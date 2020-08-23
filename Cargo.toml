@@ -4,6 +4,7 @@ version = "0.1.1-beta"
 authors = ["MathNya <umya.net.info@gmail.com>"]
 repository = "https://github.com/MathNya/umya-spreadsheet"
 keywords = ["excel", "spreadsheet", "xlsx", "reader", "writer"]
+license = "MIT"
 license-file = "LICENSE"
 readme = "README.md"
 description = "umya-spreadsheet is a library written in pure Rust and read and write xlsx file."
