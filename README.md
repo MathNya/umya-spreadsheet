@@ -1,4 +1,5 @@
 # umya-spreadsheet
+[![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
 
 ## Description
 **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
