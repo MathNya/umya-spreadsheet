@@ -254,7 +254,7 @@ impl Spreadsheet {
     pub fn get_sheet(&self, index:usize) -> &Worksheet {
         &self.work_sheet_collection.get(index).unwrap()
     }
-    pub(crate) fn get_sheet_mut(&mut self, index:usize) -> &mut Worksheet {
+    pub fn get_sheet_mut(&mut self, index:usize) -> &mut Worksheet {
         self.work_sheet_collection.get_mut(index).unwrap()
     }
     pub(crate) fn new_sheet(&mut self) -> &mut Worksheet {

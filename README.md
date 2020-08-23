@@ -10,9 +10,11 @@ This is BETA version.
 
 ## Example
 ```rust
+extern crate umya_spreadsheet;
+
 // reader
 let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
-let mut book = reader::xlsx::read(path).unwrap();
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
 // change value
 let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
@@ -23,7 +25,7 @@ dbg!(&a1_value);  // TEST1
 
 // writer
 let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");
-let _ = writer::xlsx::write(&book, path);
+let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 ```
 ## License
 MIT
