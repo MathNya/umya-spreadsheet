@@ -8,7 +8,6 @@ use super::driver::*;
 pub(crate) fn read(dir: &TempDir, target: &str) -> result::Result<Vec<(String, String, String)>, XlsxError>
 {
     let path = dir.path().join(format!("xl/drawings/_rels/{}.rels", target.replace("../drawings/", "")));
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();

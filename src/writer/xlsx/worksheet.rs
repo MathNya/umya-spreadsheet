@@ -163,25 +163,40 @@ pub(crate) fn write(
             let ht:&str = &row.get_height().to_string();
             let descent:&str = &row.get_descent().to_string();
             attributes.push(("r", r));
-            attributes.push(("spans", row.get_spans()));
-            if ht != "0" {
-                attributes.push(("ht", ht));
-            }
-            if row.get_thick_bot() == &true {
-                attributes.push(("thickBot", "1"));
-            }
-            if row.get_custom_height() == &true {
-                attributes.push(("customHeight", "1"));
-            }
-            attributes.push(("x14ac:dyDescent", descent));
 
             match cells_by_row.get_mut(id) {
                 None => {
+                    if ht != "0" {
+                        attributes.push(("ht", ht));
+                    }
+                    if row.get_thick_bot() == &true {
+                        attributes.push(("thickBot", "1"));
+                    }
+                    if row.get_custom_height() == &true {
+                        attributes.push(("customHeight", "1"));
+                    }
+                    attributes.push(("x14ac:dyDescent", descent));
+        
                     write_start_tag(&mut writer, "row", attributes, true);
                 },
                 Some(cells) => {
-                    write_start_tag(&mut writer, "row", attributes, false);
                     cells.sort();
+                    let first = column_index_from_string(coordinate_from_string(cells.first().unwrap())[0]) + 1;
+                    let last = column_index_from_string(coordinate_from_string(cells.last().unwrap())[0]) + 1;
+                    let spans = format!("{}:{}", first, last);
+                    attributes.push(("spans", &spans));
+                    if ht != "0" {
+                        attributes.push(("ht", ht));
+                    }
+                    if row.get_thick_bot() == &true {
+                        attributes.push(("thickBot", "1"));
+                    }
+                    if row.get_custom_height() == &true {
+                        attributes.push(("customHeight", "1"));
+                    }
+                    attributes.push(("x14ac:dyDescent", descent));
+
+                    write_start_tag(&mut writer, "row", attributes, false);
                     for coordinate in cells {
                         let cell = worksheet.get_cell_collection().get(&coordinate);
                         // c
@@ -248,9 +263,9 @@ pub(crate) fn write(
     }
 
     // phoneticPr
-    write_start_tag(&mut writer, "phoneticPr", vec![
-        ("fontId", "1"),
-    ], true);
+    //write_start_tag(&mut writer, "phoneticPr", vec![
+    //    ("fontId", "1"),
+    //], true);
 
     // conditionalFormatting
     for (coordinates, conditional_formatting) in worksheet.get_conditional_styles_collection() {

@@ -11,7 +11,6 @@ const FILE_PATH: &'static str = "xl/theme/theme1.xml";
 
 pub fn read(dir: &TempDir) -> result::Result<Theme, XlsxError> {
     let path = dir.path().join(FILE_PATH);
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();

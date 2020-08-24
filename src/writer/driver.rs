@@ -101,7 +101,6 @@ pub(crate) fn make_file_from_writer(
         None => {}
     }
     let file_path = temp_dir.path().join(path);
-    dbg!(file_path.clone());
     let mut f = File::create(file_path)?;
     f.write_all(writer.into_inner().get_ref())?;
     f.sync_all()?;

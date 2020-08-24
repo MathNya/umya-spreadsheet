@@ -10,7 +10,6 @@ const FILE_PATH: &'static str = "xl/_rels/workbook.xml.rels";
 pub(crate) fn read(dir: &TempDir) -> result::Result<Vec<(String, String, String)>, XlsxError> 
 {
     let path = dir.path().join(FILE_PATH);
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();

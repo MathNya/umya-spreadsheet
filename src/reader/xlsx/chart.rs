@@ -17,7 +17,6 @@ use super::super::structs::axis::Axis;
 
 pub fn read(dir: &TempDir, target: &String, chart: &mut Chart) -> result::Result<(), XlsxError> {
     let path = dir.path().join(format!("xl/drawings/{}", target));
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();

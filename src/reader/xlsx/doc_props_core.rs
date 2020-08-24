@@ -11,7 +11,6 @@ const FILE_PATH: &'static str = "docProps/core.xml";
 
 pub(crate) fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet) -> result::Result<(), XlsxError> {
     let path = dir.path().join(FILE_PATH);
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();

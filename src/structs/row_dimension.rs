@@ -2,7 +2,6 @@
 pub struct RowDimension {
     height: f32,
     descent: f32,
-    spans: String,
     thick_bot: bool,
     custom_height: bool
 }
@@ -18,12 +17,6 @@ impl RowDimension {
     }
     pub(crate) fn set_descent(&mut self, value:f32) {
         self.descent = value;
-    }
-    pub fn get_spans(&self)-> &str {
-        &self.spans
-    }
-    pub(crate) fn set_spans<S: Into<String>>(&mut self, value:S) {
-        self.spans = value.into();
     }
     pub fn get_thick_bot(&self)-> &bool {
         &self.thick_bot

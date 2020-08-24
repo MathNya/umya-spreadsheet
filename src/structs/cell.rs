@@ -21,8 +21,12 @@ impl Cell {
     }
     pub fn set_value<S: Into<String>>(&mut self, value:S)->Result<(), &str> {
         let v = value.into();
-        Cell::data_type_for_value(&v);
+        self.data_type = Cell::data_type_for_value(&v).to_string();
         self.value = v;
+        Ok(())
+    }
+    pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value:S)->Result<(), &str> {
+        self.value = value.into();
         Ok(())
     }
     pub fn get_data_type(&self)-> &str {

@@ -262,6 +262,21 @@ impl Spreadsheet {
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }
+    pub fn set_sheet_title<S: Into<String>>(&mut self, index:usize, value:S) -> Result<(), &'static str>{
+        let v = value.into();
+        for work_sheet in &self.work_sheet_collection {
+            if &v == work_sheet.get_title() {
+                return Err("title duplicate.");
+            }
+        }
+        match self.work_sheet_collection.get_mut(index) {
+            Some(sheet) => {
+                sheet.set_title(v);
+                Ok(())
+            },
+            None => return Err("sheet not found.")
+        }
+    }
     pub fn has_ribbon(&self) -> bool {
         self.ribbon_xml_data.is_some()
     }

@@ -8,7 +8,6 @@ const SHARED_STRINGS: &'static str = "xl/sharedStrings.xml";
 
 pub(crate) fn read(dir: &TempDir) -> result::Result<Vec<String>, XlsxError> {
     let path = dir.path().join(SHARED_STRINGS);
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();

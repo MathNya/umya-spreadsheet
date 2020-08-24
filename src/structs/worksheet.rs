@@ -165,14 +165,14 @@ impl Worksheet {
     pub fn get_active_cell(&self) -> &str {
         &self.active_cell
     }
-    pub(crate) fn set_active_cell(&mut self, value:String) {
-        self.active_cell = value;
+    pub(crate) fn set_active_cell<S: Into<String>>(&mut self, value:S) {
+        self.active_cell = value.into();
     }
     pub fn get_sheet_id(&self) -> &String {
         &self.sheet_id
     }
-    pub(crate) fn set_sheet_id(&mut self, value:String) {
-        self.sheet_id = value;
+    pub(crate) fn set_sheet_id<S: Into<String>>(&mut self, value:S) {
+        self.sheet_id = value.into();
     }
     pub fn get_cell_collection(&self) -> &Cells {
         &self.cell_collection
@@ -267,8 +267,8 @@ impl Worksheet {
     pub fn get_title(&self) -> &String {
         return &self.title;
     }
-    pub(crate) fn set_title(&mut self, value:String) {
-        self.title = value;
+    pub(crate) fn set_title<S: Into<String>>(&mut self, value:S) {
+        self.title = value.into();
     }
     pub fn get_sheet_state(&self) -> &String {
         return &self.sheet_state;

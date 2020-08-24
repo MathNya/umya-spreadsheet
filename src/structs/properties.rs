@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Properties {
     creator: String,
     last_modified_by: String,
@@ -14,6 +14,26 @@ pub struct Properties {
     revision: String,
     version: String,
     custom_properties: Vec<String>,
+}
+impl Default for Properties {
+    fn default() -> Self {
+        Self {
+            creator: String::from(""),
+            last_modified_by: String::from(""),
+            created: String::from("2006-09-16T00:00:00Z"),
+            modified: String::from("2006-09-16T00:00:00Z"),
+            title: String::from(""),
+            description: String::from(""),
+            subject: String::from(""),
+            keywords: String::from(""),
+            category: String::from(""),
+            manager: String::from(""),
+            company: String::from(""),
+            revision: String::from(""),
+            version: String::from(""),
+            custom_properties: Vec::new()
+        }
+    }
 }
 impl Properties {
     pub fn get_creator(&self) -> &str {

@@ -23,7 +23,6 @@ const FILE_PATH: &'static str = "xl/styles.xml";
 pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result::Result<Vec<Style>, XlsxError>
 {
     let path = dir.path().join(FILE_PATH);
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();

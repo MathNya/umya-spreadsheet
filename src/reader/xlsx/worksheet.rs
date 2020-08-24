@@ -28,7 +28,6 @@ pub(crate) fn read(
 ) -> result::Result<(bool, Option<String>), XlsxError>
 {
     let path = dir.path().join(format!("xl/{}", target));
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();
@@ -197,7 +196,7 @@ pub(crate) fn read(
                         } else if type_value == "b" {
                             let _ = worksheet.set_cell_value_and_data_type(&coordinate.to_string(), &string_value, &type_value);
                         } else if type_value == "" {
-                            let _ = worksheet.set_cell_value(&coordinate.to_string(), &string_value);
+                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_crate(&string_value);
                         };
                     },
                     b"c" => {
@@ -441,9 +440,6 @@ fn get_attribute_row(
             Ok(ref attr) if attr.key == b"r" => {
                 let value = get_attribute_value(attr).unwrap();
                 row_index = value.parse::<usize>().unwrap();
-            },
-            Ok(ref attr) if attr.key == b"spans" => {
-                row.set_spans(get_attribute_value(attr).unwrap());
             },
             Ok(ref attr) if attr.key == b"ht" => {
                 let value = get_attribute_value(attr).unwrap();

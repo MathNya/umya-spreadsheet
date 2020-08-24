@@ -13,18 +13,11 @@ pub mod writer;
 pub mod reader;
 pub mod helper;
 
-#[test]
-fn test_read_and_wite() {
-    // reader
-    let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
-    let mut book = reader::xlsx::read(path).unwrap();
-
-    let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
-    let a1_value = book.get_sheet(0).get_cell("A1").unwrap().get_value();
-    // TEST1
-    dbg!(&a1_value);
-
-    // writer
-    let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");
-    let _ = writer::xlsx::write(&book, path);
+pub fn new_file()->structs::spreadsheet::Spreadsheet {
+    let mut spreadsheet = structs::spreadsheet::Spreadsheet::default();
+    let worksheet = spreadsheet.new_sheet();
+    worksheet.set_title("Sheet1");
+    worksheet.set_sheet_id("1");
+    worksheet.set_active_cell("A1");
+    spreadsheet
 }

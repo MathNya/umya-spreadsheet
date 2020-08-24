@@ -10,7 +10,6 @@ pub(crate) fn read(dir: &TempDir, target: &str) -> result::Result<Vec<(String, S
     let mut result:Vec<(String, String, String)> = Vec::new();
 
     let path = dir.path().join(format!("xl/worksheets/_rels/{}.rels", target.replace("worksheets/","")));
-    dbg!(path.clone());
     let mut reader = match Reader::from_file(path){
         Ok(v) => {v},
         Err(_) => {return Ok(result);}

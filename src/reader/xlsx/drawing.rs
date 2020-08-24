@@ -16,7 +16,6 @@ pub(crate) fn read(
 ) -> result::Result<Vec<(HashMap<String, usize>, HashMap<String, usize>, String, Option<String>)>, XlsxError>
 {
     let path = dir.path().join(format!("xl/drawings/{}", target));
-    dbg!(path.clone());
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();
