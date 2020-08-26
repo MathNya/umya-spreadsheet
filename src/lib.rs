@@ -15,9 +15,7 @@ pub mod helper;
 
 pub fn new_file()->structs::spreadsheet::Spreadsheet {
     let mut spreadsheet = structs::spreadsheet::Spreadsheet::default();
-    let worksheet = spreadsheet.new_sheet();
-    worksheet.set_title("Sheet1");
-    worksheet.set_sheet_id("1");
+    let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
     spreadsheet
 }

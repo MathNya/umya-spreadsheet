@@ -54,9 +54,11 @@ impl Cells {
     {
         &self.index
     }
-    pub fn get(&self, coordinate:&String) -> &Cell
-    {
-        self.index.get(coordinate).unwrap()
+    pub fn get(&self, coordinate:&String) -> Result<&Cell, &'static str> {
+        match self.index.get(coordinate) {
+            Some(v) => return Ok(v),
+            None => return Err("Not found.")
+        }
     }
     pub fn get_mut(&mut self, coordinate:&String) -> &mut Cell
     {

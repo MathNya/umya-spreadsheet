@@ -1,5 +1,6 @@
 # umya-spreadsheet
 [![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
+[![Crates.io](https://img.shields.io/crates/l/umya-spreadsheet)](https://github.com/MathNya/umya-spreadsheet#license)
 
 ## Description
 **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
@@ -10,6 +11,7 @@ This is BETA version.
 - Often changes are not backward compatible.
 
 ## Example
+![Result Image](images/sample1.png)
 ```rust
 extern crate umya_spreadsheet;
 
@@ -20,12 +22,22 @@ let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 // new file
 let mut book = umya_spreadsheet::new_file();
 
+// new worksheet
+let _ = book.new_sheet("Sheet2");
+
 // change value
-let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
+let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
 
 // read value
-let a1_value = book.get_sheet(0).get_cell("A1").unwrap().get_value();
+let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell("A1").unwrap().get_value();
 assert_eq!("TEST1", a1_value);  // TEST1
+
+// add bottom border
+let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
+.get_style_mut("A1")
+.get_borders_mut()
+.get_bottom_mut()
+.set_border_style(umya_spreadsheet::structs::border::Border::BORDER_MEDIUM);
 
 // writer
 let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");

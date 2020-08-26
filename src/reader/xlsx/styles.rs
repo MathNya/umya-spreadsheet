@@ -20,7 +20,7 @@ use super::super::structs::cell_style::CellStyle;
 
 const FILE_PATH: &'static str = "xl/styles.xml";
 
-pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result::Result<Vec<Style>, XlsxError>
+pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result::Result<(Vec<Style>, Vec<Style>), XlsxError>
 {
     let path = dir.path().join(FILE_PATH);
     let mut reader = Reader::from_file(path)?;
@@ -31,6 +31,7 @@ pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result
     let mut font_vec: Vec<Font> = Vec::new();
     let mut fill_vec: Vec<Fill> = Vec::new();
     let mut borders_vec: Vec<Borders> = Vec::new();
+    let mut cell_xfs: Vec<Style> = Vec::new();
     let mut dxf_vec: Vec<Style> = Vec::new();
 
     loop {
@@ -58,7 +59,7 @@ pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result
                         }
                     },
                     b"cellXfs" => {
-                        spreadsheet.set_cell_xf_collection(get_cell_xfs(&mut reader, &num_fmt_vec, &font_vec, &fill_vec, &borders_vec, spreadsheet.get_cell_style_collection()));
+                        cell_xfs = get_cell_xfs(&mut reader, &num_fmt_vec, &font_vec, &fill_vec, &borders_vec, spreadsheet.get_cell_style_collection());
                     },
                     b"dxfs" => {
                         dxf_vec = get_dxfs(&mut reader, theme);
@@ -85,7 +86,7 @@ pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result
         buf.clear();
     }
 
-    Ok(dxf_vec)
+    Ok((cell_xfs, dxf_vec))
 }
 
 fn get_num_fmts(
@@ -387,6 +388,8 @@ fn get_fill(
                     },
                     b"fgColor" => {
                         get_attribute_color(e, fill.get_start_color_mut(), theme);
+                    },
+                    b"bgColor" => {
                         get_attribute_color(e, fill.get_end_color_mut(), theme);
                     },
                     _ => (),
@@ -590,7 +593,7 @@ fn get_cell_style_xfs(
     let num_fmt_vec: HashMap<usize, NumberFormat> = HashMap::new();
     let cel_style_vec: Vec<CellStyle> = Vec::new();
     loop {
-        match get_xf(reader, &num_fmt_vec, font_vec, fill_vec, borders_vec, &cel_style_vec) {
+        match get_xf(reader, true, &num_fmt_vec, font_vec, fill_vec, borders_vec, &cel_style_vec) {
             Some(v) => {
                 cel_vec.push(v);
             },
@@ -612,7 +615,7 @@ fn get_cell_xfs(
 {
     let mut cel_vec: Vec<Style> = Vec::new();
     loop {
-        match get_xf(reader, num_fmt_vec, font_vec, fill_vec, borders_vec, cel_style_vec) {
+        match get_xf(reader, false, num_fmt_vec, font_vec, fill_vec, borders_vec, cel_style_vec) {
             Some(v) => {
                 cel_vec.push(v);
             },
@@ -625,6 +628,7 @@ fn get_cell_xfs(
 
 fn get_xf(
     reader: &mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
+    apply_defalut: bool,
     num_fmt_vec: &HashMap<usize, NumberFormat>,
     font_vec: &Vec<Font>,
     fill_vec: &Vec<Fill>,
@@ -640,7 +644,7 @@ fn get_xf(
         Ok(Event::Start(ref e)) => {
             match e.name() {
                 b"xf" => {
-                    get_attribute_pattern_xf(e, &mut style, num_fmt_vec, font_vec, fill_vec, borders_vec, cel_style_vec);
+                    get_attribute_pattern_xf(e, &mut style, apply_defalut, num_fmt_vec, font_vec, fill_vec, borders_vec, cel_style_vec);
                 },
                 _ => {
                     return None;
@@ -650,7 +654,7 @@ fn get_xf(
         Ok(Event::Empty(ref e)) => {
             match e.name() {
                 b"xf" => {
-                    get_attribute_pattern_xf(e, &mut style, num_fmt_vec, font_vec, fill_vec, borders_vec, cel_style_vec);
+                    get_attribute_pattern_xf(e, &mut style, apply_defalut, num_fmt_vec, font_vec, fill_vec, borders_vec, cel_style_vec);
                     return Some(style);
                 },
                 _ => {
@@ -770,6 +774,7 @@ fn get_attribute_pattern_border(e:&quick_xml::events::BytesStart<'_>, border:&mu
 fn get_attribute_pattern_xf(
     e:&quick_xml::events::BytesStart<'_>,
     style:&mut Style,
+    apply_defalut: bool,
     num_fmt_vec: &HashMap<usize, NumberFormat>,
     font_vec: &Vec<Font>,
     fill_vec: &Vec<Fill>,
@@ -777,60 +782,103 @@ fn get_attribute_pattern_xf(
     cel_style_vec: &Vec<CellStyle>
 )
 {
-    for a in e.attributes().with_checks(false) {
-        match a {
-            Ok(ref attr) if attr.key == b"numFmtId" => {
-                let value = get_attribute_value(attr).unwrap();
-                let num_fmt_id = value.parse::<usize>().unwrap();
-                match num_fmt_vec.get(&num_fmt_id) {
+    // xfId
+    match get_attribute(e, b"xfId") {
+        Some(v) => {
+            let id = v.parse::<usize>().unwrap();
+            style.set_xf_id(id);
+            match cel_style_vec.get(id).unwrap().get_style().get_number_format() {
+                Some(v) => style.set_number_format(v.clone()),
+                None => {}
+            }
+            match cel_style_vec.get(id).unwrap().get_style().get_font() {
+                Some(v) => style.set_font(v.clone()),
+                None => {}
+            }
+            match cel_style_vec.get(id).unwrap().get_style().get_fill() {
+                Some(v) => style.set_fill(v.clone()),
+                None => {}
+            }
+            match cel_style_vec.get(id).unwrap().get_style().get_borders() {
+                Some(v) => style.set_borders(v.clone()),
+                None => {}
+            }
+            match cel_style_vec.get(id).unwrap().get_style().get_alignment() {
+                Some(v) => style.set_alignment(v.clone()),
+                None => {}
+            }
+        },
+        None => {}
+    }
+
+    // NumberFormat
+    let apply_number_format = match get_attribute(e, b"applyNumberFormat") {
+        Some(v) if v == "1" => true,
+        Some(_) => false,
+        None => apply_defalut.clone()
+    };
+    if apply_number_format {
+        let id = get_attribute(e, b"numFmtId").unwrap().parse::<usize>().unwrap();
+        match num_fmt_vec.get(&id) {
+            Some(v) => {
+                style.set_number_format(v.clone());
+            },
+            None => {
+                match super::super::structs::number_format::FILL_BUILT_IN_FORMAT_CODES.get(&id){
                     Some(v) => {
-                        style.set_number_format(v.clone());
-                    },
-                    None => {
-                        match super::super::structs::number_format::FILL_BUILT_IN_FORMAT_CODES.get(&num_fmt_id){
-                            Some(v) => {
-                                let mut num_fmt = NumberFormat::default();
-                                num_fmt.set_format_code(v);
-                                style.set_number_format(num_fmt);
-                            },
-                            None => {}
-                        }
-                    }
-                }
-            },
-            Ok(ref attr) if attr.key == b"fontId" => {
-                let value = get_attribute_value(attr).unwrap();
-                let font_id = value.parse::<usize>().unwrap();
-                style.set_font((*font_vec.get(font_id).unwrap()).clone());
-            },
-            Ok(ref attr) if attr.key == b"fillId" => {
-                let value = get_attribute_value(attr).unwrap();
-                let fill_id = value.parse::<usize>().unwrap();
-                style.set_fill((*fill_vec.get(fill_id).unwrap()).clone());
-            },
-            Ok(ref attr) if attr.key == b"borderId" => {
-                let value = get_attribute_value(attr).unwrap();
-                let border_id = value.parse::<usize>().unwrap();
-                style.set_borders((*borders_vec.get(border_id).unwrap()).clone());
-            },
-            Ok(ref attr) if attr.key == b"xfId" => {
-                let value = get_attribute_value(attr).unwrap();
-                let xf_id = value.parse::<usize>().unwrap();
-                style.set_xf_id(xf_id);
-                match cel_style_vec.get(xf_id) {
-                    Some(v) => {
-                        match v.get_style().get_alignment() {
-                            Some(a) => {
-                                style.set_alignment(a.clone());
-                            },
-                            None => {}
-                        }
+                        let mut num_fmt = NumberFormat::default();
+                        num_fmt.set_format_code(v);
+                        style.set_number_format(num_fmt);
                     },
                     None => {}
                 }
-            },
-            Ok(_) => {},
-            Err(_) => {},
+            }
         }
     }
+
+    // Font
+    let apply_font = match get_attribute(e, b"applyFont") {
+        Some(v) if v == "1" => true,
+        Some(_) => false,
+        None => apply_defalut.clone()
+    };
+    if apply_font {
+        let id = get_attribute(e, b"fontId").unwrap().parse::<usize>().unwrap();
+        if id == 0usize {
+            style.set_font(Font::get_defalut_value());
+        } else {
+            style.set_font((*font_vec.get(id).unwrap()).clone());
+        }
+    }
+
+    // Fill
+    let apply_fill = match get_attribute(e, b"applyFill") {
+        Some(v) if v == "1" => true,
+        Some(_) => false,
+        None => apply_defalut.clone()
+    };
+    if apply_fill {
+        let id = get_attribute(e, b"fillId").unwrap().parse::<usize>().unwrap();
+        if id == 0usize {
+            style.set_fill(Fill::get_defalut_value());
+        } else {
+            style.set_fill((*fill_vec.get(id).unwrap()).clone());
+        }
+    }
+
+    // Border
+    let apply_border = match get_attribute(e, b"applyBorder") {
+        Some(v) if v == "1" => true,
+        Some(_) => false,
+        None => apply_defalut.clone()
+    };
+    if apply_border {
+        let id = get_attribute(e, b"borderId").unwrap().parse::<usize>().unwrap();
+        if id == 0usize {
+            style.set_borders(Borders::get_defalut_value());
+        } else {
+            style.set_borders((*borders_vec.get(id).unwrap()).clone());
+        }
+    }
+
 }

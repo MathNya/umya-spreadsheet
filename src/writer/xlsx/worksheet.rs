@@ -18,6 +18,7 @@ pub(crate) fn write(
     sheet_no: &usize,
     is_selected: &bool,
     has_macros: &bool,
+    all_cell_xf_list: Vec<(String, Style)>,
     conditonal_style_list: Vec<(String, Style)>,
     shared_strings: HashMap<String, usize>,
     dir: &TempDir
@@ -137,7 +138,7 @@ pub(crate) fn write(
     }
 
     let mut cells_by_row = BTreeMap::new();
-    let coordinates = worksheet.get_cell_collection().get_coordinates();
+    let coordinates = worksheet.get_coordinates();
     for coordinate in &coordinates {
         let csf = coordinate_from_string(coordinate.as_str());
         let row_name:usize = csf.get(1).unwrap().parse().unwrap();
@@ -202,40 +203,55 @@ pub(crate) fn write(
                         // c
                         let mut attributes: Vec<(&str, &str)> = Vec::new();
                         attributes.push(("r", &coordinate));
-                        let s:&str = &cell.get_xf_index().to_string();
-                        if cell.get_xf_index() != &0usize {
-                            attributes.push(("s", s));
-                        }
-                        if cell.get_data_type() != "" {
-                            attributes.push(("t", cell.get_data_type()));
-                        }
-                        if cell.get_value() == "" {
-                            write_start_tag(&mut writer, "c", attributes, true);
-    
-                        } else {
-                            write_start_tag(&mut writer, "c", attributes, false);
-
-                            // f
-                            if cell.get_formula_attributes() != "" {
-                                write_start_tag(&mut writer, "f", vec![], false);
-                                write_text_node(&mut writer, cell.get_formula_attributes());
-                                write_end_tag(&mut writer, "f");
-                            }
-
-                            // v
-                            write_start_tag(&mut writer, "v", vec![], false);
-
-                            match cell.get_data_type() {
-                                "s" => {
-                                    let val_index = shared_strings.get(cell.get_value()).unwrap().to_string();
-                                    write_text_node(&mut writer, val_index);
+                        let mut xf_index:usize = 0;
+                        for (hash_code, _) in &all_cell_xf_list {
+                            match worksheet.get_style(coordinate.as_str()) {
+                                Ok(style) => {
+                                    if style.get_hash_code().as_str() == hash_code {
+                                        break;
+                                    }
+                                    xf_index += 1;
                                 },
-                                "b" => write_text_node(&mut writer, cell.get_value()),
-                                "" => write_text_node(&mut writer, cell.get_value()),
-                                _ => println!("something else"),
+                                Err(_) => {}
                             }
-                            write_end_tag(&mut writer, "v");
-                            write_end_tag(&mut writer, "c");
+                        }
+                        let xf_index_str:&str = &xf_index.to_string();
+                        if xf_index != 0usize {
+                            attributes.push(("s", xf_index_str));
+                        }
+                        match cell {
+                            Ok(c) => {
+                                if c.get_data_type() != "" {
+                                    attributes.push(("t", c.get_data_type()));
+                                }
+                                write_start_tag(&mut writer, "c", attributes, false);
+
+                                // f
+                                if c.get_formula_attributes() != "" {
+                                    write_start_tag(&mut writer, "f", vec![], false);
+                                    write_text_node(&mut writer, c.get_formula_attributes());
+                                    write_end_tag(&mut writer, "f");
+                                }
+    
+                                // v
+                                write_start_tag(&mut writer, "v", vec![], false);
+    
+                                match c.get_data_type() {
+                                    "s" => {
+                                        let val_index = shared_strings.get(c.get_value()).unwrap().to_string();
+                                        write_text_node(&mut writer, val_index);
+                                    },
+                                    "b" => write_text_node(&mut writer, c.get_value()),
+                                    "" => write_text_node(&mut writer, c.get_value()),
+                                    _ => println!("something else"),
+                                }
+                                write_end_tag(&mut writer, "v");
+                                write_end_tag(&mut writer, "c");
+    
+                            },
+                            Err(_) => {
+                                write_start_tag(&mut writer, "c", attributes, true);
+                            }
                         }
                     }
                     write_end_tag(&mut writer, "row");

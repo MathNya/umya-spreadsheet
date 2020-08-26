@@ -1,9 +1,17 @@
 use super::color::Color;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct Border {
     border_style: String,
     color: Color,
+}
+impl Default for Border {
+    fn default() -> Self {
+        Self {
+            border_style: Border::BORDER_NONE.into(),
+            color: Color::default(),
+        }
+    }
 }
 impl Border {
     // Border style
@@ -28,13 +36,13 @@ impl Border {
     pub fn get_border_style(&self)-> &String {
         &self.border_style
     }
-    pub(crate) fn set_border_style(&mut self, value:String) {
-        self.border_style = value;
+    pub fn set_border_style<S: Into<String>>(&mut self, value:S) {
+        self.border_style = value.into();
     }
     pub fn get_color(&self)-> &Color {
         &self.color
     }
-    pub(crate) fn get_color_mut(&mut self)-> &mut Color {
+    pub fn get_color_mut(&mut self)-> &mut Color {
         &mut self.color
     }
     pub(crate) fn set_color(&mut self, value:Color) {

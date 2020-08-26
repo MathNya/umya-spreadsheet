@@ -125,6 +125,11 @@ impl Color {
             None => {String::from("")}
         }
     }
+    pub(crate) fn set_theme_index_and_argb<S: Into<String>>(&mut self, index:usize, argb:S) {
+        self.indexed = 0;
+        self.theme_index = index;
+        self.argb = argb.into();
+    }
     pub fn get_tint(&self)-> &f64 {
         &self.tint
     }

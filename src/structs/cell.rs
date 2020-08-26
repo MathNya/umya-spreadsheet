@@ -2,7 +2,6 @@
 pub struct Cell {
     value: String,
     data_type: String,
-    xf_index  : usize,
     formula_attributes: String,
 }
 impl Cell {
@@ -70,12 +69,6 @@ impl Cell {
     }
     pub fn is_formula(&self) -> bool {
         &self.data_type == Cell::TYPE_FORMULA
-    }
-    pub fn get_xf_index(&self)-> &usize {
-        &self.xf_index
-    }
-    pub(crate) fn set_xf_index(&mut self, value:usize) {
-        self.xf_index = value;
     }
     pub fn get_formula_attributes(&self)-> &String {
         &self.formula_attributes

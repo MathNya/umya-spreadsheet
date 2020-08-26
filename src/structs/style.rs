@@ -34,11 +34,27 @@ impl Style {
     pub fn get_font(&self) -> &Option<Font> {
         &self.font
     }
+    pub fn get_font_mut(&mut self) -> &mut Font {
+        match &self.font {
+            Some(_) => return self.font.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_font(Font::default());
+        self.font.as_mut().unwrap()
+    }
     pub(crate) fn set_font(&mut self, value:Font) {
         self.font = Some(value);
     }
     pub fn get_fill(&self) -> &Option<Fill> {
         &self.fill
+    }
+    pub fn get_fill_mut(&mut self) -> &mut Fill {
+        match &self.fill {
+            Some(_) => return self.fill.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_fill(Fill::default());
+        self.fill.as_mut().unwrap()
     }
     pub(crate) fn set_fill(&mut self, value:Fill) {
         self.fill = Some(value);
@@ -46,17 +62,41 @@ impl Style {
     pub fn get_borders(&self) -> &Option<Borders> {
         &self.borders
     }
+    pub fn get_borders_mut(&mut self) -> &mut Borders {
+        match &self.borders {
+            Some(_) => return self.borders.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_borders(Borders::default());
+        self.borders.as_mut().unwrap()
+    }
     pub(crate) fn set_borders(&mut self, value:Borders) {
         self.borders = Some(value);
     }
     pub fn get_alignment(&self) -> &Option<Alignment> {
         &self.alignment
     }
+    pub fn get_alignment_mut(&mut self) -> &mut Alignment {
+        match &self.alignment {
+            Some(_) => return self.alignment.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_alignment(Alignment::default());
+        self.alignment.as_mut().unwrap()
+    }
     pub(crate) fn set_alignment(&mut self, value:Alignment) {
         self.alignment = Some(value);
     }
     pub fn get_number_format(&self) -> &Option<NumberFormat> {
         &self.number_format
+    }
+    pub fn get_number_format_mut(&mut self) -> &mut NumberFormat {
+        match &self.number_format {
+            Some(_) => return self.number_format.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_number_format(NumberFormat::default());
+        self.number_format.as_mut().unwrap()
     }
     pub(crate) fn set_number_format(&mut self, value:NumberFormat) {
         self.number_format = Some(value);
@@ -79,20 +119,17 @@ impl Style {
     pub(crate) fn set_quote_prefix(&mut self, value:bool) {
         self.quote_prefix = value;
     }
-    pub(crate) fn get_defalut_styles(theme_color_map:&Vec<String>) -> Vec<Style> {
-        let mut def_1 = Style::default();
-        def_1.set_font(Font::get_defalut_fonts(theme_color_map)[0].clone());
-        def_1.set_fill(Fill::get_defalut_fills()[0].clone());
-        def_1.set_borders(Borders::get_defalut_borders()[0].clone());
-
-        vec![def_1]
+    pub(crate) fn get_defalut_value() -> Style {
+        let def = Style::default();
+        def
     }
     pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}{}{}",
+        format!("{:x}", md5::compute(format!("{}{}{}{}{}",
             match &self.font {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
             match &self.fill {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
             match &self.borders {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
             match &self.alignment {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
+            match &self.number_format {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
         )))
     }
 }

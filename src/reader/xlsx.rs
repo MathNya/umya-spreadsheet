@@ -71,17 +71,15 @@ pub fn read(path: &Path) -> Result<Spreadsheet, XlsxError> {
     doc_props_core::read(&dir, &mut book).unwrap(); 
     let shared_string = shared_strings::read(&dir).unwrap();
     let theme = theme::read(&dir).unwrap();
-    let dxf_vec = styles::read(&dir, &mut book, &theme).unwrap();
+    let (cell_xfs_vec, dxf_vec) = styles::read(&dir, &mut book, &theme).unwrap();
 
     let workbook_rel = workbook_rels::read(&dir).unwrap();
     let mut sheet_count = 0;
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
-                let worksheet = book.new_sheet();
-                worksheet.set_title(sheets_name.clone());
-                worksheet.set_sheet_id(sheets_sheet_id.clone());
-                let (is_active_sheet, drawing_id) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &dxf_vec).unwrap();
+                let worksheet = book.new_sheet_crate(sheets_sheet_id.clone(), sheets_name.clone());
+                let (is_active_sheet, drawing_id) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
                 let worksheet_rel = worksheet_rels::read(&dir, &rel_target).unwrap();
                 match drawing_id {
                     Some(v) => {

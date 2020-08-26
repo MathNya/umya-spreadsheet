@@ -24,6 +24,7 @@ pub(crate) fn read(
     worksheet: &mut Worksheet,
     theme: &Theme,
     shared_strings: &Vec<String>,
+    cell_xfs_vec: &Vec<Style>,
     dxf_vec: &Vec<Style>
 ) -> result::Result<(bool, Option<String>), XlsxError>
 {
@@ -38,7 +39,7 @@ pub(crate) fn read(
     let mut coordinate: String = String::from("");
     let mut type_value: String = String::from("");
     let mut string_value: String = String::from("");
-    let mut style_index: usize = 0;
+    let mut style_index: Option<usize> = None;
 
     loop {
         match reader.read_event(&mut buf) {
@@ -79,7 +80,7 @@ pub(crate) fn read(
                                 },
                                 Ok(ref attr) if attr.key == b"s" => {
                                     let value = get_attribute_value(attr)?;
-                                    style_index = value.parse::<usize>().unwrap();
+                                    style_index = Some(value.parse::<usize>().unwrap());
                                 },
                                 Ok(ref attr) if attr.key == b"t" => {
                                     type_value = get_attribute_value(attr)?;
@@ -88,8 +89,14 @@ pub(crate) fn read(
                                 Err(_) => {},
                             }
                         }
-                        worksheet.set_cell_style_index(&coordinate.to_string(), style_index);
-                        style_index = 0;
+                        match style_index {
+                            Some(v) => {
+                                let style = cell_xfs_vec.get(v).unwrap().clone();
+                                worksheet.add_style(&coordinate, style);
+                            },
+                            None => {}
+                        }
+                        style_index = None;
                     },
                     b"conditionalFormatting" => {
                         let sqref = get_attribute(e, b"sqref").unwrap();
@@ -147,14 +154,20 @@ pub(crate) fn read(
                                 },
                                 Ok(ref attr) if attr.key == b"s" => {
                                     let value = get_attribute_value(attr)?;
-                                    style_index = value.parse::<usize>().unwrap();
+                                    style_index = Some(value.parse::<usize>().unwrap());
                                 },
                                 Ok(_) => {},
                                 Err(_) => {},
                             }
                         }
-                        worksheet.set_cell_style_index(&coordinate.to_string(), style_index);
-                        style_index = 0;
+                        match style_index {
+                            Some(v) => {
+                                let style = cell_xfs_vec.get(v).unwrap().clone();
+                                worksheet.add_style(&coordinate, style);
+                            },
+                            None => {}
+                        }
+                        style_index = None;
                     },
                     b"mergeCell" => {
                         worksheet.add_merge_cells_crate(get_attribute(e, b"ref").unwrap());

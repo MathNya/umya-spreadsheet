@@ -36,7 +36,7 @@ pub struct Worksheet {
     header_footer: HeaderFooter,
     sheet_view: SheetView,
     protection: Protection,
-    styles : Vec<Style>,
+    styles : HashMap<String, Style>,
     conditional_styles_collection: HashMap<String, Vec<Conditional>>,
     cell_collection_is_sorted : bool,
     breaks :Vec<String>,
@@ -81,7 +81,7 @@ impl Default for Worksheet {
             header_footer: HeaderFooter::default(),
             sheet_view: SheetView::default(),
             protection: Protection::default(),
-            styles : Vec::new(),
+            styles : HashMap::new(),
             conditional_styles_collection: HashMap::new(),
             cell_collection_is_sorted : false,
             breaks :Vec::new(),
@@ -111,6 +111,47 @@ impl Default for Worksheet {
     }
 }
 impl Worksheet {
+    pub(crate) fn get_coordinates(&self)-> Vec<String> {
+        let mut result:Vec<String> = Vec::new();
+        for coordinate in self.cell_collection.get_coordinates() {
+            result.push(coordinate);
+        }
+        for (coordinate, _) in &self.styles {
+            let mut is_match = false;
+            for co in &result {
+                if co == coordinate {
+                    is_match = true;
+                }
+            }
+            if is_match == false {
+                result.push(coordinate.clone());
+            }
+        }
+        result
+    }
+    pub fn get_style_collection(&self) -> &HashMap<String, Style> {
+        &self.styles
+    }
+    pub fn get_style<S: Into<String>>(&self, coordinate:S) -> Result<&Style, &'static str> {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        match self.styles.get(&coordinate_upper) {
+            Some(v) => return Ok(v),
+            None => Err("Not found.")
+        }
+    }
+    pub fn get_style_mut<S: Into<String>>(&mut self, coordinate:S) -> &mut Style {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        match self.styles.get(&coordinate_upper) {
+            Some(_) => return self.styles.get_mut(&coordinate_upper).unwrap(),
+            None => {}
+        }
+        self.add_style(&coordinate_upper, Style::default());
+        self.styles.get_mut(&coordinate_upper).unwrap()
+    }
+    pub(crate) fn add_style<S: Into<String>>(&mut self, coordinate:S, style:Style) {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        self.styles.insert(coordinate_upper, style);
+    }
     pub fn get_conditional_styles_collection(&self) -> &HashMap<String, Vec<Conditional>> {
         &self.conditional_styles_collection
     }
@@ -293,7 +334,7 @@ impl Worksheet {
         if self.cell_collection.has(&coordinate_upper) == false {
             return None;
         }
-        Some(self.cell_collection.get(&coordinate_upper))
+        Some(self.cell_collection.get(&coordinate_upper).unwrap())
     }
     pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate:S)->&mut Cell {
         let coordinate_upper = coordinate.into().to_uppercase();
@@ -344,9 +385,5 @@ impl Worksheet {
         //    $cell->setXfIndex($columnDimension->getXfIndex());
         //}
 
-    }
-    pub(crate) fn set_cell_style_index(&mut self, coordinate:&String, value:usize) {
-        let cell = self.get_cell_mut(coordinate);
-        cell.set_xf_index(value);
     }
 }

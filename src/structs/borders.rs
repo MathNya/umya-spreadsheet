@@ -24,11 +24,17 @@ impl Borders {
     pub fn get_left(&self)-> &Border {
         &self.left
     }
+    pub fn get_left_mut(&mut self)-> &mut Border {
+        &mut self.left
+    }
     pub(crate) fn set_left(&mut self, value:Border) {
         self.left = value;
     }
     pub fn get_right(&self)-> &Border {
         &self.right
+    }
+    pub fn get_right_mut(&mut self)-> &mut Border {
+        &mut self.right
     }
     pub(crate) fn set_right(&mut self, value:Border) {
         self.right = value;
@@ -36,17 +42,26 @@ impl Borders {
     pub fn get_top(&self)-> &Border {
         &self.top
     }
+    pub fn get_top_mut(&mut self)-> &mut Border {
+        &mut self.top
+    }
     pub(crate) fn set_top(&mut self, value:Border) {
         self.top = value;
     }
     pub fn get_bottom(&self)-> &Border {
         &self.bottom
     }
+    pub fn get_bottom_mut(&mut self)-> &mut Border {
+        &mut self.bottom
+    }
     pub(crate) fn set_bottom(&mut self, value:Border) {
         self.bottom = value;
     }
     pub fn get_diagonal(&self)-> &Border {
         &self.diagonal
+    }
+    pub fn get_diagonal_mut(&mut self)-> &mut Border {
+        &mut self.diagonal
     }
     pub(crate) fn set_diagonal(&mut self, value:Border) {
         self.diagonal = value;
@@ -57,25 +72,9 @@ impl Borders {
     pub(crate) fn set_diagonal_direction(&mut self, value:usize) {
         self.diagonal_direction = value;
     }
-    pub(crate) fn get_defalut_borders() -> Vec<Borders> {
-        let mut def_1 = Borders::default();
-        let mut left = Border::default();
-        let mut right = Border::default();
-        let mut top = Border::default();
-        let mut bottom = Border::default();
-        let mut diagonal = Border::default();
-        left.set_border_style(String::from(Border::BORDER_NONE));
-        right.set_border_style(String::from(Border::BORDER_NONE));
-        top.set_border_style(String::from(Border::BORDER_NONE));
-        bottom.set_border_style(String::from(Border::BORDER_NONE));
-        diagonal.set_border_style(String::from(Border::BORDER_NONE));
-        def_1.set_left(left);
-        def_1.set_right(right);
-        def_1.set_top(top);
-        def_1.set_bottom(bottom);
-        def_1.set_diagonal(diagonal);
-
-        vec![def_1]
+    pub(crate) fn get_defalut_value() -> Borders {
+        let def = Borders::default();
+        def
     }
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}{}{}{}{}",

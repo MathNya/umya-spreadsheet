@@ -6,8 +6,8 @@ pub struct Fill {
     endcolor_index: usize,
     fill_type: String,
     rotation: i32,
-    start_color: Color,
-    end_color: Color
+    start_color: Option<Color>,
+    end_color: Option<Color>
 }
 impl Fill {
     // Fill types
@@ -48,40 +48,43 @@ impl Fill {
     pub(crate) fn set_fill_type(&mut self, value:String) {
         self.fill_type = value;
     }
-    pub fn get_start_color(&self)-> &Color {
+    pub fn get_start_color(&self)-> &Option<Color> {
         &self.start_color
     }
     pub fn get_start_color_mut(&mut self)-> &mut Color {
-        &mut self.start_color
+        match self.start_color {
+            Some(_) => {},
+            None => self.start_color = Some(Color::default())
+        }
+        self.start_color.as_mut().unwrap()
     }
     pub(crate) fn set_start_color(&mut self, value:Color) {
-        self.start_color = value;
+        self.start_color = Some(value);
     }
-    pub fn get_end_color(&self)-> &Color {
+    pub fn get_end_color(&self)-> &Option<Color> {
         &self.end_color
     }
     pub fn get_end_color_mut(&mut self)-> &mut Color {
-        &mut self.end_color
+        match self.end_color {
+            Some(_) => {},
+            None => self.end_color = Some(Color::default())
+        }
+        self.end_color.as_mut().unwrap()
     }
     pub(crate) fn set_end_color(&mut self, value:Color) {
-        self.end_color = value;
+        self.end_color = Some(value);
     }
-    pub(crate) fn get_defalut_fills() -> Vec<Fill> {
-        let mut def_1 = Fill::default();
-        def_1.set_fill_type(String::from(Self::FILL_NONE));
-
-        let mut def_2 = Fill::default();
-        def_2.set_fill_type(String::from(Self::FILL_PATTERN_GRAY125));
-        vec![def_1, def_2]
+    pub(crate) fn get_defalut_value() -> Fill {
+        let mut def = Fill::default();
+        def.set_fill_type(String::from(Self::FILL_NONE));
+        def
     }
     pub(crate) fn get_hash_code(&self)-> String {
-        let start_color_hash_code = &self.start_color.get_hash_code();
-        let end_color_hash_code = &self.end_color.get_hash_code();
         format!("{:x}", md5::compute(format!("{}{}{}{}",
             &self.fill_type,
             &self.rotation,
-            if &self.fill_type != Self::FILL_NONE {start_color_hash_code} else {""},
-            if &self.fill_type != Self::FILL_NONE {end_color_hash_code} else {""}
+            match &self.start_color {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
+            match &self.end_color {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
         )))
     }
 }

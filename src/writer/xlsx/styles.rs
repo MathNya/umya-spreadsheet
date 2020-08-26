@@ -75,7 +75,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
             ], true);
 
             // color
-            write_color(&mut writer, &font.get_color());
+            write_color(&mut writer, &font.get_color(), "color");
 
             // name
             write_start_tag(&mut writer, "name", vec![
@@ -121,17 +121,30 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
             write_start_tag(&mut writer, "fill", vec![], false);
 
             // patternFill
-            let color = fill.get_start_color();
-            let is_color = color.get_argb() != "";
+            let fg_color = fill.get_start_color().clone();
+            let bg_color = fill.get_end_color().clone();
+            let is_fg_color = match fg_color {
+                Some(_) => true,
+                None => false
+            };
+            let is_bg_color = match bg_color {
+                Some(_) => true,
+                None => false
+            };
+            let is_color = is_fg_color || is_bg_color;
             write_start_tag(&mut writer, "patternFill", vec![
                 ("patternType", fill.get_fill_type()),
             ], !is_color);
 
+            if is_fg_color {
+                // fgColor
+                write_color(&mut writer, &fg_color.unwrap(), "fgColor");
+            }
+            if is_bg_color {
+                // bgColor
+                write_color(&mut writer, &bg_color.unwrap(), "bgColor");
+            }
             if is_color {
-                // color
-                write_start_tag(&mut writer, "fgColor", vec![
-                    ("rgb", color.get_argb()),
-                ], true);
                 write_end_tag(&mut writer, "patternFill");
             }
 
@@ -182,7 +195,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                 ], false);
 
                 // color
-                write_color(&mut writer, borders.get_left().get_color());
+                write_color(&mut writer, borders.get_left().get_color(), "color");
 
                 write_end_tag(&mut writer, "left");
             } else {
@@ -197,7 +210,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                 ], false);
 
                 // color
-                write_color(&mut writer, borders.get_right().get_color());
+                write_color(&mut writer, borders.get_right().get_color(), "color");
 
                 write_end_tag(&mut writer, "right");
             } else {
@@ -212,7 +225,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                 ], false);
 
                 // color
-                write_color(&mut writer, borders.get_top().get_color());
+                write_color(&mut writer, borders.get_top().get_color(), "color");
             
                 write_end_tag(&mut writer, "top");
             } else {
@@ -227,7 +240,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                 ], false);
 
                 // color
-                write_color(&mut writer, borders.get_bottom().get_color());
+                write_color(&mut writer, borders.get_bottom().get_color(), "color");
 
                 write_end_tag(&mut writer, "bottom");
             } else {
@@ -242,7 +255,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                 ], false);
 
                 // color
-                write_color(&mut writer, borders.get_diagonal().get_color());
+                write_color(&mut writer, borders.get_diagonal().get_color(), "color");
 
                 write_end_tag(&mut writer, "diagonal");
             } else {
@@ -346,7 +359,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
         write_end_tag(&mut writer, "cellStyleXfs");
     }
 
-    let all_cell_xf = spreadsheet.get_cell_xf_collection();
+    let all_cell_xf = spreadsheet.get_all_cell_style();
 
     // cellXfs
     if all_cell_xf.len() > 0 {
@@ -354,7 +367,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
             ("count", all_cell_xf.len().to_string().as_str()),
         ], false);
 
-        for cell_xf in all_cell_xf {
+        for (_, cell_xf) in all_cell_xf {
             let mut nmfmt_id:usize = 0;
             match cell_xf.get_number_format() {
                 Some(v) => {
@@ -429,14 +442,25 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
             attributes.push(("fillId", fill_id_str));
             attributes.push(("borderId", borders_id_str));
             attributes.push(("xfId", xf_id_str));
-            if nmfmt_id != 0 {
-                attributes.push(("applyNumberFormat", "1"));
+            match cell_xf.get_number_format() {
+                Some(_) => {
+                    attributes.push(("applyNumberFormat", "1"));
+                },
+                None => {}
             }
-            if font_id != 0 && use_cell_style == false {
-                attributes.push(("applyFont", "1"));
+            match cell_xf.get_font() {
+                Some(_) => {
+                    if use_cell_style == false {
+                        attributes.push(("applyFont", "1"));
+                    }
+                },
+                None => {}
             }
-            if borders_id != 0 {
-                attributes.push(("applyBorder", "1"));
+            match cell_xf.get_borders() {
+                Some(_) => {
+                    attributes.push(("applyBorder", "1"));
+                },
+                None => {}
             }
             match cell_xf.get_alignment() {
                 Some(_) => {
@@ -507,7 +531,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                         write_start_tag(&mut writer, "font", vec![], false);
                         
                         // color
-                        write_color(&mut writer, v.get_color());
+                        write_color(&mut writer, v.get_color(), "color");
 
                         write_end_tag(&mut writer, "font");
                     }
@@ -520,14 +544,30 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                         write_start_tag(&mut writer, "fill", vec![], false);
                         
                         // patternFill
-                        write_start_tag(&mut writer, "patternFill", vec![], false);
-
-                        // bgColor
-                        write_start_tag(&mut writer, "bgColor", vec![
-                            ("rgb", v.get_start_color().get_argb()),
-                        ], true);
-
-                        write_end_tag(&mut writer, "patternFill");
+                        let fg_color = v.get_start_color().clone();
+                        let bg_color = v.get_end_color().clone();
+                        let is_fg_color = match fg_color {
+                            Some(_) => true,
+                            None => false
+                        };
+                        let is_bg_color = match bg_color {
+                            Some(_) => true,
+                            None => false
+                        };
+                        let is_color = is_fg_color || is_bg_color;
+                        write_start_tag(&mut writer, "patternFill", vec![], !is_color);
+            
+                        if is_fg_color {
+                            // fgColor
+                            write_color(&mut writer, &fg_color.unwrap(), "fgColor");
+                        }
+                        if is_bg_color {
+                            // bgColor
+                            write_color(&mut writer, &bg_color.unwrap(), "bgColor");
+                        }
+                        if is_color {
+                            write_end_tag(&mut writer, "patternFill");
+                        }
 
                         write_end_tag(&mut writer, "fill");
                     }
@@ -578,7 +618,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
     Ok(())
 }
 
-fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color)
+fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color, tag_name: &str)
 {
     // color
     let theme_index:&str = &color.get_theme_index().to_string();
@@ -597,6 +637,6 @@ fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color)
         attributes.push(("tint", tint));
     }
     if &attributes.len() > &0usize {
-        write_start_tag(writer, "color", attributes, true);
+        write_start_tag(writer, tag_name, attributes, true);
     }
 }

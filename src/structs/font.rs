@@ -95,21 +95,14 @@ impl Font {
     pub(crate) fn set_scheme<S: Into<String>>(&mut self, value:S) {
         self.scheme = value.into();
     }
-    pub(crate) fn get_defalut_fonts(theme_color_map:&Vec<String>) -> Vec<Font> {
-        let mut def_1 = Font::default();
-        def_1.set_size(11);
-        def_1.set_name("ＭＳ Ｐゴシック");
-        def_1.get_color_mut().set_theme_index(1, theme_color_map);
-        def_1.set_family(2);
-        def_1.set_scheme("minor");
-
-        let mut def_2 = Font::default();
-        def_2.set_size(6);
-        def_2.set_name("ＭＳ Ｐゴシック");
-        def_2.set_family(3);
-        def_2.set_charset(128);
-        def_2.set_scheme("minor");
-        vec![def_1, def_2]
+    pub(crate) fn get_defalut_value() -> Font {
+        let mut def = Font::default();
+        def.set_size(11);
+        def.set_name("ＭＳ Ｐゴシック");
+        def.get_color_mut().set_theme_index_and_argb(1, "000000");
+        def.set_family(2);
+        def.set_scheme("minor");
+        def
     }
     pub(crate) fn get_hash_code(&self)-> String
     {

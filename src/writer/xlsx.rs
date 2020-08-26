@@ -88,12 +88,14 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
         let worksheet = &spreadsheet.get_sheet_collection()[i];
         let is_selected = spreadsheet.get_active_sheet_index() == &i;
         let has_macros = spreadsheet.get_has_macros();
+        let all_cell_xf_list = spreadsheet.get_all_cell_style();
         let conditonal_style_list = spreadsheet.get_all_conditional_style_list();
         let _ = worksheet::write(
             worksheet,
             &(i+1),
             &is_selected,
             has_macros,
+            all_cell_xf_list,
             conditonal_style_list,
             shared.clone(),
             &dir

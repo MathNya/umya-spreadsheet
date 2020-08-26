@@ -21,7 +21,6 @@ pub struct Spreadsheet {
     active_sheet_index: usize,
     named_ranges: Vec<String>,
     cell_style_collection: Vec<CellStyle>,
-    cell_xf_collection: Vec<Style>,
     has_macros: bool,
     macros_code: String,
     macros_certificate: String,
@@ -118,7 +117,7 @@ impl Spreadsheet {
     }
     pub(crate) fn get_all_number_format(&self) -> Vec<(String, NumberFormat)> {
         let mut result:Vec<(String, NumberFormat)> = Vec::new();
-        for style in &self.cell_xf_collection {
+        for (_, style) in &self.get_all_cell_style() {
             match style.get_number_format() {
                 Some(v) => {
                     if v.get_built_in_format_code() != &None {
@@ -142,7 +141,9 @@ impl Spreadsheet {
     }
     pub(crate) fn get_all_font(&self) -> Vec<(String, Font)> {
         let mut result:Vec<(String, Font)> = Vec::new();
-        for style in &self.cell_xf_collection {
+        let def = Font::get_defalut_value();
+        result.push((def.get_hash_code(), def));
+        for (_, style) in &self.get_all_cell_style() {
             match style.get_font() {
                 Some(v) => {
                     let mut is_match = false;
@@ -163,7 +164,9 @@ impl Spreadsheet {
     }
     pub(crate) fn get_all_fill(&self) -> Vec<(String, Fill)> {
         let mut result:Vec<(String, Fill)> = Vec::new();
-        for style in &self.cell_xf_collection {
+        let def = Fill::get_defalut_value();
+        result.push((def.get_hash_code(), def));
+        for (_, style) in &self.get_all_cell_style() {
             match style.get_fill() {
                 Some(v) => {
                     let mut is_match = false;
@@ -184,7 +187,9 @@ impl Spreadsheet {
     }
     pub(crate) fn get_all_borders(&self) -> Vec<(String, Borders)> {
         let mut result:Vec<(String, Borders)> = Vec::new();
-        for style in &self.cell_xf_collection {
+        let def = Borders::get_defalut_value();
+        result.push((def.get_hash_code(), def));
+        for (_, style) in &self.get_all_cell_style() {
             match style.get_borders() {
                 Some(v) => {
                     let mut is_match = false;
@@ -203,10 +208,12 @@ impl Spreadsheet {
         }
         result
     }
-    pub(crate) fn get_all_cell_style(&self, theme_color_map:&Vec<String>) -> Vec<(String, Style)> {
+    pub(crate) fn get_all_cell_style(&self) -> Vec<(String, Style)> {
         let mut result:Vec<(String, Style)> = Vec::new();
-        for style in &self.cell_xf_collection {
-            if style.get_xf_id() != &0 {
+        let def = Style::get_defalut_value();
+        result.push((def.get_hash_code(), def));
+        for worksheet in &self.work_sheet_collection {
+            for (_, style) in worksheet.get_style_collection() {
                 let mut is_match = false;
                 for (hash, _) in &result {
                     if hash == &style.get_hash_code() {
@@ -221,18 +228,18 @@ impl Spreadsheet {
         }
         result
     }
-    pub fn get_cell_xf_collection(&self) -> &Vec<Style> {
-        &self.cell_xf_collection
-    }
-    pub fn get_cell_xf_by_index(&self, index:usize) -> &Style {
-        &self.cell_xf_collection.get(index).unwrap()
-    }
-    pub fn add_cell_xf_collection(&mut self, value:Style) {
-        self.cell_xf_collection.push(value);
-    }
-    pub(crate) fn set_cell_xf_collection(&mut self, value:Vec<Style>) {
-        self.cell_xf_collection = value;
-    }
+    //pub fn get_cell_xf_collection(&self) -> &Vec<Style> {
+    //    &self.cell_xf_collection
+    //}
+    //pub fn get_cell_xf_by_index(&self, index:usize) -> &Style {
+    //    &self.cell_xf_collection.get(index).unwrap()
+    //}
+    //pub fn add_cell_xf_collection(&mut self, value:Style) {
+    //    self.cell_xf_collection.push(value);
+    //}
+    //pub(crate) fn set_cell_xf_collection(&mut self, value:Vec<Style>) {
+    //    self.cell_xf_collection = value;
+    //}
     pub fn get_cell_style_collection(&self) -> &Vec<CellStyle> {
         &self.cell_style_collection
     }
@@ -251,23 +258,54 @@ impl Spreadsheet {
     pub fn get_sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
     }
-    pub fn get_sheet(&self, index:usize) -> &Worksheet {
-        &self.work_sheet_collection.get(index).unwrap()
+    pub fn get_sheet(&self, index:usize) -> Result<&Worksheet, &'static str> {
+        match &self.work_sheet_collection.get(index) {
+            Some(v) => return Ok(v),
+            None => return Err("Not found.")
+        }
     }
     pub fn get_sheet_mut(&mut self, index:usize) -> &mut Worksheet {
         self.work_sheet_collection.get_mut(index).unwrap()
     }
-    pub(crate) fn new_sheet(&mut self) -> &mut Worksheet {
+    pub fn get_sheet_by_name<S: Into<String>>(&self, value:S) -> Result<&Worksheet, &'static str> {
+        let v = value.into();
+        for sheet in &self.work_sheet_collection {
+            if sheet.get_title() == &v {
+                return Ok(sheet);
+            }
+        }
+        Err("not found.")
+    }
+    pub fn get_sheet_by_name_mut<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
+        let v = value.into();
+        for sheet in &mut self.work_sheet_collection {
+            if sheet.get_title() == &v {
+                return Ok(sheet);
+            }
+        }
+        Err("not found.")
+    }
+    pub fn new_sheet<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
+        let v = value.into();
+        match Spreadsheet::check_sheet_title(self, &v) {
+            Ok(_) => {},
+            Err(e) => return Err(e)
+        }
+        let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
+        Ok(Spreadsheet::new_sheet_crate(self, sheet_id, v))
+    }
+    pub(crate) fn new_sheet_crate<S: Into<String>>(&mut self, sheet_id:S, value:S) -> &mut Worksheet {
         let mut worksheet = Worksheet::default();
+        worksheet.set_sheet_id(sheet_id.into());
+        worksheet.set_title(value.into());
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }
     pub fn set_sheet_title<S: Into<String>>(&mut self, index:usize, value:S) -> Result<(), &'static str>{
         let v = value.into();
-        for work_sheet in &self.work_sheet_collection {
-            if &v == work_sheet.get_title() {
-                return Err("title duplicate.");
-            }
+        match Spreadsheet::check_sheet_title(self, &v) {
+            Ok(_) => {},
+            Err(e) => return Err(e)
         }
         match self.work_sheet_collection.get_mut(index) {
             Some(sheet) => {
@@ -277,11 +315,17 @@ impl Spreadsheet {
             None => return Err("sheet not found.")
         }
     }
+    pub(crate) fn check_sheet_title<S: Into<String>>(&self, value:S) -> Result<(), &'static str> {
+        let v = value.into();
+        for work_sheet in &self.work_sheet_collection {
+            if &v == work_sheet.get_title() {
+                return Err("title duplicate.");
+            }
+        }
+        Ok(())
+    }
     pub fn has_ribbon(&self) -> bool {
         self.ribbon_xml_data.is_some()
-    }
-    pub(crate) fn add_sheet(&mut self, worksheet:Worksheet) {
-       self.work_sheet_collection.push(worksheet);
     }
     pub(crate) fn has_formula_attributes(&self) -> bool {
         for worksheet in &self.work_sheet_collection {
