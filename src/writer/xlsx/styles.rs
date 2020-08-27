@@ -617,26 +617,3 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
     let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, FILE_NAME).as_str(), dir, writer, Some(SUB_DIR)).unwrap();
     Ok(())
 }
-
-fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color, tag_name: &str)
-{
-    // color
-    let theme_index:&str = &color.get_theme_index().to_string();
-    let indexed:&str = &color.get_indexed().to_string();
-    let tint:&str = &color.get_tint().to_string();
-
-    let mut attributes: Vec<(&str, &str)> = Vec::new();
-    if color.is_set_theme_index() {
-        attributes.push(("theme", theme_index));
-    } else if color.is_set_indexed() {
-        attributes.push(("indexed", indexed));
-    } else if color.get_argb() != "" {
-        attributes.push(("rgb", color.get_argb()));
-    }
-    if color.get_tint() != &0.0f64 {
-        attributes.push(("tint", tint));
-    }
-    if &attributes.len() > &0usize {
-        write_start_tag(writer, tag_name, attributes, true);
-    }
-}

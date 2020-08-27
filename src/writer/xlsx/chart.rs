@@ -2,13 +2,10 @@ use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
-use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 use super::super::structs::chart::Chart;
 use super::super::structs::axis::Axis;
 use super::super::structs::data_series::DataSeries;
-use super::super::helper::coordinate::*;
 use super::driver::*;
 use super::XlsxError;
 

@@ -13,6 +13,14 @@ pub mod writer;
 pub mod reader;
 pub mod helper;
 
+/// create new spreadsheet file.
+/// # Arguments
+/// # Return value
+/// * Spreadsheet structs object.
+/// # Examples
+/// ```
+/// let mut book = umya_spreadsheet::new_file();
+/// ```
 pub fn new_file()->structs::spreadsheet::Spreadsheet {
     let mut spreadsheet = structs::spreadsheet::Spreadsheet::default();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();

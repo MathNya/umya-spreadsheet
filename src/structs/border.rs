@@ -45,8 +45,9 @@ impl Border {
     pub fn get_color_mut(&mut self)-> &mut Color {
         &mut self.color
     }
-    pub(crate) fn set_color(&mut self, value:Color) {
+    pub fn set_color(&mut self, value:Color)->Result<(), &'static str> {
         self.color = value;
+        Ok(())
     }
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}",

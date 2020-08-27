@@ -3,7 +3,6 @@ use quick_xml::Reader;
 use quick_xml::events::{Event};
 use tempdir::TempDir;
 use super::XlsxError;
-use super::driver::*;
 
 use super::super::structs::spreadsheet::Spreadsheet;
 

@@ -1,5 +1,4 @@
 use std::result;
-use std::collections::HashMap;
 use quick_xml::Reader;
 use quick_xml::events::{Event};
 use tempdir::TempDir;
@@ -15,6 +14,7 @@ use super::super::structs::conditional::Conditional;
 use super::super::structs::drawing::Drawing;
 use super::super::structs::style::Style;
 use super::super::structs::page_margins::PageMargins;
+use super::super::structs::rich_text::RichText;
 
 use super::super::helper::coordinate::*;
 
@@ -23,7 +23,7 @@ pub(crate) fn read(
     target: &String,
     worksheet: &mut Worksheet,
     theme: &Theme,
-    shared_strings: &Vec<String>,
+    shared_strings: &Vec<(String, Option<RichText>)>,
     cell_xfs_vec: &Vec<Style>,
     dxf_vec: &Vec<Style>
 ) -> result::Result<(bool, Option<String>), XlsxError>
@@ -204,8 +204,8 @@ pub(crate) fn read(
                     b"v" => {
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
-                            let value = shared_strings.get(index).unwrap();
-                            let _ = worksheet.set_cell_value_and_data_type(&coordinate, value, &type_value);
+                            let (value, rich_text) = shared_strings.get(index).unwrap();
+                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_all_param(value, rich_text.clone(), &type_value, &"".into());
                         } else if type_value == "b" {
                             let _ = worksheet.set_cell_value_and_data_type(&coordinate.to_string(), &string_value, &type_value);
                         } else if type_value == "" {
@@ -400,14 +400,14 @@ fn get_cfvo(
                             match a {
                                 Ok(ref attr) if attr.key == b"theme" => {
                                     let value = get_attribute_value(attr).unwrap();
-                                    color.set_theme_index(value.parse::<usize>().unwrap(), color_map);
+                                    let _ = color.set_theme_index(value.parse::<usize>().unwrap(), color_map);
                                 },
                                 Ok(ref attr) if attr.key == b"rgb" => {
-                                    color.set_argb(get_attribute_value(attr).unwrap());
+                                    let _ = color.set_argb(get_attribute_value(attr).unwrap());
                                 },
                                 Ok(ref attr) if attr.key == b"tint" => {
                                     let value = get_attribute_value(attr).unwrap();
-                                    color.set_tint(value.parse::<f64>().unwrap());
+                                    let _ = color.set_tint(value.parse::<f64>().unwrap());
                                 },
                                 Ok(_) => {},
                                 Err(_) => {},
@@ -489,14 +489,14 @@ fn get_attribute_color(
         match a {
             Ok(ref attr) if attr.key == b"theme" => {
                 let value = get_attribute_value(attr).unwrap();
-                worksheet.get_tab_color_mut().set_theme_index(value.parse::<usize>().unwrap(), &theme_color_map);
+                let _ = worksheet.get_tab_color_mut().set_theme_index(value.parse::<usize>().unwrap(), &theme_color_map);
             },
             Ok(ref attr) if attr.key == b"rgb" => {
-                worksheet.get_tab_color_mut().set_argb(get_attribute_value(attr).unwrap());
+                let _ = worksheet.get_tab_color_mut().set_argb(get_attribute_value(attr).unwrap());
             },
             Ok(ref attr) if attr.key == b"tint" => {
                 let value = get_attribute_value(attr).unwrap();
-                worksheet.get_tab_color_mut().set_tint(value.parse::<f64>().unwrap());
+                let _ = worksheet.get_tab_color_mut().set_tint(value.parse::<f64>().unwrap());
             },
             Ok(_) => {},
             Err(_) => {},

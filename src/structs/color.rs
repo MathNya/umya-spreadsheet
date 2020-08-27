@@ -87,15 +87,14 @@ impl Color {
     pub const COLOR_YELLOW: &'static str = "FFFFFF00";
     pub const COLOR_DARKYELLOW: &'static str = "FF808000";
 
-    pub(crate) fn is_set(&self) -> bool {
-        self.argb != "" || self.indexed != 0 || self.theme_index != 0 || self.tint != 00f64
-    }
     pub fn get_argb(&self)-> &str {
         &self.argb
     }
-    pub(crate) fn set_argb<S: Into<String>>(&mut self, value:S) {
+    pub fn set_argb<S: Into<String>>(&mut self, value:S) -> Result<(), &'static str> {
         self.indexed =0;
+        self.theme_index = 0;
         self.argb = value.into();
+        Ok(())
     }
     pub(crate) fn is_set_indexed(&self)-> bool {
         self.indexed != 0
@@ -103,13 +102,14 @@ impl Color {
     pub fn get_indexed(&self)-> &usize {
         &self.indexed
     }
-    pub(crate) fn set_indexed(&mut self, index:usize) {
+    pub fn set_indexed(&mut self, index:usize) -> Result<(), &'static str> {
         self.indexed = index;
         self.theme_index = 0;
         self.argb = match INDEXED_COLORS.get(index - 1) {
             Some(v) => {v.to_string()},
             None => {String::from("")}
-        }
+        };
+        Ok(())
     }
     pub(crate) fn is_set_theme_index(&self)-> bool {
         self.theme_index != 0
@@ -117,13 +117,14 @@ impl Color {
     pub fn get_theme_index(&self)-> &usize {
         &self.theme_index
     }
-    pub(crate) fn set_theme_index(&mut self, index:usize, theme_color_map:&Vec<String>) {
+    pub fn set_theme_index(&mut self, index:usize, theme_color_map:&Vec<String>) -> Result<(), &'static str>  {
         self.indexed = 0;
         self.theme_index = index;
         self.argb = match theme_color_map.get(index - 1) {
             Some(v) => {v.to_string()},
             None => {String::from("")}
-        }
+        };
+        Ok(())
     }
     pub(crate) fn set_theme_index_and_argb<S: Into<String>>(&mut self, index:usize, argb:S) {
         self.indexed = 0;
@@ -133,8 +134,9 @@ impl Color {
     pub fn get_tint(&self)-> &f64 {
         &self.tint
     }
-    pub(crate) fn set_tint(&mut self, value:f64) {
+    pub(crate) fn set_tint(&mut self, value:f64) -> Result<(), &'static str> {
         self.tint = value;
+        Ok(())
     }
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}{}{}",

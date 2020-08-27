@@ -54,21 +54,24 @@ pub(crate) fn write(
     }
 
     // tabColor
-    if worksheet.get_tab_color().is_set() {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let theme:&str = &worksheet.get_tab_color().get_theme_index().to_string();
-        if worksheet.get_tab_color().is_set_theme_index() {
-            attributes.push(("theme", theme));
-        } else if worksheet.get_tab_color().get_argb() != "" {
-            attributes.push(("rgb", worksheet.get_tab_color().get_argb()));
-        }
-        let tint:&str = &worksheet.get_tab_color().get_tint().to_string();
-        if worksheet.get_tab_color().get_tint() != &0.0f64 {
-            attributes.push(("tint", tint));
-        }
-        write_start_tag(&mut writer, "sheetPr", vec![], false);
-        write_start_tag(&mut writer, "tabColor", attributes, true);
-        write_end_tag(&mut writer, "sheetPr");
+    match worksheet.get_tab_color() {
+        Some(v) => {
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let theme:&str = &v.get_theme_index().to_string();
+            if v.is_set_theme_index() {
+                attributes.push(("theme", theme));
+            } else if v.get_argb() != "" {
+                attributes.push(("rgb", v.get_argb()));
+            }
+            let tint:&str = &v.get_tint().to_string();
+            if v.get_tint() != &0.0f64 {
+                attributes.push(("tint", tint));
+            }
+            write_start_tag(&mut writer, "sheetPr", vec![], false);
+            write_start_tag(&mut writer, "tabColor", attributes, true);
+            write_end_tag(&mut writer, "sheetPr");
+        },
+        None => {}
     }
 
     // outlinePr
@@ -238,7 +241,7 @@ pub(crate) fn write(
     
                                 match c.get_data_type() {
                                     "s" => {
-                                        let val_index = shared_strings.get(c.get_value()).unwrap().to_string();
+                                        let val_index = shared_strings.get(&c.get_hash_code_by_value()).unwrap().to_string();
                                         write_text_node(&mut writer, val_index);
                                     },
                                     "b" => write_text_node(&mut writer, c.get_value()),

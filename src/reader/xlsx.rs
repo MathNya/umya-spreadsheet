@@ -5,7 +5,6 @@ use std::string::FromUtf8Error;
 use std::fs::File;
 
 use super::structs::spreadsheet::Spreadsheet;
-use super::structs::chart::Chart;
 use super::driver;
 use super::super::helper::coordinate::*;
 
@@ -55,7 +54,17 @@ impl From<FromUtf8Error> for XlsxError {
     }
 }
 
-pub fn read(path: &Path) -> Result<Spreadsheet, XlsxError> {
+/// read spreadsheet file.
+/// # Arguments
+/// * `path` - file path to read.
+/// # Return value
+/// * `Result` - OK is Spreadsheet. Err is error message. 
+/// # Examples
+/// ```
+/// let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
+/// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+/// ```
+pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     let file = File::open(path)?;
     let dir = TempDir::new("shreadsheet")?;
     match driver::unzip(&file, &dir) {
@@ -69,8 +78,8 @@ pub fn read(path: &Path) -> Result<Spreadsheet, XlsxError> {
     let (mut book, sheets) = workbook::read(&dir).unwrap();
     doc_props_app::read(&dir, &mut book).unwrap();
     doc_props_core::read(&dir, &mut book).unwrap(); 
-    let shared_string = shared_strings::read(&dir).unwrap();
     let theme = theme::read(&dir).unwrap();
+    let shared_string = shared_strings::read(&dir, &theme).unwrap();
     let (cell_xfs_vec, dxf_vec) = styles::read(&dir, &mut book, &theme).unwrap();
 
     let workbook_rel = workbook_rels::read(&dir).unwrap();

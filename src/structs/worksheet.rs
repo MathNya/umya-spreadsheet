@@ -58,7 +58,7 @@ pub struct Worksheet {
     right_to_left: bool,
     hyperlink_collection: Vec<Hyperlink>,
     data_validation_collection: Vec<String>,
-    tab_color: Color,
+    tab_color: Option<Color>,
     dirty: bool,
     hash: String,
     code_name: String,
@@ -103,7 +103,7 @@ impl Default for Worksheet {
             right_to_left: false,
             hyperlink_collection: Vec::new(),
             data_validation_collection: Vec::new(),
-            tab_color: Color::default(),
+            tab_color: None,
             dirty: false,
             hash: String::from(""),
             code_name: String::from(""),
@@ -283,14 +283,19 @@ impl Worksheet {
     pub fn has_code_name(&self) -> bool {
         self.code_name != ""
     }
-    pub fn get_tab_color(&self) -> &Color {
+    pub fn get_tab_color(&self) -> &Option<Color> {
         &self.tab_color
     }
     pub(crate) fn get_tab_color_mut(&mut self) -> &mut Color {
-        &mut self.tab_color
+        match &self.tab_color {
+            Some(_) => return self.tab_color.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_tab_color(Color::default());
+        self.tab_color.as_mut().unwrap()
     }
     pub(crate) fn set_tab_color(&mut self, value:Color) {
-        self.tab_color = value;
+        self.tab_color = Some(value);
     }
     pub fn calculate_worksheet_dimension(&self) -> String {
         let highest = &self.get_cell_collection().get_highest_row_and_column();

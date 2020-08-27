@@ -5,8 +5,7 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
-pub(crate) fn read(dir: &TempDir, target: &str) -> result::Result<Vec<(String, String, String)>, XlsxError>
-{
+pub(crate) fn read(dir: &TempDir, target: &str) -> result::Result<Vec<(String, String, String)>, XlsxError> {
     let path = dir.path().join(format!("xl/drawings/_rels/{}.rels", target.replace("../drawings/", "")));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);

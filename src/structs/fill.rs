@@ -2,8 +2,6 @@ use super::color::Color;
 
 #[derive(Default, Debug, Clone)]
 pub struct Fill {
-    startcolor_index: usize,
-    endcolor_index: usize,
     fill_type: String,
     rotation: i32,
     start_color: Option<Color>,
@@ -33,15 +31,6 @@ impl Fill {
     pub const FILL_PATTERN_LIGHTVERTICAL: &'static str = "lightVertical";
     pub const FILL_PATTERN_MEDIUMGRAY: &'static str = "mediumGray";
 
-    pub fn get_startcolor_index(&self)-> &usize {
-        &self.startcolor_index
-    }
-    pub(crate) fn set_startcolor_index(&mut self, value:usize) {
-        self.startcolor_index = value;
-    }
-    pub fn get_endcolor_index(&self)-> &usize {
-        &self.endcolor_index
-    }
     pub fn get_fill_type(&self)-> &str {
         &self.fill_type
     }
@@ -54,7 +43,7 @@ impl Fill {
     pub fn get_start_color_mut(&mut self)-> &mut Color {
         match self.start_color {
             Some(_) => {},
-            None => self.start_color = Some(Color::default())
+            None => self.set_start_color(Color::default())
         }
         self.start_color.as_mut().unwrap()
     }
@@ -67,7 +56,7 @@ impl Fill {
     pub fn get_end_color_mut(&mut self)-> &mut Color {
         match self.end_color {
             Some(_) => {},
-            None => self.end_color = Some(Color::default())
+            None => self.set_end_color(Color::default())
         }
         self.end_color.as_mut().unwrap()
     }

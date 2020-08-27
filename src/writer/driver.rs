@@ -10,6 +10,8 @@ use std::io;
 use std::io::{Cursor, Read, Write};
 use std::path::Path;
 
+use super::super::structs::color::Color;
+
 pub(crate) fn write_to_file(path: &Path, dir: &TempDir) -> Result<(), io::Error> {
     let file = File::create(&path)?;
     let mut zip = zip::ZipWriter::new(file);
@@ -105,5 +107,28 @@ pub(crate) fn make_file_from_writer(
     f.write_all(writer.into_inner().get_ref())?;
     f.sync_all()?;
     Ok(())
+}
+
+pub(crate) fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color, tag_name: &str)
+{
+    // color
+    let theme_index:&str = &color.get_theme_index().to_string();
+    let indexed:&str = &color.get_indexed().to_string();
+    let tint:&str = &color.get_tint().to_string();
+
+    let mut attributes: Vec<(&str, &str)> = Vec::new();
+    if color.is_set_theme_index() {
+        attributes.push(("theme", theme_index));
+    } else if color.is_set_indexed() {
+        attributes.push(("indexed", indexed));
+    } else if color.get_argb() != "" {
+        attributes.push(("rgb", color.get_argb()));
+    }
+    if color.get_tint() != &0.0f64 {
+        attributes.push(("tint", tint));
+    }
+    if &attributes.len() > &0usize {
+        write_start_tag(writer, tag_name, attributes, true);
+    }
 }
 

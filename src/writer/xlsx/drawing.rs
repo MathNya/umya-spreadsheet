@@ -2,8 +2,6 @@ use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
-use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 use super::super::structs::worksheet::Worksheet;
 use super::super::helper::coordinate::*;
@@ -25,7 +23,6 @@ pub(crate) fn write(
 
     let file_name = format!("drawing{}.xml", p_worksheet_id);
     let charts = worksheet.get_chart_collection();
-    let drawings = worksheet.get_drawing_collection();
 
     let mut writer = Writer::new(Cursor::new(Vec::new()));
     // XML header
@@ -160,11 +157,6 @@ pub(crate) fn write(
 
         id += 1;
         chart_id += 1;
-    }
-
-    // TODO
-    for drawing in drawings {
-
     }
 
     write_end_tag(&mut writer, "xdr:wsDr");

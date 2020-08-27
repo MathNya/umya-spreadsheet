@@ -11,7 +11,6 @@ pub struct Font {
     underline: String,
     strikethrough: bool,
     color: Color,
-    color_index: usize,
     charset: usize,
     family: usize,
     scheme: String,
@@ -59,17 +58,12 @@ impl Font {
     pub fn get_color(&self)-> &Color {
         &self.color
     }
-    pub(crate) fn get_color_mut(&mut self)-> &mut Color {
+    pub fn get_color_mut(&mut self)-> &mut Color {
         &mut self.color
     }
-    pub(crate) fn set_color(&mut self, value:Color) {
+    pub fn set_color(&mut self, value:Color)->Result<(), &'static str> {
         self.color = value;
-    }
-    pub fn get_color_index(&self)-> &usize {
-        &self.color_index
-    }
-    pub(crate) fn set_color_index(&mut self, value:usize) {
-        self.color_index = value;
+        Ok(())
     }
     pub fn get_strikethrough(&self)-> &bool {
         &self.strikethrough
@@ -98,7 +92,7 @@ impl Font {
     pub(crate) fn get_defalut_value() -> Font {
         let mut def = Font::default();
         def.set_size(11);
-        def.set_name("ＭＳ Ｐゴシック");
+        def.set_name("Calibri");
         def.get_color_mut().set_theme_index_and_argb(1, "000000");
         def.set_family(2);
         def.set_scheme("minor");

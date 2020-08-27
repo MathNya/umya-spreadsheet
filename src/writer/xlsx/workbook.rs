@@ -7,7 +7,7 @@ use super::super::structs::spreadsheet::Spreadsheet;
 use super::driver::*;
 use super::XlsxError;
 
-pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, file_name: &str, recalc_required: bool) -> Result<(), XlsxError>
+pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, file_name: &str) -> Result<(), XlsxError>
 {
     let mut writer = Writer::new(Cursor::new(Vec::new()));
     // XML header

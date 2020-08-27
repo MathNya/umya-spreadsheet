@@ -39,7 +39,7 @@ impl Style {
             Some(_) => return self.font.as_mut().unwrap(),
             None => {}
         }
-        self.set_font(Font::default());
+        self.set_font(Font::get_defalut_value());
         self.font.as_mut().unwrap()
     }
     pub(crate) fn set_font(&mut self, value:Font) {
@@ -53,7 +53,7 @@ impl Style {
             Some(_) => return self.fill.as_mut().unwrap(),
             None => {}
         }
-        self.set_fill(Fill::default());
+        self.set_fill(Fill::get_defalut_value());
         self.fill.as_mut().unwrap()
     }
     pub(crate) fn set_fill(&mut self, value:Fill) {
@@ -67,7 +67,7 @@ impl Style {
             Some(_) => return self.borders.as_mut().unwrap(),
             None => {}
         }
-        self.set_borders(Borders::default());
+        self.set_borders(Borders::get_defalut_value());
         self.borders.as_mut().unwrap()
     }
     pub(crate) fn set_borders(&mut self, value:Borders) {

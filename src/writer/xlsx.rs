@@ -53,6 +53,18 @@ impl From<FromUtf8Error> for XlsxError {
     }
 }
 
+/// write spreadsheet file.
+/// # Arguments
+/// * `spreadsheet` - Spreadsheet structs object.
+/// * `path` - file path to save.
+/// # Return value
+/// * `Result` - OK is void. Err is error message. 
+/// # Examples
+/// ```
+/// let mut book = umya_spreadsheet::new_file();
+/// let path = std::path::Path::new("C:/spread_test_data/zzz.xlsx");
+/// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+/// ```
 pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
     let dir = TempDir::new("shreadsheet")?;
 
@@ -73,7 +85,7 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
     let _ = theme::write(&dir, "xl/theme", "theme1.xml");
 
     // Add workbook
-    let _ = workbook::write(spreadsheet, &dir, "xl", "workbook.xml", true);
+    let _ = workbook::write(spreadsheet, &dir, "xl", "workbook.xml");
 
     // Add SharedStrings
     let shared = shared_strings::write(spreadsheet, &dir).unwrap();

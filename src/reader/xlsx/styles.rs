@@ -14,7 +14,6 @@ use super::super::structs::border::Border;
 use super::super::structs::fill::Fill;
 use super::super::structs::font::Font;
 use super::super::structs::style::Style;
-use super::super::structs::color::Color;
 use super::super::structs::alignment::Alignment;
 use super::super::structs::cell_style::CellStyle;
 
@@ -227,103 +226,6 @@ fn get_fonts(
                 }
             },
             Ok(Event::Eof) => panic!("Error not find {} end element", "fonts"),
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-            _ => (),
-        }
-        buf.clear();
-    }
-}
-
-fn get_font(
-    reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
-    theme:&Theme
-)->Font
-{
-    let mut buf = Vec::new();
-    let mut font = Font::default();
-    loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Empty(ref e)) => {
-                match e.name() {
-                    b"i" => {
-                        font.set_italic(true);
-                    },
-                    b"strike"=> {
-                        font.set_strikethrough(true);
-                    },
-                    b"sz" => {
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"val" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    font.set_size(value.parse::<usize>().unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
-                    },
-                    b"color" => {
-                        get_attribute_color(e, font.get_color_mut(), theme);
-                    },
-                    b"name" => {
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"val" => {
-                                    font.set_name(get_attribute_value(attr).unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
-                    },
-                    b"family" => {
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"val" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    font.set_family(value.parse::<usize>().unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
-                    },
-                    b"charset" => {
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"val" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    font.set_charset(value.parse::<usize>().unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
-                    },
-                    b"scheme" => {
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"val" => {
-                                    font.set_scheme(get_attribute_value(attr).unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
-                    },
-                    _ => (),
-                }
-            },
-            Ok(Event::End(ref e)) => {
-                match e.name() {
-                    b"font" => {
-                        return font;
-                    },
-                    _ => (),
-                }
-            },
-            Ok(Event::Eof) => panic!("Error not find {} end element", "font"),
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),
         }
@@ -712,36 +614,6 @@ fn get_xf(
             _ => (),
         }
         buf.clear();
-    }
-}
-
-fn get_attribute_color(
-    e:&quick_xml::events::BytesStart<'_>, 
-    color:&mut Color, 
-    theme:&Theme
-)
-{
-    for a in e.attributes().with_checks(false) {
-        match a {
-            Ok(ref attr) if attr.key == b"indexed" => {
-                let value = get_attribute_value(attr).unwrap();
-                color.set_indexed(value.parse::<usize>().unwrap());
-            },
-            Ok(ref attr) if attr.key == b"theme" => {
-                let theme_color_map = theme.get_color_map();
-                let value = get_attribute_value(attr).unwrap();
-                color.set_theme_index(value.parse::<usize>().unwrap(), theme_color_map);
-            },
-            Ok(ref attr) if attr.key == b"rgb" => {
-                color.set_argb(get_attribute_value(attr).unwrap());
-            },
-            Ok(ref attr) if attr.key == b"tint" => {
-                let value = get_attribute_value(attr).unwrap();
-                color.set_tint(value.parse::<f64>().unwrap());
-            },
-            Ok(_) => {},
-            Err(_) => {},
-        }
     }
 }
 

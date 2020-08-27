@@ -21,4 +21,13 @@ impl RichText  {
     pub(crate) fn add_rich_text_elements(&mut self, value:TextElement) {
         self.rich_text_elements.push(value);
     }
+    pub(crate) fn get_hash_code(&self)-> String {
+        let mut value = String::from("");
+        for ele in &self.rich_text_elements {
+            value += ele.get_hash_code().as_str();
+        }
+        format!("{:x}", md5::compute(format!("{}",
+            value
+        )))
+    }
 }
