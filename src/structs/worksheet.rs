@@ -1,4 +1,3 @@
-use super::spreadsheet::Spreadsheet;
 use super::cells::Cells;
 use super::cell::Cell;
 use super::chart::Chart;
@@ -56,7 +55,6 @@ pub struct Worksheet {
     cached_highest_column: String,
     cached_highest_row: String,
     right_to_left: bool,
-    hyperlink_collection: Vec<Hyperlink>,
     data_validation_collection: Vec<String>,
     tab_color: Option<Color>,
     dirty: bool,
@@ -101,7 +99,6 @@ impl Default for Worksheet {
             cached_highest_column: String::from(""),
             cached_highest_row: String::from(""),
             right_to_left: false,
-            hyperlink_collection: Vec::new(),
             data_validation_collection: Vec::new(),
             tab_color: None,
             dirty: false,
@@ -111,6 +108,18 @@ impl Default for Worksheet {
     }
 }
 impl Worksheet {
+    pub(crate) fn get_hyperlink_collection(&self)-> HashMap<String, &Hyperlink> {
+        let mut result: HashMap<String, &Hyperlink> = HashMap::new();
+        for (coordition, cell) in self.cell_collection.get_collection() {
+            match cell.get_hyperlink() {
+                Some(hyperlink) => {
+                    result.insert(coordition.clone(), hyperlink);
+                },
+                None => {}
+            }
+        }
+        result
+    }
     pub(crate) fn get_coordinates(&self)-> Vec<String> {
         let mut result:Vec<String> = Vec::new();
         for coordinate in self.cell_collection.get_coordinates() {
@@ -190,12 +199,6 @@ impl Worksheet {
     }
     pub(crate) fn add_comments(&mut self, value:String) {
         self.comments.push(value);
-    }
-    pub fn get_hyperlink_collection(&self) -> &Vec<Hyperlink> {
-        &self.hyperlink_collection
-    }
-    pub(crate) fn add_hyperlink_collection(&mut self, value:Hyperlink) {
-        self.hyperlink_collection.push(value);
     }
     pub fn get_row_dimension(&self, row:usize) -> Option<&RowDimension> {
         self.row_dimensions.get(&row)

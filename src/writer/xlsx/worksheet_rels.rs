@@ -10,8 +10,7 @@ use super::XlsxError;
 const SUB_DIR: &'static str = "xl/worksheets/_rels";
 
 pub(crate) fn write(
-    worksheet: &Worksheet,
-    p_worksheet_id: &str,
+    worksheet: &Worksheet,    p_worksheet_id: &str,
     dir: &TempDir
 ) -> Result<(), XlsxError> 
 {
@@ -29,7 +28,7 @@ pub(crate) fn write(
     ], false);
 
     // write drawing relationships
-    let id = 1;
+    let mut id = 1;
     if worksheet.has_drawing_object() {
         is_write = write_relationship(
             &mut writer,
@@ -38,54 +37,53 @@ pub(crate) fn write(
             format!("../drawings/drawing{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
             ""
         );
-        //id+=1;
     }
 
     // Write hyperlink relationships
-    let mut i = 1;
-    for hyperlink in worksheet.get_hyperlink_collection() {
-        if hyperlink.is_internal() {
+    let mut id = 2;
+    for (_, hyperlink) in worksheet.get_hyperlink_collection() {
+        if hyperlink.get_location() == &false {
             is_write = write_relationship(
                 &mut writer,
-                format!("_hyperlink_{}", i.to_string().as_str()).as_str(),
+                id.to_string().as_str(),
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
                 hyperlink.get_url(),
                 "External"
             );
-            i+=1;
+            id+=1;
         }
     }
 
     // Write comments relationship
-    let i = 1;
-    if worksheet.get_comments().len() > 0 {
-        write_relationship(
-            &mut writer,
-            format!("_comments_vml{}", i.to_string().as_str()).as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
-            format!("../drawings/vmlDrawing{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
-            ""
-        );
-        is_write = write_relationship(
-            &mut writer,
-            format!("_comments{}", i.to_string().as_str()).as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
-            format!("../comments{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
-            ""
-        );
-    }
+    //let i = 1;
+    //if worksheet.get_comments().len() > 0 {
+    //    write_relationship(
+    //        &mut writer,
+    //        format!("_comments_vml{}", i.to_string().as_str()).as_str(),
+    //        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
+    //        format!("../drawings/vmlDrawing{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
+    //        ""
+    //    );
+    //    is_write = write_relationship(
+    //        &mut writer,
+    //        format!("_comments{}", i.to_string().as_str()).as_str(),
+    //        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
+    //        format!("../comments{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
+    //        ""
+    //    );
+    //}
 
     // Write header/footer relationship
-    let i = 1;
-    if worksheet.get_header_footer().get_header_footer_images().len() > 0 {
-        is_write = write_relationship(
-            &mut writer,
-            format!("_headerfooter_vml{}", i.to_string().as_str()).as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
-            format!("../drawings/vmlDrawingHF{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
-            ""
-        );
-    }
+    //let i = 1;
+    //if worksheet.get_header_footer().get_header_footer_images().len() > 0 {
+    //    is_write = write_relationship(
+    //        &mut writer,
+    //        format!("_headerfooter_vml{}", i.to_string().as_str()).as_str(),
+    //        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
+    //        format!("../drawings/vmlDrawingHF{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
+    //        ""
+    //    );
+    //}
 
     write_end_tag(&mut writer, "Relationships");
 

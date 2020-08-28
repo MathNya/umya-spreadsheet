@@ -46,8 +46,8 @@ impl Cells {
     pub fn has(&self, coordinate:&String)-> bool
     {
         match self.index.get(coordinate) {
-            Some(_) => { true },
-            None => { false }
+            Some(_) => true,
+            None => false
         }
     }
     pub fn get_index(&self)->&HashMap<String, Cell>

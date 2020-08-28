@@ -1,4 +1,3 @@
-use std::result;
 use quick_xml::Reader;
 use quick_xml::events::{Event};
 use tempdir::TempDir;
@@ -15,6 +14,7 @@ use super::super::structs::drawing::Drawing;
 use super::super::structs::style::Style;
 use super::super::structs::page_margins::PageMargins;
 use super::super::structs::rich_text::RichText;
+use super::super::structs::hyperlink::Hyperlink;
 
 use super::super::helper::coordinate::*;
 
@@ -26,15 +26,16 @@ pub(crate) fn read(
     shared_strings: &Vec<(String, Option<RichText>)>,
     cell_xfs_vec: &Vec<Style>,
     dxf_vec: &Vec<Style>
-) -> result::Result<(bool, Option<String>), XlsxError>
-{
+) -> Result<(bool, Option<String>, Vec<(String, String)>), XlsxError> {
     let path = dir.path().join(format!("xl/{}", target));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();
 
+    // result
     let mut is_active_sheet = false;
     let mut drawing:Option<String> = None;
+    let mut hyperlink_vec: Vec<(String, String)> = Vec::new();
 
     let mut coordinate: String = String::from("");
     let mut type_value: String = String::from("");
@@ -192,6 +193,13 @@ pub(crate) fn read(
                         drawing = Some(get_attribute(e, b"r:id").unwrap());
                         worksheet.add_drawing(Drawing::default());
                     },
+                    b"hyperlink" => {
+                        let (coor, rid, hyperlink) = get_hyperlink(e);
+                        let _ = worksheet.get_cell_mut(&coor.to_string()).set_hyperlink(hyperlink);
+                        if &rid != "" {
+                            hyperlink_vec.push((coor, rid));
+                        }
+                    },
                     _ => (),
                 }
             },
@@ -225,7 +233,7 @@ pub(crate) fn read(
         buf.clear();
     }
 
-    Ok((is_active_sheet, drawing))
+    Ok((is_active_sheet, drawing, hyperlink_vec))
 }
 
 fn get_conditional_formatting(
@@ -245,35 +253,15 @@ fn get_conditional_formatting(
                     b"cfRule" => {
                         for a in e.attributes().with_checks(false) {
                             match a {
-                                Ok(ref attr) if attr.key == b"type" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    conditional.set_condition_type(value);
-                                },
+                                Ok(ref attr) if attr.key == b"type" => conditional.set_condition_type(get_attribute_value(attr).unwrap()),
                                 Ok(ref attr) if attr.key == b"dxfId" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let dxf_id = value.parse::<usize>().unwrap();
+                                    let dxf_id = get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
                                     conditional.set_style(dxf_vec.get(dxf_id).unwrap().clone());
                                 },
-                                Ok(ref attr) if attr.key == b"priority" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let priority = value.parse::<usize>().unwrap();
-                                    conditional.set_priority(priority);
-                                },
-                                Ok(ref attr) if attr.key == b"percent" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let percent = value.parse::<usize>().unwrap();
-                                    conditional.set_percent(percent);
-                                },
-                                Ok(ref attr) if attr.key == b"bottom" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let bottom = value.parse::<usize>().unwrap();
-                                    conditional.set_bottom(bottom);
-                                },
-                                Ok(ref attr) if attr.key == b"rank" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let rank = value.parse::<usize>().unwrap();
-                                    conditional.set_rank(rank);
-                                },
+                                Ok(ref attr) if attr.key == b"priority" => conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"percent" => conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"bottom" => conditional.set_bottom(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"rank" => conditional.set_rank(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
                                 Ok(_) => {},
                                 Err(_) => {},
                             }
@@ -289,35 +277,15 @@ fn get_conditional_formatting(
                     b"cfRule" => {
                         for a in e.attributes().with_checks(false) {
                             match a {
-                                Ok(ref attr) if attr.key == b"type" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    conditional.set_condition_type(value);
-                                },
+                                Ok(ref attr) if attr.key == b"type" => conditional.set_condition_type(get_attribute_value(attr).unwrap()),
                                 Ok(ref attr) if attr.key == b"dxfId" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let dxf_id = value.parse::<usize>().unwrap();
+                                    let dxf_id = get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
                                     conditional.set_style(dxf_vec.get(dxf_id).unwrap().clone());
                                 },
-                                Ok(ref attr) if attr.key == b"priority" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let priority = value.parse::<usize>().unwrap();
-                                    conditional.set_priority(priority);
-                                },
-                                Ok(ref attr) if attr.key == b"percent" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let percent = value.parse::<usize>().unwrap();
-                                    conditional.set_percent(percent);
-                                },
-                                Ok(ref attr) if attr.key == b"bottom" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let bottom = value.parse::<usize>().unwrap();
-                                    conditional.set_bottom(bottom);
-                                },
-                                Ok(ref attr) if attr.key == b"rank" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let rank = value.parse::<usize>().unwrap();
-                                    conditional.set_rank(rank);
-                                },
+                                Ok(ref attr) if attr.key == b"priority" => conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"percent" => conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"bottom" => conditional.set_bottom(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"rank" => conditional.set_rank(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
                                 Ok(_) => {},
                                 Err(_) => {},
                             }
@@ -380,12 +348,8 @@ fn get_cfvo(
                     b"cfvo" => {
                         for a in e.attributes().with_checks(false) {
                             match a {
-                                Ok(ref attr) if attr.key == b"type" => {
-                                    r#type = get_attribute_value(attr).unwrap();
-                                },
-                                Ok(ref attr) if attr.key == b"value" => {
-                                    value = Some(get_attribute_value(attr).unwrap());
-                                },
+                                Ok(ref attr) if attr.key == b"type" => r#type = get_attribute_value(attr).unwrap(),
+                                Ok(ref attr) if attr.key == b"value" => value = Some(get_attribute_value(attr).unwrap()),
                                 Ok(_) => {},
                                 Err(_) => {},
                             }
@@ -502,4 +466,22 @@ fn get_attribute_color(
             Err(_) => {},
         }
     }
+}
+
+fn get_hyperlink(e:&quick_xml::events::BytesStart<'_>,)->(String, String, Hyperlink) {
+
+    let mut hyperlink = Hyperlink::default();
+    let mut rid = String::from("");
+
+    let coordition = get_attribute(e, b"ref").unwrap();
+    match get_attribute(e, b"location") {
+        Some(v) => {
+            hyperlink.set_url(v);
+            hyperlink.set_location(true);
+        },
+        None => {
+            rid = get_attribute(e, b"r:id").unwrap();
+        }
+    }
+    (coordition, rid, hyperlink)
 }

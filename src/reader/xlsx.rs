@@ -88,8 +88,8 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
                 let worksheet = book.new_sheet_crate(sheets_sheet_id.clone(), sheets_name.clone());
-                let (is_active_sheet, drawing_id) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
-                let worksheet_rel = worksheet_rels::read(&dir, &rel_target).unwrap();
+                let (is_active_sheet, drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
+                let worksheet_rel = worksheet_rels::read(&dir, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 match drawing_id {
                     Some(v) => {
                         for (worksheet_id, _, worksheet_target) in &worksheet_rel {

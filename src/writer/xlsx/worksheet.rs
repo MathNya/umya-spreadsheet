@@ -372,6 +372,28 @@ pub(crate) fn write(
         write_end_tag(&mut writer, "conditionalFormatting");
     }
 
+    // hyperlinks
+    if worksheet.get_hyperlink_collection().len() > 0 {
+        write_start_tag(&mut writer, "hyperlinks", vec![], false);
+
+        // hyperlink
+        let mut i = 2;
+        for (coordition, hyperlink) in worksheet.get_hyperlink_collection() {
+            let rid = format!("rId{}", &i);
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            attributes.push(("ref", &coordition));
+            if hyperlink.get_location() == &true {
+                attributes.push(("location", hyperlink.get_url()));
+            } else {
+                attributes.push(("r:id", rid.as_str()));
+                i += 1;
+            }
+            write_start_tag(&mut writer, "hyperlink", attributes, true);
+        }
+
+        write_end_tag(&mut writer, "hyperlinks");
+    }
+
     // pageMargins
     write_start_tag(&mut writer, "pageMargins", vec![
         ("left", "0.7"),

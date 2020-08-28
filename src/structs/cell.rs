@@ -1,4 +1,5 @@
 use super::rich_text::RichText;
+use super::hyperlink::Hyperlink;
 
 #[derive(Default, Debug)]
 pub struct Cell {
@@ -6,6 +7,7 @@ pub struct Cell {
     rich_text: Option<RichText>,
     data_type: String,
     formula_attributes: String,
+    hyperlink: Option<Hyperlink>,
 }
 impl Cell {
     // Data types
@@ -18,6 +20,21 @@ impl Cell {
     pub const TYPE_INLINE: &'static str = "inlineStr";
     pub const TYPE_ERROR: &'static str = "e";
 
+    pub fn get_hyperlink(&self) -> &Option<Hyperlink> {
+        &self.hyperlink
+    }
+    pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
+        match &self.hyperlink {
+            Some(_) => return self.hyperlink.as_mut().unwrap(),
+            None => {}
+        }
+        let _ = self.set_hyperlink(Hyperlink::default());
+        self.hyperlink.as_mut().unwrap()
+    }
+    pub fn set_hyperlink(&mut self, value:Hyperlink)->Result<(), &str> {
+        self.hyperlink = Some(value);
+        Ok(())
+    }
     pub fn get_value(&self)-> &String {
         &self.value
     }

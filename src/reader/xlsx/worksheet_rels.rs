@@ -5,8 +5,14 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
-pub(crate) fn read(dir: &TempDir, target: &str) -> result::Result<Vec<(String, String, String)>, XlsxError>
-{
+use super::super::structs::worksheet::Worksheet;
+
+pub(crate) fn read(
+    dir: &TempDir,
+    target: &str,
+    hyperlink_vec: &Vec<(String, String)>,
+    worksheet: &mut Worksheet
+) -> result::Result<Vec<(String, String, String)>, XlsxError> {
     let mut result:Vec<(String, String, String)> = Vec::new();
 
     let path = dir.path().join(format!("xl/worksheets/_rels/{}.rels", target.replace("worksheets/","")));
@@ -25,7 +31,16 @@ pub(crate) fn read(dir: &TempDir, target: &str) -> result::Result<Vec<(String, S
                         let id_value =  get_attribute(e, b"Id").unwrap();
                         let type_value =  get_attribute(e, b"Type").unwrap();
                         let target_value =  get_attribute(e, b"Target").unwrap();
-                        result.push((id_value, type_value, target_value));
+                        if &type_value == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" {
+                            for (coordinate, rid) in hyperlink_vec {
+                                if &id_value == rid {
+                                    worksheet.get_cell_mut(coordinate).get_hyperlink_mut().set_url(target_value);
+                                    break;
+                                }
+                            }
+                        } else {
+                            result.push((id_value, type_value, target_value));
+                        }
                     },
                     _ => (),
                 }
