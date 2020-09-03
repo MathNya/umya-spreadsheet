@@ -41,7 +41,7 @@ pub struct Worksheet {
     breaks :Vec<String>,
     merge_cells: Vec<String>,
     protected_cells: Vec<String>,
-    auto_filter: AutoFilter,
+    auto_filter: Option<AutoFilter>,
     freeze_pane: Option<String>,
     top_left_cell: Option<String>,
     show_gridlines: bool,
@@ -59,7 +59,7 @@ pub struct Worksheet {
     tab_color: Option<Color>,
     dirty: bool,
     hash: String,
-    code_name: String,
+    code_name: Option<String>,
 }
 impl Default for Worksheet {
     fn default() -> Self {
@@ -85,7 +85,7 @@ impl Default for Worksheet {
             breaks :Vec::new(),
             merge_cells: Vec::new(),
             protected_cells: Vec::new(),
-            auto_filter: AutoFilter::default(),
+            auto_filter: None,
             freeze_pane: None,
             top_left_cell: None,
             show_gridlines: false,
@@ -103,7 +103,7 @@ impl Default for Worksheet {
             tab_color: None,
             dirty: false,
             hash: String::from(""),
-            code_name: String::from(""),
+            code_name: None,
         }
     }
 }
@@ -176,17 +176,25 @@ impl Worksheet {
     pub(crate) fn add_merge_cells_crate<S: Into<String>>(&mut self, value:S) {
         self.merge_cells.push(value.into());
     }
-    pub fn get_auto_filter(&self) -> &AutoFilter {
+    pub fn get_auto_filter(&self) -> &Option<AutoFilter> {
         &self.auto_filter
     }
-    pub(crate) fn set_auto_filter(&mut self, value:AutoFilter) {
-        self.auto_filter = value;
+    pub fn get_auto_filter_mut(&mut self) -> &mut AutoFilter {
+        match &self.auto_filter {
+            Some(_) => return self.auto_filter.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_auto_filter(AutoFilter::default());
+        self.auto_filter.as_mut().unwrap()
     }
-    pub fn get_code_name(&self) -> &String {
+    pub(crate) fn set_auto_filter(&mut self, value:AutoFilter) {
+        self.auto_filter = Some(value);
+    }
+    pub fn get_code_name(&self) -> &Option<String> {
         &self.code_name
     }
-    pub(crate) fn set_code_name(&mut self, value:String) {
-        self.code_name = value;
+    pub(crate) fn set_code_name<S: Into<String>>(&mut self, value:S) {
+        self.code_name = Some(value.into());
     }
     pub fn get_header_footer(&self) -> &HeaderFooter {
         &self.header_footer
@@ -284,7 +292,10 @@ impl Worksheet {
         false
     }
     pub fn has_code_name(&self) -> bool {
-        self.code_name != ""
+        match self.code_name {
+            Some(_) => true,
+            None => false
+        }
     }
     pub fn get_tab_color(&self) -> &Option<Color> {
         &self.tab_color

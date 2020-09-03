@@ -46,6 +46,17 @@ pub(crate) fn read(
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 match e.name() {
+                    b"sheetPr" => {
+                        for a in e.attributes().with_checks(false) {
+                            match a {
+                                Ok(ref attr) if attr.key == b"codeName" => {
+                                    worksheet.set_code_name(get_attribute_value(attr)?);
+                                },
+                                Ok(_) => {},
+                                Err(_) => {},
+                            }
+                        }
+                    },
                     b"sheetView" => {
                         for a in e.attributes().with_checks(false) {
                             match a {
@@ -109,9 +120,20 @@ pub(crate) fn read(
             },
             Ok(Event::Empty(ref e)) => {
                 match e.name() {
+                    b"sheetPr" => {
+                        for a in e.attributes().with_checks(false) {
+                            match a {
+                                Ok(ref attr) if attr.key == b"codeName" => {
+                                    worksheet.set_code_name(get_attribute_value(attr)?);
+                                },
+                                Ok(_) => {},
+                                Err(_) => {},
+                            }
+                        }
+                    },
                     b"tabColor" => {
                         get_attribute_color(e, worksheet, theme);
-                    }
+                    },
                     b"selection" => {
                         for a in e.attributes().with_checks(false) {
                             match a {
@@ -170,6 +192,9 @@ pub(crate) fn read(
                         }
                         style_index = None;
                     },
+                    b"autoFilter" => {
+                        worksheet.get_auto_filter_mut().set_range(get_attribute(e, b"ref").unwrap());
+                    },
                     b"mergeCell" => {
                         worksheet.add_merge_cells_crate(get_attribute(e, b"ref").unwrap());
                     },
@@ -206,9 +231,7 @@ pub(crate) fn read(
             Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
             Ok(Event::End(ref e)) => {
                 match e.name() {
-                    b"f" => {
-                        worksheet.get_cell_mut(&coordinate.to_string()).set_formula_attributes(string_value.clone());
-                    },
+                    b"f" => worksheet.get_cell_mut(&coordinate.to_string()).set_formula_attributes(string_value.clone()),
                     b"v" => {
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
@@ -220,9 +243,7 @@ pub(crate) fn read(
                             let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_crate(&string_value);
                         };
                     },
-                    b"c" => {
-                        type_value = String::from("");
-                    },
+                    b"c" => type_value = String::from(""),
                     _ => (),
                 }
             },
@@ -386,15 +407,9 @@ fn get_cfvo(
             },
             Ok(Event::End(ref e)) => {
                 match e.name() {
-                    b"dataBar" => {
-                        return result;
-                    },
-                    b"colorScale" => {
-                        return result;
-                    },
-                    b"iconSet" => {
-                        return result;
-                    },
+                    b"dataBar" => return result,
+                    b"colorScale" => return result,
+                    b"iconSet" => return result,
                     _ => (),
                 }
             },
@@ -409,31 +424,15 @@ fn get_cfvo(
 fn get_attribute_row(
     e:&quick_xml::events::BytesStart<'_>, 
     row:&mut RowDimension
-)-> usize
-{
+)-> usize {
     let mut row_index:usize = 0;
     for a in e.attributes().with_checks(false) {
         match a {
-            Ok(ref attr) if attr.key == b"r" => {
-                let value = get_attribute_value(attr).unwrap();
-                row_index = value.parse::<usize>().unwrap();
-            },
-            Ok(ref attr) if attr.key == b"ht" => {
-                let value = get_attribute_value(attr).unwrap();
-                row.set_height(value.parse::<f32>().unwrap());
-            },
-            Ok(ref attr) if attr.key == b"thickBot" => {
-                let value = get_attribute_value(attr).unwrap();
-                row.set_thick_bot(value == "1");
-            },
-            Ok(ref attr) if attr.key == b"customHeight" => {
-                let value = get_attribute_value(attr).unwrap();
-                row.set_custom_height(value == "1");
-            },
-            Ok(ref attr) if attr.key == b"x14ac:dyDescent" => {
-                let value = get_attribute_value(attr).unwrap();
-                row.set_descent(value.parse::<f32>().unwrap());
-            },
+            Ok(ref attr) if attr.key == b"r" => row_index = get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
+            Ok(ref attr) if attr.key == b"ht" => row.set_height(get_attribute_value(attr).unwrap().parse::<f32>().unwrap()),
+            Ok(ref attr) if attr.key == b"thickBot" => row.set_thick_bot(get_attribute_value(attr).unwrap() == "1"),
+            Ok(ref attr) if attr.key == b"customHeight" => row.set_custom_height(get_attribute_value(attr).unwrap() == "1"),
+            Ok(ref attr) if attr.key == b"x14ac:dyDescent" => row.set_descent(get_attribute_value(attr).unwrap().parse::<f32>().unwrap()),
             Ok(_) => {},
             Err(_) => {},
         }
@@ -445,8 +444,7 @@ fn get_attribute_color(
     e:&quick_xml::events::BytesStart<'_>,
     worksheet: &mut Worksheet,
     theme:&Theme
-)
-{
+) {
     let theme_color_map:Vec<String> = theme.get_color_map().clone();
 
     for a in e.attributes().with_checks(false) {
@@ -476,8 +474,8 @@ fn get_hyperlink(e:&quick_xml::events::BytesStart<'_>,)->(String, String, Hyperl
     let coordition = get_attribute(e, b"ref").unwrap();
     match get_attribute(e, b"location") {
         Some(v) => {
-            hyperlink.set_url(v);
-            hyperlink.set_location(true);
+            let _ = hyperlink.set_url(v);
+            let _ = hyperlink.set_location(true);
         },
         None => {
             rid = get_attribute(e, b"r:id").unwrap();

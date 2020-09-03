@@ -128,6 +128,14 @@ fn read_axis(reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>)->
 
     loop {
         match reader.read_event(&mut buf) {
+            Ok(Event::Start(ref e)) => {
+                match e.name() {
+                    b"c:title" => {
+                        axis.set_label(chart_title(reader));
+                    },
+                    _ => (),
+                }
+            },
             Ok(Event::Empty(ref e)) => {
                 match e.name() {
                     b"c:axId" => {

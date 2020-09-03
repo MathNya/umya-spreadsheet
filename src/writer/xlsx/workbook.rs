@@ -32,8 +32,10 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, fil
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     attributes.push(("filterPrivacy", "1"));
     attributes.push(("defaultThemeVersion", "124226"));
-    //attributes.push(("codeName", "ThisWorkbook"));
-    // TODO CALENDAR_MAC_1904
+    match spreadsheet.get_has_macros() {
+        &true => attributes.push(("codeName", "ThisWorkbook")),
+        &false => {}
+    }
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 
     // workbookProtection

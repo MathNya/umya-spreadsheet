@@ -21,6 +21,7 @@ mod styles;
 mod worksheet_rels;
 mod drawing;
 mod drawing_rels;
+mod vba_project_bin;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -78,6 +79,7 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     let (mut book, sheets) = workbook::read(&dir).unwrap();
     doc_props_app::read(&dir, &mut book).unwrap();
     doc_props_core::read(&dir, &mut book).unwrap(); 
+    vba_project_bin::read(&dir, &mut book).unwrap();
     let theme = theme::read(&dir).unwrap();
     let shared_string = shared_strings::read(&dir, &theme).unwrap();
     let (cell_xfs_vec, dxf_vec) = styles::read(&dir, &mut book, &theme).unwrap();

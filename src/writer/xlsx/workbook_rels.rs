@@ -63,7 +63,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, fil
 
     // relationships for vbaProject if needed
     if spreadsheet.get_has_macros() == &true {
-        let id = (index+1+3).to_string();
+        let id = (index+1+3+1).to_string();
         write_relationship(
             &mut writer,
             id.as_str(),

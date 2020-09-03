@@ -11,8 +11,6 @@ pub struct Chart {
     title: Option<Title>,
     lang: String,
     legend: Legend,
-    x_axis_label: Title,
-    y_axis_label: Title,
     plot_area: PlotArea,
     plot_visible_only: bool,
     display_blanks_as: String,
@@ -34,8 +32,6 @@ impl Default for Chart {
             title: None,
             lang: Self::LANG_EN_GB.into(),
             legend: Legend::default(),
-            x_axis_label: Title::default(),
-            y_axis_label: Title::default(),
             plot_area: PlotArea::default(),
             plot_visible_only: false,
             display_blanks_as: DataSeries::EMPTY_AS_GAP.to_string(),
@@ -80,18 +76,6 @@ impl Chart {
     }
     pub(crate) fn set_legend(&mut self, value:Legend) {
         self.legend = value;
-    }
-    pub fn get_x_axis_label(&self) -> &Title {
-        return &self.x_axis_label;
-    }
-    pub(crate) fn set_x_axis_label(&mut self, value:Title) {
-        self.x_axis_label = value;
-    }
-    pub fn get_y_axis_label(&self) -> &Title {
-        return &self.y_axis_label;
-    }
-    pub(crate) fn set_y_axis_label(&mut self, value:Title) {
-        self.y_axis_label = value;
     }
     pub fn get_plot_area(&self) -> &PlotArea {
         &self.plot_area

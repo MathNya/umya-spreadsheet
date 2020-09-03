@@ -22,7 +22,7 @@ pub struct Spreadsheet {
     named_ranges: Vec<String>,
     cell_style_collection: Vec<CellStyle>,
     has_macros: bool,
-    macros_code: String,
+    macros_code: Option<Vec<u8>>,
     macros_certificate: String,
     ribbon_xml_data: Option<String>,
     ribbon_bin_objects: Option<Vec<String>>,
@@ -96,6 +96,12 @@ impl Spreadsheet {
     }
     pub(crate) fn set_security(&mut self, value:Security) {
         self.security = value;
+    }
+    pub fn get_macros_code(&self) -> &Option<Vec<u8>> {
+        &self.macros_code
+    }
+    pub(crate) fn set_macros_code(&mut self, value:Vec<u8>) {
+        self.macros_code = Some(value);
     }
     pub fn get_has_macros(&self) -> &bool {
         &self.has_macros

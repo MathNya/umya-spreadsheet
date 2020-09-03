@@ -5,7 +5,6 @@ use tempdir::TempDir;
 
 use super::super::structs::spreadsheet::Spreadsheet;
 use super::super::structs::borders::Borders;
-use super::super::structs::color::Color;
 use super::super::structs::alignment::Alignment;
 use super::driver::*;
 use super::XlsxError;

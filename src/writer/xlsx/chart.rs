@@ -3,6 +3,8 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
 
+use super::super::structs::font::Font;
+use super::super::structs::title::Title;
 use super::super::structs::chart::Chart;
 use super::super::structs::axis::Axis;
 use super::super::structs::data_series::DataSeries;
@@ -79,98 +81,10 @@ pub(crate) fn write(
     // c:chart
     write_start_tag(&mut writer, "c:chart", vec![], false);
 
+    // title
     match chart.get_title() {
         Some(v) => {
-            // c:title
-            write_start_tag(&mut writer, "c:title", vec![], false);
-
-            // c:tx
-            write_start_tag(&mut writer, "c:tx", vec![], false);
-
-            // c:rich
-            write_start_tag(&mut writer, "c:rich", vec![], false);
-
-            // a:bodyPr
-            write_start_tag(&mut writer, "a:bodyPr", vec![], true);
-
-            // a:lstStyle
-            write_start_tag(&mut writer, "a:lstStyle", vec![], true);
-
-            // a:p
-            write_start_tag(&mut writer, "a:p", vec![], false);
-
-            // a:pPr
-            write_start_tag(&mut writer, "a:pPr", vec![], false);
-
-            // a:defRPr
-            write_start_tag(&mut writer, "a:defRPr", vec![], true);
-
-            write_end_tag(&mut writer, "a:pPr");
-
-            // a:r
-            write_start_tag(&mut writer, "a:r", vec![], false);
-
-            // a:rPr
-            write_start_tag(&mut writer, "a:rPr", vec![
-                ("lang", "en-US"),
-                ("altLang", "ja-JP"),
-            ], true);
-
-            // a:t
-            write_start_tag(&mut writer, "a:t", vec![], false);
-            write_text_node(&mut writer, "TEST");
-            write_end_tag(&mut writer, "a:t");
-
-            write_end_tag(&mut writer, "a:r");
-
-            // a:endParaRPr
-            write_start_tag(&mut writer, "a:endParaRPr", vec![
-                ("lang", "ja-JP"),
-                ("altLang", "en-US"),
-            ], true);
-
-            write_end_tag(&mut writer, "a:p");
-
-            write_end_tag(&mut writer, "c:rich");
-
-            write_end_tag(&mut writer, "c:tx");
-
-            // c:layout
-            write_start_tag(&mut writer, "c:layout", vec![], false);
-
-            // c:manualLayout
-            write_start_tag(&mut writer, "c:manualLayout", vec![], false);
-
-            // c:xMode
-            write_start_tag(&mut writer, "c:xMode", vec![
-                ("val", "edge"),
-            ], true);
-
-            // c:yMode
-            write_start_tag(&mut writer, "c:yMode", vec![
-                ("val", "edge"),
-            ], true);
-
-            // c:x
-            write_start_tag(&mut writer, "c:x", vec![
-                ("val", "0.43505555555555553"),
-            ], true);
-
-            // c:y
-            write_start_tag(&mut writer, "c:y", vec![
-                ("val", "2.7777777777777776E-2"),
-            ], true);
-
-            write_end_tag(&mut writer, "c:manualLayout");
-
-            write_end_tag(&mut writer, "c:layout");
-
-            // c:overlay
-            write_start_tag(&mut writer, "c:overlay", vec![
-                ("val", "0"),
-            ], true);
-
-            write_end_tag(&mut writer, "c:title");
+            write_title(&mut writer, v);
         },
         None => {}
     }
@@ -236,6 +150,58 @@ pub(crate) fn write(
                 None => {}
             }
 
+            // c:cat
+            match plot_series.get_plot_category().get(idx) {
+                Some(v) => {
+                    // c:cat
+                    write_start_tag(&mut writer, "c:cat", vec![], false);
+
+                    // c:strRef
+                    write_start_tag(&mut writer, "c:strRef", vec![], false);
+
+                    // c:f
+                    write_start_tag(&mut writer, "c:f", vec![], false);
+                    write_text_node(&mut writer, v.get_data_source());
+                    write_end_tag(&mut writer, "c:f");
+
+                    // c:numCache
+                    write_start_tag(&mut writer, "c:strCache", vec![], false);
+
+                    // c:formatCode
+                    if v.get_format_code() != "" {
+                        write_start_tag(&mut writer, "c:formatCode", vec![], false);
+                        write_text_node(&mut writer, v.get_format_code());
+                        write_end_tag(&mut writer, "c:formatCode");
+                    }
+
+                    // c:ptCount
+                    write_start_tag(&mut writer, "c:ptCount", vec![
+                        ("val", v.get_point_count().to_string().as_str()),
+                    ], true);
+
+                    for (i, value) in v.get_data_values(){
+                        // c:pt
+                        write_start_tag(&mut writer, "c:pt", vec![
+                            ("idx", i.to_string().as_str()),
+                        ], false);
+
+                        // c:v
+                        write_start_tag(&mut writer, "c:v", vec![], false);
+                        write_text_node(&mut writer, value);
+                        write_end_tag(&mut writer, "c:v");
+
+                        write_end_tag(&mut writer, "c:pt");
+                    }
+
+                    write_end_tag(&mut writer, "c:strCache");
+
+                    write_end_tag(&mut writer, "c:strRef");
+
+                    write_end_tag(&mut writer, "c:cat");
+                },
+                None => {}
+            }
+
             // c:val
             write_start_tag(&mut writer, "c:val", vec![], false);
 
@@ -251,9 +217,11 @@ pub(crate) fn write(
             write_start_tag(&mut writer, "c:numCache", vec![], false);
 
             // c:formatCode
-            write_start_tag(&mut writer, "c:formatCode", vec![], false);
-            write_text_node(&mut writer, ser.get_format_code());
-            write_end_tag(&mut writer, "c:formatCode");
+            if ser.get_format_code() != "" {
+                write_start_tag(&mut writer, "c:formatCode", vec![], false);
+                write_text_node(&mut writer, ser.get_format_code());
+                write_end_tag(&mut writer, "c:formatCode");
+            }
 
             // c:ptCount
             write_start_tag(&mut writer, "c:ptCount", vec![
@@ -366,7 +334,7 @@ pub(crate) fn write(
 
             if plot_type == DataSeries::TYPE_DONUTCHART {
                 // c:holeSize
-                write_start_tag(&mut writer, "c:firstSliceAng", vec![
+                write_start_tag(&mut writer, "c:holeSize", vec![
                     ("val", "50"),
                 ], true);
             }
@@ -483,6 +451,14 @@ fn write_category_axis(writer: &mut Writer<Cursor<Vec<u8>>>, axis:&Axis, cross_a
         write_start_tag(writer, "c:axPos", vec![
             ("val", "b"),
         ], true);
+
+        // c:title
+        match axis.get_label() {
+            Some(v) => {
+                write_title(writer, v);
+            },
+            None => {}
+        }
     
         // c:majorTickMark
         write_start_tag(writer, "c:majorTickMark", vec![
@@ -532,8 +508,7 @@ fn write_category_axis(writer: &mut Writer<Cursor<Vec<u8>>>, axis:&Axis, cross_a
         write_end_tag(writer, "c:catAx");
 }
 
-fn write_value_axis(writer: &mut Writer<Cursor<Vec<u8>>>, axis:&Axis, cross_ax_id: &usize)
-{
+fn write_value_axis(writer: &mut Writer<Cursor<Vec<u8>>>, axis:&Axis, cross_ax_id: &usize) {
     // c:valAx
     write_start_tag(writer, "c:valAx", vec![], false);
 
@@ -566,14 +541,12 @@ fn write_value_axis(writer: &mut Writer<Cursor<Vec<u8>>>, axis:&Axis, cross_ax_i
     write_start_tag(writer, "c:majorGridlines", vec![], true);
 
     // c:title
-    write_start_tag(writer, "c:title", vec![], false);
-
-    // c:overlay
-    write_start_tag(writer, "c:overlay", vec![
-        ("val", "0"),
-    ], true);
-
-    write_end_tag(writer, "c:title");
+    match axis.get_label() {
+        Some(v) => {
+            write_title(writer, v);
+        },
+        None => {}
+    }
 
     // c:numFmt
     write_start_tag(writer, "c:numFmt", vec![
@@ -612,4 +585,153 @@ fn write_value_axis(writer: &mut Writer<Cursor<Vec<u8>>>, axis:&Axis, cross_ax_i
     ], true);
 
     write_end_tag(writer, "c:valAx");
+}
+
+fn write_title(writer: &mut Writer<Cursor<Vec<u8>>>, title: &Title) {
+    // c:title
+    write_start_tag(writer, "c:title", vec![], false);
+
+    // c:tx
+    write_start_tag(writer, "c:tx", vec![], false);
+
+    // c:rich
+    write_start_tag(writer, "c:rich", vec![], false);
+
+    // a:bodyPr
+    write_start_tag(writer, "a:bodyPr", vec![], true);
+
+    // a:lstStyle
+    write_start_tag(writer, "a:lstStyle", vec![], true);
+
+    // a:p
+    write_start_tag(writer, "a:p", vec![], false);
+
+    // a:pPr
+    write_start_tag(writer, "a:pPr", vec![], false);
+
+    // a:defRPr
+    write_start_tag(writer, "a:defRPr", vec![], true);
+
+    write_end_tag(writer, "a:pPr");
+
+    for text_element in title.get_caption().get_rich_text_elements() {
+        // a:r
+        write_start_tag(writer, "a:r", vec![], false);
+
+        // a:rPr
+        match text_element.get_font() {
+            Some(v) => {
+                let mut attributes: Vec<(&str, &str)> = Vec::new();
+                // Bold
+                let bold = match v.get_bold() {
+                    &true => "1",
+                    &false => "0"
+                };
+                attributes.push(("b", bold));
+
+                // Italic
+                let italic = match v.get_italic() {
+                    &true => "1",
+                    &false => "0"
+                };
+                attributes.push(("i", italic));
+
+                // Underline
+                let mut underline_type = v.get_underline();
+                if underline_type == Font::UNDERLINE_SINGLE {
+                    underline_type = "sng";
+                }
+                if underline_type == Font::UNDERLINE_DOUBLE {
+                    underline_type = "dbl";
+                }
+                attributes.push(("u", underline_type));
+
+                // Strikethrough
+                let strikethrough = match v.get_strikethrough() {
+                    &true => "sngStrike",
+                    &false => "noStrike"
+                };
+                attributes.push(("strike", strikethrough));
+
+                if v.get_name() != "" {
+                    write_start_tag(writer, "a:rPr", attributes, false);
+
+                    // rFont
+                    write_start_tag(writer, "a:latin", vec![
+                        ("typeface", v.get_name()),
+                    ], true);
+    
+                    write_end_tag(writer, "a:rPr");
+                } else {
+                    write_start_tag(writer, "a:rPr", attributes, true);
+                }
+            },
+            None => {
+                write_start_tag(writer, "a:rPr", vec![], true);
+            }
+        }
+
+        // a:t
+        write_start_tag(writer, "a:t", vec![], false);
+        write_text_node(writer, text_element.get_text());
+        write_end_tag(writer, "a:t");
+
+        write_end_tag(writer, "a:r");
+    }
+
+    // a:endParaRPr
+    //write_start_tag(writer, "a:endParaRPr", vec![
+    //    ("lang", "ja-JP"),
+    //    ("altLang", "en-US"),
+    //], true);
+
+    write_end_tag(writer, "a:p");
+
+    write_end_tag(writer, "c:rich");
+
+    write_end_tag(writer, "c:tx");
+
+    // c:layout
+    match title.get_layout() {
+        Some(v) => {
+            write_start_tag(writer, "c:layout", vec![], false);
+
+            // c:manualLayout
+            write_start_tag(writer, "c:manualLayout", vec![], false);
+        
+            // c:xMode
+            write_start_tag(writer, "c:xMode", vec![
+                ("val", v.get_x_mode()),
+            ], true);
+        
+            // c:yMode
+            write_start_tag(writer, "c:yMode", vec![
+                ("val", v.get_y_mode()),
+            ], true);
+        
+            // c:x
+            write_start_tag(writer, "c:x", vec![
+                ("val", v.get_x_pos().to_string().as_str()),
+            ], true);
+        
+            // c:y
+            write_start_tag(writer, "c:y", vec![
+                ("val", v.get_y_pos().to_string().as_str()),
+            ], true);
+        
+            write_end_tag(writer, "c:manualLayout");
+        
+            write_end_tag(writer, "c:layout");
+        },
+        None => {
+            write_start_tag(writer, "c:layout", vec![], true);
+        }
+    }
+
+    // c:overlay
+    write_start_tag(writer, "c:overlay", vec![
+        ("val", "0"),
+    ], true);
+
+    write_end_tag(writer, "c:title");
 }

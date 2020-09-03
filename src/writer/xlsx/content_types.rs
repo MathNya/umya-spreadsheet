@@ -37,13 +37,17 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
     ], true);
     
     // Override workbook
+    let content_type = match spreadsheet.get_has_macros() {
+        &true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
+        &false => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
+    };
     write_start_tag(&mut writer, "Override", vec![
         ("PartName", "/xl/workbook.xml"),
-        ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"),
+        ("ContentType", content_type),
     ], true);
 
+    // Override sheet
     for i in 0..spreadsheet.get_sheet_count() {
-        // Override sheet
         write_start_tag(&mut writer, "Override", vec![
             ("PartName", format!("/xl/worksheets/sheet{}.xml", (i+1).to_string().as_str()).as_str()),
             ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"),
@@ -96,6 +100,17 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
             chart_count += 1;
         }
     }
+
+    // Override xl/vbaProject.bin
+    match spreadsheet.get_has_macros() {
+        &true => {
+            write_start_tag(&mut writer, "Override", vec![
+                ("PartName", "/xl/vbaProject.bin"),
+                ("ContentType", "application/vnd.ms-office.vbaProject"),
+            ], true);
+        },
+        &false => {}
+    };
 
     // Override docProps/core
     write_start_tag(&mut writer, "Override", vec![

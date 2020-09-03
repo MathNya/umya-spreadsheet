@@ -1,6 +1,6 @@
 use super::color::Color;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct Font {
     name: String,
     size: usize,
@@ -15,7 +15,26 @@ pub struct Font {
     family: usize,
     scheme: String,
 }
+impl Default for Font {
+    fn default() -> Self {
+        Self {
+            name: "".into(),
+            size: 0,
+            bold: false,
+            italic: false,
+            superscript: false,
+            subscript: false,
+            underline: Font::UNDERLINE_NONE.to_string(),
+            strikethrough: false,
+            color: Color::default(),
+            charset: 0,
+            family: 0,
+            scheme: "".into()
+        }
+    }
+}
 impl Font {
+    // Charset
     pub const CHARSET_ANSI: usize = 0;
     pub const CHARSET_DEFAULT: usize = 1;
     pub const CHARSET_SYMBOL: usize = 2;
@@ -37,6 +56,13 @@ impl Font {
     pub const CHARSET_MAC: usize = 77;
     pub const CHARSET_BALTIC: usize = 186;
 
+    // Underline types
+    pub const UNDERLINE_NONE: &'static str = "'none";
+    pub const UNDERLINE_DOUBLE: &'static str = "double";
+    pub const UNDERLINE_DOUBLEACCOUNTING: &'static str = "doubleAccounting";
+    pub const UNDERLINE_SINGLE: &'static str = "single";
+    pub const UNDERLINE_SINGLEACCOUNTING: &'static str = "singleAccounting";
+
     pub fn get_name(&self)-> &str {
         &self.name
     }
@@ -48,6 +74,12 @@ impl Font {
     }
     pub(crate) fn set_size(&mut self, value:usize) {
         self.size = value;
+    }
+    pub fn get_bold(&self)-> &bool {
+        &self.bold
+    }
+    pub(crate) fn set_bold(&mut self, value:bool) {
+        self.bold = value;
     }
     pub fn get_italic(&self)-> &bool {
         &self.italic
@@ -64,6 +96,12 @@ impl Font {
     pub fn set_color(&mut self, value:Color)->Result<(), &'static str> {
         self.color = value;
         Ok(())
+    }
+    pub fn get_underline(&self)-> &str {
+        &self.underline
+    }
+    pub(crate) fn set_underline<S: Into<String>>(&mut self, value:S) {
+        self.underline = value.into();
     }
     pub fn get_strikethrough(&self)-> &bool {
         &self.strikethrough

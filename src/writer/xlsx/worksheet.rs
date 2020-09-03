@@ -42,20 +42,22 @@ pub(crate) fn write(
 
     // sheetPr
     let mut attributes: Vec<(&str, &str)> = Vec::new();
-    let mut code_name = worksheet.get_code_name();
-    if has_macros == &true {
-        if !worksheet.has_code_name() {
-            code_name = worksheet.get_title();
-        }
-    }
-    attributes.push(("codeName", code_name));
-    if worksheet.get_auto_filter().range != "" {
-        attributes.push(("filterMode", "1"));
+    match has_macros {
+        &true => {
+            let code_name = match worksheet.has_code_name() {
+                true => worksheet.get_code_name().as_ref().unwrap(),
+                false => worksheet.get_title()
+            };
+            attributes.push(("codeName", code_name));
+        },
+        &false => {}
     }
 
     // tabColor
     match worksheet.get_tab_color() {
         Some(v) => {
+            write_start_tag(&mut writer, "sheetPr", attributes, false);
+
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             let theme:&str = &v.get_theme_index().to_string();
             if v.is_set_theme_index() {
@@ -67,11 +69,14 @@ pub(crate) fn write(
             if v.get_tint() != &0.0f64 {
                 attributes.push(("tint", tint));
             }
-            write_start_tag(&mut writer, "sheetPr", vec![], false);
             write_start_tag(&mut writer, "tabColor", attributes, true);
             write_end_tag(&mut writer, "sheetPr");
         },
-        None => {}
+        None => {
+            if attributes.len() > 0 {
+                write_start_tag(&mut writer, "sheetPr", attributes, true);
+            }
+        }
     }
 
     // outlinePr
@@ -264,6 +269,16 @@ pub(crate) fn write(
 
         write_end_tag(&mut writer, "sheetData");
     }
+
+    // autoFilter
+    match worksheet.get_auto_filter() {
+        Some(v) => {
+            write_start_tag(&mut writer, "autoFilter", vec![
+                ("ref", v.get_range()),
+            ], true);
+        },
+        None => {}
+    };
 
     if worksheet.get_merge_cells().len() > 0 {
         // mergeCells

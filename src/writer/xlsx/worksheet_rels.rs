@@ -28,7 +28,7 @@ pub(crate) fn write(
     ], false);
 
     // write drawing relationships
-    let mut id = 1;
+    let id = 1;
     if worksheet.has_drawing_object() {
         is_write = write_relationship(
             &mut writer,

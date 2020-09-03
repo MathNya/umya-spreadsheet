@@ -16,6 +16,21 @@ fn read_and_wite() {
 }
 
 #[test]
+fn read_and_wite_xlsm() {
+    // reader
+    let path = std::path::Path::new("C:/spread_test_data/aaa.xlsm");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
+    let a1_value = book.get_sheet(0).unwrap().get_cell("A1").unwrap().get_value();
+    assert_eq!("TEST1", a1_value);
+
+    // writer
+    let path = std::path::Path::new("C:/spread_test_data/bbb.xlsm");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn new_and_wite() {
     // new file.
     let mut book = umya_spreadsheet::new_file();

@@ -20,6 +20,7 @@ mod shared_strings;
 mod styles;
 mod drawing;
 mod drawing_rels;
+mod vba_project_bin;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -76,6 +77,9 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
 
     // Add docProps Core
     let _= doc_props_core::write(spreadsheet, &dir, "docProps", "core.xml");
+
+    // Add vbaProject.bin
+    let _= vba_project_bin::write(spreadsheet, &dir, "xl", "vbaProject.bin");
 
     // Add relationships
     let _ = rels::write(spreadsheet, &dir, "_rels", ".rels");

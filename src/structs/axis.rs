@@ -1,8 +1,10 @@
 use std::collections::HashMap; 
+use super::title::Title;
 
 #[derive(Default, Debug)]
 pub struct Axis {
     id: usize,
+    label: Option<Title>,
     axis_number: HashMap<String, String>,
     axis_options: HashMap<String, String>,
     fill_properties: HashMap<String, String>,
@@ -18,6 +20,12 @@ impl Axis {
     }
     pub(crate) fn set_id(&mut self, value:usize) {
         self.id = value;
+    }
+    pub fn get_label(&self) -> &Option<Title> {
+        return &self.label;
+    }
+    pub(crate) fn set_label(&mut self, value:Title) {
+        self.label = Some(value);
     }
     pub fn get_axis_number(&self)-> &HashMap<String, String> {
         &self.axis_number

@@ -4,7 +4,7 @@ use super::rich_text::RichText;
 #[derive(Default, Debug)]
 pub struct Title {
     caption: RichText,
-    layout: Layout,
+    layout: Option<Layout>,
 }
 impl Title {
     pub fn get_caption(&self) -> &RichText {
@@ -16,10 +16,10 @@ impl Title {
     pub(crate) fn set_caption(&mut self, value:RichText) {
         self.caption = value.into();
     }
-    pub fn get_layout(&self) -> &Layout {
+    pub fn get_layout(&self) -> &Option<Layout> {
         &self.layout
     }
     pub(crate) fn set_layout(&mut self, value:Layout) {
-        self.layout = value;
+        self.layout = Some(value);
     }
 }

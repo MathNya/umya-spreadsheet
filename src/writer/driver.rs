@@ -109,8 +109,27 @@ pub(crate) fn make_file_from_writer(
     Ok(())
 }
 
-pub(crate) fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color, tag_name: &str)
-{
+pub(crate) fn make_file_from_bin(
+    path: &str,
+    temp_dir: &TempDir,
+    writer: &Vec<u8>,
+    dir: Option<&str>,
+) -> Result<(), io::Error> {
+    match dir {
+        Some(dir) => {
+            let dir_path = temp_dir.path().join(dir);
+            fs::create_dir_all(dir_path)?;
+        }
+        None => {}
+    }
+    let file_path = temp_dir.path().join(path);
+    let mut f = File::create(file_path)?;
+    f.write_all(writer)?;
+    f.sync_all()?;
+    Ok(())
+}
+
+pub(crate) fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color, tag_name: &str) {
     // color
     let theme_index:&str = &color.get_theme_index().to_string();
     let indexed:&str = &color.get_indexed().to_string();
@@ -131,4 +150,3 @@ pub(crate) fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color, t
         write_start_tag(writer, tag_name, attributes, true);
     }
 }
-
