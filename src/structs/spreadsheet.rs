@@ -172,6 +172,8 @@ impl Spreadsheet {
         let mut result:Vec<(String, Fill)> = Vec::new();
         let def = Fill::get_defalut_value();
         result.push((def.get_hash_code(), def));
+        let def2 = Fill::get_defalut_value_2();
+        result.push((def2.get_hash_code(), def2));
         for (_, style) in &self.get_all_cell_style() {
             match style.get_fill() {
                 Some(v) => {

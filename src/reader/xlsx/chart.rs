@@ -217,14 +217,66 @@ fn chart_title(reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>)
     let mut buf = Vec::new();
     let mut title = Title::default();
 
+    let mut text_element = TextElement::default();
     let mut string_value:String = String::from("");
 
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 match e.name() {
+                    b"a:rPr" => {
+                        for a in e.attributes().with_checks(false) {
+                            match a {
+                                Ok(ref attr) if attr.key == b"sz" => {
+                                    let value = get_attribute_value(attr).unwrap().parse::<usize>().unwrap() / 10;
+                                    text_element.get_font_mut().set_size(value);
+                                },
+                                Ok(ref attr) if attr.key == b"i" => {
+                                    let vl = get_attribute_value(attr).unwrap() == "1";
+                                    text_element.get_font_mut().set_italic(vl);
+                                },
+                                Ok(ref attr) if attr.key == b"b" => {
+                                    let vl = get_attribute_value(attr).unwrap() == "1";
+                                    text_element.get_font_mut().set_bold(vl);
+                                },
+                                Ok(_) => {},
+                                Err(_) => {},
+                            }
+                        }
+                    },
                     b"c:layout" => {
                         title.set_layout(chart_layout_details(reader));
+                    },
+                    _ => (),
+                }
+            },
+            Ok(Event::Empty(ref e)) => {
+                match e.name() {
+                    b"a:rPr" => {
+                        for a in e.attributes().with_checks(false) {
+                            match a {
+                                Ok(ref attr) if attr.key == b"sz" => {
+                                    let value = get_attribute_value(attr).unwrap().parse::<usize>().unwrap() / 10;
+                                    text_element.get_font_mut().set_size(value);
+                                },
+                                Ok(ref attr) if attr.key == b"i" => {
+                                    let vl = get_attribute_value(attr).unwrap() == "1";
+                                    text_element.get_font_mut().set_italic(vl);
+                                },
+                                Ok(ref attr) if attr.key == b"b" => {
+                                    let vl = get_attribute_value(attr).unwrap() == "1";
+                                    text_element.get_font_mut().set_bold(vl);
+                                },
+                                Ok(_) => {},
+                                Err(_) => {},
+                            }
+                        }
+                    },
+                    b"a:srgbClr" => {
+                        let _= text_element.get_font_mut().get_color_mut().set_argb(get_attribute(e, b"val").unwrap());
+                    },
+                    b"a:latin" => {
+                        text_element.get_font_mut().set_name(get_attribute(e, b"typeface").unwrap());
                     },
                     _ => (),
                 }
@@ -232,10 +284,11 @@ fn chart_title(reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>)
             Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
             Ok(Event::End(ref e)) => {
                 match e.name() {
-                    b"a:t" => {
-                        let mut text_element = TextElement::default();
-                        text_element.set_text(string_value.clone());
+                    b"a:r" => {
+                        text_element.set_text(string_value);
+                        string_value = String::from("");
                         title.get_caption_mut().add_rich_text_elements(text_element);
+                        text_element = TextElement::default();
                     },
                     b"c:title" => return title,
                     _ => (),
@@ -303,8 +356,7 @@ fn chart_layout_details(reader:&mut quick_xml::Reader<std::io::BufReader<std::fs
 fn chart_data_series(
     reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
     data_series:&mut DataSeries
-)
-{
+) {
     let mut buf = Vec::new();
 
     let mut marker:Option<String> = None;
@@ -373,8 +425,7 @@ fn chart_data_series(
 fn get_val(
     reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
     marker:&Option<String>
-)->DataSeriesValues
-{
+)->DataSeriesValues {
     let mut buf = Vec::new();
     let mut data_series_values:DataSeriesValues = DataSeriesValues::default();
 
@@ -441,8 +492,7 @@ fn get_val(
 fn read_chart_attributes(
     reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
     layout:&mut Layout
-)
-{
+) {
     let mut buf = Vec::new();
     loop {
         match reader.read_event(&mut buf) {

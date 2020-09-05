@@ -57,7 +57,7 @@ impl Font {
     pub const CHARSET_BALTIC: usize = 186;
 
     // Underline types
-    pub const UNDERLINE_NONE: &'static str = "'none";
+    pub const UNDERLINE_NONE: &'static str = "none";
     pub const UNDERLINE_DOUBLE: &'static str = "double";
     pub const UNDERLINE_DOUBLEACCOUNTING: &'static str = "doubleAccounting";
     pub const UNDERLINE_SINGLE: &'static str = "single";

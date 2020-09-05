@@ -68,6 +68,11 @@ impl Fill {
         def.set_fill_type(String::from(Self::FILL_NONE));
         def
     }
+    pub(crate) fn get_defalut_value_2() -> Fill {
+        let mut def = Fill::default();
+        def.set_fill_type(String::from(Self::FILL_PATTERN_GRAY125));
+        def
+    }
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}{}{}",
             &self.fill_type,

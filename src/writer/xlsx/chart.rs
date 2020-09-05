@@ -118,7 +118,7 @@ pub(crate) fn write(
 
         // c:varyColors
         write_start_tag(&mut writer, "c:varyColors", vec![
-            ("val", "0"),
+            ("val", "1"),
         ], true);
 
         let mut is_marker = false;
@@ -621,20 +621,25 @@ fn write_title(writer: &mut Writer<Cursor<Vec<u8>>>, title: &Title) {
         // a:rPr
         match text_element.get_font() {
             Some(v) => {
+                let def_font = Font::get_defalut_value();
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
+                // Size
+                let size = (v.get_size() * 10).to_string();
+                if v.get_size() != def_font.get_size() {
+                    attributes.push(("sz", size.as_str()));
+                }
+
                 // Bold
-                let bold = match v.get_bold() {
-                    &true => "1",
-                    &false => "0"
-                };
-                attributes.push(("b", bold));
+                match v.get_bold() {
+                    &true => attributes.push(("b", "1")),
+                    &false => {}
+                }
 
                 // Italic
-                let italic = match v.get_italic() {
-                    &true => "1",
-                    &false => "0"
+                match v.get_italic() {
+                    &true => attributes.push(("i", "1")),
+                    &false => {}
                 };
-                attributes.push(("i", italic));
 
                 // Underline
                 let mut underline_type = v.get_underline();
@@ -644,26 +649,39 @@ fn write_title(writer: &mut Writer<Cursor<Vec<u8>>>, title: &Title) {
                 if underline_type == Font::UNDERLINE_DOUBLE {
                     underline_type = "dbl";
                 }
-                attributes.push(("u", underline_type));
+                if underline_type != Font::UNDERLINE_NONE {
+                    attributes.push(("u", underline_type));
+                }
 
                 // Strikethrough
-                let strikethrough = match v.get_strikethrough() {
-                    &true => "sngStrike",
-                    &false => "noStrike"
-                };
-                attributes.push(("strike", strikethrough));
+                match v.get_strikethrough() {
+                    &true => attributes.push(("strike", "sngStrike")),
+                    &false => {}
+                }
 
-                if v.get_name() != "" {
-                    write_start_tag(writer, "a:rPr", attributes, false);
+                let empty_flg = 
+                v.get_name() == def_font.get_name() &&
+                v.get_color().get_argb() == def_font.get_color().get_argb();
+                write_start_tag(writer, "a:rPr", attributes, empty_flg);
+ 
+                if v.get_color().get_argb() != def_font.get_color().get_argb() {
+                    // Color
+                    write_start_tag(writer, "a:solidFill", vec![], false);
+                    write_start_tag(writer, "a:srgbClr", vec![
+                        ("val", v.get_color().get_argb()),
+                    ], true);
+                    write_end_tag(writer, "a:solidFill");
+                }
 
-                    // rFont
+                if v.get_name() != def_font.get_name() {
+                    // Font
                     write_start_tag(writer, "a:latin", vec![
                         ("typeface", v.get_name()),
                     ], true);
-    
+                }
+
+                if empty_flg == false {
                     write_end_tag(writer, "a:rPr");
-                } else {
-                    write_start_tag(writer, "a:rPr", attributes, true);
                 }
             },
             None => {
