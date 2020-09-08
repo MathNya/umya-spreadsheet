@@ -46,7 +46,7 @@ pub(crate) fn write_to_file(path: &Path, dir: &TempDir) -> Result<(), io::Error>
         */
     }
 
-    zip.finish()?;
+    let _= zip.finish();
     Ok(())
 }
 
