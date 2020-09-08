@@ -31,7 +31,7 @@ pub(crate) fn write_to_file(path: &Path, dir: &TempDir) -> Result<(), io::Error>
 
         if path.is_file() {
             //println!("adding {:?} as {:?} ...", path, name);
-            (zip.start_file(name, options))?;
+            let _= zip.start_file(name, options);
             let mut f = File::open(path)?;
             let mut buffer = Vec::new();
             f.read_to_end(&mut buffer)?;
