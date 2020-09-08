@@ -21,8 +21,9 @@ fn read_and_wite_xlsm() {
     let path = std::path::Path::new("C:/spread_test_data/aaa.xlsm");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
-    let a1_value = book.get_sheet(0).unwrap().get_cell("A1").unwrap().get_value();
+    //let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
+    let _ = book.get_sheet_mut(0).get_cell_by_column_and_row_mut(1, 1).set_value("TEST1");
+    let a1_value = book.get_sheet(0).unwrap().get_cell_by_column_and_row(1, 1).unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
     // writer
@@ -47,7 +48,7 @@ fn new_and_wite() {
     let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
     .get_borders_mut()
     .get_bottom_mut()
-    .set_border_style(umya_spreadsheet::structs::border::Border::BORDER_MEDIUM);
+    .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
 
     // change font color.
     let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")

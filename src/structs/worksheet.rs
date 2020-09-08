@@ -355,6 +355,11 @@ impl Worksheet {
         }
         Some(self.cell_collection.get(&coordinate_upper).unwrap())
     }
+    pub fn get_cell_by_column_and_row(&self, column:usize, row:usize)->Option<&Cell> {
+        let col = string_from_column_index(&(column - 1));
+        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
+        self.get_cell(coordinate_upper)
+    }
     pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate:S)->&mut Cell {
         let coordinate_upper = coordinate.into().to_uppercase();
         let coordinate_prm = coordinate_from_string(&coordinate_upper);
@@ -369,6 +374,11 @@ impl Worksheet {
             self.create_new_cell(&coordinate_upper);
         }
         self.cell_collection.get_mut(&coordinate_upper)
+    }
+    pub fn get_cell_by_column_and_row_mut(&mut self, column:usize, row:usize)->&mut Cell {
+        let col = string_from_column_index(&(column - 1));
+        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
+        self.get_cell_mut(coordinate_upper)
     }
     pub fn set_cell_value<S: Into<String>>(&mut self, coordinate:S, value:S)-> Result<(), &str> {
         let cell = self.get_cell_mut(coordinate);

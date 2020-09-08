@@ -13,6 +13,51 @@ pub mod writer;
 pub mod reader;
 pub mod helper;
 
+pub use self::structs::spreadsheet::*;
+pub use self::structs::worksheet::*;
+pub use self::structs::properties::*;
+pub use self::structs::cell::*;
+pub use self::structs::cells::*;
+pub use self::structs::hyperlink::*;
+pub use self::structs::row_dimension::*;
+pub use self::structs::column_dimension::*;
+pub use self::structs::drawing::*;
+pub use self::structs::shadow::*;
+pub use self::structs::color::*;
+pub use self::structs::chart::*;
+pub use self::structs::title::*;
+pub use self::structs::layout::*;
+pub use self::structs::legend::*;
+pub use self::structs::plot_area::*;
+pub use self::structs::data_series::*;
+pub use self::structs::data_series_values::*;
+pub use self::structs::axis::*;
+pub use self::structs::grid_lines::*;
+pub use self::structs::page_setup::*;
+pub use self::structs::page_margins::*;
+pub use self::structs::header_footer::*;
+pub use self::structs::header_footer_drawing::*;
+pub use self::structs::sheet_view::*;
+pub use self::structs::auto_filter::*;
+pub use self::structs::column::*;
+pub use self::structs::security::*;
+pub use self::structs::calculation::*;
+pub use self::structs::style::*;
+pub use self::structs::font::*;
+pub use self::structs::fill::*;
+pub use self::structs::borders::*;
+pub use self::structs::border::*;
+pub use self::structs::alignment::*;
+pub use self::structs::number_format::*;
+pub use self::structs::conditional::*;
+pub use self::structs::protection::*;
+pub use self::structs::rich_text::*;
+pub use self::structs::text_element::*;
+pub use self::structs::picture::*;
+pub use self::structs::theme::*;
+pub use self::structs::cell_style::*;
+pub use self::structs::defined_name::*;
+
 /// create new spreadsheet file.
 /// # Arguments
 /// # Return value

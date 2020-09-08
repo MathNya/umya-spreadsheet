@@ -27,9 +27,13 @@ let _ = book.new_sheet("Sheet2");
 
 // change value
 let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+// or
+let _ = book.get_sheet_mut(1).get_cell_by_column_and_row_mut(1, 1).set_value("TEST1");
 
 // read value
 let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell("A1").unwrap().get_value();
+// or
+let a1_value = book.get_sheet(1).unwrap().get_cell_by_column_and_row(1, 1).unwrap().get_value();
 assert_eq!("TEST1", a1_value);  // TEST1
 
 // add bottom border
@@ -37,7 +41,7 @@ let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
 .get_style_mut("A1")
 .get_borders_mut()
 .get_bottom_mut()
-.set_border_style(umya_spreadsheet::structs::border::Border::BORDER_MEDIUM);
+.set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
 
 // writer
 let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");

@@ -51,6 +51,9 @@ fn get_index(column:&str)->usize
 
 pub(crate) fn string_from_column_index(column_index:&usize)->String
 {
+    if column_index == &0usize {
+        return "A".into();
+    }
     let mut result: String = String::from("");
     let mut index_value = column_index.clone();
     while index_value > 0 {
