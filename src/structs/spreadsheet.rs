@@ -79,6 +79,14 @@ impl Spreadsheet {
     pub(crate) fn set_theme(&mut self, value:Theme) {
         self.theme = value;
     }
+    pub(crate) fn has_comment(&self) -> bool {
+        for worksheet in &self.work_sheet_collection {
+            if worksheet.get_comments().len() > 0 {
+                return true;
+            }
+        }
+        false
+    }
     pub fn get_properties(&self) -> &Properties {
         &self.properties
     }

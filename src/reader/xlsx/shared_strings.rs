@@ -59,35 +59,6 @@ pub(crate) fn read(dir: &TempDir, theme:&Theme) -> result::Result<Vec<(String, O
     Ok(res)
 }
 
-fn get_text_element(
-    reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
-    theme:&Theme
-)->TextElement {
-    let mut buf = Vec::new();
-    let mut text_element = TextElement::default();
-    loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Start(ref e)) => {
-                match e.name() {
-                    b"rPr" => text_element.set_font(get_font(reader, theme)),
-                    _ => (),
-                }
-            },
-            Ok(Event::Text(e)) => text_element.set_text(e.unescape_and_decode(&reader).unwrap()),
-            Ok(Event::End(ref e)) => {
-                match e.name() {
-                    b"r" => return text_element,
-                    _ => (),
-                }
-            },
-            Ok(Event::Eof) => panic!("Error not find {} end element", "fill"),
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-            _ => (),
-        }
-        buf.clear();
-    }
-}
-
 fn get_rubi(reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>) {
     let mut buf = Vec::new();
     loop {

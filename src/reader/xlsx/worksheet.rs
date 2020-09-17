@@ -26,7 +26,7 @@ pub(crate) fn read(
     shared_strings: &Vec<(String, Option<RichText>)>,
     cell_xfs_vec: &Vec<Style>,
     dxf_vec: &Vec<Style>
-) -> Result<(bool, Option<String>, Vec<(String, String)>), XlsxError> {
+) -> Result<(bool, Option<String>, Option<String>, Vec<(String, String)>), XlsxError> {
     let path = dir.path().join(format!("xl/{}", target));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
@@ -35,6 +35,7 @@ pub(crate) fn read(
     // result
     let mut is_active_sheet = false;
     let mut drawing:Option<String> = None;
+    let mut legacy_drawing:Option<String> = None;
     let mut hyperlink_vec: Vec<(String, String)> = Vec::new();
 
     let mut coordinate: String = String::from("");
@@ -218,6 +219,9 @@ pub(crate) fn read(
                         drawing = Some(get_attribute(e, b"r:id").unwrap());
                         worksheet.add_drawing(Drawing::default());
                     },
+                    b"legacyDrawing" => {
+                        legacy_drawing = Some(get_attribute(e, b"r:id").unwrap());
+                    },
                     b"hyperlink" => {
                         let (coor, rid, hyperlink) = get_hyperlink(e);
                         let _ = worksheet.get_cell_mut(&coor.to_string()).set_hyperlink(hyperlink);
@@ -254,7 +258,7 @@ pub(crate) fn read(
         buf.clear();
     }
 
-    Ok((is_active_sheet, drawing, hyperlink_vec))
+    Ok((is_active_sheet, drawing, legacy_drawing, hyperlink_vec))
 }
 
 fn get_conditional_formatting(

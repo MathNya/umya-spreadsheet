@@ -14,6 +14,7 @@ use super::style::Style;
 use super::auto_filter::AutoFilter;
 use super::hyperlink::Hyperlink;
 use super::color::Color;
+use super::comment::Comment;
 use std::collections::BTreeMap; 
 use std::collections::HashMap; 
 use super::super::helper::coordinate::*;
@@ -49,7 +50,7 @@ pub struct Worksheet {
     show_row_col_headers: bool,
     show_summary_below: bool,
     show_summary_right: bool,
-    comments: Vec<String>,
+    comments: HashMap<String, Comment>,
     active_cell: String,
     selected_cells: String,
     cached_highest_column: String,
@@ -93,7 +94,7 @@ impl Default for Worksheet {
             show_row_col_headers: false,
             show_summary_below: false,
             show_summary_right: false,
-            comments: Vec::new(),
+            comments: HashMap::new(),
             active_cell: String::from(""),
             selected_cells: String::from(""),
             cached_highest_column: String::from(""),
@@ -202,11 +203,11 @@ impl Worksheet {
     pub(crate) fn set_header_footer(&mut self, value:HeaderFooter) {
         self.header_footer = value;
     }
-    pub fn get_comments(&self) -> &Vec<String> {
+    pub fn get_comments(&self) -> &HashMap<String, Comment> {
         &self.comments
     }
-    pub(crate) fn add_comments(&mut self, value:String) {
-        self.comments.push(value);
+    pub(crate) fn set_comments(&mut self, value:HashMap<String, Comment>) {
+        self.comments = value;
     }
     pub fn get_row_dimension(&self, row:usize) -> Option<&RowDimension> {
         self.row_dimensions.get(&row)

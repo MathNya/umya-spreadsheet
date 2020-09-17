@@ -9,6 +9,7 @@ use std::string::FromUtf8Error;
 use super::super::structs::theme::Theme;
 use super::super::structs::font::Font;
 use super::super::structs::color::Color;
+use super::super::structs::text_element::TextElement;
 
 pub(crate) fn unzip(zip_file: &File, dir: &TempDir) -> Result<(), zip::result::ZipError> {
     let mut zip = zip::ZipArchive::new(zip_file)?;
@@ -122,5 +123,34 @@ pub(crate) fn get_attribute_color(
             Ok(_) => {},
             Err(_) => {},
         }
+    }
+}
+
+pub(crate) fn get_text_element(
+    reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
+    theme:&Theme
+)->TextElement {
+    let mut buf = Vec::new();
+    let mut text_element = TextElement::default();
+    loop {
+        match reader.read_event(&mut buf) {
+            Ok(Event::Start(ref e)) => {
+                match e.name() {
+                    b"rPr" => text_element.set_font(get_font(reader, theme)),
+                    _ => (),
+                }
+            },
+            Ok(Event::Text(e)) => text_element.set_text(e.unescape_and_decode(&reader).unwrap()),
+            Ok(Event::End(ref e)) => {
+                match e.name() {
+                    b"r" => return text_element,
+                    _ => (),
+                }
+            },
+            Ok(Event::Eof) => panic!("Error not find {} end element", "fill"),
+            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+            _ => (),
+        }
+        buf.clear();
     }
 }

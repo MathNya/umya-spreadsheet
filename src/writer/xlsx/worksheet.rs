@@ -392,7 +392,7 @@ pub(crate) fn write(
         write_start_tag(&mut writer, "hyperlinks", vec![], false);
 
         // hyperlink
-        let mut i = 2;
+        let mut i = first_hyperlink_id(worksheet);
         for (coordition, hyperlink) in worksheet.get_hyperlink_collection() {
             let rid = format!("rId{}", &i);
             let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -435,7 +435,38 @@ pub(crate) fn write(
         ], true);
     }
 
+    // comment
+    if worksheet.get_comments().len() > 0 {
+        let i = first_legacy_drawing_id(worksheet);
+        let rid = format!("rId{}", &i);
+        // legacyDrawing
+        write_start_tag(&mut writer, "legacyDrawing", vec![
+            ("r:id", rid.as_str()),
+        ], true);
+    }
+
     write_end_tag(&mut writer, "worksheet");
     let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), dir, writer, Some(SUB_DIR)).unwrap();
     Ok(())
+}
+
+fn first_hyperlink_id(worksheet: &Worksheet) -> usize {
+    let mut result = 1;
+    if worksheet.has_drawing_object() {
+        result += 1;
+    }
+    result
+}
+
+fn first_legacy_drawing_id(worksheet: &Worksheet) -> usize {
+    let mut result = 1;
+    if worksheet.has_drawing_object() {
+        result += 1;
+    }
+    for (_, hyperlink) in worksheet.get_hyperlink_collection() {
+        if hyperlink.get_location() == &false {
+            result += 1;
+        }
+    }
+    result
 }

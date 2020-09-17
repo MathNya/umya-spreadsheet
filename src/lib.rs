@@ -57,6 +57,7 @@ pub use self::structs::picture::*;
 pub use self::structs::theme::*;
 pub use self::structs::cell_style::*;
 pub use self::structs::defined_name::*;
+pub use self::structs::comment::*;
 
 /// create new spreadsheet file.
 /// # Arguments

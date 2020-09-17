@@ -35,6 +35,14 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
         ("Extension", "xml"),
         ("ContentType", "application/xml"),
     ], true);
+
+    // Default vml
+    if spreadsheet.has_comment() {
+        write_start_tag(&mut writer, "Default", vec![
+            ("Extension", "vml"),
+            ("ContentType", "application/vnd.openxmlformats-officedocument.vmlDrawing"),
+        ], true);
+    }
     
     // Override workbook
     let content_type = match spreadsheet.get_has_macros() {
@@ -52,6 +60,17 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
             ("PartName", format!("/xl/worksheets/sheet{}.xml", (i+1).to_string().as_str()).as_str()),
             ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"),
         ], true);
+    }
+
+    // Override comments
+    for i in 0..spreadsheet.get_sheet_count() {
+        let worksheet = &spreadsheet.get_sheet_collection()[i];
+        if worksheet.get_comments().len() > 0 {
+            write_start_tag(&mut writer, "Override", vec![
+                ("PartName", format!("/xl/comments{}.xml", (i+1).to_string().as_str()).as_str()),
+                ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml"),
+            ], true);
+        }
     }
 
     // Override theme
@@ -72,9 +91,9 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
         ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"),
     ], true);
 
-    let mut drawing_count = 1;
     let mut chart_count = 1;
-    for worksheet in spreadsheet.get_sheet_collection() {
+    for i in 0..spreadsheet.get_sheet_count() {
+        let worksheet = &spreadsheet.get_sheet_collection()[i];
         //for _ in worksheet.get_drawing_collection() {
         //    // Override drawing
         //    write_start_tag(&mut writer, "Override", vec![
@@ -86,10 +105,9 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
         if worksheet.get_chart_collection().len() > 0 {
             // Override drawing
             write_start_tag(&mut writer, "Override", vec![
-                ("PartName", format!("/xl/drawings/drawing{}.xml", drawing_count.to_string().as_str()).as_str()),
+                ("PartName", format!("/xl/drawings/drawing{}.xml", (i+1).to_string().as_str()).as_str()),
                 ("ContentType", "application/vnd.openxmlformats-officedocument.drawing+xml"),
             ], true);
-            drawing_count += 1;
         }
         for _ in worksheet.get_chart_collection() {
             // Override chart

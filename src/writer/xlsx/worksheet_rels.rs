@@ -10,10 +10,10 @@ use super::XlsxError;
 const SUB_DIR: &'static str = "xl/worksheets/_rels";
 
 pub(crate) fn write(
-    worksheet: &Worksheet,    p_worksheet_id: &str,
+    worksheet: &Worksheet,
+    p_worksheet_id: &str,
     dir: &TempDir
-) -> Result<(), XlsxError> 
-{
+) -> Result<(), XlsxError> {
     let file_name = format!("sheet{}.xml.rels", p_worksheet_id);
     let mut is_write = false;
 
@@ -28,7 +28,7 @@ pub(crate) fn write(
     ], false);
 
     // write drawing relationships
-    let id = 1;
+    let mut id = 1;
     if worksheet.has_drawing_object() {
         is_write = write_relationship(
             &mut writer,
@@ -37,10 +37,10 @@ pub(crate) fn write(
             format!("../drawings/drawing{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
             ""
         );
+        id += 1;
     }
 
     // Write hyperlink relationships
-    let mut id = 2;
     for (_, hyperlink) in worksheet.get_hyperlink_collection() {
         if hyperlink.get_location() == &false {
             is_write = write_relationship(
@@ -55,23 +55,24 @@ pub(crate) fn write(
     }
 
     // Write comments relationship
-    //let i = 1;
-    //if worksheet.get_comments().len() > 0 {
-    //    write_relationship(
-    //        &mut writer,
-    //        format!("_comments_vml{}", i.to_string().as_str()).as_str(),
-    //        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
-    //        format!("../drawings/vmlDrawing{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
-    //        ""
-    //    );
-    //    is_write = write_relationship(
-    //        &mut writer,
-    //        format!("_comments{}", i.to_string().as_str()).as_str(),
-    //        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
-    //        format!("../comments{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
-    //        ""
-    //    );
-    //}
+    if worksheet.get_comments().len() > 0 {
+        write_relationship(
+            &mut writer,
+            id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
+            format!("../drawings/vmlDrawing{}.vml", p_worksheet_id.to_string().as_str()).as_str(),
+            ""
+        );
+        id+=1;
+        is_write = write_relationship(
+            &mut writer,
+            id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
+            format!("../comments{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
+            ""
+        );
+        id+=1;
+    }
 
     // Write header/footer relationship
     //let i = 1;

@@ -21,6 +21,8 @@ mod styles;
 mod drawing;
 mod drawing_rels;
 mod vba_project_bin;
+mod comment;
+mod vml_drawing;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -119,6 +121,8 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
         let _ = worksheet_rels::write(worksheet, p_worksheet_id,  &dir);
         let _ = drawing::write(worksheet, p_worksheet_id, &chart_id, &dir);
         let _ = drawing_rels::write(worksheet, p_worksheet_id, &chart_id, &dir);
+        let _ = comment::write(worksheet, p_worksheet_id,  &dir);
+        let _ = vml_drawing::write(worksheet, p_worksheet_id,  &dir);
 
         for ct in worksheet.get_chart_collection(){
             let _ = chart::write(ct, &chart_id.to_string(), &dir);
