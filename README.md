@@ -42,6 +42,12 @@ let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
 .get_borders_mut()
 .get_bottom_mut()
 .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+// or
+let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
+.get_style_by_column_and_row_mut(1, 1)
+.get_borders_mut()
+.get_bottom_mut()
+.set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
 
 // writer
 let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");

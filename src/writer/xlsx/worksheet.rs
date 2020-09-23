@@ -214,13 +214,13 @@ pub(crate) fn write(
                         let mut xf_index:usize = 0;
                         for (hash_code, _) in &all_cell_xf_list {
                             match worksheet.get_style(coordinate.as_str()) {
-                                Ok(style) => {
+                                Some(style) => {
                                     if style.get_hash_code().as_str() == hash_code {
                                         break;
                                     }
                                     xf_index += 1;
                                 },
-                                Err(_) => {}
+                                Ng => {}
                             }
                         }
                         let xf_index_str:&str = &xf_index.to_string();

@@ -44,11 +44,20 @@ fn new_and_wite() {
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell("A1").unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(2, 2).set_value("TEST2");
+    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(2, 2).unwrap().get_value();
+    assert_eq!("TEST2", a1_value);
+
     // add bottom border.
     let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
     .get_borders_mut()
     .get_bottom_mut()
     .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_by_column_and_row_mut(3, 2)
+    .get_borders_mut()
+    .get_left_mut()
+    .set_border_style(umya_spreadsheet::Border::BORDER_THIN);
+    
 
     // change font color.
     let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")

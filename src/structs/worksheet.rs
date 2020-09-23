@@ -142,12 +142,14 @@ impl Worksheet {
     pub fn get_style_collection(&self) -> &HashMap<String, Style> {
         &self.styles
     }
-    pub fn get_style<S: Into<String>>(&self, coordinate:S) -> Result<&Style, &'static str> {
+    pub fn get_style_by_column_and_row(&self, column:usize, row:usize)->Option<&Style> {
+        let col = string_from_column_index(&(column - 1));
+        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
+        self.get_style(coordinate_upper)
+    }
+    pub fn get_style<S: Into<String>>(&self, coordinate:S) -> Option<&Style> {
         let coordinate_upper = coordinate.into().to_uppercase();
-        match self.styles.get(&coordinate_upper) {
-            Some(v) => return Ok(v),
-            None => Err("Not found.")
-        }
+        self.styles.get(&coordinate_upper)
     }
     pub fn get_style_mut<S: Into<String>>(&mut self, coordinate:S) -> &mut Style {
         let coordinate_upper = coordinate.into().to_uppercase();
@@ -157,6 +159,11 @@ impl Worksheet {
         }
         self.add_style(&coordinate_upper, Style::default());
         self.styles.get_mut(&coordinate_upper).unwrap()
+    }
+    pub fn get_style_by_column_and_row_mut(&mut self, column:usize, row:usize)->&mut Style {
+        let col = string_from_column_index(&(column - 1));
+        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
+        self.get_style_mut(coordinate_upper)
     }
     pub(crate) fn add_style<S: Into<String>>(&mut self, coordinate:S, style:Style) {
         let coordinate_upper = coordinate.into().to_uppercase();
