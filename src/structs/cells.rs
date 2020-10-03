@@ -7,12 +7,10 @@ pub struct Cells {
     pub(crate) index: HashMap<String, Cell>,
 }
 impl Cells {
-    pub fn get_collection(&self)-> &HashMap<String, Cell>
-    {
+    pub fn get_collection(&self)-> &HashMap<String, Cell> {
         &self.index
     }
-    pub(crate) fn get_highest_row_and_column(&self)-> HashMap<&str, String>
-    {
+    pub(crate) fn get_highest_row_and_column(&self)-> HashMap<&str, String> {
         let mut col_max:String = String::from("1A");
         let mut col_max_org:String = String::from("A");
         let mut row_max:i32 = 0;
@@ -35,23 +33,20 @@ impl Cells {
         result.insert("column", col_max_org);
         result
     }
-    pub fn get_coordinates(&self)-> Vec<String>
-    {
+    pub fn get_coordinates(&self)-> Vec<String> {
         let mut result = Vec::new();
         for (coordinate, _) in &self.index {
             result.push(coordinate.clone());
         }
         result
     }
-    pub fn has(&self, coordinate:&String)-> bool
-    {
+    pub fn has(&self, coordinate:&String)-> bool {
         match self.index.get(coordinate) {
             Some(_) => true,
             None => false
         }
     }
-    pub fn get_index(&self)->&HashMap<String, Cell>
-    {
+    pub fn get_index(&self)->&HashMap<String, Cell> {
         &self.index
     }
     pub fn get(&self, coordinate:&String) -> Result<&Cell, &'static str> {
@@ -60,12 +55,10 @@ impl Cells {
             None => return Err("Not found.")
         }
     }
-    pub fn get_mut(&mut self, coordinate:&String) -> &mut Cell
-    {
-        self.index.get_mut(coordinate).unwrap()
+    pub fn get_mut(&mut self, coordinate:&String)->Option<&mut Cell> {
+        self.index.get_mut(coordinate)
     }
-    pub(crate) fn add(&mut self, coordinate:&String, cell:Cell)
-    {
+    pub(crate) fn add(&mut self, coordinate:&String, cell:Cell) {
         self.index.insert(coordinate.clone(), cell);
     }
 }

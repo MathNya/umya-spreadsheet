@@ -59,18 +59,18 @@ const INDEXED_COLORS: &'static [&'static str] = &[
 
 #[derive(Debug, Clone)]
 pub struct Color {
-    indexed: usize,
-    theme_index: usize,
+    indexed: Option<usize>,
+    theme_index: Option<usize>,
     argb: String,
     tint: f64,
 }
 impl Default for Color {
     fn default() -> Self {
         Self {
-            indexed: 0,
-            theme_index: 0,
+            indexed: None,
+            theme_index: None,
             argb:"".into(),
-            tint: 0.0f64
+            tint: 0f64
         }
     }
 }
@@ -91,20 +91,23 @@ impl Color {
         &self.argb
     }
     pub fn set_argb<S: Into<String>>(&mut self, value:S) -> Result<(), &'static str> {
-        self.indexed =0;
-        self.theme_index = 0;
+        self.indexed =None;
+        self.theme_index = None;
         self.argb = value.into();
         Ok(())
     }
     pub(crate) fn is_set_indexed(&self)-> bool {
-        self.indexed != 0
+        match self.indexed {
+            Some(_) => true,
+            None => false
+        }
     }
-    pub fn get_indexed(&self)-> &usize {
+    pub fn get_indexed(&self)-> &Option<usize> {
         &self.indexed
     }
     pub fn set_indexed(&mut self, index:usize) -> Result<(), &'static str> {
-        self.indexed = index;
-        self.theme_index = 0;
+        self.indexed = Some(index);
+        self.theme_index = None;
         self.argb = match INDEXED_COLORS.get(index - 1) {
             Some(v) => {v.to_string()},
             None => {String::from("")}
@@ -112,23 +115,26 @@ impl Color {
         Ok(())
     }
     pub(crate) fn is_set_theme_index(&self)-> bool {
-        self.theme_index != 0
+        match self.theme_index {
+            Some(_) => true,
+            None => false
+        }
     }
-    pub fn get_theme_index(&self)-> &usize {
+    pub fn get_theme_index(&self)-> &Option<usize> {
         &self.theme_index
     }
     pub fn set_theme_index(&mut self, index:usize, theme_color_map:&Vec<String>) -> Result<(), &'static str>  {
-        self.indexed = 0;
-        self.theme_index = index;
-        self.argb = match theme_color_map.get(index - 1) {
+        self.indexed = None;
+        self.theme_index = Some(index);
+        self.argb = match theme_color_map.get(index) {
             Some(v) => {v.to_string()},
             None => {String::from("")}
         };
         Ok(())
     }
     pub(crate) fn set_theme_index_and_argb<S: Into<String>>(&mut self, index:usize, argb:S) {
-        self.indexed = 0;
-        self.theme_index = index;
+        self.indexed = None;
+        self.theme_index = Some(index);
         self.argb = argb.into();
     }
     pub fn get_tint(&self)-> &f64 {
@@ -140,8 +146,8 @@ impl Color {
     }
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}{}{}",
-            &self.indexed,
-            &self.theme_index,
+            match &self.indexed {Some(v)=> v.to_string(), None => "None".into()},
+            match &self.theme_index {Some(v)=> v.to_string(), None => "None".into()},
             &self.argb,
             &self.tint
         )))

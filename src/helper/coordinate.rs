@@ -76,3 +76,19 @@ pub(crate) fn coordinate_from_string(coordinate:&str)->Vec<&str>
 
     vec![col, row]
 }
+
+pub(crate) fn coordinate_from_index(col:usize, row:usize)->String {
+    format!(
+        "{}{}",
+        string_from_column_index(&col),
+        row
+    )
+}
+
+pub(crate) fn index_from_coordinate<S: Into<String>>(coordinate:S)->Vec<usize> {
+    let con = coordinate.into();
+    let split = coordinate_from_string(con.as_str());
+    let col = column_index_from_string(split[0]);
+    let row = split[1].parse::<usize>().unwrap();
+    vec![col, row]
+}

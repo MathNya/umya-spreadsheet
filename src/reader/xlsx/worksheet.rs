@@ -242,7 +242,7 @@ pub(crate) fn read(
                             let (value, rich_text) = shared_strings.get(index).unwrap();
                             let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_all_param(value, rich_text.clone(), &type_value, &"".into());
                         } else if type_value == "b" {
-                            let _ = worksheet.set_cell_value_and_data_type(&coordinate.to_string(), &string_value, &type_value);
+                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_and_data_type(&string_value, &type_value);
                         } else if type_value == "" {
                             let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_crate(&string_value);
                         };

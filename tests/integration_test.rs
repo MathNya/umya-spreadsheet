@@ -16,6 +16,17 @@ fn read_and_wite() {
 }
 
 #[test]
+fn read_and_wite_by_empty() {
+    // reader
+    let path = std::path::Path::new("C:/spread_test_data/aaa_empty.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("C:/spread_test_data/bbb_empty.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn read_and_wite_xlsm() {
     // reader
     let path = std::path::Path::new("C:/spread_test_data/aaa.xlsm");

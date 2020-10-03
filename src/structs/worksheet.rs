@@ -109,6 +109,71 @@ impl Default for Worksheet {
     }
 }
 impl Worksheet {
+    // Cell
+    pub fn get_cell<S: Into<String>>(&self, coordinate:S)->Option<&Cell> {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        if self.cell_collection.has(&coordinate_upper) == false {
+            return None;
+        }
+        Some(self.cell_collection.get(&coordinate_upper).unwrap())
+    }
+    pub fn get_cell_by_column_and_row(&self, col:usize, row:usize)->Option<&Cell> {
+        let coordinate = coordinate_from_index(col - 1, row);
+        self.get_cell(coordinate)
+    }
+    pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate:S)->&mut Cell {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        let split = index_from_coordinate(&coordinate_upper);
+        let row = split[1];
+        match self.row_dimensions.get(&row) {
+            Some(_) => {},
+            None => self.set_row_dimension(row, RowDimension::default())
+        }
+        if self.cell_collection.has(&coordinate_upper) == false {
+            self.create_new_cell(&coordinate_upper);
+        }
+        self.cell_collection.get_mut(&coordinate_upper).unwrap()
+    }
+    pub fn get_cell_by_column_and_row_mut(&mut self, col:usize, row:usize)->&mut Cell {
+        let coordinate = coordinate_from_index(col - 1, row);
+        self.get_cell_mut(coordinate)
+    }
+    pub(crate) fn create_new_cell(&mut self, coordinate:&String) {
+        let cell = Cell::default();
+        self.cell_collection.add(coordinate, cell);
+        self.cell_collection_is_sorted = false;
+    }
+
+    // Style
+    pub fn get_style_collection(&self) -> &HashMap<String, Style> {
+        &self.styles
+    }
+    pub fn get_style_by_column_and_row(&self, col:usize, row:usize)->Option<&Style> {
+        let coordinate = coordinate_from_index(col - 1, row);
+        self.get_style(coordinate)
+    }
+    pub fn get_style<S: Into<String>>(&self, coordinate:S) -> Option<&Style> {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        self.styles.get(&coordinate_upper)
+    }
+    pub fn get_style_mut<S: Into<String>>(&mut self, coordinate:S) -> &mut Style {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        match self.styles.get(&coordinate_upper) {
+            Some(_) => return self.styles.get_mut(&coordinate_upper).unwrap(),
+            None => {}
+        }
+        self.add_style(&coordinate_upper, Style::default());
+        self.styles.get_mut(&coordinate_upper).unwrap()
+    }
+    pub fn get_style_by_column_and_row_mut(&mut self, col:usize, row:usize)->&mut Style {
+        let coordinate = coordinate_from_index(col - 1, row);
+        self.get_style_mut(coordinate)
+    }
+    pub(crate) fn add_style<S: Into<String>>(&mut self, coordinate:S, style:Style) {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        self.styles.insert(coordinate_upper, style);
+    }
+
     pub(crate) fn get_hyperlink_collection(&self)-> HashMap<String, &Hyperlink> {
         let mut result: HashMap<String, &Hyperlink> = HashMap::new();
         for (coordition, cell) in self.cell_collection.get_collection() {
@@ -138,36 +203,6 @@ impl Worksheet {
             }
         }
         result
-    }
-    pub fn get_style_collection(&self) -> &HashMap<String, Style> {
-        &self.styles
-    }
-    pub fn get_style_by_column_and_row(&self, column:usize, row:usize)->Option<&Style> {
-        let col = string_from_column_index(&(column - 1));
-        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
-        self.get_style(coordinate_upper)
-    }
-    pub fn get_style<S: Into<String>>(&self, coordinate:S) -> Option<&Style> {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        self.styles.get(&coordinate_upper)
-    }
-    pub fn get_style_mut<S: Into<String>>(&mut self, coordinate:S) -> &mut Style {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        match self.styles.get(&coordinate_upper) {
-            Some(_) => return self.styles.get_mut(&coordinate_upper).unwrap(),
-            None => {}
-        }
-        self.add_style(&coordinate_upper, Style::default());
-        self.styles.get_mut(&coordinate_upper).unwrap()
-    }
-    pub fn get_style_by_column_and_row_mut(&mut self, column:usize, row:usize)->&mut Style {
-        let col = string_from_column_index(&(column - 1));
-        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
-        self.get_style_mut(coordinate_upper)
-    }
-    pub(crate) fn add_style<S: Into<String>>(&mut self, coordinate:S, style:Style) {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        self.styles.insert(coordinate_upper, style);
     }
     pub fn get_conditional_styles_collection(&self) -> &HashMap<String, Vec<Conditional>> {
         &self.conditional_styles_collection
@@ -355,72 +390,5 @@ impl Worksheet {
     }
     pub(crate) fn set_page_margins(&mut self, value:PageMargins) {
         self.page_margins = value;
-    }
-    pub fn get_cell<S: Into<String>>(&self, coordinate:S)->Option<&Cell> {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        if self.cell_collection.has(&coordinate_upper) == false {
-            return None;
-        }
-        Some(self.cell_collection.get(&coordinate_upper).unwrap())
-    }
-    pub fn get_cell_by_column_and_row(&self, column:usize, row:usize)->Option<&Cell> {
-        let col = string_from_column_index(&(column - 1));
-        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
-        self.get_cell(coordinate_upper)
-    }
-    pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate:S)->&mut Cell {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let coordinate_prm = coordinate_from_string(&coordinate_upper);
-        let row: usize = coordinate_prm[1].parse::<usize>().unwrap();
-        match self.row_dimensions.get(&row) {
-            Some(_) => {},
-            None => {
-                self.set_row_dimension(row, RowDimension::default())
-            }
-        }
-        if self.cell_collection.has(&coordinate_upper) == false {
-            self.create_new_cell(&coordinate_upper);
-        }
-        self.cell_collection.get_mut(&coordinate_upper)
-    }
-    pub fn get_cell_by_column_and_row_mut(&mut self, column:usize, row:usize)->&mut Cell {
-        let col = string_from_column_index(&(column - 1));
-        let coordinate_upper = format!("{}{}", col, row).to_uppercase();
-        self.get_cell_mut(coordinate_upper)
-    }
-    pub fn set_cell_value<S: Into<String>>(&mut self, coordinate:S, value:S)-> Result<(), &str> {
-        let cell = self.get_cell_mut(coordinate);
-        cell.set_value(value)
-    }
-    pub fn set_cell_value_and_data_type<S: Into<String>>(&mut self, coordinate:S, value:S, data_type:S)-> Result<(), &str> {
-        let cell = self.get_cell_mut(coordinate);
-        cell.set_value_and_data_type(value, data_type)
-    }
-    pub(crate) fn create_new_cell(&mut self, coordinate:&String) {
-        let cell = Cell::default();
-        self.cell_collection.add(coordinate, cell);
-        self.cell_collection_is_sorted = false;
-        // Coordinates
-        //$aCoordinates = Coordinate::coordinateFromString($pCoordinate);
-        //if (Coordinate::columnIndexFromString($this->cachedHighestColumn) < Coordinate::columnIndexFromString($aCoordinates[0])) {
-        //    $this->cachedHighestColumn = $aCoordinates[0];
-        //}
-        //if ($aCoordinates[1] > $this->cachedHighestRow) {
-        //    $this->cachedHighestRow = $aCoordinates[1];
-        //}
-
-        // Cell needs appropriate xfIndex from dimensions records
-        //    but don't create dimension records if they don't already exist
-        //$rowDimension = $this->getRowDimension($aCoordinates[1], false);
-        //$columnDimension = $this->getColumnDimension($aCoordinates[0], false);
-
-        //if ($rowDimension !== null && $rowDimension->getXfIndex() > 0) {
-        //   // then there is a row dimension with explicit style, assign it to the cell
-        //    $cell->setXfIndex($rowDimension->getXfIndex());
-        //} elseif ($columnDimension !== null && $columnDimension->getXfIndex() > 0) {
-        //    // then there is a column dimension, assign it to the cell
-        //    $cell->setXfIndex($columnDimension->getXfIndex());
-        //}
-
     }
 }

@@ -12,12 +12,15 @@ use super::super::structs::rich_text::RichText;
 const SHARED_STRINGS: &'static str = "xl/sharedStrings.xml";
 
 pub(crate) fn read(dir: &TempDir, theme:&Theme) -> result::Result<Vec<(String, Option<RichText>)>, XlsxError> {
+    let mut res: Vec<(String, Option<RichText>)> = Vec::new();
+
     let path = dir.path().join(SHARED_STRINGS);
-    let mut reader = Reader::from_file(path)?;
+    let mut reader = match Reader::from_file(path){
+        Ok(v) => {v},
+        Err(_) => {return Ok(res);}
+    };
     reader.trim_text(true);
     let mut buf = Vec::new();
-
-    let mut res: Vec<(String, Option<RichText>)> = Vec::new();
 
     let mut value: String = String::from("");
     let mut text: String = String::from("");

@@ -131,15 +131,15 @@ pub(crate) fn make_file_from_bin(
 
 pub(crate) fn write_color(writer: &mut Writer<Cursor<Vec<u8>>>, color: &Color, tag_name: &str) {
     // color
-    let theme_index:&str = &color.get_theme_index().to_string();
-    let indexed:&str = &color.get_indexed().to_string();
+    let theme_index:String = match color.get_theme_index() {Some(v) => v.to_string(), None=>"".into()};
+    let indexed:String = match color.get_indexed() {Some(v) => v.to_string(), None=>"".into()};
     let tint:&str = &color.get_tint().to_string();
 
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     if color.is_set_theme_index() {
-        attributes.push(("theme", theme_index));
+        attributes.push(("theme", &theme_index));
     } else if color.is_set_indexed() {
-        attributes.push(("indexed", indexed));
+        attributes.push(("indexed", &indexed));
     } else if color.get_argb() != "" {
         attributes.push(("rgb", color.get_argb()));
     }

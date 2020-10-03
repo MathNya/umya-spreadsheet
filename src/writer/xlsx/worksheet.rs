@@ -57,19 +57,7 @@ pub(crate) fn write(
     match worksheet.get_tab_color() {
         Some(v) => {
             write_start_tag(&mut writer, "sheetPr", attributes, false);
-
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            let theme:&str = &v.get_theme_index().to_string();
-            if v.is_set_theme_index() {
-                attributes.push(("theme", theme));
-            } else if v.get_argb() != "" {
-                attributes.push(("rgb", v.get_argb()));
-            }
-            let tint:&str = &v.get_tint().to_string();
-            if v.get_tint() != &0.0f64 {
-                attributes.push(("tint", tint));
-            }
-            write_start_tag(&mut writer, "tabColor", attributes, true);
+            write_color(&mut writer, v, "tabColor");
             write_end_tag(&mut writer, "sheetPr");
         },
         None => {

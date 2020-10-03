@@ -24,6 +24,12 @@ pub fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> result::Result<HashMap
             }
         }
     }
+
+    let mut map: HashMap<String, usize> = HashMap::new();
+    if shared_strings.len() == 0 {
+        return Ok(map);
+    }
+    
     let mut writer = Writer::new(Cursor::new(Vec::new()));
     let _ = writer.write_event(Event::Decl(
         BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
@@ -33,7 +39,6 @@ pub fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> result::Result<HashMap
         ("count", count.to_string().as_str()),
         ("uniqueCount", shared_strings.len().to_string().as_str()),
     ], false);
-    let mut map: HashMap<String, usize> = HashMap::new();
     let mut index = 0;
     for (hash_code, (value, rich_text)) in shared_strings {
          write_start_tag(&mut writer, "si", vec![], false);
