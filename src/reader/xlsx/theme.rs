@@ -8,31 +8,29 @@ use std::mem;
 
 use super::super::structs::theme::Theme;
 
-const FILE_PATH: &'static str = "xl/theme/theme1.xml";
-
-pub fn read(dir: &TempDir) -> result::Result<Theme, XlsxError> {
-    let path = dir.path().join(FILE_PATH);
+pub fn read(dir: &TempDir, target: &str) -> result::Result<Theme, XlsxError> {
+    let path = dir.path().join(format!("xl/{}", target));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();
 
     let mut theme: Theme = Theme::default();
-    theme.add_color_map("");
-    theme.add_color_map("");
-    theme.add_color_map("");
-    theme.add_color_map("");
+    theme.add_color_map("");  // lt1
+    theme.add_color_map("");  // dk1
+    theme.add_color_map("");  // lt2
+    theme.add_color_map("");  // dk2
     let mut tag_name = String::from("");
 
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 match e.name() {
-                    b"a:theme " => {theme.set_theme_name(get_attribute(e, b"name").unwrap());},
-                    b"a:clrScheme" => {theme.set_color_scheme_name(get_attribute(e, b"name").unwrap());},
-                    b"a:dk1" => {tag_name = "dk1".into();},
-                    b"a:lt1" => {tag_name = "lt1".into();},
-                    b"a:dk2" => {tag_name = "dk2".into();},
-                    b"a:lt2" => {tag_name = "lt2".into();},
+                    b"a:theme" => theme.set_theme_name(get_attribute(e, b"name").unwrap()),
+                    b"a:clrScheme" => theme.set_color_scheme_name(get_attribute(e, b"name").unwrap()),
+                    b"a:dk1" => tag_name = "dk1".into(),
+                    b"a:lt1" => tag_name = "lt1".into(),
+                    b"a:dk2" => tag_name = "dk2".into(),
+                    b"a:lt2" => tag_name = "lt2".into(),
                     _ => (),
                 }
             },

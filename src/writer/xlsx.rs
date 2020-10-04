@@ -88,7 +88,7 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
     let _ = workbook_rels::write(spreadsheet, &dir, "xl/_rels", "workbook.xml.rels");
 
     // Add theme
-    let _ = theme::write(&dir, "xl/theme", "theme1.xml");
+    let _ = theme::write(spreadsheet.get_theme(), &dir, "xl/theme", "theme1.xml");
 
     // Add workbook
     let _ = workbook::write(spreadsheet, &dir, "xl", "workbook.xml");

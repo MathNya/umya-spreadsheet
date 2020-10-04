@@ -4,6 +4,7 @@ use std::io;
 use std::string::FromUtf8Error;
 use std::fs::File;
 
+use super::structs::theme::Theme;
 use super::structs::spreadsheet::Spreadsheet;
 use super::driver;
 use super::super::helper::coordinate::*;
@@ -82,11 +83,21 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     doc_props_app::read(&dir, &mut book).unwrap();
     doc_props_core::read(&dir, &mut book).unwrap(); 
     vba_project_bin::read(&dir, &mut book).unwrap();
-    let theme = theme::read(&dir).unwrap();
+    let workbook_rel = workbook_rels::read(&dir).unwrap();
+
+    let mut theme = Theme::get_defalut_value();
+    for (_, type_value, rel_target) in &workbook_rel {
+        match type_value.as_str() {
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" => {
+                theme = theme::read(&dir, rel_target).unwrap();
+            },
+            _ => {}
+        }
+    }
+
     let shared_string = shared_strings::read(&dir, &theme).unwrap();
     let (cell_xfs_vec, dxf_vec) = styles::read(&dir, &mut book, &theme).unwrap();
 
-    let workbook_rel = workbook_rels::read(&dir).unwrap();
     let mut sheet_count = 0;
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {

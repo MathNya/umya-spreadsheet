@@ -29,4 +29,22 @@ impl Theme {
     pub(crate) fn add_color_map<S: Into<String>>(&mut self, value:S) {
         self.color_map.push(value.into());
     }
+    pub(crate) fn get_defalut_value() -> Theme {
+        let mut def = Theme::default();
+        def.set_theme_name("Office Theme");
+        def.set_color_scheme_name("Office");
+        def.add_color_map("FFFFFF"); // lt1
+        def.add_color_map("000000"); // dk1
+        def.add_color_map("EEECE1"); // lt2
+        def.add_color_map("1F497D"); // dk2
+        def.add_color_map("4F81BD"); // accent1
+        def.add_color_map("C0504D"); // accent2
+        def.add_color_map("9BBB59"); // accent3
+        def.add_color_map("8064A2"); // accent4
+        def.add_color_map("4BACC6"); // accent5
+        def.add_color_map("F79646"); // accent6
+        def.add_color_map("0000FF"); // accent7
+        def.add_color_map("800080"); // accent8
+        def
+    }
 }

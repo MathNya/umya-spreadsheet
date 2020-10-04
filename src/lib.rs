@@ -69,6 +69,7 @@ pub use self::structs::comment::*;
 /// ```
 pub fn new_file()->structs::spreadsheet::Spreadsheet {
     let mut spreadsheet = structs::spreadsheet::Spreadsheet::default();
+    spreadsheet.set_theme(Theme::get_defalut_value());
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
     spreadsheet

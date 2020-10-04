@@ -6,6 +6,8 @@ use tempdir::TempDir;
 use super::driver::*;
 use super::XlsxError;
 
+use super::super::structs::theme::Theme;
+
 const MAJOR_FONTS: &'static [(&'static str, &'static str)] = &[
     ("Jpan", "ＭＳ Ｐゴシック"),
     ("Hang", "맑은 고딕"),
@@ -73,6 +75,7 @@ const MINOR_FONTS: &'static [(&'static str, &'static str)] = &[
 ];
 
 pub(crate) fn write(
+    theme: &Theme,
     dir: &TempDir,
     sub_dir: &str,
     file_name: &str
@@ -86,7 +89,7 @@ pub(crate) fn write(
     // a:theme
     write_start_tag(&mut writer, "a:theme", vec![
         ("xmlns:a", "http://schemas.openxmlformats.org/drawingml/2006/main"),
-        ("name", "Office Theme"),
+        ("name", theme.get_theme_name()),
     ], false);
 
     // a:themeElements
@@ -94,7 +97,7 @@ pub(crate) fn write(
     
     // a:clrScheme
     write_start_tag(&mut writer, "a:clrScheme", vec![
-        ("name", "Office"),
+        ("name", theme.get_color_scheme_name()),
     ], false);
 
     // a:dk1
@@ -103,7 +106,7 @@ pub(crate) fn write(
     // a:sysClr
     write_start_tag(&mut writer, "a:sysClr", vec![
         ("val", "windowText"),
-        ("lastClr", "000000"),
+        ("lastClr", theme.get_color_map()[1].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:dk1");
@@ -114,7 +117,7 @@ pub(crate) fn write(
     // a:sysClr
     write_start_tag(&mut writer, "a:sysClr", vec![
         ("val", "window"),
-        ("lastClr", "FFFFFF"),
+        ("lastClr", theme.get_color_map()[0].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:lt1");
@@ -124,7 +127,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "1F497D"),
+        ("val", theme.get_color_map()[3].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:dk2");
@@ -134,7 +137,7 @@ pub(crate) fn write(
 
     // "a:srgbClr"
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "EEECE1"),
+        ("val", theme.get_color_map()[2].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:lt2");
@@ -144,7 +147,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "4F81BD"),
+        ("val", theme.get_color_map()[4].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:accent1");
@@ -154,7 +157,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "C0504D"),
+        ("val", theme.get_color_map()[5].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:accent2");
@@ -164,7 +167,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "9BBB59"),
+        ("val", theme.get_color_map()[6].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:accent3");
@@ -174,7 +177,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "8064A2"),
+        ("val", theme.get_color_map()[7].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:accent4");
@@ -184,7 +187,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "4BACC6"),
+        ("val", theme.get_color_map()[8].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:accent5");
@@ -194,7 +197,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "F79646"),
+        ("val", theme.get_color_map()[9].as_str()),
     ], true);
     write_end_tag(&mut writer, "a:accent6");
 
@@ -203,7 +206,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "0000FF"),
+        ("val", theme.get_color_map()[10].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:hlink");
@@ -213,7 +216,7 @@ pub(crate) fn write(
 
     // a:srgbClr
     write_start_tag(&mut writer, "a:srgbClr", vec![
-        ("val", "800080"),
+        ("val", theme.get_color_map()[11].as_str()),
     ], true);
 
     write_end_tag(&mut writer, "a:folHlink");
