@@ -208,7 +208,7 @@ pub(crate) fn write(
                                     }
                                     xf_index += 1;
                                 },
-                                Ng => {}
+                                None => {}
                             }
                         }
                         let xf_index_str:&str = &xf_index.to_string();
@@ -217,7 +217,7 @@ pub(crate) fn write(
                         }
                         match cell {
                             Ok(c) => {
-                                if c.get_data_type() != "" {
+                                if c.get_data_type() == "s" || c.get_data_type() == "b" {
                                     attributes.push(("t", c.get_data_type()));
                                 }
                                 write_start_tag(&mut writer, "c", attributes, false);
@@ -237,9 +237,12 @@ pub(crate) fn write(
                                         let val_index = shared_strings.get(&c.get_hash_code_by_value()).unwrap().to_string();
                                         write_text_node(&mut writer, val_index);
                                     },
-                                    "b" => write_text_node(&mut writer, c.get_value()),
-                                    "" => write_text_node(&mut writer, c.get_value()),
-                                    _ => println!("something else"),
+                                    "b" => {
+                                        let upper_value = c.get_value().to_uppercase();
+                                        let prm = if upper_value == "TRUE" {"1"} else {"0"};
+                                        write_text_node(&mut writer, prm);
+                                    },
+                                    _ => write_text_node(&mut writer, c.get_value()),
                                 }
                                 write_end_tag(&mut writer, "v");
                                 write_end_tag(&mut writer, "c");

@@ -66,7 +66,11 @@ impl Cell {
         match Cell::check_data_type(&v, &d) {
             Ok(_) => {
                 self.set_value_crate(v);
-                self.data_type = d;
+                if &d == Cell::TYPE_STRING2 {
+                    self.data_type = Cell::TYPE_STRING.to_string();
+                } else {
+                    self.data_type = d;
+                }
             },
             Err(e) => return Err(e)
         }
@@ -91,7 +95,14 @@ impl Cell {
                     Err(_) => return Err("Invalid numeric value for datatype Numeric")
                 }
             },
-            Cell::TYPE_BOOL => return Ok(()),
+            Cell::TYPE_BOOL => {
+                let check_value = &value.into().to_uppercase();
+                if check_value == "TRUE" || check_value == "FALSE" {
+                    return Ok(());
+                } else {
+                    return Err("Invalid value for datatype Bool")
+                }
+            },
             Cell::TYPE_NULL => return Ok(()),
             _ => return Err("Invalid datatype")
         }

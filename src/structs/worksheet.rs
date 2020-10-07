@@ -109,7 +109,20 @@ impl Default for Worksheet {
     }
 }
 impl Worksheet {
+    // ************************    
     // Cell
+    // ************************    
+    /// Get cell.
+    /// # Arguments
+    /// * `coordinate` - Specify the coordinates. ex) "A1"
+    /// # Return value
+    /// * `Option` - Cell in the Some.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let cell = worksheet.get_cell("A1");
+    /// ```
     pub fn get_cell<S: Into<String>>(&self, coordinate:S)->Option<&Cell> {
         let coordinate_upper = coordinate.into().to_uppercase();
         if self.cell_collection.has(&coordinate_upper) == false {
@@ -117,10 +130,35 @@ impl Worksheet {
         }
         Some(self.cell_collection.get(&coordinate_upper).unwrap())
     }
+
+    /// Gets the cell by specifying the column number and row number.
+    /// # Arguments
+    /// * `col` - Specify the column number. (first column number is 1)
+    /// * `row` - Specify the row number. (first row number is 1)
+    /// # Return value
+    /// * `Option` - Cell in the Some.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let cell = worksheet.get_cell_by_column_and_row(1, 1);  // get cell from A1. 
+    /// ```
     pub fn get_cell_by_column_and_row(&self, col:usize, row:usize)->Option<&Cell> {
         let coordinate = coordinate_from_index(col - 1, row);
         self.get_cell(coordinate)
     }
+
+    /// Get cell with mutable.
+    /// # Arguments
+    /// * `coordinate` - Specify the coordinates. ex) "A1"
+    /// # Return value
+    /// * `&mut Cell` - Cell with mutable.
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let cell = worksheet.get_cell_mut("A1");
+    /// ```
     pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate:S)->&mut Cell {
         let coordinate_upper = coordinate.into().to_uppercase();
         let split = index_from_coordinate(&coordinate_upper);
@@ -134,28 +172,77 @@ impl Worksheet {
         }
         self.cell_collection.get_mut(&coordinate_upper).unwrap()
     }
+
+    /// Gets the cell with mutable by specifying the column number and row number.
+    /// # Arguments
+    /// * `col` - Specify the column number. (first column number is 1)
+    /// * `row` - Specify the row number. (first row number is 1)
+    /// # Return value
+    /// *`&mut Cell` - Cell with mutable.
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let cell = worksheet.get_cell_by_column_and_row_mut(1, 1);  // get cell from A1. 
+    /// ```
     pub fn get_cell_by_column_and_row_mut(&mut self, col:usize, row:usize)->&mut Cell {
         let coordinate = coordinate_from_index(col - 1, row);
         self.get_cell_mut(coordinate)
     }
+
     pub(crate) fn create_new_cell(&mut self, coordinate:&String) {
         let cell = Cell::default();
         self.cell_collection.add(coordinate, cell);
         self.cell_collection_is_sorted = false;
     }
 
+    // ************************    
     // Style
-    pub fn get_style_collection(&self) -> &HashMap<String, Style> {
-        &self.styles
-    }
-    pub fn get_style_by_column_and_row(&self, col:usize, row:usize)->Option<&Style> {
-        let coordinate = coordinate_from_index(col - 1, row);
-        self.get_style(coordinate)
-    }
+    // ************************
+    /// Get style.
+    /// # Arguments
+    /// * `coordinate` - Specify the coordinates. ex) "A1"
+    /// # Return value
+    /// * `Option` - Style in the Some.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let style = worksheet.get_style("A1");
+    /// ```
     pub fn get_style<S: Into<String>>(&self, coordinate:S) -> Option<&Style> {
         let coordinate_upper = coordinate.into().to_uppercase();
         self.styles.get(&coordinate_upper)
     }
+
+    /// Gets the style by specifying the column number and row number.
+    /// # Arguments
+    /// * `col` - Specify the column number. (first column number is 1)
+    /// * `row` - Specify the row number. (first row number is 1)
+    /// # Return value
+    /// * `Option` - Style in the Some.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let style = worksheet.get_style_by_column_and_row(1, 1);  // get cell from A1. 
+    /// ```
+    pub fn get_style_by_column_and_row(&self, col:usize, row:usize)->Option<&Style> {
+        let coordinate = coordinate_from_index(col - 1, row);
+        self.get_style(coordinate)
+    }
+    
+    /// Get style with mutable.
+    /// # Arguments
+    /// * `coordinate` - Specify the coordinates. ex) "A1"
+    /// # Return value
+    /// * `&mut Style` - Style with mutable.
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let style = worksheet.get_style_mut("A1");
+    /// ```
     pub fn get_style_mut<S: Into<String>>(&mut self, coordinate:S) -> &mut Style {
         let coordinate_upper = coordinate.into().to_uppercase();
         match self.styles.get(&coordinate_upper) {
@@ -165,9 +252,26 @@ impl Worksheet {
         self.add_style(&coordinate_upper, Style::default());
         self.styles.get_mut(&coordinate_upper).unwrap()
     }
+
+    /// Gets the style with mutable by specifying the column number and row number.
+    /// # Arguments
+    /// * `col` - Specify the column number. (first column number is 1)
+    /// * `row` - Specify the row number. (first row number is 1)
+    /// # Return value
+    /// *`&mut Style` - Style with mutable.
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let style = worksheet.get_style_by_column_and_row_mut(1, 1);  // get style from A1. 
+    /// ```
     pub fn get_style_by_column_and_row_mut(&mut self, col:usize, row:usize)->&mut Style {
         let coordinate = coordinate_from_index(col - 1, row);
         self.get_style_mut(coordinate)
+    }
+
+    pub fn get_style_collection(&self) -> &HashMap<String, Style> {
+        &self.styles
     }
     pub(crate) fn add_style<S: Into<String>>(&mut self, coordinate:S, style:Style) {
         let coordinate_upper = coordinate.into().to_uppercase();

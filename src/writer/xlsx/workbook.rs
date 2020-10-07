@@ -31,7 +31,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, fil
     // workbookPr
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     attributes.push(("filterPrivacy", "1"));
-    attributes.push(("defaultThemeVersion", "124226"));
+    //attributes.push(("defaultThemeVersion", "124226"));
     match spreadsheet.get_has_macros() {
         &true => attributes.push(("codeName", "ThisWorkbook")),
         &false => {}
