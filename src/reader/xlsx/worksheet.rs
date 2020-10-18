@@ -104,8 +104,14 @@ pub(crate) fn read(
                         }
                         match style_index {
                             Some(v) => {
-                                let style = cell_xfs_vec.get(v).unwrap().clone();
-                                worksheet.add_style(&coordinate, style);
+                                let mut style = cell_xfs_vec.get(v).unwrap().clone();
+                                let coordinate_upper = coordinate.to_uppercase();
+                                let split = index_from_coordinate(&coordinate_upper);
+                                let col = split[0];
+                                let row = split[1];
+                                style.set_col_num(&col);
+                                style.set_row_num(&row);
+                                worksheet.add_style(style);
                             },
                             None => {}
                         }
@@ -186,8 +192,14 @@ pub(crate) fn read(
                         }
                         match style_index {
                             Some(v) => {
-                                let style = cell_xfs_vec.get(v).unwrap().clone();
-                                worksheet.add_style(&coordinate, style);
+                                let mut style = cell_xfs_vec.get(v).unwrap().clone();
+                                let coordinate_upper = coordinate.to_uppercase();
+                                let split = index_from_coordinate(&coordinate_upper);
+                                let col = split[0];
+                                let row = split[1];
+                                style.set_col_num(&col);
+                                style.set_row_num(&row);
+                                worksheet.add_style(style);
                             },
                             None => {}
                         }

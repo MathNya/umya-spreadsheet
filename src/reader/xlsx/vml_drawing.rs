@@ -48,7 +48,7 @@ pub(crate) fn read(
                         row = string_value.parse::<usize>().unwrap() + 1;
                     },
                     b"x:Column" => {
-                        col = string_from_column_index(&string_value.parse::<usize>().unwrap());
+                        col = string_from_column_index(&(string_value.parse::<usize>().unwrap() + 1));
                     },
                     b"v:shape" => {
                         let coordinate = format!("{}{}", col, row);

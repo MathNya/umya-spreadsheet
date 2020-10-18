@@ -13,8 +13,7 @@ pub(crate) fn read(
     dir: &TempDir,
     target: &str,
     worksheet: &mut Worksheet
-) -> result::Result<Vec<(HashMap<String, usize>, HashMap<String, usize>, String, Option<String>)>, XlsxError>
-{
+) -> result::Result<Vec<(HashMap<String, usize>, HashMap<String, usize>, String, Option<String>)>, XlsxError> {
     let path = dir.path().join(format!("xl/drawings/{}", target));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
@@ -45,8 +44,7 @@ pub(crate) fn read(
 fn two_cell_anchor(
     reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
     worksheet: &mut Worksheet
-)->(HashMap<String, usize>, HashMap<String, usize>, String, Option<String>)
-{
+)->(HashMap<String, usize>, HashMap<String, usize>, String, Option<String>) {
     let mut buf = Vec::new();
 
     let mut from: HashMap<String, usize> = HashMap::new();
@@ -96,8 +94,7 @@ fn two_cell_anchor(
     }
 }
 
-fn from_and_to(reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>)->HashMap<String, usize>
-{
+fn from_and_to(reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>)->HashMap<String, usize> {
     let mut buf = Vec::new();
     let mut result: HashMap<String, usize> = HashMap::new();
 

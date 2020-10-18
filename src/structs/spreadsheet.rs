@@ -229,7 +229,7 @@ impl Spreadsheet {
         let def = Style::get_defalut_value();
         result.push((def.get_hash_code(), def));
         for worksheet in &self.work_sheet_collection {
-            for (_, style) in worksheet.get_style_collection() {
+            for style in worksheet.get_style_collection() {
                 let mut is_match = false;
                 for (hash, _) in &result {
                     if hash == &style.get_hash_code() {
@@ -345,7 +345,7 @@ impl Spreadsheet {
     }
     pub(crate) fn has_formula_attributes(&self) -> bool {
         for worksheet in &self.work_sheet_collection {
-            for (_, cell) in worksheet.get_cell_collection().get_collection() {
+            for cell in worksheet.get_cell_collection() {
                 if cell.get_formula_attributes() != "" {
                     return true;
                 }

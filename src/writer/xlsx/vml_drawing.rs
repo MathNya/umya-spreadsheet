@@ -126,7 +126,7 @@ pub(crate) fn write(
         write_end_tag(&mut writer, "x:AutoFill");
 
         let split = coordinate_from_string(coordinate);
-        let col = column_index_from_string(split[0]);
+        let col = column_index_from_string(split[0]) - 1;
         let row = split[1].parse::<usize>().unwrap() - 1;
 
         // x:Row

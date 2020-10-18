@@ -1,8 +1,11 @@
 use super::rich_text::RichText;
 use super::hyperlink::Hyperlink;
+use super::super::helper::coordinate::*;
 
 #[derive(Default, Debug)]
 pub struct Cell {
+    col_num: usize,
+    row_num: usize,
     value: String,
     rich_text: Option<RichText>,
     data_type: String,
@@ -19,6 +22,36 @@ impl Cell {
     pub const TYPE_NULL: &'static str = "null";
     pub const TYPE_INLINE: &'static str = "inlineStr";
     pub const TYPE_ERROR: &'static str = "e";
+
+    pub fn get_col_num(&self) -> &usize {
+        &self.col_num
+    }
+
+    pub fn set_col_num(&mut self, value:&usize) {
+        self.col_num = value.clone();
+    }
+
+    pub fn get_row_num(&self) -> &usize {
+        &self.row_num
+    }
+
+    pub fn set_row_num(&mut self, value:&usize) {
+        self.row_num = value.clone();
+    }
+
+    pub fn get_coordinate(&self)-> String {
+        coordinate_from_index(&self.col_num, &self.row_num)
+    }
+
+    pub(crate) fn is_mine(&self, col_num:&usize, row_num:&usize)->bool {
+        if &self.col_num != col_num {
+            return false;
+        }
+        if &self.row_num != row_num {
+            return false;
+        }
+        true
+    }
 
     pub fn get_hyperlink(&self) -> &Option<Hyperlink> {
         &self.hyperlink

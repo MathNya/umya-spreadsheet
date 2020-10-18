@@ -16,7 +16,7 @@ pub fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> result::Result<HashMap
     let mut shared_strings: HashMap<String, (String, Option<RichText>)> = HashMap::new();
     let mut count: usize = 0;
     for sheet in spreadsheet.get_sheet_collection() {
-        for (_, cell) in sheet.get_cell_collection().get_index() {
+        for cell in sheet.get_cell_collection() {
             if cell.get_data_type() == "s" {
                 count = count + 1;
                 let value = cell.get_hash_code_by_value();

@@ -4,6 +4,7 @@ use std::io::Cursor;
 use tempdir::TempDir;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
+use std::collections::BTreeSet;
 
 use super::super::structs::style::Style;
 use super::super::structs::worksheet::Worksheet;
@@ -147,117 +148,122 @@ pub(crate) fn write(
         };
         cells.push(coordinate);
     }
-    let has_sheet_data = worksheet.get_row_dimensions().len() > 0;
 
     // sheetData
+    let has_sheet_data = worksheet.get_row_dimensions().len() > 0;
     write_start_tag(&mut writer, "sheetData", vec![], !has_sheet_data);
 
-    if has_sheet_data {
-        for (id, row) in worksheet.get_row_dimensions() {
-            // row
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            let r:&str = &id.to_string();
-            let ht:&str = &row.get_height().to_string();
-            let descent:&str = &row.get_descent().to_string();
-            attributes.push(("r", r));
-
-            match cells_by_row.get_mut(id) {
-                None => {
-                    if ht != "0" {
-                        attributes.push(("ht", ht));
-                    }
-                    if row.get_thick_bot() == &true {
-                        attributes.push(("thickBot", "1"));
-                    }
-                    if row.get_custom_height() == &true {
-                        attributes.push(("customHeight", "1"));
-                    }
-                    attributes.push(("x14ac:dyDescent", descent));
-        
-                    write_start_tag(&mut writer, "row", attributes, true);
-                },
-                Some(cells) => {
-                    cells.sort();
-                    let first = column_index_from_string(coordinate_from_string(cells.first().unwrap())[0]) + 1;
-                    let last = column_index_from_string(coordinate_from_string(cells.last().unwrap())[0]) + 1;
-                    let spans = format!("{}:{}", first, last);
-                    attributes.push(("spans", &spans));
-                    if ht != "0" {
-                        attributes.push(("ht", ht));
-                    }
-                    if row.get_thick_bot() == &true {
-                        attributes.push(("thickBot", "1"));
-                    }
-                    if row.get_custom_height() == &true {
-                        attributes.push(("customHeight", "1"));
-                    }
-                    attributes.push(("x14ac:dyDescent", descent));
-
-                    write_start_tag(&mut writer, "row", attributes, false);
-                    for coordinate in cells {
-                        let cell = worksheet.get_cell_collection().get(&coordinate);
-                        // c
-                        let mut attributes: Vec<(&str, &str)> = Vec::new();
-                        attributes.push(("r", &coordinate));
-                        let mut xf_index:usize = 0;
-                        for (hash_code, _) in &all_cell_xf_list {
-                            match worksheet.get_style(coordinate.as_str()) {
-                                Some(style) => {
-                                    if style.get_hash_code().as_str() == hash_code {
-                                        break;
-                                    }
-                                    xf_index += 1;
-                                },
-                                None => {}
-                            }
-                        }
-                        let xf_index_str:&str = &xf_index.to_string();
-                        if xf_index != 0usize {
-                            attributes.push(("s", xf_index_str));
-                        }
-                        match cell {
-                            Ok(c) => {
-                                if c.get_data_type() == "s" || c.get_data_type() == "b" {
-                                    attributes.push(("t", c.get_data_type()));
-                                }
-                                write_start_tag(&mut writer, "c", attributes, false);
-
-                                // f
-                                if c.get_formula_attributes() != "" {
-                                    write_start_tag(&mut writer, "f", vec![], false);
-                                    write_text_node(&mut writer, c.get_formula_attributes());
-                                    write_end_tag(&mut writer, "f");
-                                }
-    
-                                // v
-                                write_start_tag(&mut writer, "v", vec![], false);
-    
-                                match c.get_data_type() {
-                                    "s" => {
-                                        let val_index = shared_strings.get(&c.get_hash_code_by_value()).unwrap().to_string();
-                                        write_text_node(&mut writer, val_index);
-                                    },
-                                    "b" => {
-                                        let upper_value = c.get_value().to_uppercase();
-                                        let prm = if upper_value == "TRUE" {"1"} else {"0"};
-                                        write_text_node(&mut writer, prm);
-                                    },
-                                    _ => write_text_node(&mut writer, c.get_value()),
-                                }
-                                write_end_tag(&mut writer, "v");
-                                write_end_tag(&mut writer, "c");
-    
-                            },
-                            Err(_) => {
-                                write_start_tag(&mut writer, "c", attributes, true);
-                            }
-                        }
-                    }
-                    write_end_tag(&mut writer, "row");
-                },
-            }
+    for (row_num, row) in worksheet.get_row_dimensions() {
+        // cells and styles
+        let cells = worksheet.get_collection_by_row(row_num);
+        let styles = worksheet.get_style_collection_by_row(row_num);
+        let mut col_num_list:BTreeSet<usize> = BTreeSet::new();
+        for (col_num, _) in &cells {
+            col_num_list.insert(col_num.clone());
+        }
+        for (col_num, _) in &styles {
+            col_num_list.insert(col_num.clone());
         }
 
+        // row
+        let include_cell = col_num_list.len() > 0;
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let r_string = row_num.to_string();
+        attributes.push(("r", &r_string));
+        let fist_num = match col_num_list.iter().next() {
+            Some(col_num) => col_num,
+            None => &0usize
+        };
+        let last_num = match col_num_list.iter().last() {
+            Some(col_num) => col_num,
+            None => &0usize
+        };
+        let spans = format!("{}:{}", fist_num, last_num);
+        if include_cell {
+            attributes.push(("spans", &spans));
+        }
+        let ht = row.get_height().to_string();
+        if row.get_height() != &0f32 {
+            attributes.push(("ht", &ht));
+        }
+        if row.get_thick_bot() == &true {
+            attributes.push(("thickBot", "1"));
+        }
+        if row.get_custom_height() == &true {
+            attributes.push(("customHeight", "1"));
+        }
+        let dy_descent = row.get_descent().to_string();
+        attributes.push(("x14ac:dyDescent", &dy_descent));
+        write_start_tag(&mut writer, "row", attributes, !include_cell);
+
+        for col_num in col_num_list {
+            let cell = &cells.get(&col_num);
+            let style = &styles.get(&col_num);
+
+            let coordinate = coordinate_from_index(&col_num, row_num);
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            attributes.push(("r", &coordinate));
+
+            let mut xf_index:usize = 0;
+            match style {
+                Some(v) => {
+                    for (hash_code, _) in &all_cell_xf_list {
+                        if v.get_hash_code().as_str() == hash_code {
+                            break;
+                        }
+                        xf_index += 1;
+                    }
+                },
+                None => {}
+            }
+            let xf_index_str:&str = &xf_index.to_string();
+            if xf_index != 0usize {
+                attributes.push(("s", xf_index_str));
+            }
+
+            match cell {
+                Some(c) => {
+                    if c.get_data_type() == "s" || c.get_data_type() == "b" {
+                        attributes.push(("t", c.get_data_type()));
+                    }
+                    write_start_tag(&mut writer, "c", attributes, false);
+
+                    // f
+                    if c.get_formula_attributes() != "" {
+                        write_start_tag(&mut writer, "f", vec![], false);
+                        write_text_node(&mut writer, c.get_formula_attributes());
+                        write_end_tag(&mut writer, "f");
+                    }
+
+                    // v
+                    write_start_tag(&mut writer, "v", vec![], false);
+
+                    match c.get_data_type() {
+                        "s" => {
+                            let val_index = shared_strings.get(&c.get_hash_code_by_value()).unwrap().to_string();
+                            write_text_node(&mut writer, val_index);
+                        },
+                        "b" => {
+                            let upper_value = c.get_value().to_uppercase();
+                            let prm = if upper_value == "TRUE" {"1"} else {"0"};
+                            write_text_node(&mut writer, prm);
+                        },
+                        _ => write_text_node(&mut writer, c.get_value()),
+                    }
+                    write_end_tag(&mut writer, "v");
+                    write_end_tag(&mut writer, "c");
+                },
+                None => {
+                    write_start_tag(&mut writer, "c", attributes, true);
+                }
+            }
+        }
+        if include_cell {
+            write_end_tag(&mut writer, "row");
+        }
+    }
+
+    if has_sheet_data {
         write_end_tag(&mut writer, "sheetData");
     }
 

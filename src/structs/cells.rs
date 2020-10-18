@@ -1,64 +1,84 @@
 use super::cell::Cell;
-use std::collections::HashMap; 
-use super::super::helper::coordinate::*;
+use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[derive(Default, Debug)]
 pub struct Cells {
-    pub(crate) index: HashMap<String, Cell>,
+    index: Vec<Cell>,
 }
 impl Cells {
-    pub fn get_collection(&self)-> &HashMap<String, Cell> {
+    pub(crate) fn get_collection(&self)-> &Vec<Cell> {
         &self.index
     }
-    pub(crate) fn get_highest_row_and_column(&self)-> HashMap<&str, String> {
-        let mut col_max:String = String::from("1A");
-        let mut col_max_org:String = String::from("A");
-        let mut row_max:i32 = 0;
-        for (coordinate, _) in &self.index {
-            let cfs = coordinate_from_string(coordinate);
-            let col_string = cfs.get(0).unwrap();
-            let row = cfs.get(1).unwrap().parse().unwrap();
 
-            if row > row_max {
-                row_max = row;
+    pub(crate) fn get_collection_to_hashmap(&self)-> HashMap<String, &Cell> {
+        let mut result = HashMap::default();
+        for cell in &self.index {
+            let coordinate = cell.get_coordinate();
+            result.insert(coordinate, cell);
+        }
+        result
+    }
+
+    pub(crate) fn get_collection_by_row(&self, row_num:&usize)-> BTreeMap<usize, &Cell> {
+        let mut result = BTreeMap::default();
+        for cell in &self.index {
+            if row_num == cell.get_row_num() {
+                result.insert(cell.get_col_num().clone(), cell);
             }
-            let col = format!("{}{}", col_string.len(), col_string);
-            if col > col_max {
-                col_max = col;
-                col_max_org = col_string.to_string();
+        }
+        result
+    }
+
+    pub(crate) fn get_highest_row_and_column(&self)-> HashMap<&str, &usize> {
+        let mut col_max:&usize = &0;
+        let mut row_max:&usize = &0;
+        for cell in &self.index {
+            if cell.get_col_num() > &col_max {
+                col_max = cell.get_col_num();
+            }
+            if cell.get_row_num() > &row_max {
+                row_max = cell.get_row_num();
             }
         }
         let mut result = HashMap::new();
-        result.insert("row", row_max.to_string());
-        result.insert("column", col_max_org);
+        result.insert("column", col_max);
+        result.insert("row", row_max);
         result
     }
-    pub fn get_coordinates(&self)-> Vec<String> {
-        let mut result = Vec::new();
-        for (coordinate, _) in &self.index {
-            result.push(coordinate.clone());
+
+    pub(crate) fn has(&self, col_num:&usize, row_num:&usize)-> bool {
+        for cell in &self.index {
+            if cell.is_mine(col_num, row_num) {
+                return true;
+            }
         }
-        result
+        false
     }
-    pub fn has(&self, coordinate:&String)-> bool {
-        match self.index.get(coordinate) {
-            Some(_) => true,
-            None => false
-        }
-    }
-    pub fn get_index(&self)->&HashMap<String, Cell> {
+
+    pub(crate) fn get_index(&self)->&Vec<Cell> {
         &self.index
     }
-    pub fn get(&self, coordinate:&String) -> Result<&Cell, &'static str> {
-        match self.index.get(coordinate) {
-            Some(v) => return Ok(v),
-            None => return Err("Not found.")
+
+    pub(crate) fn get(&self, col_num:&usize, row_num:&usize)-> Option<&Cell> {
+        for cell in &self.index {
+            if cell.is_mine(col_num, row_num) {
+                return Some(cell);
+            }
         }
+        None
     }
-    pub fn get_mut(&mut self, coordinate:&String)->Option<&mut Cell> {
-        self.index.get_mut(coordinate)
+
+    pub(crate) fn get_mut(&mut self, col_num:&usize, row_num:&usize)-> Option<&mut Cell> {
+        for mut cell in &mut self.index {
+            if cell.is_mine(col_num, row_num) {
+                return Some(cell);
+            }
+        }
+        None
     }
-    pub(crate) fn add(&mut self, coordinate:&String, cell:Cell) {
-        self.index.insert(coordinate.clone(), cell);
+
+    pub(crate) fn add(&mut self, cell:Cell) {
+        self.index.push(cell);
     }
 }
