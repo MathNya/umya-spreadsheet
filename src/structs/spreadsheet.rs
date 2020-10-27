@@ -36,23 +36,30 @@ pub struct Spreadsheet {
     visibility: String,
     tab_ratio: i32,
     theme: Theme,
-    defined_names: HashMap<String, DefinedName>,
+    defined_names: Vec<DefinedName>,
 }
 impl Spreadsheet {
-    pub fn get_defined_names(&self) -> &HashMap<String, DefinedName> {
+    pub fn get_defined_names(&self) -> &Vec<DefinedName> {
         &self.defined_names
     }
-    pub(crate) fn set_defined_names(&mut self, value:HashMap<String, DefinedName>) {
+    pub(crate) fn set_defined_names(&mut self, value:Vec<DefinedName>) {
         self.defined_names = value;
     }
     pub(crate) fn add_defined_names(&mut self, value:DefinedName) {
-        self.defined_names.insert(value.get_name().to_string(), value);
+        self.defined_names.push(value);
+    }
+    pub fn add_defined_name<S: Into<String>>(&mut self, name:S, address:S)->Result<(), &str> {
+        let mut defined_name = DefinedName::default();
+        defined_name.set_name(name.into());
+        defined_name.set_address(address.into());
+        self.defined_names.push(defined_name);
+        Ok(())
     }
     pub(crate) fn get_all_conditional_style_list(&self) -> Vec<(String, Style)> {
         let mut result:Vec<(String, Style)> = Vec::new();
         for work_sheet in &self.work_sheet_collection {
-            for (_, conditional_formatting) in work_sheet.get_conditional_styles_collection() {
-                for conditional in conditional_formatting {
+            for conditional_formatting in work_sheet.get_conditional_styles_collection() {
+                for conditional in conditional_formatting.get_conditional_collection() {
                     match conditional.get_style() {
                         Some(v) => {
                             let mut is_match = false;
@@ -287,6 +294,15 @@ impl Spreadsheet {
         let v = value.into();
         for sheet in &self.work_sheet_collection {
             if sheet.get_title() == &v {
+                return Ok(sheet);
+            }
+        }
+        Err("not found.")
+    }
+    pub fn get_sheet_by_sheet_id<S: Into<String>>(&self, value:S) -> Result<&Worksheet, &'static str> {
+        let v = value.into();
+        for sheet in &self.work_sheet_collection {
+            if sheet.get_sheet_id() == &v {
                 return Ok(sheet);
             }
         }

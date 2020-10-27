@@ -9,7 +9,7 @@ use super::page_margins::PageMargins;
 use super::header_footer::HeaderFooter;
 use super::sheet_view::SheetView;
 use super::protection::Protection;
-use super::conditional::Conditional;
+use super::conditional_set::ConditionalSet;
 use super::style::Style;
 use super::styles::Styles;
 use super::auto_filter::AutoFilter;
@@ -26,7 +26,6 @@ pub struct Worksheet {
     title: String,
     cell_collection: Cells,
     row_dimensions : BTreeMap<usize, RowDimension>,
-    default_row_dimension: RowDimension,
     column_dimensions : Vec<ColumnDimension>,
     default_column_dimension: ColumnDimension,
     drawing_collection: Vec<Drawing>,
@@ -38,7 +37,7 @@ pub struct Worksheet {
     sheet_view: SheetView,
     protection: Protection,
     styles : Styles,
-    conditional_styles_collection: HashMap<String, Vec<Conditional>>,
+    conditional_styles_collection: Vec<ConditionalSet>,
     breaks :Vec<String>,
     merge_cells: Vec<String>,
     protected_cells: Vec<String>,
@@ -50,11 +49,9 @@ pub struct Worksheet {
     show_row_col_headers: bool,
     show_summary_below: bool,
     show_summary_right: bool,
-    comments: HashMap<String, Comment>,
+    comments: Vec<Comment>,
     active_cell: String,
     selected_cells: String,
-    cached_highest_column: String,
-    cached_highest_row: String,
     right_to_left: bool,
     data_validation_collection: Vec<String>,
     tab_color: Option<Color>,
@@ -69,7 +66,6 @@ impl Default for Worksheet {
             title: String::from(""),
             cell_collection: Cells::default(),
             row_dimensions : BTreeMap::new(),
-            default_row_dimension: RowDimension::default(),
             column_dimensions : Vec::new(),
             default_column_dimension: ColumnDimension::default(),
             drawing_collection: Vec::new(),
@@ -81,7 +77,7 @@ impl Default for Worksheet {
             sheet_view: SheetView::default(),
             protection: Protection::default(),
             styles : Styles::default(),
-            conditional_styles_collection: HashMap::new(),
+            conditional_styles_collection: Vec::new(),
             breaks :Vec::new(),
             merge_cells: Vec::new(),
             protected_cells: Vec::new(),
@@ -93,11 +89,9 @@ impl Default for Worksheet {
             show_row_col_headers: false,
             show_summary_below: false,
             show_summary_right: false,
-            comments: HashMap::new(),
+            comments: Vec::new(),
             active_cell: String::from(""),
             selected_cells: String::from(""),
-            cached_highest_column: String::from(""),
-            cached_highest_row: String::from(""),
             right_to_left: false,
             data_validation_collection: Vec::new(),
             tab_color: None,
@@ -196,8 +190,8 @@ impl Worksheet {
         }
         if self.cell_collection.has(&col, &row) == false {
             let mut cell = Cell::default();
-            cell.set_col_num(&col);
-            cell.set_row_num(&row);
+            cell.get_coordinate_mut().set_col_num(&col);
+            cell.get_coordinate_mut().set_row_num(&row);
             self.cell_collection.add(cell);
         }
         self.cell_collection.get_mut(&col, &row).unwrap()
@@ -291,8 +285,8 @@ impl Worksheet {
         }
         if self.styles.has(&col, &row) == false {
             let mut style = Style::default();
-            style.set_col_num(&col);
-            style.set_row_num(&row);
+            style.get_coordinate_mut().set_col_num(&col);
+            style.get_coordinate_mut().set_row_num(&row);
             self.styles.add(style);
         }
         self.styles.get_mut(&col, &row).unwrap()
@@ -302,12 +296,50 @@ impl Worksheet {
         self.styles.add(style);
     }
 
+    // ************************    
+    // Comment
+    // ************************
+    pub fn get_comments(&self)-> &Vec<Comment> {
+        &self.comments
+    }
+
+    pub fn get_comments_to_hashmap(&self)-> HashMap<String, &Comment> {
+        let mut result = HashMap::default();
+        for comment in &self.comments {
+            let coordinate = comment.get_coordinate().get_coordinate();
+            result.insert(coordinate, comment);
+        }
+        result
+    }
+   
+    pub(crate) fn set_comments(&mut self, value:Vec<Comment>) {
+        self.comments = value;
+    }
+
+    // ************************    
+    // Conditional
+    // ************************
+    pub fn get_conditional_styles_collection(&self) -> &Vec<ConditionalSet> {
+        &self.conditional_styles_collection
+
+    }
+    pub(crate) fn set_conditional_styles_collection(&mut self, value:Vec<ConditionalSet>) {
+        self.conditional_styles_collection = value;
+    }
+
+    pub(crate) fn add_conditional_styles_collection(&mut self, value:ConditionalSet) {
+        self.conditional_styles_collection.push(value);
+    }
+
+    // ************************    
+    // Hyperlink
+    // ************************
     pub(crate) fn get_hyperlink_collection(&self)-> HashMap<String, &Hyperlink> {
         let mut result: HashMap<String, &Hyperlink> = HashMap::new();
         for cell in self.cell_collection.get_collection() {
             match cell.get_hyperlink() {
                 Some(hyperlink) => {
-                    let coordition = coordinate_from_index(cell.get_col_num(), cell.get_row_num());
+                    let coordition = coordinate_from_index(cell.get_coordinate().get_col_num(), cell.get_coordinate().get_row_num());
                     result.insert(coordition, hyperlink);
                 },
                 None => {}
@@ -315,14 +347,43 @@ impl Worksheet {
         }
         result
     }
+
+    // ************************    
+    // Merge Cells
+    // ************************
+    pub fn get_merge_cells(&self) -> &Vec<String> {
+        &self.merge_cells
+    }
+    
+    pub(crate) fn add_merge_cells_crate<S: Into<String>>(&mut self, value:S) {
+        self.merge_cells.push(value.into());
+    }
+
+    // ************************    
+    // AutoFilter
+    // ************************
+    pub fn get_auto_filter(&self) -> &Option<AutoFilter> {
+        &self.auto_filter
+    }
+
+    pub fn get_auto_filter_mut(&mut self) -> &mut Option<AutoFilter> {
+        &mut self.auto_filter
+    }
+
+    pub fn set_auto_filter<S: Into<String>>(&mut self, value:S) {
+        let mut auto_filter = AutoFilter::default();
+        auto_filter.set_range(value);
+        self.auto_filter = Some(auto_filter);
+    }
+
     pub(crate) fn get_coordinates(&self)-> Vec<String> {
         let mut result:Vec<String> = Vec::new();
         for cell in self.cell_collection.get_collection() {
-            let coordinate = coordinate_from_index(cell.get_col_num(), cell.get_row_num());
+            let coordinate = coordinate_from_index(cell.get_coordinate().get_col_num(), cell.get_coordinate().get_row_num());
             result.push(coordinate);
         }
         for style in self.styles.get_collection() {
-            let coordinate = coordinate_from_index(style.get_col_num(), style.get_row_num());
+            let coordinate = coordinate_from_index(style.get_coordinate().get_col_num(), style.get_coordinate().get_row_num());
             let mut is_match = false;
             for co in &result {
                 if co == &coordinate {
@@ -335,35 +396,7 @@ impl Worksheet {
         }
         result
     }
-    pub fn get_conditional_styles_collection(&self) -> &HashMap<String, Vec<Conditional>> {
-        &self.conditional_styles_collection
-    }
-    pub(crate) fn set_conditional_styles_collection(&mut self, value:HashMap<String, Vec<Conditional>>) {
-        self.conditional_styles_collection = value;
-    }
-    pub(crate) fn add_conditional_styles_collection<S: Into<String>>(&mut self, coordinate:S, value:Vec<Conditional>) {
-        self.conditional_styles_collection.insert(coordinate.into(), value);
-    }
-    pub fn get_merge_cells(&self) -> &Vec<String> {
-        &self.merge_cells
-    }
-    pub(crate) fn add_merge_cells_crate<S: Into<String>>(&mut self, value:S) {
-        self.merge_cells.push(value.into());
-    }
-    pub fn get_auto_filter(&self) -> &Option<AutoFilter> {
-        &self.auto_filter
-    }
-    pub fn get_auto_filter_mut(&mut self) -> &mut AutoFilter {
-        match &self.auto_filter {
-            Some(_) => return self.auto_filter.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_auto_filter(AutoFilter::default());
-        self.auto_filter.as_mut().unwrap()
-    }
-    pub(crate) fn set_auto_filter(&mut self, value:AutoFilter) {
-        self.auto_filter = Some(value);
-    }
+
     pub fn get_code_name(&self) -> &Option<String> {
         &self.code_name
     }
@@ -376,12 +409,7 @@ impl Worksheet {
     pub(crate) fn set_header_footer(&mut self, value:HeaderFooter) {
         self.header_footer = value;
     }
-    pub fn get_comments(&self) -> &HashMap<String, Comment> {
-        &self.comments
-    }
-    pub(crate) fn set_comments(&mut self, value:HashMap<String, Comment>) {
-        self.comments = value;
-    }
+
     pub fn get_row_dimension(&self, row:usize) -> Option<&RowDimension> {
         self.row_dimensions.get(&row)
     }
@@ -402,9 +430,6 @@ impl Worksheet {
     }
     pub fn get_row_dimensions(&self) -> &BTreeMap<usize, RowDimension> {
         &self.row_dimensions
-    }
-    pub fn get_default_row_dimension(&self) -> &RowDimension {
-        &self.default_row_dimension
     }
     pub fn get_column_dimensions(&self) -> &Vec<ColumnDimension> {
         &self.column_dimensions
@@ -490,13 +515,7 @@ impl Worksheet {
         let column_str = string_from_column_index(highest["column"]);
         format!("A1:{}{}", column_str, highest["row"])
     }
-    pub fn get_highest_column(&self) -> &String {
-        return &self.cached_highest_column;
-    }
-    pub fn get_highest_row(&self) -> &String {
-        return &self.cached_highest_row;
-    }
-    pub fn get_title(&self) -> &String {
+    pub fn get_title(&self) -> &str {
         return &self.title;
     }
     pub(crate) fn set_title<S: Into<String>>(&mut self, value:S) {

@@ -23,7 +23,7 @@ pub(crate) fn read(
     let mut result:HashMap<String, Comment> = HashMap::new();
     let mut string_value: String = String::from("");
     let mut row:usize = 0;
-    let mut col:String = String::from("");
+    let mut col_str:String = String::from("");
     let mut comment = Comment::default();
 
     loop {
@@ -46,12 +46,15 @@ pub(crate) fn read(
                 match e.name() {
                     b"x:Row" => {
                         row = string_value.parse::<usize>().unwrap() + 1;
+                        comment.get_coordinate_mut().set_row_num(&row);
                     },
                     b"x:Column" => {
-                        col = string_from_column_index(&(string_value.parse::<usize>().unwrap() + 1));
+                        let col = string_value.parse::<usize>().unwrap() + 1;
+                        col_str = string_from_column_index(&col);
+                        comment.get_coordinate_mut().set_col_num(&col);
                     },
                     b"v:shape" => {
-                        let coordinate = format!("{}{}", col, row);
+                        let coordinate = format!("{}{}", col_str, row);
                         result.insert(coordinate, comment);
                         comment = Comment::default();
                     },

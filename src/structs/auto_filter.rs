@@ -1,15 +1,19 @@
+use super::range::Range;
 use super::column::Column;
 
 #[derive(Default, Debug)]
 pub struct AutoFilter {
-    range: String,
+    range: Range,
     columns: Vec<Column>,
 }
 impl AutoFilter {
-    pub fn get_range(&self)->&str {
+    pub fn get_range(&self)->&Range {
         &self.range
     }
+    
     pub(crate) fn set_range<S: Into<String>>(&mut self, value:S) {
-        self.range = value.into();
+        let mut range = Range::default();
+        range.set_range(value.into());
+        self.range = range;
     }
 }

@@ -1,11 +1,10 @@
 use super::rich_text::RichText;
 use super::hyperlink::Hyperlink;
-use super::super::helper::coordinate::*;
+use super::coordinate::Coordinate;
 
 #[derive(Default, Debug)]
 pub struct Cell {
-    col_num: usize,
-    row_num: usize,
+    coordinate: Coordinate,
     value: String,
     rich_text: Option<RichText>,
     data_type: String,
@@ -23,39 +22,18 @@ impl Cell {
     pub const TYPE_INLINE: &'static str = "inlineStr";
     pub const TYPE_ERROR: &'static str = "e";
 
-    pub fn get_col_num(&self) -> &usize {
-        &self.col_num
+    pub fn get_coordinate(&self)-> &Coordinate {
+        &self.coordinate
     }
 
-    pub fn set_col_num(&mut self, value:&usize) {
-        self.col_num = value.clone();
-    }
-
-    pub fn get_row_num(&self) -> &usize {
-        &self.row_num
-    }
-
-    pub fn set_row_num(&mut self, value:&usize) {
-        self.row_num = value.clone();
-    }
-
-    pub fn get_coordinate(&self)-> String {
-        coordinate_from_index(&self.col_num, &self.row_num)
-    }
-
-    pub(crate) fn is_mine(&self, col_num:&usize, row_num:&usize)->bool {
-        if &self.col_num != col_num {
-            return false;
-        }
-        if &self.row_num != row_num {
-            return false;
-        }
-        true
+    pub fn get_coordinate_mut(&mut self)-> &mut Coordinate {
+        &mut self.coordinate
     }
 
     pub fn get_hyperlink(&self) -> &Option<Hyperlink> {
         &self.hyperlink
     }
+
     pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
         match &self.hyperlink {
             Some(_) => return self.hyperlink.as_mut().unwrap(),
@@ -64,35 +42,43 @@ impl Cell {
         let _ = self.set_hyperlink(Hyperlink::default());
         self.hyperlink.as_mut().unwrap()
     }
+
     pub fn set_hyperlink(&mut self, value:Hyperlink)->Result<(), &str> {
         self.hyperlink = Some(value);
         Ok(())
     }
+
     pub fn get_value(&self)-> &String {
         &self.value
     }
+
     pub fn get_rich_text(&self)-> &Option<RichText> {
         &self.rich_text
     }
+
     pub fn set_value<S: Into<String>>(&mut self, value:S)->Result<(), &str> {
         let v = value.into();
         self.data_type = Cell::data_type_for_value(&v).to_string();
         self.set_value_crate(v);
         Ok(())
     }
+
     pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value:S) {
         self.value = value.into();
         self.rich_text = None;
     }
+
     pub(crate) fn set_all_param<S: Into<String>>(&mut self, value:S, rich_text:Option<RichText>, data_type:S, formula_attributes:S) {
         self.value = value.into();
         self.rich_text = rich_text;
         self.data_type = data_type.into();
         self.formula_attributes = formula_attributes.into();
     }
+
     pub fn get_data_type(&self)-> &str {
         &self.data_type
     }
+
     pub fn set_value_and_data_type<S: Into<String>>(&mut self, value:S, data_type:S)->Result<(), &'static str> {
         let v = value.into();
         let d = data_type.into();
@@ -109,6 +95,7 @@ impl Cell {
         }
         Ok(())
     }
+
     pub fn set_data_type<S: Into<String>>(&mut self, value:S)->Result<(), &'static str> {
         let data_type = value.into();
         match Cell::check_data_type(&self.value, &data_type) {
@@ -117,6 +104,7 @@ impl Cell {
         }
         Ok(())
     }
+
     pub(crate) fn check_data_type<S: Into<String>>(value:S, data_type:S)->Result<(), &'static str> {
         match data_type.into().as_str() {
             Cell::TYPE_STRING2 => return Ok(()),
@@ -140,15 +128,19 @@ impl Cell {
             _ => return Err("Invalid datatype")
         }
     }
+
     pub fn is_formula(&self) -> bool {
         &self.data_type == Cell::TYPE_FORMULA
     }
+
     pub fn get_formula_attributes(&self)-> &String {
         &self.formula_attributes
     }
+
     pub(crate) fn set_formula_attributes<S: Into<String>>(&mut self, value:S) {
         self.formula_attributes = value.into();
     }
+
     pub(crate) fn data_type_for_value(value:&str)-> &str {
         let check_value = value.to_uppercase();
 
@@ -165,6 +157,7 @@ impl Cell {
         }
         Cell::TYPE_STRING
     }
+    
     pub(crate) fn get_hash_code_by_value(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}",
             &self.value,

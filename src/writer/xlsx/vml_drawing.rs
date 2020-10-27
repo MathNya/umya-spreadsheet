@@ -6,7 +6,6 @@ use super::super::structs::worksheet::Worksheet;
 use super::super::structs::comment::Comment;
 use super::driver::*;
 use super::XlsxError;
-use super::super::helper::coordinate::*;
 
 const SUB_DIR: &'static str = "xl/drawings";
 
@@ -64,7 +63,7 @@ pub(crate) fn write(
     write_end_tag(&mut writer, "v:shapetype");
 
     let mut id = 1025;
-    for (coordinate, comment) in worksheet.get_comments() {
+    for comment in worksheet.get_comments() {
         // v:shape
         write_start_tag(&mut writer, "v:shape", vec![
             ("id", format!("_x0000_s{}", id).to_string().as_str()),
@@ -125,18 +124,17 @@ pub(crate) fn write(
         write_text_node(&mut writer, "False");
         write_end_tag(&mut writer, "x:AutoFill");
 
-        let split = coordinate_from_string(coordinate);
-        let col = column_index_from_string(split[0]) - 1;
-        let row = split[1].parse::<usize>().unwrap() - 1;
+        let col = comment.get_coordinate().get_col_num();
+        let row = comment.get_coordinate().get_row_num();
 
         // x:Row
         write_start_tag(&mut writer, "x:Row", vec![], false);
-        write_text_node(&mut writer, row.to_string().as_str());
+        write_text_node(&mut writer, (row - 1).to_string().as_str());
         write_end_tag(&mut writer, "x:Row");
 
         // x:Column
         write_start_tag(&mut writer, "x:Column", vec![], false);
-        write_text_node(&mut writer, col.to_string().as_str());
+        write_text_node(&mut writer, (col -1).to_string().as_str());
         write_end_tag(&mut writer, "x:Column");
 
         // x:Visible

@@ -271,7 +271,7 @@ pub(crate) fn write(
     match worksheet.get_auto_filter() {
         Some(v) => {
             write_start_tag(&mut writer, "autoFilter", vec![
-                ("ref", v.get_range()),
+                ("ref", &v.get_range().get_range()),
             ], true);
         },
         None => {}
@@ -299,13 +299,14 @@ pub(crate) fn write(
     //], true);
 
     // conditionalFormatting
-    for (coordinates, conditional_formatting) in worksheet.get_conditional_styles_collection() {
+    for conditional_formatting in worksheet.get_conditional_styles_collection() {
+        let coordinates = conditional_formatting.get_sqref();
         write_start_tag(&mut writer, "conditionalFormatting", vec![
-            ("sqref", coordinates),
+            ("sqref", &coordinates),
         ], false);
 
         // cfRule
-        for conditional in conditional_formatting {
+        for conditional in conditional_formatting.get_conditional_collection() {
             let with_data_type = conditional.get_data_type() != "";
             let dxf_id_str: String;
             let mut attributes: Vec<(&str, &str)> = Vec::new();

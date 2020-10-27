@@ -65,12 +65,14 @@ pub fn coordinate_from_string(coordinate:&str)->Vec<&str> {
     let re = Regex::new(r"[A-Z]+").unwrap();
     let caps = re.captures(coordinate).unwrap();
     let col = caps.get(0).unwrap().as_str();
+    let is_lock_col = match coordinate.find(format!("{}{}", "$", col).as_str()) {Some(_) => "1", None => "0"};
 
     let re = Regex::new(r"[0-9]+").unwrap();
     let caps = re.captures(coordinate).unwrap();
     let row = caps.get(0).unwrap().as_str();
+    let is_lock_row = match coordinate.find(format!("{}{}", "$", row).as_str()) {Some(_) => "1", None => "0"};
 
-    vec![col, row]
+    vec![col, row, is_lock_col, is_lock_row]
 }
 
 pub fn coordinate_from_index(col:&usize, row:&usize)->String {
@@ -81,10 +83,22 @@ pub fn coordinate_from_index(col:&usize, row:&usize)->String {
     )
 }
 
+pub fn coordinate_from_index_with_lock(col:&usize, row:&usize, is_lock_col:&bool, is_lock_row:&bool)->String {
+    format!(
+        "{}{}{}{}",
+        if is_lock_col == &true {"$"} else {""},
+        string_from_column_index(&col),
+        if is_lock_row == &true {"$"} else {""},
+        row
+    )
+}
+
 pub fn index_from_coordinate<S: Into<String>>(coordinate:S)->Vec<usize> {
     let con = coordinate.into();
     let split = coordinate_from_string(con.as_str());
     let col = column_index_from_string(split[0]);
     let row = split[1].parse::<usize>().unwrap();
-    vec![col, row]
+    let is_lock_col = split[2].parse::<usize>().unwrap();
+    let is_lock_row = split[3].parse::<usize>().unwrap();
+    vec![col, row, is_lock_col, is_lock_row]
 }

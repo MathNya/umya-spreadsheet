@@ -18,8 +18,7 @@ pub(crate) fn read(
     worksheet: &mut Worksheet,
     comment_list: &mut HashMap<String, Comment>,
     theme: &Theme
-) -> result::Result<(), XlsxError>
-{
+) -> result::Result<(), XlsxError> {
     let path = dir.path().join(format!("xl/worksheets/{}", target));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
@@ -28,17 +27,16 @@ pub(crate) fn read(
     let mut authors: Vec<String> = Vec::new();
     let mut comment: Comment = Comment::default();
     let mut value: String = String::from("");
-    let mut coordinate: String = String::from("");
 
     let mut text_element_vec: Vec<TextElement> = Vec::new();
-    let mut result: HashMap<String, Comment> = HashMap::new();
+    let mut result: Vec<Comment> = Vec::new();
 
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 match e.name() {
                     b"comment" => {
-                        coordinate = get_attribute(e, b"ref").unwrap();
+                        let coordinate = get_attribute(e, b"ref").unwrap();
                         comment = comment_list.get_mut(&coordinate).unwrap().clone();
                         let author_id = get_attribute(e, b"authorId").unwrap().parse::<usize>().unwrap();
                         let author = authors.get(author_id).unwrap();
@@ -61,7 +59,7 @@ pub(crate) fn read(
                         text_element_vec = Vec::new();
                     },
                     b"comment"=> {
-                        result.insert(coordinate.clone(), comment);
+                        result.push(comment);
                         comment = Comment::default();
                     }
                     _ => (),

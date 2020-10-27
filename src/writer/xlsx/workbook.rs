@@ -92,12 +92,16 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, fil
     if spreadsheet.get_defined_names().len() > 1 {
         write_start_tag(&mut writer, "definedNames", vec![], false);
 
-        for (_, defined_name) in spreadsheet.get_defined_names() {
+        for defined_name in spreadsheet.get_defined_names() {
             // definedName
-            write_start_tag(&mut writer, "definedName", vec![
-                ("name", defined_name.get_name()),
-            ], false);
-            write_text_node(&mut writer, defined_name.get_value());
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            attributes.push(("name", defined_name.get_name()));
+            if defined_name.get_is_local_only() == &true {
+                attributes.push(("localSheetId", "0"));
+                attributes.push(("hidden", "1"));
+            }
+            write_start_tag(&mut writer, "definedName", attributes, false);
+            write_text_node(&mut writer, defined_name.get_address());
             write_end_tag(&mut writer, "definedName");
         }
 

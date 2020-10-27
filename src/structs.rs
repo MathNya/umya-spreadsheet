@@ -44,3 +44,7 @@ pub mod cell_style;
 pub mod defined_name;
 pub mod comment;
 pub mod styles;
+pub mod coordinate;
+pub mod range;
+pub mod conditional_set;
+pub mod address;

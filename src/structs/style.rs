@@ -4,12 +4,11 @@ use super::borders::Borders;
 use super::alignment::Alignment;
 use super::number_format::NumberFormat;
 use super::protection::Protection;
-use super::super::helper::coordinate::*;
+use super::coordinate::Coordinate;
 
 #[derive(Clone, Debug)]
 pub struct Style {
-    col_num: usize,
-    row_num: usize,
+    coordinate: Coordinate,
     font: Option<Font>,
     fill: Option<Fill>,
     borders: Option<Borders>,
@@ -22,8 +21,7 @@ pub struct Style {
 impl Default for Style {
     fn default() -> Self {
         Self {
-            col_num: 0,
-            row_num: 0,
+            coordinate: Coordinate::default(),
             font: None,
             fill: None,
             borders: None,
@@ -36,34 +34,12 @@ impl Default for Style {
     }
 }
 impl Style {
-    pub fn get_col_num(&self) -> &usize {
-        &self.col_num
+    pub fn get_coordinate(&self)-> &Coordinate {
+        &self.coordinate
     }
 
-    pub fn set_col_num(&mut self, value:&usize) {
-        self.col_num = value.clone();
-    }
-
-    pub fn get_row_num(&self) -> &usize {
-        &self.row_num
-    }
-
-    pub fn set_row_num(&mut self, value:&usize) {
-        self.row_num = value.clone();
-    }
-
-    pub fn get_coordinate(&self)-> String {
-        coordinate_from_index(&self.col_num, &self.row_num)
-    }
-
-    pub(crate) fn is_mine(&self, col_num:&usize, row_num:&usize)->bool {
-        if &self.col_num != col_num {
-            return false;
-        }
-        if &self.row_num != row_num {
-            return false;
-        }
-        true
+    pub fn get_coordinate_mut(&mut self)-> &mut Coordinate {
+        &mut self.coordinate
     }
     
     pub fn get_font(&self) -> &Option<Font> {

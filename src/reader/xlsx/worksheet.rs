@@ -15,6 +15,7 @@ use super::super::structs::style::Style;
 use super::super::structs::page_margins::PageMargins;
 use super::super::structs::rich_text::RichText;
 use super::super::structs::hyperlink::Hyperlink;
+use super::super::structs::conditional_set::ConditionalSet;
 
 use super::super::helper::coordinate::*;
 
@@ -109,8 +110,8 @@ pub(crate) fn read(
                                 let split = index_from_coordinate(&coordinate_upper);
                                 let col = split[0];
                                 let row = split[1];
-                                style.set_col_num(&col);
-                                style.set_row_num(&row);
+                                style.get_coordinate_mut().set_col_num(&col);
+                                style.get_coordinate_mut().set_row_num(&row);
                                 worksheet.add_style(style);
                             },
                             None => {}
@@ -118,9 +119,12 @@ pub(crate) fn read(
                         style_index = None;
                     },
                     b"conditionalFormatting" => {
+                        let mut conditional_set = ConditionalSet::default();
                         let sqref = get_attribute(e, b"sqref").unwrap();
+                        conditional_set.set_sqref(sqref);
                         let conditional_styles_collection = get_conditional_formatting(&mut reader, dxf_vec, theme);
-                        worksheet.add_conditional_styles_collection(sqref, conditional_styles_collection);
+                        conditional_set.set_conditional_collection(conditional_styles_collection);
+                        worksheet.add_conditional_styles_collection(conditional_set);
                     },
                     _ => (),
                 }
@@ -197,8 +201,8 @@ pub(crate) fn read(
                                 let split = index_from_coordinate(&coordinate_upper);
                                 let col = split[0];
                                 let row = split[1];
-                                style.set_col_num(&col);
-                                style.set_row_num(&row);
+                                style.get_coordinate_mut().set_col_num(&col);
+                                style.get_coordinate_mut().set_row_num(&row);
                                 worksheet.add_style(style);
                             },
                             None => {}
@@ -206,7 +210,7 @@ pub(crate) fn read(
                         style_index = None;
                     },
                     b"autoFilter" => {
-                        worksheet.get_auto_filter_mut().set_range(get_attribute(e, b"ref").unwrap());
+                        worksheet.set_auto_filter(get_attribute(e, b"ref").unwrap());
                     },
                     b"mergeCell" => {
                         worksheet.add_merge_cells_crate(get_attribute(e, b"ref").unwrap());

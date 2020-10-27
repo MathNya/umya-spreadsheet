@@ -42,11 +42,13 @@ pub(crate) fn write(
 
     // commentList
     write_start_tag(&mut writer, "commentList", vec![], false);
-    for (coordinate, comment) in worksheet.get_comments() {
+    for comment in worksheet.get_comments() {
+        let coordinate = comment.get_coordinate().get_coordinate();
+
         // comment
         let author_id = get_author_id(&authors, comment.get_author());
         write_start_tag(&mut writer, "comment", vec![
-            ("ref", coordinate),
+            ("ref", &coordinate),
             ("authorId", author_id.as_str()),
         ], false);
 
@@ -121,7 +123,7 @@ pub(crate) fn write(
 
 fn get_authors(worksheet: &Worksheet) -> Vec<String> {
     let mut authors: Vec<String> = Vec::new();
-    for (_, comment) in worksheet.get_comments() {
+    for comment in worksheet.get_comments() {
         let mut is_match = false;
         for author in &authors {
             if comment.get_author() == author {

@@ -467,13 +467,13 @@ fn get_val(
             Ok(Event::End(ref e)) => {
                 match e.name() {
                     b"c:formatCode" => {
-                        data_series_values.set_format_code(string_value.clone());
+                        data_series_values.set_format_code(&string_value);
                     },
                     b"c:f" => {
-                        data_series_values.set_data_source(string_value.clone());
+                        data_series_values.set_address(&string_value);
                     }
                     b"c:v" => {
-                        data_series_values.add_data_values(idx, string_value.clone());
+                        data_series_values.add_data_values(idx, &string_value);
                     }
                     b"c:tx" => return data_series_values,
                     b"c:cat" => return data_series_values,
@@ -537,4 +537,13 @@ fn read_chart_attributes(
         }
         buf.clear();
     }
+}
+
+fn get_sheet_id(sheet_name:&str, sheet_vec:&Vec<(String, String, String)>)-> String {
+    for (sheets_name, sheets_sheet_id, _) in sheet_vec {
+        if sheet_name == sheets_name {
+            return sheets_sheet_id.clone();
+        }
+    }
+    String::from("")
 }

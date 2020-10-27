@@ -17,8 +17,7 @@ pub(crate) fn write(
     chart: &Chart,
     p_chart_id: &str,
     dir: &TempDir
-) -> Result<(), XlsxError> 
-{
+) -> Result<(), XlsxError> {
     let file_name = format!("chart{}.xml", p_chart_id);
 
     let mut writer = Writer::new(Cursor::new(Vec::new()));
@@ -161,7 +160,7 @@ pub(crate) fn write(
 
                     // c:f
                     write_start_tag(&mut writer, "c:f", vec![], false);
-                    write_text_node(&mut writer, v.get_data_source());
+                    write_text_node(&mut writer, v.get_address());
                     write_end_tag(&mut writer, "c:f");
 
                     // c:numCache
@@ -210,7 +209,7 @@ pub(crate) fn write(
 
             // c:f
             write_start_tag(&mut writer, "c:f", vec![], false);
-            write_text_node(&mut writer, ser.get_data_source());
+            write_text_node(&mut writer, ser.get_address());
             write_end_tag(&mut writer, "c:f");
 
             // c:numCache

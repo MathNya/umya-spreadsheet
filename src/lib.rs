@@ -59,6 +59,10 @@ pub use self::structs::cell_style::*;
 pub use self::structs::defined_name::*;
 pub use self::structs::comment::*;
 pub use self::structs::styles::*;
+pub use self::structs::coordinate::*;
+pub use self::structs::range::*;
+pub use self::structs::conditional_set::*;
+pub use self::structs::address::*;
 
 /// create new spreadsheet file.
 /// # Arguments
