@@ -10,6 +10,20 @@ fn read_and_wite() {
     let a1_value = book.get_sheet(0).unwrap().get_cell("A1").unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value_by_column_and_row(2, 20));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B20"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B21"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B22"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B23"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B24"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B25"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B26"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B27"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B28"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B29"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B30"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B33"));
+
     // writer
     let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -85,7 +99,6 @@ fn new_and_wite() {
     .get_left_mut()
     .set_border_style(umya_spreadsheet::Border::BORDER_THIN);
     
-
     // change font color.
     let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
     .get_font_mut()

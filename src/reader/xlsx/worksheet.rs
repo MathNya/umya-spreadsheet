@@ -83,8 +83,8 @@ pub(crate) fn read(
                     },
                     b"row" => {
                         let mut row = RowDimension::default();
-                        let row_index = get_attribute_row(e, &mut row);
-                        worksheet.set_row_dimension(row_index, row);
+                        get_attribute_row(e, &mut row);
+                        worksheet.set_row_dimension(row);
                     },
                     b"c" => {
                         for a in e.attributes().with_checks(false) {
@@ -158,27 +158,26 @@ pub(crate) fn read(
                     },
                     b"col" => {
                         let mut column_dimension = ColumnDimension::default();
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"min" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let column_index = value.parse::<usize>().unwrap();
-                                    column_dimension.set_column_index(string_from_column_index(&column_index));
-                                },
-                                Ok(ref attr) if attr.key == b"width" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    column_dimension.set_width(value.parse::<f32>().unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
+                        let min = get_attribute(e, b"min").unwrap().parse::<usize>().unwrap();
+                        column_dimension.set_col_num_start(min);
+
+                        let max = get_attribute(e, b"max").unwrap().parse::<usize>().unwrap();
+                        column_dimension.set_col_num_end(max);
+
+                        let width = get_attribute(e, b"width").unwrap().parse::<f32>().unwrap();
+                        column_dimension.set_width(width);
+
+                        let bestFit =  match get_attribute(e, b"bestFit") {
+                            Some(v) => { if v.as_str() == "1" { true } else { false } },
+                            None => { false }
+                        };
+                        column_dimension.set_best_fit(bestFit);
                         worksheet.set_column_dimensions(column_dimension);
                     },
                     b"row" => {
                         let mut row = RowDimension::default();
-                        let row_index = get_attribute_row(e, &mut row);
-                        worksheet.set_row_dimension(row_index, row);
+                        get_attribute_row(e, &mut row);
+                        worksheet.set_row_dimension(row);
                     },
                     b"c" => {
                         for a in e.attributes().with_checks(false) {
@@ -251,7 +250,7 @@ pub(crate) fn read(
             Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
             Ok(Event::End(ref e)) => {
                 match e.name() {
-                    b"f" => worksheet.get_cell_mut(&coordinate.to_string()).set_formula_attributes(string_value.clone()),
+                    b"f" => worksheet.get_cell_mut(&coordinate.to_string()).set_formula(string_value.clone()),
                     b"v" => {
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
@@ -445,11 +444,11 @@ fn get_cfvo(
 fn get_attribute_row(
     e:&quick_xml::events::BytesStart<'_>, 
     row:&mut RowDimension
-)-> usize {
+) {
     let mut row_index:usize = 0;
     for a in e.attributes().with_checks(false) {
         match a {
-            Ok(ref attr) if attr.key == b"r" => row_index = get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
+            Ok(ref attr) if attr.key == b"r" => row.set_row_num(&get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
             Ok(ref attr) if attr.key == b"ht" => row.set_height(get_attribute_value(attr).unwrap().parse::<f32>().unwrap()),
             Ok(ref attr) if attr.key == b"thickBot" => row.set_thick_bot(get_attribute_value(attr).unwrap() == "1"),
             Ok(ref attr) if attr.key == b"customHeight" => row.set_custom_height(get_attribute_value(attr).unwrap() == "1"),
@@ -458,7 +457,6 @@ fn get_attribute_row(
             Err(_) => {},
         }
     }
-    row_index
 }
 
 fn get_attribute_color(

@@ -160,7 +160,7 @@ pub(crate) fn write(
 
                     // c:f
                     write_start_tag(&mut writer, "c:f", vec![], false);
-                    write_text_node(&mut writer, v.get_address());
+                    write_text_node(&mut writer, v.get_address().get_address());
                     write_end_tag(&mut writer, "c:f");
 
                     // c:numCache
@@ -209,7 +209,7 @@ pub(crate) fn write(
 
             // c:f
             write_start_tag(&mut writer, "c:f", vec![], false);
-            write_text_node(&mut writer, ser.get_address());
+            write_text_node(&mut writer, ser.get_address().get_address());
             write_end_tag(&mut writer, "c:f");
 
             // c:numCache

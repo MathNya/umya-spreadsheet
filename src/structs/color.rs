@@ -75,6 +75,17 @@ impl Default for Color {
     }
 }
 impl Color {
+    pub const NAMED_COLORS: &'static [&'static str] = &[
+        "Black",
+        "White",
+        "Red",
+        "Green",
+        "Blue",
+        "Yellow",
+        "Magenta",
+        "Cyan",
+    ];
+
     // Colors
     pub const COLOR_BLACK: &'static str = "FF000000";
     pub const COLOR_WHITE: &'static str = "FFFFFFFF";

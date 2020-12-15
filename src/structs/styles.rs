@@ -11,6 +11,10 @@ impl Styles {
         &self.index
     }
 
+    pub(crate) fn get_collection_mut(&mut self)-> &mut Vec<Style> {
+        &mut self.index
+    }
+
     pub(crate) fn get_collection_to_hashmap(&self)-> HashMap<String, &Style> {
         let mut result = HashMap::default();
         for style in &self.index {

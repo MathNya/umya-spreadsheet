@@ -25,8 +25,12 @@ impl DataSeriesValues {
         self.data_type = value.into();
     }
 
-    pub fn get_address(&self)-> String {
-        self.address.get_address()
+    pub fn get_address(&self)-> &Address {
+        &self.address
+    }
+
+    pub fn get_address_mut(&mut self)-> &mut Address {
+        &mut self.address
     }
 
     pub(crate) fn set_address<S: Into<String>>(&mut self, value:S) {

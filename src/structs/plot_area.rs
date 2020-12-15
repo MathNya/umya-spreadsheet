@@ -16,6 +16,9 @@ impl PlotArea {
     pub fn get_plot_series(&self)-> &Vec<DataSeries> {
         &self.plot_series
     }
+    pub fn get_plot_series_mut(&mut self)-> &mut Vec<DataSeries> {
+        &mut self.plot_series
+    }
     pub(crate) fn set_plot_series(&mut self, value:Vec<DataSeries>) {
         self.plot_series = value;
     }

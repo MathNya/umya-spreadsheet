@@ -72,4 +72,11 @@ impl Range {
         &mut self.coordinate_end
     }
 
+    pub(crate) fn update_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_rol_num:&usize, offset_row_num:&usize) {
+        self.coordinate_start.update_coordinate(root_col_num, offset_col_num, root_rol_num, offset_row_num);
+        match &mut self.coordinate_end {
+            Some(v) => v.update_coordinate(root_col_num, offset_col_num, root_rol_num, offset_row_num),
+            None => {}
+        }
+    }
 }

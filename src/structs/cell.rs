@@ -8,7 +8,7 @@ pub struct Cell {
     value: String,
     rich_text: Option<RichText>,
     data_type: String,
-    formula_attributes: String,
+    formula: String,
     hyperlink: Option<Hyperlink>,
 }
 impl Cell {
@@ -72,7 +72,7 @@ impl Cell {
         self.value = value.into();
         self.rich_text = rich_text;
         self.data_type = data_type.into();
-        self.formula_attributes = formula_attributes.into();
+        self.formula = formula_attributes.into();
     }
 
     pub fn get_data_type(&self)-> &str {
@@ -133,12 +133,12 @@ impl Cell {
         &self.data_type == Cell::TYPE_FORMULA
     }
 
-    pub fn get_formula_attributes(&self)-> &String {
-        &self.formula_attributes
+    pub fn get_formula(&self)-> &String {
+        &self.formula
     }
 
-    pub(crate) fn set_formula_attributes<S: Into<String>>(&mut self, value:S) {
-        self.formula_attributes = value.into();
+    pub(crate) fn set_formula<S: Into<String>>(&mut self, value:S) {
+        self.formula = value.into();
     }
 
     pub(crate) fn data_type_for_value(value:&str)-> &str {

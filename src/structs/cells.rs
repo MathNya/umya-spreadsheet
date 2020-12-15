@@ -11,6 +11,10 @@ impl Cells {
         &self.index
     }
 
+    pub(crate) fn get_collection_mut(&mut self)-> &mut Vec<Cell> {
+        &mut self.index
+    }
+
     pub(crate) fn get_collection_to_hashmap(&self)-> HashMap<String, &Cell> {
         let mut result = HashMap::default();
         for cell in &self.index {

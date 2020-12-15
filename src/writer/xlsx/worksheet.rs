@@ -123,12 +123,18 @@ pub(crate) fn write(
 
         // col
         for cols in worksheet.get_column_dimensions() {
-            write_start_tag(&mut writer, "col", vec![
-                ("min", column_index_from_string(cols.get_column_index()).to_string().as_str()),
-                ("max", column_index_from_string(cols.get_column_index()).to_string().as_str()),
-                ("width", cols.get_width().to_string().as_str()),
-                ("customWidth", "1"),
-            ], true);
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let min = cols.get_col_num_start().to_string();
+            let max = cols.get_col_num_end().to_string();
+            let width = cols.get_width().to_string();
+            attributes.push(("min", min.as_str()));
+            attributes.push(("max", max.as_str()));
+            attributes.push(("width", width.as_str()));
+            if cols.get_best_fit() == &true {
+                attributes.push(("bestFit", "1"));
+            }
+            attributes.push(("customWidth", "1"));
+            write_start_tag(&mut writer, "col", attributes, true);
         }
 
         write_end_tag(&mut writer, "cols");
@@ -153,10 +159,11 @@ pub(crate) fn write(
     let has_sheet_data = worksheet.get_row_dimensions().len() > 0;
     write_start_tag(&mut writer, "sheetData", vec![], !has_sheet_data);
 
-    for (row_num, row) in worksheet.get_row_dimensions() {
+    for (row_num, row) in worksheet.get_row_dimensions_to_b_tree_map() {
+
         // cells and styles
-        let cells = worksheet.get_collection_by_row(row_num);
-        let styles = worksheet.get_style_collection_by_row(row_num);
+        let cells = worksheet.get_collection_by_row(&row_num);
+        let styles = worksheet.get_style_collection_by_row(&row_num);
         let mut col_num_list:BTreeSet<usize> = BTreeSet::new();
         for (col_num, _) in &cells {
             col_num_list.insert(col_num.clone());
@@ -200,7 +207,7 @@ pub(crate) fn write(
             let cell = &cells.get(&col_num);
             let style = &styles.get(&col_num);
 
-            let coordinate = coordinate_from_index(&col_num, row_num);
+            let coordinate = coordinate_from_index(&col_num, &row_num);
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             attributes.push(("r", &coordinate));
 
@@ -229,9 +236,9 @@ pub(crate) fn write(
                     write_start_tag(&mut writer, "c", attributes, false);
 
                     // f
-                    if c.get_formula_attributes() != "" {
+                    if c.get_formula() != "" {
                         write_start_tag(&mut writer, "f", vec![], false);
-                        write_text_node(&mut writer, c.get_formula_attributes());
+                        write_text_node(&mut writer, c.get_formula());
                         write_end_tag(&mut writer, "f");
                     }
 

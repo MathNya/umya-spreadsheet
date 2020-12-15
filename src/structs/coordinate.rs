@@ -61,4 +61,13 @@ impl Coordinate {
         }
         true
     }
+
+    pub(crate) fn update_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        if &self.col_num >= root_col_num {
+            self.col_num = self.col_num + offset_col_num;
+        }
+        if &self.row_num >= root_row_num {
+            self.row_num = self.row_num + offset_col_num;
+        }
+    }
 }

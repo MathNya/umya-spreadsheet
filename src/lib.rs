@@ -4,6 +4,9 @@ extern crate walkdir;
 extern crate zip;
 extern crate regex;
 extern crate md5;
+extern crate thousands;
+extern crate onig;
+extern crate chrono;
 
 #[macro_use]
 extern crate lazy_static;

@@ -16,18 +16,20 @@ use super::auto_filter::AutoFilter;
 use super::hyperlink::Hyperlink;
 use super::color::Color;
 use super::comment::Comment;
+use super::number_format::NumberFormat;
 use std::collections::BTreeMap; 
-use std::collections::HashMap; 
+use std::collections::HashMap;
 use super::super::helper::coordinate::*;
+use super::super::helper::number_format::*;
+use regex::Regex;
 
 #[derive(Debug)]
 pub struct Worksheet {
     sheet_id: String,
     title: String,
     cell_collection: Cells,
-    row_dimensions : BTreeMap<usize, RowDimension>,
+    row_dimensions : Vec<RowDimension>,
     column_dimensions : Vec<ColumnDimension>,
-    default_column_dimension: ColumnDimension,
     drawing_collection: Vec<Drawing>,
     chart_collection: Vec<Chart>,
     sheet_state: String,
@@ -65,9 +67,8 @@ impl Default for Worksheet {
             sheet_id: String::from(""),
             title: String::from(""),
             cell_collection: Cells::default(),
-            row_dimensions : BTreeMap::new(),
+            row_dimensions : Vec::new(),
             column_dimensions : Vec::new(),
-            default_column_dimension: ColumnDimension::default(),
             drawing_collection: Vec::new(),
             chart_collection: Vec::new(),
             sheet_state: String::from(""),
@@ -102,11 +103,109 @@ impl Default for Worksheet {
     }
 }
 impl Worksheet {
+    // ************************
+    // Value
+    // ************************
+
+    /// Get value.
+    /// # Arguments
+    /// * `coordinate` - Specify the coordinates. ex) "A1"
+    /// # Return value
+    /// * `String` - Value of the specified cell.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let value = worksheet.get_value("A1");
+    /// ```
+    pub fn get_value<S: Into<String>>(&self, coordinate:S)-> String {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        let split = index_from_coordinate(&coordinate_upper);
+        let col = split[0];
+        let row = split[1];
+        self.get_value_by_column_and_row(col, row)
+    }
+
+    /// Get value by specifying the column number and row number.
+    /// # Arguments
+    /// * `col` - Specify the column number. (first column number is 1)
+    /// * `row` - Specify the row number. (first row number is 1)
+    /// # Return value
+    /// * `String` - Value of the specified cell.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let value = worksheet.get_value_by_column_and_row(1, 1);
+    /// ```
+    pub fn get_value_by_column_and_row(&self, col:usize, row:usize)-> String {
+        match self.get_cell_by_column_and_row(col, row) {
+            Some(v) => {v.get_value().into()},
+            None => "".into()
+        }
+    }
+
+    /// Get formatted value.
+    /// # Arguments
+    /// * `coordinate` - Specify the coordinates. ex) "A1"
+    /// # Return value
+    /// * `String` - Formatted value of the specified cell.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let value = worksheet.get_formatted_value("A1");
+    /// ```
+    pub fn get_formatted_value<S: Into<String>>(&self, coordinate:S)-> String {
+        let coordinate_upper = coordinate.into().to_uppercase();
+        let split = index_from_coordinate(&coordinate_upper);
+        let col = split[0];
+        let row = split[1];
+        self.get_formatted_value_by_column_and_row(col, row)
+    }
+
+    /// Get formatted value by specifying the column number and row number.
+    /// # Arguments
+    /// * `col` - Specify the column number. (first column number is 1)
+    /// * `row` - Specify the row number. (first row number is 1)
+    /// # Return value
+    /// * `String` - Formatted value of the specified cell.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let value = worksheet.get_formatted_value_by_column_and_row(1, 1);
+    /// ```
+    pub fn get_formatted_value_by_column_and_row(&self, col:usize, row:usize)-> String {
+        let value:String = match self.get_cell_by_column_and_row(col, row) {
+            Some(v) => {v.get_value().into()},
+            None => "".into()
+        };
+        
+        // convert value
+        let result = match self.get_style_by_column_and_row(col, row) {
+            Some(style) => {
+                match style.get_number_format() {
+                    Some(nmuber_format) => {
+                        to_formatted_string(value.as_str(), nmuber_format.get_format_code())
+                    },
+                    None => value
+                }
+            },
+            None => value
+        };
+        result
+    }
+
     // ************************    
     // Cell
     // ************************    
     pub fn get_cell_collection(&self) -> &Vec<Cell> {
-        &self.cell_collection.get_collection()
+        self.cell_collection.get_collection()
+    }
+
+    pub fn get_cell_collection_mut(&mut self) -> &mut Vec<Cell> {
+        self.cell_collection.get_collection_mut()
     }
 
     pub fn get_cell_collection_to_hashmap(&self) -> HashMap<String, &Cell> {
@@ -184,9 +283,13 @@ impl Worksheet {
     /// let cell = worksheet.get_cell_by_column_and_row_mut(1, 1);  // get cell from A1. 
     /// ```
     pub fn get_cell_by_column_and_row_mut(&mut self, col:usize, row:usize)->&mut Cell {
-        match self.row_dimensions.get(&row) {
+        match self.get_row_dimension(&row) {
             Some(_) => {},
-            None => self.set_row_dimension(row, RowDimension::default())
+            None => {
+                let mut row_dimension = RowDimension::default();
+                row_dimension.set_row_num(&row);
+                self.set_row_dimension(row_dimension);
+            }
         }
         if self.cell_collection.has(&col, &row) == false {
             let mut cell = Cell::default();
@@ -202,6 +305,10 @@ impl Worksheet {
     // ************************
     pub fn get_style_collection(&self) -> &Vec<Style> {
         &self.styles.get_collection()
+    }
+
+    pub fn get_style_collection_mut(&mut self) -> &mut Vec<Style> {
+        self.styles.get_collection_mut()
     }
 
     pub fn get_style_collection_to_hashmap(&self) -> HashMap<String, &Style> {
@@ -279,9 +386,13 @@ impl Worksheet {
     /// let style = worksheet.get_style_by_column_and_row_mut(1, 1);  // get style from A1. 
     /// ```
     pub fn get_style_by_column_and_row_mut(&mut self, col:usize, row:usize)->&mut Style {
-        match self.row_dimensions.get(&row) {
+        match self.get_row_dimension(&row) {
             Some(_) => {},
-            None => self.set_row_dimension(row, RowDimension::default())
+            None => {
+                let mut row_dimension = RowDimension::default();
+                row_dimension.set_row_num(&row);
+                self.set_row_dimension(row_dimension);
+            }
         }
         if self.styles.has(&col, &row) == false {
             let mut style = Style::default();
@@ -323,6 +434,7 @@ impl Worksheet {
         &self.conditional_styles_collection
 
     }
+
     pub(crate) fn set_conditional_styles_collection(&mut self, value:Vec<ConditionalSet>) {
         self.conditional_styles_collection = value;
     }
@@ -359,8 +471,8 @@ impl Worksheet {
         self.merge_cells.push(value.into());
     }
 
-    // ************************    
-    // AutoFilter
+    // ************************
+    // Auto Filter
     // ************************
     pub fn get_auto_filter(&self) -> &Option<AutoFilter> {
         &self.auto_filter
@@ -374,6 +486,155 @@ impl Worksheet {
         let mut auto_filter = AutoFilter::default();
         auto_filter.set_range(value);
         self.auto_filter = Some(auto_filter);
+    }
+
+    // ************************
+    // Column Dimensions
+    // ************************
+    pub fn get_column_dimensions(&self) -> &Vec<ColumnDimension> {
+        &self.column_dimensions
+    }
+
+    pub(crate) fn set_column_dimensions(&mut self, value:ColumnDimension) {
+        &self.column_dimensions.push(value);
+    }
+
+    // ************************
+    // Row Dimensions
+    // ************************
+    pub fn get_row_dimensions(&self) -> &Vec<RowDimension> {
+        &self.row_dimensions
+    }
+
+    pub fn get_row_dimensions_to_b_tree_map(&self) -> BTreeMap<usize, &RowDimension> {
+        let mut result = BTreeMap::default();
+        for row_dimension in &self.row_dimensions {
+            result.insert(row_dimension.get_row_num().clone(), row_dimension);
+        }
+        result
+    }
+
+    pub fn get_row_dimension(&self, row:&usize) -> Option<&RowDimension> {
+        for row_dimension in &self.row_dimensions {
+            if row == row_dimension.get_row_num() {
+                return Some(row_dimension);
+            }
+        }
+        None
+    }
+
+    pub fn get_row_dimension_mut(&mut self, row:&usize) -> Option<&mut RowDimension> {
+        for row_dimension in &mut self.row_dimensions {
+            if row == row_dimension.get_row_num() {
+                return Some(row_dimension);
+            }
+        }
+        None
+    }
+
+    pub(crate) fn set_row_dimension(&mut self, value:RowDimension) {
+        let row_num = value.get_row_num();
+        match self.get_row_dimension_mut(row_num) {
+            Some(v) => {
+                std::mem::replace(v, value);
+            },
+            None => self.row_dimensions.push(value)
+        }
+    }
+
+    // ************************
+    // Chart
+    // ************************
+    pub fn get_chart_collection(&self) -> &Vec<Chart> {
+        &self.chart_collection
+    }
+
+    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+        &mut self.chart_collection
+    }
+
+    pub(crate) fn new_chart(&mut self) -> &mut Chart {
+        let chart = Chart::default();
+        self.add_chart(chart);
+        self.chart_collection.last_mut().unwrap()
+    }
+
+    pub(crate) fn add_chart(&mut self, chart:Chart) {
+        self.chart_collection.push(chart);
+    }
+
+    pub fn get_chart_count(&self) -> usize {
+        self.chart_collection.len()
+    }
+
+    pub fn get_chart_by_index(&self, index:usize) -> &Chart {
+        &self.chart_collection[index]
+    }
+
+    pub fn get_chart_names(&self, index:usize) -> Vec<String> {
+        let mut names: Vec<String> = Vec::new();
+        for v in self.get_chart_collection() {
+            names.push(v.get_name().into());
+        }
+        names
+    }
+
+    // ************************
+    // update Coordinate
+    // ************************
+    pub(crate) fn update_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        if sheet_name == self.title && offset_col_num != &0 {
+            // update column dimensions
+            for column_dimension in &mut self.column_dimensions {
+                column_dimension.update_coordinate(root_col_num, offset_col_num);
+            }
+        }
+        if sheet_name == self.title && offset_row_num != &0 {
+            // update row dimensions
+            for column_dimension in &mut self.row_dimensions {
+                column_dimension.update_coordinate(root_row_num, offset_row_num);
+            }
+        }
+        if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
+            // update cell
+            for cell in self.get_cell_collection_mut() {
+                cell.get_coordinate_mut().update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update style
+            for style in self.get_style_collection_mut() {
+                style.get_coordinate_mut().update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update comments
+            for comment in &mut self.comments {
+                comment.get_coordinate_mut().update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update conditional styles
+            for conditional_styles in &mut self.conditional_styles_collection {
+                for range in conditional_styles.get_range_collection_mut() {
+                    range.update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                }
+            }
+        }
+
+        if offset_col_num != &0 || offset_row_num != &0 {
+            // update chart
+            for chart in self.get_chart_collection_mut() {
+                for data_serise in chart.get_plot_area_mut().get_plot_series_mut() {
+                    for (_, data_serise_values) in data_serise.get_plot_label_mut() {
+                        data_serise_values.get_address_mut().update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                    }
+                    for (_, data_serise_values) in data_serise.get_plot_values_mut() {
+                        data_serise_values.get_address_mut().update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                    }
+                    for (_, data_serise_values) in data_serise.get_plot_category_mut() {
+                        data_serise_values.get_address_mut().update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                    }
+                }
+            }
+        }
     }
 
     pub(crate) fn get_coordinates(&self)-> Vec<String> {
@@ -410,12 +671,6 @@ impl Worksheet {
         self.header_footer = value;
     }
 
-    pub fn get_row_dimension(&self, row:usize) -> Option<&RowDimension> {
-        self.row_dimensions.get(&row)
-    }
-    pub(crate) fn set_row_dimension(&mut self, row:usize, value:RowDimension) {
-        &self.row_dimensions.insert(row, value);
-    }
     pub fn get_active_cell(&self) -> &str {
         &self.active_cell
     }
@@ -428,18 +683,7 @@ impl Worksheet {
     pub(crate) fn set_sheet_id<S: Into<String>>(&mut self, value:S) {
         self.sheet_id = value.into();
     }
-    pub fn get_row_dimensions(&self) -> &BTreeMap<usize, RowDimension> {
-        &self.row_dimensions
-    }
-    pub fn get_column_dimensions(&self) -> &Vec<ColumnDimension> {
-        &self.column_dimensions
-    }
-    pub(crate) fn set_column_dimensions(&mut self, value:ColumnDimension) {
-        &self.column_dimensions.push(value);
-    }
-    pub fn get_default_column_dimension(&self) -> &ColumnDimension {
-        &self.default_column_dimension
-    }
+
     pub fn get_drawing_collection(&self) -> &Vec<Drawing> {
         &self.drawing_collection
     }
@@ -456,30 +700,6 @@ impl Worksheet {
     }
     pub(crate) fn add_drawing(&mut self, value:Drawing) {
         self.drawing_collection.push(value);
-    }
-    pub fn get_chart_collection(&self) -> &Vec<Chart> {
-        &self.chart_collection
-    }
-    pub(crate) fn new_chart(&mut self) -> &mut Chart {
-        let chart = Chart::default();
-        self.add_chart(chart);
-        self.chart_collection.last_mut().unwrap()
-    }
-    pub(crate) fn add_chart(&mut self, chart:Chart) {
-        self.chart_collection.push(chart);
-    }
-    pub fn get_chart_count(&self) -> usize {
-        self.chart_collection.len()
-    }
-    pub fn get_chart_by_index(&self, index:usize) -> &Chart {
-        &self.chart_collection[index]
-    }
-    pub fn get_chart_names(&self, index:usize) -> Vec<String> {
-        let mut names: Vec<String> = Vec::new();
-        for v in self.get_chart_collection() {
-            names.push(v.get_name().into());
-        }
-        names
     }
     pub fn has_drawing_object(&self) -> bool {
         if self.chart_collection.len() > 0 {

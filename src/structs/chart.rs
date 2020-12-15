@@ -80,6 +80,9 @@ impl Chart {
     pub fn get_plot_area(&self) -> &PlotArea {
         &self.plot_area
     }
+    pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
+        &mut self.plot_area
+    }
     pub(crate) fn set_plot_area(&mut self, value:PlotArea) {
         self.plot_area = value;
     }

@@ -86,11 +86,18 @@ impl DataSeries {
     {
         &self.plot_label
     }
+    pub fn get_plot_label_mut(&mut self)-> &mut BTreeMap<i32, DataSeriesValues>
+    {
+        &mut self.plot_label
+    }
     pub(crate) fn add_plot_label(&mut self, index:i32, value:DataSeriesValues) {
         self.plot_label.insert(index, value);
     }
     pub fn get_plot_category(&self)-> &BTreeMap<i32, DataSeriesValues> {
         &self.plot_category
+    }
+    pub fn get_plot_category_mut(&mut self)-> &mut BTreeMap<i32, DataSeriesValues> {
+        &mut self.plot_category
     }
     pub(crate) fn add_plot_category(&mut self, index:i32, value:DataSeriesValues) {
         self.plot_category.insert(index, value);
@@ -103,6 +110,9 @@ impl DataSeries {
     }
     pub fn get_plot_values(&self)-> &BTreeMap<i32, DataSeriesValues> {
         &self.plot_values
+    }
+    pub fn get_plot_values_mut(&mut self)-> &mut BTreeMap<i32, DataSeriesValues> {
+        &mut self.plot_values
     }
     pub(crate) fn add_plot_values(&mut self, index:i32, value:DataSeriesValues) {
         self.plot_values.insert(index, value);

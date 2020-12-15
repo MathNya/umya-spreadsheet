@@ -39,6 +39,23 @@ pub struct Spreadsheet {
     defined_names: Vec<DefinedName>,
 }
 impl Spreadsheet {
+    // ************************
+    // update Coordinate
+    // ************************
+    pub(crate) fn insert_new_row(&mut self, sheet_name:&str, root_row_num:usize, offset_row_num:usize) {
+        self.update_coordinate(sheet_name, &0, &0, &root_row_num, &offset_row_num);
+    }
+
+    pub(crate) fn insert_new_colmun(&mut self, sheet_name:&str, root_col_num:usize, offset_col_num:usize) {
+        self.update_coordinate(sheet_name, &root_col_num, &offset_col_num, &0, &0);
+    }
+
+    pub(crate) fn update_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        for worksheet in &mut self.work_sheet_collection {
+            worksheet.update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+        }
+    }
+
     pub fn get_defined_names(&self) -> &Vec<DefinedName> {
         &self.defined_names
     }
@@ -359,10 +376,10 @@ impl Spreadsheet {
     pub fn has_ribbon(&self) -> bool {
         self.ribbon_xml_data.is_some()
     }
-    pub(crate) fn has_formula_attributes(&self) -> bool {
+    pub(crate) fn has_formula(&self) -> bool {
         for worksheet in &self.work_sheet_collection {
             for cell in worksheet.get_cell_collection() {
-                if cell.get_formula_attributes() != "" {
+                if cell.get_formula() != "" {
                     return true;
                 }
             }
