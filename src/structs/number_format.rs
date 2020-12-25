@@ -145,11 +145,24 @@ impl NumberFormat {
     pub fn get_format_code(&self)-> &str {
         &self.format_code
     }
-    pub(crate) fn set_format_code<S: Into<String>>(&mut self, value:S) {
+
+    /// Set the format code.
+    /// # Arguments
+    /// * `value` - format code. (umya_spreadsheet::NumberFormat)
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let _ = worksheet.get_style_mut("C30")
+    /// .get_number_format_mut()
+    /// .set_format_code(umya_spreadsheet::NumberFormat::FORMAT_DATE_XLSX17);
+    /// ```
+    pub fn set_format_code<S: Into<String>>(&mut self, value:S) {
         self.format_code = value.into();
         let check:&str = &self.format_code;
         self.built_in_format_code = FILL_BUILT_IN_FORMAT_CODES.iter().find_map(|(key, val)| if val == check { Some(key.clone()) } else { None });
     }
+
     pub fn get_built_in_format_code(&self)-> &Option<usize> {
         &self.built_in_format_code
     }

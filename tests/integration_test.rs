@@ -7,7 +7,7 @@ fn read_and_wite() {
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
-    let a1_value = book.get_sheet(0).unwrap().get_cell("A1").unwrap().get_value();
+    let a1_value = book.get_sheet(0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
 
     dbg!(book.get_sheet(0).unwrap().get_formatted_value_by_column_and_row(2, 20));
@@ -22,7 +22,26 @@ fn read_and_wite() {
     dbg!(book.get_sheet(0).unwrap().get_formatted_value("B28"));
     dbg!(book.get_sheet(0).unwrap().get_formatted_value("B29"));
     dbg!(book.get_sheet(0).unwrap().get_formatted_value("B30"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B31"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B32"));
     dbg!(book.get_sheet(0).unwrap().get_formatted_value("B33"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B34"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B35"));
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("B36"));
+
+    let _ = book.get_sheet_mut(1).get_cell_mut("C20")
+    .set_value("49046881.119999997").unwrap();
+    let _ = book.get_sheet_mut(1).get_style_mut("C20")
+    .get_number_format_mut()
+    .set_format_code("#,##0.00");
+    dbg!(book.get_sheet(1).unwrap().get_formatted_value("C20"));
+
+    let value = book.get_sheet(0).unwrap().get_value("B30");
+    let _ = book.get_sheet_mut(0).get_cell_mut("C30").set_value(value);
+    let _ = book.get_sheet_mut(0).get_style_mut("C30")
+    .get_number_format_mut()
+    .set_format_code(umya_spreadsheet::NumberFormat::FORMAT_DATE_XLSX17);
+    dbg!(book.get_sheet(0).unwrap().get_formatted_value("C30"));
 
     // writer
     let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");

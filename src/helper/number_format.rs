@@ -3,7 +3,7 @@ use onig::*;
 use structs::number_format::NumberFormat;
 use structs::color::Color;
 use helper::string_helper::*;
-use thousands::{Separable, SeparatorPolicy, digits};
+use thousands::{Separable};
 use helper::date::*;
 
 const DATE_FORMAT_REPLACEMENTS: &'static [(&'static str, &'static str)] = &[
@@ -74,10 +74,10 @@ pub fn to_formatted_string<S: Into<String>>(value:S, format:S)-> String {
 
     // convert value
     if &format == NumberFormat::FORMAT_GENERAL {
-        return value;
+        return value.parse::<f64>().unwrap().to_string();
     }
     if &format == NumberFormat::FORMAT_TEXT {
-        return value;
+        return value.parse::<f64>().unwrap().to_string();
     }
 
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")
@@ -88,13 +88,13 @@ pub fn to_formatted_string<S: Into<String>>(value:S, format:S)-> String {
     let re = Regex::new(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
     let sections:Vec<&str> = re.split(&format).collect();
 
-    let (color, split_format, split_value) = split_format(sections, &value.parse::<f64>().unwrap());
+    let (_, split_format, split_value) = split_format(sections, &value.parse::<f64>().unwrap());
     format = split_format;
     value = split_value;
 
     // In Excel formats, "_" is used to add spacing,
     //    The following character indicates the size of the spacing, which we can't do in HTML, so we just use a standard space
-    let re = Regex::new("/_./").unwrap();
+    let re = Regex::new("_.").unwrap();
     format = re.replace_all(&format, " ");
 
     // Let's begin inspecting the format and converting the value to a formatted string
@@ -106,17 +106,30 @@ pub fn to_formatted_string<S: Into<String>>(value:S, format:S)-> String {
         // datetime format
         value = format_as_date(&value.parse::<f64>().unwrap(), &format);
     } else {
-        if &format.starts_with(r#"""#) == &true && &format.ends_with(r#"""#) == &true  {
+        if &format.starts_with(r#"""#) == &true && &format.ends_with(r#"""#) == &true {
             let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
             value = conv_format.to_string();
         } else if re2.find(&format).is_some() {
             // % number format
-            //formatAsPercentage(&value, &format);
+            value = format_as_percentage(&value.parse::<f64>().unwrap(), &format);
         } else {
             value = format_as_number(&value.parse::<f64>().unwrap(), &format);
         }
     }
     value.trim().to_string()
+}
+
+fn format_as_percentage(value:&f64, format:&str)-> String {
+    let mut value = value.to_string();
+    let mut format = format.to_string();
+    format = format.replace("%", "");
+    let blocks:Vec<&str> = format.split('.').collect();
+    let len = match blocks.get(1) {
+        Some(v) => v.len(),
+        None => 0
+    };
+    value = format!("{:0width$.len$}%", (100f64 * &value.parse::<f64>().unwrap()).round(), width = 1, len = len);
+    value
 }
 
 fn split_format(sections:Vec<&str>, value:&f64)-> (String, String, String) {
@@ -131,7 +144,7 @@ fn split_format(sections:Vec<&str>, value:&f64)-> (String, String, String) {
     //   4 sections:  [POSITIVE] [NEGATIVE] [ZERO] [TEXT]
     let cnt:usize = sections.len();
     let color_regex:String = format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
-    let cond_regex = "\\[(>|>=|<|<=|=|<>)([+-]?\\d+([.]\\d+)?)\\]";
+    let cond_regex = r#"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]"#;
     let color_re = Regex::new(&color_regex).unwrap();
     let cond_re = Regex::new(&cond_regex).unwrap();
     
@@ -142,14 +155,20 @@ fn split_format(sections:Vec<&str>, value:&f64)-> (String, String, String) {
     for section in sections {
         let mut converted_section = section.to_string();
         if color_re.find(section).is_some() {
-            let item:Vec<&str> = color_re.split(section).collect();
+            let mut item:Vec<String> = Vec::new();
+            for ite in color_re.captures(section).unwrap().iter() {
+                item.push(ite.unwrap().to_string());
+            }
             std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "").to_string();
         }
         if cond_regex.find(section).is_some() {
-            let item:Vec<&str> = cond_re.split(section).collect();
-            std::mem::replace(&mut condops[idx], item.get(0).unwrap().to_string());
-            std::mem::replace(&mut condvals[idx], item.get(1).unwrap().to_string());
+            let mut item:Vec<String> = Vec::new();
+            for ite in cond_re.captures(section).unwrap().iter() {
+                item.push(ite.unwrap().to_string());
+            }
+            std::mem::replace(&mut condops[idx], item.get(1).unwrap().to_string());
+            std::mem::replace(&mut condvals[idx], item.get(2).unwrap().to_string());
             converted_section = cond_re.replace_all(section, "").to_string();
         }
         converted_sections.insert(idx, converted_section);
@@ -207,7 +226,7 @@ fn split_format_compare(value:&f64, cond:&str, val:&f64, dfcond:&str, dfval:&f64
 }
 
 fn format_as_date(value:&f64, format:&str)-> String {
-    let mut value = value;
+    let value = value;
     let mut format = format.to_string();
 
     // strip off first part containing e.g. [$-F800] or [$USD-409]
@@ -274,7 +293,7 @@ fn format_as_date(value:&f64, format:&str)-> String {
 }
 
 fn format_as_number(value:&f64, format:&str)-> String {
-    let mut converted_value = value.to_string();
+    let mut value = value.to_string();
 
     // The "_" in this string has already been stripped out,
     // so this test is never true. Furthermore, testing
@@ -284,17 +303,17 @@ fn format_as_number(value:&f64, format:&str)-> String {
     //}
 
     // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
-    let mut converted_format = format.replace('"', "").replace("*", "");
+    let mut format = format.replace('"', "").replace("*", "");
 
     // Find out if we need thousands separator
     // This is indicated by a comma enclosed by a digit placeholder:
     //        #,#   or   0,0
     let re = Regex::new(r#"(#,#|0,0)"#).unwrap();
-    let converted_format_clone = converted_format.clone();
-    let use_thousands:Vec<&str> = re.split(&converted_format_clone).collect();
-    if re.find(&converted_format_clone).is_some() {
-        converted_format = Regex::new("0,0").unwrap().replace_all(&converted_format, "00");
-        converted_format = Regex::new("#,#").unwrap().replace_all(&converted_format, "##");
+    let converted_format_clone = format.clone();
+    let use_thousands = re.find(&converted_format_clone).is_some();
+    if &use_thousands == &true {
+        format = Regex::new("0,0").unwrap().replace_all(&format, "00");
+        format = Regex::new("#,#").unwrap().replace_all(&format, "##");
     }
 
     // Scale thousands, millions,...
@@ -302,67 +321,77 @@ fn format_as_number(value:&f64, format:&str)-> String {
     //        #,   or    0.0,,
     let mut scale:f64 = 1f64; // same as no scale
     let re = Regex::new(r#"(#|0)(,+)"#).unwrap();
-    if re.find(&converted_format).is_some() {
-        let matches:Vec<&str> = re.split(&converted_format).collect();
-        scale = 1000f64 ** &matches[1].len() as f64;
+    if re.find(&format).is_some() {
+        let mut matches:Vec<String> = Vec::new();
+        for ite in re.captures(&format).unwrap().iter() {
+            matches.push(ite.unwrap().to_string());
+        }
+        scale = 1000i32.pow(matches[2].len() as u32) as f64;
 
         // strip the commas
-        converted_format = Regex::new("0,+").unwrap().replace_all(&converted_format, "0");
-        converted_format = Regex::new("#,+").unwrap().replace_all(&converted_format, "#");
+        format = Regex::new("0,+").unwrap().replace_all(&format, "0");
+        format = Regex::new("#,+").unwrap().replace_all(&format, "#");
     }
 
-    if Regex::new(r#"#?.*\?\/\?"#).unwrap().is_match(&converted_format) {
-        match &converted_value.parse::<usize>() {
+    if Regex::new(r#"#?.*\?\/\?"#).unwrap().find(&format).is_some() {
+        match &value.parse::<usize>() {
             Ok(_) => {},
             Err(_) => {
-                converted_value = format_as_fraction(&converted_value.parse::<f64>().unwrap(), &converted_format);
+                value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
             },
         }
     } else {
         // Handle the number itself
 
         // scale number
-        converted_value = (converted_value.parse::<f64>().unwrap() / scale).to_string();
+        value = (value.parse::<f64>().unwrap() / scale).to_string();
         // Strip #
-        converted_format = Regex::new(r#"\\#"#).unwrap().replace_all(&converted_format, "0");
+        format = Regex::new(r#"\#"#).unwrap().replace_all(&format, "0");
+        // Remove \
+        format = Regex::new(r#"\\"#).unwrap().replace_all(&format, "");
         // Remove locale code [$-###]
-        converted_format = Regex::new(r#"\[\$\-.*\]"#).unwrap().replace_all(&converted_format, "");
+        format = Regex::new(r#"\[\$\-.*\]"#).unwrap().replace_all(&format, "");
+        // Trim
+        format = format.trim().to_string();
 
-        let m = Regex::new(r#"\\[[^\\]]+\\]"#).unwrap().replace_all(&converted_format, "");
-        let number_regex = r#"(0+)(\\.?)(0*)"#;
+        let m = Regex::new(r#"\[[^\]]+\]"#).unwrap().replace_all(&format, "");
+        let number_regex = r#"(0+)(\.?)(0*)"#;
         let re = Regex::new(number_regex).unwrap();
         if re.find(&m).is_some() {
-            let item:Vec<&str> = re.split(&m).collect();
-            converted_value = format_straight_numeric_value(&converted_value, &converted_format, &item, &use_thousands, number_regex);
+            let mut item:Vec<String> = Vec::new();
+            for ite in re.captures(&m).unwrap().iter() {
+                item.push(ite.unwrap().to_string());
+            }
+            value = format_straight_numeric_value(&value, &format, &item, &use_thousands, number_regex);
         }
     }
 
-    let re = Regex::new(r#"\[\$(.*)\]"#).unwrap();
-    if re.find(&converted_format).is_some() {
-        let item:Vec<&str> = re.split(&converted_format).collect();
-        //  Currency or Accounting
-        let mut currency_code = item.get(1).unwrap().to_string();
-        //[$currencyCode] = explode('-', $currencyCode);
-        if currency_code == "" {
-            currency_code = get_currency_code();
+    let re = Regex::new(r#"\$[^0-9]*"#).unwrap();
+    if re.find(&format).is_some() {
+        let mut item:Vec<String> = Vec::new();
+        for ite in re.captures(&format).unwrap().iter() {
+            item.push(ite.unwrap().to_string());
         }
-        converted_value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&converted_format, currency_code.as_str()).to_string();
+        value = format!("{}{}", item.get(0).unwrap(), value);
+    //    //  Currency or Accounting
+    //    let currency_code = item.get(1).unwrap().to_string();
+    //    value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value, currency_code.as_str()).to_string();
     }
 
-    converted_value
+    value
 }
 
 fn format_as_fraction(value:&f64, format:&str)-> String {
     let sign = if value < &0f64 { "-" } else { "" };
 
     let integer_part = value.abs().floor();
-    let decimal_part = value.abs() % 1f64;
+    let decimal_part = (value.abs() % 1f64).to_string().replace("0.", "").parse::<f64>().unwrap();
     let decimal_length = decimal_part.to_string().len();
-    let decimal_divisor = (10 ** &decimal_length).to_string().parse::<f64>().unwrap();
+    let decimal_divisor = 10i32.pow(decimal_length as u32).to_string().parse::<f64>().unwrap();
 
     let gcd = gcd(&decimal_part, &decimal_divisor);
 
-    let adjusted_decimal_part = &decimal_part / &gcd;
+    let mut adjusted_decimal_part = &decimal_part / &gcd;
     let adjusted_decimal_divisor = &decimal_divisor / &gcd;
 
     let mut result = String::from("");
@@ -388,7 +417,7 @@ fn format_as_fraction(value:&f64, format:&str)-> String {
                         }
                         result = format!("{}{} {}/{}", &sign, &integer_part_str, &adjusted_decimal_part, &adjusted_decimal_divisor);
                     } else {
-                        //adjusted_decimal_part += &integer_part * &adjusted_decimal_divisor.to_string().parse::<f64>().unwrap();
+                        adjusted_decimal_part = adjusted_decimal_part + (&integer_part * &adjusted_decimal_divisor);
                         result = format!("{}{}/{}", &sign, &adjusted_decimal_part, &adjusted_decimal_divisor);
                     }
                 }
@@ -399,96 +428,141 @@ fn format_as_fraction(value:&f64, format:&str)-> String {
     result
 }
 
-fn format_straight_numeric_value(value:&str, format:&str, matches: &Vec<&str>, use_thousands:&Vec<&str>, number_regex:&str)-> String {
-    let mut converted_value = value.to_string();
+fn format_straight_numeric_value(value:&str, format:&str, matches: &Vec<String>, use_thousands:&bool, number_regex:&str)-> String {
+    let mut value = value.to_string();
+    let format = format.to_string();
 
     let left = matches.get(1).unwrap();
     let dec = matches.get(2).unwrap();
     let right = matches.get(3).unwrap();
 
     // minimun width of formatted number (including dot)
-    let minWidth = left.len() + dec.len() + right.len();
-    if use_thousands.len() > 0 {
-        converted_value = converted_value.parse::<usize>().unwrap().separate_with_commas();
-        converted_value = Regex::new(&number_regex).unwrap().replace_all(&format, converted_value.as_str()).to_string();
-    } else {
-        if Regex::new(r#"[0#]E[+-]0"#).unwrap().is_match(&format) {
-            // Scientific format
-            // $value = sprintf('%5.2E', $value); TODO
-        } else if Regex::new(r#"0([^\d\.]+)0"#).unwrap().is_match(&format) || format.find(".") != None {
-            let mut char_cnt = 0;
-            for i in format.chars() {
-                if i == '.' {
-                    char_cnt += 1;
-                }
-            }
-            if char_cnt == 1 {
-                //converted_value = (10 ** format.split('.').collect().get(1).len()).to_string();
-            }
-            converted_value = complex_number_format_mask(&converted_value.parse::<f64>().unwrap(), &format, &true);
+    let min_width = left.len() + dec.len() + right.len();
+    if use_thousands == &true {
+        value = value.parse::<f64>().unwrap().separate_with_commas();
+    }
+    let blocks:Vec<&str> = value.split('.').collect();
+    let left_value = blocks.get(0).unwrap().to_string();
+    let mut right_value = match blocks.get(1) {
+        Some(v) => v.to_string(),
+        None => String::from("0")
+    };
+    if right.len() == 0 {
+        return left_value;
+    }
+    if right.len() != right_value.len() {
+        if right_value == "0" {
+            right_value = right.to_string();
+        } else if right.len() > right_value.len() {
+            let pow = 10i32.pow(right.len() as u32);
+            right_value = format!("{}", right_value.parse::<i32>().unwrap() * pow);
         } else {
-            let sprintf_pattern = format!("$minWidth.{}{}", right.len(), 'f');
-            converted_value = format!("{}{}", &converted_value, &sprintf_pattern);
-            converted_value = Regex::new(number_regex).unwrap().replace_all(&converted_value, format).to_string();
+            let mut right_value_conv:String = right_value.chars().skip(0).take(right.len()).collect();
+            let ajst_str:String = right_value.chars().skip(right.len()).take(1).collect();
+            let ajst_int = ajst_str.parse::<i32>().unwrap();
+            if ajst_int > 4 {
+                right_value_conv = (right_value_conv.parse::<i32>().unwrap() + 1).to_string();
+            }
+            right_value = right_value_conv;
         }
     }
-    converted_value
+    value = format!("{}.{}", left_value, right_value);
+    value
+
+//    if use_thousands == &true {
+//        value = value.parse::<f64>().unwrap().separate_with_commas();
+//        dbg!(&value);
+//        value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
+//        dbg!(&value);
+//    } else {
+//        if Regex::new(r#"[0#]E[+-]0"#).unwrap().find(&format).is_some() {
+//            // Scientific format
+//            value = value.parse::<f64>().unwrap().to_string();
+//        } else if Regex::new(r#"0([^\d\.]+)0"#).unwrap().find(&format).is_some() || format.find(".").is_some() {
+//            if value.parse::<f64>().unwrap() as usize as f64 == value.parse::<f64>().unwrap() && format.find(".").is_some() {
+//                let format_collect:Vec<&str> = format.split('.').collect();
+//                let pow = 10i32.pow(format_collect.get(1).unwrap().len() as u32);
+//                value = format!("{}", value.parse::<i32>().unwrap() * pow);
+//            }
+//            value = complex_number_format_mask(&value.parse::<f64>().unwrap(), &format, &true);
+//        } else {
+//            value = format!("{:0width$.len$}", value, width = min_width, len = right.len());
+//            value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
+//        }
+//    }
+//    value
 }
 
 fn merge_complex_number_format_masks(numbers:&Vec<String>, masks:&Vec<String>)-> Vec<String> {
-    let decimal_count = numbers[1].len();
+    let mut decimal_count = numbers[1].len();
     let mut post_decimal_masks:Vec<String> = Vec::new();
 
     for mask in masks.iter().rev() {
         post_decimal_masks.push(mask.to_string());
+        decimal_count -= mask.to_string().len();
+        if decimal_count <= 0 {
+            break;
+        }
     }
 
+    post_decimal_masks.reverse();
     let mut result:Vec<String> = Vec::new();
     result.push(masks.join("."));
     result.push(post_decimal_masks.join("."));
     result
 }
 
-fn process_complex_number_formatMask(number:&f64, mask:&str)-> String {
+fn process_complex_number_format_mask(number:&f64, mask:&str)-> String {
     let mut result = number.to_string();
-    let mut converted_mask = mask.to_string();
+    let mut mask = mask.to_string();
     let re = Regex::new(r#"0+"#).unwrap();
-    let mut masking_blocks:Vec<String> = Vec::new();
-    let re = Regex::new(r#"\[\$(.*)\]"#).unwrap();
-    let masking_blocks:Vec<&str> = re.split(&mask).collect();
+    let mut masking_blocks:Vec<(String, usize)> = Vec::new();
+    let mut masking_str:Vec<String> = Vec::new();
+    let mut masking_beg:Vec<usize> = Vec::new();
+    for ite in re.captures(&mask).unwrap().iter() {
+        masking_str.push(ite.unwrap().to_string());
+    }
+    for (_, pos) in re.captures(&mask).unwrap().iter_pos().enumerate() {
+        let (beg, _) = pos.unwrap();
+        masking_beg.push(beg);
+    }
+    for i in 0..masking_str.len() {
+        masking_blocks.push((masking_str.get(i).unwrap().clone(), masking_beg.get(i).unwrap().clone()));
+    }
 
     if masking_blocks.len() > 1 {
-        let mut number:f64 = 0f64;
+        let mut number = number.clone();
         let mut offset:usize = 0;
-        for block in masking_blocks.iter().rev() {
-            let divisor = format!("{}{}", 1, block);
+        for (block, pos) in masking_blocks.iter().rev() {
+            let divisor = format!("{}{}", 1, block).parse::<f64>().unwrap();
             let size = block.len();
-            offset = block.parse::<usize>().unwrap();
+            offset = pos.clone();
 
-            let blockValue = format!("{}", (number / divisor.parse::<f64>().unwrap()));
-            number = (number / divisor.parse::<f64>().unwrap()).abs().floor();
+            let block_value = format!("{:0width$}", (&number % &divisor), width = size);
+
+            number = (number / divisor) as f64;
             let from: String = mask.chars().skip(offset).take(size).collect();
-            converted_mask = mask.replace(&from, &blockValue);
+            mask = mask.replace(&from, &block_value);
         }
         if number > 0f64 {
             let from: String = mask.chars().skip(offset).collect();
-            converted_mask = mask.replace(&from, &number.to_string());
+            mask = mask.replace(&from, &number.to_string());
         }
-        result = converted_mask;
+        result = mask;
     }
     result
 }
 
-fn complex_number_format_mask(number:&f64, mask:&str, splitOnPoint:&bool)->String {
+fn complex_number_format_mask(number:&f64, mask:&str, split_on_point:&bool)->String {
     let sign = number < &0.0;
-    let converted_number = number.abs();
+    let number = number.abs();
 
-    if splitOnPoint == &true && mask.find(".") != None && &converted_number.to_string().find(".") != &None {
-        let converted_number_str = converted_number.to_string();
-        let numbers_as:Vec<&str> = converted_number_str.split('.').collect();
+    if split_on_point == &true && mask.find(".").is_some() && number.to_string().find(".").is_some() {
+        let number_str = number.to_string();
+        let numbers_as:Vec<&str> = number_str.split('.').collect();
         let mut numbers:Vec<String> = Vec::new();
-        for number in numbers_as {
-            numbers.push(number.to_string());
+        for n in numbers_as {
+            numbers.push(n.to_string());
         }
         let masks_as:Vec<&str> = mask.split('.').collect();
         let mut masks:Vec<String> = Vec::new();
@@ -508,7 +582,7 @@ fn complex_number_format_mask(number:&f64, mask:&str, splitOnPoint:&bool)->Strin
         return format!("{}{}.{}", if sign { "-" } else { "" } , result1, result2);
     }
 
-    let result = process_complex_number_formatMask(&converted_number, mask);
+    let result = process_complex_number_format_mask(&number, mask);
     format!("{}{}", if sign { "-" } else { "" } , result)
 }
 

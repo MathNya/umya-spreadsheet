@@ -189,10 +189,14 @@ impl Worksheet {
                     Some(nmuber_format) => {
                         to_formatted_string(value.as_str(), nmuber_format.get_format_code())
                     },
-                    None => value
+                    None => {
+                        to_formatted_string(value.as_str(), NumberFormat::FORMAT_GENERAL)
+                    }
                 }
             },
-            None => value
+            None => {
+                to_formatted_string(value.as_str(), NumberFormat::FORMAT_GENERAL)
+            }
         };
         result
     }

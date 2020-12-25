@@ -52,9 +52,9 @@ let mut book = umya_spreadsheet::new_file();
 let _ = book.new_sheet("Sheet2");
 
 // read value
-let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell("A1").unwrap().get_value();
+let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");
 // or
-let a1_value = book.get_sheet(1).unwrap().get_cell_by_column_and_row(1, 1).unwrap().get_value();
+let a1_value = book.get_sheet(1).unwrap().get_value_by_column_and_row(1, 1);
 // or formatted value
 let a1_value = book.get_sheet(0).unwrap().get_formatted_value("A1");
 assert_eq!("TEST1", a1_value);  // TEST1
