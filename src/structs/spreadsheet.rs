@@ -9,8 +9,7 @@ use super::fill::Fill;
 use super::defined_name::DefinedName;
 use super::borders::Borders;
 use super::theme::Theme;
-use super::cell_style::CellStyle;
-use std::collections::HashMap;
+use super::super::helper::coordinate::*;
 
 #[derive(Default, Debug)]
 pub struct Spreadsheet {
@@ -20,7 +19,6 @@ pub struct Spreadsheet {
     calculation_engine: Calculation,
     active_sheet_index: usize,
     named_ranges: Vec<String>,
-    cell_style_collection: Vec<CellStyle>,
     has_macros: bool,
     macros_code: Option<Vec<u8>>,
     macros_certificate: String,
@@ -42,23 +40,124 @@ impl Spreadsheet {
     // ************************
     // update Coordinate
     // ************************
-    pub(crate) fn insert_new_row(&mut self, sheet_name:&str, root_row_num:usize, offset_row_num:usize) {
-        self.update_coordinate(sheet_name, &0, &0, &root_row_num, &offset_row_num);
+
+    /// Insert new rows.
+    /// # Arguments
+    /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
+    /// * `row_index` - Specify point of insert. ex) 1
+    /// * `num_rows` - Specify number to insert. ex) 2
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// book.insert_new_row("Sheet1", 2, 3);
+    /// ```
+    pub fn insert_new_row<S: Into<String>>(&mut self, sheet_name:S, row_index:usize, num_rows:usize) {
+        self.adjustment_insert_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
     }
 
-    pub(crate) fn insert_new_colmun(&mut self, sheet_name:&str, root_col_num:usize, offset_col_num:usize) {
-        self.update_coordinate(sheet_name, &root_col_num, &offset_col_num, &0, &0);
+    /// Insert new colmuns.
+    /// # Arguments
+    /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
+    /// * `column` - Specify point of insert. ex) "B"
+    /// * `num_columns` - Specify number to insert. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// book.insert_new_colmun("Sheet1", "B", 3);
+    /// ```
+    pub fn insert_new_colmun<S: Into<String>>(&mut self, sheet_name:S, column:S, num_columns:usize) {
+        let column_upper = column.into().to_uppercase();
+        let column_index = column_index_from_string(column_upper);
+        self.insert_new_colmun_by_index(&sheet_name.into(), column_index, num_columns);
     }
 
-    pub(crate) fn update_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+    /// Insert new colmuns.
+    /// # Arguments
+    /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
+    /// * `column_index` - Specify point of insert. ex) 2
+    /// * `num_columns` - Specify number to insert. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// book.insert_new_colmun_by_index("Sheet1", 2, 3);
+    /// ```
+    pub fn insert_new_colmun_by_index<S: Into<String>>(&mut self, sheet_name:S, column_index:usize, num_columns:usize) {
+        self.adjustment_insert_coordinate(&sheet_name.into(), &column_index, &num_columns, &0, &0);
+    }
+
+    /// Remove rows.
+    /// # Arguments
+    /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
+    /// * `row_index` - Specify point of remove. ex) 1
+    /// * `num_rows` - Specify number to remove. ex) 2
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// book.remove_row("Sheet1", 2, 3);
+    /// ```
+    pub fn remove_row<S: Into<String>>(&mut self, sheet_name:S, row_index:usize, num_rows:usize) {
+        self.adjustment_remove_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
+    }
+
+    /// Remove colmuns.
+    /// # Arguments
+    /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
+    /// * `column` - Specify point of remove. ex) "B"
+    /// * `num_columns` - Specify number to remove. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// book.remove_colmun("Sheet1", "B", 3);
+    /// ```
+    pub fn remove_colmun<S: Into<String>>(&mut self, sheet_name:S, column:S, num_columns:usize) {
+        let column_upper = column.into().to_uppercase();
+        let column_index = column_index_from_string(column_upper);
+        self.remove_colmun_by_index(&sheet_name.into(), column_index, num_columns);
+    }
+
+    /// Remove colmuns.
+    /// # Arguments
+    /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
+    /// * `column_index` - Specify point of remove. ex) 2
+    /// * `num_columns` - Specify number to remove. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// book.remove_colmun_by_index("Sheet1", 2, 3);
+    /// ```
+    pub fn remove_colmun_by_index<S: Into<String>>(&mut self, sheet_name:S, column_index:usize, num_columns:usize) {
+        self.adjustment_remove_coordinate(&sheet_name.into(), &column_index, &num_columns, &0, &0);
+    }
+
+    pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, column_index:&usize, num_columns:&usize, row_index:&usize, num_rows:&usize) {
+        for defined_name in &mut self.defined_names {
+            defined_name.get_address_obj_mut().adjustment_insert_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
+        }
         for worksheet in &mut self.work_sheet_collection {
-            worksheet.update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+            worksheet.adjustment_insert_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
+        }
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, column_index:&usize, num_columns:&usize, row_index:&usize, num_rows:&usize) {
+        self.defined_names.retain(|x| {
+            !(x.get_address_obj().is_remove(sheet_name, column_index, num_columns, row_index, num_rows))
+        });
+        for defined_name in &mut self.defined_names {
+            defined_name.get_address_obj_mut().adjustment_remove_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
+        }
+        for worksheet in &mut self.work_sheet_collection {
+            worksheet.adjustment_remove_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
         }
     }
 
     pub fn get_defined_names(&self) -> &Vec<DefinedName> {
         &self.defined_names
     }
+
+    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+        &mut self.defined_names
+    }
+
     pub(crate) fn set_defined_names(&mut self, value:Vec<DefinedName>) {
         self.defined_names = value;
     }
@@ -267,30 +366,6 @@ impl Spreadsheet {
             }
         }
         result
-    }
-    //pub fn get_cell_xf_collection(&self) -> &Vec<Style> {
-    //    &self.cell_xf_collection
-    //}
-    //pub fn get_cell_xf_by_index(&self, index:usize) -> &Style {
-    //    &self.cell_xf_collection.get(index).unwrap()
-    //}
-    //pub fn add_cell_xf_collection(&mut self, value:Style) {
-    //    self.cell_xf_collection.push(value);
-    //}
-    //pub(crate) fn set_cell_xf_collection(&mut self, value:Vec<Style>) {
-    //    self.cell_xf_collection = value;
-    //}
-    pub fn get_cell_style_collection(&self) -> &Vec<CellStyle> {
-        &self.cell_style_collection
-    }
-    pub(crate) fn get_cell_style_collection_mut(&mut self) -> &mut Vec<CellStyle> {
-        &mut self.cell_style_collection
-    }
-    pub(crate) fn add_cell_style_collection(&mut self, value:CellStyle) {
-        self.cell_style_collection.push(value);
-    }
-    pub(crate) fn set_cell_style_collection(&mut self, value:Vec<CellStyle>) {
-        self.cell_style_collection = value;
     }
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
         &self.work_sheet_collection

@@ -47,9 +47,15 @@ impl RowDimension {
         self.custom_height = value;
     }
 
-    pub(crate) fn update_coordinate(&mut self, root_row_num:&usize, offset_row_num:&usize) {
+    pub(crate) fn adjustment_insert_coordinate(&mut self, root_row_num:&usize, offset_row_num:&usize) {
         if &self.row_num >= root_row_num {
-            self.row_num = self.row_num + root_row_num;
+            self.row_num = self.row_num + offset_row_num;
+        }
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(&mut self, root_row_num:&usize, offset_row_num:&usize) {
+        if &self.row_num >= root_row_num {
+            self.row_num = self.row_num - offset_row_num;
         }
     }
 }

@@ -293,7 +293,7 @@ pub(crate) fn write(
         // mergeCell
         for merge_cell in worksheet.get_merge_cells() {
             write_start_tag(&mut writer, "mergeCell", vec![
-                ("ref", merge_cell),
+                ("ref", merge_cell.get_range().as_str()),
             ], true);
         }
 

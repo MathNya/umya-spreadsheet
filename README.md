@@ -79,6 +79,29 @@ let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
 .get_bottom_mut()
 .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
 ```
+![Result Image](images/sample2.png)
+### Insert or Remove Rows(or Columns)
+```rust
+extern crate umya_spreadsheet;
+
+let mut book = umya_spreadsheet::new_file();
+
+// insert rows
+book.insert_new_row("Sheet1", 2, 3);
+
+// insert columns
+book.insert_new_colmun("Sheet1", "B", 3);
+// or
+book.insert_new_colmun_by_index("Sheet1", 2, 3);
+
+// remove rows
+book.remove_row("Sheet1", 6, 2);
+
+// remove columns
+book.remove_colmun("Sheet1", "F", 2);
+// or
+book.remove_colmun_by_index("Sheet1", 6, 2);
+```
 ### Writer
 ```rust
 extern crate umya_spreadsheet;

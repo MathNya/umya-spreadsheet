@@ -29,19 +29,14 @@ fn read_and_wite() {
     dbg!(book.get_sheet(0).unwrap().get_formatted_value("B35"));
     dbg!(book.get_sheet(0).unwrap().get_formatted_value("B36"));
 
-    let _ = book.get_sheet_mut(1).get_cell_mut("C20")
-    .set_value("49046881.119999997").unwrap();
-    let _ = book.get_sheet_mut(1).get_style_mut("C20")
-    .get_number_format_mut()
-    .set_format_code("#,##0.00");
-    dbg!(book.get_sheet(1).unwrap().get_formatted_value("C20"));
+    let _ = book.get_sheet_by_name_mut("Sheet1").unwrap().get_cell_mut("A1")
+    .set_value("49046881.119999997");
 
-    let value = book.get_sheet(0).unwrap().get_value("B30");
-    let _ = book.get_sheet_mut(0).get_cell_mut("C30").set_value(value);
-    let _ = book.get_sheet_mut(0).get_style_mut("C30")
-    .get_number_format_mut()
-    .set_format_code(umya_spreadsheet::NumberFormat::FORMAT_DATE_XLSX17);
-    dbg!(book.get_sheet(0).unwrap().get_formatted_value("C30"));
+    let _ = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1")
+    .get_number_format_mut().set_format_code(umya_spreadsheet::NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+
+    let value =  book.get_sheet_by_name_mut("Sheet1").unwrap().get_formatted_value("A1");
+    dbg!(&value);
 
     // writer
     let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");
@@ -72,6 +67,24 @@ fn read_and_wite_xlsm() {
 
     // writer
     let path = std::path::Path::new("C:/spread_test_data/bbb.xlsm");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn insert_and_remove_cells() {
+    // reader
+    let path = std::path::Path::new("C:/spread_test_data/aaa_insertCell.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    book.insert_new_row("Sheet1", 2, 3);
+    book.insert_new_colmun("Sheet1", "B", 3);
+    book.insert_new_colmun_by_index("Sheet1", 2, 3);
+
+    book.remove_row("Sheet1", 6, 2);
+    book.remove_colmun_by_index("Sheet1", 6, 2);
+
+    // writer
+    let path = std::path::Path::new("C:/spread_test_data/bbb_insertCell.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 

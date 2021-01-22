@@ -96,7 +96,7 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     }
 
     let shared_string = shared_strings::read(&dir, &theme).unwrap();
-    let (cell_xfs_vec, dxf_vec) = styles::read(&dir, &mut book, &theme).unwrap();
+    let (cell_xfs_vec, dxf_vec) = styles::read(&dir, &theme).unwrap();
 
     let mut sheet_count = 0;
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {

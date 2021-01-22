@@ -72,11 +72,28 @@ impl Range {
         &mut self.coordinate_end
     }
 
-    pub(crate) fn update_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_rol_num:&usize, offset_row_num:&usize) {
-        self.coordinate_start.update_coordinate(root_col_num, offset_col_num, root_rol_num, offset_row_num);
+    pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        self.coordinate_start.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
         match &mut self.coordinate_end {
-            Some(v) => v.update_coordinate(root_col_num, offset_col_num, root_rol_num, offset_row_num),
+            Some(v) => v.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num),
             None => {}
         }
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        self.coordinate_start.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+        match &mut self.coordinate_end {
+            Some(v) => v.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num),
+            None => {}
+        }
+    }
+
+    pub(crate) fn is_remove(&self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize)->bool {
+        let start_result = self.coordinate_start.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num);
+        let end_result = match &self.coordinate_end {
+            Some(v) => v.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num),
+            None => start_result
+        };
+        start_result && end_result
     }
 }

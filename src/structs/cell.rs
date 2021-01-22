@@ -1,6 +1,7 @@
 use super::rich_text::RichText;
 use super::hyperlink::Hyperlink;
 use super::coordinate::Coordinate;
+use super::super::helper::formula::*;
 
 #[derive(Default, Debug)]
 pub struct Cell {
@@ -138,6 +139,7 @@ impl Cell {
     }
 
     pub(crate) fn set_formula<S: Into<String>>(&mut self, value:S) {
+        self.data_type = Cell::TYPE_FORMULA.to_string();
         self.formula = value.into();
     }
 
@@ -163,5 +165,19 @@ impl Cell {
             &self.value,
             match &self.rich_text {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
         )))
+    }
+
+    pub(crate) fn adjustment_insert_formula_coordinate(&mut self, self_sheet_name:&str, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        if self.is_formula() {
+            let formula = adjustment_insert_formula_coordinate(&self.formula, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
+            self.formula = formula;
+        }
+    }
+
+    pub(crate) fn adjustment_remove_formula_coordinate(&mut self, self_sheet_name:&str, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        if self.is_formula() {
+            let formula = adjustment_remove_formula_coordinate(&self.formula, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
+            self.formula = formula;
+        }
     }
 }

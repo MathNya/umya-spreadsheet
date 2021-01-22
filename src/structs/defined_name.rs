@@ -19,6 +19,14 @@ impl DefinedName {
         self.address.get_address()
     }
 
+    pub(crate) fn get_address_obj(&self)-> &Address {
+        &self.address
+    }
+
+    pub(crate) fn get_address_obj_mut(&mut self)-> &mut Address {
+        &mut self.address
+    }
+
     pub(crate) fn set_address<S: Into<String>>(&mut self, value:S) {
         let mut address = Address::default();
         address.set_address(value);

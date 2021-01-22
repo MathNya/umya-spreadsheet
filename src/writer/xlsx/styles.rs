@@ -268,99 +268,20 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
         write_end_tag(&mut writer, "borders");
     }
 
-    let all_cell_style_xf = spreadsheet.get_cell_style_collection();
-
     //cellStyleXfs
-    if all_cell_style_xf.len() > 0 {
-        write_start_tag(&mut writer, "cellStyleXfs", vec![
-            ("count", all_cell_style_xf.len().to_string().as_str()),
-        ], false);
-
-        let mut is_first = true;
-        for cell_style_xf in all_cell_style_xf {
-            let mut font_id:usize = 0;
-            for (hash_code, _) in &all_font {
-                match cell_style_xf.get_style().get_font() {
-                    Some(v) => {
-                        if v.get_hash_code().as_str() == hash_code {
-                            break;
-                        }
-                        font_id += 1;
-                    },
-                    None => {}
-                }
-            }
-            let mut fill_id:usize = 0;
-            for (hash_code, _) in &all_fill {
-                match cell_style_xf.get_style().get_fill() {
-                    Some(v) => {
-                        if v.get_hash_code().as_str() == hash_code {
-                            break;
-                        }
-                        fill_id += 1;
-                    },
-                    None => {}
-                }
-            }
-            let mut borders_id:usize = 0;
-            for (hash_code, _) in &all_borders {
-                match cell_style_xf.get_style().get_borders() {
-                    Some(v) => {
-                        if v.get_hash_code().as_str() == hash_code {
-                            break;
-                        }
-                        borders_id += 1;
-                    },
-                    None => {}
-                }
-            }
-            // xf
-            let is_align_empty = match cell_style_xf.get_style().get_alignment() {
-                Some(v) => {v.is_empty()},
-                None => true
-            };
-            let font_id_str:&str = &font_id.to_string();
-            let fill_id_str:&str = &fill_id.to_string();
-            let borders_id_str:&str = &borders_id.to_string();
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            attributes.push(("numFmtId", "0"));
-            attributes.push(("fontId", font_id_str));
-            attributes.push(("fillId", fill_id_str));
-            attributes.push(("borderId", borders_id_str));
-            if is_first == false {
-                attributes.push(("applyNumberFormat", "0"));
-                attributes.push(("applyBorder", "0"));
-                attributes.push(("applyAlignment", "0"));
-                attributes.push(("applyProtection", "0"));
-            } else {
-                is_first = false;
-            }
-            write_start_tag(&mut writer, "xf", attributes, is_align_empty);
-
-            // alignment
-            match cell_style_xf.get_style().get_alignment(){
-                Some(v) => {
-                    let mut attributes: Vec<(&str, &str)> = Vec::new();
-                    if v.get_horizontal() != Alignment::HORIZONTAL_GENERAL {
-                        attributes.push(("horizontal", v.get_horizontal()));
-                    }
-                    if v.get_vertical() != "" {
-                        attributes.push(("vertical", v.get_vertical()));
-                    }
-                    write_start_tag(&mut writer, "alignment", attributes, true);
-
-                    write_end_tag(&mut writer, "xf");
-                },
-                None => {}
-            }
-        }
-
-        write_end_tag(&mut writer, "cellStyleXfs");
-    }
-
-    let all_cell_xf = spreadsheet.get_all_cell_style();
-
+    write_start_tag(&mut writer, "cellStyleXfs", vec![
+        ("count", "1"),
+    ], false);
+    write_start_tag(&mut writer, "xf", vec![
+        ("numFmtId", "0"),
+        ("fontId", "0"),
+        ("fillId", "0"),
+        ("borderId", "0"),
+    ], true);
+    write_end_tag(&mut writer, "cellStyleXfs");
+    
     // cellXfs
+    let all_cell_xf = spreadsheet.get_all_cell_style();
     if all_cell_xf.len() > 0 {
         write_start_tag(&mut writer, "cellXfs", vec![
             ("count", all_cell_xf.len().to_string().as_str()),
@@ -440,7 +361,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
             attributes.push(("fontId", font_id_str));
             attributes.push(("fillId", fill_id_str));
             attributes.push(("borderId", borders_id_str));
-            attributes.push(("xfId", xf_id_str));
+            attributes.push(("xfId", "0"));
             match cell_xf.get_number_format() {
                 Some(_) => {
                     attributes.push(("applyNumberFormat", "1"));
@@ -493,24 +414,15 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
     }
 
     // cellStyles
-    if all_cell_style_xf.len() > 0 {
-        write_start_tag(&mut writer, "cellStyles", vec![
-            ("count", all_cell_style_xf.len().to_string().as_str()),
-        ], false);
-
-        let mut xfid = 0;
-        for cell_style in all_cell_style_xf {
-            // cellStyle
-            write_start_tag(&mut writer, "cellStyle", vec![
-                ("name", cell_style.get_name()),
-                ("xfId", xfid.to_string().as_str()),
-                ("builtinId", cell_style.get_builtin_id().to_string().as_str()),
-            ], true);
-            xfid += 1;
-        }
-
-        write_end_tag(&mut writer, "cellStyles");
-    }
+    write_start_tag(&mut writer, "cellStyles", vec![
+        ("count", "1"),
+    ], false);
+    write_start_tag(&mut writer, "cellStyle", vec![
+        ("name", "normal"),
+        ("xfId", "0"),
+        ("builtinId", "0"),
+    ], true);
+    write_end_tag(&mut writer, "cellStyles");
 
     let all_conditional_style = spreadsheet.get_all_conditional_style_list();
     match all_conditional_style.len() > 0 {

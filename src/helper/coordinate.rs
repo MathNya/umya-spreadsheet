@@ -102,3 +102,19 @@ pub fn index_from_coordinate<S: Into<String>>(coordinate:S)->Vec<usize> {
     let is_lock_row = split[3].parse::<usize>().unwrap();
     vec![col, row, is_lock_col, is_lock_row]
 }
+
+pub(crate) fn adjustment_insert_coordinate(num:&usize, root_num:&usize, offset_num:&usize)->usize {
+    let mut result = num.clone();
+    if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
+        result += offset_num;
+    }
+    result
+}
+
+pub(crate) fn adjustment_remove_coordinate(num:&usize, root_num:&usize, offset_num:&usize)->usize {
+    let mut result = num.clone();
+    if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
+        result -= offset_num;
+    }
+    result
+}

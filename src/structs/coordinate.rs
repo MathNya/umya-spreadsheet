@@ -62,12 +62,25 @@ impl Coordinate {
         true
     }
 
-    pub(crate) fn update_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        if &self.col_num >= root_col_num {
-            self.col_num = self.col_num + offset_col_num;
+    pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        self.col_num = adjustment_insert_coordinate(&self.col_num, root_col_num, offset_col_num);
+        self.row_num = adjustment_insert_coordinate(&self.row_num, root_row_num, offset_row_num);
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        self.col_num = adjustment_remove_coordinate(&self.col_num, root_col_num, offset_col_num);
+        self.row_num = adjustment_remove_coordinate(&self.row_num, root_row_num, offset_row_num);
+    }
+
+    pub(crate) fn is_remove(&self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize)->bool {
+        if root_col_num > &0 {
+            let col_result = &self.col_num >= root_col_num && &self.col_num < &(root_col_num + offset_col_num);
+            return col_result;
         }
-        if &self.row_num >= root_row_num {
-            self.row_num = self.row_num + offset_col_num;
+        if root_row_num > &0 {
+            let row_result = &self.row_num >= root_row_num && &self.row_num < &(root_row_num + offset_row_num);
+            return row_result;
         }
+        false
     }
 }

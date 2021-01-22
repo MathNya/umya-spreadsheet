@@ -19,7 +19,7 @@ use super::super::structs::cell_style::CellStyle;
 
 const FILE_PATH: &'static str = "xl/styles.xml";
 
-pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result::Result<(Vec<Style>, Vec<Style>), XlsxError>
+pub fn read(dir: &TempDir, theme:&Theme) -> result::Result<(Vec<Style>, Vec<Style>), XlsxError>
 {
     let path = dir.path().join(FILE_PATH);
     let mut reader = Reader::from_file(path)?;
@@ -32,6 +32,7 @@ pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result
     let mut borders_vec: Vec<Borders> = Vec::new();
     let mut cell_xfs: Vec<Style> = Vec::new();
     let mut dxf_vec: Vec<Style> = Vec::new();
+    let mut cel_style_vec: Vec<CellStyle> = Vec::new();
 
     loop {
         match reader.read_event(&mut buf) {
@@ -54,11 +55,11 @@ pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result
                         for style in style_vec {
                             let mut cell_style: CellStyle = CellStyle::default();
                             cell_style.set_style(style);
-                            spreadsheet.add_cell_style_collection(cell_style);
+                            cel_style_vec.push(cell_style);
                         }
                     },
                     b"cellXfs" => {
-                        cell_xfs = get_cell_xfs(&mut reader, &num_fmt_vec, &font_vec, &fill_vec, &borders_vec, spreadsheet.get_cell_style_collection());
+                        cell_xfs = get_cell_xfs(&mut reader, &num_fmt_vec, &font_vec, &fill_vec, &borders_vec, &cel_style_vec);
                     },
                     b"dxfs" => {
                         dxf_vec = get_dxfs(&mut reader, theme);
@@ -69,11 +70,11 @@ pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet, theme:&Theme) -> result
             Ok(Event::Empty(ref e)) => {
                 match e.name() {
                     b"cellStyle" => {
-                        let name = get_attribute(e, b"name").unwrap();
-                        let xf_id = get_attribute(e, b"xfId").unwrap().parse::<usize>().unwrap();
-                        let builtin_id = get_attribute(e, b"builtinId").unwrap().parse::<usize>().unwrap();
-                        spreadsheet.get_cell_style_collection_mut().get_mut(xf_id).unwrap().set_name(name);
-                        spreadsheet.get_cell_style_collection_mut().get_mut(xf_id).unwrap().set_builtin_id(builtin_id);
+                        //let name = get_attribute(e, b"name").unwrap();
+                        //let xf_id = get_attribute(e, b"xfId").unwrap().parse::<usize>().unwrap();
+                        //let builtin_id = get_attribute(e, b"builtinId").unwrap().parse::<usize>().unwrap();
+                        //spreadsheet.get_cell_style_collection_mut().get_mut(xf_id).unwrap().set_name(name);
+                        //spreadsheet.get_cell_style_collection_mut().get_mut(xf_id).unwrap().set_builtin_id(builtin_id);
                     },
                     _ => (),
                 }

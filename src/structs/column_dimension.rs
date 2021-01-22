@@ -38,12 +38,21 @@ impl ColumnDimension {
         self.best_fit = value;
     }
 
-    pub(crate) fn update_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize) {
+    pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize) {
         if &self.col_num_start >= root_col_num {
             self.col_num_start = self.col_num_start + offset_col_num;
         }
         if &self.col_num_end >= root_col_num {
             self.col_num_end = self.col_num_end + offset_col_num;
+        }
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize) {
+        if &self.col_num_start >= root_col_num {
+            self.col_num_start = self.col_num_start - offset_col_num;
+        }
+        if &self.col_num_end >= root_col_num {
+            self.col_num_end = self.col_num_end - offset_col_num;
         }
     }
 }

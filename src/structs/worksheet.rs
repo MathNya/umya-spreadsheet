@@ -1,6 +1,7 @@
 use super::cells::Cells;
 use super::cell::Cell;
 use super::chart::Chart;
+use super::range::Range;
 use super::row_dimension::RowDimension;
 use super::column_dimension::ColumnDimension;
 use super::drawing::Drawing;
@@ -21,7 +22,6 @@ use std::collections::BTreeMap;
 use std::collections::HashMap;
 use super::super::helper::coordinate::*;
 use super::super::helper::number_format::*;
-use regex::Regex;
 
 #[derive(Debug)]
 pub struct Worksheet {
@@ -41,7 +41,7 @@ pub struct Worksheet {
     styles : Styles,
     conditional_styles_collection: Vec<ConditionalSet>,
     breaks :Vec<String>,
-    merge_cells: Vec<String>,
+    merge_cells: Vec<Range>,
     protected_cells: Vec<String>,
     auto_filter: Option<AutoFilter>,
     freeze_pane: Option<String>,
@@ -467,12 +467,18 @@ impl Worksheet {
     // ************************    
     // Merge Cells
     // ************************
-    pub fn get_merge_cells(&self) -> &Vec<String> {
+    pub fn get_merge_cells(&self) -> &Vec<Range> {
         &self.merge_cells
+    }
+
+    pub fn get_merge_cells_mut(&mut self) -> &mut Vec<Range> {
+        &mut self.merge_cells
     }
     
     pub(crate) fn add_merge_cells_crate<S: Into<String>>(&mut self, value:S) {
-        self.merge_cells.push(value.into());
+        let mut range = Range::default();
+        range.set_range(value.into());
+        self.merge_cells.push(range);
     }
 
     // ************************
@@ -490,6 +496,10 @@ impl Worksheet {
         let mut auto_filter = AutoFilter::default();
         auto_filter.set_range(value);
         self.auto_filter = Some(auto_filter);
+    }
+
+    pub fn remove_auto_filter(&mut self) {
+        self.auto_filter = None;
     }
 
     // ************************
@@ -586,55 +596,183 @@ impl Worksheet {
     // ************************
     // update Coordinate
     // ************************
-    pub(crate) fn update_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+    pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
         if sheet_name == self.title && offset_col_num != &0 {
             // update column dimensions
             for column_dimension in &mut self.column_dimensions {
-                column_dimension.update_coordinate(root_col_num, offset_col_num);
+                column_dimension.adjustment_insert_coordinate(root_col_num, offset_col_num);
             }
         }
         if sheet_name == self.title && offset_row_num != &0 {
             // update row dimensions
-            for column_dimension in &mut self.row_dimensions {
-                column_dimension.update_coordinate(root_row_num, offset_row_num);
+            for row_dimension in &mut self.row_dimensions {
+                row_dimension.adjustment_insert_coordinate(root_row_num, offset_row_num);
             }
         }
         if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
             // update cell
             for cell in self.get_cell_collection_mut() {
-                cell.get_coordinate_mut().update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                cell.get_coordinate_mut().adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
             }
 
             // update style
             for style in self.get_style_collection_mut() {
-                style.get_coordinate_mut().update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                style.get_coordinate_mut().adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
             }
 
             // update comments
             for comment in &mut self.comments {
-                comment.get_coordinate_mut().update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                comment.get_coordinate_mut().adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
             }
 
             // update conditional styles
             for conditional_styles in &mut self.conditional_styles_collection {
                 for range in conditional_styles.get_range_collection_mut() {
-                    range.update_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                    range.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
                 }
             }
+
+            // update merge cells
+            for merge_cell in self.get_merge_cells_mut() {
+                merge_cell.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update auto filter
+            match self.get_auto_filter_mut() {
+                Some(v) => {
+                    v.get_range_mut().adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                },
+                None => {}
+            };
         }
 
         if offset_col_num != &0 || offset_row_num != &0 {
+            // update cell formula coordinate
+            let title = self.title.clone();
+            for cell in self.get_cell_collection_mut() {
+                cell.adjustment_insert_formula_coordinate(&title, sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
             // update chart
             for chart in self.get_chart_collection_mut() {
                 for data_serise in chart.get_plot_area_mut().get_plot_series_mut() {
                     for (_, data_serise_values) in data_serise.get_plot_label_mut() {
-                        data_serise_values.get_address_mut().update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                        data_serise_values.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
                     }
                     for (_, data_serise_values) in data_serise.get_plot_values_mut() {
-                        data_serise_values.get_address_mut().update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                        data_serise_values.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
                     }
                     for (_, data_serise_values) in data_serise.get_plot_category_mut() {
-                        data_serise_values.get_address_mut().update_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                        data_serise_values.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                    }
+                }
+            }
+        }
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        if sheet_name == self.title && offset_col_num != &0 {
+            // update column dimensions
+            self.column_dimensions.retain(|x| {
+                !(x.get_col_num_start() > root_col_num && x.get_col_num_end() < &(root_col_num + offset_col_num))
+            });
+            for column_dimension in &mut self.column_dimensions {
+                column_dimension.adjustment_remove_coordinate(root_col_num, offset_col_num);
+            }
+        }
+        if sheet_name == self.title && offset_row_num != &0 {
+            // update row dimensions
+            self.row_dimensions.retain(|x| {
+                !(x.get_row_num() > root_row_num && x.get_row_num() < &(root_row_num + offset_row_num))
+            });
+            for row_dimension in &mut self.row_dimensions {
+                row_dimension.adjustment_remove_coordinate(root_row_num, offset_row_num);
+            }
+        }
+        if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
+            // update cell
+            self.get_cell_collection_mut().retain(|x| {
+                !(x.get_coordinate().is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
+            });
+            for cell in self.get_cell_collection_mut() {
+                cell.get_coordinate_mut().adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update style
+            self.get_style_collection_mut().retain(|x| {
+                !(x.get_coordinate().is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
+            });
+            for style in self.get_style_collection_mut() {
+                style.get_coordinate_mut().adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update comments
+            self.comments.retain(|x| {
+                !(x.get_coordinate().is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
+            });
+            for comment in &mut self.comments {
+                comment.get_coordinate_mut().adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update conditional styles
+            for conditional_styles in &mut self.conditional_styles_collection {
+                conditional_styles.get_range_collection_mut().retain(|x| {
+                    !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
+                });
+            }
+            self.conditional_styles_collection.retain(|x| {
+                !(x.get_range_collection().len() == 0)
+            });
+            for conditional_styles in &mut self.conditional_styles_collection {
+                for range in conditional_styles.get_range_collection_mut() {
+                    range.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                }
+            }
+
+            // update merge cells
+            self.get_merge_cells_mut().retain(|x| {
+                !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
+            });
+            for merge_cell in self.get_merge_cells_mut() {
+                merge_cell.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update auto filter
+            let is_remove = match self.get_auto_filter() {
+                Some(v) => {
+                    v.get_range().is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
+                },
+                None => false
+            };
+            if is_remove {
+                self.remove_auto_filter();
+            }
+            match self.get_auto_filter_mut() {
+                Some(v) => {
+                    v.get_range_mut().adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                },
+                None => {}
+            };
+        }
+
+        if offset_col_num != &0 || offset_row_num != &0 {
+            // update cell formula coordinate
+            let title = self.title.clone();
+            for cell in self.get_cell_collection_mut() {
+                cell.adjustment_remove_formula_coordinate(&title, sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
+            // update chart
+            for chart in self.get_chart_collection_mut() {
+                for data_serise in chart.get_plot_area_mut().get_plot_series_mut() {
+                    for (_, data_serise_values) in data_serise.get_plot_label_mut() {
+                        data_serise_values.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                    }
+                    for (_, data_serise_values) in data_serise.get_plot_values_mut() {
+                        data_serise_values.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+                    }
+                    for (_, data_serise_values) in data_serise.get_plot_category_mut() {
+                        data_serise_values.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
                     }
                 }
             }
