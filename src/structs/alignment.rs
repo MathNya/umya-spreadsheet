@@ -47,15 +47,27 @@ impl Alignment {
     pub fn get_horizontal(&self)-> &str {
         &self.horizontal
     }
-    pub(crate) fn set_horizontal<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_horizontal<S: Into<String>>(&mut self, value:S) {
         self.horizontal = value.into();
     }
+
     pub fn get_vertical(&self)-> &str {
         &self.vertical
     }
-    pub(crate) fn set_vertical<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_vertical<S: Into<String>>(&mut self, value:S) {
         self.vertical = value.into();
     }
+
+    pub fn get_wrap_text(&self)-> &bool {
+        &self.wrap_text
+    }
+
+    pub fn set_wrap_text(&mut self, value:bool) {
+        self.wrap_text = value;
+    }
+
     pub(crate) fn is_empty(&self)-> bool {
         if &self.horizontal != Alignment::HORIZONTAL_GENERAL {
             return false;
@@ -66,8 +78,12 @@ impl Alignment {
         if &self.text_rotation != &0 {
             return false;
         }
+        if &self.wrap_text == &true {
+            return false;
+        }
         true
     }
+
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}{}{}{}{}{}",
         &self.horizontal,

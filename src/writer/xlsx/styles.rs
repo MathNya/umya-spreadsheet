@@ -401,6 +401,9 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                         if v.get_vertical() != "" {
                             attributes.push(("vertical", v.get_vertical()));
                         }
+                        if v.get_wrap_text() == &true {
+                            attributes.push(("wrapText", "1"));
+                        }
                         write_start_tag(&mut writer, "alignment", attributes, true);
 
                         write_end_tag(&mut writer, "xf");

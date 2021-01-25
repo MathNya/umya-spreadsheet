@@ -79,8 +79,8 @@ let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
 .get_bottom_mut()
 .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
 ```
-![Result Image](images/sample2.png)
 ### Insert or Remove Rows(or Columns)
+![Result Image](images/sample2.png)
 ```rust
 extern crate umya_spreadsheet;
 

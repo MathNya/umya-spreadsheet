@@ -115,8 +115,18 @@ pub(crate) fn write(
         write_start_tag(&mut writer, "x:SizeWithCells", vec![], true);
 
         // x:Anchor
+        let anchor = format!("{}, {}, {}, {}, {}, {}, {}, {}",
+            comment.get_anchor().get_left_column(),
+            comment.get_anchor().get_left_offset(),
+            comment.get_anchor().get_top_row(),
+            comment.get_anchor().get_top_offset(),
+            comment.get_anchor().get_right_column(),
+            comment.get_anchor().get_right_offset(),
+            comment.get_anchor().get_bottom_row(),
+            comment.get_anchor().get_bottom_offset()
+        );
         write_start_tag(&mut writer, "x:Anchor", vec![], false);
-        write_text_node(&mut writer, "0, 69, 21, 8, 1, 58, 27, 6");
+        write_text_node(&mut writer, anchor.as_str());
         write_end_tag(&mut writer, "x:Anchor");
 
         // x:AutoFill

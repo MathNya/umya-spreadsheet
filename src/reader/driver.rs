@@ -71,6 +71,14 @@ pub(crate) fn get_font(
             Ok(Event::Empty(ref e)) => {
                 match e.name() {
                     b"i" => font.set_italic(true),
+                    b"b" => font.set_bold(true),
+                    b"u" => {
+                        let val = match get_attribute(e, b"val") {
+                            Some(v) => v,
+                            None => Font::UNDERLINE_SINGLE.to_string()
+                        };
+                        font.set_underline(val);
+                    },
                     b"strike"=> font.set_strikethrough(true),
                     b"sz" => font.set_size(get_attribute(e, b"val").unwrap().parse::<usize>().unwrap()),
                     b"color" => get_attribute_color(e, font.get_color_mut(), theme),
@@ -132,15 +140,32 @@ pub(crate) fn get_text_element(
 )->TextElement {
     let mut buf = Vec::new();
     let mut text_element = TextElement::default();
+    let mut with_first_space = false;
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 match e.name() {
                     b"rPr" => text_element.set_font(get_font(reader, theme)),
+                    b"t" => {
+                        match get_attribute(e, b"xml:space") {
+                            Some(v) => {
+                                if v == "preserve" {
+                                    with_first_space = true;
+                                }
+                            },
+                            None => {}
+                        }
+                    },
                     _ => (),
                 }
             },
-            Ok(Event::Text(e)) => text_element.set_text(e.unescape_and_decode(&reader).unwrap()),
+            Ok(Event::Text(e)) => {
+                let mut value = e.unescape_and_decode(&reader).unwrap();
+                if with_first_space {
+                    value = format!("\r\n{}", value);
+                }
+                text_element.set_text(value);
+            },
             Ok(Event::End(ref e)) => {
                 match e.name() {
                     b"r" => return text_element,

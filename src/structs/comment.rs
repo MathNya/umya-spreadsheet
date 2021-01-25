@@ -1,6 +1,7 @@
 use super::rich_text::RichText;
 use super::color::Color;
 use super::coordinate::Coordinate;
+use super::anchor::Anchor;
 
 #[derive(Default, Debug, Clone)]
 pub struct Comment {
@@ -14,6 +15,7 @@ pub struct Comment {
     height: String,
     fill_color: Color,
     alignment: String,
+    anchor: Anchor,
 }
 impl Comment {
     pub fn get_coordinate(&self)-> &Coordinate {
@@ -28,7 +30,7 @@ impl Comment {
         &self.author
     }
 
-    pub(crate) fn set_author<S: Into<String>>(&mut self, value:S) {
+    pub fn set_author<S: Into<String>>(&mut self, value:S) {
         self.author = value.into();
     }
 
@@ -36,7 +38,7 @@ impl Comment {
         &self.text
     }
 
-    pub(crate) fn set_text(&mut self, value:RichText) {
+    pub fn set_text(&mut self, value:RichText) {
         self.text = value;
     }
 
@@ -44,7 +46,7 @@ impl Comment {
         &self.width
     }
 
-    pub(crate) fn set_width<S: Into<String>>(&mut self, value:S) {
+    pub fn set_width<S: Into<String>>(&mut self, value:S) {
         self.width = value.into();
     }
 
@@ -52,7 +54,7 @@ impl Comment {
         &self.margin_left
     }
 
-    pub(crate) fn set_margin_left<S: Into<String>>(&mut self, value:S) {
+    pub fn set_margin_left<S: Into<String>>(&mut self, value:S) {
         self.margin_left = value.into();
     }
 
@@ -60,7 +62,7 @@ impl Comment {
         &self.margin_top
     }
 
-    pub(crate) fn set_margin_top<S: Into<String>>(&mut self, value:S) {
+    pub fn set_margin_top<S: Into<String>>(&mut self, value:S) {
         self.margin_top = value.into();
     }
 
@@ -68,7 +70,7 @@ impl Comment {
         &self.visible
     }
 
-    pub(crate) fn set_visible(&mut self, value:bool) {
+    pub fn set_visible(&mut self, value:bool) {
         self.visible = value;
     }
 
@@ -76,7 +78,7 @@ impl Comment {
         &self.height
     }
 
-    pub(crate) fn set_height<S: Into<String>>(&mut self, value:S) {
+    pub fn set_height<S: Into<String>>(&mut self, value:S) {
         self.height = value.into();
     }
     
@@ -84,7 +86,7 @@ impl Comment {
         &self.fill_color
     }
 
-    pub(crate) fn set_fill_color(&mut self, value:Color) {
+    pub fn set_fill_color(&mut self, value:Color) {
         self.fill_color = value;
     }
 
@@ -92,7 +94,43 @@ impl Comment {
         &self.alignment
     }
 
-    pub(crate) fn set_alignment<S: Into<String>>(&mut self, value:S) {
+    pub fn set_alignment<S: Into<String>>(&mut self, value:S) {
         self.alignment = value.into();
+    }
+
+    pub fn get_anchor(&self)->&Anchor {
+        &self.anchor
+    }
+
+    pub fn get_anchor_mut(&mut self)->&mut Anchor {
+        &mut self.anchor
+    }
+
+    pub fn set_anchor(&mut self, value:Anchor) {
+        self.anchor = value;
+    }
+
+    pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        let org_col_num = self.coordinate.get_col_num().clone();
+        let org_row_num = self.coordinate.get_row_num().clone();
+        self.coordinate.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+        if &org_col_num != self.coordinate.get_col_num() {
+            self.anchor.adjustment_insert_colmun(offset_col_num);
+        }
+        if &org_row_num != self.coordinate.get_row_num() {
+            self.anchor.adjustment_insert_row(offset_row_num);
+        }
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+        let org_col_num = self.coordinate.get_col_num().clone();
+        let org_row_num = self.coordinate.get_row_num().clone();
+        self.coordinate.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+        if &org_col_num != self.coordinate.get_col_num() {
+            self.anchor.adjustment_remove_colmun(offset_col_num);
+        }
+        if &org_row_num != self.coordinate.get_row_num() {
+            self.anchor.adjustment_remove_row(offset_row_num);
+        }
     }
 }

@@ -46,7 +46,9 @@ pub(crate) fn read(
                     _ => (),
                 }
             },
-            Ok(Event::Text(e)) => value = e.unescape_and_decode(&reader).unwrap(),
+            Ok(Event::Text(e)) => {
+                value = e.unescape_and_decode(&reader).unwrap();
+            },
             Ok(Event::End(ref e)) => {
                 match e.name() {
                     b"author" => {

@@ -5,9 +5,10 @@ use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
 use tempdir::TempDir;
 use super::XlsxError;
-
+use onig::*;
 use super::super::structs::spreadsheet::Spreadsheet;
 use super::super::structs::rich_text::RichText;
+use super::super::structs::font::Font;
 use super::driver::*;
 
 const SHARED_STRINGS: &'static str = "xl/sharedStrings.xml";
@@ -49,6 +50,18 @@ pub fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> result::Result<HashMap
                     match element.get_font() {
                         Some(font) => {
                             write_start_tag(&mut writer, "rPr", vec![], false);
+                            // bold
+                            if font.get_bold() == &true {
+                                write_start_tag(&mut writer, "b", vec![], true);
+                             }
+ 
+                             // under line
+                             if font.get_underline() != Font::UNDERLINE_NONE {
+                                 write_start_tag(&mut writer, "u", vec![
+                                     ("val", font.get_underline()),
+                                 ], true);
+                             }
+
                             // italic
                             if font.get_italic() == &true {
                             write_start_tag(&mut writer, "i", vec![], true);
@@ -95,14 +108,28 @@ pub fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> result::Result<HashMap
                         },
                         None => {}
                     }
-                    write_start_tag(&mut writer, "t", vec![], false);
+
+                    // t
+                    let mut attributes: Vec<(&str, &str)> = Vec::new();
+                    let re = Regex::new(r#"^\r\n.*"#).unwrap();
+                    if re.find(element.get_text()).is_some() {
+                        attributes.push(("xml:space" , "preserve"));
+                    }
+                    write_start_tag(&mut writer, "t", attributes, false);
                     write_text_node(&mut writer, element.get_text());
                     write_end_tag(&mut writer, "t");
+
                     write_end_tag(&mut writer, "r");
                 }
              },
              None => {
-                write_start_tag(&mut writer, "t", vec![], false);
+                // t
+                let mut attributes: Vec<(&str, &str)> = Vec::new();
+                let re = Regex::new(r#"^\r\n.*"#).unwrap();
+                if re.find(&value).is_some() {
+                    attributes.push(("xml:space" , "preserve"));
+                }
+                write_start_tag(&mut writer, "t", attributes, false);
                 write_text_node(&mut writer, value);
                 write_end_tag(&mut writer, "t");
              }

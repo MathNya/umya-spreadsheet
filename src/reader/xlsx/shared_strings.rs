@@ -25,6 +25,7 @@ pub(crate) fn read(dir: &TempDir, theme:&Theme) -> result::Result<Vec<(String, O
     let mut value: String = String::from("");
     let mut text: String = String::from("");
     let mut text_element_vec: Vec<TextElement> = Vec::new();
+    let mut with_first_space = false;
 
     loop {
         match reader.read_event(&mut buf) {
@@ -32,10 +33,25 @@ pub(crate) fn read(dir: &TempDir, theme:&Theme) -> result::Result<Vec<(String, O
                 match e.name() {
                     b"r" => text_element_vec.push(get_text_element(&mut reader, theme)),
                     b"rPh" => get_rubi(&mut reader),
+                    b"t" => {
+                        match get_attribute(e, b"xml:space") {
+                            Some(v) => {
+                                if v == "preserve" {
+                                    with_first_space = true;
+                                }
+                            },
+                            None => {}
+                        }
+                    },
                     _ => (),
                 }
             },
-            Ok(Event::Text(e)) => value = e.unescape_and_decode(&reader).unwrap(),
+            Ok(Event::Text(e)) => {
+                value = e.unescape_and_decode(&reader).unwrap();
+                if with_first_space {
+                    value = format!("\r\n{}", value);
+                }
+            },
             Ok(Event::End(ref e)) => {
                 match e.name() {
                     b"t" => text = value.clone(),

@@ -66,25 +66,25 @@ impl Font {
     pub fn get_name(&self)-> &str {
         &self.name
     }
-    pub(crate) fn set_name<S: Into<String>>(&mut self, value:S) {
+    pub fn set_name<S: Into<String>>(&mut self, value:S) {
         self.name = value.into();
     }
     pub fn get_size(&self)-> &usize {
         &self.size
     }
-    pub(crate) fn set_size(&mut self, value:usize) {
+    pub fn set_size(&mut self, value:usize) {
         self.size = value;
     }
     pub fn get_bold(&self)-> &bool {
         &self.bold
     }
-    pub(crate) fn set_bold(&mut self, value:bool) {
+    pub fn set_bold(&mut self, value:bool) {
         self.bold = value;
     }
     pub fn get_italic(&self)-> &bool {
         &self.italic
     }
-    pub(crate) fn set_italic(&mut self, value:bool) {
+    pub fn set_italic(&mut self, value:bool) {
         self.italic = value;
     }
     pub fn get_color(&self)-> &Color {
@@ -100,31 +100,31 @@ impl Font {
     pub fn get_underline(&self)-> &str {
         &self.underline
     }
-    pub(crate) fn set_underline<S: Into<String>>(&mut self, value:S) {
+    pub fn set_underline<S: Into<String>>(&mut self, value:S) {
         self.underline = value.into();
     }
     pub fn get_strikethrough(&self)-> &bool {
         &self.strikethrough
     }
-    pub(crate) fn set_strikethrough(&mut self, value:bool) {
+    pub fn set_strikethrough(&mut self, value:bool) {
         self.strikethrough = value;
     }
     pub fn get_charset(&self)-> &usize {
         &self.charset
     }
-    pub(crate) fn set_charset(&mut self, value:usize) {
+    pub fn set_charset(&mut self, value:usize) {
         self.charset = value;
     }
     pub fn get_family(&self)-> &usize {
         &self.family
     }
-    pub(crate) fn set_family(&mut self, value:usize) {
+    pub fn set_family(&mut self, value:usize) {
         self.family = value;
     }
     pub fn get_scheme(&self)-> &String {
         &self.scheme
     }
-    pub(crate) fn set_scheme<S: Into<String>>(&mut self, value:S) {
+    pub fn set_scheme<S: Into<String>>(&mut self, value:S) {
         self.scheme = value.into();
     }
     pub(crate) fn get_defalut_value() -> Font {

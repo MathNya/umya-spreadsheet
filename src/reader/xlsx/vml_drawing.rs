@@ -5,10 +5,9 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 use std::collections::HashMap;
-
 use super::super::structs::comment::Comment;
 use super::super::structs::color::Color;
-
+use super::super::structs::anchor::Anchor;
 use super::super::helper::coordinate::*;
 
 pub(crate) fn read(
@@ -44,6 +43,19 @@ pub(crate) fn read(
             Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
             Ok(Event::End(ref e)) => {
                 match e.name() {
+                    b"x:Anchor" => {
+                        let split_str:Vec<&str> = string_value.split(", ").collect();
+                        let mut anchor = Anchor::default();
+                        anchor.set_left_column(split_str.get(0).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_left_offset(split_str.get(1).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_top_row(split_str.get(2).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_top_offset(split_str.get(3).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_right_column(split_str.get(4).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_right_offset(split_str.get(5).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_bottom_row(split_str.get(6).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_bottom_offset(split_str.get(7).unwrap().to_string().parse::<usize>().unwrap());
+                        comment.set_anchor(anchor);
+                    }
                     b"x:Row" => {
                         row = string_value.parse::<usize>().unwrap() + 1;
                         comment.get_coordinate_mut().set_row_num(&row);

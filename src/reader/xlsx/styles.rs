@@ -67,18 +67,6 @@ pub fn read(dir: &TempDir, theme:&Theme) -> result::Result<(Vec<Style>, Vec<Styl
                     _ => (),
                 }
             },
-            Ok(Event::Empty(ref e)) => {
-                match e.name() {
-                    b"cellStyle" => {
-                        //let name = get_attribute(e, b"name").unwrap();
-                        //let xf_id = get_attribute(e, b"xfId").unwrap().parse::<usize>().unwrap();
-                        //let builtin_id = get_attribute(e, b"builtinId").unwrap().parse::<usize>().unwrap();
-                        //spreadsheet.get_cell_style_collection_mut().get_mut(xf_id).unwrap().set_name(name);
-                        //spreadsheet.get_cell_style_collection_mut().get_mut(xf_id).unwrap().set_builtin_id(builtin_id);
-                    },
-                    _ => (),
-                }
-            },
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),
@@ -592,6 +580,10 @@ fn get_xf(
                                 },
                                 Ok(ref attr) if attr.key == b"vertical" => {
                                     alignment.set_vertical(get_attribute_value(attr).unwrap());
+                                },
+                                Ok(ref attr) if attr.key == b"wrapText" => {
+                                    let value = get_attribute_value(attr).unwrap();
+                                    alignment.set_wrap_text(if value == "1" { true } else { false });
                                 },
                                 Ok(_) => {},
                                 Err(_) => {},

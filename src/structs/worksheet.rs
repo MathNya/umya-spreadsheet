@@ -622,7 +622,7 @@ impl Worksheet {
 
             // update comments
             for comment in &mut self.comments {
-                comment.get_coordinate_mut().adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                comment.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
             }
 
             // update conditional styles
@@ -711,7 +711,7 @@ impl Worksheet {
                 !(x.get_coordinate().is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
             });
             for comment in &mut self.comments {
-                comment.get_coordinate_mut().adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
+                comment.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
             }
 
             // update conditional styles

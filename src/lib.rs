@@ -66,6 +66,7 @@ pub use self::structs::coordinate::*;
 pub use self::structs::range::*;
 pub use self::structs::conditional_set::*;
 pub use self::structs::address::*;
+pub use self::structs::anchor::*;
 
 /// create new spreadsheet file.
 /// # Arguments
