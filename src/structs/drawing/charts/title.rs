@@ -1,5 +1,5 @@
 use super::layout::Layout;
-use super::rich_text::RichText;
+use super::super::super::rich_text::RichText;
 
 #[derive(Default, Debug)]
 pub struct Title {

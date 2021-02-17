@@ -24,18 +24,8 @@ pub use self::structs::cells::*;
 pub use self::structs::hyperlink::*;
 pub use self::structs::row_dimension::*;
 pub use self::structs::column_dimension::*;
-pub use self::structs::drawing::*;
 pub use self::structs::shadow::*;
 pub use self::structs::color::*;
-pub use self::structs::chart::*;
-pub use self::structs::title::*;
-pub use self::structs::layout::*;
-pub use self::structs::legend::*;
-pub use self::structs::plot_area::*;
-pub use self::structs::data_series::*;
-pub use self::structs::data_series_values::*;
-pub use self::structs::axis::*;
-pub use self::structs::grid_lines::*;
 pub use self::structs::page_setup::*;
 pub use self::structs::page_margins::*;
 pub use self::structs::header_footer::*;
@@ -67,6 +57,7 @@ pub use self::structs::range::*;
 pub use self::structs::conditional_set::*;
 pub use self::structs::address::*;
 pub use self::structs::anchor::*;
+pub use self::structs::drawing::*;
 
 /// create new spreadsheet file.
 /// # Arguments

@@ -10,7 +10,6 @@ use super::super::structs::theme::Theme;
 use super::super::structs::row_dimension::RowDimension;
 use super::super::structs::column_dimension::ColumnDimension;
 use super::super::structs::conditional::Conditional;
-use super::super::structs::drawing::Drawing;
 use super::super::structs::style::Style;
 use super::super::structs::page_margins::PageMargins;
 use super::super::structs::rich_text::RichText;
@@ -167,11 +166,11 @@ pub(crate) fn read(
                         let width = get_attribute(e, b"width").unwrap().parse::<f32>().unwrap();
                         column_dimension.set_width(width);
 
-                        let bestFit =  match get_attribute(e, b"bestFit") {
+                        let best_fit =  match get_attribute(e, b"bestFit") {
                             Some(v) => { if v.as_str() == "1" { true } else { false } },
                             None => { false }
                         };
-                        column_dimension.set_best_fit(bestFit);
+                        column_dimension.set_best_fit(best_fit);
                         worksheet.set_column_dimensions(column_dimension);
                     },
                     b"row" => {
@@ -232,7 +231,6 @@ pub(crate) fn read(
                     },
                     b"drawing" => {
                         drawing = Some(get_attribute(e, b"r:id").unwrap());
-                        worksheet.add_drawing(Drawing::default());
                     },
                     b"legacyDrawing" => {
                         legacy_drawing = Some(get_attribute(e, b"r:id").unwrap());

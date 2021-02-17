@@ -66,8 +66,12 @@ pub(crate) fn read(
                         comment.get_coordinate_mut().set_col_num(&col);
                     },
                     b"v:shape" => {
-                        let coordinate = format!("{}{}", col_str, row);
-                        result.insert(coordinate, comment);
+                        if row > 0 && col_str != "" {
+                            let coordinate = format!("{}{}", col_str, row);
+                            result.insert(coordinate, comment);
+                        }
+                        row = 0;
+                        col_str = String::from("");
                         comment = Comment::default();
                     },
                     _ => (),

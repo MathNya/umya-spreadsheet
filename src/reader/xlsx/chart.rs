@@ -5,15 +5,15 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
-use super::super::structs::data_series::DataSeries;
-use super::super::structs::data_series_values::DataSeriesValues;
-use super::super::structs::layout::Layout;
-use super::super::structs::plot_area::PlotArea;
-use super::super::structs::chart::Chart;
-use super::super::structs::title::Title;
 use super::super::structs::text_element::TextElement;
-use super::super::structs::legend::Legend;
-use super::super::structs::axis::Axis;
+use super::super::structs::drawing::charts::data_series::DataSeries;
+use super::super::structs::drawing::charts::data_series_values::DataSeriesValues;
+use super::super::structs::drawing::charts::layout::Layout;
+use super::super::structs::drawing::charts::plot_area::PlotArea;
+use super::super::structs::drawing::charts::chart::Chart;
+use super::super::structs::drawing::charts::title::Title;
+use super::super::structs::drawing::charts::legend::Legend;
+use super::super::structs::drawing::charts::axis::Axis;
 
 pub fn read(dir: &TempDir, target: &String, chart: &mut Chart) -> result::Result<(), XlsxError> {
     let path = dir.path().join(format!("xl/drawings/{}", target));

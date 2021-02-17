@@ -1,10 +1,11 @@
 use super::cells::Cells;
 use super::cell::Cell;
-use super::chart::Chart;
+use super::drawing::charts::chart::Chart;
 use super::range::Range;
 use super::row_dimension::RowDimension;
 use super::column_dimension::ColumnDimension;
-use super::drawing::Drawing;
+use super::drawing::spreadsheet::shape::Shape;
+use super::drawing::spreadsheet::connection_shape::ConnectionShape;
 use super::page_setup::PageSetup;
 use super::page_margins::PageMargins;
 use super::header_footer::HeaderFooter;
@@ -30,8 +31,9 @@ pub struct Worksheet {
     cell_collection: Cells,
     row_dimensions : Vec<RowDimension>,
     column_dimensions : Vec<ColumnDimension>,
-    drawing_collection: Vec<Drawing>,
     chart_collection: Vec<Chart>,
+    shape_collection: Vec<Shape>,
+    connection_shape_collection: Vec<ConnectionShape>,
     sheet_state: String,
     page_setup: PageSetup,
     page_margins: PageMargins,
@@ -69,8 +71,9 @@ impl Default for Worksheet {
             cell_collection: Cells::default(),
             row_dimensions : Vec::new(),
             column_dimensions : Vec::new(),
-            drawing_collection: Vec::new(),
             chart_collection: Vec::new(),
+            shape_collection: Vec::new(),
+            connection_shape_collection: Vec::new(),
             sheet_state: String::from(""),
             page_setup: PageSetup::default(),
             page_margins: PageMargins::default(),
@@ -567,13 +570,13 @@ impl Worksheet {
         &mut self.chart_collection
     }
 
-    pub(crate) fn new_chart(&mut self) -> &mut Chart {
+    pub fn new_chart(&mut self) -> &mut Chart {
         let chart = Chart::default();
         self.add_chart(chart);
         self.chart_collection.last_mut().unwrap()
     }
 
-    pub(crate) fn add_chart(&mut self, chart:Chart) {
+    pub fn add_chart(&mut self, chart:Chart) {
         self.chart_collection.push(chart);
     }
 
@@ -591,6 +594,44 @@ impl Worksheet {
             names.push(v.get_name().into());
         }
         names
+    }
+
+    // ************************
+    // Shape
+    // ************************
+    pub fn get_shape_collection(&self) -> &Vec<Shape> {
+        &self.shape_collection
+    }
+
+    pub fn get_shape_collection_mut(&mut self) -> &mut Vec<Shape> {
+        &mut self.shape_collection
+    }
+
+    pub fn set_shape_collection(&mut self, value:Vec<Shape>) {
+        self.shape_collection = value;
+    }
+
+    pub fn add_shape(&mut self, value:Shape) {
+        self.shape_collection.push(value);
+    }
+
+    // ************************
+    // Connection Shape
+    // ************************
+    pub fn get_connection_shape_collection(&self) -> &Vec<ConnectionShape> {
+        &self.connection_shape_collection
+    }
+
+    pub fn get_connection_shape_collection_mut(&mut self) -> &mut Vec<ConnectionShape> {
+        &mut self.connection_shape_collection
+    }
+
+    pub fn set_connection_shape_collection(&mut self, value:Vec<ConnectionShape>) {
+        self.connection_shape_collection = value;
+    }
+
+    pub fn add_connection_shape(&mut self, value:ConnectionShape) {
+        self.connection_shape_collection.push(value);
     }
 
     // ************************
@@ -826,29 +867,17 @@ impl Worksheet {
         self.sheet_id = value.into();
     }
 
-    pub fn get_drawing_collection(&self) -> &Vec<Drawing> {
-        &self.drawing_collection
-    }
-    pub(crate) fn get_drawing_collection_mut(&mut self) -> &mut Vec<Drawing> {
-        &mut self.drawing_collection
-    }
-    pub(crate) fn set_drawing_collection(&mut self, value:Vec<Drawing>) {
-        self.drawing_collection = value;
-    }
-    pub(crate) fn new_drawing(&mut self) -> &mut Drawing {
-        let drawing = Drawing::default();
-        self.add_drawing(drawing);
-        self.drawing_collection.last_mut().unwrap()
-    }
-    pub(crate) fn add_drawing(&mut self, value:Drawing) {
-        self.drawing_collection.push(value);
-    }
+
     pub fn has_drawing_object(&self) -> bool {
         if self.chart_collection.len() > 0 {
             return true;
         }
+        if self.shape_collection.len() > 0 {
+            return true;
+        }
         false
     }
+
     pub fn has_code_name(&self) -> bool {
         match self.code_name {
             Some(_) => true,

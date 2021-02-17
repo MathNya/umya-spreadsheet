@@ -22,6 +22,8 @@ mod styles;
 mod worksheet_rels;
 mod vml_drawing;
 mod drawing;
+mod drawing_charts;
+mod drawing_spreadsheet;
 mod drawing_rels;
 mod vba_project_bin;
 mod comment;
@@ -103,7 +105,7 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
                 let worksheet = book.new_sheet_crate(sheets_sheet_id.clone(), sheets_name.clone());
-                let (is_active_sheet, drawing_id, legacyDrawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
+                let (is_active_sheet, drawing_id, legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
                 let worksheet_rel = worksheet_rels::read(&dir, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 for (worksheet_id, type_value, worksheet_target) in &worksheet_rel {
                     match type_value.as_str() {
@@ -111,26 +113,15 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
                         "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
                             let draw_info = drawing::read(&dir, &worksheet_target, worksheet).unwrap();
                             let drawing_rel = drawing_rels::read(&dir, &worksheet_target).unwrap();
-                            for (from, to, name, chart) in &draw_info {
-                                match chart {
-                                    Some(v) => {
-                                        for (drawing_id, _, drawing_target) in &drawing_rel {
-                                            if v == drawing_id {
-                                                let from_coordinate = format!("{}{}", string_from_column_index(from.get("col").unwrap()), from.get("row").unwrap());
-                                                let to_coordinate = format!("{}{}", string_from_column_index(to.get("col").unwrap()), to.get("row").unwrap());
-                                                let mut ct = worksheet.new_chart();
-                                                ct.set_name(name);
-                                                ct.set_top_left_cell(from_coordinate);
-                                                ct.set_top_left_x_offset(from.get("colOff").unwrap().clone());
-                                                ct.set_top_left_y_offset(from.get("rowOff").unwrap().clone());
-                                                ct.set_bottom_right_cell(to_coordinate);
-                                                ct.set_bottom_right_x_offset(to.get("colOff").unwrap().clone());
-                                                ct.set_bottom_right_y_offset(to.get("rowOff").unwrap().clone());
-                                                chart::read(&dir, &drawing_target, &mut ct).unwrap();
-                                            }
-                                        }
-                                    },
-                                    None => {},
+                            for (chart_id, chart) in &draw_info {
+                                for (drawing_id, _, drawing_target) in &drawing_rel {
+                                    if chart_id == drawing_id {
+                                        let my_chart = worksheet.new_chart();
+                                        my_chart.set_non_visual_drawing_properties(chart.get_non_visual_drawing_properties().clone());
+                                        my_chart.set_anchor(chart.get_anchor().clone());
+                                        my_chart.set_transform(chart.get_transform().clone());
+                                        chart::read(&dir, &drawing_target, my_chart).unwrap();
+                                    }
                                 }
                             }
                         },

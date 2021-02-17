@@ -17,7 +17,7 @@ impl TextElement  {
     pub fn get_text(&self)-> &str {
         &self.text
     }
-    pub(crate) fn set_text<S: Into<String>>(&mut self, value:S) {
+    pub fn set_text<S: Into<String>>(&mut self, value:S) {
         self.text = value.into();
     }
     pub fn get_font(&self)-> &Option<Font> {
@@ -31,7 +31,7 @@ impl TextElement  {
         self.set_font(Font::get_defalut_value());
         self.font.as_mut().unwrap()
     }
-    pub(crate) fn set_font(&mut self, value:Font) {
+    pub fn set_font(&mut self, value:Font) {
         self.font = Some(value);
     }
     pub(crate) fn get_hash_code(&self)-> String {

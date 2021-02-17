@@ -119,7 +119,7 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
             &dir
         );
         let _ = worksheet_rels::write(worksheet, p_worksheet_id,  &dir);
-        let _ = drawing::write(worksheet, p_worksheet_id, &chart_id, &dir);
+        let _ = drawing::write(worksheet, p_worksheet_id, &dir);
         let _ = drawing_rels::write(worksheet, p_worksheet_id, &chart_id, &dir);
         let _ = comment::write(worksheet, p_worksheet_id,  &dir);
         let _ = vml_drawing::write(worksheet, p_worksheet_id,  &dir);

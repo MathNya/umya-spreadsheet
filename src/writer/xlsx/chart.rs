@@ -4,10 +4,10 @@ use std::io::Cursor;
 use tempdir::TempDir;
 
 use super::super::structs::font::Font;
-use super::super::structs::title::Title;
-use super::super::structs::chart::Chart;
-use super::super::structs::axis::Axis;
-use super::super::structs::data_series::DataSeries;
+use super::super::structs::drawing::charts::title::Title;
+use super::super::structs::drawing::charts::chart::Chart;
+use super::super::structs::drawing::charts::axis::Axis;
+use super::super::structs::drawing::charts::data_series::DataSeries;
 use super::driver::*;
 use super::XlsxError;
 
