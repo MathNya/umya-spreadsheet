@@ -1,5 +1,11 @@
 // a:avLst
 use super::shape_guide::ShapeGuide;
+use writer::driver::*;
+use reader::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct AdjustValueList {
@@ -20,5 +26,54 @@ impl AdjustValueList {
 
     pub fn add_shape_guide_collection(&mut self, value:ShapeGuide) {
         self.shape_guide_collection.push(value);
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+    
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:gd" => {
+                            let mut shape_guide = ShapeGuide::default();
+                            shape_guide.set_name(get_attribute(e, b"name").unwrap());
+                            shape_guide.set_fmla(get_attribute(e, b"fmla").unwrap());
+                            &mut self.add_shape_guide_collection(shape_guide);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"a:avLst" => {
+                            return;
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "a:avLst"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // a:avLst
+        if self.shape_guide_collection.len() > 0 {
+            write_start_tag(writer, "a:avLst", vec![], false);
+            for gd in &self.shape_guide_collection {
+                gd.write_to(writer);
+            }
+            write_end_tag(writer, "a:avLst");
+        } else {
+            write_start_tag(writer, "a:avLst", vec![], true);
+        }
     }
 }

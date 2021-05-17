@@ -109,8 +109,8 @@ pub(crate) fn read(
                                 let split = index_from_coordinate(&coordinate_upper);
                                 let col = split[0];
                                 let row = split[1];
-                                style.get_coordinate_mut().set_col_num(&col);
-                                style.get_coordinate_mut().set_row_num(&row);
+                                style.get_coordinate_mut().set_col_num(col);
+                                style.get_coordinate_mut().set_row_num(row);
                                 worksheet.add_style(style);
                             },
                             None => {}
@@ -199,8 +199,8 @@ pub(crate) fn read(
                                 let split = index_from_coordinate(&coordinate_upper);
                                 let col = split[0];
                                 let row = split[1];
-                                style.get_coordinate_mut().set_col_num(&col);
-                                style.get_coordinate_mut().set_row_num(&row);
+                                style.get_coordinate_mut().set_col_num(col);
+                                style.get_coordinate_mut().set_row_num(row);
                                 worksheet.add_style(style);
                             },
                             None => {}
@@ -248,7 +248,7 @@ pub(crate) fn read(
             Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
             Ok(Event::End(ref e)) => {
                 match e.name() {
-                    b"f" => worksheet.get_cell_mut(&coordinate.to_string()).set_formula(string_value.clone()),
+                    b"f" => {worksheet.get_cell_mut(&coordinate.to_string()).set_formula(string_value.clone());},
                     b"v" => {
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
@@ -292,15 +292,15 @@ fn get_conditional_formatting(
                     b"cfRule" => {
                         for a in e.attributes().with_checks(false) {
                             match a {
-                                Ok(ref attr) if attr.key == b"type" => conditional.set_condition_type(get_attribute_value(attr).unwrap()),
+                                Ok(ref attr) if attr.key == b"type" => {conditional.set_condition_type(get_attribute_value(attr).unwrap());},
                                 Ok(ref attr) if attr.key == b"dxfId" => {
                                     let dxf_id = get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
                                     conditional.set_style(dxf_vec.get(dxf_id).unwrap().clone());
                                 },
-                                Ok(ref attr) if attr.key == b"priority" => conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
-                                Ok(ref attr) if attr.key == b"percent" => conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
-                                Ok(ref attr) if attr.key == b"bottom" => conditional.set_bottom(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
-                                Ok(ref attr) if attr.key == b"rank" => conditional.set_rank(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"priority" => {conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
+                                Ok(ref attr) if attr.key == b"percent" => {conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
+                                Ok(ref attr) if attr.key == b"bottom" => {conditional.set_bottom(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
+                                Ok(ref attr) if attr.key == b"rank" => {conditional.set_rank(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
                                 Ok(_) => {},
                                 Err(_) => {},
                             }
@@ -316,15 +316,15 @@ fn get_conditional_formatting(
                     b"cfRule" => {
                         for a in e.attributes().with_checks(false) {
                             match a {
-                                Ok(ref attr) if attr.key == b"type" => conditional.set_condition_type(get_attribute_value(attr).unwrap()),
+                                Ok(ref attr) if attr.key == b"type" => {conditional.set_condition_type(get_attribute_value(attr).unwrap());},
                                 Ok(ref attr) if attr.key == b"dxfId" => {
                                     let dxf_id = get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
                                     conditional.set_style(dxf_vec.get(dxf_id).unwrap().clone());
                                 },
-                                Ok(ref attr) if attr.key == b"priority" => conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
-                                Ok(ref attr) if attr.key == b"percent" => conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
-                                Ok(ref attr) if attr.key == b"bottom" => conditional.set_bottom(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
-                                Ok(ref attr) if attr.key == b"rank" => conditional.set_rank(get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
+                                Ok(ref attr) if attr.key == b"priority" => {conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
+                                Ok(ref attr) if attr.key == b"percent" => {conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
+                                Ok(ref attr) if attr.key == b"bottom" => {conditional.set_bottom(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
+                                Ok(ref attr) if attr.key == b"rank" => {conditional.set_rank(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
                                 Ok(_) => {},
                                 Err(_) => {},
                             }
@@ -443,7 +443,6 @@ fn get_attribute_row(
     e:&quick_xml::events::BytesStart<'_>, 
     row:&mut RowDimension
 ) {
-    let mut row_index:usize = 0;
     for a in e.attributes().with_checks(false) {
         match a {
             Ok(ref attr) if attr.key == b"r" => row.set_row_num(&get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),

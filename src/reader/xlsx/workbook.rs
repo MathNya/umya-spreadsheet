@@ -70,12 +70,3 @@ pub(crate) fn read(dir: &TempDir) -> result::Result<(Spreadsheet, Vec<(String, S
     }
     Ok((spreadsheet,sheets))
 }
-
-fn get_sheet_id(sheet_name:&str, sheet_vec:&Vec<(String, String, String)>)-> String {
-    for (sheets_name, sheets_sheet_id, sheets_rid) in sheet_vec {
-        if sheet_name == sheets_name {
-            return sheets_sheet_id.clone();
-        }
-    }
-    String::from("")
-}

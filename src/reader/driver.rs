@@ -70,8 +70,8 @@ pub(crate) fn get_font(
         match reader.read_event(&mut buf) {
             Ok(Event::Empty(ref e)) => {
                 match e.name() {
-                    b"i" => font.set_italic(true),
-                    b"b" => font.set_bold(true),
+                    b"i" => {font.set_italic(true);},
+                    b"b" => {font.set_bold(true);},
                     b"u" => {
                         let val = match get_attribute(e, b"val") {
                             Some(v) => v,
@@ -79,14 +79,14 @@ pub(crate) fn get_font(
                         };
                         font.set_underline(val);
                     },
-                    b"strike"=> font.set_strikethrough(true),
-                    b"sz" => font.set_size(get_attribute(e, b"val").unwrap().parse::<usize>().unwrap()),
-                    b"color" => get_attribute_color(e, font.get_color_mut(), theme),
-                    b"name" => font.set_name(get_attribute(e, b"val").unwrap()),
-                    b"rFont" => font.set_name(get_attribute(e, b"val").unwrap()),
-                    b"family" => font.set_family(get_attribute(e, b"val").unwrap().parse::<usize>().unwrap()),
-                    b"charset" => font.set_charset(get_attribute(e, b"val").unwrap().parse::<usize>().unwrap()),
-                    b"scheme" => font.set_scheme(get_attribute(e, b"val").unwrap()),
+                    b"strike"=> {font.set_strikethrough(true);},
+                    b"sz" => {font.set_size(get_attribute(e, b"val").unwrap().parse::<usize>().unwrap());},
+                    b"color" => {get_attribute_color(e, font.get_color_mut(), theme);},
+                    b"name" => {font.set_name(get_attribute(e, b"val").unwrap());},
+                    b"rFont" => {font.set_name(get_attribute(e, b"val").unwrap());},
+                    b"family" => {font.set_family(get_attribute(e, b"val").unwrap().parse::<usize>().unwrap());},
+                    b"charset" => {font.set_charset(get_attribute(e, b"val").unwrap().parse::<usize>().unwrap());},
+                    b"scheme" => {font.set_scheme(get_attribute(e, b"val").unwrap());},
                     _ => (),
                 }
             },

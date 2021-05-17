@@ -10,16 +10,22 @@ impl Title {
     pub fn get_caption(&self) -> &RichText {
         &self.caption
     }
+
     pub fn get_caption_mut(&mut self) -> &mut RichText {
         &mut self.caption
     }
-    pub(crate) fn set_caption(&mut self, value:RichText) {
+
+    pub fn set_caption(&mut self, value:RichText)-> &mut Title {
         self.caption = value.into();
+        self
     }
-    pub fn get_layout(&self) -> &Option<Layout> {
+
+    pub fn get_layout(&self)-> &Option<Layout> {
         &self.layout
     }
-    pub(crate) fn set_layout(&mut self, value:Layout) {
+
+    pub fn set_layout(&mut self, value:Layout)-> &mut Title {
         self.layout = Some(value);
+        self
     }
 }

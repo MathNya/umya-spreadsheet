@@ -61,79 +61,117 @@ impl Conditional {
     pub fn get_condition_type(&self)-> &str {
         &self.condition_type
     }
-    pub(crate) fn set_condition_type<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_condition_type<S: Into<String>>(&mut self, value:S)-> &mut Conditional {
         self.condition_type = value.into();
+        self
     }
+
     pub fn get_operator_type(&self)-> &str {
         &self.operator_type
     }
-    pub(crate) fn set_operator_type<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_operator_type<S: Into<String>>(&mut self, value:S)-> &mut Conditional {
         self.operator_type = value.into();
+        self
     }
+
     pub fn get_data_type(&self)-> &str {
         &self.data_type
     }
-    pub(crate) fn set_data_type<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_data_type<S: Into<String>>(&mut self, value:S)-> &mut Conditional {
         self.data_type = value.into();
+        self
     }
+
     pub fn get_text(&self)-> &str {
         &self.text
     }
-    pub(crate) fn set_text<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_text<S: Into<String>>(&mut self, value:S)-> &mut Conditional {
         self.text = value.into();
+        self
     }
+
     pub fn get_priority(&self)-> &usize {
         &self.priority
     }
-    pub(crate) fn set_priority(&mut self, value:usize) {
+
+    pub fn set_priority(&mut self, value:usize)-> &mut Conditional {
         self.priority = value;
+        self
     }
+
     pub fn get_percent(&self)-> &usize {
         &self.percent
     }
-    pub(crate) fn set_percent(&mut self, value:usize) {
+
+    pub fn set_percent(&mut self, value:usize)-> &mut Conditional {
         self.percent = value;
+        self
     }
+
     pub fn get_bottom(&self)-> &usize {
         &self.bottom
     }
-    pub(crate) fn set_bottom(&mut self, value:usize) {
+
+    pub fn set_bottom(&mut self, value:usize)-> &mut Conditional {
         self.bottom = value;
+        self
     }
+
     pub fn get_rank(&self)-> &usize {
         &self.rank
     }
-    pub(crate) fn set_rank(&mut self, value:usize) {
+
+    pub fn set_rank(&mut self, value:usize)-> &mut Conditional {
         self.rank = value;
+        self
     }
+
     pub fn get_stop_if_true(&self)-> &bool {
         &self.stop_if_true
     }
-    pub(crate) fn set_stop_if_true(&mut self, value:bool) {
+
+    pub fn set_stop_if_true(&mut self, value:bool)-> &mut Conditional {
         self.stop_if_true = value;
+        self
     }
+
     pub fn get_condition(&self)-> &Vec<String> {
         &self.condition
     }
-    pub(crate) fn set_condition(&mut self, value:Vec<String>) {
+
+    pub fn set_condition(&mut self, value:Vec<String>)-> &mut Conditional {
         self.condition = value;
+        self
     }
-    pub(crate) fn add_condition<S: Into<String>>(&mut self, value:S) {
+
+    pub fn add_condition<S: Into<String>>(&mut self, value:S)-> &mut Conditional {
         self.condition.push(value.into());
+        self
     }
+
     pub fn get_cfvo_collection(&self)-> &Vec<(String, Option<String>, Option<Color>)> {
         &self.cfvo_collection
     }
-    pub(crate) fn set_cfvo_collection(&mut self, value:Vec<(String, Option<String>, Option<Color>)>) {
+
+    pub fn set_cfvo_collection(&mut self, value:Vec<(String, Option<String>, Option<Color>)>) {
         self.cfvo_collection = value;
     }
-    pub(crate) fn add_cfvo_collection<S: Into<String>>(&mut self, r#type:S, value:Option<String>, color:Option<Color>) {
+
+    pub fn add_cfvo_collection<S: Into<String>>(&mut self, r#type:S, value:Option<String>, color:Option<Color>)-> &mut Conditional {
         self.cfvo_collection.push((r#type.into(), value, color));
+        self
     }
+
     pub fn get_style(&self)-> &Option<Style> {
         &self.style
     }
-    pub(crate) fn set_style(&mut self, value:Style) {
+
+    pub fn set_style(&mut self, value:Style)-> &mut Conditional {
         self.style = Some(value);
+        self
     }
 }

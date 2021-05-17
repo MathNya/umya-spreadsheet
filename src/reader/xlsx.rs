@@ -7,9 +7,7 @@ use std::fs::File;
 use super::structs::theme::Theme;
 use super::structs::spreadsheet::Spreadsheet;
 use super::driver;
-use super::super::helper::coordinate::*;
 
-mod chart;
 mod doc_props_app;
 mod doc_props_core;
 mod workbook;
@@ -22,11 +20,11 @@ mod styles;
 mod worksheet_rels;
 mod vml_drawing;
 mod drawing;
-mod drawing_charts;
-mod drawing_spreadsheet;
-mod drawing_rels;
 mod vba_project_bin;
 mod comment;
+pub(crate) mod chart;
+pub(crate) mod drawing_rels;
+pub(crate) mod media;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -105,25 +103,13 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
                 let worksheet = book.new_sheet_crate(sheets_sheet_id.clone(), sheets_name.clone());
-                let (is_active_sheet, drawing_id, legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
+                let (is_active_sheet, _drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
                 let worksheet_rel = worksheet_rels::read(&dir, &rel_target, &hyperlink_vec, worksheet).unwrap();
-                for (worksheet_id, type_value, worksheet_target) in &worksheet_rel {
+                for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
                     match type_value.as_str() {
                         // drawing, chart
                         "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
-                            let draw_info = drawing::read(&dir, &worksheet_target, worksheet).unwrap();
-                            let drawing_rel = drawing_rels::read(&dir, &worksheet_target).unwrap();
-                            for (chart_id, chart) in &draw_info {
-                                for (drawing_id, _, drawing_target) in &drawing_rel {
-                                    if chart_id == drawing_id {
-                                        let my_chart = worksheet.new_chart();
-                                        my_chart.set_non_visual_drawing_properties(chart.get_non_visual_drawing_properties().clone());
-                                        my_chart.set_anchor(chart.get_anchor().clone());
-                                        my_chart.set_transform(chart.get_transform().clone());
-                                        chart::read(&dir, &drawing_target, my_chart).unwrap();
-                                    }
-                                }
-                            }
+                            drawing::read(&dir, &worksheet_target, worksheet).unwrap();
                         },
                         // comment
                         "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {

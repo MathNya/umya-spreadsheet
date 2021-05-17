@@ -97,27 +97,27 @@ fn new_and_wite() {
     let _ = book.new_sheet("Sheet2");
 
     // change value.
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1").unwrap();
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell("A1").unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(2, 2).set_value_and_data_type("1", umya_spreadsheet::Cell::TYPE_NUMERIC).unwrap();
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(2, 2).set_value_and_data_type("1", umya_spreadsheet::Cell::TYPE_NUMERIC);
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(2, 2).unwrap().get_value();
     assert_eq!("1", a1_value);
 
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 3).set_value_and_data_type("true", umya_spreadsheet::Cell::TYPE_BOOL).unwrap();
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 3).set_value_and_data_type("true", umya_spreadsheet::Cell::TYPE_BOOL);
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 3).unwrap().get_value();
     assert_eq!("true", a1_value);
 
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 4).set_value("true").unwrap();
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 4).set_value("true");
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 4).unwrap().get_value();
     assert_eq!("true", a1_value);
 
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 5).set_value("false").unwrap();
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 5).set_value("false");
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 5).unwrap().get_value();
     assert_eq!("false", a1_value);
 
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 6).set_value("100").unwrap();
+    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 6).set_value("100");
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 6).unwrap().get_value();
     assert_eq!("100", a1_value);
 

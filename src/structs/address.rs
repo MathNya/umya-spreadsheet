@@ -6,27 +6,29 @@ pub struct Address {
     range: Range,
 }
 impl Address {
-    pub(crate) fn get_sheet_name(&self)-> &str {
+    pub fn get_sheet_name(&self)-> &str {
         &self.sheet_name
     }
 
-    pub(crate) fn set_sheet_name<S: Into<String>>(&mut self, value:S) {
+    pub fn set_sheet_name<S: Into<String>>(&mut self, value:S)-> &mut Address {
         self.sheet_name = value.into();
+        self
     }
 
-    pub(crate) fn get_range(&self)-> &Range {
+    pub fn get_range(&self)-> &Range {
         &self.range
     }
 
-    pub(crate) fn get_range_mut(&mut self)-> &mut Range {
+    pub fn get_range_mut(&mut self)-> &mut Range {
         &mut self.range
     }
 
-    pub(crate) fn set_range(&mut self, value:Range) {
+    pub fn set_range(&mut self, value:Range)-> &mut Address {
         self.range = value;
+        self
     }
 
-    pub(crate) fn set_address<S: Into<String>>(&mut self, value:S) {
+    pub fn set_address<S: Into<String>>(&mut self, value:S)-> &mut Address {
         let org_value = value.into().clone();
         let split_value: Vec<&str> = org_value.split("!").collect();
 
@@ -40,9 +42,10 @@ impl Address {
         } else {
             panic!("Non-standard address");
         }
+        self
     }
 
-    pub(crate) fn get_address(&self) -> String {
+    pub fn get_address(&self) -> String {
         let range = self.range.get_range();
         if self.sheet_name == "" {
             return range;

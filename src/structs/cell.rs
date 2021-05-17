@@ -44,9 +44,9 @@ impl Cell {
         self.hyperlink.as_mut().unwrap()
     }
 
-    pub fn set_hyperlink(&mut self, value:Hyperlink)->Result<(), &str> {
+    pub fn set_hyperlink(&mut self, value:Hyperlink)-> &mut Cell {
         self.hyperlink = Some(value);
-        Ok(())
+        self
     }
 
     pub fn get_value(&self)-> &String {
@@ -57,30 +57,32 @@ impl Cell {
         &self.rich_text
     }
 
-    pub fn set_value<S: Into<String>>(&mut self, value:S)->Result<(), &str> {
+    pub fn set_value<S: Into<String>>(&mut self, value:S)-> &mut Cell {
         let v = value.into();
         self.data_type = Cell::data_type_for_value(&v).to_string();
         self.set_value_crate(v);
-        Ok(())
+        self
     }
 
-    pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value:S) {
+    pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value:S)-> &mut Cell {
         self.value = value.into();
         self.rich_text = None;
+        self
     }
 
-    pub(crate) fn set_all_param<S: Into<String>>(&mut self, value:S, rich_text:Option<RichText>, data_type:S, formula_attributes:S) {
+    pub(crate) fn set_all_param<S: Into<String>>(&mut self, value:S, rich_text:Option<RichText>, data_type:S, formula_attributes:S)-> &mut Cell {
         self.value = value.into();
         self.rich_text = rich_text;
         self.data_type = data_type.into();
         self.formula = formula_attributes.into();
+        self
     }
 
     pub fn get_data_type(&self)-> &str {
         &self.data_type
     }
 
-    pub fn set_value_and_data_type<S: Into<String>>(&mut self, value:S, data_type:S)->Result<(), &'static str> {
+    pub fn set_value_and_data_type<S: Into<String>>(&mut self, value:S, data_type:S)-> &mut Cell {
         let v = value.into();
         let d = data_type.into();
         match Cell::check_data_type(&v, &d) {
@@ -92,18 +94,18 @@ impl Cell {
                     self.data_type = d;
                 }
             },
-            Err(e) => return Err(e)
+            Err(e) => panic!("Error at set_value_and_data_type {:?}", e),
         }
-        Ok(())
+        self
     }
 
-    pub fn set_data_type<S: Into<String>>(&mut self, value:S)->Result<(), &'static str> {
+    pub fn set_data_type<S: Into<String>>(&mut self, value:S)-> &mut Cell {
         let data_type = value.into();
         match Cell::check_data_type(&self.value, &data_type) {
             Ok(_) => self.data_type = data_type.into(),
-            Err(e) => return Err(e)
+            Err(e) => panic!("Error at set_data_type {:?}", e),
         }
-        Ok(())
+        self
     }
 
     pub(crate) fn check_data_type<S: Into<String>>(value:S, data_type:S)->Result<(), &'static str> {
@@ -138,9 +140,10 @@ impl Cell {
         &self.formula
     }
 
-    pub(crate) fn set_formula<S: Into<String>>(&mut self, value:S) {
+    pub fn set_formula<S: Into<String>>(&mut self, value:S)-> &mut Cell {
         self.data_type = Cell::TYPE_FORMULA.to_string();
         self.formula = value.into();
+        self
     }
 
     pub(crate) fn data_type_for_value(value:&str)-> &str {

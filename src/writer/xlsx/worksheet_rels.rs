@@ -12,6 +12,8 @@ const SUB_DIR: &'static str = "xl/worksheets/_rels";
 pub(crate) fn write(
     worksheet: &Worksheet,
     p_worksheet_id: &str,
+    drawing_id: &usize,
+    comment_id: &usize,
     dir: &TempDir
 ) -> Result<(), XlsxError> {
     let file_name = format!("sheet{}.xml.rels", p_worksheet_id);
@@ -34,7 +36,7 @@ pub(crate) fn write(
             &mut writer,
             id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
-            format!("../drawings/drawing{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
+            format!("../drawings/drawing{}.xml", drawing_id.to_string().as_str()).as_str(),
             ""
         );
         id += 1;
@@ -60,7 +62,7 @@ pub(crate) fn write(
             &mut writer,
             id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
-            format!("../drawings/vmlDrawing{}.vml", p_worksheet_id.to_string().as_str()).as_str(),
+            format!("../drawings/vmlDrawing{}.vml", comment_id.to_string().as_str()).as_str(),
             ""
         );
         id+=1;
@@ -68,10 +70,9 @@ pub(crate) fn write(
             &mut writer,
             id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
-            format!("../comments{}.xml", p_worksheet_id.to_string().as_str()).as_str(),
+            format!("../comments{}.xml", comment_id.to_string().as_str()).as_str(),
             ""
         );
-        id+=1;
     }
 
     // Write header/footer relationship

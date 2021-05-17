@@ -10,19 +10,27 @@ impl PlotArea {
     pub fn get_layout(&self)-> &Layout {
         &self.layout
     }
-    pub(crate) fn set_layout(&mut self, value:Layout) {
+
+    pub fn set_layout(&mut self, value:Layout)-> &mut PlotArea {
         self.layout = value;
+        self
     }
+
     pub fn get_plot_series(&self)-> &Vec<DataSeries> {
         &self.plot_series
     }
+
     pub fn get_plot_series_mut(&mut self)-> &mut Vec<DataSeries> {
         &mut self.plot_series
     }
-    pub(crate) fn set_plot_series(&mut self, value:Vec<DataSeries>) {
+
+    pub fn set_plot_series(&mut self, value:Vec<DataSeries>)-> &mut PlotArea {
         self.plot_series = value;
+        self
     }
-    pub(crate) fn add_plot_series(&mut self, value:DataSeries) {
+
+    pub fn add_plot_series(&mut self, value:DataSeries)-> &mut PlotArea {
         self.plot_series.push(value);
+        self
     }
 }

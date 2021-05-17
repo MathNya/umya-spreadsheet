@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDateTime, Duration};
+use chrono::{NaiveDateTime, Duration};
 
 pub const CALENDAR_WINDOWS_1900: &'static str = "1900";
 pub const CALENDAR_MAC_1904: &'static str = "1904";

@@ -1,5 +1,12 @@
 // a:xfrm
-#[derive(Default, Debug, Clone)]
+use writer::driver::*;
+use reader::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
+
+#[derive(Default, Debug)]
 pub struct Transform2D {
     x: usize,
     y: usize,
@@ -64,5 +71,91 @@ impl Transform2D {
     
     pub fn set_flip_h<S: Into<String>>(&mut self, value:S) {
         self.flip_h = Some(value.into());
+    }
+    
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+    
+        match get_attribute(e, b"rot") {
+            Some(v) => {&mut self.set_rot(v);},
+            None => {}
+        }
+    
+        match get_attribute(e, b"flipH") {
+            Some(v) => {&mut self.set_flip_h(v);},
+            None => {}
+        }
+    
+        match get_attribute(e, b"flipV") {
+            Some(v) => {&mut self.set_flip_v(v);},
+            None => {}
+        }
+    
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:off" => {
+                            &mut self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
+                            &mut self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
+                        },
+                        b"a:ext" => {
+                            &mut self.set_width(get_attribute(e, b"cx").unwrap().parse::<usize>().unwrap());
+                            &mut self.set_height(get_attribute(e, b"cy").unwrap().parse::<usize>().unwrap());
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"a:xfrm" => {
+                            return;
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "a:xfrm"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
+        // a:xfrm
+        // xdr:xfrm
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        match &self.rot {
+            Some(v) => attributes.push(("rot", v)),
+            None => {}
+        }
+        match &self.flip_h {
+            Some(v) => attributes.push(("flipH", v)),
+            None => {}
+        }
+        match &self.flip_v {
+            Some(v) => attributes.push(("flipV", v)),
+            None => {}
+        }
+        write_start_tag(writer, tag_name, attributes, false);
+
+        // a:off
+        write_start_tag(writer, "a:off", vec![
+            ("x", &self.x.to_string()),
+            ("y", &self.y.to_string()),
+        ], true);
+
+        // a:ext
+        write_start_tag(writer, "a:ext", vec![
+            ("cx", &self.width.to_string()),
+            ("cy", &self.height.to_string()),
+        ], true);
+
+        write_end_tag(writer, tag_name);
     }
 }

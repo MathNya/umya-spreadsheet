@@ -1,6 +1,11 @@
 // a:solidFill
 use super::scheme_color::SchemeColor;
 use super::rgb_color_model_hex::RgbColorModelHex;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct SolidFill {
@@ -30,5 +35,72 @@ impl SolidFill {
     
     pub fn set_rgb_color_model_hex(&mut self, value:RgbColorModelHex) {
         self.rgb_color_model_hex = Some(value);
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"a:schemeClr" => {
+                            let mut scheme_color = SchemeColor::default();
+                            scheme_color.set_attributes(reader, e, false);
+                            &mut self.set_scheme_color(scheme_color);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:schemeClr" => {
+                            let mut scheme_color = SchemeColor::default();
+                            scheme_color.set_attributes(reader, e, true);
+                            &mut self.set_scheme_color(scheme_color);
+                        },
+                        b"a:srgbClr" => {
+                            let mut rgb_color_model_hex = RgbColorModelHex::default();
+                            rgb_color_model_hex.set_attributes(reader, e);
+                            &mut self.set_rgb_color_model_hex(rgb_color_model_hex);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"a:solidFill" => {
+                            return;
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "a:solidFill"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // a:solidFill
+        write_start_tag(writer, "a:solidFill", vec![], false);
+        match &self.scheme_color {
+            Some(color) => {
+                color.write_to(writer);
+            },
+            None => {}
+        }
+        match &self.rgb_color_model_hex {
+            Some(hex) => {
+                hex.write_to(writer);
+            },
+            None => {}
+        }
+        write_end_tag(writer, "a:solidFill");
     }
 }

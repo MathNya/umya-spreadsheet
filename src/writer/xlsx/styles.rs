@@ -345,7 +345,6 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
                 }
             }
             // xf
-            let xf_id = cell_xf.get_xf_id();
             let use_cell_style = cell_xf.get_xf_id() != &0;
             let is_align_empty = match cell_xf.get_alignment() {
                 Some(v) => {v.is_empty()},
@@ -355,7 +354,6 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> Result<(), Xlsx
             let font_id_str:&str = &font_id.to_string();
             let fill_id_str:&str = &fill_id.to_string();
             let borders_id_str:&str = &borders_id.to_string();
-            let xf_id_str:&str = &xf_id.to_string();
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             attributes.push(("numFmtId", nmfmt_id_str));
             attributes.push(("fontId", font_id_str));

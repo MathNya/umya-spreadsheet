@@ -10,19 +10,27 @@ impl Legend  {
     pub fn get_position(&self)-> &str {
         &self.position
     }
-    pub(crate) fn set_position<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_position<S: Into<String>>(&mut self, value:S)-> &mut Legend {
         self.position = value.into();
+        self
     }
+
     pub fn get_overlay(&self)-> &bool {
         &self.overlay
     }
-    pub(crate) fn set_overlay(&mut self, value:bool) {
+
+    pub fn set_overlay(&mut self, value:bool)-> &mut Legend {
         self.overlay = value;
+        self
     }
+
     pub fn get_layout(&self)-> &Layout {
         &self.layout
     }
-    pub(crate) fn set_layout(&mut self, value:Layout) {
+
+    pub fn set_layout(&mut self, value:Layout)-> &mut Legend {
         self.layout = value;
+        self
     }
 }

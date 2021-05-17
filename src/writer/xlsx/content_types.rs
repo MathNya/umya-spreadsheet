@@ -43,7 +43,71 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
             ("ContentType", "application/vnd.openxmlformats-officedocument.vmlDrawing"),
         ], true);
     }
-    
+
+    // Default png
+    let mut writed = false;
+    for work_sheet in spreadsheet.get_sheet_collection() {
+        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
+            if picture.get_blip_fill().get_blip().is_png() {
+                write_start_tag(&mut writer, "Default", vec![
+                    ("Extension", "png"),
+                    ("ContentType", "image/png"),
+                ], true);
+                writed = true;
+                break;
+            }
+        }
+        if writed {break};
+    }
+
+    // Default jpg
+    let mut writed = false;
+    for work_sheet in spreadsheet.get_sheet_collection() {
+        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
+            if picture.get_blip_fill().get_blip().is_jpg() {
+                write_start_tag(&mut writer, "Default", vec![
+                    ("Extension", "jpg"),
+                    ("ContentType", "image/jpeg"),
+                ], true);
+                writed = true;
+                break;
+            }
+        }
+        if writed {break};
+    }
+
+    // Default jpeg
+    let mut writed = false;
+    for work_sheet in spreadsheet.get_sheet_collection() {
+        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
+            if picture.get_blip_fill().get_blip().is_jpeg() {
+                write_start_tag(&mut writer, "Default", vec![
+                    ("Extension", "jpeg"),
+                    ("ContentType", "image/jpeg"),
+                ], true);
+                writed = true;
+                break;
+            }
+        }
+        if writed {break};
+    }
+
+    // Default tiff
+    let mut writed = false;
+    for work_sheet in spreadsheet.get_sheet_collection() {
+        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
+            if picture.get_blip_fill().get_blip().is_tiff() {
+                write_start_tag(&mut writer, "Default", vec![
+                    ("Extension", "tiff"),
+                    ("ContentType", "image/tiff"),
+                ], true);
+                writed = true;
+                break;
+            }
+        }
+        if writed {break};
+    }
+
     // Override workbook
     let content_type = match spreadsheet.get_has_macros() {
         &true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
@@ -91,31 +155,25 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
         ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"),
     ], true);
 
-    let mut chart_count = 1;
+    let mut drawing_id = 1;
+    let mut chart_id = 1;
     for i in 0..spreadsheet.get_sheet_count() {
         let worksheet = &spreadsheet.get_sheet_collection()[i];
-        //for _ in worksheet.get_drawing_collection() {
-        //    // Override drawing
-        //    write_start_tag(&mut writer, "Override", vec![
-        //        ("PartName", format!("/xl/drawings/drawing{}.xml", drawing_count.to_string().as_str()).as_str()),
-        //        ("ContentType", "application/vnd.openxmlformats-officedocument.drawing+xml"),
-        //    ], true);
-        //    drawing_count += 1;
-        //}
-        if worksheet.get_chart_collection().len() > 0 {
+        if worksheet.get_worksheet_drawing().has_drawing_object() {
             // Override drawing
             write_start_tag(&mut writer, "Override", vec![
-                ("PartName", format!("/xl/drawings/drawing{}.xml", (i+1).to_string().as_str()).as_str()),
+                ("PartName", format!("/xl/drawings/drawing{}.xml", drawing_id.to_string().as_str()).as_str()),
                 ("ContentType", "application/vnd.openxmlformats-officedocument.drawing+xml"),
             ], true);
+            drawing_id += 1;
         }
-        for _ in worksheet.get_chart_collection() {
+        for _ in worksheet.get_worksheet_drawing().get_chart_collection() {
             // Override chart
             write_start_tag(&mut writer, "Override", vec![
-                ("PartName", format!("/xl/charts/chart{}.xml", chart_count.to_string().as_str()).as_str()),
+                ("PartName", format!("/xl/charts/chart{}.xml", chart_id.to_string().as_str()).as_str()),
                 ("ContentType", "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"),
             ], true);
-            chart_count += 1;
+            chart_id += 1;
         }
     }
 

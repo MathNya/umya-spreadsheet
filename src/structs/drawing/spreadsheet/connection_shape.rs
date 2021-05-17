@@ -1,9 +1,13 @@
 // xdr:cxnSp
 use super::super::super::anchor::Anchor;
-use super::non_visual_shape_properties::NonVisualShapeProperties;
 use super::non_visual_connection_shape_properties::NonVisualConnectionShapeProperties;
 use super::shape_properties::ShapeProperties;
 use super::shape_style::ShapeStyle;
+use writer::driver::*;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use quick_xml::Reader;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct ConnectionShape {
@@ -59,5 +63,59 @@ impl ConnectionShape {
 
     pub fn set_shape_style(&mut self, value:ShapeStyle) {
         self.shape_style = value;
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"xdr:nvCxnSpPr" => {
+                            &mut self.non_visual_connection_shape_properties.set_attributes(reader, e);
+                        },
+                        b"xdr:spPr" => {
+                            &mut self.shape_properties.set_attributes(reader, e);
+                        },
+                        b"xdr:style" => {
+                            &mut self.shape_style.set_attributes(reader, e);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"xdr:cxnSp" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cxnSp"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // xdr:cxnSp
+        write_start_tag(writer, "xdr:cxnSp", vec![
+            ("macro", ""),
+        ], false);
+
+        // xdr:nvCxnSpPr
+        &self.non_visual_connection_shape_properties.write_to(writer);
+
+        // xdr:spPr
+        &self.shape_properties.write_to(writer);
+
+        // xdr:style
+        &self.shape_style.write_to(writer);
+
+        write_end_tag(writer, "xdr:cxnSp");
     }
 }

@@ -55,66 +55,95 @@ impl DataSeries {
     pub fn get_plot_type(&self)-> &str {
         &self.plot_type
     }
-    pub(crate) fn set_plot_type<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_plot_type<S: Into<String>>(&mut self, value:S)-> &mut DataSeries {
         self.plot_type = value.into();
+        self
     }
+
     pub fn get_plot_grouping(&self)-> &Option<String> {
         &self.plot_grouping
     }
-    pub(crate) fn set_plot_grouping<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_plot_grouping<S: Into<String>>(&mut self, value:S)-> &mut DataSeries {
         self.plot_grouping = Some(value.into());
+        self
     }
+
     pub fn get_plot_direction(&self)-> &str {
         &self.plot_direction
     }
-    pub(crate) fn set_plot_direction<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_plot_direction<S: Into<String>>(&mut self, value:S)-> &mut DataSeries {
         self.plot_direction = value.into();
+        self
     }
+
     pub fn get_plot_style(&self)-> &str {
         &self.plot_style
     }
-    pub(crate) fn set_plot_style<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_plot_style<S: Into<String>>(&mut self, value:S)-> &mut DataSeries {
         self.plot_style = value.into();
+        self
     }
+
     pub fn get_plot_order(&self)-> &BTreeMap<i32, i32> {
         &self.plot_order
     }
-    pub(crate) fn add_plot_order(&mut self, index:i32, value:i32) {
+
+    pub fn add_plot_order(&mut self, index:i32, value:i32)-> &mut DataSeries {
         self.plot_order.insert(index, value);
+        self
     }
+
     pub fn get_plot_label(&self)-> &BTreeMap<i32, DataSeriesValues>
     {
         &self.plot_label
     }
+
     pub fn get_plot_label_mut(&mut self)-> &mut BTreeMap<i32, DataSeriesValues>
     {
         &mut self.plot_label
     }
-    pub(crate) fn add_plot_label(&mut self, index:i32, value:DataSeriesValues) {
+
+    pub fn add_plot_label(&mut self, index:i32, value:DataSeriesValues)-> &mut DataSeries {
         self.plot_label.insert(index, value);
+        self
     }
+
     pub fn get_plot_category(&self)-> &BTreeMap<i32, DataSeriesValues> {
         &self.plot_category
     }
+
     pub fn get_plot_category_mut(&mut self)-> &mut BTreeMap<i32, DataSeriesValues> {
         &mut self.plot_category
     }
-    pub(crate) fn add_plot_category(&mut self, index:i32, value:DataSeriesValues) {
+
+    pub(crate) fn add_plot_category(&mut self, index:i32, value:DataSeriesValues)-> &mut DataSeries {
         self.plot_category.insert(index, value);
+        self
     }
+
     pub fn get_smooth_line(&self)-> &bool {
         &self.smooth_line
     }
-    pub(crate) fn set_smooth_line(&mut self, value:bool) {
+
+    pub fn set_smooth_line(&mut self, value:bool)-> &mut DataSeries {
         self.smooth_line = value.into();
+        self
     }
+
     pub fn get_plot_values(&self)-> &BTreeMap<i32, DataSeriesValues> {
         &self.plot_values
     }
+
     pub fn get_plot_values_mut(&mut self)-> &mut BTreeMap<i32, DataSeriesValues> {
         &mut self.plot_values
     }
-    pub(crate) fn add_plot_values(&mut self, index:i32, value:DataSeriesValues) {
+
+    pub fn add_plot_values(&mut self, index:i32, value:DataSeriesValues)-> &mut DataSeries {
         self.plot_values.insert(index, value);
+        self
     }
 }

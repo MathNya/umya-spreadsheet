@@ -15,7 +15,7 @@ const SUB_DIR: &'static str = "xl/charts";
 
 pub(crate) fn write(
     chart: &Chart,
-    p_chart_id: &str,
+    p_chart_id: &usize,
     dir: &TempDir
 ) -> Result<(), XlsxError> {
     let file_name = format!("chart{}.xml", p_chart_id);

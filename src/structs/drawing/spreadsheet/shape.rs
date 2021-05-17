@@ -3,6 +3,11 @@ use super::non_visual_shape_properties::NonVisualShapeProperties;
 use super::shape_properties::ShapeProperties;
 use super::shape_style::ShapeStyle;
 use super::text_body::TextBody;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct Shape {
@@ -71,5 +76,58 @@ impl Shape {
 
     pub fn set_text_body(&mut self, value:TextBody) {
         self.text_body = value;
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"xdr:nvSpPr" => { &mut self.non_visual_shape_properties.set_attributes(reader, e); }
+                        b"xdr:spPr" => { &mut self.shape_properties.set_attributes(reader, e); },
+                        b"xdr:style" => { &mut self.shape_style.set_attributes(reader, e); },
+                        b"xdr:txBody" => { &mut self.text_body.set_attributes(reader, e); },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"xdr:sp" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:sp"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // xdr:sp
+        write_start_tag(writer, "xdr:sp", vec![
+            ("macro", ""),
+            ("textlink", ""),
+        ], false);
+
+        // xdr:nvSpPr
+        &self.non_visual_shape_properties.write_to(writer);
+
+        // xdr:spPr
+        &self.shape_properties.write_to(writer);
+
+        // xdr:style
+        &self.shape_style.write_to(writer);
+
+        // xdr:txBody
+        &self.text_body.write_to(writer);
+
+        write_end_tag(writer, "xdr:sp");
     }
 }

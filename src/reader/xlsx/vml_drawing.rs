@@ -58,12 +58,12 @@ pub(crate) fn read(
                     }
                     b"x:Row" => {
                         row = string_value.parse::<usize>().unwrap() + 1;
-                        comment.get_coordinate_mut().set_row_num(&row);
+                        comment.get_coordinate_mut().set_row_num(row);
                     },
                     b"x:Column" => {
                         let col = string_value.parse::<usize>().unwrap() + 1;
                         col_str = string_from_column_index(&col);
-                        comment.get_coordinate_mut().set_col_num(&col);
+                        comment.get_coordinate_mut().set_col_num(col);
                     },
                     b"v:shape" => {
                         if row > 0 && col_str != "" {

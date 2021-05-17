@@ -1,4 +1,11 @@
 // a:schemeClr
+use writer::driver::*;
+use reader::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
+
 #[derive(Default, Debug)]
 pub struct SchemeColor {
     val: String,
@@ -59,5 +66,119 @@ impl SchemeColor {
 
     pub(crate) fn with_inner_params(&self) -> bool {
         self.lum_mod.is_some() ||  self.lum_off.is_some() || self.shade.is_some() || self.sat_mod.is_some() || self.alpha.is_some()
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart,
+        empty_flag: bool
+    ) {
+        &mut self.set_val(get_attribute(e, b"val").unwrap());
+
+        if empty_flag == true {
+            return;
+        }
+
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:lumMod" => {
+                            &mut self.set_lum_mod(get_attribute(e, b"val").unwrap());
+                        },
+                        b"a:lumOff" => {
+                            &mut self.set_lum_off(get_attribute(e, b"val").unwrap());
+                        },
+                        b"a:shade" => {
+                            &mut self.set_shade(get_attribute(e, b"val").unwrap());
+                        },
+                        b"a:satMod" => {
+                            &mut self.set_sat_mod(get_attribute(e, b"val").unwrap());
+                        },
+                        b"a:alpha" => {
+                            &mut self.set_alpha(get_attribute(e, b"val").unwrap());
+                        }
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"a:schemeClr" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "a:schemeClr"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // a:schemeClr
+        if self.with_inner_params() {
+            write_start_tag(writer, "a:schemeClr", vec![
+                ("val", &self.val),
+            ], false);
+
+            // a:lumMod
+            match &self.lum_mod {
+                Some(v) => {
+                    write_start_tag(writer, "a:lumMod", vec![
+                        ("val", v),
+                    ], true);
+                },
+                None => {}
+            }
+
+            // a:lumOff
+            match &self.lum_off {
+                Some(v) => {
+                    write_start_tag(writer, "a:lumOff", vec![
+                        ("val", v),
+                    ], true);
+                },
+                None => {}
+            }
+
+            // a:shade
+            match &self.shade {
+                Some(v) => {
+                    write_start_tag(writer, "a:shade", vec![
+                        ("val", v),
+                    ], true);
+                },
+                None => {}
+            }
+
+           // a:satMod
+            match &self.sat_mod {
+                Some(v) => {
+                    write_start_tag(writer, "a:satMod", vec![
+                        ("val", v),
+                    ], true);
+                },
+                None => {}
+            }
+
+            // a:alpha
+            match &self.alpha {
+                Some(v) => {
+                    write_start_tag(writer, "a:alpha", vec![
+                        ("val", v),
+                    ], true);
+                },
+                None => {}
+            }
+
+            write_end_tag(writer, "a:schemeClr");
+        } else {
+            write_start_tag(writer, "a:schemeClr", vec![
+                ("val", &self.val),
+            ], true);
+        }
     }
 }

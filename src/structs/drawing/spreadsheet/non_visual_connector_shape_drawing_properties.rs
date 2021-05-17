@@ -1,5 +1,10 @@
 // xdr:cNvCxnSpPr
 use super::connection_type::ConnectionType;
+use writer::driver::*;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use quick_xml::Reader;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct NonVisualConnectorShapeDrawingProperties {
@@ -29,5 +34,69 @@ impl NonVisualConnectorShapeDrawingProperties {
 
     pub fn remove_end_connection(&mut self) {
         self.end_connection = None;
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:stCxn" => {
+                            let mut connection_type = ConnectionType::default();
+                            connection_type.set_attributes(reader, e);
+                            &mut self.set_start_connection(connection_type);
+                        },
+                        b"a:endCxn" => {
+                            let mut connection_type = ConnectionType::default();
+                            connection_type.set_attributes(reader, e);
+                            &mut self.set_end_connection(connection_type);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"xdr:cNvCxnSpPr" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cNvCxnSpPr"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // xdr:cNvCxnSpPr
+        if self.start_connection.is_some() || self.end_connection.is_some() {
+            write_start_tag(writer, "xdr:cNvCxnSpPr", vec![], false);
+
+            // a:stCxn
+            match &self.start_connection {
+                Some(v) => {
+                    v.write_to(writer, "a:stCxn");
+                },
+                None => {}
+            }
+
+            // a:endCxn
+            match &self.end_connection {
+                Some(v) => {
+                    v.write_to(writer, "a:endCxn");
+                },
+                None => {}
+            }
+
+            write_end_tag(writer, "xdr:cNvCxnSpPr");
+        } else {
+            write_start_tag(writer, "xdr:cNvCxnSpPr", vec![], true);
+        }
     }
 }

@@ -66,67 +66,97 @@ impl Font {
     pub fn get_name(&self)-> &str {
         &self.name
     }
-    pub fn set_name<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_name<S: Into<String>>(&mut self, value:S)-> &mut Font {
         self.name = value.into();
+        self
     }
+
     pub fn get_size(&self)-> &usize {
         &self.size
     }
-    pub fn set_size(&mut self, value:usize) {
+
+    pub fn set_size(&mut self, value:usize)-> &mut Font {
         self.size = value;
+        self
     }
+
     pub fn get_bold(&self)-> &bool {
         &self.bold
     }
-    pub fn set_bold(&mut self, value:bool) {
+
+    pub fn set_bold(&mut self, value:bool)-> &mut Font {
         self.bold = value;
+        self
     }
+
     pub fn get_italic(&self)-> &bool {
         &self.italic
     }
-    pub fn set_italic(&mut self, value:bool) {
+
+    pub fn set_italic(&mut self, value:bool)-> &mut Font {
         self.italic = value;
+        self
     }
+
     pub fn get_color(&self)-> &Color {
         &self.color
     }
+
     pub fn get_color_mut(&mut self)-> &mut Color {
         &mut self.color
     }
-    pub fn set_color(&mut self, value:Color)->Result<(), &'static str> {
+
+    pub fn set_color(&mut self, value:Color)-> &mut Font {
         self.color = value;
-        Ok(())
+        self
     }
+
     pub fn get_underline(&self)-> &str {
         &self.underline
     }
-    pub fn set_underline<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_underline<S: Into<String>>(&mut self, value:S)-> &mut Font {
         self.underline = value.into();
+        self
     }
+
     pub fn get_strikethrough(&self)-> &bool {
         &self.strikethrough
     }
-    pub fn set_strikethrough(&mut self, value:bool) {
+
+    pub fn set_strikethrough(&mut self, value:bool)-> &mut Font {
         self.strikethrough = value;
+        self
     }
+
     pub fn get_charset(&self)-> &usize {
         &self.charset
     }
-    pub fn set_charset(&mut self, value:usize) {
+
+    pub fn set_charset(&mut self, value:usize)-> &mut Font {
         self.charset = value;
+        self
     }
+
     pub fn get_family(&self)-> &usize {
         &self.family
     }
-    pub fn set_family(&mut self, value:usize) {
+
+    pub fn set_family(&mut self, value:usize)-> &mut Font {
         self.family = value;
+        self
     }
+
     pub fn get_scheme(&self)-> &String {
         &self.scheme
     }
-    pub fn set_scheme<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_scheme<S: Into<String>>(&mut self, value:S)-> &mut Font {
         self.scheme = value.into();
+        self
     }
+
     pub(crate) fn get_defalut_value() -> Font {
         let mut def = Font::default();
         def.set_size(11);
@@ -136,6 +166,7 @@ impl Font {
         def.set_scheme("minor");
         def
     }
+
     pub(crate) fn get_hash_code(&self)-> String
     {
         format!("{:x}", md5::compute(format!("{}{}{}{}{}{}{}{}{}{}{}{}",

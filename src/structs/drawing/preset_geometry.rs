@@ -1,5 +1,11 @@
 // a:prstGeom
 use super::adjust_value_list::AdjustValueList;
+use writer::driver::*;
+use reader::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct PresetGeometry {
@@ -214,5 +220,51 @@ impl PresetGeometry {
 
     pub fn set_adjust_value_list(&mut self, value:AdjustValueList) {
         self.adjust_value_list = value;
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart
+    ) {
+        &mut self.set_geometry(get_attribute(e, b"prst").unwrap());
+
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"a:avLst" => {
+                            &mut self.get_adjust_value_list_mut().set_attributes(reader, e);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"a:prstGeom" => {
+                            return;
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "a:prstGeom"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // a:prstGeom
+        write_start_tag(writer, "a:prstGeom", vec![
+            ("prst", &self.geometry),
+        ], false);
+    
+        // a:avLst
+        &self.adjust_value_list.write_to(writer);
+    
+        write_end_tag(writer, "a:prstGeom");
     }
 }

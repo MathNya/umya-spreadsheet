@@ -23,6 +23,7 @@ mod drawing_rels;
 mod vba_project_bin;
 mod comment;
 mod vml_drawing;
+mod media;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -101,6 +102,8 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
 
     // Add worksheets and relationships (drawings, ...)
     let mut chart_id = 1;
+    let mut drawing_id = 1;
+    let mut comment_id = 1;
     for i in 0..spreadsheet.get_sheet_count() {
         let p_worksheet_id:&str = &(i+1).to_string();
         let worksheet = &spreadsheet.get_sheet_collection()[i];
@@ -118,15 +121,27 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
             shared.clone(),
             &dir
         );
-        let _ = worksheet_rels::write(worksheet, p_worksheet_id,  &dir);
-        let _ = drawing::write(worksheet, p_worksheet_id, &dir);
-        let _ = drawing_rels::write(worksheet, p_worksheet_id, &chart_id, &dir);
-        let _ = comment::write(worksheet, p_worksheet_id,  &dir);
-        let _ = vml_drawing::write(worksheet, p_worksheet_id,  &dir);
+        let _ = worksheet_rels::write(worksheet, p_worksheet_id, &drawing_id, &comment_id,  &dir);
+        let _ = drawing::write(worksheet, &drawing_id, &dir);
+        let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &dir);
+        let _ = comment::write(worksheet, &comment_id,  &dir);
+        let _ = vml_drawing::write(worksheet, &comment_id,  &dir);
 
-        for ct in worksheet.get_chart_collection(){
-            let _ = chart::write(ct, &chart_id.to_string(), &dir);
+        if worksheet.has_drawing_object() {
+            drawing_id += 1;
+        }
+
+        if worksheet.has_comments() {
+            comment_id += 1;
+        }
+
+        for ct in worksheet.get_worksheet_drawing().get_chart_collection(){
+            let _ = chart::write(ct, &chart_id, &dir);
             chart_id += 1;
+        }
+
+        for picture in worksheet.get_worksheet_drawing().get_picture_collection(){
+            let _ = media::write(picture, &dir, "xl/media");
         }
     }
 

@@ -11,13 +11,12 @@ const SUB_DIR: &'static str = "xl/drawings/_rels";
 
 pub(crate) fn write(
     worksheet: &Worksheet,
-    p_worksheet_id: &str,
+    drawing_id: &usize,
     chart_start_id: &usize,
     dir: &TempDir
 ) -> Result<(), XlsxError> 
 {
-    let file_name = format!("drawing{}.xml.rels", p_worksheet_id);
-    let charts = worksheet.get_chart_collection();
+    let file_name = format!("drawing{}.xml.rels", drawing_id);
     let mut is_write = false;
 
     let mut writer = Writer::new(Cursor::new(Vec::new()));
@@ -30,18 +29,37 @@ pub(crate) fn write(
         ("xmlns", "http://schemas.openxmlformats.org/package/2006/relationships"),
     ], false);
 
-    let mut id = 1;
+    let mut r_id = 1;
     let mut chart_id = chart_start_id.clone();
-    for _ in charts {
-        is_write = write_relationship(
-            &mut writer,
-            id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
-            format!("../charts/chart{}.xml", chart_id).as_str(),
-            ""
-        );
-        id += 1;
-        chart_id += 1;
+    let two_cell_anchor_collection = worksheet.get_worksheet_drawing().get_two_cell_anchor_collection();
+    for two_cell_anchor in two_cell_anchor_collection {
+        match two_cell_anchor.get_chart() {
+            Some(_) => {
+                is_write = write_relationship(
+                    &mut writer,
+                    &r_id,
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
+                    format!("../charts/chart{}.xml", chart_id).as_str(),
+                    ""
+                );
+                r_id += 1;
+                chart_id += 1;
+            },
+            None => {}
+        }
+        match two_cell_anchor.get_picture() {
+            Some(picture) => {
+                is_write = write_relationship(
+                    &mut writer,
+                    &r_id,
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+                    format!("../media/{}", picture.get_blip_fill().get_blip().get_image_name()).as_str(),
+                    ""
+                );
+                r_id += 1;
+            },
+            None => {}
+        }
     }
 
     write_end_tag(&mut writer, "Relationships");
@@ -52,13 +70,12 @@ pub(crate) fn write(
     Ok(())
 }
 
-
-fn write_relationship(writer: &mut Writer<Cursor<Vec<u8>>>, p_id: &str, p_type: &str, p_target: &str, p_target_mode: &str) -> bool
+fn write_relationship(writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32, p_type: &str, p_target: &str, p_target_mode: &str) -> bool
 {
     let tag_name = "Relationship";
+    let r_id_str = format!("rId{}", r_id);
     let mut attributes: Vec<(&str, &str)> = Vec::new();
-    let r_id = format!("rId{}", p_id);
-    attributes.push(("Id", r_id.as_str()));
+    attributes.push(("Id", &r_id_str));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));
     if p_target_mode != "" {

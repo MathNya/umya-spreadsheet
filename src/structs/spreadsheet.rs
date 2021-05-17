@@ -158,12 +158,14 @@ impl Spreadsheet {
         &mut self.defined_names
     }
 
-    pub(crate) fn set_defined_names(&mut self, value:Vec<DefinedName>) {
+    pub fn set_defined_names(&mut self, value:Vec<DefinedName>) {
         self.defined_names = value;
     }
-    pub(crate) fn add_defined_names(&mut self, value:DefinedName) {
+
+    pub fn add_defined_names(&mut self, value:DefinedName) {
         self.defined_names.push(value);
     }
+
     pub fn add_defined_name<S: Into<String>>(&mut self, name:S, address:S)->Result<(), &str> {
         let mut defined_name = DefinedName::default();
         defined_name.set_name(name.into());
@@ -171,6 +173,7 @@ impl Spreadsheet {
         self.defined_names.push(defined_name);
         Ok(())
     }
+
     pub(crate) fn get_all_conditional_style_list(&self) -> Vec<(String, Style)> {
         let mut result:Vec<(String, Style)> = Vec::new();
         for work_sheet in &self.work_sheet_collection {
@@ -196,12 +199,15 @@ impl Spreadsheet {
         }
         result
     }
+
     pub fn get_theme(&self) -> &Theme {
         &self.theme
     }
+
     pub(crate) fn set_theme(&mut self, value:Theme) {
         self.theme = value;
     }
+
     pub(crate) fn has_comment(&self) -> bool {
         for worksheet in &self.work_sheet_collection {
             if worksheet.get_comments().len() > 0 {
@@ -210,48 +216,63 @@ impl Spreadsheet {
         }
         false
     }
+
     pub fn get_properties(&self) -> &Properties {
         &self.properties
     }
-    pub(crate) fn get_properties_mut(&mut self) -> &mut Properties {
+
+    pub fn get_properties_mut(&mut self) -> &mut Properties {
         &mut self.properties
     }
-    pub(crate) fn set_properties(&mut self, value:Properties) {
+    
+    pub fn set_properties(&mut self, value:Properties) {
         self.properties = value;
     }
+
     pub fn get_security(&self) -> &Security {
         &self.security
     }
-    pub(crate) fn get_security_mut(&mut self) -> &mut Security {
+
+    pub fn get_security_mut(&mut self) -> &mut Security {
         &mut self.security
     }
-    pub(crate) fn set_security(&mut self, value:Security) {
+
+    pub fn set_security(&mut self, value:Security) {
         self.security = value;
     }
+
     pub fn get_macros_code(&self) -> &Option<Vec<u8>> {
         &self.macros_code
     }
+
     pub(crate) fn set_macros_code(&mut self, value:Vec<u8>) {
         self.macros_code = Some(value);
     }
+    
     pub fn get_has_macros(&self) -> &bool {
         &self.has_macros
     }
+
     pub(crate) fn set_has_macros(&mut self, value:bool) {
         self.has_macros = value;
     }
+
     pub fn get_unparsed_loaded_data(&self) -> &Vec<String> {
         &self.unparsed_loaded_data
     }
-    pub(crate) fn set_unparsed_loaded_data(&mut self, value:Vec<String>) {
+
+    pub fn set_unparsed_loaded_data(&mut self, value:Vec<String>) {
         self.unparsed_loaded_data = value;
     }
+
     pub fn get_active_sheet_index(&self) -> &usize {
         &self.active_sheet_index
     }
+
     pub(crate) fn set_active_sheet_index(&mut self, value:usize) {
         self.active_sheet_index = value;
     }
+
     pub(crate) fn get_all_number_format(&self) -> Vec<(String, NumberFormat)> {
         let mut result:Vec<(String, NumberFormat)> = Vec::new();
         for (_, style) in &self.get_all_cell_style() {
@@ -299,6 +320,7 @@ impl Spreadsheet {
         }
         result
     }
+
     pub(crate) fn get_all_fill(&self) -> Vec<(String, Fill)> {
         let mut result:Vec<(String, Fill)> = Vec::new();
         let def = Fill::get_defalut_value();
@@ -324,6 +346,7 @@ impl Spreadsheet {
         }
         result
     }
+
     pub(crate) fn get_all_borders(&self) -> Vec<(String, Borders)> {
         let mut result:Vec<(String, Borders)> = Vec::new();
         let def = Borders::get_defalut_value();
@@ -347,6 +370,7 @@ impl Spreadsheet {
         }
         result
     }
+
     pub(crate) fn get_all_cell_style(&self) -> Vec<(String, Style)> {
         let mut result:Vec<(String, Style)> = Vec::new();
         let def = Style::get_defalut_value();
@@ -367,21 +391,26 @@ impl Spreadsheet {
         }
         result
     }
+
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
         &self.work_sheet_collection
     }
+
     pub fn get_sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
     }
+
     pub fn get_sheet(&self, index:usize) -> Result<&Worksheet, &'static str> {
         match &self.work_sheet_collection.get(index) {
             Some(v) => return Ok(v),
             None => return Err("Not found.")
         }
     }
+
     pub fn get_sheet_mut(&mut self, index:usize) -> &mut Worksheet {
         self.work_sheet_collection.get_mut(index).unwrap()
     }
+
     pub fn get_sheet_by_name<S: Into<String>>(&self, value:S) -> Result<&Worksheet, &'static str> {
         let v = value.into();
         for sheet in &self.work_sheet_collection {
@@ -391,6 +420,7 @@ impl Spreadsheet {
         }
         Err("not found.")
     }
+
     pub fn get_sheet_by_sheet_id<S: Into<String>>(&self, value:S) -> Result<&Worksheet, &'static str> {
         let v = value.into();
         for sheet in &self.work_sheet_collection {
@@ -400,6 +430,7 @@ impl Spreadsheet {
         }
         Err("not found.")
     }
+
     pub fn get_sheet_by_name_mut<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
         let v = value.into();
         for sheet in &mut self.work_sheet_collection {
@@ -409,6 +440,7 @@ impl Spreadsheet {
         }
         Err("not found.")
     }
+
     pub fn new_sheet<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
         let v = value.into();
         match Spreadsheet::check_sheet_title(self, &v) {
@@ -418,6 +450,7 @@ impl Spreadsheet {
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
         Ok(Spreadsheet::new_sheet_crate(self, sheet_id, v))
     }
+
     pub(crate) fn new_sheet_crate<S: Into<String>>(&mut self, sheet_id:S, value:S) -> &mut Worksheet {
         let mut worksheet = Worksheet::default();
         worksheet.set_sheet_id(sheet_id.into());
@@ -425,6 +458,7 @@ impl Spreadsheet {
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }
+
     pub fn set_sheet_title<S: Into<String>>(&mut self, index:usize, value:S) -> Result<(), &'static str>{
         let v = value.into();
         match Spreadsheet::check_sheet_title(self, &v) {
@@ -439,6 +473,7 @@ impl Spreadsheet {
             None => return Err("sheet not found.")
         }
     }
+
     pub(crate) fn check_sheet_title<S: Into<String>>(&self, value:S) -> Result<(), &'static str> {
         let v = value.into();
         for work_sheet in &self.work_sheet_collection {
@@ -448,10 +483,12 @@ impl Spreadsheet {
         }
         Ok(())
     }
+
     pub fn has_ribbon(&self) -> bool {
         self.ribbon_xml_data.is_some()
     }
-    pub(crate) fn has_formula(&self) -> bool {
+
+    pub fn has_formula(&self) -> bool {
         for worksheet in &self.work_sheet_collection {
             for cell in worksheet.get_cell_collection() {
                 if cell.get_formula() != "" {

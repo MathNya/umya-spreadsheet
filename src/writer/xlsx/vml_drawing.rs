@@ -11,14 +11,14 @@ const SUB_DIR: &'static str = "xl/drawings";
 
 pub(crate) fn write(
     worksheet: &Worksheet,
-    p_worksheet_id: &str,
+    comment_id: &usize,
     dir: &TempDir
 ) -> Result<(), XlsxError> {
     if worksheet.get_comments().len() == 0 {
         return Ok(());
     }
 
-    let file_name = format!("vmlDrawing{}.vml", p_worksheet_id);
+    let file_name = format!("vmlDrawing{}.vml", comment_id);
 
     let mut writer = Writer::new(Cursor::new(Vec::new()));
     // xml

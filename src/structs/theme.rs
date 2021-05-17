@@ -23,7 +23,7 @@ impl Theme {
     pub fn get_color_map_mut(&mut self)-> &mut Vec<String> {
         &mut self.color_map
     }
-    pub(crate) fn set_color_map(&mut self, value:Vec<String>) {
+    pub fn set_color_map(&mut self, value:Vec<String>) {
         self.color_map = value;
     }
     pub(crate) fn add_color_map<S: Into<String>>(&mut self, value:S) {

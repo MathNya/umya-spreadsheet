@@ -42,6 +42,11 @@ impl Style {
         &mut self.coordinate
     }
     
+    pub fn set_coordinate_mut(&mut self, value:Coordinate)-> &mut Style {
+        self.coordinate = value;
+        self
+    }
+
     pub fn get_font(&self) -> &Option<Font> {
         &self.font
     }
@@ -55,8 +60,9 @@ impl Style {
         self.font.as_mut().unwrap()
     }
 
-    pub(crate) fn set_font(&mut self, value:Font) {
+    pub fn set_font(&mut self, value:Font)-> &mut Style {
         self.font = Some(value);
+        self
     }
 
     pub fn get_fill(&self) -> &Option<Fill> {
@@ -72,8 +78,9 @@ impl Style {
         self.fill.as_mut().unwrap()
     }
     
-    pub(crate) fn set_fill(&mut self, value:Fill) {
+    pub fn set_fill(&mut self, value:Fill)-> &mut Style {
         self.fill = Some(value);
+        self
     }
 
     pub fn get_borders(&self) -> &Option<Borders> {
@@ -89,8 +96,9 @@ impl Style {
         self.borders.as_mut().unwrap()
     }
 
-    pub(crate) fn set_borders(&mut self, value:Borders) {
+    pub fn set_borders(&mut self, value:Borders)-> &mut Style {
         self.borders = Some(value);
+        self
     }
 
     pub fn get_alignment(&self) -> &Option<Alignment> {
@@ -106,8 +114,9 @@ impl Style {
         self.alignment.as_mut().unwrap()
     }
 
-    pub(crate) fn set_alignment(&mut self, value:Alignment) {
+    pub fn set_alignment(&mut self, value:Alignment)-> &mut Style {
         self.alignment = Some(value);
+        self
     }
 
     pub fn get_number_format(&self) -> &Option<NumberFormat> {
@@ -123,35 +132,39 @@ impl Style {
         self.number_format.as_mut().unwrap()
     }
 
-    pub(crate) fn set_number_format(&mut self, value:NumberFormat) {
+    pub fn set_number_format(&mut self, value:NumberFormat)-> &mut Style {
         self.number_format = Some(value);
+        self
     }
 
     pub fn get_protection(&self) -> &Option<Protection> {
         &self.protection
     }
 
-    pub(crate) fn set_protection(&mut self, value:Protection) {
+    pub fn set_protection(&mut self, value:Protection)-> &mut Style {
         self.protection = Some(value);
+        self
     }
 
     pub fn get_xf_id(&self) -> &usize {
         &self.xf_id
     }
 
-    pub(crate) fn set_xf_id(&mut self, value:usize) {
+    pub fn set_xf_id(&mut self, value:usize)-> &mut Style {
         self.xf_id = value;
+        self
     }
 
     pub fn get_quote_prefix(&self) -> &bool {
         &self.quote_prefix
     }
 
-    pub(crate) fn set_quote_prefix(&mut self, value:bool) {
+    pub fn set_quote_prefix(&mut self, value:bool)-> &mut Style {
         self.quote_prefix = value;
+        self
     }
 
-    pub(crate) fn get_defalut_value() -> Style {
+    pub(crate) fn get_defalut_value()-> Style {
         let def = Style::default();
         def
     }

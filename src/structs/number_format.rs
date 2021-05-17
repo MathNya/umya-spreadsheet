@@ -136,11 +136,13 @@ impl NumberFormat {
     pub fn get_flipped_built_in_formats(&self)-> &Vec<String> {
         &self.flipped_built_in_formats
     }
-    pub(crate) fn set_flipped_built_in_formats(&mut self, value:Vec<String>) {
+    pub fn set_flipped_built_in_formats(&mut self, value:Vec<String>)-> &mut NumberFormat {
         self.flipped_built_in_formats = value;
+        self
     }
-    pub(crate) fn add_flipped_built_in_formats<S: Into<String>>(&mut self, value:S) {
+    pub fn add_flipped_built_in_formats<S: Into<String>>(&mut self, value:S)-> &mut NumberFormat {
         self.flipped_built_in_formats.push(value.into());
+        self
     }
     pub fn get_format_code(&self)-> &str {
         &self.format_code
@@ -157,15 +159,17 @@ impl NumberFormat {
     /// .get_number_format_mut()
     /// .set_format_code(umya_spreadsheet::NumberFormat::FORMAT_DATE_XLSX17);
     /// ```
-    pub fn set_format_code<S: Into<String>>(&mut self, value:S) {
+    pub fn set_format_code<S: Into<String>>(&mut self, value:S)-> &mut NumberFormat {
         self.format_code = value.into();
         let check:&str = &self.format_code;
         self.built_in_format_code = FILL_BUILT_IN_FORMAT_CODES.iter().find_map(|(key, val)| if val == check { Some(key.clone()) } else { None });
+        self
     }
 
     pub fn get_built_in_format_code(&self)-> &Option<usize> {
         &self.built_in_format_code
     }
+
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}",
             &self.format_code,

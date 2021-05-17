@@ -2,7 +2,6 @@
 use onig::*;
 use structs::number_format::NumberFormat;
 use structs::color::Color;
-use helper::string_helper::*;
 use thousands::{Separable};
 use helper::date::*;
 

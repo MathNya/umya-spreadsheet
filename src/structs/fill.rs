@@ -34,45 +34,58 @@ impl Fill {
     pub fn get_fill_type(&self)-> &str {
         &self.fill_type
     }
-    pub(crate) fn set_fill_type(&mut self, value:String) {
+
+    pub fn set_fill_type(&mut self, value:String)-> &mut Fill {
         self.fill_type = value;
+        self
     }
+
     pub fn get_start_color(&self)-> &Option<Color> {
         &self.start_color
     }
+
     pub fn get_start_color_mut(&mut self)-> &mut Color {
         match self.start_color {
             Some(_) => {},
-            None => self.set_start_color(Color::default())
+            None => {self.set_start_color(Color::default());}
         }
         self.start_color.as_mut().unwrap()
     }
-    pub(crate) fn set_start_color(&mut self, value:Color) {
+
+    pub fn set_start_color(&mut self, value:Color)-> &mut Fill {
         self.start_color = Some(value);
+        self
     }
+
     pub fn get_end_color(&self)-> &Option<Color> {
         &self.end_color
     }
+
     pub fn get_end_color_mut(&mut self)-> &mut Color {
         match self.end_color {
             Some(_) => {},
-            None => self.set_end_color(Color::default())
+            None => {self.set_end_color(Color::default());}
         }
         self.end_color.as_mut().unwrap()
     }
-    pub(crate) fn set_end_color(&mut self, value:Color) {
+
+    pub fn set_end_color(&mut self, value:Color)-> &mut Fill {
         self.end_color = Some(value);
+        self
     }
-    pub(crate) fn get_defalut_value() -> Fill {
+
+    pub(crate) fn get_defalut_value()-> Fill {
         let mut def = Fill::default();
         def.set_fill_type(String::from(Self::FILL_NONE));
         def
     }
-    pub(crate) fn get_defalut_value_2() -> Fill {
+
+    pub(crate) fn get_defalut_value_2()-> Fill {
         let mut def = Fill::default();
         def.set_fill_type(String::from(Self::FILL_PATTERN_GRAY125));
         def
     }
+
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}{}{}",
             &self.fill_type,

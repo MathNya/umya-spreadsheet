@@ -15,7 +15,7 @@ use super::super::structs::drawing::charts::title::Title;
 use super::super::structs::drawing::charts::legend::Legend;
 use super::super::structs::drawing::charts::axis::Axis;
 
-pub fn read(dir: &TempDir, target: &String, chart: &mut Chart) -> result::Result<(), XlsxError> {
+pub(crate) fn read(dir: &TempDir, target: &String, chart: &mut Chart) -> result::Result<(), XlsxError> {
     let path = dir.path().join(format!("xl/drawings/{}", target));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
@@ -537,13 +537,4 @@ fn read_chart_attributes(
         }
         buf.clear();
     }
-}
-
-fn get_sheet_id(sheet_name:&str, sheet_vec:&Vec<(String, String, String)>)-> String {
-    for (sheets_name, sheets_sheet_id, _) in sheet_vec {
-        if sheet_name == sheets_name {
-            return sheets_sheet_id.clone();
-        }
-    }
-    String::from("")
 }

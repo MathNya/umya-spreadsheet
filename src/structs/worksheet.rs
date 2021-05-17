@@ -1,11 +1,9 @@
 use super::cells::Cells;
 use super::cell::Cell;
-use super::drawing::charts::chart::Chart;
 use super::range::Range;
 use super::row_dimension::RowDimension;
 use super::column_dimension::ColumnDimension;
-use super::drawing::spreadsheet::shape::Shape;
-use super::drawing::spreadsheet::connection_shape::ConnectionShape;
+use super::drawing::spreadsheet::worksheet_drawing::WorksheetDrawing;
 use super::page_setup::PageSetup;
 use super::page_margins::PageMargins;
 use super::header_footer::HeaderFooter;
@@ -31,9 +29,7 @@ pub struct Worksheet {
     cell_collection: Cells,
     row_dimensions : Vec<RowDimension>,
     column_dimensions : Vec<ColumnDimension>,
-    chart_collection: Vec<Chart>,
-    shape_collection: Vec<Shape>,
-    connection_shape_collection: Vec<ConnectionShape>,
+    worksheet_drawing: WorksheetDrawing,
     sheet_state: String,
     page_setup: PageSetup,
     page_margins: PageMargins,
@@ -71,9 +67,7 @@ impl Default for Worksheet {
             cell_collection: Cells::default(),
             row_dimensions : Vec::new(),
             column_dimensions : Vec::new(),
-            chart_collection: Vec::new(),
-            shape_collection: Vec::new(),
-            connection_shape_collection: Vec::new(),
+            worksheet_drawing: WorksheetDrawing::default(),
             sheet_state: String::from(""),
             page_setup: PageSetup::default(),
             page_margins: PageMargins::default(),
@@ -300,8 +294,8 @@ impl Worksheet {
         }
         if self.cell_collection.has(&col, &row) == false {
             let mut cell = Cell::default();
-            cell.get_coordinate_mut().set_col_num(&col);
-            cell.get_coordinate_mut().set_row_num(&row);
+            cell.get_coordinate_mut().set_col_num(col);
+            cell.get_coordinate_mut().set_row_num(row);
             self.cell_collection.add(cell);
         }
         self.cell_collection.get_mut(&col, &row).unwrap()
@@ -403,8 +397,8 @@ impl Worksheet {
         }
         if self.styles.has(&col, &row) == false {
             let mut style = Style::default();
-            style.get_coordinate_mut().set_col_num(&col);
-            style.get_coordinate_mut().set_row_num(&row);
+            style.get_coordinate_mut().set_col_num(col);
+            style.get_coordinate_mut().set_row_num(row);
             self.styles.add(style);
         }
         self.styles.get_mut(&col, &row).unwrap()
@@ -430,8 +424,16 @@ impl Worksheet {
         result
     }
    
-    pub(crate) fn set_comments(&mut self, value:Vec<Comment>) {
+    pub fn set_comments(&mut self, value:Vec<Comment>) {
         self.comments = value;
+    }
+
+    pub fn add_comments(&mut self, value:Comment) {
+        self.comments.push(value);
+    }
+
+    pub fn has_comments(&self) -> bool {
+        self.comments.len() > 1
     }
 
     // ************************    
@@ -442,7 +444,7 @@ impl Worksheet {
 
     }
 
-    pub(crate) fn set_conditional_styles_collection(&mut self, value:Vec<ConditionalSet>) {
+    pub fn set_conditional_styles_collection(&mut self, value:Vec<ConditionalSet>) {
         self.conditional_styles_collection = value;
     }
 
@@ -560,78 +562,22 @@ impl Worksheet {
     }
 
     // ************************
-    // Chart
+    // WorksheetDrawing
     // ************************
-    pub fn get_chart_collection(&self) -> &Vec<Chart> {
-        &self.chart_collection
+    pub fn get_worksheet_drawing(&self) -> &WorksheetDrawing {
+        &self.worksheet_drawing
     }
 
-    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
-        &mut self.chart_collection
+    pub fn get_worksheet_drawing_mut(&mut self) -> &mut WorksheetDrawing {
+        &mut self.worksheet_drawing
     }
 
-    pub fn new_chart(&mut self) -> &mut Chart {
-        let chart = Chart::default();
-        self.add_chart(chart);
-        self.chart_collection.last_mut().unwrap()
+    pub fn set_worksheet_drawing_mut(&mut self, value:WorksheetDrawing) {
+        self.worksheet_drawing = value;
     }
 
-    pub fn add_chart(&mut self, chart:Chart) {
-        self.chart_collection.push(chart);
-    }
-
-    pub fn get_chart_count(&self) -> usize {
-        self.chart_collection.len()
-    }
-
-    pub fn get_chart_by_index(&self, index:usize) -> &Chart {
-        &self.chart_collection[index]
-    }
-
-    pub fn get_chart_names(&self, index:usize) -> Vec<String> {
-        let mut names: Vec<String> = Vec::new();
-        for v in self.get_chart_collection() {
-            names.push(v.get_name().into());
-        }
-        names
-    }
-
-    // ************************
-    // Shape
-    // ************************
-    pub fn get_shape_collection(&self) -> &Vec<Shape> {
-        &self.shape_collection
-    }
-
-    pub fn get_shape_collection_mut(&mut self) -> &mut Vec<Shape> {
-        &mut self.shape_collection
-    }
-
-    pub fn set_shape_collection(&mut self, value:Vec<Shape>) {
-        self.shape_collection = value;
-    }
-
-    pub fn add_shape(&mut self, value:Shape) {
-        self.shape_collection.push(value);
-    }
-
-    // ************************
-    // Connection Shape
-    // ************************
-    pub fn get_connection_shape_collection(&self) -> &Vec<ConnectionShape> {
-        &self.connection_shape_collection
-    }
-
-    pub fn get_connection_shape_collection_mut(&mut self) -> &mut Vec<ConnectionShape> {
-        &mut self.connection_shape_collection
-    }
-
-    pub fn set_connection_shape_collection(&mut self, value:Vec<ConnectionShape>) {
-        self.connection_shape_collection = value;
-    }
-
-    pub fn add_connection_shape(&mut self, value:ConnectionShape) {
-        self.connection_shape_collection.push(value);
+    pub fn has_drawing_object(&self) -> bool {
+        self.worksheet_drawing.has_drawing_object()
     }
 
     // ************************
@@ -695,7 +641,7 @@ impl Worksheet {
             }
 
             // update chart
-            for chart in self.get_chart_collection_mut() {
+            for chart in self.worksheet_drawing.get_chart_collection_mut() {
                 for data_serise in chart.get_plot_area_mut().get_plot_series_mut() {
                     for (_, data_serise_values) in data_serise.get_plot_label_mut() {
                         data_serise_values.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
@@ -804,7 +750,7 @@ impl Worksheet {
             }
 
             // update chart
-            for chart in self.get_chart_collection_mut() {
+            for chart in self.worksheet_drawing.get_chart_collection_mut() {
                 for data_serise in chart.get_plot_area_mut().get_plot_series_mut() {
                     for (_, data_serise_values) in data_serise.get_plot_label_mut() {
                         data_serise_values.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
@@ -850,7 +796,7 @@ impl Worksheet {
     pub fn get_header_footer(&self) -> &HeaderFooter {
         &self.header_footer
     }
-    pub(crate) fn set_header_footer(&mut self, value:HeaderFooter) {
+    pub fn set_header_footer(&mut self, value:HeaderFooter) {
         self.header_footer = value;
     }
 
@@ -865,17 +811,6 @@ impl Worksheet {
     }
     pub(crate) fn set_sheet_id<S: Into<String>>(&mut self, value:S) {
         self.sheet_id = value.into();
-    }
-
-
-    pub fn has_drawing_object(&self) -> bool {
-        if self.chart_collection.len() > 0 {
-            return true;
-        }
-        if self.shape_collection.len() > 0 {
-            return true;
-        }
-        false
     }
 
     pub fn has_code_name(&self) -> bool {
@@ -915,19 +850,19 @@ impl Worksheet {
     pub fn get_sheet_state(&self) -> &String {
         return &self.sheet_state;
     }
-    pub(crate) fn set_sheet_state(&mut self, value:String) {
+    pub fn set_sheet_state(&mut self, value:String) {
         self.sheet_state = value;
     }
     pub fn get_page_setup(&self) -> &PageSetup {
         &self.page_setup
     }
-    pub(crate) fn set_page_setup(&mut self, value:PageSetup) {
+    pub fn set_page_setup(&mut self, value:PageSetup) {
         self.page_setup = value;
     }
     pub fn get_page_margins(&self) -> &PageMargins {
         &self.page_margins
     }
-    pub(crate) fn set_page_margins(&mut self, value:PageMargins) {
+    pub fn set_page_margins(&mut self, value:PageMargins) {
         self.page_margins = value;
     }
 }

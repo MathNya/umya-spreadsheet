@@ -1,0 +1,143 @@
+// xdr:blipFill
+use super::super::blip::Blip;
+use super::super::source_rectangle::SourceRectangle;
+use super::super::stretch::Stretch;
+use writer::driver::*;
+use reader::driver::*;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use quick_xml::Reader;
+use std::io::Cursor;
+use tempdir::TempDir;
+
+#[derive(Default, Debug)]
+pub struct BlipFill {
+    rot_with_shape: usize,
+    blip: Blip,
+    source_rectangle: Option<SourceRectangle>,
+    stretch: Stretch,
+}
+impl BlipFill {
+    pub fn get_rot_with_shape(&self) -> &usize {
+        &self.rot_with_shape
+    }
+
+    pub fn set_rot_with_shape(&mut self, value:usize)-> &mut BlipFill {
+        self.rot_with_shape = value;
+        self
+    }
+
+    pub fn get_source_rectangle(&self) -> &Option<SourceRectangle> {
+        &self.source_rectangle
+    }
+
+    pub fn get_source_rectangle_mut(&mut self) -> &mut Option<SourceRectangle> {
+        &mut self.source_rectangle
+    }
+
+    pub fn set_source_rectangle(&mut self, value:SourceRectangle)-> &mut BlipFill {
+        self.source_rectangle = Some(value);
+        self
+    }
+
+    pub fn get_blip(&self) -> &Blip {
+        &self.blip
+    }
+
+    pub fn get_blip_mut(&mut self) -> &mut Blip {
+        &mut self.blip
+    }
+
+    pub fn set_blip(&mut self, value:Blip)-> &mut BlipFill {
+        self.blip = value;
+        self
+    }
+
+    pub fn get_stretch(&self) -> &Stretch {
+        &self.stretch
+    }
+
+    pub fn get_stretch_mut(&mut self) -> &mut Stretch {
+        &mut self.stretch
+    }
+
+    pub fn set_stretch(&mut self, value:Stretch)-> &mut BlipFill {
+        self.stretch = value;
+        self
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart,
+        dir: &TempDir,
+        target: &str,
+    ) {
+        let mut buf = Vec::new();
+    
+        match get_attribute(e, b"rotWithShape") {
+            Some(v) => {&mut self.set_rot_with_shape(v.parse::<usize>().unwrap());},
+            None => {}
+        }
+    
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"a:blip" => {
+                            &mut self.blip.set_attributes(reader, e, dir, target);
+                        },
+                        b"a:stretch" => {
+                            &mut self.stretch.set_attributes(reader, e);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:srcRect" => {
+                            let mut source_rectangle = SourceRectangle::default();
+                            source_rectangle.set_attributes(reader, e);
+                            &mut self.set_source_rectangle(source_rectangle);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"xdr:blipFill" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:blipFill"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
+        // xdr:blipFill
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let rot_with_sharp_str = &self.rot_with_shape.to_string();
+        if &self.rot_with_shape > &0 {
+            attributes.push(("rotWithShape", rot_with_sharp_str.as_str()))
+        }
+        write_start_tag(writer, "xdr:blipFill", attributes, false);
+
+        // a:blip
+        &self.blip.write_to(writer, r_id);
+
+        // a:srcRect
+        match &self.source_rectangle {
+            Some(v) => v.write_to(writer),
+            None => {},
+        }
+
+        // a:stretch
+        &self.stretch.write_to(writer);
+
+        write_end_tag(writer, "xdr:blipFill");
+    }
+}

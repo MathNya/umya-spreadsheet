@@ -1,12 +1,17 @@
 use super::body_properties::BodyProperties;
 use super::list_style::ListStyle;
-use super::text_body_content::TextBodyContent;
+use super::super::paragraph::Paragraph;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct TextBody {
     body_properties: BodyProperties,
     list_style: ListStyle,
-    text_body_contentes: Vec<TextBodyContent>,
+    paragraph: Vec<Paragraph>,
 }
 impl TextBody {
     pub fn get_body_properties(&self)-> &BodyProperties {
@@ -33,15 +38,74 @@ impl TextBody {
         self.list_style = value;
     }
 
-    pub fn get_text_body_contentes(&self)-> &Vec<TextBodyContent> {
-        &self.text_body_contentes
+    pub fn get_paragraph(&self)-> &Vec<Paragraph> {
+        &self.paragraph
     }
 
-    pub fn get_text_body_contentes_mut(&mut self)-> &mut Vec<TextBodyContent> {
-        &mut self.text_body_contentes
+    pub fn get_paragraph_mut(&mut self)-> &mut Vec<Paragraph> {
+        &mut self.paragraph
     }
 
-    pub fn add_text_body_contentes(&mut self, value:TextBodyContent) {
-        self.text_body_contentes.push(value);
+    pub fn add_paragraph(&mut self, value:Paragraph) {
+        self.paragraph.push(value);
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"a:p" => {
+                            let mut paragraph = Paragraph::default();
+                            paragraph.set_attributes(reader, e);
+                            &mut self.add_paragraph(paragraph);
+                        }
+                        _ => (),
+                    }
+                },
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:bodyPr" => {
+                            let mut body_properties = BodyProperties::default();
+                            body_properties.set_attributes(reader, e);
+                            &mut self.set_body_properties(body_properties);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"xdr:txBody" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:txBody"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // xdr:txBody
+        write_start_tag(writer, "xdr:txBody", vec![], false);
+
+        // a:bodyPr
+        &self.body_properties.write_to(writer);
+
+        // a:lstStyle
+        write_start_tag(writer, "a:lstStyle", vec![], true);
+
+        for content in &self.paragraph {
+            content.write_to(writer);
+        }
+
+        write_end_tag(writer, "xdr:txBody");
     }
 }

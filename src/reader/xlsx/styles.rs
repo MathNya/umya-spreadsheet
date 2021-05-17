@@ -8,7 +8,6 @@ use super::driver::*;
 
 use super::super::structs::theme::Theme;
 use super::super::structs::number_format::NumberFormat;
-use super::super::structs::spreadsheet::Spreadsheet;
 use super::super::structs::borders::Borders;
 use super::super::structs::border::Border;
 use super::super::structs::fill::Fill;
@@ -165,7 +164,7 @@ fn get_dxf(
                     },
                     b"get_border" => {
                         match get_border(reader, theme){
-                            Some(v) => {style.set_borders(v)},
+                            Some(v) => {style.set_borders(v);},
                             None => {}
                         }
                         
@@ -653,23 +652,23 @@ fn get_attribute_pattern_xf(
             let id = v.parse::<usize>().unwrap();
             style.set_xf_id(id);
             match cel_style_vec.get(id).unwrap().get_style().get_number_format() {
-                Some(v) => style.set_number_format(v.clone()),
+                Some(v) => {style.set_number_format(v.clone());},
                 None => {}
             }
             match cel_style_vec.get(id).unwrap().get_style().get_font() {
-                Some(v) => style.set_font(v.clone()),
+                Some(v) => {style.set_font(v.clone());},
                 None => {}
             }
             match cel_style_vec.get(id).unwrap().get_style().get_fill() {
-                Some(v) => style.set_fill(v.clone()),
+                Some(v) => {style.set_fill(v.clone());},
                 None => {}
             }
             match cel_style_vec.get(id).unwrap().get_style().get_borders() {
-                Some(v) => style.set_borders(v.clone()),
+                Some(v) => {style.set_borders(v.clone());},
                 None => {}
             }
             match cel_style_vec.get(id).unwrap().get_style().get_alignment() {
-                Some(v) => style.set_alignment(v.clone()),
+                Some(v) => {style.set_alignment(v.clone());},
                 None => {}
             }
         },
