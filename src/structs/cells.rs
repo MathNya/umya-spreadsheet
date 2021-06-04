@@ -1,4 +1,4 @@
-use super::cell::Cell;
+use super::Cell;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 

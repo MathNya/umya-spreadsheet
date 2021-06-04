@@ -1,6 +1,6 @@
-use super::body_properties::BodyProperties;
-use super::list_style::ListStyle;
-use super::super::paragraph::Paragraph;
+use super::BodyProperties;
+use super::ListStyle;
+use super::super::Paragraph;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};

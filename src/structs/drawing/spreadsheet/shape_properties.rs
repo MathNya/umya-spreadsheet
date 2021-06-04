@@ -1,9 +1,9 @@
 // xdr:spPr
-use super::super::transform2d::Transform2D;
-use super::super::preset_geometry::PresetGeometry;
-use super::super::solid_fill::SolidFill;
-use super::super::outline::Outline;
-use super::super::effect_list::EffectList;
+use super::super::Transform2D;
+use super::super::PresetGeometry;
+use super::super::SolidFill;
+use super::super::Outline;
+use super::super::EffectList;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;

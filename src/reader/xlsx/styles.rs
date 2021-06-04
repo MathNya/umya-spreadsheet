@@ -5,16 +5,15 @@ use quick_xml::events::{Event};
 use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
-
-use super::super::structs::theme::Theme;
-use super::super::structs::number_format::NumberFormat;
-use super::super::structs::borders::Borders;
-use super::super::structs::border::Border;
-use super::super::structs::fill::Fill;
-use super::super::structs::font::Font;
-use super::super::structs::style::Style;
-use super::super::structs::alignment::Alignment;
-use super::super::structs::cell_style::CellStyle;
+use structs::Theme;
+use structs::NumberFormat;
+use structs::Borders;
+use structs::Border;
+use structs::Fill;
+use structs::Font;
+use structs::Style;
+use structs::Alignment;
+use structs::CellStyle;
 
 const FILE_PATH: &'static str = "xl/styles.xml";
 

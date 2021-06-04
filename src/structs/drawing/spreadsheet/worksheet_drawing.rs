@@ -3,7 +3,7 @@ use super::two_cell_anchor::TwoCellAnchor;
 use super::picture::Picture;
 use super::shape::Shape;
 use super::connection_shape::ConnectionShape;
-use super::super::charts::chart::Chart;
+use super::super::charts::Chart;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;

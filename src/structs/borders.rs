@@ -1,4 +1,4 @@
-use super::border::Border;
+use super::Border;
 
 #[derive(Default, Debug, Clone)]
 pub struct Borders {

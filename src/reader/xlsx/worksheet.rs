@@ -4,17 +4,17 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
-use super::super::structs::worksheet::Worksheet;
-use super::super::structs::color::Color;
-use super::super::structs::theme::Theme;
-use super::super::structs::row_dimension::RowDimension;
-use super::super::structs::column_dimension::ColumnDimension;
-use super::super::structs::conditional::Conditional;
-use super::super::structs::style::Style;
-use super::super::structs::page_margins::PageMargins;
-use super::super::structs::rich_text::RichText;
-use super::super::structs::hyperlink::Hyperlink;
-use super::super::structs::conditional_set::ConditionalSet;
+use ::structs::Worksheet;
+use ::structs::Color;
+use ::structs::Theme;
+use ::structs::RowDimension;
+use ::structs::ColumnDimension;
+use ::structs::Conditional;
+use ::structs::Style;
+use ::structs::PageMargins;
+use ::structs::RichText;
+use ::structs::Hyperlink;
+use ::structs::ConditionalSet;
 
 use super::super::helper::coordinate::*;
 

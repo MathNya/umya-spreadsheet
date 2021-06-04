@@ -6,8 +6,8 @@ use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::collections::BTreeSet;
 
-use super::super::structs::style::Style;
-use super::super::structs::worksheet::Worksheet;
+use ::structs::Style;
+use ::structs::Worksheet;
 use super::super::helper::coordinate::*;
 use super::driver::*;
 use super::XlsxError;

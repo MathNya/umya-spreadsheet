@@ -6,9 +6,9 @@ use quick_xml::Writer;
 use tempdir::TempDir;
 use super::XlsxError;
 use onig::*;
-use super::super::structs::spreadsheet::Spreadsheet;
-use super::super::structs::rich_text::RichText;
-use super::super::structs::font::Font;
+use ::structs::Spreadsheet;
+use ::structs::RichText;
+use ::structs::Font;
 use super::driver::*;
 
 const SHARED_STRINGS: &'static str = "xl/sharedStrings.xml";

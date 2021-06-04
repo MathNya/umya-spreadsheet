@@ -1,7 +1,7 @@
 // xdr:blipFill
-use super::super::blip::Blip;
-use super::super::source_rectangle::SourceRectangle;
-use super::super::stretch::Stretch;
+use super::super::Blip;
+use super::super::SourceRectangle;
+use super::super::Stretch;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::events::{Event, BytesStart};

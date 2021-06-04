@@ -1,5 +1,5 @@
-use super::coordinate::Coordinate;
-use super::super::helper::coordinate::*;
+use super::Coordinate;
+use ::helper::coordinate::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Range {

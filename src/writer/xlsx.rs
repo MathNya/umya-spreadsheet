@@ -3,7 +3,7 @@ use std::path::Path;
 use std::io;
 use std::string::FromUtf8Error;
 
-use super::structs::spreadsheet::Spreadsheet;
+use structs::Spreadsheet;
 use super::driver;
 
 mod chart;

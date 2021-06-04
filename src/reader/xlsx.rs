@@ -4,8 +4,8 @@ use std::io;
 use std::string::FromUtf8Error;
 use std::fs::File;
 
-use super::structs::theme::Theme;
-use super::structs::spreadsheet::Spreadsheet;
+use ::structs::Theme;
+use ::structs::Spreadsheet;
 use super::driver;
 
 mod doc_props_app;

@@ -6,10 +6,10 @@ use std::fs::File;
 use std::io;
 use std::string::FromUtf8Error;
 
-use super::super::structs::theme::Theme;
-use super::super::structs::font::Font;
-use super::super::structs::color::Color;
-use super::super::structs::text_element::TextElement;
+use ::structs::Theme;
+use ::structs::Font;
+use ::structs::Color;
+use ::structs::TextElement;
 
 pub(crate) fn unzip(zip_file: &File, dir: &TempDir) -> Result<(), zip::result::ZipError> {
     let mut zip = zip::ZipArchive::new(zip_file)?;

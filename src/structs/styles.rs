@@ -1,4 +1,4 @@
-use super::style::Style;
+use super::Style;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 

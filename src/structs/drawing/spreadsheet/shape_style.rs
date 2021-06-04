@@ -1,5 +1,5 @@
 // xdr:style
-use super::super::style_matrix_reference_type::StyleMatrixReferenceType;
+use super::super::StyleMatrixReferenceType;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};

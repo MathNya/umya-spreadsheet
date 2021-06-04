@@ -1,4 +1,4 @@
-use super::super::helper::coordinate::*;
+use helper::coordinate::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Coordinate {

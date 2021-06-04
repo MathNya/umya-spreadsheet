@@ -1,4 +1,4 @@
-use super::layout::Layout;
+use super::Layout;
 
 #[derive(Default, Debug)]
 pub struct Legend {

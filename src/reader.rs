@@ -1,3 +1,5 @@
+//! file reader library.
+
 use super::structs;
 use super::helper;
 

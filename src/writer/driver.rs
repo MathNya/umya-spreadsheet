@@ -10,7 +10,7 @@ use std::io;
 use std::io::{Cursor, Read, Write};
 use std::path::Path;
 
-use super::super::structs::color::Color;
+use ::structs::Color;
 
 pub(crate) fn write_to_file(path: &Path, dir: &TempDir) -> Result<(), io::Error> {
     let file = File::create(&path)?;

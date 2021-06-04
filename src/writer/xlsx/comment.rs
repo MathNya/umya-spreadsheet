@@ -3,8 +3,8 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
 use onig::*;
-use super::super::structs::worksheet::Worksheet;
-use super::super::structs::font::Font;
+use ::structs::Worksheet;
+use ::structs::Font;
 use super::driver::*;
 use super::XlsxError;
 

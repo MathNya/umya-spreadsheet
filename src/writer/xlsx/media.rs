@@ -1,6 +1,6 @@
 use tempdir::TempDir;
 
-use structs::drawing::spreadsheet::picture::Picture;
+use structs::drawing::spreadsheet::Picture;
 use super::driver::*;
 use super::XlsxError;
 

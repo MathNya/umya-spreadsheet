@@ -1,6 +1,6 @@
 //xdr:nvPicPr
-use super::non_visual_drawing_properties::NonVisualDrawingProperties;
-use super::non_visual_picture_drawing_properties::NonVisualPictureDrawingProperties;
+use super::NonVisualDrawingProperties;
+use super::NonVisualPictureDrawingProperties;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};

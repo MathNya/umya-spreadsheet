@@ -1,4 +1,4 @@
-use super::text_element::TextElement;
+use super::TextElement;
 
 #[derive(Clone, Debug)]
 pub struct RichText  {

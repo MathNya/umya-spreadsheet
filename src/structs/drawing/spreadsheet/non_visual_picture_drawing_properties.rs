@@ -1,5 +1,5 @@
 //xdr:cNvPicPr
-use super::super::picture_locks::PictureLocks;
+use super::super::PictureLocks;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};

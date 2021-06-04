@@ -1,7 +1,7 @@
-use super::rich_text::RichText;
-use super::color::Color;
-use super::coordinate::Coordinate;
-use super::anchor::Anchor;
+use super::RichText;
+use super::Color;
+use super::Coordinate;
+use super::Anchor;
 
 #[derive(Default, Debug, Clone)]
 pub struct Comment {

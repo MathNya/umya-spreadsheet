@@ -3,11 +3,11 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
 
-use super::super::structs::font::Font;
-use super::super::structs::drawing::charts::title::Title;
-use super::super::structs::drawing::charts::chart::Chart;
-use super::super::structs::drawing::charts::axis::Axis;
-use super::super::structs::drawing::charts::data_series::DataSeries;
+use ::structs::Font;
+use ::structs::drawing::charts::Title;
+use ::structs::drawing::charts::Chart;
+use ::structs::drawing::charts::Axis;
+use ::structs::drawing::charts::DataSeries;
 use super::driver::*;
 use super::XlsxError;
 

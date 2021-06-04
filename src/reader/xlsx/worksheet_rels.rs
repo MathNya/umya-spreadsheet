@@ -5,7 +5,7 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
-use super::super::structs::worksheet::Worksheet;
+use ::structs::Worksheet;
 
 pub(crate) fn read(
     dir: &TempDir,

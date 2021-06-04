@@ -1,5 +1,5 @@
-use super::range::Range;
-use super::conditional::Conditional;
+use super::Range;
+use super::Conditional;
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalSet {

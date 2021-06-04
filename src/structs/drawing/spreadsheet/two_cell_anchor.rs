@@ -1,10 +1,10 @@
 // xdr:blipFill
-use super::from_marker::FromMarker;
-use super::to_marker::ToMarker;
-use super::super::charts::chart::Chart;
-use super::shape::Shape;
-use super::connection_shape::ConnectionShape;
-use super::picture::Picture;
+use super::FromMarker;
+use super::ToMarker;
+use super::super::charts::Chart;
+use super::Shape;
+use super::ConnectionShape;
+use super::Picture;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::events::{Event, BytesStart};

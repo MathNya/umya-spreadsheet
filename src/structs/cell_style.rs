@@ -1,4 +1,4 @@
-use super::style::Style;
+use super::Style;
 
 #[derive(Default, Debug)]
 pub struct CellStyle {

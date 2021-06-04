@@ -1,4 +1,4 @@
-use super::font::Font;
+use super::Font;
 
 #[derive(Clone, Debug)]
 pub struct TextElement {

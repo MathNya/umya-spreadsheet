@@ -1,4 +1,4 @@
-use super::color::Color;
+use super::Color;
 
 #[derive(Default, Debug)]
 pub(crate) struct Shadow {

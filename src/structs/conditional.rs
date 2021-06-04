@@ -1,5 +1,5 @@
-use super::style::Style;
-use super::color::Color;
+use super::Style;
+use super::Color;
 
 #[derive(Clone, Debug)]
 pub struct Conditional {

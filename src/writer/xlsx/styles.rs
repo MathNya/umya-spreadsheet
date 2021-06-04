@@ -3,9 +3,9 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
 
-use super::super::structs::spreadsheet::Spreadsheet;
-use super::super::structs::borders::Borders;
-use super::super::structs::alignment::Alignment;
+use ::structs::Spreadsheet;
+use ::structs::Borders;
+use ::structs::Alignment;
 use super::driver::*;
 use super::XlsxError;
 

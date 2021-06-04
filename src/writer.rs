@@ -1,4 +1,5 @@
-use super::structs;
+//! file writer library.
+
 use super::helper;
 
 pub mod xlsx;

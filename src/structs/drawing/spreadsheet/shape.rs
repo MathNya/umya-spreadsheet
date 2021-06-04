@@ -1,8 +1,8 @@
-use super::super::super::anchor::Anchor;
-use super::non_visual_shape_properties::NonVisualShapeProperties;
-use super::shape_properties::ShapeProperties;
-use super::shape_style::ShapeStyle;
-use super::text_body::TextBody;
+use super::super::super::Anchor;
+use super::NonVisualShapeProperties;
+use super::ShapeProperties;
+use super::ShapeStyle;
+use super::TextBody;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};

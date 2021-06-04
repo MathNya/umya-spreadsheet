@@ -1,4 +1,4 @@
-use super::header_footer_drawing::HeaderFooterDrawing;
+use super::HeaderFooterDrawing;
 
 #[derive(Default, Debug)]
 pub struct HeaderFooter {

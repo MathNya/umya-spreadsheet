@@ -1,5 +1,5 @@
-use super::range::Range;
-use super::column::Column;
+use super::Range;
+use super::Column;
 
 #[derive(Default, Debug)]
 pub struct AutoFilter {

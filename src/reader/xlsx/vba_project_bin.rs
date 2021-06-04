@@ -4,7 +4,7 @@ use std::io::Read;
 use tempdir::TempDir;
 use super::XlsxError;
 
-use super::super::structs::spreadsheet::Spreadsheet;
+use ::structs::Spreadsheet;
 
 const FILE_PATH: &'static str = "xl/vbaProject.bin";
 

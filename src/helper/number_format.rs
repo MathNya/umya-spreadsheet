@@ -1,7 +1,7 @@
 //use regex::Regex;
 use onig::*;
-use structs::number_format::NumberFormat;
-use structs::color::Color;
+use structs::NumberFormat;
+use structs::Color;
 use thousands::{Separable};
 use helper::date::*;
 

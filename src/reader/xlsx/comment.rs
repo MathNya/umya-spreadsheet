@@ -4,13 +4,12 @@ use quick_xml::events::{Event};
 use tempdir::TempDir;
 use super::XlsxError;
 use std::collections::HashMap; 
-
 use super::driver::*;
-use super::super::structs::text_element::TextElement;
-use super::super::structs::theme::Theme;
-use super::super::structs::rich_text::RichText;
-use super::super::structs::worksheet::Worksheet;
-use super::super::structs::comment::Comment;
+use structs::TextElement;
+use structs::Theme;
+use structs::RichText;
+use structs::Worksheet;
+use structs::Comment;
 
 pub(crate) fn read(
     dir: &TempDir,

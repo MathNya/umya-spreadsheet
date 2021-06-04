@@ -1,8 +1,8 @@
 // xdr:cxnSp
-use super::super::super::anchor::Anchor;
-use super::non_visual_connection_shape_properties::NonVisualConnectionShapeProperties;
-use super::shape_properties::ShapeProperties;
-use super::shape_style::ShapeStyle;
+use super::super::super::Anchor;
+use super::NonVisualConnectionShapeProperties;
+use super::ShapeProperties;
+use super::ShapeStyle;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;

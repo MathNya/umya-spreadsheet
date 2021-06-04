@@ -1,3 +1,117 @@
+//! # umya-spreadsheet
+//! [![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
+//! [![Crates.io](https://img.shields.io/crates/l/umya-spreadsheet)](https://github.com/MathNya/umya-spreadsheet#license)
+//! 
+//! ## Description
+//! **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
+//! 
+//! ## Example
+// ![Result Image](images/sample1.png)
+//! ### Reader or New File
+//! ```rust
+//! extern crate umya_spreadsheet;
+//! 
+//! // reader
+//! let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
+//! let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+//! // or
+//! // new file
+//! let mut book = umya_spreadsheet::new_file();
+//! ```
+//! ### New worksheet
+//! ```rust
+//! extern crate umya_spreadsheet;
+//! 
+//! let mut book = umya_spreadsheet::new_file();
+//! 
+//! // new worksheet
+//! let _ = book.new_sheet("Sheet2");
+//! ```
+//! ### Change value
+//! ```rust
+//! extern crate umya_spreadsheet;
+//! 
+//! let mut book = umya_spreadsheet::new_file();
+//! let _ = book.new_sheet("Sheet2");
+//! 
+//! // change value
+//! let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+//! // or
+//! let _ = book.get_sheet_mut(1).get_cell_by_column_and_row_mut(1, 1).set_value("TEST1");
+//! ```
+//! ### Read value
+//! ```rust
+//! extern crate umya_spreadsheet;
+//! 
+//! let mut book = umya_spreadsheet::new_file();
+//! let _ = book.new_sheet("Sheet2");
+//! let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+//! 
+//! // read value
+//! let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");
+//! // or
+//! let a1_value = book.get_sheet(1).unwrap().get_value_by_column_and_row(1, 1);
+//! // or formatted value
+//! let a1_value = book.get_sheet(1).unwrap().get_formatted_value("A1");
+//! assert_eq!("TEST1", a1_value);  // TEST1
+//! ```
+//! ### Change style
+//! ```rust
+//! extern crate umya_spreadsheet;
+//! 
+//! let mut book = umya_spreadsheet::new_file();
+//! let _ = book.new_sheet("Sheet2");
+//! 
+//! // add bottom border
+//! let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
+//! .get_style_mut("A1")
+//! .get_borders_mut()
+//! .get_bottom_mut()
+//! .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+//! // or
+//! let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
+//! .get_style_by_column_and_row_mut(1, 1)
+//! .get_borders_mut()
+//! .get_bottom_mut()
+//! .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+//! ```
+//! ### Insert or Remove Rows(or Columns)
+// ![Result Image](images/sample2.png)
+//! ```rust
+//! extern crate umya_spreadsheet;
+//! 
+//! let mut book = umya_spreadsheet::new_file();
+//! 
+//! // insert rows
+//! book.insert_new_row("Sheet1", 2, 3);
+//! 
+//! // insert columns
+//! book.insert_new_colmun("Sheet1", "B", 3);
+//! // or
+//! book.insert_new_colmun_by_index("Sheet1", 2, 3);
+//! 
+//! // remove rows
+//! book.remove_row("Sheet1", 6, 2);
+//! 
+//! // remove columns
+//! book.remove_colmun("Sheet1", "F", 2);
+//! // or
+//! book.remove_colmun_by_index("Sheet1", 6, 2);
+//! ```
+//! ### Writer
+//! ```rust
+//! extern crate umya_spreadsheet;
+//! 
+//! let mut book = umya_spreadsheet::new_file();
+//! let _ = book.new_sheet("Sheet2");
+//! 
+//! // writer
+//! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
+//! let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+//! ```
+//! ## License
+//! MIT
+
 extern crate quick_xml;
 extern crate tempdir;
 extern crate walkdir;
@@ -16,48 +130,7 @@ pub mod writer;
 pub mod reader;
 pub mod helper;
 
-pub use self::structs::spreadsheet::*;
-pub use self::structs::worksheet::*;
-pub use self::structs::properties::*;
-pub use self::structs::cell::*;
-pub use self::structs::cells::*;
-pub use self::structs::hyperlink::*;
-pub use self::structs::row_dimension::*;
-pub use self::structs::column_dimension::*;
-pub use self::structs::shadow::*;
-pub use self::structs::color::*;
-pub use self::structs::page_setup::*;
-pub use self::structs::page_margins::*;
-pub use self::structs::header_footer::*;
-pub use self::structs::header_footer_drawing::*;
-pub use self::structs::sheet_view::*;
-pub use self::structs::auto_filter::*;
-pub use self::structs::column::*;
-pub use self::structs::security::*;
-pub use self::structs::calculation::*;
-pub use self::structs::style::*;
-pub use self::structs::font::*;
-pub use self::structs::fill::*;
-pub use self::structs::borders::*;
-pub use self::structs::border::*;
-pub use self::structs::alignment::*;
-pub use self::structs::number_format::*;
-pub use self::structs::conditional::*;
-pub use self::structs::protection::*;
-pub use self::structs::rich_text::*;
-pub use self::structs::text_element::*;
-pub use self::structs::picture::*;
-pub use self::structs::theme::*;
-pub use self::structs::cell_style::*;
-pub use self::structs::defined_name::*;
-pub use self::structs::comment::*;
-pub use self::structs::styles::*;
-pub use self::structs::coordinate::*;
-pub use self::structs::range::*;
-pub use self::structs::conditional_set::*;
-pub use self::structs::address::*;
-pub use self::structs::anchor::*;
-pub use self::structs::drawing::*;
+pub use self::structs::*;
 
 /// create new spreadsheet file.
 /// # Arguments
@@ -67,8 +140,8 @@ pub use self::structs::drawing::*;
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
 /// ```
-pub fn new_file()->structs::spreadsheet::Spreadsheet {
-    let mut spreadsheet = structs::spreadsheet::Spreadsheet::default();
+pub fn new_file()->structs::Spreadsheet {
+    let mut spreadsheet = structs::Spreadsheet::default();
     spreadsheet.set_theme(Theme::get_defalut_value());
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");

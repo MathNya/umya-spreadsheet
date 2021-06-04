@@ -1,5 +1,5 @@
 // xdr:cNvCxnSpPr
-use super::connection_type::ConnectionType;
+use super::ConnectionType;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;

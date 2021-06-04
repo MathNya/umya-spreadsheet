@@ -4,16 +4,15 @@ use quick_xml::events::{Event};
 use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
-
-use super::super::structs::text_element::TextElement;
-use super::super::structs::drawing::charts::data_series::DataSeries;
-use super::super::structs::drawing::charts::data_series_values::DataSeriesValues;
-use super::super::structs::drawing::charts::layout::Layout;
-use super::super::structs::drawing::charts::plot_area::PlotArea;
-use super::super::structs::drawing::charts::chart::Chart;
-use super::super::structs::drawing::charts::title::Title;
-use super::super::structs::drawing::charts::legend::Legend;
-use super::super::structs::drawing::charts::axis::Axis;
+use structs::TextElement;
+use structs::drawing::charts::DataSeries;
+use structs::drawing::charts::DataSeriesValues;
+use structs::drawing::charts::Layout;
+use structs::drawing::charts::PlotArea;
+use structs::drawing::charts::Chart;
+use structs::drawing::charts::Title;
+use structs::drawing::charts::Legend;
+use structs::drawing::charts::Axis;
 
 pub(crate) fn read(dir: &TempDir, target: &String, chart: &mut Chart) -> result::Result<(), XlsxError> {
     let path = dir.path().join(format!("xl/drawings/{}", target));

@@ -1,10 +1,10 @@
-use super::font::Font;
-use super::fill::Fill;
-use super::borders::Borders;
-use super::alignment::Alignment;
-use super::number_format::NumberFormat;
-use super::protection::Protection;
-use super::coordinate::Coordinate;
+use super::Font;
+use super::Fill;
+use super::Borders;
+use super::Alignment;
+use super::NumberFormat;
+use super::Protection;
+use super::Coordinate;
 
 #[derive(Clone, Debug)]
 pub struct Style {

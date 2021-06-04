@@ -1,6 +1,6 @@
-use super::worksheet::Worksheet;
-use super::shadow::Shadow;
-use super::hyperlink::Hyperlink;
+use super::Worksheet;
+use super::Shadow;
+use super::Hyperlink;
 
 #[derive(Default, Debug)]
 pub struct Picture {

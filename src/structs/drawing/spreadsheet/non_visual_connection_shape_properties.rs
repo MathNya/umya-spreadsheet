@@ -1,6 +1,6 @@
 // xdr:nvCxnSpPr
-use super::non_visual_drawing_properties::NonVisualDrawingProperties;
-use super::non_visual_connector_shape_drawing_properties::NonVisualConnectorShapeDrawingProperties;
+use super::NonVisualDrawingProperties;
+use super::NonVisualConnectorShapeDrawingProperties;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;

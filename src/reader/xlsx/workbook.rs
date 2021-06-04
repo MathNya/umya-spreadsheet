@@ -5,8 +5,8 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
-use super::super::structs::spreadsheet::Spreadsheet;
-use super::super::structs::defined_name::DefinedName;
+use ::structs::Spreadsheet;
+use ::structs::DefinedName;
 
 const FILE_PATH: &'static str = "xl/workbook.xml";
 

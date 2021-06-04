@@ -1,5 +1,5 @@
-use super::layout::Layout;
-use super::data_series::DataSeries;
+use super::Layout;
+use super::DataSeries;
 
 #[derive(Default, Debug)]
 pub struct PlotArea {

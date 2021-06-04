@@ -1,8 +1,8 @@
 // xdr:pic
-use super::super::super::anchor::Anchor;
-use super::non_visual_picture_properties::NonVisualPictureProperties;
-use super::blip_fill::BlipFill;
-use super::shape_properties::ShapeProperties;
+use super::super::super::Anchor;
+use super::NonVisualPictureProperties;
+use super::BlipFill;
+use super::ShapeProperties;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;

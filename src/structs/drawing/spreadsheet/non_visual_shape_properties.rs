@@ -1,5 +1,5 @@
 // xdr:nvSpPr
-use super::non_visual_drawing_properties::NonVisualDrawingProperties;
+use super::NonVisualDrawingProperties;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};

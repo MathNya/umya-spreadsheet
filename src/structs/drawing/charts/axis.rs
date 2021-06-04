@@ -1,5 +1,5 @@
 use std::collections::HashMap; 
-use super::title::Title;
+use super::Title;
 
 #[derive(Default, Debug)]
 pub struct Axis {

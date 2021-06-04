@@ -1,4 +1,4 @@
-use super::data_series_values::DataSeriesValues;
+use super::DataSeriesValues;
 use std::collections::BTreeMap;
 
 #[derive(Default, Debug)]

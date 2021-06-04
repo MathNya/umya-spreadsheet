@@ -1,5 +1,5 @@
 // a:lnRef
-use super::scheme_color::SchemeColor;
+use super::SchemeColor;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;

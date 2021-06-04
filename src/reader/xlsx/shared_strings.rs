@@ -5,9 +5,9 @@ use tempdir::TempDir;
 use super::XlsxError;
 
 use super::driver::*;
-use super::super::structs::text_element::TextElement;
-use super::super::structs::theme::Theme;
-use super::super::structs::rich_text::RichText;
+use structs::TextElement;
+use structs::Theme;
+use structs::RichText;
 
 const SHARED_STRINGS: &'static str = "xl/sharedStrings.xml";
 

@@ -6,7 +6,7 @@ use super::XlsxError;
 use super::driver::*;
 use std::mem;
 
-use super::super::structs::theme::Theme;
+use ::structs::Theme;
 
 pub fn read(dir: &TempDir, target: &str) -> result::Result<Theme, XlsxError> {
     let path = dir.path().join(format!("xl/{}", target));

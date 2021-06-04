@@ -5,10 +5,10 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 use std::collections::HashMap;
-use super::super::structs::comment::Comment;
-use super::super::structs::color::Color;
-use super::super::structs::anchor::Anchor;
-use super::super::helper::coordinate::*;
+use structs::Comment;
+use structs::Color;
+use structs::Anchor;
+use helper::coordinate::*;
 
 pub(crate) fn read(
     dir: &TempDir,

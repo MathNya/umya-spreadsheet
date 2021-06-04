@@ -1,6 +1,6 @@
 use tempdir::TempDir;
 
-use super::super::structs::spreadsheet::Spreadsheet;
+use ::structs::Spreadsheet;
 use super::driver::*;
 use super::XlsxError;
 

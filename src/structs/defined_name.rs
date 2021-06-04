@@ -1,4 +1,4 @@
-use super::address::Address;
+use super::Address;
 
 #[derive(Default, Debug)]
 pub struct DefinedName {

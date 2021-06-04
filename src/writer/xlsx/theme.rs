@@ -6,7 +6,7 @@ use tempdir::TempDir;
 use super::driver::*;
 use super::XlsxError;
 
-use super::super::structs::theme::Theme;
+use ::structs::Theme;
 
 const MAJOR_FONTS: &'static [(&'static str, &'static str)] = &[
     ("Jpan", "ＭＳ Ｐゴシック"),

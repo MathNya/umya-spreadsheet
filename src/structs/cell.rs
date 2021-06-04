@@ -1,7 +1,7 @@
-use super::rich_text::RichText;
-use super::hyperlink::Hyperlink;
-use super::coordinate::Coordinate;
-use super::super::helper::formula::*;
+use super::RichText;
+use super::Hyperlink;
+use super::Coordinate;
+use ::helper::formula::*;
 
 #[derive(Default, Debug)]
 pub struct Cell {

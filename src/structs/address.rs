@@ -1,4 +1,4 @@
-use super::range::Range;
+use super::Range;
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {

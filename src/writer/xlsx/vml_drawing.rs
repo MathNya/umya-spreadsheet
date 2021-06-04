@@ -2,8 +2,8 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
 
-use super::super::structs::worksheet::Worksheet;
-use super::super::structs::comment::Comment;
+use ::structs::Worksheet;
+use ::structs::Comment;
 use super::driver::*;
 use super::XlsxError;
 
