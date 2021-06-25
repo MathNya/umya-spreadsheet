@@ -120,7 +120,7 @@ impl DataSeries {
         &mut self.plot_category
     }
 
-    pub(crate) fn add_plot_category(&mut self, index:i32, value:DataSeriesValues)-> &mut DataSeries {
+    pub fn add_plot_category(&mut self, index:i32, value:DataSeriesValues)-> &mut DataSeries {
         self.plot_category.insert(index, value);
         self
     }

@@ -28,18 +28,22 @@ const DATE_FORMAT_REPLACEMENTS: &'static [(&'static str, &'static str)] = &[
     // It isn't perfect, but the best way I know how
     (":mm", ":%M"),
     ("mm:", "%M:"),
-    // month leading zero
-    ("mm", "%m"),
+    // month leading zero (first)
+    ("mm", "MM"),
     // month no leading zero
-    ("m", "%m"),
+    ("m", "%-m"),
+    // month leading zero (second)
+    ("MM", "%m"),
     // full day of week name
     ("dddd", "%A"),
     // short day of week name
     ("ddd", "%a"),
-    // days leading zero
-    ("dd", "%d"),
+    // days leading zero (first)
+    ("dd", "D"),
     // days no leading zero
-    ("d", "%d"),
+    ("d", "%-d"),
+    // days leading zero (second)
+    ("D", "%d"),
     // seconds
     ("ss", "%S"),
     // fractional seconds - no rust equivalent
@@ -48,12 +52,12 @@ const DATE_FORMAT_REPLACEMENTS: &'static [(&'static str, &'static str)] = &[
 
 const DATE_FORMAT_REPLACEMENTS_24: &'static [(&'static str, &'static str)] = &[
     ("hh", "%H"),
-    ("h", "%k"),
+    ("h", "%-H"),
 ];
 
 const DATE_FORMAT_REPLACEMENTS_12: &'static [(&'static str, &'static str)] = &[
     ("hh", "%I"),
-    ("h", "%l"),
+    ("h", "%-I"),
 ];
 
 pub fn to_formatted_string<S: Into<String>>(value:S, format:S)-> String {
@@ -591,4 +595,55 @@ fn gcd(a: &f64, b: &f64) -> f64 {
     } else {
         gcd(b, &(a % b))
     }
+}
+
+#[test]
+fn test_to_formatted_string_date() {
+    let value = String::from("45435"); // 2024/5/23
+    assert_eq!(r#"2024-05-23"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_YYYYMMDD2));
+    assert_eq!(r#"2024-05-23"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_YYYYMMDD));
+    assert_eq!(r#"23-05-2024"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DDMMYYYY));
+    assert_eq!(r#"23/05/2024"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DDMMYYYYSLASH));
+    assert_eq!(r#"23/5/24"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DMYSLASH));
+    assert_eq!(r#"23-5-24"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DMYMINUS));
+    assert_eq!(r#"23-5"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DMMINUS));
+    assert_eq!(r#"5-24"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_MYMINUS));
+    assert_eq!(r#"05-23-24"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX14));
+    assert_eq!(r#"23-May-24"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX15));
+    assert_eq!(r#"23-May"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX16));
+    assert_eq!(r#"May-24"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX17));
+    assert_eq!(r#"5/23/24 0:00"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX22));
+    assert_eq!(r#"23/5/24 0:00"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DATETIME));
+    assert_eq!(r#"12:00 am"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME1));
+    assert_eq!(r#"12:00:00 am"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME2));
+    assert_eq!(r#"0:00"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME3));
+    assert_eq!(r#"0:00:00"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME4));
+    assert_eq!(r#"00:00"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME5));
+    assert_eq!(r#"0:00:00"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME6));
+    assert_eq!(r#"0:00:00"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME8));
+    assert_eq!(r#"2024/05/23"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_YYYYMMDDSLASH));
+
+    let value = String::from("44349.211134259262"); // 2021/06/02 05:04:02
+    assert_eq!(r#"2021-06-02"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_YYYYMMDD2));
+    assert_eq!(r#"2021-06-02"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_YYYYMMDD));
+    assert_eq!(r#"02-06-2021"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DDMMYYYY));
+    assert_eq!(r#"02/06/2021"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DDMMYYYYSLASH));
+    assert_eq!(r#"2/6/21"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DMYSLASH));
+    assert_eq!(r#"2-6-21"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DMYMINUS));
+    assert_eq!(r#"2-6"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DMMINUS));
+    assert_eq!(r#"6-21"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_MYMINUS));
+    assert_eq!(r#"06-02-21"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX14));
+    assert_eq!(r#"2-Jun-21"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX15));
+    assert_eq!(r#"2-Jun"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX16));
+    assert_eq!(r#"Jun-21"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX17));
+    assert_eq!(r#"6/2/21 5:04"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_XLSX22));
+    assert_eq!(r#"2/6/21 5:04"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_DATETIME));
+    assert_eq!(r#"5:04 am"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME1));
+    assert_eq!(r#"5:04:02 am"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME2));
+    assert_eq!(r#"5:04"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME3));
+    assert_eq!(r#"5:04:02"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME4));
+    assert_eq!(r#"04:02"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME5));
+    assert_eq!(r#"5:04:02"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME6));
+    assert_eq!(r#"5:04:02"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_TIME8));
+    assert_eq!(r#"2021/06/02"#, to_formatted_string(value.as_str(), NumberFormat::FORMAT_DATE_YYYYMMDDSLASH));
 }

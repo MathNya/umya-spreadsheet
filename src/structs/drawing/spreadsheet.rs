@@ -10,12 +10,6 @@ pub use self::text_body::*;
           mod shape_properties;
 pub use self::shape_properties::*;
 
-          mod body_properties;
-pub use self::body_properties::*;
-
-          mod list_style;
-pub use self::list_style::*;
-
           mod connection_shape;
 pub use self::connection_shape::*;
 
@@ -57,3 +51,16 @@ pub use self::two_cell_anchor::*;
 
           mod worksheet_drawing;
 pub use self::worksheet_drawing::*;
+
+          mod graphic_frame;
+pub use self::graphic_frame::*;
+
+          mod non_visual_graphic_frame_properties;
+pub use self::non_visual_graphic_frame_properties::*;
+
+          mod non_visual_graphic_frame_drawing_properties;
+pub use self::non_visual_graphic_frame_drawing_properties::*;
+
+          mod transform;
+pub use self::transform::*;
+

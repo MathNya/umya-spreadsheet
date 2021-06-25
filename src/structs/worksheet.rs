@@ -641,17 +641,9 @@ impl Worksheet {
             }
 
             // update chart
-            for chart in self.worksheet_drawing.get_chart_collection_mut() {
-                for data_serise in chart.get_plot_area_mut().get_plot_series_mut() {
-                    for (_, data_serise_values) in data_serise.get_plot_label_mut() {
-                        data_serise_values.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
-                    }
-                    for (_, data_serise_values) in data_serise.get_plot_values_mut() {
-                        data_serise_values.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
-                    }
-                    for (_, data_serise_values) in data_serise.get_plot_category_mut() {
-                        data_serise_values.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
-                    }
+            for graphic_frame in self.worksheet_drawing.get_graphic_frame_collection_mut() {
+                for formula in  graphic_frame.get_graphic_mut().get_graphic_data_mut().get_chart_space_mut().get_chart_mut().get_formula_mut() {
+                    formula.get_address_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
                 }
             }
         }
@@ -750,17 +742,9 @@ impl Worksheet {
             }
 
             // update chart
-            for chart in self.worksheet_drawing.get_chart_collection_mut() {
-                for data_serise in chart.get_plot_area_mut().get_plot_series_mut() {
-                    for (_, data_serise_values) in data_serise.get_plot_label_mut() {
-                        data_serise_values.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
-                    }
-                    for (_, data_serise_values) in data_serise.get_plot_values_mut() {
-                        data_serise_values.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
-                    }
-                    for (_, data_serise_values) in data_serise.get_plot_category_mut() {
-                        data_serise_values.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
-                    }
+            for graphic_frame in self.worksheet_drawing.get_graphic_frame_collection_mut() {
+                for formula in graphic_frame.get_graphic_mut().get_graphic_data_mut().get_chart_space_mut().get_chart_mut().get_formula_mut() {
+                    formula.get_address_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
                 }
             }
         }

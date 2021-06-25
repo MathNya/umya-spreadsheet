@@ -11,6 +11,7 @@ use std::io::Cursor;
 #[derive(Default, Debug)]
 pub struct Outline {
     width: u32,
+    compound_line_type: Option<String>,
     solid_fill: Option<SolidFill>,
     tail_end: Option<TailEnd>,
 }
@@ -21,6 +22,14 @@ impl Outline {
 
     pub fn set_width(&mut self, value:u32) {
         self.width = value;
+    }
+
+    pub fn get_compound_line_type(&self) -> &Option<String> {
+        &self.compound_line_type
+    }
+
+    pub fn set_compound_line_type<S: Into<String>>(&mut self, value:S) {
+        self.compound_line_type = Some(value.into());
     }
 
     pub fn get_solid_fill(&self) -> &Option<SolidFill> {
@@ -59,6 +68,11 @@ impl Outline {
             None => {}
         }
     
+        match get_attribute(e, b"cmpd") {
+            Some(v) => {&mut self.set_compound_line_type(v);},
+            None => {}
+        }
+
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => {
@@ -102,7 +116,13 @@ impl Outline {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let width_str = &self.width.to_string();
         if &self.width > &0 {
-            attributes.push(("w", width_str.as_str()))
+            attributes.push(("w", width_str.as_str()));
+        }
+        match &self.compound_line_type {
+            Some(v) => {
+                attributes.push(("cmpd", v));
+            }
+            None => {},
         }
         write_start_tag(writer, "a:ln", attributes, false);
 

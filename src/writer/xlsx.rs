@@ -135,8 +135,9 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
             comment_id += 1;
         }
 
-        for ct in worksheet.get_worksheet_drawing().get_chart_collection(){
-            let _ = chart::write(ct, &chart_id, &dir);
+        for graphic_frame in worksheet.get_worksheet_drawing().get_graphic_frame_collection(){
+            let chart_space = graphic_frame.get_graphic().get_graphic_data().get_chart_space();
+            let _ = chart::write(chart_space, &chart_id, &dir);
             chart_id += 1;
         }
 

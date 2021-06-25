@@ -1,0 +1,113 @@
+// c:printSettings
+use super::HeaderFooter;
+use super::PageMargins;
+use super::PageSetup;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
+
+#[derive(Default, Debug)]
+pub struct PrintSettings {
+    header_footer: HeaderFooter,
+    page_margins: PageMargins,
+    page_setup: PageSetup,
+}
+impl PrintSettings {
+    pub fn get_header_footer(&self)-> &HeaderFooter {
+        &self.header_footer
+    }
+
+    pub fn get_header_footer_mut(&mut self)-> &HeaderFooter {
+        &mut self.header_footer
+    }
+
+    pub fn set_header_footer(&mut self, value:HeaderFooter)-> &mut PrintSettings {
+        self.header_footer = value;
+        self
+    }
+
+    pub fn get_page_margins(&self)-> &PageMargins {
+        &self.page_margins
+    }
+
+    pub fn get_page_margins_mut(&mut self)-> &PageMargins {
+        &mut self.page_margins
+    }
+
+    pub fn set_page_margins(&mut self, value:PageMargins)-> &mut PrintSettings {
+        self.page_margins = value;
+        self
+    }
+
+    pub fn get_page_setup(&self)-> &PageSetup {
+        &self.page_setup
+    }
+
+    pub fn get_page_setup_mut(&mut self)-> &PageSetup {
+        &mut self.page_setup
+    }
+
+    pub fn set_page_setup(&mut self, value:PageSetup)-> &mut PrintSettings {
+        self.page_setup = value;
+        self
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"c:headerFooter" => {
+                            self.header_footer.set_attributes(reader, e);
+                        },
+                        b"c:pageSetup" => {
+                            self.page_setup.set_attributes(reader, e);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"c:pageMargins" => {
+                            self.page_margins.set_attributes(reader, e);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"c:printSettings" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "c:printSettings"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // c:printSettings
+        write_start_tag(writer, "c:printSettings", vec![], false);
+
+        // c:headerFooter
+        &self.header_footer.write_to(writer);
+
+        // c:pageMargins
+        &self.page_margins.write_to(writer);
+
+        // c:pageSetup
+        &self.page_setup.write_to(writer);
+
+        write_end_tag(writer, "c:printSettings");
+    }
+}

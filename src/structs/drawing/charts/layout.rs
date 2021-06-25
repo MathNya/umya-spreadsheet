@@ -1,144 +1,81 @@
+// c:layout 
+use super::ManualLayout;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
+
 #[derive(Default, Debug)]
 pub struct Layout {
-    layout_target: String,
-    x_mode: String,
-    y_mode: String,
-    x_pos: f64,
-    y_pos: f64,
-    width: i32,
-    height: i32,
-    show_legend_key: bool,
-    show_val: bool,
-    show_cat_name: bool,
-    show_ser_name: bool,
-    show_percent: bool,
-    show_bubble_size: bool,
-    show_leader_lines: bool,
+    manual_layout: Option<ManualLayout>,
 }
 impl Layout {
-    pub fn get_layout_target(&self)-> &str {
-        &self.layout_target
+    pub fn get_manual_layout(&self)-> &Option<ManualLayout> {
+        &self.manual_layout
     }
 
-    pub fn set_layout_target<S: Into<String>>(&mut self, value:S)-> &mut Layout {
-        self.layout_target = value.into();
+    pub fn get_manual_layout_mut(&mut self)-> &mut Option<ManualLayout> {
+        &mut self.manual_layout
+    }
+
+    pub fn set_manual_layout(&mut self, value:ManualLayout)-> &mut Layout {
+        self.manual_layout = Some(value);
         self
     }
 
-    pub fn get_x_mode(&self)-> &str {
-        &self.x_mode
+    pub fn is_empty(&self) -> bool {
+        self.manual_layout.is_none()
     }
 
-    pub fn set_x_mode<S: Into<String>>(&mut self, value:S)-> &mut Layout {
-        self.x_mode = value.into();
-        self
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"c:manualLayout" => {
+                            let mut obj = ManualLayout::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_manual_layout(obj);
+                        }
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"c:layout" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "c:layout"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
     }
 
-    pub fn get_y_mode(&self)-> &str {
-        &self.y_mode
-    }
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        if self.is_empty() {
+            // c:layout
+            write_start_tag(writer, "c:layout", vec![], true);
 
-    pub fn set_y_mode<S: Into<String>>(&mut self, value:S)-> &mut Layout {
-        self.y_mode = value.into();
-        self
-    }
+        } else {
+            // c:layout
+            write_start_tag(writer, "c:layout", vec![], false);
 
-    pub fn get_x_pos(&self)-> &f64 {
-        &self.x_pos
-    }
+            // c:manualLayout
+            match &self.manual_layout {
+                Some(v) => {v.write_to(writer);},
+                None => {}
+            }
 
-    pub fn set_x_pos(&mut self, value:f64)-> &mut Layout {
-        self.x_pos = value;
-        self
-    }
-
-    pub fn get_y_pos(&self)-> &f64 {
-        &self.y_pos
-    }
-
-    pub fn set_y_pos(&mut self, value:f64)-> &mut Layout {
-        self.y_pos = value;
-        self
-    }
-
-    pub fn get_width(&self)-> &i32 {
-        &self.width
-    }
-
-    pub fn set_width(&mut self, value:i32)-> &mut Layout {
-        self.width = value;
-        self
-    }
-
-    pub fn get_height(&self)-> &i32 {
-        &self.height
-    }
-
-    pub fn set_height(&mut self, value:i32)-> &mut Layout {
-        self.height = value;
-        self
-    }
-
-    pub fn get_show_legend_key(&self)-> &bool {
-        &self.show_legend_key
-    }
-
-    pub fn set_show_legend_key(&mut self, value:bool)-> &mut Layout {
-        self.show_legend_key = value;
-        self
-    }
-    
-    pub fn get_show_val(&self)-> &bool {
-        &self.show_val
-    }
-
-    pub fn set_show_val(&mut self, value:bool)-> &mut Layout {
-        self.show_val = value;
-        self
-    }
-
-    pub fn get_show_cat_name(&self)-> &bool {
-        &self.show_cat_name
-    }
-
-    pub fn set_show_cat_name(&mut self, value:bool)-> &mut Layout {
-        self.show_cat_name = value;
-        self
-    }
-
-    pub fn get_show_ser_name(&self)-> &bool {
-        &self.show_ser_name
-    }
-
-    pub fn set_show_ser_name(&mut self, value:bool)-> &mut Layout {
-        self.show_ser_name = value;
-        self
-    }
-
-    pub fn get_show_percent(&self)-> &bool {
-        &self.show_percent
-    }
-
-    pub fn set_show_percent(&mut self, value:bool)-> &mut Layout {
-        self.show_percent = value;
-        self
-    }
-
-    pub fn get_show_bubble_size(&self)-> &bool {
-        &self.show_bubble_size
-    }
-
-    pub fn set_show_bubble_size(&mut self, value:bool)-> &mut Layout {
-        self.show_bubble_size = value;
-        self
-    }
-
-    pub fn get_show_leader_lines(&self)-> &bool {
-        &self.show_leader_lines
-    }
-
-    pub fn set_show_leader_lines(&mut self, value:bool)-> &mut Layout {
-        self.show_leader_lines = value;
-        self
+            write_end_tag(writer, "c:layout");
+        }
     }
 }

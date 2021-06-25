@@ -9,6 +9,8 @@ fn read_and_wite() {
     let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
     let a1_value = book.get_sheet(0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
+    let b5_value = book.get_sheet(0).unwrap().get_value("B5");
+    assert_eq!(" ", b5_value);
 
     dbg!(book.get_sheet(0).unwrap().get_formatted_value_by_column_and_row(2, 20));
     dbg!(book.get_sheet(0).unwrap().get_formatted_value("B20"));

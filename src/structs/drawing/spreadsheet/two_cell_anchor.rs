@@ -1,7 +1,7 @@
-// xdr:blipFill
+// xdr:twoCellAnchor
 use super::FromMarker;
 use super::ToMarker;
-use super::super::charts::Chart;
+use super::GraphicFrame;
 use super::Shape;
 use super::ConnectionShape;
 use super::Picture;
@@ -18,7 +18,7 @@ pub struct TwoCellAnchor {
     edit_as: Option<String>,
     from_marker: FromMarker,
     to_marker: ToMarker,
-    chart: Option<Chart>,
+    graphic_frame: Option<GraphicFrame>,
     shape: Option<Shape>,
     connection_shape: Option<ConnectionShape>,
     picture: Option<Picture>,
@@ -59,16 +59,16 @@ impl TwoCellAnchor {
         self
     }
 
-    pub fn get_chart(&self)-> &Option<Chart> {
-        &self.chart
+    pub fn get_graphic_frame(&self)-> &Option<GraphicFrame> {
+        &self.graphic_frame
     }
 
-    pub fn get_chart_mut(&mut self)-> &mut Option<Chart> {
-        &mut self.chart
+    pub fn get_graphic_frame_mut(&mut self)-> &mut Option<GraphicFrame> {
+        &mut self.graphic_frame
     }
 
-    pub fn set_chart(&mut self, value:Chart)-> &mut TwoCellAnchor {
-        self.chart = Some(value);
+    pub fn set_graphic_frame(&mut self, value:GraphicFrame)-> &mut TwoCellAnchor {
+        self.graphic_frame = Some(value);
         self
     }
 
@@ -131,6 +131,16 @@ impl TwoCellAnchor {
         &mut self.to_marker.adjustment_remove_colmun(num_cols);
     }
 
+    pub(crate) fn is_support(&self) -> bool {
+        match &self.graphic_frame {
+            Some(v) => {
+                return v.get_graphic().get_graphic_data().get_chart_space().get_chart().get_plot_area().is_support();
+            },
+            None => {}
+        }
+        true
+    }
+
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
@@ -155,24 +165,24 @@ impl TwoCellAnchor {
                             self.to_marker.set_attributes(reader, e);
                         },
                         b"xdr:graphicFrame" => {
-                            let mut chart = Chart::default();
-                            chart.set_attributes(reader, e, dir, target);
-                            self.set_chart(chart);
+                            let mut obj = GraphicFrame::default();
+                            obj.set_attributes(reader, e, dir, target);
+                            self.set_graphic_frame(obj);
                         },
                         b"xdr:sp" => {
-                            let mut shape = Shape::default();
-                            shape.set_attributes(reader, e);
-                            self.set_shape(shape);
+                            let mut obj = Shape::default();
+                            obj.set_attributes(reader, e);
+                            self.set_shape(obj);
                         },
                         b"xdr:cxnSp" => {
-                            let mut connection_shape = ConnectionShape::default();
-                            connection_shape.set_attributes(reader, e);
-                            self.set_connection_shape(connection_shape);
+                            let mut obj = ConnectionShape::default();
+                            obj.set_attributes(reader, e);
+                            self.set_connection_shape(obj);
                         }
                         b"xdr:pic" => {
-                            let mut picture = Picture::default();
-                            picture.set_attributes(reader, e, dir, target);
-                            self.set_picture(picture);
+                            let mut obj = Picture::default();
+                            obj.set_attributes(reader, e, dir, target);
+                            self.set_picture(obj);
                         }
                         _ => (),
                     }
@@ -209,7 +219,7 @@ impl TwoCellAnchor {
         &self.to_marker.write_to(writer);
 
         // xdr:graphicFrame
-        match &self.chart {
+        match &self.graphic_frame {
             Some(v) => {
                 v.write_to(writer, r_id);
                 *r_id += 1i32;

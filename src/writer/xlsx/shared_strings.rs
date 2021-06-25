@@ -111,7 +111,7 @@ pub fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> result::Result<HashMap
 
                     // t
                     let mut attributes: Vec<(&str, &str)> = Vec::new();
-                    let re = Regex::new(r#"^\r\n.*"#).unwrap();
+                    let re = Regex::new(r#"^(\s|　)"#).unwrap();
                     if re.find(element.get_text()).is_some() {
                         attributes.push(("xml:space" , "preserve"));
                     }
@@ -125,7 +125,7 @@ pub fn write(spreadsheet: &Spreadsheet, dir: &TempDir) -> result::Result<HashMap
              None => {
                 // t
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
-                let re = Regex::new(r#"^\r\n.*"#).unwrap();
+                let re = Regex::new(r#"^(\s|　)"#).unwrap();
                 if re.find(&value).is_some() {
                     attributes.push(("xml:space" , "preserve"));
                 }

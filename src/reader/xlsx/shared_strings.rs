@@ -19,7 +19,7 @@ pub(crate) fn read(dir: &TempDir, theme:&Theme) -> result::Result<Vec<(String, O
         Ok(v) => {v},
         Err(_) => {return Ok(res);}
     };
-    reader.trim_text(true);
+    reader.trim_text(false);
     let mut buf = Vec::new();
 
     let mut value: String = String::from("");
@@ -48,13 +48,13 @@ pub(crate) fn read(dir: &TempDir, theme:&Theme) -> result::Result<Vec<(String, O
             },
             Ok(Event::Text(e)) => {
                 value = e.unescape_and_decode(&reader).unwrap();
-                if with_first_space {
-                    value = format!("\r\n{}", value);
-                }
             },
             Ok(Event::End(ref e)) => {
                 match e.name() {
-                    b"t" => text = value.clone(),
+                    b"t" => {
+                        text = value.clone();
+                        value = String::from("");
+                    },
                     b"si" => {
                         if text_element_vec.len() > 0 {
                             let mut rich_text = RichText::default();

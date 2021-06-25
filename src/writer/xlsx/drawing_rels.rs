@@ -33,7 +33,7 @@ pub(crate) fn write(
     let mut chart_id = chart_start_id.clone();
     let two_cell_anchor_collection = worksheet.get_worksheet_drawing().get_two_cell_anchor_collection();
     for two_cell_anchor in two_cell_anchor_collection {
-        match two_cell_anchor.get_chart() {
+        match two_cell_anchor.get_graphic_frame() {
             Some(_) => {
                 is_write = write_relationship(
                     &mut writer,

@@ -3,7 +3,7 @@ use super::two_cell_anchor::TwoCellAnchor;
 use super::picture::Picture;
 use super::shape::Shape;
 use super::connection_shape::ConnectionShape;
-use super::super::charts::Chart;
+use super::GraphicFrame;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -33,11 +33,11 @@ impl WorksheetDrawing {
         &self.two_cell_anchor_collection.len() > &0usize
     }
 
-    pub fn get_chart_collection(&self)-> Vec<&Chart>
+    pub fn get_graphic_frame_collection(&self)-> Vec<&GraphicFrame>
     {
-        let mut result:Vec<&Chart> = Vec::new(); 
+        let mut result:Vec<&GraphicFrame> = Vec::new(); 
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            match two_cell_anchor.get_chart() {
+            match two_cell_anchor.get_graphic_frame() {
                 Some(v) => {
                     result.push(v);
                 },
@@ -47,11 +47,11 @@ impl WorksheetDrawing {
         result
     }
 
-    pub fn get_chart_collection_mut(&mut self)-> Vec<&mut Chart>
+    pub fn get_graphic_frame_collection_mut(&mut self)-> Vec<&mut GraphicFrame>
     {
-        let mut result:Vec<&mut Chart> = Vec::new(); 
+        let mut result:Vec<&mut GraphicFrame> = Vec::new(); 
         for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            match two_cell_anchor.get_chart_mut() {
+            match two_cell_anchor.get_graphic_frame_mut() {
                 Some(v) => {
                     result.push(v);
                 },
@@ -164,7 +164,9 @@ impl WorksheetDrawing {
                             }
                             let mut two_cell_anchor = TwoCellAnchor::default();
                             two_cell_anchor.set_attributes(reader, e, dir, target);
-                            &mut self.add_two_cell_anchor_collection(two_cell_anchor);
+                            if two_cell_anchor.is_support() {
+                                &mut self.add_two_cell_anchor_collection(two_cell_anchor);
+                            }
                         },
                         b"mc:AlternateContent" => {
                             is_alternate_content = true;

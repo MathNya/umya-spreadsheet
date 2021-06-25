@@ -1,22 +1,30 @@
+// c:title
+use super::ChartText;
 use super::Layout;
-use super::super::super::RichText;
+use super::Overlay;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct Title {
-    caption: RichText,
+    chart_text: Option<ChartText>,
     layout: Option<Layout>,
+    overlay: Overlay,
 }
 impl Title {
-    pub fn get_caption(&self) -> &RichText {
-        &self.caption
+    pub fn get_chart_text(&self) -> &Option<ChartText> {
+        &self.chart_text
     }
 
-    pub fn get_caption_mut(&mut self) -> &mut RichText {
-        &mut self.caption
+    pub fn get_chart_text_mut(&mut self) -> &mut Option<ChartText> {
+        &mut self.chart_text
     }
 
-    pub fn set_caption(&mut self, value:RichText)-> &mut Title {
-        self.caption = value.into();
+    pub fn set_chart_text(&mut self, value:ChartText)-> &mut Title {
+        self.chart_text = Some(value);
         self
     }
 
@@ -24,8 +32,92 @@ impl Title {
         &self.layout
     }
 
+    pub fn get_layout_mut(&mut self)-> &mut Option<Layout> {
+        &mut self.layout
+    }
+
     pub fn set_layout(&mut self, value:Layout)-> &mut Title {
         self.layout = Some(value);
         self
+    }
+
+    pub fn get_overlay(&self)-> &Overlay {
+        &self.overlay
+    }
+
+    pub fn get_overlay_mut(&mut self)-> &mut Overlay {
+        &mut self.overlay
+    }
+
+    pub fn set_overlay(&mut self, value:Overlay)-> &mut Title {
+        self.overlay = value;
+        self
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"c:tx" => {
+                            let mut obj = ChartText::default();
+                            obj.set_attributes(reader, e);
+                            self.set_chart_text(obj);
+                        }
+                        b"c:layout" => {
+                            let mut obj = Layout::default();
+                            obj.set_attributes(reader, e);
+                            self.set_layout(obj);
+                        }
+                        _ => (),
+                    }
+                },
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"c:overlay" => {
+                            &mut self.overlay.set_attributes(reader, e);
+                        }
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"c:title" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "c:title"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // c:title
+        write_start_tag(writer, "c:title", vec![], false);
+
+        // c:tx
+        match &self.chart_text {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:layout
+        match &self.layout {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:overlay
+        &self.overlay.write_to(writer);
+
+        write_end_tag(writer, "c:title");
     }
 }

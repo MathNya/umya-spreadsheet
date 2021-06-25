@@ -105,7 +105,8 @@ impl NumberFormat {
    
     pub const FORMAT_DATE_YYYYMMDD2: &'static str = "yyyy-mm-dd";
     pub const FORMAT_DATE_YYYYMMDD: &'static str = "yyyy-mm-dd";
-    pub const FORMAT_DATE_DDMMYYYY: &'static str = "dd/mm/yyyy";
+    pub const FORMAT_DATE_DDMMYYYY: &'static str = "dd-mm-yyyy";
+    pub const FORMAT_DATE_DDMMYYYYSLASH: &'static str = "dd/mm/yyyy";
     pub const FORMAT_DATE_DMYSLASH: &'static str = "d/m/yy";
     pub const FORMAT_DATE_DMYMINUS: &'static str = "d-m-yy";
     pub const FORMAT_DATE_DMMINUS: &'static str = "d-m";
@@ -122,7 +123,6 @@ impl NumberFormat {
     pub const FORMAT_DATE_TIME4: &'static str = "h:mm:ss";
     pub const FORMAT_DATE_TIME5: &'static str = "mm:ss";
     pub const FORMAT_DATE_TIME6: &'static str = "h:mm:ss";
-    pub const FORMAT_DATE_TIME7: &'static str = "i:s.S";
     pub const FORMAT_DATE_TIME8: &'static str = "h:mm:ss;@";
     pub const FORMAT_DATE_YYYYMMDDSLASH: &'static str = "yyyy/mm/dd;@";
     

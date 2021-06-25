@@ -1,5 +1,5 @@
-use super::BodyProperties;
-use super::ListStyle;
+use super::super::BodyProperties;
+use super::super::ListStyle;
 use super::super::Paragraph;
 use writer::driver::*;
 use quick_xml::Reader;

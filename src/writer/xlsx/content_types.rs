@@ -167,7 +167,7 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, file_name: &str) -
             ], true);
             drawing_id += 1;
         }
-        for _ in worksheet.get_worksheet_drawing().get_chart_collection() {
+        for _ in worksheet.get_worksheet_drawing().get_graphic_frame_collection() {
             // Override chart
             write_start_tag(&mut writer, "Override", vec![
                 ("PartName", format!("/xl/charts/chart{}.xml", chart_id.to_string().as_str()).as_str()),

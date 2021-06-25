@@ -126,9 +126,8 @@ impl Transform2D {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:xfrm
-        // xdr:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         match &self.rot {
             Some(v) => attributes.push(("rot", v)),
@@ -142,7 +141,7 @@ impl Transform2D {
             Some(v) => attributes.push(("flipV", v)),
             None => {}
         }
-        write_start_tag(writer, tag_name, attributes, false);
+        write_start_tag(writer, "a:xfrm", attributes, false);
 
         // a:off
         write_start_tag(writer, "a:off", vec![
@@ -156,6 +155,6 @@ impl Transform2D {
             ("cy", &self.height.to_string()),
         ], true);
 
-        write_end_tag(writer, tag_name);
+        write_end_tag(writer, "a:xfrm");
     }
 }

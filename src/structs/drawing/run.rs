@@ -77,7 +77,7 @@ impl Run {
         write_start_tag(writer, "a:r", vec![], false);
 
         // a:rPr
-        &mut self.run_properties.write_to(writer, "a:rPr");
+        &mut self.run_properties.write_to(writer);
 
         // a:t
         write_start_tag(writer, "a:t", vec![], false);

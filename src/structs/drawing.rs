@@ -68,3 +68,36 @@ pub use self::run_properties::*;
 
 mod paragraph;
 pub use self::paragraph::*;
+
+mod body_properties;
+pub use self::body_properties::*;
+
+mod list_style;
+pub use self::list_style::*;
+
+mod offset;
+pub use self::offset::*;
+
+mod extents;
+pub use self::extents::*;
+
+mod graphic;
+pub use self::graphic::*;
+
+mod graphic_data;
+pub use self::graphic_data::*;
+
+mod paragraph_properties;
+pub use self::paragraph_properties::*;
+
+mod default_run_properties;
+pub use self::default_run_properties::*;
+
+mod end_paragraph_run_properties;
+pub use self::end_paragraph_run_properties::*;
+
+mod latin_font;
+pub use self::latin_font::*;
+
+mod east_asian_font;
+pub use self::east_asian_font::*;

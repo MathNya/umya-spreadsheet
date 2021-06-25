@@ -132,7 +132,7 @@ impl ShapeProperties {
         write_start_tag(writer, "xdr:spPr", vec![], false);
         
         // a:xfrm
-        &self.transform2d.write_to(writer, "a:xfrm");
+        &self.transform2d.write_to(writer);
     
         // a:prstGeom
         &self.preset_geometry.write_to(writer);

@@ -9,14 +9,40 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct OuterShadow {
+    blur_radius: Option<String>,
     alignment: Option<String>,
-    blur_radius: Option<i64>,
-    direction: Option<i32>,
-    distance: Option<i64>,
-    rotate_with_shape: Option<bool>,
+    horizontal_ratio: Option<String>,
+    vertical_ratio: Option<String>,
+    direction: Option<String>,
+    distance: Option<String>,
+    rotate_with_shape: Option<String>,
     preset_color: Option<PresetColor>,
 }
 impl OuterShadow {
+    pub fn get_blur_radius(&self) -> &Option<String> {
+        &self.blur_radius
+    }
+
+    pub fn set_blur_radius<S: Into<String>>(&mut self, value:S) {
+        self.blur_radius = Some(value.into());
+    }
+
+    pub fn get_horizontal_ratio(&self) -> &Option<String> {
+        &self.horizontal_ratio
+    }
+
+    pub fn set_horizontal_ratio<S: Into<String>>(&mut self, value:S) {
+        self.horizontal_ratio = Some(value.into());
+    }
+
+    pub fn get_vertical_ratio(&self) -> &Option<String> {
+        &self.vertical_ratio
+    }
+
+    pub fn set_vertical_ratio<S: Into<String>>(&mut self, value:S) {
+        self.vertical_ratio = Some(value.into());
+    }
+    
     pub fn get_alignment(&self) -> &Option<String> {
         &self.alignment
     }
@@ -25,36 +51,28 @@ impl OuterShadow {
         self.alignment = Some(value.into());
     }
 
-    pub fn get_blur_radius(&self) -> &Option<i64> {
-        &self.blur_radius
-    }
-
-    pub fn set_blur_radius(&mut self, value:i64) {
-        self.blur_radius = Some(value);
-    }
-
-    pub fn get_direction(&self) -> &Option<i32> {
+    pub fn get_direction(&self) -> &Option<String> {
         &self.direction
     }
 
-    pub fn set_direction(&mut self, value:i32) {
-        self.direction = Some(value);
+    pub fn set_direction<S: Into<String>>(&mut self, value:S) {
+        self.direction = Some(value.into());
     }
 
-    pub fn get_distance(&self) -> &Option<i64> {
+    pub fn get_distance(&self) -> &Option<String> {
         &self.distance
     }
 
-    pub fn set_distance(&mut self, value:i64) {
-        self.distance = Some(value);
+    pub fn set_distance<S: Into<String>>(&mut self, value:S) {
+        self.distance = Some(value.into());
     }
 
-    pub fn get_rotate_with_shape(&self) -> &Option<bool> {
+    pub fn get_rotate_with_shape(&self) -> &Option<String> {
         &self.rotate_with_shape
     }
 
-    pub fn set_rotate_with_shape(&mut self, value:bool) {
-        self.rotate_with_shape = Some(value);
+    pub fn set_rotate_with_shape<S: Into<String>>(&mut self, value:S) {
+        self.rotate_with_shape = Some(value.into());
     }
 
     pub fn get_preset_color(&self) -> &Option<PresetColor> {
@@ -70,30 +88,32 @@ impl OuterShadow {
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
+        match get_attribute(e, b"blurRad") {
+            Some(v) => {&mut self.set_blur_radius(v);},
+            None => {}
+        }
+        match get_attribute(e, b"sx") {
+            Some(v) => {&mut self.set_horizontal_ratio(v);},
+            None => {}
+        }
+        match get_attribute(e, b"sy") {
+            Some(v) => {&mut self.set_vertical_ratio(v);},
+            None => {}
+        }
         match get_attribute(e, b"algn") {
             Some(v) => {&mut self.set_alignment(v);},
             None => {}
         }
-        match get_attribute(e, b"blurRad") {
-            Some(v) => {&mut self.set_blur_radius(v.parse::<i64>().unwrap());},
-            None => {}
-        }
         match get_attribute(e, b"dir") {
-            Some(v) => {&mut self.set_direction(v.parse::<i32>().unwrap());},
+            Some(v) => {&mut self.set_direction(v);},
             None => {}
         }
         match get_attribute(e, b"dist") {
-            Some(v) => {&mut self.set_distance(v.parse::<i64>().unwrap());},
+            Some(v) => {&mut self.set_distance(v);},
             None => {}
         }
         match get_attribute(e, b"rotWithShape") {
-            Some(v) => {
-                match &*v {
-                    "1" => {&mut self.set_rotate_with_shape(true);},
-                    "0" => {&mut self.set_rotate_with_shape(false);},
-                     _ => {}
-                };
-            },
+            Some(v) => {&mut self.set_rotate_with_shape(v);},
             None => {}
         }
 
@@ -125,42 +145,47 @@ impl OuterShadow {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // a:ln
+        // a:outerShdw
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let mut blur_rad_str = String::default();
         match &self.blur_radius {
             Some(v) => {
-                blur_rad_str = v.to_string();
-                attributes.push(("blurRad", &blur_rad_str));
+                attributes.push(("blurRad", v));
             },
             None => {}
         }
-        let mut distance_str = String::from("");
+        match &self.horizontal_ratio {
+            Some(v) => {
+                attributes.push(("sx", v));
+            },
+            None => {}
+        }
+        match &self.vertical_ratio {
+            Some(v) => {
+                attributes.push(("sy", v));
+            },
+            None => {}
+        }
         match &self.distance {
             Some(v) => {
-                distance_str = v.to_string();
-                attributes.push(("dist", &distance_str));
+                attributes.push(("dist", v));
             },
             None => {}
         }
-        let mut direction_str = String::from("");
         match &self.direction {
             Some(v) => {
-                direction_str = v.to_string();
-                attributes.push(("dir", &direction_str));
+                attributes.push(("dir", v));
             },
             None => {}
         }
         match &self.alignment {
-            Some(v) => {attributes.push(("algn", &v));},
+            Some(v) => {
+                attributes.push(("algn", v));
+            },
             None => {}
         }
         match &self.rotate_with_shape {
             Some(v) => {
-                match v {
-                    true => attributes.push(("rotWithShape", "1")),
-                    false => attributes.push(("rotWithShape", "0")),
-                }
+                attributes.push(("rotWithShape", v));
             },
             None => {}
         }

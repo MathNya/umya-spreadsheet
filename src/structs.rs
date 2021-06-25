@@ -124,3 +124,13 @@ pub use self::address::*;
 
           mod anchor;
 pub use self::anchor::*;
+
+          mod alternate_content;
+pub use self::alternate_content::*;
+
+          mod alternate_content_choice;
+pub use self::alternate_content_choice::*;
+
+          mod alternate_content_fallback;
+pub use self::alternate_content_fallback::*;
+
