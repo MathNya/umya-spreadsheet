@@ -3,6 +3,9 @@ use super::Layout;
 use super::LineChart;
 use super::PieChart;
 use super::DoughnutChart;
+use super::ScatterChart;
+use super::BarChart;
+use super::Bar3DChart;
 use super::CategoryAxis;
 use super::ValueAxis;
 use super::Formula;
@@ -18,8 +21,11 @@ pub struct PlotArea {
     line_chart: Option<LineChart>,
     pie_chart: Option<PieChart>,
     doughnut_chart: Option<DoughnutChart>,
-    category_axis: Option<CategoryAxis>,
-    value_axis: Option<ValueAxis>,
+    scatter_chart: Option<ScatterChart>,
+    bar_chart: Option<BarChart>,
+    bar_3d_chart: Option<Bar3DChart>,
+    category_axis: Vec<CategoryAxis>,
+    value_axis: Vec<ValueAxis>,
 }
 impl PlotArea {
     pub fn get_layout(&self)-> &Layout {
@@ -74,29 +80,68 @@ impl PlotArea {
         self
     }
 
-    pub fn get_category_axis(&self)-> &Option<CategoryAxis> {
+    pub fn get_scatter_chart(&self)-> &Option<ScatterChart> {
+        &self.scatter_chart
+    }
+
+    pub fn get_scatter_chart_mut(&mut self)-> &mut Option<ScatterChart> {
+        &mut self.scatter_chart
+    }
+
+    pub fn set_scatter_chart(&mut self, value:ScatterChart)-> &mut PlotArea {
+        self.scatter_chart = Some(value);
+        self
+    }
+
+    pub fn get_bar_chart(&self)-> &Option<BarChart> {
+        &self.bar_chart
+    }
+
+    pub fn get_bar_chart_mut(&mut self)-> &mut Option<BarChart> {
+        &mut self.bar_chart
+    }
+
+    pub fn set_bar_chart(&mut self, value:BarChart)-> &mut PlotArea {
+        self.bar_chart = Some(value);
+        self
+    }
+
+    pub fn get_bar_3d_chart(&self)-> &Option<Bar3DChart> {
+        &self.bar_3d_chart
+    }
+
+    pub fn get_bar_3d_chart_mut(&mut self)-> &mut Option<Bar3DChart> {
+        &mut self.bar_3d_chart
+    }
+
+    pub fn set_bar_3d_chart(&mut self, value:Bar3DChart)-> &mut PlotArea {
+        self.bar_3d_chart = Some(value);
+        self
+    }
+
+    pub fn get_category_axis(&self)-> &Vec<CategoryAxis> {
         &self.category_axis
     }
 
-    pub fn get_category_axis_mut(&mut self)-> &mut Option<CategoryAxis> {
+    pub fn get_category_axis_mut(&mut self)-> &mut Vec<CategoryAxis> {
         &mut self.category_axis
     }
 
     pub fn set_category_axis(&mut self, value:CategoryAxis)-> &mut PlotArea {
-        self.category_axis = Some(value);
+        self.category_axis.push(value);
         self
     }
 
-    pub fn get_value_axis(&self)-> &Option<ValueAxis> {
+    pub fn get_value_axis(&self)-> &Vec<ValueAxis> {
         &self.value_axis
     }
 
-    pub fn get_value_axis_mut(&mut self)-> &mut Option<ValueAxis> {
+    pub fn get_value_axis_mut(&mut self)-> &mut Vec<ValueAxis> {
         &mut self.value_axis
     }
 
     pub fn set_value_axis(&mut self, value:ValueAxis)-> &mut PlotArea {
-        self.value_axis = Some(value);
+        self.value_axis.push(value);
         self
     }
 
@@ -105,7 +150,9 @@ impl PlotArea {
         match &mut self.line_chart {
             Some(v) => {
                 for ser in v.get_area_chart_series_mut() {
-                    result.push(ser.get_values_mut().get_number_reference_mut().get_formula_mut());
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
                 }
             }
             None => {}
@@ -113,7 +160,9 @@ impl PlotArea {
         match &mut self.pie_chart {
             Some(v) => {
                 for ser in v.get_area_chart_series_mut() {
-                    result.push(ser.get_values_mut().get_number_reference_mut().get_formula_mut());
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
                 }
             }
             None => {}
@@ -121,7 +170,39 @@ impl PlotArea {
         match &mut self.doughnut_chart {
             Some(v) => {
                 for ser in v.get_area_chart_series_mut() {
-                    result.push(ser.get_values_mut().get_number_reference_mut().get_formula_mut());
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
+        match &mut self.scatter_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
+        match &mut self.bar_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
+        match &mut self.bar_3d_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
                 }
             }
             None => {}
@@ -142,6 +223,18 @@ impl PlotArea {
             Some(_) => {return true;},
             None => {}
         }
+        match &self.scatter_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.bar_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.bar_3d_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
         false
     }
 
@@ -156,7 +249,7 @@ impl PlotArea {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"c:layout" => {
-                            self.layout.set_attributes(reader, e);
+                            self.layout.set_attributes(reader, e, false);
                         },
                         b"c:lineChart" => {
                             let mut obj = LineChart::default();
@@ -172,6 +265,21 @@ impl PlotArea {
                             let mut obj = DoughnutChart::default();
                             obj.set_attributes(reader, e);
                             self.set_doughnut_chart(obj);
+                        },
+                        b"c:scatterChart" => {
+                            let mut obj = ScatterChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_scatter_chart(obj);
+                        },
+                        b"c:barChart" => {
+                            let mut obj = BarChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_bar_chart(obj);
+                        },
+                        b"c:bar3DChart" => {
+                            let mut obj = Bar3DChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_bar_3d_chart(obj);
                         },
                         b"c:catAx" => {
                             let mut obj = CategoryAxis::default();
@@ -225,16 +333,32 @@ impl PlotArea {
             None => {}
         }
 
-        // c:catAx
-        match &self.category_axis {
+        // c:scatterChart
+        match &self.scatter_chart {
             Some(v) => {v.write_to(writer);},
             None => {}
         }
 
-        // c:valAx
-        match &self.value_axis {
+        // c:barChart
+        match &self.bar_chart {
             Some(v) => {v.write_to(writer);},
             None => {}
+        }
+
+        // c:bar3DChart
+        match &self.bar_3d_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:catAx
+        for v in &self.category_axis {
+            v.write_to(writer);
+        }
+
+        // c:valAx
+        for v in &self.value_axis {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:plotArea");

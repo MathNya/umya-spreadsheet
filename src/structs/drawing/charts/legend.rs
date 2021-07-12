@@ -80,7 +80,7 @@ impl Legend  {
                     match e.name() {
                         b"c:layout" => {
                             let mut obj = Layout::default();
-                            obj.set_attributes(reader, e);
+                            obj.set_attributes(reader, e, false);
                             self.set_layout(obj);
                         },
                         b"c:txPr" => {
@@ -95,6 +95,11 @@ impl Legend  {
                     match e.name() {
                         b"c:legendPos" => {
                             self.legend_position.set_attributes(reader, e);
+                        },
+                        b"c:layout" => {
+                            let mut obj = Layout::default();
+                            obj.set_attributes(reader, e, true);
+                            self.set_layout(obj);
                         },
                         b"c:overlay" => {
                             self.overlay.set_attributes(reader, e);

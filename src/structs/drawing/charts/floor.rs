@@ -1,27 +1,27 @@
-// mc:Fallback
-use super::drawing::charts::Style;
+// c:marker
+use super::Thickness;
 use writer::driver::*;
+use reader::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
 #[derive(Default, Debug)]
-pub struct AlternateContentFallback {
-    style: Style,
+pub struct Floor {
+    thickness: Option<Thickness>,
 }
-impl AlternateContentFallback {
-
-    pub fn get_style(&self)-> &Style {
-        &self.style
+impl Floor {
+    pub fn get_thickness(&self)-> &Option<Thickness> {
+        &self.thickness
     }
 
-    pub fn get_style_mut(&mut self)-> &mut Style {
-        &mut self.style
+    pub fn get_thickness_mut(&mut self)-> &mut Option<Thickness> {
+        &mut self.thickness
     }
 
-    pub fn set_style(&mut self, value:Style)-> &mut AlternateContentFallback {
-        self.style = value;
+    pub fn set_thickness(&mut self, value:Thickness)-> &mut Floor {
+        self.thickness = Some(value);
         self
     }
 
@@ -35,19 +35,21 @@ impl AlternateContentFallback {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => {
                     match e.name() {
-                        b"c:style" => {
-                            self.style.set_attributes(reader, e);
+                        b"c:thickness" => {
+                            let mut obj = Thickness::default();
+                            obj.set_attributes(reader, e);
+                            self.set_thickness(obj);
                         },
                         _ => (),
                     }
                 },
                 Ok(Event::End(ref e)) => {
                     match e.name() {
-                        b"mc:Fallback" => return,
+                        b"c:floor" => return,
                         _ => (),
                     }
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "mc:Fallback"),
+                Ok(Event::Eof) => panic!("Error not find {} end element", "c:floor"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
@@ -56,12 +58,15 @@ impl AlternateContentFallback {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // mc:Fallback
-        write_start_tag(writer, "mc:Fallback", vec![], false);
+        // c:floor
+        write_start_tag(writer, "c:floor", vec![], false);
 
-        // c:style
-        self.style.write_to(writer);
+        // c:thickness
+        match &self.thickness {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
 
-        write_end_tag(writer, "mc:Fallback");
+        write_end_tag(writer, "c:floor");
     }
 }

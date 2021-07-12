@@ -1,5 +1,9 @@
 use super::Title;
 use super::AutoTitleDeleted;
+use super::View3D;
+use super::Floor;
+use super::SideWall;
+use super::BackWall;
 use super::PlotArea;
 use super::Legend;
 use super::PlotVisibleOnly;
@@ -16,6 +20,10 @@ use std::io::Cursor;
 pub struct Chart {
     title: Option<Title>,
     auto_title_deleted: AutoTitleDeleted,
+    view_3d: Option<View3D>,
+    floor: Option<Floor>,
+    side_wall: Option<SideWall>,
+    back_wall: Option<BackWall>,
     plot_area: PlotArea,
     legend: Legend,
     plot_visible_only: PlotVisibleOnly,
@@ -50,6 +58,58 @@ impl Chart {
 
     pub fn set_auto_title_deleted(&mut self, value:AutoTitleDeleted)-> &mut Chart {
         self.auto_title_deleted = value;
+        self
+    }
+
+    pub fn get_view_3d(&self)-> &Option<View3D> {
+        &self.view_3d
+    }
+
+    pub fn get_view_3d_mut(&mut self)-> &mut Option<View3D> {
+        &mut self.view_3d
+    }
+
+    pub fn set_view_3d(&mut self, value:View3D)-> &mut Chart {
+        self.view_3d = Some(value);
+        self
+    }
+
+    pub fn get_floor(&self)-> &Option<Floor> {
+        &self.floor
+    }
+
+    pub fn get_floor_mut(&mut self)-> &mut Option<Floor> {
+        &mut self.floor
+    }
+
+    pub fn set_floor(&mut self, value:Floor)-> &mut Chart {
+        self.floor = Some(value);
+        self
+    }
+
+    pub fn get_side_wall(&self)-> &Option<SideWall> {
+        &self.side_wall
+    }
+
+    pub fn get_side_wall_mut(&mut self)-> &mut Option<SideWall> {
+        &mut self.side_wall
+    }
+
+    pub fn set_side_wall(&mut self, value:SideWall)-> &mut Chart {
+        self.side_wall = Some(value);
+        self
+    }
+
+    pub fn get_back_wall(&self)-> &Option<BackWall> {
+        &self.back_wall
+    }
+
+    pub fn get_back_wall_mut(&mut self)-> &mut Option<BackWall> {
+        &mut self.back_wall
+    }
+
+    pub fn set_back_wall(&mut self, value:BackWall)-> &mut Chart {
+        self.back_wall = Some(value);
         self
     }
 
@@ -138,6 +198,26 @@ impl Chart {
                             obj.set_attributes(reader, e);
                             &mut self.set_title(obj);
                         },
+                        b"c:view3D" => {
+                            let mut obj = View3D::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_view_3d(obj);
+                        },
+                        b"c:floor" => {
+                            let mut obj = Floor::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_floor(obj);
+                        },
+                        b"c:sideWall" => {
+                            let mut obj = SideWall::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_side_wall(obj);
+                        },
+                        b"c:backWall" => {
+                            let mut obj = BackWall::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_back_wall(obj);
+                        },
                         b"c:plotArea" => {
                             &mut self.plot_area.set_attributes(reader, e);
                         },
@@ -192,6 +272,38 @@ impl Chart {
         
         // c:autoTitleDeleted
         &self.auto_title_deleted.write_to(writer);
+
+        // c:view3D
+        match &self.view_3d {
+            Some(v) => {
+                v.write_to(writer);
+            },
+            None => {}
+        }
+
+        // c:floor
+        match &self.floor {
+            Some(v) => {
+                v.write_to(writer);
+            },
+            None => {}
+        }
+
+        // c:sideWall
+        match &self.side_wall {
+            Some(v) => {
+                v.write_to(writer);
+            },
+            None => {}
+        }
+
+        // c:backWall
+        match &self.back_wall {
+            Some(v) => {
+                v.write_to(writer);
+            },
+            None => {}
+        }
 
         // c:plotArea
         &self.plot_area.write_to(writer);

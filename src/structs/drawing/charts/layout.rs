@@ -31,8 +31,13 @@ impl Layout {
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        _e:&BytesStart
+        _e:&BytesStart,
+        empty_flag:bool,
     ) {
+        if empty_flag {
+            return;
+        }
+
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {

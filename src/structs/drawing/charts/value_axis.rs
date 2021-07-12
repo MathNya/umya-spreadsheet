@@ -24,7 +24,7 @@ pub struct ValueAxis {
     scaling: Scaling,
     delete: Delete,
     axis_position: AxisPosition,
-    major_gridlines: MajorGridlines,
+    major_gridlines: Option<MajorGridlines>,
     title: Option<Title>,
     numbering_format: NumberingFormat,
     major_tick_mark: MajorTickMark,
@@ -87,16 +87,16 @@ impl ValueAxis {
         self
     }
 
-    pub fn get_major_gridlines(&self)-> &MajorGridlines {
+    pub fn get_major_gridlines(&self)-> &Option<MajorGridlines> {
         &self.major_gridlines
     }
 
-    pub fn get_major_gridlines_mut(&mut self)-> &MajorGridlines {
+    pub fn get_major_gridlines_mut(&mut self)-> &Option<MajorGridlines> {
         &mut self.major_gridlines
     }
 
     pub fn set_major_gridlines(&mut self, value:MajorGridlines)-> &mut ValueAxis {
-        self.major_gridlines = value;
+        self.major_gridlines = Some(value);
         self
     }
 
@@ -236,6 +236,11 @@ impl ValueAxis {
                         b"c:axPos" => {
                             self.axis_position.set_attributes(reader, e);
                         },
+                        b"c:majorGridlines" => {
+                            let mut obj = MajorGridlines::default();
+                            obj.set_attributes(reader, e);
+                            self.set_major_gridlines(obj);
+                        },
                         b"c:numFmt" => {
                             self.numbering_format.set_attributes(reader, e);
                         },
@@ -290,8 +295,11 @@ impl ValueAxis {
         // c:axPos
         &self.axis_position.write_to(writer);
 
-        // majorGridlines
-        &self.major_gridlines.write_to(writer);
+        // c:majorGridlines
+        match &self.major_gridlines {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
         
         // c:title
         match &self.title {

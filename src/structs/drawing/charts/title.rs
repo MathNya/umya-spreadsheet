@@ -71,7 +71,7 @@ impl Title {
                         }
                         b"c:layout" => {
                             let mut obj = Layout::default();
-                            obj.set_attributes(reader, e);
+                            obj.set_attributes(reader, e, false);
                             self.set_layout(obj);
                         }
                         _ => (),

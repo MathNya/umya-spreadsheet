@@ -3,11 +3,11 @@ use super::AlternateContentChoice;
 use super::AlternateContentFallback;
 use writer::driver::*;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
+use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug)]
 pub struct AlternateContent {
     alternate_content_choice: AlternateContentChoice,
     alternate_content_fallback: AlternateContentFallback,
@@ -42,9 +42,35 @@ impl AlternateContent {
 
     pub(crate) fn set_attributes(
         &mut self,
-        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         _e:&BytesStart
     ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"mc:Choice" => {
+                            self.alternate_content_choice.set_attributes(reader, e);
+                        },
+                        b"mc:Fallback" => {
+                            self.alternate_content_fallback.set_attributes(reader, e);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"mc:AlternateContent" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "mc:AlternateContent"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

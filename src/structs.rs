@@ -134,3 +134,5 @@ pub use self::alternate_content_choice::*;
           mod alternate_content_fallback;
 pub use self::alternate_content_fallback::*;
 
+          mod office2010;
+pub use self::office2010::*;

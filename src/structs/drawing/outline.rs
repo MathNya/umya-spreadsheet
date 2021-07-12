@@ -1,6 +1,7 @@
 // a:ln
-use super::tail_end::TailEnd;
-use super::solid_fill::SolidFill;
+use super::TailEnd;
+use super::SolidFill;
+use super::NoFill;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -14,6 +15,7 @@ pub struct Outline {
     compound_line_type: Option<String>,
     solid_fill: Option<SolidFill>,
     tail_end: Option<TailEnd>,
+    no_fill: Option<NoFill>,
 }
 impl Outline {
     pub fn get_width(&self) -> &u32 {
@@ -56,6 +58,19 @@ impl Outline {
         self.tail_end = Some(value);
     }
 
+    pub fn get_no_fill(&self) -> &Option<NoFill> {
+        &self.no_fill
+    }
+
+    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
+        &mut self.no_fill
+    }
+
+    pub fn set_no_fill(&mut self, value:NoFill) -> &mut Outline {
+        self.no_fill = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
@@ -88,9 +103,14 @@ impl Outline {
                 Ok(Event::Empty(ref e)) => {
                     match e.name() {
                         b"a:tailEnd" => {
-                            let mut tail_end = TailEnd::default();
-                            tail_end.set_attributes(reader, e);
-                            &mut self.set_tail_end(tail_end);
+                            let mut obj = TailEnd::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_tail_end(obj);
+                        },
+                        b"a:noFill" => {
+                            let mut obj = NoFill::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_no_fill(obj);
                         },
                         _ => (),
                     }
@@ -134,6 +154,12 @@ impl Outline {
 
         // a:tailEnd
         match &self.tail_end {
+            Some(v) => v.write_to(writer),
+            None => {},
+        }
+
+        // a:noFill
+        match &self.no_fill {
             Some(v) => v.write_to(writer),
             None => {},
         }

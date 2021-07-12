@@ -5,6 +5,16 @@
 ## Description
 **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
 
+## Supported graph types
+* LineChart
+* PieChart
+* DoughnutChart
+* ScatterChart
+* BarChart
+* Bar3DChart
+
+Other types will be supported sequentially.
+
 ## Example
 ![Result Image](images/sample1.png)
 ### Reader or New File

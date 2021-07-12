@@ -262,3 +262,65 @@ pub use self::string_reference::*;
           mod string_cache;
 pub use self::string_cache::*;
 
+          mod scatter_chart;
+pub use self::scatter_chart::*;
+
+          mod scatter_style;
+pub use self::scatter_style::*;
+
+          mod x_values;
+pub use self::x_values::*;
+
+          mod y_values;
+pub use self::y_values::*;
+
+          mod style;
+pub use self::style::*;
+
+          mod bar_direction;
+pub use self::bar_direction::*;
+
+          mod bar_chart;
+pub use self::bar_chart::*;
+
+          mod gap_width;
+pub use self::gap_width::*;
+
+          mod overlap;
+pub use self::overlap::*;
+
+          mod invert_if_negative;
+pub use self::invert_if_negative::*;
+
+          mod bar_3d_chart;
+pub use self::bar_3d_chart::*;
+
+          mod shape;
+pub use self::shape::*;
+
+          mod view_3d;
+pub use self::view_3d::*;
+
+          mod rotate_x;
+pub use self::rotate_x::*;
+
+          mod rotate_y;
+pub use self::rotate_y::*;
+
+          mod right_angle_axes;
+pub use self::right_angle_axes::*;
+
+          mod perspective;
+pub use self::perspective::*;
+
+          mod thickness;
+pub use self::thickness::*;
+
+          mod floor;
+pub use self::floor::*;
+
+          mod side_wall;
+pub use self::side_wall::*;
+
+          mod back_wall;
+pub use self::back_wall::*;
