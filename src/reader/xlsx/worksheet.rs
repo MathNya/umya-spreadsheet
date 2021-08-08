@@ -257,7 +257,7 @@ pub(crate) fn read(
                         } else if type_value == "b" {
                             let prm = if &string_value == "1" {"TRUE"} else {"FALSE"};
                             let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_and_data_type(prm, &type_value);
-                        } else if type_value == "" {
+                        } else if type_value == "" || type_value == "n" {
                             let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_crate(&string_value);
                         };
                     },
