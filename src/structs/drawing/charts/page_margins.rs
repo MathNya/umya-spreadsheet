@@ -1,4 +1,5 @@
 // c:pageMargins
+use super::super::super::DoubleValue;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -8,65 +9,65 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct PageMargins {
-    bottom: String,
-    left: String,
-    right: String,
-    top: String,
-    header: String,
-    footer: String,
+    bottom: DoubleValue,
+    left: DoubleValue,
+    right: DoubleValue,
+    top: DoubleValue,
+    header: DoubleValue,
+    footer: DoubleValue,
 }
 impl PageMargins {
-    pub fn get_bottom(&self)-> &str {
-        &self.bottom
+    pub fn get_bottom(&self)-> &f64 {
+        &self.bottom.get_value()
     }
 
-    pub fn set_bottom<S: Into<String>>(&mut self, value:S)-> &mut PageMargins {
-        self.bottom = value.into();
+    pub fn set_bottom(&mut self, value:f64)-> &mut PageMargins {
+        self.bottom.set_value(value);
         self
     }
 
-    pub fn get_left(&self)-> &str {
-        &self.left
+    pub fn get_left(&self)-> &f64 {
+        &self.left.get_value()
     }
 
-    pub fn set_left<S: Into<String>>(&mut self, value:S)-> &mut PageMargins {
-        self.left = value.into();
+    pub fn set_left(&mut self, value:f64)-> &mut PageMargins {
+        self.left.set_value(value);
         self
     }
 
-    pub fn get_right(&self)-> &str {
-        &self.right
+    pub fn get_right(&self)-> &f64 {
+        &self.right.get_value()
     }
 
-    pub fn set_right<S: Into<String>>(&mut self, value:S)-> &mut PageMargins {
-        self.right = value.into();
+    pub fn set_right(&mut self, value:f64)-> &mut PageMargins {
+        self.right.set_value(value);
         self
     }
 
-    pub fn get_top(&self)-> &str {
-        &self.top
+    pub fn get_top(&self)-> &f64 {
+        &self.top.get_value()
     }
 
-    pub fn set_top<S: Into<String>>(&mut self, value:S)-> &mut PageMargins {
-        self.top = value.into();
+    pub fn set_top(&mut self, value:f64)-> &mut PageMargins {
+        self.top.set_value(value);
         self
     }
 
-    pub fn get_header(&self)-> &str {
-        &self.header
+    pub fn get_header(&self)-> &f64 {
+        &self.header.get_value()
     }
 
-    pub fn set_header<S: Into<String>>(&mut self, value:S)-> &mut PageMargins {
-        self.header = value.into();
+    pub fn set_header(&mut self, value:f64)-> &mut PageMargins {
+        self.header.set_value(value);
         self
     }
 
-    pub fn get_footer(&self)-> &str {
-        &self.footer
+    pub fn get_footer(&self)-> &f64 {
+        &self.footer.get_value()
     }
 
-    pub fn set_footer<S: Into<String>>(&mut self, value:S)-> &mut PageMargins {
-        self.footer = value.into();
+    pub fn set_footer(&mut self, value:f64)-> &mut PageMargins {
+        self.footer.set_value(value);
         self
     }
 
@@ -75,23 +76,23 @@ impl PageMargins {
         _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        self.bottom = get_attribute(e, b"b").unwrap();
-        self.left = get_attribute(e, b"l").unwrap();
-        self.right = get_attribute(e, b"r").unwrap();
-        self.top = get_attribute(e, b"t").unwrap();
-        self.header = get_attribute(e, b"header").unwrap();
-        self.footer = get_attribute(e, b"footer").unwrap();
+        self.bottom.set_value_string(get_attribute(e, b"b").unwrap());
+        self.left.set_value_string(get_attribute(e, b"l").unwrap());
+        self.right.set_value_string(get_attribute(e, b"r").unwrap());
+        self.top.set_value_string(get_attribute(e, b"t").unwrap());
+        self.header.set_value_string(get_attribute(e, b"header").unwrap());
+        self.footer.set_value_string(get_attribute(e, b"footer").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:pageMargins
         write_start_tag(writer, "c:pageMargins", vec![
-            ("b", &self.bottom),
-            ("l", &self.left),
-            ("r", &self.right),
-            ("t", &self.top),
-            ("header", &self.header),
-            ("footer", &self.footer),
+            ("b", &self.bottom.get_value_string()),
+            ("l", &self.left.get_value_string()),
+            ("r", &self.right.get_value_string()),
+            ("t", &self.top.get_value_string()),
+            ("header", &self.header.get_value_string()),
+            ("footer", &self.footer.get_value_string()),
         ], true);
     }
 }

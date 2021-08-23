@@ -25,9 +25,6 @@ pub use self::non_visual_connection_shape_properties::*;
           mod non_visual_connector_shape_drawing_properties;
 pub use self::non_visual_connector_shape_drawing_properties::*;
 
-          mod connection_type;
-pub use self::connection_type::*;
-
           mod non_visual_picture_properties;
 pub use self::non_visual_picture_properties::*;
 
@@ -64,3 +61,5 @@ pub use self::non_visual_graphic_frame_drawing_properties::*;
           mod transform;
 pub use self::transform::*;
 
+          mod edit_as_values;
+pub use self::edit_as_values::*;

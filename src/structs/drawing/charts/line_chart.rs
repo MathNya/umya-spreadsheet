@@ -3,7 +3,7 @@ use super::Grouping;
 use super::VaryColors;
 use super::AreaChartSeries;
 use super::DataLabels;
-use super::Marker;
+use super::ShowMarker;
 use super::Smooth;
 use super::AxisId;
 use writer::driver::*;
@@ -18,7 +18,7 @@ pub struct LineChart {
     vary_colors: VaryColors,
     area_chart_series: Vec<AreaChartSeries>,
     data_labels: DataLabels,
-    marker: Marker,
+    show_marker: ShowMarker,
     smooth: Smooth,
     axis_id: Vec<AxisId>,
 }
@@ -80,16 +80,16 @@ impl LineChart {
         self
     }
 
-    pub fn get_marker(&self)-> &Marker {
-        &self.marker
+    pub fn get_show_marker(&self)-> &ShowMarker {
+        &self.show_marker
     }
 
-    pub fn get_marker_mut(&mut self)-> &mut Marker {
-        &mut self.marker
+    pub fn get_show_marker_mut(&mut self)-> &mut ShowMarker {
+        &mut self.show_marker
     }
 
-    pub fn set_marker(&mut self, value:Marker)-> &mut LineChart {
-        self.marker = value;
+    pub fn set_show_marker(&mut self, value:ShowMarker)-> &mut LineChart {
+        self.show_marker = value;
         self
     }
 
@@ -154,7 +154,7 @@ impl LineChart {
                             self.vary_colors.set_attributes(reader, e);
                         },
                         b"c:marker" => {
-                            self.marker.set_attributes(reader, e, true);
+                            self.show_marker.set_attributes(reader, e);
                         },
                         b"c:smooth" => {
                             self.smooth.set_attributes(reader, e);
@@ -200,7 +200,7 @@ impl LineChart {
         &self.data_labels.write_to(writer);
 
         // c:marker
-        &self.marker.write_to(writer);
+        &self.show_marker.write_to(writer);
 
         // c:smooth
         &self.smooth.write_to(writer);

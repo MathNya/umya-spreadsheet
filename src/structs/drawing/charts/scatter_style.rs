@@ -1,4 +1,6 @@
 // c:scatterStyle
+use super::ScatterStyleValues;
+use super::super::super::EnumValue;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -8,15 +10,15 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct ScatterStyle {
-    val: String,
+    val: EnumValue<ScatterStyleValues>,
 }
 impl ScatterStyle {
-    pub fn get_val(&self)-> &str {
-        &self.val
+    pub fn get_val(&self)-> &ScatterStyleValues {
+        &self.val.get_value()
     }
 
-    pub fn set_val<S: Into<String>>(&mut self, value:S)-> &mut ScatterStyle {
-        self.val = value.into();
+    pub fn set_val(&mut self, value:ScatterStyleValues)-> &mut ScatterStyle {
+        self.val.set_value(value);
         self
     }
 
@@ -25,13 +27,13 @@ impl ScatterStyle {
         _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        self.val = get_attribute(e, b"val").unwrap();
+        self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:scatterStyle
         write_start_tag(writer, "c:scatterStyle", vec![
-            ("val", &self.val),
+            ("val", &self.val.get_value_string()),
         ], true);
     }
 }

@@ -8,6 +8,8 @@ use super::CategoryAxisData;
 use super::Values;
 use super::XValues;
 use super::YValues;
+use super::BubbleSize;
+use super::Bubble3D;
 use super::Smooth;
 use super::Formula;
 use writer::driver::*;
@@ -27,6 +29,8 @@ pub struct AreaChartSeries {
     values: Option<Values>,
     x_values: Option<XValues>,
     y_values: Option<YValues>,
+    bubble_size: Option<BubbleSize>,
+    bubble_3d: Option<Bubble3D>,
     smooth: Option<Smooth>,
 }
 impl AreaChartSeries {
@@ -147,6 +151,32 @@ impl AreaChartSeries {
         self
     }
 
+    pub fn get_bubble_size(&self)-> &Option<BubbleSize> {
+        &self.bubble_size
+    }
+
+    pub fn get_bubble_size_mut(&mut self)-> &mut Option<BubbleSize> {
+        &mut self.bubble_size
+    }
+
+    pub fn set_bubble_size(&mut self, value:BubbleSize)-> &mut AreaChartSeries {
+        self.bubble_size = Some(value);
+        self
+    }
+
+    pub fn get_bubble_3d(&self)-> &Option<Bubble3D> {
+        &self.bubble_3d
+    }
+
+    pub fn get_bubble_3d_mut(&mut self)-> &Option<Bubble3D> {
+        &mut self.bubble_3d
+    }
+
+    pub fn set_bubble_3d(&mut self, value:Bubble3D)-> &mut AreaChartSeries {
+        self.bubble_3d = Some(value);
+        self
+    }
+
     pub fn get_smooth(&self)-> &Option<Smooth> {
         &self.smooth
     }
@@ -182,6 +212,12 @@ impl AreaChartSeries {
             None => {}
         }
         match &mut self.y_values {
+            Some(v) => {
+                result.push(v.get_number_reference_mut().get_formula_mut());
+            }
+            None => {}
+        }
+        match &mut self.bubble_size {
             Some(v) => {
                 result.push(v.get_number_reference_mut().get_formula_mut());
             }
@@ -230,6 +266,11 @@ impl AreaChartSeries {
                             obj.set_attributes(reader, e);
                             self.set_y_values(obj);
                         },
+                        b"c:bubbleSize" => {
+                            let mut obj = BubbleSize::default();
+                            obj.set_attributes(reader, e);
+                            self.set_bubble_size(obj);
+                        },
                         _ => (),
                     }
                 },
@@ -245,6 +286,11 @@ impl AreaChartSeries {
                             let mut obj = InvertIfNegative::default();
                             obj.set_attributes(reader, e);
                             self.set_invert_if_negative(obj);
+                        },
+                        b"c:bubble3D" => {
+                            let mut obj = Bubble3D::default();
+                            obj.set_attributes(reader, e);
+                            self.set_bubble_3d(obj);
                         },
                         b"c:smooth" => {
                             let mut obj = Smooth::default();
@@ -316,6 +362,18 @@ impl AreaChartSeries {
 
         // c:yVal
         match &self.y_values {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:bubbleSize
+        match &self.bubble_size {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:bubble3D
+        match &self.bubble_3d {
             Some(v) => {v.write_to(writer);},
             None => {}
         }

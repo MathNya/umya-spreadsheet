@@ -1,4 +1,5 @@
 // c:showLeaderLines
+use super::super::super::BooleanValue;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -8,15 +9,15 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct ShowLeaderLines {
-    val: String,
+    val: BooleanValue,
 }
 impl ShowLeaderLines {
-    pub fn get_val(&self)-> &str {
-        &self.val
+    pub fn get_val(&self)-> &bool {
+        &self.val.get_value()
     }
 
-    pub fn set_val<S: Into<String>>(&mut self, value:S)-> &mut ShowLeaderLines {
-        self.val = value.into();
+    pub fn set_val(&mut self, value:bool)-> &mut ShowLeaderLines {
+        self.val.set_value(value);
         self
     }
 
@@ -25,13 +26,13 @@ impl ShowLeaderLines {
         _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        self.val = get_attribute(e, b"val").unwrap();
+        self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:showLeaderLines
         write_start_tag(writer, "c:showLeaderLines", vec![
-            ("val", &self.val),
+            ("val", &self.val.get_value_string()),
         ], true);
     }
 }

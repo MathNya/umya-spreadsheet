@@ -104,3 +104,78 @@ pub use self::east_asian_font::*;
 
 mod no_fill;
 pub use self::no_fill::*;
+
+mod pattern_fill;
+pub use self::pattern_fill::*;
+
+mod foreground_color;
+pub use self::foreground_color::*;
+
+mod background_color;
+pub use self::background_color::*;
+
+mod gradient_fill;
+pub use self::gradient_fill::*;
+
+mod gradient_stop_list;
+pub use self::gradient_stop_list::*;
+
+mod gradient_stop;
+pub use self::gradient_stop::*;
+
+mod start_connection;
+pub use self::start_connection::*;
+
+mod end_connection;
+pub use self::end_connection::*;
+
+mod linear_gradient_fill;
+pub use self::linear_gradient_fill::*;
+
+mod tile_flip_values;
+pub use self::tile_flip_values::*;
+
+mod tile_rectangle;
+pub use self::tile_rectangle::*;
+
+mod glow;
+pub use self::glow::*;
+
+mod soft_edge;
+pub use self::soft_edge::*;
+
+mod bevel;
+pub use self::bevel::*;
+
+mod preset_camera_values;
+pub use self::preset_camera_values::*;
+
+mod camera;
+pub use self::camera::*;
+
+mod light_rig_direction_values;
+pub use self::light_rig_direction_values::*;
+
+mod light_rig_values;
+pub use self::light_rig_values::*;
+
+mod light_rig;
+pub use self::light_rig::*;
+
+mod scene_3d_type;
+pub use self::scene_3d_type::*;
+
+mod bevel_preset_values;
+pub use self::bevel_preset_values::*;
+
+mod bevel_top;
+pub use self::bevel_top::*;
+
+mod bevel_bottom;
+pub use self::bevel_bottom::*;
+
+mod shape_3d_type;
+pub use self::shape_3d_type::*;
+
+mod preset_material_type_values;
+pub use self::preset_material_type_values::*;

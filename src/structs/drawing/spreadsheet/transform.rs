@@ -1,4 +1,6 @@
 // xdr:xfrm
+use super::super::super::Int32Value;
+use super::super::super::BooleanValue;
 use super::super::Offset;
 use super::super::Extents;
 use writer::driver::*;
@@ -12,9 +14,9 @@ use std::io::Cursor;
 pub struct Transform {
     offset: Offset,
     extents: Extents,
-    rotation: Option<String>,
-    flip_v: Option<String>,
-    flip_h: Option<String>,
+    rotation: Int32Value,
+    vertical_flip: BooleanValue,
+    horizontal_flip: BooleanValue,
 }
 impl Transform {
     pub fn get_offset(&self) -> &Offset {
@@ -43,28 +45,28 @@ impl Transform {
         self
     }
 
-    pub fn get_rotation(&self) -> &Option<String> {
-        &self.rotation
+    pub fn get_rotation(&self) -> &i32 {
+        &self.rotation.get_value()
     }
     
-    pub fn set_rotation<S: Into<String>>(&mut self, value:S) {
-        self.rotation = Some(value.into());
+    pub fn set_rotation(&mut self, value:i32) {
+        self.rotation.set_value(value);
     }
 
-    pub fn get_flip_v(&self) -> &Option<String> {
-        &self.flip_v
+    pub fn get_vertical_flip(&self) -> &bool {
+        &self.vertical_flip.get_value()
     }
     
-    pub fn set_flip_v<S: Into<String>>(&mut self, value:S) {
-        self.flip_v = Some(value.into());
+    pub fn set_vertical_flip(&mut self, value:bool) {
+        self.vertical_flip.set_value(value);
     }
 
-    pub fn get_flip_h(&self) -> &Option<String> {
-        &self.flip_h
+    pub fn get_horizontal_flip(&self) -> &bool {
+        &self.horizontal_flip.get_value()
     }
     
-    pub fn set_flip_h<S: Into<String>>(&mut self, value:S) {
-        self.flip_h = Some(value.into());
+    pub fn set_horizontal_flip(&mut self, value:bool) {
+        self.horizontal_flip.set_value(value);
     }
     
     pub(crate) fn set_attributes(
@@ -75,17 +77,17 @@ impl Transform {
         let mut buf = Vec::new();
     
         match get_attribute(e, b"rot") {
-            Some(v) => {&mut self.set_rotation(v);},
+            Some(v) => {&mut self.rotation.set_value_string(v);},
             None => {}
         }
     
         match get_attribute(e, b"flipH") {
-            Some(v) => {&mut self.set_flip_h(v);},
+            Some(v) => {&mut self.vertical_flip.set_value_string(v);},
             None => {}
         }
     
         match get_attribute(e, b"flipV") {
-            Some(v) => {&mut self.set_flip_v(v);},
+            Some(v) => {&mut self.horizontal_flip.set_value_string(v);},
             None => {}
         }
     
@@ -121,17 +123,14 @@ impl Transform {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.rotation {
-            Some(v) => attributes.push(("rot", v)),
-            None => {}
+        if &self.rotation.has_value() == &true {
+            attributes.push(("rot", &self.rotation.get_value_string()));
         }
-        match &self.flip_h {
-            Some(v) => attributes.push(("flipH", v)),
-            None => {}
+        if &self.horizontal_flip.has_value() == &true {
+            attributes.push(("flipH", &self.horizontal_flip.get_value_string()));
         }
-        match &self.flip_v {
-            Some(v) => attributes.push(("flipV", v)),
-            None => {}
+        if &self.vertical_flip.has_value() == &true {
+            attributes.push(("flipV", &self.vertical_flip.get_value_string()));
         }
         write_start_tag(writer, "xdr:xfrm", attributes, false);
 

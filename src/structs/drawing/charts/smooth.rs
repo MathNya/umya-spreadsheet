@@ -1,4 +1,5 @@
 // c:smooth
+use super::super::super::BooleanValue;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -8,15 +9,15 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct Smooth {
-    val: String,
+    val: BooleanValue,
 }
 impl Smooth {
-    pub fn get_val(&self)-> &str {
-        &self.val
+    pub fn get_val(&self)-> &bool {
+        &self.val.get_value()
     }
 
-    pub fn set_val<S: Into<String>>(&mut self, value:S)-> &mut Smooth {
-        self.val = value.into();
+    pub fn set_val(&mut self, value:bool)-> &mut Smooth {
+        self.val.set_value(value);
         self
     }
 
@@ -25,13 +26,13 @@ impl Smooth {
         _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        self.val = get_attribute(e, b"val").unwrap();
+        self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:smooth
         write_start_tag(writer, "c:smooth", vec![
-            ("val", &self.val),
+            ("val", &self.val.get_value_string()),
         ], true);
     }
 }

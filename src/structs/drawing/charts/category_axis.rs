@@ -3,6 +3,7 @@ use super::AxisId;
 use super::Scaling;
 use super::Delete;
 use super::AxisPosition;
+use super::MajorGridlines;
 use super::MajorTickMark;
 use super::MinorTickMark;
 use super::TickLabelPosition;
@@ -24,6 +25,7 @@ pub struct CategoryAxis {
     scaling: Scaling,
     delete: Delete,
     axis_position: AxisPosition,
+    major_gridlines: Option<MajorGridlines>,
     major_tick_mark: MajorTickMark,
     minor_tick_mark: MinorTickMark,
     tick_label_position: TickLabelPosition,
@@ -84,6 +86,19 @@ impl CategoryAxis {
 
     pub fn set_axis_position(&mut self, value:AxisPosition)-> &mut CategoryAxis {
         self.axis_position = value;
+        self
+    }
+
+    pub fn get_major_gridlines(&self)-> &Option<MajorGridlines> {
+        &self.major_gridlines
+    }
+
+    pub fn get_major_gridlines_mut(&mut self)-> &Option<MajorGridlines> {
+        &mut self.major_gridlines
+    }
+
+    pub fn set_major_gridlines(&mut self, value:MajorGridlines)-> &mut CategoryAxis {
+        self.major_gridlines = Some(value);
         self
     }
 
@@ -231,6 +246,11 @@ impl CategoryAxis {
                         b"c:axPos" => {
                             self.axis_position.set_attributes(reader, e);
                         },
+                        b"c:majorGridlines" => {
+                            let mut obj = MajorGridlines::default();
+                            obj.set_attributes(reader, e);
+                            self.set_major_gridlines(obj);
+                        },
                         b"c:majorTickMark" => {
                             self.major_tick_mark.set_attributes(reader, e);
                         },
@@ -290,6 +310,12 @@ impl CategoryAxis {
 
         // c:axPos
         &self.axis_position.write_to(writer);
+
+        // c:majorGridlines
+        match &self.major_gridlines {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
 
         // c:majorTickMark
         &self.major_tick_mark.write_to(writer);

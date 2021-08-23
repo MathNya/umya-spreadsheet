@@ -136,3 +136,39 @@ pub use self::alternate_content_fallback::*;
 
           mod office2010;
 pub use self::office2010::*;
+
+          mod boolean_value;
+pub use self::boolean_value::*;
+
+          mod u_int32_value;
+pub use self::u_int32_value::*;
+
+          mod u_int16_value;
+pub use self::u_int16_value::*;
+
+          mod int32_value;
+pub use self::int32_value::*;
+
+          mod int16_value;
+pub use self::int16_value::*;
+
+          mod string_value;
+pub use self::string_value::*;
+
+          mod double_value;
+pub use self::double_value::*;
+
+          mod enum_value;
+pub use self::enum_value::*;
+
+          mod enum_trait;
+pub use self::enum_trait::*;
+
+          mod byte_value;
+pub use self::byte_value::*;
+
+          mod s_byte_value;
+pub use self::s_byte_value::*;
+
+          mod int64_value;
+pub use self::int64_value::*;

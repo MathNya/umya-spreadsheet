@@ -1,4 +1,5 @@
 // xdr:blipFill
+use super::super::super::BooleanValue;
 use super::super::Blip;
 use super::super::SourceRectangle;
 use super::super::Stretch;
@@ -12,18 +13,18 @@ use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct BlipFill {
-    rot_with_shape: usize,
+    rotate_with_shape: BooleanValue,
     blip: Blip,
     source_rectangle: Option<SourceRectangle>,
     stretch: Stretch,
 }
 impl BlipFill {
-    pub fn get_rot_with_shape(&self) -> &usize {
-        &self.rot_with_shape
+    pub fn get_rotate_with_shape(&self) -> &bool {
+        &self.rotate_with_shape.get_value()
     }
 
-    pub fn set_rot_with_shape(&mut self, value:usize)-> &mut BlipFill {
-        self.rot_with_shape = value;
+    pub fn set_rotate_with_shape(&mut self, value:bool)-> &mut BlipFill {
+        self.rotate_with_shape.set_value(value);
         self
     }
 
@@ -76,7 +77,7 @@ impl BlipFill {
         let mut buf = Vec::new();
     
         match get_attribute(e, b"rotWithShape") {
-            Some(v) => {&mut self.set_rot_with_shape(v.parse::<usize>().unwrap());},
+            Some(v) => {&mut self.rotate_with_shape.set_value_string(v);},
             None => {}
         }
     
@@ -120,9 +121,8 @@ impl BlipFill {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
         // xdr:blipFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let rot_with_sharp_str = &self.rot_with_shape.to_string();
-        if &self.rot_with_shape > &0 {
-            attributes.push(("rotWithShape", rot_with_sharp_str.as_str()))
+        if &self.rotate_with_shape.has_value() == &true {
+            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()))
         }
         write_start_tag(writer, "xdr:blipFill", attributes, false);
 

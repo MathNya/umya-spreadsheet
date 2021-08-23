@@ -1,5 +1,6 @@
 // a:outerShdw
-use super::preset_color::PresetColor;
+use super::PresetColor;
+use super::SchemeColor;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -17,6 +18,7 @@ pub struct OuterShadow {
     distance: Option<String>,
     rotate_with_shape: Option<String>,
     preset_color: Option<PresetColor>,
+    scheme_color: Option<SchemeColor>,
 }
 impl OuterShadow {
     pub fn get_blur_radius(&self) -> &Option<String> {
@@ -83,6 +85,14 @@ impl OuterShadow {
         self.preset_color = Some(value);
     }
 
+    pub fn get_scheme_color(&self) -> &Option<SchemeColor> {
+        &self.scheme_color
+    }
+
+    pub fn set_scheme_color(&mut self, value:SchemeColor) {
+        self.scheme_color = Some(value);
+    }
+
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
@@ -90,6 +100,14 @@ impl OuterShadow {
     ) {
         match get_attribute(e, b"blurRad") {
             Some(v) => {&mut self.set_blur_radius(v);},
+            None => {}
+        }
+        match get_attribute(e, b"dist") {
+            Some(v) => {&mut self.set_distance(v);},
+            None => {}
+        }
+        match get_attribute(e, b"dir") {
+            Some(v) => {&mut self.set_direction(v);},
             None => {}
         }
         match get_attribute(e, b"sx") {
@@ -104,14 +122,6 @@ impl OuterShadow {
             Some(v) => {&mut self.set_alignment(v);},
             None => {}
         }
-        match get_attribute(e, b"dir") {
-            Some(v) => {&mut self.set_direction(v);},
-            None => {}
-        }
-        match get_attribute(e, b"dist") {
-            Some(v) => {&mut self.set_distance(v);},
-            None => {}
-        }
         match get_attribute(e, b"rotWithShape") {
             Some(v) => {&mut self.set_rotate_with_shape(v);},
             None => {}
@@ -123,9 +133,14 @@ impl OuterShadow {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"a:prstClr" => {
-                            let mut preset_color = PresetColor::default();
-                            preset_color.set_attributes(reader, e);
-                            &mut self.set_preset_color(preset_color);
+                            let mut obj = PresetColor::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_preset_color(obj);
+                        },
+                        b"a:schemeClr" => {
+                            let mut obj = SchemeColor::default();
+                            obj.set_attributes(reader, e, false);
+                            &mut self.set_scheme_color(obj);
                         },
                         _ => (),
                     }
@@ -153,18 +168,6 @@ impl OuterShadow {
             },
             None => {}
         }
-        match &self.horizontal_ratio {
-            Some(v) => {
-                attributes.push(("sx", v));
-            },
-            None => {}
-        }
-        match &self.vertical_ratio {
-            Some(v) => {
-                attributes.push(("sy", v));
-            },
-            None => {}
-        }
         match &self.distance {
             Some(v) => {
                 attributes.push(("dist", v));
@@ -174,6 +177,18 @@ impl OuterShadow {
         match &self.direction {
             Some(v) => {
                 attributes.push(("dir", v));
+            },
+            None => {}
+        }
+        match &self.horizontal_ratio {
+            Some(v) => {
+                attributes.push(("sx", v));
+            },
+            None => {}
+        }
+        match &self.vertical_ratio {
+            Some(v) => {
+                attributes.push(("sy", v));
             },
             None => {}
         }
@@ -193,6 +208,14 @@ impl OuterShadow {
 
         // a:prstClr
         match &self.preset_color {
+            Some(v) => {
+                v.write_to(writer);
+            },
+            None => {}
+        }
+
+        // a:schemeClr
+        match &self.scheme_color {
             Some(v) => {
                 v.write_to(writer);
             },

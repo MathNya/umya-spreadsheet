@@ -1,4 +1,5 @@
 // c:rotX
+use super::super::super::SByteValue;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -8,15 +9,15 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct RotateX {
-    val: String,
+    val: SByteValue,
 }
 impl RotateX {
-    pub fn get_val(&self)-> &str {
-        &self.val
+    pub fn get_val(&self)-> &i8 {
+        &self.val.get_value()
     }
 
-    pub fn set_val<S: Into<String>>(&mut self, value:S)-> &mut RotateX {
-        self.val = value.into();
+    pub fn set_val(&mut self, value:i8)-> &mut RotateX {
+        self.val.set_value(value);
         self
     }
 
@@ -25,13 +26,13 @@ impl RotateX {
         _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        self.val = get_attribute(e, b"val").unwrap();
+        self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:rotX
         write_start_tag(writer, "c:rotX", vec![
-            ("val", &self.val),
+            ("val", &self.val.get_value_string()),
         ], true);
     }
 }

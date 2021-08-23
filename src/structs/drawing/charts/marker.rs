@@ -1,7 +1,6 @@
 // c:marker
 use super::Symbol;
 use writer::driver::*;
-use reader::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -9,19 +8,9 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct Marker {
-    val: Option<String>,
     symbol: Option<Symbol>,
 }
 impl Marker {
-    pub fn get_val(&self)-> &Option<String> {
-        &self.val
-    }
-
-    pub fn set_val<S: Into<String>>(&mut self, value:S)-> &mut Marker {
-        self.val = Some(value.into());
-        self
-    }
-
     pub fn get_symbol(&self)-> &Option<Symbol> {
         &self.symbol
     }
@@ -38,14 +27,9 @@ impl Marker {
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        e:&BytesStart,
+        _:&BytesStart,
         empty_flag:bool,
     ) {
-        match get_attribute(e, b"val") {
-            Some(v) => {self.set_val(v);},
-            None => {}
-        }
-
         if empty_flag {
             return;
         }
@@ -79,13 +63,8 @@ impl Marker {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:marker
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.val {
-            Some(v) => attributes.push(("val", v)),
-            None => {}
-        }
         if self.symbol.is_some() {
-            write_start_tag(writer, "c:marker", attributes, false);
+            write_start_tag(writer, "c:marker", vec![], false);
 
             // a:symbol
             match &self.symbol {
@@ -95,7 +74,7 @@ impl Marker {
 
             write_end_tag(writer, "c:marker");
         } else {
-            write_start_tag(writer, "c:marker", attributes, true);
+            write_start_tag(writer, "c:marker", vec![], true);
         }
     }
 }

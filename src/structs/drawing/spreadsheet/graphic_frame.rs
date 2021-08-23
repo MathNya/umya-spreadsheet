@@ -1,4 +1,5 @@
 // xdr:graphicFrame
+use super::super::super::StringValue;
 use super::NonVisualGraphicFrameProperties;
 use super::Transform;
 use super::super::Graphic;
@@ -13,18 +14,18 @@ use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct GraphicFrame {
-    r#macro: String,
+    r#macro: StringValue,
     non_visual_graphic_frame_properties: NonVisualGraphicFrameProperties,
     transform: Transform,
     graphic: Graphic,
 }
 impl GraphicFrame {
     pub fn get_macro(&self) -> &str {
-        &self.r#macro
+        &self.r#macro.get_value()
     }
 
     pub fn set_macro<S: Into<String>>(&mut self, value:S) -> &mut GraphicFrame {
-        self.r#macro = value.into();
+        self.r#macro.set_value(value);
         self
     }
 
@@ -70,10 +71,15 @@ impl GraphicFrame {
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        _e:&BytesStart,
+        e:&BytesStart,
         dir: &TempDir,
         target: &str
     ) {
+        match get_attribute(e, b"macro") {
+            Some(v) => {&mut self.r#macro.set_value_string(v);},
+            None => {}
+        }
+
         let mut buf = Vec::new();
 
         loop {
@@ -109,7 +115,7 @@ impl GraphicFrame {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
         // xdr:graphicFrame
         write_start_tag(writer, "xdr:graphicFrame", vec![
-            ("macro", &self.r#macro),
+            ("macro", &self.r#macro.get_value_string()),
         ], false);
         
         // xdr:nvGraphicFramePr

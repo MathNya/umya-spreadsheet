@@ -1,13 +1,18 @@
 // c:plotArea
 use super::Layout;
 use super::LineChart;
+use super::Line3DChart;
 use super::PieChart;
 use super::DoughnutChart;
 use super::ScatterChart;
 use super::BarChart;
 use super::Bar3DChart;
+use super::RadarChart;
+use super::BubbleChart;
 use super::CategoryAxis;
 use super::ValueAxis;
+use super::SeriesAxis;
+use super::ShapeProperties;
 use super::Formula;
 use writer::driver::*;
 use quick_xml::Reader;
@@ -19,13 +24,18 @@ use std::io::Cursor;
 pub struct PlotArea {
     layout: Layout,
     line_chart: Option<LineChart>,
+    line_3d_chart: Option<Line3DChart>,
     pie_chart: Option<PieChart>,
     doughnut_chart: Option<DoughnutChart>,
     scatter_chart: Option<ScatterChart>,
     bar_chart: Option<BarChart>,
     bar_3d_chart: Option<Bar3DChart>,
+    radar_chart: Option<RadarChart>,
+    bubble_chart: Option<BubbleChart>,
     category_axis: Vec<CategoryAxis>,
     value_axis: Vec<ValueAxis>,
+    series_axis: Vec<SeriesAxis>,
+    shape_properties: Option<ShapeProperties>,
 }
 impl PlotArea {
     pub fn get_layout(&self)-> &Layout {
@@ -51,6 +61,19 @@ impl PlotArea {
 
     pub fn set_line_chart(&mut self, value:LineChart)-> &mut PlotArea {
         self.line_chart = Some(value);
+        self
+    }
+
+    pub fn get_line_3d_chart(&self)-> &Option<Line3DChart> {
+        &self.line_3d_chart
+    }
+
+    pub fn get_line_3d_chart_mut(&mut self)-> &mut Option<Line3DChart> {
+        &mut self.line_3d_chart
+    }
+
+    pub fn set_line_3d_chart(&mut self, value:Line3DChart)-> &mut PlotArea {
+        self.line_3d_chart = Some(value);
         self
     }
 
@@ -119,6 +142,32 @@ impl PlotArea {
         self
     }
 
+    pub fn get_radar_chart(&self)-> &Option<RadarChart> {
+        &self.radar_chart
+    }
+
+    pub fn get_radar_chart_mut(&mut self)-> &mut Option<RadarChart> {
+        &mut self.radar_chart
+    }
+
+    pub fn set_radar_chart(&mut self, value:RadarChart)-> &mut PlotArea {
+        self.radar_chart = Some(value);
+        self
+    }
+
+    pub fn get_bubble_chart(&self)-> &Option<BubbleChart> {
+        &self.bubble_chart
+    }
+
+    pub fn get_bubble_chart_mut(&mut self)-> &mut Option<BubbleChart> {
+        &mut self.bubble_chart
+    }
+
+    pub fn set_bubble_chart(&mut self, value:BubbleChart)-> &mut PlotArea {
+        self.bubble_chart = Some(value);
+        self
+    }
+
     pub fn get_category_axis(&self)-> &Vec<CategoryAxis> {
         &self.category_axis
     }
@@ -145,9 +194,45 @@ impl PlotArea {
         self
     }
 
+    pub fn get_series_axis(&self)-> &Vec<SeriesAxis> {
+        &self.series_axis
+    }
+
+    pub fn get_series_axis_mut(&mut self)-> &mut Vec<SeriesAxis> {
+        &mut self.series_axis
+    }
+
+    pub fn set_series_axis(&mut self, value:SeriesAxis)-> &mut PlotArea {
+        self.series_axis.push(value);
+        self
+    }
+
+    pub fn get_shape_properties(&self)-> &Option<ShapeProperties> {
+        &self.shape_properties
+    }
+
+    pub fn get_shape_properties_mut(&mut self)-> &Option<ShapeProperties> {
+        &mut self.shape_properties
+    }
+
+    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut PlotArea {
+        self.shape_properties = Some(value);
+        self
+    }
+
     pub fn get_formula_mut(&mut self)-> Vec<&mut Formula> {
         let mut result:Vec<&mut Formula> = Vec::default();
         match &mut self.line_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
+        match &mut self.line_3d_chart {
             Some(v) => {
                 for ser in v.get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
@@ -207,11 +292,35 @@ impl PlotArea {
             }
             None => {}
         }
+        match &mut self.radar_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
+        match &mut self.bubble_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
         result
     }
 
     pub(crate) fn is_support(&self) -> bool {
         match &self.line_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.line_3d_chart {
             Some(_) => {return true;},
             None => {}
         }
@@ -235,6 +344,14 @@ impl PlotArea {
             Some(_) => {return true;},
             None => {}
         }
+        match &self.radar_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.bubble_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
         false
     }
 
@@ -255,6 +372,11 @@ impl PlotArea {
                             let mut obj = LineChart::default();
                             obj.set_attributes(reader, e);
                             self.set_line_chart(obj);
+                        },
+                        b"c:line3DChart" => {
+                            let mut obj = Line3DChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_line_3d_chart(obj);
                         },
                         b"c:pieChart" => {
                             let mut obj = PieChart::default();
@@ -281,6 +403,16 @@ impl PlotArea {
                             obj.set_attributes(reader, e);
                             self.set_bar_3d_chart(obj);
                         },
+                        b"c:radarChart" => {
+                            let mut obj = RadarChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_radar_chart(obj);
+                        },
+                        b"c:bubbleChart" => {
+                            let mut obj = BubbleChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_bubble_chart(obj);
+                        },
                         b"c:catAx" => {
                             let mut obj = CategoryAxis::default();
                             obj.set_attributes(reader, e);
@@ -290,6 +422,16 @@ impl PlotArea {
                             let mut obj = ValueAxis::default();
                             obj.set_attributes(reader, e);
                             self.set_value_axis(obj);
+                        },
+                        b"c:serAx" => {
+                            let mut obj = SeriesAxis::default();
+                            obj.set_attributes(reader, e);
+                            self.set_series_axis(obj);
+                        },
+                        b"c:spPr" => {
+                            let mut obj = ShapeProperties::default();
+                            obj.set_attributes(reader, e);
+                            self.set_shape_properties(obj);
                         },
                         _ => (),
                     }
@@ -317,6 +459,12 @@ impl PlotArea {
 
         // c:lineChart
         match &self.line_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:line3DChart
+        match &self.line_3d_chart {
             Some(v) => {v.write_to(writer);},
             None => {}
         }
@@ -351,6 +499,18 @@ impl PlotArea {
             None => {}
         }
 
+        // c:radarChart
+        match &self.radar_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:bubbleChart
+        match &self.bubble_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
         // c:catAx
         for v in &self.category_axis {
             v.write_to(writer);
@@ -359,6 +519,17 @@ impl PlotArea {
         // c:valAx
         for v in &self.value_axis {
             v.write_to(writer);
+        }
+
+        // c:serAx
+        for v in &self.series_axis {
+            v.write_to(writer);
+        }
+        
+        // c:spPr
+        match &self.shape_properties {
+            Some(v) => {v.write_to(writer);},
+            None => {}
         }
 
         write_end_tag(writer, "c:plotArea");

@@ -1,4 +1,5 @@
 // c:pt
+use super::super::super::UInt32Value;
 use super::NumericValue;
 use writer::driver::*;
 use reader::driver::*;
@@ -9,16 +10,16 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct StringPoint {
-    index: String,
+    index: UInt32Value,
     numeric_value: NumericValue,
 }
 impl StringPoint {
-    pub fn get_index(&self)-> &str {
-        &self.index
+    pub fn get_index(&self)-> &u32 {
+        &self.index.get_value()
     }
 
-    pub fn set_index<S: Into<String>>(&mut self, value:S)-> &mut StringPoint {
-        self.index = value.into();
+    pub fn set_index(&mut self, value:u32)-> &mut StringPoint {
+        self.index.set_value(value);
         self
     }
 
@@ -40,7 +41,7 @@ impl StringPoint {
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        &mut self.set_index(get_attribute(e, b"idx").unwrap());
+        &mut self.index.set_value_string(get_attribute(e, b"idx").unwrap());
 
         let mut buf = Vec::new();
         loop {
@@ -70,7 +71,7 @@ impl StringPoint {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:pt
         write_start_tag(writer, "c:pt", vec![
-            ("idx", &self.index),
+            ("idx", &self.index.get_value_string()),
         ], false);
 
         // c:v

@@ -1,4 +1,6 @@
 // xdr:twoCellAnchor
+use super::EditAsValues;
+use super::super::super::EnumValue;
 use super::FromMarker;
 use super::ToMarker;
 use super::GraphicFrame;
@@ -15,7 +17,7 @@ use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct TwoCellAnchor {
-    edit_as: Option<String>,
+    edit_as: EnumValue<EditAsValues>,
     from_marker: FromMarker,
     to_marker: ToMarker,
     graphic_frame: Option<GraphicFrame>,
@@ -24,12 +26,12 @@ pub struct TwoCellAnchor {
     picture: Option<Picture>,
 }
 impl TwoCellAnchor {
-    pub fn get_edit_as(&self)-> &Option<String> {
-        &self.edit_as
+    pub fn get_edit_as(&self)-> &EditAsValues {
+        &self.edit_as.get_value()
     }
 
-    pub fn set_edit_as<S: Into<String>>(&mut self, value:S)-> &mut TwoCellAnchor {
-        self.edit_as = Some(value.into());
+    pub fn set_edit_as(&mut self, value:EditAsValues)-> &mut TwoCellAnchor {
+        self.edit_as.set_value(value);
         self
     }
 
@@ -149,7 +151,7 @@ impl TwoCellAnchor {
         target: &str,
     ) {
         match get_attribute(e, b"editAs") {
-            Some(v) => {self.set_edit_as(v);},
+            Some(v) => {self.edit_as.set_value_string(v);},
             None => {}
         }
 
@@ -204,11 +206,8 @@ impl TwoCellAnchor {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {
         // xdr:twoCellAnchor
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.edit_as {
-            Some(v) => {
-                attributes.push(("editAs", v));
-            },
-            None => {}
+        if &self.edit_as.has_value() == &true {
+            attributes.push(("editAs", &self.edit_as.get_value_string()));
         }
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 

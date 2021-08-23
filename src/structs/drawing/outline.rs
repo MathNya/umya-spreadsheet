@@ -1,7 +1,9 @@
 // a:ln
 use super::TailEnd;
 use super::SolidFill;
+use super::GradientFill;
 use super::NoFill;
+use super::Bevel;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -12,10 +14,13 @@ use std::io::Cursor;
 #[derive(Default, Debug)]
 pub struct Outline {
     width: u32,
+    cap_type: Option<String>,
     compound_line_type: Option<String>,
     solid_fill: Option<SolidFill>,
+    gradient_fill: Option<GradientFill>,
     tail_end: Option<TailEnd>,
     no_fill: Option<NoFill>,
+    bevel: Option<Bevel>,
 }
 impl Outline {
     pub fn get_width(&self) -> &u32 {
@@ -24,6 +29,14 @@ impl Outline {
 
     pub fn set_width(&mut self, value:u32) {
         self.width = value;
+    }
+
+    pub fn get_cap_type(&self) -> &Option<String> {
+        &self.cap_type
+    }
+
+    pub fn set_cap_type<S: Into<String>>(&mut self, value:S) {
+        self.cap_type = Some(value.into());
     }
 
     pub fn get_compound_line_type(&self) -> &Option<String> {
@@ -44,6 +57,18 @@ impl Outline {
 
     pub fn set_solid_fill(&mut self, value:SolidFill) {
         self.solid_fill = Some(value);
+    }
+
+    pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
+        &self.gradient_fill
+    }
+
+    pub fn get_gradient_fill_mut(&mut self) -> &mut Option<GradientFill> {
+        &mut self.gradient_fill
+    }
+
+    pub fn set_gradient_fill(&mut self, value:GradientFill) {
+        self.gradient_fill = Some(value);
     }
 
     pub fn get_tail_end(&self) -> &Option<TailEnd> {
@@ -71,6 +96,19 @@ impl Outline {
         self
     }
 
+    pub fn get_bevel(&self) -> &Option<Bevel> {
+        &self.bevel
+    }
+
+    pub fn get_bevel_mut(&mut self) -> &mut Option<Bevel> {
+        &mut self.bevel
+    }
+
+    pub fn set_bevel(&mut self, value:Bevel) -> &mut Outline {
+        self.bevel = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
@@ -83,6 +121,11 @@ impl Outline {
             None => {}
         }
     
+        match get_attribute(e, b"cap") {
+            Some(v) => {&mut self.set_cap_type(v);},
+            None => {}
+        }
+
         match get_attribute(e, b"cmpd") {
             Some(v) => {&mut self.set_compound_line_type(v);},
             None => {}
@@ -96,6 +139,11 @@ impl Outline {
                             let mut solid_fill = SolidFill::default();
                             solid_fill.set_attributes(reader, e);
                             &mut self.set_solid_fill(solid_fill);
+                        },
+                        b"a:gradFill" => {
+                            let mut obj = GradientFill::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_gradient_fill(obj);
                         },
                         _ => (),
                     }
@@ -111,6 +159,11 @@ impl Outline {
                             let mut obj = NoFill::default();
                             obj.set_attributes(reader, e);
                             &mut self.set_no_fill(obj);
+                        },
+                        b"a:bevel" => {
+                            let mut obj = Bevel::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_bevel(obj);
                         },
                         _ => (),
                     }
@@ -138,6 +191,12 @@ impl Outline {
         if &self.width > &0 {
             attributes.push(("w", width_str.as_str()));
         }
+        match &self.cap_type {
+            Some(v) => {
+                attributes.push(("cap", v));
+            }
+            None => {},
+        }
         match &self.compound_line_type {
             Some(v) => {
                 attributes.push(("cmpd", v));
@@ -152,6 +211,12 @@ impl Outline {
             None => {},
         }
 
+        // a:gradFill
+        match &self.gradient_fill {
+            Some(v) => v.write_to(writer),
+            None => {},
+        }
+
         // a:tailEnd
         match &self.tail_end {
             Some(v) => v.write_to(writer),
@@ -160,6 +225,12 @@ impl Outline {
 
         // a:noFill
         match &self.no_fill {
+            Some(v) => v.write_to(writer),
+            None => {},
+        }
+
+        // a:bevel
+        match &self.bevel {
             Some(v) => v.write_to(writer),
             None => {},
         }

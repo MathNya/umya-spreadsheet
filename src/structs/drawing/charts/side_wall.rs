@@ -1,7 +1,6 @@
 // c:sideWall
 use super::Thickness;
 use writer::driver::*;
-use reader::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;

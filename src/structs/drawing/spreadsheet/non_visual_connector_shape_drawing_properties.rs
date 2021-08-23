@@ -1,5 +1,6 @@
 // xdr:cNvCxnSpPr
-use super::ConnectionType;
+use super::super::StartConnection;
+use super::super::EndConnection;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -8,15 +9,15 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct NonVisualConnectorShapeDrawingProperties {
-    start_connection: Option<ConnectionType>,
-    end_connection: Option<ConnectionType>,
+    start_connection: Option<StartConnection>,
+    end_connection: Option<EndConnection>,
 }
 impl NonVisualConnectorShapeDrawingProperties {
-    pub fn get_start_connection(&self) -> &Option<ConnectionType> {
+    pub fn get_start_connection(&self) -> &Option<StartConnection> {
         &self.start_connection
     }
 
-    pub fn set_start_connection(&mut self, value:ConnectionType) {
+    pub fn set_start_connection(&mut self, value:StartConnection) {
         self.start_connection = Some(value);
     }
 
@@ -24,11 +25,11 @@ impl NonVisualConnectorShapeDrawingProperties {
         self.start_connection = None;
     }
 
-    pub fn get_end_connection(&self) -> &Option<ConnectionType> {
+    pub fn get_end_connection(&self) -> &Option<EndConnection> {
         &self.end_connection
     }
 
-    pub fn set_end_connection(&mut self, value:ConnectionType) {
+    pub fn set_end_connection(&mut self, value:EndConnection) {
         self.end_connection = Some(value);
     }
 
@@ -47,12 +48,12 @@ impl NonVisualConnectorShapeDrawingProperties {
                 Ok(Event::Empty(ref e)) => {
                     match e.name() {
                         b"a:stCxn" => {
-                            let mut connection_type = ConnectionType::default();
+                            let mut connection_type = StartConnection::default();
                             connection_type.set_attributes(reader, e);
                             &mut self.set_start_connection(connection_type);
                         },
                         b"a:endCxn" => {
-                            let mut connection_type = ConnectionType::default();
+                            let mut connection_type = EndConnection::default();
                             connection_type.set_attributes(reader, e);
                             &mut self.set_end_connection(connection_type);
                         },
@@ -81,7 +82,7 @@ impl NonVisualConnectorShapeDrawingProperties {
             // a:stCxn
             match &self.start_connection {
                 Some(v) => {
-                    v.write_to(writer, "a:stCxn");
+                    v.write_to(writer);
                 },
                 None => {}
             }
@@ -89,7 +90,7 @@ impl NonVisualConnectorShapeDrawingProperties {
             // a:endCxn
             match &self.end_connection {
                 Some(v) => {
-                    v.write_to(writer, "a:endCxn");
+                    v.write_to(writer);
                 },
                 None => {}
             }

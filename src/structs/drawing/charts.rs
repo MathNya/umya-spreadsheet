@@ -1,12 +1,6 @@
           mod chart;
 pub use self::chart::*;
 
-          mod data_series_values;
-pub use self::data_series_values::*;
-
-          mod data_series;
-pub use self::data_series::*;
-
           mod layout;
 pub use self::layout::*;
 
@@ -18,12 +12,6 @@ pub use self::plot_area::*;
 
           mod title;
 pub use self::title::*;
-
-          mod axis;
-pub use self::axis::*;
-
-          mod grid_lines;
-pub use self::grid_lines::*;
 
           mod chart_text;
 pub use self::chart_text::*;
@@ -324,3 +312,84 @@ pub use self::side_wall::*;
 
           mod back_wall;
 pub use self::back_wall::*;
+
+          mod line_3d_chart;
+pub use self::line_3d_chart::*;
+
+          mod series_axis;
+pub use self::series_axis::*;
+
+          mod radar_style;
+pub use self::radar_style::*;
+
+          mod radar_chart;
+pub use self::radar_chart::*;
+
+          mod bubble_chart;
+pub use self::bubble_chart::*;
+
+          mod bubble_scale;
+pub use self::bubble_scale::*;
+
+          mod show_negative_bubbles;
+pub use self::show_negative_bubbles::*;
+
+          mod bubble_size;
+pub use self::bubble_size::*;
+
+          mod bubble_3d;
+pub use self::bubble_3d::*;
+
+          mod axis_position_values;
+pub use self::axis_position_values::*;
+
+          mod bar_direction_values;
+pub use self::bar_direction_values::*;
+
+          mod cross_between_values;
+pub use self::cross_between_values::*;
+
+          mod crosses_values;
+pub use self::crosses_values::*;
+
+          mod display_blanks_as_values;
+pub use self::display_blanks_as_values::*;
+
+          mod grouping_values;
+pub use self::grouping_values::*;
+
+          mod layout_mode_values;
+pub use self::layout_mode_values::*;
+
+          mod label_alignment_values;
+pub use self::label_alignment_values::*;
+
+          mod layout_target_values;
+pub use self::layout_target_values::*;
+
+          mod legend_position_values;
+pub use self::legend_position_values::*;
+
+          mod tick_mark_values;
+pub use self::tick_mark_values::*;
+
+          mod show_marker;
+pub use self::show_marker::*;
+
+          mod orientation_values;
+pub use self::orientation_values::*;
+
+          mod radar_style_values;
+pub use self::radar_style_values::*;
+
+          mod scatter_style_values;
+pub use self::scatter_style_values::*;
+
+          mod shape_values;
+pub use self::shape_values::*;
+
+          mod marker_style_values;
+pub use self::marker_style_values::*;
+
+          mod tick_label_position_values;
+pub use self::tick_label_position_values::*;

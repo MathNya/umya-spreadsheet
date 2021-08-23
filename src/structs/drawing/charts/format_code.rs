@@ -7,15 +7,15 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct FormatCode {
-    val: String,
+    text: String,
 }
 impl FormatCode {
-    pub fn get_val(&self)-> &str {
-        &self.val
+    pub fn get_text(&self)-> &str {
+        &self.text
     }
 
-    pub fn set_val<S: Into<String>>(&mut self, value:S)-> &mut FormatCode {
-        self.val = value.into();
+    pub fn set_text<S: Into<String>>(&mut self, value:S)-> &mut FormatCode {
+        self.text = value.into();
         self
     }
 
@@ -28,7 +28,7 @@ impl FormatCode {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    self.set_val(e.unescape_and_decode(&reader).unwrap());
+                    self.set_text(e.unescape_and_decode(&reader).unwrap());
                 }, 
                 Ok(Event::End(ref e)) => {
                     match e.name() {
@@ -47,7 +47,7 @@ impl FormatCode {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:formatCode
         write_start_tag(writer, "c:formatCode", vec![], false);
-        write_text_node(writer, &self.val);
+        write_text_node(writer, &self.text);
         write_end_tag(writer, "c:formatCode");
     }
 }
