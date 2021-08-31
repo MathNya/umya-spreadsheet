@@ -155,13 +155,17 @@ mod tests {
 
     #[test]
     fn index_from_coordinate_1() {
-        assert_eq!(index_from_coordinate("$A$4"), vec![1, 4, 1, 1]);
-        assert_eq!(index_from_coordinate("$A4"), vec![1, 4, 1, 0]);
-        assert_eq!(index_from_coordinate("A4"), vec![1, 4, 0, 0]);
-        assert_eq!(index_from_coordinate("Z91"), vec![26, 91, 0, 0]);
-        assert_eq!(index_from_coordinate("AA91"), vec![27, 91, 0, 0]);
-        assert_eq!(index_from_coordinate("AA$91"), vec![27, 91, 0, 1]);
-        assert_eq!(index_from_coordinate("$AA91"), vec![27, 91, 1, 0]);
-        assert_eq!(index_from_coordinate("$AA$91"), vec![27, 91, 1, 1]);
+        assert_eq!(index_from_coordinate("$A$4"),   vec![Some(1),  Some(4),  Some(1), Some(1)]);
+        assert_eq!(index_from_coordinate("$A4"),    vec![Some(1),  Some(4),  Some(1), Some(0)]);
+        assert_eq!(index_from_coordinate("A4"),     vec![Some(1),  Some(4),  Some(0), Some(0)]);
+        assert_eq!(index_from_coordinate("Z91"),    vec![Some(26), Some(91), Some(0), Some(0)]);
+        assert_eq!(index_from_coordinate("AA91"),   vec![Some(27), Some(91), Some(0), Some(0)]);
+        assert_eq!(index_from_coordinate("AA$91"),  vec![Some(27), Some(91), Some(0), Some(1)]);
+        assert_eq!(index_from_coordinate("$AA91"),  vec![Some(27), Some(91), Some(1), Some(0)]);
+        assert_eq!(index_from_coordinate("$AA$91"), vec![Some(27), Some(91), Some(1), Some(1)]);
+        assert_eq!(index_from_coordinate("A"),      vec![Some(1),  None,     Some(0), None]);
+        assert_eq!(index_from_coordinate("$A"),     vec![Some(1),  None,     Some(1), None]);
+        assert_eq!(index_from_coordinate("5"),      vec![None,     Some(5),  None,    Some(0)]);
+        assert_eq!(index_from_coordinate("$5"),     vec![None,     Some(5),  None,    Some(1)]);
     }
 }
