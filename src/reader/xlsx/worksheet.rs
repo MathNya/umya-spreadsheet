@@ -107,8 +107,8 @@ pub(crate) fn read(
                                 let mut style = cell_xfs_vec.get(v).unwrap().clone();
                                 let coordinate_upper = coordinate.to_uppercase();
                                 let split = index_from_coordinate(&coordinate_upper);
-                                let col = split[0];
-                                let row = split[1];
+                                let col = split[0].unwrap();
+                                let row = split[1].unwrap();
                                 style.get_coordinate_mut().set_col_num(col);
                                 style.get_coordinate_mut().set_row_num(row);
                                 worksheet.add_style(style);
@@ -197,8 +197,8 @@ pub(crate) fn read(
                                 let mut style = cell_xfs_vec.get(v).unwrap().clone();
                                 let coordinate_upper = coordinate.to_uppercase();
                                 let split = index_from_coordinate(&coordinate_upper);
-                                let col = split[0];
-                                let row = split[1];
+                                let col = split[0].unwrap();
+                                let row = split[1].unwrap();
                                 style.get_coordinate_mut().set_col_num(col);
                                 style.get_coordinate_mut().set_row_num(row);
                                 worksheet.add_style(style);

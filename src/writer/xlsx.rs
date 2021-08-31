@@ -66,7 +66,7 @@ impl From<FromUtf8Error> for XlsxError {
 /// # Examples
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
-/// let path = std::path::Path::new("C:/spread_test_data/zzz.xlsx");
+/// let path = std::path::Path::new("./tests/result_files/zzz.xlsx");
 /// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {

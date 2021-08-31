@@ -134,10 +134,14 @@ impl GradientFill {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:gradFill
-        write_start_tag(writer, "a:gradFill", vec![
-            ("flip", &self.flip.get_value_string()),
-            ("rotWithShape", &self.rotate_with_shape.get_value_string()),
-        ], false);
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if &self.flip.has_value() == &true {
+            attributes.push(("flip", &self.flip.get_value_string()));
+        }
+        if &self.rotate_with_shape.has_value() == &true {
+            attributes.push(("rotWithShape", &self.rotate_with_shape.get_value_string()));
+        }
+        write_start_tag(writer, "a:gradFill",attributes, false);
 
         // a:gsLst
         &self.gradient_stop_list.write_to(writer);

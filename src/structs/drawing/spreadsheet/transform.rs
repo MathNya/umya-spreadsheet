@@ -96,10 +96,10 @@ impl Transform {
                 Ok(Event::Empty(ref e)) => {
                     match e.name() {
                         b"a:off" => {
-                            self.offset.set_attributes(reader, e);
+                            &mut self.offset.set_attributes(reader, e);
                         },
                         b"a:ext" => {
-                            self.extents.set_attributes(reader, e);
+                            &mut self.extents.set_attributes(reader, e);
                         },
                         _ => (),
                     }

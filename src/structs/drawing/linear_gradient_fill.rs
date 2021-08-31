@@ -37,15 +37,25 @@ impl LinearGradientFill {
         _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        self.angle.set_value_string(get_attribute(e, b"ang").unwrap());
-        self.scaled.set_value_string(get_attribute(e, b"scaled").unwrap());
+        match get_attribute(e, b"ang") {
+            Some(v) => {self.angle.set_value_string(v);},
+            None => {},
+        }
+        match get_attribute(e, b"scaled") {
+            Some(v) => {self.scaled.set_value_string(v);},
+            None => {},
+        }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lin
-        write_start_tag(writer, "a:lin", vec![
-            ("ang", &self.angle.get_value_string()),
-            ("scaled", &self.scaled.get_value_string()),
-        ], true);
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if &self.angle.has_value() == &true {
+            attributes.push(("ang", &self.angle.get_value_string()));
+        }
+        if &self.scaled.has_value() == &true {
+            attributes.push(("scaled", &self.scaled.get_value_string()));
+        }
+        write_start_tag(writer, "a:lin", attributes, true);
     }
 }

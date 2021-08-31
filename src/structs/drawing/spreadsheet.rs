@@ -63,3 +63,9 @@ pub use self::transform::*;
 
           mod edit_as_values;
 pub use self::edit_as_values::*;
+
+          mod one_cell_anchor;
+pub use self::one_cell_anchor::*;
+
+          mod extent;
+pub use self::extent::*;

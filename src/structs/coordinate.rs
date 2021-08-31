@@ -1,90 +1,82 @@
+use super::Column;
+use super::Row;
 use helper::coordinate::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Coordinate {
-    col_num: usize,
-    row_num: usize,
-    is_lock_col: bool,
-    is_lock_row: bool,
+    column: Column,
+    row: Row,
 }
 impl Coordinate {
     pub fn get_col_num(&self)-> &usize {
-        &self.col_num
+        &self.column.get_num()
     }
 
-    pub fn set_col_num(&mut self, value:usize)-> &mut Coordinate {
-        self.col_num = value;
+    pub fn set_col_num(&mut self, value:usize)-> &mut Self {
+        self.column.set_num(value);
         self
     }
 
     pub fn get_row_num(&self) -> &usize {
-        &self.row_num
+        &self.row.get_num()
     }
 
-    pub fn set_row_num(&mut self, value:usize)-> &mut Coordinate {
-        self.row_num = value;
+    pub fn set_row_num(&mut self, value:usize)-> &mut Self {
+        self.row.set_num(value);
         self
     }
 
     pub fn get_is_lock_col(&self) -> &bool {
-        &self.is_lock_col
+        self.column.get_is_lock()
     }
 
-    pub fn set_is_lock_col(&mut self, value:bool)-> &mut Coordinate {
-        self.is_lock_col = value;
+    pub fn set_is_lock_col(&mut self, value:bool)-> &mut Self {
+        self.column.set_is_lock(value);
         self
     }
 
     pub fn get_is_lock_row(&self) -> &bool {
-        &self.is_lock_row
+        self.row.get_is_lock()
     }
 
-    pub fn set_is_lock_row(&mut self, value:bool)-> &mut Coordinate {
-        self.is_lock_row = value;
+    pub fn set_is_lock_row(&mut self, value:bool)-> &mut Self {
+        self.row.set_is_lock(value);
         self
     }
 
-    pub fn set_coordinate<S: Into<String>>(&mut self, value:S)-> &mut Coordinate {
+    pub fn set_coordinate<S: Into<String>>(&mut self, value:S)-> &mut Self {
         let result = index_from_coordinate(value.into());
-        self.col_num = result[0];
-        self.row_num = result[1];
-        self.is_lock_col = if result[2] == 1 { true } else { false };
-        self.is_lock_col = if result[3] == 1 { true } else { false };
+        self.column.set_num(result[0].unwrap());
+        self.row.set_num(result[1].unwrap());
+        self.column.set_is_lock_usize(result[2].unwrap());
+        self.row.set_is_lock_usize(result[3].unwrap());
         self
     }
 
     pub fn get_coordinate(&self)-> String {
-        coordinate_from_index_with_lock(&self.col_num, &self.row_num, &self.is_lock_col, &self.is_lock_row)
+        coordinate_from_index_with_lock(&self.column.get_num(), &self.row.get_num(), &self.column.get_is_lock(), &self.row.get_is_lock())
     }
 
     pub(crate) fn is_mine(&self, col_num:&usize, row_num:&usize)->bool {
-        if &self.col_num != col_num {
-            return false;
-        }
-        if &self.row_num != row_num {
-            return false;
-        }
-        true
+        self.column.is_mine(col_num) && self.row.is_mine(row_num)
     }
 
     pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        self.col_num = adjustment_insert_coordinate(&self.col_num, root_col_num, offset_col_num);
-        self.row_num = adjustment_insert_coordinate(&self.row_num, root_row_num, offset_row_num);
+        self.column.adjustment_insert_coordinate(root_col_num, offset_col_num);
+        self.row.adjustment_insert_coordinate(root_row_num, offset_row_num);
     }
 
     pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        self.col_num = adjustment_remove_coordinate(&self.col_num, root_col_num, offset_col_num);
-        self.row_num = adjustment_remove_coordinate(&self.row_num, root_row_num, offset_row_num);
+        self.column.adjustment_remove_coordinate(root_col_num, offset_col_num);
+        self.row.adjustment_remove_coordinate(root_row_num, offset_row_num);
     }
 
     pub(crate) fn is_remove(&self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize)->bool {
-        if root_col_num > &0 {
-            let col_result = &self.col_num >= root_col_num && &self.col_num < &(root_col_num + offset_col_num);
-            return col_result;
+        if self.column.is_remove(root_col_num, offset_col_num) {
+            return true;
         }
-        if root_row_num > &0 {
-            let row_result = &self.row_num >= root_row_num && &self.row_num < &(root_row_num + offset_row_num);
-            return row_result;
+        if self.row.is_remove(root_row_num, offset_row_num) {
+            return true;
         }
         false
     }

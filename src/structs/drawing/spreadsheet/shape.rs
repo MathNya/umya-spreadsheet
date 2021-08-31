@@ -14,7 +14,7 @@ pub struct Shape {
     anchor: Anchor,
     non_visual_shape_properties: NonVisualShapeProperties,
     shape_properties: ShapeProperties,
-    shape_style: ShapeStyle,
+    shape_style: Option<ShapeStyle>,
     text_body: TextBody,
 }
 impl Shape {
@@ -54,16 +54,16 @@ impl Shape {
         self.shape_properties = value;
     }
 
-    pub fn get_shape_style(&self) -> &ShapeStyle {
+    pub fn get_shape_style(&self) -> &Option<ShapeStyle> {
         &self.shape_style
     }
 
-    pub fn get_shape_style_mut(&mut self) -> &mut ShapeStyle {
+    pub fn get_shape_style_mut(&mut self) -> &mut Option<ShapeStyle> {
         &mut self.shape_style
     }
 
     pub fn set_shape_style(&mut self, value:ShapeStyle) {
-        self.shape_style = value;
+        self.shape_style = Some(value);
     }
 
     pub fn get_text_body(&self) -> &TextBody {
@@ -90,7 +90,11 @@ impl Shape {
                     match e.name() {
                         b"xdr:nvSpPr" => { &mut self.non_visual_shape_properties.set_attributes(reader, e); }
                         b"xdr:spPr" => { &mut self.shape_properties.set_attributes(reader, e); },
-                        b"xdr:style" => { &mut self.shape_style.set_attributes(reader, e); },
+                        b"xdr:style" => {
+                            let mut obj = ShapeStyle::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_shape_style(obj);
+                        },
                         b"xdr:txBody" => { &mut self.text_body.set_attributes(reader, e); },
                         _ => (),
                     }
@@ -123,7 +127,10 @@ impl Shape {
         &self.shape_properties.write_to(writer);
 
         // xdr:style
-        &self.shape_style.write_to(writer);
+        match &self.shape_style {
+            Some(v) => {v.write_to(writer);},
+            None => {},
+        }
 
         // xdr:txBody
         &self.text_body.write_to(writer);

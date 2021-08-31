@@ -1,8 +1,17 @@
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Int64Value {
     value: Option<i64>,
     value_string: String,
     value_default: i64,
+}
+impl Default for Int64Value {
+    fn default() -> Self {
+        Self {
+            value: None,
+            value_string: "0".into(),
+            value_default: 0,
+        }
+    }
 }
 impl Int64Value {
     pub(crate) fn get_value(&self)-> &i64 {

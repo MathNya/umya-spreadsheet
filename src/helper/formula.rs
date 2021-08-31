@@ -34,10 +34,10 @@ pub fn adjustment_insert_formula_coordinate(
             let mut result = String::from("");
             for coordinate in split_range {
                 let index_coordinate = index_from_coordinate(coordinate);
-                let mut col_num = index_coordinate[0];
-                let mut row_num = index_coordinate[1];
-                let is_lock_col = index_coordinate[2] == 1;
-                let is_lock_row = index_coordinate[3] == 1;
+                let mut col_num = index_coordinate[0].unwrap();
+                let mut row_num = index_coordinate[1].unwrap();
+                let is_lock_col = index_coordinate[2].unwrap() == 1;
+                let is_lock_row = index_coordinate[3].unwrap() == 1;
                 col_num = adjustment_insert_coordinate(&col_num, root_col_num, offset_col_num);
                 row_num = adjustment_insert_coordinate(&row_num, root_row_num, offset_row_num);
                 let new_corrdinate = coordinate_from_index_with_lock(&col_num, &row_num, &is_lock_col, &is_lock_row);
@@ -88,10 +88,10 @@ pub fn adjustment_remove_formula_coordinate(
             let mut result = String::from("");
             for coordinate in split_range {
                 let index_coordinate = index_from_coordinate(coordinate);
-                let mut col_num = index_coordinate[0];
-                let mut row_num = index_coordinate[1];
-                let is_lock_col = index_coordinate[2] == 1;
-                let is_lock_row = index_coordinate[3] == 1;
+                let mut col_num = index_coordinate[0].unwrap();
+                let mut row_num = index_coordinate[1].unwrap();
+                let is_lock_col = index_coordinate[2].unwrap() == 1;
+                let is_lock_row = index_coordinate[3].unwrap() == 1;
                 col_num = adjustment_remove_coordinate(&col_num, root_col_num, offset_col_num);
                 row_num = adjustment_remove_coordinate(&row_num, root_row_num, offset_row_num);
                 let new_corrdinate = coordinate_from_index_with_lock(&col_num, &row_num, &is_lock_col, &is_lock_row);

@@ -3,7 +3,7 @@ extern crate umya_spreadsheet;
 #[test]
 fn read_and_wite() {
     // reader
-    let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
@@ -41,25 +41,25 @@ fn read_and_wite() {
     dbg!(&value);
 
     // writer
-    let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");
+    let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
 #[test]
 fn read_and_wite_by_empty() {
     // reader
-    let path = std::path::Path::new("C:/spread_test_data/aaa_empty.xlsx");
+    let path = std::path::Path::new("./tests/test_files/aaa_empty.xlsx");
     let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     // writer
-    let path = std::path::Path::new("C:/spread_test_data/bbb_empty.xlsx");
+    let path = std::path::Path::new("./tests/result_files/bbb_empty.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
 #[test]
 fn read_and_wite_xlsm() {
     // reader
-    let path = std::path::Path::new("C:/spread_test_data/aaa.xlsm");
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsm");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     //let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
@@ -68,14 +68,14 @@ fn read_and_wite_xlsm() {
     assert_eq!("TEST1", a1_value);
 
     // writer
-    let path = std::path::Path::new("C:/spread_test_data/bbb.xlsm");
+    let path = std::path::Path::new("./tests/result_files/bbb.xlsm");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
 #[test]
 fn insert_and_remove_cells() {
     // reader
-    let path = std::path::Path::new("C:/spread_test_data/aaa_insertCell.xlsx");
+    let path = std::path::Path::new("./tests/test_files/aaa_insertCell.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     book.insert_new_row("Sheet1", 2, 3);
@@ -86,7 +86,7 @@ fn insert_and_remove_cells() {
     book.remove_colmun_by_index("Sheet1", 6, 2);
 
     // writer
-    let path = std::path::Path::new("C:/spread_test_data/bbb_insertCell.xlsx");
+    let path = std::path::Path::new("./tests/result_files/bbb_insertCell.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
@@ -140,7 +140,7 @@ fn new_and_wite() {
     .set_argb("00FF0000");
 
     // writer.
-    let path = std::path::Path::new("C:/spread_test_data/eee.xlsx");
+    let path = std::path::Path::new("./tests/result_files/eee.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
 }
 

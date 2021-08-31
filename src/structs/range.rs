@@ -1,100 +1,176 @@
-use super::Coordinate;
+use super::Column;
+use super::Row;
 use ::helper::coordinate::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Range {
-    coordinate_start: Coordinate,
-    coordinate_end: Option<Coordinate>,
+    coordinate_start_col: Option<Column>,
+    coordinate_start_row: Option<Row>,
+    coordinate_end_col: Option<Column>,
+    coordinate_end_row: Option<Row>,
 }
 impl Range {
-    pub(crate) fn set_range<S: Into<String>>(&mut self, value:S)-> &mut Range {
+    pub fn set_range<S: Into<String>>(&mut self, value:S)-> &mut Self {
         let org_value = value.into().clone();
         let coordinate_collection: Vec<&str> = org_value.split(":").collect();
 
-        if coordinate_collection.len() == 1 {
+        if coordinate_collection.len() == 0 || coordinate_collection.len() > 2 {
+            panic!("Non-standard coordinate");
+        }
+
+        if coordinate_collection.len() == 1 || coordinate_collection.len() == 2 {
             let coordinate_str = coordinate_collection[0].to_string();
             let nums = index_from_coordinate(coordinate_str);
-            let mut coordinate_start = Coordinate::default();
-            coordinate_start.set_col_num(nums[0]);
-            coordinate_start.set_row_num(nums[1]);
-            coordinate_start.set_is_lock_col(if &nums[2] == &1 { true } else { false });
-            coordinate_start.set_is_lock_row(if &nums[3] == &1 { true } else { false });
-            self.coordinate_start = coordinate_start;
+            match nums[0] {
+                Some(v)=> {
+                    let mut coordinate_start_col = Column::default();
+                    coordinate_start_col.set_num(v);
+                    coordinate_start_col.set_is_lock_usize(nums[2].unwrap());
+                    self.coordinate_start_col = Some(coordinate_start_col);
+                }, None => {},
+            };
+            match nums[1] {
+                Some(v)=> {
+                    let mut coordinate_start_row = Row::default();
+                    coordinate_start_row.set_num(v);
+                    coordinate_start_row.set_is_lock_usize(nums[3].unwrap());
+                    self.coordinate_start_row = Some(coordinate_start_row);
+                }, None => {},
+            }
+        }
 
-        } else if coordinate_collection.len() == 2 {
-            let coordinate_str = coordinate_collection[0].to_string();
-            let nums = index_from_coordinate(coordinate_str);
-            let mut coordinate_start = Coordinate::default();
-            coordinate_start.set_col_num(nums[0]);
-            coordinate_start.set_row_num(nums[1]);
-            coordinate_start.set_is_lock_col(if &nums[2] == &1 { true } else { false });
-            coordinate_start.set_is_lock_row(if &nums[3] == &1 { true } else { false });
-            self.coordinate_start = coordinate_start;
-
+        if coordinate_collection.len() == 2 {
             let coordinate_str = coordinate_collection[1].to_string();
             let nums = index_from_coordinate(coordinate_str);
-            let mut coordinate_end = Coordinate::default();
-            coordinate_end.set_col_num(nums[0]);
-            coordinate_end.set_row_num(nums[1]);
-            coordinate_end.set_is_lock_col(if &nums[2] == &1 { true } else { false });
-            coordinate_end.set_is_lock_row(if &nums[3] == &1 { true } else { false });
-            self.coordinate_end = Some(coordinate_end);
-
-        } else {
-            panic!("Non-standard coordinate");
+            match nums[0] {
+                Some(v)=> {
+                    let mut coordinate_end_col = Column::default();
+                    coordinate_end_col.set_num(v);
+                    coordinate_end_col.set_is_lock_usize(nums[2].unwrap());
+                    self.coordinate_end_col = Some(coordinate_end_col);
+                }, None => {},
+            };
+            match nums[1] {
+                Some(v)=> {
+                    let mut coordinate_end_row = Row::default();
+                    coordinate_end_row.set_num(v);
+                    coordinate_end_row.set_is_lock_usize(nums[3].unwrap());
+                    self.coordinate_end_row = Some(coordinate_end_row);
+                }, None => {},
+            }
         }
         self
     }
 
-    pub(crate) fn get_range(&self) -> String {
-        match &self.coordinate_end {
-            Some(v) => {
-                format!("{}:{}", &self.coordinate_start.get_coordinate(), &v.get_coordinate())
-            },
-            None => {
-                format!("{}", &self.coordinate_start.get_coordinate())
-            }
+    pub fn get_range(&self) -> String {
+        let mut result = self.get_coordinate_start();
+        if self.coordinate_end_col.is_some() || self.coordinate_end_row.is_some() {
+            result = format!("{}:{}", result, &self.get_coordinate_end());
         }
+        result
     }
 
-    pub fn get_coordinate_start(&self)-> &Coordinate {
-        &self.coordinate_start
+    pub fn get_coordinate_start_col(&self)-> &Option<Column> {
+        &self.coordinate_start_col
     }
 
-    pub fn get_coordinate_start_mut(&mut self)-> &mut Coordinate {
-        &mut self.coordinate_start
+    pub fn get_coordinate_start_col_mut(&mut self)-> &mut Option<Column> {
+        &mut self.coordinate_start_col
     }
 
-    pub fn get_coordinate_end(&self)-> &Option<Coordinate> {
-        &self.coordinate_end
+    pub fn get_coordinate_start_row(&self)-> &Option<Row> {
+        &self.coordinate_start_row
     }
 
-    pub fn get_coordinate_end_mut(&mut self)-> &mut Option<Coordinate> {
-        &mut self.coordinate_end
+    pub fn get_coordinate_start_row_mut(&mut self)-> &mut Option<Row> {
+        &mut self.coordinate_start_row
+    }
+
+    pub fn get_coordinate_end_col(&self)-> &Option<Column> {
+        &self.coordinate_end_col
+    }
+
+    pub fn get_coordinate_end_col_mut(&mut self)-> &mut Option<Column> {
+        &mut self.coordinate_end_col
+    }
+
+    pub fn get_coordinate_end_row(&self)-> &Option<Row> {
+        &self.coordinate_end_row
+    }
+
+    pub fn get_coordinate_end_row_mut(&mut self)-> &mut Option<Row> {
+        &mut self.coordinate_end_row
+    }
+
+    pub(crate) fn get_coordinate_start(&self)-> String {
+        let mut coordinate_str = "".into();
+        match &self.coordinate_start_col {
+            Some(v) => {coordinate_str = v.get_coordinate();},
+            None => {}
+        };
+        match &self.coordinate_start_row {
+            Some(v) => {coordinate_str = format!("{}{}",  coordinate_str, v.get_coordinate());},
+            None => {}
+        };
+        coordinate_str
+    }
+
+    pub(crate) fn get_coordinate_end(&self)-> String {
+        let mut coordinate_str = "".into();
+        match &self.coordinate_end_col {
+            Some(v) => {coordinate_str = v.get_coordinate();},
+            None => {}
+        };
+        match &self.coordinate_end_row {
+            Some(v) => {coordinate_str = format!("{}{}",  coordinate_str, v.get_coordinate());},
+            None => {}
+        };
+        coordinate_str
     }
 
     pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        self.coordinate_start.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
-        match &mut self.coordinate_end {
-            Some(v) => v.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num),
-            None => {}
+        match &mut self.coordinate_start_col {
+            Some(v) => {v.adjustment_insert_coordinate(root_col_num, offset_col_num);},
+            None => {},
+        }
+        match &mut self.coordinate_start_row {
+            Some(v) => {v.adjustment_insert_coordinate(root_col_num, offset_col_num);},
+            None => {},
+        }
+        match &mut self.coordinate_end_col {
+            Some(v) => {v.adjustment_insert_coordinate(root_col_num, offset_col_num);},
+            None => {},
+        }
+        match &mut self.coordinate_end_row {
+            Some(v) => {v.adjustment_insert_coordinate(root_col_num, offset_col_num);},
+            None => {},
         }
     }
 
     pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        self.coordinate_start.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
-        match &mut self.coordinate_end {
-            Some(v) => v.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num),
-            None => {}
+        match &mut self.coordinate_start_col {
+            Some(v) => {v.adjustment_remove_coordinate(root_col_num, offset_col_num);},
+            None => {},
+        }
+        match &mut self.coordinate_start_row {
+            Some(v) => {v.adjustment_remove_coordinate(root_row_num, offset_row_num);},
+            None => {},
+        }
+        match &mut self.coordinate_end_col {
+            Some(v) => {v.adjustment_remove_coordinate(root_col_num, offset_col_num);},
+            None => {},
+        }
+        match &mut self.coordinate_end_row {
+            Some(v) => {v.adjustment_remove_coordinate(root_row_num, offset_row_num);},
+            None => {},
         }
     }
 
     pub(crate) fn is_remove(&self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize)->bool {
-        let start_result = self.coordinate_start.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num);
-        let end_result = match &self.coordinate_end {
-            Some(v) => v.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num),
-            None => start_result
-        };
-        start_result && end_result
+        let start_col_result = match &self.coordinate_start_col {Some(v)=> v.is_remove(root_col_num, offset_col_num), None=>false};
+        let start_row_result = match &self.coordinate_start_row {Some(v)=> v.is_remove(root_row_num, offset_row_num), None=>false};
+        let end_col_result = match &self.coordinate_end_col {Some(v)=> v.is_remove(root_col_num, offset_col_num), None=>false};
+        let end_row_result = match &self.coordinate_end_row {Some(v)=> v.is_remove(root_row_num, offset_row_num), None=>false};
+        start_col_result && start_row_result && end_col_result && end_row_result
     }
 }

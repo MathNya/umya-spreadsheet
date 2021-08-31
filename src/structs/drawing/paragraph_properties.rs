@@ -1,4 +1,6 @@
 // a:pPr
+use super::TextAlignmentTypeValues;
+use super::super::EnumValue;
 use super::DefaultRunProperties;
 use writer::driver::*;
 use reader::driver::*;
@@ -10,6 +12,7 @@ use std::io::Cursor;
 #[derive(Default, Debug)]
 pub struct ParagraphProperties {
     right_to_left: Option<String>,
+    alignment: EnumValue<TextAlignmentTypeValues>,
     default_run_properties: Option<DefaultRunProperties>,
 }
 impl ParagraphProperties {
@@ -19,6 +22,15 @@ impl ParagraphProperties {
 
     pub fn set_right_to_left<S: Into<String>>(&mut self, value:S) -> &mut ParagraphProperties {
         self.right_to_left = Some(value.into());
+        self
+    }
+
+    pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
+        &self.alignment.get_value()
+    }
+
+    pub fn set_alignment(&mut self, value:TextAlignmentTypeValues) -> &mut ParagraphProperties {
+        self.alignment.set_value(value);
         self
     }
 
@@ -43,6 +55,10 @@ impl ParagraphProperties {
     ) {
         match get_attribute(e, b"rtl") {
             Some(v) => {&mut self.set_right_to_left(v);},
+            None => {}
+        }
+        match get_attribute(e, b"algn") {
+            Some(v) => {&mut self.alignment.set_value_string(v);},
             None => {}
         }
         
@@ -88,20 +104,27 @@ impl ParagraphProperties {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        let empty_flag = &self.default_run_properties.is_none();
+
         // a:pPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         match &self.right_to_left {
             Some(v) => {attributes.push(("rtl", v));},
             None => {}
         }
-        write_start_tag(writer, "a:pPr", attributes, false);
-
-        // a:defRPr
-        match &self.default_run_properties {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if self.alignment.has_value() == true {
+            attributes.push(("algn", self.alignment.get_value_string()));
         }
+        write_start_tag(writer, "a:pPr", attributes, *empty_flag);
 
-        write_end_tag(writer, "a:pPr");
+        if empty_flag == &false {
+            // a:defRPr
+            match &self.default_run_properties {
+                Some(v) => v.write_to(writer),
+                None => {}
+            }
+
+            write_end_tag(writer, "a:pPr");
+        }
     }
 }

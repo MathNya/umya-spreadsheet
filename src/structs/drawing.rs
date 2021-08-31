@@ -179,3 +179,36 @@ pub use self::shape_3d_type::*;
 
 mod preset_material_type_values;
 pub use self::preset_material_type_values::*;
+
+mod text_wrapping_values;
+pub use self::text_wrapping_values::*;
+
+mod shape_auto_fit;
+pub use self::shape_auto_fit::*;
+
+mod text_alignment_type_values;
+pub use self::text_alignment_type_values::*;
+
+mod text_caps_values;
+pub use self::text_caps_values::*;
+
+mod tint;
+pub use self::tint::*;
+
+mod shade;
+pub use self::shade::*;
+
+mod saturation_modulation;
+pub use self::saturation_modulation::*;
+
+mod preset_line_dash_values;
+pub use self::preset_line_dash_values::*;
+
+mod preset_dash;
+pub use self::preset_dash::*;
+
+mod text_character_properties_type;
+pub use self::text_character_properties_type::*;
+
+mod miter;
+pub use self::miter::*;

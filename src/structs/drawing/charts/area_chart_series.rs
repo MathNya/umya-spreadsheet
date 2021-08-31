@@ -1,6 +1,7 @@
 // c:ser
 use super::Index;
 use super::Order;
+use super::Explosion;
 use super::InvertIfNegative;
 use super::Marker;
 use super::ShapeProperties;
@@ -22,6 +23,7 @@ use std::io::Cursor;
 pub struct AreaChartSeries {
     index: Index,
     order: Order,
+    explosion: Option<Explosion>,
     invert_if_negative: Option<InvertIfNegative>,
     marker: Option<Marker>,
     shape_properties: Option<ShapeProperties>,
@@ -57,6 +59,19 @@ impl AreaChartSeries {
 
     pub fn set_order(&mut self, value:Order)-> &mut AreaChartSeries {
         self.order = value;
+        self
+    }
+
+    pub fn get_explosion(&self)-> &Option<Explosion> {
+        &self.explosion
+    }
+
+    pub fn get_explosion_mut(&mut self)-> &Option<Explosion> {
+        &mut self.explosion
+    }
+
+    pub fn set_explosion(&mut self, value:Explosion)-> &mut AreaChartSeries {
+        self.explosion = Some(value);
         self
     }
 
@@ -282,6 +297,11 @@ impl AreaChartSeries {
                         b"c:order" => {
                             self.order.set_attributes(reader, e);
                         },
+                        b"c:explosion" => {
+                            let mut obj = Explosion::default();
+                            obj.set_attributes(reader, e);
+                            self.set_explosion(obj);
+                        },
                         b"c:invertIfNegative" => {
                             let mut obj = InvertIfNegative::default();
                             obj.set_attributes(reader, e);
@@ -323,6 +343,12 @@ impl AreaChartSeries {
 
         // c:order
         &self.order.write_to(writer);
+
+        // c:explosion
+        match &self.explosion {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
 
         // c:invertIfNegative
         match &self.invert_if_negative {

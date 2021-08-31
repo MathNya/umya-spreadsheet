@@ -166,7 +166,7 @@ impl ShapeProperties {
                         },
                         b"a:effectLst" => {
                             let mut obj = EffectList::default();
-                            obj.set_attributes(reader, e);
+                            obj.set_attributes(reader, e, false);
                             &mut self.set_effect_list(obj);
                         }
                         b"a:scene3d" => {

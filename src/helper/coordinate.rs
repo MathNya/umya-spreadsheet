@@ -11,6 +11,9 @@ const ALPHABET: &'static [&'static str] = &[
 
 pub fn column_index_from_string<S: Into<String>>(column:S)->usize {
     let column_c = column.into().clone();
+    if column_c == "0" {
+        return 0;
+    }
     match column_c.len() {
         3 => {
             let mut result = 1;
@@ -61,16 +64,22 @@ pub fn string_from_column_index(column_index:&usize)->String {
     result
 }
 
-pub fn coordinate_from_string(coordinate:&str)->Vec<&str> {
+pub fn coordinate_from_string(coordinate:&str)->Vec<Option<&str>> {
     let re = Regex::new(r"[A-Z]+").unwrap();
-    let caps = re.captures(coordinate).unwrap();
-    let col = caps.get(0).unwrap().as_str();
-    let is_lock_col = match coordinate.find(format!("{}{}", "$", col).as_str()) {Some(_) => "1", None => "0"};
+    let caps = re.captures(coordinate);
+    let col = match caps {Some(v) => Some(v.get(0).unwrap().as_str()), None => None};
+    let is_lock_col = match col {
+        Some(v) => match coordinate.find(format!("{}{}", "$", v).as_str()) {Some(_) => Some("1"), None => Some("0")},
+        None => None,
+    };
 
     let re = Regex::new(r"[0-9]+").unwrap();
-    let caps = re.captures(coordinate).unwrap();
-    let row = caps.get(0).unwrap().as_str();
-    let is_lock_row = match coordinate.find(format!("{}{}", "$", row).as_str()) {Some(_) => "1", None => "0"};
+    let caps = re.captures(coordinate);
+    let row = match caps {Some(v) => Some(v.get(0).unwrap().as_str()), None => None};
+    let is_lock_row = match row {
+        Some(v) => match coordinate.find(format!("{}{}", "$", v).as_str()) {Some(_) => Some("1"), None => Some("0")},
+        None => None,
+    };
 
     vec![col, row, is_lock_col, is_lock_row]
 }
@@ -93,13 +102,13 @@ pub fn coordinate_from_index_with_lock(col:&usize, row:&usize, is_lock_col:&bool
     )
 }
 
-pub fn index_from_coordinate<S: Into<String>>(coordinate:S)->Vec<usize> {
+pub fn index_from_coordinate<S: Into<String>>(coordinate:S)->Vec<Option<usize>> {
     let con = coordinate.into();
     let split = coordinate_from_string(con.as_str());
-    let col = column_index_from_string(split[0]);
-    let row = split[1].parse::<usize>().unwrap();
-    let is_lock_col = split[2].parse::<usize>().unwrap();
-    let is_lock_row = split[3].parse::<usize>().unwrap();
+    let col = match split[0] {Some(v) => Some(column_index_from_string(v)), None => None};
+    let row = match split[1] {Some(v) => Some(v.parse::<usize>().unwrap()), None => None};
+    let is_lock_col = match split[2] {Some(v) => Some(v.parse::<usize>().unwrap()), None => None};
+    let is_lock_row = match split[3] {Some(v) => Some(v.parse::<usize>().unwrap()), None => None};
     vec![col, row, is_lock_col, is_lock_row]
 }
 

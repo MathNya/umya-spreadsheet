@@ -1,10 +1,8 @@
 use super::Range;
-use super::Column;
 
 #[derive(Default, Debug)]
 pub struct AutoFilter {
     range: Range,
-    columns: Vec<Column>,
 }
 impl AutoFilter {
     pub fn get_range(&self)->&Range {

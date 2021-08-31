@@ -70,6 +70,11 @@ impl GradientStop {
                             obj.set_attributes(reader, e, false);
                             self.set_scheme_color(obj);
                         },
+                        b"a:srgbClr" => {
+                            let mut obj = RgbColorModelHex::default();
+                            obj.set_attributes(reader, e, false);
+                            self.set_rgb_color_model_hex(obj);
+                        },
                         _ => (),
                     }
                 },
@@ -82,7 +87,7 @@ impl GradientStop {
                         },
                         b"a:srgbClr" => {
                             let mut obj = RgbColorModelHex::default();
-                            obj.set_attributes(reader, e);
+                            obj.set_attributes(reader, e, true);
                             self.set_rgb_color_model_hex(obj);
                         },
                         _ => (),

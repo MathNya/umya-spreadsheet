@@ -4,6 +4,8 @@ use super::SolidFill;
 use super::GradientFill;
 use super::NoFill;
 use super::Bevel;
+use super::PresetDash;
+use super::Miter;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -21,6 +23,8 @@ pub struct Outline {
     tail_end: Option<TailEnd>,
     no_fill: Option<NoFill>,
     bevel: Option<Bevel>,
+    preset_dash: Option<PresetDash>,
+    miter: Option<Miter>,
 }
 impl Outline {
     pub fn get_width(&self) -> &u32 {
@@ -109,6 +113,32 @@ impl Outline {
         self
     }
 
+    pub fn get_preset_dash(&self) -> &Option<PresetDash> {
+        &self.preset_dash
+    }
+
+    pub fn get_preset_dash_mut(&mut self) -> &mut Option<PresetDash> {
+        &mut self.preset_dash
+    }
+
+    pub fn set_preset_dash(&mut self, value:PresetDash) -> &mut Outline {
+        self.preset_dash = Some(value);
+        self
+    }
+
+    pub fn get_miter(&self) -> &Option<Miter> {
+        &self.miter
+    }
+
+    pub fn get_miter_mut(&mut self) -> &mut Option<Miter> {
+        &mut self.miter
+    }
+
+    pub fn set_miter(&mut self, value:Miter) -> &mut Outline {
+        self.miter = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
@@ -164,6 +194,16 @@ impl Outline {
                             let mut obj = Bevel::default();
                             obj.set_attributes(reader, e);
                             &mut self.set_bevel(obj);
+                        },
+                        b"a:miter" => {
+                            let mut obj = Miter::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_miter(obj);
+                        },
+                        b"a:prstDash" => {
+                            let mut obj = PresetDash::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_preset_dash(obj);
                         },
                         _ => (),
                     }
@@ -231,6 +271,18 @@ impl Outline {
 
         // a:bevel
         match &self.bevel {
+            Some(v) => v.write_to(writer),
+            None => {},
+        }
+
+        // a:miter
+        match &self.miter {
+            Some(v) => v.write_to(writer),
+            None => {},
+        }
+
+        // a:prstDash
+        match &self.preset_dash {
             Some(v) => v.write_to(writer),
             None => {},
         }

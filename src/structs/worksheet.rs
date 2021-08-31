@@ -118,8 +118,8 @@ impl Worksheet {
     pub fn get_value<S: Into<String>>(&self, coordinate:S)-> String {
         let coordinate_upper = coordinate.into().to_uppercase();
         let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0];
-        let row = split[1];
+        let col = split[0].unwrap();
+        let row = split[1].unwrap();
         self.get_value_by_column_and_row(col, row)
     }
 
@@ -156,8 +156,8 @@ impl Worksheet {
     pub fn get_formatted_value<S: Into<String>>(&self, coordinate:S)-> String {
         let coordinate_upper = coordinate.into().to_uppercase();
         let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0];
-        let row = split[1];
+        let col = split[0].unwrap();
+        let row = split[1].unwrap();
         self.get_formatted_value_by_column_and_row(col, row)
     }
 
@@ -231,8 +231,8 @@ impl Worksheet {
     pub fn get_cell<S: Into<String>>(&self, coordinate:S)->Option<&Cell> {
         let coordinate_upper = coordinate.into().to_uppercase();
         let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0];
-        let row = split[1];
+        let col = split[0].unwrap();
+        let row = split[1].unwrap();
         self.get_cell_by_column_and_row(col, row)
     }
 
@@ -266,8 +266,8 @@ impl Worksheet {
     pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate:S)->&mut Cell {
         let coordinate_upper = coordinate.into().to_uppercase();
         let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0];
-        let row = split[1];
+        let col = split[0].unwrap();
+        let row = split[1].unwrap();
         self.get_cell_by_column_and_row_mut(col, row)
     }
 
@@ -334,8 +334,8 @@ impl Worksheet {
     pub fn get_style<S: Into<String>>(&self, coordinate:S) -> Option<&Style> {
         let coordinate_upper = coordinate.into().to_uppercase();
         let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0];
-        let row = split[1];
+        let col = split[0].unwrap();
+        let row = split[1].unwrap();
         self.get_style_by_column_and_row(col, row)
     }
 
@@ -369,8 +369,8 @@ impl Worksheet {
     pub fn get_style_mut<S: Into<String>>(&mut self, coordinate:S) -> &mut Style {
         let coordinate_upper = coordinate.into().to_uppercase();
         let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0];
-        let row = split[1];
+        let col = split[0].unwrap();
+        let row = split[1].unwrap();
         self.get_style_by_column_and_row_mut(col, row)
     }
 

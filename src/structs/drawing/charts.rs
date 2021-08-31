@@ -393,3 +393,30 @@ pub use self::marker_style_values::*;
 
           mod tick_label_position_values;
 pub use self::tick_label_position_values::*;
+
+          mod area_chart;
+pub use self::area_chart::*;
+
+          mod area_3d_chart;
+pub use self::area_3d_chart::*;
+
+          mod pie_3d_chart;
+pub use self::pie_3d_chart::*;
+
+          mod of_pie_chart;
+pub use self::of_pie_chart::*;
+
+          mod of_pie_values;
+pub use self::of_pie_values::*;
+
+          mod of_pie_type;
+pub use self::of_pie_type::*;
+
+          mod second_pie_size;
+pub use self::second_pie_size::*;
+
+          mod series_lines;
+pub use self::series_lines::*;
+
+          mod explosion;
+pub use self::explosion::*;

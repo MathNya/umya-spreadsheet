@@ -65,7 +65,7 @@ impl From<FromUtf8Error> for XlsxError {
 /// * `Result` - OK is Spreadsheet. Err is error message. 
 /// # Examples
 /// ```
-/// let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
+/// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 /// ```
 pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {

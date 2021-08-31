@@ -54,8 +54,13 @@ impl EffectList {
     pub(crate) fn set_attributes(
         &mut self,
         reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        _e:&BytesStart
+        _e:&BytesStart,
+        empty_flag: bool,
     ) {
+        if empty_flag == true {
+            return;
+        }
+
         let mut buf = Vec::new();
     
         loop {
@@ -100,27 +105,31 @@ impl EffectList {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        let empty_flag = self.glow.is_none() && self.outer_shadow.is_none() && self.soft_edge.is_none();
+
         // a:effectLst
-        write_start_tag(writer, "a:effectLst", vec![], false);
+        write_start_tag(writer, "a:effectLst", vec![], empty_flag);
 
-        // a:glow
-        match &self.glow {
-            Some(v) => v.write_to(writer),
-            None => {},
+        if empty_flag == false {
+            // a:glow
+            match &self.glow {
+                Some(v) => v.write_to(writer),
+                None => {},
+            }
+
+            // a:outerShdow
+            match &self.outer_shadow {
+                Some(v) => v.write_to(writer),
+                None => {},
+            }
+
+            // a:softEdge
+            match &self.soft_edge {
+                Some(v) => v.write_to(writer),
+                None => {},
+            }
+
+            write_end_tag(writer, "a:effectLst");
         }
-
-        // a:outerShdow
-        match &self.outer_shadow {
-            Some(v) => v.write_to(writer),
-            None => {},
-        }
-
-        // a:softEdge
-        match &self.soft_edge {
-            Some(v) => v.write_to(writer),
-            None => {},
-        }
-
-        write_end_tag(writer, "a:effectLst");
     }
 }

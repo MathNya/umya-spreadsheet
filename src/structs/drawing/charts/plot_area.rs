@@ -3,12 +3,16 @@ use super::Layout;
 use super::LineChart;
 use super::Line3DChart;
 use super::PieChart;
+use super::Pie3DChart;
 use super::DoughnutChart;
 use super::ScatterChart;
 use super::BarChart;
 use super::Bar3DChart;
 use super::RadarChart;
 use super::BubbleChart;
+use super::AreaChart;
+use super::Area3DChart;
+use super::OfPieChart;
 use super::CategoryAxis;
 use super::ValueAxis;
 use super::SeriesAxis;
@@ -26,12 +30,16 @@ pub struct PlotArea {
     line_chart: Option<LineChart>,
     line_3d_chart: Option<Line3DChart>,
     pie_chart: Option<PieChart>,
+    pie_3d_chart: Option<Pie3DChart>,
     doughnut_chart: Option<DoughnutChart>,
     scatter_chart: Option<ScatterChart>,
     bar_chart: Option<BarChart>,
     bar_3d_chart: Option<Bar3DChart>,
     radar_chart: Option<RadarChart>,
     bubble_chart: Option<BubbleChart>,
+    area_chart: Option<AreaChart>,
+    area_3d_chart: Option<Area3DChart>,
+    of_pie_chart: Option<OfPieChart>,
     category_axis: Vec<CategoryAxis>,
     value_axis: Vec<ValueAxis>,
     series_axis: Vec<SeriesAxis>,
@@ -87,6 +95,19 @@ impl PlotArea {
 
     pub fn set_pie_chart(&mut self, value:PieChart)-> &mut PlotArea {
         self.pie_chart = Some(value);
+        self
+    }
+
+    pub fn get_pie_3d_chart(&self)-> &Option<Pie3DChart> {
+        &self.pie_3d_chart
+    }
+
+    pub fn get_pie_3d_chart_mut(&mut self)-> &mut Option<Pie3DChart> {
+        &mut self.pie_3d_chart
+    }
+
+    pub fn set_pie_3d_chart(&mut self, value:Pie3DChart)-> &mut PlotArea {
+        self.pie_3d_chart = Some(value);
         self
     }
 
@@ -165,6 +186,45 @@ impl PlotArea {
 
     pub fn set_bubble_chart(&mut self, value:BubbleChart)-> &mut PlotArea {
         self.bubble_chart = Some(value);
+        self
+    }
+
+    pub fn get_area_chart(&self)-> &Option<AreaChart> {
+        &self.area_chart
+    }
+
+    pub fn get_area_chart_mut(&mut self)-> &mut Option<AreaChart> {
+        &mut self.area_chart
+    }
+
+    pub fn set_area_chart(&mut self, value:AreaChart)-> &mut PlotArea {
+        self.area_chart = Some(value);
+        self
+    }
+
+    pub fn get_area_3d_chart(&self)-> &Option<Area3DChart> {
+        &self.area_3d_chart
+    }
+
+    pub fn get_area_3d_chart_mut(&mut self)-> &mut Option<Area3DChart> {
+        &mut self.area_3d_chart
+    }
+
+    pub fn set_area_3d_chart(&mut self, value:Area3DChart)-> &mut PlotArea {
+        self.area_3d_chart = Some(value);
+        self
+    }
+
+    pub fn get_of_pie_chart(&self)-> &Option<OfPieChart> {
+        &self.of_pie_chart
+    }
+
+    pub fn get_of_pie_chart_mut(&mut self)-> &mut Option<OfPieChart> {
+        &mut self.of_pie_chart
+    }
+
+    pub fn set_of_pie_chart(&mut self, value:OfPieChart)-> &mut PlotArea {
+        self.of_pie_chart = Some(value);
         self
     }
 
@@ -252,6 +312,16 @@ impl PlotArea {
             }
             None => {}
         }
+        match &mut self.pie_3d_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
         match &mut self.doughnut_chart {
             Some(v) => {
                 for ser in v.get_area_chart_series_mut() {
@@ -312,6 +382,36 @@ impl PlotArea {
             }
             None => {}
         }
+        match &mut self.area_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
+        match &mut self.area_3d_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
+        match &mut self.of_pie_chart {
+            Some(v) => {
+                for ser in v.get_area_chart_series_mut() {
+                    for formula in ser.get_formula_mut() {
+                        result.push(formula);
+                    }
+                }
+            }
+            None => {}
+        }
         result
     }
 
@@ -325,6 +425,10 @@ impl PlotArea {
             None => {}
         }
         match &self.pie_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.pie_3d_chart {
             Some(_) => {return true;},
             None => {}
         }
@@ -349,6 +453,18 @@ impl PlotArea {
             None => {}
         }
         match &self.bubble_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.area_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.area_3d_chart {
+            Some(_) => {return true;},
+            None => {}
+        }
+        match &self.of_pie_chart {
             Some(_) => {return true;},
             None => {}
         }
@@ -383,6 +499,11 @@ impl PlotArea {
                             obj.set_attributes(reader, e);
                             self.set_pie_chart(obj);
                         },
+                        b"c:pie3DChart" => {
+                            let mut obj = Pie3DChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_pie_3d_chart(obj);
+                        },
                         b"c:doughnutChart" => {
                             let mut obj = DoughnutChart::default();
                             obj.set_attributes(reader, e);
@@ -412,6 +533,21 @@ impl PlotArea {
                             let mut obj = BubbleChart::default();
                             obj.set_attributes(reader, e);
                             self.set_bubble_chart(obj);
+                        },
+                        b"c:areaChart" => {
+                            let mut obj = AreaChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_area_chart(obj);
+                        },
+                        b"c:area3DChart" => {
+                            let mut obj = Area3DChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_area_3d_chart(obj);
+                        },
+                        b"c:ofPieChart" => {
+                            let mut obj = OfPieChart::default();
+                            obj.set_attributes(reader, e);
+                            self.set_of_pie_chart(obj);
                         },
                         b"c:catAx" => {
                             let mut obj = CategoryAxis::default();
@@ -475,6 +611,12 @@ impl PlotArea {
             None => {}
         }
 
+        // c:pie3DChart
+        match &self.pie_3d_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
         // c:doughnutChart
         match &self.doughnut_chart {
             Some(v) => {v.write_to(writer);},
@@ -507,6 +649,24 @@ impl PlotArea {
 
         // c:bubbleChart
         match &self.bubble_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:areaChart
+        match &self.area_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:area3DChart
+        match &self.area_3d_chart {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
+
+        // c:ofPieChart
+        match &self.of_pie_chart {
             Some(v) => {v.write_to(writer);},
             None => {}
         }

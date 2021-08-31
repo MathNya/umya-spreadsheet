@@ -140,31 +140,19 @@ pub(crate) fn get_text_element(
 )->TextElement {
     let mut buf = Vec::new();
     let mut text_element = TextElement::default();
-    let mut with_first_space = false;
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 match e.name() {
                     b"rPr" => text_element.set_font(get_font(reader, theme)),
-                    b"t" => {
-                        match get_attribute(e, b"xml:space") {
-                            Some(v) => {
-                                if v == "preserve" {
-                                    with_first_space = true;
-                                }
-                            },
-                            None => {}
-                        }
-                    },
                     _ => (),
                 }
             },
             Ok(Event::Text(e)) => {
-                let mut value = e.unescape_and_decode(&reader).unwrap();
-                if with_first_space {
-                    value = format!("\r\n{}", value);
+                let value = e.unescape_and_decode(&reader).unwrap();
+                if &value != "" {
+                    text_element.set_text(value);
                 }
-                text_element.set_text(value);
             },
             Ok(Event::End(ref e)) => {
                 match e.name() {

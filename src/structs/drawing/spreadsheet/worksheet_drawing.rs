@@ -1,8 +1,9 @@
 // xdr:wsDr
-use super::two_cell_anchor::TwoCellAnchor;
-use super::picture::Picture;
-use super::shape::Shape;
-use super::connection_shape::ConnectionShape;
+use super::OneCellAnchor;
+use super::TwoCellAnchor;
+use super::Picture;
+use super::Shape;
+use super::ConnectionShape;
 use super::GraphicFrame;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
@@ -13,9 +14,22 @@ use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct WorksheetDrawing {
+    one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }
 impl WorksheetDrawing {
+    pub fn get_one_cell_anchor_collection(&self) -> &Vec<OneCellAnchor> {
+        &self.one_cell_anchor_collection
+    }
+
+    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
+        &mut self.one_cell_anchor_collection
+    }
+
+    pub fn add_one_cell_anchor_collection(&mut self, value:OneCellAnchor) {
+        self.one_cell_anchor_collection.push(value);
+    }
+
     pub fn get_two_cell_anchor_collection(&self) -> &Vec<TwoCellAnchor> {
         &self.two_cell_anchor_collection
     }
@@ -158,14 +172,22 @@ impl WorksheetDrawing {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
+                        b"xdr:oneCellAnchor" => {
+                            if is_alternate_content {
+                                continue;
+                            }
+                            let mut obj = OneCellAnchor::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.add_one_cell_anchor_collection(obj);
+                        },
                         b"xdr:twoCellAnchor" => {
                             if is_alternate_content {
                                 continue;
                             }
-                            let mut two_cell_anchor = TwoCellAnchor::default();
-                            two_cell_anchor.set_attributes(reader, e, dir, target);
-                            if two_cell_anchor.is_support() {
-                                &mut self.add_two_cell_anchor_collection(two_cell_anchor);
+                            let mut obj = TwoCellAnchor::default();
+                            obj.set_attributes(reader, e, dir, target);
+                            if obj.is_support() {
+                                &mut self.add_two_cell_anchor_collection(obj);
                             }
                         },
                         b"mc:AlternateContent" => {
@@ -197,6 +219,11 @@ impl WorksheetDrawing {
             ("xmlns:xdr", "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"),
             ("xmlns:a", "http://schemas.openxmlformats.org/drawingml/2006/main"),
         ], false);
+
+        // xdr:oneCellAnchor
+        for one_cell_anchor in &self.one_cell_anchor_collection {
+            one_cell_anchor.write_to(writer);
+        }
 
         // xdr:twoCellAnchor
         let mut r_id = 1;

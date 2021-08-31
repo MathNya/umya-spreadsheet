@@ -4,6 +4,7 @@ use super::super::PresetGeometry;
 use super::super::SolidFill;
 use super::super::Outline;
 use super::super::EffectList;
+use super::super::NoFill;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -17,6 +18,7 @@ pub struct ShapeProperties {
     solid_fill: Option<SolidFill>,
     outline: Option<Outline>,
     effect_list: Option<EffectList>,
+    no_fill: Option<NoFill>,
 }
 impl ShapeProperties {
     pub fn get_geometry(&self) -> &PresetGeometry {
@@ -27,8 +29,9 @@ impl ShapeProperties {
         &mut self.preset_geometry
     }
 
-    pub fn set_geometry(&mut self, value:PresetGeometry) {
+    pub fn set_geometry(&mut self, value:PresetGeometry) -> &mut ShapeProperties {
         self.preset_geometry = value;
+        self
     }
 
     pub fn get_transform2d(&self) -> &Transform2D {
@@ -39,8 +42,9 @@ impl ShapeProperties {
         &mut self.transform2d
     }
 
-    pub fn set_transform2d(&mut self, value:Transform2D) {
+    pub fn set_transform2d(&mut self, value:Transform2D) -> &mut ShapeProperties {
         self.transform2d = value;
+        self
     }
 
     pub fn get_solid_fill(&self) -> &Option<SolidFill> {
@@ -51,8 +55,9 @@ impl ShapeProperties {
         &mut self.solid_fill
     }
 
-    pub fn set_solid_fill(&mut self, value:SolidFill) {
+    pub fn set_solid_fill(&mut self, value:SolidFill) -> &mut ShapeProperties {
         self.solid_fill = Some(value);
+        self
     }
 
     pub fn get_outline(&self) -> &Option<Outline> {
@@ -63,8 +68,9 @@ impl ShapeProperties {
         &mut self.outline
     }
 
-    pub fn set_outline(&mut self, value:Outline) {
+    pub fn set_outline(&mut self, value:Outline) -> &mut ShapeProperties {
         self.outline = Some(value);
+        self
     }
 
     pub fn get_effect_list(&self) -> &Option<EffectList> {
@@ -75,8 +81,22 @@ impl ShapeProperties {
         &mut self.effect_list
     }
 
-    pub fn set_effect_list(&mut self, value:EffectList) {
+    pub fn set_effect_list(&mut self, value:EffectList) -> &mut ShapeProperties {
         self.effect_list = Some(value);
+        self
+    }
+
+    pub fn get_no_fill(&self) -> &Option<NoFill> {
+        &self.no_fill
+    }
+
+    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
+        &mut self.no_fill
+    }
+
+    pub fn set_no_fill(&mut self, value:NoFill) -> &mut ShapeProperties {
+        self.no_fill = Some(value);
+        self
     }
 
     pub(crate) fn set_attributes(
@@ -107,9 +127,19 @@ impl ShapeProperties {
                         },
                         b"a:effectLst" => {
                             let mut effect_list = EffectList::default();
-                            effect_list.set_attributes(reader, e);
+                            effect_list.set_attributes(reader, e, false);
                             &mut self.set_effect_list(effect_list);
                         }
+                        _ => (),
+                    }
+                },
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"a:noFill" => {
+                            let mut obj = NoFill::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_no_fill(obj);
+                        },
                         _ => (),
                     }
                 },
@@ -160,7 +190,13 @@ impl ShapeProperties {
             },
             None => {}
         }
-    
+
+        // a:noFill
+        match &self.no_fill {
+            Some(v) => v.write_to(writer),
+            None => {},
+        }
+
         write_end_tag(writer, "xdr:spPr");
     }
 }

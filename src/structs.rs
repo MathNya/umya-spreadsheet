@@ -172,3 +172,6 @@ pub use self::s_byte_value::*;
 
           mod int64_value;
 pub use self::int64_value::*;
+
+          mod row;
+pub use self::row::*;

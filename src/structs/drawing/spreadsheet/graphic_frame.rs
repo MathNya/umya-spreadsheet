@@ -89,7 +89,7 @@ impl GraphicFrame {
                         b"xdr:nvGraphicFramePr" => {
                             &mut self.non_visual_graphic_frame_properties.set_attributes(reader, e);
                         },
-                        b"a:xfrm" => {
+                        b"xdr:xfrm" => {
                             &mut self.transform.set_attributes(reader, e);
                         },
                         b"a:graphic" => {

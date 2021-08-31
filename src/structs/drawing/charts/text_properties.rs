@@ -69,6 +69,11 @@ impl TextProperties {
                             paragraph.set_attributes(reader, e);
                             &mut self.add_paragraph(paragraph);
                         }
+                        b"a:bodyPr" => {
+                            let mut body_properties = BodyProperties::default();
+                            body_properties.set_attributes(reader, e, false);
+                            &mut self.set_body_properties(body_properties);
+                        },
                         _ => (),
                     }
                 },
@@ -76,7 +81,7 @@ impl TextProperties {
                     match e.name() {
                         b"a:bodyPr" => {
                             let mut body_properties = BodyProperties::default();
-                            body_properties.set_attributes(reader, e);
+                            body_properties.set_attributes(reader, e, true);
                             &mut self.set_body_properties(body_properties);
                         },
                         _ => (),

@@ -146,7 +146,7 @@ pub(crate) fn write(
     let coordinates = worksheet.get_coordinates();
     for coordinate in &coordinates {
         let csf = coordinate_from_string(coordinate.as_str());
-        let row_name:usize = csf.get(1).unwrap().parse().unwrap();
+        let row_name:usize = csf.get(1).unwrap().unwrap().parse().unwrap();
         let cells = match cells_by_row.get_mut(&row_name) {
             Some(v) => { v },
             None => {

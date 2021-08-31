@@ -1,4 +1,5 @@
 // a:off
+use super::super::super::Int64Value;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -8,24 +9,24 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct Offset {
-    x: usize,
-    y: usize,
+    x: Int64Value,
+    y: Int64Value,
 }
 impl Offset {
-    pub fn get_x(&self) -> &usize {
-        &self.x
+    pub fn get_x(&self) -> &i64 {
+        &self.x.get_value()
     }
 
-    pub fn set_x(&mut self, value:usize) {
-        self.x = value;
+    pub fn set_x(&mut self, value:i64) {
+        self.x.set_value(value);
     }
 
-    pub fn get_y(&self) -> &usize {
-        &self.y
+    pub fn get_y(&self) -> &i64 {
+        &self.y.get_value()
     }
 
-    pub fn set_y(&mut self, value:usize) {
-        self.y = value;
+    pub fn set_y(&mut self, value:i64) {
+        self.y.set_value(value);
     }
     
     pub(crate) fn set_attributes(
@@ -33,15 +34,15 @@ impl Offset {
         _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
         e:&BytesStart
     ) {
-        &mut self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
-        &mut self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
+        &mut self.x.set_value_string(get_attribute(e, b"x").unwrap());
+        &mut self.y.set_value_string(get_attribute(e, b"y").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:off
         write_start_tag(writer, "a:off", vec![
-            ("x", &self.x.to_string()),
-            ("y", &self.y.to_string()),
+            ("x",  &self.x.get_value_string()),
+            ("y",  &self.y.get_value_string()),
         ], true);
     }
 }
