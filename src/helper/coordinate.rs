@@ -16,22 +16,16 @@ pub fn column_index_from_string<S: Into<String>>(column:S)->usize {
     }
     match column_c.len() {
         3 => {
-            let mut result = 1;
-            result += get_index(&column_c.chars().nth(0).unwrap().to_string()) * 676;
-            result += get_index(&column_c.chars().nth(1).unwrap().to_string()) * 26;
-            result += get_index(&column_c.chars().nth(2).unwrap().to_string());
-            return result;
+            get_index(&column_c.chars().nth(0).unwrap().to_string()) * 676 +
+            get_index(&column_c.chars().nth(1).unwrap().to_string()) * 26 +
+            get_index(&column_c.chars().nth(2).unwrap().to_string())
         },
         2 => {
-            let mut result = 1;
-            result += get_index(&column_c.chars().nth(0).unwrap().to_string()) * 26;
-            result += get_index(&column_c.chars().nth(1).unwrap().to_string());
-            return result;
+            get_index(&column_c.chars().nth(0).unwrap().to_string()) * 26 +
+            get_index(&column_c.chars().nth(1).unwrap().to_string())
         },
         1 => {
-            let mut result = 1;
-            result += get_index(&column_c.chars().nth(0).unwrap().to_string());
-            return result;
+            get_index(&column_c.chars().nth(0).unwrap().to_string())
         },
         _ => {
             panic!("longer than 3 characters");
@@ -43,7 +37,7 @@ fn get_index(column:&str)->usize {
     let mut i = 0;
     for tar in self::ALPHABET {
         if tar == &column {
-            return i;
+            return i + 1;
         }
         i += 1;
     }
@@ -55,9 +49,9 @@ pub fn string_from_column_index(column_index:&usize)->String {
         panic!("Column number starts from 1.");
     }
     let mut result: String = String::from("");
-    let mut index_value = column_index.clone();
+    let mut index_value = *column_index;
     while index_value > 0 {
-        let character_value = index_value % 26;
+        let character_value = (index_value - 1) % 26 + 1;
         index_value = (index_value - character_value) / 26;
         result = format!("{}{}", self::ALPHABET.get(character_value - 1).unwrap(), result);
     }
@@ -126,4 +120,48 @@ pub(crate) fn adjustment_remove_coordinate(num:&usize, root_num:&usize, offset_n
         result -= offset_num;
     }
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn column_index_from_string_1() {
+        assert_eq!(column_index_from_string("A"), 1);
+        assert_eq!(column_index_from_string("B"), 2);
+        assert_eq!(column_index_from_string("Z"), 26);
+        assert_eq!(column_index_from_string("AA"), 27);
+        assert_eq!(column_index_from_string("AB"), 28);
+        assert_eq!(column_index_from_string("BA"), 53);
+        assert_eq!(column_index_from_string("ZZ"), 702);
+        assert_eq!(column_index_from_string("AAA"), 703);
+        assert_eq!(column_index_from_string("LAV"), 8160);
+        assert_eq!(column_index_from_string("XFD"), 16384); // Max. supported by Excel 2102
+    }
+
+    #[test]
+    fn string_from_column_index_1() {
+        assert_eq!(string_from_column_index(&1), String::from("A"));
+        assert_eq!(string_from_column_index(&26), String::from("Z"));
+        assert_eq!(string_from_column_index(&27), String::from("AA"));
+        assert_eq!(string_from_column_index(&28), String::from("AB"));
+        assert_eq!(string_from_column_index(&53), String::from("BA"));
+        assert_eq!(string_from_column_index(&702), String::from("ZZ"));
+        assert_eq!(string_from_column_index(&703), String::from("AAA"));
+        assert_eq!(string_from_column_index(&8160), String::from("LAV"));
+        assert_eq!(string_from_column_index(&16384), String::from("XFD"));
+    }
+
+    #[test]
+    fn index_from_coordinate_1() {
+        assert_eq!(index_from_coordinate("$A$4"), vec![1, 4, 1, 1]);
+        assert_eq!(index_from_coordinate("$A4"), vec![1, 4, 1, 0]);
+        assert_eq!(index_from_coordinate("A4"), vec![1, 4, 0, 0]);
+        assert_eq!(index_from_coordinate("Z91"), vec![26, 91, 0, 0]);
+        assert_eq!(index_from_coordinate("AA91"), vec![27, 91, 0, 0]);
+        assert_eq!(index_from_coordinate("AA$91"), vec![27, 91, 0, 1]);
+        assert_eq!(index_from_coordinate("$AA91"), vec![27, 91, 1, 0]);
+        assert_eq!(index_from_coordinate("$AA$91"), vec![27, 91, 1, 1]);
+    }
 }
