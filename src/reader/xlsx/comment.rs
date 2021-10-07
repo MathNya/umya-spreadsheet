@@ -5,9 +5,7 @@ use tempdir::TempDir;
 use super::XlsxError;
 use std::collections::HashMap; 
 use super::driver::*;
-use structs::TextElement;
 use structs::Theme;
-use structs::RichText;
 use structs::Worksheet;
 use structs::Comment;
 
@@ -20,14 +18,13 @@ pub(crate) fn read(
 ) -> result::Result<(), XlsxError> {
     let path = dir.path().join(format!("xl/worksheets/{}", target));
     let mut reader = Reader::from_file(path)?;
-    reader.trim_text(true);
+    reader.trim_text(false);
     let mut buf = Vec::new();
 
     let mut authors: Vec<String> = Vec::new();
     let mut comment: Comment = Comment::default();
     let mut value: String = String::from("");
 
-    let mut text_element_vec: Vec<TextElement> = Vec::new();
     let mut result: Vec<Comment> = Vec::new();
 
     loop {
@@ -41,7 +38,9 @@ pub(crate) fn read(
                         let author = authors.get(author_id).unwrap();
                         comment.set_author(author);
                     },
-                    b"r" => text_element_vec.push(get_text_element(&mut reader, theme)),
+                    b"text" => {
+                        comment.get_text_mut().set_attributes_text(&mut reader, e);
+                    },
                     _ => (),
                 }
             },
@@ -52,12 +51,6 @@ pub(crate) fn read(
                 match e.name() {
                     b"author" => {
                         authors.push(value.clone());
-                    },
-                    b"text" => {
-                        let mut rich_text = RichText::default();
-                        rich_text.set_rich_text_elements(text_element_vec);
-                        comment.set_text(rich_text);
-                        text_element_vec = Vec::new();
                     },
                     b"comment"=> {
                         result.push(comment);

@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct BooleanValue {
     value: Option<bool>,
     value_default: bool,
@@ -29,5 +29,13 @@ impl BooleanValue {
             Some(_) => true,
             None => false
         }
+    }
+
+    pub(crate) fn get_hash_string(&self)-> &str
+    {
+        if self.has_value() {
+            return self.get_value_string();
+        }
+        "empty!!"
     }
 }

@@ -1,40 +1,78 @@
-use super::Style;
+// cellStyle
+use super::StringValue;
+use super::UInt32Value;
+use reader::driver::*;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct CellStyle {
-    name: String,
-    builtin_id: usize,
-    style: Style,
+    name: StringValue,
+    builtin_id: UInt32Value,
+    format_id: UInt32Value,
 }
 impl CellStyle {
     pub fn get_name(&self)-> &str {
-        &self.name
+        &self.name.get_value()
     }
 
-    pub fn set_name<S: Into<String>>(&mut self, value:S)-> &mut CellStyle {
-        self.name = value.into();
+    pub fn set_name<S: Into<String>>(&mut self, value:S)-> &mut Self {
+        self.name.set_value(value);
         self
     }
 
-    pub fn get_builtin_id(&self)-> &usize {
-        &self.builtin_id
+    pub fn get_builtin_id(&self)-> &u32 {
+        &self.builtin_id.get_value()
     }
 
-    pub fn set_builtin_id(&mut self, value:usize)-> &mut CellStyle {
-        self.builtin_id = value;
+    pub fn set_builtin_id(&mut self, value:u32)-> &mut Self {
+        self.builtin_id.set_value(value);
         self
     }
 
-    pub fn get_style(&self)-> &Style {
-        &self.style
+    pub fn get_format_id(&self)-> &u32 {
+        &self.format_id.get_value()
     }
 
-    pub fn get_style_mut(&mut self)-> &mut Style {
-        &mut self.style
-    }
-
-    pub fn set_style(&mut self, value:Style)-> &mut CellStyle {
-        self.style = value;
+    pub fn set_format_id(&mut self, value:u32)-> &mut Self {
+        self.format_id.set_value(value);
         self
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart
+    ) {
+        match get_attribute(e, b"name") {
+            Some(v) => {
+                self.name.set_value_string(v);
+            },
+            None => {},
+        }
+        match get_attribute(e, b"xfId") {
+            Some(v) => {
+                self.builtin_id.set_value_string(v);
+            },
+            None => {},
+        }
+        match get_attribute(e, b"builtinId") {
+            Some(v) => {
+                self.format_id.set_value_string(v);
+            },
+            None => {},
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // cellStyle
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        attributes.push(("name", &self.name.get_value_string()));
+        attributes.push(("xfId", &self.builtin_id.get_value_string()));
+        attributes.push(("builtinId", &self.format_id.get_value_string()));
+        write_start_tag(writer, "cellStyle", attributes, true);
     }
 }

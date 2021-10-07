@@ -14,9 +14,9 @@ use super::Style;
 use super::Styles;
 use super::AutoFilter;
 use super::Hyperlink;
-use super::Color;
+use super::NumberingFormat;
 use super::Comment;
-use super::NumberFormat;
+use super::Color;
 use std::collections::BTreeMap; 
 use std::collections::HashMap;
 use helper::coordinate::*;
@@ -187,12 +187,12 @@ impl Worksheet {
                         to_formatted_string(value.as_str(), nmuber_format.get_format_code())
                     },
                     None => {
-                        to_formatted_string(value.as_str(), NumberFormat::FORMAT_GENERAL)
+                        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_GENERAL)
                     }
                 }
             },
             None => {
-                to_formatted_string(value.as_str(), NumberFormat::FORMAT_GENERAL)
+                to_formatted_string(value.as_str(), NumberingFormat::FORMAT_GENERAL)
             }
         };
         result
@@ -803,9 +803,11 @@ impl Worksheet {
             None => false
         }
     }
+    
     pub fn get_tab_color(&self) -> &Option<Color> {
         &self.tab_color
     }
+
     pub(crate) fn get_tab_color_mut(&mut self) -> &mut Color {
         match &self.tab_color {
             Some(_) => return self.tab_color.as_mut().unwrap(),
@@ -814,9 +816,11 @@ impl Worksheet {
         self.set_tab_color(Color::default());
         self.tab_color.as_mut().unwrap()
     }
+
     pub(crate) fn set_tab_color(&mut self, value:Color) {
         self.tab_color = Some(value);
     }
+
     pub fn calculate_worksheet_dimension(&self) -> String {
         let highest = &self.cell_collection.get_highest_row_and_column();
         if highest["row"] == &0 {

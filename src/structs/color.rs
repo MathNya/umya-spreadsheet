@@ -1,3 +1,15 @@
+// color
+use super::UInt32Value;
+use super::StringValue;
+use super::DoubleValue;
+use super::Theme;
+use writer::driver::*;
+use reader::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
+
 const INDEXED_COLORS: &'static [&'static str] = &[
     "FF000000", //  System Colour #1 - Black
     "FFFFFFFF", //  System Colour #2 - White
@@ -57,22 +69,12 @@ const INDEXED_COLORS: &'static [&'static str] = &[
     "FF333333", //  Standard Colour #56
 ];
 
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct Color {
-    indexed: Option<usize>,
-    theme_index: Option<usize>,
-    argb: String,
-    tint: f64,
-}
-impl Default for Color {
-    fn default() -> Self {
-        Self {
-            indexed: None,
-            theme_index: None,
-            argb:"".into(),
-            tint: 0f64
-        }
-    }
+    indexed: UInt32Value,
+    theme_index: UInt32Value,
+    argb: StringValue,
+    tint: DoubleValue,
 }
 impl Color {
     pub const NAMED_COLORS: &'static [&'static str] = &[
@@ -99,80 +101,137 @@ impl Color {
     pub const COLOR_DARKYELLOW: &'static str = "FF808000";
 
     pub fn get_argb(&self)-> &str {
-        &self.argb
+        &self.argb.get_value()
     }
     
-    pub fn set_argb<S: Into<String>>(&mut self, value:S)-> &mut Color {
-        self.indexed =None;
-        self.theme_index = None;
-        self.argb = value.into();
+    pub fn set_argb<S: Into<String>>(&mut self, value:S)-> &mut Self {
+        self.indexed.remove_value();
+        self.theme_index.remove_value();
+        self.argb.set_value(value);
         self
     }
 
-    pub(crate) fn is_set_indexed(&self)-> bool {
-        match self.indexed {
-            Some(_) => true,
-            None => false
+    pub fn get_indexed(&self)-> &u32 {
+        &self.indexed.get_value()
+    }
+
+    pub fn set_indexed(&mut self, index:u32)-> &mut Self {
+        self.indexed.set_value(index);
+        self.theme_index.remove_value();
+        self.argb.set_value(
+            match INDEXED_COLORS.get(index as usize - 1) {
+                Some(v) => {v.to_string()},
+                None => {String::from("")}
+            }
+        );
+        self
+    }
+
+    pub fn get_theme_index(&self)-> &u32 {
+        &self.theme_index.get_value()
+    }
+
+    pub fn set_theme_index(&mut self, index:u32)-> &mut Self {
+        self.indexed.remove_value();
+        self.theme_index.set_value(index);
+        self.argb.remove_value();
+        self
+    }
+
+    pub(crate) fn set_argb_by_theme(&mut self, theme:&Theme)-> &mut Self  {
+        if self.theme_index.has_value() {
+            self.argb.set_value(
+                match theme.get_color_map().get(self.theme_index.get_value().clone() as usize) {
+                    Some(v) => {v.to_string()},
+                   None => {String::from("")}
+                }
+            );
         }
-    }
-
-    pub fn get_indexed(&self)-> &Option<usize> {
-        &self.indexed
-    }
-
-    pub fn set_indexed(&mut self, index:usize)-> &mut Color {
-        self.indexed = Some(index);
-        self.theme_index = None;
-        self.argb = match INDEXED_COLORS.get(index - 1) {
-            Some(v) => {v.to_string()},
-            None => {String::from("")}
-        };
-        self
-    }
-
-    pub(crate) fn is_set_theme_index(&self)-> bool {
-        match self.theme_index {
-            Some(_) => true,
-            None => false
-        }
-    }
-
-    pub fn get_theme_index(&self)-> &Option<usize> {
-        &self.theme_index
-    }
-
-    pub fn set_theme_index(&mut self, index:usize, theme_color_map:&Vec<String>)-> &mut Color  {
-        self.indexed = None;
-        self.theme_index = Some(index);
-        self.argb = match theme_color_map.get(index) {
-            Some(v) => {v.to_string()},
-            None => {String::from("")}
-        };
-        self
-    }
-
-    pub fn set_theme_index_and_argb<S: Into<String>>(&mut self, index:usize, argb:S)-> &mut Color {
-        self.indexed = None;
-        self.theme_index = Some(index);
-        self.argb = argb.into();
         self
     }
 
     pub fn get_tint(&self)-> &f64 {
-        &self.tint
+        &self.tint.get_value()
     }
 
     pub fn set_tint(&mut self, value:f64)-> &mut Color {
-        self.tint = value;
+        self.tint.set_value(value);
         self
+    }
+
+    pub(crate) fn has_value(&self) -> bool {
+        self.theme_index.has_value() || self.indexed.has_value() || self.argb.has_value() || self.tint.has_value()
     }
 
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}{}{}",
-            match &self.indexed {Some(v)=> v.to_string(), None => "None".into()},
-            match &self.theme_index {Some(v)=> v.to_string(), None => "None".into()},
-            &self.argb,
-            &self.tint
+            &self.indexed.get_hash_string(),
+            &self.theme_index.get_hash_string(),
+            &self.argb.get_hash_string(),
+            &self.tint.get_hash_string()
         )))
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart
+    ) {
+        for a in e.attributes().with_checks(false) {
+            match a {
+                Ok(ref attr) if attr.key == b"indexed" => {
+                    self.indexed.set_value_string(get_attribute_value(attr).unwrap());
+                },
+                Ok(ref attr) if attr.key == b"theme" => {
+                    self.theme_index.set_value_string(get_attribute_value(attr).unwrap());
+                },
+                Ok(ref attr) if attr.key == b"rgb" => {
+                    self.argb.set_value_string(get_attribute_value(attr).unwrap());
+                },
+                Ok(ref attr) if attr.key == b"tint" => {
+                    self.tint.set_value_string(get_attribute_value(attr).unwrap());
+                },
+                Ok(_) => {},
+                Err(_) => {},
+            }
+        }
+    }
+
+    pub(crate) fn write_to_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // color
+        self.write_to(writer, "color");
+    }
+
+    pub(crate) fn write_to_fg_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // fgColor
+        self.write_to(writer, "fgColor");
+    }
+
+    pub(crate) fn write_to_bg_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // bgColor
+        self.write_to(writer, "bgColor");
+    }
+
+    pub(crate) fn write_to_tab_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // tabColor
+        self.write_to(writer, "tabColor");
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name:&str) {
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if self.theme_index.has_value() {
+            attributes.push(("theme", self.theme_index.get_value_string()));
+        } else if self.indexed.has_value() {
+            attributes.push(("indexed", self.indexed.get_value_string()));
+        } else if self.argb.has_value() {
+            attributes.push(("rgb", self.argb.get_value_string()));
+        }
+        if self.tint.has_value() {
+            attributes.push(("tint", self.tint.get_value_string()));
+        }
+
+        if attributes.len() > 0 {
+            write_start_tag(writer, tag_name, attributes, true);
+        }
     }
 }

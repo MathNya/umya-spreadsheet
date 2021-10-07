@@ -1,15 +1,16 @@
 use super::RichText;
 use super::Hyperlink;
 use super::Coordinate;
+use super::SharedStringItem;
 use ::helper::formula::*;
 
 #[derive(Default, Debug)]
 pub struct Cell {
     coordinate: Coordinate,
-    value: String,
-    rich_text: Option<RichText>,
     data_type: String,
-    formula: String,
+    value: Option<String>,
+    rich_text: Option<RichText>,
+    formula: Option<String>,
     hyperlink: Option<Hyperlink>,
 }
 impl Cell {
@@ -49,7 +50,21 @@ impl Cell {
         self
     }
 
-    pub fn get_value(&self)-> &String {
+    pub fn get_value(&self)-> &str {
+        match &self.value {
+            Some(v) => {return v;},
+            None => {},
+        }
+        match &self.rich_text {
+            Some(v) => {
+                return v.get_text();
+            },
+            None => {},
+        }
+        ""
+    }
+    
+    pub(crate) fn get_value_crate(&self)-> &Option<String> {
         &self.value
     }
 
@@ -57,24 +72,111 @@ impl Cell {
         &self.rich_text
     }
 
-    pub fn set_value<S: Into<String>>(&mut self, value:S)-> &mut Cell {
-        let v = value.into();
-        self.data_type = Cell::data_type_for_value(&v).to_string();
-        self.set_value_crate(v);
-        self
-    }
-
-    pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value:S)-> &mut Cell {
-        self.value = value.into();
+    pub fn set_value<S: Into<String>>(&mut self, value:S)-> &mut Self {
+        let value_org = value.into();
+        self.data_type = Cell::data_type_for_value(&value_org).to_string();
+        self.value = Some(value_org);
         self.rich_text = None;
+        self.formula = None;
         self
     }
 
-    pub(crate) fn set_all_param<S: Into<String>>(&mut self, value:S, rich_text:Option<RichText>, data_type:S, formula_attributes:S)-> &mut Cell {
-        self.value = value.into();
-        self.rich_text = rich_text;
-        self.data_type = data_type.into();
-        self.formula = formula_attributes.into();
+    pub fn set_value_from_string<S: Into<String>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_STRING.to_string();
+        self.value = Some(value.into());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_bool<S: Into<bool>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_BOOL.to_string();
+        self.value = Some(match value.into() {true=>{"TRUE".to_string()}, false=>{"FALSE".to_string()}});
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_u16<S: Into<u16>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_NUMERIC.to_string();
+        self.value = Some(value.into().to_string());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_u32<S: Into<u32>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_NUMERIC.to_string();
+        self.value = Some(value.into().to_string());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_u64<S: Into<u64>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_NUMERIC.to_string();
+        self.value = Some(value.into().to_string());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_i16<S: Into<i16>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_NUMERIC.to_string();
+        self.value = Some(value.into().to_string());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_i32<S: Into<i32>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_NUMERIC.to_string();
+        self.value = Some(value.into().to_string());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_i64<S: Into<i64>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_NUMERIC.to_string();
+        self.value = Some(value.into().to_string());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_value_from_usize<S: Into<usize>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_NUMERIC.to_string();
+        self.value = Some(value.into().to_string());
+        self.rich_text = None;
+        self.formula = None;
+        self
+    }
+
+    pub fn set_rich_text<S: Into<RichText>>(&mut self, value:S)-> &mut Self {
+        self.data_type = Cell::TYPE_STRING.to_string();
+        self.value = None;
+        self.rich_text = Some(value.into());
+        self.formula = None;
+        self
+    }
+
+    pub fn set_formula<S: Into<String>>(&mut self, value:S)-> &mut Cell {
+        self.data_type = Cell::TYPE_FORMULA.to_string();
+        self.value = None;
+        self.rich_text = None;
+        self.formula = Some(value.into());
+        self
+    }
+
+    pub(crate) fn set_shared_string_item(&mut self, value:SharedStringItem)-> &mut Self {
+        self.data_type = Cell::TYPE_STRING.to_string();
+        match value.get_text() {
+            Some(v) => {self.value = Some(v.get_value().to_string());},
+            None => {}
+        }
+        self.rich_text = value.get_rich_text().clone();
+        self.formula = None;
         self
     }
 
@@ -82,26 +184,9 @@ impl Cell {
         &self.data_type
     }
 
-    pub fn set_value_and_data_type<S: Into<String>>(&mut self, value:S, data_type:S)-> &mut Cell {
-        let v = value.into();
-        let d = data_type.into();
-        match Cell::check_data_type(&v, &d) {
-            Ok(_) => {
-                self.set_value_crate(v);
-                if &d == Cell::TYPE_STRING2 {
-                    self.data_type = Cell::TYPE_STRING.to_string();
-                } else {
-                    self.data_type = d;
-                }
-            },
-            Err(e) => panic!("Error at set_value_and_data_type {:?}", e),
-        }
-        self
-    }
-
     pub fn set_data_type<S: Into<String>>(&mut self, value:S)-> &mut Cell {
         let data_type = value.into();
-        match Cell::check_data_type(&self.value, &data_type) {
+        match Cell::check_data_type(self.get_value(), &data_type) {
             Ok(_) => self.data_type = data_type.into(),
             Err(e) => panic!("Error at set_data_type {:?}", e),
         }
@@ -136,15 +221,14 @@ impl Cell {
         &self.data_type == Cell::TYPE_FORMULA
     }
 
-    pub fn get_formula(&self)-> &String {
-        &self.formula
+    pub fn get_formula(&self)-> &str {
+        match &self.formula {
+            Some(v) => {return v;},
+            None => {},
+        }
+        ""
     }
 
-    pub fn set_formula<S: Into<String>>(&mut self, value:S)-> &mut Cell {
-        self.data_type = Cell::TYPE_FORMULA.to_string();
-        self.formula = value.into();
-        self
-    }
 
     pub(crate) fn data_type_for_value(value:&str)-> &str {
         let check_value = value.to_uppercase();
@@ -165,22 +249,28 @@ impl Cell {
     
     pub(crate) fn get_hash_code_by_value(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}",
-            &self.value,
+            match &self.value {Some(v) => {v}, None => {"None"}},
             match &self.rich_text {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
         )))
     }
 
     pub(crate) fn adjustment_insert_formula_coordinate(&mut self, self_sheet_name:&str, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        if self.is_formula() {
-            let formula = adjustment_insert_formula_coordinate(&self.formula, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
-            self.formula = formula;
+        match &self.formula {
+            Some(v) => {
+                let formula = adjustment_insert_formula_coordinate(v, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
+                self.formula = Some(formula);
+            },
+            None => {},
         }
     }
 
     pub(crate) fn adjustment_remove_formula_coordinate(&mut self, self_sheet_name:&str, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        if self.is_formula() {
-            let formula = adjustment_remove_formula_coordinate(&self.formula, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
-            self.formula = formula;
+        match &self.formula {
+            Some(v) => {
+                let formula = adjustment_remove_formula_coordinate(v, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
+                self.formula = Some(formula);
+            },
+            None => {}
         }
     }
 }

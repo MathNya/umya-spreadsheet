@@ -18,7 +18,7 @@ impl StringPoint {
         &self.index.get_value()
     }
 
-    pub fn set_index(&mut self, value:u32)-> &mut StringPoint {
+    pub fn set_index(&mut self, value:u32)-> &mut Self {
         self.index.set_value(value);
         self
     }
@@ -31,7 +31,7 @@ impl StringPoint {
         &mut self.numeric_value
     }
 
-    pub fn set_numeric_value(&mut self, value:NumericValue)-> &mut StringPoint {
+    pub fn set_numeric_value(&mut self, value:NumericValue)-> &mut Self {
         self.numeric_value = value;
         self
     }

@@ -1,8 +1,17 @@
-#[derive(Default, Debug)]
+#[derive(Clone,  Debug)]
 pub struct Int32Value {
     value: Option<i32>,
     value_string: String,
     value_default: i32,
+}
+impl Default for Int32Value {
+    fn default() -> Self {
+        Self {
+            value: None,
+            value_string: "0".into(),
+            value_default: 0,
+        }
+    }
 }
 impl Int32Value {
     pub(crate) fn get_value(&self)-> &i32 {
@@ -31,5 +40,13 @@ impl Int32Value {
             Some(_) => true,
             None => false
         }
+    }
+
+    pub(crate) fn get_hash_string(&self)-> &str
+    {
+        if self.has_value() {
+            return self.get_value_string();
+        }
+        "empty!!"
     }
 }

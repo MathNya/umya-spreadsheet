@@ -1,43 +1,118 @@
+// r
+use super::Text;
 use super::Font;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct TextElement {
-    text: String,
-    font: Option<Font>
-}
-impl Default for TextElement {
-    fn default() -> Self {
-        Self {
-            text: "".into(),
-            font: None,
-        }
-    }
+    text: Text,
+    run_properties: Option<Font>
 }
 impl TextElement  {
     pub fn get_text(&self)-> &str {
-        &self.text
+        &self.text.get_value()
     }
-    pub fn set_text<S: Into<String>>(&mut self, value:S) {
-        self.text = value.into();
+
+    pub fn set_text<S: Into<String>>(&mut self, value:S) -> &mut Self {
+        self.text.set_value(value);
+        self
     }
-    pub fn get_font(&self)-> &Option<Font> {
-        &self.font
+
+    pub fn get_run_properties(&self)-> &Option<Font> {
+        &self.run_properties
     }
-    pub fn get_font_mut(&mut self)-> &mut Font {
-        match &self.font {
-            Some(_) => return self.font.as_mut().unwrap(),
+
+    pub fn get_run_properties_mut(&mut self)-> &mut Font {
+        match &self.run_properties {
+            Some(_) => return self.run_properties.as_mut().unwrap(),
             None => {}
         }
-        self.set_font(Font::get_defalut_value());
-        self.font.as_mut().unwrap()
+        self.set_run_properties(Font::get_defalut_value());
+        self.run_properties.as_mut().unwrap()
     }
-    pub fn set_font(&mut self, value:Font) {
-        self.font = Some(value);
+
+    pub(crate) fn get_run_properties_crate(&mut self) -> &mut Option<Font> {
+        &mut self.run_properties
     }
+
+    pub fn set_run_properties(&mut self, value:Font) -> &mut Self {
+        self.run_properties = Some(value);
+        self
+    }
+
+    pub fn get_font(&self)-> &Option<Font> {
+        &self.get_run_properties()
+    }
+
+    pub fn get_font_mut(&mut self)-> &mut Font {
+        self.get_run_properties_mut()
+    }
+
+    pub fn set_font(&mut self, value:Font) -> &mut Self {
+        self.set_run_properties(value)
+    }
+
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}",
-            &self.text,
-            match &self.font {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
+            &self.text.get_value(),
+            match &self.run_properties {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
         )))
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _e:&BytesStart
+    ) {
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"t" => {
+                            let mut obj = Text::default();
+                            obj.set_attributes(reader, e);
+                            self.text = obj;
+                        },
+                        b"rPr" => {
+                            let mut obj = Font::default();
+                            obj.set_attributes(reader, e);
+                            self.set_run_properties(obj);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"r" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "r"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // r
+        write_start_tag(writer, "r", vec![], false);
+
+        // rPr
+        match &self.run_properties {
+            Some(v) => {v.write_to_rpr(writer);},
+            None => {},
+        }
+
+        // t
+        &self.text.write_to(writer);
+
+        write_end_tag(writer, "r");
     }
 }

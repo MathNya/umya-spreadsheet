@@ -4,33 +4,35 @@ use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
-use ::structs::Worksheet;
+use ::structs::Spreadsheet;
 use ::structs::Color;
 use ::structs::Theme;
 use ::structs::RowDimension;
 use ::structs::ColumnDimension;
 use ::structs::Conditional;
-use ::structs::Style;
+use ::structs::Stylesheet;
 use ::structs::PageMargins;
-use ::structs::RichText;
 use ::structs::Hyperlink;
 use ::structs::ConditionalSet;
-
-use super::super::helper::coordinate::*;
 
 pub(crate) fn read(
     dir: &TempDir,
     target: &String,
-    worksheet: &mut Worksheet,
-    theme: &Theme,
-    shared_strings: &Vec<(String, Option<RichText>)>,
-    cell_xfs_vec: &Vec<Style>,
-    dxf_vec: &Vec<Style>
+    spreadsheet: &mut Spreadsheet,
+    sheets_sheet_id: &str,
+    sheets_name: &str,
 ) -> Result<(bool, Option<String>, Option<String>, Vec<(String, String)>), XlsxError> {
+    
     let path = dir.path().join(format!("xl/{}", target));
     let mut reader = Reader::from_file(path)?;
     reader.trim_text(true);
     let mut buf = Vec::new();
+
+    let theme = spreadsheet.get_theme_mut().clone();
+    let shared_string_table = spreadsheet.get_shared_string_table().clone();
+    let stylesheet = spreadsheet.get_stylesheet().clone();
+
+    let worksheet = spreadsheet.new_sheet_crate(sheets_sheet_id, sheets_name);
 
     // result
     let mut is_active_sheet = false;
@@ -41,7 +43,6 @@ pub(crate) fn read(
     let mut coordinate: String = String::from("");
     let mut type_value: String = String::from("");
     let mut string_value: String = String::from("");
-    let mut style_index: Option<usize> = None;
 
     loop {
         match reader.read_event(&mut buf) {
@@ -86,13 +87,14 @@ pub(crate) fn read(
                         worksheet.set_row_dimension(row);
                     },
                     b"c" => {
+                        let mut style_index: Option<usize> = None;
                         for a in e.attributes().with_checks(false) {
                             match a {
                                 Ok(ref attr) if attr.key == b"r" => {
                                     coordinate = get_attribute_value(attr)?;
                                 },
                                 Ok(ref attr) if attr.key == b"s" => {
-                                    let value = get_attribute_value(attr)?;
+                                    let value = get_attribute_value(attr).unwrap();
                                     style_index = Some(value.parse::<usize>().unwrap());
                                 },
                                 Ok(ref attr) if attr.key == b"t" => {
@@ -104,24 +106,18 @@ pub(crate) fn read(
                         }
                         match style_index {
                             Some(v) => {
-                                let mut style = cell_xfs_vec.get(v).unwrap().clone();
-                                let coordinate_upper = coordinate.to_uppercase();
-                                let split = index_from_coordinate(&coordinate_upper);
-                                let col = split[0].unwrap();
-                                let row = split[1].unwrap();
-                                style.get_coordinate_mut().set_col_num(col);
-                                style.get_coordinate_mut().set_row_num(row);
+                                let mut style = stylesheet.get_style(v);
+                                style.get_coordinate_mut().set_coordinate(&coordinate);
                                 worksheet.add_style(style);
                             },
                             None => {}
                         }
-                        style_index = None;
                     },
                     b"conditionalFormatting" => {
                         let mut conditional_set = ConditionalSet::default();
                         let sqref = get_attribute(e, b"sqref").unwrap();
                         conditional_set.set_sqref(sqref);
-                        let conditional_styles_collection = get_conditional_formatting(&mut reader, dxf_vec, theme);
+                        let conditional_styles_collection = get_conditional_formatting(&mut reader, &stylesheet, &theme);
                         conditional_set.set_conditional_collection(conditional_styles_collection);
                         worksheet.add_conditional_styles_collection(conditional_set);
                     },
@@ -142,7 +138,8 @@ pub(crate) fn read(
                         }
                     },
                     b"tabColor" => {
-                        get_attribute_color(e, worksheet, theme);
+                        worksheet.get_tab_color_mut().set_attributes(&mut reader, e);
+                        worksheet.get_tab_color_mut().set_argb_by_theme(&theme);
                     },
                     b"selection" => {
                         for a in e.attributes().with_checks(false) {
@@ -179,6 +176,7 @@ pub(crate) fn read(
                         worksheet.set_row_dimension(row);
                     },
                     b"c" => {
+                        let mut style_index: Option<usize> = None;
                         for a in e.attributes().with_checks(false) {
                             match a {
                                 Ok(ref attr) if attr.key == b"r" => {
@@ -194,18 +192,12 @@ pub(crate) fn read(
                         }
                         match style_index {
                             Some(v) => {
-                                let mut style = cell_xfs_vec.get(v).unwrap().clone();
-                                let coordinate_upper = coordinate.to_uppercase();
-                                let split = index_from_coordinate(&coordinate_upper);
-                                let col = split[0].unwrap();
-                                let row = split[1].unwrap();
-                                style.get_coordinate_mut().set_col_num(col);
-                                style.get_coordinate_mut().set_row_num(row);
+                                let mut style = stylesheet.get_style(v);
+                                style.get_coordinate_mut().set_coordinate(&coordinate);
                                 worksheet.add_style(style);
                             },
                             None => {}
                         }
-                        style_index = None;
                     },
                     b"autoFilter" => {
                         worksheet.set_auto_filter(get_attribute(e, b"ref").unwrap());
@@ -248,17 +240,19 @@ pub(crate) fn read(
             Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
             Ok(Event::End(ref e)) => {
                 match e.name() {
-                    b"f" => {worksheet.get_cell_mut(&coordinate.to_string()).set_formula(string_value.clone());},
+                    b"f" => {
+                        worksheet.get_cell_mut(&coordinate.to_string()).set_formula(string_value.clone());
+                    },
                     b"v" => {
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
-                            let (value, rich_text) = shared_strings.get(index).unwrap();
-                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_all_param(value, rich_text.clone(), &type_value, &"".into());
+                            let shared_string_item = shared_string_table.get_shared_string_item().get(index).unwrap();
+                            worksheet.get_cell_mut(&coordinate.to_string()).set_shared_string_item(shared_string_item.clone());
                         } else if type_value == "b" {
-                            let prm = if &string_value == "1" {"TRUE"} else {"FALSE"};
-                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_and_data_type(prm, &type_value);
+                            let prm = if &string_value == "1" {true} else {false};
+                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_from_bool(prm);
                         } else if type_value == "" || type_value == "n" {
-                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_crate(&string_value);
+                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value(&string_value);
                         };
                     },
                     b"c" => type_value = String::from(""),
@@ -277,7 +271,7 @@ pub(crate) fn read(
 
 fn get_conditional_formatting(
     reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
-    dxf_vec: &Vec<Style>,
+    stylesheet: &Stylesheet,
     theme: &Theme
 ) -> Vec<Conditional>
 {
@@ -295,7 +289,8 @@ fn get_conditional_formatting(
                                 Ok(ref attr) if attr.key == b"type" => {conditional.set_condition_type(get_attribute_value(attr).unwrap());},
                                 Ok(ref attr) if attr.key == b"dxfId" => {
                                     let dxf_id = get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
-                                    conditional.set_style(dxf_vec.get(dxf_id).unwrap().clone());
+                                    let style = stylesheet.get_differential_formats().get_style(dxf_id);
+                                    conditional.set_style(style);
                                 },
                                 Ok(ref attr) if attr.key == b"priority" => {conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
                                 Ok(ref attr) if attr.key == b"percent" => {conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
@@ -319,7 +314,8 @@ fn get_conditional_formatting(
                                 Ok(ref attr) if attr.key == b"type" => {conditional.set_condition_type(get_attribute_value(attr).unwrap());},
                                 Ok(ref attr) if attr.key == b"dxfId" => {
                                     let dxf_id = get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
-                                    conditional.set_style(dxf_vec.get(dxf_id).unwrap().clone());
+                                    let style = stylesheet.get_differential_formats().get_style(dxf_id);
+                                    conditional.set_style(style);
                                 },
                                 Ok(ref attr) if attr.key == b"priority" => {conditional.set_priority(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
                                 Ok(ref attr) if attr.key == b"percent" => {conditional.set_percent(get_attribute_value(attr).unwrap().parse::<usize>().unwrap());},
@@ -378,7 +374,6 @@ fn get_cfvo(
     let mut value: Option<String> = None;
     
     let mut color_count = 0;
-    let color_map = theme.get_color_map();
 
     loop {
         match reader.read_event(&mut buf) {
@@ -399,23 +394,9 @@ fn get_cfvo(
                     },
                     b"color" => {
                         let mut color = Color::default();
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"theme" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let _ = color.set_theme_index(value.parse::<usize>().unwrap(), color_map);
-                                },
-                                Ok(ref attr) if attr.key == b"rgb" => {
-                                    let _ = color.set_argb(get_attribute_value(attr).unwrap());
-                                },
-                                Ok(ref attr) if attr.key == b"tint" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    let _ = color.set_tint(value.parse::<f64>().unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
+                        color.set_attributes(reader, e);
+                        color.set_argb_by_theme(theme);
+                        
                         let (t, v) = cfvo.get(color_count).unwrap();
                         result.insert(color_count, (t.clone(), v.clone(), Some(color)));
                         color_count += 1;
@@ -450,32 +431,6 @@ fn get_attribute_row(
             Ok(ref attr) if attr.key == b"thickBot" => row.set_thick_bot(get_attribute_value(attr).unwrap() == "1"),
             Ok(ref attr) if attr.key == b"customHeight" => row.set_custom_height(get_attribute_value(attr).unwrap() == "1"),
             Ok(ref attr) if attr.key == b"x14ac:dyDescent" => row.set_descent(get_attribute_value(attr).unwrap().parse::<f32>().unwrap()),
-            Ok(_) => {},
-            Err(_) => {},
-        }
-    }
-}
-
-fn get_attribute_color(
-    e:&quick_xml::events::BytesStart<'_>,
-    worksheet: &mut Worksheet,
-    theme:&Theme
-) {
-    let theme_color_map:Vec<String> = theme.get_color_map().clone();
-
-    for a in e.attributes().with_checks(false) {
-        match a {
-            Ok(ref attr) if attr.key == b"theme" => {
-                let value = get_attribute_value(attr).unwrap();
-                let _ = worksheet.get_tab_color_mut().set_theme_index(value.parse::<usize>().unwrap(), &theme_color_map);
-            },
-            Ok(ref attr) if attr.key == b"rgb" => {
-                let _ = worksheet.get_tab_color_mut().set_argb(get_attribute_value(attr).unwrap());
-            },
-            Ok(ref attr) if attr.key == b"tint" => {
-                let value = get_attribute_value(attr).unwrap();
-                let _ = worksheet.get_tab_color_mut().set_tint(value.parse::<f64>().unwrap());
-            },
             Ok(_) => {},
             Err(_) => {},
         }

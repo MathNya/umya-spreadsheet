@@ -1,19 +1,42 @@
+// left right top bottom
 use super::Color;
+use super::EnumValue;
+use super::BorderStyleValues;
+use reader::driver::*;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct Border {
-    border_style: String,
     color: Color,
-}
-impl Default for Border {
-    fn default() -> Self {
-        Self {
-            border_style: Border::BORDER_NONE.into(),
-            color: Color::default(),
-        }
-    }
+    style: EnumValue<BorderStyleValues>,
 }
 impl Border {
+    pub fn get_color(&self) -> &Color {
+        &self.color
+    }
+
+    pub fn get_color_mut(&mut self) -> &mut Color {
+        &mut self.color
+    }
+
+    pub fn set_color(&mut self, value:Color) -> &mut Self {
+        self.color = value;
+        self
+    }
+
+    pub fn get_style(&self) -> &BorderStyleValues {
+        self.style.get_value()
+    }
+
+    pub fn set_style(&mut self, value:BorderStyleValues) -> &mut Self {
+        self.style.set_value(value);
+        self
+    }
+
     // Border style
     pub const BORDER_NONE: &'static str = "none";
     pub const BORDER_DASHDOT: &'static str = "dashDot";
@@ -30,29 +53,104 @@ impl Border {
     pub const BORDER_THICK: &'static str = "thick";
     pub const BORDER_THIN: &'static str = "thin";
 
-    pub(crate) fn has_border_style(&self) -> bool {
-        &self.border_style != Self::BORDER_NONE
-    }
-    pub fn get_border_style(&self)-> &String {
-        &self.border_style
+    pub fn get_border_style(&self)-> &str {
+        &self.style.get_value_string()
     }
     pub fn set_border_style<S: Into<String>>(&mut self, value:S) {
-        self.border_style = value.into();
+        self.style.set_value_string(value);
     }
-    pub fn get_color(&self)-> &Color {
-        &self.color
-    }
-    pub fn get_color_mut(&mut self)-> &mut Color {
-        &mut self.color
-    }
-    pub fn set_color(&mut self, value:Color)->Result<(), &'static str> {
-        self.color = value;
-        Ok(())
-    }
+
     pub(crate) fn get_hash_code(&self)-> String {
         format!("{:x}", md5::compute(format!("{}{}",
-            &self.border_style,
+            &self.style.get_value_string(),
             &self.get_color().get_hash_code()
         )))
+    }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart
+    ) {
+        match get_attribute(e, b"style") {
+            Some(v) => {self.style.set_value_string(v);},
+            None => {},
+        }
+
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Empty(ref e)) => {
+                    match e.name() {
+                        b"color" => {
+                            &mut self.color.set_attributes(reader, e);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"left" => return,
+                        b"right" => return,
+                        b"top" => return,
+                        b"bottom" => return,
+                        b"diagonal" => return,
+                        b"vertical" => return,
+                        b"horizontal" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "left,right,top,bottom,diagonal,vertical,horizontal"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to_left(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "left");
+    }
+
+    pub(crate) fn write_to_right(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "right");
+    }
+
+    pub(crate) fn write_to_top(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "top");
+    }
+
+    pub(crate) fn write_to_bottom(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "bottom");
+    }
+
+    pub(crate) fn write_to_diagonal(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "diagonal");
+    }
+
+    pub(crate) fn write_to_vertical(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "vertical");
+    }
+
+    pub(crate) fn write_to_horizontal(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "horizontal");
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name:&str) {
+        let empty_flag = self.color.has_value() == false;
+
+        // left,right,top,bottom,diagonal,vertical,horizontal
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if self.style.has_value() {
+            attributes.push(("style", &self.style.get_value_string()));
+        }
+        write_start_tag(writer, tag_name, attributes, empty_flag);
+
+        if empty_flag == false {
+            // color
+            &self.color.write_to_color(writer);
+
+            write_end_tag(writer, tag_name);
+        }
     }
 }

@@ -1,98 +1,91 @@
-#[derive(Clone, Debug)]
+// alignment
+use super::EnumValue;
+use super::HorizontalAlignmentValues;
+use super::VerticalAlignmentValues;
+use super::BooleanValue;
+use reader::driver::*;
+use writer::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
+
+#[derive(Default, Clone, Debug)]
 pub struct Alignment {
-    horizontal: String,
-    vertical: String,
-    text_rotation: i32,
-    wrap_text: bool,
-    shrink_to_fit: bool,
-    indent: i32,
-    read_order: i32,
-}
-impl Default for Alignment {
-    fn default() -> Self {
-        Self {
-            horizontal: Alignment::HORIZONTAL_GENERAL.to_string(),
-            vertical: "".into(),
-            text_rotation: 0,
-            wrap_text: false,
-            shrink_to_fit: false,
-            indent: 0,
-            read_order:0
-        }
-    }
+    horizontal: EnumValue<HorizontalAlignmentValues>,
+    vertical: EnumValue<VerticalAlignmentValues>,
+    wrap_text: BooleanValue,
 }
 impl Alignment {
-    // Horizontal alignment styles
-    pub const HORIZONTAL_GENERAL: &'static str = "general";
-    pub const HORIZONTAL_LEFT: &'static str = "left";
-    pub const HORIZONTAL_RIGHT: &'static str = "right";
-    pub const HORIZONTAL_CENTER: &'static str = "center";
-    pub const HORIZONTAL_CENTER_CONTINUOUS: &'static str = "centerContinuous";
-    pub const HORIZONTAL_JUSTIFY: &'static str = "justify";
-    pub const HORIZONTAL_FILL: &'static str = "fill";
-    pub const HORIZONTAL_DISTRIBUTED: &'static str = "distributed"; // Excel2007 only
-    
-    // Vertical alignment styles
-    pub const VERTICAL_BOTTOM: &'static str = "bottom";
-    pub const VERTICAL_TOP: &'static str = "top";
-    pub const VERTICAL_CENTER: &'static str = "center";
-    pub const VERTICAL_JUSTIFY: &'static str = "justify";
-    pub const VERTICAL_DISTRIBUTED: &'static str = "distributed"; // Excel2007 only
-    
-    // Read order
-    pub const READORDER_CONTEXT: usize = 0;
-    pub const READORDER_LTR: usize = 1;
-    pub const READORDER_RTL: usize = 2;
-
-    pub fn get_horizontal(&self)-> &str {
-        &self.horizontal
+    pub fn get_horizontal(&self)-> &HorizontalAlignmentValues {
+        &self.horizontal.get_value()
     }
 
-    pub fn set_horizontal<S: Into<String>>(&mut self, value:S) {
-        self.horizontal = value.into();
+    pub fn set_horizontal(&mut self, value:HorizontalAlignmentValues) {
+        self.horizontal.set_value(value);
     }
 
-    pub fn get_vertical(&self)-> &str {
-        &self.vertical
+    pub fn get_vertical(&self)-> &VerticalAlignmentValues {
+        &self.vertical.get_value()
     }
 
-    pub fn set_vertical<S: Into<String>>(&mut self, value:S) {
-        self.vertical = value.into();
+    pub fn set_vertical(&mut self, value:VerticalAlignmentValues) {
+        self.vertical.set_value(value);
     }
 
     pub fn get_wrap_text(&self)-> &bool {
-        &self.wrap_text
+        &self.wrap_text.get_value()
     }
 
     pub fn set_wrap_text(&mut self, value:bool) {
-        self.wrap_text = value;
-    }
-
-    pub(crate) fn is_empty(&self)-> bool {
-        if &self.horizontal != Alignment::HORIZONTAL_GENERAL {
-            return false;
-        }
-        if &self.vertical != "" {
-            return false;
-        }
-        if &self.text_rotation != &0 {
-            return false;
-        }
-        if &self.wrap_text == &true {
-            return false;
-        }
-        true
+        self.wrap_text.set_value(value);
     }
 
     pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}{}{}{}{}{}",
-        &self.horizontal,
-        &self.vertical,
-        &self.text_rotation,
-        if self.wrap_text {"t"} else {"f"},
-        if self.shrink_to_fit {"t"} else {"f"},
-        &self.indent,
-        &self.read_order
+        format!("{:x}", md5::compute(format!("{}{}{}",
+        &self.horizontal.get_hash_string(),
+        &self.vertical.get_hash_string(),
+        &self.wrap_text.get_hash_string(),
         )))
     }
+
+    pub(crate) fn set_attributes(
+        &mut self,
+        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart
+    ) {
+        match get_attribute(e, b"horizontal") {
+            Some(v) => {
+                self.horizontal.set_value_string(v);
+            },
+            None => {},
+        }
+        match get_attribute(e, b"vertical") {
+            Some(v) => {
+                self.vertical.set_value_string(v);
+            },
+            None => {},
+        }
+        match get_attribute(e, b"wrapText") {
+            Some(v) => {
+                self.wrap_text.set_value_string(v);
+            },
+            None => {},
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // alignment
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if self.horizontal.has_value() {
+            attributes.push(("horizontal", &self.horizontal.get_value_string()));
+        }
+        if self.vertical.has_value() {
+            attributes.push(("vertical", &self.vertical.get_value_string()));
+        }
+        if self.wrap_text.has_value() {
+            attributes.push(("wrapText", &self.wrap_text.get_value_string()));
+        }
+        write_start_tag(writer, "alignment", attributes, true);
+   }
 }

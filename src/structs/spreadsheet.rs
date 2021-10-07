@@ -3,12 +3,10 @@ use super::Properties;
 use super::Security;
 use super::Calculation;
 use super::Style;
-use super::NumberFormat;
-use super::Font;
-use super::Fill;
 use super::DefinedName;
-use super::Borders;
 use super::Theme;
+use super::Stylesheet;
+use super::SharedStringTable;
 use helper::coordinate::*;
 
 #[derive(Default, Debug)]
@@ -35,6 +33,8 @@ pub struct Spreadsheet {
     tab_ratio: i32,
     theme: Theme,
     defined_names: Vec<DefinedName>,
+    stylesheet: Stylesheet,
+    shared_string_table: SharedStringTable,
 }
 impl Spreadsheet {
     // ************************
@@ -204,6 +204,10 @@ impl Spreadsheet {
         &self.theme
     }
 
+    pub fn get_theme_mut(&mut self) -> &mut Theme {
+        &mut self.theme
+    }
+
     pub(crate) fn set_theme(&mut self, value:Theme) {
         self.theme = value;
     }
@@ -253,6 +257,10 @@ impl Spreadsheet {
         &self.has_macros
     }
 
+    pub(crate) fn get_has_macros_mut(&mut self) -> &mut bool {
+        &mut self.has_macros
+    }
+
     pub(crate) fn set_has_macros(&mut self, value:bool) {
         self.has_macros = value;
     }
@@ -273,123 +281,40 @@ impl Spreadsheet {
         self.active_sheet_index = value;
     }
 
-    pub(crate) fn get_all_number_format(&self) -> Vec<(String, NumberFormat)> {
-        let mut result:Vec<(String, NumberFormat)> = Vec::new();
-        for (_, style) in &self.get_all_cell_style() {
-            match style.get_number_format() {
-                Some(v) => {
-                    if v.get_built_in_format_code() != &None {
-                        continue;
-                    }
-                    let mut is_match = false;
-                    for (hash, _) in &result {
-                        if hash == &v.get_hash_code() {
-                            is_match = true;
-                            break;
-                        }
-                    }
-                    if is_match == false {
-                        result.push((v.get_hash_code(), v.clone()));
-                    }
-                },
-                None => {}
-            }
-        }
-        result
-    }
-    pub(crate) fn get_all_font(&self) -> Vec<(String, Font)> {
-        let mut result:Vec<(String, Font)> = Vec::new();
-        let def = Font::get_defalut_value();
-        result.push((def.get_hash_code(), def));
-        for (_, style) in &self.get_all_cell_style() {
-            match style.get_font() {
-                Some(v) => {
-                    let mut is_match = false;
-                    for (hash, _) in &result {
-                        if hash == &v.get_hash_code() {
-                            is_match = true;
-                            break;
-                        }
-                    }
-                    if is_match == false {
-                        result.push((v.get_hash_code(), v.clone()));
-                    }
-                }
-                None => {}
-            }
-        }
-        result
+    pub(crate) fn get_stylesheet(&self) -> &Stylesheet {
+        &self.stylesheet
     }
 
-    pub(crate) fn get_all_fill(&self) -> Vec<(String, Fill)> {
-        let mut result:Vec<(String, Fill)> = Vec::new();
-        let def = Fill::get_defalut_value();
-        result.push((def.get_hash_code(), def));
-        let def2 = Fill::get_defalut_value_2();
-        result.push((def2.get_hash_code(), def2));
-        for (_, style) in &self.get_all_cell_style() {
-            match style.get_fill() {
-                Some(v) => {
-                    let mut is_match = false;
-                    for (hash, _) in &result {
-                        if hash == &v.get_hash_code() {
-                            is_match = true;
-                            break;
-                        }
-                    }
-                    if is_match == false {
-                        result.push((v.get_hash_code(), v.clone()));
-                    }
-                },
-                None => {}
-            }
-        }
-        result
+    pub(crate) fn get_stylesheet_mut(&mut self) -> &mut Stylesheet {
+        &mut self.stylesheet
     }
 
-    pub(crate) fn get_all_borders(&self) -> Vec<(String, Borders)> {
-        let mut result:Vec<(String, Borders)> = Vec::new();
-        let def = Borders::get_defalut_value();
-        result.push((def.get_hash_code(), def));
-        for (_, style) in &self.get_all_cell_style() {
-            match style.get_borders() {
-                Some(v) => {
-                    let mut is_match = false;
-                    for (hash, _) in &result {
-                        if hash == &v.get_hash_code() {
-                            is_match = true;
-                            break;
-                        }
-                    }
-                    if is_match == false {
-                        result.push((v.get_hash_code(), v.clone()));
-                    }
-                },
-                None => {}
-            }
-        }
-        result
+    pub(crate) fn set_stylesheet(&mut self, value:Stylesheet) -> &mut Self {
+        self.stylesheet = value;
+        self
     }
 
-    pub(crate) fn get_all_cell_style(&self) -> Vec<(String, Style)> {
-        let mut result:Vec<(String, Style)> = Vec::new();
-        let def = Style::get_defalut_value();
-        result.push((def.get_hash_code(), def));
-        for worksheet in &self.work_sheet_collection {
-            for style in worksheet.get_style_collection() {
-                let mut is_match = false;
-                for (hash, _) in &result {
-                    if hash == &style.get_hash_code() {
-                        is_match = true;
-                        break;
-                    }
-                }
-                if is_match == false {
-                    result.push((style.get_hash_code(), style.clone()));
-                }
-            }
-        }
-        result
+    pub(crate) fn remove_stylesheet(&mut self) -> &mut Self {
+        self.stylesheet = Stylesheet::default();
+        self
+    }
+
+    pub(crate) fn get_shared_string_table(&self) -> &SharedStringTable {
+        &self.shared_string_table
+    }
+
+    pub(crate) fn get_shared_string_table_mut(&mut self) -> &mut SharedStringTable {
+        &mut self.shared_string_table
+    }
+
+    pub(crate) fn set_shared_string_table(&mut self, value:SharedStringTable) -> &mut Self {
+        self.shared_string_table = value;
+        self
+    }
+
+    pub(crate) fn remove_shared_string_table(&mut self) -> &mut Self {
+        self.shared_string_table = SharedStringTable::default();
+        self
     }
 
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
@@ -421,6 +346,16 @@ impl Spreadsheet {
         Err("not found.")
     }
 
+    pub fn get_sheet_by_name_mut<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
+        let v = value.into();
+        for sheet in &mut self.work_sheet_collection {
+            if sheet.get_title() == &v {
+                return Ok(sheet);
+            }
+        }
+        Err("not found.")
+    }
+
     pub fn get_sheet_by_sheet_id<S: Into<String>>(&self, value:S) -> Result<&Worksheet, &'static str> {
         let v = value.into();
         for sheet in &self.work_sheet_collection {
@@ -431,10 +366,10 @@ impl Spreadsheet {
         Err("not found.")
     }
 
-    pub fn get_sheet_by_name_mut<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
+    pub fn get_sheet_by_sheet_id_mut<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
         let v = value.into();
         for sheet in &mut self.work_sheet_collection {
-            if sheet.get_title() == &v {
+            if sheet.get_sheet_id() == &v {
                 return Ok(sheet);
             }
         }

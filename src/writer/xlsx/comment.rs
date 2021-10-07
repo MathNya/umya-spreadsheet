@@ -4,7 +4,6 @@ use std::io::Cursor;
 use tempdir::TempDir;
 use onig::*;
 use ::structs::Worksheet;
-use ::structs::Font;
 use super::driver::*;
 use super::XlsxError;
 
@@ -44,9 +43,8 @@ pub(crate) fn write(
     // commentList
     write_start_tag(&mut writer, "commentList", vec![], false);
     for comment in worksheet.get_comments() {
-        let coordinate = comment.get_coordinate().get_coordinate();
-
         // comment
+        let coordinate = comment.get_coordinate().get_coordinate();
         let author_id = get_author_id(&authors, comment.get_author());
         write_start_tag(&mut writer, "comment", vec![
             ("ref", &coordinate),
@@ -54,82 +52,8 @@ pub(crate) fn write(
         ], false);
 
         // text
-        write_start_tag(&mut writer, "text", vec![], false);
-        for element in comment.get_text().get_rich_text_elements() {
-            write_start_tag(&mut writer, "r", vec![], false);
-            match element.get_font() {
-                Some(font) => {
-                    write_start_tag(&mut writer, "rPr", vec![], false);
-                    // bold
-                    if font.get_bold() == &true {
-                       write_start_tag(&mut writer, "b", vec![], true);
-                    }
+        comment.get_text().write_to_text(&mut writer);
 
-                    // under line
-                    if font.get_underline() != Font::UNDERLINE_NONE {
-                        write_start_tag(&mut writer, "u", vec![
-                            ("val", font.get_underline()),
-                        ], true);
-                    }
-
-                    // italic
-                    if font.get_italic() == &true {
-                        write_start_tag(&mut writer, "i", vec![], true);
-                    }
-
-                    // strike
-                    if font.get_strikethrough() == &true {
-                        write_start_tag(&mut writer, "strike", vec![], true);
-                    }
-
-                    // sz
-                    write_start_tag(&mut writer, "sz", vec![
-                        ("val", font.get_size().to_string().as_str()),
-                    ], true);
-
-                    // color
-                    write_color(&mut writer, &font.get_color(), "color");
-
-                    // name
-                    write_start_tag(&mut writer, "name", vec![
-                        ("val", font.get_name()),
-                    ], true);
-
-                    // family
-                    write_start_tag(&mut writer, "family", vec![
-                        ("val", font.get_family().to_string().as_str()),
-                    ], true);
-
-                    // charset
-                    let zero:usize = 0;
-                    if font.get_charset() > &zero {
-                        write_start_tag(&mut writer, "charset", vec![
-                            ("val", font.get_charset().to_string().as_str()),
-                        ], true);
-                    }
-
-                    // scheme
-                    if font.get_scheme() != "" {
-                        write_start_tag(&mut writer, "scheme", vec![
-                            ("val",  font.get_scheme()),
-                        ], true);
-                    }
-                    write_end_tag(&mut writer, "rPr");
-                },
-                None => {}
-            }
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            let re = Regex::new(r#"^\r\n.*"#).unwrap();
-            if re.find(element.get_text()).is_some() {
-                attributes.push(("xml:space" , "preserve"));
-            }
-            write_start_tag(&mut writer, "t", attributes, false);
-            write_text_node(&mut writer, element.get_text());
-            write_end_tag(&mut writer, "t");
-            write_end_tag(&mut writer, "r");
-        }
-
-        write_end_tag(&mut writer, "text");
         write_end_tag(&mut writer, "comment");
     }
     write_end_tag(&mut writer, "commentList");

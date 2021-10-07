@@ -4,7 +4,6 @@ use std::io;
 use std::string::FromUtf8Error;
 use std::fs::File;
 
-use ::structs::Theme;
 use ::structs::Spreadsheet;
 use super::driver;
 
@@ -85,25 +84,26 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     vba_project_bin::read(&dir, &mut book).unwrap();
     let workbook_rel = workbook_rels::read(&dir).unwrap();
 
-    let mut theme = Theme::get_defalut_value();
     for (_, type_value, rel_target) in &workbook_rel {
         match type_value.as_str() {
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" => {
-                theme = theme::read(&dir, rel_target).unwrap();
+                let theme = theme::read(&dir, rel_target).unwrap();
+                book.set_theme(theme);
             },
             _ => {}
         }
     }
+    let theme = book.get_theme().clone();
 
-    let shared_string = shared_strings::read(&dir, &theme).unwrap();
-    let (cell_xfs_vec, dxf_vec) = styles::read(&dir, &theme).unwrap();
+    shared_strings::read(&dir, &mut book).unwrap();
+    styles::read(&dir, &mut book).unwrap();
 
     let mut sheet_count = 0;
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
-                let worksheet = book.new_sheet_crate(sheets_sheet_id.clone(), sheets_name.clone());
-                let (is_active_sheet, _drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, worksheet, &theme, &shared_string, &cell_xfs_vec, &dxf_vec).unwrap();
+                let (is_active_sheet, _drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
+                let worksheet = book.get_sheet_by_sheet_id_mut(sheets_sheet_id).unwrap();
                 let worksheet_rel = worksheet_rels::read(&dir, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
                     match type_value.as_str() {
@@ -128,7 +128,9 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
         }
         sheet_count += 1;
     }
-    book.set_theme(theme);
+
+    book.remove_shared_string_table();
+    book.remove_stylesheet();
 
     dir.close()?;
     Ok(book)

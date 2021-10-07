@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct StringValue {
     value: Option<String>,
     value_default: String,
@@ -24,10 +24,23 @@ impl StringValue {
         self.set_value(value.into())
     }
 
+    pub(crate) fn remove_value(&mut self) -> &mut Self {
+        self.value = None;
+        self
+    }
+
     pub(crate) fn has_value(&self)-> bool {
         match &self.value {
             Some(_) => true,
             None => false
         }
+    }
+
+    pub(crate) fn get_hash_string(&self)-> &str
+    {
+        if self.has_value() {
+            return self.get_value_string();
+        }
+        "empty!!"
     }
 }

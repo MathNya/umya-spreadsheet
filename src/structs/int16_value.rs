@@ -1,7 +1,17 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Debug)]
 pub struct Int16Value {
     value: Option<i16>,
+    value_string: String,
     value_default: i16,
+}
+impl Default for Int16Value {
+    fn default() -> Self {
+        Self {
+            value: None,
+            value_string: "0".into(),
+            value_default: 0,
+        }
+    }
 }
 impl Int16Value {
     pub(crate) fn get_value(&self)-> &i16 {
@@ -11,12 +21,13 @@ impl Int16Value {
         }
     }
 
-    pub(crate) fn get_value_string(&self)-> String {
-        self.get_value().to_string()
+    pub(crate) fn get_value_string(&self)-> &str {
+        &self.value_string
     }
 
     pub(crate) fn set_value(&mut self, value:i16) -> &mut Int16Value {
         self.value = Some(value);
+        self.value_string = value.to_string();
         self
     }
 
@@ -29,5 +40,13 @@ impl Int16Value {
             Some(_) => true,
             None => false
         }
+    }
+
+    pub(crate) fn get_hash_string(&self)-> &str
+    {
+        if self.has_value() {
+            return self.get_value_string();
+        }
+        "empty!!"
     }
 }

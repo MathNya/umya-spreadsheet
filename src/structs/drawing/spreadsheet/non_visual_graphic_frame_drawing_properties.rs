@@ -1,7 +1,6 @@
 // xdr:cNvGraphicFramePr
 use writer::driver::*;
-use reader::driver::*;
-use quick_xml::events::{Event, BytesStart};
+use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;

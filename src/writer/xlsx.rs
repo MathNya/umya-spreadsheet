@@ -4,6 +4,8 @@ use std::io;
 use std::string::FromUtf8Error;
 
 use structs::Spreadsheet;
+use structs::SharedStringTable;
+use structs::Stylesheet;
 use super::driver;
 
 mod chart;
@@ -94,33 +96,18 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
     // Add workbook
     let _ = workbook::write(spreadsheet, &dir, "xl", "workbook.xml");
 
-    // Add SharedStrings
-    let shared = shared_strings::write(spreadsheet, &dir).unwrap();
-
-    // Add Styles
-    let _ = styles::write(spreadsheet, &dir).unwrap();
-
     // Add worksheets and relationships (drawings, ...)
     let mut chart_id = 1;
     let mut drawing_id = 1;
     let mut comment_id = 1;
+    let mut shared_string_table = SharedStringTable::default();
+    shared_string_table.init_setup();
+    let mut stylesheet = Stylesheet::default();
+    stylesheet.init_setup();
     for i in 0..spreadsheet.get_sheet_count() {
         let p_worksheet_id:&str = &(i+1).to_string();
+        let _ = worksheet::write(&spreadsheet, &i, &mut shared_string_table, &mut stylesheet, &dir);
         let worksheet = &spreadsheet.get_sheet_collection()[i];
-        let is_selected = spreadsheet.get_active_sheet_index() == &i;
-        let has_macros = spreadsheet.get_has_macros();
-        let all_cell_xf_list = spreadsheet.get_all_cell_style();
-        let conditonal_style_list = spreadsheet.get_all_conditional_style_list();
-        let _ = worksheet::write(
-            worksheet,
-            &(i+1),
-            &is_selected,
-            has_macros,
-            all_cell_xf_list,
-            conditonal_style_list,
-            shared.clone(),
-            &dir
-        );
         let _ = worksheet_rels::write(worksheet, p_worksheet_id, &drawing_id, &comment_id,  &dir);
         let _ = drawing::write(worksheet, &drawing_id, &dir);
         let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &dir);
@@ -145,6 +132,12 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
             let _ = media::write(picture, &dir, "xl/media");
         }
     }
+
+    // Add SharedStrings
+    let _ = shared_strings::write(&shared_string_table, &dir).unwrap();
+
+    // Add Styles
+    let _ = styles::write(&stylesheet, &dir).unwrap();
 
     driver::write_to_file(path, &dir)?;
     dir.close()?;

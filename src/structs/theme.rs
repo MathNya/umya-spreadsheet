@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Theme {
     theme_name: String,
     color_scheme_name: String,

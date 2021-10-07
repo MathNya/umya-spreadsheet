@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Int64Value {
     value: Option<i64>,
     value_string: String,
@@ -40,5 +40,13 @@ impl Int64Value {
             Some(_) => true,
             None => false
         }
+    }
+
+    pub(crate) fn get_hash_string(&self)-> &str
+    {
+        if self.has_value() {
+            return self.get_value_string();
+        }
+        "empty!!"
     }
 }

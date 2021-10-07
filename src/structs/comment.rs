@@ -38,6 +38,10 @@ impl Comment {
         &self.text
     }
 
+    pub fn get_text_mut(&mut self)->&mut RichText {
+        &mut self.text
+    }
+
     pub fn set_text(&mut self, value:RichText) {
         self.text = value;
     }

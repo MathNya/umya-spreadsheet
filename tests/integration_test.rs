@@ -35,7 +35,7 @@ fn read_and_wite() {
     .set_value("49046881.119999997");
 
     let _ = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1")
-    .get_number_format_mut().set_format_code(umya_spreadsheet::NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+    .get_number_format_mut().set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
 
     let value =  book.get_sheet_by_name_mut("Sheet1").unwrap().get_formatted_value("A1");
     dbg!(&value);
@@ -66,6 +66,8 @@ fn read_and_wite_xlsm() {
     let _ = book.get_sheet_mut(0).get_cell_by_column_and_row_mut(1, 1).set_value("TEST1");
     let a1_value = book.get_sheet(0).unwrap().get_cell_by_column_and_row(1, 1).unwrap().get_value();
     assert_eq!("TEST1", a1_value);
+
+    //dbg!(book.get_sheet_mut(0).get_style("D10"));
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb.xlsm");
@@ -99,42 +101,30 @@ fn new_and_wite() {
     let _ = book.new_sheet("Sheet2");
 
     // change value.
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell("A1").unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(2, 2).set_value_and_data_type("1", umya_spreadsheet::Cell::TYPE_NUMERIC);
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(2, 2).set_value_from_i32(1);
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(2, 2).unwrap().get_value();
     assert_eq!("1", a1_value);
 
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 3).set_value_and_data_type("true", umya_spreadsheet::Cell::TYPE_BOOL);
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 3).set_value_from_bool(true);
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 3).unwrap().get_value();
-    assert_eq!("true", a1_value);
-
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 4).set_value("true");
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 4).unwrap().get_value();
-    assert_eq!("true", a1_value);
-
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 5).set_value("false");
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 5).unwrap().get_value();
-    assert_eq!("false", a1_value);
-
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_by_column_and_row_mut(3, 6).set_value("100");
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 6).unwrap().get_value();
-    assert_eq!("100", a1_value);
+    assert_eq!("TRUE", a1_value);
 
     // add bottom border.
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
     .get_borders_mut()
     .get_bottom_mut()
     .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_by_column_and_row_mut(3, 2)
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_by_column_and_row_mut(3, 2)
     .get_borders_mut()
     .get_left_mut()
     .set_border_style(umya_spreadsheet::Border::BORDER_THIN);
     
     // change font color.
-    let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
     .get_font_mut()
     .get_color_mut()
     .set_argb("00FF0000");

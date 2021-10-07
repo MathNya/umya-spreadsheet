@@ -134,7 +134,7 @@ impl Range {
             None => {},
         }
         match &mut self.coordinate_start_row {
-            Some(v) => {v.adjustment_insert_coordinate(root_col_num, offset_col_num);},
+            Some(v) => {v.adjustment_insert_coordinate(root_row_num, offset_row_num);},
             None => {},
         }
         match &mut self.coordinate_end_col {
@@ -142,7 +142,7 @@ impl Range {
             None => {},
         }
         match &mut self.coordinate_end_row {
-            Some(v) => {v.adjustment_insert_coordinate(root_col_num, offset_col_num);},
+            Some(v) => {v.adjustment_insert_coordinate(root_row_num, offset_row_num);},
             None => {},
         }
     }

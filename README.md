@@ -51,9 +51,13 @@ let mut book = umya_spreadsheet::new_file();
 let _ = book.new_sheet("Sheet2");
 
 // change value
-let _ = book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("B2").set_value_from_i32(1);
+book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("C3").set_value_from_bool(true);
 // or
-let _ = book.get_sheet_mut(1).get_cell_by_column_and_row_mut(1, 1).set_value("TEST1");
+book.get_sheet_mut(1).get_cell_by_column_and_row_mut(1, 1).set_value("TEST1");
+book.get_sheet_mut(1).get_cell_by_column_and_row_mut(2, 2).set_value_from_i32(1);
+book.get_sheet_mut(1).get_cell_by_column_and_row_mut(3, 3).set_value_from_bool(true);
 ```
 ### Read value
 ```rust
@@ -78,13 +82,13 @@ let mut book = umya_spreadsheet::new_file();
 let _ = book.new_sheet("Sheet2");
 
 // add bottom border
-let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
+book.get_sheet_by_name_mut("Sheet2").unwrap()
 .get_style_mut("A1")
 .get_borders_mut()
 .get_bottom_mut()
 .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
 // or
-let _ = book.get_sheet_by_name_mut("Sheet2").unwrap()
+book.get_sheet_by_name_mut("Sheet2").unwrap()
 .get_style_by_column_and_row_mut(1, 1)
 .get_borders_mut()
 .get_bottom_mut()

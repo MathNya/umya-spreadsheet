@@ -1,6 +1,6 @@
 use super::EnumTrait;
 use std::str::FromStr;
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct EnumValue<T:EnumTrait + FromStr> {
     value: Option<T>,
     value_default: T,
@@ -35,5 +35,13 @@ impl<T:EnumTrait + FromStr> EnumValue<T> {
             Some(_) => true,
             None => false
         }
+    }
+
+    pub(crate) fn get_hash_string(&self)-> &str
+    {
+        if self.has_value() {
+            return self.get_value_string();
+        }
+        "empty!!"
     }
 }
