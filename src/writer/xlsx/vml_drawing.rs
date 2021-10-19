@@ -1,6 +1,5 @@
 use quick_xml::Writer;
-use std::io::Cursor;
-use tempdir::TempDir;
+use std::io;
 
 use ::structs::Worksheet;
 use ::structs::Comment;
@@ -9,10 +8,10 @@ use super::XlsxError;
 
 const SUB_DIR: &'static str = "xl/drawings";
 
-pub(crate) fn write(
+pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     comment_id: &usize,
-    dir: &TempDir
+    arv: &mut zip::ZipWriter<W>
 ) -> Result<(), XlsxError> {
     if worksheet.get_comments().len() == 0 {
         return Ok(());
@@ -20,7 +19,7 @@ pub(crate) fn write(
 
     let file_name = format!("vmlDrawing{}.vml", comment_id);
 
-    let mut writer = Writer::new(Cursor::new(Vec::new()));
+    let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // xml
     write_start_tag(&mut writer, "xml", vec![
         ("xmlns:v", "urn:schemas-microsoft-com:vml"),
@@ -160,7 +159,7 @@ pub(crate) fn write(
 
     write_end_tag(&mut writer, "xml");
 
-    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), dir, writer, Some(SUB_DIR)).unwrap();
+    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), arv, writer, Some(SUB_DIR)).unwrap();
     Ok(())
 }
 

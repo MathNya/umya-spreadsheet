@@ -1,14 +1,13 @@
 use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
-use std::io::Cursor;
-use tempdir::TempDir;
+use std::io;
 
 use ::structs::Spreadsheet;
 use super::driver::*;
 use super::XlsxError;
 
-pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, file_name: &str) -> Result<(), XlsxError> {
-    let mut writer = Writer::new(Cursor::new(Vec::new()));
+pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mut zip::ZipWriter<W>, sub_dir: &str, file_name: &str) -> Result<(), XlsxError> {
+    let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
     write_new_line(&mut writer);
@@ -68,11 +67,11 @@ pub(crate) fn write(spreadsheet: &Spreadsheet, dir: &TempDir, sub_dir: &str, fil
     }
     
     write_end_tag(&mut writer, "Relationships");
-    let _ = make_file_from_writer(format!("{}/{}",sub_dir,file_name).as_str(), dir, writer, Some(sub_dir)).unwrap();
+    let _ = make_file_from_writer(format!("{}/{}",sub_dir,file_name).as_str(), arv, writer, Some(sub_dir)).unwrap();
     Ok(())
 }
 
-fn write_relationship(writer: &mut Writer<Cursor<Vec<u8>>>, p_id: &str, p_type: &str, p_target: &str, p_target_mode: &str)
+fn write_relationship(writer: &mut Writer<io::Cursor<Vec<u8>>>, p_id: &str, p_type: &str, p_target: &str, p_target_mode: &str)
 {
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();

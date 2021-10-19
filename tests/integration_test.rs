@@ -42,7 +42,7 @@ fn read_and_wite() {
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+    let _ = umya_spreadsheet::writer::xlsx::write_to_file(&book, path);
 }
 
 #[test]
@@ -53,7 +53,7 @@ fn read_and_wite_by_empty() {
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_empty.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+    let _ = umya_spreadsheet::writer::xlsx::write_to_file(&book, path);
 }
 
 #[test]
@@ -71,7 +71,7 @@ fn read_and_wite_xlsm() {
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb.xlsm");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+    let _ = umya_spreadsheet::writer::xlsx::write_to_file(&book, path);
 }
 
 #[test]
@@ -89,7 +89,7 @@ fn insert_and_remove_cells() {
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_insertCell.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+    let _ = umya_spreadsheet::writer::xlsx::write_to_file(&book, path);
 }
 
 #[test]
@@ -131,7 +131,7 @@ fn new_and_wite() {
 
     // writer.
     let path = std::path::Path::new("./tests/result_files/eee.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
+    let _ = umya_spreadsheet::writer::xlsx::write_to_file(&book, path).unwrap();
 }
 
 #[test]

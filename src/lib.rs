@@ -127,7 +127,7 @@
 //! 
 //! // writer
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
-//! let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+//! let _ = umya_spreadsheet::writer::xlsx::write_to_file(&book, path);
 //! ```
 //! ## License
 //! MIT
