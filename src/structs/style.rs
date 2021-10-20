@@ -168,4 +168,8 @@ impl Style {
             match &self.numbering_format {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
         )))
     }
+
+    pub(crate) fn is_empty(&self) -> bool {
+        self.get_hash_code() == Self::get_defalut_value().get_hash_code()
+    }
 }

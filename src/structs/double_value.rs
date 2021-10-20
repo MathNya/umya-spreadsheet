@@ -18,7 +18,7 @@ impl DoubleValue {
 
     pub(crate) fn set_value(&mut self, value:f64) -> &mut DoubleValue {
         self.value = Some(value);
-        self.value_string = value.to_string();
+        self.value_string = self.value.unwrap().to_string();
         self
     }
 

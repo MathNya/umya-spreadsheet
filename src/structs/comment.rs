@@ -114,7 +114,7 @@ impl Comment {
         self.anchor = value;
     }
 
-    pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+    pub(crate) fn adjustment_insert_coordinate(&mut self, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32) {
         let org_col_num = self.coordinate.get_col_num().clone();
         let org_row_num = self.coordinate.get_row_num().clone();
         self.coordinate.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
@@ -126,7 +126,7 @@ impl Comment {
         }
     }
 
-    pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+    pub(crate) fn adjustment_remove_coordinate(&mut self, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32) {
         let org_col_num = self.coordinate.get_col_num().clone();
         let org_row_num = self.coordinate.get_row_num().clone();
         self.coordinate.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);

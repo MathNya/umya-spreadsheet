@@ -1,16 +1,23 @@
-use super::RichText;
+use super::CellValue;
 use super::Hyperlink;
 use super::Coordinate;
+use super::Style;
+use super::RichText;
 use super::SharedStringItem;
-use ::helper::formula::*;
+use super::Stylesheet;
+use super::SharedStringTable;
+use writer::driver::*;
+use reader::driver::*;
+use quick_xml::Reader;
+use quick_xml::events::{Event, BytesStart};
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct Cell {
     coordinate: Coordinate,
-    data_type: String,
-    value: Option<String>,
-    rich_text: Option<RichText>,
-    formula: Option<String>,
+    pub(crate)cell_value: CellValue,
+    style: Style,
     hyperlink: Option<Hyperlink>,
 }
 impl Cell {
@@ -23,6 +30,33 @@ impl Cell {
     pub const TYPE_NULL: &'static str = "null";
     pub const TYPE_INLINE: &'static str = "inlineStr";
     pub const TYPE_ERROR: &'static str = "e";
+
+    pub fn get_cell_value(&self)-> &CellValue {
+        &self.cell_value
+    }
+
+    pub fn get_cell_value_mut(&mut self)-> &mut CellValue {
+        &mut self.cell_value
+    }
+
+    pub fn set_cell_value(&mut self, value:CellValue)-> &mut Self {
+        self.cell_value = value;
+        self
+    }
+
+
+    pub fn get_style(&self)-> &Style {
+        &self.style
+    }
+
+    pub fn get_style_mut(&mut self)-> &mut Style {
+        &mut self.style
+    }
+
+    pub fn set_style(&mut self, value:Style)-> &mut Self {
+        self.style = value;
+        self
+    }
 
     pub fn get_coordinate(&self)-> &Coordinate {
         &self.coordinate
@@ -45,17 +79,17 @@ impl Cell {
         self.hyperlink.as_mut().unwrap()
     }
 
-    pub fn set_hyperlink(&mut self, value:Hyperlink)-> &mut Cell {
+    pub fn set_hyperlink(&mut self, value:Hyperlink)-> &mut Self {
         self.hyperlink = Some(value);
         self
     }
 
     pub fn get_value(&self)-> &str {
-        match &self.value {
+        match &self.cell_value.value {
             Some(v) => {return v;},
             None => {},
         }
-        match &self.rich_text {
+        match &self.cell_value.rich_text {
             Some(v) => {
                 return v.get_text();
             },
@@ -65,212 +99,261 @@ impl Cell {
     }
     
     pub(crate) fn get_value_crate(&self)-> &Option<String> {
-        &self.value
+        &self.cell_value.value
     }
 
     pub fn get_rich_text(&self)-> &Option<RichText> {
-        &self.rich_text
+        &self.cell_value.rich_text
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value:S)-> &mut Self {
-        let value_org = value.into();
-        self.data_type = Cell::data_type_for_value(&value_org).to_string();
-        self.value = Some(value_org);
-        self.rich_text = None;
-        self.formula = None;
+        self.cell_value.set_value(value);
         self
     }
 
     pub fn set_value_from_string<S: Into<String>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_STRING.to_string();
-        self.value = Some(value.into());
-        self.rich_text = None;
-        self.formula = None;
+        self.cell_value.set_value_from_string(value);
         self
     }
 
-    pub fn set_value_from_bool<S: Into<bool>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_BOOL.to_string();
-        self.value = Some(match value.into() {true=>{"TRUE".to_string()}, false=>{"FALSE".to_string()}});
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_bool(&mut self, value:bool)-> &mut Self {
+        self.cell_value.set_value_from_bool(value);
         self
     }
 
-    pub fn set_value_from_u16<S: Into<u16>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_NUMERIC.to_string();
-        self.value = Some(value.into().to_string());
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_bool_ref(&mut self, value:&bool)-> &mut Self {
+        self.cell_value.set_value_from_bool_ref(value);
         self
     }
 
-    pub fn set_value_from_u32<S: Into<u32>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_NUMERIC.to_string();
-        self.value = Some(value.into().to_string());
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_u16(&mut self, value:u16)-> &mut Self {
+        self.cell_value.set_value_from_u16(value);
         self
     }
 
-    pub fn set_value_from_u64<S: Into<u64>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_NUMERIC.to_string();
-        self.value = Some(value.into().to_string());
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_u16_ref(&mut self, value:&u16)-> &mut Self {
+        self.cell_value.set_value_from_u16_ref(value);
         self
     }
 
-    pub fn set_value_from_i16<S: Into<i16>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_NUMERIC.to_string();
-        self.value = Some(value.into().to_string());
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_u32(&mut self, value:u32)-> &mut Self {
+        self.cell_value.set_value_from_u32(value);
         self
     }
 
-    pub fn set_value_from_i32<S: Into<i32>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_NUMERIC.to_string();
-        self.value = Some(value.into().to_string());
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_u32_ref(&mut self, value:&u32)-> &mut Self {
+        self.cell_value.set_value_from_u32_ref(value);
         self
     }
 
-    pub fn set_value_from_i64<S: Into<i64>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_NUMERIC.to_string();
-        self.value = Some(value.into().to_string());
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_u64(&mut self, value:u64)-> &mut Self {
+        self.cell_value.set_value_from_u64(value);
         self
     }
 
-    pub fn set_value_from_usize<S: Into<usize>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_NUMERIC.to_string();
-        self.value = Some(value.into().to_string());
-        self.rich_text = None;
-        self.formula = None;
+    pub fn set_value_from_u64_ref(&mut self, value:&u64)-> &mut Self {
+        self.cell_value.set_value_from_u64_ref(value);
         self
     }
 
-    pub fn set_rich_text<S: Into<RichText>>(&mut self, value:S)-> &mut Self {
-        self.data_type = Cell::TYPE_STRING.to_string();
-        self.value = None;
-        self.rich_text = Some(value.into());
-        self.formula = None;
+    pub fn set_value_from_i16(&mut self, value:i16)-> &mut Self {
+        self.cell_value.set_value_from_i16(value);
         self
     }
 
-    pub fn set_formula<S: Into<String>>(&mut self, value:S)-> &mut Cell {
-        self.data_type = Cell::TYPE_FORMULA.to_string();
-        self.value = None;
-        self.rich_text = None;
-        self.formula = Some(value.into());
+    pub fn set_value_from_i16_ref(&mut self, value:&i16)-> &mut Self {
+        self.cell_value.set_value_from_i16_ref(value);
+        self
+    }
+
+    pub fn set_value_from_i32(&mut self, value:i32)-> &mut Self {
+        self.cell_value.set_value_from_i32(value);
+        self
+    }
+
+    pub fn set_value_from_i32_ref(&mut self, value:&i32)-> &mut Self {
+        self.cell_value.set_value_from_i32_ref(value);
+        self
+    }
+
+    pub fn set_value_from_i64(&mut self, value:i64)-> &mut Self {
+        self.cell_value.set_value_from_i64(value);
+        self
+    }
+
+    pub fn set_value_from_i64_ref(&mut self, value:&i64)-> &mut Self {
+        self.cell_value.set_value_from_i64_ref(value);
+        self
+    }
+
+    pub fn set_value_from_usize(&mut self, value:usize)-> &mut Self {
+        self.cell_value.set_value_from_usize(value);
+        self
+    }
+
+    pub fn set_value_from_usize_ref(&mut self, value:&usize)-> &mut Self {
+        self.cell_value.set_value_from_usize_ref(value);
+        self
+    }
+
+    pub fn set_rich_text(&mut self, value:RichText)-> &mut Self {
+        self.cell_value.set_rich_text(value);
+        self
+    }
+
+    pub fn set_rich_text_ref(&mut self, value:&RichText)-> &mut Self {
+        self.cell_value.set_rich_text_ref(value);
+        self
+    }
+    
+    pub fn set_formula<S: Into<String>>(&mut self, value:S)-> &mut Self {
+        self.cell_value.set_formula(value);
         self
     }
 
     pub(crate) fn set_shared_string_item(&mut self, value:SharedStringItem)-> &mut Self {
-        self.data_type = Cell::TYPE_STRING.to_string();
-        match value.get_text() {
-            Some(v) => {self.value = Some(v.get_value().to_string());},
-            None => {}
-        }
-        self.rich_text = value.get_rich_text().clone();
-        self.formula = None;
+        self.cell_value.set_shared_string_item(value);
         self
     }
 
     pub fn get_data_type(&self)-> &str {
-        &self.data_type
+        &self.cell_value.data_type
     }
 
-    pub fn set_data_type<S: Into<String>>(&mut self, value:S)-> &mut Cell {
-        let data_type = value.into();
-        match Cell::check_data_type(self.get_value(), &data_type) {
-            Ok(_) => self.data_type = data_type.into(),
-            Err(e) => panic!("Error at set_data_type {:?}", e),
-        }
+    pub fn set_data_type<S: Into<String>>(&mut self, value:S)-> &mut Self {
+        self.cell_value.set_data_type(value);
         self
     }
 
-    pub(crate) fn check_data_type<S: Into<String>>(value:S, data_type:S)->Result<(), &'static str> {
-        match data_type.into().as_str() {
-            Cell::TYPE_STRING2 => return Ok(()),
-            Cell::TYPE_STRING => return Ok(()),
-            Cell::TYPE_FORMULA => return Ok(()),
-            Cell::TYPE_NUMERIC => {
-                match &value.into().parse::<f64>() {
-                    Ok(_) => return Ok(()),
-                    Err(_) => return Err("Invalid numeric value for datatype Numeric")
-                }
-            },
-            Cell::TYPE_BOOL => {
-                let check_value = &value.into().to_uppercase();
-                if check_value == "TRUE" || check_value == "FALSE" {
-                    return Ok(());
-                } else {
-                    return Err("Invalid value for datatype Bool")
-                }
-            },
-            Cell::TYPE_NULL => return Ok(()),
-            _ => return Err("Invalid datatype")
-        }
-    }
-
     pub fn is_formula(&self) -> bool {
-        &self.data_type == Cell::TYPE_FORMULA
+        self.cell_value.is_formula()
     }
 
     pub fn get_formula(&self)-> &str {
-        match &self.formula {
-            Some(v) => {return v;},
-            None => {},
-        }
-        ""
+        &self.cell_value.get_formula()
     }
 
+    pub(crate) fn set_attributes(
+        &mut self,
+        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        e:&BytesStart,
+        shared_string_table: &SharedStringTable,
+        stylesheet: &Stylesheet,
+        empty_flag:bool,
+    ) {
+        let mut type_value: String = String::from("");
 
-    pub(crate) fn data_type_for_value(value:&str)-> &str {
-        let check_value = value.to_uppercase();
-
-        // Match the value against a few data types
-        if check_value == "NULL" {
-            return Cell::TYPE_NULL;
-        }
-        match check_value.parse::<f64>() {
-            Ok(_) => return Cell::TYPE_NUMERIC,
-            Err(_) => {}
-        }
-        if check_value == "TRUE" || check_value == "FALSE" {
-            return Cell::TYPE_BOOL;
-        }
-        Cell::TYPE_STRING
-    }
-    
-    pub(crate) fn get_hash_code_by_value(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}",
-            match &self.value {Some(v) => {v}, None => {"None"}},
-            match &self.rich_text {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-        )))
-    }
-
-    pub(crate) fn adjustment_insert_formula_coordinate(&mut self, self_sheet_name:&str, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        match &self.formula {
+        match get_attribute(e, b"r") {
             Some(v) => {
-                let formula = adjustment_insert_formula_coordinate(v, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
-                self.formula = Some(formula);
-            },
-            None => {},
-        }
-    }
-
-    pub(crate) fn adjustment_remove_formula_coordinate(&mut self, self_sheet_name:&str, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
-        match &self.formula {
-            Some(v) => {
-                let formula = adjustment_remove_formula_coordinate(v, root_col_num, offset_col_num, root_row_num, offset_row_num, sheet_name, self_sheet_name);
-                self.formula = Some(formula);
+                self.coordinate.set_coordinate(v);
             },
             None => {}
+        }
+
+        match get_attribute(e, b"s") {
+            Some(v) => {
+                let style = stylesheet.get_style(v.parse::<usize>().unwrap());
+                self.set_style(style);
+            },
+            None => {}
+        }
+
+        match get_attribute(e, b"t") {
+            Some(v) => {
+                type_value = v;
+            },
+            None => {}
+        }
+
+        if empty_flag {
+            return;
+        }
+
+        let mut string_value: String = String::from("");
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event(&mut buf) {
+                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
+                Ok(Event::End(ref e)) => {
+                    match e.name() {
+                        b"f" => {
+                            self.set_formula(string_value.clone());
+                        },
+                        b"v" => {
+                            if type_value == "s" {
+                                let index = string_value.parse::<usize>().unwrap();
+                                let shared_string_item = shared_string_table.get_shared_string_item().get(index).unwrap();
+                                self.set_shared_string_item(shared_string_item.clone());
+                            } else if type_value == "b" {
+                                let prm = if &string_value == "1" {true} else {false};
+                                let _ = self.set_value_from_bool(prm);
+                            } else if type_value == "" || type_value == "n" {
+                                let _ = self.set_value(&string_value);
+                            };
+                        },
+                        b"c" => return,
+                        _ => (),
+                    }
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "c"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
+        }
+    }
+
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        shared_string_table: &mut SharedStringTable,
+        stylesheet: &mut Stylesheet,
+    ) {
+        let empty_flag = self.cell_value.is_empty();
+
+        // c
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let coordinate = self.coordinate.get_coordinate();
+        attributes.push(("r", &coordinate));
+        if self.get_data_type() == "s" || self.get_data_type() == "b" {
+            attributes.push(("t", self.get_data_type()));
+        }
+        let xf_index_str:String;
+        let xf_index = stylesheet.set_style(self.get_style());
+        if xf_index > 0 {
+            xf_index_str = xf_index.to_string();
+            attributes.push(("s", &xf_index_str));
+        }
+        write_start_tag(writer, "c", attributes, empty_flag);
+
+        if empty_flag == false {
+            // f
+            match &self.cell_value.formula {
+                Some(v) => {
+                    write_start_tag(writer, "f", vec![], false);
+                    write_text_node(writer, v);
+                    write_end_tag(writer, "f");
+                },
+                None => {},
+            }
+
+            // v
+            write_start_tag(writer, "v", vec![], false);
+            match self.get_data_type() {
+                "s" => {
+                    let val_index = shared_string_table.set_cell(self.get_cell_value());
+                    write_text_node(writer, val_index.to_string());
+                },
+                "b" => {
+                    let upper_value = self.get_value().to_uppercase();
+                    let prm = if upper_value == "TRUE" {"1"} else {"0"};
+                    write_text_node(writer, prm);
+                },
+                _ => write_text_node(writer, self.get_value()),
+            }
+            write_end_tag(writer, "v");
+
+            write_end_tag(writer, "c");
         }
     }
 }

@@ -30,12 +30,17 @@ pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet) -> result::Result<(), X
                             color.set_argb_by_theme(&theme);
                         }
                         for fill in obj.get_fills_mut().get_fill_mut() {
-                            match fill.get_pattern_fill_mut().get_foreground_color_mut() {
-                                Some(v) => {v.set_argb_by_theme(&theme);},
-                                None => {},
-                            }
-                            match fill.get_pattern_fill_mut().get_background_color_mut() {
-                                Some(v) => {v.set_argb_by_theme(&theme);},
+                            match fill.get_pattern_fill_mut() {
+                                Some(v) => {
+                                    match v.get_foreground_color_mut() {
+                                        Some(c) => {c.set_argb_by_theme(&theme);},
+                                        None => {},
+                                    }
+                                    match v.get_background_color_mut() {
+                                        Some(c) => {c.set_argb_by_theme(&theme);},
+                                        None => {},
+                                    }
+                                },
                                 None => {},
                             }
                         }

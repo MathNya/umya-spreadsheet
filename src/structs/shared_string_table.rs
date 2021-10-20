@@ -1,6 +1,6 @@
 // sst
 use super::SharedStringItem;
-use super::Cell;
+use super::CellValue;
 use super::Text;
 use writer::driver::*;
 use quick_xml::Reader;
@@ -32,7 +32,7 @@ impl SharedStringTable {
         self
     }
 
-    pub(crate) fn set_cell(&mut self, value:&Cell) -> u32 {
+    pub(crate) fn set_cell(&mut self, value:&CellValue) -> u32 {
         self.regist_count += 1;
 
         let mut shared_string_item = SharedStringItem::default();

@@ -53,19 +53,19 @@ impl Address {
         format!("{}!{}", &self.sheet_name, self.range.get_range())
     }
 
-    pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+    pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32) {
         if &self.sheet_name == sheet_name {
             self.range.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
         }
     }
 
-    pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize) {
+    pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32) {
         if &self.sheet_name == sheet_name {
             self.range.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
         }
     }
 
-    pub(crate) fn is_remove(&self, sheet_name:&str, root_col_num:&usize, offset_col_num:&usize, root_row_num:&usize, offset_row_num:&usize)->bool {
+    pub(crate) fn is_remove(&self, sheet_name:&str, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32)->bool {
         if &self.sheet_name == sheet_name {
            return self.range.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num);
         }

@@ -7,13 +7,14 @@ use super::driver::*;
 use ::structs::Spreadsheet;
 use ::structs::Color;
 use ::structs::Theme;
-use ::structs::RowDimension;
-use ::structs::ColumnDimension;
+use ::structs::Row;
+use ::structs::Column;
 use ::structs::Conditional;
 use ::structs::Stylesheet;
 use ::structs::PageMargins;
 use ::structs::Hyperlink;
 use ::structs::ConditionalSet;
+use ::structs::Cell;
 
 pub(crate) fn read(
     dir: &TempDir,
@@ -39,10 +40,6 @@ pub(crate) fn read(
     let mut drawing:Option<String> = None;
     let mut legacy_drawing:Option<String> = None;
     let mut hyperlink_vec: Vec<(String, String)> = Vec::new();
-
-    let mut coordinate: String = String::from("");
-    let mut type_value: String = String::from("");
-    let mut string_value: String = String::from("");
 
     loop {
         match reader.read_event(&mut buf) {
@@ -82,36 +79,9 @@ pub(crate) fn read(
                         }
                     },
                     b"row" => {
-                        let mut row = RowDimension::default();
-                        get_attribute_row(e, &mut row);
-                        worksheet.set_row_dimension(row);
-                    },
-                    b"c" => {
-                        let mut style_index: Option<usize> = None;
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"r" => {
-                                    coordinate = get_attribute_value(attr)?;
-                                },
-                                Ok(ref attr) if attr.key == b"s" => {
-                                    let value = get_attribute_value(attr).unwrap();
-                                    style_index = Some(value.parse::<usize>().unwrap());
-                                },
-                                Ok(ref attr) if attr.key == b"t" => {
-                                    type_value = get_attribute_value(attr)?;
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
-                        match style_index {
-                            Some(v) => {
-                                let mut style = stylesheet.get_style(v);
-                                style.get_coordinate_mut().set_coordinate(&coordinate);
-                                worksheet.add_style(style);
-                            },
-                            None => {}
-                        }
+                        let mut obj = Row::default();
+                        obj.set_attributes(&mut reader, e, worksheet, &shared_string_table, &stylesheet, false);
+                        worksheet.set_row_dimension(obj);
                     },
                     b"conditionalFormatting" => {
                         let mut conditional_set = ConditionalSet::default();
@@ -153,51 +123,14 @@ pub(crate) fn read(
                         }
                     },
                     b"col" => {
-                        let mut column_dimension = ColumnDimension::default();
-                        let min = get_attribute(e, b"min").unwrap().parse::<usize>().unwrap();
-                        column_dimension.set_col_num_start(min);
-
-                        let max = get_attribute(e, b"max").unwrap().parse::<usize>().unwrap();
-                        column_dimension.set_col_num_end(max);
-
-                        let width = get_attribute(e, b"width").unwrap().parse::<f32>().unwrap();
-                        column_dimension.set_width(width);
-
-                        let best_fit =  match get_attribute(e, b"bestFit") {
-                            Some(v) => { if v.as_str() == "1" { true } else { false } },
-                            None => { false }
-                        };
-                        column_dimension.set_best_fit(best_fit);
-                        worksheet.set_column_dimensions(column_dimension);
+                        let mut obj = Column::default();
+                        obj.set_attributes(&mut reader, e, &stylesheet);
+                        worksheet.set_column_dimensions(obj);
                     },
                     b"row" => {
-                        let mut row = RowDimension::default();
-                        get_attribute_row(e, &mut row);
-                        worksheet.set_row_dimension(row);
-                    },
-                    b"c" => {
-                        let mut style_index: Option<usize> = None;
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"r" => {
-                                    coordinate = get_attribute_value(attr)?;
-                                },
-                                Ok(ref attr) if attr.key == b"s" => {
-                                    let value = get_attribute_value(attr)?;
-                                    style_index = Some(value.parse::<usize>().unwrap());
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
-                        match style_index {
-                            Some(v) => {
-                                let mut style = stylesheet.get_style(v);
-                                style.get_coordinate_mut().set_coordinate(&coordinate);
-                                worksheet.add_style(style);
-                            },
-                            None => {}
-                        }
+                        let mut obj = Row::default();
+                        obj.set_attributes(&mut reader, e, worksheet, &shared_string_table, &stylesheet, true);
+                        worksheet.set_row_dimension(obj);
                     },
                     b"autoFilter" => {
                         worksheet.set_auto_filter(get_attribute(e, b"ref").unwrap());
@@ -234,28 +167,6 @@ pub(crate) fn read(
                             hyperlink_vec.push((coor, rid));
                         }
                     },
-                    _ => (),
-                }
-            },
-            Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
-            Ok(Event::End(ref e)) => {
-                match e.name() {
-                    b"f" => {
-                        worksheet.get_cell_mut(&coordinate.to_string()).set_formula(string_value.clone());
-                    },
-                    b"v" => {
-                        if type_value == "s" {
-                            let index = string_value.parse::<usize>().unwrap();
-                            let shared_string_item = shared_string_table.get_shared_string_item().get(index).unwrap();
-                            worksheet.get_cell_mut(&coordinate.to_string()).set_shared_string_item(shared_string_item.clone());
-                        } else if type_value == "b" {
-                            let prm = if &string_value == "1" {true} else {false};
-                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value_from_bool(prm);
-                        } else if type_value == "" || type_value == "n" {
-                            let _ = worksheet.get_cell_mut(&coordinate.to_string()).set_value(&string_value);
-                        };
-                    },
-                    b"c" => type_value = String::from(""),
                     _ => (),
                 }
             },
@@ -417,23 +328,6 @@ fn get_cfvo(
             _ => (),
         }
         buf.clear();
-    }
-}
-
-fn get_attribute_row(
-    e:&quick_xml::events::BytesStart<'_>, 
-    row:&mut RowDimension
-) {
-    for a in e.attributes().with_checks(false) {
-        match a {
-            Ok(ref attr) if attr.key == b"r" => row.set_row_num(&get_attribute_value(attr).unwrap().parse::<usize>().unwrap()),
-            Ok(ref attr) if attr.key == b"ht" => row.set_height(get_attribute_value(attr).unwrap().parse::<f32>().unwrap()),
-            Ok(ref attr) if attr.key == b"thickBot" => row.set_thick_bot(get_attribute_value(attr).unwrap() == "1"),
-            Ok(ref attr) if attr.key == b"customHeight" => row.set_custom_height(get_attribute_value(attr).unwrap() == "1"),
-            Ok(ref attr) if attr.key == b"x14ac:dyDescent" => row.set_descent(get_attribute_value(attr).unwrap().parse::<f32>().unwrap()),
-            Ok(_) => {},
-            Err(_) => {},
-        }
     }
 }
 

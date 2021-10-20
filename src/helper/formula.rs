@@ -3,10 +3,10 @@ use helper::coordinate::*;
 
 pub fn adjustment_insert_formula_coordinate(
     formula:&str,
-    root_col_num:&usize,
-    offset_col_num:&usize,
-    root_row_num:&usize,
-    offset_row_num:&usize,
+    root_col_num:&u32,
+    offset_col_num:&u32,
+    root_row_num:&u32,
+    offset_row_num:&u32,
     worksheet_name:&str,
     self_worksheet_name:&str
 )-> String {
@@ -57,10 +57,10 @@ pub fn adjustment_insert_formula_coordinate(
 
 pub fn adjustment_remove_formula_coordinate(
     formula:&str,
-    root_col_num:&usize,
-    offset_col_num:&usize,
-    root_row_num:&usize,
-    offset_row_num:&usize,
+    root_col_num:&u32,
+    offset_col_num:&u32,
+    root_row_num:&u32,
+    offset_row_num:&u32,
     worksheet_name:&str,
     self_worksheet_name:&str
 )-> String {

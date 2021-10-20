@@ -51,7 +51,7 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_row("Sheet1", 2, 3);
     /// ```
-    pub fn insert_new_row<S: Into<String>>(&mut self, sheet_name:S, row_index:usize, num_rows:usize) {
+    pub fn insert_new_row<S: Into<String>>(&mut self, sheet_name:S, row_index:u32, num_rows:u32) {
         self.adjustment_insert_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
     }
 
@@ -65,7 +65,7 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_colmun("Sheet1", "B", 3);
     /// ```
-    pub fn insert_new_colmun<S: Into<String>>(&mut self, sheet_name:S, column:S, num_columns:usize) {
+    pub fn insert_new_colmun<S: Into<String>>(&mut self, sheet_name:S, column:S, num_columns:u32) {
         let column_upper = column.into().to_uppercase();
         let column_index = column_index_from_string(column_upper);
         self.insert_new_colmun_by_index(&sheet_name.into(), column_index, num_columns);
@@ -81,7 +81,7 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_colmun_by_index("Sheet1", 2, 3);
     /// ```
-    pub fn insert_new_colmun_by_index<S: Into<String>>(&mut self, sheet_name:S, column_index:usize, num_columns:usize) {
+    pub fn insert_new_colmun_by_index<S: Into<String>>(&mut self, sheet_name:S, column_index:u32, num_columns:u32) {
         self.adjustment_insert_coordinate(&sheet_name.into(), &column_index, &num_columns, &0, &0);
     }
 
@@ -95,7 +95,7 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_row("Sheet1", 2, 3);
     /// ```
-    pub fn remove_row<S: Into<String>>(&mut self, sheet_name:S, row_index:usize, num_rows:usize) {
+    pub fn remove_row<S: Into<String>>(&mut self, sheet_name:S, row_index:u32, num_rows:u32) {
         self.adjustment_remove_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
     }
 
@@ -109,7 +109,7 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_colmun("Sheet1", "B", 3);
     /// ```
-    pub fn remove_colmun<S: Into<String>>(&mut self, sheet_name:S, column:S, num_columns:usize) {
+    pub fn remove_colmun<S: Into<String>>(&mut self, sheet_name:S, column:S, num_columns:u32) {
         let column_upper = column.into().to_uppercase();
         let column_index = column_index_from_string(column_upper);
         self.remove_colmun_by_index(&sheet_name.into(), column_index, num_columns);
@@ -125,11 +125,11 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_colmun_by_index("Sheet1", 2, 3);
     /// ```
-    pub fn remove_colmun_by_index<S: Into<String>>(&mut self, sheet_name:S, column_index:usize, num_columns:usize) {
+    pub fn remove_colmun_by_index<S: Into<String>>(&mut self, sheet_name:S, column_index:u32, num_columns:u32) {
         self.adjustment_remove_coordinate(&sheet_name.into(), &column_index, &num_columns, &0, &0);
     }
 
-    pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, column_index:&usize, num_columns:&usize, row_index:&usize, num_rows:&usize) {
+    pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, column_index:&u32, num_columns:&u32, row_index:&u32, num_rows:&u32) {
         for defined_name in &mut self.defined_names {
             defined_name.get_address_obj_mut().adjustment_insert_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
         }
@@ -138,7 +138,7 @@ impl Spreadsheet {
         }
     }
 
-    pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, column_index:&usize, num_columns:&usize, row_index:&usize, num_rows:&usize) {
+    pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, column_index:&u32, num_columns:&u32, row_index:&u32, num_rows:&u32) {
         self.defined_names.retain(|x| {
             !(x.get_address_obj().is_remove(sheet_name, column_index, num_columns, row_index, num_rows))
         });

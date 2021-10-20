@@ -9,7 +9,7 @@ const ALPHABET: &'static [&'static str] = &[
     "Z",
 ];
 
-pub fn column_index_from_string<S: Into<String>>(column:S)->usize {
+pub fn column_index_from_string<S: Into<String>>(column:S)->u32 {
     let column_c = column.into().clone();
     if column_c == "0" {
         return 0;
@@ -33,7 +33,7 @@ pub fn column_index_from_string<S: Into<String>>(column:S)->usize {
     }
 }
 
-fn get_index(column:&str)->usize {
+fn get_index(column:&str)->u32 {
     let mut i = 0;
     for tar in self::ALPHABET {
         if tar == &column {
@@ -44,8 +44,8 @@ fn get_index(column:&str)->usize {
     panic!("illegal character");
 }
 
-pub fn string_from_column_index(column_index:&usize)->String {
-    if column_index < &1usize {
+pub fn string_from_column_index(column_index:&u32)->String {
+    if column_index < &1u32 {
         panic!("Column number starts from 1.");
     }
     let mut result: String = String::from("");
@@ -53,7 +53,7 @@ pub fn string_from_column_index(column_index:&usize)->String {
     while index_value > 0 {
         let character_value = (index_value - 1) % 26 + 1;
         index_value = (index_value - character_value) / 26;
-        result = format!("{}{}", self::ALPHABET.get(character_value - 1).unwrap(), result);
+        result = format!("{}{}", self::ALPHABET.get((character_value - 1) as usize).unwrap(), result);
     }
     result
 }
@@ -78,7 +78,7 @@ pub fn coordinate_from_string(coordinate:&str)->Vec<Option<&str>> {
     vec![col, row, is_lock_col, is_lock_row]
 }
 
-pub fn coordinate_from_index(col:&usize, row:&usize)->String {
+pub fn coordinate_from_index(col:&u32, row:&u32)->String {
     format!(
         "{}{}",
         string_from_column_index(&col),
@@ -86,7 +86,7 @@ pub fn coordinate_from_index(col:&usize, row:&usize)->String {
     )
 }
 
-pub fn coordinate_from_index_with_lock(col:&usize, row:&usize, is_lock_col:&bool, is_lock_row:&bool)->String {
+pub fn coordinate_from_index_with_lock(col:&u32, row:&u32, is_lock_col:&bool, is_lock_row:&bool)->String {
     format!(
         "{}{}{}{}",
         if is_lock_col == &true {"$"} else {""},
@@ -96,17 +96,17 @@ pub fn coordinate_from_index_with_lock(col:&usize, row:&usize, is_lock_col:&bool
     )
 }
 
-pub fn index_from_coordinate<S: Into<String>>(coordinate:S)->Vec<Option<usize>> {
+pub fn index_from_coordinate<S: Into<String>>(coordinate:S)->Vec<Option<u32>> {
     let con = coordinate.into();
     let split = coordinate_from_string(con.as_str());
     let col = match split[0] {Some(v) => Some(column_index_from_string(v)), None => None};
-    let row = match split[1] {Some(v) => Some(v.parse::<usize>().unwrap()), None => None};
-    let is_lock_col = match split[2] {Some(v) => Some(v.parse::<usize>().unwrap()), None => None};
-    let is_lock_row = match split[3] {Some(v) => Some(v.parse::<usize>().unwrap()), None => None};
+    let row = match split[1] {Some(v) => Some(v.parse::<u32>().unwrap()), None => None};
+    let is_lock_col = match split[2] {Some(v) => Some(v.parse::<u32>().unwrap()), None => None};
+    let is_lock_row = match split[3] {Some(v) => Some(v.parse::<u32>().unwrap()), None => None};
     vec![col, row, is_lock_col, is_lock_row]
 }
 
-pub(crate) fn adjustment_insert_coordinate(num:&usize, root_num:&usize, offset_num:&usize)->usize {
+pub(crate) fn adjustment_insert_coordinate(num:&u32, root_num:&u32, offset_num:&u32)->u32 {
     let mut result = num.clone();
     if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
         result += offset_num;
@@ -114,7 +114,7 @@ pub(crate) fn adjustment_insert_coordinate(num:&usize, root_num:&usize, offset_n
     result
 }
 
-pub(crate) fn adjustment_remove_coordinate(num:&usize, root_num:&usize, offset_num:&usize)->usize {
+pub(crate) fn adjustment_remove_coordinate(num:&u32, root_num:&u32, offset_num:&u32)->u32 {
     let mut result = num.clone();
     if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
         result -= offset_num;

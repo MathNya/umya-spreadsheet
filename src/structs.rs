@@ -20,12 +20,6 @@ pub use self::cells::*;
           mod hyperlink;
 pub use self::hyperlink::*;
 
-          mod row_dimension;
-pub use self::row_dimension::*;
-
-          mod column_dimension;
-pub use self::column_dimension::*;
-
           mod shadow;
 pub use self::shadow::*;
 
@@ -103,9 +97,6 @@ pub use self::defined_name::*;
 
           mod comment;
 pub use self::comment::*;
-
-          mod styles;
-pub use self::styles::*;
 
           mod coordinate;
 pub use self::coordinate::*;
@@ -206,8 +197,8 @@ pub use self::font_scheme_values::*;
           mod font_scheme;
 pub use self::font_scheme::*;
 
-                 mod fonts;
-pub(crate) use self::fonts::*;
+          mod fonts;
+pub use self::fonts::*;
 
           mod pattern_fill;
 pub use self::pattern_fill::*;
@@ -215,17 +206,17 @@ pub use self::pattern_fill::*;
           mod pattern_values;
 pub use self::pattern_values::*;
 
-                 mod fills;
-pub(crate) use self::fills::*;
+          mod fills;
+pub use self::fills::*;
 
           mod numbering_format;
 pub use self::numbering_format::*;
 
-                 mod numbering_formats;
-pub(crate) use self::numbering_formats::*;
+          mod numbering_formats;
+pub use self::numbering_formats::*;
 
-                 mod stylesheet;
-pub(crate) use self::stylesheet::*;
+          mod stylesheet;
+pub use self::stylesheet::*;
 
           mod border_properties_type;
 pub use self::border_properties_type::*;
@@ -245,35 +236,62 @@ pub use self::horizontal_alignment_values::*;
           mod vertical_alignment_values;
 pub use self::vertical_alignment_values::*;
 
-                 mod cell_formats;
-pub(crate) use self::cell_formats::*;
+          mod cell_formats;
+pub use self::cell_formats::*;
 
-                 mod cell_style_formats;
-pub(crate) use self::cell_style_formats::*;
+          mod cell_style_formats;
+pub use self::cell_style_formats::*;
 
-                 mod cell_styles;
-pub(crate) use self::cell_styles::*;
+          mod cell_styles;
+pub use self::cell_styles::*;
 
-                 mod differential_format;
-pub(crate) use self::differential_format::*;
+          mod differential_format;
+pub use self::differential_format::*;
 
-                 mod differential_formats;
-pub(crate) use self::differential_formats::*;
+          mod differential_formats;
+pub use self::differential_formats::*;
 
-                 mod mru_colors;
-pub(crate) use self::mru_colors::*;
+          mod mru_colors;
+pub use self::mru_colors::*;
 
-                 mod colors;
-pub(crate) use self::colors::*;
+          mod colors;
+pub use self::colors::*;
 
-                 mod shared_string_table;
-pub(crate) use self::shared_string_table::*;
+          mod shared_string_table;
+pub use self::shared_string_table::*;
 
-                 mod shared_string_item;
-pub(crate) use self::shared_string_item::*;
+          mod shared_string_item;
+pub use self::shared_string_item::*;
 
-                 mod text;
-pub(crate) use self::text::*;
+          mod text;
+pub use self::text::*;
 
-                 mod phonetic_run;
-pub(crate) use self::phonetic_run::*;
+          mod phonetic_run;
+pub use self::phonetic_run::*;
+
+          mod gradient_fill;
+pub use self::gradient_fill::*;
+
+          mod gradient_stop;
+pub use self::gradient_stop::*;
+
+          mod vertical_alignment_run_values;
+pub use self::vertical_alignment_run_values::*;
+
+          mod vertical_text_alignment;
+pub use self::vertical_text_alignment::*;
+
+          mod cell_value;
+pub use self::cell_value::*;
+
+          mod row_reference;
+pub use self::row_reference::*;
+
+          mod column_reference;
+pub use self::column_reference::*;
+
+          mod columns;
+pub use self::columns::*;
+
+          mod column_sort;
+pub use self::column_sort::*;

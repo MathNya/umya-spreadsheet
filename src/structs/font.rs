@@ -11,6 +11,7 @@ use super::Color;
 use super::FontCharSet;
 use super::FontScheme;
 use super::FontSchemeValues;
+use super::VerticalTextAlignment;
 use std::str::FromStr;
 use writer::driver::*;
 use quick_xml::Reader;
@@ -30,6 +31,7 @@ pub struct Font {
     color: Color,
     font_char_set: FontCharSet,
     font_scheme: FontScheme,
+    vertical_text_alignment: VerticalTextAlignment,
 }
 impl Font {
     // Charset
@@ -274,6 +276,19 @@ impl Font {
         self
     }
 
+    pub fn get_vertical_text_alignment(&self)-> &VerticalTextAlignment {
+        &self.vertical_text_alignment
+    }
+
+    pub fn get_vertical_text_alignment_mut(&mut self)-> &mut VerticalTextAlignment {
+        &mut self.vertical_text_alignment
+    }
+
+    pub fn set_vertical_text_alignment(&mut self, value:VerticalTextAlignment)-> &mut Self {
+        self.vertical_text_alignment = value;
+        self
+    }
+
     pub(crate) fn get_defalut_value() -> Self {
         let mut def = Self::default();
         def.set_size(11.0);
@@ -286,7 +301,7 @@ impl Font {
 
     pub(crate) fn get_hash_code(&self)-> String
     {
-        format!("{:x}", md5::compute(format!("{}{}{}{}{}{}{}{}{}{}",
+        format!("{:x}", md5::compute(format!("{}{}{}{}{}{}{}{}{}{}{}",
             &self.font_name.val.get_hash_string(),
             &self.font_size.val.get_hash_string(),
             &self.font_family_numbering.val.get_hash_string(),
@@ -297,6 +312,7 @@ impl Font {
             &self.color.get_hash_code(),
             &self.font_char_set.val.get_hash_string(),
             &self.font_scheme.val.get_hash_string(),
+            &self.vertical_text_alignment.val.get_hash_string(),
         )))
     }
 
@@ -320,6 +336,7 @@ impl Font {
                         b"color" => {self.color.set_attributes(reader,e);},
                         b"charset" => {self.font_char_set.set_attributes(reader,e);},
                         b"scheme" => {self.font_scheme.set_attributes(reader,e);},
+                        b"vertAlign" => {self.vertical_text_alignment.set_attributes(reader,e);},
                         _ => (),
                     }
                 },
@@ -363,6 +380,9 @@ impl Font {
 
         // strike
         self.font_strike.write_to(writer);
+
+        // vertAlign
+        self.vertical_text_alignment.write_to(writer);
 
         // sz
         self.font_size.write_to(writer);

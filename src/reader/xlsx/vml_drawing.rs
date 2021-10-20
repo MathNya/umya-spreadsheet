@@ -21,7 +21,7 @@ pub(crate) fn read(
 
     let mut result:HashMap<String, Comment> = HashMap::new();
     let mut string_value: String = String::from("");
-    let mut row:usize = 0;
+    let mut row:u32 = 0;
     let mut col_str:String = String::from("");
     let mut comment = Comment::default();
 
@@ -46,22 +46,22 @@ pub(crate) fn read(
                     b"x:Anchor" => {
                         let split_str:Vec<&str> = string_value.split(", ").collect();
                         let mut anchor = Anchor::default();
-                        anchor.set_left_column(split_str.get(0).unwrap().to_string().parse::<usize>().unwrap());
-                        anchor.set_left_offset(split_str.get(1).unwrap().to_string().parse::<usize>().unwrap());
-                        anchor.set_top_row(split_str.get(2).unwrap().to_string().parse::<usize>().unwrap());
-                        anchor.set_top_offset(split_str.get(3).unwrap().to_string().parse::<usize>().unwrap());
-                        anchor.set_right_column(split_str.get(4).unwrap().to_string().parse::<usize>().unwrap());
-                        anchor.set_right_offset(split_str.get(5).unwrap().to_string().parse::<usize>().unwrap());
-                        anchor.set_bottom_row(split_str.get(6).unwrap().to_string().parse::<usize>().unwrap());
-                        anchor.set_bottom_offset(split_str.get(7).unwrap().to_string().parse::<usize>().unwrap());
+                        anchor.set_left_column(split_str.get(0).unwrap().to_string().parse::<u32>().unwrap());
+                        anchor.set_left_offset(split_str.get(1).unwrap().to_string().parse::<u32>().unwrap());
+                        anchor.set_top_row(split_str.get(2).unwrap().to_string().parse::<u32>().unwrap());
+                        anchor.set_top_offset(split_str.get(3).unwrap().to_string().parse::<u32>().unwrap());
+                        anchor.set_right_column(split_str.get(4).unwrap().to_string().parse::<u32>().unwrap());
+                        anchor.set_right_offset(split_str.get(5).unwrap().to_string().parse::<u32>().unwrap());
+                        anchor.set_bottom_row(split_str.get(6).unwrap().to_string().parse::<u32>().unwrap());
+                        anchor.set_bottom_offset(split_str.get(7).unwrap().to_string().parse::<u32>().unwrap());
                         comment.set_anchor(anchor);
                     }
                     b"x:Row" => {
-                        row = string_value.parse::<usize>().unwrap() + 1;
+                        row = string_value.parse::<u32>().unwrap() + 1;
                         comment.get_coordinate_mut().set_row_num(row);
                     },
                     b"x:Column" => {
-                        let col = string_value.parse::<usize>().unwrap() + 1;
+                        let col = string_value.parse::<u32>().unwrap() + 1;
                         col_str = string_from_column_index(&col);
                         comment.get_coordinate_mut().set_col_num(col);
                     },

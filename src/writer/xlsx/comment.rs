@@ -2,7 +2,6 @@ use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
 use std::io::Cursor;
 use tempdir::TempDir;
-use onig::*;
 use ::structs::Worksheet;
 use super::driver::*;
 use super::XlsxError;

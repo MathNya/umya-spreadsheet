@@ -3,6 +3,7 @@ use super::EnumValue;
 use super::HorizontalAlignmentValues;
 use super::VerticalAlignmentValues;
 use super::BooleanValue;
+use super::UInt32Value;
 use reader::driver::*;
 use writer::driver::*;
 use quick_xml::Reader;
@@ -15,6 +16,7 @@ pub struct Alignment {
     horizontal: EnumValue<HorizontalAlignmentValues>,
     vertical: EnumValue<VerticalAlignmentValues>,
     wrap_text: BooleanValue,
+    text_rotation: UInt32Value,
 }
 impl Alignment {
     pub fn get_horizontal(&self)-> &HorizontalAlignmentValues {
@@ -41,11 +43,20 @@ impl Alignment {
         self.wrap_text.set_value(value);
     }
 
+    pub fn get_text_rotation(&self)-> &u32 {
+        &self.text_rotation.get_value()
+    }
+
+    pub fn set_text_rotation(&mut self, value:u32) {
+        self.text_rotation.set_value(value);
+    }
+
     pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}{}",
-        &self.horizontal.get_hash_string(),
-        &self.vertical.get_hash_string(),
-        &self.wrap_text.get_hash_string(),
+        format!("{:x}", md5::compute(format!("{}{}{}{}",
+            &self.horizontal.get_hash_string(),
+            &self.vertical.get_hash_string(),
+            &self.wrap_text.get_hash_string(),
+            &self.text_rotation.get_hash_string(),
         )))
     }
 
@@ -72,6 +83,12 @@ impl Alignment {
             },
             None => {},
         }
+        match get_attribute(e, b"textRotation") {
+            Some(v) => {
+                self.text_rotation.set_value_string(v);
+            },
+            None => {},
+        }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -85,6 +102,9 @@ impl Alignment {
         }
         if self.wrap_text.has_value() {
             attributes.push(("wrapText", &self.wrap_text.get_value_string()));
+        }
+        if self.text_rotation.has_value() {
+            attributes.push(("textRotation", &self.text_rotation.get_value_string()));
         }
         write_start_tag(writer, "alignment", attributes, true);
    }
