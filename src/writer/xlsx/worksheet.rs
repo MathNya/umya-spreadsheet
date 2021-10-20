@@ -1,7 +1,6 @@
 use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
-use std::io::Cursor;
-use tempdir::TempDir;
+use std::io;
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 
@@ -15,12 +14,12 @@ use super::XlsxError;
 
 const SUB_DIR: &'static str = "xl/worksheets";
 
-pub(crate) fn write(
+pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
     sheet_index: &usize,
     shared_string_table: &mut SharedStringTable,
     stylesheet: &mut Stylesheet,
-    dir: &TempDir
+    arv: &mut zip::ZipWriter<W>
 ) -> Result<(), XlsxError> 
 {
     let is_selected = spreadsheet.get_active_sheet_index() == sheet_index;
@@ -28,7 +27,7 @@ pub(crate) fn write(
     let sheet_no = sheet_index + 1;
 
     let file_name = format!("sheet{}.xml", &sheet_no);
-    let mut writer = Writer::new(Cursor::new(Vec::new()));
+    let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
     {
         let worksheet = spreadsheet.get_sheet(sheet_index.clone()).unwrap();
@@ -446,7 +445,7 @@ pub(crate) fn write(
     }
     
     write_end_tag(&mut writer, "worksheet");
-    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), dir, writer, Some(SUB_DIR)).unwrap();
+    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), arv, writer, Some(SUB_DIR)).unwrap();
     Ok(())
 }
 
