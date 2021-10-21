@@ -6,7 +6,7 @@ use super::XlsxError;
 use ::structs::SharedStringTable;
 use super::driver::*;
 
-const SHARED_STRINGS: &'static str = "xl/sharedStrings.xml";
+const SHARED_STRINGS: &'static str = "sharedStrings.xml";
 
 pub(crate) fn write<W: io::Seek + io::Write>(shared_string_table: &SharedStringTable, arv: &mut zip::ZipWriter<W>) -> result::Result<(), XlsxError> {
 

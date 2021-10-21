@@ -95,6 +95,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     }
 
     write_end_tag(&mut writer, "cp:coreProperties");
-    let _ = make_file_from_writer(format!("{}/{}",sub_dir,file_name).as_str(), arv, writer, Some(sub_dir)).unwrap();
+    let _ = make_file_from_writer(&file_name, arv, writer, Some(sub_dir)).unwrap();
     Ok(())
 }

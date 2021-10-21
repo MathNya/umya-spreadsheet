@@ -10,6 +10,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
         &false => return Ok(())
     }
     let writer = spreadsheet.get_macros_code().as_ref().unwrap();
-    let _ = make_file_from_bin(format!("{}/{}",sub_dir,file_name).as_str(), arv, writer, Some(sub_dir)).unwrap();
+    let _ = make_file_from_bin(&file_name, arv, writer, Some(sub_dir)).unwrap();
     Ok(())
 }
