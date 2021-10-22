@@ -1,17 +1,16 @@
 use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
-use std::io::Cursor;
-use tempdir::TempDir;
+use std::io;
 use ::structs::Worksheet;
 use super::driver::*;
 use super::XlsxError;
 
 const SUB_DIR: &'static str = "xl";
 
-pub(crate) fn write(
+pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     comment_id: &usize,
-    dir: &TempDir
+    arv: &mut zip::ZipWriter<W>
 ) -> Result<(), XlsxError> {
     if worksheet.get_comments().len() == 0 {
         return Ok(());
@@ -19,7 +18,7 @@ pub(crate) fn write(
 
     let file_name = format!("comments{}.xml", comment_id);
 
-    let mut writer = Writer::new(Cursor::new(Vec::new()));
+    let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
     write_new_line(&mut writer);
@@ -58,7 +57,7 @@ pub(crate) fn write(
     write_end_tag(&mut writer, "commentList");
     write_end_tag(&mut writer, "comments");
 
-    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), dir, writer, Some(SUB_DIR)).unwrap();
+    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), arv, writer, None).unwrap();
     Ok(())
 }
 

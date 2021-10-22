@@ -1,7 +1,6 @@
 use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
-use std::io::Cursor;
-use tempdir::TempDir;
+use std::io;
 
 use super::driver::*;
 use super::XlsxError;
@@ -74,14 +73,14 @@ const MINOR_FONTS: &'static [(&'static str, &'static str)] = &[
     ("Geor", "Sylfaen"),
 ];
 
-pub(crate) fn write(
+pub(crate) fn write<W: io::Seek + io::Write>(
     theme: &Theme,
-    dir: &TempDir,
+    arv: &mut zip::ZipWriter<W>,
     sub_dir: &str,
     file_name: &str
 ) -> Result<(), XlsxError> 
 {
-    let mut writer = Writer::new(Cursor::new(Vec::new()));
+    let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
     write_new_line(&mut writer);
@@ -930,6 +929,6 @@ pub(crate) fn write(
 
     write_end_tag(&mut writer, "a:theme");
 
-    let _ = make_file_from_writer(format!("{}/{}",sub_dir,file_name).as_str(), dir, writer, Some(sub_dir)).unwrap();
+    let _ = make_file_from_writer(format!("{}/{}",sub_dir,file_name).as_str(), arv, writer, None).unwrap();
     Ok(())
 }

@@ -1,7 +1,6 @@
 use quick_xml::events::{Event, BytesDecl};
 use quick_xml::Writer;
-use std::io::Cursor;
-use tempdir::TempDir;
+use std::io;
 
 use ::structs::Worksheet;
 use super::driver::*;
@@ -9,17 +8,17 @@ use super::XlsxError;
 
 const SUB_DIR: &'static str = "xl/drawings/_rels";
 
-pub(crate) fn write(
+pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     drawing_id: &usize,
     chart_start_id: &usize,
-    dir: &TempDir
+    arv: &mut zip::ZipWriter<W>
 ) -> Result<(), XlsxError> 
 {
     let file_name = format!("drawing{}.xml.rels", drawing_id);
     let mut is_write = false;
 
-    let mut writer = Writer::new(Cursor::new(Vec::new()));
+    let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
     write_new_line(&mut writer);
@@ -65,12 +64,12 @@ pub(crate) fn write(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), dir, writer, Some(SUB_DIR)).unwrap();
+        let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), arv, writer, None).unwrap();
     }
     Ok(())
 }
 
-fn write_relationship(writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32, p_type: &str, p_target: &str, p_target_mode: &str) -> bool
+fn write_relationship(writer: &mut Writer<io::Cursor<Vec<u8>>>, r_id: &i32, p_type: &str, p_target: &str, p_target_mode: &str) -> bool
 {
     let tag_name = "Relationship";
     let r_id_str = format!("rId{}", r_id);

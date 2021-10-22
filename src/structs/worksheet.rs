@@ -2,6 +2,7 @@ use super::Cells;
 use super::Cell;
 use super::Range;
 use super::Row;
+use super::Columns;
 use super::Column;
 use super::drawing::spreadsheet::WorksheetDrawing;
 use super::PageSetup;
@@ -23,13 +24,13 @@ use helper::coordinate::*;
 use helper::range::*;
 use helper::number_format::*;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Worksheet {
     sheet_id: String,
     title: String,
     cell_collection: Cells,
     row_dimensions : Vec<Row>,
-    column_dimensions : Vec<Column>,
+    column_dimensions : Columns,
     worksheet_drawing: WorksheetDrawing,
     sheet_state: String,
     page_setup: PageSetup,
@@ -58,45 +59,6 @@ pub struct Worksheet {
     dirty: bool,
     hash: String,
     code_name: Option<String>,
-}
-impl Default for Worksheet {
-    fn default() -> Self {
-        Self {
-            sheet_id: String::from(""),
-            title: String::from(""),
-            cell_collection: Cells::default(),
-            row_dimensions : Vec::new(),
-            column_dimensions : Vec::new(),
-            worksheet_drawing: WorksheetDrawing::default(),
-            sheet_state: String::from(""),
-            page_setup: PageSetup::default(),
-            page_margins: PageMargins::default(),
-            header_footer: HeaderFooter::default(),
-            sheet_view: SheetView::default(),
-            protection: Protection::default(),
-            conditional_styles_collection: Vec::new(),
-            breaks :Vec::new(),
-            merge_cells: Vec::new(),
-            protected_cells: Vec::new(),
-            auto_filter: None,
-            freeze_pane: None,
-            top_left_cell: None,
-            show_gridlines: false,
-            print_gridlines: false,
-            show_row_col_headers: false,
-            show_summary_below: false,
-            show_summary_right: false,
-            comments: Vec::new(),
-            active_cell: String::from(""),
-            selected_cells: String::from(""),
-            right_to_left: false,
-            data_validation_collection: Vec::new(),
-            tab_color: None,
-            dirty: false,
-            hash: String::from(""),
-            code_name: None,
-        }
-    }
 }
 impl Worksheet {
     // ************************
@@ -448,6 +410,34 @@ impl Worksheet {
         self.cell_collection.get_mut(&col, &row).get_style_mut()
     }
 
+    /// Set the style by specifying the column number and row number.
+    /// # Arguments
+    /// * `col` - Specify the column number. (first column number is 1)
+    /// * `row` - Specify the row number. (first row number is 1)
+    /// * `style` - Style.
+    /// # Return value
+    /// *`&mut Self` - self.
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut style = umya_spreadsheet::Style::default();
+    /// style.get_borders_mut().get_bottom_mut().set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+    /// let style = worksheet.set_style_by_column_and_row(1, 1, style);  // set style to A1. 
+    /// ```
+    pub fn set_style_by_column_and_row(&mut self, col:u32, row:u32, style:Style) -> &mut Self {
+        match self.get_row_dimension(&row) {
+            Some(_) => {},
+            None => {
+                let mut row_dimension = Row::default();
+                row_dimension.set_row_num(row);
+                self.set_row_dimension(row_dimension);
+            }
+        }
+        self.cell_collection.get_mut(&col, &row).set_style(style);
+        self
+    }
+
     /// Set style by range.
     /// # Arguments
     /// * `range` - Specify the range. ex) "A1:B2"
@@ -458,7 +448,9 @@ impl Worksheet {
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.get_sheet_mut(0);
-    /// let style = worksheet.set_style_by_range("A1");
+    /// let mut style = umya_spreadsheet::Style::default();
+    /// style.get_borders_mut().get_bottom_mut().set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+    /// worksheet.set_style_by_range("A1:A3", style);
     /// ```
     pub fn set_style_by_range<S: Into<String>>(&mut self, range:S, style:Style) -> &mut Self {
         let range_upper = range.into().to_uppercase();
@@ -467,7 +459,7 @@ impl Worksheet {
         let (col_num_start, row_num_start) = coordinate_list[0];
         if col_num_start == 0 {
             let (_, row_num_end) = coordinate_list[1];
-            for row_num in row_num_start..row_num_end {
+            for row_num in row_num_start..=row_num_end {
                 match self.get_row_dimension_mut(&row_num) {
                     Some(v) => {
                         v.set_style(style.clone());
@@ -484,7 +476,7 @@ impl Worksheet {
         }
         if row_num_start == 0 {
             let (col_num_end, _) = coordinate_list[1];
-            for col_num in col_num_start..col_num_end {
+            for col_num in col_num_start..=col_num_end {
                 match self.get_column_dimension_mut(&col_num) {
                     Some(v) => {
                         v.set_style(style.clone());
@@ -501,16 +493,8 @@ impl Worksheet {
         }
 
         for (col_num, row_num) in coordinate_list {
-            if col_num == 0 {
-
-            }
-            if row_num == 0 {
-
-            }
-
+            self.set_style_by_column_and_row(col_num, row_num, style.clone());
         }
-
-
         self
     }
 
@@ -617,11 +601,11 @@ impl Worksheet {
     // Column Dimensions
     // ************************
     pub fn get_column_dimensions(&self) -> &Vec<Column> {
-        &self.column_dimensions
+        &self.column_dimensions.get_column_collection()
     }
 
     pub fn get_column_dimension(&self, col:&u32) -> Option<&Column> {
-        for column_dimension in &self.column_dimensions {
+        for column_dimension in self.column_dimensions.get_column_collection() {
             if col == column_dimension.get_col_num() {
                 return Some(column_dimension);
             }
@@ -630,7 +614,7 @@ impl Worksheet {
     }
 
     pub fn get_column_dimension_mut(&mut self, col:&u32) -> Option<&mut Column> {
-        for column_dimension in &mut self.column_dimensions {
+        for column_dimension in self.column_dimensions.get_column_collection_mut() {
             if col == column_dimension.get_col_num() {
                 return Some(column_dimension);
             }
@@ -638,14 +622,23 @@ impl Worksheet {
         None
     }
 
-    pub(crate) fn set_column_dimensions(&mut self, value:Column) {
+    pub fn set_column_dimensions(&mut self, value:Column) {
         let col_num = value.get_col_num();
         match self.get_column_dimension_mut(col_num) {
             Some(v) => {
                 std::mem::replace(v, value);
             },
-            None => self.column_dimensions.push(value)
+            None => {self.column_dimensions.set_column(value);},
         }
+    }
+
+    pub(crate) fn get_column_dimensions_crate(&self) -> &Columns {
+        &self.column_dimensions
+    }
+
+    pub(crate) fn set_column_dimensions_crate(&mut self, value:Columns) -> &mut Self {
+        self.column_dimensions = value;
+        self
     }
 
     // ************************
@@ -716,7 +709,7 @@ impl Worksheet {
     pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32) {
         if sheet_name == self.title && offset_col_num != &0 {
             // update column dimensions
-            for column_dimension in &mut self.column_dimensions {
+            for column_dimension in self.column_dimensions.get_column_collection_mut() {
                 column_dimension.adjustment_insert_coordinate(root_col_num, offset_col_num);
             }
         }
@@ -777,10 +770,10 @@ impl Worksheet {
     pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32) {
         if sheet_name == self.title && offset_col_num != &0 {
             // update column dimensions
-            self.column_dimensions.retain(|x| {
+            self.column_dimensions.get_column_collection_mut().retain(|x| {
                 !(x.get_col_num() > root_col_num && x.get_col_num() < &(root_col_num + offset_col_num))
             });
-            for column_dimension in &mut self.column_dimensions {
+            for column_dimension in self.column_dimensions.get_column_collection_mut() {
                 column_dimension.adjustment_remove_coordinate(root_col_num, offset_col_num);
             }
         }

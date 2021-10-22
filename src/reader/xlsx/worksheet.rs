@@ -14,7 +14,7 @@ use ::structs::Stylesheet;
 use ::structs::PageMargins;
 use ::structs::Hyperlink;
 use ::structs::ConditionalSet;
-use ::structs::Cell;
+use ::structs::Columns;
 
 pub(crate) fn read(
     dir: &TempDir,
@@ -83,6 +83,11 @@ pub(crate) fn read(
                         obj.set_attributes(&mut reader, e, worksheet, &shared_string_table, &stylesheet, false);
                         worksheet.set_row_dimension(obj);
                     },
+                    b"cols" => {
+                        let mut obj = Columns::default();
+                        obj.set_attributes(&mut reader, e, &stylesheet);
+                        worksheet.set_column_dimensions_crate(obj);
+                    },
                     b"conditionalFormatting" => {
                         let mut conditional_set = ConditionalSet::default();
                         let sqref = get_attribute(e, b"sqref").unwrap();
@@ -121,11 +126,6 @@ pub(crate) fn read(
                                 Err(_) => {},
                             }
                         }
-                    },
-                    b"col" => {
-                        let mut obj = Column::default();
-                        obj.set_attributes(&mut reader, e, &stylesheet);
-                        worksheet.set_column_dimensions(obj);
                     },
                     b"row" => {
                         let mut obj = Row::default();

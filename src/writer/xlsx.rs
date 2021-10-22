@@ -1,6 +1,6 @@
-use tempdir::TempDir;
-use std::path::Path;
+use std::fs;
 use std::io;
+use std::path::Path;
 use std::string::FromUtf8Error;
 
 use structs::Spreadsheet;
@@ -59,6 +59,78 @@ impl From<FromUtf8Error> for XlsxError {
     }
 }
 
+pub(crate) fn write_crate<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: W) -> Result<(), XlsxError> {
+    let mut arv = zip::ZipWriter::new(writer);
+
+    // Add Content_Types
+    let _= content_types::write(spreadsheet, &mut arv, "[Content_Types].xml");
+
+    // Add docProps App
+    let _= doc_props_app::write(spreadsheet, &mut arv, "docProps", "app.xml");
+
+    // Add docProps Core
+    let _= doc_props_core::write(spreadsheet, &mut arv, "docProps", "core.xml");
+
+    // Add vbaProject.bin
+    let _= vba_project_bin::write(spreadsheet, &mut arv, "xl", "vbaProject.bin");
+
+    // Add relationships
+    let _ = rels::write(spreadsheet, &mut arv, "_rels", ".rels");
+    let _ = workbook_rels::write(spreadsheet, &mut arv, "xl/_rels", "workbook.xml.rels");
+
+    // Add theme
+    let _ = theme::write(spreadsheet.get_theme(), &mut arv, "xl/theme", "theme1.xml");
+
+    // Add workbook
+    let _ = workbook::write(spreadsheet, &mut arv, "xl", "workbook.xml");
+
+    // Add worksheets and relationships (drawings, ...)
+    let mut chart_id = 1;
+    let mut drawing_id = 1;
+    let mut comment_id = 1;
+    let mut shared_string_table = SharedStringTable::default();
+    shared_string_table.init_setup();
+    let mut stylesheet = Stylesheet::default();
+    stylesheet.init_setup();
+    for i in 0..spreadsheet.get_sheet_count() {
+        let p_worksheet_id:&str = &(i+1).to_string();
+        let _ = worksheet::write(&spreadsheet, &i, &mut shared_string_table, &mut stylesheet, &mut arv);
+        let worksheet = &spreadsheet.get_sheet_collection()[i];
+        let _ = worksheet_rels::write(worksheet, p_worksheet_id, &drawing_id, &comment_id,  &mut arv);
+        let _ = drawing::write(worksheet, &drawing_id, &mut arv);
+        let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &mut arv);
+        let _ = comment::write(worksheet, &comment_id,  &mut arv);
+        let _ = vml_drawing::write(worksheet, &comment_id,  &mut arv);
+
+        if worksheet.has_drawing_object() {
+            drawing_id += 1;
+        }
+
+        if worksheet.has_comments() {
+            comment_id += 1;
+        }
+
+        for graphic_frame in worksheet.get_worksheet_drawing().get_graphic_frame_collection(){
+            let chart_space = graphic_frame.get_graphic().get_graphic_data().get_chart_space();
+            let _ = chart::write(chart_space, &chart_id, &mut arv);
+            chart_id += 1;
+        }
+
+        for picture in worksheet.get_worksheet_drawing().get_picture_collection(){
+            let _ = media::write(picture, &mut arv, "xl/media");
+        }
+    }
+
+    // Add SharedStrings
+    let _ = shared_strings::write(&shared_string_table, &mut arv).unwrap();
+
+    // Add Styles
+    let _ = styles::write(&stylesheet, &mut arv).unwrap();
+
+    arv.finish()?;
+    Ok(())
+}
+
 /// write spreadsheet file.
 /// # Arguments
 /// * `spreadsheet` - Spreadsheet structs object.
@@ -72,74 +144,5 @@ impl From<FromUtf8Error> for XlsxError {
 /// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
-    let dir = TempDir::new("shreadsheet")?;
-
-    // Add Content_Types
-    let _= content_types::write(spreadsheet, &dir, "[Content_Types].xml");
-
-    // Add docProps App
-    let _= doc_props_app::write(spreadsheet, &dir, "docProps", "app.xml");
-
-    // Add docProps Core
-    let _= doc_props_core::write(spreadsheet, &dir, "docProps", "core.xml");
-
-    // Add vbaProject.bin
-    let _= vba_project_bin::write(spreadsheet, &dir, "xl", "vbaProject.bin");
-
-    // Add relationships
-    let _ = rels::write(spreadsheet, &dir, "_rels", ".rels");
-    let _ = workbook_rels::write(spreadsheet, &dir, "xl/_rels", "workbook.xml.rels");
-
-    // Add theme
-    let _ = theme::write(spreadsheet.get_theme(), &dir, "xl/theme", "theme1.xml");
-
-    // Add workbook
-    let _ = workbook::write(spreadsheet, &dir, "xl", "workbook.xml");
-
-    // Add worksheets and relationships (drawings, ...)
-    let mut chart_id = 1;
-    let mut drawing_id = 1;
-    let mut comment_id = 1;
-    let mut shared_string_table = SharedStringTable::default();
-    shared_string_table.init_setup();
-    let mut stylesheet = Stylesheet::default();
-    stylesheet.init_setup();
-    for i in 0..spreadsheet.get_sheet_count() {
-        let p_worksheet_id:&str = &(i+1).to_string();
-        let _ = worksheet::write(&spreadsheet, &i, &mut shared_string_table, &mut stylesheet, &dir);
-        let worksheet = &spreadsheet.get_sheet_collection()[i];
-        let _ = worksheet_rels::write(worksheet, p_worksheet_id, &drawing_id, &comment_id,  &dir);
-        let _ = drawing::write(worksheet, &drawing_id, &dir);
-        let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &dir);
-        let _ = comment::write(worksheet, &comment_id,  &dir);
-        let _ = vml_drawing::write(worksheet, &comment_id,  &dir);
-
-        if worksheet.has_drawing_object() {
-            drawing_id += 1;
-        }
-
-        if worksheet.has_comments() {
-            comment_id += 1;
-        }
-
-        for graphic_frame in worksheet.get_worksheet_drawing().get_graphic_frame_collection(){
-            let chart_space = graphic_frame.get_graphic().get_graphic_data().get_chart_space();
-            let _ = chart::write(chart_space, &chart_id, &dir);
-            chart_id += 1;
-        }
-
-        for picture in worksheet.get_worksheet_drawing().get_picture_collection(){
-            let _ = media::write(picture, &dir, "xl/media");
-        }
-    }
-
-    // Add SharedStrings
-    let _ = shared_strings::write(&shared_string_table, &dir).unwrap();
-
-    // Add Styles
-    let _ = styles::write(&stylesheet, &dir).unwrap();
-
-    driver::write_to_file(path, &dir)?;
-    dir.close()?;
-    Ok(())
+    write_crate(spreadsheet, &mut io::BufWriter::new(fs::File::create(path)?))
 }

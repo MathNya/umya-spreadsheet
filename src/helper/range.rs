@@ -59,11 +59,11 @@ pub fn get_coordinate_list<S: Into<String>>(range_str:S) -> Vec<(u32, u32)> {
         }
     }
 
-    for row_num in row_start..row_end {
-        for col_num in col_start..col_end {
+    for row_num in row_start..=row_end {
+        for col_num in col_start..=col_end {
             result.push((col_num, row_num));
         }
     }
-
+    
     result
 }
