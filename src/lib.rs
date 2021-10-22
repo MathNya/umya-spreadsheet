@@ -89,7 +89,7 @@
 //! .get_bottom_mut()
 //! .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
 //! // or
-//! book.get_sheet_mut(1).unwrap()
+//! book.get_sheet_mut(1)
 //! .get_style_by_column_and_row_mut(1, 1)
 //! .get_borders_mut()
 //! .get_bottom_mut()

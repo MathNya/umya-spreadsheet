@@ -58,12 +58,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     ], false);
 
     // workbookView
-    write_start_tag(&mut writer, "workbookView", vec![
-        ("xWindow", "240"),
-        ("yWindow", "105"),
-        ("windowWidth", "14805"),
-        ("windowHeight", "8010"),
-    ], true);
+    spreadsheet.get_workbook_view().write_to(&mut writer);
 
     write_end_tag(&mut writer, "bookViews");
 
@@ -118,6 +113,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     ], true);
     
     write_end_tag(&mut writer, "workbook");
-    let _ = make_file_from_writer(format!("{}/{}",sub_dir,file_name).as_str(), arv, writer, None).unwrap();
+    let _ = make_file_from_writer(&file_name, arv, writer, Some(sub_dir)).unwrap();
     Ok(())
 }

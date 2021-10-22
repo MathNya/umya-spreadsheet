@@ -7,6 +7,7 @@ use super::driver::*;
 
 use ::structs::Spreadsheet;
 use ::structs::DefinedName;
+use ::structs::WorkbookView;
 
 const FILE_PATH: &'static str = "xl/workbook.xml";
 
@@ -27,6 +28,11 @@ pub(crate) fn read(dir: &TempDir) -> result::Result<(Spreadsheet, Vec<(String, S
         match reader.read_event(&mut buf) {
             Ok(Event::Empty(ref e)) => {
                 match e.name() {
+                    b"workbookView" => {
+                        let mut obj = WorkbookView::default();
+                        obj.set_attributes(&mut reader, e);
+                        spreadsheet.set_workbook_view(obj);
+                    },
                     b"sheet" => {
                         let name_value =  get_attribute(e, b"name").unwrap();
                         let sheet_id_value =  get_attribute(e, b"sheetId").unwrap();

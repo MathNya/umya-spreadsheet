@@ -102,7 +102,7 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
-                let (is_active_sheet, _drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
+                let (drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
                 let worksheet = book.get_sheet_by_sheet_id_mut(sheets_sheet_id).unwrap();
                 let worksheet_rel = worksheet_rels::read(&dir, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
@@ -119,10 +119,6 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
                         },
                         _ => {}
                     }
-                }
-                match is_active_sheet {
-                    true => book.set_active_sheet_index(sheet_count),
-                    false => {},
                 }
             }
         }

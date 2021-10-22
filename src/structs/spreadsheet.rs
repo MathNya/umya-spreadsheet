@@ -7,6 +7,7 @@ use super::DefinedName;
 use super::Theme;
 use super::Stylesheet;
 use super::SharedStringTable;
+use super::WorkbookView;
 use helper::coordinate::*;
 
 #[derive(Default, Debug)]
@@ -15,7 +16,6 @@ pub struct Spreadsheet {
     security: Security,
     work_sheet_collection: Vec<Worksheet>,
     calculation_engine: Calculation,
-    active_sheet_index: usize,
     named_ranges: Vec<String>,
     has_macros: bool,
     macros_code: Option<Vec<u8>>,
@@ -35,6 +35,7 @@ pub struct Spreadsheet {
     defined_names: Vec<DefinedName>,
     stylesheet: Stylesheet,
     shared_string_table: SharedStringTable,
+    workbook_view: WorkbookView,
 }
 impl Spreadsheet {
     // ************************
@@ -273,14 +274,6 @@ impl Spreadsheet {
         self.unparsed_loaded_data = value;
     }
 
-    pub fn get_active_sheet_index(&self) -> &usize {
-        &self.active_sheet_index
-    }
-
-    pub(crate) fn set_active_sheet_index(&mut self, value:usize) {
-        self.active_sheet_index = value;
-    }
-
     pub(crate) fn get_stylesheet(&self) -> &Stylesheet {
         &self.stylesheet
     }
@@ -432,5 +425,18 @@ impl Spreadsheet {
             }
         }
         false
+    }
+
+    pub fn get_workbook_view(&self) -> &WorkbookView {
+        &self.workbook_view
+    }
+
+    pub fn get_workbook_view_mut(&mut self) -> &mut WorkbookView {
+        &mut self.workbook_view
+    }
+
+    pub fn set_workbook_view(&mut self, value:WorkbookView) -> &mut Self {
+        self.workbook_view = value;
+        self
     }
 }

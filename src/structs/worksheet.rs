@@ -732,7 +732,7 @@ impl Worksheet {
 
             // update conditional styles
             for conditional_styles in &mut self.conditional_styles_collection {
-                for range in conditional_styles.get_range_collection_mut() {
+                for range in conditional_styles.get_sequence_of_references_mut().get_range_collection_mut() {
                     range.adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
                 }
             }
@@ -805,15 +805,15 @@ impl Worksheet {
 
             // update conditional styles
             for conditional_styles in &mut self.conditional_styles_collection {
-                conditional_styles.get_range_collection_mut().retain(|x| {
+                conditional_styles.get_sequence_of_references_mut().get_range_collection_mut().retain(|x| {
                     !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
                 });
             }
             self.conditional_styles_collection.retain(|x| {
-                !(x.get_range_collection().len() == 0)
+                !(x.get_sequence_of_references().get_range_collection().len() == 0)
             });
             for conditional_styles in &mut self.conditional_styles_collection {
-                for range in conditional_styles.get_range_collection_mut() {
+                for range in conditional_styles.get_sequence_of_references_mut().get_range_collection_mut() {
                     range.adjustment_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
                 }
             }
@@ -941,5 +941,18 @@ impl Worksheet {
     }
     pub fn set_page_margins(&mut self, value:PageMargins) {
         self.page_margins = value;
+    }
+
+    pub fn get_sheet_view(&self) -> &SheetView {
+        &self.sheet_view
+    }
+
+    pub fn get_sheet_view_mut(&mut self) -> &mut SheetView {
+        &mut self.sheet_view
+    }
+
+    pub fn set_sheet_view(&mut self, value:SheetView) -> &mut Self {
+        self.sheet_view = value;
+        self
     }
 }

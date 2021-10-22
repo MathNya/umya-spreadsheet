@@ -8,7 +8,7 @@ use ::structs::Spreadsheet;
 use ::structs::Color;
 use ::structs::Theme;
 use ::structs::Row;
-use ::structs::Column;
+use ::structs::SheetView;
 use ::structs::Conditional;
 use ::structs::Stylesheet;
 use ::structs::PageMargins;
@@ -22,7 +22,7 @@ pub(crate) fn read(
     spreadsheet: &mut Spreadsheet,
     sheets_sheet_id: &str,
     sheets_name: &str,
-) -> Result<(bool, Option<String>, Option<String>, Vec<(String, String)>), XlsxError> {
+) -> Result<(Option<String>, Option<String>, Vec<(String, String)>), XlsxError> {
     
     let path = dir.path().join(format!("xl/{}", target));
     let mut reader = Reader::from_file(path)?;
@@ -36,7 +36,6 @@ pub(crate) fn read(
     let worksheet = spreadsheet.new_sheet_crate(sheets_sheet_id, sheets_name);
 
     // result
-    let mut is_active_sheet = false;
     let mut drawing:Option<String> = None;
     let mut legacy_drawing:Option<String> = None;
     let mut hyperlink_vec: Vec<(String, String)> = Vec::new();
@@ -57,15 +56,9 @@ pub(crate) fn read(
                         }
                     },
                     b"sheetView" => {
-                        for a in e.attributes().with_checks(false) {
-                            match a {
-                                Ok(ref attr) if attr.key == b"tabSelected" => {
-                                    is_active_sheet = true;
-                                },
-                                Ok(_) => {},
-                                Err(_) => {},
-                            }
-                        }
+                        let mut obj = SheetView::default();
+                        obj.set_attributes(&mut reader, e, false);
+                        worksheet.set_sheet_view(obj);
                     },
                     b"selection" => {
                         for a in e.attributes().with_checks(false) {
@@ -91,7 +84,7 @@ pub(crate) fn read(
                     b"conditionalFormatting" => {
                         let mut conditional_set = ConditionalSet::default();
                         let sqref = get_attribute(e, b"sqref").unwrap();
-                        conditional_set.set_sqref(sqref);
+                        conditional_set.get_sequence_of_references_mut().set_sqref(sqref);
                         let conditional_styles_collection = get_conditional_formatting(&mut reader, &stylesheet, &theme);
                         conditional_set.set_conditional_collection(conditional_styles_collection);
                         worksheet.add_conditional_styles_collection(conditional_set);
@@ -177,7 +170,7 @@ pub(crate) fn read(
         buf.clear();
     }
 
-    Ok((is_active_sheet, drawing, legacy_drawing, hyperlink_vec))
+    Ok((drawing, legacy_drawing, hyperlink_vec))
 }
 
 fn get_conditional_formatting(

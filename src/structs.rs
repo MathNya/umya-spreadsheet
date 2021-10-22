@@ -295,3 +295,21 @@ pub use self::columns::*;
 
           mod column_sort;
 pub use self::column_sort::*;
+
+          mod sequence_of_references;
+pub use self::sequence_of_references::*;
+
+          mod selection;
+pub use self::selection::*;
+
+          mod pane_values;
+pub use self::pane_values::*;
+
+          mod pane;
+pub use self::pane::*;
+
+          mod pane_state_values;
+pub use self::pane_state_values::*;
+
+          mod workbook_view;
+pub use self::workbook_view::*;

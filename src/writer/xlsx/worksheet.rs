@@ -19,7 +19,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     arv: &mut zip::ZipWriter<W>,
 ) -> Result<(), XlsxError> 
 {
-    let is_selected = spreadsheet.get_active_sheet_index() == sheet_index;
     let has_macros = spreadsheet.get_has_macros();
     let sheet_no = sheet_index + 1;
 
@@ -95,22 +94,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
        ], false);
 
         // sheetView
-        let has_active_cell = worksheet.get_active_cell() != "";
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if is_selected == true {
-            attributes.push(("tabSelected", "1"));
-        }
-        attributes.push(("workbookViewId", "0"));
-        write_start_tag(&mut writer, "sheetView", attributes, !has_active_cell);
-
-        if has_active_cell {
-            // selection
-            write_start_tag(&mut writer, "selection", vec![
-                ("activeCell", worksheet.get_active_cell()),
-                ("sqref", worksheet.get_active_cell()),
-            ], true);
-            write_end_tag(&mut writer, "sheetView");
-        }
+        worksheet.get_sheet_view().write_to(&mut writer);
 
         write_end_tag(&mut writer, "sheetViews");
 
@@ -195,7 +179,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // conditionalFormatting
         for conditional_formatting in worksheet.get_conditional_styles_collection() {
-            let coordinates = conditional_formatting.get_sqref();
+            let coordinates = conditional_formatting.get_sequence_of_references().get_sqref();
             write_start_tag(&mut writer, "conditionalFormatting", vec![
                 ("sqref", &coordinates),
             ], false);
@@ -334,7 +318,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
     
     write_end_tag(&mut writer, "worksheet");
-    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), arv, writer, None).unwrap();
+    let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
     Ok(())
 }
 
