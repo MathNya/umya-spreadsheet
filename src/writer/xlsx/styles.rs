@@ -16,6 +16,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(stylesheet: &Stylesheet, arv: &mut 
 
     stylesheet.write_to(&mut writer);
 
-    let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, FILE_NAME).as_str(), arv, writer, Some(SUB_DIR)).unwrap();
+    let _ = make_file_from_writer(FILE_NAME, arv, writer, Some(SUB_DIR)).unwrap();
     Ok(())
 }

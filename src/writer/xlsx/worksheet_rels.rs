@@ -89,7 +89,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let _ = make_file_from_writer(format!("{}/{}", SUB_DIR, file_name).as_str(), arv, writer, Some(SUB_DIR)).unwrap();
+        let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
     }
     Ok(())
 }

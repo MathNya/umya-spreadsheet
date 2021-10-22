@@ -118,6 +118,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     ], true);
     
     write_end_tag(&mut writer, "workbook");
-    let _ = make_file_from_writer(format!("{}/{}",sub_dir,file_name).as_str(), arv, writer, Some(sub_dir)).unwrap();
+    let _ = make_file_from_writer(&file_name, arv, writer, Some(sub_dir)).unwrap();
     Ok(())
 }
