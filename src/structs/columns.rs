@@ -126,6 +126,9 @@ impl Columns {
         attributes.push(("min", min_str.as_str()));
         attributes.push(("max", max_str.as_str()));
         attributes.push(("width", obj.width.get_value_string()));
+        if obj.hidden.get_value() == &true {
+            attributes.push(("hidden", obj.hidden.get_value_string()));
+        }
         if obj.best_fit.get_value() == &true {
             attributes.push(("bestFit", obj.best_fit.get_value_string()));
         }

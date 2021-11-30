@@ -16,6 +16,7 @@ use std::io::Cursor;
 pub struct Column {
     pub(crate) col_num: UInt32Value,
     pub(crate) width: DoubleValue,
+    pub(crate) hidden: BooleanValue,
     pub(crate) best_fit: BooleanValue,
     pub(crate) style: Style,
 }
@@ -24,24 +25,36 @@ impl Column {
         &self.col_num.get_value()
     }
 
-    pub(crate) fn set_col_num(&mut self, value:u32) {
+    pub(crate) fn set_col_num(&mut self, value:u32) -> &mut Self {
         self.col_num.set_value(value);
+        self
     }
 
     pub fn get_width(&self)-> &f64 {
         &self.width.get_value()
     }
 
-    pub fn set_width(&mut self, value:f64) {
+    pub fn set_width(&mut self, value:f64) -> &mut Self {
         self.width.set_value(value);
+        self
     }
-    
+
+    pub fn get_hidden(&self)-> &bool {
+        &self.hidden.get_value()
+    }
+
+    pub fn set_hidden(&mut self, value:bool) -> &mut Self {
+        self.hidden.set_value(value);
+        self
+    }
+
     pub fn get_best_fit(&self)-> &bool {
         &self.best_fit.get_value()
     }
 
-    pub fn set_best_fit(&mut self, value:bool) {
+    pub fn set_best_fit(&mut self, value:bool) -> &mut Self {
         self.best_fit.set_value(value);
+        self
     }
 
     pub fn get_style(&self)-> &Style {
@@ -70,8 +83,9 @@ impl Column {
     }
 
     pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}{}",
+        format!("{:x}", md5::compute(format!("{}{}{}{}",
             &self.width.get_value_string(),
+            &self.hidden.get_value_string(),
             &self.best_fit.get_value_string(),
             &self.style.get_hash_code(),
         )))
@@ -86,6 +100,13 @@ impl Column {
         match get_attribute(e, b"width") {
             Some(v) => {
                 self.width.set_value_string(v);
+            },
+            None => {}
+        }
+
+        match get_attribute(e, b"hidden") {
+            Some(v) => {
+                self.hidden.set_value_string(v);
             },
             None => {}
         }
@@ -105,6 +126,4 @@ impl Column {
             None => {}
         }
     }
-
-
 }

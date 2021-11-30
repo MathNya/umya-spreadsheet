@@ -21,6 +21,7 @@ pub struct Row {
     thick_bot: BooleanValue,
     custom_height: BooleanValue,
     custom_format: BooleanValue,
+    hidden: BooleanValue,
     style: Style,
 }
 impl Row {
@@ -75,6 +76,15 @@ impl Row {
     
     pub fn set_custom_format(&mut self, value:bool) -> &mut Self {
         self.custom_format.set_value(value);
+        self
+    }
+
+    pub fn get_hidden(&self)-> &bool {
+        &self.hidden.get_value()
+    }
+
+    pub fn set_hidden(&mut self, value:bool) -> &mut Self {
+        self.hidden.set_value(value);
         self
     }
 
@@ -147,9 +157,18 @@ impl Row {
             None => {}
         }
 
+        match get_attribute(e, b"hidden") {
+            Some(v) => {
+                self.hidden.set_value_string(v);
+            },
+            None => {}
+        }
+
         match get_attribute(e, b"x14ac:dyDescent") {
             Some(v) => {
-                self.descent.set_value_string(v);
+                if v != "" {
+                    self.descent.set_value_string(v);
+                }
             },
             None => {}
         }
@@ -227,6 +246,9 @@ impl Row {
         }
         if self.custom_format.get_value() == &true {
             attributes.push(("customFormat", self.custom_format.get_value_string()));
+        }
+        if self.hidden.get_value() == &true {
+            attributes.push(("hidden", self.hidden.get_value_string()));
         }
         attributes.push(("x14ac:dyDescent", self.descent.get_value_string()));
 
