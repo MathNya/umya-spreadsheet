@@ -65,9 +65,9 @@ impl FromMarker {
         self.col = if &self.col > num_cols { self.col - num_cols } else { 1 };
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart,
     ) {
         let mut string_value:String = String::from("");

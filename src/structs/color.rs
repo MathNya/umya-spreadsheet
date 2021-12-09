@@ -172,9 +172,9 @@ impl Color {
         )))
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _reader:&mut Reader<R>,
         e:&BytesStart
     ) {
         for a in e.attributes().with_checks(false) {

@@ -1,14 +1,14 @@
 // dxf
-use super::Font;
-use super::Fill;
-use super::Borders;
 use super::Alignment;
+use super::Borders;
+use super::Fill;
+use super::Font;
 use super::Style;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormat {
@@ -26,7 +26,7 @@ impl DifferentialFormat {
         &mut self.font
     }
 
-    pub(crate) fn set_font(&mut self, value:Font)-> &mut Self {
+    pub(crate) fn set_font(&mut self, value: Font) -> &mut Self {
         self.font = Some(value);
         self
     }
@@ -38,8 +38,8 @@ impl DifferentialFormat {
     pub(crate) fn get_fill_mut(&mut self) -> &mut Option<Fill> {
         &mut self.fill
     }
-    
-    pub(crate) fn set_fill(&mut self, value:Fill)-> &mut Self {
+
+    pub(crate) fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill = Some(value);
         self
     }
@@ -52,7 +52,7 @@ impl DifferentialFormat {
         &mut self.borders
     }
 
-    pub(crate) fn set_borders(&mut self, value:Borders)-> &mut Self {
+    pub(crate) fn set_borders(&mut self, value: Borders) -> &mut Self {
         self.borders = Some(value);
         self
     }
@@ -65,7 +65,7 @@ impl DifferentialFormat {
         &mut self.alignment
     }
 
-    pub(crate) fn set_alignment(&mut self, value:Alignment)-> &mut Self {
+    pub(crate) fn set_alignment(&mut self, value: Alignment) -> &mut Self {
         self.alignment = Some(value);
         self
     }
@@ -79,60 +79,88 @@ impl DifferentialFormat {
         style
     }
 
-    pub(crate) fn set_style(&mut self, style:&Style) {
+    pub(crate) fn set_style(&mut self, style: &Style) {
         self.font = style.get_font().clone();
         self.fill = style.get_fill().clone();
         self.borders = style.get_borders().clone();
         self.alignment = style.get_alignment().clone();
     }
 
-    pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}{}{}",
-            match &self.font {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-            match &self.fill {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-            match &self.borders {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-            match &self.alignment {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-        )))
+    pub(crate) fn get_hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::compute(format!(
+                "{}{}{}{}",
+                match &self.font {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+                match &self.fill {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+                match &self.borders {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+                match &self.alignment {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+            ))
+        )
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"font" => {
-                            let mut obj = Font::default();
-                            obj.set_attributes(reader, e);
-                            self.set_font(obj);
-                        },
-                        b"fill" => {
-                            let mut obj = Fill::default();
-                            obj.set_attributes(reader, e);
-                            self.set_fill(obj);
-                        },
-                        b"border" => {
-                            let mut obj = Borders::default();
-                            obj.set_attributes(reader, e);
-                            self.set_borders(obj);
-                        },
-                        b"alignment" => {
-                            let mut obj = Alignment::default();
-                            obj.set_attributes(reader, e);
-                            self.set_alignment(obj);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"font" => {
+                        let mut obj = Font::default();
+                        obj.set_attributes(reader, e);
+                        self.set_font(obj);
                     }
+                    b"fill" => {
+                        let mut obj = Fill::default();
+                        obj.set_attributes(reader, e);
+                        self.set_fill(obj);
+                    }
+                    b"border" => {
+                        let mut obj = Borders::default();
+                        obj.set_attributes(reader, e);
+                        self.set_borders(obj);
+                    }
+                    b"alignment" => {
+                        let mut obj = Alignment::default();
+                        obj.set_attributes(reader, e);
+                        self.set_alignment(obj);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"dxf" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"dxf" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "dxf"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -150,32 +178,32 @@ impl DifferentialFormat {
         match &self.font {
             Some(v) => {
                 v.write_to_font(writer);
-            },
-            None => {},
+            }
+            None => {}
         }
 
         // fill
         match &self.fill {
             Some(v) => {
                 v.write_to(writer);
-            },
-            None => {},
+            }
+            None => {}
         }
 
         // border
         match &self.borders {
             Some(v) => {
                 v.write_to(writer);
-            },
-            None => {},
+            }
+            None => {}
         }
 
         // alignment
         match &self.alignment {
             Some(v) => {
                 v.write_to(writer);
-            },
-            None => {},
+            }
+            None => {}
         }
 
         write_end_tag(writer, "dxf");

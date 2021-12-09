@@ -1,17 +1,23 @@
-use std::result;
+use std::io::Read;
+use std::{io, path, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 use structs::Worksheet;
+use super::driver::normalize_path;
 
-pub(crate) fn read(
-    dir: &TempDir,
+pub(crate) fn read<R: io::Read + io::Seek>(
+    arv: &mut zip::read::ZipArchive<R>,
     target: &str,
     worksheet: &mut Worksheet
 )-> result::Result<(), XlsxError>{
-    let path = dir.path().join(format!("xl/drawings/{}", target));
-    let mut reader = Reader::from_file(path)?;
+    let data = {
+        let mut r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/drawings/{}", target)).to_str().unwrap_or(""))?);
+        let mut buf = Vec::new();
+        r.read_to_end(&mut buf)?;
+        std::io::Cursor::new(buf)
+    };
+    let mut reader = Reader::from_reader(data);
     reader.trim_text(true);
     let mut buf = Vec::new();
 
@@ -21,7 +27,7 @@ pub(crate) fn read(
                 match e.name() {
                     b"xdr:wsDr" => {
                         let worksheet_drawing = worksheet.get_worksheet_drawing_mut();
-                        worksheet_drawing.set_attributes(&mut reader, e, dir, target);
+                        worksheet_drawing.set_attributes(&mut reader, e, arv, target);
                     },
                     _ => (),
                 }

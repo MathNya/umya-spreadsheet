@@ -125,9 +125,9 @@ impl NumberingFormat {
         )))
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _reader:&mut Reader<R>,
         e:&BytesStart,
     ) {
         self.number_format_id = get_attribute(e, b"numFmtId").unwrap().parse::<u32>().unwrap();

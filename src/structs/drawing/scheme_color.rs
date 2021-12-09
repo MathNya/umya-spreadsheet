@@ -68,9 +68,9 @@ impl SchemeColor {
         self.lum_mod.is_some() ||  self.lum_off.is_some() || self.shade.is_some() || self.sat_mod.is_some() || self.alpha.is_some()
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart,
         empty_flag: bool
     ) {

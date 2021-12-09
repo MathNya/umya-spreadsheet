@@ -1,14 +1,14 @@
 // tabColor
-use super::UInt32Value;
-use super::StringValue;
 use super::DoubleValue;
+use super::StringValue;
 use super::Theme;
-use writer::driver::*;
-use reader::driver::*;
+use super::UInt32Value;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 const INDEXED_COLORS: &'static [&'static str] = &[
     "FF000000", //  System Colour #1 - Black
@@ -78,14 +78,7 @@ pub struct TabColor {
 }
 impl TabColor {
     pub const NAMED_COLORS: &'static [&'static str] = &[
-        "Black",
-        "White",
-        "Red",
-        "Green",
-        "Blue",
-        "Yellow",
-        "Magenta",
-        "Cyan",
+        "Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan",
     ];
 
     // Colors
@@ -100,99 +93,112 @@ impl TabColor {
     pub const COLOR_YELLOW: &'static str = "FFFFFF00";
     pub const COLOR_DARKYELLOW: &'static str = "FF808000";
 
-    pub fn get_argb(&self)-> &str {
+    pub fn get_argb(&self) -> &str {
         &self.argb.get_value()
     }
-    
-    pub fn set_argb<S: Into<String>>(&mut self, value:S)-> &mut Self {
+
+    pub fn set_argb<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.indexed.remove_value();
         self.theme_index.remove_value();
         self.argb.set_value(value);
         self
     }
 
-    pub fn get_indexed(&self)-> &u32 {
+    pub fn get_indexed(&self) -> &u32 {
         &self.indexed.get_value()
     }
 
-    pub fn set_indexed(&mut self, index:u32)-> &mut Self {
+    pub fn set_indexed(&mut self, index: u32) -> &mut Self {
         self.indexed.set_value(index);
         self.theme_index.remove_value();
-        self.argb.set_value(
-            match INDEXED_COLORS.get(index as usize - 1) {
-                Some(v) => {v.to_string()},
-                None => {String::from("")}
-            }
-        );
+        self.argb
+            .set_value(match INDEXED_COLORS.get(index as usize - 1) {
+                Some(v) => v.to_string(),
+                None => String::from(""),
+            });
         self
     }
 
-    pub fn get_theme_index(&self)-> &u32 {
+    pub fn get_theme_index(&self) -> &u32 {
         &self.theme_index.get_value()
     }
 
-    pub fn set_theme_index(&mut self, index:u32)-> &mut Self {
+    pub fn set_theme_index(&mut self, index: u32) -> &mut Self {
         self.indexed.remove_value();
         self.theme_index.set_value(index);
         self.argb.remove_value();
         self
     }
 
-    pub(crate) fn set_argb_by_theme(&mut self, theme:&Theme)-> &mut Self  {
+    pub(crate) fn set_argb_by_theme(&mut self, theme: &Theme) -> &mut Self {
         if self.theme_index.has_value() {
             self.argb.set_value(
-                match theme.get_color_map().get(self.theme_index.get_value().clone() as usize) {
-                    Some(v) => {v.to_string()},
-                   None => {String::from("")}
-                }
+                match theme
+                    .get_color_map()
+                    .get(self.theme_index.get_value().clone() as usize)
+                {
+                    Some(v) => v.to_string(),
+                    None => String::from(""),
+                },
             );
         }
         self
     }
 
-    pub fn get_tint(&self)-> &f64 {
+    pub fn get_tint(&self) -> &f64 {
         &self.tint.get_value()
     }
 
-    pub fn set_tint(&mut self, value:f64)-> &mut Self {
+    pub fn set_tint(&mut self, value: f64) -> &mut Self {
         self.tint.set_value(value);
         self
     }
 
     pub(crate) fn has_value(&self) -> bool {
-        self.theme_index.has_value() || self.indexed.has_value() || self.argb.has_value() || self.tint.has_value()
+        self.theme_index.has_value()
+            || self.indexed.has_value()
+            || self.argb.has_value()
+            || self.tint.has_value()
     }
 
-    pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}{}{}",
-            &self.indexed.get_hash_string(),
-            &self.theme_index.get_hash_string(),
-            &self.argb.get_hash_string(),
-            &self.tint.get_hash_string()
-        )))
+    pub(crate) fn get_hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::compute(format!(
+                "{}{}{}{}",
+                &self.indexed.get_hash_string(),
+                &self.theme_index.get_hash_string(),
+                &self.argb.get_hash_string(),
+                &self.tint.get_hash_string()
+            ))
+        )
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        e:&BytesStart
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         for a in e.attributes().with_checks(false) {
             match a {
                 Ok(ref attr) if attr.key == b"indexed" => {
-                    self.indexed.set_value_string(get_attribute_value(attr).unwrap());
-                },
+                    self.indexed
+                        .set_value_string(get_attribute_value(attr).unwrap());
+                }
                 Ok(ref attr) if attr.key == b"theme" => {
-                    self.theme_index.set_value_string(get_attribute_value(attr).unwrap());
-                },
+                    self.theme_index
+                        .set_value_string(get_attribute_value(attr).unwrap());
+                }
                 Ok(ref attr) if attr.key == b"rgb" => {
-                    self.argb.set_value_string(get_attribute_value(attr).unwrap());
-                },
+                    self.argb
+                        .set_value_string(get_attribute_value(attr).unwrap());
+                }
                 Ok(ref attr) if attr.key == b"tint" => {
-                    self.tint.set_value_string(get_attribute_value(attr).unwrap());
-                },
-                Ok(_) => {},
-                Err(_) => {},
+                    self.tint
+                        .set_value_string(get_attribute_value(attr).unwrap());
+                }
+                Ok(_) => {}
+                Err(_) => {}
             }
         }
     }

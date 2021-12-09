@@ -1,68 +1,62 @@
 // cellStyleXfs
 use super::CellFormat;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellStyleFormats {
     cell_format: Vec<CellFormat>,
 }
 impl CellStyleFormats {
-    pub(crate) fn get_cell_format(&self)-> &Vec<CellFormat> {
+    pub(crate) fn get_cell_format(&self) -> &Vec<CellFormat> {
         &self.cell_format
     }
 
-    pub(crate) fn get_cell_format_mut(&mut self)-> &mut Vec<CellFormat> {
+    pub(crate) fn get_cell_format_mut(&mut self) -> &mut Vec<CellFormat> {
         &mut self.cell_format
     }
 
-    pub(crate) fn set_cell_format(&mut self, value:CellFormat)-> &mut Self {
+    pub(crate) fn set_cell_format(&mut self, value: CellFormat) -> &mut Self {
         self.cell_format.push(value);
         self
     }
 
-    pub(crate) fn init_setup(&mut self)-> &mut Self {
+    pub(crate) fn init_setup(&mut self) -> &mut Self {
         let mut obj = CellFormat::get_defalut_value();
         self.set_cell_format(obj);
         self
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"xf" => {
-                            let mut obj = CellFormat::default();
-                            obj.set_attributes(reader, e, true);
-                            self.set_cell_format(obj);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"xf" => {
+                        let mut obj = CellFormat::default();
+                        obj.set_attributes(reader, e, true);
+                        self.set_cell_format(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"xf" => {
-                            let mut obj = CellFormat::default();
-                            obj.set_attributes(reader, e, false);
-                            self.set_cell_format(obj);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"xf" => {
+                        let mut obj = CellFormat::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_cell_format(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"cellStyleXfs" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"cellStyleXfs" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "cellStyleXfs"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -75,9 +69,12 @@ impl CellStyleFormats {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if self.cell_format.len() > 0 {
             // cellStyleXfs
-            write_start_tag(writer, "cellStyleXfs", vec![
-                ("count", &self.cell_format.len().to_string()),
-            ], false);
+            write_start_tag(
+                writer,
+                "cellStyleXfs",
+                vec![("count", &self.cell_format.len().to_string())],
+                false,
+            );
 
             // xf
             for cell_format in &self.cell_format {

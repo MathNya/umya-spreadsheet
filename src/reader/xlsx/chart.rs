@@ -1,13 +1,13 @@
-use std::result;
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 use structs::drawing::charts::ChartSpace;
+use super::driver::normalize_path;
 
-pub(crate) fn read(dir: &TempDir, target: &String, chart_space: &mut ChartSpace) -> result::Result<(), XlsxError> {
-    let path = dir.path().join(format!("xl/drawings/{}", target));
-    let mut reader = Reader::from_file(path).unwrap();
+pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>, target: &String, chart_space: &mut ChartSpace) -> result::Result<(), XlsxError> {
+    let r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/drawings/{}", target)).to_str().unwrap_or(""))?);
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
 

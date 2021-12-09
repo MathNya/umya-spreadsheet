@@ -59,7 +59,13 @@ impl From<FromUtf8Error> for XlsxError {
     }
 }
 
-pub(crate) fn write_crate<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: W) -> Result<(), XlsxError> {
+/// write spreadsheet file to arbitrary writer.
+/// # Arguments
+/// * `spreadsheet` - Spreadsheet structs object.
+/// * `writer` - writer to write to.
+/// # Return value
+/// * `Result` - OK is void. Err is error message. 
+pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: W) -> Result<(), XlsxError> {
     let mut arv = zip::ZipWriter::new(writer);
 
     // Add Content_Types
@@ -144,5 +150,5 @@ pub(crate) fn write_crate<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, wr
 /// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
-    write_crate(spreadsheet, &mut io::BufWriter::new(fs::File::create(path)?))
+    write_writer(spreadsheet, &mut io::BufWriter::new(fs::File::create(path)?))
 }

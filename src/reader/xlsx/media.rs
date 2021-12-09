@@ -1,17 +1,12 @@
-use std::result;
-use std::fs::File;
+use std::{io, result};
 use std::io::Read;
-use tempdir::TempDir;
 use super::XlsxError;
+use super::driver::normalize_path;
 
-pub fn read(dir: &TempDir, target: &String) -> result::Result<Vec<u8>, XlsxError> {
-    let path = dir.path().join(format!("xl/drawings/{}", target));
-    let mut file = match File::open(path) {
-        Ok(v) => {v},
-        Err(_) => {panic!("Error not find image.")}
-    };
+pub fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>, target: &String) -> result::Result<Vec<u8>, XlsxError> {
+    let mut r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/drawings/{}", target)).to_str().unwrap_or(""))?);
     let mut buf = Vec::new();
-    let _ = file.read_to_end(&mut buf)?;
+    let _ = r.read_to_end(&mut buf)?;
 
     return Ok(buf);
 }

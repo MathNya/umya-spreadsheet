@@ -1,16 +1,15 @@
-use std::result;
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
 const FILE_PATH: &'static str = "xl/_rels/workbook.xml.rels";
 
-pub(crate) fn read(dir: &TempDir) -> result::Result<Vec<(String, String, String)>, XlsxError> 
+pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>) -> result::Result<Vec<(String, String, String)>, XlsxError> 
 {
-    let path = dir.path().join(FILE_PATH);
-    let mut reader = Reader::from_file(path)?;
+    let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
 

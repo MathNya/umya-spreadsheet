@@ -13,7 +13,6 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
-use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct TwoCellAnchor {
@@ -143,11 +142,11 @@ impl TwoCellAnchor {
         true
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart,
-        dir: &TempDir,
+        arv: &mut zip::read::ZipArchive<A>,
         target: &str,
     ) {
         match get_attribute(e, b"editAs") {
@@ -168,7 +167,7 @@ impl TwoCellAnchor {
                         },
                         b"xdr:graphicFrame" => {
                             let mut obj = GraphicFrame::default();
-                            obj.set_attributes(reader, e, dir, target);
+                            obj.set_attributes(reader, e, arv, target);
                             self.set_graphic_frame(obj);
                         },
                         b"xdr:sp" => {
@@ -183,7 +182,7 @@ impl TwoCellAnchor {
                         }
                         b"xdr:pic" => {
                             let mut obj = Picture::default();
-                            obj.set_attributes(reader, e, dir, target);
+                            obj.set_attributes(reader, e, arv, target);
                             self.set_picture(obj);
                         }
                         _ => (),

@@ -33,9 +33,9 @@ impl PresetColor {
         self.alpha = Some(value);
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart
     ) {
         &mut self.set_val(get_attribute(e, b"val").unwrap());

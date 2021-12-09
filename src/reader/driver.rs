@@ -1,26 +1,33 @@
 use quick_xml::events::attributes::Attribute;
-use tempdir::TempDir;
-use std::fs;
-use std::fs::File;
-use std::io;
+use std::path::{Component, Path, PathBuf};
 use std::string::FromUtf8Error;
 
-pub(crate) fn unzip(zip_file: &File, dir: &TempDir) -> Result<(), zip::result::ZipError> {
-    let mut zip = zip::ZipArchive::new(zip_file)?;
-    for i in 0..zip.len() {
-        let mut file = zip.by_index(i)?;
-        let path = dir.path().join(file.name());
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?
-        }
-        if (&*file.name()).ends_with("/") {
-            fs::create_dir_all(path)?
-        } else {
-            let mut archived_file = File::create(path)?;
-            let _ = io::copy(&mut file, &mut archived_file);
+pub(crate) fn normalize_path(path: &str) -> PathBuf {
+    let path = Path::new(path);
+    let mut components = path.components().peekable();
+    let mut ret = if let Some(c @ Component::Prefix(..)) = components.peek().cloned() {
+        components.next();
+        PathBuf::from(c.as_os_str())
+    } else {
+        PathBuf::new()
+    };
+
+    for component in components {
+        match component {
+            Component::Prefix(..) => unreachable!(),
+            Component::RootDir => {
+                ret.push(component.as_os_str());
+            }
+            Component::CurDir => {}
+            Component::ParentDir => {
+                ret.pop();
+            }
+            Component::Normal(c) => {
+                ret.push(c);
+            }
         }
     }
-    Ok(())
+    ret
 }
 
 pub(crate) fn get_attribute(

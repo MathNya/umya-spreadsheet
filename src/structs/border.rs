@@ -1,13 +1,13 @@
 // left right top bottom
+use super::BorderStyleValues;
 use super::Color;
 use super::EnumValue;
-use super::BorderStyleValues;
-use reader::driver::*;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct Border {
@@ -23,7 +23,7 @@ impl Border {
         &mut self.color
     }
 
-    pub fn set_color(&mut self, value:Color) -> &mut Self {
+    pub fn set_color(&mut self, value: Color) -> &mut Self {
         self.color = value;
         self
     }
@@ -32,7 +32,7 @@ impl Border {
         self.style.get_value()
     }
 
-    pub fn set_style(&mut self, value:BorderStyleValues) -> &mut Self {
+    pub fn set_style(&mut self, value: BorderStyleValues) -> &mut Self {
         self.style.set_value(value);
         self
     }
@@ -53,54 +53,59 @@ impl Border {
     pub const BORDER_THICK: &'static str = "thick";
     pub const BORDER_THIN: &'static str = "thin";
 
-    pub fn get_border_style(&self)-> &str {
+    pub fn get_border_style(&self) -> &str {
         &self.style.get_value_string()
     }
-    pub fn set_border_style<S: Into<String>>(&mut self, value:S) {
+    pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
     }
 
-    pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}",
-            &self.style.get_value_string(),
-            &self.get_color().get_hash_code()
-        )))
+    pub(crate) fn get_hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::compute(format!(
+                "{}{}",
+                &self.style.get_value_string(),
+                &self.get_color().get_hash_code()
+            ))
+        )
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        e:&BytesStart
+        reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"style") {
-            Some(v) => {self.style.set_value_string(v);},
-            None => {},
+            Some(v) => {
+                self.style.set_value_string(v);
+            }
+            None => {}
         }
 
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"color" => {
-                            &mut self.color.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"color" => {
+                        &mut self.color.set_attributes(reader, e);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"left" => return,
-                        b"right" => return,
-                        b"top" => return,
-                        b"bottom" => return,
-                        b"diagonal" => return,
-                        b"vertical" => return,
-                        b"horizontal" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"left" => return,
+                    b"right" => return,
+                    b"top" => return,
+                    b"bottom" => return,
+                    b"diagonal" => return,
+                    b"vertical" => return,
+                    b"horizontal" => return,
+                    _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "left,right,top,bottom,diagonal,vertical,horizontal"),
+                Ok(Event::Eof) => panic!(
+                    "Error not find {} end element",
+                    "left,right,top,bottom,diagonal,vertical,horizontal"
+                ),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
@@ -136,7 +141,7 @@ impl Border {
         self.write_to(writer, "horizontal");
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name:&str) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let empty_flag = self.color.has_value() == false;
 
         // left,right,top,bottom,diagonal,vertical,horizontal

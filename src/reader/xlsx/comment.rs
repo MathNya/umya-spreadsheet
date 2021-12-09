@@ -1,7 +1,6 @@
-use std::result;
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 use std::collections::HashMap; 
 use super::driver::*;
@@ -9,15 +8,15 @@ use structs::Theme;
 use structs::Worksheet;
 use structs::Comment;
 
-pub(crate) fn read(
-    dir: &TempDir,
+pub(crate) fn read<R: io::Read + io::Seek>(
+    arv: &mut zip::read::ZipArchive<R>,
     target: &str,
     worksheet: &mut Worksheet,
     comment_list: &mut HashMap<String, Comment>,
     theme: &Theme
 ) -> result::Result<(), XlsxError> {
-    let path = dir.path().join(format!("xl/worksheets/{}", target));
-    let mut reader = Reader::from_file(path)?;
+    let r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/worksheets/{}", target)).to_str().unwrap_or(""))?);
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(false);
     let mut buf = Vec::new();
 

@@ -10,7 +10,6 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
-use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct WorksheetDrawing {
@@ -159,11 +158,11 @@ impl WorksheetDrawing {
         result
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         _e:&BytesStart,
-        dir: &TempDir,
+        arv: &mut zip::read::ZipArchive<A>,
         target: &str,
     ) {
         let mut is_alternate_content = false;
@@ -185,7 +184,7 @@ impl WorksheetDrawing {
                                 continue;
                             }
                             let mut obj = TwoCellAnchor::default();
-                            obj.set_attributes(reader, e, dir, target);
+                            obj.set_attributes(reader, e, arv, target);
                             if obj.is_support() {
                                 &mut self.add_two_cell_anchor_collection(obj);
                             }

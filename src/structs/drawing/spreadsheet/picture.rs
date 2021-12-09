@@ -1,14 +1,13 @@
 // xdr:pic
 use super::super::super::Anchor;
-use super::NonVisualPictureProperties;
 use super::BlipFill;
+use super::NonVisualPictureProperties;
 use super::ShapeProperties;
-use writer::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-use tempdir::TempDir;
+use writer::driver::*;
 
 #[derive(Default, Debug)]
 pub struct Picture {
@@ -26,7 +25,7 @@ impl Picture {
         &mut self.anchor
     }
 
-    pub fn set_anchor(&mut self, value:Anchor) {
+    pub fn set_anchor(&mut self, value: Anchor) {
         self.anchor = value;
     }
 
@@ -38,7 +37,7 @@ impl Picture {
         &mut self.non_visual_picture_properties
     }
 
-    pub fn set_non_visual_picture_properties(&mut self, value:NonVisualPictureProperties) {
+    pub fn set_non_visual_picture_properties(&mut self, value: NonVisualPictureProperties) {
         self.non_visual_picture_properties = value;
     }
 
@@ -50,7 +49,7 @@ impl Picture {
         &mut self.blip_fill
     }
 
-    pub fn set_blip_fill(&mut self, value:BlipFill) {
+    pub fn set_blip_fill(&mut self, value: BlipFill) {
         self.blip_fill = value;
     }
 
@@ -62,40 +61,36 @@ impl Picture {
         &mut self.shape_properties
     }
 
-    pub fn set_shape_properties(&mut self, value:ShapeProperties) {
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) {
         self.shape_properties = value;
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        _e:&BytesStart,
-        dir: &TempDir,
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
+        arv: &mut zip::read::ZipArchive<A>,
         target: &str,
     ) {
         let mut buf = Vec::new();
-    
+
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"xdr:nvPicPr" => {
-                            &mut self.non_visual_picture_properties.set_attributes(reader, e);
-                        },
-                        b"xdr:blipFill" => {
-                            &mut self.blip_fill.set_attributes(reader, e, dir, target);
-                        },
-                        b"xdr:spPr" => {
-                            &mut self.shape_properties.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"xdr:nvPicPr" => {
+                        &mut self.non_visual_picture_properties.set_attributes(reader, e);
                     }
+                    b"xdr:blipFill" => {
+                        &mut self.blip_fill.set_attributes(reader, e, arv, target);
+                    }
+                    b"xdr:spPr" => {
+                        &mut self.shape_properties.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:pic" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:pic" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:pic"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

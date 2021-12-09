@@ -1,25 +1,25 @@
-use std::result;
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 
 use ::structs::Worksheet;
 
-pub(crate) fn read(
-    dir: &TempDir,
+pub(crate) fn read<R: io::Read + io::Seek>(
+    arv: &mut zip::read::ZipArchive<R>,
     target: &str,
     hyperlink_vec: &Vec<(String, String)>,
     worksheet: &mut Worksheet
 ) -> result::Result<Vec<(String, String, String)>, XlsxError> {
     let mut result:Vec<(String, String, String)> = Vec::new();
-
-    let path = dir.path().join(format!("xl/worksheets/_rels/{}.rels", target.replace("worksheets/","")));
-    let mut reader = match Reader::from_file(path){
-        Ok(v) => {v},
-        Err(_) => {return Ok(result);}
-    };
+    let path = normalize_path(&format!("xl/worksheets/_rels/{}.rels", target.replace("worksheets/","")));
+    let r = io::BufReader::new(match arv.by_name(path.to_str().unwrap_or("")) {
+        Ok(v) => v,
+        Err(zip::result::ZipError::FileNotFound) => {return Ok(result);},
+        Err(e) => {return Err(e.into());}
+    });
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
 

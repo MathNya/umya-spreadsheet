@@ -211,9 +211,9 @@ impl TextCharacterPropertiesType for EndParagraphRunProperties {
 }
 
 impl EndParagraphRunProperties {
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart,
         empty_flag:bool,
     ) {
