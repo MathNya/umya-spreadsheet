@@ -5,8 +5,8 @@ use super::XlsxError;
 use super::driver::*;
 
 pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::ZipArchive<R>, target: &str) -> result::Result<Vec<(String, String, String)>, XlsxError> {
-    let path = normalize_path(&format!("xl/drawings/_rels/{}.rels", target.replace("../drawings/", "")));
-    let r = io::BufReader::new(arv.by_name(path.to_str().unwrap_or(""))?);
+    let path_str = normalize_path_to_str(&format!("xl/drawings/_rels/{}.rels", target.replace("../drawings/", "")));
+    let r = io::BufReader::new(arv.by_name(path_str.as_str())?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();

@@ -15,7 +15,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     comment_list: &mut HashMap<String, Comment>,
     theme: &Theme
 ) -> result::Result<(), XlsxError> {
-    let r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/worksheets/{}", target)).to_str().unwrap_or(""))?);
+    let path_str = normalize_path_to_str(&format!("xl/worksheets/{}", target));
+    let r = io::BufReader::new(arv.by_name(path_str.as_str())?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(false);
     let mut buf = Vec::new();

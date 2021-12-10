@@ -4,7 +4,7 @@ use quick_xml::Reader;
 use quick_xml::events::{Event};
 use super::XlsxError;
 use structs::Worksheet;
-use super::driver::normalize_path;
+use super::driver::normalize_path_to_str;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
@@ -12,7 +12,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     worksheet: &mut Worksheet
 )-> result::Result<(), XlsxError>{
     let data = {
-        let mut r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/drawings/{}", target)).to_str().unwrap_or(""))?);
+        let path_str = normalize_path_to_str(&format!("xl/drawings/{}", target));
+        let mut r = io::BufReader::new(arv.by_name(path_str.as_str())?);
         let mut buf = Vec::new();
         r.read_to_end(&mut buf)?;
         std::io::Cursor::new(buf)

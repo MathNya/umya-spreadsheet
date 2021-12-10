@@ -13,8 +13,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     worksheet: &mut Worksheet
 ) -> result::Result<Vec<(String, String, String)>, XlsxError> {
     let mut result:Vec<(String, String, String)> = Vec::new();
-    let path = normalize_path(&format!("xl/worksheets/_rels/{}.rels", target.replace("worksheets/","")));
-    let r = io::BufReader::new(match arv.by_name(path.to_str().unwrap_or("")) {
+    let path_str = normalize_path_to_str(&format!("xl/worksheets/_rels/{}.rels", target.replace("worksheets/","")));
+    let r = io::BufReader::new(match arv.by_name(path_str.as_str()) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {return Ok(result);},
         Err(e) => {return Err(e.into());}
