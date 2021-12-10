@@ -8,13 +8,13 @@ use structs::Comment;
 use structs::Color;
 use structs::Anchor;
 use helper::coordinate::*;
-use super::driver::normalize_path;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
     target: &str,
 ) -> result::Result<HashMap<String, Comment>, XlsxError> {
-    let r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/drawings/{}", target)).to_str().unwrap_or(""))?);
+    let path_str = normalize_path_to_str(&format!("xl/drawings/{}", target));
+    let r = io::BufReader::new(arv.by_name(path_str.as_str())?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();

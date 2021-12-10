@@ -3,10 +3,11 @@ use quick_xml::Reader;
 use quick_xml::events::{Event};
 use super::XlsxError;
 use structs::drawing::charts::ChartSpace;
-use super::driver::normalize_path;
+use super::driver::normalize_path_to_str;
 
 pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>, target: &String, chart_space: &mut ChartSpace) -> result::Result<(), XlsxError> {
-    let r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/drawings/{}", target)).to_str().unwrap_or(""))?);
+    let path_str = normalize_path_to_str(&format!("xl/drawings/{}", target));
+    let r = io::BufReader::new(arv.by_name(path_str.as_str())?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
