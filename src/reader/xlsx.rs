@@ -1,6 +1,5 @@
-use tempdir::TempDir;
-use std::path::Path;
 use std::io;
+use std::path::Path;
 use std::string::FromUtf8Error;
 use std::fs::File;
 
@@ -57,37 +56,24 @@ impl From<FromUtf8Error> for XlsxError {
     }
 }
 
-/// read spreadsheet file.
+/// read spreadsheet from arbitrary reader.
 /// # Arguments
-/// * `path` - file path to read.
+/// * `reader` - reader to read from.
 /// # Return value
 /// * `Result` - OK is Spreadsheet. Err is error message. 
-/// # Examples
-/// ```
-/// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
-/// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-/// ```
-pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
-    let file = File::open(path)?;
-    let dir = TempDir::new("shreadsheet")?;
-    match driver::unzip(&file, &dir) {
-        Ok(_) => {},
-        Err(err) => {
-            dir.close()?;
-            return Err(XlsxError::Zip(err));
-        }
-    }
+pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxError> {
+    let mut arv = zip::read::ZipArchive::new(reader)?;
 
-    let (mut book, sheets) = workbook::read(&dir).unwrap();
-    doc_props_app::read(&dir, &mut book).unwrap();
-    doc_props_core::read(&dir, &mut book).unwrap(); 
-    vba_project_bin::read(&dir, &mut book).unwrap();
-    let workbook_rel = workbook_rels::read(&dir).unwrap();
+    let (mut book, sheets) = workbook::read(&mut arv).unwrap();
+    doc_props_app::read(&mut arv, &mut book).unwrap();
+    doc_props_core::read(&mut arv, &mut book).unwrap(); 
+    vba_project_bin::read(&mut arv, &mut book).unwrap();
+    let workbook_rel = workbook_rels::read(&mut arv).unwrap();
 
     for (_, type_value, rel_target) in &workbook_rel {
         match type_value.as_str() {
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" => {
-                let theme = theme::read(&dir, rel_target).unwrap();
+                let theme = theme::read(&mut arv, rel_target).unwrap();
                 book.set_theme(theme);
             },
             _ => {}
@@ -95,27 +81,27 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     }
     let theme = book.get_theme().clone();
 
-    shared_strings::read(&dir, &mut book).unwrap();
-    styles::read(&dir, &mut book).unwrap();
+    shared_strings::read(&mut arv, &mut book).unwrap();
+    styles::read(&mut arv, &mut book).unwrap();
 
     let mut sheet_count = 0;
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
-                let (drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&dir, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
+                let (drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&mut arv, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
                 let worksheet = book.get_sheet_by_sheet_id_mut(sheets_sheet_id).unwrap();
-                let worksheet_rel = worksheet_rels::read(&dir, &rel_target, &hyperlink_vec, worksheet).unwrap();
+                let worksheet_rel = worksheet_rels::read(&mut arv, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
                     match type_value.as_str() {
                         // drawing, chart
                         "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
-                            drawing::read(&dir, &worksheet_target, worksheet).unwrap();
+                            drawing::read(&mut arv, &worksheet_target, worksheet).unwrap();
                         },
                         // comment
                         "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
                             let vml_drawing_target = get_vml_drawing_target(&worksheet_rel);
-                            let mut vml_drawing_list = vml_drawing::read(&dir, vml_drawing_target).unwrap();
-                            let _ = comment::read(&dir, &worksheet_target, worksheet, &mut vml_drawing_list, &theme).unwrap();
+                            let mut vml_drawing_list = vml_drawing::read(&mut arv, vml_drawing_target).unwrap();
+                            let _ = comment::read(&mut arv, &worksheet_target, worksheet, &mut vml_drawing_list, &theme).unwrap();
                         },
                         _ => {}
                     }
@@ -128,8 +114,22 @@ pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
     book.remove_shared_string_table();
     book.remove_stylesheet();
 
-    dir.close()?;
     Ok(book)
+}
+
+/// read spreadsheet file.
+/// # Arguments
+/// * `path` - file path to read.
+/// # Return value
+/// * `Result` - OK is Spreadsheet. Err is error message. 
+/// # Examples
+/// ```
+/// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+/// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+/// ```
+pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
+    let file = File::open(path)?;
+    read_reader(file)
 }
 
 fn get_vml_drawing_target(worksheet_rel: &Vec<(String, String, String)>) -> &str

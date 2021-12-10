@@ -19,9 +19,9 @@ impl Alpha {
         self.val = value.into();
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        _reader:&mut Reader<R>,
         e:&BytesStart
     ) {
         &mut self.set_val(get_attribute(e, b"val").unwrap());

@@ -1,16 +1,15 @@
-use std::result;
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 use structs::Spreadsheet;
 use structs::Stylesheet;
 
 const FILE_PATH: &'static str = "xl/styles.xml";
 
-pub fn read(dir: &TempDir, spreadsheet:&mut Spreadsheet) -> result::Result<(), XlsxError> {
-    let path = dir.path().join(FILE_PATH);
-    let mut reader = Reader::from_file(path)?;
+pub fn read<R: io::Read + io::Seek>(arv: &mut zip::ZipArchive<R>, spreadsheet:&mut Spreadsheet) -> result::Result<(), XlsxError> {
+    let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
 

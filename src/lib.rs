@@ -133,8 +133,6 @@
 //! MIT
 
 extern crate quick_xml;
-extern crate tempdir;
-extern crate walkdir;
 extern crate zip;
 extern crate regex;
 extern crate md5;

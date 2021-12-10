@@ -1,10 +1,10 @@
 use super::UInt32Value;
-use writer::driver::*;
-use reader::driver::*;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Default, Debug)]
 pub struct WorkbookView {
@@ -15,28 +15,25 @@ impl WorkbookView {
         &self.active_tab.get_value()
     }
 
-    pub fn set_active_tab(&mut self, value:u32) -> &mut Self {
+    pub fn set_active_tab(&mut self, value: u32) -> &mut Self {
         self.active_tab.set_value(value);
         self
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        e:&BytesStart,
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"activeTab") {
             Some(v) => {
                 self.active_tab.set_value_string(v);
-            },
+            }
             None => {}
         }
     }
-    
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-    ) {
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("xWindow", "240"));

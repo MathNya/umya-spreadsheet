@@ -316,9 +316,9 @@ impl Font {
         )))
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         _e:&BytesStart
     ) {
         let mut buf = Vec::new();

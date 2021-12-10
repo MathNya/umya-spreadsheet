@@ -10,7 +10,6 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
-use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct GraphicFrame {
@@ -68,11 +67,11 @@ impl GraphicFrame {
         self
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart,
-        dir: &TempDir,
+        arv: &mut zip::read::ZipArchive<A>,
         target: &str
     ) {
         match get_attribute(e, b"macro") {
@@ -93,7 +92,7 @@ impl GraphicFrame {
                             &mut self.transform.set_attributes(reader, e);
                         },
                         b"a:graphic" => {
-                            &mut self.graphic.set_attributes(reader, e, dir, target);
+                            &mut self.graphic.set_attributes(reader, e, arv, target);
                         },
                         _ => (),
                     }

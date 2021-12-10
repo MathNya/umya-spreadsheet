@@ -3,13 +3,12 @@ use super::super::super::BooleanValue;
 use super::super::Blip;
 use super::super::SourceRectangle;
 use super::super::Stretch;
-use writer::driver::*;
-use reader::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
-use tempdir::TempDir;
+use writer::driver::*;
 
 #[derive(Default, Debug)]
 pub struct BlipFill {
@@ -23,7 +22,7 @@ impl BlipFill {
         &self.rotate_with_shape.get_value()
     }
 
-    pub fn set_rotate_with_shape(&mut self, value:bool)-> &mut BlipFill {
+    pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut BlipFill {
         self.rotate_with_shape.set_value(value);
         self
     }
@@ -36,7 +35,7 @@ impl BlipFill {
         &mut self.source_rectangle
     }
 
-    pub fn set_source_rectangle(&mut self, value:SourceRectangle)-> &mut BlipFill {
+    pub fn set_source_rectangle(&mut self, value: SourceRectangle) -> &mut BlipFill {
         self.source_rectangle = Some(value);
         self
     }
@@ -49,7 +48,7 @@ impl BlipFill {
         &mut self.blip
     }
 
-    pub fn set_blip(&mut self, value:Blip)-> &mut BlipFill {
+    pub fn set_blip(&mut self, value: Blip) -> &mut BlipFill {
         self.blip = value;
         self
     }
@@ -62,53 +61,49 @@ impl BlipFill {
         &mut self.stretch
     }
 
-    pub fn set_stretch(&mut self, value:Stretch)-> &mut BlipFill {
+    pub fn set_stretch(&mut self, value: Stretch) -> &mut BlipFill {
         self.stretch = value;
         self
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        e:&BytesStart,
-        dir: &TempDir,
+        reader: &mut Reader<R>,
+        e: &BytesStart,
+        arv: &mut zip::read::ZipArchive<A>,
         target: &str,
     ) {
         let mut buf = Vec::new();
-    
+
         match get_attribute(e, b"rotWithShape") {
-            Some(v) => {&mut self.rotate_with_shape.set_value_string(v);},
+            Some(v) => {
+                &mut self.rotate_with_shape.set_value_string(v);
+            }
             None => {}
         }
-    
+
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:blip" => {
-                            &mut self.blip.set_attributes(reader, e, dir, target);
-                        },
-                        b"a:stretch" => {
-                            &mut self.stretch.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:blip" => {
+                        &mut self.blip.set_attributes(reader, e, arv, target);
                     }
+                    b"a:stretch" => {
+                        &mut self.stretch.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:srcRect" => {
-                            let mut source_rectangle = SourceRectangle::default();
-                            source_rectangle.set_attributes(reader, e);
-                            &mut self.set_source_rectangle(source_rectangle);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:srcRect" => {
+                        let mut source_rectangle = SourceRectangle::default();
+                        source_rectangle.set_attributes(reader, e);
+                        &mut self.set_source_rectangle(source_rectangle);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:blipFill" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:blipFill" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:blipFill"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -132,7 +127,7 @@ impl BlipFill {
         // a:srcRect
         match &self.source_rectangle {
             Some(v) => v.write_to(writer),
-            None => {},
+            None => {}
         }
 
         // a:stretch

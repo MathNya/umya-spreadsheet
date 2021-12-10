@@ -1,6 +1,6 @@
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
+use std::io;
 use super::XlsxError;
 use super::driver::*;
 
@@ -16,16 +16,15 @@ use ::structs::Hyperlink;
 use ::structs::ConditionalSet;
 use ::structs::Columns;
 
-pub(crate) fn read(
-    dir: &TempDir,
+pub(crate) fn read<R: io::Read + io::Seek>(
+    arv: &mut zip::read::ZipArchive<R>,
     target: &String,
     spreadsheet: &mut Spreadsheet,
     sheets_sheet_id: &str,
     sheets_name: &str,
 ) -> Result<(Option<String>, Option<String>, Vec<(String, String)>), XlsxError> {
-    
-    let path = dir.path().join(format!("xl/{}", target));
-    let mut reader = Reader::from_file(path)?;
+    let r = io::BufReader::new(arv.by_name(&format!("xl/{}", target))?);
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
 
@@ -174,7 +173,7 @@ pub(crate) fn read(
 }
 
 fn get_conditional_formatting(
-    reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
+    reader:&mut quick_xml::Reader<std::io::BufReader<zip::read::ZipFile>>,
     stylesheet: &Stylesheet,
     theme: &Theme
 ) -> Vec<Conditional>
@@ -266,7 +265,7 @@ fn get_conditional_formatting(
 }
 
 fn get_cfvo(
-    reader:&mut quick_xml::Reader<std::io::BufReader<std::fs::File>>,
+    reader:&mut quick_xml::Reader<std::io::BufReader<zip::read::ZipFile>>,
     theme: &Theme
 )->Vec<(String, Option<String>, Option<Color>)>
 {

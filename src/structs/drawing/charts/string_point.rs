@@ -36,9 +36,9 @@ impl StringPoint {
         self
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart
     ) {
         &mut self.index.set_value_string(get_attribute(e, b"idx").unwrap());

@@ -302,9 +302,9 @@ impl Stylesheet {
         self.cell_formats.set_cell_format_crate(cell_format)
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         _e:&BytesStart
     ) {
         self.numbering_formats.get_build_in_formats();

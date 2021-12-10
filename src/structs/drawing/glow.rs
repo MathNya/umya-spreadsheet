@@ -31,9 +31,9 @@ impl Glow {
         self.scheme_color = Some(value);
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         e:&BytesStart
     ) {
         self.radius.set_value_string(get_attribute(e, b"rad").unwrap());

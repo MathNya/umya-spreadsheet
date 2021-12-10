@@ -1,21 +1,18 @@
 // a:bevel
-use writer::driver::*;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Default, Debug)]
-pub struct Bevel {
-
-}
+pub struct Bevel {}
 impl Bevel {
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
-
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

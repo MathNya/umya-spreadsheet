@@ -1,7 +1,6 @@
-use std::result;
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 use super::driver::*;
 use std::collections::HashMap;
@@ -9,13 +8,14 @@ use structs::Comment;
 use structs::Color;
 use structs::Anchor;
 use helper::coordinate::*;
+use super::driver::normalize_path;
 
-pub(crate) fn read(
-    dir: &TempDir,
+pub(crate) fn read<R: io::Read + io::Seek>(
+    arv: &mut zip::read::ZipArchive<R>,
     target: &str,
 ) -> result::Result<HashMap<String, Comment>, XlsxError> {
-    let path = dir.path().join(format!("xl/drawings/{}", target));
-    let mut reader = Reader::from_file(path)?;
+    let r = io::BufReader::new(arv.by_name(normalize_path(&format!("xl/drawings/{}", target)).to_str().unwrap_or(""))?);
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
 

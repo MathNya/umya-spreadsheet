@@ -1,19 +1,19 @@
 use structs::Spreadsheet;
 use structs::SharedStringTable;
-use std::result;
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
-use tempdir::TempDir;
 use super::XlsxError;
 
 const FILE_PATH: &'static str = "xl/sharedStrings.xml";
 
-pub(crate) fn read(dir: &TempDir, spreadsheet: &mut Spreadsheet) -> result::Result<(), XlsxError> {
-    let path = dir.path().join(FILE_PATH);
-    let mut reader = match Reader::from_file(path){
-        Ok(v) => {v},
-        Err(_) => {return Ok(());}
-    };
+pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::ZipArchive<R>, spreadsheet: &mut Spreadsheet) -> result::Result<(), XlsxError> {
+    let r = io::BufReader::new(match arv.by_name(FILE_PATH) {
+        Ok(v) => v,
+        Err(zip::result::ZipError::FileNotFound) => {return Ok(());},
+        Err(e) => {return Err(e.into());}
+    });
+    let mut reader = Reader::from_reader(r);
     reader.trim_text(false);
     let mut buf = Vec::new();
 

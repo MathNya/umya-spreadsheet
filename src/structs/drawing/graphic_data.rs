@@ -8,7 +8,6 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
-use tempdir::TempDir;
 
 #[derive(Default, Debug)]
 pub struct GraphicData {
@@ -28,11 +27,11 @@ impl GraphicData {
         self
     }
 
-    pub(crate) fn set_attributes(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<std::io::BufReader<std::fs::File>>,
+        reader:&mut Reader<R>,
         _e:&BytesStart,
-        dir: &TempDir,
+        arv: &mut zip::read::ZipArchive<A>,
         target: &str,
     ) {
         let mut buf = Vec::new();
@@ -43,10 +42,10 @@ impl GraphicData {
                     match e.name() {
                         b"c:chart" => {
                             let chart_id = get_attribute(e, b"r:id").unwrap();
-                            let drawing_rel = drawing_rels::read(dir, target).unwrap();
+                            let drawing_rel = drawing_rels::read(arv, target).unwrap();
                             for (drawing_id, _, drawing_target) in &drawing_rel {
                                 if &chart_id == drawing_id {
-                                    let _ = chart::read(&dir, &drawing_target, &mut self.chart_space);
+                                    let _ = chart::read(arv, &drawing_target, &mut self.chart_space);
                                 }
                             }
                         },
