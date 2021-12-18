@@ -26,7 +26,7 @@ impl ListStyle {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader:&mut Reader<R>,
-        e:&BytesStart
+        _e:&BytesStart
     ) {
         let mut buf = Vec::new();
         loop {
@@ -34,7 +34,7 @@ impl ListStyle {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"a:effectLst" => {
-                            let mut obj = EffectList::default();
+                            let obj = EffectList::default();
                             self.set_effect_list(obj);
                         },
                         _ => (),

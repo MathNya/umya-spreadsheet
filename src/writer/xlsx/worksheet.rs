@@ -258,21 +258,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             write_end_tag(&mut writer, "conditionalFormatting");
         }
 
+        let mut r_id = 1;
+
         // hyperlinks
         if worksheet.get_hyperlink_collection().len() > 0 {
             write_start_tag(&mut writer, "hyperlinks", vec![], false);
 
             // hyperlink
-            let mut i = first_hyperlink_id(worksheet);
             for (coordition, hyperlink) in worksheet.get_hyperlink_collection() {
-                let rid = format!("rId{}", &i);
+                let r_id_str = format!("rId{}", &r_id);
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
                 attributes.push(("ref", &coordition));
                 if hyperlink.get_location() == &true {
                     attributes.push(("location", hyperlink.get_url()));
                 } else {
-                    attributes.push(("r:id", rid.as_str()));
-                    i += 1;
+                    attributes.push(("r:id", r_id_str.as_str()));
+                    r_id += 1;
                 }
                 write_start_tag(&mut writer, "hyperlink", attributes, true);
             }
@@ -301,44 +302,32 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         if worksheet.has_drawing_object() {
             // drawing
+            let r_id_str = format!("rId{}", &r_id);
             write_start_tag(&mut writer, "drawing", vec![
-                ("r:id", "rId1"),
+                ("r:id", r_id_str.as_str()),
             ], true);
+            r_id += 1;
         }
 
         // comment
         if worksheet.get_comments().len() > 0 {
-            let i = first_legacy_drawing_id(worksheet);
-            let rid = format!("rId{}", &i);
             // legacyDrawing
+            let r_id_str = format!("rId{}", &r_id);
             write_start_tag(&mut writer, "legacyDrawing", vec![
-                ("r:id", rid.as_str()),
+                ("r:id", r_id_str.as_str()),
             ], true);
+        }
+
+        // oleObjects
+        match worksheet.get_ole_objects() {
+            Some(v) => {
+                v.write_to(&mut writer, &r_id);
+            },
+            None => {}
         }
     }
     
     write_end_tag(&mut writer, "worksheet");
     let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
     Ok(())
-}
-
-fn first_hyperlink_id(worksheet: &Worksheet) -> usize {
-    let mut result = 1;
-    if worksheet.has_drawing_object() {
-        result += 1;
-    }
-    result
-}
-
-fn first_legacy_drawing_id(worksheet: &Worksheet) -> usize {
-    let mut result = 1;
-    if worksheet.has_drawing_object() {
-        result += 1;
-    }
-    for (_, hyperlink) in worksheet.get_hyperlink_collection() {
-        if hyperlink.get_location() == &false {
-            result += 1;
-        }
-    }
-    result
 }

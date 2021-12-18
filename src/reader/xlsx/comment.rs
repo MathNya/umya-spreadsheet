@@ -13,7 +13,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     target: &str,
     worksheet: &mut Worksheet,
     comment_list: &mut HashMap<String, Comment>,
-    theme: &Theme
+    _theme: &Theme
 ) -> result::Result<(), XlsxError> {
     let path_str = normalize_path_to_str(&format!("xl/worksheets/{}", target));
     let r = io::BufReader::new(arv.by_name(path_str.as_str())?);

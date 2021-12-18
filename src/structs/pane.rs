@@ -70,7 +70,7 @@ impl Pane {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
+        _reader:&mut Reader<R>,
         e:&BytesStart,
     ) {
         match get_attribute(e, b"xSplit") {

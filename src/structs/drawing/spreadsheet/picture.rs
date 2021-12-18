@@ -1,5 +1,4 @@
 // xdr:pic
-use super::super::super::Anchor;
 use super::BlipFill;
 use super::NonVisualPictureProperties;
 use super::ShapeProperties;
@@ -11,24 +10,11 @@ use writer::driver::*;
 
 #[derive(Default, Debug)]
 pub struct Picture {
-    anchor: Anchor,
     non_visual_picture_properties: NonVisualPictureProperties,
     blip_fill: BlipFill,
     shape_properties: ShapeProperties,
 }
 impl Picture {
-    pub fn get_anchor(&self) -> &Anchor {
-        &self.anchor
-    }
-
-    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
-        &mut self.anchor
-    }
-
-    pub fn set_anchor(&mut self, value: Anchor) {
-        self.anchor = value;
-    }
-
     pub fn get_non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
         &self.non_visual_picture_properties
     }

@@ -25,7 +25,7 @@ impl CellStyleFormats {
     }
 
     pub(crate) fn init_setup(&mut self) -> &mut Self {
-        let mut obj = CellFormat::get_defalut_value();
+        let obj = CellFormat::get_defalut_value();
         self.set_cell_format(obj);
         self
     }

@@ -28,50 +28,83 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         ("xmlns", "http://schemas.openxmlformats.org/package/2006/relationships"),
     ], false);
 
-    // write drawing relationships
-    let mut id = 1;
-    if worksheet.has_drawing_object() {
-        is_write = write_relationship(
-            &mut writer,
-            id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
-            format!("../drawings/drawing{}.xml", drawing_id.to_string().as_str()).as_str(),
-            ""
-        );
-        id += 1;
-    }
+    let mut r_id = 1;
 
     // Write hyperlink relationships
     for (_, hyperlink) in worksheet.get_hyperlink_collection() {
         if hyperlink.get_location() == &false {
             is_write = write_relationship(
                 &mut writer,
-                id.to_string().as_str(),
+                r_id.to_string().as_str(),
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
                 hyperlink.get_url(),
                 "External"
             );
-            id+=1;
+            r_id+=1;
         }
     }
 
+    // write drawing relationships
+    if worksheet.has_drawing_object() {
+        is_write = write_relationship(
+            &mut writer,
+            r_id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
+            format!("../drawings/drawing{}.xml", drawing_id.to_string().as_str()).as_str(),
+            ""
+        );
+        r_id += 1;
+    }
+
+
     // Write comments relationship
     if worksheet.get_comments().len() > 0 {
-        write_relationship(
+        is_write = write_relationship(
             &mut writer,
-            id.to_string().as_str(),
+            r_id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
             format!("../drawings/vmlDrawing{}.vml", comment_id.to_string().as_str()).as_str(),
             ""
         );
-        id+=1;
-        is_write = write_relationship(
-            &mut writer,
-            id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
-            format!("../comments{}.xml", comment_id.to_string().as_str()).as_str(),
-            ""
-        );
+        r_id+=1;
+    }
+
+    // Write ole_objects
+    match worksheet.get_ole_objects() {
+        Some(v) => {
+            for alternate_content in v.get_alternate_content() {
+                match alternate_content.get_alternate_content_choice().get_ole_object() {
+                    Some(j) => {
+                        let object_name = j.get_object_name();
+                        is_write = write_relationship(
+                            &mut writer,
+                            r_id.to_string().as_str(),
+                            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject",
+                            format!("../embeddings/{}", object_name).as_str(),
+                            ""
+                        );
+                        r_id+=1;
+
+                        match j.get_embedded_object_properties() {
+                            Some(a) => {
+                                let image_name = a.get_image_name();
+                                is_write = write_relationship(
+                                    &mut writer,
+                                    r_id.to_string().as_str(),
+                                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+                                    format!("../media/{}", image_name).as_str(),
+                                    ""
+                                );
+                                r_id+=1;
+                            },
+                            None => {}
+                        }
+                    },
+                    None => {}
+                }
+            }
+        },
+        None => {}
     }
 
     // Write header/footer relationship
@@ -85,6 +118,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     //        ""
     //    );
     //}
+
+
+    // Write comments relationship
+    if worksheet.get_comments().len() > 0 {
+        is_write = write_relationship(
+            &mut writer,
+            r_id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
+            format!("../comments{}.xml", comment_id.to_string().as_str()).as_str(),
+            ""
+        );
+    }
 
     write_end_tag(&mut writer, "Relationships");
 

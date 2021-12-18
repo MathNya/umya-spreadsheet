@@ -12,8 +12,8 @@ pub struct TileRectangle {
 impl TileRectangle {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart
+        _reader:&mut Reader<R>,
+        _e:&BytesStart
     ) {
 
     }

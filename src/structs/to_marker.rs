@@ -1,4 +1,4 @@
-// xdr:from
+// to
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -6,18 +6,18 @@ use quick_xml::Reader;
 use std::io::Cursor;
 
 #[derive(Default, Debug)]
-pub struct FromMarker {
+pub struct ToMarker {
     col: usize,
     col_off: usize,
     row: usize,
     row_off: usize,
 }
-impl FromMarker {
+impl ToMarker {
     pub fn get_col(&self)-> &usize {
         &self.col
     }
 
-    pub fn set_col(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_col(&mut self, value:usize)-> &mut ToMarker {
         self.col = value;
         self
     }
@@ -26,7 +26,7 @@ impl FromMarker {
         &self.col_off
     }
 
-    pub fn set_col_off(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_col_off(&mut self, value:usize)-> &mut ToMarker {
         self.col_off = value;
         self
     }
@@ -35,7 +35,7 @@ impl FromMarker {
         &self.row
     }
 
-    pub fn set_row(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_row(&mut self, value:usize)-> &mut ToMarker {
         self.row = value;
         self
     }
@@ -44,7 +44,7 @@ impl FromMarker {
         &self.row_off
     }
 
-    pub fn set_row_off(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_row_off(&mut self, value:usize)-> &mut ToMarker {
         self.row_off = value;
         self
     }
@@ -89,11 +89,11 @@ impl FromMarker {
                         b"xdr:rowOff" => {
                             self.row_off = string_value.parse::<usize>().unwrap();
                         },
-                        b"xdr:from" => return,
+                        b"to" => return,
                         _ => (),
                     }
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:from"),
+                Ok(Event::Eof) => panic!("Error not find {} end element", "to"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
@@ -102,8 +102,8 @@ impl FromMarker {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // xdr:from
-        write_start_tag(writer, "xdr:from", vec![], false);
+        // to
+        write_start_tag(writer, "to", vec![], false);
 
         // xdr:col
         write_start_tag(writer, "xdr:col", vec![], false);
@@ -125,6 +125,6 @@ impl FromMarker {
         write_text_node(writer, &self.row_off.to_string());
         write_end_tag(writer, "xdr:rowOff");
 
-        write_end_tag(writer, "xdr:from");
+        write_end_tag(writer, "to");
     }
 }

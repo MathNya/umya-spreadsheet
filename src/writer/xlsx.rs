@@ -26,6 +26,7 @@ mod vba_project_bin;
 mod comment;
 mod vml_drawing;
 mod media;
+mod embeddings;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -122,9 +123,8 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
             chart_id += 1;
         }
 
-        for picture in worksheet.get_worksheet_drawing().get_picture_collection(){
-            let _ = media::write(picture, &mut arv, "xl/media");
-        }
+        let _ = media::write(worksheet, &mut arv, "xl/media");
+        let _ = embeddings::write(worksheet, &mut arv, "xl/embeddings");
     }
 
     // Add SharedStrings

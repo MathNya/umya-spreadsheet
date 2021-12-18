@@ -1,4 +1,4 @@
-// xdr:from
+// from
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -89,11 +89,11 @@ impl FromMarker {
                         b"xdr:rowOff" => {
                             self.row_off = string_value.parse::<usize>().unwrap();
                         },
-                        b"xdr:from" => return,
+                        b"from" => return,
                         _ => (),
                     }
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:from"),
+                Ok(Event::Eof) => panic!("Error not find {} end element", "from"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
@@ -102,8 +102,8 @@ impl FromMarker {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // xdr:from
-        write_start_tag(writer, "xdr:from", vec![], false);
+        // from
+        write_start_tag(writer, "from", vec![], false);
 
         // xdr:col
         write_start_tag(writer, "xdr:col", vec![], false);
@@ -125,6 +125,6 @@ impl FromMarker {
         write_text_node(writer, &self.row_off.to_string());
         write_end_tag(writer, "xdr:rowOff");
 
-        write_end_tag(writer, "xdr:from");
+        write_end_tag(writer, "from");
     }
 }

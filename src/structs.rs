@@ -313,3 +313,25 @@ pub use self::pane_state_values::*;
 
           mod workbook_view;
 pub use self::workbook_view::*;
+
+          mod ole_objects;
+pub use self::ole_objects::*;
+
+          mod ole_object;
+pub use self::ole_object::*;
+
+          mod embedded_object_properties;
+pub use self::embedded_object_properties::*;
+
+          mod object_anchor;
+pub use self::object_anchor::*;
+
+          mod from_marker;
+pub use self::from_marker::*;
+
+          mod to_marker;
+pub use self::to_marker::*;
+
+          mod reader_writer_trait;
+pub use self::reader_writer_trait::*;
+

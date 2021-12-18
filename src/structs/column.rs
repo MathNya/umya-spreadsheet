@@ -1,16 +1,11 @@
 use super::BooleanValue;
 use super::DoubleValue;
-use super::SharedStringItem;
-use super::SharedStringTable;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::{BytesStart};
 use quick_xml::Reader;
-use quick_xml::Writer;
 use reader::driver::*;
-use std::io::Cursor;
-use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Column {

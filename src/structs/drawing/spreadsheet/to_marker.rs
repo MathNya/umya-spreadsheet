@@ -68,7 +68,7 @@ impl ToMarker {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader:&mut Reader<R>,
-        e:&BytesStart,
+        _e:&BytesStart,
     ) {
         let mut string_value:String = String::from("");
         let mut buf = Vec::new();

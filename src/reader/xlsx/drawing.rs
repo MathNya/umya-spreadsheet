@@ -1,5 +1,5 @@
 use std::io::Read;
-use std::{io, path, result};
+use std::{io, result};
 use quick_xml::Reader;
 use quick_xml::events::{Event};
 use super::XlsxError;

@@ -15,14 +15,15 @@ mod rels;
 mod theme;
 mod shared_strings;
 mod styles;
-mod worksheet_rels;
 mod vml_drawing;
 mod drawing;
 mod vba_project_bin;
 mod comment;
 pub(crate) mod chart;
 pub(crate) mod drawing_rels;
+pub(crate) mod worksheet_rels;
 pub(crate) mod media;
+pub(crate) mod embeddings;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -84,11 +85,10 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
     shared_strings::read(&mut arv, &mut book).unwrap();
     styles::read(&mut arv, &mut book).unwrap();
 
-    let mut sheet_count = 0;
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
-                let (drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&mut arv, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
+                let (_drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&mut arv, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
                 let worksheet = book.get_sheet_by_sheet_id_mut(sheets_sheet_id).unwrap();
                 let worksheet_rel = worksheet_rels::read(&mut arv, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
@@ -108,7 +108,6 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
                 }
             }
         }
-        sheet_count += 1;
     }
 
     book.remove_shared_string_table();

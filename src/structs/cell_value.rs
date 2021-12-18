@@ -1,7 +1,5 @@
 use super::RichText;
 use super::SharedStringItem;
-use super::BooleanValue;
-use std::borrow::Cow;
 use ::helper::formula::*;
 
 #[derive(Default, Debug)]

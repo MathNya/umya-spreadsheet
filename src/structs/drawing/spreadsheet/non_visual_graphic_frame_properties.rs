@@ -42,7 +42,7 @@ impl NonVisualGraphicFrameProperties {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader:&mut Reader<R>,
-        e:&BytesStart
+        _e:&BytesStart
     ) {
         let mut buf = Vec::new();
         loop {

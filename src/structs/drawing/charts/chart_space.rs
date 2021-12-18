@@ -114,10 +114,11 @@ impl ChartSpace {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
         reader:&mut Reader<R>,
-        _e:&BytesStart
+        _e:&BytesStart,
+        arv: &mut zip::read::ZipArchive<A>,
     ) {
         let mut buf = Vec::new();
         loop {
@@ -125,7 +126,7 @@ impl ChartSpace {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"mc:AlternateContent" => {
-                            &mut self.alternate_content.set_attributes(reader, e);
+                            &mut self.alternate_content.set_attributes(reader, e, arv, None);
                         }
                         b"c:chart" => {
                             &mut self.chart.set_attributes(reader, e);
@@ -187,7 +188,7 @@ impl ChartSpace {
         &self.rounded_corners.write_to(writer);
 
         // mc:AlternateContent
-        &self.alternate_content.write_to(writer);
+        &self.alternate_content.write_to(writer, None);
 
         // c:chart
         &self.chart.write_to(writer);

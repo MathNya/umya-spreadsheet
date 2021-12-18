@@ -1,3 +1,4 @@
+use std::io::Read;
 use quick_xml::Reader;
 use quick_xml::events::{Event};
 use std::io;
@@ -15,6 +16,7 @@ use ::structs::PageMargins;
 use ::structs::Hyperlink;
 use ::structs::ConditionalSet;
 use ::structs::Columns;
+use ::structs::OleObjects;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
@@ -23,8 +25,14 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     sheets_sheet_id: &str,
     sheets_name: &str,
 ) -> Result<(Option<String>, Option<String>, Vec<(String, String)>), XlsxError> {
-    let r = io::BufReader::new(arv.by_name(&format!("xl/{}", target))?);
-    let mut reader = Reader::from_reader(r);
+    let data = {
+        let path_str = normalize_path_to_str(&format!("xl/{}", target));
+        let mut r = io::BufReader::new(arv.by_name(path_str.as_str())?);
+        let mut buf = Vec::new();
+        r.read_to_end(&mut buf)?;
+        std::io::Cursor::new(buf)
+    };
+    let mut reader = Reader::from_reader(data);
     reader.trim_text(true);
     let mut buf = Vec::new();
 
@@ -87,6 +95,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                         let conditional_styles_collection = get_conditional_formatting(&mut reader, &stylesheet, &theme);
                         conditional_set.set_conditional_collection(conditional_styles_collection);
                         worksheet.add_conditional_styles_collection(conditional_set);
+                    },
+                    b"oleObjects" => {
+                        //let mut obj = OleObjects::default();
+                        //obj.set_attributes(&mut reader, e, arv, Some(sheets_name));
+                        //worksheet.set_ole_objects(obj);
                     },
                     _ => (),
                 }
@@ -172,8 +185,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     Ok((drawing, legacy_drawing, hyperlink_vec))
 }
 
-fn get_conditional_formatting(
-    reader:&mut quick_xml::Reader<std::io::BufReader<zip::read::ZipFile>>,
+fn get_conditional_formatting<R: std::io::BufRead>(
+    reader:&mut Reader<R>,
     stylesheet: &Stylesheet,
     theme: &Theme
 ) -> Vec<Conditional>
@@ -264,8 +277,8 @@ fn get_conditional_formatting(
     }
 }
 
-fn get_cfvo(
-    reader:&mut quick_xml::Reader<std::io::BufReader<zip::read::ZipFile>>,
+fn get_cfvo<R: std::io::BufRead>(
+    reader:&mut Reader<R>,
     theme: &Theme
 )->Vec<(String, Option<String>, Option<Color>)>
 {

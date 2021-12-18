@@ -18,6 +18,7 @@ use super::NumberingFormat;
 use super::Comment;
 use super::Color;
 use super::CellValue;
+use super::OleObjects;
 use std::collections::BTreeMap; 
 use std::collections::HashMap;
 use helper::coordinate::*;
@@ -59,6 +60,7 @@ pub struct Worksheet {
     dirty: bool,
     hash: String,
     code_name: Option<String>,
+    ole_objects: Option<OleObjects>,
 }
 impl Worksheet {
     // ************************
@@ -953,6 +955,19 @@ impl Worksheet {
 
     pub fn set_sheet_view(&mut self, value:SheetView) -> &mut Self {
         self.sheet_view = value;
+        self
+    }
+
+    pub(crate) fn get_ole_objects(&self) -> &Option<OleObjects> {
+        &self.ole_objects
+    }
+
+    pub(crate) fn get_ole_objects_mut(&mut self) -> &mut Option<OleObjects> {
+        &mut self.ole_objects
+    }
+
+    pub(crate) fn set_ole_objects(&mut self, value:OleObjects) -> &mut Self {
+        self.ole_objects = Some(value);
         self
     }
 }

@@ -2,6 +2,7 @@
 use super::AlternateContentChoice;
 use super::AlternateContentFallback;
 use writer::driver::*;
+use reader::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -9,11 +10,20 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct AlternateContent {
+    sub_path: Vec<(String,String)>,
     alternate_content_choice: AlternateContentChoice,
     alternate_content_fallback: AlternateContentFallback,
 }
 impl AlternateContent {
-    
+    pub fn get_sub_path(&self) -> &Vec<(String,String)> {
+        &self.sub_path
+    }
+
+    pub fn set_sub_path(&mut self, value: (String,String)) -> &mut Self {
+        self.sub_path.push(value);
+        self
+    }
+
     pub fn get_alternate_content_choice(&self)-> &AlternateContentChoice {
         &self.alternate_content_choice
     }
@@ -40,21 +50,37 @@ impl AlternateContent {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
         reader:&mut Reader<R>,
-        _e:&BytesStart
+        e:&BytesStart,
+        arv: &mut zip::read::ZipArchive<A>,
+        sheet_name: Option<&str>,
     ) {
+        match get_attribute(e, b"xmlns:mc") {
+            Some(v) => {
+                self.set_sub_path(("xmlns:mc".to_string(), v));
+            },
+            None => {}
+        }
+
+        match get_attribute(e, b"xmlns:c14") {
+            Some(v) => {
+                self.set_sub_path(("xmlns:c14".to_string(), v));
+            },
+            None => {}
+        }
+
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"mc:Choice" => {
-                            self.alternate_content_choice.set_attributes(reader, e);
+                            self.alternate_content_choice.set_attributes(reader, e, arv, sheet_name);
                         },
                         b"mc:Fallback" => {
-                            self.alternate_content_fallback.set_attributes(reader, e);
+                            self.alternate_content_fallback.set_attributes(reader, e, arv, sheet_name);
                         },
                         _ => (),
                     }
@@ -73,17 +99,23 @@ impl AlternateContent {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        r_id: Option<&usize>,
+    ) {
         // mc:AlternateContent
-        write_start_tag(writer, "mc:AlternateContent", vec![
-            ("xmlns:mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"),
-        ], false);
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        for (title, path) in &self.sub_path {
+            attributes.push((title, path));
+        }
+        write_start_tag(writer, "mc:AlternateContent", attributes, false);
 
         // mc:Choice
-        &self.alternate_content_choice.write_to(writer);
+        &self.alternate_content_choice.write_to(writer, r_id);
 
         // mc:Fallback
-        &self.alternate_content_fallback.write_to(writer);
+        &self.alternate_content_fallback.write_to(writer, r_id);
 
         write_end_tag(writer, "mc:AlternateContent");
     }
