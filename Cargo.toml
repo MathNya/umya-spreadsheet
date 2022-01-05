@@ -21,3 +21,5 @@ thousands = "0.2.0"
 onig = { version = "6.1.1", default-features = false }
 chrono = "0.4.19"
 
+[lib]
+doctest = false
