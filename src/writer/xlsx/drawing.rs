@@ -25,7 +25,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let _ = writer.write_event(Event::Decl(BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
     write_new_line(&mut writer);
 
-    worksheet.get_worksheet_drawing().write_to(&mut writer);
+    worksheet.get_worksheet_drawing().write_to(&mut writer, worksheet.get_ole_objects());
     
     let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
     Ok(())

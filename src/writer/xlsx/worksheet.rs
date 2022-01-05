@@ -3,7 +3,6 @@ use quick_xml::Writer;
 use std::io;
 use std::collections::BTreeSet;
 use ::structs::Spreadsheet;
-use ::structs::Worksheet;
 use ::structs::SharedStringTable;
 use ::structs::Stylesheet;
 use super::driver::*;
@@ -309,22 +308,17 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             r_id += 1;
         }
 
-        // comment
-        if worksheet.get_comments().len() > 0 {
-            // legacyDrawing
+        // legacyDrawing
+        if worksheet.has_legacy_drawing() {
             let r_id_str = format!("rId{}", &r_id);
             write_start_tag(&mut writer, "legacyDrawing", vec![
                 ("r:id", r_id_str.as_str()),
             ], true);
+            r_id += 1;
         }
 
         // oleObjects
-        match worksheet.get_ole_objects() {
-            Some(v) => {
-                v.write_to(&mut writer, &r_id);
-            },
-            None => {}
-        }
+        worksheet.get_ole_objects().write_to(&mut writer, &r_id);
     }
     
     write_end_tag(&mut writer, "worksheet");

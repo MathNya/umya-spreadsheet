@@ -34,7 +34,15 @@ impl NonVisualShapeProperties  {
                 Ok(Event::Empty(ref e)) => {
                     match e.name() {
                         b"xdr:cNvPr" => {
-                            &mut self.non_visual_drawing_properties.set_attributes(reader, e);
+                            &mut self.non_visual_drawing_properties.set_attributes(reader, e, true);
+                        },
+                        _ => (),
+                    }
+                },
+                Ok(Event::Start(ref e)) => {
+                    match e.name() {
+                        b"xdr:cNvPr" => {
+                            &mut self.non_visual_drawing_properties.set_attributes(reader, e, false);
                         },
                         _ => (),
                     }

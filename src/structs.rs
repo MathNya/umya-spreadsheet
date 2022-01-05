@@ -1,6 +1,7 @@
 //! store structs.
 
 pub mod drawing;
+pub mod vml;
 
           mod spreadsheet;
 pub use self::spreadsheet::*;
@@ -112,15 +113,6 @@ pub use self::address::*;
 
           mod anchor;
 pub use self::anchor::*;
-
-          mod alternate_content;
-pub use self::alternate_content::*;
-
-          mod alternate_content_choice;
-pub use self::alternate_content_choice::*;
-
-          mod alternate_content_fallback;
-pub use self::alternate_content_fallback::*;
 
           mod office2010;
 pub use self::office2010::*;
@@ -332,6 +324,9 @@ pub use self::from_marker::*;
           mod to_marker;
 pub use self::to_marker::*;
 
-          mod reader_writer_trait;
-pub use self::reader_writer_trait::*;
+          mod true_false_value;
+pub use self::true_false_value::*;
+
+          mod true_false_blank_value;
+pub use self::true_false_blank_value::*;
 

@@ -1,5 +1,5 @@
 // oleObjects
-use super::AlternateContent;
+use super::OleObject;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -8,19 +8,19 @@ use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct OleObjects {
-    alternate_content: Vec<AlternateContent>,
+    ole_object: Vec<OleObject>,
 }
 impl OleObjects {
-    pub fn get_alternate_content(&self)-> &Vec<AlternateContent> {
-        &self.alternate_content
+    pub fn get_ole_object(&self)-> &Vec<OleObject> {
+        &self.ole_object
     }
 
-    pub fn get_alternate_content_mut(&mut self)-> &mut Vec<AlternateContent> {
-        &mut self.alternate_content
+    pub fn get_ole_object_mut(&mut self)-> &mut Vec<OleObject> {
+        &mut self.ole_object
     }
 
-    pub fn set_alternate_content(&mut self, value:AlternateContent)-> &mut Self {
-        self.alternate_content.push(value);
+    pub fn set_ole_object(&mut self, value:OleObject)-> &mut Self {
+        self.ole_object.push(value);
         self
     }
 
@@ -29,7 +29,7 @@ impl OleObjects {
         reader:&mut Reader<R>,
         _e:&BytesStart,
         arv: &mut zip::read::ZipArchive<A>,
-        sheet_name: Option<&str>,
+        target: &str,
     ) {
         let mut buf = Vec::new();
         loop {
@@ -37,9 +37,9 @@ impl OleObjects {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"mc:AlternateContent" => {
-                            let mut obj = AlternateContent::default();
-                            obj.set_attributes(reader, e, arv, sheet_name);
-                            self.set_alternate_content(obj);
+                            let mut obj = OleObject::default();
+                            obj.set_attributes(reader, e, arv, target);
+                            self.set_ole_object(obj);
                         },
                         _ => (),
                     }
@@ -63,14 +63,14 @@ impl OleObjects {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         r_id: &usize,
     ) {
-        if self.alternate_content.len() > 0 {
+        if self.ole_object.len() > 0 {
             // oleObjects
             write_start_tag(writer, "oleObjects", vec![], false);
 
             // mc:AlternateContent
             let mut r = r_id.clone();
-            for obj in &self.alternate_content {
-                obj.write_to(writer, Some(&r));
+            for obj in &self.ole_object {
+                obj.write_to(writer, &r);
                 r += 2;
             }
 

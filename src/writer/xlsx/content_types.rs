@@ -17,12 +17,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
         ("xmlns", "http://schemas.openxmlformats.org/package/2006/content-types"),
     ], false);
 
-    // Default bin
-    //write_start_tag(&mut writer, "Default", vec![
-    //    ("Extension", "bin"),
-    //    ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings"),
-    //], true);
-
     // Default rels
     write_start_tag(&mut writer, "Default", vec![
         ("Extension", "rels"),
@@ -107,6 +101,40 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
         if writed {break};
     }
 
+    // Default emf
+    let mut writed = false;
+    for work_sheet in spreadsheet.get_sheet_collection() {
+        for ole_object in work_sheet.get_ole_objects().get_ole_object() {
+            if ole_object.get_embedded_object_properties().is_emf() {
+                write_start_tag(&mut writer, "Default", vec![
+                    ("Extension", "emf"),
+                    ("ContentType", "image/x-emf"),
+                ], true);
+                writed = true;
+                break;
+            }
+            if writed {break};
+        }
+        if writed {break};
+    }
+
+    // Default xlsx
+    let mut writed = false;
+    for work_sheet in spreadsheet.get_sheet_collection() {
+        for ole_object in work_sheet.get_ole_objects().get_ole_object() {
+            if ole_object.is_xlsx() {
+                write_start_tag(&mut writer, "Default", vec![
+                    ("Extension", "xlsx"),
+                    ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+                ], true);
+                writed = true;
+                break;
+            }
+            if writed {break};
+        }
+        if writed {break};
+    }
+
     // Override workbook
     let content_type = match spreadsheet.get_has_macros() {
         &true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
@@ -173,6 +201,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
                 ("ContentType", "application/vnd.openxmlformats-officedocument.drawingml.chart+xml"),
             ], true);
             chart_id += 1;
+        }
+    }
+
+    // Override embeddings
+    for work_sheet in spreadsheet.get_sheet_collection() {
+        for ole_object in work_sheet.get_ole_objects().get_ole_object() {
+            if ole_object.is_bin() {
+                write_start_tag(&mut writer, "Override", vec![
+                    ("PartName", format!("/xl/embeddings/{}", ole_object.get_object_name()).as_str()),
+                    ("ContentType", "application/vnd.openxmlformats-officedocument.oleObject"),
+                ], true);
+            }
         }
     }
 

@@ -1,8 +1,6 @@
 use quick_xml::Writer;
 use std::io;
-
 use ::structs::Worksheet;
-use ::structs::Comment;
 use super::driver::*;
 use super::XlsxError;
 
@@ -13,7 +11,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     comment_id: &usize,
     arv: &mut zip::ZipWriter<W>
 ) -> Result<(), XlsxError> {
-    if worksheet.get_comments().len() == 0 {
+    if worksheet.has_legacy_drawing() == false {
         return Ok(());
     }
 
@@ -40,121 +38,118 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "o:shapelayout");
 
-    // v:shapetype
-    write_start_tag(&mut writer, "v:shapetype", vec![
-        ("id", "_x0000_t202"),
-        ("coordsize", "21600,21600"),
-        ("o:spt", "202"),
-        ("path", "m,l,21600r21600,l21600,xe"),
-    ], false);
-
-    // v:stroke
-    write_start_tag(&mut writer, "v:stroke", vec![
-        ("joinstyle", "miter"),
-    ], true);
-
-    // v:path
-    write_start_tag(&mut writer, "v:path", vec![
-        ("gradientshapeok", "t"),
-        ("o:connecttype", "rect"),
-    ], true);
-
-    write_end_tag(&mut writer, "v:shapetype");
-
     let mut id = 1025;
-    for comment in worksheet.get_comments() {
-        // v:shape
-        write_start_tag(&mut writer, "v:shape", vec![
-            ("id", format!("_x0000_s{}", id).to_string().as_str()),
-            ("type", "#_x0000_t202"),
-            ("style", get_style_string(comment).as_str()),
-            ("fillcolor", format!("#{}", comment.get_fill_color().get_argb()).as_str()),
-            ("o:insetmode", "auto"),
+
+    // comment
+    if worksheet.has_comments() {
+        // v:shapetype
+        write_start_tag(&mut writer, "v:shapetype", vec![
+            ("id", "_x0000_t202"),
+            ("coordsize", "21600,21600"),
+            ("o:spt", "202"),
+            ("path", "m,l,21600r21600,l21600,xe"),
         ], false);
 
-        // v:fill
-        write_start_tag(&mut writer, "v:fill", vec![
-            ("color2", format!("#{}", comment.get_fill_color().get_argb()).as_str()),
-        ], true);
-
-        // v:shadow
-        write_start_tag(&mut writer, "v:shadow", vec![
-            ("on", "t"),
-            ("color", "black"),
-            ("obscured", "t"),
+        // v:stroke
+        write_start_tag(&mut writer, "v:stroke", vec![
+            ("joinstyle", "miter"),
         ], true);
 
         // v:path
         write_start_tag(&mut writer, "v:path", vec![
-            ("o:connecttype", "none"),
+            ("gradientshapeok", "t"),
+            ("o:connecttype", "rect"),
         ], true);
 
-        // v:textbox
-        write_start_tag(&mut writer, "v:textbox", vec![
-            ("style", "mso-direction-alt:auto"),
-        ], false);
+        write_end_tag(&mut writer, "v:shapetype");
 
-        // div
-        write_start_tag(&mut writer, "div", vec![
-            ("style", "text-align:left"),
-        ], false);
-        write_end_tag(&mut writer, "div");
-
-        write_end_tag(&mut writer, "v:textbox");
-        
-        // x:ClientData
-        write_start_tag(&mut writer, "x:ClientData", vec![
-            ("ObjectType", "Note"),
-        ], false);
-
-        // x:MoveWithCells
-        write_start_tag(&mut writer, "x:MoveWithCells", vec![], true);
-
-        // x:SizeWithCells
-        write_start_tag(&mut writer, "x:SizeWithCells", vec![], true);
-
-        // x:Anchor
-        let anchor = format!("{}, {}, {}, {}, {}, {}, {}, {}",
-            comment.get_anchor().get_left_column(),
-            comment.get_anchor().get_left_offset(),
-            comment.get_anchor().get_top_row(),
-            comment.get_anchor().get_top_offset(),
-            comment.get_anchor().get_right_column(),
-            comment.get_anchor().get_right_offset(),
-            comment.get_anchor().get_bottom_row(),
-            comment.get_anchor().get_bottom_offset()
-        );
-        write_start_tag(&mut writer, "x:Anchor", vec![], false);
-        write_text_node(&mut writer, anchor.as_str());
-        write_end_tag(&mut writer, "x:Anchor");
-
-        // x:AutoFill
-        write_start_tag(&mut writer, "x:AutoFill", vec![], false);
-        write_text_node(&mut writer, "False");
-        write_end_tag(&mut writer, "x:AutoFill");
-
-        let col = comment.get_coordinate().get_col_num();
-        let row = comment.get_coordinate().get_row_num();
-
-        // x:Row
-        write_start_tag(&mut writer, "x:Row", vec![], false);
-        write_text_node(&mut writer, (row - 1).to_string().as_str());
-        write_end_tag(&mut writer, "x:Row");
-
-        // x:Column
-        write_start_tag(&mut writer, "x:Column", vec![], false);
-        write_text_node(&mut writer, (col -1).to_string().as_str());
-        write_end_tag(&mut writer, "x:Column");
-
-        // x:Visible
-        if comment.get_visible() == &true {
-            write_start_tag(&mut writer, "x:Visible", vec![], true);
+        for comment in worksheet.get_comments() {
+            // v:shape
+            comment.get_shape().write_to(&mut writer, &id, &0);
+            id += 1;
         }
+    }
 
-        write_end_tag(&mut writer, "x:ClientData");
-        write_end_tag(&mut writer, "v:shape");
+    // ole_object
+    if worksheet.has_ole_objects() {
+        // v:shapetype
+        write_start_tag(&mut writer, "v:shapetype", vec![
+            ("id", "_x0000_t75"),
+            ("coordsize", "21600,21600"),
+            ("o:spt", "75"),
+            ("o:preferrelative", "t"),
+            ("path", "m@4@5l@4@11@9@11@9@5xe"),
+            ("filled", "f"),
+            ("stroked", "f"),
+        ], false);
 
-        id += 1;
+        // v:stroke
+        write_start_tag(&mut writer, "v:stroke", vec![
+            ("joinstyle", "miter"),
+        ], true);
+
+        // v:formulas
+        write_start_tag(&mut writer, "v:formulas", vec![], false);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "if lineDrawn pixelLineWidth 0"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "sum @0 1 0"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "sum 0 0 @1"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "prod @2 1 2"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "prod @3 21600 pixelWidth"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "prod @3 21600 pixelHeight"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "sum @0 0 1"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "prod @6 1 2"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "prod @7 21600 pixelWidth"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "sum @8 21600 0"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "prod @7 21600 pixelHeight"),
+        ], true);
+        write_start_tag(&mut writer, "v:f", vec![
+            ("eqn", "sum @10 21600 0"),
+        ], true);
+        write_end_tag(&mut writer, "v:formulas");
+
+        // v:path
+        write_start_tag(&mut writer, "v:path", vec![
+            ("o:extrusionok", "f"),
+            ("gradientshapeok", "t"),
+            ("o:connecttype", "rect"),
+        ], true);
+
+        // o:lock
+        write_start_tag(&mut writer, "o:lock", vec![
+            ("v:ext", "edit"),
+            ("aspectratio", "t"),
+        ], true);
+
+        write_end_tag(&mut writer, "v:shapetype");
+
+        let mut r_id = 1;
+        for ole_object in worksheet.get_ole_objects().get_ole_object() {
+            // v:shape
+            ole_object.get_shape().write_to(&mut writer, &id, &r_id);
+            r_id += 1;
+            id += 1;
+        }
     }
 
     write_end_tag(&mut writer, "xml");
@@ -163,14 +158,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     Ok(())
 }
 
-fn get_style_string(comment: &Comment) -> String {
-    let style = format!(
-        "position:absolute;margin-left:{};margin-top:{};width:{};height:{};z-index:1;visibility:{}",
-        comment.get_margin_left(),
-        comment.get_margin_top(),
-        comment.get_width(),
-        comment.get_height(),
-        if comment.get_visible() == &true {"visible"} else {"hidden"}
-    );
-    style
-}
+//fn get_style_string_comment(comment: &Comment) -> String {
+//    let style = format!(
+//        "position:absolute;margin-left:{};margin-top:{};width:{};height:{};z-index:1;visibility:{}",
+//        comment.get_margin_left(),
+//        comment.get_margin_top(),
+//        comment.get_width(),
+//        comment.get_height(),
+//        if comment.get_visible() == &true {"visible"} else {"hidden"}
+//    );
+//    style
+//}

@@ -2,7 +2,7 @@
 use super::Date1904;
 use super::EditingLanguage;
 use super::RoundedCorners;
-use super::super::super::AlternateContent;
+use structs::office2010::drawing::charts::Style;
 use super::Chart;
 use super::ShapeProperties;
 use super::PrintSettings;
@@ -17,7 +17,7 @@ pub struct ChartSpace {
     date1904: Date1904,
     editing_language: EditingLanguage,
     rounded_corners: RoundedCorners,
-    alternate_content: AlternateContent,
+    style: Option<Style>,
     chart: Chart,
     shape_properties: Option<ShapeProperties>,
     print_settings: PrintSettings,
@@ -62,16 +62,16 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_alternate_content(&self)-> &AlternateContent {
-        &self.alternate_content
+    pub fn get_style(&self)-> &Option<Style> {
+        &self.style
     }
 
-    pub fn get_alternate_content_mut(&mut self)-> &mut AlternateContent {
-        &mut self.alternate_content
+    pub fn get_style_mut(&mut self)-> &mut Option<Style> {
+        &mut self.style
     }
 
-    pub fn set_alternate_content(&mut self, value:AlternateContent)-> &mut ChartSpace {
-        self.alternate_content = value;
+    pub fn set_style(&mut self, value:Style)-> &mut ChartSpace {
+        self.style = Some(value);
         self
     }
 
@@ -114,11 +114,10 @@ impl ChartSpace {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader:&mut Reader<R>,
         _e:&BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
     ) {
         let mut buf = Vec::new();
         loop {
@@ -126,7 +125,9 @@ impl ChartSpace {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
                         b"mc:AlternateContent" => {
-                            &mut self.alternate_content.set_attributes(reader, e, arv, None);
+                            let mut obj = Style::default();
+                            obj.set_attributes(reader, e);
+                            self.set_style(obj);
                         }
                         b"c:chart" => {
                             &mut self.chart.set_attributes(reader, e);
@@ -188,7 +189,10 @@ impl ChartSpace {
         &self.rounded_corners.write_to(writer);
 
         // mc:AlternateContent
-        &self.alternate_content.write_to(writer, None);
+        match &self.style {
+            Some(v) => {v.write_to(writer);},
+            None => {}
+        }
 
         // c:chart
         &self.chart.write_to(writer);

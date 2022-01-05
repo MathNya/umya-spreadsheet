@@ -60,7 +60,7 @@ pub struct Worksheet {
     dirty: bool,
     hash: String,
     code_name: Option<String>,
-    ole_objects: Option<OleObjects>,
+    ole_objects: OleObjects,
 }
 impl Worksheet {
     // ************************
@@ -507,6 +507,10 @@ impl Worksheet {
         &self.comments
     }
 
+    pub fn get_comments_mut(&mut self)-> &mut Vec<Comment> {
+        &mut self.comments
+    }
+
     pub fn get_comments_to_hashmap(&self)-> HashMap<String, &Comment> {
         let mut result = HashMap::default();
         for comment in &self.comments {
@@ -525,7 +529,7 @@ impl Worksheet {
     }
 
     pub fn has_comments(&self) -> bool {
-        self.comments.len() > 1
+        self.comments.len() > 0
     }
 
     // ************************    
@@ -697,7 +701,7 @@ impl Worksheet {
         &mut self.worksheet_drawing
     }
 
-    pub fn set_worksheet_drawing_mut(&mut self, value:WorksheetDrawing) {
+    pub fn set_worksheet_drawing(&mut self, value:WorksheetDrawing) {
         self.worksheet_drawing = value;
     }
 
@@ -958,16 +962,24 @@ impl Worksheet {
         self
     }
 
-    pub(crate) fn get_ole_objects(&self) -> &Option<OleObjects> {
+    pub fn get_ole_objects(&self) -> &OleObjects {
         &self.ole_objects
     }
 
-    pub(crate) fn get_ole_objects_mut(&mut self) -> &mut Option<OleObjects> {
+    pub fn get_ole_objects_mut(&mut self) -> &mut OleObjects {
         &mut self.ole_objects
     }
 
-    pub(crate) fn set_ole_objects(&mut self, value:OleObjects) -> &mut Self {
-        self.ole_objects = Some(value);
+    pub fn set_ole_objects(&mut self, value:OleObjects) -> &mut Self {
+        self.ole_objects = value;
         self
+    }
+
+    pub fn has_ole_objects(&self) -> bool {
+        self.ole_objects.get_ole_object().len() > 0
+    }
+
+    pub fn has_legacy_drawing(&self) -> bool {
+        self.has_comments() || self.has_ole_objects()
     }
 }

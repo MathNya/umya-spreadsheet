@@ -4,6 +4,7 @@ use quick_xml::Reader;
 use quick_xml::events::{Event};
 use super::XlsxError;
 use structs::Worksheet;
+use structs::drawing::spreadsheet::WorksheetDrawing;
 use super::driver::normalize_path_to_str;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
@@ -27,8 +28,9 @@ pub(crate) fn read<R: io::Read + io::Seek>(
             Ok(Event::Start(ref e)) => {
                 match e.name() {
                     b"xdr:wsDr" => {
-                        let worksheet_drawing = worksheet.get_worksheet_drawing_mut();
-                        worksheet_drawing.set_attributes(&mut reader, e, arv, target);
+                        let mut obj = WorksheetDrawing::default();
+                        obj.set_attributes(&mut reader, e, arv, target, worksheet.get_ole_objects_mut());
+                        worksheet.set_worksheet_drawing(obj);
                     },
                     _ => (),
                 }

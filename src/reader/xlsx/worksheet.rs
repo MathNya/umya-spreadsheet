@@ -97,9 +97,9 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                         worksheet.add_conditional_styles_collection(conditional_set);
                     },
                     b"oleObjects" => {
-                        //let mut obj = OleObjects::default();
-                        //obj.set_attributes(&mut reader, e, arv, Some(sheets_name));
-                        //worksheet.set_ole_objects(obj);
+                        let mut obj = OleObjects::default();
+                        obj.set_attributes(&mut reader, e, arv, target);
+                        worksheet.set_ole_objects(obj);
                     },
                     _ => (),
                 }

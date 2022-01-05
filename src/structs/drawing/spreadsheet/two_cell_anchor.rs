@@ -7,6 +7,7 @@ use super::GraphicFrame;
 use super::Shape;
 use super::ConnectionShape;
 use super::Picture;
+use structs::BooleanValue;
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::events::{Event, BytesStart};
@@ -23,13 +24,14 @@ pub struct TwoCellAnchor {
     shape: Option<Shape>,
     connection_shape: Option<ConnectionShape>,
     picture: Option<Picture>,
+    is_alternate_content: BooleanValue,
 }
 impl TwoCellAnchor {
     pub fn get_edit_as(&self)-> &EditAsValues {
         &self.edit_as.get_value()
     }
 
-    pub fn set_edit_as(&mut self, value:EditAsValues)-> &mut TwoCellAnchor {
+    pub fn set_edit_as(&mut self, value:EditAsValues)-> &mut Self {
         self.edit_as.set_value(value);
         self
     }
@@ -42,7 +44,7 @@ impl TwoCellAnchor {
         &mut self.from_marker
     }
 
-    pub fn set_from_marker(&mut self, value:FromMarker)-> &mut TwoCellAnchor {
+    pub fn set_from_marker(&mut self, value:FromMarker)-> &mut Self {
         self.from_marker = value;
         self
     }
@@ -55,7 +57,7 @@ impl TwoCellAnchor {
         &mut self.to_marker
     }
 
-    pub fn set_to_marker(&mut self, value:ToMarker)-> &mut TwoCellAnchor {
+    pub fn set_to_marker(&mut self, value:ToMarker)-> &mut Self {
         self.to_marker = value;
         self
     }
@@ -68,7 +70,7 @@ impl TwoCellAnchor {
         &mut self.graphic_frame
     }
 
-    pub fn set_graphic_frame(&mut self, value:GraphicFrame)-> &mut TwoCellAnchor {
+    pub fn set_graphic_frame(&mut self, value:GraphicFrame)-> &mut Self {
         self.graphic_frame = Some(value);
         self
     }
@@ -81,7 +83,7 @@ impl TwoCellAnchor {
         &mut self.shape
     }
 
-    pub fn set_shape(&mut self, value:Shape)-> &mut TwoCellAnchor {
+    pub fn set_shape(&mut self, value:Shape)-> &mut Self {
         self.shape = Some(value);
         self
     }
@@ -94,7 +96,7 @@ impl TwoCellAnchor {
         &mut self.connection_shape
     }
 
-    pub fn set_connection_shape(&mut self, value:ConnectionShape)-> &mut TwoCellAnchor {
+    pub fn set_connection_shape(&mut self, value:ConnectionShape)-> &mut Self {
         self.connection_shape = Some(value);
         self
     }
@@ -107,8 +109,17 @@ impl TwoCellAnchor {
         &mut self.picture
     }
 
-    pub fn set_picture(&mut self, value:Picture)-> &mut TwoCellAnchor {
+    pub fn set_picture(&mut self, value:Picture)-> &mut Self {
         self.picture = Some(value);
+        self
+    }
+
+    pub fn get_is_alternate_content(&self)-> &bool {
+        &self.is_alternate_content.get_value()
+    }
+
+    pub fn set_is_alternate_content(&mut self, value:bool)-> &mut Self {
+        self.is_alternate_content.set_value(value);
         self
     }
 
@@ -203,6 +214,19 @@ impl TwoCellAnchor {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {
+        if self.get_is_alternate_content() == &true {
+            // mc:AlternateContent
+            write_start_tag(writer, "mc:AlternateContent", vec![
+                ("xmlns:mc","http://schemas.openxmlformats.org/markup-compatibility/2006"),
+            ], false);
+
+            // mc:Choice
+            write_start_tag(writer, "mc:Choice", vec![
+                ("xmlns:a14","http://schemas.microsoft.com/office/drawing/2010/main"),
+                ("Requires", "a14"),
+            ], false);
+        }
+
         // xdr:twoCellAnchor
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.edit_as.has_value() == &true {
@@ -250,5 +274,14 @@ impl TwoCellAnchor {
         write_start_tag(writer, "xdr:clientData", vec![], true);
 
         write_end_tag(writer, "xdr:twoCellAnchor");
+
+        if self.get_is_alternate_content() == &true {
+            write_end_tag(writer, "mc:Choice");
+
+            // mc:Fallback
+            write_start_tag(writer, "mc:Fallback", vec![], true);
+            
+            write_end_tag(writer, "mc:AlternateContent");
+        }
     }
 }

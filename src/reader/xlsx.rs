@@ -24,6 +24,7 @@ pub(crate) mod drawing_rels;
 pub(crate) mod worksheet_rels;
 pub(crate) mod media;
 pub(crate) mod embeddings;
+pub(crate) mod vml_drawing_rels;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -88,7 +89,7 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
-                let (_drawing_id, _legacy_drawing_id, hyperlink_vec) = worksheet::read(&mut arv, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
+                let (_drawing_id, legacy_drawing_id, hyperlink_vec) = worksheet::read(&mut arv, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
                 let worksheet = book.get_sheet_by_sheet_id_mut(sheets_sheet_id).unwrap();
                 let worksheet_rel = worksheet_rels::read(&mut arv, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
@@ -99,11 +100,19 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
                         },
                         // comment
                         "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
-                            let vml_drawing_target = get_vml_drawing_target(&worksheet_rel);
-                            let mut vml_drawing_list = vml_drawing::read(&mut arv, vml_drawing_target).unwrap();
-                            let _ = comment::read(&mut arv, &worksheet_target, worksheet, &mut vml_drawing_list, &theme).unwrap();
+                            let _ = comment::read(&mut arv, &worksheet_target, worksheet, &theme).unwrap();
                         },
                         _ => {}
+                    }
+                }
+                for (worksheet_id, _type_value, worksheet_target) in &worksheet_rel {
+                    match &legacy_drawing_id {
+                        Some(v) => {
+                            if v == worksheet_id {
+                                let _ = vml_drawing::read(&mut arv, worksheet_target, worksheet).unwrap();
+                            }
+                        },
+                        None => {}
                     }
                 }
             }

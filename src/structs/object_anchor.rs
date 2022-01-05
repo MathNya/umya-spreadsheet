@@ -85,8 +85,14 @@ impl ObjectAnchor {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
+                        b"from" => {
+                            self.from_marker.set_attributes(reader, e);
+                        },
                         b"xdr:from" => {
                             self.from_marker.set_attributes(reader, e);
+                        },
+                        b"to" => {
+                            self.to_marker.set_attributes(reader, e);
                         },
                         b"xdr:to" => {
                             self.to_marker.set_attributes(reader, e);

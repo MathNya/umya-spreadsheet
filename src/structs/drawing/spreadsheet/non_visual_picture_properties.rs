@@ -56,7 +56,7 @@ impl NonVisualPictureProperties {
                 Ok(Event::Empty(ref e)) => {
                     match e.name() {
                         b"xdr:cNvPr" => {
-                            &mut self.non_visual_drawing_properties.set_attributes(reader, e);
+                            &mut self.non_visual_drawing_properties.set_attributes(reader, e, true);
                         },
                         _ => (),
                     }

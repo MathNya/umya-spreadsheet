@@ -24,7 +24,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>, t
             Ok(Event::Start(ref e)) => {
                 match e.name() {
                     b"c:chartSpace" => {
-                        chart_space.set_attributes(&mut reader, e, arv);
+                        chart_space.set_attributes(&mut reader, e);
                     },
                     _ => (),
                 }

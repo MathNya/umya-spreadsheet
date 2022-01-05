@@ -57,8 +57,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
 
-    // Write comments relationship
-    if worksheet.get_comments().len() > 0 {
+    // Write vmlDrawing relationship
+    if worksheet.has_legacy_drawing() {
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
@@ -70,41 +70,38 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Write ole_objects
-    match worksheet.get_ole_objects() {
-        Some(v) => {
-            for alternate_content in v.get_alternate_content() {
-                match alternate_content.get_alternate_content_choice().get_ole_object() {
-                    Some(j) => {
-                        let object_name = j.get_object_name();
-                        is_write = write_relationship(
-                            &mut writer,
-                            r_id.to_string().as_str(),
-                            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject",
-                            format!("../embeddings/{}", object_name).as_str(),
-                            ""
-                        );
-                        r_id+=1;
+    for ole_object in worksheet.get_ole_objects().get_ole_object() {
+        let object_name = ole_object.get_object_name();
+        if ole_object.is_xlsx() {
+            write_relationship(
+                &mut writer,
+                r_id.to_string().as_str(),
+                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package",
+                format!("../embeddings/{}", object_name).as_str(),
+                ""
+            );
+            r_id+=1;
+        }
+        if ole_object.is_bin() {
+            write_relationship(
+                &mut writer,
+                r_id.to_string().as_str(),
+                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject",
+                format!("../embeddings/{}", object_name).as_str(),
+                ""
+            );
+            r_id+=1;
+        }
 
-                        match j.get_embedded_object_properties() {
-                            Some(a) => {
-                                let image_name = a.get_image_name();
-                                is_write = write_relationship(
-                                    &mut writer,
-                                    r_id.to_string().as_str(),
-                                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
-                                    format!("../media/{}", image_name).as_str(),
-                                    ""
-                                );
-                                r_id+=1;
-                            },
-                            None => {}
-                        }
-                    },
-                    None => {}
-                }
-            }
-        },
-        None => {}
+        let image_name = ole_object.get_embedded_object_properties().get_image_name();
+        is_write = write_relationship(
+            &mut writer,
+            r_id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+            format!("../media/{}", image_name).as_str(),
+            ""
+        );
+        r_id+=1;
     }
 
     // Write header/footer relationship

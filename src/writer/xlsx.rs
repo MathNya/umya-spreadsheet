@@ -27,6 +27,7 @@ mod comment;
 mod vml_drawing;
 mod media;
 mod embeddings;
+mod vml_drawing_rels;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -94,6 +95,7 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
     // Add worksheets and relationships (drawings, ...)
     let mut chart_id = 1;
     let mut drawing_id = 1;
+    let mut vml_drawing_id = 1;
     let mut comment_id = 1;
     let mut shared_string_table = SharedStringTable::default();
     shared_string_table.init_setup();
@@ -107,7 +109,8 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
         let _ = drawing::write(worksheet, &drawing_id, &mut arv);
         let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &mut arv);
         let _ = comment::write(worksheet, &comment_id,  &mut arv);
-        let _ = vml_drawing::write(worksheet, &comment_id,  &mut arv);
+        let _ = vml_drawing::write(worksheet, &vml_drawing_id,  &mut arv);
+        let _ = vml_drawing_rels::write(worksheet, &vml_drawing_id,  &mut arv);
 
         if worksheet.has_drawing_object() {
             drawing_id += 1;
@@ -115,6 +118,10 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
 
         if worksheet.has_comments() {
             comment_id += 1;
+        }
+
+        if worksheet.has_legacy_drawing() {
+            vml_drawing_id += 1;
         }
 
         for graphic_frame in worksheet.get_worksheet_drawing().get_graphic_frame_collection(){

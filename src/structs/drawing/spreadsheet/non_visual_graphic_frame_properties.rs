@@ -50,7 +50,7 @@ impl NonVisualGraphicFrameProperties {
                 Ok(Event::Empty(ref e)) => {
                     match e.name() {
                         b"xdr:cNvPr" => {
-                            &mut self.non_visual_drawing_properties.set_attributes(reader, e);
+                            &mut self.non_visual_drawing_properties.set_attributes(reader, e, true);
                         },
                         b"xdr:cNvGraphicFramePr" => {
                             &mut self.non_visual_graphic_frame_drawing_properties.set_attributes(reader, e);

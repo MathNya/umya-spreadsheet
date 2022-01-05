@@ -15,7 +15,7 @@ pub struct Shape {
     non_visual_shape_properties: NonVisualShapeProperties,
     shape_properties: ShapeProperties,
     shape_style: Option<ShapeStyle>,
-    text_body: TextBody,
+    text_body: Option<TextBody>,
 }
 impl Shape {
     pub fn get_anchor(&self) -> &Anchor {
@@ -66,16 +66,16 @@ impl Shape {
         self.shape_style = Some(value);
     }
 
-    pub fn get_text_body(&self) -> &TextBody {
+    pub fn get_text_body(&self) -> &Option<TextBody> {
         &self.text_body
     }
 
-    pub fn get_text_body_mut(&mut self) -> &mut TextBody {
+    pub fn get_text_body_mut(&mut self) -> &mut Option<TextBody> {
         &mut self.text_body
     }
 
     pub fn set_text_body(&mut self, value:TextBody) {
-        self.text_body = value;
+        self.text_body = Some(value);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -95,7 +95,11 @@ impl Shape {
                             obj.set_attributes(reader, e);
                             &mut self.set_shape_style(obj);
                         },
-                        b"xdr:txBody" => { &mut self.text_body.set_attributes(reader, e); },
+                        b"xdr:txBody" => {
+                            let mut obj = TextBody::default();
+                            obj.set_attributes(reader, e);
+                            &mut self.set_text_body(obj);
+                        },
                         _ => (),
                     }
                 },
@@ -133,7 +137,10 @@ impl Shape {
         }
 
         // xdr:txBody
-        &self.text_body.write_to(writer);
+        match &self.text_body {
+            Some(v) => {v.write_to(writer);},
+            None => {},
+        }
 
         write_end_tag(writer, "xdr:sp");
     }

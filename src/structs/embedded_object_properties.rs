@@ -87,6 +87,17 @@ impl EmbeddedObjectProperties {
         self
     }
 
+    pub(crate) fn get_extension(&self) -> String {
+        let v: Vec<&str> = self.image_name.split('.').collect();
+        let extension = v.last().unwrap().clone();
+        let extension_lower = extension.to_lowercase();
+        extension_lower
+    }
+
+    pub(crate) fn is_emf(&self) -> bool {
+        self.get_extension() == "emf"
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
         reader: &mut Reader<R>,
@@ -127,10 +138,10 @@ impl EmbeddedObjectProperties {
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name() {
-                    b"oleObject" => return,
+                    b"objectPr" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "oleObject"),
+                Ok(Event::Eof) => panic!("Error not find {} end element", "objectPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
@@ -143,7 +154,7 @@ impl EmbeddedObjectProperties {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         r_id: &usize,
     ) {
-        // oleObject
+        // objectPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.default_size.has_value() {
             attributes.push(("defaultSize", self.default_size.get_value_string()));
@@ -151,13 +162,13 @@ impl EmbeddedObjectProperties {
         if self.auto_pict.has_value() {
             attributes.push(("autoPict", self.auto_pict.get_value_string()));
         }
-        let r_id_str = r_id.to_string();
+        let r_id_str = format!("rId{}", r_id);
         attributes.push(("r:id", r_id_str.as_str()));
-        write_start_tag(writer, "oleObject", attributes, false);
+        write_start_tag(writer, "objectPr", attributes, false);
 
         // anchor
         &mut self.object_anchor.write_to(writer);
 
-        write_end_tag(writer, "oleObject");
+        write_end_tag(writer, "objectPr");
     }
 }

@@ -5,6 +5,7 @@ use super::Picture;
 use super::Shape;
 use super::ConnectionShape;
 use super::GraphicFrame;
+use structs::OleObjects;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -164,13 +165,18 @@ impl WorksheetDrawing {
         _e:&BytesStart,
         arv: &mut zip::read::ZipArchive<A>,
         target: &str,
+        ole_objects: &mut OleObjects,
     ) {
+        let mut ole_index = 0;
         let mut is_alternate_content = false;
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => {
                     match e.name() {
+                        b"mc:AlternateContent" => {
+                            is_alternate_content = true;
+                        },
                         b"xdr:oneCellAnchor" => {
                             if is_alternate_content {
                                 continue;
@@ -181,6 +187,9 @@ impl WorksheetDrawing {
                         },
                         b"xdr:twoCellAnchor" => {
                             if is_alternate_content {
+                                ole_objects.get_ole_object_mut()[ole_index].get_two_cell_anchor_mut().set_is_alternate_content(true);
+                                ole_objects.get_ole_object_mut()[ole_index].get_two_cell_anchor_mut().set_attributes(reader, e, arv, target);
+                                ole_index += 1;
                                 continue;
                             }
                             let mut obj = TwoCellAnchor::default();
@@ -188,9 +197,6 @@ impl WorksheetDrawing {
                             if obj.is_support() {
                                 &mut self.add_two_cell_anchor_collection(obj);
                             }
-                        },
-                        b"mc:AlternateContent" => {
-                            is_alternate_content = true;
                         },
                         _ => (),
                     }
@@ -212,7 +218,7 @@ impl WorksheetDrawing {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_objects: &OleObjects) {
         // xdr:wsDr
         write_start_tag(writer, "xdr:wsDr", vec![
             ("xmlns:xdr", "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"),
@@ -230,6 +236,12 @@ impl WorksheetDrawing {
             two_cell_anchor.write_to(writer, &mut r_id);
         }
         
+        // xdr:twoCellAnchor
+        let mut r_id = 1;
+        for ole_object in ole_objects.get_ole_object() {
+            ole_object.get_two_cell_anchor().write_to(writer, &mut r_id);
+        }
+
         write_end_tag(writer, "xdr:wsDr");
     }
 }
