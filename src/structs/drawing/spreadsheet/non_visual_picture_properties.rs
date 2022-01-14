@@ -7,7 +7,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct NonVisualPictureProperties {
     non_visual_drawing_properties: NonVisualDrawingProperties,
     non_visual_picture_drawing_properties: NonVisualPictureDrawingProperties,
@@ -80,7 +80,7 @@ impl NonVisualPictureProperties {
         write_start_tag(writer, "xdr:nvPicPr", vec![], false);
 
         // xdr:cNvPr
-        &self.non_visual_drawing_properties.write_to(writer);
+        &self.non_visual_drawing_properties.write_to(writer, &0);
 
         // xdr:cNvPicPr
         &self.non_visual_picture_drawing_properties.write_to(writer);

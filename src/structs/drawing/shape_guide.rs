@@ -3,7 +3,7 @@ use writer::driver::*;
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct ShapeGuide {
     name: String,
     fmla: String,

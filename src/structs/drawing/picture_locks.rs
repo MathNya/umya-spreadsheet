@@ -6,7 +6,7 @@ use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct PictureLocks {
     no_change_aspect: bool,
 }

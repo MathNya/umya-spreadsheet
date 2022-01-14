@@ -12,7 +12,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
     one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
@@ -218,7 +218,7 @@ impl WorksheetDrawing {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_objects: &OleObjects) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, drawing_id: &usize, ole_objects: &OleObjects) {
         // xdr:wsDr
         write_start_tag(writer, "xdr:wsDr", vec![
             ("xmlns:xdr", "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"),
@@ -233,13 +233,15 @@ impl WorksheetDrawing {
         // xdr:twoCellAnchor
         let mut r_id = 1;
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            two_cell_anchor.write_to(writer, &mut r_id);
+            two_cell_anchor.write_to(writer, &mut r_id, &0);
         }
         
         // xdr:twoCellAnchor
         let mut r_id = 1;
+        let mut ole_id = (1000 * drawing_id) + 25;
         for ole_object in ole_objects.get_ole_object() {
-            ole_object.get_two_cell_anchor().write_to(writer, &mut r_id);
+            ole_object.get_two_cell_anchor().write_to(writer, &mut r_id, &ole_id);
+            ole_id += 1;
         }
 
         write_end_tag(writer, "xdr:wsDr");

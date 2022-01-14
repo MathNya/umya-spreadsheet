@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct SByteValue {
     value: Option<i8>,
     value_default: i8,

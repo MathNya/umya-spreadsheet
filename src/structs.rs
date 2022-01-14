@@ -330,3 +330,6 @@ pub use self::true_false_value::*;
           mod true_false_blank_value;
 pub use self::true_false_blank_value::*;
 
+          mod image;
+pub use self::image::*;
+

@@ -97,19 +97,21 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
     let mut drawing_id = 1;
     let mut vml_drawing_id = 1;
     let mut comment_id = 1;
+    let mut ole_bin_id = 1;
+    let mut ole_excel_id = 1;
     let mut shared_string_table = SharedStringTable::default();
     shared_string_table.init_setup();
     let mut stylesheet = Stylesheet::default();
     stylesheet.init_setup();
     for i in 0..spreadsheet.get_sheet_count() {
         let p_worksheet_id:&str = &(i+1).to_string();
-        let _ = worksheet::write(&spreadsheet, &i, &mut shared_string_table, &mut stylesheet, &mut arv);
+        let _ = worksheet::write(&spreadsheet, &i, &mut shared_string_table, &mut stylesheet, &drawing_id, &mut arv);
         let worksheet = &spreadsheet.get_sheet_collection()[i];
-        let _ = worksheet_rels::write(worksheet, p_worksheet_id, &drawing_id, &comment_id,  &mut arv);
+        let _ = worksheet_rels::write(worksheet, p_worksheet_id, &drawing_id, &vml_drawing_id, &comment_id,  &mut arv, &ole_bin_id, &ole_excel_id);
         let _ = drawing::write(worksheet, &drawing_id, &mut arv);
         let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &mut arv);
         let _ = comment::write(worksheet, &comment_id,  &mut arv);
-        let _ = vml_drawing::write(worksheet, &vml_drawing_id,  &mut arv);
+        let _ = vml_drawing::write(worksheet, &drawing_id, &vml_drawing_id,  &mut arv);
         let _ = vml_drawing_rels::write(worksheet, &vml_drawing_id,  &mut arv);
 
         if worksheet.has_drawing_object() {
@@ -130,9 +132,12 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
             chart_id += 1;
         }
 
-        let _ = media::write(worksheet, &mut arv, "xl/media");
-        let _ = embeddings::write(worksheet, &mut arv, "xl/embeddings");
+        let _ = embeddings::write(worksheet, &mut arv, "xl/embeddings", &mut ole_bin_id, &mut ole_excel_id);
     }
+
+    // Add Media
+    let images = spreadsheet.get_image_collection();
+    let _ = media::write(images, &mut arv, "xl/media");
 
     // Add SharedStrings
     let _ = shared_strings::write(&shared_string_table, &mut arv).unwrap();

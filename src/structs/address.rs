@@ -50,7 +50,12 @@ impl Address {
         if self.sheet_name == "" {
             return range;
         }
-        format!("{}!{}", &self.sheet_name, self.range.get_range())
+        let mut with_space_char = String::from("");
+        match self.get_sheet_name().find(char::is_whitespace) {
+            Some(_) => {with_space_char = String::from("'");},
+            None => {}
+        }
+        format!("{}{}{}!{}", &with_space_char, &self.sheet_name, &with_space_char, self.range.get_range())
     }
 
     pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, root_col_num:&u32, offset_col_num:&u32, root_row_num:&u32, offset_row_num:&u32) {

@@ -8,7 +8,7 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Picture {
     non_visual_picture_properties: NonVisualPictureProperties,
     blip_fill: BlipFill,

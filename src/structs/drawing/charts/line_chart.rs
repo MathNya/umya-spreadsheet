@@ -12,7 +12,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct LineChart {
     grouping: Grouping,
     vary_colors: VaryColors,

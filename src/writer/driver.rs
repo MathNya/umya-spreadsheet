@@ -38,6 +38,13 @@ where
     let _ = writer.write_event(Event::Text(BytesText::from_plain_str(&data.into())));
 }
 
+pub(crate) fn write_text_node_no_escape<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
+where
+    S: Into<Cow<'a, str>>,
+{
+    let _ = writer.write(&data.into().as_bytes());
+}
+
 pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>)
 {
     let _ = write_text_node(writer, "\r\n");

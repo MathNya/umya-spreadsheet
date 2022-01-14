@@ -9,7 +9,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct GraphicData {
     chart_space: ChartSpace,
 }

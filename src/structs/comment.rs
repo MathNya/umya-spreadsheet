@@ -6,7 +6,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use reader::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Comment {
     coordinate: Coordinate,
     author: String,

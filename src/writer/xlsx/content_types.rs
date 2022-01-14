@@ -41,7 +41,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     let mut writed = false;
     for work_sheet in spreadsheet.get_sheet_collection() {
         for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().is_png() {
+            if picture.get_blip_fill().get_blip().get_image().is_png() {
                 write_start_tag(&mut writer, "Default", vec![
                     ("Extension", "png"),
                     ("ContentType", "image/png"),
@@ -57,7 +57,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     let mut writed = false;
     for work_sheet in spreadsheet.get_sheet_collection() {
         for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().is_jpg() {
+            if picture.get_blip_fill().get_blip().get_image().is_jpg() {
                 write_start_tag(&mut writer, "Default", vec![
                     ("Extension", "jpg"),
                     ("ContentType", "image/jpeg"),
@@ -73,7 +73,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     let mut writed = false;
     for work_sheet in spreadsheet.get_sheet_collection() {
         for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().is_jpeg() {
+            if picture.get_blip_fill().get_blip().get_image().is_jpeg() {
                 write_start_tag(&mut writer, "Default", vec![
                     ("Extension", "jpeg"),
                     ("ContentType", "image/jpeg"),
@@ -89,7 +89,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     let mut writed = false;
     for work_sheet in spreadsheet.get_sheet_collection() {
         for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().is_tiff() {
+            if picture.get_blip_fill().get_blip().get_image().is_tiff() {
                 write_start_tag(&mut writer, "Default", vec![
                     ("Extension", "tiff"),
                     ("ContentType", "image/tiff"),
@@ -105,7 +105,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     let mut writed = false;
     for work_sheet in spreadsheet.get_sheet_collection() {
         for ole_object in work_sheet.get_ole_objects().get_ole_object() {
-            if ole_object.get_embedded_object_properties().is_emf() {
+            if ole_object.get_embedded_object_properties().get_image().is_emf() {
                 write_start_tag(&mut writer, "Default", vec![
                     ("Extension", "emf"),
                     ("ContentType", "image/x-emf"),
@@ -154,13 +154,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     }
 
     // Override comments
-    for i in 0..spreadsheet.get_sheet_count() {
-        let worksheet = &spreadsheet.get_sheet_collection()[i];
+    let mut comment_id = 1;
+    for worksheet in spreadsheet.get_sheet_collection() {
         if worksheet.get_comments().len() > 0 {
             write_start_tag(&mut writer, "Override", vec![
-                ("PartName", format!("/xl/comments{}.xml", (i+1).to_string().as_str()).as_str()),
+                ("PartName", format!("/xl/comments{}.xml", &comment_id).as_str()),
                 ("ContentType", "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml"),
             ], true);
+            comment_id += 1;
         }
     }
 
@@ -205,13 +206,16 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     }
 
     // Override embeddings
+    let mut ole_bin_id = 1;
     for work_sheet in spreadsheet.get_sheet_collection() {
         for ole_object in work_sheet.get_ole_objects().get_ole_object() {
             if ole_object.is_bin() {
+                let object_name = format!("oleObject{}.bin", ole_bin_id);
                 write_start_tag(&mut writer, "Override", vec![
-                    ("PartName", format!("/xl/embeddings/{}", ole_object.get_object_name()).as_str()),
+                    ("PartName", format!("/xl/embeddings/{}", object_name).as_str()),
                     ("ContentType", "application/vnd.openxmlformats-officedocument.oleObject"),
                 ], true);
+                ole_bin_id += 1;
             }
         }
     }

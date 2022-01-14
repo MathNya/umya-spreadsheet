@@ -12,7 +12,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct DataLabels {
     show_legend_key: ShowLegendKey,
     show_value: ShowValue,

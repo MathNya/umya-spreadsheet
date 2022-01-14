@@ -10,7 +10,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Area3DChart {
     grouping: Grouping,
     vary_colors: VaryColors,

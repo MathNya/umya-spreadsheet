@@ -9,7 +9,6 @@ use super::driver;
 mod doc_props_app;
 mod doc_props_core;
 mod workbook;
-mod workbook_rels;
 mod worksheet;
 mod rels;
 mod theme;
@@ -19,6 +18,7 @@ mod vml_drawing;
 mod drawing;
 mod vba_project_bin;
 mod comment;
+mod workbook_rels;
 pub(crate) mod chart;
 pub(crate) mod drawing_rels;
 pub(crate) mod worksheet_rels;
@@ -66,7 +66,7 @@ impl From<FromUtf8Error> for XlsxError {
 pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
-    let (mut book, sheets) = workbook::read(&mut arv).unwrap();
+    let (mut book, sheets, defined_names) = workbook::read(&mut arv).unwrap();
     doc_props_app::read(&mut arv, &mut book).unwrap();
     doc_props_core::read(&mut arv, &mut book).unwrap(); 
     vba_project_bin::read(&mut arv, &mut book).unwrap();
@@ -115,6 +115,15 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
                         None => {}
                     }
                 }
+            }
+        }
+    }
+
+    for sheet in book.get_sheet_collection_mut() {
+        for defined_name in &defined_names {
+            let def_sheet_name = defined_name.get_address_obj().get_sheet_name();
+            if sheet.get_title() == def_sheet_name {
+                sheet.add_defined_names(defined_name.clone());
             }
         }
     }

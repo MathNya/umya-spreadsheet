@@ -6,7 +6,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct NonVisualShapeProperties  {
     non_visual_drawing_properties: NonVisualDrawingProperties,
 }
@@ -61,12 +61,12 @@ impl NonVisualShapeProperties  {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
         // xdr:nvSpPr
         write_start_tag(writer, "xdr:nvSpPr", vec![], false);
 
         // xdr:cNvPr
-        &self.non_visual_drawing_properties.write_to(writer);
+        &self.non_visual_drawing_properties.write_to(writer, ole_id);
 
         // xdr:cNvSpPr
         write_start_tag(writer, "xdr:cNvSpPr", vec![], true);

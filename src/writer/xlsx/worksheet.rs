@@ -15,6 +15,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     sheet_index: &usize,
     shared_string_table: &mut SharedStringTable,
     stylesheet: &mut Stylesheet,
+    drawing_id: &usize,
     arv: &mut zip::ZipWriter<W>,
 ) -> Result<(), XlsxError> 
 {
@@ -318,7 +319,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         }
 
         // oleObjects
-        worksheet.get_ole_objects().write_to(&mut writer, &r_id);
+        let ole_id = (1000 * drawing_id) + 25;
+        worksheet.get_ole_objects().write_to(&mut writer, &r_id, &ole_id);
     }
     
     write_end_tag(&mut writer, "worksheet");

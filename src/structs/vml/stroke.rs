@@ -6,7 +6,7 @@ use std::io::Cursor;
 use writer::driver::*;
 use reader::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Stroke {
     dash_style: StringValue,
 }

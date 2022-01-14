@@ -1,6 +1,6 @@
 use super::Range;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct AutoFilter {
     range: Range,
 }

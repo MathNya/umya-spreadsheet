@@ -7,7 +7,7 @@ use std::io::Cursor;
 use writer::driver::*;
 use reader::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Path {
     connection_point_type: EnumValue<ConnectValues>,
 }

@@ -83,20 +83,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     write_end_tag(&mut writer, "sheets");
 
     // definedNames
-    if spreadsheet.get_defined_names().len() > 1 {
+    if spreadsheet.has_defined_names() {
         write_start_tag(&mut writer, "definedNames", vec![], false);
 
-        for defined_name in spreadsheet.get_defined_names() {
-            // definedName
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            attributes.push(("name", defined_name.get_name()));
-            if defined_name.get_is_local_only() == &true {
-                attributes.push(("localSheetId", "0"));
-                attributes.push(("hidden", "1"));
+        for sheet in spreadsheet.get_sheet_collection() {
+            for defined_name in sheet.get_defined_names() {
+                // definedName
+                let mut attributes: Vec<(&str, &str)> = Vec::new();
+                attributes.push(("name", defined_name.get_name()));
+                if defined_name.get_is_local_only() == &true {
+                    attributes.push(("localSheetId", "0"));
+                    attributes.push(("hidden", "1"));
+                }
+                write_start_tag(&mut writer, "definedName", attributes, false);
+                write_text_node_no_escape(&mut writer, defined_name.get_address());
+                write_end_tag(&mut writer, "definedName");
             }
-            write_start_tag(&mut writer, "definedName", attributes, false);
-            write_text_node(&mut writer, defined_name.get_address());
-            write_end_tag(&mut writer, "definedName");
         }
 
         write_end_tag(&mut writer, "definedNames");

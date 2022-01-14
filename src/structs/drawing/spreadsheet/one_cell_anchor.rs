@@ -8,7 +8,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct OneCellAnchor {
     from_marker: FromMarker,
     extent: Extent,
@@ -125,7 +125,7 @@ impl OneCellAnchor {
 
         // xdr:sp
         match &self.shape {
-            Some(v) => v.write_to(writer),
+            Some(v) => v.write_to(writer, &0),
             None => {},
         }
 

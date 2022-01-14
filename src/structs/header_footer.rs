@@ -1,6 +1,6 @@
 use super::HeaderFooterDrawing;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct HeaderFooter {
     odd_header: String,
     odd_footer: String,

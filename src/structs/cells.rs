@@ -4,7 +4,7 @@ use super::Style;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Cells {
     index: Vec<Cell>,
     default_cell_value: CellValue,

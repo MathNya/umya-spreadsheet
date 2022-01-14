@@ -5,7 +5,7 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Visible  {
     value: TrueFalseBlankValue,
 }

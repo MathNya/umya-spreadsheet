@@ -9,7 +9,7 @@ use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Selection {
     pane: EnumValue<PaneValues>,
     active_cell: Coordinate,

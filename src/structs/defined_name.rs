@@ -1,6 +1,6 @@
 use super::Address;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct DefinedName {
     name: String,
     address: Address,

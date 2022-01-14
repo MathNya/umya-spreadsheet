@@ -1,4 +1,5 @@
 // a:blip
+use structs::Image;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -8,58 +9,30 @@ use reader::xlsx::media;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Blip {
-    image_name: String,
-    image_data: Option<Vec<u8>>,
+    image: Image,
     cstate: String,
 }
 impl Blip {
-    pub fn get_image_name(&self) -> &String {
-        &self.image_name
+    pub fn get_image(&self) -> &Image {
+        &self.image
     }
 
-    pub fn set_image_name<S: Into<String>>(&mut self, value: S) {
-        self.image_name = value.into();
+    pub fn get_image_mut(&mut self) -> &mut Image {
+        &mut self.image
     }
 
-    pub fn get_image_data(&self) -> &Option<Vec<u8>> {
-        &self.image_data
+    pub fn set_image(&mut self, value: Image) {
+        self.image = value;
     }
 
-    pub fn set_image_data(&mut self, value: Vec<u8>) {
-        self.image_data = Some(value);
-    }
-
-    pub fn get_cstate(&self) -> &String {
+    pub fn get_cstate(&self) -> &str {
         &self.cstate
     }
 
     pub fn set_cstate<S: Into<String>>(&mut self, value: S) {
         self.cstate = value.into();
-    }
-
-    pub(crate) fn get_extension(&self) -> String {
-        let v: Vec<&str> = self.image_name.split('.').collect();
-        let extension = v.last().unwrap().clone();
-        let extension_lower = extension.to_lowercase();
-        extension_lower
-    }
-
-    pub(crate) fn is_jpeg(&self) -> bool {
-        self.get_extension() == "jpeg"
-    }
-
-    pub(crate) fn is_jpg(&self) -> bool {
-        self.get_extension() == "jpg"
-    }
-
-    pub(crate) fn is_png(&self) -> bool {
-        self.get_extension() == "png"
-    }
-
-    pub(crate) fn is_tiff(&self) -> bool {
-        self.get_extension() == "tiff"
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
@@ -82,8 +55,8 @@ impl Blip {
             if &picture_id == drawing_id {
                 let v: Vec<&str> = drawing_target.split('/').collect();
                 let image_name = v.last().unwrap().clone();
-                &mut self.set_image_name(image_name);
-                &mut self.set_image_data(media::read(arv, &drawing_target).unwrap());
+                &mut self.get_image_mut().set_image_name(image_name);
+                &mut self.get_image_mut().set_image_data(media::read(arv, &drawing_target).unwrap());
             }
         }
     }

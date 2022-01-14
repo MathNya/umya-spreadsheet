@@ -12,8 +12,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     p_worksheet_id: &str,
     drawing_id: &usize,
+    vml_drawing_id: &usize,
     comment_id: &usize,
-    arv: &mut zip::ZipWriter<W>
+    arv: &mut zip::ZipWriter<W>,
+    ole_bin_id: &usize,
+    ole_excel_id: &usize,
 ) -> Result<(), XlsxError> {
     let file_name = format!("sheet{}.xml.rels", p_worksheet_id);
     let mut is_write = false;
@@ -63,16 +66,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             r_id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
-            format!("../drawings/vmlDrawing{}.vml", comment_id.to_string().as_str()).as_str(),
+            format!("../drawings/vmlDrawing{}.vml", vml_drawing_id.to_string().as_str()).as_str(),
             ""
         );
         r_id+=1;
     }
 
     // Write ole_objects
+    let mut ole_excel_id = ole_excel_id.clone();
+    let mut ole_bin_id = ole_bin_id.clone();
     for ole_object in worksheet.get_ole_objects().get_ole_object() {
-        let object_name = ole_object.get_object_name();
         if ole_object.is_xlsx() {
+            let object_name = format!("Microsoft_Excel_Worksheet{}.xlsx", ole_excel_id);
             write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),
@@ -80,9 +85,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 format!("../embeddings/{}", object_name).as_str(),
                 ""
             );
+            ole_excel_id+=1;
             r_id+=1;
         }
         if ole_object.is_bin() {
+            let object_name = format!("oleObject{}.bin", ole_bin_id);
             write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),
@@ -90,10 +97,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 format!("../embeddings/{}", object_name).as_str(),
                 ""
             );
+            ole_bin_id+=1;
             r_id+=1;
         }
 
-        let image_name = ole_object.get_embedded_object_properties().get_image_name();
+        let image_name = ole_object.get_embedded_object_properties().get_image().get_image_name();
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),

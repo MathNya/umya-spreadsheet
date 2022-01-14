@@ -19,13 +19,14 @@ use super::Comment;
 use super::Color;
 use super::CellValue;
 use super::OleObjects;
+use super::DefinedName;
 use std::collections::BTreeMap; 
 use std::collections::HashMap;
 use helper::coordinate::*;
 use helper::range::*;
 use helper::number_format::*;
 
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Worksheet {
     sheet_id: String,
     title: String,
@@ -61,6 +62,7 @@ pub struct Worksheet {
     hash: String,
     code_name: Option<String>,
     ole_objects: OleObjects,
+    defined_names: Vec<DefinedName>,
 }
 impl Worksheet {
     // ************************
@@ -726,6 +728,10 @@ impl Worksheet {
             }
         }
         if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
+            // update defined_names
+            for defined_name in &mut self.defined_names {
+                defined_name.get_address_obj_mut().adjustment_insert_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
             // update cell
             for cell in self.get_cell_collection_mut() {
                 cell.get_coordinate_mut().adjustment_insert_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num);
@@ -793,6 +799,14 @@ impl Worksheet {
             }
         }
         if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
+            // update defined_names
+            self.defined_names.retain(|x| {
+                !(x.get_address_obj().is_remove(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num))
+            });
+            for defined_name in &mut self.defined_names {
+                defined_name.get_address_obj_mut().adjustment_remove_coordinate(sheet_name, root_col_num, offset_col_num, root_row_num, offset_row_num);
+            }
+
             // update cell
             self.get_cell_collection_mut().retain(|x| {
                 !(x.get_coordinate().is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
@@ -924,12 +938,20 @@ impl Worksheet {
         let column_str = string_from_column_index(highest["column"]);
         format!("A1:{}{}", column_str, highest["row"])
     }
+
     pub fn get_title(&self) -> &str {
         return &self.title;
     }
-    pub(crate) fn set_title<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_title<S: Into<String>>(&mut self, value:S) -> &mut Self {
         self.title = value.into();
+        let title = self.get_title().to_string();
+        for defined_name in self.get_defined_names_mut() {
+            defined_name.get_address_obj_mut().set_sheet_name(&title);
+        }
+        self
     }
+
     pub fn get_sheet_state(&self) -> &String {
         return &self.sheet_state;
     }
@@ -981,5 +1003,29 @@ impl Worksheet {
 
     pub fn has_legacy_drawing(&self) -> bool {
         self.has_comments() || self.has_ole_objects()
+    }
+
+    pub fn get_defined_names(&self) -> &Vec<DefinedName> {
+        &self.defined_names
+    }
+
+    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+        &mut self.defined_names
+    }
+
+    pub fn set_defined_names(&mut self, value:Vec<DefinedName>) {
+        self.defined_names = value;
+    }
+
+    pub fn add_defined_names(&mut self, value:DefinedName) {
+        self.defined_names.push(value);
+    }
+
+    pub fn add_defined_name<S: Into<String>>(&mut self, name:S, address:S)->Result<(), &str> {
+        let mut defined_name = DefinedName::default();
+        defined_name.set_name(name.into());
+        defined_name.set_address(address.into());
+        self.defined_names.push(defined_name);
+        Ok(())
     }
 }

@@ -16,7 +16,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Chart {
     title: Option<Title>,
     auto_title_deleted: AutoTitleDeleted,

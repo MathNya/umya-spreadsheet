@@ -9,7 +9,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct ParagraphProperties {
     right_to_left: Option<String>,
     alignment: EnumValue<TextAlignmentTypeValues>,

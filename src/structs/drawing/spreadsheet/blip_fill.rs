@@ -10,7 +10,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct BlipFill {
     rotate_with_shape: BooleanValue,
     blip: Blip,

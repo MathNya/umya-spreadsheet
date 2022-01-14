@@ -8,7 +8,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct NumberingCache {
     format_code: FormatCode,
     point_count: PointCount,

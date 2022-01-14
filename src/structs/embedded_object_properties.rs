@@ -2,6 +2,7 @@ use super::StringValue;
 use super::UInt32Value;
 use super::BooleanValue;
 use super::ObjectAnchor;
+use structs::Image;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -11,12 +12,11 @@ use reader::driver::*;
 use reader::xlsx::worksheet_rels;
 use reader::xlsx::media;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {
     prog_id: StringValue,
     shape_id: UInt32Value,
-    image_name: String,
-    image_data: Option<Vec<u8>>,
+    image: Image,
     default_size: BooleanValue,
     auto_pict: BooleanValue,
     object_anchor: ObjectAnchor,
@@ -40,20 +40,16 @@ impl EmbeddedObjectProperties {
         self
     }
 
-    pub fn get_image_name(&self) -> &str {
-        &self.image_name
+    pub fn get_image(&self) -> &Image {
+        &self.image
     }
 
-    pub fn set_image_name<S: Into<String>>(&mut self, value: S) {
-        self.image_name = value.into();
+    pub fn get_image_mut(&mut self) -> &mut Image {
+        &mut self.image
     }
 
-    pub fn get_image_data(&self) -> &Option<Vec<u8>> {
-        &self.image_data
-    }
-
-    pub fn set_image_data(&mut self, value: Vec<u8>) {
-        self.image_data = Some(value);
+    pub fn set_image(&mut self, value: Image) {
+        self.image = value;
     }
 
     pub fn get_default_size(&self)-> &bool {
@@ -87,16 +83,6 @@ impl EmbeddedObjectProperties {
         self
     }
 
-    pub(crate) fn get_extension(&self) -> String {
-        let v: Vec<&str> = self.image_name.split('.').collect();
-        let extension = v.last().unwrap().clone();
-        let extension_lower = extension.to_lowercase();
-        extension_lower
-    }
-
-    pub(crate) fn is_emf(&self) -> bool {
-        self.get_extension() == "emf"
-    }
 
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
@@ -111,8 +97,8 @@ impl EmbeddedObjectProperties {
 
         let v: Vec<&str> = target_value.split('/').collect();
         let object_name = v.last().unwrap().clone();
-        &mut self.set_image_name(object_name);
-        &mut self.set_image_data(media::read(arv, &target_value).unwrap());
+        &mut self.get_image_mut().set_image_name(object_name);
+        &mut self.get_image_mut().set_image_data(media::read(arv, &target_value).unwrap());
 
         match get_attribute(e, b"defaultSize") {
             Some(v) => {

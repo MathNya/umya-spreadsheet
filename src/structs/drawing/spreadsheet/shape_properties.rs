@@ -11,7 +11,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
     transform2d: Transform2D,
     preset_geometry: PresetGeometry,

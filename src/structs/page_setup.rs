@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct PageSetup {
     paper_size: i32,
     orientation: String,

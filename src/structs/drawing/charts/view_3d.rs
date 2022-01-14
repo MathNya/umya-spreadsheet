@@ -9,7 +9,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct View3D {
     rotate_x: Option<RotateX>,
     rotate_y: Option<RotateY>,

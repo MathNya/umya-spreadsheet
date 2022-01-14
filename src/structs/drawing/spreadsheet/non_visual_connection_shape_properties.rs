@@ -7,7 +7,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct NonVisualConnectionShapeProperties {
     non_visual_drawing_properties: NonVisualDrawingProperties,
     non_visual_connector_shape_drawing_properties: NonVisualConnectorShapeDrawingProperties,
@@ -82,7 +82,7 @@ impl NonVisualConnectionShapeProperties {
         write_start_tag(writer, "xdr:nvCxnSpPr", vec![], false);
 
         // xdr:cNvPr
-        &self.non_visual_drawing_properties.write_to(writer);
+        &self.non_visual_drawing_properties.write_to(writer, &0);
 
         // xdr:cNvCxnSpPr
         &self.non_visual_connector_shape_drawing_properties.write_to(writer);

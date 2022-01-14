@@ -4,7 +4,7 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Anchor {
     left_column: u32,
     left_offset: u32,

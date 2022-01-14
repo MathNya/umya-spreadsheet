@@ -9,7 +9,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Shape {
     anchor: Anchor,
     non_visual_shape_properties: NonVisualShapeProperties,
@@ -117,7 +117,7 @@ impl Shape {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
         // xdr:sp
         write_start_tag(writer, "xdr:sp", vec![
             ("macro", ""),
@@ -125,7 +125,7 @@ impl Shape {
         ], false);
 
         // xdr:nvSpPr
-        &self.non_visual_shape_properties.write_to(writer);
+        &self.non_visual_shape_properties.write_to(writer, ole_id);
 
         // xdr:spPr
         &self.shape_properties.write_to(writer);

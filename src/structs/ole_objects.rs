@@ -6,7 +6,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct OleObjects {
     ole_object: Vec<OleObject>,
 }
@@ -62,6 +62,7 @@ impl OleObjects {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         r_id: &usize,
+        ole_id: &usize,
     ) {
         if self.ole_object.len() > 0 {
             // oleObjects
@@ -69,9 +70,11 @@ impl OleObjects {
 
             // mc:AlternateContent
             let mut r = r_id.clone();
+            let mut o = ole_id.clone();
             for obj in &self.ole_object {
-                obj.write_to(writer, &r);
+                obj.write_to(writer, &r, &o);
                 r += 2;
+                o += 1;
             }
 
             write_end_tag(writer, "oleObjects");

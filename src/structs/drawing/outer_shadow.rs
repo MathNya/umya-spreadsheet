@@ -9,7 +9,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct OuterShadow {
     blur_radius: Option<String>,
     alignment: Option<String>,

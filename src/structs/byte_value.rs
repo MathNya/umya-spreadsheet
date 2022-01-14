@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct ByteValue {
     value: Option<u8>,
     value_default: u8,

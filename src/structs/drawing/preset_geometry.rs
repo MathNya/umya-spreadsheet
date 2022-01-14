@@ -7,7 +7,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct PresetGeometry {
     geometry: String,
     adjust_value_list: AdjustValueList,

@@ -8,7 +8,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct PatternFill {
     preset: String,
     foreground_color: ForegroundColor,

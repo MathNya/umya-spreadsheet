@@ -10,7 +10,7 @@ use ::structs::WorkbookView;
 
 const FILE_PATH: &'static str = "xl/workbook.xml";
 
-pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>) -> result::Result<(Spreadsheet, Vec<(String, String, String)>), XlsxError>
+pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>) -> result::Result<(Spreadsheet, Vec<(String, String, String)>, Vec<DefinedName>), XlsxError>
 {    
     let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
     let mut reader = Reader::from_reader(r);
@@ -22,6 +22,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>) -
     let mut defined_name_value = String::from("");
     let mut is_local_only = false;
     let mut string_value = String::from("");
+    let mut defined_names: Vec<DefinedName> = Vec::new();
 
     loop {
         match reader.read_event(&mut buf) {
@@ -58,7 +59,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>) -
                         defined_name.set_name(defined_name_value);
                         defined_name.set_address(string_value);
                         defined_name.set_is_local_only(is_local_only);
-                        spreadsheet.add_defined_names(defined_name);
+                        defined_names.push(defined_name);
                         
                         defined_name_value = String::from("");
                         string_value = String::from("");
@@ -73,5 +74,5 @@ pub(crate) fn read<R: io::Read + io::Seek>(arv: &mut zip::read::ZipArchive<R>) -
         }
         buf.clear();
     }
-    Ok((spreadsheet,sheets))
+    Ok((spreadsheet, sheets, defined_names))
 }

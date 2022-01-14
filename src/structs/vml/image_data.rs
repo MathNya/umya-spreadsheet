@@ -7,7 +7,7 @@ use writer::driver::*;
 use reader::driver::*;
 use reader::xlsx::vml_drawing_rels;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct ImageData {
     image_name: StringValue,
     title: StringValue,

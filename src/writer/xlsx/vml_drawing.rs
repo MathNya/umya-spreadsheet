@@ -8,14 +8,15 @@ const SUB_DIR: &'static str = "xl/drawings";
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
-    comment_id: &usize,
+    drawing_id: &usize,
+    vml_drawing_id: &usize,
     arv: &mut zip::ZipWriter<W>
 ) -> Result<(), XlsxError> {
     if worksheet.has_legacy_drawing() == false {
         return Ok(());
     }
 
-    let file_name = format!("vmlDrawing{}.vml", comment_id);
+    let file_name = format!("vmlDrawing{}.vml", vml_drawing_id);
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // xml
@@ -33,42 +34,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // o:idmap
     write_start_tag(&mut writer, "o:idmap", vec![
         ("v:ext", "edit"),
-        ("data", "1"),
+        ("data", drawing_id.to_string().as_str()),
     ], true);
 
     write_end_tag(&mut writer, "o:shapelayout");
 
-    let mut id = 1025;
-
-    // comment
-    if worksheet.has_comments() {
-        // v:shapetype
-        write_start_tag(&mut writer, "v:shapetype", vec![
-            ("id", "_x0000_t202"),
-            ("coordsize", "21600,21600"),
-            ("o:spt", "202"),
-            ("path", "m,l,21600r21600,l21600,xe"),
-        ], false);
-
-        // v:stroke
-        write_start_tag(&mut writer, "v:stroke", vec![
-            ("joinstyle", "miter"),
-        ], true);
-
-        // v:path
-        write_start_tag(&mut writer, "v:path", vec![
-            ("gradientshapeok", "t"),
-            ("o:connecttype", "rect"),
-        ], true);
-
-        write_end_tag(&mut writer, "v:shapetype");
-
-        for comment in worksheet.get_comments() {
-            // v:shape
-            comment.get_shape().write_to(&mut writer, &id, &0);
-            id += 1;
-        }
-    }
+    let mut id = (drawing_id * 1000) + 25;
 
     // ole_object
     if worksheet.has_ole_objects() {
@@ -148,6 +119,36 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             // v:shape
             ole_object.get_shape().write_to(&mut writer, &id, &r_id);
             r_id += 1;
+            id += 1;
+        }
+    }
+
+    // comment
+    if worksheet.has_comments() {
+        // v:shapetype
+        write_start_tag(&mut writer, "v:shapetype", vec![
+            ("id", "_x0000_t202"),
+            ("coordsize", "21600,21600"),
+            ("o:spt", "202"),
+            ("path", "m,l,21600r21600,l21600,xe"),
+        ], false);
+
+        // v:stroke
+        write_start_tag(&mut writer, "v:stroke", vec![
+            ("joinstyle", "miter"),
+        ], true);
+
+        // v:path
+        write_start_tag(&mut writer, "v:path", vec![
+            ("gradientshapeok", "t"),
+            ("o:connecttype", "rect"),
+        ], true);
+
+        write_end_tag(&mut writer, "v:shapetype");
+
+        for comment in worksheet.get_comments() {
+            // v:shape
+            comment.get_shape().write_to(&mut writer, &id, &0);
             id += 1;
         }
     }

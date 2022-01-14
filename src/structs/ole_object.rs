@@ -12,12 +12,11 @@ use reader::driver::*;
 use reader::xlsx::worksheet_rels;
 use reader::xlsx::embeddings;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct OleObject {
     requires: StringValue,
     prog_id: StringValue,
-    shape_id: UInt32Value,
-    object_name: String,
+    object_extension: String,
     object_data: Option<Vec<u8>>,
     embedded_object_properties: EmbeddedObjectProperties,
     two_cell_anchor: TwoCellAnchor,
@@ -42,21 +41,12 @@ impl OleObject {
         self
     }
 
-    pub fn get_shape_id(&self) -> &u32 {
-        &self.shape_id.get_value()
+    pub fn get_object_extension(&self) -> &str {
+        &self.object_extension
     }
 
-    pub fn set_shape_id(&mut self, value:u32) -> &mut Self {
-        self.shape_id.set_value(value);
-        self
-    }
-
-    pub fn get_object_name(&self) -> &str {
-        &self.object_name
-    }
-
-    pub fn set_object_name<S: Into<String>>(&mut self, value: S) {
-        self.object_name = value.into();
+    pub fn set_object_extension<S: Into<String>>(&mut self, value: S) {
+        self.object_extension = value.into();
     }
 
     pub fn get_object_data(&self) -> &Option<Vec<u8>> {
@@ -111,19 +101,20 @@ impl OleObject {
         self
     }
 
-    pub(crate) fn get_extension(&self) -> String {
-        let v: Vec<&str> = self.object_name.split('.').collect();
+    pub(crate) fn get_extension<S: Into<String>>(&self, value:S) -> String {
+        let value_org = value.into();
+        let v: Vec<&str> = value_org.split('.').collect();
         let extension = v.last().unwrap().clone();
         let extension_lower = extension.to_lowercase();
         extension_lower
     }
 
     pub(crate) fn is_bin(&self) -> bool {
-        self.get_extension() == "bin"
+        &self.object_extension == "bin"
     }
 
     pub(crate) fn is_xlsx(&self) -> bool {
-        self.get_extension() == "xlsx"
+        &self.object_extension == "xlsx"
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
@@ -153,14 +144,14 @@ impl OleObject {
                     b"oleObject" => {
                         if alternate_content.as_str() == "Choice" {
                             &mut self.prog_id.set_value_string(get_attribute(e, b"progId").unwrap());
-                            &mut self.shape_id.set_value_string(get_attribute(e, b"shapeId").unwrap());
-                
+                            
                             let r_id = get_attribute(e, b"r:id").unwrap();
                             let (_, target_value) = worksheet_rels::read_rid(arv, target, &r_id).unwrap();
                 
                             let v: Vec<&str> = target_value.split('/').collect();
                             let object_name = v.last().unwrap().clone();
-                            &mut self.set_object_name(object_name);
+                            let object_extension = self.get_extension(object_name);
+                            &mut self.set_object_extension(object_extension);
                             &mut self.set_object_data(embeddings::read(arv, object_name).unwrap());
                         }
                     }
@@ -187,6 +178,7 @@ impl OleObject {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         r_id: &usize,
+        ole_id: &usize,
     ) {
         // mc:AlternateContent
         write_start_tag(writer, "mc:AlternateContent", vec![
@@ -200,9 +192,10 @@ impl OleObject {
 
         // oleObject
         let r_id_str = format!("rId{}", r_id);
+        let shape_id_str = format!("{}", ole_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("progId", &self.prog_id.get_value_string()));
-        attributes.push(("shapeId", &self.shape_id.get_value_string()));
+        attributes.push(("shapeId", shape_id_str.as_str()));
         attributes.push(("r:id", r_id_str.as_str()));
         write_start_tag(writer, "oleObject", attributes, false);
 
@@ -220,7 +213,7 @@ impl OleObject {
         let r_id_str = format!("rId{}", r_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("progId", &self.prog_id.get_value_string()));
-        attributes.push(("shapeId", &self.shape_id.get_value_string()));
+        attributes.push(("shapeId", shape_id_str.as_str()));
         attributes.push(("r:id", r_id_str.as_str()));
         write_start_tag(writer, "oleObject", attributes, true);
 

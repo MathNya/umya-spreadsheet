@@ -8,7 +8,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct PrintSettings {
     header_footer: HeaderFooter,
     page_margins: PageMargins,

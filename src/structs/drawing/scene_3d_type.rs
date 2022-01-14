@@ -7,7 +7,7 @@ use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Scene3DType {
     camera: Option<Camera>,
     light_rig: Option<LightRig>,

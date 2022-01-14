@@ -15,7 +15,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {
     edit_as: EnumValue<EditAsValues>,
     from_marker: FromMarker,
@@ -213,7 +213,7 @@ impl TwoCellAnchor {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32, ole_id: &usize) {
         if self.get_is_alternate_content() == &true {
             // mc:AlternateContent
             write_start_tag(writer, "mc:AlternateContent", vec![
@@ -251,7 +251,7 @@ impl TwoCellAnchor {
 
         // xdr:sp
         match &self.shape {
-            Some(v) => v.write_to(writer),
+            Some(v) => v.write_to(writer, ole_id),
             None => {},
         }
 

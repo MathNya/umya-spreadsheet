@@ -3,7 +3,7 @@ use super::Properties;
 use super::Security;
 use super::Calculation;
 use super::Style;
-use super::DefinedName;
+use super::Image;
 use super::Theme;
 use super::Stylesheet;
 use super::SharedStringTable;
@@ -32,7 +32,6 @@ pub struct Spreadsheet {
     visibility: String,
     tab_ratio: i32,
     theme: Theme,
-    defined_names: Vec<DefinedName>,
     stylesheet: Stylesheet,
     shared_string_table: SharedStringTable,
     workbook_view: WorkbookView,
@@ -131,48 +130,16 @@ impl Spreadsheet {
     }
 
     pub(crate) fn adjustment_insert_coordinate(&mut self, sheet_name:&str, column_index:&u32, num_columns:&u32, row_index:&u32, num_rows:&u32) {
-        for defined_name in &mut self.defined_names {
-            defined_name.get_address_obj_mut().adjustment_insert_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
-        }
+
         for worksheet in &mut self.work_sheet_collection {
             worksheet.adjustment_insert_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
         }
     }
 
     pub(crate) fn adjustment_remove_coordinate(&mut self, sheet_name:&str, column_index:&u32, num_columns:&u32, row_index:&u32, num_rows:&u32) {
-        self.defined_names.retain(|x| {
-            !(x.get_address_obj().is_remove(sheet_name, column_index, num_columns, row_index, num_rows))
-        });
-        for defined_name in &mut self.defined_names {
-            defined_name.get_address_obj_mut().adjustment_remove_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
-        }
         for worksheet in &mut self.work_sheet_collection {
             worksheet.adjustment_remove_coordinate(sheet_name, column_index, num_columns, row_index, num_rows);
         }
-    }
-
-    pub fn get_defined_names(&self) -> &Vec<DefinedName> {
-        &self.defined_names
-    }
-
-    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
-        &mut self.defined_names
-    }
-
-    pub fn set_defined_names(&mut self, value:Vec<DefinedName>) {
-        self.defined_names = value;
-    }
-
-    pub fn add_defined_names(&mut self, value:DefinedName) {
-        self.defined_names.push(value);
-    }
-
-    pub fn add_defined_name<S: Into<String>>(&mut self, name:S, address:S)->Result<(), &str> {
-        let mut defined_name = DefinedName::default();
-        defined_name.set_name(name.into());
-        defined_name.set_address(address.into());
-        self.defined_names.push(defined_name);
-        Ok(())
     }
 
     pub(crate) fn get_all_conditional_style_list(&self) -> Vec<(String, Style)> {
@@ -314,6 +281,10 @@ impl Spreadsheet {
         &self.work_sheet_collection
     }
 
+    pub fn get_sheet_collection_mut(&mut self) -> &mut Vec<Worksheet> {
+        &mut self.work_sheet_collection
+    }
+
     pub fn get_sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
     }
@@ -349,17 +320,7 @@ impl Spreadsheet {
         Err("not found.")
     }
 
-    pub fn get_sheet_by_sheet_id<S: Into<String>>(&self, value:S) -> Result<&Worksheet, &'static str> {
-        let v = value.into();
-        for sheet in &self.work_sheet_collection {
-            if sheet.get_sheet_id() == &v {
-                return Ok(sheet);
-            }
-        }
-        Err("not found.")
-    }
-
-    pub fn get_sheet_by_sheet_id_mut<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
+    pub(crate) fn get_sheet_by_sheet_id_mut<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
         let v = value.into();
         for sheet in &mut self.work_sheet_collection {
             if sheet.get_sheet_id() == &v {
@@ -367,6 +328,16 @@ impl Spreadsheet {
             }
         }
         Err("not found.")
+    }
+
+    pub fn add_sheet(&mut self, value:Worksheet) -> Result<(), &'static str> {
+        let title = value.get_title();
+        match Spreadsheet::check_sheet_title(self, title) {
+            Ok(_) => {},
+            Err(e) => return Err(e)
+        }
+        self.work_sheet_collection.push(value);
+        Ok(())
     }
 
     pub fn new_sheet<S: Into<String>>(&mut self, value:S) -> Result<&mut Worksheet, &'static str> {
@@ -381,7 +352,7 @@ impl Spreadsheet {
 
     pub(crate) fn new_sheet_crate<S: Into<String>>(&mut self, sheet_id:S, value:S) -> &mut Worksheet {
         let mut worksheet = Worksheet::default();
-        worksheet.set_sheet_id(sheet_id.into());
+        worksheet.set_sheet_id(sheet_id);
         worksheet.set_title(value.into());
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
@@ -438,5 +409,45 @@ impl Spreadsheet {
     pub fn set_workbook_view(&mut self, value:WorkbookView) -> &mut Self {
         self.workbook_view = value;
         self
+    }
+
+    pub fn has_defined_names(&self) -> bool {
+        for sheet in self.get_sheet_collection() {
+            if sheet.get_defined_names().len() > 0 {
+                return true;
+            }
+        }
+        false
+    }
+
+    pub fn get_image_collection(&self) -> Vec<&Image> {
+        let mut result: Vec<&Image> = Vec::new();
+        for worksheet in self.get_sheet_collection() {
+            for picture in worksheet.get_worksheet_drawing().get_picture_collection() { 
+                let image = picture.get_blip_fill().get_blip().get_image();
+                let mut is_new = true;
+                for v in &result {
+                    if v.get_image_name() == image.get_image_name() {
+                        is_new = false;
+                    }
+                }
+                if is_new {
+                    result.push(image);
+                }
+            }
+            for ole_objects in worksheet.get_ole_objects().get_ole_object() { 
+                let image = ole_objects.get_embedded_object_properties().get_image();
+                let mut is_new = true;
+                for v in &result {
+                    if v.get_image_name() == image.get_image_name() {
+                        is_new = false;
+                    }
+                }
+                if is_new {
+                    result.push(image);
+                }
+            }
+        }
+        result
     }
 }

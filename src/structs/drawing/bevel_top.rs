@@ -9,7 +9,7 @@ use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct BevelTop {
     width: Int64Value,
     height: Int64Value,

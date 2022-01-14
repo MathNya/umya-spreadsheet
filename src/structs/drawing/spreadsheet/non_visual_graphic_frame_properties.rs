@@ -7,7 +7,7 @@ use quick_xml::Writer;
 use quick_xml::Reader;
 use std::io::Cursor;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct NonVisualGraphicFrameProperties {
     non_visual_drawing_properties: NonVisualDrawingProperties,
     non_visual_graphic_frame_drawing_properties: NonVisualGraphicFrameDrawingProperties,
@@ -77,7 +77,7 @@ impl NonVisualGraphicFrameProperties {
         write_start_tag(writer, "xdr:nvGraphicFramePr", vec![], false);
 
         // xdr:cNvPr
-        &self.non_visual_drawing_properties.write_to(writer);
+        &self.non_visual_drawing_properties.write_to(writer, &0);
         
         // xdr:cNvGraphicFramePr
         &self.non_visual_graphic_frame_drawing_properties.write_to(writer);

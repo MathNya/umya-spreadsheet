@@ -1,6 +1,6 @@
 use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum BarDirectionValues {
     Bar,
     Column,

@@ -52,7 +52,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     &mut writer,
                     &r_id,
                     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
-                    format!("../media/{}", picture.get_blip_fill().get_blip().get_image_name()).as_str(),
+                    format!("../media/{}", picture.get_blip_fill().get_blip().get_image().get_image_name()).as_str(),
                     ""
                 );
                 r_id += 1;

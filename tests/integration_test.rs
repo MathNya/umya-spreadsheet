@@ -66,7 +66,9 @@ fn read_and_wite_xlsm() {
     let a1_value = book.get_sheet(0).unwrap().get_cell_by_column_and_row(1, 1).unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
-    //dbg!(book.get_sheet_mut(0).get_style("D10"));
+    let mut clone_sheet = book.get_sheet(0).unwrap().clone();
+    clone_sheet.set_title("New Sheet");
+    let _ = book.add_sheet(clone_sheet);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb.xlsm");
