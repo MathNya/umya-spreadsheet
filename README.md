@@ -5,22 +5,6 @@
 ## Description
 **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
 
-## Supported graph types
-* AreaChart
-* Area3DChart
-* BarChart
-* Bar3DChart
-* BubbleChart
-* DoughnutChart
-* LineChart
-* Line3DChart
-* OfPieChart
-* PieChart
-* RadarChart
-* ScatterChart
-
-Other types will be supported sequentially.
-
 ## Example
 ![Result Image](images/sample1.png)
 ### Reader or New File
@@ -42,6 +26,15 @@ let mut book = umya_spreadsheet::new_file();
 
 // new worksheet
 let _ = book.new_sheet("Sheet2");
+```
+### Copy worksheet
+```rust
+extern crate umya_spreadsheet;
+let mut book = umya_spreadsheet::new_file();
+
+let mut clone_sheet = book.get_sheet(0).unwrap().clone();
+clone_sheet.set_title("New Sheet");
+let _ = book.add_sheet(clone_sheet);
 ```
 ### Change value
 ```rust
@@ -127,6 +120,47 @@ let _ = book.new_sheet("Sheet2");
 // writer
 let path = std::path::Path::new("C:/spread_test_data/bbb.xlsx");
 let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+```
+## Supported chart types
+* AreaChart
+* Area3DChart
+* BarChart
+* Bar3DChart
+* BubbleChart
+* DoughnutChart
+* LineChart
+* Line3DChart
+* OfPieChart
+* PieChart
+* RadarChart
+* ScatterChart
+
+Other types will be supported sequentially.
+
+## Add Chart
+![Result Image](images/sample3.png)
+```rust
+extern crate umya_spreadsheet;
+
+let mut book = umya_spreadsheet::new_file();
+
+// add chart
+let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+from_marker.set_coordinate("C1");
+to_marker.set_coordinate("D11");
+let area_chart_series_list = vec![
+    "Sheet1!$A$1:$A$10",
+    "Sheet1!$B$1:$B$10",
+];
+let mut chart = umya_spreadsheet::structs::Chart::default();
+chart.new_chart(
+    umya_spreadsheet::structs::ChartType::LineChart,
+    from_marker,
+    to_marker,
+    area_chart_series_list,
+);
+book.get_sheet_by_name_mut("Sheet1").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
 ```
 ## License
 MIT

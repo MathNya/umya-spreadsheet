@@ -19,11 +19,11 @@ impl PrintSettings {
         &self.header_footer
     }
 
-    pub fn get_header_footer_mut(&mut self)-> &HeaderFooter {
+    pub fn get_header_footer_mut(&mut self)-> &mut HeaderFooter {
         &mut self.header_footer
     }
 
-    pub fn set_header_footer(&mut self, value:HeaderFooter)-> &mut PrintSettings {
+    pub fn set_header_footer(&mut self, value:HeaderFooter)-> &mut Self {
         self.header_footer = value;
         self
     }
@@ -32,11 +32,11 @@ impl PrintSettings {
         &self.page_margins
     }
 
-    pub fn get_page_margins_mut(&mut self)-> &PageMargins {
+    pub fn get_page_margins_mut(&mut self)-> &mut PageMargins {
         &mut self.page_margins
     }
 
-    pub fn set_page_margins(&mut self, value:PageMargins)-> &mut PrintSettings {
+    pub fn set_page_margins(&mut self, value:PageMargins)-> &mut Self {
         self.page_margins = value;
         self
     }
@@ -45,11 +45,11 @@ impl PrintSettings {
         &self.page_setup
     }
 
-    pub fn get_page_setup_mut(&mut self)-> &PageSetup {
+    pub fn get_page_setup_mut(&mut self)-> &mut PageSetup {
         &mut self.page_setup
     }
 
-    pub fn set_page_setup(&mut self, value:PageSetup)-> &mut PrintSettings {
+    pub fn set_page_setup(&mut self, value:PageSetup)-> &mut Self {
         self.page_setup = value;
         self
     }

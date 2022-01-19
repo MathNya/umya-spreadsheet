@@ -336,6 +336,10 @@ impl Worksheet {
         self.cell_collection.get_mut(&col, &row).get_cell_value_mut()
     }
 
+    pub fn get_cell_value_by_range<S: Into<String>>(&self, range:S) -> Vec<&CellValue> {
+        self.cell_collection.get_cell_value_by_range(range)
+    }
+
     /// Get style.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) "A1"

@@ -32,11 +32,11 @@ impl GraphicFrame {
         &self.non_visual_graphic_frame_properties
     }
 
-    pub fn get_non_visual_graphic_frame_properties_mut(&mut self) -> &NonVisualGraphicFrameProperties {
+    pub fn get_non_visual_graphic_frame_properties_mut(&mut self) -> &mut NonVisualGraphicFrameProperties {
         &mut self.non_visual_graphic_frame_properties
     }
 
-    pub fn set_non_visual_graphic_frame_properties(&mut self, value:NonVisualGraphicFrameProperties)-> &mut GraphicFrame {
+    pub fn set_non_visual_graphic_frame_properties(&mut self, value:NonVisualGraphicFrameProperties)-> &mut Self {
         self.non_visual_graphic_frame_properties = value;
         self
     }
@@ -49,7 +49,7 @@ impl GraphicFrame {
         &mut self.transform
     }
 
-    pub fn set_transform(&mut self, value:Transform)-> &mut GraphicFrame {
+    pub fn set_transform(&mut self, value:Transform)-> &mut Self {
         self.transform = value;
         self
     }
@@ -62,7 +62,7 @@ impl GraphicFrame {
         &mut self.graphic
     }
 
-    pub fn set_graphic(&mut self, value:Graphic)-> &mut GraphicFrame {
+    pub fn set_graphic(&mut self, value:Graphic)-> &mut Self {
         self.graphic = value;
         self
     }

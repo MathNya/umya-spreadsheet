@@ -1,6 +1,7 @@
 // c:strRef
 use super::Formula;
 use super::StringCache;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -72,7 +73,7 @@ impl StringReference {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:strRef
         write_start_tag(writer, "c:strRef", vec![], false);
 
@@ -80,7 +81,7 @@ impl StringReference {
         &self.formula.write_to(writer);
 
         // c:strCache
-        &self.string_cache.write_to(writer);
+        &self.string_cache.write_to(writer, self.get_formula().get_address(), spreadsheet);
 
         write_end_tag(writer, "c:strRef");
     }

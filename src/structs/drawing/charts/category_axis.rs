@@ -41,11 +41,11 @@ impl CategoryAxis {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self)-> &AxisId {
+    pub fn get_axis_id_mut(&mut self)-> &mut AxisId {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value:AxisId)-> &mut CategoryAxis {
+    pub fn set_axis_id(&mut self, value:AxisId)-> &mut Self {
         self.axis_id = value;
         self
     }
@@ -54,11 +54,11 @@ impl CategoryAxis {
         &self.scaling
     }
 
-    pub fn get_scaling_mut(&mut self)-> &Scaling {
+    pub fn get_scaling_mut(&mut self)-> &mut Scaling {
         &mut self.scaling
     }
 
-    pub fn set_scaling(&mut self, value:Scaling)-> &mut CategoryAxis {
+    pub fn set_scaling(&mut self, value:Scaling)-> &mut Self {
         self.scaling = value;
         self
     }
@@ -67,11 +67,11 @@ impl CategoryAxis {
         &self.delete
     }
 
-    pub fn get_delete_mut(&mut self)-> &Delete {
+    pub fn get_delete_mut(&mut self)-> &mut Delete {
         &mut self.delete
     }
 
-    pub fn set_delete(&mut self, value:Delete)-> &mut CategoryAxis {
+    pub fn set_delete(&mut self, value:Delete)-> &mut Self {
         self.delete = value;
         self
     }
@@ -80,11 +80,11 @@ impl CategoryAxis {
         &self.axis_position
     }
 
-    pub fn get_axis_position_mut(&mut self)-> &AxisPosition {
+    pub fn get_axis_position_mut(&mut self)-> &mut AxisPosition {
         &mut self.axis_position
     }
 
-    pub fn set_axis_position(&mut self, value:AxisPosition)-> &mut CategoryAxis {
+    pub fn set_axis_position(&mut self, value:AxisPosition)-> &mut Self {
         self.axis_position = value;
         self
     }
@@ -93,11 +93,11 @@ impl CategoryAxis {
         &self.major_gridlines
     }
 
-    pub fn get_major_gridlines_mut(&mut self)-> &Option<MajorGridlines> {
+    pub fn get_major_gridlines_mut(&mut self)-> &mut Option<MajorGridlines> {
         &mut self.major_gridlines
     }
 
-    pub fn set_major_gridlines(&mut self, value:MajorGridlines)-> &mut CategoryAxis {
+    pub fn set_major_gridlines(&mut self, value:MajorGridlines)-> &mut Self {
         self.major_gridlines = Some(value);
         self
     }
@@ -106,11 +106,11 @@ impl CategoryAxis {
         &self.major_tick_mark
     }
 
-    pub fn get_major_tick_mark_mut(&mut self)-> &MajorTickMark {
+    pub fn get_major_tick_mark_mut(&mut self)-> &mut MajorTickMark {
         &mut self.major_tick_mark
     }
 
-    pub fn set_major_tick_mark(&mut self, value:MajorTickMark)-> &mut CategoryAxis {
+    pub fn set_major_tick_mark(&mut self, value:MajorTickMark)-> &mut Self {
         self.major_tick_mark = value;
         self
     }
@@ -119,11 +119,11 @@ impl CategoryAxis {
         &self.minor_tick_mark
     }
 
-    pub fn get_minor_tick_mark_mut(&mut self)-> &MinorTickMark {
+    pub fn get_minor_tick_mark_mut(&mut self)-> &mut MinorTickMark {
         &mut self.minor_tick_mark
     }
 
-    pub fn set_minor_tick_mark(&mut self, value:MinorTickMark)-> &mut CategoryAxis {
+    pub fn set_minor_tick_mark(&mut self, value:MinorTickMark)-> &mut Self {
         self.minor_tick_mark = value;
         self
     }
@@ -132,11 +132,11 @@ impl CategoryAxis {
         &self.tick_label_position
     }
 
-    pub fn get_tick_label_position_mut(&mut self)-> &TickLabelPosition {
+    pub fn get_tick_label_position_mut(&mut self)-> &mut TickLabelPosition {
         &mut self.tick_label_position
     }
 
-    pub fn set_tick_label_position(&mut self, value:TickLabelPosition)-> &mut CategoryAxis {
+    pub fn set_tick_label_position(&mut self, value:TickLabelPosition)-> &mut Self {
         self.tick_label_position = value;
         self
     }
@@ -145,11 +145,11 @@ impl CategoryAxis {
         &self.crossing_axis
     }
 
-    pub fn get_tick_crossing_axis_mut(&mut self)-> &CrossingAxis {
+    pub fn get_tick_crossing_axis_mut(&mut self)-> &mut CrossingAxis {
         &mut self.crossing_axis
     }
 
-    pub fn set_tick_crossing_axis(&mut self, value:CrossingAxis)-> &mut CategoryAxis {
+    pub fn set_tick_crossing_axis(&mut self, value:CrossingAxis)-> &mut Self {
         self.crossing_axis = value;
         self
     }
@@ -158,11 +158,11 @@ impl CategoryAxis {
         &self.crosses
     }
 
-    pub fn get_crosses_mut(&mut self)-> &Crosses {
+    pub fn get_crosses_mut(&mut self)-> &mut Crosses {
         &mut self.crosses
     }
 
-    pub fn set_crosses(&mut self, value:Crosses)-> &mut CategoryAxis {
+    pub fn set_crosses(&mut self, value:Crosses)-> &mut Self {
         self.crosses = value;
         self
     }
@@ -171,11 +171,11 @@ impl CategoryAxis {
         &self.auto_labeled
     }
 
-    pub fn get_auto_labeled_mut(&mut self)-> &AutoLabeled {
+    pub fn get_auto_labeled_mut(&mut self)-> &mut AutoLabeled {
         &mut self.auto_labeled
     }
 
-    pub fn set_auto_labeled(&mut self, value:AutoLabeled)-> &mut CategoryAxis {
+    pub fn set_auto_labeled(&mut self, value:AutoLabeled)-> &mut Self {
         self.auto_labeled = value;
         self
     }
@@ -184,11 +184,11 @@ impl CategoryAxis {
         &self.label_alignment
     }
 
-    pub fn get_label_alignment_mut(&mut self)-> &LabelAlignment {
+    pub fn get_label_alignment_mut(&mut self)-> &mut LabelAlignment {
         &mut self.label_alignment
     }
 
-    pub fn set_label_alignment(&mut self, value:LabelAlignment)-> &mut CategoryAxis {
+    pub fn set_label_alignment(&mut self, value:LabelAlignment)-> &mut Self {
         self.label_alignment = value;
         self
     }
@@ -197,11 +197,11 @@ impl CategoryAxis {
         &self.label_offset
     }
 
-    pub fn get_label_offset_mut(&mut self)-> &LabelOffset {
+    pub fn get_label_offset_mut(&mut self)-> &mut LabelOffset {
         &mut self.label_offset
     }
 
-    pub fn set_label_offset(&mut self, value:LabelOffset)-> &mut CategoryAxis {
+    pub fn set_label_offset(&mut self, value:LabelOffset)-> &mut Self {
         self.label_offset = value;
         self
     }
@@ -210,11 +210,11 @@ impl CategoryAxis {
         &self.no_multi_level_labels
     }
 
-    pub fn get_no_multi_level_labels_mut(&mut self)-> &NoMultiLevelLabels {
+    pub fn get_no_multi_level_labels_mut(&mut self)-> &mut NoMultiLevelLabels {
         &mut self.no_multi_level_labels
     }
 
-    pub fn set_no_multi_level_labels(&mut self, value:NoMultiLevelLabels)-> &mut CategoryAxis {
+    pub fn set_no_multi_level_labels(&mut self, value:NoMultiLevelLabels)-> &mut Self {
         self.no_multi_level_labels = value;
         self
     }

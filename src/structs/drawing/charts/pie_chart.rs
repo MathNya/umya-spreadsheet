@@ -1,8 +1,10 @@
 // c:pieChart
 use super::VaryColors;
 use super::AreaChartSeries;
+use super::AreaChartSeriesList;
 use super::DataLabels;
 use super::FirstSliceAngle;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -12,7 +14,7 @@ use std::io::Cursor;
 #[derive(Clone, Default, Debug)]
 pub struct PieChart {
     vary_colors: VaryColors,
-    area_chart_series: Vec<AreaChartSeries>,
+    area_chart_series_list: AreaChartSeriesList,
     data_labels: DataLabels,
     first_slice_angle: FirstSliceAngle,
 }
@@ -25,26 +27,21 @@ impl PieChart {
         &mut self.vary_colors
     }
 
-    pub fn set_vary_colors(&mut self, value:VaryColors)-> &mut PieChart {
+    pub fn set_vary_colors(&mut self, value:VaryColors)-> &mut Self {
         self.vary_colors = value;
         self
     }
 
-    pub fn get_area_chart_series(&self)-> &Vec<AreaChartSeries> {
-        &self.area_chart_series
+    pub fn get_area_chart_series_list(&self)-> &AreaChartSeriesList {
+        &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_mut(&mut self)-> &mut Vec<AreaChartSeries> {
-        &mut self.area_chart_series
+    pub fn get_area_chart_series_list_mut(&mut self)-> &mut AreaChartSeriesList {
+        &mut self.area_chart_series_list
     }
 
-    pub fn set_area_chart_series(&mut self, value:Vec<AreaChartSeries>)-> &mut PieChart {
-        self.area_chart_series = value;
-        self
-    }
-
-    pub fn add_area_chart_series(&mut self, value:AreaChartSeries)-> &mut PieChart {
-        self.area_chart_series.push(value);
+    pub fn set_area_chart_series_list(&mut self, value:AreaChartSeriesList)-> &mut Self {
+        self.area_chart_series_list = value;
         self
     }
 
@@ -56,7 +53,7 @@ impl PieChart {
         &mut self.data_labels
     }
 
-    pub fn set_data_labels(&mut self, value:DataLabels)-> &mut PieChart {
+    pub fn set_data_labels(&mut self, value:DataLabels)-> &mut Self {
         self.data_labels = value;
         self
     }
@@ -69,7 +66,7 @@ impl PieChart {
         &mut self.first_slice_angle
     }
 
-    pub fn set_first_slice_angle(&mut self, value:FirstSliceAngle)-> &mut PieChart {
+    pub fn set_first_slice_angle(&mut self, value:FirstSliceAngle)-> &mut Self {
         self.first_slice_angle = value;
         self
     }
@@ -87,7 +84,7 @@ impl PieChart {
                         b"c:ser" => {
                             let mut obj = AreaChartSeries::default();
                             obj.set_attributes(reader, e);
-                            self.add_area_chart_series(obj);
+                            self.get_area_chart_series_list_mut().add_area_chart_series(obj);
                         },
                         b"c:dLbls" => {
                             self.data_labels.set_attributes(reader, e);
@@ -120,7 +117,7 @@ impl PieChart {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:pieChart
         write_start_tag(writer, "c:pieChart", vec![], false);
 
@@ -128,8 +125,8 @@ impl PieChart {
         &self.vary_colors.write_to(writer);
 
         // c:ser
-        for v in &self.area_chart_series {
-            v.write_to(writer);
+        for v in self.area_chart_series_list.get_area_chart_series() {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:dLbls

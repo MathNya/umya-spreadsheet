@@ -126,9 +126,9 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
             vml_drawing_id += 1;
         }
 
-        for graphic_frame in worksheet.get_worksheet_drawing().get_graphic_frame_collection(){
-            let chart_space = graphic_frame.get_graphic().get_graphic_data().get_chart_space();
-            let _ = chart::write(chart_space, &chart_id, &mut arv);
+        for chart in worksheet.get_worksheet_drawing().get_chart_collection(){
+            let chart_space = chart.get_chart_space();
+            let _ = chart::write(chart_space, &chart_id, &mut arv, spreadsheet);
             chart_id += 1;
         }
 

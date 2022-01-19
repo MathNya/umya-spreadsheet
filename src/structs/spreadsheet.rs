@@ -8,9 +8,12 @@ use super::Theme;
 use super::Stylesheet;
 use super::SharedStringTable;
 use super::WorkbookView;
+use structs::CellValue;
+use structs::Address;
 use helper::coordinate::*;
+use helper::address::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Spreadsheet {
     properties: Properties,
     security: Security,
@@ -166,6 +169,15 @@ impl Spreadsheet {
             }
         }
         result
+    }
+
+    pub fn get_cell_value_by_address<S: Into<String>>(&self, address:S) -> Vec<&CellValue> {
+        let (sheet_name, range) = split_address(address);
+        self.get_sheet_by_name(sheet_name).unwrap().get_cell_value_by_range(range)
+    }
+
+    pub(crate) fn get_cell_value_by_address_crate(&self, address:&Address) -> Vec<&CellValue> {
+        self.get_sheet_by_name(address.get_sheet_name()).unwrap().get_cell_value_by_range(address.get_range().get_range())
     }
 
     pub fn get_theme(&self) -> &Theme {

@@ -29,6 +29,7 @@ fn read_and_wite() {
     assert_eq!("1.235",             book.get_sheet(0).unwrap().get_formatted_value("B34"));
     assert_eq!("1",                 book.get_sheet(0).unwrap().get_formatted_value("B35"));
     assert_eq!("",                  book.get_sheet(0).unwrap().get_formatted_value("B36"));
+    assert_eq!("123456789012345678", book.get_sheet(0).unwrap().get_formatted_value("B37"));
 
     let _ = book.get_sheet_by_name_mut("Sheet1").unwrap().get_cell_mut("A1")
     .set_value("49046881.119999997");
@@ -66,9 +67,246 @@ fn read_and_wite_xlsm() {
     let a1_value = book.get_sheet(0).unwrap().get_cell_by_column_and_row(1, 1).unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
+    // copy sheet
     let mut clone_sheet = book.get_sheet(0).unwrap().clone();
     clone_sheet.set_title("New Sheet");
     let _ = book.add_sheet(clone_sheet);
+
+    // add chart (line chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("A1");
+    to_marker.set_coordinate("B2");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::LineChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (pie chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("B1");
+    to_marker.set_coordinate("C2");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::PieChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (doughnut chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("C1");
+    to_marker.set_coordinate("D2");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::DoughnutChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+    
+    // add chart (area chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("D1");
+    to_marker.set_coordinate("E2");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::AreaChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (bar chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("E1");
+    to_marker.set_coordinate("F2");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::BarChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (bar 3d chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("A2");
+    to_marker.set_coordinate("B3");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::Bar3DChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (line 3d chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("B2");
+    to_marker.set_coordinate("C3");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::Line3DChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (pie 3d chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("C2");
+    to_marker.set_coordinate("D3");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::Pie3DChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (area 3d chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("D2");
+    to_marker.set_coordinate("E3");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::Area3DChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (of pie chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("E2");
+    to_marker.set_coordinate("F3");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::OfPieChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (bubble chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("A3");
+    to_marker.set_coordinate("B4");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+        "New Sheet!$I$7:$I$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::BubbleChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (radar chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("B3");
+    to_marker.set_coordinate("C4");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+        "New Sheet!$I$7:$I$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::RadarChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+
+    // add chart (scatter chart)
+    let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    from_marker.set_coordinate("C3");
+    to_marker.set_coordinate("D4");
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+    ];
+    let mut chart = umya_spreadsheet::structs::Chart::default();
+    chart.new_chart(
+        umya_spreadsheet::structs::ChartType::ScatterChart,
+        from_marker,
+        to_marker,
+        area_chart_series_list,
+    );
+    book.get_sheet_by_name_mut("Sheet7").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb.xlsm");

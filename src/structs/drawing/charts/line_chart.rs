@@ -2,10 +2,12 @@
 use super::Grouping;
 use super::VaryColors;
 use super::AreaChartSeries;
+use super::AreaChartSeriesList;
 use super::DataLabels;
 use super::ShowMarker;
 use super::Smooth;
 use super::AxisId;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -16,7 +18,7 @@ use std::io::Cursor;
 pub struct LineChart {
     grouping: Grouping,
     vary_colors: VaryColors,
-    area_chart_series: Vec<AreaChartSeries>,
+    area_chart_series_list: AreaChartSeriesList,
     data_labels: DataLabels,
     show_marker: ShowMarker,
     smooth: Smooth,
@@ -31,7 +33,7 @@ impl LineChart {
         &mut self.grouping
     }
 
-    pub fn set_grouping(&mut self, value:Grouping)-> &mut LineChart {
+    pub fn set_grouping(&mut self, value:Grouping)-> &mut Self {
         self.grouping = value;
         self
     }
@@ -44,26 +46,21 @@ impl LineChart {
         &mut self.vary_colors
     }
 
-    pub fn set_vary_colors(&mut self, value:VaryColors)-> &mut LineChart {
+    pub fn set_vary_colors(&mut self, value:VaryColors)-> &mut Self {
         self.vary_colors = value;
         self
     }
 
-    pub fn get_area_chart_series(&self)-> &Vec<AreaChartSeries> {
-        &self.area_chart_series
+    pub fn get_area_chart_series_list(&self)-> &AreaChartSeriesList {
+        &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_mut(&mut self)-> &mut Vec<AreaChartSeries> {
-        &mut self.area_chart_series
+    pub fn get_area_chart_series_list_mut(&mut self)-> &mut AreaChartSeriesList {
+        &mut self.area_chart_series_list
     }
 
-    pub fn set_area_chart_series(&mut self, value:Vec<AreaChartSeries>)-> &mut LineChart {
-        self.area_chart_series = value;
-        self
-    }
-
-    pub fn add_area_chart_series(&mut self, value:AreaChartSeries)-> &mut LineChart {
-        self.area_chart_series.push(value);
+    pub fn set_area_chart_series_list(&mut self, value:AreaChartSeriesList)-> &mut Self {
+        self.area_chart_series_list = value;
         self
     }
 
@@ -75,7 +72,7 @@ impl LineChart {
         &mut self.data_labels
     }
 
-    pub fn set_data_labels(&mut self, value:DataLabels)-> &mut LineChart {
+    pub fn set_data_labels(&mut self, value:DataLabels)-> &mut Self {
         self.data_labels = value;
         self
     }
@@ -88,7 +85,7 @@ impl LineChart {
         &mut self.show_marker
     }
 
-    pub fn set_show_marker(&mut self, value:ShowMarker)-> &mut LineChart {
+    pub fn set_show_marker(&mut self, value:ShowMarker)-> &mut Self {
         self.show_marker = value;
         self
     }
@@ -101,7 +98,7 @@ impl LineChart {
         &mut self.smooth
     }
 
-    pub fn set_smooth(&mut self, value:Smooth)-> &mut LineChart {
+    pub fn set_smooth(&mut self, value:Smooth)-> &mut Self {
         self.smooth = value;
         self
     }
@@ -114,12 +111,12 @@ impl LineChart {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value:Vec<AxisId>)-> &mut LineChart {
+    pub fn set_axis_id(&mut self, value:Vec<AxisId>)-> &mut Self {
         self.axis_id = value;
         self
     }
 
-    pub fn add_axis_id(&mut self, value:AxisId)-> &mut LineChart {
+    pub fn add_axis_id(&mut self, value:AxisId)-> &mut Self {
         self.axis_id.push(value);
         self
     }
@@ -137,7 +134,7 @@ impl LineChart {
                         b"c:ser" => {
                             let mut obj = AreaChartSeries::default();
                             obj.set_attributes(reader, e);
-                            self.add_area_chart_series(obj);
+                            self.get_area_chart_series_list_mut().add_area_chart_series(obj);
                         },
                         b"c:dLbls" => {
                             self.data_labels.set_attributes(reader, e);
@@ -181,7 +178,7 @@ impl LineChart {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:lineChart
         write_start_tag(writer, "c:lineChart", vec![], false);
 
@@ -192,8 +189,8 @@ impl LineChart {
         &self.vary_colors.write_to(writer);
 
         // c:ser
-        for v in &self.area_chart_series {
-            v.write_to(writer);
+        for v in self.area_chart_series_list.get_area_chart_series() {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:dLbls

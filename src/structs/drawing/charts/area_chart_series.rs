@@ -13,6 +13,7 @@ use super::BubbleSize;
 use super::Bubble3D;
 use super::Smooth;
 use super::Formula;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -40,11 +41,11 @@ impl AreaChartSeries {
         &self.index
     }
 
-    pub fn get_index_mut(&mut self)-> &Index {
+    pub fn get_index_mut(&mut self)-> &mut Index {
         &mut self.index
     }
 
-    pub fn set_index(&mut self, value:Index)-> &mut AreaChartSeries {
+    pub fn set_index(&mut self, value:Index)-> &mut Self {
         self.index = value;
         self
     }
@@ -53,11 +54,11 @@ impl AreaChartSeries {
         &self.order
     }
 
-    pub fn get_order_mut(&mut self)-> &Order {
+    pub fn get_order_mut(&mut self)-> &mut Order {
         &mut self.order
     }
 
-    pub fn set_order(&mut self, value:Order)-> &mut AreaChartSeries {
+    pub fn set_order(&mut self, value:Order)-> &mut Self {
         self.order = value;
         self
     }
@@ -66,11 +67,11 @@ impl AreaChartSeries {
         &self.explosion
     }
 
-    pub fn get_explosion_mut(&mut self)-> &Option<Explosion> {
+    pub fn get_explosion_mut(&mut self)-> &mut Option<Explosion> {
         &mut self.explosion
     }
 
-    pub fn set_explosion(&mut self, value:Explosion)-> &mut AreaChartSeries {
+    pub fn set_explosion(&mut self, value:Explosion)-> &mut Self {
         self.explosion = Some(value);
         self
     }
@@ -79,11 +80,11 @@ impl AreaChartSeries {
         &self.invert_if_negative
     }
 
-    pub fn get_invert_if_negative_mut(&mut self)-> &Option<InvertIfNegative> {
+    pub fn get_invert_if_negative_mut(&mut self)-> &mut Option<InvertIfNegative> {
         &mut self.invert_if_negative
     }
 
-    pub fn set_invert_if_negative(&mut self, value:InvertIfNegative)-> &mut AreaChartSeries {
+    pub fn set_invert_if_negative(&mut self, value:InvertIfNegative)-> &mut Self {
         self.invert_if_negative = Some(value);
         self
     }
@@ -92,11 +93,11 @@ impl AreaChartSeries {
         &self.marker
     }
 
-    pub fn get_marker_mut(&mut self)-> &Option<Marker> {
+    pub fn get_marker_mut(&mut self)-> &mut Option<Marker> {
         &mut self.marker
     }
 
-    pub fn set_marker(&mut self, value:Marker)-> &mut AreaChartSeries {
+    pub fn set_marker(&mut self, value:Marker)-> &mut Self {
         self.marker = Some(value);
         self
     }
@@ -105,11 +106,11 @@ impl AreaChartSeries {
         &self.shape_properties
     }
 
-    pub fn get_shape_properties_mut(&mut self)-> &Option<ShapeProperties> {
+    pub fn get_shape_properties_mut(&mut self)-> &mut Option<ShapeProperties> {
         &mut self.shape_properties
     }
 
-    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut AreaChartSeries {
+    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut Self {
         self.shape_properties = Some(value);
         self
     }
@@ -118,11 +119,11 @@ impl AreaChartSeries {
         &self.category_axis_data
     }
 
-    pub fn get_category_axis_data_mut(&mut self)-> &Option<CategoryAxisData> {
+    pub fn get_category_axis_data_mut(&mut self)-> &mut Option<CategoryAxisData> {
         &mut self.category_axis_data
     }
 
-    pub fn set_category_axis_data(&mut self, value:CategoryAxisData)-> &mut AreaChartSeries {
+    pub fn set_category_axis_data(&mut self, value:CategoryAxisData)-> &mut Self {
         self.category_axis_data = Some(value);
         self
     }
@@ -135,7 +136,7 @@ impl AreaChartSeries {
         &mut self.values
     }
 
-    pub fn set_values(&mut self, value:Values)-> &mut AreaChartSeries {
+    pub fn set_values(&mut self, value:Values)-> &mut Self {
         self.values = Some(value);
         self
     }
@@ -148,7 +149,7 @@ impl AreaChartSeries {
         &mut self.x_values
     }
 
-    pub fn set_x_values(&mut self, value:XValues)-> &mut AreaChartSeries {
+    pub fn set_x_values(&mut self, value:XValues)-> &mut Self {
         self.x_values = Some(value);
         self
     }
@@ -161,7 +162,7 @@ impl AreaChartSeries {
         &mut self.y_values
     }
 
-    pub fn set_y_values(&mut self, value:YValues)-> &mut AreaChartSeries {
+    pub fn set_y_values(&mut self, value:YValues)-> &mut Self {
         self.y_values = Some(value);
         self
     }
@@ -174,7 +175,7 @@ impl AreaChartSeries {
         &mut self.bubble_size
     }
 
-    pub fn set_bubble_size(&mut self, value:BubbleSize)-> &mut AreaChartSeries {
+    pub fn set_bubble_size(&mut self, value:BubbleSize)-> &mut Self {
         self.bubble_size = Some(value);
         self
     }
@@ -183,11 +184,11 @@ impl AreaChartSeries {
         &self.bubble_3d
     }
 
-    pub fn get_bubble_3d_mut(&mut self)-> &Option<Bubble3D> {
+    pub fn get_bubble_3d_mut(&mut self)-> &mut Option<Bubble3D> {
         &mut self.bubble_3d
     }
 
-    pub fn set_bubble_3d(&mut self, value:Bubble3D)-> &mut AreaChartSeries {
+    pub fn set_bubble_3d(&mut self, value:Bubble3D)-> &mut Self {
         self.bubble_3d = Some(value);
         self
     }
@@ -196,11 +197,11 @@ impl AreaChartSeries {
         &self.smooth
     }
 
-    pub fn get_smooth_mut(&mut self)-> &Option<Smooth> {
+    pub fn get_smooth_mut(&mut self)-> &mut Option<Smooth> {
         &mut self.smooth
     }
 
-    pub fn set_smooth(&mut self, value:Smooth)-> &mut AreaChartSeries {
+    pub fn set_smooth(&mut self, value:Smooth)-> &mut Self {
         self.smooth = Some(value);
         self
     }
@@ -334,7 +335,7 @@ impl AreaChartSeries {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:ser
         write_start_tag(writer, "c:ser", vec![], false);
 
@@ -370,31 +371,31 @@ impl AreaChartSeries {
 
         // c:cat
         match &self.category_axis_data {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:val
         match &self.values {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:xVal
         match &self.x_values {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:yVal
         match &self.y_values {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:bubbleSize
         match &self.bubble_size {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 

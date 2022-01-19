@@ -1,6 +1,7 @@
 // c:numRef
 use super::Formula;
 use super::NumberingCache;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -72,7 +73,7 @@ impl NumberReference {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:numRef
         write_start_tag(writer, "c:numRef", vec![], false);
 
@@ -80,7 +81,7 @@ impl NumberReference {
         &self.formula.write_to(writer);
 
         // c:numCache
-        &self.numbering_cache.write_to(writer);
+        &self.numbering_cache.write_to(writer, self.get_formula().get_address(), spreadsheet);
 
         write_end_tag(writer, "c:numRef");
     }

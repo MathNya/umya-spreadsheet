@@ -11,10 +11,19 @@ use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualDrawingProperties  {
+    id: UInt32Value,
     name: StringValue,
     hidden: BooleanValue,
 }
 impl NonVisualDrawingProperties  {
+    pub fn get_id(&self) -> &u32 {
+        &self.id.get_value()
+    }
+
+    pub fn set_id(&mut self, value:u32) {
+        self.id.set_value(value);
+    }
+
     pub fn get_name(&self) -> &str {
         &self.name.get_value()
     }
@@ -37,6 +46,7 @@ impl NonVisualDrawingProperties  {
         e: &BytesStart,
         empty_flg: bool,
     ) {
+        &mut self.id.set_value_string(get_attribute(e, b"id").unwrap());
         &mut self.name.set_value_string(get_attribute(e, b"name").unwrap());
         match get_attribute(e, b"hidden") {
             Some(v) => {&mut self.hidden.set_value_string(v);},
@@ -67,9 +77,8 @@ impl NonVisualDrawingProperties  {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
         let with_inner = ole_id > &0;
         // xdr:cNvPr
-        let id = format!("{}", ole_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("id", id.as_str()));
+        attributes.push(("id", &self.id.get_value_string()));
         attributes.push(("name", &self.name.get_value_string()));
         if self.hidden.has_value() {
             attributes.push(("hidden", &self.hidden.get_value_string()));

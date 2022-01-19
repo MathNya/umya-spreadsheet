@@ -6,7 +6,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct WorkbookView {
     active_tab: UInt32Value,
 }

@@ -15,11 +15,11 @@ impl Scaling {
         &self.orientation
     }
 
-    pub fn get_orientation_mut(&mut self)-> &Orientation {
+    pub fn get_orientation_mut(&mut self)-> &mut Orientation {
         &mut self.orientation
     }
 
-    pub fn set_orientation(&mut self, value:Orientation)-> &mut Scaling {
+    pub fn set_orientation(&mut self, value:Orientation)-> &mut Self {
         self.orientation = value;
         self
     }

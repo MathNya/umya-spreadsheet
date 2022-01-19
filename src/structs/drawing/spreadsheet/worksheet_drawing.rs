@@ -1,4 +1,5 @@
 // xdr:wsDr
+use structs::Chart;
 use super::OneCellAnchor;
 use super::TwoCellAnchor;
 use super::Picture;
@@ -14,10 +15,24 @@ use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
+    chart_collection: Vec<Chart>,
     one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }
 impl WorksheetDrawing {
+    pub fn get_chart_collection(&self) -> &Vec<Chart> {
+        &self.chart_collection
+    }
+
+    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+        &mut self.chart_collection
+    }
+
+    pub fn add_chart_collection(&mut self, value:Chart) -> &mut Self {
+        self.chart_collection.push(value);
+        self
+    }
+
     pub fn get_one_cell_anchor_collection(&self) -> &Vec<OneCellAnchor> {
         &self.one_cell_anchor_collection
     }
@@ -26,8 +41,9 @@ impl WorksheetDrawing {
         &mut self.one_cell_anchor_collection
     }
 
-    pub fn add_one_cell_anchor_collection(&mut self, value:OneCellAnchor) {
+    pub fn add_one_cell_anchor_collection(&mut self, value:OneCellAnchor) -> &mut Self {
         self.one_cell_anchor_collection.push(value);
+        self
     }
 
     pub fn get_two_cell_anchor_collection(&self) -> &Vec<TwoCellAnchor> {
@@ -38,13 +54,16 @@ impl WorksheetDrawing {
         &mut self.two_cell_anchor_collection
     }
 
-    pub fn add_two_cell_anchor_collection(&mut self, value:TwoCellAnchor) {
+    pub fn add_two_cell_anchor_collection(&mut self, value:TwoCellAnchor) -> &mut Self {
         self.two_cell_anchor_collection.push(value);
+        self
     }
 
     pub fn has_drawing_object(&self)-> bool
     {
-        &self.two_cell_anchor_collection.len() > &0usize
+        self.chart_collection.len() > 0 ||
+        self.one_cell_anchor_collection.len() > 0 ||
+        self.two_cell_anchor_collection.len() > 0
     }
 
     pub fn get_graphic_frame_collection(&self)-> Vec<&GraphicFrame>
@@ -195,7 +214,13 @@ impl WorksheetDrawing {
                             let mut obj = TwoCellAnchor::default();
                             obj.set_attributes(reader, e, arv, target);
                             if obj.is_support() {
-                                &mut self.add_two_cell_anchor_collection(obj);
+                                if obj.is_chart() {
+                                    let mut chart = Chart::default();
+                                    chart.set_two_cell_anchor(obj);
+                                    &mut self.add_chart_collection(chart);
+                                } else {
+                                    &mut self.add_two_cell_anchor_collection(obj);
+                                }
                             }
                         },
                         _ => (),
@@ -225,18 +250,21 @@ impl WorksheetDrawing {
             ("xmlns:a", "http://schemas.openxmlformats.org/drawingml/2006/main"),
         ], false);
 
+        // xdr:twoCellAnchor
+        let mut r_id = 1;
+        for chart in &self.chart_collection {
+            chart.get_two_cell_anchor().write_to(writer, &mut r_id, &0);
+        }
+        for two_cell_anchor in &self.two_cell_anchor_collection {
+            two_cell_anchor.write_to(writer, &mut r_id, &0);
+        }
+
         // xdr:oneCellAnchor
         for one_cell_anchor in &self.one_cell_anchor_collection {
             one_cell_anchor.write_to(writer);
         }
 
-        // xdr:twoCellAnchor
-        let mut r_id = 1;
-        for two_cell_anchor in &self.two_cell_anchor_collection {
-            two_cell_anchor.write_to(writer, &mut r_id, &0);
-        }
-        
-        // xdr:twoCellAnchor
+        // mc:AlternateContent
         let mut r_id = 1;
         let mut ole_id = (1000 * drawing_id) + 25;
         for ole_object in ole_objects.get_ole_object() {

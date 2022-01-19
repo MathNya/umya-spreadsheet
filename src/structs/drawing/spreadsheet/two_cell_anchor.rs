@@ -1,8 +1,7 @@
 // xdr:twoCellAnchor
 use super::EditAsValues;
 use super::super::super::EnumValue;
-use super::FromMarker;
-use super::ToMarker;
+use super::MarkerType;
 use super::GraphicFrame;
 use super::Shape;
 use super::ConnectionShape;
@@ -18,8 +17,8 @@ use std::io::Cursor;
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {
     edit_as: EnumValue<EditAsValues>,
-    from_marker: FromMarker,
-    to_marker: ToMarker,
+    from_marker: MarkerType,
+    to_marker: MarkerType,
     graphic_frame: Option<GraphicFrame>,
     shape: Option<Shape>,
     connection_shape: Option<ConnectionShape>,
@@ -36,28 +35,28 @@ impl TwoCellAnchor {
         self
     }
 
-    pub fn get_from_marker(&self)-> &FromMarker {
+    pub fn get_from_marker(&self)-> &MarkerType {
         &self.from_marker
     }
 
-    pub fn get_from_marker_mut(&mut self)-> &mut FromMarker {
+    pub fn get_from_marker_mut(&mut self)-> &mut MarkerType {
         &mut self.from_marker
     }
 
-    pub fn set_from_marker(&mut self, value:FromMarker)-> &mut Self {
+    pub fn set_from_marker(&mut self, value:MarkerType)-> &mut Self {
         self.from_marker = value;
         self
     }
 
-    pub fn get_to_marker(&self)-> &ToMarker {
+    pub fn get_to_marker(&self)-> &MarkerType {
         &self.to_marker
     }
 
-    pub fn get_to_marker_mut(&mut self)-> &mut ToMarker {
+    pub fn get_to_marker_mut(&mut self)-> &mut MarkerType {
         &mut self.to_marker
     }
 
-    pub fn set_to_marker(&mut self, value:ToMarker)-> &mut Self {
+    pub fn set_to_marker(&mut self, value:MarkerType)-> &mut Self {
         self.to_marker = value;
         self
     }
@@ -153,6 +152,16 @@ impl TwoCellAnchor {
         true
     }
 
+    pub(crate) fn is_chart(&self) -> bool {
+        match &self.graphic_frame {
+            Some(_) => {
+                return true;
+            },
+            None => {}
+        }
+        false
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
         reader:&mut Reader<R>,
@@ -235,10 +244,10 @@ impl TwoCellAnchor {
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 
         // xdr:from
-        &self.from_marker.write_to(writer);
+        &self.from_marker.write_to_from(writer);
 
         // xdr:to
-        &self.to_marker.write_to(writer);
+        &self.to_marker.write_to_to(writer);
 
         // xdr:graphicFrame
         match &self.graphic_frame {

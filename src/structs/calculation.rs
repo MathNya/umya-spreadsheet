@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub(crate) struct Calculation {
     pub(crate) calculation_cache: Vec<String>,
     pub(crate) calculation_cache_enabled: bool,

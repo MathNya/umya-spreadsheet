@@ -1,5 +1,6 @@
 // c:val
 use super::NumberReference;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -54,12 +55,12 @@ impl Values {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:val
         write_start_tag(writer, "c:val", vec![], false);
 
         // c:numRef
-        &self.number_reference.write_to(writer);
+        &self.number_reference.write_to(writer, spreadsheet);
 
         write_end_tag(writer, "c:val");
     }

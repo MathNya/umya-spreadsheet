@@ -1,5 +1,5 @@
 // xdr:oneCellAnchor
-use super::FromMarker;
+use super::MarkerType;
 use super::Extent;
 use super::Shape;
 use writer::driver::*;
@@ -10,20 +10,20 @@ use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct OneCellAnchor {
-    from_marker: FromMarker,
+    from_marker: MarkerType,
     extent: Extent,
     shape: Option<Shape>,
 }
 impl OneCellAnchor {
-    pub fn get_from_marker(&self)-> &FromMarker {
+    pub fn get_from_marker(&self)-> &MarkerType {
         &self.from_marker
     }
 
-    pub fn get_from_marker_mut(&mut self)-> &mut FromMarker {
+    pub fn get_from_marker_mut(&mut self)-> &mut MarkerType {
         &mut self.from_marker
     }
 
-    pub fn set_from_marker(&mut self, value:FromMarker)-> &mut OneCellAnchor {
+    pub fn set_from_marker(&mut self, value:MarkerType)-> &mut OneCellAnchor {
         self.from_marker = value;
         self
     }
@@ -118,7 +118,7 @@ impl OneCellAnchor {
         write_start_tag(writer, "xdr:oneCellAnchor", vec![], false);
 
         // xdr:from
-        &self.from_marker.write_to(writer);
+        &self.from_marker.write_to_from(writer);
 
         // xdr:ext
         &self.extent.write_to(writer);

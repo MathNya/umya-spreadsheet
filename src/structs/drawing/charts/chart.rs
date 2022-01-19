@@ -10,6 +10,7 @@ use super::PlotVisibleOnly;
 use super::DisplayBlanksAs;
 use super::ShowDataLabelsOverMaximum;
 use super::Formula;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
@@ -258,7 +259,7 @@ impl Chart {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:chart
         write_start_tag(writer, "c:chart", vec![], false);
 
@@ -306,7 +307,7 @@ impl Chart {
         }
 
         // c:plotArea
-        &self.plot_area.write_to(writer);
+        &self.plot_area.write_to(writer, spreadsheet);
         
         // c:legend
         &self.legend.write_to(writer);

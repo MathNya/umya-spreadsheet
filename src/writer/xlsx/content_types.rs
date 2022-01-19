@@ -185,8 +185,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
 
     let mut drawing_id = 1;
     let mut chart_id = 1;
-    for i in 0..spreadsheet.get_sheet_count() {
-        let worksheet = &spreadsheet.get_sheet_collection()[i];
+    for worksheet in spreadsheet.get_sheet_collection() {
         if worksheet.get_worksheet_drawing().has_drawing_object() {
             // Override drawing
             write_start_tag(&mut writer, "Override", vec![
@@ -195,7 +194,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
             ], true);
             drawing_id += 1;
         }
-        for _ in worksheet.get_worksheet_drawing().get_graphic_frame_collection() {
+        for _ in worksheet.get_worksheet_drawing().get_chart_collection() {
             // Override chart
             write_start_tag(&mut writer, "Override", vec![
                 ("PartName", format!("/xl/charts/chart{}.xml", chart_id.to_string().as_str()).as_str()),

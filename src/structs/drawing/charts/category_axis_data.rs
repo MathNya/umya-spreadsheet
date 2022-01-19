@@ -1,5 +1,6 @@
 // c:cat
 use super::StringReference;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -54,12 +55,12 @@ impl CategoryAxisData {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:cat
         write_start_tag(writer, "c:cat", vec![], false);
 
         // c:strRef
-        &self.string_reference.write_to(writer);
+        &self.string_reference.write_to(writer, spreadsheet);
 
         write_end_tag(writer, "c:cat");
     }

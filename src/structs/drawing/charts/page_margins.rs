@@ -21,7 +21,7 @@ impl PageMargins {
         &self.bottom.get_value()
     }
 
-    pub fn set_bottom(&mut self, value:f64)-> &mut PageMargins {
+    pub fn set_bottom(&mut self, value:f64)-> &mut Self {
         self.bottom.set_value(value);
         self
     }
@@ -30,7 +30,7 @@ impl PageMargins {
         &self.left.get_value()
     }
 
-    pub fn set_left(&mut self, value:f64)-> &mut PageMargins {
+    pub fn set_left(&mut self, value:f64)-> &mut Self {
         self.left.set_value(value);
         self
     }
@@ -39,7 +39,7 @@ impl PageMargins {
         &self.right.get_value()
     }
 
-    pub fn set_right(&mut self, value:f64)-> &mut PageMargins {
+    pub fn set_right(&mut self, value:f64)-> &mut Self {
         self.right.set_value(value);
         self
     }
@@ -48,7 +48,7 @@ impl PageMargins {
         &self.top.get_value()
     }
 
-    pub fn set_top(&mut self, value:f64)-> &mut PageMargins {
+    pub fn set_top(&mut self, value:f64)-> &mut Self {
         self.top.set_value(value);
         self
     }
@@ -57,7 +57,7 @@ impl PageMargins {
         &self.header.get_value()
     }
 
-    pub fn set_header(&mut self, value:f64)-> &mut PageMargins {
+    pub fn set_header(&mut self, value:f64)-> &mut Self {
         self.header.set_value(value);
         self
     }
@@ -66,7 +66,7 @@ impl PageMargins {
         &self.footer.get_value()
     }
 
-    pub fn set_footer(&mut self, value:f64)-> &mut PageMargins {
+    pub fn set_footer(&mut self, value:f64)-> &mut Self {
         self.footer.set_value(value);
         self
     }

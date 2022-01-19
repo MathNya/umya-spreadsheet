@@ -83,7 +83,6 @@ impl EmbeddedObjectProperties {
         self
     }
 
-
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
         reader: &mut Reader<R>,

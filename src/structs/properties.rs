@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Properties {
     creator: String,
     last_modified_by: String,

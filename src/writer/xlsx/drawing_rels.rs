@@ -30,22 +30,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut r_id = 1;
     let mut chart_id = chart_start_id.clone();
-    let two_cell_anchor_collection = worksheet.get_worksheet_drawing().get_two_cell_anchor_collection();
-    for two_cell_anchor in two_cell_anchor_collection {
-        match two_cell_anchor.get_graphic_frame() {
-            Some(_) => {
-                is_write = write_relationship(
-                    &mut writer,
-                    &r_id,
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
-                    format!("../charts/chart{}.xml", chart_id).as_str(),
-                    ""
-                );
-                r_id += 1;
-                chart_id += 1;
-            },
-            None => {}
-        }
+    for _chart in worksheet.get_worksheet_drawing().get_chart_collection() {
+        is_write = write_relationship(
+            &mut writer,
+            &r_id,
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
+            format!("../charts/chart{}.xml", chart_id).as_str(),
+            ""
+        );
+        r_id += 1;
+        chart_id += 1;
+    }
+    for two_cell_anchor in worksheet.get_worksheet_drawing().get_two_cell_anchor_collection() {
         match two_cell_anchor.get_picture() {
             Some(picture) => {
                 is_write = write_relationship(

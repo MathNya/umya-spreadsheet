@@ -37,12 +37,6 @@ pub use self::picture::*;
           mod blip_fill;
 pub use self::blip_fill::*;
 
-          mod from_marker;
-pub use self::from_marker::*;
-
-          mod to_marker;
-pub use self::to_marker::*;
-
           mod two_cell_anchor;
 pub use self::two_cell_anchor::*;
 
@@ -69,3 +63,7 @@ pub use self::one_cell_anchor::*;
 
           mod extent;
 pub use self::extent::*;
+
+          mod marker_type;
+pub use self::marker_type::*;
+

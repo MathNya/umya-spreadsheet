@@ -6,6 +6,7 @@ use structs::office2010::drawing::charts::Style;
 use super::Chart;
 use super::ShapeProperties;
 use super::PrintSettings;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -17,7 +18,7 @@ pub struct ChartSpace {
     date1904: Date1904,
     editing_language: EditingLanguage,
     rounded_corners: RoundedCorners,
-    style: Option<Style>,
+    style: Style,
     chart: Chart,
     shape_properties: Option<ShapeProperties>,
     print_settings: PrintSettings,
@@ -31,7 +32,7 @@ impl ChartSpace {
         &mut self.date1904
     }
 
-    pub fn set_date1904(&mut self, value:Date1904)-> &mut ChartSpace {
+    pub fn set_date1904(&mut self, value:Date1904)-> &mut Self {
         self.date1904 = value;
         self
     }
@@ -44,7 +45,7 @@ impl ChartSpace {
         &mut self.editing_language
     }
 
-    pub fn set_editing_language(&mut self, value:EditingLanguage)-> &mut ChartSpace {
+    pub fn set_editing_language(&mut self, value:EditingLanguage)-> &mut Self {
         self.editing_language = value;
         self
     }
@@ -57,21 +58,21 @@ impl ChartSpace {
         &mut self.rounded_corners
     }
 
-    pub fn set_rounded_corners(&mut self, value:RoundedCorners)-> &mut ChartSpace {
+    pub fn set_rounded_corners(&mut self, value:RoundedCorners)-> &mut Self {
         self.rounded_corners = value;
         self
     }
 
-    pub fn get_style(&self)-> &Option<Style> {
+    pub fn get_style(&self)-> &Style {
         &self.style
     }
 
-    pub fn get_style_mut(&mut self)-> &mut Option<Style> {
+    pub fn get_style_mut(&mut self)-> &mut Style {
         &mut self.style
     }
 
-    pub fn set_style(&mut self, value:Style)-> &mut ChartSpace {
-        self.style = Some(value);
+    pub fn set_style(&mut self, value:Style)-> &mut Self {
+        self.style = value;
         self
     }
 
@@ -83,7 +84,7 @@ impl ChartSpace {
         &mut self.chart
     }
 
-    pub fn set_chart(&mut self, value:Chart)-> &mut ChartSpace {
+    pub fn set_chart(&mut self, value:Chart)-> &mut Self {
         self.chart = value;
         self
     }
@@ -96,7 +97,7 @@ impl ChartSpace {
         &mut self.shape_properties
     }
 
-    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut ChartSpace {
+    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut Self {
         self.shape_properties = Some(value);
         self
     }
@@ -109,7 +110,7 @@ impl ChartSpace {
         &mut self.print_settings
     }
 
-    pub fn set_print_settings(&mut self, value:PrintSettings)-> &mut ChartSpace {
+    pub fn set_print_settings(&mut self, value:PrintSettings)-> &mut Self {
         self.print_settings = value;
         self
     }
@@ -171,7 +172,7 @@ impl ChartSpace {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:chartSpace
         write_start_tag(writer, "c:chartSpace", vec![
             ("xmlns:c", "http://schemas.openxmlformats.org/drawingml/2006/chart"),
@@ -189,13 +190,10 @@ impl ChartSpace {
         &self.rounded_corners.write_to(writer);
 
         // mc:AlternateContent
-        match &self.style {
-            Some(v) => {v.write_to(writer);},
-            None => {}
-        }
+        &self.style.write_to(writer);
 
         // c:chart
-        &self.chart.write_to(writer);
+        &self.chart.write_to(writer, spreadsheet);
 
         // c:spPr
         match &self.shape_properties {

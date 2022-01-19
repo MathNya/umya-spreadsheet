@@ -3,6 +3,7 @@ use super::CellValue;
 use super::Style;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
+use helper::range::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
@@ -122,5 +123,15 @@ impl Cells {
 
     pub(crate) fn add(&mut self, cell:Cell) {
         self.index.push(cell);
+    }
+
+    pub(crate) fn get_cell_value_by_range<S: Into<String>>(&self, range:S) -> Vec<&CellValue> {
+        let mut result:Vec<&CellValue> = Vec::new();
+        let range_upper = range.into().to_uppercase();
+        let coordinate_list = get_coordinate_list(&range_upper);
+        for (col_num, row_num) in coordinate_list {
+            result.push(self.get_cell_value(&col_num, &row_num));
+        }
+        result
     }
 }

@@ -80,7 +80,7 @@ pub fn to_formatted_string<S: Into<String>>(value:S, format:S)-> String {
         return value.parse::<f64>().unwrap().to_string();
     }
     if &format == NumberingFormat::FORMAT_TEXT {
-        return value.parse::<f64>().unwrap().to_string();
+        return value.into();
     }
 
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")

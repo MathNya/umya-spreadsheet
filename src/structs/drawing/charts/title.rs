@@ -82,6 +82,11 @@ impl Title {
                         b"c:overlay" => {
                             &mut self.overlay.set_attributes(reader, e);
                         }
+                        b"c:layout" => {
+                            let mut obj = Layout::default();
+                            obj.set_attributes(reader, e, true);
+                            self.set_layout(obj);
+                        }
                         _ => (),
                     }
                 },

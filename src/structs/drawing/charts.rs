@@ -420,3 +420,6 @@ pub use self::series_lines::*;
 
           mod explosion;
 pub use self::explosion::*;
+
+          mod area_chart_series_list;
+pub use self::area_chart_series_list::*;

@@ -333,3 +333,8 @@ pub use self::true_false_blank_value::*;
           mod image;
 pub use self::image::*;
 
+          mod chart;
+pub use self::chart::*;
+
+          mod chart_type;
+pub use self::chart_type::*;

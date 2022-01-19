@@ -16,7 +16,7 @@ impl Smooth {
         &self.val.get_value()
     }
 
-    pub fn set_val(&mut self, value:bool)-> &mut Smooth {
+    pub fn set_val(&mut self, value:bool)-> &mut Self {
         self.val.set_value(value);
         self
     }

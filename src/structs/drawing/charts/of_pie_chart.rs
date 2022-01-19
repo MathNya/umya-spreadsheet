@@ -2,10 +2,12 @@
 use super::OfPieType;
 use super::VaryColors;
 use super::AreaChartSeries;
+use super::AreaChartSeriesList;
 use super::DataLabels;
 use super::GapWidth;
 use super::SecondPieSize;
 use super::SeriesLines;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -16,7 +18,7 @@ use std::io::Cursor;
 pub struct OfPieChart {
     of_pie_type: OfPieType,
     vary_colors: VaryColors,
-    area_chart_series: Vec<AreaChartSeries>,
+    area_chart_series_list: AreaChartSeriesList,
     data_labels: DataLabels,
     gap_width: GapWidth,
     second_pie_size: SecondPieSize,
@@ -49,21 +51,16 @@ impl OfPieChart {
         self
     }
 
-    pub fn get_area_chart_series(&self)-> &Vec<AreaChartSeries> {
-        &self.area_chart_series
+    pub fn get_area_chart_series_list(&self)-> &AreaChartSeriesList {
+        &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_mut(&mut self)-> &mut Vec<AreaChartSeries> {
-        &mut self.area_chart_series
+    pub fn get_area_chart_series_list_mut(&mut self)-> &mut AreaChartSeriesList {
+        &mut self.area_chart_series_list
     }
 
-    pub fn set_area_chart_series(&mut self, value:Vec<AreaChartSeries>)-> &mut OfPieChart {
-        self.area_chart_series = value;
-        self
-    }
-
-    pub fn add_area_chart_series(&mut self, value:AreaChartSeries)-> &mut OfPieChart {
-        self.area_chart_series.push(value);
+    pub fn set_area_chart_series_list(&mut self, value:AreaChartSeriesList)-> &mut Self {
+        self.area_chart_series_list = value;
         self
     }
 
@@ -132,7 +129,7 @@ impl OfPieChart {
                         b"c:ser" => {
                             let mut obj = AreaChartSeries::default();
                             obj.set_attributes(reader, e);
-                            self.add_area_chart_series(obj);
+                            self.get_area_chart_series_list_mut().add_area_chart_series(obj);
                         },
                         b"c:dLbls" => {
                             self.data_labels.set_attributes(reader, e);
@@ -174,7 +171,7 @@ impl OfPieChart {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:ofPieChart
         write_start_tag(writer, "c:ofPieChart", vec![], false);
 
@@ -185,8 +182,8 @@ impl OfPieChart {
         &self.vary_colors.write_to(writer);
 
         // c:ser
-        for v in &self.area_chart_series {
-            v.write_to(writer);
+        for v in self.area_chart_series_list.get_area_chart_series() {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:dLbls

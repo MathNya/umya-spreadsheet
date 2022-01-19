@@ -1,7 +1,7 @@
 // c:numCache
 use super::FormatCode;
-use super::PointCount;
-use super::StringPoint;
+use structs::Address;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -11,9 +11,6 @@ use std::io::Cursor;
 #[derive(Clone, Default, Debug)]
 pub struct NumberingCache {
     format_code: FormatCode,
-    point_count: PointCount,
-    string_point: Vec<StringPoint>,
-
 }
 impl NumberingCache {
     pub fn get_format_code(&self)-> &FormatCode {
@@ -29,37 +26,6 @@ impl NumberingCache {
         self
     }
 
-    pub fn get_point_count(&self)-> &PointCount {
-        &self.point_count
-    }
-
-    pub fn get_point_count_mut(&mut self)-> &mut PointCount {
-        &mut self.point_count
-    }
-
-    pub fn set_point_count(&mut self, value:PointCount)-> &mut NumberingCache {
-        self.point_count = value;
-        self
-    }
-
-    pub fn get_string_point(&self)-> &Vec<StringPoint> {
-        &self.string_point
-    }
-
-    pub fn get_string_point_mut(&mut self)-> &mut Vec<StringPoint> {
-        &mut self.string_point
-    }
-
-    pub fn set_string_point(&mut self, value:Vec<StringPoint>)-> &mut NumberingCache {
-        self.string_point = value;
-        self
-    }
-
-    pub fn add_string_point(&mut self, value:StringPoint)-> &mut NumberingCache {
-        self.string_point.push(value);
-        self
-    }
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader:&mut Reader<R>,
@@ -72,19 +38,6 @@ impl NumberingCache {
                     match e.name() {
                         b"c:formatCode" => {
                             self.format_code.set_attributes(reader, e);
-                        },
-                        b"c:pt" => {
-                            let mut obj = StringPoint::default();
-                            obj.set_attributes(reader, e);
-                            self.add_string_point(obj);
-                        },
-                        _ => (),
-                    }
-                },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"c:ptCount" => {
-                            self.point_count.set_attributes(reader, e);
                         },
                         _ => (),
                     }
@@ -103,7 +56,9 @@ impl NumberingCache {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, address:&Address, spreadsheet: &Spreadsheet) {
+        let cell_value_list = spreadsheet.get_cell_value_by_address_crate(address);
+        let coll_value_count = cell_value_list.len().to_string();
         // c:numCache
         write_start_tag(writer, "c:numCache", vec![], false);
 
@@ -111,11 +66,24 @@ impl NumberingCache {
         &self.format_code.write_to(writer);
 
         // c:ptCount
-        &self.point_count.write_to(writer);
+        write_start_tag(writer, "c:ptCount", vec![
+            ("val", coll_value_count.as_str()),
+        ], true);
 
-        // c:pt
-        for v in &self.string_point {
-            v.write_to(writer);
+        let mut idx = 0;
+        for cell_value in cell_value_list {
+            // c:pt
+            write_start_tag(writer, "c:pt", vec![
+                ("idx", idx.to_string().as_str()),
+            ], false);
+
+            // c:v
+            write_start_tag(writer, "c:v", vec![], false);
+            write_text_node(writer, cell_value.get_value());
+            write_end_tag(writer, "c:v");
+
+            write_end_tag(writer, "c:pt");
+            idx += 1;
         }
 
         write_end_tag(writer, "c:numCache");

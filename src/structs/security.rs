@@ -1,4 +1,4 @@
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Security {
     lock_revision: bool,
     lock_structure: bool,

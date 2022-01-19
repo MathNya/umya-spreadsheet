@@ -18,6 +18,7 @@ use super::ValueAxis;
 use super::SeriesAxis;
 use super::ShapeProperties;
 use super::Formula;
+use structs::Spreadsheet;
 use writer::driver::*;
 use quick_xml::Reader;
 use quick_xml::events::{Event, BytesStart};
@@ -54,7 +55,7 @@ impl PlotArea {
         &mut self.layout
     }
 
-    pub fn set_layout(&mut self, value:Layout)-> &mut PlotArea {
+    pub fn set_layout(&mut self, value:Layout)-> &mut Self {
         self.layout = value;
         self
     }
@@ -67,7 +68,7 @@ impl PlotArea {
         &mut self.line_chart
     }
 
-    pub fn set_line_chart(&mut self, value:LineChart)-> &mut PlotArea {
+    pub fn set_line_chart(&mut self, value:LineChart)-> &mut Self {
         self.line_chart = Some(value);
         self
     }
@@ -80,7 +81,7 @@ impl PlotArea {
         &mut self.line_3d_chart
     }
 
-    pub fn set_line_3d_chart(&mut self, value:Line3DChart)-> &mut PlotArea {
+    pub fn set_line_3d_chart(&mut self, value:Line3DChart)-> &mut Self {
         self.line_3d_chart = Some(value);
         self
     }
@@ -93,7 +94,7 @@ impl PlotArea {
         &mut self.pie_chart
     }
 
-    pub fn set_pie_chart(&mut self, value:PieChart)-> &mut PlotArea {
+    pub fn set_pie_chart(&mut self, value:PieChart)-> &mut Self {
         self.pie_chart = Some(value);
         self
     }
@@ -106,7 +107,7 @@ impl PlotArea {
         &mut self.pie_3d_chart
     }
 
-    pub fn set_pie_3d_chart(&mut self, value:Pie3DChart)-> &mut PlotArea {
+    pub fn set_pie_3d_chart(&mut self, value:Pie3DChart)-> &mut Self {
         self.pie_3d_chart = Some(value);
         self
     }
@@ -119,7 +120,7 @@ impl PlotArea {
         &mut self.doughnut_chart
     }
 
-    pub fn set_doughnut_chart(&mut self, value:DoughnutChart)-> &mut PlotArea {
+    pub fn set_doughnut_chart(&mut self, value:DoughnutChart)-> &mut Self {
         self.doughnut_chart = Some(value);
         self
     }
@@ -132,7 +133,7 @@ impl PlotArea {
         &mut self.scatter_chart
     }
 
-    pub fn set_scatter_chart(&mut self, value:ScatterChart)-> &mut PlotArea {
+    pub fn set_scatter_chart(&mut self, value:ScatterChart)-> &mut Self {
         self.scatter_chart = Some(value);
         self
     }
@@ -145,7 +146,7 @@ impl PlotArea {
         &mut self.bar_chart
     }
 
-    pub fn set_bar_chart(&mut self, value:BarChart)-> &mut PlotArea {
+    pub fn set_bar_chart(&mut self, value:BarChart)-> &mut Self {
         self.bar_chart = Some(value);
         self
     }
@@ -158,7 +159,7 @@ impl PlotArea {
         &mut self.bar_3d_chart
     }
 
-    pub fn set_bar_3d_chart(&mut self, value:Bar3DChart)-> &mut PlotArea {
+    pub fn set_bar_3d_chart(&mut self, value:Bar3DChart)-> &mut Self {
         self.bar_3d_chart = Some(value);
         self
     }
@@ -171,7 +172,7 @@ impl PlotArea {
         &mut self.radar_chart
     }
 
-    pub fn set_radar_chart(&mut self, value:RadarChart)-> &mut PlotArea {
+    pub fn set_radar_chart(&mut self, value:RadarChart)-> &mut Self {
         self.radar_chart = Some(value);
         self
     }
@@ -184,7 +185,7 @@ impl PlotArea {
         &mut self.bubble_chart
     }
 
-    pub fn set_bubble_chart(&mut self, value:BubbleChart)-> &mut PlotArea {
+    pub fn set_bubble_chart(&mut self, value:BubbleChart)-> &mut Self {
         self.bubble_chart = Some(value);
         self
     }
@@ -197,7 +198,7 @@ impl PlotArea {
         &mut self.area_chart
     }
 
-    pub fn set_area_chart(&mut self, value:AreaChart)-> &mut PlotArea {
+    pub fn set_area_chart(&mut self, value:AreaChart)-> &mut Self {
         self.area_chart = Some(value);
         self
     }
@@ -210,7 +211,7 @@ impl PlotArea {
         &mut self.area_3d_chart
     }
 
-    pub fn set_area_3d_chart(&mut self, value:Area3DChart)-> &mut PlotArea {
+    pub fn set_area_3d_chart(&mut self, value:Area3DChart)-> &mut Self {
         self.area_3d_chart = Some(value);
         self
     }
@@ -223,7 +224,7 @@ impl PlotArea {
         &mut self.of_pie_chart
     }
 
-    pub fn set_of_pie_chart(&mut self, value:OfPieChart)-> &mut PlotArea {
+    pub fn set_of_pie_chart(&mut self, value:OfPieChart)-> &mut Self {
         self.of_pie_chart = Some(value);
         self
     }
@@ -236,7 +237,12 @@ impl PlotArea {
         &mut self.category_axis
     }
 
-    pub fn set_category_axis(&mut self, value:CategoryAxis)-> &mut PlotArea {
+    pub fn set_category_axis(&mut self, value:Vec<CategoryAxis>)-> &mut Self {
+        self.category_axis = value;
+        self
+    }
+
+    pub fn add_category_axis(&mut self, value:CategoryAxis)-> &mut Self {
         self.category_axis.push(value);
         self
     }
@@ -249,7 +255,12 @@ impl PlotArea {
         &mut self.value_axis
     }
 
-    pub fn set_value_axis(&mut self, value:ValueAxis)-> &mut PlotArea {
+    pub fn set_value_axis(&mut self, value:Vec<ValueAxis>)-> &mut Self {
+        self.value_axis = value;
+        self
+    }
+
+    pub fn add_value_axis(&mut self, value:ValueAxis)-> &mut Self {
         self.value_axis.push(value);
         self
     }
@@ -262,7 +273,12 @@ impl PlotArea {
         &mut self.series_axis
     }
 
-    pub fn set_series_axis(&mut self, value:SeriesAxis)-> &mut PlotArea {
+    pub fn set_series_axis(&mut self, value:Vec<SeriesAxis>)-> &mut Self {
+        self.series_axis = value;
+        self
+    }
+
+    pub fn add_series_axis(&mut self, value:SeriesAxis)-> &mut Self {
         self.series_axis.push(value);
         self
     }
@@ -271,11 +287,11 @@ impl PlotArea {
         &self.shape_properties
     }
 
-    pub fn get_shape_properties_mut(&mut self)-> &Option<ShapeProperties> {
+    pub fn get_shape_properties_mut(&mut self)-> &mut Option<ShapeProperties> {
         &mut self.shape_properties
     }
 
-    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut PlotArea {
+    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut Self {
         self.shape_properties = Some(value);
         self
     }
@@ -284,7 +300,7 @@ impl PlotArea {
         let mut result:Vec<&mut Formula> = Vec::default();
         match &mut self.line_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -294,7 +310,7 @@ impl PlotArea {
         }
         match &mut self.line_3d_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -304,7 +320,7 @@ impl PlotArea {
         }
         match &mut self.pie_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -314,7 +330,7 @@ impl PlotArea {
         }
         match &mut self.pie_3d_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -324,7 +340,7 @@ impl PlotArea {
         }
         match &mut self.doughnut_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -334,7 +350,7 @@ impl PlotArea {
         }
         match &mut self.scatter_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -344,7 +360,7 @@ impl PlotArea {
         }
         match &mut self.bar_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -354,7 +370,7 @@ impl PlotArea {
         }
         match &mut self.bar_3d_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -364,7 +380,7 @@ impl PlotArea {
         }
         match &mut self.radar_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -374,7 +390,7 @@ impl PlotArea {
         }
         match &mut self.bubble_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -384,7 +400,7 @@ impl PlotArea {
         }
         match &mut self.area_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -394,7 +410,7 @@ impl PlotArea {
         }
         match &mut self.area_3d_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -404,7 +420,7 @@ impl PlotArea {
         }
         match &mut self.of_pie_chart {
             Some(v) => {
-                for ser in v.get_area_chart_series_mut() {
+                for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
                     for formula in ser.get_formula_mut() {
                         result.push(formula);
                     }
@@ -552,17 +568,17 @@ impl PlotArea {
                         b"c:catAx" => {
                             let mut obj = CategoryAxis::default();
                             obj.set_attributes(reader, e);
-                            self.set_category_axis(obj);
+                            self.add_category_axis(obj);
                         },
                         b"c:valAx" => {
                             let mut obj = ValueAxis::default();
                             obj.set_attributes(reader, e);
-                            self.set_value_axis(obj);
+                            self.add_value_axis(obj);
                         },
                         b"c:serAx" => {
                             let mut obj = SeriesAxis::default();
                             obj.set_attributes(reader, e);
-                            self.set_series_axis(obj);
+                            self.add_series_axis(obj);
                         },
                         b"c:spPr" => {
                             let mut obj = ShapeProperties::default();
@@ -586,7 +602,7 @@ impl PlotArea {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:plotArea
         write_start_tag(writer, "c:plotArea", vec![], false);
 
@@ -595,79 +611,79 @@ impl PlotArea {
 
         // c:lineChart
         match &self.line_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:line3DChart
         match &self.line_3d_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:pieChart
         match &self.pie_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:pie3DChart
         match &self.pie_3d_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:doughnutChart
         match &self.doughnut_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:scatterChart
         match &self.scatter_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:barChart
         match &self.bar_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:bar3DChart
         match &self.bar_3d_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:radarChart
         match &self.radar_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:bubbleChart
         match &self.bubble_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:areaChart
         match &self.area_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:area3DChart
         match &self.area_3d_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
         // c:ofPieChart
         match &self.of_pie_chart {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {v.write_to(writer, spreadsheet);},
             None => {}
         }
 
