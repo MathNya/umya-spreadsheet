@@ -17,24 +17,26 @@ pub enum ChartType {
     OfPieChart,
 }
 impl Default for ChartType {
-    fn default() -> Self { Self::LineChart }
+    fn default() -> Self {
+        Self::LineChart
+    }
 }
 impl EnumTrait for ChartType {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::LineChart => {"line_chart"},
-            Self::Line3DChart => {"line_3d_chart"},
-            Self::PieChart => {"pie_chart"},
-            Self::Pie3DChart => {"pie_3d_chart"},
-            Self::DoughnutChart => {"doughnut_chart"},
-            Self::ScatterChart => {"scatter_chart"},
-            Self::BarChart => {"bar_chart"},
-            Self::Bar3DChart => {"bar_3d_chart"},
-            Self::RadarChart => {"radar_chart"},
-            Self::BubbleChart => {"bubble_chart"},
-            Self::AreaChart => {"area_chart"},
-            Self::Area3DChart => {"area_3d_chart"},
-            Self::OfPieChart => {"of_pie_chart"},
+            Self::LineChart => "line_chart",
+            Self::Line3DChart => "line_3d_chart",
+            Self::PieChart => "pie_chart",
+            Self::Pie3DChart => "pie_3d_chart",
+            Self::DoughnutChart => "doughnut_chart",
+            Self::ScatterChart => "scatter_chart",
+            Self::BarChart => "bar_chart",
+            Self::Bar3DChart => "bar_3d_chart",
+            Self::RadarChart => "radar_chart",
+            Self::BubbleChart => "bubble_chart",
+            Self::AreaChart => "area_chart",
+            Self::Area3DChart => "area_3d_chart",
+            Self::OfPieChart => "of_pie_chart",
         }
     }
 }
@@ -55,7 +57,7 @@ impl FromStr for ChartType {
             "area_chart" => Ok(Self::AreaChart),
             "area_3d_chart" => Ok(Self::Area3DChart),
             "of_pie_chart" => Ok(Self::OfPieChart),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

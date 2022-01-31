@@ -7,16 +7,16 @@ pub struct Security {
     workbook_password: String,
 }
 impl Security {
-     pub(crate) fn is_security_enabled(&self) -> bool {
-         if self.lock_revision {
+    pub(crate) fn is_security_enabled(&self) -> bool {
+        if self.lock_revision {
             return true;
-         } else if self.lock_structure {
+        } else if self.lock_structure {
             return true;
-         } else if self.lock_windows {
+        } else if self.lock_windows {
             return true;
-         } else {
-             return false;
-         }
+        } else {
+            return false;
+        }
     }
     pub fn get_lock_revision(&self) -> &bool {
         &self.lock_revision

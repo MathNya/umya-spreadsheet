@@ -8,15 +8,17 @@ pub enum TileFlipValues {
     Vertical,
 }
 impl Default for TileFlipValues {
-    fn default() -> Self { Self::None }
+    fn default() -> Self {
+        Self::None
+    }
 }
 impl EnumTrait for TileFlipValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Horizontal => {"x"},
-            Self::HorizontalAndVertical => {"xy"},
-            Self::None => {"none"},
-            Self::Vertical => {"y"},
+            Self::Horizontal => "x",
+            Self::HorizontalAndVertical => "xy",
+            Self::None => "none",
+            Self::Vertical => "y",
         }
     }
 }
@@ -28,7 +30,7 @@ impl FromStr for TileFlipValues {
             "xy" => Ok(Self::HorizontalAndVertical),
             "none" => Ok(Self::None),
             "y" => Ok(Self::Vertical),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

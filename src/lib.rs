@@ -1,16 +1,16 @@
 //! # umya-spreadsheet
 //! [![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
 //! [![Crates.io](https://img.shields.io/crates/l/umya-spreadsheet)](https://github.com/MathNya/umya-spreadsheet#license)
-//! 
+//!
 //! ## Description
 //! **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
-//! 
+//!
 //! ## Example
 // ![Result Image](images/sample1.png)
 //! ### Reader or New File
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! // reader
 //! let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
 //! let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
@@ -21,9 +21,9 @@
 //! ### New worksheet
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! let mut book = umya_spreadsheet::new_file();
-//! 
+//!
 //! // new worksheet
 //! let _ = book.new_sheet("Sheet2");
 //! ```
@@ -31,7 +31,7 @@
 //! ```rust
 //! extern crate umya_spreadsheet;
 //! let mut book = umya_spreadsheet::new_file();
-//! 
+//!
 //! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
 //! clone_sheet.set_title("New Sheet");
 //! let _ = book.add_sheet(clone_sheet);
@@ -39,10 +39,10 @@
 //! ### Change value
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! let mut book = umya_spreadsheet::new_file();
 //! let _ = book.new_sheet("Sheet2");
-//! 
+//!
 //! // change value
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("B2").set_value_from_i32(1);
@@ -55,11 +55,11 @@
 //! ### Read value
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! let mut book = umya_spreadsheet::new_file();
 //! let _ = book.new_sheet("Sheet2");
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
-//! 
+//!
 //! // read value
 //! let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");
 //! // or
@@ -71,10 +71,10 @@
 //! ### Change style
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! let mut book = umya_spreadsheet::new_file();
 //! let _ = book.new_sheet("Sheet2");
-//! 
+//!
 //! // add bottom border
 //! book.get_sheet_by_name_mut("Sheet2").unwrap()
 //! .get_style_mut("A1")
@@ -92,20 +92,20 @@
 // ![Result Image](images/sample2.png)
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! let mut book = umya_spreadsheet::new_file();
-//! 
+//!
 //! // insert rows
 //! book.insert_new_row("Sheet1", 2, 3);
-//! 
+//!
 //! // insert columns
 //! book.insert_new_colmun("Sheet1", "B", 3);
 //! // or
 //! book.insert_new_colmun_by_index("Sheet1", 2, 3);
-//! 
+//!
 //! // remove rows
 //! book.remove_row("Sheet1", 6, 2);
-//! 
+//!
 //! // remove columns
 //! book.remove_colmun("Sheet1", "F", 2);
 //! // or
@@ -114,10 +114,10 @@
 //! ### Writer
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! let mut book = umya_spreadsheet::new_file();
 //! let _ = book.new_sheet("Sheet2");
-//! 
+//!
 //! // writer
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
 //! let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -135,16 +135,16 @@
 //! * PieChart
 //! * RadarChart
 //! * ScatterChart
-//! 
+//!
 //! Other types will be supported sequentially.
-//! 
+//!
 //! ## Add Chart
 // ![Result Image](images/sample3.png)
 //! ```rust
 //! extern crate umya_spreadsheet;
-//! 
+//!
 //! let mut book = umya_spreadsheet::new_file();
-//! 
+//!
 //! // add chart
 //! let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
 //! let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -166,21 +166,21 @@
 //! ## License
 //! MIT
 
-extern crate quick_xml;
-extern crate zip;
-extern crate regex;
-extern crate md5;
-extern crate thousands;
-extern crate onig;
 extern crate chrono;
+extern crate md5;
+extern crate onig;
+extern crate quick_xml;
+extern crate regex;
+extern crate thousands;
+extern crate zip;
 
 #[macro_use]
 extern crate lazy_static;
 
+pub mod helper;
+pub mod reader;
 pub mod structs;
 pub mod writer;
-pub mod reader;
-pub mod helper;
 
 pub use self::structs::*;
 
@@ -192,7 +192,7 @@ pub use self::structs::*;
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
 /// ```
-pub fn new_file()->structs::Spreadsheet {
+pub fn new_file() -> structs::Spreadsheet {
     let mut spreadsheet = structs::Spreadsheet::default();
     spreadsheet.set_theme(Theme::get_defalut_value());
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();

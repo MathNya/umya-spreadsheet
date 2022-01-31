@@ -7,14 +7,16 @@ pub enum RadarStyleValues {
     Standard,
 }
 impl Default for RadarStyleValues {
-    fn default() -> Self { Self::Standard }
+    fn default() -> Self {
+        Self::Standard
+    }
 }
 impl EnumTrait for RadarStyleValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Filled => {"filled"},
-            Self::Marker => {"marker"},
-            Self::Standard => {"standard"},
+            Self::Filled => "filled",
+            Self::Marker => "marker",
+            Self::Standard => "standard",
         }
     }
 }
@@ -25,8 +27,7 @@ impl FromStr for RadarStyleValues {
             "filled" => Ok(Self::Filled),
             "marker" => Ok(Self::Marker),
             "standard" => Ok(Self::Standard),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

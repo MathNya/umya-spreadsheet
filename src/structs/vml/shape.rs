@@ -1,20 +1,20 @@
-use structs::StringValue;
-use structs::TrueFalseValue;
-use structs::EnumValue;
-use super::spreadsheet::ClientData;
 use super::office::InsetMarginValues;
+use super::spreadsheet::ClientData;
 use super::Fill;
 use super::ImageData;
-use super::Stroke;
-use super::Shadow;
 use super::Path;
+use super::Shadow;
+use super::Stroke;
 use super::TextBox;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
-use writer::driver::*;
 use reader::driver::*;
+use std::io::Cursor;
+use structs::EnumValue;
+use structs::StringValue;
+use structs::TrueFalseValue;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
@@ -24,7 +24,7 @@ pub struct Shape {
     fill_color: StringValue,
     stroked: TrueFalseValue,
     stroke_color: StringValue,
-    stroke_weight:StringValue,
+    stroke_weight: StringValue,
     inset_mode: EnumValue<InsetMarginValues>,
     fill: Option<Fill>,
     image_data: Option<ImageData>,
@@ -39,70 +39,70 @@ impl Shape {
         &self.style.get_value()
     }
 
-    pub fn set_style<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.style.set_value(value);
         self
     }
 
-    pub fn get_type(&self)->&str {
+    pub fn get_type(&self) -> &str {
         &self.r_type.get_value()
     }
 
-    pub fn set_type<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.r_type.set_value(value);
         self
     }
 
-    pub fn get_filled(&self)->&bool {
+    pub fn get_filled(&self) -> &bool {
         &self.filled.get_value()
     }
 
-    pub fn set_filled(&mut self, value:bool) -> &mut Self {
+    pub fn set_filled(&mut self, value: bool) -> &mut Self {
         self.filled.set_value(value);
         self
     }
 
-    pub fn get_fill_color(&self)->&str {
+    pub fn get_fill_color(&self) -> &str {
         &self.fill_color.get_value()
     }
 
-    pub fn set_fill_color<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_fill_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.fill_color.set_value(value);
         self
     }
 
-    pub fn get_stroked(&self)->&bool {
+    pub fn get_stroked(&self) -> &bool {
         &self.stroked.get_value()
     }
 
-    pub fn set_stroked(&mut self, value:bool) -> &mut Self {
+    pub fn set_stroked(&mut self, value: bool) -> &mut Self {
         self.stroked.set_value(value);
         self
     }
 
-    pub fn get_stroke_color(&self)->&str {
+    pub fn get_stroke_color(&self) -> &str {
         &self.stroke_color.get_value()
     }
 
-    pub fn set_stroke_color<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_stroke_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.stroke_color.set_value(value);
         self
     }
 
-    pub fn get_stroke_weight(&self)->&str {
+    pub fn get_stroke_weight(&self) -> &str {
         &self.stroke_weight.get_value()
     }
 
-    pub fn set_stroke_weight<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_stroke_weight<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.stroke_weight.set_value(value);
         self
     }
 
-    pub fn get_inset_mode(&self)->&InsetMarginValues {
+    pub fn get_inset_mode(&self) -> &InsetMarginValues {
         &self.inset_mode.get_value()
     }
 
-    pub fn set_inset_mode(&mut self, value:InsetMarginValues) -> &mut Self {
+    pub fn set_inset_mode(&mut self, value: InsetMarginValues) -> &mut Self {
         self.inset_mode.set_value(value);
         self
     }
@@ -115,7 +115,7 @@ impl Shape {
         &mut self.fill
     }
 
-    pub fn set_fill(&mut self, value:Fill) -> &mut Self {
+    pub fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill = Some(value);
         self
     }
@@ -128,7 +128,7 @@ impl Shape {
         &mut self.image_data
     }
 
-    pub fn set_image_data(&mut self, value:ImageData) -> &mut Self {
+    pub fn set_image_data(&mut self, value: ImageData) -> &mut Self {
         self.image_data = Some(value);
         self
     }
@@ -141,7 +141,7 @@ impl Shape {
         &mut self.stroke
     }
 
-    pub fn set_stroke(&mut self, value:Stroke) -> &mut Self {
+    pub fn set_stroke(&mut self, value: Stroke) -> &mut Self {
         self.stroke = Some(value);
         self
     }
@@ -154,7 +154,7 @@ impl Shape {
         &mut self.shadow
     }
 
-    pub fn set_shadow(&mut self, value:Shadow) -> &mut Self {
+    pub fn set_shadow(&mut self, value: Shadow) -> &mut Self {
         self.shadow = Some(value);
         self
     }
@@ -167,7 +167,7 @@ impl Shape {
         &mut self.path
     }
 
-    pub fn set_path(&mut self, value:Path) -> &mut Self {
+    pub fn set_path(&mut self, value: Path) -> &mut Self {
         self.path = Some(value);
         self
     }
@@ -180,7 +180,7 @@ impl Shape {
         &mut self.text_box
     }
 
-    pub fn set_text_box(&mut self, value:TextBox) -> &mut Self {
+    pub fn set_text_box(&mut self, value: TextBox) -> &mut Self {
         self.text_box = Some(value);
         self
     }
@@ -193,7 +193,7 @@ impl Shape {
         &mut self.client_data
     }
 
-    pub fn set_client_data(&mut self, value:ClientData) -> &mut Self {
+    pub fn set_client_data(&mut self, value: ClientData) -> &mut Self {
         self.client_data = value;
         self
     }
@@ -208,50 +208,50 @@ impl Shape {
         match get_attribute(e, b"type") {
             Some(v) => {
                 self.r_type.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"style") {
             Some(v) => {
                 self.style.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"filled") {
             Some(v) => {
                 self.filled.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"fillcolor") {
             Some(v) => {
                 self.fill_color.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"stroked") {
             Some(v) => {
                 self.stroked.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"strokecolor") {
             Some(v) => {
                 self.stroke_color.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"strokeweight") {
             Some(v) => {
                 self.stroke_weight.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"o:insetmode") {
             Some(v) => {
                 self.inset_mode.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
 
         let mut buf = Vec::new();
@@ -310,12 +310,7 @@ impl Shape {
         }
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-        id: &usize,
-        r_id: &usize,
-    ) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, id: &usize, r_id: &usize) {
         // v:shape
         let id_str = format!("_x0000_s{}", id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -348,37 +343,49 @@ impl Shape {
 
         // v:fill
         match &self.fill {
-            Some(v) => { v.write_to(writer); },
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 
         // v:shadow
         match &self.shadow {
-            Some(v) => { v.write_to(writer); },
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 
         // v:path
         match &self.path {
-            Some(v) => { v.write_to(writer); },
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 
         // v:textbox
         match &self.text_box {
-            Some(v) => { v.write_to(writer); },
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 
         // v:stroke
         match &self.stroke {
-            Some(v) => { v.write_to(writer); },
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 
         // v:imagedata
         match &self.image_data {
-            Some(v) => { v.write_to(writer, r_id); },
+            Some(v) => {
+                v.write_to(writer, r_id);
+            }
             None => {}
         }
 

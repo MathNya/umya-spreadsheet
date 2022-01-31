@@ -1,10 +1,10 @@
 //xdr:cNvPicPr
 use super::super::PictureLocks;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualPictureDrawingProperties {
@@ -19,32 +19,28 @@ impl NonVisualPictureDrawingProperties {
         &mut self.picture_locks
     }
 
-    pub fn set_picture_locks(&mut self, value:PictureLocks) {
+    pub fn set_picture_locks(&mut self, value: PictureLocks) {
         self.picture_locks = value;
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
-    
+
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:picLocks" => {
-                            &mut self.get_picture_locks_mut().set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:picLocks" => {
+                        &mut self.get_picture_locks_mut().set_attributes(reader, e);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:cNvPicPr" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:cNvPicPr" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cNvPicPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

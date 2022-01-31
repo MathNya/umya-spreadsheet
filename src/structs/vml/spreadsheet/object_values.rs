@@ -23,30 +23,32 @@ pub enum ObjectValues {
     Spin,
 }
 impl Default for ObjectValues {
-    fn default() -> Self { Self::Button }
+    fn default() -> Self {
+        Self::Button
+    }
 }
 impl EnumTrait for ObjectValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::AuditingLine => {"LineA"},
-            Self::AuditingRectangle => {"RectA"},
-            Self::Button => {"Button"},
-            Self::Checkbox => {"Checkbox"},
-            Self::Dialog => {"Dialog"},
-            Self::Drop => {"Drop"},
-            Self::Edit => {"Edit"},
-            Self::Group => {"Group"},
-            Self::GroupBox => {"GBox"},
-            Self::Label => {"Label"},
-            Self::List => {"List"},
-            Self::Movie => {"Movie"},
-            Self::Note => {"Note"},
-            Self::Picture => {"Pict"},
-            Self::Radio => {"Radio"},
-            Self::Rectangle => {"Rect"},
-            Self::Scroll => {"Scroll"},
-            Self::Shape => {"Shape"},
-            Self::Spin => {"Spin"},
+            Self::AuditingLine => "LineA",
+            Self::AuditingRectangle => "RectA",
+            Self::Button => "Button",
+            Self::Checkbox => "Checkbox",
+            Self::Dialog => "Dialog",
+            Self::Drop => "Drop",
+            Self::Edit => "Edit",
+            Self::Group => "Group",
+            Self::GroupBox => "GBox",
+            Self::Label => "Label",
+            Self::List => "List",
+            Self::Movie => "Movie",
+            Self::Note => "Note",
+            Self::Picture => "Pict",
+            Self::Radio => "Radio",
+            Self::Rectangle => "Rect",
+            Self::Scroll => "Scroll",
+            Self::Shape => "Shape",
+            Self::Spin => "Spin",
         }
     }
 }
@@ -73,7 +75,7 @@ impl FromStr for ObjectValues {
             "Scroll" => Ok(Self::Scroll),
             "Shape" => Ok(Self::Shape),
             "Spin" => Ok(Self::Spin),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

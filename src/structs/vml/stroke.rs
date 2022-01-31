@@ -1,10 +1,10 @@
-use structs::StringValue;
-use quick_xml::events::{BytesStart};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
-use writer::driver::*;
 use reader::driver::*;
+use std::io::Cursor;
+use structs::StringValue;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Stroke {
@@ -15,7 +15,7 @@ impl Stroke {
         &self.dash_style.get_value()
     }
 
-    pub fn set_dash_style<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_dash_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.dash_style.set_value(value);
         self
     }
@@ -28,15 +28,12 @@ impl Stroke {
         match get_attribute(e, b"dashstyle") {
             Some(v) => {
                 self.dash_style.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-    ) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:stroke
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.dash_style.has_value() {

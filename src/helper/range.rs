@@ -1,6 +1,6 @@
 use helper::coordinate::*;
 
-pub fn get_coordinate_list<S: Into<String>>(range_str:S) -> Vec<(u32, u32)> {
+pub fn get_coordinate_list<S: Into<String>>(range_str: S) -> Vec<(u32, u32)> {
     let value = range_str.into();
     let coordinate_collection: Vec<&str> = value.split(":").collect();
 
@@ -8,7 +8,7 @@ pub fn get_coordinate_list<S: Into<String>>(range_str:S) -> Vec<(u32, u32)> {
         panic!("Non-standard range.");
     }
 
-    let mut result:Vec<(u32, u32)> = Vec::new();
+    let mut result: Vec<(u32, u32)> = Vec::new();
 
     let mut is_col_select = false;
     let mut is_row_select = false;
@@ -21,18 +21,20 @@ pub fn get_coordinate_list<S: Into<String>>(range_str:S) -> Vec<(u32, u32)> {
         let coordinate_str = coordinate_collection[0].to_string();
         let nums = index_from_coordinate(coordinate_str);
         match nums[0] {
-            Some(v)=> {
+            Some(v) => {
                 is_col_select = true;
                 col_start = v;
                 col_end = v;
-            }, None => {},
+            }
+            None => {}
         };
         match nums[1] {
-            Some(v)=> {
+            Some(v) => {
                 is_row_select = true;
                 row_start = v;
                 row_end = v;
-            }, None => {},
+            }
+            None => {}
         }
     }
 
@@ -40,22 +42,24 @@ pub fn get_coordinate_list<S: Into<String>>(range_str:S) -> Vec<(u32, u32)> {
         let coordinate_str = coordinate_collection[1].to_string();
         let nums = index_from_coordinate(coordinate_str);
         match nums[0] {
-            Some(v)=> {
+            Some(v) => {
                 col_end = v;
-            }, None => {
+            }
+            None => {
                 if is_col_select == false {
                     panic!("Non-standard range.");
                 }
-            },
+            }
         };
         match nums[1] {
-            Some(v)=> {
+            Some(v) => {
                 row_end = v;
-            }, None => {
+            }
+            None => {
                 if is_row_select == false {
                     panic!("Non-standard range.");
                 }
-            },
+            }
         }
     }
 
@@ -64,6 +68,6 @@ pub fn get_coordinate_list<S: Into<String>>(range_str:S) -> Vec<(u32, u32)> {
             result.push((col_num, row_num));
         }
     }
-    
+
     result
 }

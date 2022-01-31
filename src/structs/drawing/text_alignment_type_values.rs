@@ -11,18 +11,20 @@ pub enum TextAlignmentTypeValues {
     ThaiDistributed,
 }
 impl Default for TextAlignmentTypeValues {
-    fn default() -> Self { Self::Left }
+    fn default() -> Self {
+        Self::Left
+    }
 }
 impl EnumTrait for TextAlignmentTypeValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Center => {"ctr"},
-            Self::Distributed => {"dist"},
-            Self::Justified => {"just"},
-            Self::JustifiedLow => {"justLow"},
-            Self::Left => {"l"},
-            Self::Right => {"r"},
-            Self::ThaiDistributed => {"thaiDist"},
+            Self::Center => "ctr",
+            Self::Distributed => "dist",
+            Self::Justified => "just",
+            Self::JustifiedLow => "justLow",
+            Self::Left => "l",
+            Self::Right => "r",
+            Self::ThaiDistributed => "thaiDist",
         }
     }
 }
@@ -37,7 +39,7 @@ impl FromStr for TextAlignmentTypeValues {
             "l" => Ok(Self::Left),
             "r" => Ok(Self::Right),
             "thaiDist" => Ok(Self::ThaiDistributed),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

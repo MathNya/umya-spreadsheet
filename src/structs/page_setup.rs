@@ -14,16 +14,16 @@ pub struct PageSetup {
     first_page_number: i32,
 }
 impl PageSetup {
-    pub fn get_paper_size(&self)-> &i32 {
+    pub fn get_paper_size(&self) -> &i32 {
         &self.paper_size
     }
-    pub fn set_paper_size(&mut self, value:i32) {
+    pub fn set_paper_size(&mut self, value: i32) {
         self.paper_size = value;
     }
-    pub fn get_fit_to_page(&self)-> &bool {
+    pub fn get_fit_to_page(&self) -> &bool {
         &self.fit_to_page
     }
-    pub fn set_fit_to_page(&mut self, value:bool) {
+    pub fn set_fit_to_page(&mut self, value: bool) {
         self.fit_to_page = value;
     }
 }

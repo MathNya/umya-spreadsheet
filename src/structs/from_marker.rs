@@ -1,9 +1,9 @@
 // from
-use writer::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct FromMarker {
@@ -13,85 +13,91 @@ pub struct FromMarker {
     row_off: usize,
 }
 impl FromMarker {
-    pub fn get_col(&self)-> &usize {
+    pub fn get_col(&self) -> &usize {
         &self.col
     }
 
-    pub fn set_col(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_col(&mut self, value: usize) -> &mut FromMarker {
         self.col = value;
         self
     }
 
-    pub fn get_col_off(&self)-> &usize {
+    pub fn get_col_off(&self) -> &usize {
         &self.col_off
     }
 
-    pub fn set_col_off(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_col_off(&mut self, value: usize) -> &mut FromMarker {
         self.col_off = value;
         self
     }
 
-    pub fn get_row(&self)-> &usize {
+    pub fn get_row(&self) -> &usize {
         &self.row
     }
 
-    pub fn set_row(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_row(&mut self, value: usize) -> &mut FromMarker {
         self.row = value;
         self
     }
 
-    pub fn get_row_off(&self)-> &usize {
+    pub fn get_row_off(&self) -> &usize {
         &self.row_off
     }
 
-    pub fn set_row_off(&mut self, value:usize)-> &mut FromMarker {
+    pub fn set_row_off(&mut self, value: usize) -> &mut FromMarker {
         self.row_off = value;
         self
     }
 
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows:&usize) {
+    pub(crate) fn adjustment_insert_row(&mut self, num_rows: &usize) {
         self.row += num_rows;
     }
 
-    pub(crate) fn adjustment_insert_colmun(&mut self, num_cols:&usize) {
+    pub(crate) fn adjustment_insert_colmun(&mut self, num_cols: &usize) {
         self.col += num_cols;
     }
 
-    pub(crate) fn adjustment_remove_row(&mut self, num_rows:&usize) {
-        self.row = if &self.row > num_rows { self.row - num_rows } else { 1 };
+    pub(crate) fn adjustment_remove_row(&mut self, num_rows: &usize) {
+        self.row = if &self.row > num_rows {
+            self.row - num_rows
+        } else {
+            1
+        };
     }
 
-    pub(crate) fn adjustment_remove_colmun(&mut self, num_cols:&usize) {
-        self.col = if &self.col > num_cols { self.col - num_cols } else { 1 };
+    pub(crate) fn adjustment_remove_colmun(&mut self, num_cols: &usize) {
+        self.col = if &self.col > num_cols {
+            self.col - num_cols
+        } else {
+            1
+        };
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart,
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
-        let mut string_value:String = String::from("");
+        let mut string_value: String = String::from("");
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:col" => {
-                            self.col = string_value.parse::<usize>().unwrap();
-                        },
-                        b"xdr:colOff" => {
-                            self.col_off = string_value.parse::<usize>().unwrap();
-                        },
-                        b"xdr:row" => {
-                            self.row = string_value.parse::<usize>().unwrap();
-                        },
-                        b"xdr:rowOff" => {
-                            self.row_off = string_value.parse::<usize>().unwrap();
-                        },
-                        b"from" => return,
-                        _ => (),
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:col" => {
+                        self.col = string_value.parse::<usize>().unwrap();
                     }
+                    b"xdr:colOff" => {
+                        self.col_off = string_value.parse::<usize>().unwrap();
+                    }
+                    b"xdr:row" => {
+                        self.row = string_value.parse::<usize>().unwrap();
+                    }
+                    b"xdr:rowOff" => {
+                        self.row_off = string_value.parse::<usize>().unwrap();
+                    }
+                    b"from" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "from"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -114,7 +120,7 @@ impl FromMarker {
         write_start_tag(writer, "xdr:colOff", vec![], false);
         write_text_node(writer, &self.col_off.to_string());
         write_end_tag(writer, "xdr:colOff");
-        
+
         // xdr:row
         write_start_tag(writer, "xdr:row", vec![], false);
         write_text_node(writer, &self.row.to_string());

@@ -9,16 +9,18 @@ pub enum ClipboardFormatValues {
     PictureScreen,
 }
 impl Default for ClipboardFormatValues {
-    fn default() -> Self { Self::PictureOld }
+    fn default() -> Self {
+        Self::PictureOld
+    }
 }
 impl EnumTrait for ClipboardFormatValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Bitmap => {"Bitmap"},
-            Self::Picture => {"Pict"},
-            Self::PictureOld => {"PictOld"},
-            Self::PicturePrint => {"PictPrint"},
-            Self::PictureScreen => {"PictScreen"},
+            Self::Bitmap => "Bitmap",
+            Self::Picture => "Pict",
+            Self::PictureOld => "PictOld",
+            Self::PicturePrint => "PictPrint",
+            Self::PictureScreen => "PictScreen",
         }
     }
 }
@@ -31,7 +33,7 @@ impl FromStr for ClipboardFormatValues {
             "PictOld" => Ok(Self::PictureOld),
             "PictPrint" => Ok(Self::PicturePrint),
             "PictScreen" => Ok(Self::PictureScreen),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

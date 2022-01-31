@@ -8,15 +8,17 @@ pub enum PaneValues {
     TopRight,
 }
 impl Default for PaneValues {
-    fn default() -> Self { Self::BottomRight }
+    fn default() -> Self {
+        Self::BottomRight
+    }
 }
 impl EnumTrait for PaneValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::BottomLeft => {"bottomLeft"},
-            Self::BottomRight => {"bottomRight"},
-            Self::TopLeft => {"topLeft"},
-            Self::TopRight => {"TopRight"},
+            Self::BottomLeft => "bottomLeft",
+            Self::BottomRight => "bottomRight",
+            Self::TopLeft => "topLeft",
+            Self::TopRight => "TopRight",
         }
     }
 }
@@ -28,7 +30,7 @@ impl FromStr for PaneValues {
             "bottomRight" => Ok(Self::BottomRight),
             "topLeft" => Ok(Self::TopLeft),
             "TopRight" => Ok(Self::TopRight),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

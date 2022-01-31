@@ -1,9 +1,9 @@
-use super::Font;
-use super::Fill;
-use super::Borders;
 use super::Alignment;
-use super::NumberingFormat;
+use super::Borders;
 use super::Coordinate;
+use super::Fill;
+use super::Font;
+use super::NumberingFormat;
 
 #[derive(Clone, Default, Debug)]
 pub struct Style {
@@ -15,15 +15,15 @@ pub struct Style {
     numbering_format: Option<NumberingFormat>,
 }
 impl Style {
-    pub fn get_coordinate(&self)-> &Coordinate {
+    pub fn get_coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
 
-    pub fn get_coordinate_mut(&mut self)-> &mut Coordinate {
+    pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
         &mut self.coordinate
     }
-    
-    pub fn set_coordinate(&mut self, value:Coordinate)-> &mut Self {
+
+    pub fn set_coordinate(&mut self, value: Coordinate) -> &mut Self {
         self.coordinate = value;
         self
     }
@@ -41,12 +41,12 @@ impl Style {
         self.font.as_mut().unwrap()
     }
 
-    pub fn set_font(&mut self, value:Font)-> &mut Self {
+    pub fn set_font(&mut self, value: Font) -> &mut Self {
         self.font = Some(value);
         self
     }
 
-    pub(crate) fn set_font_crate(&mut self, value:Option<Font>)-> &mut Self {
+    pub(crate) fn set_font_crate(&mut self, value: Option<Font>) -> &mut Self {
         self.font = value;
         self
     }
@@ -63,13 +63,13 @@ impl Style {
         self.set_fill(Fill::get_defalut_value());
         self.fill.as_mut().unwrap()
     }
-    
-    pub fn set_fill(&mut self, value:Fill)-> &mut Self {
+
+    pub fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill = Some(value);
         self
     }
 
-    pub(crate) fn set_fill_crate(&mut self, value:Option<Fill>)-> &mut Self {
+    pub(crate) fn set_fill_crate(&mut self, value: Option<Fill>) -> &mut Self {
         self.fill = value;
         self
     }
@@ -87,12 +87,12 @@ impl Style {
         self.borders.as_mut().unwrap()
     }
 
-    pub fn set_borders(&mut self, value:Borders)-> &mut Self {
+    pub fn set_borders(&mut self, value: Borders) -> &mut Self {
         self.borders = Some(value);
         self
     }
 
-    pub(crate) fn set_borders_crate(&mut self, value:Option<Borders>)-> &mut Self {
+    pub(crate) fn set_borders_crate(&mut self, value: Option<Borders>) -> &mut Self {
         self.borders = value;
         self
     }
@@ -110,12 +110,12 @@ impl Style {
         self.alignment.as_mut().unwrap()
     }
 
-    pub fn set_alignment(&mut self, value:Alignment)-> &mut Self {
+    pub fn set_alignment(&mut self, value: Alignment) -> &mut Self {
         self.alignment = Some(value);
         self
     }
 
-    pub(crate) fn set_alignment_crate(&mut self, value:Option<Alignment>)-> &mut Self {
+    pub(crate) fn set_alignment_crate(&mut self, value: Option<Alignment>) -> &mut Self {
         self.alignment = value;
         self
     }
@@ -137,7 +137,7 @@ impl Style {
         &mut self.numbering_format
     }
 
-    pub fn set_numbering_format(&mut self, value:NumberingFormat)-> &mut Self {
+    pub fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
         self.numbering_format = Some(value);
         self
     }
@@ -150,23 +150,62 @@ impl Style {
         self.get_numbering_format_mut()
     }
 
-    pub fn set_number_format(&mut self, value:NumberingFormat)-> &mut Self {
+    pub fn set_number_format(&mut self, value: NumberingFormat) -> &mut Self {
         self.set_numbering_format(value)
     }
 
-    pub(crate) fn get_defalut_value()-> Self {
+    pub(crate) fn get_defalut_value() -> Self {
         let def = Self::default();
         def
     }
-    
-    pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}{}{}{}",
-            match &self.font {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-            match &self.fill {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-            match &self.borders {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-            match &self.alignment {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-            match &self.numbering_format {Some(v) => {v.get_hash_code()}, None => {"None".into()}},
-        )))
+
+    pub(crate) fn get_hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::compute(format!(
+                "{}{}{}{}{}",
+                match &self.font {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+                match &self.fill {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+                match &self.borders {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+                match &self.alignment {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+                match &self.numbering_format {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+            ))
+        )
     }
 
     pub(crate) fn is_empty(&self) -> bool {

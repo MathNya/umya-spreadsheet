@@ -9,16 +9,18 @@ pub enum LegendPositionValues {
     TopRight,
 }
 impl Default for LegendPositionValues {
-    fn default() -> Self { Self::Bottom }
+    fn default() -> Self {
+        Self::Bottom
+    }
 }
 impl EnumTrait for LegendPositionValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Bottom => {"b"},
-            Self::Left => {"l"},
-            Self::Right => {"r"},
-            Self::Top => {"t"},
-            Self::TopRight => {"tr"},
+            Self::Bottom => "b",
+            Self::Left => "l",
+            Self::Right => "r",
+            Self::Top => "t",
+            Self::TopRight => "tr",
         }
     }
 }
@@ -31,8 +33,7 @@ impl FromStr for LegendPositionValues {
             "r" => Ok(Self::Right),
             "t" => Ok(Self::Top),
             "tr" => Ok(Self::TopRight),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

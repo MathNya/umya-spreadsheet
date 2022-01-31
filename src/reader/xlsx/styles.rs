@@ -1,13 +1,16 @@
-use std::{io, result};
-use quick_xml::Reader;
-use quick_xml::events::{Event};
 use super::XlsxError;
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use std::{io, result};
 use structs::Spreadsheet;
 use structs::Stylesheet;
 
 const FILE_PATH: &'static str = "xl/styles.xml";
 
-pub fn read<R: io::Read + io::Seek>(arv: &mut zip::ZipArchive<R>, spreadsheet:&mut Spreadsheet) -> result::Result<(), XlsxError> {
+pub fn read<R: io::Read + io::Seek>(
+    arv: &mut zip::ZipArchive<R>,
+    spreadsheet: &mut Spreadsheet,
+) -> result::Result<(), XlsxError> {
     let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
@@ -32,15 +35,19 @@ pub fn read<R: io::Read + io::Seek>(arv: &mut zip::ZipArchive<R>, spreadsheet:&m
                             match fill.get_pattern_fill_mut() {
                                 Some(v) => {
                                     match v.get_foreground_color_mut() {
-                                        Some(c) => {c.set_argb_by_theme(&theme);},
-                                        None => {},
+                                        Some(c) => {
+                                            c.set_argb_by_theme(&theme);
+                                        }
+                                        None => {}
                                     }
                                     match v.get_background_color_mut() {
-                                        Some(c) => {c.set_argb_by_theme(&theme);},
-                                        None => {},
+                                        Some(c) => {
+                                            c.set_argb_by_theme(&theme);
+                                        }
+                                        None => {}
                                     }
-                                },
-                                None => {},
+                                }
+                                None => {}
                             }
                         }
                         for border in obj.get_borders_mut().get_borders_mut() {
@@ -61,10 +68,10 @@ pub fn read<R: io::Read + io::Seek>(arv: &mut zip::ZipArchive<R>, spreadsheet:&m
                         }
 
                         spreadsheet.set_stylesheet(obj);
-                    },
+                    }
                     _ => (),
                 }
-            },
+            }
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),

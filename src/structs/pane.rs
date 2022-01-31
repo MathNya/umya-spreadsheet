@@ -1,14 +1,14 @@
-use super::EnumValue;
-use super::PaneValues;
-use super::DoubleValue;
 use super::Coordinate;
+use super::DoubleValue;
+use super::EnumValue;
 use super::PaneStateValues;
-use writer::driver::*;
-use reader::driver::*;
+use super::PaneValues;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Pane {
@@ -23,7 +23,7 @@ impl Pane {
         &self.horizontal_split.get_value()
     }
 
-    pub fn set_horizontal_split(&mut self, value:f64) -> &mut Self {
+    pub fn set_horizontal_split(&mut self, value: f64) -> &mut Self {
         self.horizontal_split.set_value(value);
         self
     }
@@ -32,7 +32,7 @@ impl Pane {
         &self.vertical_split.get_value()
     }
 
-    pub fn set_vertical_split(&mut self, value:f64) -> &mut Self {
+    pub fn set_vertical_split(&mut self, value: f64) -> &mut Self {
         self.vertical_split.set_value(value);
         self
     }
@@ -45,7 +45,7 @@ impl Pane {
         &mut self.top_left_cell
     }
 
-    pub fn set_top_left_cell(&mut self, value:Coordinate) -> &mut Self {
+    pub fn set_top_left_cell(&mut self, value: Coordinate) -> &mut Self {
         self.top_left_cell = value;
         self
     }
@@ -54,7 +54,7 @@ impl Pane {
         &self.active_pane.get_value()
     }
 
-    pub fn set_active_pane(&mut self, value:PaneValues) -> &mut Self {
+    pub fn set_active_pane(&mut self, value: PaneValues) -> &mut Self {
         self.active_pane.set_value(value);
         self
     }
@@ -63,56 +63,53 @@ impl Pane {
         &self.state.get_value()
     }
 
-    pub fn set_state(&mut self, value:PaneStateValues) -> &mut Self {
+    pub fn set_state(&mut self, value: PaneStateValues) -> &mut Self {
         self.state.set_value(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        e:&BytesStart,
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"xSplit") {
             Some(v) => {
                 self.horizontal_split.set_value_string(v);
-            },
+            }
             None => {}
         }
 
         match get_attribute(e, b"ySplit") {
             Some(v) => {
                 self.vertical_split.set_value_string(v);
-            },
+            }
             None => {}
         }
 
         match get_attribute(e, b"topLeftCell") {
             Some(v) => {
                 self.top_left_cell.set_coordinate(v);
-            },
+            }
             None => {}
         }
 
         match get_attribute(e, b"activePane") {
             Some(v) => {
                 self.active_pane.set_value_string(v);
-            },
+            }
             None => {}
         }
 
         match get_attribute(e, b"state") {
             Some(v) => {
                 self.state.set_value_string(v);
-            },
+            }
             None => {}
         }
     }
-    
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-    ) {
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pane
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let coordinate = self.top_left_cell.get_coordinate();

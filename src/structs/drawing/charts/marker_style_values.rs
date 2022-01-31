@@ -16,23 +16,25 @@ pub enum MarkerStyleValues {
     X,
 }
 impl Default for MarkerStyleValues {
-    fn default() -> Self { Self::Auto }
+    fn default() -> Self {
+        Self::Auto
+    }
 }
 impl EnumTrait for MarkerStyleValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Auto => {"auto"},
-            Self::Circle => {"circle"},
-            Self::Dash => {"dash"},
-            Self::Diamond => {"diamond"},
-            Self::Dot => {"dot"},
-            Self::None => {"none"},
-            Self::Picture => {"picture"},
-            Self::Plus => {"plus"},
-            Self::Square => {"square"},
-            Self::Star => {"star"},
-            Self::Triangle => {"triangle"},
-            Self::X => {"x"},
+            Self::Auto => "auto",
+            Self::Circle => "circle",
+            Self::Dash => "dash",
+            Self::Diamond => "diamond",
+            Self::Dot => "dot",
+            Self::None => "none",
+            Self::Picture => "picture",
+            Self::Plus => "plus",
+            Self::Square => "square",
+            Self::Star => "star",
+            Self::Triangle => "triangle",
+            Self::X => "x",
         }
     }
 }
@@ -52,8 +54,7 @@ impl FromStr for MarkerStyleValues {
             "star" => Ok(Self::Star),
             "triangle" => Ok(Self::Triangle),
             "x" => Ok(Self::X),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

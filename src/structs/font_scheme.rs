@@ -1,31 +1,31 @@
 // scheme
-use super::FontSchemeValues;
 use super::EnumValue;
-use writer::driver::*;
-use reader::driver::*;
+use super::FontSchemeValues;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct FontScheme {
     pub(crate) val: EnumValue<FontSchemeValues>,
 }
 impl FontScheme {
-    pub fn get_val(&self)-> &FontSchemeValues {
+    pub fn get_val(&self) -> &FontSchemeValues {
         &self.val.get_value()
     }
 
-    pub fn set_val(&mut self, value:FontSchemeValues)-> &mut Self {
+    pub fn set_val(&mut self, value: FontSchemeValues) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        e:&BytesStart
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }

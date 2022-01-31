@@ -1,17 +1,17 @@
 // c:chartSpace
+use super::Chart;
 use super::Date1904;
 use super::EditingLanguage;
-use super::RoundedCorners;
-use structs::office2010::drawing::charts::Style;
-use super::Chart;
-use super::ShapeProperties;
 use super::PrintSettings;
-use structs::Spreadsheet;
-use writer::driver::*;
+use super::RoundedCorners;
+use super::ShapeProperties;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use structs::office2010::drawing::charts::Style;
+use structs::Spreadsheet;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartSpace {
@@ -24,145 +24,139 @@ pub struct ChartSpace {
     print_settings: PrintSettings,
 }
 impl ChartSpace {
-    pub fn get_date1904(&self)-> &Date1904 {
+    pub fn get_date1904(&self) -> &Date1904 {
         &self.date1904
     }
 
-    pub fn get_date1904_mut(&mut self)-> &mut Date1904 {
+    pub fn get_date1904_mut(&mut self) -> &mut Date1904 {
         &mut self.date1904
     }
 
-    pub fn set_date1904(&mut self, value:Date1904)-> &mut Self {
+    pub fn set_date1904(&mut self, value: Date1904) -> &mut Self {
         self.date1904 = value;
         self
     }
 
-    pub fn get_editing_language(&self)-> &EditingLanguage {
+    pub fn get_editing_language(&self) -> &EditingLanguage {
         &self.editing_language
     }
 
-    pub fn get_editing_language_mut(&mut self)-> &mut EditingLanguage {
+    pub fn get_editing_language_mut(&mut self) -> &mut EditingLanguage {
         &mut self.editing_language
     }
 
-    pub fn set_editing_language(&mut self, value:EditingLanguage)-> &mut Self {
+    pub fn set_editing_language(&mut self, value: EditingLanguage) -> &mut Self {
         self.editing_language = value;
         self
     }
 
-    pub fn get_rounded_corners(&self)-> &RoundedCorners {
+    pub fn get_rounded_corners(&self) -> &RoundedCorners {
         &self.rounded_corners
     }
 
-    pub fn get_rounded_corners_mut(&mut self)-> &mut RoundedCorners {
+    pub fn get_rounded_corners_mut(&mut self) -> &mut RoundedCorners {
         &mut self.rounded_corners
     }
 
-    pub fn set_rounded_corners(&mut self, value:RoundedCorners)-> &mut Self {
+    pub fn set_rounded_corners(&mut self, value: RoundedCorners) -> &mut Self {
         self.rounded_corners = value;
         self
     }
 
-    pub fn get_style(&self)-> &Style {
+    pub fn get_style(&self) -> &Style {
         &self.style
     }
 
-    pub fn get_style_mut(&mut self)-> &mut Style {
+    pub fn get_style_mut(&mut self) -> &mut Style {
         &mut self.style
     }
 
-    pub fn set_style(&mut self, value:Style)-> &mut Self {
+    pub fn set_style(&mut self, value: Style) -> &mut Self {
         self.style = value;
         self
     }
 
-    pub fn get_chart(&self)-> &Chart {
+    pub fn get_chart(&self) -> &Chart {
         &self.chart
     }
 
-    pub fn get_chart_mut(&mut self)-> &mut Chart {
+    pub fn get_chart_mut(&mut self) -> &mut Chart {
         &mut self.chart
     }
 
-    pub fn set_chart(&mut self, value:Chart)-> &mut Self {
+    pub fn set_chart(&mut self, value: Chart) -> &mut Self {
         self.chart = value;
         self
     }
 
-    pub fn get_shape_properties(&self)-> &Option<ShapeProperties> {
+    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
         &self.shape_properties
     }
 
-    pub fn get_shape_properties_mut(&mut self)-> &mut Option<ShapeProperties> {
+    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
         &mut self.shape_properties
     }
 
-    pub fn set_shape_properties(&mut self, value:ShapeProperties)-> &mut Self {
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
         self.shape_properties = Some(value);
         self
     }
 
-    pub fn get_print_settings(&self)-> &PrintSettings {
+    pub fn get_print_settings(&self) -> &PrintSettings {
         &self.print_settings
     }
 
-    pub fn get_print_settings_mut(&mut self)-> &mut PrintSettings {
+    pub fn get_print_settings_mut(&mut self) -> &mut PrintSettings {
         &mut self.print_settings
     }
 
-    pub fn set_print_settings(&mut self, value:PrintSettings)-> &mut Self {
+    pub fn set_print_settings(&mut self, value: PrintSettings) -> &mut Self {
         self.print_settings = value;
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart,
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"mc:AlternateContent" => {
-                            let mut obj = Style::default();
-                            obj.set_attributes(reader, e);
-                            self.set_style(obj);
-                        }
-                        b"c:chart" => {
-                            &mut self.chart.set_attributes(reader, e);
-                        }
-                        b"c:printSettings" => {
-                            &mut self.print_settings.set_attributes(reader, e);
-                        }
-                        b"c:spPr" => {
-                            let mut obj = ShapeProperties::default();
-                            obj.set_attributes(reader, e);
-                            self.set_shape_properties(obj);
-                        }
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"mc:AlternateContent" => {
+                        let mut obj = Style::default();
+                        obj.set_attributes(reader, e);
+                        self.set_style(obj);
                     }
+                    b"c:chart" => {
+                        &mut self.chart.set_attributes(reader, e);
+                    }
+                    b"c:printSettings" => {
+                        &mut self.print_settings.set_attributes(reader, e);
+                    }
+                    b"c:spPr" => {
+                        let mut obj = ShapeProperties::default();
+                        obj.set_attributes(reader, e);
+                        self.set_shape_properties(obj);
+                    }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"c:date1904" => {
-                            &mut self.date1904.set_attributes(reader, e);
-                        }
-                        b"c:lang" => {
-                            &mut self.editing_language.set_attributes(reader, e);
-                        }
-                        b"c:roundedCorners" => {
-                            &mut self.rounded_corners.set_attributes(reader, e);
-                        }
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"c:date1904" => {
+                        &mut self.date1904.set_attributes(reader, e);
                     }
+                    b"c:lang" => {
+                        &mut self.editing_language.set_attributes(reader, e);
+                    }
+                    b"c:roundedCorners" => {
+                        &mut self.rounded_corners.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"c:chartSpace" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"c:chartSpace" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "c:chartSpace"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -174,11 +168,25 @@ impl ChartSpace {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:chartSpace
-        write_start_tag(writer, "c:chartSpace", vec![
-            ("xmlns:c", "http://schemas.openxmlformats.org/drawingml/2006/chart"),
-            ("xmlns:a", "http://schemas.openxmlformats.org/drawingml/2006/main"),
-            ("xmlns:r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships"),
-        ], false);
+        write_start_tag(
+            writer,
+            "c:chartSpace",
+            vec![
+                (
+                    "xmlns:c",
+                    "http://schemas.openxmlformats.org/drawingml/2006/chart",
+                ),
+                (
+                    "xmlns:a",
+                    "http://schemas.openxmlformats.org/drawingml/2006/main",
+                ),
+                (
+                    "xmlns:r",
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+                ),
+            ],
+            false,
+        );
 
         // c:date1904
         &self.date1904.write_to(writer);
@@ -197,7 +205,9 @@ impl ChartSpace {
 
         // c:spPr
         match &self.shape_properties {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 

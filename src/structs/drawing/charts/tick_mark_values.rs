@@ -8,15 +8,17 @@ pub enum TickMarkValues {
     Outside,
 }
 impl Default for TickMarkValues {
-    fn default() -> Self { TickMarkValues::Cross }
+    fn default() -> Self {
+        TickMarkValues::Cross
+    }
 }
 impl EnumTrait for TickMarkValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Cross => {"cross"},
-            Self::Inside => {"in"},
-            Self::None => {"none"},
-            Self::Outside => {"out"},
+            Self::Cross => "cross",
+            Self::Inside => "in",
+            Self::None => "none",
+            Self::Outside => "out",
         }
     }
 }
@@ -28,8 +30,7 @@ impl FromStr for TickMarkValues {
             "in" => Ok(Self::Inside),
             "none" => Ok(Self::None),
             "out" => Ok(Self::Outside),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

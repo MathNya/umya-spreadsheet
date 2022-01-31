@@ -7,14 +7,16 @@ pub enum CrossesValues {
     Minimum,
 }
 impl Default for CrossesValues {
-    fn default() -> Self { Self::AutoZero }
+    fn default() -> Self {
+        Self::AutoZero
+    }
 }
 impl EnumTrait for CrossesValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::AutoZero => {"autoZero"},
-            Self::Maximum => {"max"},
-            Self::Minimum => {"min"},
+            Self::AutoZero => "autoZero",
+            Self::Maximum => "max",
+            Self::Minimum => "min",
         }
     }
 }
@@ -25,8 +27,7 @@ impl FromStr for CrossesValues {
             "autoZero" => Ok(Self::AutoZero),
             "max" => Ok(Self::Maximum),
             "min" => Ok(Self::Minimum),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

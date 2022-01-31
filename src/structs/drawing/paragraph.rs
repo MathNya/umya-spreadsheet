@@ -1,12 +1,12 @@
 // a:p
+use super::EndParagraphRunProperties;
 use super::ParagraphProperties;
 use super::Run;
-use super::EndParagraphRunProperties;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
@@ -23,7 +23,7 @@ impl Paragraph {
         &mut self.paragraph_properties
     }
 
-    pub fn set_paragraph_properties(&mut self, value:ParagraphProperties) -> &mut Paragraph {
+    pub fn set_paragraph_properties(&mut self, value: ParagraphProperties) -> &mut Paragraph {
         self.paragraph_properties = value;
         self
     }
@@ -32,7 +32,7 @@ impl Paragraph {
         &self.run
     }
 
-    pub fn add_run(&mut self, value:Run) {
+    pub fn add_run(&mut self, value: Run) {
         self.run.push(value);
     }
 
@@ -44,7 +44,10 @@ impl Paragraph {
         &mut self.end_para_run_properties
     }
 
-    pub fn set_end_para_run_properties(&mut self, value:EndParagraphRunProperties) -> &mut Paragraph {
+    pub fn set_end_para_run_properties(
+        &mut self,
+        value: EndParagraphRunProperties,
+    ) -> &mut Paragraph {
         self.end_para_run_properties = Some(value);
         self
     }
@@ -55,48 +58,42 @@ impl Paragraph {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:pPr" => {
-                            &mut self.paragraph_properties.set_attributes(reader, e, false);
-                        },
-                        b"a:r" => {
-                            let mut run = Run::default();
-                            run.set_attributes(reader, e);
-                            &mut self.add_run(run);
-                        },
-                        b"a:endParaRPr" => {
-                            let mut run_properties = EndParagraphRunProperties::default();
-                            run_properties.set_attributes(reader, e, false);
-                            &mut self.set_end_para_run_properties(run_properties);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:pPr" => {
+                        &mut self.paragraph_properties.set_attributes(reader, e, false);
                     }
+                    b"a:r" => {
+                        let mut run = Run::default();
+                        run.set_attributes(reader, e);
+                        &mut self.add_run(run);
+                    }
+                    b"a:endParaRPr" => {
+                        let mut run_properties = EndParagraphRunProperties::default();
+                        run_properties.set_attributes(reader, e, false);
+                        &mut self.set_end_para_run_properties(run_properties);
+                    }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:pPr" => {
-                            &mut self.paragraph_properties.set_attributes(reader, e, true);
-                        },
-                        b"a:endParaRPr" => {
-                            let mut run_properties = EndParagraphRunProperties::default();
-                            run_properties.set_attributes(reader, e, true);
-                            &mut self.set_end_para_run_properties(run_properties);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:pPr" => {
+                        &mut self.paragraph_properties.set_attributes(reader, e, true);
                     }
+                    b"a:endParaRPr" => {
+                        let mut run_properties = EndParagraphRunProperties::default();
+                        run_properties.set_attributes(reader, e, true);
+                        &mut self.set_end_para_run_properties(run_properties);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:p" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:p" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:p"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

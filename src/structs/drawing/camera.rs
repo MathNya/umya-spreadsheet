@@ -1,12 +1,12 @@
 // a:camera
-use super::PresetCameraValues;
 use super::super::EnumValue;
-use writer::driver::*;
-use reader::driver::*;
+use super::PresetCameraValues;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Camera {
@@ -17,26 +17,31 @@ impl Camera {
         &self.preset.get_value()
     }
 
-    pub fn set_preset(&mut self, value:PresetCameraValues) -> &mut Camera {
+    pub fn set_preset(&mut self, value: PresetCameraValues) -> &mut Camera {
         self.preset.set_value(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        e:&BytesStart
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"prst") {
-            Some(v) => {&mut self.preset.set_value_string(v);},
+            Some(v) => {
+                &mut self.preset.set_value_string(v);
+            }
             None => {}
         }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:camera
-        write_start_tag(writer, "a:camera", vec![
-            ("prst", &self.preset.get_value_string())
-        ], true);
+        write_start_tag(
+            writer,
+            "a:camera",
+            vec![("prst", &self.preset.get_value_string())],
+            true,
+        );
     }
 }

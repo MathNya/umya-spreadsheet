@@ -1,7 +1,7 @@
 use super::EnumTrait;
 use std::str::FromStr;
 #[derive(Debug, Clone)]
-pub enum HorizontalAlignmentValues  {
+pub enum HorizontalAlignmentValues {
     Center,
     CenterContinuous,
     Distributed,
@@ -11,24 +11,26 @@ pub enum HorizontalAlignmentValues  {
     Left,
     Right,
 }
-impl Default for HorizontalAlignmentValues  {
-    fn default() -> Self { Self::General }
+impl Default for HorizontalAlignmentValues {
+    fn default() -> Self {
+        Self::General
+    }
 }
-impl EnumTrait for HorizontalAlignmentValues  {
-    fn get_value_string(&self)->&str {
+impl EnumTrait for HorizontalAlignmentValues {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Center => {"center"},
-            Self::CenterContinuous => {"centerContinuous"},
-            Self::Distributed => {"distributed"},
-            Self::Fill => {"fill"},
-            Self::General => {"general"},
-            Self::Justify => {"justify"},
-            Self::Left => {"left"},
-            Self::Right => {"right"},
+            Self::Center => "center",
+            Self::CenterContinuous => "centerContinuous",
+            Self::Distributed => "distributed",
+            Self::Fill => "fill",
+            Self::General => "general",
+            Self::Justify => "justify",
+            Self::Left => "left",
+            Self::Right => "right",
         }
     }
 }
-impl FromStr for HorizontalAlignmentValues  {
+impl FromStr for HorizontalAlignmentValues {
     type Err = ();
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
@@ -40,8 +42,7 @@ impl FromStr for HorizontalAlignmentValues  {
             "justify" => Ok(Self::Justify),
             "left" => Ok(Self::Left),
             "right" => Ok(Self::Right),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

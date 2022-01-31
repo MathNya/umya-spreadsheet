@@ -1,16 +1,16 @@
+use super::EmbeddedObjectProperties;
 use super::StringValue;
 use super::UInt32Value;
-use super::EmbeddedObjectProperties;
-use structs::drawing::spreadsheet::TwoCellAnchor;
-use structs::vml::Shape;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
-use writer::driver::*;
 use reader::driver::*;
-use reader::xlsx::worksheet_rels;
 use reader::xlsx::embeddings;
+use reader::xlsx::worksheet_rels;
+use std::io::Cursor;
+use structs::drawing::spreadsheet::TwoCellAnchor;
+use structs::vml::Shape;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObject {
@@ -27,7 +27,7 @@ impl OleObject {
         &self.requires.get_value()
     }
 
-    pub fn set_requires<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_requires<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.requires.set_value(value);
         self
     }
@@ -36,7 +36,7 @@ impl OleObject {
         &self.prog_id.get_value()
     }
 
-    pub fn set_prog_id<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_prog_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prog_id.set_value(value);
         self
     }
@@ -101,7 +101,7 @@ impl OleObject {
         self
     }
 
-    pub(crate) fn get_extension<S: Into<String>>(&self, value:S) -> String {
+    pub(crate) fn get_extension<S: Into<String>>(&self, value: S) -> String {
         let value_org = value.into();
         let v: Vec<&str> = value_org.split('.').collect();
         let extension = v.last().unwrap().clone();
@@ -122,7 +122,7 @@ impl OleObject {
         reader: &mut Reader<R>,
         _e: &BytesStart,
         arv: &mut zip::read::ZipArchive<A>,
-        target: &str
+        target: &str,
     ) {
         let mut alternate_content = String::from("");
         let mut buf = Vec::new();
@@ -134,7 +134,7 @@ impl OleObject {
                         match get_attribute(e, b"Requires") {
                             Some(v) => {
                                 self.requires.set_value_string(v);
-                            },
+                            }
                             None => {}
                         }
                     }
@@ -143,11 +143,14 @@ impl OleObject {
                     }
                     b"oleObject" => {
                         if alternate_content.as_str() == "Choice" {
-                            &mut self.prog_id.set_value_string(get_attribute(e, b"progId").unwrap());
-                            
+                            &mut self
+                                .prog_id
+                                .set_value_string(get_attribute(e, b"progId").unwrap());
+
                             let r_id = get_attribute(e, b"r:id").unwrap();
-                            let (_, target_value) = worksheet_rels::read_rid(arv, target, &r_id).unwrap();
-                
+                            let (_, target_value) =
+                                worksheet_rels::read_rid(arv, target, &r_id).unwrap();
+
                             let v: Vec<&str> = target_value.split('/').collect();
                             let object_name = v.last().unwrap().clone();
                             let object_extension = self.get_extension(object_name);
@@ -181,14 +184,23 @@ impl OleObject {
         ole_id: &usize,
     ) {
         // mc:AlternateContent
-        write_start_tag(writer, "mc:AlternateContent", vec![
-            ("xmlns:mc","http://schemas.openxmlformats.org/markup-compatibility/2006"),
-        ], false);
+        write_start_tag(
+            writer,
+            "mc:AlternateContent",
+            vec![(
+                "xmlns:mc",
+                "http://schemas.openxmlformats.org/markup-compatibility/2006",
+            )],
+            false,
+        );
 
         // mc:Choice
-        write_start_tag(writer, "mc:Choice", vec![
-            ("Requires", &self.requires.get_value_string()),
-        ], false);
+        write_start_tag(
+            writer,
+            "mc:Choice",
+            vec![("Requires", &self.requires.get_value_string())],
+            false,
+        );
 
         // oleObject
         let r_id_str = format!("rId{}", r_id);
@@ -200,7 +212,9 @@ impl OleObject {
         write_start_tag(writer, "oleObject", attributes, false);
 
         // objectPr
-        &self.embedded_object_properties.write_to(writer, &(r_id+1));
+        &self
+            .embedded_object_properties
+            .write_to(writer, &(r_id + 1));
 
         write_end_tag(writer, "oleObject");
 

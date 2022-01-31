@@ -1,34 +1,34 @@
 // c:marker
 use super::Symbol;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Marker {
     symbol: Option<Symbol>,
 }
 impl Marker {
-    pub fn get_symbol(&self)-> &Option<Symbol> {
+    pub fn get_symbol(&self) -> &Option<Symbol> {
         &self.symbol
     }
 
-    pub fn get_symbol_mut(&mut self)-> &mut Option<Symbol> {
+    pub fn get_symbol_mut(&mut self) -> &mut Option<Symbol> {
         &mut self.symbol
     }
 
-    pub fn set_symbol(&mut self, value:Symbol)-> &mut Marker {
+    pub fn set_symbol(&mut self, value: Symbol) -> &mut Marker {
         self.symbol = Some(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _:&BytesStart,
-        empty_flag:bool,
+        reader: &mut Reader<R>,
+        _: &BytesStart,
+        empty_flag: bool,
     ) {
         if empty_flag {
             return;
@@ -37,21 +37,17 @@ impl Marker {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"c:symbol" => {
-                            let mut obj = Symbol::default();
-                            obj.set_attributes(reader, e);
-                            self.set_symbol(obj);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"c:symbol" => {
+                        let mut obj = Symbol::default();
+                        obj.set_attributes(reader, e);
+                        self.set_symbol(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"c:marker" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"c:marker" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "c:marker"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -68,7 +64,9 @@ impl Marker {
 
             // a:symbol
             match &self.symbol {
-                Some(v) => {v.write_to(writer);},
+                Some(v) => {
+                    v.write_to(writer);
+                }
                 None => {}
             }
 

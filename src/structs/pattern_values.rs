@@ -23,30 +23,32 @@ pub enum PatternValues {
     Solid,
 }
 impl Default for PatternValues {
-    fn default() -> Self { Self::None }
+    fn default() -> Self {
+        Self::None
+    }
 }
 impl EnumTrait for PatternValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::DarkDown => {"darkDown"},
-            Self::DarkGray => {"darkGray"},
-            Self::DarkGrid => {"darkGrid"},
-            Self::DarkHorizontal => {"darkHorizontal"},
-            Self::DarkTrellis => {"darkTrellis"},
-            Self::DarkUp => {"darkUp"},
-            Self::DarkVertical => {"darkVertical"},
-            Self::Gray0625 => {"gray0625"},
-            Self::Gray125 => {"gray125"},
-            Self::LightDown => {"lightDown"},
-            Self::LightGray => {"lightGray"},
-            Self::LightGrid => {"lightGrid"},
-            Self::LightHorizontal => {"lightHorizontal"},
-            Self::LightTrellis => {"lightTrellis"},
-            Self::LightUp => {"lightUp"},
-            Self::LightVertical => {"lightVertical"},
-            Self::MediumGray => {"mediumGray"},
-            Self::None => {"none"},
-            Self::Solid => {"solid"},
+            Self::DarkDown => "darkDown",
+            Self::DarkGray => "darkGray",
+            Self::DarkGrid => "darkGrid",
+            Self::DarkHorizontal => "darkHorizontal",
+            Self::DarkTrellis => "darkTrellis",
+            Self::DarkUp => "darkUp",
+            Self::DarkVertical => "darkVertical",
+            Self::Gray0625 => "gray0625",
+            Self::Gray125 => "gray125",
+            Self::LightDown => "lightDown",
+            Self::LightGray => "lightGray",
+            Self::LightGrid => "lightGrid",
+            Self::LightHorizontal => "lightHorizontal",
+            Self::LightTrellis => "lightTrellis",
+            Self::LightUp => "lightUp",
+            Self::LightVertical => "lightVertical",
+            Self::MediumGray => "mediumGray",
+            Self::None => "none",
+            Self::Solid => "solid",
         }
     }
 }
@@ -73,8 +75,7 @@ impl FromStr for PatternValues {
             "mediumGray" => Ok(Self::MediumGray),
             "none" => Ok(Self::None),
             "solid" => Ok(Self::Solid),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

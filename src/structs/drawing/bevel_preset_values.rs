@@ -16,23 +16,25 @@ pub enum BevelPresetValues {
     SoftRound,
 }
 impl Default for BevelPresetValues {
-    fn default() -> Self { Self::RelaxedInset }
+    fn default() -> Self {
+        Self::RelaxedInset
+    }
 }
 impl EnumTrait for BevelPresetValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Angle => {"angle"},
-            Self::ArtDeco => {"artDeco"},
-            Self::Circle => {"circle"},
-            Self::Convex => {"convex"},
-            Self::CoolSlant => {"coolSlant"},
-            Self::Cross => {"cross"},
-            Self::Divot => {"divot"},
-            Self::HardEdge => {"hardEdge"},
-            Self::RelaxedInset => {"relaxedInset"},
-            Self::Riblet => {"riblet"},
-            Self::Slope => {"slope"},
-            Self::SoftRound => {"softRound"},
+            Self::Angle => "angle",
+            Self::ArtDeco => "artDeco",
+            Self::Circle => "circle",
+            Self::Convex => "convex",
+            Self::CoolSlant => "coolSlant",
+            Self::Cross => "cross",
+            Self::Divot => "divot",
+            Self::HardEdge => "hardEdge",
+            Self::RelaxedInset => "relaxedInset",
+            Self::Riblet => "riblet",
+            Self::Slope => "slope",
+            Self::SoftRound => "softRound",
         }
     }
 }
@@ -52,7 +54,7 @@ impl FromStr for BevelPresetValues {
             "riblet" => Ok(Self::Riblet),
             "slope" => Ok(Self::Slope),
             "softRound" => Ok(Self::SoftRound),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

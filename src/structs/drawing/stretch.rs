@@ -1,10 +1,10 @@
 // a:stretch
 use super::fill_rectangle::FillRectangle;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Stretch {
@@ -19,33 +19,29 @@ impl Stretch {
         &mut self.fill_rectangle
     }
 
-    pub fn set_fill_rectangle(&mut self, value:FillRectangle) {
+    pub fn set_fill_rectangle(&mut self, value: FillRectangle) {
         self.fill_rectangle = Some(value);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:fillRect" => {
-                            let mut fill_rectangle = FillRectangle::default();
-                            fill_rectangle.set_attributes(reader, e);
-                            &mut self.set_fill_rectangle(fill_rectangle);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:fillRect" => {
+                        let mut fill_rectangle = FillRectangle::default();
+                        fill_rectangle.set_attributes(reader, e);
+                        &mut self.set_fill_rectangle(fill_rectangle);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:stretch" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:stretch" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:stretch"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -63,7 +59,7 @@ impl Stretch {
             // a:fillRect
             match &self.fill_rectangle {
                 Some(v) => v.write_to(writer),
-                None => {},
+                None => {}
             }
 
             write_end_tag(writer, "a:stretch");

@@ -1,11 +1,11 @@
 // xdr:ext
 use super::super::super::Int64Value;
-use writer::driver::*;
-use reader::driver::*;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Extent {
@@ -17,7 +17,7 @@ impl Extent {
         &self.cx.get_value()
     }
 
-    pub fn set_cx(&mut self, value:i64) -> &mut Extent {
+    pub fn set_cx(&mut self, value: i64) -> &mut Extent {
         self.cx.set_value(value);
         self
     }
@@ -26,31 +26,40 @@ impl Extent {
         &self.cy.get_value()
     }
 
-    pub fn set_cy(&mut self, value:i64) -> &mut Extent {
+    pub fn set_cy(&mut self, value: i64) -> &mut Extent {
         self.cy.set_value(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        e:&BytesStart
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"cx") {
-            Some(v) => {&mut self.cx.set_value_string(v);},
+            Some(v) => {
+                &mut self.cx.set_value_string(v);
+            }
             None => {}
         }
         match get_attribute(e, b"cy") {
-            Some(v) => {&mut self.cy.set_value_string(v);},
+            Some(v) => {
+                &mut self.cy.set_value_string(v);
+            }
             None => {}
         }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:ext
-        write_start_tag(writer, "xdr:ext", vec![
-            ("cx",  &self.cx.get_value_string()),
-            ("cy",  &self.cy.get_value_string()),
-        ], true);
+        write_start_tag(
+            writer,
+            "xdr:ext",
+            vec![
+                ("cx", &self.cx.get_value_string()),
+                ("cy", &self.cy.get_value_string()),
+            ],
+            true,
+        );
     }
 }

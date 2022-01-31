@@ -1,30 +1,30 @@
+use std::fs::File;
 use std::io;
 use std::path::Path;
 use std::string::FromUtf8Error;
-use std::fs::File;
 
-use ::structs::Spreadsheet;
 use super::driver;
+use structs::Spreadsheet;
 
+pub(crate) mod chart;
+mod comment;
 mod doc_props_app;
 mod doc_props_core;
-mod workbook;
-mod worksheet;
+mod drawing;
+pub(crate) mod drawing_rels;
+pub(crate) mod embeddings;
+pub(crate) mod media;
 mod rels;
-mod theme;
 mod shared_strings;
 mod styles;
-mod vml_drawing;
-mod drawing;
+mod theme;
 mod vba_project_bin;
-mod comment;
-mod workbook_rels;
-pub(crate) mod chart;
-pub(crate) mod drawing_rels;
-pub(crate) mod worksheet_rels;
-pub(crate) mod media;
-pub(crate) mod embeddings;
+mod vml_drawing;
 pub(crate) mod vml_drawing_rels;
+mod workbook;
+mod workbook_rels;
+mod worksheet;
+pub(crate) mod worksheet_rels;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -62,13 +62,13 @@ impl From<FromUtf8Error> for XlsxError {
 /// # Arguments
 /// * `reader` - reader to read from.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message. 
-pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxError> {
+/// * `Result` - OK is Spreadsheet. Err is error message.
+pub fn read_reader<R: io::Read + io::Seek>(reader: R) -> Result<Spreadsheet, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
     let (mut book, sheets, defined_names) = workbook::read(&mut arv).unwrap();
     doc_props_app::read(&mut arv, &mut book).unwrap();
-    doc_props_core::read(&mut arv, &mut book).unwrap(); 
+    doc_props_core::read(&mut arv, &mut book).unwrap();
     vba_project_bin::read(&mut arv, &mut book).unwrap();
     let workbook_rel = workbook_rels::read(&mut arv).unwrap();
 
@@ -77,7 +77,7 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" => {
                 let theme = theme::read(&mut arv, rel_target).unwrap();
                 book.set_theme(theme);
-            },
+            }
             _ => {}
         }
     }
@@ -89,9 +89,17 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
     for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
         for (rel_id, _, rel_target) in &workbook_rel {
             if sheets_rid == rel_id {
-                let (_drawing_id, legacy_drawing_id, hyperlink_vec) = worksheet::read(&mut arv, &rel_target, &mut book, sheets_sheet_id, sheets_name).unwrap();
+                let (_drawing_id, legacy_drawing_id, hyperlink_vec) = worksheet::read(
+                    &mut arv,
+                    &rel_target,
+                    &mut book,
+                    sheets_sheet_id,
+                    sheets_name,
+                )
+                .unwrap();
                 let worksheet = book.get_sheet_by_sheet_id_mut(sheets_sheet_id).unwrap();
-                let worksheet_rel = worksheet_rels::read(&mut arv, &rel_target, &hyperlink_vec, worksheet).unwrap();
+                let worksheet_rel =
+                    worksheet_rels::read(&mut arv, &rel_target, &hyperlink_vec, worksheet).unwrap();
                 for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
                     match type_value.as_str() {
                         // drawing, chart
@@ -109,9 +117,10 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
                     match &legacy_drawing_id {
                         Some(v) => {
                             if v == worksheet_id {
-                                let _ = vml_drawing::read(&mut arv, worksheet_target, worksheet).unwrap();
+                                let _ = vml_drawing::read(&mut arv, worksheet_target, worksheet)
+                                    .unwrap();
                             }
-                        },
+                        }
                         None => {}
                     }
                 }
@@ -138,21 +147,22 @@ pub fn read_reader<R: io::Read+io::Seek>(reader: R)->Result<Spreadsheet, XlsxErr
 /// # Arguments
 /// * `path` - file path to read.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message. 
+/// * `Result` - OK is Spreadsheet. Err is error message.
 /// # Examples
 /// ```
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 /// ```
-pub fn read(path: &Path)->Result<Spreadsheet, XlsxError> {
+pub fn read(path: &Path) -> Result<Spreadsheet, XlsxError> {
     let file = File::open(path)?;
     read_reader(file)
 }
 
-fn get_vml_drawing_target(worksheet_rel: &Vec<(String, String, String)>) -> &str
-{
+fn get_vml_drawing_target(worksheet_rel: &Vec<(String, String, String)>) -> &str {
     for (_, type_value, worksheet_target) in worksheet_rel {
-        if type_value == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" {
+        if type_value
+            == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
+        {
             return worksheet_target;
         }
     }

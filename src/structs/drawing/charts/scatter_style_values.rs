@@ -9,16 +9,18 @@ pub enum ScatterStyleValues {
     SmoothMarker,
 }
 impl Default for ScatterStyleValues {
-    fn default() -> Self { Self::Line }
+    fn default() -> Self {
+        Self::Line
+    }
 }
 impl EnumTrait for ScatterStyleValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Line => {"line"},
-            Self::LineMarker => {"lineMarker"},
-            Self::Marker => {"marker"},
-            Self::Smooth => {"smooth"},
-            Self::SmoothMarker => {"smoothMarker"},
+            Self::Line => "line",
+            Self::LineMarker => "lineMarker",
+            Self::Marker => "marker",
+            Self::Smooth => "smooth",
+            Self::SmoothMarker => "smoothMarker",
         }
     }
 }
@@ -31,8 +33,7 @@ impl FromStr for ScatterStyleValues {
             "marker" => Ok(Self::Marker),
             "smooth" => Ok(Self::Smooth),
             "smoothMarker" => Ok(Self::SmoothMarker),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

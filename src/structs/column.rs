@@ -3,7 +3,7 @@ use super::DoubleValue;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use quick_xml::events::{BytesStart};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use reader::driver::*;
 

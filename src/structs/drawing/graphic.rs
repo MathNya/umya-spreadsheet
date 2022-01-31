@@ -1,10 +1,10 @@
 // a:graphic
 use super::GraphicData;
-use writer::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Graphic {
@@ -19,35 +19,31 @@ impl Graphic {
         &mut self.graphic_data
     }
 
-    pub fn set_graphic_data(&mut self, value:GraphicData)-> &mut Graphic {
+    pub fn set_graphic_data(&mut self, value: GraphicData) -> &mut Graphic {
         self.graphic_data = value;
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart,
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
         arv: &mut zip::read::ZipArchive<A>,
         target: &str,
     ) {
         let mut buf = Vec::new();
-    
+
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:graphicData" => {
-                            &mut self.graphic_data.set_attributes(reader, e, arv, target);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:graphicData" => {
+                        &mut self.graphic_data.set_attributes(reader, e, arv, target);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:graphic" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:graphic" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:graphic"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

@@ -15,22 +15,24 @@ pub enum PresetLineDashValues {
     SystemDot,
 }
 impl Default for PresetLineDashValues {
-    fn default() -> Self { Self::Solid }
+    fn default() -> Self {
+        Self::Solid
+    }
 }
 impl EnumTrait for PresetLineDashValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Dash => {"dash"},
-            Self::DashDot => {"dashDot"},
-            Self::Dot => {"dot"},
-            Self::LargeDash => {"lgDash"},
-            Self::LargeDashDot => {"lgDashDot"},
-            Self::LargeDashDotDot => {"lgDashDotDot"},
-            Self::Solid => {"solid"},
-            Self::SystemDash => {"sysDash"},
-            Self::SystemDashDot => {"sysDashDot"},
-            Self::SystemDashDotDot => {"sysDashDotDot"},
-            Self::SystemDot => {"sysDot"},
+            Self::Dash => "dash",
+            Self::DashDot => "dashDot",
+            Self::Dot => "dot",
+            Self::LargeDash => "lgDash",
+            Self::LargeDashDot => "lgDashDot",
+            Self::LargeDashDotDot => "lgDashDotDot",
+            Self::Solid => "solid",
+            Self::SystemDash => "sysDash",
+            Self::SystemDashDot => "sysDashDot",
+            Self::SystemDashDotDot => "sysDashDotDot",
+            Self::SystemDot => "sysDot",
         }
     }
 }
@@ -49,7 +51,7 @@ impl FromStr for PresetLineDashValues {
             "sysDashDot" => Ok(Self::SystemDashDot),
             "sysDashDotDot" => Ok(Self::SystemDashDotDot),
             "sysDot" => Ok(Self::SystemDot),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

@@ -18,25 +18,27 @@ pub enum BorderStyleValues {
     Thin,
 }
 impl Default for BorderStyleValues {
-    fn default() -> Self { Self::None }
+    fn default() -> Self {
+        Self::None
+    }
 }
 impl EnumTrait for BorderStyleValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::DashDot => {"dashDot"},
-            Self::DashDotDot => {"dashDotDot"},
-            Self::Dashed => {"dashed"},
-            Self::Dotted => {"dotted"},
-            Self::Double => {"double"},
-            Self::Hair => {"hair"},
-            Self::Medium => {"medium"},
-            Self::MediumDashDot => {"mediumDashDot"},
-            Self::MediumDashDotDot => {"mediumDashDotDot"},
-            Self::MediumDashed => {"mediumDashed"},
-            Self::None => {"none"},
-            Self::SlantDashDot => {"slantDashDot"},
-            Self::Thick => {"thick"},
-            Self::Thin => {"thin"},
+            Self::DashDot => "dashDot",
+            Self::DashDotDot => "dashDotDot",
+            Self::Dashed => "dashed",
+            Self::Dotted => "dotted",
+            Self::Double => "double",
+            Self::Hair => "hair",
+            Self::Medium => "medium",
+            Self::MediumDashDot => "mediumDashDot",
+            Self::MediumDashDotDot => "mediumDashDotDot",
+            Self::MediumDashed => "mediumDashed",
+            Self::None => "none",
+            Self::SlantDashDot => "slantDashDot",
+            Self::Thick => "thick",
+            Self::Thin => "thin",
         }
     }
 }
@@ -58,8 +60,7 @@ impl FromStr for BorderStyleValues {
             "slantDashDot" => Ok(Self::SlantDashDot),
             "thick" => Ok(Self::Thick),
             "thin" => Ok(Self::Thin),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

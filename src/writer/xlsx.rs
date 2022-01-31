@@ -3,31 +3,31 @@ use std::io;
 use std::path::Path;
 use std::string::FromUtf8Error;
 
-use structs::Spreadsheet;
-use structs::SharedStringTable;
-use structs::Stylesheet;
 use super::driver;
+use structs::SharedStringTable;
+use structs::Spreadsheet;
+use structs::Stylesheet;
 
 mod chart;
+mod comment;
 mod content_types;
 mod doc_props_app;
 mod doc_props_core;
-mod workbook;
-mod worksheet;
-mod rels;
-mod workbook_rels;
-mod worksheet_rels;
-mod theme;
-mod shared_strings;
-mod styles;
 mod drawing;
 mod drawing_rels;
-mod vba_project_bin;
-mod comment;
-mod vml_drawing;
-mod media;
 mod embeddings;
+mod media;
+mod rels;
+mod shared_strings;
+mod styles;
+mod theme;
+mod vba_project_bin;
+mod vml_drawing;
 mod vml_drawing_rels;
+mod workbook;
+mod workbook_rels;
+mod worksheet;
+mod worksheet_rels;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -66,21 +66,24 @@ impl From<FromUtf8Error> for XlsxError {
 /// * `spreadsheet` - Spreadsheet structs object.
 /// * `writer` - writer to write to.
 /// # Return value
-/// * `Result` - OK is void. Err is error message. 
-pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: W) -> Result<(), XlsxError> {
+/// * `Result` - OK is void. Err is error message.
+pub fn write_writer<W: io::Seek + io::Write>(
+    spreadsheet: &Spreadsheet,
+    writer: W,
+) -> Result<(), XlsxError> {
     let mut arv = zip::ZipWriter::new(writer);
 
     // Add Content_Types
-    let _= content_types::write(spreadsheet, &mut arv, "[Content_Types].xml");
+    let _ = content_types::write(spreadsheet, &mut arv, "[Content_Types].xml");
 
     // Add docProps App
-    let _= doc_props_app::write(spreadsheet, &mut arv, "docProps", "app.xml");
+    let _ = doc_props_app::write(spreadsheet, &mut arv, "docProps", "app.xml");
 
     // Add docProps Core
-    let _= doc_props_core::write(spreadsheet, &mut arv, "docProps", "core.xml");
+    let _ = doc_props_core::write(spreadsheet, &mut arv, "docProps", "core.xml");
 
     // Add vbaProject.bin
-    let _= vba_project_bin::write(spreadsheet, &mut arv, "xl", "vbaProject.bin");
+    let _ = vba_project_bin::write(spreadsheet, &mut arv, "xl", "vbaProject.bin");
 
     // Add relationships
     let _ = rels::write(spreadsheet, &mut arv, "_rels", ".rels");
@@ -104,15 +107,31 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
     let mut stylesheet = Stylesheet::default();
     stylesheet.init_setup();
     for i in 0..spreadsheet.get_sheet_count() {
-        let p_worksheet_id:&str = &(i+1).to_string();
-        let _ = worksheet::write(&spreadsheet, &i, &mut shared_string_table, &mut stylesheet, &drawing_id, &mut arv);
+        let p_worksheet_id: &str = &(i + 1).to_string();
+        let _ = worksheet::write(
+            &spreadsheet,
+            &i,
+            &mut shared_string_table,
+            &mut stylesheet,
+            &drawing_id,
+            &mut arv,
+        );
         let worksheet = &spreadsheet.get_sheet_collection()[i];
-        let _ = worksheet_rels::write(worksheet, p_worksheet_id, &drawing_id, &vml_drawing_id, &comment_id,  &mut arv, &ole_bin_id, &ole_excel_id);
+        let _ = worksheet_rels::write(
+            worksheet,
+            p_worksheet_id,
+            &drawing_id,
+            &vml_drawing_id,
+            &comment_id,
+            &mut arv,
+            &ole_bin_id,
+            &ole_excel_id,
+        );
         let _ = drawing::write(worksheet, &drawing_id, &mut arv);
         let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &mut arv);
-        let _ = comment::write(worksheet, &comment_id,  &mut arv);
-        let _ = vml_drawing::write(worksheet, &drawing_id, &vml_drawing_id,  &mut arv);
-        let _ = vml_drawing_rels::write(worksheet, &vml_drawing_id,  &mut arv);
+        let _ = comment::write(worksheet, &comment_id, &mut arv);
+        let _ = vml_drawing::write(worksheet, &drawing_id, &vml_drawing_id, &mut arv);
+        let _ = vml_drawing_rels::write(worksheet, &vml_drawing_id, &mut arv);
 
         if worksheet.has_drawing_object() {
             drawing_id += 1;
@@ -126,13 +145,19 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
             vml_drawing_id += 1;
         }
 
-        for chart in worksheet.get_worksheet_drawing().get_chart_collection(){
+        for chart in worksheet.get_worksheet_drawing().get_chart_collection() {
             let chart_space = chart.get_chart_space();
             let _ = chart::write(chart_space, &chart_id, &mut arv, spreadsheet);
             chart_id += 1;
         }
 
-        let _ = embeddings::write(worksheet, &mut arv, "xl/embeddings", &mut ole_bin_id, &mut ole_excel_id);
+        let _ = embeddings::write(
+            worksheet,
+            &mut arv,
+            "xl/embeddings",
+            &mut ole_bin_id,
+            &mut ole_excel_id,
+        );
     }
 
     // Add Media
@@ -154,7 +179,7 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
 /// * `spreadsheet` - Spreadsheet structs object.
 /// * `path` - file path to save.
 /// # Return value
-/// * `Result` - OK is void. Err is error message. 
+/// * `Result` - OK is void. Err is error message.
 /// # Examples
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
@@ -162,5 +187,8 @@ pub fn write_writer<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, writer: 
 /// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
-    write_writer(spreadsheet, &mut io::BufWriter::new(fs::File::create(path)?))
+    write_writer(
+        spreadsheet,
+        &mut io::BufWriter::new(fs::File::create(path)?),
+    )
 }

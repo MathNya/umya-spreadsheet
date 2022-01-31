@@ -1,10 +1,10 @@
 // a:xfrm
-use writer::driver::*;
-use reader::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform2D {
@@ -21,7 +21,7 @@ impl Transform2D {
         &self.x
     }
 
-    pub fn set_x(&mut self, value:usize) {
+    pub fn set_x(&mut self, value: usize) {
         self.x = value;
     }
 
@@ -29,7 +29,7 @@ impl Transform2D {
         &self.y
     }
 
-    pub fn set_y(&mut self, value:usize) {
+    pub fn set_y(&mut self, value: usize) {
         self.y = value;
     }
 
@@ -37,86 +37,90 @@ impl Transform2D {
         &self.width
     }
 
-    pub fn set_width(&mut self, value:usize) {
+    pub fn set_width(&mut self, value: usize) {
         self.width = value;
     }
 
     pub fn get_height(&self) -> &usize {
         &self.height
     }
-    
-    pub fn set_height(&mut self, value:usize) {
+
+    pub fn set_height(&mut self, value: usize) {
         self.height = value;
     }
 
     pub fn get_rot(&self) -> &Option<String> {
         &self.rot
     }
-    
-    pub fn set_rot<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_rot<S: Into<String>>(&mut self, value: S) {
         self.rot = Some(value.into());
     }
 
     pub fn get_flip_v(&self) -> &Option<String> {
         &self.flip_v
     }
-    
-    pub fn set_flip_v<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_flip_v<S: Into<String>>(&mut self, value: S) {
         self.flip_v = Some(value.into());
     }
 
     pub fn get_flip_h(&self) -> &Option<String> {
         &self.flip_h
     }
-    
-    pub fn set_flip_h<S: Into<String>>(&mut self, value:S) {
+
+    pub fn set_flip_h<S: Into<String>>(&mut self, value: S) {
         self.flip_h = Some(value.into());
     }
-    
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart
+        reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         let mut buf = Vec::new();
-    
+
         match get_attribute(e, b"rot") {
-            Some(v) => {&mut self.set_rot(v);},
+            Some(v) => {
+                &mut self.set_rot(v);
+            }
             None => {}
         }
-    
+
         match get_attribute(e, b"flipH") {
-            Some(v) => {&mut self.set_flip_h(v);},
+            Some(v) => {
+                &mut self.set_flip_h(v);
+            }
             None => {}
         }
-    
+
         match get_attribute(e, b"flipV") {
-            Some(v) => {&mut self.set_flip_v(v);},
+            Some(v) => {
+                &mut self.set_flip_v(v);
+            }
             None => {}
         }
-    
+
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:off" => {
-                            &mut self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
-                            &mut self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
-                        },
-                        b"a:ext" => {
-                            &mut self.set_width(get_attribute(e, b"cx").unwrap().parse::<usize>().unwrap());
-                            &mut self.set_height(get_attribute(e, b"cy").unwrap().parse::<usize>().unwrap());
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:off" => {
+                        &mut self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
+                        &mut self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
                     }
+                    b"a:ext" => {
+                        &mut self
+                            .set_width(get_attribute(e, b"cx").unwrap().parse::<usize>().unwrap());
+                        &mut self
+                            .set_height(get_attribute(e, b"cy").unwrap().parse::<usize>().unwrap());
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:xfrm" => {
-                            return;
-                        },
-                        _ => (),
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:xfrm" => {
+                        return;
                     }
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:xfrm"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -144,16 +148,23 @@ impl Transform2D {
         write_start_tag(writer, "a:xfrm", attributes, false);
 
         // a:off
-        write_start_tag(writer, "a:off", vec![
-            ("x", &self.x.to_string()),
-            ("y", &self.y.to_string()),
-        ], true);
+        write_start_tag(
+            writer,
+            "a:off",
+            vec![("x", &self.x.to_string()), ("y", &self.y.to_string())],
+            true,
+        );
 
         // a:ext
-        write_start_tag(writer, "a:ext", vec![
-            ("cx", &self.width.to_string()),
-            ("cy", &self.height.to_string()),
-        ], true);
+        write_start_tag(
+            writer,
+            "a:ext",
+            vec![
+                ("cx", &self.width.to_string()),
+                ("cy", &self.height.to_string()),
+            ],
+            true,
+        );
 
         write_end_tag(writer, "a:xfrm");
     }
