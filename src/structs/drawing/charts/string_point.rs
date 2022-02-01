@@ -36,7 +36,7 @@ impl StringPoint {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
+    pub(crate) fn _set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
@@ -50,7 +50,7 @@ impl StringPoint {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"c:v" => {
-                        &mut self.numeric_value.set_attributes(reader, e);
+                        &mut self.numeric_value._set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -66,7 +66,7 @@ impl StringPoint {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:pt
         write_start_tag(
             writer,
@@ -76,7 +76,7 @@ impl StringPoint {
         );
 
         // c:v
-        &self.numeric_value.write_to(writer);
+        &self.numeric_value._write_to(writer);
 
         write_end_tag(writer, "c:pt");
     }

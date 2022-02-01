@@ -11,11 +11,11 @@ pub(crate) struct CellStyles {
     cell_style: Vec<CellStyle>,
 }
 impl CellStyles {
-    pub(crate) fn get_cell_style(&self) -> &Vec<CellStyle> {
+    pub(crate) fn _get_cell_style(&self) -> &Vec<CellStyle> {
         &self.cell_style
     }
 
-    pub(crate) fn get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
+    pub(crate) fn _get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
         &mut self.cell_style
     }
 

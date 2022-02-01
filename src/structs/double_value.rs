@@ -16,13 +16,13 @@ impl DoubleValue {
         &self.value_string
     }
 
-    pub(crate) fn set_value(&mut self, value: f64) -> &mut DoubleValue {
+    pub(crate) fn set_value(&mut self, value: f64) -> &mut Self {
         self.value = Some(value);
         self.value_string = self.value.unwrap().to_string();
         self
     }
 
-    pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut DoubleValue {
+    pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.set_value(value.into().parse::<f64>().unwrap())
     }
 

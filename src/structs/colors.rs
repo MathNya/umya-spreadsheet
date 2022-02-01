@@ -11,15 +11,15 @@ pub(crate) struct Colors {
     mru_colors: MruColors,
 }
 impl Colors {
-    pub(crate) fn get_mru_colors(&self) -> &MruColors {
+    pub(crate) fn _get_mru_colors(&self) -> &MruColors {
         &self.mru_colors
     }
 
-    pub(crate) fn get_mru_colors_mut(&mut self) -> &mut MruColors {
+    pub(crate) fn _get_mru_colors_mut(&mut self) -> &mut MruColors {
         &mut self.mru_colors
     }
 
-    pub(crate) fn set_mru_colors(&mut self, value: MruColors) -> &mut Self {
+    pub(crate) fn _set_mru_colors(&mut self, value: MruColors) -> &mut Self {
         self.mru_colors = value;
         self
     }

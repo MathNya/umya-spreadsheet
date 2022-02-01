@@ -1,6 +1,5 @@
 use super::EmbeddedObjectProperties;
 use super::StringValue;
-use super::UInt32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;

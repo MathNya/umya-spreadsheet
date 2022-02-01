@@ -176,6 +176,10 @@ impl Worksheet {
         self.cell_collection.get_collection_by_row(row_num)
     }
 
+    pub(crate) fn get_cell_collection_crate(&self) -> &Cells {
+        &self.cell_collection
+    }
+
     /// Get cell.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) "A1"
@@ -451,7 +455,7 @@ impl Worksheet {
         if row_num_start == 0 {
             let (col_num_end, _) = coordinate_list[1];
             for col_num in col_num_start..=col_num_end {
-                self.get_column_dimension_mut(&col_num)
+                self.get_column_dimension_by_number_mut(&col_num)
                     .set_style(style.clone());
             }
             return self;
@@ -579,17 +583,24 @@ impl Worksheet {
         self.column_dimensions.get_column_collection_mut()
     }
 
-    pub fn get_column_dimension(&self, col: &u32) -> Option<&Column> {
+    pub fn get_column_dimension<S: Into<String>>(&self, column: S) -> Option<&Column> {
+        let column_upper = column.into().to_uppercase();
+        let col = column_index_from_string(&column_upper);
+        self.get_column_dimension_by_number(&col)
+    }
+
+    pub fn get_column_dimension_mut<S: Into<String>>(&mut self, column: S) -> &mut Column {
+        let column_upper = column.into().to_uppercase();
+        let col = column_index_from_string(&column_upper);
+        self.get_column_dimension_by_number_mut(&col)
+    }
+
+    pub fn get_column_dimension_by_number(&self, col: &u32) -> Option<&Column> {
         self.get_column_dimensions_crate().get_column(col)
     }
 
-    pub fn get_column_dimension_mut(&mut self, col: &u32) -> &mut Column {
+    pub fn get_column_dimension_by_number_mut(&mut self, col: &u32) -> &mut Column {
         self.get_column_dimensions_crate_mut().get_column_mut(col)
-    }
-
-    pub(crate) fn set_column_dimension(&mut self, value: Column) -> &mut Self {
-        self.get_column_dimensions_crate_mut().set_column(value);
-        self
     }
 
     pub(crate) fn get_column_dimensions_crate(&self) -> &Columns {

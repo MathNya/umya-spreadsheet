@@ -58,13 +58,13 @@ pub fn read<R: io::Read + io::Seek>(
 
 fn set_value(theme: &mut Theme, tag_name: &str, value: &str) {
     if tag_name == "lt1" {
-        mem::replace(&mut theme.get_color_map_mut()[0], value.into());
+        let _ = mem::replace(&mut theme.get_color_map_mut()[0], value.into());
     } else if tag_name == "dk1" {
-        mem::replace(&mut theme.get_color_map_mut()[1], value.into());
+        let _ = mem::replace(&mut theme.get_color_map_mut()[1], value.into());
     } else if tag_name == "lt2" {
-        mem::replace(&mut theme.get_color_map_mut()[2], value.into());
+        let _ = mem::replace(&mut theme.get_color_map_mut()[2], value.into());
     } else if tag_name == "dk2" {
-        mem::replace(&mut theme.get_color_map_mut()[3], value.into());
+        let _ = mem::replace(&mut theme.get_color_map_mut()[3], value.into());
     } else {
         theme.add_color_map(value);
     }

@@ -35,7 +35,7 @@ impl TrueFalseValue {
         }
     }
 
-    pub(crate) fn get_hash_string(&self) -> &str {
+    pub(crate) fn _get_hash_string(&self) -> &str {
         if self.has_value() {
             return self.get_value_string();
         }

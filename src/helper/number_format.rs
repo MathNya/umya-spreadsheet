@@ -182,7 +182,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             for ite in color_re.captures(section).unwrap().iter() {
                 item.push(ite.unwrap().to_string());
             }
-            std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
+            let _ = std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "").to_string();
         }
         if cond_regex.find(section).is_some() {
@@ -190,8 +190,8 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             for ite in cond_re.captures(section).unwrap().iter() {
                 item.push(ite.unwrap().to_string());
             }
-            std::mem::replace(&mut condops[idx], item.get(1).unwrap().to_string());
-            std::mem::replace(&mut condvals[idx], item.get(2).unwrap().to_string());
+            let _ = std::mem::replace(&mut condops[idx], item.get(1).unwrap().to_string());
+            let _ = std::mem::replace(&mut condvals[idx], item.get(2).unwrap().to_string());
             converted_section = cond_re.replace_all(section, "").to_string();
         }
         converted_sections.insert(idx, converted_section);
@@ -474,20 +474,16 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
 
 fn format_straight_numeric_value(
     value: &str,
-    format: &str,
+    _format: &str,
     matches: &Vec<String>,
     use_thousands: &bool,
-    number_regex: &str,
+    _number_regex: &str,
 ) -> String {
     let mut value = value.to_string();
-    let format = format.to_string();
 
-    let left = matches.get(1).unwrap();
-    let dec = matches.get(2).unwrap();
     let right = matches.get(3).unwrap();
 
     // minimun width of formatted number (including dot)
-    let min_width = left.len() + dec.len() + right.len();
     if use_thousands == &true {
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
@@ -544,7 +540,7 @@ fn format_straight_numeric_value(
     //    value
 }
 
-fn merge_complex_number_format_masks(numbers: &Vec<String>, masks: &Vec<String>) -> Vec<String> {
+fn _merge_complex_number_format_masks(numbers: &Vec<String>, masks: &Vec<String>) -> Vec<String> {
     let mut decimal_count = numbers[1].len();
     let mut post_decimal_masks: Vec<String> = Vec::new();
 
@@ -563,7 +559,7 @@ fn merge_complex_number_format_masks(numbers: &Vec<String>, masks: &Vec<String>)
     result
 }
 
-fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
+fn _process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     let mut result = number.to_string();
     let mut mask = mask.to_string();
     let re = Regex::new(r#"0+"#).unwrap();
@@ -607,7 +603,7 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     result
 }
 
-fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -> String {
+fn _complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -> String {
     let sign = number < &0.0;
     let number = number.abs();
 
@@ -625,11 +621,11 @@ fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -
             masks.push(mask.to_string());
         }
         if masks.len() > 2 {
-            masks = merge_complex_number_format_masks(&numbers, &masks);
+            masks = _merge_complex_number_format_masks(&numbers, &masks);
         }
         let result1 =
-            complex_number_format_mask(&numbers[0].parse::<f64>().unwrap(), &masks[0], &false);
-        let result2 = complex_number_format_mask(
+            _complex_number_format_mask(&numbers[0].parse::<f64>().unwrap(), &masks[0], &false);
+        let result2 = _complex_number_format_mask(
             &numbers[1]
                 .chars()
                 .rev()
@@ -646,7 +642,7 @@ fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -
         return format!("{}{}.{}", if sign { "-" } else { "" }, result1, result2);
     }
 
-    let result = process_complex_number_format_mask(&number, mask);
+    let result = _process_complex_number_format_mask(&number, mask);
     format!("{}{}", if sign { "-" } else { "" }, result)
 }
 

@@ -35,15 +35,15 @@ impl UInt16Value {
         self.set_value(value.into().parse::<u16>().unwrap())
     }
 
-    pub(crate) fn has_value(&self) -> bool {
+    pub(crate) fn _has_value(&self) -> bool {
         match &self.value {
             Some(_) => true,
             None => false,
         }
     }
 
-    pub(crate) fn get_hash_string(&self) -> &str {
-        if self.has_value() {
+    pub(crate) fn _get_hash_string(&self) -> &str {
+        if self._has_value() {
             return self.get_value_string();
         }
         "empty!!"

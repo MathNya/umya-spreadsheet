@@ -17,7 +17,7 @@ impl NumberingFormats {
         &self.numbering_format
     }
 
-    pub(crate) fn get_numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
+    pub(crate) fn _get_numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
         &mut self.numbering_format
     }
 

@@ -2,6 +2,7 @@
 use super::Column;
 use super::ColumnSort;
 use super::Stylesheet;
+use structs::Cells;
 
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -92,15 +93,24 @@ impl Columns {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         stylesheet: &mut Stylesheet,
+        cells: &Cells,
     ) {
         if self.column.len() > 0 {
-            let mut column_index: Vec<ColumnSort> = Vec::new();
+            let mut column_ajst_index: Vec<Column> = Vec::new();
             for column in &self.column {
+                let mut obj = column.clone();
+                obj.calculation_auto_width(cells);
+                column_ajst_index.push(obj);
+            }
+
+            let mut column_index: Vec<ColumnSort> = Vec::new();
+            for column in &column_ajst_index {
                 let mut obj = ColumnSort::default();
                 obj.col_num = column.get_col_num().clone();
                 obj.hash_code = column.get_hash_code();
                 column_index.push(obj);
             }
+            column_index.sort();
 
             // cols
             write_start_tag(writer, "cols", vec![], false);
@@ -110,16 +120,24 @@ impl Columns {
             let mut min = column_index[0].col_num.clone();
             let mut max = column_index[0].col_num.clone();
             for index in &column_index {
-                if hash_code == index.hash_code {
+                if max + 1 >= index.col_num && hash_code == index.hash_code {
                     max = index.col_num.clone();
                 } else {
-                    self.write_to_column(writer, &min, &max, stylesheet);
+                    for column in &column_ajst_index {
+                        if &min == column.get_col_num() {
+                            self.write_to_column(writer, &min, &max, column, stylesheet);
+                        }
+                    }
                     hash_code = index.hash_code.clone();
                     min = index.col_num.clone();
                     max = index.col_num.clone();
                 }
             }
-            self.write_to_column(writer, &min, &max, stylesheet);
+            for column in &column_ajst_index {
+                if &min == column.get_col_num() {
+                    self.write_to_column(writer, &min, &max, column, stylesheet);
+                }
+            }
 
             write_end_tag(writer, "cols");
         }
@@ -130,25 +148,25 @@ impl Columns {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         min: &u32,
         max: &u32,
+        column: &Column,
         stylesheet: &mut Stylesheet,
     ) {
         // col
-        let obj = self.get_column(min).unwrap();
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let min_str = min.to_string();
         let max_str = max.to_string();
         attributes.push(("min", min_str.as_str()));
         attributes.push(("max", max_str.as_str()));
-        attributes.push(("width", obj.width.get_value_string()));
-        if obj.hidden.get_value() == &true {
-            attributes.push(("hidden", obj.hidden.get_value_string()));
+        attributes.push(("width", column.width.get_value_string()));
+        if column.hidden.get_value() == &true {
+            attributes.push(("hidden", column.hidden.get_value_string()));
         }
-        if obj.best_fit.get_value() == &true {
-            attributes.push(("bestFit", obj.best_fit.get_value_string()));
+        if column.best_fit.get_value() == &true {
+            attributes.push(("bestFit", column.best_fit.get_value_string()));
         }
         attributes.push(("customWidth", "1"));
         let xf_index_str: String;
-        let xf_index = stylesheet.set_style(obj.get_style());
+        let xf_index = stylesheet.set_style(column.get_style());
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
             attributes.push(("style", &xf_index_str));

@@ -7,7 +7,7 @@ pub fn excel_to_date_time_object(
     excel_timestamp: &f64,
     time_zone: Option<String>,
 ) -> NaiveDateTime {
-    let time_zone = match time_zone {
+    let _time_zone = match time_zone {
         Some(v) => v,
         None => get_default_timezone(),
     };

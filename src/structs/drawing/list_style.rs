@@ -23,7 +23,7 @@ impl ListStyle {
         self.effect_list = Some(value);
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
+    pub(crate) fn _set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
@@ -50,7 +50,7 @@ impl ListStyle {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lstStyle
         write_start_tag(writer, "a:lstStyle", vec![], true);
     }

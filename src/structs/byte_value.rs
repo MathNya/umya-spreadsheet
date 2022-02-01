@@ -24,7 +24,7 @@ impl ByteValue {
         self.set_value(value.into().parse::<u8>().unwrap())
     }
 
-    pub(crate) fn has_value(&self) -> bool {
+    pub(crate) fn _has_value(&self) -> bool {
         match &self.value {
             Some(_) => true,
             None => false,

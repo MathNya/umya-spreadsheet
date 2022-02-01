@@ -50,24 +50,24 @@ impl ObjectAnchor {
         self
     }
 
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows: &usize) {
-        &mut self.from_marker.adjustment_insert_row(num_rows);
-        &mut self.to_marker.adjustment_insert_row(num_rows);
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
+        &mut self.from_marker._adjustment_insert_row(num_rows);
+        &mut self.to_marker._adjustment_insert_row(num_rows);
     }
 
-    pub(crate) fn adjustment_insert_colmun(&mut self, num_cols: &usize) {
-        &mut self.from_marker.adjustment_insert_colmun(num_cols);
-        &mut self.to_marker.adjustment_insert_colmun(num_cols);
+    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
+        &mut self.from_marker._adjustment_insert_colmun(num_cols);
+        &mut self.to_marker._adjustment_insert_colmun(num_cols);
     }
 
-    pub(crate) fn adjustment_remove_row(&mut self, num_rows: &usize) {
-        &mut self.from_marker.adjustment_remove_row(num_rows);
-        &mut self.to_marker.adjustment_remove_row(num_rows);
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
+        &mut self.from_marker._adjustment_remove_row(num_rows);
+        &mut self.to_marker._adjustment_remove_row(num_rows);
     }
 
-    pub(crate) fn adjustment_remove_colmun(&mut self, num_cols: &usize) {
-        &mut self.from_marker.adjustment_remove_colmun(num_cols);
-        &mut self.to_marker.adjustment_remove_colmun(num_cols);
+    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
+        &mut self.from_marker._adjustment_remove_colmun(num_cols);
+        &mut self.to_marker._adjustment_remove_colmun(num_cols);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

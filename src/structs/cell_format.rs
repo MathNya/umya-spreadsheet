@@ -139,7 +139,7 @@ impl CellFormat {
         &self.apply_protection.get_value()
     }
 
-    pub(crate) fn set_apply_protection(&mut self, value: bool) -> &mut Self {
+    pub(crate) fn _set_apply_protection(&mut self, value: bool) -> &mut Self {
         self.apply_protection.set_value(value);
         self
     }
@@ -148,7 +148,7 @@ impl CellFormat {
         &self.alignment
     }
 
-    pub(crate) fn get_alignment_mut(&mut self) -> &mut Option<Alignment> {
+    pub(crate) fn _get_alignment_mut(&mut self) -> &mut Option<Alignment> {
         &mut self.alignment
     }
 

@@ -190,7 +190,7 @@ impl Spreadsheet {
         }
     }
 
-    pub(crate) fn get_all_conditional_style_list(&self) -> Vec<(String, Style)> {
+    pub(crate) fn _get_all_conditional_style_list(&self) -> Vec<(String, Style)> {
         let mut result: Vec<(String, Style)> = Vec::new();
         for work_sheet in &self.work_sheet_collection {
             for conditional_formatting in work_sheet.get_conditional_styles_collection() {
@@ -286,7 +286,7 @@ impl Spreadsheet {
         &self.has_macros
     }
 
-    pub(crate) fn get_has_macros_mut(&mut self) -> &mut bool {
+    pub(crate) fn _get_has_macros_mut(&mut self) -> &mut bool {
         &mut self.has_macros
     }
 
@@ -306,7 +306,7 @@ impl Spreadsheet {
         &self.stylesheet
     }
 
-    pub(crate) fn get_stylesheet_mut(&mut self) -> &mut Stylesheet {
+    pub(crate) fn _get_stylesheet_mut(&mut self) -> &mut Stylesheet {
         &mut self.stylesheet
     }
 
@@ -324,7 +324,7 @@ impl Spreadsheet {
         &self.shared_string_table
     }
 
-    pub(crate) fn get_shared_string_table_mut(&mut self) -> &mut SharedStringTable {
+    pub(crate) fn _get_shared_string_table_mut(&mut self) -> &mut SharedStringTable {
         &mut self.shared_string_table
     }
 

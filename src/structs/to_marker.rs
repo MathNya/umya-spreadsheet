@@ -49,15 +49,15 @@ impl ToMarker {
         self
     }
 
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
         self.row += num_rows;
     }
 
-    pub(crate) fn adjustment_insert_colmun(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
         self.col += num_cols;
     }
 
-    pub(crate) fn adjustment_remove_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
         self.row = if &self.row > num_rows {
             self.row - num_rows
         } else {
@@ -65,7 +65,7 @@ impl ToMarker {
         };
     }
 
-    pub(crate) fn adjustment_remove_colmun(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
         self.col = if &self.col > num_cols {
             self.col - num_cols
         } else {

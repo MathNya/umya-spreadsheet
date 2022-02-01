@@ -139,9 +139,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
 
         // cols
-        worksheet
-            .get_column_dimensions_crate()
-            .write_to(&mut writer, stylesheet);
+        worksheet.get_column_dimensions_crate().write_to(
+            &mut writer,
+            stylesheet,
+            worksheet.get_cell_collection_crate(),
+        );
 
         // sheetData
         let has_sheet_data = worksheet.get_row_dimensions().len() > 0;

@@ -403,6 +403,7 @@ fn new_and_wite() {
 
     // new worksheet.
     let _ = book.new_sheet("Sheet2");
+    let _ = book.new_sheet("Sheet3");
 
     // change value.
     book.get_sheet_by_name_mut("Sheet2")
@@ -465,37 +466,6 @@ fn new_and_wite() {
         .get_value();
     assert_eq!("TRUE", a1_value);
 
-    book.get_sheet_by_name_mut("Sheet2")
-        .unwrap()
-        .get_cell_mut("F1")
-        .set_value("AAAAAAAAAAAAAAAAAA");
-    book.get_sheet_by_name_mut("Sheet2")
-        .unwrap()
-        .get_cell_mut("F2")
-        .set_value("BBBBBBBBBBB");
-    book.get_sheet_by_name_mut("Sheet2")
-        .unwrap()
-        .get_cell_mut("F4")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
-
-    book.get_sheet_by_name_mut("Sheet2")
-        .unwrap()
-        .get_cell_mut("G1")
-        .set_value("AAAAAAAAAAAAAAAAAA");
-    book.get_sheet_by_name_mut("Sheet2")
-        .unwrap()
-        .get_cell_mut("G2")
-        .set_value("BBBBBBBBBBB");
-    book.get_sheet_by_name_mut("Sheet2")
-        .unwrap()
-        .get_cell_mut("G3")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
-
-    book.get_sheet_by_name_mut("Sheet2")
-        .unwrap()
-        .get_column_dimension_mut(&6)
-        .set_best_fit(true);
-
     // add bottom border.
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
@@ -517,6 +487,63 @@ fn new_and_wite() {
         .get_font_mut()
         .get_color_mut()
         .set_argb("00FF0000");
+
+    let worksheet = book.get_sheet_by_name_mut("Sheet3").unwrap();
+    worksheet.get_column_dimension_mut("A").set_auto_width(true);
+
+    worksheet.get_cell_mut("E1").set_value("テスト");
+    worksheet.get_cell_mut("E2").set_value("うみゃーねっと");
+    worksheet.get_cell_mut("E3").set_value("案案案案");
+    worksheet.get_column_dimension_mut("E").set_auto_width(true);
+
+    worksheet.get_cell_mut("F1").set_value("AAAAAAAAAAAAAAAAAA");
+    worksheet.get_cell_mut("F2").set_value("BBBBBBBBBBB");
+    worksheet
+        .get_cell_mut("F4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet.get_column_dimension_mut("F").set_auto_width(true);
+
+    worksheet.get_cell_mut("G1").set_value("AAAAAAAAAAAAAAAAAA");
+    worksheet.get_cell_mut("G2").set_value("BBBBBBBBBBB");
+    worksheet
+        .get_cell_mut("G3")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet.get_column_dimension_mut("G").set_width(60f64);
+
+    worksheet.get_cell_mut("D1").set_value("テスト");
+    worksheet.get_cell_mut("D2").set_value("うみゃーねっと");
+    worksheet.get_cell_mut("D3").set_value("案案案案");
+    worksheet.get_column_dimension_mut("D").set_auto_width(true);
+
+    worksheet.get_cell_mut("H1").set_value("テスト");
+    worksheet
+        .get_cell_mut("H2")
+        .set_value("うみゃーねっと\nうみゃーねっと")
+        .get_style_mut()
+        .get_alignment_mut()
+        .set_wrap_text(true);
+    worksheet.get_cell_mut("H3").set_value("案案案案");
+    worksheet.get_column_dimension_mut("H").set_auto_width(true);
+
+    worksheet.get_cell_mut("I1").set_value("テスト");
+    worksheet
+        .get_cell_mut("I2")
+        .set_value("うみゃーねっと")
+        .get_style_mut()
+        .get_font_mut()
+        .get_font_size_mut()
+        .set_val(20f64);
+    worksheet.get_cell_mut("I3").set_value("案案案案");
+    worksheet.get_column_dimension_mut("I").set_auto_width(true);
+
+    worksheet
+        .get_cell_mut("J2")
+        .set_value("うみゃーねっと")
+        .get_style_mut()
+        .get_font_mut()
+        .get_font_size_mut()
+        .set_val(5f64);
+    worksheet.get_column_dimension_mut("J").set_auto_width(true);
 
     // writer.
     let path = std::path::Path::new("./tests/result_files/eee.xlsx");

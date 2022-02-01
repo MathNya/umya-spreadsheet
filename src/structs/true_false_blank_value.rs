@@ -8,7 +8,7 @@ impl TrueFalseBlankValue {
         &self.value
     }
 
-    pub(crate) fn get_value_string(&self) -> &str {
+    pub(crate) fn _get_value_string(&self) -> &str {
         match self.get_value() {
             Some(v) => {
                 if v == &false {
@@ -55,9 +55,9 @@ impl TrueFalseBlankValue {
         }
     }
 
-    pub(crate) fn get_hash_string(&self) -> &str {
+    pub(crate) fn _get_hash_string(&self) -> &str {
         if self.has_value() {
-            return self.get_value_string();
+            return self._get_value_string();
         }
         "empty!!"
     }

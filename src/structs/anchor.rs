@@ -74,17 +74,17 @@ impl Anchor {
         self.bottom_offset = value.into();
     }
 
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows: &u32) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &u32) {
         self.top_row += num_rows;
         self.bottom_row += num_rows;
     }
 
-    pub(crate) fn adjustment_insert_colmun(&mut self, num_cols: &u32) {
+    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &u32) {
         self.left_column += num_cols;
         self.right_column += num_cols;
     }
 
-    pub(crate) fn adjustment_remove_row(&mut self, num_rows: &u32) {
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &u32) {
         self.top_row = if &self.top_row > num_rows {
             self.top_row - num_rows
         } else {
@@ -97,7 +97,7 @@ impl Anchor {
         };
     }
 
-    pub(crate) fn adjustment_remove_colmun(&mut self, num_cols: &u32) {
+    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &u32) {
         self.left_column = if &self.left_column > num_cols {
             self.left_column - num_cols
         } else {

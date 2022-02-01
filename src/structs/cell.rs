@@ -99,7 +99,7 @@ impl Cell {
         ""
     }
 
-    pub(crate) fn get_value_crate(&self) -> &Option<String> {
+    pub(crate) fn _get_value_crate(&self) -> &Option<String> {
         &self.cell_value.value
     }
 

@@ -158,7 +158,7 @@ pub fn read(path: &Path) -> Result<Spreadsheet, XlsxError> {
     read_reader(file)
 }
 
-fn get_vml_drawing_target(worksheet_rel: &Vec<(String, String, String)>) -> &str {
+fn _get_vml_drawing_target(worksheet_rel: &Vec<(String, String, String)>) -> &str {
     for (_, type_value, worksheet_target) in worksheet_rel {
         if type_value
             == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"

@@ -8,7 +8,7 @@ use quick_xml::Reader;
 use reader::driver::*;
 use structs::Cells;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Debug)]
 pub struct Column {
     pub(crate) col_num: UInt32Value,
     pub(crate) width: DoubleValue,
@@ -16,6 +16,20 @@ pub struct Column {
     pub(crate) best_fit: BooleanValue,
     pub(crate) style: Style,
     pub(crate) auto_width: BooleanValue,
+}
+impl Default for Column {
+    fn default() -> Self {
+        let mut width = DoubleValue::default();
+        width.set_value(8.38f64);
+        Self {
+            col_num: UInt32Value::default(),
+            width: width,
+            hidden: BooleanValue::default(),
+            best_fit: BooleanValue::default(),
+            style: Style::default(),
+            auto_width: BooleanValue::default(),
+        }
+    }
 }
 impl Column {
     pub fn get_col_num(&self) -> &u32 {
@@ -76,33 +90,48 @@ impl Column {
         self
     }
 
-    pub(crate) fn calculation_auto_width(&mut self, cells: &Cells) -> f64 {
-        // default cell value len.
-        let mut char_cnt_max = 0;
+    pub(crate) fn calculation_auto_width(&mut self, cells: &Cells) -> &mut Self {
+        if self.get_auto_width() == &false {
+            return self;
+        }
+
+        let mut column_width_max = 0f64;
 
         // default font size len.
         let column_font_size = match self.get_style().get_font() {
             Some(font) => font.get_font_size().get_val().clone(),
-            None => 0.0000f64,
+            None => 11f64,
         };
 
-        if self.get_auto_width() == &true {
-            let cell_list = cells.get_collection_by_column(self.get_col_num());
-            for (_, cell) in cell_list {
-                // get cell value len.
-                let char_cnt = cell.get_cell_value().get_value().len();
-                if char_cnt_max < char_cnt {
-                    char_cnt_max = char_cnt;
-                }
+        let mut find_char = false;
+        let cell_list = cells.get_collection_by_column(self.get_col_num());
+        for (_, cell) in cell_list {
+            // get cell value len.
+            let char_cnt = cell.get_cell_value().get_width_point();
+            if char_cnt > 0f64 {
+                find_char = true;
+            }
 
-                // get font size.
-                let font_size = match cell.get_style().get_font() {
-                    Some(font) => font.get_font_size().get_val(),
-                    None => &column_font_size,
-                };
+            // get font size.
+            let font_size = match cell.get_style().get_font() {
+                Some(font) => font.get_font_size().get_val(),
+                None => &column_font_size,
+            };
+
+            let mut column_width = 1.4 * char_cnt as f64;
+            column_width = column_width * font_size / 11f64;
+            if column_width > column_width_max {
+                column_width_max = column_width;
             }
         }
-        char_cnt_max as f64
+
+        // set default width if empty column.
+        if find_char == false {
+            column_width_max = 8.38f64;
+        }
+
+        self.set_width(column_width_max);
+        self
     }
 
     pub(crate) fn adjustment_insert_coordinate(

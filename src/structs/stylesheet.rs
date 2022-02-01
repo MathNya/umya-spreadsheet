@@ -29,20 +29,20 @@ pub(crate) struct Stylesheet {
     colors: Colors,
 }
 impl Stylesheet {
-    pub(crate) fn get_numbering_formats(&self) -> &NumberingFormats {
+    pub(crate) fn _get_numbering_formats(&self) -> &NumberingFormats {
         &self.numbering_formats
     }
 
-    pub(crate) fn get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
+    pub(crate) fn _get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
         &mut self.numbering_formats
     }
 
-    pub(crate) fn set_numbering_formats(&mut self, value: NumberingFormats) -> &mut Self {
+    pub(crate) fn _set_numbering_formats(&mut self, value: NumberingFormats) -> &mut Self {
         self.numbering_formats = value;
         self
     }
 
-    pub(crate) fn get_fonts(&self) -> &Fonts {
+    pub(crate) fn _get_fonts(&self) -> &Fonts {
         &self.fonts
     }
 
@@ -50,12 +50,12 @@ impl Stylesheet {
         &mut self.fonts
     }
 
-    pub(crate) fn set_fonts(&mut self, value: Fonts) -> &mut Self {
+    pub(crate) fn _set_fonts(&mut self, value: Fonts) -> &mut Self {
         self.fonts = value;
         self
     }
 
-    pub(crate) fn get_fills(&self) -> &Fills {
+    pub(crate) fn _get_fills(&self) -> &Fills {
         &self.fills
     }
 
@@ -63,12 +63,12 @@ impl Stylesheet {
         &mut self.fills
     }
 
-    pub(crate) fn set_fills(&mut self, value: Fills) -> &mut Self {
+    pub(crate) fn _set_fills(&mut self, value: Fills) -> &mut Self {
         self.fills = value;
         self
     }
 
-    pub(crate) fn get_borders(&self) -> &BordersCrate {
+    pub(crate) fn _get_borders(&self) -> &BordersCrate {
         &self.borders
     }
 
@@ -76,46 +76,46 @@ impl Stylesheet {
         &mut self.borders
     }
 
-    pub(crate) fn set_borders(&mut self, value: BordersCrate) -> &mut Self {
+    pub(crate) fn _set_borders(&mut self, value: BordersCrate) -> &mut Self {
         self.borders = value;
         self
     }
 
-    pub(crate) fn get_cell_style_formats(&self) -> &CellStyleFormats {
+    pub(crate) fn _get_cell_style_formats(&self) -> &CellStyleFormats {
         &self.cell_style_formats
     }
 
-    pub(crate) fn get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
+    pub(crate) fn _get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
         &mut self.cell_style_formats
     }
 
-    pub(crate) fn set_cell_style_formats(&mut self, value: CellStyleFormats) -> &mut Self {
+    pub(crate) fn _set_cell_style_formats(&mut self, value: CellStyleFormats) -> &mut Self {
         self.cell_style_formats = value;
         self
     }
 
-    pub(crate) fn get_cell_formats(&self) -> &CellFormats {
+    pub(crate) fn _get_cell_formats(&self) -> &CellFormats {
         &self.cell_formats
     }
 
-    pub(crate) fn get_cell_formats_mut(&mut self) -> &mut CellFormats {
+    pub(crate) fn _get_cell_formats_mut(&mut self) -> &mut CellFormats {
         &mut self.cell_formats
     }
 
-    pub(crate) fn set_cell_formats(&mut self, value: CellFormats) -> &mut Self {
+    pub(crate) fn _set_cell_formats(&mut self, value: CellFormats) -> &mut Self {
         self.cell_formats = value;
         self
     }
 
-    pub(crate) fn get_cell_styles(&self) -> &CellStyles {
+    pub(crate) fn _get_cell_styles(&self) -> &CellStyles {
         &self.cell_styles
     }
 
-    pub(crate) fn get_cell_styles_mut(&mut self) -> &mut CellStyles {
+    pub(crate) fn _get_cell_styles_mut(&mut self) -> &mut CellStyles {
         &mut self.cell_styles
     }
 
-    pub(crate) fn set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
+    pub(crate) fn _set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
         self.cell_styles = value;
         self
     }
@@ -128,20 +128,20 @@ impl Stylesheet {
         &mut self.differential_formats
     }
 
-    pub(crate) fn set_differential_formats(&mut self, value: DifferentialFormats) -> &mut Self {
+    pub(crate) fn _set_differential_formats(&mut self, value: DifferentialFormats) -> &mut Self {
         self.differential_formats = value;
         self
     }
 
-    pub(crate) fn get_colors(&self) -> &Colors {
+    pub(crate) fn _get_colors(&self) -> &Colors {
         &self.colors
     }
 
-    pub(crate) fn get_colors_mut(&mut self) -> &mut Colors {
+    pub(crate) fn _get_colors_mut(&mut self) -> &mut Colors {
         &mut self.colors
     }
 
-    pub(crate) fn set_colors(&mut self, value: Colors) -> &mut Self {
+    pub(crate) fn _set_colors(&mut self, value: Colors) -> &mut Self {
         self.colors = value;
         self
     }

@@ -36,7 +36,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     Ok(result)
 }
 
-pub(crate) fn read_rid<R: io::Read + io::Seek>(
+pub(crate) fn _read_rid<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
     rid: &str,
 ) -> result::Result<(String, String), XlsxError> {
