@@ -1,7 +1,7 @@
 //! structs of drawing.
 
-pub mod spreadsheet;
 pub mod charts;
+pub mod spreadsheet;
 
 mod transform2d;
 pub use self::transform2d::*;

@@ -7,14 +7,16 @@ pub enum GroupingValues {
     Standard,
 }
 impl Default for GroupingValues {
-    fn default() -> Self { Self::PercentStacked }
+    fn default() -> Self {
+        Self::PercentStacked
+    }
 }
 impl EnumTrait for GroupingValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::PercentStacked => {"percentStacked"},
-            Self::Stacked => {"stacked"},
-            Self::Standard => {"standard"},
+            Self::PercentStacked => "percentStacked",
+            Self::Stacked => "stacked",
+            Self::Standard => "standard",
         }
     }
 }
@@ -25,8 +27,7 @@ impl FromStr for GroupingValues {
             "percentStacked" => Ok(Self::PercentStacked),
             "stacked" => Ok(Self::Stacked),
             "standard" => Ok(Self::Standard),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

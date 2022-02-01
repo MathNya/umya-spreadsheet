@@ -45,8 +45,7 @@ where
     let _ = writer.write(&data.into().as_bytes());
 }
 
-pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>)
-{
+pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>) {
     let _ = write_text_node(writer, "\r\n");
 }
 
@@ -73,6 +72,6 @@ pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
 pub(crate) fn to_path(path: &str, dir: Option<&str>) -> String {
     match dir {
         Some(dir) => format!("{}/{}", dir, path),
-        None => path.to_owned()
+        None => path.to_owned(),
     }
 }

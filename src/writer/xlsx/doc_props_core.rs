@@ -1,25 +1,42 @@
-use quick_xml::events::{Event, BytesDecl};
+use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use ::structs::Spreadsheet;
 use super::driver::*;
 use super::XlsxError;
+use structs::Spreadsheet;
 
-pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mut zip::ZipWriter<W>, sub_dir: &str, file_name: &str) -> Result<(), XlsxError> {
+pub(crate) fn write<W: io::Seek + io::Write>(
+    spreadsheet: &Spreadsheet,
+    arv: &mut zip::ZipWriter<W>,
+    sub_dir: &str,
+    file_name: &str,
+) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    let _ = writer.write_event(Event::Decl(BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
+    let _ = writer.write_event(Event::Decl(BytesDecl::new(
+        b"1.0",
+        Some(b"UTF-8"),
+        Some(b"yes"),
+    )));
     write_new_line(&mut writer);
 
     // cp:coreProperties
-    write_start_tag(&mut writer, "cp:coreProperties", vec![
-        ("xmlns:cp", "http://schemas.openxmlformats.org/package/2006/metadata/core-properties"),
-        ("xmlns:dc", "http://purl.org/dc/elements/1.1/"),
-        ("xmlns:dcterms", "http://purl.org/dc/terms/"),
-        ("xmlns:dcmitype", "http://purl.org/dc/dcmitype/"),
-        ("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"),
-    ], false);
+    write_start_tag(
+        &mut writer,
+        "cp:coreProperties",
+        vec![
+            (
+                "xmlns:cp",
+                "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
+            ),
+            ("xmlns:dc", "http://purl.org/dc/elements/1.1/"),
+            ("xmlns:dcterms", "http://purl.org/dc/terms/"),
+            ("xmlns:dcmitype", "http://purl.org/dc/dcmitype/"),
+            ("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+        ],
+        false,
+    );
 
     // dc:title
     if spreadsheet.get_properties().get_title() != "" {
@@ -56,7 +73,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
 
     // cp:lastModifiedBy
     write_start_tag(&mut writer, "cp:lastModifiedBy", vec![], false);
-    write_text_node(&mut writer, spreadsheet.get_properties().get_last_modified_by());
+    write_text_node(
+        &mut writer,
+        spreadsheet.get_properties().get_last_modified_by(),
+    );
     write_end_tag(&mut writer, "cp:lastModifiedBy");
 
     // cp:revision
@@ -67,16 +87,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(spreadsheet: &Spreadsheet, arv: &mu
     }
 
     // dcterms:created
-    write_start_tag(&mut writer, "dcterms:created", vec![
-        ("xsi:type", "dcterms:W3CDTF"),
-    ], false);
+    write_start_tag(
+        &mut writer,
+        "dcterms:created",
+        vec![("xsi:type", "dcterms:W3CDTF")],
+        false,
+    );
     write_text_node(&mut writer, spreadsheet.get_properties().get_created());
     write_end_tag(&mut writer, "dcterms:created");
 
     // dcterms:modified
-    write_start_tag(&mut writer, "dcterms:modified", vec![
-        ("xsi:type", "dcterms:W3CDTF"),
-    ], false);
+    write_start_tag(
+        &mut writer,
+        "dcterms:modified",
+        vec![("xsi:type", "dcterms:W3CDTF")],
+        false,
+    );
     write_text_node(&mut writer, spreadsheet.get_properties().get_modified());
     write_end_tag(&mut writer, "dcterms:modified");
 

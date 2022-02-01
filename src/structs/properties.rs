@@ -31,7 +31,7 @@ impl Default for Properties {
             company: String::from(""),
             revision: String::from(""),
             version: String::from(""),
-            custom_properties: Vec::new()
+            custom_properties: Vec::new(),
         }
     }
 }
@@ -40,7 +40,7 @@ impl Properties {
         &self.creator
     }
 
-    pub fn set_creator<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_creator<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.creator = value.into();
         self
     }
@@ -49,7 +49,7 @@ impl Properties {
         &self.last_modified_by
     }
 
-    pub fn set_last_modified_by<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_last_modified_by<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.last_modified_by = value.into();
         self
     }
@@ -58,7 +58,7 @@ impl Properties {
         &self.created
     }
 
-    pub fn set_created<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_created<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.created = value.into();
         self
     }
@@ -67,97 +67,97 @@ impl Properties {
         &self.modified
     }
 
-    pub fn set_modified<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_modified<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.modified = value.into();
         self
     }
 
-    pub fn get_title(&self)-> &str {
+    pub fn get_title(&self) -> &str {
         &self.title
     }
-    
-    pub fn set_title<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+
+    pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.title = value.into();
         self
     }
 
-    pub fn get_description(&self)-> &str {
+    pub fn get_description(&self) -> &str {
         &self.description
     }
 
-    pub fn set_description<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_description<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.description = value.into();
         self
     }
 
-    pub fn get_subject(&self)-> &str {
+    pub fn get_subject(&self) -> &str {
         &self.subject
     }
 
-    pub fn set_subject<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_subject<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.subject = value.into();
         self
     }
 
-    pub fn get_keywords(&self)-> &str {
+    pub fn get_keywords(&self) -> &str {
         &self.keywords
     }
 
-    pub fn set_keywords<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_keywords<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.keywords = value.into();
         self
     }
 
-    pub fn get_revision(&self)-> &str {
+    pub fn get_revision(&self) -> &str {
         &self.revision
     }
 
-    pub fn set_revision<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_revision<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.revision = value.into();
         self
     }
 
-    pub fn get_category(&self)-> &str {
+    pub fn get_category(&self) -> &str {
         &self.category
     }
 
-    pub fn set_category<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_category<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.category = value.into();
         self
     }
 
-    pub fn get_version(&self)-> &str {
+    pub fn get_version(&self) -> &str {
         &self.version
     }
 
-    pub fn set_version<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_version<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.version = value.into();
         self
     }
-    
-    pub fn get_manager(&self)-> &str {
+
+    pub fn get_manager(&self) -> &str {
         &self.manager
     }
 
-    pub fn set_manager<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_manager<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.manager = value.into();
         self
     }
 
-    pub fn get_company(&self)-> &str {
+    pub fn get_company(&self) -> &str {
         &self.company
     }
 
-    pub fn set_company<S: Into<String>>(&mut self, value:S)-> &mut Properties {
+    pub fn set_company<S: Into<String>>(&mut self, value: S) -> &mut Properties {
         self.company = value.into();
         self
     }
 
-    pub fn get_custom_properties(&self)-> &Vec<String> {
+    pub fn get_custom_properties(&self) -> &Vec<String> {
         &self.custom_properties
     }
 
-    pub fn set_custom_properties(&mut self, value:Vec<String>)-> &mut Properties {
+    pub fn set_custom_properties(&mut self, value: Vec<String>) -> &mut Properties {
         self.custom_properties = value;
         self
     }

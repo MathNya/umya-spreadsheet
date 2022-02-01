@@ -1,14 +1,14 @@
 // a:gsLst
 use super::GradientStop;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientStopList {
-    gradient_stop:Vec<GradientStop>,
+    gradient_stop: Vec<GradientStop>,
 }
 impl GradientStopList {
     pub fn get_gradient_stop(&self) -> &Vec<GradientStop> {
@@ -19,39 +19,35 @@ impl GradientStopList {
         &mut self.gradient_stop
     }
 
-    pub fn set_gradient_stop(&mut self, value:Vec<GradientStop>) -> &mut GradientStopList {
+    pub fn set_gradient_stop(&mut self, value: Vec<GradientStop>) -> &mut GradientStopList {
         self.gradient_stop = value;
         self
     }
 
-    pub fn add_gradient_stop(&mut self, value:GradientStop) -> &mut GradientStopList {
+    pub fn add_gradient_stop(&mut self, value: GradientStop) -> &mut GradientStopList {
         self.gradient_stop.push(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:gs" => {
-                            let mut obj = GradientStop::default();
-                            obj.set_attributes(reader, e);
-                            self.add_gradient_stop(obj);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:gs" => {
+                        let mut obj = GradientStop::default();
+                        obj.set_attributes(reader, e);
+                        self.add_gradient_stop(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:gsLst" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:gsLst" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:gsLst"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

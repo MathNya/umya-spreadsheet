@@ -1,12 +1,12 @@
 // a:glow
 use super::super::super::Int64Value;
 use super::SchemeColor;
-use writer::driver::*;
-use reader::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Glow {
@@ -14,11 +14,11 @@ pub struct Glow {
     scheme_color: Option<SchemeColor>,
 }
 impl Glow {
-    pub fn get_radius(&self)-> &i64 {
+    pub fn get_radius(&self) -> &i64 {
         &self.radius.get_value()
     }
-    
-    pub fn set_radius(&mut self, value:i64)-> &mut Glow {
+
+    pub fn set_radius(&mut self, value: i64) -> &mut Glow {
         self.radius.set_value(value);
         self
     }
@@ -27,35 +27,32 @@ impl Glow {
         &self.scheme_color
     }
 
-    pub fn set_scheme_color(&mut self, value:SchemeColor) {
+    pub fn set_scheme_color(&mut self, value: SchemeColor) {
         self.scheme_color = Some(value);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart
+        reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
-        self.radius.set_value_string(get_attribute(e, b"rad").unwrap());
+        self.radius
+            .set_value_string(get_attribute(e, b"rad").unwrap());
 
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:schemeClr" => {
-                            let mut obj = SchemeColor::default();
-                            obj.set_attributes(reader, e, false);
-                            &mut self.set_scheme_color(obj);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:schemeClr" => {
+                        let mut obj = SchemeColor::default();
+                        obj.set_attributes(reader, e, false);
+                        &mut self.set_scheme_color(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:glow" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:glow" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:glow"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -67,15 +64,18 @@ impl Glow {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:glow
-        write_start_tag(writer, "a:glow", vec![
-            ("rad", &self.radius.get_value_string()),
-        ], false);
+        write_start_tag(
+            writer,
+            "a:glow",
+            vec![("rad", &self.radius.get_value_string())],
+            false,
+        );
 
         // a:schemeClr
         match &self.scheme_color {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
 

@@ -8,15 +8,17 @@ pub enum AxisPositionValues {
     Top,
 }
 impl Default for AxisPositionValues {
-    fn default() -> Self { Self::Bottom }
+    fn default() -> Self {
+        Self::Bottom
+    }
 }
 impl EnumTrait for AxisPositionValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Bottom => {"b"},
-            Self::Left => {"l"},
-            Self::Right => {"r"},
-            Self::Top => {"t"},
+            Self::Bottom => "b",
+            Self::Left => "l",
+            Self::Right => "r",
+            Self::Top => "t",
         }
     }
 }
@@ -28,8 +30,7 @@ impl FromStr for AxisPositionValues {
             "l" => Ok(Self::Left),
             "r" => Ok(Self::Right),
             "t" => Ok(Self::Top),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

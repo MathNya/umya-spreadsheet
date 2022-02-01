@@ -1,11 +1,11 @@
 // xdr:cNvCxnSpPr
-use super::super::StartConnection;
 use super::super::EndConnection;
-use writer::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use super::super::StartConnection;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualConnectorShapeDrawingProperties {
@@ -17,7 +17,7 @@ impl NonVisualConnectorShapeDrawingProperties {
         &self.start_connection
     }
 
-    pub fn set_start_connection(&mut self, value:StartConnection) {
+    pub fn set_start_connection(&mut self, value: StartConnection) {
         self.start_connection = Some(value);
     }
 
@@ -29,7 +29,7 @@ impl NonVisualConnectorShapeDrawingProperties {
         &self.end_connection
     }
 
-    pub fn set_end_connection(&mut self, value:EndConnection) {
+    pub fn set_end_connection(&mut self, value: EndConnection) {
         self.end_connection = Some(value);
     }
 
@@ -39,32 +39,28 @@ impl NonVisualConnectorShapeDrawingProperties {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:stCxn" => {
-                            let mut connection_type = StartConnection::default();
-                            connection_type.set_attributes(reader, e);
-                            &mut self.set_start_connection(connection_type);
-                        },
-                        b"a:endCxn" => {
-                            let mut connection_type = EndConnection::default();
-                            connection_type.set_attributes(reader, e);
-                            &mut self.set_end_connection(connection_type);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:stCxn" => {
+                        let mut connection_type = StartConnection::default();
+                        connection_type.set_attributes(reader, e);
+                        &mut self.set_start_connection(connection_type);
                     }
+                    b"a:endCxn" => {
+                        let mut connection_type = EndConnection::default();
+                        connection_type.set_attributes(reader, e);
+                        &mut self.set_end_connection(connection_type);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:cNvCxnSpPr" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:cNvCxnSpPr" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cNvCxnSpPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -83,7 +79,7 @@ impl NonVisualConnectorShapeDrawingProperties {
             match &self.start_connection {
                 Some(v) => {
                     v.write_to(writer);
-                },
+                }
                 None => {}
             }
 
@@ -91,7 +87,7 @@ impl NonVisualConnectorShapeDrawingProperties {
             match &self.end_connection {
                 Some(v) => {
                     v.write_to(writer);
-                },
+                }
                 None => {}
             }
 

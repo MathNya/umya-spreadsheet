@@ -7,14 +7,16 @@ pub enum PaneStateValues {
     Split,
 }
 impl Default for PaneStateValues {
-    fn default() -> Self { Self::Split }
+    fn default() -> Self {
+        Self::Split
+    }
 }
 impl EnumTrait for PaneStateValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Frozen => {"frozen"},
-            Self::FrozenSplit => {"frozenSplit"},
-            Self::Split => {"split"},
+            Self::Frozen => "frozen",
+            Self::FrozenSplit => "frozenSplit",
+            Self::Split => "split",
         }
     }
 }
@@ -25,7 +27,7 @@ impl FromStr for PaneStateValues {
             "frozen" => Ok(Self::Frozen),
             "frozenSplit" => Ok(Self::FrozenSplit),
             "split" => Ok(Self::Split),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

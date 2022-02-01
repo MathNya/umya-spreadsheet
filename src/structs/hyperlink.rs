@@ -9,7 +9,7 @@ impl Hyperlink {
         &self.url
     }
 
-    pub fn set_url<S: Into<String>>(&mut self, value:S)-> &mut Hyperlink {
+    pub fn set_url<S: Into<String>>(&mut self, value: S) -> &mut Hyperlink {
         self.url = value.into();
         self
     }
@@ -18,7 +18,7 @@ impl Hyperlink {
         &self.tooltip
     }
 
-    pub fn set_tooltip<S: Into<String>>(&mut self, value:S)-> &mut Hyperlink {
+    pub fn set_tooltip<S: Into<String>>(&mut self, value: S) -> &mut Hyperlink {
         self.tooltip = value.into();
         self
     }
@@ -26,8 +26,8 @@ impl Hyperlink {
     pub fn get_location(&self) -> &bool {
         &self.location
     }
-    
-    pub fn set_location(&mut self, value:bool)-> &mut Hyperlink {
+
+    pub fn set_location(&mut self, value: bool) -> &mut Hyperlink {
         self.location = value;
         self
     }

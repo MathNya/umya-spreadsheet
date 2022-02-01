@@ -1,9 +1,9 @@
 use super::run_properties::RunProperties;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Run {
@@ -15,7 +15,7 @@ impl Run {
         &self.text
     }
 
-    pub fn set_text<S: Into<String>>(&mut self, value:S) {
+    pub fn set_text<S: Into<String>>(&mut self, value: S) {
         self.text = value.into();
     }
 
@@ -27,42 +27,36 @@ impl Run {
         &mut self.run_properties
     }
 
-    pub fn set_run_properties(&mut self, value:RunProperties) {
+    pub fn set_run_properties(&mut self, value: RunProperties) {
         self.run_properties = value;
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:rPr" => {
-                            self.run_properties.set_attributes(reader, e, false);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:rPr" => {
+                        self.run_properties.set_attributes(reader, e, false);
                     }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:rPr" => {
-                            self.run_properties.set_attributes(reader, e, true);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:rPr" => {
+                        self.run_properties.set_attributes(reader, e, true);
                     }
+                    _ => (),
                 },
                 Ok(Event::Text(e)) => {
                     self.set_text(e.unescape_and_decode(&reader).unwrap());
-                },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:r" => return,
-                        _ => (),
-                    }
+                }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:r" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:r"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

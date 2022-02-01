@@ -12,19 +12,21 @@ pub enum LightRigDirectionValues {
     TopRight,
 }
 impl Default for LightRigDirectionValues {
-    fn default() -> Self { Self::TopLeft }
+    fn default() -> Self {
+        Self::TopLeft
+    }
 }
 impl EnumTrait for LightRigDirectionValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Bottom => {"b"},
-            Self::BottomLeft => {"bl"},
-            Self::BottomRight => {"br"},
-            Self::Left => {"l"},
-            Self::Right => {"r"},
-            Self::Top => {"t"},
-            Self::TopLeft => {"tl"},
-            Self::TopRight => {"tr"},
+            Self::Bottom => "b",
+            Self::BottomLeft => "bl",
+            Self::BottomRight => "br",
+            Self::Left => "l",
+            Self::Right => "r",
+            Self::Top => "t",
+            Self::TopLeft => "tl",
+            Self::TopRight => "tr",
         }
     }
 }
@@ -40,7 +42,7 @@ impl FromStr for LightRigDirectionValues {
             "t" => Ok(Self::Top),
             "tl" => Ok(Self::TopLeft),
             "tr" => Ok(Self::TopRight),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

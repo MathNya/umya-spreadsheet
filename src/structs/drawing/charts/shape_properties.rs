@@ -1,17 +1,17 @@
 // c:spPr
-use super::super::PatternFill;
-use super::super::Transform2D;
-use super::super::PresetGeometry;
-use super::super::SolidFill;
-use super::super::Outline;
 use super::super::EffectList;
+use super::super::Outline;
+use super::super::PatternFill;
+use super::super::PresetGeometry;
 use super::super::Scene3DType;
 use super::super::Shape3DType;
-use writer::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use super::super::SolidFill;
+use super::super::Transform2D;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
@@ -33,7 +33,7 @@ impl ShapeProperties {
         &mut self.pattern_fill
     }
 
-    pub fn set_pattern_fill(&mut self, value:PatternFill) -> &mut ShapeProperties {
+    pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut ShapeProperties {
         self.pattern_fill = Some(value);
         self
     }
@@ -46,7 +46,7 @@ impl ShapeProperties {
         &mut self.transform2d
     }
 
-    pub fn set_transform2d(&mut self, value:Transform2D) -> &mut ShapeProperties {
+    pub fn set_transform2d(&mut self, value: Transform2D) -> &mut ShapeProperties {
         self.transform2d = Some(value);
         self
     }
@@ -59,7 +59,7 @@ impl ShapeProperties {
         &mut self.preset_geometry
     }
 
-    pub fn set_geometry(&mut self, value:PresetGeometry) -> &mut ShapeProperties {
+    pub fn set_geometry(&mut self, value: PresetGeometry) -> &mut ShapeProperties {
         self.preset_geometry = Some(value);
         self
     }
@@ -72,7 +72,7 @@ impl ShapeProperties {
         &mut self.solid_fill
     }
 
-    pub fn set_solid_fill(&mut self, value:SolidFill) -> &mut ShapeProperties {
+    pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut ShapeProperties {
         self.solid_fill = Some(value);
         self
     }
@@ -85,7 +85,7 @@ impl ShapeProperties {
         &mut self.outline
     }
 
-    pub fn set_outline(&mut self, value:Outline) -> &mut ShapeProperties {
+    pub fn set_outline(&mut self, value: Outline) -> &mut ShapeProperties {
         self.outline = Some(value);
         self
     }
@@ -98,7 +98,7 @@ impl ShapeProperties {
         &mut self.effect_list
     }
 
-    pub fn set_effect_list(&mut self, value:EffectList) -> &mut ShapeProperties {
+    pub fn set_effect_list(&mut self, value: EffectList) -> &mut ShapeProperties {
         self.effect_list = Some(value);
         self
     }
@@ -111,7 +111,7 @@ impl ShapeProperties {
         &mut self.scene_3d_type
     }
 
-    pub fn set_scene_3d_type(&mut self, value:Scene3DType) -> &mut ShapeProperties {
+    pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut ShapeProperties {
         self.scene_3d_type = Some(value);
         self
     }
@@ -124,69 +124,65 @@ impl ShapeProperties {
         &mut self.shape_3d_type
     }
 
-    pub fn set_shape_3d_type(&mut self, value:Shape3DType) -> &mut ShapeProperties {
+    pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut ShapeProperties {
         self.shape_3d_type = Some(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:pattFill" => {
-                            let mut obj = PatternFill::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_pattern_fill(obj);
-                        },
-                        b"a:xfrm" => {
-                            let mut obj = Transform2D::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_transform2d(obj);
-                        },
-                        b"a:prstGeom" => {
-                            let mut obj = PresetGeometry::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_geometry(obj);
-                        },
-                        b"a:ln" => {
-                            let mut obj = Outline::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_outline(obj);
-                        },
-                        b"a:solidFill" => {
-                            let mut obj = SolidFill::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_solid_fill(obj);
-                        },
-                        b"a:effectLst" => {
-                            let mut obj = EffectList::default();
-                            obj.set_attributes(reader, e, false);
-                            &mut self.set_effect_list(obj);
-                        }
-                        b"a:scene3d" => {
-                            let mut obj = Scene3DType::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_scene_3d_type(obj);
-                        }
-                        b"a:sp3d" => {
-                            let mut obj = Shape3DType::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_shape_3d_type(obj);
-                        }
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:pattFill" => {
+                        let mut obj = PatternFill::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_pattern_fill(obj);
                     }
+                    b"a:xfrm" => {
+                        let mut obj = Transform2D::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_transform2d(obj);
+                    }
+                    b"a:prstGeom" => {
+                        let mut obj = PresetGeometry::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_geometry(obj);
+                    }
+                    b"a:ln" => {
+                        let mut obj = Outline::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_outline(obj);
+                    }
+                    b"a:solidFill" => {
+                        let mut obj = SolidFill::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_solid_fill(obj);
+                    }
+                    b"a:effectLst" => {
+                        let mut obj = EffectList::default();
+                        obj.set_attributes(reader, e, false);
+                        &mut self.set_effect_list(obj);
+                    }
+                    b"a:scene3d" => {
+                        let mut obj = Scene3DType::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_scene_3d_type(obj);
+                    }
+                    b"a:sp3d" => {
+                        let mut obj = Shape3DType::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_shape_3d_type(obj);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"c:spPr" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"c:spPr" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "c:spPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -199,12 +195,12 @@ impl ShapeProperties {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:spPr
         write_start_tag(writer, "c:spPr", vec![], false);
-        
+
         // a:pattFill
         match &self.pattern_fill {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
 
@@ -212,31 +208,31 @@ impl ShapeProperties {
         match &self.transform2d {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
-    
+
         // a:prstGeom
         match &self.preset_geometry {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
-    
+
         // a:solidFill
         match &self.solid_fill {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
-    
+
         // a:ln
         match &self.outline {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
 
@@ -244,7 +240,7 @@ impl ShapeProperties {
         match &self.effect_list {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
 
@@ -252,15 +248,15 @@ impl ShapeProperties {
         match &self.scene_3d_type {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
-    
+
         // a:sp3d
         match &self.shape_3d_type {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
 

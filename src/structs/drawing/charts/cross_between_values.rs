@@ -6,13 +6,15 @@ pub enum CrossBetweenValues {
     MidpointCategory,
 }
 impl Default for CrossBetweenValues {
-    fn default() -> Self { Self::Between }
+    fn default() -> Self {
+        Self::Between
+    }
 }
 impl EnumTrait for CrossBetweenValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Between => {"between"},
-            Self::MidpointCategory => {"midCat"},
+            Self::Between => "between",
+            Self::MidpointCategory => "midCat",
         }
     }
 }
@@ -22,8 +24,7 @@ impl FromStr for CrossBetweenValues {
         match input {
             "between" => Ok(Self::Between),
             "midCat" => Ok(Self::MidpointCategory),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

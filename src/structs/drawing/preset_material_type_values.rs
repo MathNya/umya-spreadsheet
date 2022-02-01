@@ -19,26 +19,28 @@ pub enum PresetMaterialTypeValues {
     WarmMatte,
 }
 impl Default for PresetMaterialTypeValues {
-    fn default() -> Self { Self::LegacyMatte }
+    fn default() -> Self {
+        Self::LegacyMatte
+    }
 }
 impl EnumTrait for PresetMaterialTypeValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Clear => {"clear"},
-            Self::DarkEdge => {"dkEdge"},
-            Self::Flat => {"flat"},
-            Self::LegacyMatte => {"legacyMatte"},
-            Self::LegacyMetal => {"legacyMetal"},
-            Self::LegacyPlastic => {"legacyPlastic"},
-            Self::LegacyWireframe => {"legacyWireframe"},
-            Self::Matte => {"matte"},
-            Self::Metal => {"metal"},
-            Self::Plastic => {"plastic"},
-            Self::Powder => {"powder"},
-            Self::SoftEdge => {"softEdge"},
-            Self::SoftMetal => {"softmetal"},
-            Self::TranslucentPowder => {"translucentPowder"},
-            Self::WarmMatte => {"warmMatte"},
+            Self::Clear => "clear",
+            Self::DarkEdge => "dkEdge",
+            Self::Flat => "flat",
+            Self::LegacyMatte => "legacyMatte",
+            Self::LegacyMetal => "legacyMetal",
+            Self::LegacyPlastic => "legacyPlastic",
+            Self::LegacyWireframe => "legacyWireframe",
+            Self::Matte => "matte",
+            Self::Metal => "metal",
+            Self::Plastic => "plastic",
+            Self::Powder => "powder",
+            Self::SoftEdge => "softEdge",
+            Self::SoftMetal => "softmetal",
+            Self::TranslucentPowder => "translucentPowder",
+            Self::WarmMatte => "warmMatte",
         }
     }
 }
@@ -61,7 +63,7 @@ impl FromStr for PresetMaterialTypeValues {
             "softmetal" => Ok(Self::SoftMetal),
             "translucentPowder" => Ok(Self::TranslucentPowder),
             "warmMatte" => Ok(Self::WarmMatte),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

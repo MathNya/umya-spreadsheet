@@ -1,31 +1,31 @@
 // fills
 use super::Fill;
 use super::Style;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fills {
     fill: Vec<Fill>,
 }
 impl Fills {
-    pub(crate) fn get_fill(&self)-> &Vec<Fill> {
+    pub(crate) fn get_fill(&self) -> &Vec<Fill> {
         &self.fill
     }
 
-    pub(crate) fn get_fill_mut(&mut self)-> &mut Vec<Fill> {
+    pub(crate) fn get_fill_mut(&mut self) -> &mut Vec<Fill> {
         &mut self.fill
     }
 
-    pub(crate) fn set_fill(&mut self, value:Fill)-> &mut Self {
+    pub(crate) fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill.push(value);
         self
     }
 
-    pub(crate) fn init_setup(&mut self)-> &mut Self {
+    pub(crate) fn init_setup(&mut self) -> &mut Self {
         let obj = Fill::get_defalut_value();
         self.set_fill(obj);
         let obj = Fill::get_defalut_value_2();
@@ -33,7 +33,7 @@ impl Fills {
         self
     }
 
-    pub(crate) fn set_style(&mut self, style:&Style) -> u32 {
+    pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_fill() {
             Some(v) => {
                 let hash_code = v.get_hash_code();
@@ -46,34 +46,30 @@ impl Fills {
                 }
                 self.set_fill(v.clone());
                 return id;
-            },
-            None => {0}
+            }
+            None => 0,
         }
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"fill" => {
-                            let mut obj = Fill::default();
-                            obj.set_attributes(reader, e);
-                            self.set_fill(obj);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"fill" => {
+                        let mut obj = Fill::default();
+                        obj.set_attributes(reader, e);
+                        self.set_fill(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"fills" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"fills" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "fills"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -86,9 +82,12 @@ impl Fills {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if self.fill.len() > 0 {
             // fills
-            write_start_tag(writer, "fills", vec![
-                ("count", &self.fill.len().to_string()),
-            ], false);
+            write_start_tag(
+                writer,
+                "fills",
+                vec![("count", &self.fill.len().to_string())],
+                false,
+            );
 
             // fill
             for fill in &self.fill {

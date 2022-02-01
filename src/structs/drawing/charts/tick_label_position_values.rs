@@ -8,15 +8,17 @@ pub enum TickLabelPositionValues {
     None,
 }
 impl Default for TickLabelPositionValues {
-    fn default() -> Self { Self::High }
+    fn default() -> Self {
+        Self::High
+    }
 }
 impl EnumTrait for TickLabelPositionValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::High => {"high"},
-            Self::Low => {"low"},
-            Self::NextTo => {"nextTo"},
-            Self::None => {"none"},
+            Self::High => "high",
+            Self::Low => "low",
+            Self::NextTo => "nextTo",
+            Self::None => "none",
         }
     }
 }
@@ -28,7 +30,7 @@ impl FromStr for TickLabelPositionValues {
             "low" => Ok(Self::Low),
             "nextTo" => Ok(Self::NextTo),
             "none" => Ok(Self::None),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

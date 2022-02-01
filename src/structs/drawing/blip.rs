@@ -1,5 +1,4 @@
 // a:blip
-use structs::Image;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -7,6 +6,7 @@ use reader::driver::*;
 use reader::xlsx::drawing_rels;
 use reader::xlsx::media;
 use std::io::Cursor;
+use structs::Image;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -56,7 +56,9 @@ impl Blip {
                 let v: Vec<&str> = drawing_target.split('/').collect();
                 let image_name = v.last().unwrap().clone();
                 &mut self.get_image_mut().set_image_name(image_name);
-                &mut self.get_image_mut().set_image_data(media::read(arv, &drawing_target).unwrap());
+                &mut self
+                    .get_image_mut()
+                    .set_image_data(media::read(arv, &drawing_target).unwrap());
             }
         }
     }

@@ -1,15 +1,15 @@
 // xdr:graphicFrame
 use super::super::super::StringValue;
+use super::super::Graphic;
 use super::NonVisualGraphicFrameProperties;
 use super::Transform;
-use super::super::Graphic;
 
-use writer::driver::*;
-use reader::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicFrame {
@@ -23,7 +23,7 @@ impl GraphicFrame {
         &self.r#macro.get_value()
     }
 
-    pub fn set_macro<S: Into<String>>(&mut self, value:S) -> &mut GraphicFrame {
+    pub fn set_macro<S: Into<String>>(&mut self, value: S) -> &mut GraphicFrame {
         self.r#macro.set_value(value);
         self
     }
@@ -32,11 +32,16 @@ impl GraphicFrame {
         &self.non_visual_graphic_frame_properties
     }
 
-    pub fn get_non_visual_graphic_frame_properties_mut(&mut self) -> &mut NonVisualGraphicFrameProperties {
+    pub fn get_non_visual_graphic_frame_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualGraphicFrameProperties {
         &mut self.non_visual_graphic_frame_properties
     }
 
-    pub fn set_non_visual_graphic_frame_properties(&mut self, value:NonVisualGraphicFrameProperties)-> &mut Self {
+    pub fn set_non_visual_graphic_frame_properties(
+        &mut self,
+        value: NonVisualGraphicFrameProperties,
+    ) -> &mut Self {
         self.non_visual_graphic_frame_properties = value;
         self
     }
@@ -49,7 +54,7 @@ impl GraphicFrame {
         &mut self.transform
     }
 
-    pub fn set_transform(&mut self, value:Transform)-> &mut Self {
+    pub fn set_transform(&mut self, value: Transform) -> &mut Self {
         self.transform = value;
         self
     }
@@ -62,20 +67,22 @@ impl GraphicFrame {
         &mut self.graphic
     }
 
-    pub fn set_graphic(&mut self, value:Graphic)-> &mut Self {
+    pub fn set_graphic(&mut self, value: Graphic) -> &mut Self {
         self.graphic = value;
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart,
+        reader: &mut Reader<R>,
+        e: &BytesStart,
         arv: &mut zip::read::ZipArchive<A>,
-        target: &str
+        target: &str,
     ) {
         match get_attribute(e, b"macro") {
-            Some(v) => {&mut self.r#macro.set_value_string(v);},
+            Some(v) => {
+                &mut self.r#macro.set_value_string(v);
+            }
             None => {}
         }
 
@@ -83,25 +90,23 @@ impl GraphicFrame {
 
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"xdr:nvGraphicFramePr" => {
-                            &mut self.non_visual_graphic_frame_properties.set_attributes(reader, e);
-                        },
-                        b"xdr:xfrm" => {
-                            &mut self.transform.set_attributes(reader, e);
-                        },
-                        b"a:graphic" => {
-                            &mut self.graphic.set_attributes(reader, e, arv, target);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"xdr:nvGraphicFramePr" => {
+                        &mut self
+                            .non_visual_graphic_frame_properties
+                            .set_attributes(reader, e);
                     }
+                    b"xdr:xfrm" => {
+                        &mut self.transform.set_attributes(reader, e);
+                    }
+                    b"a:graphic" => {
+                        &mut self.graphic.set_attributes(reader, e, arv, target);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:graphicFrame" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:graphicFrame" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:graphicFrame"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -113,10 +118,13 @@ impl GraphicFrame {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
         // xdr:graphicFrame
-        write_start_tag(writer, "xdr:graphicFrame", vec![
-            ("macro", &self.r#macro.get_value_string()),
-        ], false);
-        
+        write_start_tag(
+            writer,
+            "xdr:graphicFrame",
+            vec![("macro", &self.r#macro.get_value_string())],
+            false,
+        );
+
         // xdr:nvGraphicFramePr
         &self.non_visual_graphic_frame_properties.write_to(writer);
 

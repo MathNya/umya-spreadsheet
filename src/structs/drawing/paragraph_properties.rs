@@ -1,13 +1,13 @@
 // a:pPr
-use super::TextAlignmentTypeValues;
 use super::super::EnumValue;
 use super::DefaultRunProperties;
-use writer::driver::*;
-use reader::driver::*;
+use super::TextAlignmentTypeValues;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ParagraphProperties {
@@ -20,7 +20,7 @@ impl ParagraphProperties {
         &self.right_to_left
     }
 
-    pub fn set_right_to_left<S: Into<String>>(&mut self, value:S) -> &mut ParagraphProperties {
+    pub fn set_right_to_left<S: Into<String>>(&mut self, value: S) -> &mut ParagraphProperties {
         self.right_to_left = Some(value.into());
         self
     }
@@ -29,7 +29,7 @@ impl ParagraphProperties {
         &self.alignment.get_value()
     }
 
-    pub fn set_alignment(&mut self, value:TextAlignmentTypeValues) -> &mut ParagraphProperties {
+    pub fn set_alignment(&mut self, value: TextAlignmentTypeValues) -> &mut ParagraphProperties {
         self.alignment.set_value(value);
         self
     }
@@ -42,26 +42,33 @@ impl ParagraphProperties {
         &mut self.default_run_properties
     }
 
-    pub fn set_default_run_properties(&mut self, value:DefaultRunProperties) -> &mut ParagraphProperties {
+    pub fn set_default_run_properties(
+        &mut self,
+        value: DefaultRunProperties,
+    ) -> &mut ParagraphProperties {
         self.default_run_properties = Some(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart,
-        empty_flag:bool,
+        reader: &mut Reader<R>,
+        e: &BytesStart,
+        empty_flag: bool,
     ) {
         match get_attribute(e, b"rtl") {
-            Some(v) => {&mut self.set_right_to_left(v);},
+            Some(v) => {
+                &mut self.set_right_to_left(v);
+            }
             None => {}
         }
         match get_attribute(e, b"algn") {
-            Some(v) => {&mut self.alignment.set_value_string(v);},
+            Some(v) => {
+                &mut self.alignment.set_value_string(v);
+            }
             None => {}
         }
-        
+
         if empty_flag {
             return;
         }
@@ -69,31 +76,25 @@ impl ParagraphProperties {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:defRPr" => {
-                            let mut obj = DefaultRunProperties::default();
-                            obj.set_attributes(reader, e, false);
-                            &mut self.set_default_run_properties(obj);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:defRPr" => {
+                        let mut obj = DefaultRunProperties::default();
+                        obj.set_attributes(reader, e, false);
+                        &mut self.set_default_run_properties(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:defRPr" => {
-                            let mut obj = DefaultRunProperties::default();
-                            obj.set_attributes(reader, e, true);
-                            &mut self.set_default_run_properties(obj);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:defRPr" => {
+                        let mut obj = DefaultRunProperties::default();
+                        obj.set_attributes(reader, e, true);
+                        &mut self.set_default_run_properties(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:pPr" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:pPr" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:pPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -109,7 +110,9 @@ impl ParagraphProperties {
         // a:pPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         match &self.right_to_left {
-            Some(v) => {attributes.push(("rtl", v));},
+            Some(v) => {
+                attributes.push(("rtl", v));
+            }
             None => {}
         }
         if self.alignment.has_value() == true {

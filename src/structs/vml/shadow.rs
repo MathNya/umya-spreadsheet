@@ -1,11 +1,11 @@
-use structs::TrueFalseValue;
-use structs::StringValue;
-use quick_xml::events::{BytesStart};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
-use writer::driver::*;
 use reader::driver::*;
+use std::io::Cursor;
+use structs::StringValue;
+use structs::TrueFalseValue;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Shadow {
@@ -18,7 +18,7 @@ impl Shadow {
         &self.on.get_value()
     }
 
-    pub fn set_on(&mut self, value:bool) -> &mut Self {
+    pub fn set_on(&mut self, value: bool) -> &mut Self {
         self.on.set_value(value);
         self
     }
@@ -27,7 +27,7 @@ impl Shadow {
         &self.color.get_value()
     }
 
-    pub fn set_color<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.color.set_value(value);
         self
     }
@@ -36,7 +36,7 @@ impl Shadow {
         &self.obscured.get_value()
     }
 
-    pub fn set_obscured(&mut self, value:bool) -> &mut Self {
+    pub fn set_obscured(&mut self, value: bool) -> &mut Self {
         self.obscured.set_value(value);
         self
     }
@@ -49,27 +49,24 @@ impl Shadow {
         match get_attribute(e, b"on") {
             Some(v) => {
                 self.on.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"color") {
             Some(v) => {
                 self.color.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
         match get_attribute(e, b"obscured") {
             Some(v) => {
                 self.obscured.set_value_string(v);
-            },
-            None => {},
+            }
+            None => {}
         }
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-    ) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:shadow
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.on.has_value() {

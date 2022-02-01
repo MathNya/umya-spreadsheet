@@ -3,4 +3,3 @@ pub struct Protection {
     locked: String,
     hidden: String,
 }
-

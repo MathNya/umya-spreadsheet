@@ -1,6 +1,6 @@
-use super::Worksheet;
-use super::Shadow;
 use super::Hyperlink;
+use super::Shadow;
+use super::Worksheet;
 
 #[derive(Default, Debug)]
 pub struct Picture {
@@ -20,12 +20,10 @@ pub struct Picture {
     hyperlink: Hyperlink,
 }
 impl Picture {
-    pub fn get_name(&self) -> &str
-    {
+    pub fn get_name(&self) -> &str {
         &self.name
     }
-    pub fn set_name<S: Into<String>>(&mut self, value:S)
-    {
+    pub fn set_name<S: Into<String>>(&mut self, value: S) {
         self.name = value.into();
     }
 }

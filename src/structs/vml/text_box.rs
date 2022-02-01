@@ -5,11 +5,8 @@ use std::io::Cursor;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
-pub struct TextBox {
-
-}
+pub struct TextBox {}
 impl TextBox {
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -30,17 +27,15 @@ impl TextBox {
         }
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-    ) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:textbox
-        write_start_tag(writer, "v:textbox", vec![
-            ("style", "mso-direction-alt:auto"),
-        ], false);
-        write_start_tag(writer, "div", vec![
-            ("style", "text-align:left"),
-        ], false);
+        write_start_tag(
+            writer,
+            "v:textbox",
+            vec![("style", "mso-direction-alt:auto")],
+            false,
+        );
+        write_start_tag(writer, "div", vec![("style", "text-align:left")], false);
         write_end_tag(writer, "div");
         write_end_tag(writer, "v:textbox");
     }

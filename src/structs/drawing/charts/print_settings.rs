@@ -2,11 +2,11 @@
 use super::HeaderFooter;
 use super::PageMargins;
 use super::PageSetup;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct PrintSettings {
@@ -15,77 +15,71 @@ pub struct PrintSettings {
     page_setup: PageSetup,
 }
 impl PrintSettings {
-    pub fn get_header_footer(&self)-> &HeaderFooter {
+    pub fn get_header_footer(&self) -> &HeaderFooter {
         &self.header_footer
     }
 
-    pub fn get_header_footer_mut(&mut self)-> &mut HeaderFooter {
+    pub fn get_header_footer_mut(&mut self) -> &mut HeaderFooter {
         &mut self.header_footer
     }
 
-    pub fn set_header_footer(&mut self, value:HeaderFooter)-> &mut Self {
+    pub fn set_header_footer(&mut self, value: HeaderFooter) -> &mut Self {
         self.header_footer = value;
         self
     }
 
-    pub fn get_page_margins(&self)-> &PageMargins {
+    pub fn get_page_margins(&self) -> &PageMargins {
         &self.page_margins
     }
 
-    pub fn get_page_margins_mut(&mut self)-> &mut PageMargins {
+    pub fn get_page_margins_mut(&mut self) -> &mut PageMargins {
         &mut self.page_margins
     }
 
-    pub fn set_page_margins(&mut self, value:PageMargins)-> &mut Self {
+    pub fn set_page_margins(&mut self, value: PageMargins) -> &mut Self {
         self.page_margins = value;
         self
     }
 
-    pub fn get_page_setup(&self)-> &PageSetup {
+    pub fn get_page_setup(&self) -> &PageSetup {
         &self.page_setup
     }
 
-    pub fn get_page_setup_mut(&mut self)-> &mut PageSetup {
+    pub fn get_page_setup_mut(&mut self) -> &mut PageSetup {
         &mut self.page_setup
     }
 
-    pub fn set_page_setup(&mut self, value:PageSetup)-> &mut Self {
+    pub fn set_page_setup(&mut self, value: PageSetup) -> &mut Self {
         self.page_setup = value;
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"c:headerFooter" => {
-                            self.header_footer.set_attributes(reader, e);
-                        },
-                        b"c:pageSetup" => {
-                            self.page_setup.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"c:headerFooter" => {
+                        self.header_footer.set_attributes(reader, e);
                     }
+                    b"c:pageSetup" => {
+                        self.page_setup.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"c:pageMargins" => {
-                            self.page_margins.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"c:pageMargins" => {
+                        self.page_margins.set_attributes(reader, e);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"c:printSettings" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"c:printSettings" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "c:printSettings"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

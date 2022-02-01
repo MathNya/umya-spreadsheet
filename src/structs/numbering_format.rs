@@ -1,10 +1,10 @@
-use std::collections::HashMap;
-use reader::driver::*;
-use writer::driver::*;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
+use std::collections::HashMap;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Debug)]
 pub struct NumberingFormat {
@@ -31,10 +31,10 @@ impl NumberingFormat {
     pub const FORMAT_NUMBER_00: &'static str = "0.00";
     pub const FORMAT_NUMBER_COMMA_SEPARATED1: &'static str = "#,##0.00";
     pub const FORMAT_NUMBER_COMMA_SEPARATED2: &'static str = "#,##0.00_-";
-    
+
     pub const FORMAT_PERCENTAGE: &'static str = "0%";
     pub const FORMAT_PERCENTAGE_00: &'static str = "0.00%";
-   
+
     pub const FORMAT_DATE_YYYYMMDD2: &'static str = "yyyy-mm-dd";
     pub const FORMAT_DATE_YYYYMMDD: &'static str = "yyyy-mm-dd";
     pub const FORMAT_DATE_DDMMYYYY: &'static str = "dd-mm-yyyy";
@@ -57,26 +57,37 @@ impl NumberingFormat {
     pub const FORMAT_DATE_TIME6: &'static str = "h:mm:ss";
     pub const FORMAT_DATE_TIME8: &'static str = "h:mm:ss;@";
     pub const FORMAT_DATE_YYYYMMDDSLASH: &'static str = "yyyy/mm/dd;@";
-    
+
     pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r###""$"#,##0.00_-"###;
     pub const FORMAT_CURRENCY_USD: &'static str = r###"$#,##0_-"###;
     pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r###"#,##0.00_-"€""###;
     pub const FORMAT_CURRENCY_EUR: &'static str = r###"#,##0_-"€""###;
-    pub const FORMAT_ACCOUNTING_USD: &'static str = r###"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"###;
-    pub const FORMAT_ACCOUNTING_EUR: &'static str = r###"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"###;
+    pub const FORMAT_ACCOUNTING_USD: &'static str =
+        r###"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"###;
+    pub const FORMAT_ACCOUNTING_EUR: &'static str =
+        r###"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"###;
 
-    pub fn get_number_format_id(&self)-> &u32 {
+    pub fn get_number_format_id(&self) -> &u32 {
         &self.number_format_id
     }
 
-    pub fn set_number_format_id(&mut self, value:u32)-> &mut Self {
-        self.format_code = FILL_BUILT_IN_FORMAT_CODES.iter().find_map(|(key, val)| if key == &value { Some(val.clone()) } else { panic!("Not Found NumberFormatId.") }).unwrap();
+    pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
+        self.format_code = FILL_BUILT_IN_FORMAT_CODES
+            .iter()
+            .find_map(|(key, val)| {
+                if key == &value {
+                    Some(val.clone())
+                } else {
+                    panic!("Not Found NumberFormatId.")
+                }
+            })
+            .unwrap();
         self.number_format_id = value;
         self.is_build_in = true;
         self
     }
 
-    pub(crate) fn set_number_format_id_crate(&mut self, value:u32)-> &mut Self {
+    pub(crate) fn set_number_format_id_crate(&mut self, value: u32) -> &mut Self {
         self.number_format_id = value;
         self
     }
@@ -92,7 +103,7 @@ impl NumberingFormat {
     /// .get_number_format_mut()
     /// .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
     /// ```
-    pub fn set_format_code<S: Into<String>>(&mut self, value:S)-> &mut Self {
+    pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into();
         for (index, format) in FILL_BUILT_IN_FORMAT_CODES.iter() {
             if &self.format_code == format {
@@ -106,41 +117,48 @@ impl NumberingFormat {
         self
     }
 
-    pub(crate) fn set_format_code_crate<S: Into<String>>(&mut self, value:S)-> &mut Self {
+    pub(crate) fn set_format_code_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into();
         self
     }
 
-    pub fn get_format_code(&self)-> &str {
+    pub fn get_format_code(&self) -> &str {
         &self.format_code
     }
 
-    pub(crate) fn get_is_build_in(&self)-> &bool {
+    pub(crate) fn get_is_build_in(&self) -> &bool {
         &self.is_build_in
     }
 
-    pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}",
-            &self.format_code
-        )))
+    pub(crate) fn get_hash_code(&self) -> String {
+        format!("{:x}", md5::compute(format!("{}", &self.format_code)))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        e:&BytesStart,
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
-        self.number_format_id = get_attribute(e, b"numFmtId").unwrap().parse::<u32>().unwrap();
-        self.format_code = condvert_character_reference(get_attribute(e, b"formatCode").unwrap().as_str());
+        self.number_format_id = get_attribute(e, b"numFmtId")
+            .unwrap()
+            .parse::<u32>()
+            .unwrap();
+        self.format_code =
+            condvert_character_reference(get_attribute(e, b"formatCode").unwrap().as_str());
         self.is_build_in = false;
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, number_format_id: &u32) {
         // numFmt
-        write_start_tag(writer, "numFmt", vec![
-            ("numFmtId", number_format_id.to_string().as_str()),
-            ("formatCode", &self.format_code),
-        ], true);
+        write_start_tag(
+            writer,
+            "numFmt",
+            vec![
+                ("numFmtId", number_format_id.to_string().as_str()),
+                ("formatCode", &self.format_code),
+            ],
+            true,
+        );
     }
 }
 

@@ -1,10 +1,10 @@
 // a:srcRect
-use writer::driver::*;
-use reader::driver::*;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SourceRectangle {
@@ -14,7 +14,7 @@ pub struct SourceRectangle {
     b: Option<String>,
 }
 impl SourceRectangle {
-    pub fn set_t<S: Into<String>>(&mut self, value:S) {
+    pub fn set_t<S: Into<String>>(&mut self, value: S) {
         self.t = Some(value.into());
     }
 
@@ -22,7 +22,7 @@ impl SourceRectangle {
         &self.t
     }
 
-    pub fn set_l<S: Into<String>>(&mut self, value:S) {
+    pub fn set_l<S: Into<String>>(&mut self, value: S) {
         self.l = Some(value.into());
     }
 
@@ -30,7 +30,7 @@ impl SourceRectangle {
         &self.l
     }
 
-    pub fn set_r<S: Into<String>>(&mut self, value:S) {
+    pub fn set_r<S: Into<String>>(&mut self, value: S) {
         self.r = Some(value.into());
     }
 
@@ -38,7 +38,7 @@ impl SourceRectangle {
         &self.r
     }
 
-    pub fn set_b<S: Into<String>>(&mut self, value:S) {
+    pub fn set_b<S: Into<String>>(&mut self, value: S) {
         self.b = Some(value.into());
     }
 
@@ -48,25 +48,25 @@ impl SourceRectangle {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        e:&BytesStart,
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         for a in e.attributes().with_checks(false) {
             match a {
                 Ok(ref attr) if attr.key == b"t" => {
                     &mut self.set_t(get_attribute_value(attr).unwrap());
-                },
+                }
                 Ok(ref attr) if attr.key == b"l" => {
                     &mut self.set_l(get_attribute_value(attr).unwrap());
-                },
+                }
                 Ok(ref attr) if attr.key == b"r" => {
                     &mut self.set_r(get_attribute_value(attr).unwrap());
-                },
+                }
                 Ok(ref attr) if attr.key == b"b" => {
                     &mut self.set_b(get_attribute_value(attr).unwrap());
-                },
-                Ok(_) => {},
-                Err(_) => {},
+                }
+                Ok(_) => {}
+                Err(_) => {}
             }
         }
     }
@@ -76,19 +76,19 @@ impl SourceRectangle {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         match &self.t {
             Some(v) => attributes.push(("t", v)),
-            None => {},
+            None => {}
         }
         match &self.l {
             Some(v) => attributes.push(("l", v)),
-            None => {},
+            None => {}
         }
         match &self.r {
             Some(v) => attributes.push(("r", v)),
-            None => {},
+            None => {}
         }
         match &self.b {
             Some(v) => attributes.push(("b", v)),
-            None => {},
+            None => {}
         }
         write_start_tag(writer, "a:srcRect", attributes, true);
     }

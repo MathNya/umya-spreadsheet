@@ -6,13 +6,15 @@ pub enum OfPieValues {
     Pie,
 }
 impl Default for OfPieValues {
-    fn default() -> Self { Self::Pie }
+    fn default() -> Self {
+        Self::Pie
+    }
 }
 impl EnumTrait for OfPieValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Bar => {"bar"},
-            Self::Pie => {"pie"},
+            Self::Bar => "bar",
+            Self::Pie => "pie",
         }
     }
 }
@@ -22,8 +24,7 @@ impl FromStr for OfPieValues {
         match input {
             "bar" => Ok(Self::Bar),
             "pie" => Ok(Self::Pie),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

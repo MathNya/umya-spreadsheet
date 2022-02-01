@@ -1,16 +1,16 @@
-use super::StringValue;
-use super::UInt32Value;
 use super::BooleanValue;
 use super::ObjectAnchor;
-use structs::Image;
+use super::StringValue;
+use super::UInt32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
-use writer::driver::*;
 use reader::driver::*;
-use reader::xlsx::worksheet_rels;
 use reader::xlsx::media;
+use reader::xlsx::worksheet_rels;
+use std::io::Cursor;
+use structs::Image;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {
@@ -26,7 +26,7 @@ impl EmbeddedObjectProperties {
         &self.prog_id.get_value()
     }
 
-    pub fn set_prog_id<S: Into<String>>(&mut self, value:S) -> &mut Self {
+    pub fn set_prog_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prog_id.set_value(value);
         self
     }
@@ -35,7 +35,7 @@ impl EmbeddedObjectProperties {
         &self.shape_id.get_value()
     }
 
-    pub fn set_shape_id(&mut self, value:u32) -> &mut Self {
+    pub fn set_shape_id(&mut self, value: u32) -> &mut Self {
         self.shape_id.set_value(value);
         self
     }
@@ -52,20 +52,20 @@ impl EmbeddedObjectProperties {
         self.image = value;
     }
 
-    pub fn get_default_size(&self)-> &bool {
+    pub fn get_default_size(&self) -> &bool {
         &self.default_size.get_value()
     }
 
-    pub fn set_default_size(&mut self, value:bool)-> &mut Self {
+    pub fn set_default_size(&mut self, value: bool) -> &mut Self {
         self.default_size.set_value(value);
         self
     }
 
-    pub fn get_auto_pict(&self)-> &bool {
+    pub fn get_auto_pict(&self) -> &bool {
         &self.auto_pict.get_value()
     }
 
-    pub fn set_auto_pict(&mut self, value:bool)-> &mut Self {
+    pub fn set_auto_pict(&mut self, value: bool) -> &mut Self {
         self.auto_pict.set_value(value);
         self
     }
@@ -78,7 +78,7 @@ impl EmbeddedObjectProperties {
         &mut self.object_anchor
     }
 
-    pub fn set_object_anchor(&mut self, value:ObjectAnchor) -> &mut Self {
+    pub fn set_object_anchor(&mut self, value: ObjectAnchor) -> &mut Self {
         self.object_anchor = value;
         self
     }
@@ -90,26 +90,27 @@ impl EmbeddedObjectProperties {
         arv: &mut zip::read::ZipArchive<A>,
         sheet_name: &str,
     ) {
-
         let r_id = get_attribute(e, b"r:id").unwrap();
         let (_, target_value) = worksheet_rels::read_rid(arv, sheet_name, &r_id).unwrap();
 
         let v: Vec<&str> = target_value.split('/').collect();
         let object_name = v.last().unwrap().clone();
         &mut self.get_image_mut().set_image_name(object_name);
-        &mut self.get_image_mut().set_image_data(media::read(arv, &target_value).unwrap());
+        &mut self
+            .get_image_mut()
+            .set_image_data(media::read(arv, &target_value).unwrap());
 
         match get_attribute(e, b"defaultSize") {
             Some(v) => {
                 self.default_size.set_value_string(v);
-            },
+            }
             None => {}
         }
 
         match get_attribute(e, b"autoPict") {
             Some(v) => {
                 self.auto_pict.set_value_string(v);
-            },
+            }
             None => {}
         }
 
@@ -134,11 +135,7 @@ impl EmbeddedObjectProperties {
         }
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-        r_id: &usize,
-    ) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {
         // objectPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.default_size.has_value() {

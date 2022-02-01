@@ -10,17 +10,19 @@ pub enum ShapeValues {
     PyramidToMaximum,
 }
 impl Default for ShapeValues {
-    fn default() -> Self { Self::Cone }
+    fn default() -> Self {
+        Self::Cone
+    }
 }
 impl EnumTrait for ShapeValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Box => {"box"},
-            Self::Cone => {"cone"},
-            Self::ConeToMax => {"coneToMax"},
-            Self::Cylinder => {"cylinder"},
-            Self::Pyramid => {"pyramid"},
-            Self::PyramidToMaximum => {"pyramidToMax"},
+            Self::Box => "box",
+            Self::Cone => "cone",
+            Self::ConeToMax => "coneToMax",
+            Self::Cylinder => "cylinder",
+            Self::Pyramid => "pyramid",
+            Self::PyramidToMaximum => "pyramidToMax",
         }
     }
 }
@@ -34,8 +36,7 @@ impl FromStr for ShapeValues {
             "cylinder" => Ok(Self::Cylinder),
             "pyramid" => Ok(Self::Pyramid),
             "pyramidToMax" => Ok(Self::PyramidToMaximum),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

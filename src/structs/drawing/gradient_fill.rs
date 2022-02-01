@@ -1,16 +1,16 @@
 // a:gradFill
-use super::TileFlipValues;
 use super::super::super::EnumValue;
 use super::super::BooleanValue;
 use super::GradientStopList;
 use super::LinearGradientFill;
+use super::TileFlipValues;
 use super::TileRectangle;
-use writer::driver::*;
-use reader::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientFill {
@@ -25,7 +25,7 @@ impl GradientFill {
         &self.flip.get_value()
     }
 
-    pub fn set_flip(&mut self, value:TileFlipValues) -> &mut GradientFill {
+    pub fn set_flip(&mut self, value: TileFlipValues) -> &mut GradientFill {
         self.flip.set_value(value);
         self
     }
@@ -34,7 +34,7 @@ impl GradientFill {
         &self.rotate_with_shape.get_value()
     }
 
-    pub fn set_rotate_with_shape(&mut self, value:bool) -> &mut GradientFill {
+    pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut GradientFill {
         self.rotate_with_shape.set_value(value);
         self
     }
@@ -47,7 +47,7 @@ impl GradientFill {
         &mut self.gradient_stop_list
     }
 
-    pub fn set_gradient_stop_list(&mut self, value:GradientStopList) -> &mut GradientFill {
+    pub fn set_gradient_stop_list(&mut self, value: GradientStopList) -> &mut GradientFill {
         self.gradient_stop_list = value;
         self
     }
@@ -60,7 +60,7 @@ impl GradientFill {
         &mut self.linear_gradient_fill
     }
 
-    pub fn set_linear_gradient_fill(&mut self, value:LinearGradientFill) -> &mut GradientFill {
+    pub fn set_linear_gradient_fill(&mut self, value: LinearGradientFill) -> &mut GradientFill {
         self.linear_gradient_fill = Some(value);
         self
     }
@@ -73,56 +73,54 @@ impl GradientFill {
         &mut self.tile_rectangle
     }
 
-    pub fn set_tile_rectangle(&mut self, value:TileRectangle) -> &mut GradientFill {
+    pub fn set_tile_rectangle(&mut self, value: TileRectangle) -> &mut GradientFill {
         self.tile_rectangle = Some(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart
+        reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"flip") {
-            Some(v) => {&mut self.flip.set_value_string(v);},
+            Some(v) => {
+                &mut self.flip.set_value_string(v);
+            }
             None => {}
         }
         match get_attribute(e, b"rotWithShape") {
-            Some(v) => {&mut self.rotate_with_shape.set_value_string(v);},
+            Some(v) => {
+                &mut self.rotate_with_shape.set_value_string(v);
+            }
             None => {}
         }
 
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:lin" => {
-                            let mut obj = LinearGradientFill::default();
-                            obj.set_attributes(reader, e);
-                            self.set_linear_gradient_fill(obj);
-                        },
-                        b"a:tileRect" => {
-                            let mut obj = TileRectangle::default();
-                            obj.set_attributes(reader, e);
-                            self.set_tile_rectangle(obj);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:lin" => {
+                        let mut obj = LinearGradientFill::default();
+                        obj.set_attributes(reader, e);
+                        self.set_linear_gradient_fill(obj);
                     }
+                    b"a:tileRect" => {
+                        let mut obj = TileRectangle::default();
+                        obj.set_attributes(reader, e);
+                        self.set_tile_rectangle(obj);
+                    }
+                    _ => (),
                 },
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:gsLst" => {
-                            self.gradient_stop_list.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:gsLst" => {
+                        self.gradient_stop_list.set_attributes(reader, e);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:gradFill" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:gradFill" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:gradFill"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -141,20 +139,24 @@ impl GradientFill {
         if &self.rotate_with_shape.has_value() == &true {
             attributes.push(("rotWithShape", &self.rotate_with_shape.get_value_string()));
         }
-        write_start_tag(writer, "a:gradFill",attributes, false);
+        write_start_tag(writer, "a:gradFill", attributes, false);
 
         // a:gsLst
         &self.gradient_stop_list.write_to(writer);
 
         // a:lin
         match &self.linear_gradient_fill {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 
         // a:tileRect
         match &self.tile_rectangle {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 

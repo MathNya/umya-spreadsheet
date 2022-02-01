@@ -2,5 +2,5 @@
 
 use super::helper;
 
-pub mod xlsx;
 pub(crate) mod driver;
+pub mod xlsx;

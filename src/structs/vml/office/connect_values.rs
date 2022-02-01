@@ -8,15 +8,17 @@ pub enum ConnectValues {
     Segments,
 }
 impl Default for ConnectValues {
-    fn default() -> Self { Self::None }
+    fn default() -> Self {
+        Self::None
+    }
 }
 impl EnumTrait for ConnectValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Custom => {"custom"},
-            Self::None => {"none"},
-            Self::Rectangle => {"rect"},
-            Self::Segments => {"segments"},
+            Self::Custom => "custom",
+            Self::None => "none",
+            Self::Rectangle => "rect",
+            Self::Segments => "segments",
         }
     }
 }
@@ -28,7 +30,7 @@ impl FromStr for ConnectValues {
             "none" => Ok(Self::None),
             "rect" => Ok(Self::Rectangle),
             "segments" => Ok(Self::Segments),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

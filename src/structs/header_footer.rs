@@ -15,7 +15,7 @@ pub struct HeaderFooter {
     header_footer_images: Vec<HeaderFooterDrawing>,
 }
 impl HeaderFooter {
-    pub fn get_header_footer_images(&self)-> &Vec<HeaderFooterDrawing> {
+    pub fn get_header_footer_images(&self) -> &Vec<HeaderFooterDrawing> {
         &self.header_footer_images
     }
 }
