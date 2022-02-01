@@ -242,14 +242,7 @@ impl Worksheet {
     /// let cell = worksheet.get_cell_by_column_and_row_mut(1, 1);  // get cell from A1. 
     /// ```
     pub fn get_cell_by_column_and_row_mut(&mut self, col:u32, row:u32)->&mut Cell {
-        match self.get_row_dimension(&row) {
-            Some(_) => {},
-            None => {
-                let mut row_dimension = Row::default();
-                row_dimension.set_row_num(row);
-                self.set_row_dimension(row_dimension);
-            }
-        }
+        self.get_row_dimension_mut(&row);
         self.cell_collection.get_mut(&col, &row)
     }
 
@@ -325,14 +318,7 @@ impl Worksheet {
     /// let cell_value = worksheet.get_cell_value_by_column_and_row_mut(1, 1);  // get cell_value from A1. 
     /// ```
     pub fn get_cell_value_by_column_and_row_mut(&mut self, col:u32, row:u32) -> &mut CellValue {
-        match self.get_row_dimension(&row) {
-            Some(_) => {},
-            None => {
-                let mut row_dimension = Row::default();
-                row_dimension.set_row_num(row);
-                self.set_row_dimension(row_dimension);
-            }
-        }
+        self.get_row_dimension_mut(&row);
         self.cell_collection.get_mut(&col, &row).get_cell_value_mut()
     }
 
@@ -407,14 +393,7 @@ impl Worksheet {
     /// let style = worksheet.get_style_by_column_and_row_mut(1, 1);  // get style from A1. 
     /// ```
     pub fn get_style_by_column_and_row_mut(&mut self, col:u32, row:u32) -> &mut Style {
-        match self.get_row_dimension(&row) {
-            Some(_) => {},
-            None => {
-                let mut row_dimension = Row::default();
-                row_dimension.set_row_num(row);
-                self.set_row_dimension(row_dimension);
-            }
-        }
+        self.get_row_dimension_mut(&row);
         self.cell_collection.get_mut(&col, &row).get_style_mut()
     }
 
@@ -434,14 +413,7 @@ impl Worksheet {
     /// let style = worksheet.set_style_by_column_and_row(1, 1, style);  // set style to A1. 
     /// ```
     pub fn set_style_by_column_and_row(&mut self, col:u32, row:u32, style:Style) -> &mut Self {
-        match self.get_row_dimension(&row) {
-            Some(_) => {},
-            None => {
-                let mut row_dimension = Row::default();
-                row_dimension.set_row_num(row);
-                self.set_row_dimension(row_dimension);
-            }
-        }
+        self.get_row_dimension_mut(&row);
         self.cell_collection.get_mut(&col, &row).set_style(style);
         self
     }
@@ -468,34 +440,14 @@ impl Worksheet {
         if col_num_start == 0 {
             let (_, row_num_end) = coordinate_list[1];
             for row_num in row_num_start..=row_num_end {
-                match self.get_row_dimension_mut(&row_num) {
-                    Some(v) => {
-                        v.set_style(style.clone());
-                    },
-                    None => {
-                        let mut obj = Row::default();
-                        obj.set_row_num(row_num);
-                        obj.set_style(style.clone());
-                        self.set_row_dimension(obj);
-                    }
-                }
+                self.get_row_dimension_mut(&row_num).set_style(style.clone());
             }
             return self;
         }
         if row_num_start == 0 {
             let (col_num_end, _) = coordinate_list[1];
             for col_num in col_num_start..=col_num_end {
-                match self.get_column_dimension_mut(&col_num) {
-                    Some(v) => {
-                        v.set_style(style.clone());
-                    },
-                    None => {
-                        let mut obj = Column::default();
-                        obj.set_col_num(col_num);
-                        obj.set_style(style.clone());
-                        self.set_column_dimensions(obj);
-                    }
-                }
+                self.get_column_dimension_mut(&col_num).set_style(style.clone());
             }
             return self;
         }
@@ -616,36 +568,29 @@ impl Worksheet {
         &self.column_dimensions.get_column_collection()
     }
 
+    pub fn get_column_dimensions_mut(&mut self) -> &mut Vec<Column> {
+        self.column_dimensions.get_column_collection_mut()
+    }
+
     pub fn get_column_dimension(&self, col:&u32) -> Option<&Column> {
-        for column_dimension in self.column_dimensions.get_column_collection() {
-            if col == column_dimension.get_col_num() {
-                return Some(column_dimension);
-            }
-        }
-        None
+        self.get_column_dimensions_crate().get_column(col)
     }
 
-    pub fn get_column_dimension_mut(&mut self, col:&u32) -> Option<&mut Column> {
-        for column_dimension in self.column_dimensions.get_column_collection_mut() {
-            if col == column_dimension.get_col_num() {
-                return Some(column_dimension);
-            }
-        }
-        None
+    pub fn get_column_dimension_mut(&mut self, col:&u32) -> &mut Column {
+        self.get_column_dimensions_crate_mut().get_column_mut(col)
     }
 
-    pub fn set_column_dimensions(&mut self, value:Column) {
-        let col_num = value.get_col_num();
-        match self.get_column_dimension_mut(col_num) {
-            Some(v) => {
-                std::mem::replace(v, value);
-            },
-            None => {self.column_dimensions.set_column(value);},
-        }
+    pub(crate) fn set_column_dimension(&mut self, value:Column) -> &mut Self {
+        self.get_column_dimensions_crate_mut().set_column(value);
+        self
     }
 
     pub(crate) fn get_column_dimensions_crate(&self) -> &Columns {
         &self.column_dimensions
+    }
+
+    pub(crate) fn get_column_dimensions_crate_mut(&mut self) -> &mut Columns {
+        &mut self.column_dimensions
     }
 
     pub(crate) fn set_column_dimensions_crate(&mut self, value:Columns) -> &mut Self {
@@ -658,6 +603,10 @@ impl Worksheet {
     // ************************
     pub fn get_row_dimensions(&self) -> &Vec<Row> {
         &self.row_dimensions
+    }
+
+    pub fn get_row_dimensions_mut(&mut self) -> &mut Vec<Row> {
+        &mut self.row_dimensions
     }
 
     pub fn get_row_dimensions_to_b_tree_map(&self) -> BTreeMap<u32, &Row> {
@@ -677,23 +626,27 @@ impl Worksheet {
         None
     }
 
-    pub fn get_row_dimension_mut(&mut self, row:&u32) -> Option<&mut Row> {
-        for row_dimension in &mut self.row_dimensions {
-            if row == row_dimension.get_row_num() {
-                return Some(row_dimension);
+    pub fn get_row_dimension_mut(&mut self, row:&u32) -> &mut Row {
+        match self.get_row_dimension(row) {
+            Some(_) => {},
+            None => {
+                let mut obj = Row::default();
+                obj.set_row_num(row.clone());
+                self.set_row_dimension(obj);
+        
             }
         }
-        None
+        for row_dimenstion in self.get_row_dimensions_mut() {
+            if row == row_dimenstion.get_row_num() {
+                return row_dimenstion;
+            }
+        }
+        panic!("Row not found.");
     }
 
-    pub(crate) fn set_row_dimension(&mut self, value:Row) {
-        let row_num = value.get_row_num();
-        match self.get_row_dimension_mut(row_num) {
-            Some(v) => {
-                std::mem::replace(v, value);
-            },
-            None => self.row_dimensions.push(value)
-        }
+    pub(crate) fn set_row_dimension(&mut self, value:Row) -> &mut Self {
+        self.row_dimensions.push(value);
+        self
     }
 
     // ************************

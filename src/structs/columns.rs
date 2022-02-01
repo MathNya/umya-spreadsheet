@@ -2,6 +2,7 @@
 use super::Column;
 use super::ColumnSort;
 use super::Stylesheet;
+
 use writer::driver::*;
 use reader::driver::*;
 use quick_xml::Reader;
@@ -29,6 +30,23 @@ impl Columns {
             }
         }
         None
+    }
+
+    pub(crate) fn get_column_mut(&mut self, value:&u32)-> &mut Column {
+        match self.get_column(value) {
+            Some(_) => {},
+            None => {
+                let mut obj = Column::default();
+                obj.set_col_num(value.clone());
+                self.set_column(obj);
+            }
+        }
+        for column in self.get_column_collection_mut() {
+            if value == column.get_col_num() {
+                return column;
+            }
+        }
+        panic!("Column not found.");
     }
 
     pub(crate) fn set_column(&mut self, value:Column)-> &mut Self {

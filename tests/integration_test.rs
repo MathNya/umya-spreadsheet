@@ -360,6 +360,16 @@ fn new_and_wite() {
     let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell_by_column_and_row(3, 3).unwrap().get_value();
     assert_eq!("TRUE", a1_value);
 
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("F1").set_value("AAAAAAAAAAAAAAAAAA");
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("F2").set_value("BBBBBBBBBBB");
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("F4").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("G1").set_value("AAAAAAAAAAAAAAAAAA");
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("G2").set_value("BBBBBBBBBBB");
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("G3").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+
+    book.get_sheet_by_name_mut("Sheet2").unwrap().get_column_dimension_mut(&6).set_best_fit(true);
+
     // add bottom border.
     book.get_sheet_by_name_mut("Sheet2").unwrap().get_style_mut("A1")
     .get_borders_mut()

@@ -39,6 +39,16 @@ impl Cells {
         result
     }
 
+    pub(crate) fn get_collection_by_column(&self, column_num:&u32)-> BTreeMap<u32, &Cell> {
+        let mut result = BTreeMap::default();
+        for cell in &self.index {
+            if column_num == cell.get_coordinate().get_col_num() {
+                result.insert(cell.get_coordinate().get_row_num().clone(), cell);
+            }
+        }
+        result
+    }
+
     pub(crate) fn get_highest_row_and_column(&self)-> HashMap<&str, &u32> {
         let mut col_max:&u32 = &0;
         let mut row_max:&u32 = &0;

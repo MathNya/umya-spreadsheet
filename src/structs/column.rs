@@ -3,6 +3,7 @@ use super::DoubleValue;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
+use structs::Cells;
 use quick_xml::events::{BytesStart};
 use quick_xml::Reader;
 use reader::driver::*;
@@ -14,13 +15,14 @@ pub struct Column {
     pub(crate) hidden: BooleanValue,
     pub(crate) best_fit: BooleanValue,
     pub(crate) style: Style,
+    pub(crate) auto_width: BooleanValue,
 }
 impl Column {
     pub fn get_col_num(&self) -> &u32 {
         &self.col_num.get_value()
     }
 
-    pub(crate) fn set_col_num(&mut self, value: u32) -> &mut Self {
+    pub fn set_col_num(&mut self, value: u32) -> &mut Self {
         self.col_num.set_value(value);
         self
     }
@@ -63,6 +65,45 @@ impl Column {
     pub fn set_style(&mut self, value: Style) -> &mut Self {
         self.style = value;
         self
+    }
+
+    pub fn get_auto_width(&self) -> &bool {
+        &self.auto_width.get_value()
+    }
+
+    pub fn set_auto_width(&mut self, value: bool) -> &mut Self {
+        self.auto_width.set_value(value);
+        self
+    }
+
+    pub(crate) fn calculation_auto_width(&mut self, cells:&Cells)-> f64 {
+            // default cell value len.
+            let mut char_cnt_max = 0;
+
+            // default font size len.
+            let column_font_size = match self.get_style().get_font() {
+                Some(font) => { font.get_font_size().get_val().clone() },
+                None => { 0.0000f64 }
+            };
+
+            if self.get_auto_width() == &true {
+                let cell_list = cells.get_collection_by_column(self.get_col_num());
+                for (_, cell) in cell_list {
+                    // get cell value len.
+                    let char_cnt = cell.get_cell_value().get_value().len();
+                    if char_cnt_max < char_cnt {
+                        char_cnt_max = char_cnt;
+                    }
+
+                    // get font size.
+                    let font_size = match cell.get_style().get_font() {
+                        Some(font) => { font.get_font_size().get_val() },
+                        None => { &column_font_size },
+                    };
+
+                }
+            }
+            char_cnt_max as f64
     }
 
     pub(crate) fn adjustment_insert_coordinate(
