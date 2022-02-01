@@ -1,12 +1,12 @@
 // a:pattFill
-use super::ForegroundColor;
 use super::BackgroundColor;
-use writer::driver::*;
-use reader::driver::*;
+use super::ForegroundColor;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Debug)]
 pub struct PatternFill {
@@ -17,7 +17,7 @@ pub struct PatternFill {
 impl Default for PatternFill {
     fn default() -> Self {
         Self {
-            preset:"pct5".into(),
+            preset: "pct5".into(),
             foreground_color: ForegroundColor::default(),
             background_color: BackgroundColor::default(),
         }
@@ -28,7 +28,7 @@ impl PatternFill {
         &self.preset
     }
 
-    pub fn set_preset(&mut self, value:String) -> &mut PatternFill {
+    pub fn set_preset(&mut self, value: String) -> &mut PatternFill {
         self.preset = value;
         self
     }
@@ -41,7 +41,7 @@ impl PatternFill {
         &mut self.foreground_color
     }
 
-    pub fn set_foreground_color(&mut self, value:ForegroundColor) -> &mut PatternFill {
+    pub fn set_foreground_color(&mut self, value: ForegroundColor) -> &mut PatternFill {
         self.foreground_color = value;
         self
     }
@@ -54,40 +54,38 @@ impl PatternFill {
         &mut self.background_color
     }
 
-    pub fn set_background_color(&mut self, value:BackgroundColor) -> &mut PatternFill {
+    pub fn set_background_color(&mut self, value: BackgroundColor) -> &mut PatternFill {
         self.background_color = value;
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart
+        reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"prst") {
-            Some(v) => {&mut self.set_preset(v);},
+            Some(v) => {
+                &mut self.set_preset(v);
+            }
             None => {}
         }
 
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:fgClr" => {
-                            self.foreground_color.set_attributes(reader, e);
-                        },
-                        b"a:bgClr" => {
-                            self.background_color.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:fgClr" => {
+                        self.foreground_color.set_attributes(reader, e);
                     }
+                    b"a:bgClr" => {
+                        self.background_color.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"a:pattFill" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"a:pattFill" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "a:pattFill"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -99,9 +97,7 @@ impl PatternFill {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:pattFill
-        write_start_tag(writer, "a:pattFill", vec![
-            ("prst", &self.preset)
-        ], false);
+        write_start_tag(writer, "a:pattFill", vec![("prst", &self.preset)], false);
 
         // a:fgClr
         &self.foreground_color.write_to(writer);

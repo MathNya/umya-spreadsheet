@@ -6,13 +6,15 @@ pub enum BarDirectionValues {
     Column,
 }
 impl Default for BarDirectionValues {
-    fn default() -> Self { Self::Bar }
+    fn default() -> Self {
+        Self::Bar
+    }
 }
 impl EnumTrait for BarDirectionValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Bar => {"bar"},
-            Self::Column => {"col"},
+            Self::Bar => "bar",
+            Self::Column => "col",
         }
     }
 }
@@ -22,8 +24,7 @@ impl FromStr for BarDirectionValues {
         match input {
             "bar" => Ok(Self::Bar),
             "col" => Ok(Self::Column),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

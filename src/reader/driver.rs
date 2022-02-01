@@ -35,30 +35,24 @@ pub(crate) fn normalize_path_to_str(path: &str) -> String {
     ret.to_str().unwrap_or("").to_string().replace("\\", "/")
 }
 
-pub(crate) fn get_attribute(
-    e:&quick_xml::events::BytesStart<'_>,
-    key:&[u8]
-) -> Option<String>
-{
+pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -> Option<String> {
     for a in e.attributes().with_checks(false) {
         match a {
             Ok(ref attr) if attr.key == key => {
                 return Some(get_attribute_value(attr).unwrap());
-            },
-            Ok(_) => {},
-            Err(_) => {},
+            }
+            Ok(_) => {}
+            Err(_) => {}
         }
     }
     None
 }
-pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Error>
-{
+pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Error> {
     let value = (&attr.value).clone().into_owned();
     String::from_utf8(value)
 }
 
-pub(crate) fn condvert_character_reference(src: &str) -> String
-{
+pub(crate) fn condvert_character_reference(src: &str) -> String {
     src.replace("&amp;", "&")
         .replace("&lt;", "<")
         .replace("&gt;", ">")

@@ -5,28 +5,28 @@ pub struct Theme {
     color_map: Vec<String>,
 }
 impl Theme {
-    pub fn get_theme_name(&self)-> &str {
+    pub fn get_theme_name(&self) -> &str {
         &self.theme_name
     }
-    pub(crate) fn set_theme_name<S: Into<String>>(&mut self, value:S) {
+    pub(crate) fn set_theme_name<S: Into<String>>(&mut self, value: S) {
         self.theme_name = value.into();
     }
-    pub fn get_color_scheme_name(&self)-> &str {
+    pub fn get_color_scheme_name(&self) -> &str {
         &self.color_scheme_name
     }
-    pub(crate) fn set_color_scheme_name<S: Into<String>>(&mut self, value:S) {
+    pub(crate) fn set_color_scheme_name<S: Into<String>>(&mut self, value: S) {
         self.color_scheme_name = value.into();
     }
-    pub fn get_color_map(&self)-> &Vec<String> {
+    pub fn get_color_map(&self) -> &Vec<String> {
         &self.color_map
     }
-    pub fn get_color_map_mut(&mut self)-> &mut Vec<String> {
+    pub fn get_color_map_mut(&mut self) -> &mut Vec<String> {
         &mut self.color_map
     }
-    pub fn set_color_map(&mut self, value:Vec<String>) {
+    pub fn set_color_map(&mut self, value: Vec<String>) {
         self.color_map = value;
     }
-    pub(crate) fn add_color_map<S: Into<String>>(&mut self, value:S) {
+    pub(crate) fn add_color_map<S: Into<String>>(&mut self, value: S) {
         self.color_map.push(value.into());
     }
     pub(crate) fn get_defalut_value() -> Theme {

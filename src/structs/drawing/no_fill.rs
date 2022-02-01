@@ -1,19 +1,17 @@
 // a:noFill
-use writer::driver::*;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
-pub struct NoFill {
-}
+pub struct NoFill {}
 impl NoFill {
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        _:&BytesStart
+        _reader: &mut Reader<R>,
+        _: &BytesStart,
     ) {
     }
 

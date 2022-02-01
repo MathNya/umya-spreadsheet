@@ -4,30 +4,30 @@ pub struct ByteValue {
     value_default: u8,
 }
 impl ByteValue {
-    pub(crate) fn get_value(&self)-> &u8 {
+    pub(crate) fn get_value(&self) -> &u8 {
         match &self.value {
             Some(v) => v,
-            None => &self.value_default
+            None => &self.value_default,
         }
     }
 
-    pub(crate) fn get_value_string(&self)-> String {
+    pub(crate) fn get_value_string(&self) -> String {
         self.get_value().to_string()
     }
 
-    pub(crate) fn set_value(&mut self, value:u8) -> &mut ByteValue {
+    pub(crate) fn set_value(&mut self, value: u8) -> &mut ByteValue {
         self.value = Some(value);
         self
     }
 
-    pub(crate) fn set_value_string<S: Into<String>>(&mut self, value:S) -> &mut ByteValue {
+    pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut ByteValue {
         self.set_value(value.into().parse::<u8>().unwrap())
     }
 
-    pub(crate) fn has_value(&self)-> bool {
+    pub(crate) fn has_value(&self) -> bool {
         match &self.value {
             Some(_) => true,
-            None => false
+            None => false,
         }
     }
 }

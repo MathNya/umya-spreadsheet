@@ -1,15 +1,15 @@
 // xdr:spPr
-use super::super::Transform2D;
-use super::super::PresetGeometry;
-use super::super::SolidFill;
-use super::super::Outline;
 use super::super::EffectList;
 use super::super::NoFill;
-use writer::driver::*;
-use quick_xml::events::{Event, BytesStart};
-use quick_xml::Writer;
+use super::super::Outline;
+use super::super::PresetGeometry;
+use super::super::SolidFill;
+use super::super::Transform2D;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
@@ -29,7 +29,7 @@ impl ShapeProperties {
         &mut self.preset_geometry
     }
 
-    pub fn set_geometry(&mut self, value:PresetGeometry) -> &mut ShapeProperties {
+    pub fn set_geometry(&mut self, value: PresetGeometry) -> &mut ShapeProperties {
         self.preset_geometry = value;
         self
     }
@@ -42,7 +42,7 @@ impl ShapeProperties {
         &mut self.transform2d
     }
 
-    pub fn set_transform2d(&mut self, value:Transform2D) -> &mut ShapeProperties {
+    pub fn set_transform2d(&mut self, value: Transform2D) -> &mut ShapeProperties {
         self.transform2d = value;
         self
     }
@@ -55,7 +55,7 @@ impl ShapeProperties {
         &mut self.solid_fill
     }
 
-    pub fn set_solid_fill(&mut self, value:SolidFill) -> &mut ShapeProperties {
+    pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut ShapeProperties {
         self.solid_fill = Some(value);
         self
     }
@@ -68,7 +68,7 @@ impl ShapeProperties {
         &mut self.outline
     }
 
-    pub fn set_outline(&mut self, value:Outline) -> &mut ShapeProperties {
+    pub fn set_outline(&mut self, value: Outline) -> &mut ShapeProperties {
         self.outline = Some(value);
         self
     }
@@ -81,7 +81,7 @@ impl ShapeProperties {
         &mut self.effect_list
     }
 
-    pub fn set_effect_list(&mut self, value:EffectList) -> &mut ShapeProperties {
+    pub fn set_effect_list(&mut self, value: EffectList) -> &mut ShapeProperties {
         self.effect_list = Some(value);
         self
     }
@@ -94,60 +94,54 @@ impl ShapeProperties {
         &mut self.no_fill
     }
 
-    pub fn set_no_fill(&mut self, value:NoFill) -> &mut ShapeProperties {
+    pub fn set_no_fill(&mut self, value: NoFill) -> &mut ShapeProperties {
         self.no_fill = Some(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"a:xfrm" => {
-                            &mut self.transform2d.set_attributes(reader, e);
-                        },
-                        b"a:prstGeom" => {
-                            &mut self.preset_geometry.set_attributes(reader, e);
-                        },
-                        b"a:ln" => {
-                            let mut outline = Outline::default();
-                            outline.set_attributes(reader, e);
-                            &mut self.set_outline(outline);
-                        },
-                        b"a:solidFill" => {
-                            let mut solid_fill = SolidFill::default();
-                            solid_fill.set_attributes(reader, e);
-                            &mut self.set_solid_fill(solid_fill);
-                        },
-                        b"a:effectLst" => {
-                            let mut effect_list = EffectList::default();
-                            effect_list.set_attributes(reader, e, false);
-                            &mut self.set_effect_list(effect_list);
-                        }
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"a:xfrm" => {
+                        &mut self.transform2d.set_attributes(reader, e);
                     }
+                    b"a:prstGeom" => {
+                        &mut self.preset_geometry.set_attributes(reader, e);
+                    }
+                    b"a:ln" => {
+                        let mut outline = Outline::default();
+                        outline.set_attributes(reader, e);
+                        &mut self.set_outline(outline);
+                    }
+                    b"a:solidFill" => {
+                        let mut solid_fill = SolidFill::default();
+                        solid_fill.set_attributes(reader, e);
+                        &mut self.set_solid_fill(solid_fill);
+                    }
+                    b"a:effectLst" => {
+                        let mut effect_list = EffectList::default();
+                        effect_list.set_attributes(reader, e, false);
+                        &mut self.set_effect_list(effect_list);
+                    }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:noFill" => {
-                            let mut obj = NoFill::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_no_fill(obj);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:noFill" => {
+                        let mut obj = NoFill::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_no_fill(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:spPr" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:spPr" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:spPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -160,26 +154,26 @@ impl ShapeProperties {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:spPr
         write_start_tag(writer, "xdr:spPr", vec![], false);
-        
+
         // a:xfrm
         &self.transform2d.write_to(writer);
-    
+
         // a:prstGeom
         &self.preset_geometry.write_to(writer);
-    
+
         // a:solidFill
         match &self.solid_fill {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
-    
+
         // a:ln
         match &self.outline {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
 
@@ -187,14 +181,14 @@ impl ShapeProperties {
         match &self.effect_list {
             Some(v) => {
                 v.write_to(writer);
-            },
+            }
             None => {}
         }
 
         // a:noFill
         match &self.no_fill {
             Some(v) => v.write_to(writer),
-            None => {},
+            None => {}
         }
 
         write_end_tag(writer, "xdr:spPr");

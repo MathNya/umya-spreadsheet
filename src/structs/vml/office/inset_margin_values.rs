@@ -6,13 +6,15 @@ pub enum InsetMarginValues {
     Custom,
 }
 impl Default for InsetMarginValues {
-    fn default() -> Self { Self::Auto }
+    fn default() -> Self {
+        Self::Auto
+    }
 }
 impl EnumTrait for InsetMarginValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Auto => {"auto"},
-            Self::Custom => {"custom"},
+            Self::Auto => "auto",
+            Self::Custom => "custom",
         }
     }
 }
@@ -22,7 +24,7 @@ impl FromStr for InsetMarginValues {
         match input {
             "auto" => Ok(Self::Auto),
             "custom" => Ok(Self::Custom),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

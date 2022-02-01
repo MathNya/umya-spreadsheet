@@ -7,14 +7,16 @@ pub enum DisplayBlanksAsValues {
     Zero,
 }
 impl Default for DisplayBlanksAsValues {
-    fn default() -> Self { Self::Span }
+    fn default() -> Self {
+        Self::Span
+    }
 }
 impl EnumTrait for DisplayBlanksAsValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Gap => {"gap"},
-            Self::Span => {"span"},
-            Self::Zero => {"zero"},
+            Self::Gap => "gap",
+            Self::Span => "span",
+            Self::Zero => "zero",
         }
     }
 }
@@ -25,8 +27,7 @@ impl FromStr for DisplayBlanksAsValues {
             "gap" => Ok(Self::Gap),
             "span" => Ok(Self::Span),
             "zero" => Ok(Self::Zero),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

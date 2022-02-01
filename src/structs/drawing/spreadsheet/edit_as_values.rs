@@ -7,14 +7,16 @@ pub enum EditAsValues {
     TwoCell,
 }
 impl Default for EditAsValues {
-    fn default() -> Self { Self::TwoCell }
+    fn default() -> Self {
+        Self::TwoCell
+    }
 }
 impl EnumTrait for EditAsValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Absolute => {"absolute"},
-            Self::OneCell => {"oneCell"},
-            Self::TwoCell => {"twoCell"},
+            Self::Absolute => "absolute",
+            Self::OneCell => "oneCell",
+            Self::TwoCell => "twoCell",
         }
     }
 }
@@ -25,8 +27,7 @@ impl FromStr for EditAsValues {
             "absolute" => Ok(Self::Absolute),
             "oneCell" => Ok(Self::OneCell),
             "twoCell" => Ok(Self::TwoCell),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

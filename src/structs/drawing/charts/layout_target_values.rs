@@ -6,13 +6,15 @@ pub enum LayoutTargetValues {
     Outer,
 }
 impl Default for LayoutTargetValues {
-    fn default() -> Self { Self::Inner }
+    fn default() -> Self {
+        Self::Inner
+    }
 }
 impl EnumTrait for LayoutTargetValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Inner => {"inner"},
-            Self::Outer => {"outer"},
+            Self::Inner => "inner",
+            Self::Outer => "outer",
         }
     }
 }
@@ -22,8 +24,7 @@ impl FromStr for LayoutTargetValues {
         match input {
             "inner" => Ok(Self::Inner),
             "outer" => Ok(Self::Outer),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

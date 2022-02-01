@@ -7,14 +7,16 @@ pub enum FontSchemeValues {
     None,
 }
 impl Default for FontSchemeValues {
-    fn default() -> Self { Self::None }
+    fn default() -> Self {
+        Self::None
+    }
 }
 impl EnumTrait for FontSchemeValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Major => {"major"},
-            Self::Minor => {"minor"},
-            Self::None => {"none"},
+            Self::Major => "major",
+            Self::Minor => "minor",
+            Self::None => "none",
         }
     }
 }
@@ -25,7 +27,7 @@ impl FromStr for FontSchemeValues {
             "major" => Ok(Self::Major),
             "minor" => Ok(Self::Minor),
             "none" => Ok(Self::None),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

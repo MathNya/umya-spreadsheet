@@ -1,13 +1,13 @@
 // a:bevelT
+use super::super::EnumValue;
 use super::super::Int64Value;
 use super::BevelPresetValues;
-use super::super::EnumValue;
-use writer::driver::*;
-use reader::driver::*;
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use quick_xml::events::{BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct BevelTop {
@@ -20,7 +20,7 @@ impl BevelTop {
         &self.width.get_value()
     }
 
-    pub fn set_width(&mut self, value:i64) -> &mut BevelTop {
+    pub fn set_width(&mut self, value: i64) -> &mut BevelTop {
         self.width.set_value(value);
         self
     }
@@ -29,7 +29,7 @@ impl BevelTop {
         &self.height.get_value()
     }
 
-    pub fn set_height(&mut self, value:i64) -> &mut BevelTop {
+    pub fn set_height(&mut self, value: i64) -> &mut BevelTop {
         self.height.set_value(value);
         self
     }
@@ -38,26 +38,32 @@ impl BevelTop {
         &self.preset.get_value()
     }
 
-    pub fn set_preset(&mut self, value:BevelPresetValues) -> &mut BevelTop {
+    pub fn set_preset(&mut self, value: BevelPresetValues) -> &mut BevelTop {
         self.preset.set_value(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader:&mut Reader<R>,
-        e:&BytesStart
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         match get_attribute(e, b"w") {
-            Some(v) => {&mut self.width.set_value_string(v);},
+            Some(v) => {
+                &mut self.width.set_value_string(v);
+            }
             None => {}
         }
         match get_attribute(e, b"h") {
-            Some(v) => {&mut self.height.set_value_string(v);},
+            Some(v) => {
+                &mut self.height.set_value_string(v);
+            }
             None => {}
         }
         match get_attribute(e, b"prst") {
-            Some(v) => {&mut self.preset.set_value_string(v);},
+            Some(v) => {
+                &mut self.preset.set_value_string(v);
+            }
             None => {}
         }
     }

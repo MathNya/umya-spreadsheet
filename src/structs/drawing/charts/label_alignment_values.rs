@@ -7,14 +7,16 @@ pub enum LabelAlignmentValues {
     Right,
 }
 impl Default for LabelAlignmentValues {
-    fn default() -> Self { Self::Center }
+    fn default() -> Self {
+        Self::Center
+    }
 }
 impl EnumTrait for LabelAlignmentValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Center => {"ctr"},
-            Self::Left => {"l"},
-            Self::Right => {"r"},
+            Self::Center => "ctr",
+            Self::Left => "l",
+            Self::Right => "r",
         }
     }
 }
@@ -25,7 +27,7 @@ impl FromStr for LabelAlignmentValues {
             "ctr" => Ok(Self::Center),
             "l" => Ok(Self::Left),
             "r" => Ok(Self::Right),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

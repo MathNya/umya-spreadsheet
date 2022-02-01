@@ -1,10 +1,10 @@
-use quick_xml::events::{Event, BytesDecl};
+use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use ::structs::Worksheet;
 use super::driver::*;
 use super::XlsxError;
+use structs::Worksheet;
 
 const SUB_DIR: &'static str = "xl/worksheets/_rels";
 
@@ -23,13 +23,23 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    let _ = writer.write_event(Event::Decl(BytesDecl::new(b"1.0", Some(b"UTF-8"), Some(b"yes"))));
+    let _ = writer.write_event(Event::Decl(BytesDecl::new(
+        b"1.0",
+        Some(b"UTF-8"),
+        Some(b"yes"),
+    )));
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(&mut writer, "Relationships", vec![
-        ("xmlns", "http://schemas.openxmlformats.org/package/2006/relationships"),
-    ], false);
+    write_start_tag(
+        &mut writer,
+        "Relationships",
+        vec![(
+            "xmlns",
+            "http://schemas.openxmlformats.org/package/2006/relationships",
+        )],
+        false,
+    );
 
     let mut r_id = 1;
 
@@ -41,9 +51,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 r_id.to_string().as_str(),
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
                 hyperlink.get_url(),
-                "External"
+                "External",
             );
-            r_id+=1;
+            r_id += 1;
         }
     }
 
@@ -54,11 +64,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             r_id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
             format!("../drawings/drawing{}.xml", drawing_id.to_string().as_str()).as_str(),
-            ""
+            "",
         );
         r_id += 1;
     }
-
 
     // Write vmlDrawing relationship
     if worksheet.has_legacy_drawing() {
@@ -66,10 +75,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             r_id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
-            format!("../drawings/vmlDrawing{}.vml", vml_drawing_id.to_string().as_str()).as_str(),
-            ""
+            format!(
+                "../drawings/vmlDrawing{}.vml",
+                vml_drawing_id.to_string().as_str()
+            )
+            .as_str(),
+            "",
         );
-        r_id+=1;
+        r_id += 1;
     }
 
     // Write ole_objects
@@ -83,10 +96,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 r_id.to_string().as_str(),
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package",
                 format!("../embeddings/{}", object_name).as_str(),
-                ""
+                "",
             );
-            ole_excel_id+=1;
-            r_id+=1;
+            ole_excel_id += 1;
+            r_id += 1;
         }
         if ole_object.is_bin() {
             let object_name = format!("oleObject{}.bin", ole_bin_id);
@@ -95,21 +108,24 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 r_id.to_string().as_str(),
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject",
                 format!("../embeddings/{}", object_name).as_str(),
-                ""
+                "",
             );
-            ole_bin_id+=1;
-            r_id+=1;
+            ole_bin_id += 1;
+            r_id += 1;
         }
 
-        let image_name = ole_object.get_embedded_object_properties().get_image().get_image_name();
+        let image_name = ole_object
+            .get_embedded_object_properties()
+            .get_image()
+            .get_image_name();
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
             format!("../media/{}", image_name).as_str(),
-            ""
+            "",
         );
-        r_id+=1;
+        r_id += 1;
     }
 
     // Write header/footer relationship
@@ -124,7 +140,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     //    );
     //}
 
-
     // Write comments relationship
     if worksheet.get_comments().len() > 0 {
         is_write = write_relationship(
@@ -132,7 +147,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             r_id.to_string().as_str(),
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
             format!("../comments{}.xml", comment_id.to_string().as_str()).as_str(),
-            ""
+            "",
         );
     }
 
@@ -144,9 +159,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     Ok(())
 }
 
-
-fn write_relationship(writer: &mut Writer<io::Cursor<Vec<u8>>>, p_id: &str, p_type: &str, p_target: &str, p_target_mode: &str)-> bool
-{
+fn write_relationship(
+    writer: &mut Writer<io::Cursor<Vec<u8>>>,
+    p_id: &str,
+    p_type: &str,
+    p_target: &str,
+    p_target_mode: &str,
+) -> bool {
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     let r_id = format!("rId{}", p_id);

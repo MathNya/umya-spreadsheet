@@ -1,12 +1,12 @@
-use super::LegendPosition;
 use super::Layout;
+use super::LegendPosition;
 use super::Overlay;
 use super::TextProperties;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Legend {
@@ -15,103 +15,97 @@ pub struct Legend {
     overlay: Overlay,
     text_properties: Option<TextProperties>,
 }
-impl Legend  {
-    pub fn get_legend_position(&self)-> &LegendPosition {
+impl Legend {
+    pub fn get_legend_position(&self) -> &LegendPosition {
         &self.legend_position
     }
 
-    pub fn get_legend_position_mut(&mut self)-> &mut LegendPosition {
+    pub fn get_legend_position_mut(&mut self) -> &mut LegendPosition {
         &mut self.legend_position
     }
 
-    pub fn set_legend_position(&mut self, value:LegendPosition)-> &mut Legend {
+    pub fn set_legend_position(&mut self, value: LegendPosition) -> &mut Legend {
         self.legend_position = value.into();
         self
     }
 
-    pub fn get_layout(&self)-> &Option<Layout> {
+    pub fn get_layout(&self) -> &Option<Layout> {
         &self.layout
     }
 
-    pub fn get_layout_mut(&mut self)-> &mut Option<Layout> {
+    pub fn get_layout_mut(&mut self) -> &mut Option<Layout> {
         &mut self.layout
     }
 
-    pub fn set_layout(&mut self, value:Layout)-> &mut Legend {
+    pub fn set_layout(&mut self, value: Layout) -> &mut Legend {
         self.layout = Some(value);
         self
     }
 
-    pub fn get_overlay(&self)-> &Overlay {
+    pub fn get_overlay(&self) -> &Overlay {
         &self.overlay
     }
 
-    pub fn get_overlay_mut(&mut self)-> &mut Overlay {
+    pub fn get_overlay_mut(&mut self) -> &mut Overlay {
         &mut self.overlay
     }
 
-    pub fn set_overlay(&mut self, value:Overlay)-> &mut Legend {
+    pub fn set_overlay(&mut self, value: Overlay) -> &mut Legend {
         self.overlay = value;
         self
     }
 
-    pub fn get_text_properties(&self)-> &Option<TextProperties> {
+    pub fn get_text_properties(&self) -> &Option<TextProperties> {
         &self.text_properties
     }
 
-    pub fn get_text_properties_mut(&mut self)-> &mut Option<TextProperties> {
+    pub fn get_text_properties_mut(&mut self) -> &mut Option<TextProperties> {
         &mut self.text_properties
     }
 
-    pub fn set_text_properties(&mut self, value:TextProperties)-> &mut Legend {
+    pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Legend {
         self.text_properties = Some(value);
         self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"c:layout" => {
-                            let mut obj = Layout::default();
-                            obj.set_attributes(reader, e, false);
-                            self.set_layout(obj);
-                        },
-                        b"c:txPr" => {
-                            let mut obj = TextProperties::default();
-                            obj.set_attributes(reader, e);
-                            self.set_text_properties(obj);
-                        },
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"c:layout" => {
+                        let mut obj = Layout::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_layout(obj);
                     }
+                    b"c:txPr" => {
+                        let mut obj = TextProperties::default();
+                        obj.set_attributes(reader, e);
+                        self.set_text_properties(obj);
+                    }
+                    _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"c:legendPos" => {
-                            self.legend_position.set_attributes(reader, e);
-                        },
-                        b"c:layout" => {
-                            let mut obj = Layout::default();
-                            obj.set_attributes(reader, e, true);
-                            self.set_layout(obj);
-                        },
-                        b"c:overlay" => {
-                            self.overlay.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"c:legendPos" => {
+                        self.legend_position.set_attributes(reader, e);
                     }
+                    b"c:layout" => {
+                        let mut obj = Layout::default();
+                        obj.set_attributes(reader, e, true);
+                        self.set_layout(obj);
+                    }
+                    b"c:overlay" => {
+                        self.overlay.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"c:legend" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"c:legend" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "c:legend"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -130,7 +124,9 @@ impl Legend  {
 
         // c:layout
         match &self.layout {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 
@@ -139,7 +135,9 @@ impl Legend  {
 
         // c:txPr
         match &self.text_properties {
-            Some(v) => {v.write_to(writer);},
+            Some(v) => {
+                v.write_to(writer);
+            }
             None => {}
         }
 

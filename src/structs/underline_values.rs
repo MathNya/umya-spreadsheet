@@ -9,16 +9,18 @@ pub enum UnderlineValues {
     SingleAccounting,
 }
 impl Default for UnderlineValues {
-    fn default() -> Self { Self::Single }
+    fn default() -> Self {
+        Self::Single
+    }
 }
 impl EnumTrait for UnderlineValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Double => {"double"},
-            Self::DoubleAccounting => {"doubleAccounting"},
-            Self::None => {"none"},
-            Self::Single => {"single"},
-            Self::SingleAccounting => {"singleAccounting"},
+            Self::Double => "double",
+            Self::DoubleAccounting => "doubleAccounting",
+            Self::None => "none",
+            Self::Single => "single",
+            Self::SingleAccounting => "singleAccounting",
         }
     }
 }
@@ -31,7 +33,7 @@ impl FromStr for UnderlineValues {
             "none" => Ok(Self::None),
             "single" => Ok(Self::Single),
             "singleAccounting" => Ok(Self::SingleAccounting),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

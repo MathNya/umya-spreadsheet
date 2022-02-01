@@ -6,13 +6,15 @@ pub enum OrientationValues {
     MinMax,
 }
 impl Default for OrientationValues {
-    fn default() -> Self { Self::MaxMin }
+    fn default() -> Self {
+        Self::MaxMin
+    }
 }
 impl EnumTrait for OrientationValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::MaxMin => {"maxMin"},
-            Self::MinMax => {"minMax"},
+            Self::MaxMin => "maxMin",
+            Self::MinMax => "minMax",
         }
     }
 }
@@ -22,8 +24,7 @@ impl FromStr for OrientationValues {
         match input {
             "maxMin" => Ok(Self::MaxMin),
             "minMax" => Ok(Self::MinMax),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

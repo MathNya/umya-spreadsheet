@@ -3,338 +3,338 @@
 pub mod drawing;
 pub mod vml;
 
-          mod spreadsheet;
+mod spreadsheet;
 pub use self::spreadsheet::*;
 
-          mod worksheet;
+mod worksheet;
 pub use self::worksheet::*;
 
-          mod properties;
+mod properties;
 pub use self::properties::*;
 
-          mod cell;
+mod cell;
 pub use self::cell::*;
 
-          mod cells;
+mod cells;
 pub use self::cells::*;
 
-          mod hyperlink;
+mod hyperlink;
 pub use self::hyperlink::*;
 
-          mod shadow;
+mod shadow;
 pub use self::shadow::*;
 
-          mod color;
+mod color;
 pub use self::color::*;
 
-          mod page_setup;
+mod page_setup;
 pub use self::page_setup::*;
 
-          mod page_margins;
+mod page_margins;
 pub use self::page_margins::*;
 
-          mod header_footer;
+mod header_footer;
 pub use self::header_footer::*;
 
-          mod header_footer_drawing;
+mod header_footer_drawing;
 pub use self::header_footer_drawing::*;
 
-          mod sheet_view;
+mod sheet_view;
 pub use self::sheet_view::*;
 
-          mod auto_filter;
+mod auto_filter;
 pub use self::auto_filter::*;
 
-          mod column;
+mod column;
 pub use self::column::*;
 
-          mod security;
+mod security;
 pub use self::security::*;
 
-          mod calculation;
+mod calculation;
 pub use self::calculation::*;
 
-          mod style;
+mod style;
 pub use self::style::*;
 
-          mod font;
+mod font;
 pub use self::font::*;
 
-          mod fill;
+mod fill;
 pub use self::fill::*;
 
-                 mod borders;
+mod borders;
 pub(crate) use self::borders::*;
 
-          mod border;
+mod border;
 pub use self::border::*;
 
-          mod alignment;
+mod alignment;
 pub use self::alignment::*;
 
-          mod conditional;
+mod conditional;
 pub use self::conditional::*;
 
-          mod protection;
+mod protection;
 pub use self::protection::*;
 
-          mod rich_text;
+mod rich_text;
 pub use self::rich_text::*;
 
-          mod text_element;
+mod text_element;
 pub use self::text_element::*;
 
-          mod picture;
+mod picture;
 pub use self::picture::*;
 
-          mod theme;
+mod theme;
 pub use self::theme::*;
 
-          mod cell_style;
+mod cell_style;
 pub use self::cell_style::*;
 
-          mod defined_name;
+mod defined_name;
 pub use self::defined_name::*;
 
-          mod comment;
+mod comment;
 pub use self::comment::*;
 
-          mod coordinate;
+mod coordinate;
 pub use self::coordinate::*;
 
-          mod range;
+mod range;
 pub use self::range::*;
 
-          mod conditional_set;
+mod conditional_set;
 pub use self::conditional_set::*;
 
-          mod address;
+mod address;
 pub use self::address::*;
 
-          mod anchor;
+mod anchor;
 pub use self::anchor::*;
 
-          mod office2010;
+mod office2010;
 pub use self::office2010::*;
 
-          mod boolean_value;
+mod boolean_value;
 pub use self::boolean_value::*;
 
-          mod u_int32_value;
+mod u_int32_value;
 pub use self::u_int32_value::*;
 
-          mod u_int16_value;
+mod u_int16_value;
 pub use self::u_int16_value::*;
 
-          mod int32_value;
+mod int32_value;
 pub use self::int32_value::*;
 
-          mod int16_value;
+mod int16_value;
 pub use self::int16_value::*;
 
-          mod string_value;
+mod string_value;
 pub use self::string_value::*;
 
-          mod double_value;
+mod double_value;
 pub use self::double_value::*;
 
-          mod enum_value;
+mod enum_value;
 pub use self::enum_value::*;
 
-          mod enum_trait;
+mod enum_trait;
 pub use self::enum_trait::*;
 
-          mod byte_value;
+mod byte_value;
 pub use self::byte_value::*;
 
-          mod s_byte_value;
+mod s_byte_value;
 pub use self::s_byte_value::*;
 
-          mod int64_value;
+mod int64_value;
 pub use self::int64_value::*;
 
-          mod row;
+mod row;
 pub use self::row::*;
 
-          mod font_name;
+mod font_name;
 pub use self::font_name::*;
 
-          mod font_size;
+mod font_size;
 pub use self::font_size::*;
 
-          mod font_family_numbering;
+mod font_family_numbering;
 pub use self::font_family_numbering::*;
 
-          mod bold;
+mod bold;
 pub use self::bold::*;
 
-          mod italic;
+mod italic;
 pub use self::italic::*;
 
-          mod underline_values;
+mod underline_values;
 pub use self::underline_values::*;
 
-          mod underline;
+mod underline;
 pub use self::underline::*;
 
-          mod strike;
+mod strike;
 pub use self::strike::*;
 
-          mod font_char_set;
+mod font_char_set;
 pub use self::font_char_set::*;
 
-          mod font_scheme_values;
+mod font_scheme_values;
 pub use self::font_scheme_values::*;
 
-          mod font_scheme;
+mod font_scheme;
 pub use self::font_scheme::*;
 
-          mod fonts;
+mod fonts;
 pub use self::fonts::*;
 
-          mod pattern_fill;
+mod pattern_fill;
 pub use self::pattern_fill::*;
 
-          mod pattern_values;
+mod pattern_values;
 pub use self::pattern_values::*;
 
-          mod fills;
+mod fills;
 pub use self::fills::*;
 
-          mod numbering_format;
+mod numbering_format;
 pub use self::numbering_format::*;
 
-          mod numbering_formats;
+mod numbering_formats;
 pub use self::numbering_formats::*;
 
-          mod stylesheet;
+mod stylesheet;
 pub use self::stylesheet::*;
 
-          mod border_properties_type;
+mod border_properties_type;
 pub use self::border_properties_type::*;
 
-          mod border_style_values;
+mod border_style_values;
 pub use self::border_style_values::*;
 
-          mod borders_crate;
+mod borders_crate;
 pub use self::borders_crate::*;
 
-          mod cell_format;
+mod cell_format;
 pub use self::cell_format::*;
 
-          mod horizontal_alignment_values;
+mod horizontal_alignment_values;
 pub use self::horizontal_alignment_values::*;
 
-          mod vertical_alignment_values;
+mod vertical_alignment_values;
 pub use self::vertical_alignment_values::*;
 
-          mod cell_formats;
+mod cell_formats;
 pub use self::cell_formats::*;
 
-          mod cell_style_formats;
+mod cell_style_formats;
 pub use self::cell_style_formats::*;
 
-          mod cell_styles;
+mod cell_styles;
 pub use self::cell_styles::*;
 
-          mod differential_format;
+mod differential_format;
 pub use self::differential_format::*;
 
-          mod differential_formats;
+mod differential_formats;
 pub use self::differential_formats::*;
 
-          mod mru_colors;
+mod mru_colors;
 pub use self::mru_colors::*;
 
-          mod colors;
+mod colors;
 pub use self::colors::*;
 
-          mod shared_string_table;
+mod shared_string_table;
 pub use self::shared_string_table::*;
 
-          mod shared_string_item;
+mod shared_string_item;
 pub use self::shared_string_item::*;
 
-          mod text;
+mod text;
 pub use self::text::*;
 
-          mod phonetic_run;
+mod phonetic_run;
 pub use self::phonetic_run::*;
 
-          mod gradient_fill;
+mod gradient_fill;
 pub use self::gradient_fill::*;
 
-          mod gradient_stop;
+mod gradient_stop;
 pub use self::gradient_stop::*;
 
-          mod vertical_alignment_run_values;
+mod vertical_alignment_run_values;
 pub use self::vertical_alignment_run_values::*;
 
-          mod vertical_text_alignment;
+mod vertical_text_alignment;
 pub use self::vertical_text_alignment::*;
 
-          mod cell_value;
+mod cell_value;
 pub use self::cell_value::*;
 
-          mod row_reference;
+mod row_reference;
 pub use self::row_reference::*;
 
-          mod column_reference;
+mod column_reference;
 pub use self::column_reference::*;
 
-          mod columns;
+mod columns;
 pub use self::columns::*;
 
-          mod column_sort;
+mod column_sort;
 pub use self::column_sort::*;
 
-          mod sequence_of_references;
+mod sequence_of_references;
 pub use self::sequence_of_references::*;
 
-          mod selection;
+mod selection;
 pub use self::selection::*;
 
-          mod pane_values;
+mod pane_values;
 pub use self::pane_values::*;
 
-          mod pane;
+mod pane;
 pub use self::pane::*;
 
-          mod pane_state_values;
+mod pane_state_values;
 pub use self::pane_state_values::*;
 
-          mod workbook_view;
+mod workbook_view;
 pub use self::workbook_view::*;
 
-          mod ole_objects;
+mod ole_objects;
 pub use self::ole_objects::*;
 
-          mod ole_object;
+mod ole_object;
 pub use self::ole_object::*;
 
-          mod embedded_object_properties;
+mod embedded_object_properties;
 pub use self::embedded_object_properties::*;
 
-          mod object_anchor;
+mod object_anchor;
 pub use self::object_anchor::*;
 
-          mod from_marker;
+mod from_marker;
 pub use self::from_marker::*;
 
-          mod to_marker;
+mod to_marker;
 pub use self::to_marker::*;
 
-          mod true_false_value;
+mod true_false_value;
 pub use self::true_false_value::*;
 
-          mod true_false_blank_value;
+mod true_false_blank_value;
 pub use self::true_false_blank_value::*;
 
-          mod image;
+mod image;
 pub use self::image::*;
 
-          mod chart;
+mod chart;
 pub use self::chart::*;
 
-          mod chart_type;
+mod chart_type;
 pub use self::chart_type::*;

@@ -1,12 +1,11 @@
-
-pub(crate) fn get_currency_code()-> String {
+pub(crate) fn get_currency_code() -> String {
     String::from("")
 }
 
-pub(crate) fn get_decimal_separator()-> String {
+pub(crate) fn get_decimal_separator() -> String {
     String::from(".")
 }
 
-pub(crate) fn get_thousands_separator()-> String {
+pub(crate) fn get_thousands_separator() -> String {
     String::from(",")
 }

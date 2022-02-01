@@ -1,5 +1,5 @@
-use super::SequenceOfReferences;
 use super::Conditional;
+use super::SequenceOfReferences;
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalSet {
@@ -7,27 +7,27 @@ pub struct ConditionalSet {
     conditional_collection: Vec<Conditional>,
 }
 impl ConditionalSet {
-    pub fn get_sequence_of_references(&self)-> &SequenceOfReferences {
+    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
-    pub fn get_sequence_of_references_mut(&mut self)-> &mut SequenceOfReferences {
+    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
     }
 
-    pub fn set_sequence_of_references(&mut self, value:SequenceOfReferences) {
+    pub fn set_sequence_of_references(&mut self, value: SequenceOfReferences) {
         self.sequence_of_references = value;
     }
 
-    pub fn get_conditional_collection(&self)-> &Vec<Conditional> {
+    pub fn get_conditional_collection(&self) -> &Vec<Conditional> {
         &self.conditional_collection
     }
 
-    pub fn get_conditional_collection_mut(&mut self)-> &mut Vec<Conditional> {
+    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<Conditional> {
         &mut self.conditional_collection
     }
 
-    pub fn set_conditional_collection(&mut self, value:Vec<Conditional>) {
+    pub fn set_conditional_collection(&mut self, value: Vec<Conditional>) {
         self.conditional_collection = value;
     }
 }

@@ -7,14 +7,16 @@ pub enum TextCapsValues {
     Small,
 }
 impl Default for TextCapsValues {
-    fn default() -> Self { Self::None }
+    fn default() -> Self {
+        Self::None
+    }
 }
 impl EnumTrait for TextCapsValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::All => {"all"},
-            Self::None => {"none"},
-            Self::Small => {"small"},
+            Self::All => "all",
+            Self::None => "none",
+            Self::Small => "small",
         }
     }
 }
@@ -25,7 +27,7 @@ impl FromStr for TextCapsValues {
             "all" => Ok(Self::All),
             "none" => Ok(Self::None),
             "small" => Ok(Self::Small),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }

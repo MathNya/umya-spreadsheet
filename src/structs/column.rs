@@ -3,10 +3,10 @@ use super::DoubleValue;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use structs::Cells;
-use quick_xml::events::{BytesStart};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use reader::driver::*;
+use structs::Cells;
 
 #[derive(Clone, Default, Debug)]
 pub struct Column {
@@ -76,34 +76,33 @@ impl Column {
         self
     }
 
-    pub(crate) fn calculation_auto_width(&mut self, cells:&Cells)-> f64 {
-            // default cell value len.
-            let mut char_cnt_max = 0;
+    pub(crate) fn calculation_auto_width(&mut self, cells: &Cells) -> f64 {
+        // default cell value len.
+        let mut char_cnt_max = 0;
 
-            // default font size len.
-            let column_font_size = match self.get_style().get_font() {
-                Some(font) => { font.get_font_size().get_val().clone() },
-                None => { 0.0000f64 }
-            };
+        // default font size len.
+        let column_font_size = match self.get_style().get_font() {
+            Some(font) => font.get_font_size().get_val().clone(),
+            None => 0.0000f64,
+        };
 
-            if self.get_auto_width() == &true {
-                let cell_list = cells.get_collection_by_column(self.get_col_num());
-                for (_, cell) in cell_list {
-                    // get cell value len.
-                    let char_cnt = cell.get_cell_value().get_value().len();
-                    if char_cnt_max < char_cnt {
-                        char_cnt_max = char_cnt;
-                    }
-
-                    // get font size.
-                    let font_size = match cell.get_style().get_font() {
-                        Some(font) => { font.get_font_size().get_val() },
-                        None => { &column_font_size },
-                    };
-
+        if self.get_auto_width() == &true {
+            let cell_list = cells.get_collection_by_column(self.get_col_num());
+            for (_, cell) in cell_list {
+                // get cell value len.
+                let char_cnt = cell.get_cell_value().get_value().len();
+                if char_cnt_max < char_cnt {
+                    char_cnt_max = char_cnt;
                 }
+
+                // get font size.
+                let font_size = match cell.get_style().get_font() {
+                    Some(font) => font.get_font_size().get_val(),
+                    None => &column_font_size,
+                };
             }
-            char_cnt_max as f64
+        }
+        char_cnt_max as f64
     }
 
     pub(crate) fn adjustment_insert_coordinate(

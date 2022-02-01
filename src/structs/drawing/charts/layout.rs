@@ -1,25 +1,25 @@
-// c:layout 
+// c:layout
 use super::ManualLayout;
-use writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Layout {
     manual_layout: Option<ManualLayout>,
 }
 impl Layout {
-    pub fn get_manual_layout(&self)-> &Option<ManualLayout> {
+    pub fn get_manual_layout(&self) -> &Option<ManualLayout> {
         &self.manual_layout
     }
 
-    pub fn get_manual_layout_mut(&mut self)-> &mut Option<ManualLayout> {
+    pub fn get_manual_layout_mut(&mut self) -> &mut Option<ManualLayout> {
         &mut self.manual_layout
     }
 
-    pub fn set_manual_layout(&mut self, value:ManualLayout)-> &mut Layout {
+    pub fn set_manual_layout(&mut self, value: ManualLayout) -> &mut Layout {
         self.manual_layout = Some(value);
         self
     }
@@ -30,9 +30,9 @@ impl Layout {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart,
-        empty_flag:bool,
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
+        empty_flag: bool,
     ) {
         if empty_flag {
             return;
@@ -41,21 +41,17 @@ impl Layout {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => {
-                    match e.name() {
-                        b"c:manualLayout" => {
-                            let mut obj = ManualLayout::default();
-                            obj.set_attributes(reader, e);
-                            &mut self.set_manual_layout(obj);
-                        }
-                        _ => (),
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"c:manualLayout" => {
+                        let mut obj = ManualLayout::default();
+                        obj.set_attributes(reader, e);
+                        &mut self.set_manual_layout(obj);
                     }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"c:layout" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"c:layout" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "c:layout"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -69,14 +65,15 @@ impl Layout {
         if self.is_empty() {
             // c:layout
             write_start_tag(writer, "c:layout", vec![], true);
-
         } else {
             // c:layout
             write_start_tag(writer, "c:layout", vec![], false);
 
             // c:manualLayout
             match &self.manual_layout {
-                Some(v) => {v.write_to(writer);},
+                Some(v) => {
+                    v.write_to(writer);
+                }
                 None => {}
             }
 

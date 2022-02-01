@@ -51,7 +51,11 @@ impl RichText {
         format!("{:x}", md5::compute(format!("{}", value)))
     }
 
-    pub(crate) fn set_attributes_text<R: std::io::BufRead>(&mut self, reader: &mut Reader<R>, _e: &BytesStart) {
+    pub(crate) fn set_attributes_text<R: std::io::BufRead>(
+        &mut self,
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
+    ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {

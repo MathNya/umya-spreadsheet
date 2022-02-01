@@ -1,11 +1,11 @@
+use super::driver::*;
+use super::XlsxError;
+use quick_xml::events::Event;
+use quick_xml::Reader;
 use std::io::Read;
 use std::{io, result};
-use quick_xml::Reader;
-use quick_xml::events::{Event};
-use super::XlsxError;
-use super::driver::*;
-use structs::Worksheet;
 use structs::vml::Shape;
+use structs::Worksheet;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
@@ -28,24 +28,23 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 
     loop {
         match reader.read_event(&mut buf) {
-            Ok(Event::Start(ref e)) => {
-                match e.name() {
-                    b"v:shape" => {
-                        let mut obj = Shape::default();
-                        obj.set_attributes(&mut reader, e, arv, target);
-                        match obj.get_client_data().get_comment_column_target() {
-                            Some(_) => {
-                                worksheet.get_comments_mut()[comment_index].set_shape(obj);
-                                comment_index += 1;
-                            },
-                            None => {
-                                worksheet.get_ole_objects_mut().get_ole_object_mut()[ole_index].set_shape(obj);
-                                ole_index += 1;
-                            }
+            Ok(Event::Start(ref e)) => match e.name() {
+                b"v:shape" => {
+                    let mut obj = Shape::default();
+                    obj.set_attributes(&mut reader, e, arv, target);
+                    match obj.get_client_data().get_comment_column_target() {
+                        Some(_) => {
+                            worksheet.get_comments_mut()[comment_index].set_shape(obj);
+                            comment_index += 1;
                         }
-                    },
-                    _ => (),
+                        None => {
+                            worksheet.get_ole_objects_mut().get_ole_object_mut()[ole_index]
+                                .set_shape(obj);
+                            ole_index += 1;
+                        }
+                    }
                 }
+                _ => (),
             },
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

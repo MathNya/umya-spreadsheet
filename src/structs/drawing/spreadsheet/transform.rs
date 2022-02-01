@@ -1,14 +1,14 @@
 // xdr:xfrm
-use super::super::super::Int32Value;
 use super::super::super::BooleanValue;
-use super::super::Offset;
+use super::super::super::Int32Value;
 use super::super::Extents;
-use writer::driver::*;
-use reader::driver::*;
+use super::super::Offset;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform {
@@ -27,7 +27,7 @@ impl Transform {
         &mut self.offset
     }
 
-    pub fn set_offset(&mut self, value:Offset) -> &mut Transform {
+    pub fn set_offset(&mut self, value: Offset) -> &mut Transform {
         self.offset = value;
         self
     }
@@ -40,7 +40,7 @@ impl Transform {
         &mut self.extents
     }
 
-    pub fn set_extents(&mut self, value:Extents) -> &mut Transform {
+    pub fn set_extents(&mut self, value: Extents) -> &mut Transform {
         self.extents = value;
         self
     }
@@ -48,69 +48,71 @@ impl Transform {
     pub fn get_rotation(&self) -> &i32 {
         &self.rotation.get_value()
     }
-    
-    pub fn set_rotation(&mut self, value:i32) {
+
+    pub fn set_rotation(&mut self, value: i32) {
         self.rotation.set_value(value);
     }
 
     pub fn get_vertical_flip(&self) -> &bool {
         &self.vertical_flip.get_value()
     }
-    
-    pub fn set_vertical_flip(&mut self, value:bool) {
+
+    pub fn set_vertical_flip(&mut self, value: bool) {
         self.vertical_flip.set_value(value);
     }
 
     pub fn get_horizontal_flip(&self) -> &bool {
         &self.horizontal_flip.get_value()
     }
-    
-    pub fn set_horizontal_flip(&mut self, value:bool) {
+
+    pub fn set_horizontal_flip(&mut self, value: bool) {
         self.horizontal_flip.set_value(value);
     }
-    
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        e:&BytesStart
+        reader: &mut Reader<R>,
+        e: &BytesStart,
     ) {
         let mut buf = Vec::new();
-    
+
         match get_attribute(e, b"rot") {
-            Some(v) => {&mut self.rotation.set_value_string(v);},
+            Some(v) => {
+                &mut self.rotation.set_value_string(v);
+            }
             None => {}
         }
-    
+
         match get_attribute(e, b"flipH") {
-            Some(v) => {&mut self.vertical_flip.set_value_string(v);},
+            Some(v) => {
+                &mut self.vertical_flip.set_value_string(v);
+            }
             None => {}
         }
-    
+
         match get_attribute(e, b"flipV") {
-            Some(v) => {&mut self.horizontal_flip.set_value_string(v);},
+            Some(v) => {
+                &mut self.horizontal_flip.set_value_string(v);
+            }
             None => {}
         }
-    
+
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name() {
-                        b"a:off" => {
-                            &mut self.offset.set_attributes(reader, e);
-                        },
-                        b"a:ext" => {
-                            &mut self.extents.set_attributes(reader, e);
-                        },
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:off" => {
+                        &mut self.offset.set_attributes(reader, e);
                     }
+                    b"a:ext" => {
+                        &mut self.extents.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name() {
-                        b"xdr:xfrm" => {
-                            return;
-                        },
-                        _ => (),
+                Ok(Event::End(ref e)) => match e.name() {
+                    b"xdr:xfrm" => {
+                        return;
                     }
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:xfrm"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

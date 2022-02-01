@@ -6,13 +6,15 @@ pub enum LayoutModeValues {
     Factor,
 }
 impl Default for LayoutModeValues {
-    fn default() -> Self { Self::Edge }
+    fn default() -> Self {
+        Self::Edge
+    }
 }
 impl EnumTrait for LayoutModeValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Edge => {"edge"},
-            Self::Factor => {"factor"},
+            Self::Edge => "edge",
+            Self::Factor => "factor",
         }
     }
 }
@@ -22,8 +24,7 @@ impl FromStr for LayoutModeValues {
         match input {
             "edge" => Ok(Self::Edge),
             "factor" => Ok(Self::Factor),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
- 

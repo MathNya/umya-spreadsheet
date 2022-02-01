@@ -7,14 +7,16 @@ pub enum VerticalAlignmentRunValues {
     Superscript,
 }
 impl Default for VerticalAlignmentRunValues {
-    fn default() -> Self { Self::Baseline }
+    fn default() -> Self {
+        Self::Baseline
+    }
 }
 impl EnumTrait for VerticalAlignmentRunValues {
-    fn get_value_string(&self)->&str {
+    fn get_value_string(&self) -> &str {
         match &self {
-            Self::Baseline => {"baseline"},
-            Self::Subscript => {"subscript"},
-            Self::Superscript => {"superscript"},
+            Self::Baseline => "baseline",
+            Self::Subscript => "subscript",
+            Self::Superscript => "superscript",
         }
     }
 }
@@ -25,7 +27,7 @@ impl FromStr for VerticalAlignmentRunValues {
             "baseline" => Ok(Self::Baseline),
             "subscript" => Ok(Self::Subscript),
             "superscript" => Ok(Self::Superscript),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
