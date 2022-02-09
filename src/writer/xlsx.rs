@@ -17,6 +17,7 @@ mod drawing;
 mod drawing_rels;
 mod embeddings;
 mod media;
+mod printer_settings;
 mod rels;
 mod shared_strings;
 mod styles;
@@ -102,6 +103,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     let mut comment_id = 1;
     let mut ole_bin_id = 1;
     let mut ole_excel_id = 1;
+    let mut printer_settings_id = 1;
     let mut shared_string_table = SharedStringTable::default();
     shared_string_table.init_setup();
     let mut stylesheet = Stylesheet::default();
@@ -126,6 +128,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
             &mut arv,
             &ole_bin_id,
             &ole_excel_id,
+            &printer_settings_id,
         );
         let _ = drawing::write(worksheet, &drawing_id, &mut arv);
         let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &mut arv);
@@ -158,6 +161,16 @@ pub fn write_writer<W: io::Seek + io::Write>(
             &mut ole_bin_id,
             &mut ole_excel_id,
         );
+
+        if worksheet.get_page_setup().get_object_data().is_some() {
+            let _ = printer_settings::write(
+                worksheet,
+                &mut arv,
+                "xl/printerSettings",
+                &mut printer_settings_id,
+            );
+            printer_settings_id += 1;
+        }
     }
 
     // Add Media

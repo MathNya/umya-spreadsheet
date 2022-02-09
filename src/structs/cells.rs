@@ -75,6 +75,19 @@ impl Cells {
         false
     }
 
+    /// Has Hyperlink
+    pub(crate) fn has_hyperlink(&self) -> bool {
+        for cell in &self.index {
+            match cell.get_hyperlink() {
+                Some(_) => {
+                    return true;
+                }
+                None => {}
+            }
+        }
+        false
+    }
+
     pub(crate) fn get(&self, col_num: &u32, row_num: &u32) -> Option<&Cell> {
         for cell in &self.index {
             if cell.get_coordinate().is_mine(col_num, row_num) {
@@ -142,5 +155,12 @@ impl Cells {
             result.push(self.get_cell_value(&col_num, &row_num));
         }
         result
+    }
+
+    pub(crate) fn get_formatted_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
+        match self.get(col, row) {
+            Some(v) => v.get_formatted_value(),
+            None => "".into(),
+        }
     }
 }

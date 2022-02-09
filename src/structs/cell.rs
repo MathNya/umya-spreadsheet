@@ -1,16 +1,18 @@
-use super::CellValue;
-use super::Coordinate;
-use super::Hyperlink;
-use super::RichText;
-use super::SharedStringItem;
-use super::SharedStringTable;
-use super::Style;
-use super::Stylesheet;
+use helper::number_format::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::CellValue;
+use structs::Coordinate;
+use structs::Hyperlink;
+use structs::NumberingFormat;
+use structs::RichText;
+use structs::SharedStringItem;
+use structs::SharedStringTable;
+use structs::Style;
+use structs::Stylesheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -232,6 +234,53 @@ impl Cell {
 
     pub fn get_formula(&self) -> &str {
         &self.cell_value.get_formula()
+    }
+
+    pub(crate) fn get_width_point(&self, column_font_size: &f64) -> f64 {
+        // get cell value len.
+        let char_cnt = self.get_width_point_cell();
+
+        // get font size.
+        let font_size = match self.get_style().get_font() {
+            Some(font) => font.get_font_size().get_val(),
+            None => column_font_size,
+        };
+
+        let mut column_width = 1.4 * char_cnt as f64;
+        column_width = column_width * font_size / 11f64;
+
+        column_width
+    }
+
+    pub(crate) fn get_width_point_cell(&self) -> f64 {
+        let mut max_point = 0f64;
+        let value = self.get_formatted_value();
+        let value_list: Vec<&str> = value.split("\n").collect();
+        for value in value_list {
+            let mut point = 0f64;
+            for chr in value.chars() {
+                let mut clen = chr.len_utf8() as f64;
+                if clen > 1f64 {
+                    clen = 1.5;
+                }
+                point += clen;
+            }
+            if point > max_point {
+                max_point = point;
+            }
+        }
+        max_point
+    }
+
+    pub(crate) fn get_formatted_value(&self) -> String {
+        let value = self.get_value();
+
+        // convert value
+        let result = match self.get_style().get_number_format() {
+            Some(nmuber_format) => to_formatted_string(value, nmuber_format.get_format_code()),
+            None => to_formatted_string(value, NumberingFormat::FORMAT_GENERAL),
+        };
+        result
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

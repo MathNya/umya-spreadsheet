@@ -103,30 +103,17 @@ impl Column {
             None => 11f64,
         };
 
-        let mut find_char = false;
         let cell_list = cells.get_collection_by_column(self.get_col_num());
         for (_, cell) in cell_list {
-            // get cell value len.
-            let char_cnt = cell.get_cell_value().get_width_point();
-            if char_cnt > 0f64 {
-                find_char = true;
-            }
+            let column_width = cell.get_width_point(&column_font_size);
 
-            // get font size.
-            let font_size = match cell.get_style().get_font() {
-                Some(font) => font.get_font_size().get_val(),
-                None => &column_font_size,
-            };
-
-            let mut column_width = 1.4 * char_cnt as f64;
-            column_width = column_width * font_size / 11f64;
             if column_width > column_width_max {
                 column_width_max = column_width;
             }
         }
 
         // set default width if empty column.
-        if find_char == false {
+        if column_width_max == 0f64 {
             column_width_max = 8.38f64;
         }
 

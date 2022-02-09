@@ -36,9 +36,6 @@ pub use self::page_margins::*;
 mod header_footer;
 pub use self::header_footer::*;
 
-mod header_footer_drawing;
-pub use self::header_footer_drawing::*;
-
 mod sheet_view;
 pub use self::sheet_view::*;
 
@@ -338,3 +335,30 @@ pub use self::chart::*;
 
 mod chart_type;
 pub use self::chart_type::*;
+
+mod merge_cells;
+pub(crate) use self::merge_cells::*;
+
+mod print_options;
+pub use self::print_options::*;
+
+mod orientation_values;
+pub use self::orientation_values::*;
+
+mod odd_header;
+pub use self::odd_header::*;
+
+mod odd_footer;
+pub use self::odd_footer::*;
+
+mod r#break;
+pub use self::r#break::*;
+
+mod row_breaks;
+pub use self::row_breaks::*;
+
+mod column_breaks;
+pub use self::column_breaks::*;
+
+mod sheet_view_values;
+pub use self::sheet_view_values::*;

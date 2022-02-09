@@ -53,8 +53,24 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         true,
     );
 
+    // Default bin
+    if spreadsheet.has_bin() {
+        write_start_tag(
+            &mut writer,
+            "Default",
+            vec![
+                ("Extension", "bin"),
+                (
+                    "ContentType",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings",
+                ),
+            ],
+            true,
+        );
+    }
+
     // Default vml
-    if spreadsheet.has_comment() {
+    if spreadsheet.has_legacy_drawing() {
         write_start_tag(
             &mut writer,
             "Default",
@@ -207,8 +223,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // Override workbook
     let content_type = match spreadsheet.get_has_macros() {
-        &true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
-        &false => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml",
+        true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
+        false => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml",
     };
     write_start_tag(
         &mut writer,
@@ -378,19 +394,16 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Override xl/vbaProject.bin
-    match spreadsheet.get_has_macros() {
-        &true => {
-            write_start_tag(
-                &mut writer,
-                "Override",
-                vec![
-                    ("PartName", "/xl/vbaProject.bin"),
-                    ("ContentType", "application/vnd.ms-office.vbaProject"),
-                ],
-                true,
-            );
-        }
-        &false => {}
+    if spreadsheet.get_has_macros() {
+        write_start_tag(
+            &mut writer,
+            "Override",
+            vec![
+                ("PartName", "/xl/vbaProject.bin"),
+                ("ContentType", "application/vnd.ms-office.vbaProject"),
+            ],
+            true,
+        );
     };
 
     // Override docProps/core

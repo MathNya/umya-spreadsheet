@@ -5,6 +5,18 @@
 //! ## Description
 //! **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
 //!
+//! ## Support Status
+//! | Function | Remarks |
+//! | --- | --- |
+//! | file | read, write |
+//! | cell value | read, edit, formated value. |
+//! | cell style | read, edit |
+//! | columns | read, edit, auto width |
+//! | charts | detail to # Supported chart types |
+//! | drawings | read, edit(Still might be inconvenient.) |
+//! | images | read, edit(Still might be inconvenient.) |
+//! | ole objects | read, edit(Still might be inconvenient.) |
+//!
 //! ## Example
 // ![Result Image](images/sample1.png)
 //! ### Reader or New File

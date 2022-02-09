@@ -2,19 +2,21 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
-use structs::Spreadsheet;
+use structs::Worksheet;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    worksheet: &Worksheet,
     arv: &mut zip::ZipWriter<W>,
     sub_dir: &str,
-    file_name: &str,
+    id: &mut usize,
 ) -> Result<(), XlsxError> {
-    match spreadsheet.get_has_macros() {
-        true => {}
-        false => return Ok(()),
-    }
-    let writer = spreadsheet.get_macros_code().as_ref().unwrap();
+    let file_name = format!("printerSettings{}.bin", id);
+    let writer = worksheet
+        .get_page_setup()
+        .get_object_data()
+        .as_ref()
+        .unwrap();
     let _ = make_file_from_bin(&file_name, arv, writer, Some(sub_dir)).unwrap();
+
     Ok(())
 }

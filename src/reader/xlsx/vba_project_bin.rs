@@ -23,7 +23,6 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let _ = r.read_to_end(&mut buf)?;
 
     spreadsheet.set_macros_code(buf);
-    spreadsheet.set_has_macros(true);
 
     Ok(())
 }

@@ -73,7 +73,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // relationships for vbaProject if needed
-    if spreadsheet.get_has_macros() == &true {
+    if spreadsheet.get_has_macros() {
         let id = (index + 1 + 3 + 1).to_string();
         write_relationship(
             &mut writer,

@@ -545,6 +545,30 @@ fn new_and_wite() {
         .set_val(5f64);
     worksheet.get_column_dimension_mut("J").set_auto_width(true);
 
+    worksheet
+        .get_cell_mut("K4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet.get_column_dimension_mut("K").set_auto_width(true);
+
+    worksheet
+        .get_cell_mut("L4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet.get_column_dimension_mut("L").set_auto_width(true);
+
+    worksheet
+        .get_cell_mut("M4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet.get_column_dimension_mut("M").set_auto_width(true);
+
+    worksheet
+        .get_cell_mut("N1")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet.get_column_dimension_mut("N").set_auto_width(true);
+
+    worksheet.add_merge_cells("K8:L8");
+    worksheet.add_merge_cells("M8:M10");
+    worksheet.add_merge_cells("N:N");
+
     // writer.
     let path = std::path::Path::new("./tests/result_files/eee.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();

@@ -36,25 +36,6 @@ impl CellValue {
         ""
     }
 
-    pub(crate) fn get_width_point(&self) -> f64 {
-        let mut max_point = 0f64;
-        let value_list: Vec<&str> = self.get_value().split("\n").collect();
-        for value in value_list {
-            let mut point = 0f64;
-            for chr in value.chars() {
-                let mut clen = chr.len_utf8() as f64;
-                if clen > 1f64 {
-                    clen = 1.5;
-                }
-                point += clen;
-            }
-            if point > max_point {
-                max_point = point;
-            }
-        }
-        max_point
-    }
-
     pub(crate) fn get_value_crate(&self) -> &Option<String> {
         &self.value
     }

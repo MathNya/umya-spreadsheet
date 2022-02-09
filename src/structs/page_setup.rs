@@ -1,29 +1,231 @@
+use structs::EnumValue;
+use structs::OrientationValues;
+use structs::UInt32Value;
+
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use reader::driver::*;
+use reader::xlsx::printer_settings;
+use reader::xlsx::worksheet_rels;
+use std::io::Cursor;
+use writer::driver::*;
+
 #[derive(Clone, Default, Debug)]
 pub struct PageSetup {
-    paper_size: i32,
-    orientation: String,
-    scale: i32,
-    fit_to_page: bool,
-    fit_to_height: i32,
-    fit_to_width: i32,
-    columns_to_repeat_at_left: Vec<String>,
-    rows_to_repeat_at_top: Vec<i32>,
-    horizontal_centered: bool,
-    vertical_centered: bool,
-    print_area: String,
-    first_page_number: i32,
+    paper_size: UInt32Value,
+    orientation: EnumValue<OrientationValues>,
+    scale: UInt32Value,
+    fit_to_height: UInt32Value,
+    fit_to_width: UInt32Value,
+    horizontal_dpi: UInt32Value,
+    vertical_dpi: UInt32Value,
+    object_data: Option<Vec<u8>>,
 }
 impl PageSetup {
-    pub fn get_paper_size(&self) -> &i32 {
-        &self.paper_size
+    pub fn get_paper_size(&self) -> &u32 {
+        self.paper_size.get_value()
     }
-    pub fn set_paper_size(&mut self, value: i32) {
-        self.paper_size = value;
+
+    pub fn set_paper_size(&mut self, value: u32) -> &mut Self {
+        self.paper_size.set_value(value);
+        self
     }
-    pub fn get_fit_to_page(&self) -> &bool {
-        &self.fit_to_page
+
+    pub fn get_orientation(&self) -> &OrientationValues {
+        self.orientation.get_value()
     }
-    pub fn set_fit_to_page(&mut self, value: bool) {
-        self.fit_to_page = value;
+
+    pub fn set_orientation(&mut self, value: OrientationValues) -> &mut Self {
+        self.orientation.set_value(value);
+        self
+    }
+
+    pub fn get_scale(&self) -> &u32 {
+        self.scale.get_value()
+    }
+
+    pub fn set_scale(&mut self, value: u32) -> &mut Self {
+        self.scale.set_value(value);
+        self
+    }
+
+    pub fn get_fit_to_height(&self) -> &u32 {
+        self.fit_to_height.get_value()
+    }
+
+    pub fn set_fit_to_height(&mut self, value: u32) -> &mut Self {
+        self.fit_to_height.set_value(value);
+        self
+    }
+
+    pub fn get_fit_to_width(&self) -> &u32 {
+        self.fit_to_width.get_value()
+    }
+
+    pub fn set_fit_to_width(&mut self, value: u32) -> &mut Self {
+        self.fit_to_width.set_value(value);
+        self
+    }
+
+    pub fn get_horizontal_dpi(&self) -> &u32 {
+        self.horizontal_dpi.get_value()
+    }
+
+    pub fn set_horizontal_dpi(&mut self, value: u32) -> &mut Self {
+        self.horizontal_dpi.set_value(value);
+        self
+    }
+
+    pub fn get_vertical_dpi(&self) -> &u32 {
+        self.vertical_dpi.get_value()
+    }
+
+    pub fn set_vertical_dpi(&mut self, value: u32) -> &mut Self {
+        self.vertical_dpi.set_value(value);
+        self
+    }
+
+    pub fn get_object_data(&self) -> &Option<Vec<u8>> {
+        &self.object_data
+    }
+
+    pub fn get_object_data_mut(&mut self) -> &mut Option<Vec<u8>> {
+        &mut self.object_data
+    }
+
+    pub fn set_object_data(&mut self, value: Vec<u8>) -> &mut Self {
+        self.object_data = Some(value);
+        self
+    }
+
+    pub(crate) fn has_param(&self) -> bool {
+        if self.paper_size.has_value() {
+            return true;
+        }
+        if self.orientation.has_value() {
+            return true;
+        }
+        if self.scale.has_value() {
+            return true;
+        }
+        if self.fit_to_height.has_value() {
+            return true;
+        }
+        if self.fit_to_width.has_value() {
+            return true;
+        }
+        if self.horizontal_dpi.has_value() {
+            return true;
+        }
+        if self.vertical_dpi.has_value() {
+            return true;
+        }
+        if self.object_data.is_some() {
+            return true;
+        }
+        false
+    }
+
+    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+        &mut self,
+        _reader: &mut Reader<R>,
+        e: &BytesStart,
+        arv: &mut zip::read::ZipArchive<A>,
+        target: &str,
+    ) {
+        match get_attribute(e, b"paperSize") {
+            Some(v) => {
+                self.paper_size.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"orientation") {
+            Some(v) => {
+                self.orientation.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"scale") {
+            Some(v) => {
+                self.scale.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"fitToHeight") {
+            Some(v) => {
+                self.fit_to_height.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"fitToWidth") {
+            Some(v) => {
+                self.fit_to_width.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"horizontalDpi") {
+            Some(v) => {
+                self.horizontal_dpi.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"verticalDpi") {
+            Some(v) => {
+                self.vertical_dpi.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"r:id") {
+            Some(r_id) => {
+                let (_, target_value) = worksheet_rels::read_rid(arv, target, &r_id).unwrap();
+
+                let v: Vec<&str> = target_value.split('/').collect();
+                let object_name = v.last().unwrap().clone();
+
+                self.set_object_data(printer_settings::read(arv, object_name).unwrap());
+            }
+            None => {}
+        }
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {
+        if self.has_param() {
+            // pageSetup
+            let r_id_str = format!("rId{}", r_id);
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            if self.paper_size.has_value() {
+                attributes.push(("paperSize", self.paper_size.get_value_string()));
+            }
+            if self.scale.has_value() {
+                attributes.push(("scale", self.scale.get_value_string()));
+            }
+            if self.orientation.has_value() {
+                attributes.push(("orientation", self.orientation.get_value_string()));
+            }
+            if self.fit_to_height.has_value() {
+                attributes.push(("fitToHeight", self.fit_to_height.get_value_string()));
+            }
+            if self.fit_to_width.has_value() {
+                attributes.push(("fitToWidth", self.fit_to_width.get_value_string()));
+            }
+            if self.horizontal_dpi.has_value() {
+                attributes.push(("horizontalDpi", self.horizontal_dpi.get_value_string()));
+            }
+            if self.vertical_dpi.has_value() {
+                attributes.push(("verticalDpi", self.vertical_dpi.get_value_string()));
+            }
+            if self.object_data.is_some() {
+                attributes.push(("r:id", r_id_str.as_str()));
+            }
+            write_start_tag(writer, "pageSetup", attributes, true);
+        }
     }
 }

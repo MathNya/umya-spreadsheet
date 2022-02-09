@@ -102,11 +102,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         //    ("summaryRight", if worksheet.show_summary_right {"1"} else {"0"}),
         //], true);
 
-        // pageSetUpPr
-        if worksheet.get_page_setup().get_fit_to_page() == &true {
-            write_start_tag(&mut writer, "pageSetUpPr", vec![("fitToPage", "1")], true);
-        }
-
         // dimension
         write_start_tag(
             &mut writer,
@@ -139,11 +134,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
 
         // cols
-        worksheet.get_column_dimensions_crate().write_to(
-            &mut writer,
-            stylesheet,
+        let mut column_dimensions = worksheet.get_column_dimensions_crate().clone();
+        column_dimensions.calculation_auto_width(
             worksheet.get_cell_collection_crate(),
+            worksheet.get_merge_cells_crate(),
         );
+        column_dimensions.write_to(&mut writer, stylesheet);
 
         // sheetData
         let has_sheet_data = worksheet.get_row_dimensions().len() > 0;
@@ -197,35 +193,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             None => {}
         };
 
-        if worksheet.get_merge_cells().len() > 0 {
-            // mergeCells
-            write_start_tag(
-                &mut writer,
-                "mergeCells",
-                vec![(
-                    "count",
-                    worksheet.get_merge_cells().len().to_string().as_str(),
-                )],
-                false,
-            );
-
-            // mergeCell
-            for merge_cell in worksheet.get_merge_cells() {
-                write_start_tag(
-                    &mut writer,
-                    "mergeCell",
-                    vec![("ref", merge_cell.get_range().as_str())],
-                    true,
-                );
-            }
-
-            write_end_tag(&mut writer, "mergeCells");
-        }
+        // mergeCells
+        worksheet.get_merge_cells_crate().write_to(&mut writer);
 
         // phoneticPr
-        //write_start_tag(&mut writer, "phoneticPr", vec![
-        //    ("fontId", "1"),
-        //], true);
+        write_start_tag(&mut writer, "phoneticPr", vec![("fontId", "1")], true);
 
         // conditionalFormatting
         for conditional_formatting in worksheet.get_conditional_styles_collection() {
@@ -319,11 +291,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let mut r_id = 1;
 
         // hyperlinks
-        if worksheet.get_hyperlink_collection().len() > 0 {
+        if worksheet.has_hyperlink() {
             write_start_tag(&mut writer, "hyperlinks", vec![], false);
 
             // hyperlink
-            for (coordition, hyperlink) in worksheet.get_hyperlink_collection() {
+            for (coordition, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
                 let r_id_str = format!("rId{}", &r_id);
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
                 attributes.push(("ref", &coordition));
@@ -339,29 +311,26 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             write_end_tag(&mut writer, "hyperlinks");
         }
 
+        // printOptions
+        worksheet.get_print_options().write_to(&mut writer);
+
         // pageMargins
-        write_start_tag(
-            &mut writer,
-            "pageMargins",
-            vec![
-                ("left", "0.7"),
-                ("right", "0.7"),
-                ("top", "0.75"),
-                ("bottom", "0.75"),
-                ("header", "0.3"),
-                ("footer", "0.3"),
-            ],
-            true,
-        );
+        worksheet.get_page_margins().write_to(&mut writer);
 
         // pageSetup
-        //write_start_tag(&mut writer, "pageSetup", vec![
-        //    ("paperSize", "9"),
-        //    ("orientation", "portrait"),
-        //    ("horizontalDpi", "0"),
-        //    ("verticalDpi", "0"),
-        //    ("r:id", "rId1"),
-        //], true);
+        if worksheet.get_page_setup().has_param() {
+            worksheet.get_page_setup().write_to(&mut writer, &r_id);
+            r_id += 1;
+        }
+
+        // headerFooter
+        worksheet.get_header_footer().write_to(&mut writer);
+
+        // rowBreaks
+        worksheet.get_row_breaks().write_to(&mut writer);
+
+        // colBreaks
+        worksheet.get_column_breaks().write_to(&mut writer);
 
         if worksheet.has_drawing_object() {
             // drawing

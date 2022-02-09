@@ -55,9 +55,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     attributes.push(("filterPrivacy", "1"));
     //attributes.push(("defaultThemeVersion", "124226"));
-    match spreadsheet.get_has_macros() {
-        &true => attributes.push(("codeName", "ThisWorkbook")),
-        &false => {}
+    if spreadsheet.get_has_macros() {
+        attributes.push(("codeName", "ThisWorkbook"));
     }
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 

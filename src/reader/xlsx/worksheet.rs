@@ -11,7 +11,6 @@ use structs::Conditional;
 use structs::ConditionalSet;
 use structs::Hyperlink;
 use structs::OleObjects;
-use structs::PageMargins;
 use structs::Row;
 use structs::SheetView;
 use structs::Spreadsheet;
@@ -40,7 +39,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let shared_string_table = spreadsheet.get_shared_string_table().clone();
     let stylesheet = spreadsheet.get_stylesheet().clone();
 
-    let worksheet = spreadsheet.new_sheet_crate(sheets_sheet_id, sheets_name);
+    let worksheet = spreadsheet.add_new_sheet_crate(sheets_sheet_id, sheets_name);
 
     // result
     let mut drawing: Option<String> = None;
@@ -94,6 +93,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     obj.set_attributes(&mut reader, e, &stylesheet);
                     worksheet.set_column_dimensions_crate(obj);
                 }
+                b"mergeCells" => {
+                    worksheet
+                        .get_merge_cells_crate_mut()
+                        .set_attributes(&mut reader, e);
+                }
                 b"conditionalFormatting" => {
                     let mut conditional_set = ConditionalSet::default();
                     let sqref = get_attribute(e, b"sqref").unwrap();
@@ -109,6 +113,21 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let mut obj = OleObjects::default();
                     obj.set_attributes(&mut reader, e, arv, target);
                     worksheet.set_ole_objects(obj);
+                }
+                b"headerFooter" => {
+                    worksheet
+                        .get_header_footer_mut()
+                        .set_attributes(&mut reader, e);
+                }
+                b"rowBreaks" => {
+                    worksheet
+                        .get_row_breaks_mut()
+                        .set_attributes(&mut reader, e);
+                }
+                b"colBreaks" => {
+                    worksheet
+                        .get_column_breaks_mut()
+                        .set_attributes(&mut reader, e);
                 }
                 _ => (),
             },
@@ -154,24 +173,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 b"autoFilter" => {
                     worksheet.set_auto_filter(get_attribute(e, b"ref").unwrap());
                 }
-                b"mergeCell" => {
-                    worksheet.add_merge_cells_crate(get_attribute(e, b"ref").unwrap());
-                }
                 b"pageMargins" => {
-                    let mut page_margins: PageMargins = PageMargins::default();
-                    let left = get_attribute(e, b"left").unwrap();
-                    let right = get_attribute(e, b"right").unwrap();
-                    let top = get_attribute(e, b"top").unwrap();
-                    let bottom = get_attribute(e, b"bottom").unwrap();
-                    let header = get_attribute(e, b"header").unwrap();
-                    let footer = get_attribute(e, b"footer").unwrap();
-                    page_margins.set_left(left.parse::<f32>().unwrap());
-                    page_margins.set_right(right.parse::<f32>().unwrap());
-                    page_margins.set_top(top.parse::<f32>().unwrap());
-                    page_margins.set_bottom(bottom.parse::<f32>().unwrap());
-                    page_margins.set_header(header.parse::<f32>().unwrap());
-                    page_margins.set_footer(footer.parse::<f32>().unwrap());
-                    worksheet.set_page_margins(page_margins);
+                    worksheet
+                        .get_page_margins_mut()
+                        .set_attributes(&mut reader, e);
                 }
                 b"drawing" => {
                     drawing = Some(get_attribute(e, b"r:id").unwrap());
@@ -187,6 +192,16 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     if &rid != "" {
                         hyperlink_vec.push((coor, rid));
                     }
+                }
+                b"printOptions" => {
+                    worksheet
+                        .get_print_options_mut()
+                        .set_attributes(&mut reader, e);
+                }
+                b"pageSetup" => {
+                    worksheet
+                        .get_page_setup_mut()
+                        .set_attributes(&mut reader, e, arv, target);
                 }
                 _ => (),
             },

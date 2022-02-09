@@ -14,6 +14,7 @@ mod drawing;
 pub(crate) mod drawing_rels;
 pub(crate) mod embeddings;
 pub(crate) mod media;
+pub(crate) mod printer_settings;
 mod rels;
 mod shared_strings;
 mod styles;

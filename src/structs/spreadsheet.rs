@@ -3,7 +3,6 @@ use super::Image;
 use super::Properties;
 use super::Security;
 use super::SharedStringTable;
-use super::Style;
 use super::Stylesheet;
 use super::Theme;
 use super::WorkbookView;
@@ -13,6 +12,8 @@ use helper::coordinate::*;
 use structs::Address;
 use structs::CellValue;
 
+/// A Spreadsheet Object.
+/// The starting point of all struct.
 #[derive(Clone, Default, Debug)]
 pub struct Spreadsheet {
     properties: Properties,
@@ -20,12 +21,10 @@ pub struct Spreadsheet {
     work_sheet_collection: Vec<Worksheet>,
     calculation_engine: Calculation,
     named_ranges: Vec<String>,
-    has_macros: bool,
     macros_code: Option<Vec<u8>>,
     macros_certificate: String,
     ribbon_xml_data: Option<String>,
     ribbon_bin_objects: Option<Vec<String>>,
-    unparsed_loaded_data: Vec<String>,
     show_horizontal_scroll: bool,
     show_vertical_scroll: bool,
     show_sheet_tabs: bool,
@@ -152,6 +151,8 @@ impl Spreadsheet {
         self.adjustment_remove_coordinate(&sheet_name.into(), &column_index, &num_columns, &0, &0);
     }
 
+    /// (This method is crate only.)
+    /// Adjustment Insert Coordinate.
     pub(crate) fn adjustment_insert_coordinate(
         &mut self,
         sheet_name: &str,
@@ -171,6 +172,8 @@ impl Spreadsheet {
         }
     }
 
+    /// (This method is crate only.)
+    /// Adjustment Remove Coordinate.
     pub(crate) fn adjustment_remove_coordinate(
         &mut self,
         sheet_name: &str,
@@ -190,32 +193,16 @@ impl Spreadsheet {
         }
     }
 
-    pub(crate) fn _get_all_conditional_style_list(&self) -> Vec<(String, Style)> {
-        let mut result: Vec<(String, Style)> = Vec::new();
-        for work_sheet in &self.work_sheet_collection {
-            for conditional_formatting in work_sheet.get_conditional_styles_collection() {
-                for conditional in conditional_formatting.get_conditional_collection() {
-                    match conditional.get_style() {
-                        Some(v) => {
-                            let mut is_match = false;
-                            for (hash, _) in &result {
-                                if hash == &v.get_hash_code() {
-                                    is_match = true;
-                                    break;
-                                }
-                            }
-                            if is_match == false {
-                                result.push((v.get_hash_code(), v.clone()));
-                            }
-                        }
-                        None => {}
-                    }
-                }
-            }
-        }
-        result
-    }
-
+    /// Gets the cell value by specifying an address.
+    /// # Arguments
+    /// * `address` - address. ex) "Sheet1!A1:C5"
+    /// # Return value
+    /// *`Vec<&CellValue>` - CellValue List.
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
+    /// ```
     pub fn get_cell_value_by_address<S: Into<String>>(&self, address: S) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
         self.get_sheet_by_name(sheet_name)
@@ -223,133 +210,164 @@ impl Spreadsheet {
             .get_cell_value_by_range(range)
     }
 
+    /// (This method is crate only.)
+    /// Gets the cell value by specifying an Address Object.
+    /// # Arguments
+    /// * `address` - Address Object
+    /// # Return value
+    /// *`Vec<&CellValue>` - CellValue List.
     pub(crate) fn get_cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
         self.get_sheet_by_name(address.get_sheet_name())
             .unwrap()
             .get_cell_value_by_range(address.get_range().get_range())
     }
 
+    /// Get Theme.
     pub fn get_theme(&self) -> &Theme {
         &self.theme
     }
 
+    /// Get Theme in mutable.
     pub fn get_theme_mut(&mut self) -> &mut Theme {
         &mut self.theme
     }
 
-    pub(crate) fn set_theme(&mut self, value: Theme) {
+    /// Set Theme.
+    /// # Arguments
+    /// * `value` - Theme
+    pub fn set_theme(&mut self, value: Theme) -> &mut Self {
         self.theme = value;
+        self
     }
 
-    pub(crate) fn has_comment(&self) -> bool {
-        for worksheet in &self.work_sheet_collection {
-            if worksheet.get_comments().len() > 0 {
-                return true;
-            }
-        }
-        false
-    }
-
+    /// Get Properties.
     pub fn get_properties(&self) -> &Properties {
         &self.properties
     }
 
+    /// Get Properties in mutable.
     pub fn get_properties_mut(&mut self) -> &mut Properties {
         &mut self.properties
     }
 
-    pub fn set_properties(&mut self, value: Properties) {
+    /// Set Properties.
+    /// # Arguments
+    /// * `value` - Properties
+    pub fn set_properties(&mut self, value: Properties) -> &mut Self {
         self.properties = value;
+        self
     }
 
+    /// Get Security.
     pub fn get_security(&self) -> &Security {
         &self.security
     }
 
+    /// Get Security in mutable.
     pub fn get_security_mut(&mut self) -> &mut Security {
         &mut self.security
     }
 
-    pub fn set_security(&mut self, value: Security) {
+    /// Set Security.
+    /// # Arguments
+    /// * `value` - Security
+    pub fn set_security(&mut self, value: Security) -> &mut Self {
         self.security = value;
+        self
     }
 
+    /// Get Macros Code.
+    /// # Return value
+    /// * `&Option<Vec<u8>>` - Macros Code Raw Data.
     pub fn get_macros_code(&self) -> &Option<Vec<u8>> {
         &self.macros_code
     }
 
-    pub(crate) fn set_macros_code(&mut self, value: Vec<u8>) {
+    /// Set Macros Code.
+    /// # Arguments
+    /// * `value` - Macros Code Raw Data.
+    pub fn set_macros_code(&mut self, value: Vec<u8>) -> &mut Self {
         self.macros_code = Some(value);
+        self
     }
 
-    pub fn get_has_macros(&self) -> &bool {
-        &self.has_macros
+    /// Remove Macros Code
+    pub fn remove_macros_code(&mut self) -> &mut Self {
+        self.macros_code = None;
+        self
     }
 
-    pub(crate) fn _get_has_macros_mut(&mut self) -> &mut bool {
-        &mut self.has_macros
+    /// Has Macros Code
+    pub fn get_has_macros(&self) -> bool {
+        self.macros_code.is_some()
     }
 
-    pub(crate) fn set_has_macros(&mut self, value: bool) {
-        self.has_macros = value;
-    }
-
-    pub fn get_unparsed_loaded_data(&self) -> &Vec<String> {
-        &self.unparsed_loaded_data
-    }
-
-    pub fn set_unparsed_loaded_data(&mut self, value: Vec<String>) {
-        self.unparsed_loaded_data = value;
-    }
-
+    /// (This method is crate only.)
+    /// Get Stylesheet.
     pub(crate) fn get_stylesheet(&self) -> &Stylesheet {
         &self.stylesheet
     }
 
-    pub(crate) fn _get_stylesheet_mut(&mut self) -> &mut Stylesheet {
-        &mut self.stylesheet
-    }
-
+    /// (This method is crate only.)
+    /// Set Stylesheet.
+    /// # Arguments
+    /// * `value` - Stylesheet
     pub(crate) fn set_stylesheet(&mut self, value: Stylesheet) -> &mut Self {
         self.stylesheet = value;
         self
     }
 
+    /// (This method is crate only.)
+    /// Remove Stylesheet.
     pub(crate) fn remove_stylesheet(&mut self) -> &mut Self {
         self.stylesheet = Stylesheet::default();
         self
     }
 
+    /// (This method is crate only.)
+    /// Get Shared String Table.
     pub(crate) fn get_shared_string_table(&self) -> &SharedStringTable {
         &self.shared_string_table
     }
 
-    pub(crate) fn _get_shared_string_table_mut(&mut self) -> &mut SharedStringTable {
-        &mut self.shared_string_table
-    }
-
+    /// (This method is crate only.)
+    /// Set Shared String Table.
+    /// # Arguments
+    /// * `value` - Shared String Table
     pub(crate) fn set_shared_string_table(&mut self, value: SharedStringTable) -> &mut Self {
         self.shared_string_table = value;
         self
     }
 
+    /// (This method is crate only.)
+    /// Remove Shared String Table.
     pub(crate) fn remove_shared_string_table(&mut self) -> &mut Self {
         self.shared_string_table = SharedStringTable::default();
         self
     }
 
+    /// Get Work Sheet List.
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
         &self.work_sheet_collection
     }
 
+    /// Get Work Sheet List in mutable.
     pub fn get_sheet_collection_mut(&mut self) -> &mut Vec<Worksheet> {
         &mut self.work_sheet_collection
     }
 
+    /// Get Work Sheet Count.
+    /// # Return value
+    /// * `usize` - Work Sheet Count.
     pub fn get_sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
     }
 
+    /// Get Work Sheet.
+    /// # Arguments
+    /// * `index` - sheet index
+    /// # Return value
+    /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
     pub fn get_sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
         match &self.work_sheet_collection.get(index) {
             Some(v) => return Ok(v),
@@ -357,12 +375,25 @@ impl Spreadsheet {
         }
     }
 
+    /// Get Work Sheet in mutable.
+    /// # Arguments
+    /// * `index` - sheet index
+    /// # Return value
+    /// * `&mut Worksheet` - Work sheet.
     pub fn get_sheet_mut(&mut self, index: usize) -> &mut Worksheet {
         self.work_sheet_collection.get_mut(index).unwrap()
     }
 
-    pub fn get_sheet_by_name<S: Into<String>>(&self, value: S) -> Result<&Worksheet, &'static str> {
-        let v = value.into();
+    /// Get Work Sheet.
+    /// # Arguments
+    /// * `sheet_name` - sheet name
+    /// # Return value
+    /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
+    pub fn get_sheet_by_name<S: Into<String>>(
+        &self,
+        sheet_name: S,
+    ) -> Result<&Worksheet, &'static str> {
+        let v = sheet_name.into();
         for sheet in &self.work_sheet_collection {
             if sheet.get_title() == &v {
                 return Ok(sheet);
@@ -371,11 +402,16 @@ impl Spreadsheet {
         Err("not found.")
     }
 
+    /// Get Work Sheet in mutable.
+    /// # Arguments
+    /// * `sheet_name` - sheet name
+    /// # Return value
+    /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
     pub fn get_sheet_by_name_mut<S: Into<String>>(
         &mut self,
-        value: S,
+        sheet_name: S,
     ) -> Result<&mut Worksheet, &'static str> {
-        let v = value.into();
+        let v = sheet_name.into();
         for sheet in &mut self.work_sheet_collection {
             if sheet.get_title() == &v {
                 return Ok(sheet);
@@ -384,11 +420,17 @@ impl Spreadsheet {
         Err("not found.")
     }
 
+    /// (This method is crate only.)
+    /// Get Work Sheet in mutable.
+    /// # Arguments
+    /// * `index` - sheet index
+    /// # Return value
+    /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
     pub(crate) fn get_sheet_by_sheet_id_mut<S: Into<String>>(
         &mut self,
-        value: S,
+        index: S,
     ) -> Result<&mut Worksheet, &'static str> {
-        let v = value.into();
+        let v = index.into();
         for sheet in &mut self.work_sheet_collection {
             if sheet.get_sheet_id() == &v {
                 return Ok(sheet);
@@ -397,44 +439,70 @@ impl Spreadsheet {
         Err("not found.")
     }
 
-    pub fn add_sheet(&mut self, value: Worksheet) -> Result<(), &'static str> {
+    /// Add Work Sheet.
+    /// # Arguments
+    /// * `value` - Work Sheet
+    /// # Return value
+    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet. Err:Error.
+    pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
         let title = value.get_title();
         match Spreadsheet::check_sheet_title(self, title) {
             Ok(_) => {}
             Err(e) => return Err(e),
         }
         self.work_sheet_collection.push(value);
-        Ok(())
+        Ok(self.work_sheet_collection.last_mut().unwrap())
     }
 
-    pub fn new_sheet<S: Into<String>>(&mut self, value: S) -> Result<&mut Worksheet, &'static str> {
-        let v = value.into();
+    /// Add New Work Sheet.
+    /// # Arguments
+    /// * `sheet_title` - sheet title
+    /// # Return value
+    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet. Err:Error.
+    pub fn new_sheet<S: Into<String>>(
+        &mut self,
+        sheet_title: S,
+    ) -> Result<&mut Worksheet, &'static str> {
+        let v = sheet_title.into();
         match Spreadsheet::check_sheet_title(self, &v) {
             Ok(_) => {}
             Err(e) => return Err(e),
         }
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
-        Ok(Spreadsheet::new_sheet_crate(self, sheet_id, v))
+        Ok(Spreadsheet::add_new_sheet_crate(self, sheet_id, v))
     }
 
-    pub(crate) fn new_sheet_crate<S: Into<String>>(
+    /// (This method is crate only.)
+    /// Add New Work Sheet.
+    /// # Arguments
+    /// * `index` - sheet index
+    /// * `sheet_title` - sheet title
+    /// # Return value
+    /// * `&mut Worksheet` - added work sheet.
+    pub(crate) fn add_new_sheet_crate<S: Into<String>>(
         &mut self,
         sheet_id: S,
-        value: S,
+        sheet_title: S,
     ) -> &mut Worksheet {
         let mut worksheet = Worksheet::default();
         worksheet.set_sheet_id(sheet_id);
-        worksheet.set_title(value.into());
+        worksheet.set_title(sheet_title.into());
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }
 
+    /// Set Sheet Title.
+    /// # Arguments
+    /// * `index` - target sheet index
+    /// * `sheet_title` - sheet title
+    /// # Return value
+    /// * `Result<(), &'static str>` - OK:Success  Err:Error.
     pub fn set_sheet_title<S: Into<String>>(
         &mut self,
         index: usize,
-        value: S,
+        sheet_title: S,
     ) -> Result<(), &'static str> {
-        let v = value.into();
+        let v = sheet_title.into();
         match Spreadsheet::check_sheet_title(self, &v) {
             Ok(_) => {}
             Err(e) => return Err(e),
@@ -448,6 +516,12 @@ impl Spreadsheet {
         }
     }
 
+    /// (This method is crate only.)
+    /// Check for duplicate sheet title.
+    /// # Arguments
+    /// * `value` - sheet title
+    /// # Return value
+    /// * `Result<(), &'static str>` - OK:Not duplicate Err:Duplicate.
     pub(crate) fn check_sheet_title<S: Into<String>>(&self, value: S) -> Result<(), &'static str> {
         let v = value.into();
         for work_sheet in &self.work_sheet_collection {
@@ -458,60 +532,48 @@ impl Spreadsheet {
         Ok(())
     }
 
-    pub fn has_ribbon(&self) -> bool {
+    /// (This method is crate only.)
+    /// Has Ribbon XML Data.
+    pub(crate) fn has_ribbon(&self) -> bool {
         self.ribbon_xml_data.is_some()
     }
 
-    pub fn has_formula(&self) -> bool {
-        for worksheet in &self.work_sheet_collection {
-            for cell in worksheet.get_cell_collection() {
-                if cell.get_formula() != "" {
-                    return true;
-                }
-            }
-        }
-        false
-    }
-
+    /// Get Workbook View.
     pub fn get_workbook_view(&self) -> &WorkbookView {
         &self.workbook_view
     }
 
+    /// Get Workbook View in mutable.
     pub fn get_workbook_view_mut(&mut self) -> &mut WorkbookView {
         &mut self.workbook_view
     }
 
+    /// Set Workbook View.
+    /// # Arguments
+    /// * `value` - WorkbookView
     pub fn set_workbook_view(&mut self, value: WorkbookView) -> &mut Self {
         self.workbook_view = value;
         self
     }
 
-    pub fn has_defined_names(&self) -> bool {
+    /// (This method is crate only.)
+    /// Has Defined Names.
+    pub(crate) fn has_defined_names(&self) -> bool {
         for sheet in self.get_sheet_collection() {
-            if sheet.get_defined_names().len() > 0 {
+            if sheet.has_defined_names() {
                 return true;
             }
         }
         false
     }
 
+    /// Outputs all images contained in the spreadsheet.
+    /// # Return value
+    /// * `Vec<&Image>` - Image Object List.
     pub fn get_image_collection(&self) -> Vec<&Image> {
         let mut result: Vec<&Image> = Vec::new();
         for worksheet in self.get_sheet_collection() {
-            for picture in worksheet.get_worksheet_drawing().get_picture_collection() {
-                let image = picture.get_blip_fill().get_blip().get_image();
-                let mut is_new = true;
-                for v in &result {
-                    if v.get_image_name() == image.get_image_name() {
-                        is_new = false;
-                    }
-                }
-                if is_new {
-                    result.push(image);
-                }
-            }
-            for ole_objects in worksheet.get_ole_objects().get_ole_object() {
-                let image = ole_objects.get_embedded_object_properties().get_image();
+            for image in worksheet.get_image_collection() {
                 let mut is_new = true;
                 for v in &result {
                     if v.get_image_name() == image.get_image_name() {
@@ -524,5 +586,27 @@ impl Spreadsheet {
             }
         }
         result
+    }
+
+    /// (This method is crate only.)
+    /// Has Bin File.
+    pub(crate) fn has_bin(&self) -> bool {
+        for work_sheet in self.get_sheet_collection() {
+            if work_sheet.get_page_setup().get_object_data().is_some() {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// (This method is crate only.)
+    /// Has Legacy Drawing.
+    pub(crate) fn has_legacy_drawing(&self) -> bool {
+        for work_sheet in self.get_sheet_collection() {
+            if work_sheet.has_legacy_drawing() {
+                return true;
+            }
+        }
+        false
     }
 }

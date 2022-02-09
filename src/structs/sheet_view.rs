@@ -1,7 +1,9 @@
 // sheetView
 use super::BooleanValue;
+use super::EnumValue;
 use super::Pane;
 use super::Selection;
+use super::SheetViewValues;
 use super::UInt32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -15,6 +17,11 @@ pub struct SheetView {
     tab_selected: BooleanValue,
     workbook_view_id: UInt32Value,
     pane: Option<Pane>,
+    view: EnumValue<SheetViewValues>,
+    zoom_scale: UInt32Value,
+    zoom_scale_normal: UInt32Value,
+    zoom_scale_page_layout_view: UInt32Value,
+    zoom_scale_sheet_layout_view: UInt32Value,
     selection: Vec<Selection>,
 }
 impl SheetView {
@@ -49,6 +56,51 @@ impl SheetView {
         self
     }
 
+    pub fn get_view(&self) -> &SheetViewValues {
+        &self.view.get_value()
+    }
+
+    pub fn set_view(&mut self, value: SheetViewValues) -> &mut Self {
+        self.view.set_value(value);
+        self
+    }
+
+    pub fn get_zoom_scale(&self) -> &u32 {
+        &self.zoom_scale.get_value()
+    }
+
+    pub fn set_zoom_scale(&mut self, value: u32) -> &mut Self {
+        self.zoom_scale.set_value(value);
+        self
+    }
+
+    pub fn get_zoom_scale_normal(&self) -> &u32 {
+        &self.zoom_scale_normal.get_value()
+    }
+
+    pub fn set_zoom_scale_normal(&mut self, value: u32) -> &mut Self {
+        self.zoom_scale_normal.set_value(value);
+        self
+    }
+
+    pub fn get_zoom_scale_page_layout_view(&self) -> &u32 {
+        &self.zoom_scale_page_layout_view.get_value()
+    }
+
+    pub fn set_zoom_scale_page_layout_view(&mut self, value: u32) -> &mut Self {
+        self.zoom_scale_page_layout_view.set_value(value);
+        self
+    }
+
+    pub fn get_zoom_scale_sheet_layout_view(&self) -> &u32 {
+        &self.zoom_scale_sheet_layout_view.get_value()
+    }
+
+    pub fn set_zoom_scale_sheet_layout_view(&mut self, value: u32) -> &mut Self {
+        self.zoom_scale_sheet_layout_view.set_value(value);
+        self
+    }
+
     pub fn get_selection(&self) -> &Vec<Selection> {
         &self.selection
     }
@@ -78,6 +130,41 @@ impl SheetView {
         match get_attribute(e, b"workbookViewId") {
             Some(v) => {
                 self.workbook_view_id.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"view") {
+            Some(v) => {
+                self.view.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"zoomScale") {
+            Some(v) => {
+                self.zoom_scale.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"zoomScaleNormal") {
+            Some(v) => {
+                self.zoom_scale_normal.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"zoomScalePageLayoutView") {
+            Some(v) => {
+                self.zoom_scale_page_layout_view.set_value_string(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"zoomScaleSheetLayoutView") {
+            Some(v) => {
+                self.zoom_scale_sheet_layout_view.set_value_string(v);
             }
             None => {}
         }
@@ -121,6 +208,27 @@ impl SheetView {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.tab_selected.get_value() == &true {
             attributes.push(("tabSelected", self.tab_selected.get_value_string()));
+        }
+        if self.view.has_value() {
+            attributes.push(("view", self.view.get_value_string()));
+        }
+        if self.zoom_scale.has_value() {
+            attributes.push(("zoomScale", self.zoom_scale.get_value_string()));
+        }
+        if self.zoom_scale_normal.has_value() {
+            attributes.push(("zoomScaleNormal", self.zoom_scale_normal.get_value_string()));
+        }
+        if self.zoom_scale_page_layout_view.has_value() {
+            attributes.push((
+                "zoomScalePageLayoutView",
+                self.zoom_scale_page_layout_view.get_value_string(),
+            ));
+        }
+        if self.zoom_scale_sheet_layout_view.has_value() {
+            attributes.push((
+                "zoomScaleSheetLayoutView",
+                self.zoom_scale_sheet_layout_view.get_value_string(),
+            ));
         }
         attributes.push(("workbookViewId", self.workbook_view_id.get_value_string()));
 

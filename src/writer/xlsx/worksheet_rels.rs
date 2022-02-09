@@ -17,6 +17,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     arv: &mut zip::ZipWriter<W>,
     ole_bin_id: &usize,
     ole_excel_id: &usize,
+    printer_settings_id: &usize,
 ) -> Result<(), XlsxError> {
     let file_name = format!("sheet{}.xml.rels", p_worksheet_id);
     let mut is_write = false;
@@ -44,7 +45,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let mut r_id = 1;
 
     // Write hyperlink relationships
-    for (_, hyperlink) in worksheet.get_hyperlink_collection() {
+    for (_, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
         if hyperlink.get_location() == &false {
             is_write = write_relationship(
                 &mut writer,
@@ -55,6 +56,19 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             );
             r_id += 1;
         }
+    }
+
+    // write pageSetup
+    if worksheet.get_page_setup().get_object_data().is_some() {
+        let object_name = format!("printerSettings{}.bin", printer_settings_id);
+        is_write = write_relationship(
+            &mut writer,
+            r_id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings",
+            format!("../printerSettings/{}", object_name).as_str(),
+            "",
+        );
+        r_id += 1;
     }
 
     // write drawing relationships

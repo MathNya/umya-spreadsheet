@@ -1,8 +1,9 @@
 // fills
-use super::Column;
-use super::ColumnSort;
-use super::Stylesheet;
 use structs::Cells;
+use structs::Column;
+use structs::ColumnSort;
+use structs::MergeCells;
+use structs::Stylesheet;
 
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -55,6 +56,44 @@ impl Columns {
         self
     }
 
+    pub(crate) fn calculation_auto_width(
+        &mut self,
+        cells: &Cells,
+        merge_cells: &MergeCells,
+    ) -> &mut Self {
+        for column in self.get_column_collection_mut() {
+            let has_horizontal = merge_cells.has_horizontal(column.get_col_num());
+            if has_horizontal {
+                continue;
+            }
+            column.calculation_auto_width(cells);
+        }
+        self
+    }
+
+    pub(crate) fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+    ) {
+        for column_dimension in self.get_column_collection_mut() {
+            column_dimension.adjustment_insert_coordinate(root_col_num, offset_col_num);
+        }
+    }
+
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+    ) {
+        self.get_column_collection_mut().retain(|x| {
+            !(x.get_col_num() > root_col_num && x.get_col_num() < &(root_col_num + offset_col_num))
+        });
+        for column_dimension in self.get_column_collection_mut() {
+            column_dimension.adjustment_remove_coordinate(root_col_num, offset_col_num);
+        }
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -93,18 +132,10 @@ impl Columns {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         stylesheet: &mut Stylesheet,
-        cells: &Cells,
     ) {
         if self.column.len() > 0 {
-            let mut column_ajst_index: Vec<Column> = Vec::new();
-            for column in &self.column {
-                let mut obj = column.clone();
-                obj.calculation_auto_width(cells);
-                column_ajst_index.push(obj);
-            }
-
             let mut column_index: Vec<ColumnSort> = Vec::new();
-            for column in &column_ajst_index {
+            for column in self.get_column_collection() {
                 let mut obj = ColumnSort::default();
                 obj.col_num = column.get_col_num().clone();
                 obj.hash_code = column.get_hash_code();
@@ -123,7 +154,7 @@ impl Columns {
                 if max + 1 >= index.col_num && hash_code == index.hash_code {
                     max = index.col_num.clone();
                 } else {
-                    for column in &column_ajst_index {
+                    for column in self.get_column_collection() {
                         if &min == column.get_col_num() {
                             self.write_to_column(writer, &min, &max, column, stylesheet);
                         }
@@ -133,7 +164,7 @@ impl Columns {
                     max = index.col_num.clone();
                 }
             }
-            for column in &column_ajst_index {
+            for column in self.get_column_collection() {
                 if &min == column.get_col_num() {
                     self.write_to_column(writer, &min, &max, column, stylesheet);
                 }
