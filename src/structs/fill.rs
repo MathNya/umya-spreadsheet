@@ -7,7 +7,7 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Fill {
     pattern_fill: Option<PatternFill>,
     gradient_fill: Option<GradientFill>,

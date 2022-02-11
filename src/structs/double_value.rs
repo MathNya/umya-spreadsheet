@@ -1,4 +1,4 @@
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct DoubleValue {
     value: Option<f64>,
     value_string: String,

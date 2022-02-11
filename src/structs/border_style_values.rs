@@ -1,6 +1,6 @@
 use super::EnumTrait;
 use std::str::FromStr;
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub enum BorderStyleValues {
     DashDot,
     DashDotDot,

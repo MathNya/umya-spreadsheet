@@ -140,6 +140,7 @@ pub fn read_reader<R: io::Read + io::Seek>(reader: R) -> Result<Spreadsheet, Xls
 
     book.remove_shared_string_table();
     book.remove_stylesheet();
+    book.get_cell_styles_mut().set_defalut_value();
 
     Ok(book)
 }

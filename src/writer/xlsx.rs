@@ -107,7 +107,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     let mut shared_string_table = SharedStringTable::default();
     shared_string_table.init_setup();
     let mut stylesheet = Stylesheet::default();
-    stylesheet.init_setup();
+    stylesheet.init_setup(spreadsheet.get_cell_styles().clone());
     for i in 0..spreadsheet.get_sheet_count() {
         let p_worksheet_id: &str = &(i + 1).to_string();
         let _ = worksheet::write(

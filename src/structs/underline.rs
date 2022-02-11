@@ -9,7 +9,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Underline {
     pub(crate) val: EnumValue<UnderlineValues>,
 }

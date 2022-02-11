@@ -67,6 +67,7 @@ pub fn read<R: io::Read + io::Seek>(
                             color.set_argb_by_theme(&theme);
                         }
 
+                        obj.make_style();
                         spreadsheet.set_stylesheet(obj);
                     }
                     _ => (),

@@ -1,4 +1,4 @@
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct StringValue {
     value: Option<String>,
     value_default: String,

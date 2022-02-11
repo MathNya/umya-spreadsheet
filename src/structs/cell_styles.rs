@@ -7,26 +7,32 @@ use std::io::Cursor;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
-pub(crate) struct CellStyles {
+pub struct CellStyles {
     cell_style: Vec<CellStyle>,
 }
 impl CellStyles {
-    pub(crate) fn _get_cell_style(&self) -> &Vec<CellStyle> {
+    pub fn _get_cell_style(&self) -> &Vec<CellStyle> {
         &self.cell_style
     }
 
-    pub(crate) fn _get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
+    pub fn _get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
         &mut self.cell_style
     }
 
-    pub(crate) fn set_cell_style(&mut self, value: CellStyle) -> &mut Self {
+    pub fn add_cell_style(&mut self, value: CellStyle) -> &mut Self {
         self.cell_style.push(value);
         self
     }
 
     pub(crate) fn get_defalut_value() -> CellStyle {
-        let def = CellStyle::default();
+        let mut def = CellStyle::default();
+        def.set_name("Normal");
         def
+    }
+
+    pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
+        self.add_cell_style(Self::get_defalut_value());
+        self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -34,16 +40,14 @@ impl CellStyles {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        self.set_cell_style(Self::get_defalut_value());
-
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name() {
-                    b"xf" => {
+                    b"cellStyle" => {
                         let mut obj = CellStyle::default();
                         obj.set_attributes(reader, e);
-                        self.set_cell_style(obj);
+                        self.add_cell_style(obj);
                     }
                     _ => (),
                 },

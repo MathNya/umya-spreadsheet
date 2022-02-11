@@ -9,7 +9,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Border {
     color: Color,
     style: EnumValue<BorderStyleValues>,

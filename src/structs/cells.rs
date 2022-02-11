@@ -137,8 +137,12 @@ impl Cells {
     pub(crate) fn set(&mut self, cell: Cell) -> &mut Self {
         let col_num = cell.get_coordinate().get_col_num();
         let row_num = cell.get_coordinate().get_row_num();
-        self.index
-            .retain(|x| !x.get_coordinate().is_mine(col_num, row_num));
+        let target_cell = self.get_mut(col_num, row_num);
+        target_cell.set_obj(cell);
+        self
+    }
+
+    pub(crate) fn set_fast(&mut self, cell: Cell) -> &mut Self {
         self.add(cell);
         self
     }

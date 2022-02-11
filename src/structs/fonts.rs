@@ -1,10 +1,10 @@
 // fronts
-use super::Font;
-use super::Style;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
+use structs::Font;
+use structs::Style;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]

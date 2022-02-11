@@ -2,7 +2,7 @@ use super::RichText;
 use super::SharedStringItem;
 use helper::formula::*;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
     pub(crate) data_type: String,
     pub(crate) value: Option<String>,

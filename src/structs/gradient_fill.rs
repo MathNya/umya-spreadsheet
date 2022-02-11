@@ -8,7 +8,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientFill {
     degree: DoubleValue,
     gradient_stop: Vec<GradientStop>,

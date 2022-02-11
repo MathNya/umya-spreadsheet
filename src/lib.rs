@@ -207,6 +207,7 @@ pub use self::structs::*;
 pub fn new_file() -> structs::Spreadsheet {
     let mut spreadsheet = structs::Spreadsheet::default();
     spreadsheet.set_theme(Theme::get_defalut_value());
+    spreadsheet.get_cell_styles_mut().set_defalut_value();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
     spreadsheet

@@ -1,33 +1,20 @@
-use super::Alignment;
-use super::Borders;
-use super::Coordinate;
-use super::Fill;
-use super::Font;
-use super::NumberingFormat;
+use structs::Alignment;
+use structs::Borders;
+use structs::Fill;
+use structs::Font;
+use structs::NumberingFormat;
+use structs::UInt32Value;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Style {
-    coordinate: Coordinate,
     font: Option<Font>,
     fill: Option<Fill>,
     borders: Option<Borders>,
     alignment: Option<Alignment>,
     numbering_format: Option<NumberingFormat>,
+    format_id: UInt32Value,
 }
 impl Style {
-    pub fn get_coordinate(&self) -> &Coordinate {
-        &self.coordinate
-    }
-
-    pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
-        &mut self.coordinate
-    }
-
-    pub fn set_coordinate(&mut self, value: Coordinate) -> &mut Self {
-        self.coordinate = value;
-        self
-    }
-
     pub fn get_font(&self) -> &Option<Font> {
         &self.font
     }
@@ -152,6 +139,15 @@ impl Style {
 
     pub fn set_number_format(&mut self, value: NumberingFormat) -> &mut Self {
         self.set_numbering_format(value)
+    }
+
+    pub fn get_format_id(&self) -> &u32 {
+        self.format_id.get_value()
+    }
+
+    pub fn set_format_id(&mut self, value: u32) -> &mut Self {
+        self.format_id.set_value(value);
+        self
     }
 
     pub(crate) fn _get_defalut_value() -> Self {

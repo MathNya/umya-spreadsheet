@@ -15,7 +15,7 @@ use structs::Style;
 use structs::Stylesheet;
 use writer::driver::*;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {
     coordinate: Coordinate,
     pub(crate) cell_value: CellValue,
@@ -281,6 +281,13 @@ impl Cell {
             None => to_formatted_string(value, NumberingFormat::FORMAT_GENERAL),
         };
         result
+    }
+
+    pub(crate) fn set_obj(&mut self, cell: Self) -> &mut Self {
+        self.cell_value = cell.get_cell_value().clone();
+        self.style = cell.get_style().clone();
+        self.hyperlink = cell.get_hyperlink().clone();
+        self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

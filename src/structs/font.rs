@@ -19,7 +19,7 @@ use std::io::Cursor;
 use std::str::FromStr;
 use writer::driver::*;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Font {
     font_name: FontName,
     font_size: FontSize,

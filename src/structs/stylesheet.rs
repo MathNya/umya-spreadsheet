@@ -27,6 +27,7 @@ pub(crate) struct Stylesheet {
     cell_styles: CellStyles,
     differential_formats: DifferentialFormats,
     colors: Colors,
+    maked_style_list: Vec<Style>,
 }
 impl Stylesheet {
     pub(crate) fn _get_numbering_formats(&self) -> &NumberingFormats {
@@ -115,7 +116,7 @@ impl Stylesheet {
         &mut self.cell_styles
     }
 
-    pub(crate) fn _set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
+    pub(crate) fn set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
         self.cell_styles = value;
         self
     }
@@ -146,30 +147,36 @@ impl Stylesheet {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
+    pub(crate) fn init_setup(&mut self, cell_styles: CellStyles) -> &mut Self {
         self.numbering_formats.init_setup();
         self.fonts.init_setup();
         self.fills.init_setup();
         self.borders.init_setup();
         self.cell_style_formats.init_setup();
         self.cell_formats.init_setup();
+        self.set_cell_styles(cell_styles);
         self
     }
 
     pub(crate) fn get_style(&self, id: usize) -> Style {
-        let mut style = Style::default();
+        self.maked_style_list.get(id).unwrap().clone()
+    }
 
-        let cell_format = self.cell_formats.get_cell_format().get(id).unwrap().clone();
-        let def_cell_format = self
-            .cell_style_formats
-            .get_cell_format()
-            .get(*cell_format.get_format_id() as usize)
-            .unwrap()
-            .clone();
+    pub(crate) fn make_style(&mut self) -> &mut Self {
+        for cell_format in self.cell_formats.get_cell_format() {
+            let def_cell_format = self
+                .cell_style_formats
+                .get_cell_format()
+                .get(*cell_format.get_format_id() as usize)
+                .unwrap()
+                .clone();
 
-        self.get_style_by_cell_format(&mut style, &def_cell_format, &cell_format);
+            let mut style = Style::default();
+            self.get_style_by_cell_format(&mut style, &def_cell_format, &cell_format);
+            self.maked_style_list.push(style);
+        }
 
-        style
+        self
     }
 
     pub(crate) fn get_style_by_cell_format(
@@ -237,6 +244,9 @@ impl Stylesheet {
             let obj = self.borders.get_borders().get(id).unwrap();
             style.set_borders(obj.clone());
         }
+
+        // format_id
+        style.set_format_id(cell_format.get_format_id().clone());
 
         // alignment
         let mut apply = true;

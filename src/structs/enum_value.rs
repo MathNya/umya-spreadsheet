@@ -1,6 +1,6 @@
 use super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct EnumValue<T: EnumTrait + FromStr> {
     value: Option<T>,
     value_default: T,

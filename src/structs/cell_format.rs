@@ -220,6 +220,12 @@ impl CellFormat {
             }
             None => {}
         }
+        match get_attribute(e, b"xfId") {
+            Some(v) => {
+                self.format_id.set_value_string(v);
+            }
+            None => {}
+        }
         match get_attribute(e, b"applyNumberFormat") {
             Some(v) => {
                 self.apply_number_format.set_value_string(v);
@@ -284,7 +290,7 @@ impl CellFormat {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, is_cell_xfs: bool) {
         let empty_flag = self.alignment.is_none();
 
         // xf
@@ -293,7 +299,9 @@ impl CellFormat {
         attributes.push(("fontId", &self.font_id.get_value_string()));
         attributes.push(("fillId", &self.fill_id.get_value_string()));
         attributes.push(("borderId", &self.border_id.get_value_string()));
-        attributes.push(("xfId", "0"));
+        if is_cell_xfs {
+            attributes.push(("xfId", &self.format_id.get_value_string()));
+        }
         if self.apply_number_format.has_value() {
             attributes.push((
                 "applyNumberFormat",

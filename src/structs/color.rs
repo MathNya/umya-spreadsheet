@@ -69,7 +69,7 @@ const INDEXED_COLORS: &'static [&'static str] = &[
     "FF333333", //  Standard Colour #56
 ];
 
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Color {
     indexed: UInt32Value,
     theme_index: UInt32Value,

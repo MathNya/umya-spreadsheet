@@ -2,8 +2,8 @@ use super::driver::*;
 use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
-use std::collections::BTreeSet;
 use std::io;
+use structs::Cell;
 use structs::SharedStringTable;
 use structs::Spreadsheet;
 use structs::Stylesheet;
@@ -145,34 +145,78 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let has_sheet_data = worksheet.get_row_dimensions().len() > 0;
         write_start_tag(&mut writer, "sheetData", vec![], !has_sheet_data);
 
-        for (row_num, row) in worksheet.get_row_dimensions_to_b_tree_map() {
-            // cells
-            let cells = worksheet.get_collection_by_row(&row_num);
-            let mut col_num_list: BTreeSet<u32> = BTreeSet::new();
-            for (col_num, _) in &cells {
-                col_num_list.insert(col_num.clone());
+        // row dimensions sort.
+        let mut row_dimensions = worksheet.get_row_dimensions().clone();
+        row_dimensions.sort_by(|a, b| a.get_row_num().cmp(&b.get_row_num()));
+        // cells sort.
+        let mut cells = worksheet.get_cell_collection().clone();
+        cells.sort_by(|a, b| {
+            (
+                a.get_coordinate().get_row_num(),
+                a.get_coordinate().get_col_num(),
+            )
+                .cmp(&(
+                    b.get_coordinate().get_row_num(),
+                    b.get_coordinate().get_col_num(),
+                ))
+        });
+        let mut cells_iter = cells.iter();
+        // row loop
+        let mut is_cells_active = true;
+        let mut cell_bk: Option<&Cell> = None;
+        for row in &row_dimensions {
+            let mut do_next_cells = true;
+            let mut cells_in_row: Vec<&Cell> = Vec::new();
+            if cell_bk.is_some() {
+                if row.get_row_num() == cell_bk.unwrap().get_coordinate().get_row_num() {
+                    cells_in_row.push(cell_bk.unwrap());
+                    cell_bk = None;
+                } else {
+                    do_next_cells = false;
+                }
+            }
+            if is_cells_active && do_next_cells {
+                'cell_loop: loop {
+                    let cell_raw = cells_iter.next();
+                    if cell_raw.is_none() {
+                        is_cells_active = false;
+                        break 'cell_loop;
+                    }
+                    cell_bk = Some(cell_raw.unwrap());
+                    if row.get_row_num() == cell_bk.unwrap().get_coordinate().get_row_num() {
+                        cells_in_row.push(cell_bk.unwrap());
+                        cell_bk = None;
+                    } else {
+                        break 'cell_loop;
+                    }
+                }
             }
 
             // row
-            let include_cell = col_num_list.len() > 0;
-            let fist_num = match col_num_list.iter().next() {
-                Some(col_num) => col_num,
-                None => &0u32,
-            };
-            let last_num = match col_num_list.iter().last() {
-                Some(col_num) => col_num,
-                None => &0u32,
-            };
-            let spans = format!("{}:{}", fist_num, last_num);
-            row.write_to(&mut writer, stylesheet, spans, !include_cell);
-
-            // c
-            for (_, cell) in cells {
-                cell.write_to(&mut writer, shared_string_table, stylesheet);
-            }
-
+            let include_cell = cells_in_row.len() > 0;
             if include_cell {
+                let fist_num = cells_in_row
+                    .iter()
+                    .next()
+                    .unwrap()
+                    .get_coordinate()
+                    .get_col_num();
+                let last_num = cells_in_row
+                    .iter()
+                    .last()
+                    .unwrap()
+                    .get_coordinate()
+                    .get_col_num();
+                let spans = format!("{}:{}", fist_num, last_num);
+                row.write_to(&mut writer, stylesheet, spans, false);
+                // c
+                for cell in cells_in_row {
+                    cell.write_to(&mut writer, shared_string_table, stylesheet);
+                }
                 write_end_tag(&mut writer, "row");
+            } else {
+                let spans = format!("{}:{}", 0, 0);
+                row.write_to(&mut writer, stylesheet, spans, true);
             }
         }
 

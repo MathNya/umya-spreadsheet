@@ -1,16 +1,17 @@
-use super::Calculation;
-use super::Image;
-use super::Properties;
-use super::Security;
-use super::SharedStringTable;
-use super::Stylesheet;
-use super::Theme;
-use super::WorkbookView;
-use super::Worksheet;
 use helper::address::*;
 use helper::coordinate::*;
 use structs::Address;
+use structs::Calculation;
+use structs::CellStyles;
 use structs::CellValue;
+use structs::Image;
+use structs::Properties;
+use structs::Security;
+use structs::SharedStringTable;
+use structs::Stylesheet;
+use structs::Theme;
+use structs::WorkbookView;
+use structs::Worksheet;
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.
@@ -37,6 +38,7 @@ pub struct Spreadsheet {
     stylesheet: Stylesheet,
     shared_string_table: SharedStringTable,
     workbook_view: WorkbookView,
+    cell_styles: CellStyles,
 }
 impl Spreadsheet {
     // ************************
@@ -553,6 +555,27 @@ impl Spreadsheet {
     /// * `value` - WorkbookView
     pub fn set_workbook_view(&mut self, value: WorkbookView) -> &mut Self {
         self.workbook_view = value;
+        self
+    }
+
+    /// (This method is crate only.)
+    /// Get CellStyles.
+    pub(crate) fn get_cell_styles(&self) -> &CellStyles {
+        &self.cell_styles
+    }
+
+    /// (This method is crate only.)
+    /// Get CellStyles in mutable.
+    pub(crate) fn get_cell_styles_mut(&mut self) -> &mut CellStyles {
+        &mut self.cell_styles
+    }
+
+    /// (This method is crate only.)
+    /// Set CellStyles.
+    /// # Arguments
+    /// * `value` - CellStyles
+    pub(crate) fn _set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
+        self.cell_styles = value;
         self
     }
 

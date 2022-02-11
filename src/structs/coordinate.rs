@@ -2,7 +2,7 @@ use super::ColumnReference;
 use super::RowReference;
 use helper::coordinate::*;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Coordinate {
     column: ColumnReference,
     row: RowReference,

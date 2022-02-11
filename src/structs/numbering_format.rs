@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {
     number_format_id: u32,
     format_code: String,

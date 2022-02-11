@@ -266,6 +266,15 @@ impl Worksheet {
         self
     }
 
+    /// (This method is crate only.)
+    /// Set Cell
+    /// # Arguments
+    /// * `cell` - Cell
+    pub(crate) fn set_cell_crate(&mut self, cell: Cell) -> &mut Self {
+        self.cell_collection.set_fast(cell);
+        self
+    }
+
     /// Get cell value.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) "A1"

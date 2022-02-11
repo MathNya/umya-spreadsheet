@@ -91,7 +91,7 @@ impl CellFormats {
 
             // xf
             for cell_format in &self.cell_format {
-                cell_format.write_to(writer);
+                cell_format.write_to(writer, true);
             }
 
             write_end_tag(writer, "cellXfs");

@@ -13,7 +13,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Row {
     row_num: UInt32Value,
     height: DoubleValue,
@@ -210,7 +210,7 @@ impl Row {
                     b"c" => {
                         let mut obj = Cell::default();
                         obj.set_attributes(reader, e, &shared_string_table, &stylesheet, false);
-                        worksheet.set_cell(obj);
+                        worksheet.set_cell_crate(obj);
                     }
                     _ => (),
                 },

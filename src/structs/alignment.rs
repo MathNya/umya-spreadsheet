@@ -11,7 +11,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-#[derive(Default, Clone, Debug)]
+#[derive(Default, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Alignment {
     horizontal: EnumValue<HorizontalAlignmentValues>,
     vertical: EnumValue<VerticalAlignmentValues>,

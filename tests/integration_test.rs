@@ -1,3 +1,4 @@
+extern crate chrono;
 extern crate umya_spreadsheet;
 
 #[test]
@@ -582,4 +583,23 @@ fn duplicate_sheet() {
         Ok(_) => panic!("getting new sheet.."),
         Err(_) => {}
     }
+}
+
+#[test]
+fn wite_large() {
+    let is_exec = true;
+    if is_exec == false {
+        return;
+    }
+
+    // reader
+    dbg!(chrono::Local::now());
+    let path = std::path::Path::new("./tests/test_files/aaa_large.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    dbg!(chrono::Local::now());
+    let path = std::path::Path::new("./tests/result_files/bbb_large.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+    dbg!(chrono::Local::now());
 }

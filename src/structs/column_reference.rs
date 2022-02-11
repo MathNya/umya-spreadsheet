@@ -1,6 +1,6 @@
 use helper::coordinate::*;
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct ColumnReference {
     num: u32,
     is_lock: bool,
