@@ -8,6 +8,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -66,12 +67,11 @@ impl BlipFill {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         let mut buf = Vec::new();
 
@@ -86,7 +86,7 @@ impl BlipFill {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:blip" => {
-                        &mut self.blip.set_attributes(reader, e, arv, target);
+                        &mut self.blip.set_attributes(reader, e, drawing_relationships);
                     }
                     b"a:stretch" => {
                         &mut self.stretch.set_attributes(reader, e);

@@ -3,6 +3,7 @@ use super::super::super::StringValue;
 use super::super::Graphic;
 use super::NonVisualGraphicFrameProperties;
 use super::Transform;
+use structs::raw::RawRelationships;
 
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -72,12 +73,11 @@ impl GraphicFrame {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         match get_attribute(e, b"macro") {
             Some(v) => {
@@ -100,7 +100,9 @@ impl GraphicFrame {
                         &mut self.transform.set_attributes(reader, e);
                     }
                     b"a:graphic" => {
-                        &mut self.graphic.set_attributes(reader, e, arv, target);
+                        &mut self
+                            .graphic
+                            .set_attributes(reader, e, drawing_relationships);
                     }
                     _ => (),
                 },

@@ -3,14 +3,13 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
-use super::XlsxError;
 use structs::Spreadsheet;
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
-    arv: &mut zip::ZipWriter<W>,
-    file_name: &str,
-) -> Result<(), XlsxError> {
+    writer_mng: &mut WriterManager<W>,
+) {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(
@@ -54,7 +53,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     );
 
     // Default bin
-    if spreadsheet.has_bin() {
+    if writer_mng.has_extension("bin") {
         write_start_tag(
             &mut writer,
             "Default",
@@ -70,7 +69,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Default vml
-    if spreadsheet.has_legacy_drawing() {
+    if writer_mng.has_extension("vml") {
         write_start_tag(
             &mut writer,
             "Default",
@@ -86,139 +85,69 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Default png
-    let mut writed = false;
-    for work_sheet in spreadsheet.get_sheet_collection() {
-        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().get_image().is_png() {
-                write_start_tag(
-                    &mut writer,
-                    "Default",
-                    vec![("Extension", "png"), ("ContentType", "image/png")],
-                    true,
-                );
-                writed = true;
-                break;
-            }
-        }
-        if writed {
-            break;
-        };
+    if writer_mng.has_extension("png") {
+        write_start_tag(
+            &mut writer,
+            "Default",
+            vec![("Extension", "png"), ("ContentType", "image/png")],
+            true,
+        );
     }
 
     // Default jpg
-    let mut writed = false;
-    for work_sheet in spreadsheet.get_sheet_collection() {
-        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().get_image().is_jpg() {
-                write_start_tag(
-                    &mut writer,
-                    "Default",
-                    vec![("Extension", "jpg"), ("ContentType", "image/jpeg")],
-                    true,
-                );
-                writed = true;
-                break;
-            }
-        }
-        if writed {
-            break;
-        };
+    if writer_mng.has_extension("jpg") {
+        write_start_tag(
+            &mut writer,
+            "Default",
+            vec![("Extension", "jpg"), ("ContentType", "image/jpeg")],
+            true,
+        );
     }
 
     // Default jpeg
-    let mut writed = false;
-    for work_sheet in spreadsheet.get_sheet_collection() {
-        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().get_image().is_jpeg() {
-                write_start_tag(
-                    &mut writer,
-                    "Default",
-                    vec![("Extension", "jpeg"), ("ContentType", "image/jpeg")],
-                    true,
-                );
-                writed = true;
-                break;
-            }
-        }
-        if writed {
-            break;
-        };
+    if writer_mng.has_extension("jpeg") {
+        write_start_tag(
+            &mut writer,
+            "Default",
+            vec![("Extension", "jpeg"), ("ContentType", "image/jpeg")],
+            true,
+        );
     }
 
     // Default tiff
-    let mut writed = false;
-    for work_sheet in spreadsheet.get_sheet_collection() {
-        for picture in work_sheet.get_worksheet_drawing().get_picture_collection() {
-            if picture.get_blip_fill().get_blip().get_image().is_tiff() {
-                write_start_tag(
-                    &mut writer,
-                    "Default",
-                    vec![("Extension", "tiff"), ("ContentType", "image/tiff")],
-                    true,
-                );
-                writed = true;
-                break;
-            }
-        }
-        if writed {
-            break;
-        };
+    if writer_mng.has_extension("tiff") {
+        write_start_tag(
+            &mut writer,
+            "Default",
+            vec![("Extension", "tiff"), ("ContentType", "image/tiff")],
+            true,
+        );
     }
 
     // Default emf
-    let mut writed = false;
-    for work_sheet in spreadsheet.get_sheet_collection() {
-        for ole_object in work_sheet.get_ole_objects().get_ole_object() {
-            if ole_object
-                .get_embedded_object_properties()
-                .get_image()
-                .is_emf()
-            {
-                write_start_tag(
-                    &mut writer,
-                    "Default",
-                    vec![("Extension", "emf"), ("ContentType", "image/x-emf")],
-                    true,
-                );
-                writed = true;
-                break;
-            }
-            if writed {
-                break;
-            };
-        }
-        if writed {
-            break;
-        };
+    if writer_mng.has_extension("emf") {
+        write_start_tag(
+            &mut writer,
+            "Default",
+            vec![("Extension", "emf"), ("ContentType", "image/x-emf")],
+            true,
+        );
     }
 
     // Default xlsx
-    let mut writed = false;
-    for work_sheet in spreadsheet.get_sheet_collection() {
-        for ole_object in work_sheet.get_ole_objects().get_ole_object() {
-            if ole_object.is_xlsx() {
-                write_start_tag(
-                    &mut writer,
-                    "Default",
-                    vec![
-                        ("Extension", "xlsx"),
-                        (
-                            "ContentType",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        ),
-                    ],
-                    true,
-                );
-                writed = true;
-                break;
-            }
-            if writed {
-                break;
-            };
-        }
-        if writed {
-            break;
-        };
+    if writer_mng.has_extension("xlsx") {
+        write_start_tag(
+            &mut writer,
+            "Default",
+            vec![
+                ("Extension", "xlsx"),
+                (
+                    "ContentType",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ),
+            ],
+            true,
+        );
     }
 
     // Override workbook
@@ -237,15 +166,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     );
 
     // Override sheet
-    for i in 0..spreadsheet.get_sheet_count() {
+    let mut index = 1;
+    for _ in spreadsheet.get_sheet_collection_no_check() {
+        let path_str = format!("/xl/worksheets/sheet{}.xml", index);
         write_start_tag(
             &mut writer,
             "Override",
             vec![
-                (
-                    "PartName",
-                    format!("/xl/worksheets/sheet{}.xml", (i + 1).to_string().as_str()).as_str(),
-                ),
+                ("PartName", &path_str),
                 (
                     "ContentType",
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml",
@@ -253,29 +181,23 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             ],
             true,
         );
+        index += 1;
     }
 
     // Override comments
-    let mut comment_id = 1;
-    for worksheet in spreadsheet.get_sheet_collection() {
-        if worksheet.get_comments().len() > 0 {
-            write_start_tag(
-                &mut writer,
-                "Override",
-                vec![
-                    (
-                        "PartName",
-                        format!("/xl/comments{}.xml", &comment_id).as_str(),
-                    ),
-                    (
-                        "ContentType",
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml",
-                    ),
-                ],
-                true,
-            );
-            comment_id += 1;
-        }
+    for path_str in writer_mng.has_find("xl/comments") {
+        write_start_tag(
+            &mut writer,
+            "Override",
+            vec![
+                ("PartName", &path_str),
+                (
+                    "ContentType",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml",
+                ),
+            ],
+            true,
+        );
     }
 
     // Override theme
@@ -320,77 +242,52 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         true,
     );
 
-    let mut drawing_id = 1;
-    let mut chart_id = 1;
-    for worksheet in spreadsheet.get_sheet_collection() {
-        if worksheet.get_worksheet_drawing().has_drawing_object() {
-            // Override drawing
-            write_start_tag(
-                &mut writer,
-                "Override",
-                vec![
-                    (
-                        "PartName",
-                        format!(
-                            "/xl/drawings/drawing{}.xml",
-                            drawing_id.to_string().as_str()
-                        )
-                        .as_str(),
-                    ),
-                    (
-                        "ContentType",
-                        "application/vnd.openxmlformats-officedocument.drawing+xml",
-                    ),
-                ],
-                true,
-            );
-            drawing_id += 1;
-        }
-        for _ in worksheet.get_worksheet_drawing().get_chart_collection() {
-            // Override chart
-            write_start_tag(
-                &mut writer,
-                "Override",
-                vec![
-                    (
-                        "PartName",
-                        format!("/xl/charts/chart{}.xml", chart_id.to_string().as_str()).as_str(),
-                    ),
-                    (
-                        "ContentType",
-                        "application/vnd.openxmlformats-officedocument.drawingml.chart+xml",
-                    ),
-                ],
-                true,
-            );
-            chart_id += 1;
-        }
+    // Override drawing
+    for path_str in writer_mng.has_find("xl/drawings/drawing") {
+        write_start_tag(
+            &mut writer,
+            "Override",
+            vec![
+                ("PartName", &path_str),
+                (
+                    "ContentType",
+                    "application/vnd.openxmlformats-officedocument.drawing+xml",
+                ),
+            ],
+            true,
+        );
+    }
+
+    // Override chart
+    for path_str in writer_mng.has_find("xl/charts/chart") {
+        write_start_tag(
+            &mut writer,
+            "Override",
+            vec![
+                ("PartName", &path_str),
+                (
+                    "ContentType",
+                    "application/vnd.openxmlformats-officedocument.drawingml.chart+xml",
+                ),
+            ],
+            true,
+        );
     }
 
     // Override embeddings
-    let mut ole_bin_id = 1;
-    for work_sheet in spreadsheet.get_sheet_collection() {
-        for ole_object in work_sheet.get_ole_objects().get_ole_object() {
-            if ole_object.is_bin() {
-                let object_name = format!("oleObject{}.bin", ole_bin_id);
-                write_start_tag(
-                    &mut writer,
-                    "Override",
-                    vec![
-                        (
-                            "PartName",
-                            format!("/xl/embeddings/{}", object_name).as_str(),
-                        ),
-                        (
-                            "ContentType",
-                            "application/vnd.openxmlformats-officedocument.oleObject",
-                        ),
-                    ],
-                    true,
-                );
-                ole_bin_id += 1;
-            }
-        }
+    for path_str in writer_mng.has_find("xl/embeddings/oleObject") {
+        write_start_tag(
+            &mut writer,
+            "Override",
+            vec![
+                ("PartName", &path_str),
+                (
+                    "ContentType",
+                    "application/vnd.openxmlformats-officedocument.oleObject",
+                ),
+            ],
+            true,
+        );
     }
 
     // Override xl/vbaProject.bin
@@ -435,6 +332,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     );
 
     write_end_tag(&mut writer, "Types");
-    let _ = make_file_from_writer(&file_name, arv, writer, None).unwrap();
-    Ok(())
+    let _ = make_file_from_writer(
+        "[Content_Types].xml",
+        writer_mng.get_arv_mut(),
+        writer,
+        None,
+    )
+    .unwrap();
 }

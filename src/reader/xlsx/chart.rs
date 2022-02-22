@@ -1,23 +1,15 @@
-use super::driver::normalize_path_to_str;
 use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::io::Read;
-use std::{io, result};
+use std::result;
 use structs::drawing::charts::ChartSpace;
+use structs::raw::RawFile;
 
-pub(crate) fn read<R: io::Read + io::Seek>(
-    arv: &mut zip::read::ZipArchive<R>,
-    target: &String,
+pub(crate) fn read(
+    raw_file: &RawFile,
     chart_space: &mut ChartSpace,
 ) -> result::Result<(), XlsxError> {
-    let data = {
-        let path_str = normalize_path_to_str(&format!("xl/drawings/{}", target));
-        let mut r = io::BufReader::new(arv.by_name(path_str.as_str())?);
-        let mut buf = Vec::new();
-        r.read_to_end(&mut buf)?;
-        std::io::Cursor::new(buf)
-    };
+    let data = std::io::Cursor::new(raw_file.get_file_data());
     let mut reader = Reader::from_reader(data);
 
     reader.trim_text(true);

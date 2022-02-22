@@ -1,22 +1,16 @@
 use super::driver::*;
-use super::XlsxError;
 use quick_xml::Writer;
 use std::io;
 use structs::Worksheet;
-
-const SUB_DIR: &'static str = "xl/drawings";
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
-    drawing_id: &usize,
-    vml_drawing_id: &usize,
-    arv: &mut zip::ZipWriter<W>,
-) -> Result<(), XlsxError> {
+    writer_mng: &mut WriterManager<W>,
+) -> String {
     if worksheet.has_legacy_drawing() == false {
-        return Ok(());
+        return String::from("");
     }
-
-    let file_name = format!("vmlDrawing{}.vml", vml_drawing_id);
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // xml
@@ -38,13 +32,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "o:idmap",
-        vec![("v:ext", "edit"), ("data", drawing_id.to_string().as_str())],
+        vec![("v:ext", "edit"), ("data", "1")],
         true,
     );
 
     write_end_tag(&mut writer, "o:shapelayout");
 
-    let mut id = (drawing_id * 1000) + 25;
+    let mut id = 1000 + 25;
 
     // ole_object
     if worksheet.has_ole_objects() {
@@ -176,18 +170,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "xml");
 
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
-    Ok(())
+    let file_no = writer_mng.add_file_at_vml_drawing(writer);
+    file_no.to_string()
 }
-
-//fn get_style_string_comment(comment: &Comment) -> String {
-//    let style = format!(
-//        "position:absolute;margin-left:{};margin-top:{};width:{};height:{};z-index:1;visibility:{}",
-//        comment.get_margin_left(),
-//        comment.get_margin_top(),
-//        comment.get_width(),
-//        comment.get_height(),
-//        if comment.get_visible() == &true {"visible"} else {"hidden"}
-//    );
-//    style
-//}

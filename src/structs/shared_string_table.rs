@@ -27,9 +27,8 @@ impl SharedStringTable {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
-        self.shared_string_item.clear();
-        self
+    pub(crate) fn has_value(&self) -> bool {
+        self.shared_string_item.len() > 0
     }
 
     pub(crate) fn set_cell(&mut self, value: &CellValue) -> u32 {

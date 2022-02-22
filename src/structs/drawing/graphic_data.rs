@@ -5,8 +5,8 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use reader::xlsx::chart;
-use reader::xlsx::drawing_rels;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -27,12 +27,11 @@ impl GraphicData {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         let mut buf = Vec::new();
 
@@ -41,12 +40,8 @@ impl GraphicData {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"c:chart" => {
                         let chart_id = get_attribute(e, b"r:id").unwrap();
-                        let drawing_rel = drawing_rels::read(arv, target).unwrap();
-                        for (drawing_id, _, drawing_target) in &drawing_rel {
-                            if &chart_id == drawing_id {
-                                let _ = chart::read(arv, &drawing_target, &mut self.chart_space);
-                            }
-                        }
+                        let relationship = drawing_relationships.get_relationship_by_rid(chart_id);
+                        let _ = chart::read(relationship.get_raw_file(), &mut self.chart_space);
                     }
                     _ => (),
                 },

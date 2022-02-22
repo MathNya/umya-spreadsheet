@@ -1,6 +1,7 @@
 //! store structs.
 
 pub mod drawing;
+pub mod raw;
 pub mod vml;
 
 mod spreadsheet;
@@ -362,3 +363,6 @@ pub use self::column_breaks::*;
 
 mod sheet_view_values;
 pub use self::sheet_view_values::*;
+
+mod writer_manager;
+pub use self::writer_manager::*;

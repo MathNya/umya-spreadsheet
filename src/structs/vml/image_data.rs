@@ -2,8 +2,8 @@ use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
-use reader::xlsx::vml_drawing_rels;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use structs::StringValue;
 use writer::driver::*;
 
@@ -31,20 +31,17 @@ impl ImageData {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         match get_attribute(e, b"o:relid") {
             Some(relid) => {
-                let (_type_value, target_value) =
-                    vml_drawing_rels::read(arv, target, &relid).unwrap();
-                let v: Vec<&str> = target_value.split('/').collect();
-                let image_name = v.last().unwrap().clone();
-                self.image_name.set_value_string(image_name);
+                let relationship = drawing_relationships.get_relationship_by_rid(relid);
+                self.image_name
+                    .set_value_string(relationship.get_raw_file().get_file_name());
             }
             None => {}
         }

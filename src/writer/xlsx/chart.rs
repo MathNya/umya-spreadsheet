@@ -1,21 +1,16 @@
 use super::driver::*;
-use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 use structs::drawing::charts::ChartSpace;
 use structs::Spreadsheet;
-
-const SUB_DIR: &'static str = "xl/charts";
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     chart_space: &ChartSpace,
-    p_chart_id: &usize,
-    arv: &mut zip::ZipWriter<W>,
     spreadsheet: &Spreadsheet,
-) -> Result<(), XlsxError> {
-    let file_name = format!("chart{}.xml", p_chart_id);
-
+    writer_mng: &mut WriterManager<W>,
+) -> String {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(
@@ -28,6 +23,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // c:chartSpace
     chart_space.write_to(&mut writer, spreadsheet);
 
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
-    Ok(())
+    let file_no = writer_mng.add_file_at_chart(writer);
+    file_no.to_string()
 }

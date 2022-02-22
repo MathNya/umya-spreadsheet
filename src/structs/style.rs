@@ -120,10 +120,6 @@ impl Style {
         self.numbering_format.as_mut().unwrap()
     }
 
-    pub(crate) fn _get_numbering_format_mut_crate(&mut self) -> &mut Option<NumberingFormat> {
-        &mut self.numbering_format
-    }
-
     pub fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
         self.numbering_format = Some(value);
         self
@@ -150,8 +146,11 @@ impl Style {
         self
     }
 
-    pub(crate) fn _get_defalut_value() -> Self {
-        let def = Self::default();
+    pub(crate) fn get_defalut_value() -> Self {
+        let mut def = Self::default();
+        def.set_font(Font::get_defalut_value());
+        def.set_borders(Borders::get_defalut_value());
+        def.set_fill(Fill::get_defalut_value());
         def
     }
 
@@ -202,9 +201,5 @@ impl Style {
                 },
             ))
         )
-    }
-
-    pub(crate) fn _is_empty(&self) -> bool {
-        self.get_hash_code() == Self::_get_defalut_value().get_hash_code()
     }
 }

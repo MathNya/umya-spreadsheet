@@ -25,12 +25,6 @@ impl Fonts {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
-        let obj = Font::get_defalut_value();
-        self.set_font(obj);
-        self
-    }
-
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_font() {
             Some(v) => {

@@ -157,11 +157,6 @@ impl CellFormat {
         self
     }
 
-    pub(crate) fn get_defalut_value() -> Self {
-        let def = CellFormat::default();
-        def
-    }
-
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",

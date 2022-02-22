@@ -3,6 +3,7 @@ use helper::range::*;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
 use structs::drawing::spreadsheet::WorksheetDrawing;
+use structs::raw::RawWorksheet;
 use structs::AutoFilter;
 use structs::Cell;
 use structs::CellValue;
@@ -32,6 +33,8 @@ use structs::Style;
 /// A Worksheet Object.
 #[derive(Clone, Debug, Default)]
 pub struct Worksheet {
+    raw_data_of_worksheet: Option<RawWorksheet>,
+    r_id: String,
     sheet_id: String,
     title: String,
     cell_collection: Cells,
@@ -1172,6 +1175,17 @@ impl Worksheet {
         self.active_cell = cell.into();
     }
 
+    /// Get R Id.
+    pub(crate) fn get_r_id(&self) -> &String {
+        &self.r_id
+    }
+
+    /// (This method is crate only.)
+    /// Set r Id.
+    pub(crate) fn set_r_id<S: Into<String>>(&mut self, value: S) {
+        self.r_id = value.into();
+    }
+
     /// Get Sheet Id.
     pub fn get_sheet_id(&self) -> &String {
         &self.sheet_id
@@ -1329,16 +1343,6 @@ impl Worksheet {
         self
     }
 
-    /// Has Ole Objects.
-    pub fn has_ole_objects(&self) -> bool {
-        self.ole_objects.get_ole_object().len() > 0
-    }
-
-    /// Has Legacy Drawing.
-    pub fn has_legacy_drawing(&self) -> bool {
-        self.has_comments() || self.has_ole_objects()
-    }
-
     /// Get Defined Name (Vec).
     pub fn get_defined_names(&self) -> &Vec<DefinedName> {
         &self.defined_names
@@ -1468,5 +1472,41 @@ impl Worksheet {
             return true;
         }
         false
+    }
+
+    pub(crate) fn is_serialized(&self) -> bool {
+        self.raw_data_of_worksheet.is_none()
+    }
+
+    pub(crate) fn get_raw_data_of_worksheet(&self) -> &RawWorksheet {
+        match &self.raw_data_of_worksheet {
+            Some(v) => {
+                return v;
+            }
+            None => {}
+        }
+        panic!("Not found at raw data of worksheet.");
+    }
+
+    pub(crate) fn set_raw_data_of_worksheet(&mut self, value: RawWorksheet) -> &mut Self {
+        self.raw_data_of_worksheet = Some(value);
+        self
+    }
+
+    pub(crate) fn remove_raw_data_of_worksheet(&mut self) -> &mut Self {
+        self.raw_data_of_worksheet = None;
+        self
+    }
+
+    /// (This method is crate only.)
+    /// Has Ole Objects.
+    pub(crate) fn has_ole_objects(&self) -> bool {
+        self.ole_objects.get_ole_object().len() > 0
+    }
+
+    /// (This method is crate only.)
+    /// Has Legacy Drawing.
+    pub(crate) fn has_legacy_drawing(&self) -> bool {
+        self.has_comments() || self.has_ole_objects()
     }
 }

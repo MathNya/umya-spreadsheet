@@ -1,8 +1,8 @@
 use helper::address::*;
 use helper::coordinate::*;
+use reader::xlsx::*;
 use structs::Address;
 use structs::Calculation;
-use structs::CellStyles;
 use structs::CellValue;
 use structs::Image;
 use structs::Properties;
@@ -38,7 +38,6 @@ pub struct Spreadsheet {
     stylesheet: Stylesheet,
     shared_string_table: SharedStringTable,
     workbook_view: WorkbookView,
-    cell_styles: CellStyles,
 }
 impl Spreadsheet {
     // ************************
@@ -163,6 +162,7 @@ impl Spreadsheet {
         row_index: &u32,
         num_rows: &u32,
     ) {
+        self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {
             worksheet.adjustment_insert_coordinate(
                 sheet_name,
@@ -184,6 +184,7 @@ impl Spreadsheet {
         row_index: &u32,
         num_rows: &u32,
     ) {
+        self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {
             worksheet.adjustment_remove_coordinate(
                 sheet_name,
@@ -320,9 +321,9 @@ impl Spreadsheet {
     }
 
     /// (This method is crate only.)
-    /// Remove Stylesheet.
-    pub(crate) fn remove_stylesheet(&mut self) -> &mut Self {
-        self.stylesheet = Stylesheet::default();
+    /// Set Default Value Stylesheet.
+    pub(crate) fn set_stylesheet_defalut_value(&mut self) -> &mut Self {
+        self.stylesheet.set_defalut_value();
         self
     }
 
@@ -341,20 +342,25 @@ impl Spreadsheet {
         self
     }
 
-    /// (This method is crate only.)
-    /// Remove Shared String Table.
-    pub(crate) fn remove_shared_string_table(&mut self) -> &mut Self {
-        self.shared_string_table = SharedStringTable::default();
-        self
+    /// Get Work Sheet List.
+    pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
+        for worksheet in &self.work_sheet_collection {
+            if worksheet.is_serialized() == false {
+                panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
+            }
+        }
+        &self.work_sheet_collection
     }
 
     /// Get Work Sheet List.
-    pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
+    /// No check serialized.
+    pub fn get_sheet_collection_no_check(&self) -> &Vec<Worksheet> {
         &self.work_sheet_collection
     }
 
     /// Get Work Sheet List in mutable.
     pub fn get_sheet_collection_mut(&mut self) -> &mut Vec<Worksheet> {
+        self.read_sheet_collection();
         &mut self.work_sheet_collection
     }
 
@@ -365,14 +371,40 @@ impl Spreadsheet {
         self.work_sheet_collection.len()
     }
 
+    /// serialize by all worksheet.
+    pub fn read_sheet_collection(&mut self) -> &mut Self {
+        let theme = self.get_theme().clone();
+        let shared_string_table = self.get_shared_string_table().clone();
+        let stylesheet = self.get_stylesheet().clone();
+        for worksheet in &mut self.work_sheet_collection {
+            raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+        }
+        self
+    }
+
+    /// serialize a worksheet.
+    pub fn read_sheet(&mut self, index: usize) -> &mut Self {
+        let theme = self.get_theme().clone();
+        let shared_string_table = self.get_shared_string_table().clone();
+        let stylesheet = self.get_stylesheet().clone();
+        let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
+        raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+        self
+    }
+
     /// Get Work Sheet.
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
     /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
     pub fn get_sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
-        match &self.work_sheet_collection.get(index) {
-            Some(v) => return Ok(v),
+        match self.work_sheet_collection.get(index) {
+            Some(v) => {
+                if v.is_serialized() == false {
+                    panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
+                }
+                return Ok(v);
+            }
             None => return Err("Not found."),
         }
     }
@@ -383,7 +415,12 @@ impl Spreadsheet {
     /// # Return value
     /// * `&mut Worksheet` - Work sheet.
     pub fn get_sheet_mut(&mut self, index: usize) -> &mut Worksheet {
-        self.work_sheet_collection.get_mut(index).unwrap()
+        let theme = self.get_theme().clone();
+        let shared_string_table = self.get_shared_string_table().clone();
+        let stylesheet = self.get_stylesheet().clone();
+        let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
+        raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+        worksheet
     }
 
     /// Get Work Sheet.
@@ -398,6 +435,9 @@ impl Spreadsheet {
         let v = sheet_name.into();
         for sheet in &self.work_sheet_collection {
             if sheet.get_title() == &v {
+                if sheet.is_serialized() == false {
+                    panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
+                }
                 return Ok(sheet);
             }
         }
@@ -413,29 +453,14 @@ impl Spreadsheet {
         &mut self,
         sheet_name: S,
     ) -> Result<&mut Worksheet, &'static str> {
+        let theme = self.get_theme().clone();
+        let shared_string_table = self.get_shared_string_table().clone();
+        let stylesheet = self.get_stylesheet().clone();
         let v = sheet_name.into();
-        for sheet in &mut self.work_sheet_collection {
-            if sheet.get_title() == &v {
-                return Ok(sheet);
-            }
-        }
-        Err("not found.")
-    }
-
-    /// (This method is crate only.)
-    /// Get Work Sheet in mutable.
-    /// # Arguments
-    /// * `index` - sheet index
-    /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub(crate) fn get_sheet_by_sheet_id_mut<S: Into<String>>(
-        &mut self,
-        index: S,
-    ) -> Result<&mut Worksheet, &'static str> {
-        let v = index.into();
-        for sheet in &mut self.work_sheet_collection {
-            if sheet.get_sheet_id() == &v {
-                return Ok(sheet);
+        for worksheet in &mut self.work_sheet_collection {
+            if worksheet.get_title() == &v {
+                raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+                return Ok(worksheet);
             }
         }
         Err("not found.")
@@ -559,30 +584,9 @@ impl Spreadsheet {
     }
 
     /// (This method is crate only.)
-    /// Get CellStyles.
-    pub(crate) fn get_cell_styles(&self) -> &CellStyles {
-        &self.cell_styles
-    }
-
-    /// (This method is crate only.)
-    /// Get CellStyles in mutable.
-    pub(crate) fn get_cell_styles_mut(&mut self) -> &mut CellStyles {
-        &mut self.cell_styles
-    }
-
-    /// (This method is crate only.)
-    /// Set CellStyles.
-    /// # Arguments
-    /// * `value` - CellStyles
-    pub(crate) fn _set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
-        self.cell_styles = value;
-        self
-    }
-
-    /// (This method is crate only.)
     /// Has Defined Names.
     pub(crate) fn has_defined_names(&self) -> bool {
-        for sheet in self.get_sheet_collection() {
+        for sheet in self.get_sheet_collection_no_check() {
             if sheet.has_defined_names() {
                 return true;
             }
@@ -595,7 +599,7 @@ impl Spreadsheet {
     /// * `Vec<&Image>` - Image Object List.
     pub fn get_image_collection(&self) -> Vec<&Image> {
         let mut result: Vec<&Image> = Vec::new();
-        for worksheet in self.get_sheet_collection() {
+        for worksheet in self.get_sheet_collection_no_check() {
             for image in worksheet.get_image_collection() {
                 let mut is_new = true;
                 for v in &result {
@@ -609,27 +613,5 @@ impl Spreadsheet {
             }
         }
         result
-    }
-
-    /// (This method is crate only.)
-    /// Has Bin File.
-    pub(crate) fn has_bin(&self) -> bool {
-        for work_sheet in self.get_sheet_collection() {
-            if work_sheet.get_page_setup().get_object_data().is_some() {
-                return true;
-            }
-        }
-        false
-    }
-
-    /// (This method is crate only.)
-    /// Has Legacy Drawing.
-    pub(crate) fn has_legacy_drawing(&self) -> bool {
-        for work_sheet in self.get_sheet_collection() {
-            if work_sheet.has_legacy_drawing() {
-                return true;
-            }
-        }
-        false
     }
 }

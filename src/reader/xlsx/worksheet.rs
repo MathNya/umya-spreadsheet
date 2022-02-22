@@ -2,9 +2,8 @@ use super::driver::*;
 use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::io;
-use std::io::Read;
 
+use structs::raw::RawWorksheet;
 use structs::Color;
 use structs::Columns;
 use structs::Conditional;
@@ -12,39 +11,23 @@ use structs::ConditionalSet;
 use structs::Hyperlink;
 use structs::OleObjects;
 use structs::Row;
+use structs::SharedStringTable;
 use structs::SheetView;
-use structs::Spreadsheet;
 use structs::Stylesheet;
 use structs::Theme;
+use structs::Worksheet;
 
-pub(crate) fn read<R: io::Read + io::Seek>(
-    arv: &mut zip::read::ZipArchive<R>,
-    target: &String,
-    spreadsheet: &mut Spreadsheet,
-    sheets_sheet_id: &str,
-    sheets_name: &str,
-) -> Result<(Option<String>, Option<String>, Vec<(String, String)>), XlsxError> {
-    let data = {
-        let path_str = normalize_path_to_str(&format!("xl/{}", target));
-        let mut r = io::BufReader::new(arv.by_name(path_str.as_str())?);
-        let mut buf = Vec::new();
-        r.read_to_end(&mut buf)?;
-        std::io::Cursor::new(buf)
-    };
+pub(crate) fn read(
+    worksheet: &mut Worksheet,
+    raw_data_of_worksheet: &RawWorksheet,
+    theme: &Theme,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+) -> Result<(), XlsxError> {
+    let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.trim_text(true);
     let mut buf = Vec::new();
-
-    let theme = spreadsheet.get_theme_mut().clone();
-    let shared_string_table = spreadsheet.get_shared_string_table().clone();
-    let stylesheet = spreadsheet.get_stylesheet().clone();
-
-    let worksheet = spreadsheet.add_new_sheet_crate(sheets_sheet_id, sheets_name);
-
-    // result
-    let mut drawing: Option<String> = None;
-    let mut legacy_drawing: Option<String> = None;
-    let mut hyperlink_vec: Vec<(String, String)> = Vec::new();
 
     loop {
         match reader.read_event(&mut buf) {
@@ -111,7 +94,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 }
                 b"oleObjects" => {
                     let mut obj = OleObjects::default();
-                    obj.set_attributes(&mut reader, e, arv, target);
+                    obj.set_attributes(&mut reader, e, raw_data_of_worksheet.get_relationships());
                     worksheet.set_ole_objects(obj);
                 }
                 b"headerFooter" => {
@@ -178,20 +161,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                         .get_page_margins_mut()
                         .set_attributes(&mut reader, e);
                 }
-                b"drawing" => {
-                    drawing = Some(get_attribute(e, b"r:id").unwrap());
-                }
-                b"legacyDrawing" => {
-                    legacy_drawing = Some(get_attribute(e, b"r:id").unwrap());
-                }
                 b"hyperlink" => {
-                    let (coor, rid, hyperlink) = get_hyperlink(e);
+                    let (coor, _rid, hyperlink) = get_hyperlink(e);
                     let _ = worksheet
                         .get_cell_mut(&coor.to_string())
                         .set_hyperlink(hyperlink);
-                    if &rid != "" {
-                        hyperlink_vec.push((coor, rid));
-                    }
                 }
                 b"printOptions" => {
                     worksheet
@@ -199,9 +173,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                         .set_attributes(&mut reader, e);
                 }
                 b"pageSetup" => {
-                    worksheet
-                        .get_page_setup_mut()
-                        .set_attributes(&mut reader, e, arv, target);
+                    worksheet.get_page_setup_mut().set_attributes(
+                        &mut reader,
+                        e,
+                        raw_data_of_worksheet.get_relationships(),
+                    );
                 }
                 _ => (),
             },
@@ -212,7 +188,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         buf.clear();
     }
 
-    Ok((drawing, legacy_drawing, hyperlink_vec))
+    Ok(())
 }
 
 fn get_conditional_formatting<R: std::io::BufRead>(

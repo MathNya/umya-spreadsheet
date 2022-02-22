@@ -1,22 +1,17 @@
 use super::driver::*;
-use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 use structs::Worksheet;
-
-const SUB_DIR: &'static str = "xl";
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
-    comment_id: &usize,
-    arv: &mut zip::ZipWriter<W>,
-) -> Result<(), XlsxError> {
+    writer_mng: &mut WriterManager<W>,
+) -> String {
     if worksheet.get_comments().len() == 0 {
-        return Ok(());
+        return String::from("");
     }
-
-    let file_name = format!("comments{}.xml", comment_id);
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
@@ -69,8 +64,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "commentList");
     write_end_tag(&mut writer, "comments");
 
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
-    Ok(())
+    let file_no = writer_mng.add_file_at_comment(writer);
+    file_no.to_string()
 }
 
 fn get_authors(worksheet: &Worksheet) -> Vec<String> {

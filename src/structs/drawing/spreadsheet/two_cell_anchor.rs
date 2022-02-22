@@ -11,6 +11,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use structs::BooleanValue;
 use writer::driver::*;
 
@@ -168,12 +169,11 @@ impl TwoCellAnchor {
         false
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         match get_attribute(e, b"editAs") {
             Some(v) => {
@@ -194,7 +194,7 @@ impl TwoCellAnchor {
                     }
                     b"xdr:graphicFrame" => {
                         let mut obj = GraphicFrame::default();
-                        obj.set_attributes(reader, e, arv, target);
+                        obj.set_attributes(reader, e, drawing_relationships);
                         self.set_graphic_frame(obj);
                     }
                     b"xdr:sp" => {
@@ -209,7 +209,7 @@ impl TwoCellAnchor {
                     }
                     b"xdr:pic" => {
                         let mut obj = Picture::default();
-                        obj.set_attributes(reader, e, arv, target);
+                        obj.set_attributes(reader, e, drawing_relationships);
                         self.set_picture(obj);
                     }
                     _ => (),

@@ -24,14 +24,14 @@ impl CellStyles {
         self
     }
 
-    pub(crate) fn get_defalut_value() -> CellStyle {
+    pub(crate) fn _get_defalut_value() -> CellStyle {
         let mut def = CellStyle::default();
         def.set_name("Normal");
         def
     }
 
-    pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
-        self.add_cell_style(Self::get_defalut_value());
+    pub(crate) fn _set_defalut_value(&mut self) -> &mut Self {
+        self.add_cell_style(Self::_get_defalut_value());
         self
     }
 

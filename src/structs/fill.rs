@@ -49,7 +49,7 @@ impl Fill {
         def
     }
 
-    pub(crate) fn get_defalut_value_2() -> Self {
+    pub(crate) fn _get_defalut_value_2() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
         pfill.set_pattern_type(PatternValues::Gray125);

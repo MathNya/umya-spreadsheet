@@ -4,10 +4,9 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
-use reader::xlsx::embeddings;
-use reader::xlsx::worksheet_rels;
 use std::io::Cursor;
 use structs::drawing::spreadsheet::TwoCellAnchor;
+use structs::raw::RawRelationships;
 use structs::vml::Shape;
 use writer::driver::*;
 
@@ -100,7 +99,7 @@ impl OleObject {
         self
     }
 
-    pub(crate) fn get_extension<S: Into<String>>(&self, value: S) -> String {
+    pub(crate) fn _get_extension<S: Into<String>>(&self, value: S) -> String {
         let value_org = value.into();
         let v: Vec<&str> = value_org.split('.').collect();
         let extension = v.last().unwrap().clone();
@@ -116,12 +115,11 @@ impl OleObject {
         &self.object_extension == "xlsx"
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        relationships: &RawRelationships,
     ) {
         let mut alternate_content = String::from("");
         let mut buf = Vec::new();
@@ -147,19 +145,15 @@ impl OleObject {
                                 .set_value_string(get_attribute(e, b"progId").unwrap());
 
                             let r_id = get_attribute(e, b"r:id").unwrap();
-                            let (_, target_value) =
-                                worksheet_rels::read_rid(arv, target, &r_id).unwrap();
-
-                            let v: Vec<&str> = target_value.split('/').collect();
-                            let object_name = v.last().unwrap().clone();
-                            let object_extension = self.get_extension(object_name);
-                            &mut self.set_object_extension(object_extension);
-                            &mut self.set_object_data(embeddings::read(arv, object_name).unwrap());
+                            let attached_file =
+                                relationships.get_relationship_by_rid(r_id).get_raw_file();
+                            &mut self.set_object_extension(attached_file.get_extension());
+                            &mut self.set_object_data(attached_file.get_file_data().clone());
                         }
                     }
                     b"objectPr" => {
                         let mut obj = EmbeddedObjectProperties::default();
-                        obj.set_attributes(reader, e, arv, target);
+                        obj.set_attributes(reader, e, relationships);
                         &mut self.set_embedded_object_properties(obj);
                     }
                     _ => (),

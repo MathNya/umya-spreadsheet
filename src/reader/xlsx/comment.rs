@@ -1,26 +1,22 @@
-use super::driver::*;
 use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::{io, result};
+use std::result;
+use structs::raw::RawFile;
 use structs::Comment;
-use structs::Theme;
 use structs::Worksheet;
 
-pub(crate) fn read<R: io::Read + io::Seek>(
-    arv: &mut zip::read::ZipArchive<R>,
-    target: &str,
+pub(crate) fn read(
     worksheet: &mut Worksheet,
-    _theme: &Theme,
+    drawing_file: &RawFile,
 ) -> result::Result<(), XlsxError> {
-    let path_str = normalize_path_to_str(&format!("xl/worksheets/{}", target));
-    let r = io::BufReader::new(arv.by_name(path_str.as_str())?);
-    let mut reader = Reader::from_reader(r);
+    let data = std::io::Cursor::new(drawing_file.get_file_data());
+    let mut reader = Reader::from_reader(data);
     reader.trim_text(false);
+    let mut buf = Vec::new();
 
     let mut authors: Vec<String> = Vec::new();
     let mut value: String = String::from("");
-    let mut buf = Vec::new();
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => match e.name() {

@@ -1,22 +1,18 @@
 use std::io;
 
-use super::driver::*;
-use super::XlsxError;
 use structs::Worksheet;
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
-    arv: &mut zip::ZipWriter<W>,
-    sub_dir: &str,
-    id: &mut usize,
-) -> Result<(), XlsxError> {
-    let file_name = format!("printerSettings{}.bin", id);
+    writer_mng: &mut WriterManager<W>,
+) -> String {
     let writer = worksheet
         .get_page_setup()
         .get_object_data()
         .as_ref()
         .unwrap();
-    let _ = make_file_from_bin(&file_name, arv, writer, Some(sub_dir)).unwrap();
 
-    Ok(())
+    let file_no = writer_mng.add_file_at_printer_settings(writer);
+    file_no.to_string()
 }

@@ -1,32 +1,24 @@
 use super::driver::*;
-use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 use structs::Cell;
 use structs::SharedStringTable;
-use structs::Spreadsheet;
 use structs::Stylesheet;
-
-const SUB_DIR: &'static str = "xl/worksheets";
+use structs::Worksheet;
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
-    sheet_index: &usize,
+    sheet_no: &i32,
+    worksheet: &Worksheet,
     shared_string_table: &mut SharedStringTable,
     stylesheet: &mut Stylesheet,
-    drawing_id: &usize,
-    arv: &mut zip::ZipWriter<W>,
-) -> Result<(), XlsxError> {
-    let has_macros = spreadsheet.get_has_macros();
-    let sheet_no = sheet_index + 1;
-
-    let file_name = format!("sheet{}.xml", &sheet_no);
+    has_macros: bool,
+    writer_mng: &mut WriterManager<W>,
+) {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
     {
-        let worksheet = spreadsheet.get_sheet(sheet_index.clone()).unwrap();
-
         // XML header
         let _ = writer.write_event(Event::Decl(BytesDecl::new(
             b"1.0",
@@ -401,13 +393,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         }
 
         // oleObjects
-        let ole_id = (1000 * drawing_id) + 25;
+        let ole_id = 1000 + 25;
         worksheet
             .get_ole_objects()
             .write_to(&mut writer, &r_id, &ole_id);
     }
 
     write_end_tag(&mut writer, "worksheet");
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
-    Ok(())
+
+    let target = format!("xl/worksheets/sheet{}.xml", sheet_no);
+    writer_mng.add_writer(&target, writer);
 }

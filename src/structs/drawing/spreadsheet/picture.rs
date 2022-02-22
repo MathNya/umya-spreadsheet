@@ -6,6 +6,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -51,12 +52,11 @@ impl Picture {
         self.shape_properties = value;
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         let mut buf = Vec::new();
 
@@ -67,7 +67,9 @@ impl Picture {
                         &mut self.non_visual_picture_properties.set_attributes(reader, e);
                     }
                     b"xdr:blipFill" => {
-                        &mut self.blip_fill.set_attributes(reader, e, arv, target);
+                        &mut self
+                            .blip_fill
+                            .set_attributes(reader, e, drawing_relationships);
                     }
                     b"xdr:spPr" => {
                         &mut self.shape_properties.set_attributes(reader, e);

@@ -7,18 +7,18 @@ use std::{io, result};
 use structs::DefinedName;
 use structs::Spreadsheet;
 use structs::WorkbookView;
+use structs::Worksheet;
 
 const FILE_PATH: &'static str = "xl/workbook.xml";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
-) -> result::Result<(Spreadsheet, Vec<(String, String, String)>, Vec<DefinedName>), XlsxError> {
+) -> result::Result<Spreadsheet, XlsxError> {
     let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut buf = Vec::new();
     let mut spreadsheet = Spreadsheet::default();
-    let mut sheets: Vec<(String, String, String)> = Vec::new();
 
     let mut defined_name_value = String::from("");
     let mut is_local_only = false;
@@ -37,7 +37,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let name_value = get_attribute(e, b"name").unwrap();
                     let sheet_id_value = get_attribute(e, b"sheetId").unwrap();
                     let r_id_value = get_attribute(e, b"r:id").unwrap();
-                    sheets.push((name_value, sheet_id_value, r_id_value));
+                    let mut worksheet = Worksheet::default();
+                    worksheet.set_title(name_value);
+                    worksheet.set_sheet_id(sheet_id_value);
+                    worksheet.set_r_id(r_id_value);
+                    let _ = spreadsheet.add_sheet(worksheet);
                 }
                 _ => (),
             },
@@ -72,5 +76,13 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         }
         buf.clear();
     }
-    Ok((spreadsheet, sheets, defined_names))
+    for sheet in spreadsheet.get_sheet_collection_mut() {
+        for defined_name in &defined_names {
+            let def_sheet_name = defined_name.get_address_obj().get_sheet_name();
+            if sheet.get_title() == def_sheet_name {
+                sheet.add_defined_names(defined_name.clone());
+            }
+        }
+    }
+    Ok(spreadsheet)
 }

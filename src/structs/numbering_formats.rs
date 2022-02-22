@@ -28,7 +28,7 @@ impl NumberingFormats {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
+    pub(crate) fn _init_setup(&mut self) -> &mut Self {
         self.get_build_in_formats();
         self
     }

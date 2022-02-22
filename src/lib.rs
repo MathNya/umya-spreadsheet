@@ -8,7 +8,7 @@
 //! ## Support Status
 //! | Function | Remarks |
 //! | --- | --- |
-//! | file | read, write |
+//! | file | read, lazy_read, write |
 //! | cell value | read, edit, formated value. |
 //! | cell style | read, edit |
 //! | columns | read, edit, auto width |
@@ -26,6 +26,12 @@
 //! // reader
 //! let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
 //! let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+//! // or
+//! // lazy reader
+//! //  Delays the loading of the worksheet until it is needed.
+//! //  When loading a file with a large amount of data, response improvement can be expected.
+//! let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
+//! let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 //! // or
 //! // new file
 //! let mut book = umya_spreadsheet::new_file();
@@ -207,7 +213,7 @@ pub use self::structs::*;
 pub fn new_file() -> structs::Spreadsheet {
     let mut spreadsheet = structs::Spreadsheet::default();
     spreadsheet.set_theme(Theme::get_defalut_value());
-    spreadsheet.get_cell_styles_mut().set_defalut_value();
+    spreadsheet.set_stylesheet_defalut_value();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
     spreadsheet

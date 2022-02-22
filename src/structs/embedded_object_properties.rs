@@ -6,9 +6,8 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
-use reader::xlsx::media;
-use reader::xlsx::worksheet_rels;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use structs::Image;
 use writer::driver::*;
 
@@ -83,22 +82,21 @@ impl EmbeddedObjectProperties {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        sheet_name: &str,
+        relationships: &RawRelationships,
     ) {
         let r_id = get_attribute(e, b"r:id").unwrap();
-        let (_, target_value) = worksheet_rels::read_rid(arv, sheet_name, &r_id).unwrap();
+        let attached_file = relationships.get_relationship_by_rid(r_id).get_raw_file();
 
-        let v: Vec<&str> = target_value.split('/').collect();
-        let object_name = v.last().unwrap().clone();
-        &mut self.get_image_mut().set_image_name(object_name);
         &mut self
             .get_image_mut()
-            .set_image_data(media::read(arv, &target_value).unwrap());
+            .set_image_name(attached_file.get_file_name());
+        &mut self
+            .get_image_mut()
+            .set_image_data(attached_file.get_file_data().clone());
 
         match get_attribute(e, b"defaultSize") {
             Some(v) => {

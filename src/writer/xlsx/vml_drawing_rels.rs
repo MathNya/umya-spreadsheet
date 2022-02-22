@@ -3,17 +3,14 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
-use super::XlsxError;
 use structs::Worksheet;
-
-const SUB_DIR: &'static str = "xl/drawings/_rels";
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
-    drawing_id: &usize,
-    arv: &mut zip::ZipWriter<W>,
-) -> Result<(), XlsxError> {
-    let file_name = format!("vmlDrawing{}.vml.rels", drawing_id);
+    vml_drawing_no: &str,
+    writer_mng: &mut WriterManager<W>,
+) {
     let mut is_write = false;
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -56,9 +53,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
+        let file_path = format!("xl/drawings/_rels/vmlDrawing{}.vml.rels", vml_drawing_no);
+        writer_mng.add_writer(&file_path, writer);
     }
-    Ok(())
 }
 
 fn write_relationship(

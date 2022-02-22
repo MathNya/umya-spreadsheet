@@ -25,14 +25,6 @@ impl Fills {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
-        let obj = Fill::get_defalut_value();
-        self.set_fill(obj);
-        let obj = Fill::get_defalut_value_2();
-        self.set_fill(obj);
-        self
-    }
-
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_fill() {
             Some(v) => {

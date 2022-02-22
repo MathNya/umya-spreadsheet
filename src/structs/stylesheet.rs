@@ -116,7 +116,7 @@ impl Stylesheet {
         &mut self.cell_styles
     }
 
-    pub(crate) fn set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
+    pub(crate) fn _set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
         self.cell_styles = value;
         self
     }
@@ -144,17 +144,6 @@ impl Stylesheet {
 
     pub(crate) fn _set_colors(&mut self, value: Colors) -> &mut Self {
         self.colors = value;
-        self
-    }
-
-    pub(crate) fn init_setup(&mut self, cell_styles: CellStyles) -> &mut Self {
-        self.numbering_formats.init_setup();
-        self.fonts.init_setup();
-        self.fills.init_setup();
-        self.borders.init_setup();
-        self.cell_style_formats.init_setup();
-        self.cell_formats.init_setup();
-        self.set_cell_styles(cell_styles);
         self
     }
 
@@ -324,6 +313,12 @@ impl Stylesheet {
         }
 
         self.cell_formats.set_cell_format_crate(cell_format)
+    }
+
+    pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
+        let style = Style::get_defalut_value();
+        self.set_style(&style);
+        self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

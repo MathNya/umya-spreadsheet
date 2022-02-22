@@ -4,6 +4,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -24,12 +25,11 @@ impl Graphic {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         let mut buf = Vec::new();
 
@@ -37,7 +37,9 @@ impl Graphic {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:graphicData" => {
-                        &mut self.graphic_data.set_attributes(reader, e, arv, target);
+                        &mut self
+                            .graphic_data
+                            .set_attributes(reader, e, drawing_relationships);
                     }
                     _ => (),
                 },

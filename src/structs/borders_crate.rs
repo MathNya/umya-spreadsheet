@@ -25,12 +25,6 @@ impl BordersCrate {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
-        let obj = Borders::get_defalut_value();
-        self.set_borders(obj);
-        self
-    }
-
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_borders() {
             Some(v) => {

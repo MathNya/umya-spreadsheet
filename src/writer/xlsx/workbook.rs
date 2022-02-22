@@ -3,15 +3,13 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
-use super::XlsxError;
 use structs::Spreadsheet;
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
-    arv: &mut zip::ZipWriter<W>,
-    sub_dir: &str,
-    file_name: &str,
-) -> Result<(), XlsxError> {
+    writer_mng: &mut WriterManager<W>,
+) {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(
@@ -113,24 +111,20 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // // sheets
     write_start_tag(&mut writer, "sheets", vec![], false);
-    for i in 0..spreadsheet.get_sheet_count() {
-        let id = (i + 1).to_string();
-        let r_id = format!("rId{}", (i + 1 + 3).to_string());
+
+    let mut index = 1;
+    for worksheet in spreadsheet.get_sheet_collection_no_check() {
+        let id = index.to_string();
+        let r_id = format!("rId{}", index);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", spreadsheet.get_sheet_collection()[i].get_title()));
-        attributes.push(("sheetId", id.as_str()));
-        if spreadsheet.get_sheet_collection()[i].get_sheet_state() != "visible"
-            && spreadsheet.get_sheet_collection()[i].get_sheet_state() != ""
-        {
-            attributes.push((
-                "state",
-                spreadsheet.get_sheet_collection()[i].get_sheet_state(),
-            ));
-        }
-        attributes.push(("r:id", r_id.as_str()));
+        attributes.push(("name", worksheet.get_title()));
+        attributes.push(("sheetId", &id));
+        attributes.push(("r:id", &r_id));
 
         // sheet
         write_start_tag(&mut writer, "sheet", attributes, true);
+
+        index += 1;
     }
     write_end_tag(&mut writer, "sheets");
 
@@ -138,7 +132,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if spreadsheet.has_defined_names() {
         write_start_tag(&mut writer, "definedNames", vec![], false);
 
-        for sheet in spreadsheet.get_sheet_collection() {
+        for sheet in spreadsheet.get_sheet_collection_no_check() {
             for defined_name in sheet.get_defined_names() {
                 // definedName
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -172,6 +166,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     );
 
     write_end_tag(&mut writer, "workbook");
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(sub_dir)).unwrap();
-    Ok(())
+    let _ =
+        make_file_from_writer("xl/workbook.xml", writer_mng.get_arv_mut(), writer, None).unwrap();
 }

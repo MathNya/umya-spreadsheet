@@ -4,28 +4,27 @@ use std::path::Path;
 use std::string::FromUtf8Error;
 
 use super::driver;
+use structs::raw::RawWorksheet;
+use structs::SharedStringTable;
 use structs::Spreadsheet;
+use structs::Stylesheet;
+use structs::Theme;
+use structs::Worksheet;
 
 pub(crate) mod chart;
-mod comment;
+pub(crate) mod comment;
 mod doc_props_app;
 mod doc_props_core;
-mod drawing;
-pub(crate) mod drawing_rels;
-pub(crate) mod embeddings;
-pub(crate) mod media;
-pub(crate) mod printer_settings;
+pub(crate) mod drawing;
 mod rels;
 mod shared_strings;
 mod styles;
 mod theme;
 mod vba_project_bin;
-mod vml_drawing;
-pub(crate) mod vml_drawing_rels;
+pub(crate) mod vml_drawing;
 mod workbook;
 mod workbook_rels;
-mod worksheet;
-pub(crate) mod worksheet_rels;
+pub(crate) mod worksheet;
 
 #[derive(Debug)]
 pub enum XlsxError {
@@ -64,10 +63,13 @@ impl From<FromUtf8Error> for XlsxError {
 /// * `reader` - reader to read from.
 /// # Return value
 /// * `Result` - OK is Spreadsheet. Err is error message.
-pub fn read_reader<R: io::Read + io::Seek>(reader: R) -> Result<Spreadsheet, XlsxError> {
+pub fn read_reader<R: io::Read + io::Seek>(
+    reader: R,
+    with_sheet_read: bool,
+) -> Result<Spreadsheet, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
-    let (mut book, sheets, defined_names) = workbook::read(&mut arv).unwrap();
+    let mut book = workbook::read(&mut arv).unwrap();
     doc_props_app::read(&mut arv, &mut book).unwrap();
     doc_props_core::read(&mut arv, &mut book).unwrap();
     vba_project_bin::read(&mut arv, &mut book).unwrap();
@@ -82,65 +84,25 @@ pub fn read_reader<R: io::Read + io::Seek>(reader: R) -> Result<Spreadsheet, Xls
             _ => {}
         }
     }
-    let theme = book.get_theme().clone();
+    let _theme = book.get_theme().clone();
 
     shared_strings::read(&mut arv, &mut book).unwrap();
     styles::read(&mut arv, &mut book).unwrap();
 
-    for (sheets_name, sheets_sheet_id, sheets_rid) in &sheets {
-        for (rel_id, _, rel_target) in &workbook_rel {
-            if sheets_rid == rel_id {
-                let (_drawing_id, legacy_drawing_id, hyperlink_vec) = worksheet::read(
-                    &mut arv,
-                    &rel_target,
-                    &mut book,
-                    sheets_sheet_id,
-                    sheets_name,
-                )
-                .unwrap();
-                let worksheet = book.get_sheet_by_sheet_id_mut(sheets_sheet_id).unwrap();
-                let worksheet_rel =
-                    worksheet_rels::read(&mut arv, &rel_target, &hyperlink_vec, worksheet).unwrap();
-                for (_worksheet_id, type_value, worksheet_target) in &worksheet_rel {
-                    match type_value.as_str() {
-                        // drawing, chart
-                        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
-                            drawing::read(&mut arv, &worksheet_target, worksheet).unwrap();
-                        },
-                        // comment
-                        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
-                            let _ = comment::read(&mut arv, &worksheet_target, worksheet, &theme).unwrap();
-                        },
-                        _ => {}
-                    }
-                }
-                for (worksheet_id, _type_value, worksheet_target) in &worksheet_rel {
-                    match &legacy_drawing_id {
-                        Some(v) => {
-                            if v == worksheet_id {
-                                let _ = vml_drawing::read(&mut arv, worksheet_target, worksheet)
-                                    .unwrap();
-                            }
-                        }
-                        None => {}
-                    }
-                }
-            }
-        }
-    }
-
     for sheet in book.get_sheet_collection_mut() {
-        for defined_name in &defined_names {
-            let def_sheet_name = defined_name.get_address_obj().get_sheet_name();
-            if sheet.get_title() == def_sheet_name {
-                sheet.add_defined_names(defined_name.clone());
+        for (rel_id, _, rel_target) in &workbook_rel {
+            if sheet.get_r_id() != rel_id {
+                continue;
             }
+            let mut raw_worksheet = RawWorksheet::default();
+            raw_worksheet.read(&mut arv, &rel_target);
+            sheet.set_raw_data_of_worksheet(raw_worksheet);
         }
     }
 
-    book.remove_shared_string_table();
-    book.remove_stylesheet();
-    book.get_cell_styles_mut().set_defalut_value();
+    if with_sheet_read {
+        book.read_sheet_collection();
+    }
 
     Ok(book)
 }
@@ -157,16 +119,84 @@ pub fn read_reader<R: io::Read + io::Seek>(reader: R) -> Result<Spreadsheet, Xls
 /// ```
 pub fn read(path: &Path) -> Result<Spreadsheet, XlsxError> {
     let file = File::open(path)?;
-    read_reader(file)
+    read_reader(file, true)
 }
 
-fn _get_vml_drawing_target(worksheet_rel: &Vec<(String, String, String)>) -> &str {
-    for (_, type_value, worksheet_target) in worksheet_rel {
-        if type_value
-            == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
-        {
-            return worksheet_target;
+/// lazy read spreadsheet file.
+/// Delays the loading of the worksheet until it is needed.
+/// When loading a file with a large amount of data, response improvement can be expected.
+/// # Arguments
+/// * `path` - file path to read.
+/// # Return value
+/// * `Result` - OK is Spreadsheet. Err is error message.
+/// # Examples
+/// ```
+/// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+/// let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+/// ```
+pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
+    let file = File::open(path)?;
+    read_reader(file, false)
+}
+
+pub(crate) fn raw_to_serialize_by_worksheet(
+    worksheet: &mut Worksheet,
+    theme: &Theme,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+) {
+    if worksheet.is_serialized() {
+        return;
+    }
+
+    let raw_data_of_worksheet = worksheet.get_raw_data_of_worksheet().clone();
+    worksheet::read(
+        worksheet,
+        &raw_data_of_worksheet,
+        theme,
+        shared_string_table,
+        stylesheet,
+    )
+    .unwrap();
+
+    for relationship in raw_data_of_worksheet
+        .get_relationships()
+        .get_relationship_list()
+    {
+        match relationship.get_type() {
+            // drawing, chart
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
+                drawing::read(
+                    worksheet,
+                    relationship.get_raw_file(),
+                    raw_data_of_worksheet.get_drawing_relationships(),
+                )
+                .unwrap();
+            }
+            // comment
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
+                let _ = comment::read(worksheet, relationship.get_raw_file()).unwrap();
+            }
+            _ => {}
         }
     }
-    ""
+    for relationship in raw_data_of_worksheet
+        .get_relationships()
+        .get_relationship_list()
+    {
+        match relationship.get_type() {
+            // vmlDrawing
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" => {
+                let _ = vml_drawing::read(
+                    worksheet,
+                    relationship.get_raw_file(),
+                    raw_data_of_worksheet.get_vml_drawing_relationships(),
+                )
+                .unwrap();
+            }
+            _ => {}
+        }
+    }
+
+    worksheet.remove_raw_data_of_worksheet();
 }

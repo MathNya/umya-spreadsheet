@@ -6,9 +6,8 @@ use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
-use reader::xlsx::printer_settings;
-use reader::xlsx::worksheet_rels;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -127,12 +126,11 @@ impl PageSetup {
         false
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        relationships: &RawRelationships,
     ) {
         match get_attribute(e, b"paperSize") {
             Some(v) => {
@@ -185,12 +183,8 @@ impl PageSetup {
 
         match get_attribute(e, b"r:id") {
             Some(r_id) => {
-                let (_, target_value) = worksheet_rels::read_rid(arv, target, &r_id).unwrap();
-
-                let v: Vec<&str> = target_value.split('/').collect();
-                let object_name = v.last().unwrap().clone();
-
-                self.set_object_data(printer_settings::read(arv, object_name).unwrap());
+                let attached_file = relationships.get_relationship_by_rid(r_id).get_raw_file();
+                self.set_object_data(attached_file.get_file_data().clone());
             }
             None => {}
         }

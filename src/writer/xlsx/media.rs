@@ -1,19 +1,14 @@
 use std::io;
 
-use super::driver::*;
-use super::XlsxError;
-use structs::Image;
+use structs::Worksheet;
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    images: Vec<&Image>,
-    arv: &mut zip::ZipWriter<W>,
-    sub_dir: &str,
-) -> Result<(), XlsxError> {
-    for image in images {
-        let file_name = image.get_image_name();
-        let writer = image.get_image_data().as_ref();
-        let _ = make_file_from_bin(file_name, arv, writer, Some(sub_dir)).unwrap();
+    worksheet: &Worksheet,
+    writer_mng: &mut WriterManager<W>,
+) {
+    for image in worksheet.get_image_collection() {
+        let file_name = format!("xl/media/{}", image.get_image_name());
+        writer_mng.add_bin(&file_name, image.get_image_data());
     }
-
-    Ok(())
 }

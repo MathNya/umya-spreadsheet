@@ -3,18 +3,15 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
-use super::XlsxError;
 use structs::Worksheet;
-
-const SUB_DIR: &'static str = "xl/drawings/_rels";
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
-    drawing_id: &usize,
-    chart_start_id: &usize,
-    arv: &mut zip::ZipWriter<W>,
-) -> Result<(), XlsxError> {
-    let file_name = format!("drawing{}.xml.rels", drawing_id);
+    drawing_no: &str,
+    chart_no_list: &Vec<String>,
+    writer_mng: &mut WriterManager<W>,
+) {
     let mut is_write = false;
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -38,17 +35,15 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     );
 
     let mut r_id = 1;
-    let mut chart_id = chart_start_id.clone();
-    for _chart in worksheet.get_worksheet_drawing().get_chart_collection() {
+    for chart_no in chart_no_list {
         is_write = write_relationship(
             &mut writer,
             &r_id,
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
-            format!("../charts/chart{}.xml", chart_id).as_str(),
+            format!("../charts/chart{}.xml", chart_no).as_str(),
             "",
         );
         r_id += 1;
-        chart_id += 1;
     }
     for two_cell_anchor in worksheet
         .get_worksheet_drawing()
@@ -80,9 +75,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
+        let file_path = format!("xl/drawings/_rels/drawing{}.xml.rels", drawing_no);
+        writer_mng.add_writer(&file_path, writer);
     }
-    Ok(())
 }
 
 fn write_relationship(

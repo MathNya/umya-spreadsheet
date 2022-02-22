@@ -8,7 +8,7 @@
 ## Support Status
 | Function | Remarks |
 | --- | --- |
-| file | read, write |
+| file | read, lazy_read, write |
 | cell value | read, edit, formated value. |
 | cell style | read, edit |
 | columns | read, edit, auto width |
@@ -26,6 +26,12 @@ extern crate umya_spreadsheet;
 // reader
 let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
 let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+// or
+// lazy reader
+//  Delays the loading of the worksheet until it is needed.
+//  When loading a file with a large amount of data, response improvement can be expected.
+let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
+let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 // or
 // new file
 let mut book = umya_spreadsheet::new_file();

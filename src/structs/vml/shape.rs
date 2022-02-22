@@ -11,6 +11,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use structs::EnumValue;
 use structs::StringValue;
 use structs::TrueFalseValue;
@@ -198,12 +199,11 @@ impl Shape {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         match get_attribute(e, b"type") {
             Some(v) => {
@@ -280,7 +280,7 @@ impl Shape {
                     }
                     b"v:imagedata" => {
                         let mut obj = ImageData::default();
-                        obj.set_attributes(reader, e, arv, target);
+                        obj.set_attributes(reader, e, drawing_relationships);
                         self.set_image_data(obj);
                     }
                     _ => (),

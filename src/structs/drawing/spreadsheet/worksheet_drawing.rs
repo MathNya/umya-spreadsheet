@@ -9,6 +9,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use structs::Chart;
 use structs::OleObjects;
 use writer::driver::*;
@@ -169,12 +170,11 @@ impl WorksheetDrawing {
         result
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
         ole_objects: &mut OleObjects,
     ) {
         let mut ole_index = 0;
@@ -201,12 +201,12 @@ impl WorksheetDrawing {
                                 .set_is_alternate_content(true);
                             ole_objects.get_ole_object_mut()[ole_index]
                                 .get_two_cell_anchor_mut()
-                                .set_attributes(reader, e, arv, target);
+                                .set_attributes(reader, e, drawing_relationships);
                             ole_index += 1;
                             continue;
                         }
                         let mut obj = TwoCellAnchor::default();
-                        obj.set_attributes(reader, e, arv, target);
+                        obj.set_attributes(reader, e, drawing_relationships);
                         if obj.is_support() {
                             if obj.is_chart() {
                                 let mut chart = Chart::default();
@@ -234,12 +234,7 @@ impl WorksheetDrawing {
         }
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-        drawing_id: &usize,
-        ole_objects: &OleObjects,
-    ) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_objects: &OleObjects) {
         // xdr:wsDr
         write_start_tag(
             writer,
@@ -273,7 +268,7 @@ impl WorksheetDrawing {
 
         // mc:AlternateContent
         let mut r_id = 1;
-        let mut ole_id = (1000 * drawing_id) + 25;
+        let mut ole_id = 1000 + 25;
         for ole_object in ole_objects.get_ole_object() {
             ole_object
                 .get_two_cell_anchor()

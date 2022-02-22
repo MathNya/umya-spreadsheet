@@ -24,12 +24,6 @@ impl CellFormats {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
-        let obj = CellFormat::get_defalut_value();
-        self.set_cell_format(obj);
-        self
-    }
-
     pub(crate) fn set_cell_format_crate(&mut self, value: CellFormat) -> u32 {
         let hash_code = value.get_hash_code();
         let mut id = 0;

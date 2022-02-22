@@ -4,9 +4,8 @@ use std::path::Path;
 use std::string::FromUtf8Error;
 
 use super::driver;
-use structs::SharedStringTable;
 use structs::Spreadsheet;
-use structs::Stylesheet;
+use structs::WriterManager;
 
 mod chart;
 mod comment;
@@ -72,118 +71,153 @@ pub fn write_writer<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
     writer: W,
 ) -> Result<(), XlsxError> {
-    let mut arv = zip::ZipWriter::new(writer);
-
-    // Add Content_Types
-    let _ = content_types::write(spreadsheet, &mut arv, "[Content_Types].xml");
+    let arv = zip::ZipWriter::new(writer);
+    let mut writer_manager = WriterManager::new(arv);
 
     // Add docProps App
-    let _ = doc_props_app::write(spreadsheet, &mut arv, "docProps", "app.xml");
+    let _ = doc_props_app::write(
+        spreadsheet,
+        writer_manager.get_arv_mut(),
+        "docProps",
+        "app.xml",
+    );
 
     // Add docProps Core
-    let _ = doc_props_core::write(spreadsheet, &mut arv, "docProps", "core.xml");
+    let _ = doc_props_core::write(
+        spreadsheet,
+        writer_manager.get_arv_mut(),
+        "docProps",
+        "core.xml",
+    );
 
     // Add vbaProject.bin
-    let _ = vba_project_bin::write(spreadsheet, &mut arv, "xl", "vbaProject.bin");
+    let _ = vba_project_bin::write(
+        spreadsheet,
+        writer_manager.get_arv_mut(),
+        "xl",
+        "vbaProject.bin",
+    );
 
     // Add relationships
-    let _ = rels::write(spreadsheet, &mut arv, "_rels", ".rels");
-    let _ = workbook_rels::write(spreadsheet, &mut arv, "xl/_rels", "workbook.xml.rels");
+    let _ = rels::write(spreadsheet, writer_manager.get_arv_mut(), "_rels", ".rels");
 
     // Add theme
-    let _ = theme::write(spreadsheet.get_theme(), &mut arv, "xl/theme", "theme1.xml");
+    let _ = theme::write(
+        spreadsheet.get_theme(),
+        writer_manager.get_arv_mut(),
+        "xl/theme",
+        "theme1.xml",
+    );
 
-    // Add workbook
-    let _ = workbook::write(spreadsheet, &mut arv, "xl", "workbook.xml");
-
-    // Add worksheets and relationships (drawings, ...)
-    let mut chart_id = 1;
-    let mut drawing_id = 1;
-    let mut vml_drawing_id = 1;
-    let mut comment_id = 1;
-    let mut ole_bin_id = 1;
-    let mut ole_excel_id = 1;
-    let mut printer_settings_id = 1;
-    let mut shared_string_table = SharedStringTable::default();
-    shared_string_table.init_setup();
-    let mut stylesheet = Stylesheet::default();
-    stylesheet.init_setup(spreadsheet.get_cell_styles().clone());
-    for i in 0..spreadsheet.get_sheet_count() {
-        let p_worksheet_id: &str = &(i + 1).to_string();
-        let _ = worksheet::write(
-            &spreadsheet,
-            &i,
-            &mut shared_string_table,
-            &mut stylesheet,
-            &drawing_id,
-            &mut arv,
-        );
-        let worksheet = &spreadsheet.get_sheet_collection()[i];
-        let _ = worksheet_rels::write(
-            worksheet,
-            p_worksheet_id,
-            &drawing_id,
-            &vml_drawing_id,
-            &comment_id,
-            &mut arv,
-            &ole_bin_id,
-            &ole_excel_id,
-            &printer_settings_id,
-        );
-        let _ = drawing::write(worksheet, &drawing_id, &mut arv);
-        let _ = drawing_rels::write(worksheet, &drawing_id, &chart_id, &mut arv);
-        let _ = comment::write(worksheet, &comment_id, &mut arv);
-        let _ = vml_drawing::write(worksheet, &drawing_id, &vml_drawing_id, &mut arv);
-        let _ = vml_drawing_rels::write(worksheet, &vml_drawing_id, &mut arv);
-
-        if worksheet.has_drawing_object() {
-            drawing_id += 1;
+    // worksheet
+    let mut shared_string_table = spreadsheet.get_shared_string_table().clone();
+    let mut stylesheet = spreadsheet.get_stylesheet().clone();
+    let mut worksheet_no = 1;
+    for worksheet in spreadsheet.get_sheet_collection_no_check() {
+        match worksheet.is_serialized() {
+            false => {
+                // from no serialized.
+                worksheet
+                    .get_raw_data_of_worksheet()
+                    .write_to(&worksheet_no, &mut writer_manager);
+            }
+            true => {
+                // from serialized.
+                worksheet::write(
+                    &worksheet_no,
+                    worksheet,
+                    &mut shared_string_table,
+                    &mut stylesheet,
+                    spreadsheet.get_has_macros(),
+                    &mut writer_manager,
+                );
+            }
         }
-
-        if worksheet.has_comments() {
-            comment_id += 1;
-        }
-
-        if worksheet.has_legacy_drawing() {
-            vml_drawing_id += 1;
-        }
-
-        for chart in worksheet.get_worksheet_drawing().get_chart_collection() {
-            let chart_space = chart.get_chart_space();
-            let _ = chart::write(chart_space, &chart_id, &mut arv, spreadsheet);
-            chart_id += 1;
-        }
-
-        let _ = embeddings::write(
-            worksheet,
-            &mut arv,
-            "xl/embeddings",
-            &mut ole_bin_id,
-            &mut ole_excel_id,
-        );
-
-        if worksheet.get_page_setup().get_object_data().is_some() {
-            let _ = printer_settings::write(
-                worksheet,
-                &mut arv,
-                "xl/printerSettings",
-                &mut printer_settings_id,
-            );
-            printer_settings_id += 1;
-        }
+        worksheet_no += 1;
     }
 
-    // Add Media
-    let images = spreadsheet.get_image_collection();
-    let _ = media::write(images, &mut arv, "xl/media");
+    // Objects associated with worksheets
+    let mut worksheet_no = 1;
+    for worksheet in spreadsheet.get_sheet_collection_no_check() {
+        match worksheet.is_serialized() {
+            false => {
+                // from no serialized.
+            }
+            true => {
+                // from serialized.
+                // Add charts
+                let mut chart_no_list: Vec<String> = Vec::new();
+                for chart in worksheet.get_worksheet_drawing().get_chart_collection() {
+                    let chart_space = chart.get_chart_space();
+                    let chart_no = chart::write(chart_space, spreadsheet, &mut writer_manager);
+                    chart_no_list.push(chart_no);
+                }
+
+                // Add drawing
+                let drawing_no = drawing::write(worksheet, &mut writer_manager);
+
+                // Add drawing rels
+                drawing_rels::write(worksheet, &drawing_no, &chart_no_list, &mut writer_manager);
+
+                // Add vml drawing
+                let vml_drawing_no = vml_drawing::write(worksheet, &mut writer_manager);
+
+                // Add vml drawing rels
+                vml_drawing_rels::write(worksheet, &vml_drawing_no, &mut writer_manager);
+
+                // Add comment
+                let comment_no = comment::write(worksheet, &mut writer_manager);
+
+                // Add ole_object and excel
+                let (ole_object_no_list, excel_no_list) =
+                    embeddings::write(worksheet, &mut writer_manager);
+
+                // Add Media
+                media::write(worksheet, &mut writer_manager);
+
+                // Add printer_settings
+                let printer_settings_no = match worksheet.get_page_setup().get_object_data() {
+                    Some(_) => printer_settings::write(worksheet, &mut writer_manager),
+                    None => String::from(""),
+                };
+
+                // Add worksheet rels
+                worksheet_rels::write(
+                    worksheet,
+                    &worksheet_no.to_string(),
+                    &drawing_no,
+                    &vml_drawing_no,
+                    &comment_no,
+                    &ole_object_no_list,
+                    &excel_no_list,
+                    &printer_settings_no,
+                    &mut writer_manager,
+                );
+            }
+        }
+        worksheet_no += 1;
+    }
+
+    // file list sort
+    writer_manager.file_list_sort();
 
     // Add SharedStrings
-    let _ = shared_strings::write(&shared_string_table, &mut arv).unwrap();
+    let _ = shared_strings::write(&shared_string_table, writer_manager.get_arv_mut()).unwrap();
 
     // Add Styles
-    let _ = styles::write(&stylesheet, &mut arv).unwrap();
+    let _ = styles::write(&stylesheet, writer_manager.get_arv_mut()).unwrap();
 
-    arv.finish()?;
+    // Add workbook
+    workbook::write(spreadsheet, &mut writer_manager);
+
+    // Add workbook relationships
+    let has_shared_string_table = shared_string_table.has_value();
+    workbook_rels::write(spreadsheet, has_shared_string_table, &mut writer_manager);
+
+    // Add Content_Types
+    content_types::write(spreadsheet, &mut writer_manager);
+
+    writer_manager.get_arv_mut().finish()?;
     Ok(())
 }
 

@@ -3,21 +3,16 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
-use super::XlsxError;
 use structs::Worksheet;
-
-const SUB_DIR: &'static str = "xl/drawings";
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
-    drawing_id: &usize,
-    arv: &mut zip::ZipWriter<W>,
-) -> Result<(), XlsxError> {
+    writer_mng: &mut WriterManager<W>,
+) -> String {
     if worksheet.has_drawing_object() == false {
-        return Ok(());
+        return String::from("");
     }
-
-    let file_name = format!("drawing{}.xml", drawing_id);
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
@@ -28,12 +23,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     )));
     write_new_line(&mut writer);
 
-    worksheet.get_worksheet_drawing().write_to(
-        &mut writer,
-        drawing_id,
-        worksheet.get_ole_objects(),
-    );
+    worksheet
+        .get_worksheet_drawing()
+        .write_to(&mut writer, worksheet.get_ole_objects());
 
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(SUB_DIR)).unwrap();
-    Ok(())
+    let file_no = writer_mng.add_file_at_drawing(writer);
+    file_no.to_string()
 }

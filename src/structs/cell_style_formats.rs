@@ -24,12 +24,6 @@ impl CellStyleFormats {
         self
     }
 
-    pub(crate) fn init_setup(&mut self) -> &mut Self {
-        let obj = CellFormat::get_defalut_value();
-        self.set_cell_format(obj);
-        self
-    }
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

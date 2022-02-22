@@ -3,9 +3,8 @@ use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
-use reader::xlsx::drawing_rels;
-use reader::xlsx::media;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use structs::Image;
 use writer::driver::*;
 
@@ -35,12 +34,11 @@ impl Blip {
         self.cstate = value.into();
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: std::io::Read + std::io::Seek>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
-        arv: &mut zip::read::ZipArchive<A>,
-        target: &str,
+        drawing_relationships: &RawRelationships,
     ) {
         match get_attribute(e, b"cstate") {
             Some(v) => {
@@ -50,17 +48,13 @@ impl Blip {
         }
 
         let picture_id = get_attribute(e, b"r:embed").unwrap();
-        let drawing_rel = drawing_rels::read(arv, target).unwrap();
-        for (drawing_id, _, drawing_target) in &drawing_rel {
-            if &picture_id == drawing_id {
-                let v: Vec<&str> = drawing_target.split('/').collect();
-                let image_name = v.last().unwrap().clone();
-                &mut self.get_image_mut().set_image_name(image_name);
-                &mut self
-                    .get_image_mut()
-                    .set_image_data(media::read(arv, &drawing_target).unwrap());
-            }
-        }
+        let relationship = drawing_relationships.get_relationship_by_rid(picture_id);
+        &mut self
+            .get_image_mut()
+            .set_image_name(relationship.get_raw_file().get_file_name());
+        &mut self
+            .get_image_mut()
+            .set_image_data(relationship.get_raw_file().get_file_data().clone());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
