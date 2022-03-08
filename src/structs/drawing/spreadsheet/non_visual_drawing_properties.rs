@@ -46,13 +46,12 @@ impl NonVisualDrawingProperties {
         e: &BytesStart,
         empty_flg: bool,
     ) {
-        &mut self.id.set_value_string(get_attribute(e, b"id").unwrap());
-        &mut self
-            .name
+        self.id.set_value_string(get_attribute(e, b"id").unwrap());
+        self.name
             .set_value_string(get_attribute(e, b"name").unwrap());
         match get_attribute(e, b"hidden") {
             Some(v) => {
-                &mut self.hidden.set_value_string(v);
+                self.hidden.set_value_string(v);
             }
             None => {}
         }

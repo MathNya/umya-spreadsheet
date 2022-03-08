@@ -178,10 +178,10 @@ impl LineChart {
         write_start_tag(writer, "c:lineChart", vec![], false);
 
         // c:grouping
-        &self.grouping.write_to(writer);
+        self.grouping.write_to(writer);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -189,13 +189,13 @@ impl LineChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         // c:marker
-        &self.show_marker.write_to(writer);
+        self.show_marker.write_to(writer);
 
         // c:smooth
-        &self.smooth.write_to(writer);
+        self.smooth.write_to(writer);
 
         // c:axId
         for v in &self.axis_id {

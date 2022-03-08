@@ -80,7 +80,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
         writer_manager.get_arv_mut(),
         "docProps",
         "app.xml",
-    );
+    )?;
 
     // Add docProps Core
     let _ = doc_props_core::write(
@@ -88,7 +88,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
         writer_manager.get_arv_mut(),
         "docProps",
         "core.xml",
-    );
+    )?;
 
     // Add vbaProject.bin
     let _ = vba_project_bin::write(
@@ -96,10 +96,10 @@ pub fn write_writer<W: io::Seek + io::Write>(
         writer_manager.get_arv_mut(),
         "xl",
         "vbaProject.bin",
-    );
+    )?;
 
     // Add relationships
-    let _ = rels::write(spreadsheet, writer_manager.get_arv_mut(), "_rels", ".rels");
+    let _ = rels::write(spreadsheet, writer_manager.get_arv_mut(), "_rels", ".rels")?;
 
     // Add theme
     let _ = theme::write(
@@ -107,7 +107,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
         writer_manager.get_arv_mut(),
         "xl/theme",
         "theme1.xml",
-    );
+    )?;
 
     // worksheet
     let mut shared_string_table = spreadsheet.get_shared_string_table().clone();
@@ -119,7 +119,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
                 // from no serialized.
                 worksheet
                     .get_raw_data_of_worksheet()
-                    .write_to(&worksheet_no, &mut writer_manager);
+                    .write(&worksheet_no, &mut writer_manager)?;
             }
             true => {
                 // from serialized.
@@ -130,14 +130,14 @@ pub fn write_writer<W: io::Seek + io::Write>(
                     &mut stylesheet,
                     spreadsheet.get_has_macros(),
                     &mut writer_manager,
-                );
+                )?;
             }
         }
         worksheet_no += 1;
     }
 
     // Objects associated with worksheets
-    let mut worksheet_no = 1;
+    let mut worksheet_no: i32 = 1;
     for worksheet in spreadsheet.get_sheet_collection_no_check() {
         match worksheet.is_serialized() {
             false => {
@@ -149,35 +149,35 @@ pub fn write_writer<W: io::Seek + io::Write>(
                 let mut chart_no_list: Vec<String> = Vec::new();
                 for chart in worksheet.get_worksheet_drawing().get_chart_collection() {
                     let chart_space = chart.get_chart_space();
-                    let chart_no = chart::write(chart_space, spreadsheet, &mut writer_manager);
+                    let chart_no = chart::write(chart_space, spreadsheet, &mut writer_manager)?;
                     chart_no_list.push(chart_no);
                 }
 
                 // Add drawing
-                let drawing_no = drawing::write(worksheet, &mut writer_manager);
+                let drawing_no = drawing::write(worksheet, &mut writer_manager)?;
 
                 // Add drawing rels
-                drawing_rels::write(worksheet, &drawing_no, &chart_no_list, &mut writer_manager);
+                drawing_rels::write(worksheet, &drawing_no, &chart_no_list, &mut writer_manager)?;
 
                 // Add vml drawing
-                let vml_drawing_no = vml_drawing::write(worksheet, &mut writer_manager);
+                let vml_drawing_no = vml_drawing::write(worksheet, &mut writer_manager)?;
 
                 // Add vml drawing rels
-                vml_drawing_rels::write(worksheet, &vml_drawing_no, &mut writer_manager);
+                vml_drawing_rels::write(worksheet, &vml_drawing_no, &mut writer_manager)?;
 
                 // Add comment
-                let comment_no = comment::write(worksheet, &mut writer_manager);
+                let comment_no = comment::write(worksheet, &mut writer_manager)?;
 
                 // Add ole_object and excel
                 let (ole_object_no_list, excel_no_list) =
-                    embeddings::write(worksheet, &mut writer_manager);
+                    embeddings::write(worksheet, &mut writer_manager)?;
 
                 // Add Media
-                media::write(worksheet, &mut writer_manager);
+                media::write(worksheet, &mut writer_manager)?;
 
                 // Add printer_settings
                 let printer_settings_no = match worksheet.get_page_setup().get_object_data() {
-                    Some(_) => printer_settings::write(worksheet, &mut writer_manager),
+                    Some(_) => printer_settings::write(worksheet, &mut writer_manager)?,
                     None => String::from(""),
                 };
 
@@ -192,7 +192,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
                     &excel_no_list,
                     &printer_settings_no,
                     &mut writer_manager,
-                );
+                )?;
             }
         }
         worksheet_no += 1;
@@ -202,20 +202,20 @@ pub fn write_writer<W: io::Seek + io::Write>(
     writer_manager.file_list_sort();
 
     // Add SharedStrings
-    let _ = shared_strings::write(&shared_string_table, writer_manager.get_arv_mut()).unwrap();
+    let _ = shared_strings::write(&shared_string_table, writer_manager.get_arv_mut())?;
 
     // Add Styles
-    let _ = styles::write(&stylesheet, writer_manager.get_arv_mut()).unwrap();
+    let _ = styles::write(&stylesheet, writer_manager.get_arv_mut())?;
 
     // Add workbook
-    workbook::write(spreadsheet, &mut writer_manager);
+    workbook::write(spreadsheet, &mut writer_manager)?;
 
     // Add workbook relationships
     let has_shared_string_table = shared_string_table.has_value();
-    workbook_rels::write(spreadsheet, has_shared_string_table, &mut writer_manager);
+    workbook_rels::write(spreadsheet, has_shared_string_table, &mut writer_manager)?;
 
     // Add Content_Types
-    content_types::write(spreadsheet, &mut writer_manager);
+    content_types::write(spreadsheet, &mut writer_manager)?;
 
     writer_manager.get_arv_mut().finish()?;
     Ok(())
@@ -234,8 +234,17 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
-    write_writer(
+    let path_tmp = format!("{}.tmp", path.to_str().unwrap());
+    match write_writer(
         spreadsheet,
-        &mut io::BufWriter::new(fs::File::create(path)?),
-    )
+        &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
+    ) {
+        Ok(_) => {}
+        Err(v) => {
+            fs::remove_file(path_tmp)?;
+            return Err(v);
+        }
+    }
+    fs::rename(path_tmp, path.to_str().unwrap())?;
+    Ok(())
 }

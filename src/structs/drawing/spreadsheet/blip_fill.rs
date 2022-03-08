@@ -77,7 +77,7 @@ impl BlipFill {
 
         match get_attribute(e, b"rotWithShape") {
             Some(v) => {
-                &mut self.rotate_with_shape.set_value_string(v);
+                self.rotate_with_shape.set_value_string(v);
             }
             None => {}
         }
@@ -86,10 +86,10 @@ impl BlipFill {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:blip" => {
-                        &mut self.blip.set_attributes(reader, e, drawing_relationships);
+                        self.blip.set_attributes(reader, e, drawing_relationships);
                     }
                     b"a:stretch" => {
-                        &mut self.stretch.set_attributes(reader, e);
+                        self.stretch.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -97,7 +97,7 @@ impl BlipFill {
                     b"a:srcRect" => {
                         let mut source_rectangle = SourceRectangle::default();
                         source_rectangle.set_attributes(reader, e);
-                        &mut self.set_source_rectangle(source_rectangle);
+                        self.set_source_rectangle(source_rectangle);
                     }
                     _ => (),
                 },
@@ -122,7 +122,7 @@ impl BlipFill {
         write_start_tag(writer, "xdr:blipFill", attributes, false);
 
         // a:blip
-        &self.blip.write_to(writer, r_id);
+        let _ = &self.blip.write_to(writer, r_id);
 
         // a:srcRect
         match &self.source_rectangle {
@@ -131,7 +131,7 @@ impl BlipFill {
         }
 
         // a:stretch
-        &self.stretch.write_to(writer);
+        let _ = &self.stretch.write_to(writer);
 
         write_end_tag(writer, "xdr:blipFill");
     }

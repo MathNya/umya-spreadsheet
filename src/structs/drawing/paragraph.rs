@@ -66,28 +66,28 @@ impl Paragraph {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:pPr" => {
-                        &mut self.paragraph_properties.set_attributes(reader, e, false);
+                        self.paragraph_properties.set_attributes(reader, e, false);
                     }
                     b"a:r" => {
                         let mut run = Run::default();
                         run.set_attributes(reader, e);
-                        &mut self.add_run(run);
+                        self.add_run(run);
                     }
                     b"a:endParaRPr" => {
                         let mut run_properties = EndParagraphRunProperties::default();
                         run_properties.set_attributes(reader, e, false);
-                        &mut self.set_end_para_run_properties(run_properties);
+                        self.set_end_para_run_properties(run_properties);
                     }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"a:pPr" => {
-                        &mut self.paragraph_properties.set_attributes(reader, e, true);
+                        self.paragraph_properties.set_attributes(reader, e, true);
                     }
                     b"a:endParaRPr" => {
                         let mut run_properties = EndParagraphRunProperties::default();
                         run_properties.set_attributes(reader, e, true);
-                        &mut self.set_end_para_run_properties(run_properties);
+                        self.set_end_para_run_properties(run_properties);
                     }
                     _ => (),
                 },
@@ -108,7 +108,7 @@ impl Paragraph {
         write_start_tag(writer, "a:p", vec![], false);
 
         // a:pPr
-        &self.paragraph_properties.write_to(writer);
+        let _ = &self.paragraph_properties.write_to(writer);
 
         // a:r
         for run in &self.run {

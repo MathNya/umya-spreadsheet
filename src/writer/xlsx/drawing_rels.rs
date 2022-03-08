@@ -3,6 +3,7 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
+use super::XlsxError;
 use structs::Worksheet;
 use structs::WriterManager;
 
@@ -11,7 +12,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     drawing_no: &str,
     chart_no_list: &Vec<String>,
     writer_mng: &mut WriterManager<W>,
-) {
+) -> Result<(), XlsxError> {
     let mut is_write = false;
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -76,8 +77,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     if is_write {
         let file_path = format!("xl/drawings/_rels/drawing{}.xml.rels", drawing_no);
-        writer_mng.add_writer(&file_path, writer);
+        return writer_mng.add_writer(&file_path, writer);
     }
+    Ok(())
 }
 
 fn write_relationship(

@@ -20,7 +20,6 @@ pub struct Row {
     descent: DoubleValue,
     thick_bot: BooleanValue,
     custom_height: BooleanValue,
-    custom_format: BooleanValue,
     hidden: BooleanValue,
     style: Style,
 }
@@ -67,15 +66,6 @@ impl Row {
 
     pub fn set_custom_height(&mut self, value: bool) -> &mut Self {
         self.custom_height.set_value(value);
-        self
-    }
-
-    pub fn get_custom_format(&self) -> &bool {
-        &self.custom_format.get_value()
-    }
-
-    pub fn set_custom_format(&mut self, value: bool) -> &mut Self {
-        self.custom_format.set_value(value);
         self
     }
 
@@ -160,13 +150,6 @@ impl Row {
             None => {}
         }
 
-        match get_attribute(e, b"customFormat") {
-            Some(v) => {
-                self.custom_format.set_value_string(v);
-            }
-            None => {}
-        }
-
         match get_attribute(e, b"hidden") {
             Some(v) => {
                 self.hidden.set_value_string(v);
@@ -233,6 +216,9 @@ impl Row {
         spans: String,
         empty_flag: bool,
     ) {
+        let xf_index_str: String;
+        let xf_index = stylesheet.set_style(self.get_style());
+
         // row
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("r", self.row_num.get_value_string()));
@@ -248,16 +234,14 @@ impl Row {
         if self.custom_height.get_value() == &true {
             attributes.push(("customHeight", self.custom_height.get_value_string()));
         }
-        if self.custom_format.get_value() == &true {
-            attributes.push(("customFormat", self.custom_format.get_value_string()));
+        if xf_index > 0 {
+            attributes.push(("customFormat", "1"));
         }
         if self.hidden.get_value() == &true {
             attributes.push(("hidden", self.hidden.get_value_string()));
         }
         attributes.push(("x14ac:dyDescent", self.descent.get_value_string()));
 
-        let xf_index_str: String;
-        let xf_index = stylesheet.set_style(self.get_style());
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
             attributes.push(("s", &xf_index_str));

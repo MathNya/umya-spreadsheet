@@ -61,7 +61,7 @@ impl BackgroundColor {
         write_start_tag(writer, "a:bgClr", vec![], false);
 
         // a:schemeClr
-        &self.scheme_color.write_to(writer);
+        let _ = &self.scheme_color.write_to(writer);
 
         write_end_tag(writer, "a:bgClr");
     }

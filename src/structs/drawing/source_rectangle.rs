@@ -54,16 +54,16 @@ impl SourceRectangle {
         for a in e.attributes().with_checks(false) {
             match a {
                 Ok(ref attr) if attr.key == b"t" => {
-                    &mut self.set_t(get_attribute_value(attr).unwrap());
+                    self.set_t(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"l" => {
-                    &mut self.set_l(get_attribute_value(attr).unwrap());
+                    self.set_l(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"r" => {
-                    &mut self.set_r(get_attribute_value(attr).unwrap());
+                    self.set_r(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"b" => {
-                    &mut self.set_b(get_attribute_value(attr).unwrap());
+                    self.set_b(get_attribute_value(attr).unwrap());
                 }
                 Ok(_) => {}
                 Err(_) => {}

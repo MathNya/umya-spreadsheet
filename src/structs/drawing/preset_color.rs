@@ -38,7 +38,7 @@ impl PresetColor {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self.set_val(get_attribute(e, b"val").unwrap());
+        self.set_val(get_attribute(e, b"val").unwrap());
 
         let mut buf = Vec::new();
         loop {
@@ -47,7 +47,7 @@ impl PresetColor {
                     b"a:alpha" => {
                         let mut alpha = Alpha::default();
                         alpha.set_attributes(reader, e);
-                        &mut self.set_alpha(alpha);
+                        self.set_alpha(alpha);
                     }
                     _ => (),
                 },

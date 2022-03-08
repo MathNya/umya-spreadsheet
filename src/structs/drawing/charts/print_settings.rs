@@ -94,13 +94,13 @@ impl PrintSettings {
         write_start_tag(writer, "c:printSettings", vec![], false);
 
         // c:headerFooter
-        &self.header_footer.write_to(writer);
+        self.header_footer.write_to(writer);
 
         // c:pageMargins
-        &self.page_margins.write_to(writer);
+        self.page_margins.write_to(writer);
 
         // c:pageSetup
-        &self.page_setup.write_to(writer);
+        self.page_setup.write_to(writer);
 
         write_end_tag(writer, "c:printSettings");
     }

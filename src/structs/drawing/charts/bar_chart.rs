@@ -196,13 +196,13 @@ impl BarChart {
         write_start_tag(writer, "c:barChart", vec![], false);
 
         // c:barDir
-        &self.bar_direction.write_to(writer);
+        self.bar_direction.write_to(writer);
 
         // c:grouping
-        &self.grouping.write_to(writer);
+        self.grouping.write_to(writer);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -210,13 +210,13 @@ impl BarChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         // c:gapWidth
-        &self.gap_width.write_to(writer);
+        self.gap_width.write_to(writer);
 
         // c:overlap
-        &self.overlap.write_to(writer);
+        self.overlap.write_to(writer);
 
         // c:axId
         for v in &self.axis_id {

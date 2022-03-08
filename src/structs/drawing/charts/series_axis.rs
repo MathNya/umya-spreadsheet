@@ -242,16 +242,16 @@ impl SeriesAxis {
         write_start_tag(writer, "c:serAx", vec![], false);
 
         // c:axId
-        &self.axis_id.write_to(writer);
+        self.axis_id.write_to(writer);
 
         // c:scaling
-        &self.scaling.write_to(writer);
+        self.scaling.write_to(writer);
 
         // c:delete
-        &self.delete.write_to(writer);
+        self.delete.write_to(writer);
 
         // c:axPos
-        &self.axis_position.write_to(writer);
+        self.axis_position.write_to(writer);
 
         // c:majorGridlines
         match &self.major_gridlines {
@@ -270,19 +270,19 @@ impl SeriesAxis {
         }
 
         // c:majorTickMark
-        &self.major_tick_mark.write_to(writer);
+        self.major_tick_mark.write_to(writer);
 
         // c:minorTickMark
-        &self.minor_tick_mark.write_to(writer);
+        self.minor_tick_mark.write_to(writer);
 
         // c:tickLblPos
-        &self.tick_label_position.write_to(writer);
+        self.tick_label_position.write_to(writer);
 
         // c:crossAx
-        &self.crossing_axis.write_to(writer);
+        self.crossing_axis.write_to(writer);
 
         // c:crosses
-        &self.crosses.write_to(writer);
+        self.crosses.write_to(writer);
 
         write_end_tag(writer, "c:serAx");
     }

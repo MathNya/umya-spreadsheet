@@ -64,15 +64,14 @@ impl Picture {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"xdr:nvPicPr" => {
-                        &mut self.non_visual_picture_properties.set_attributes(reader, e);
+                        self.non_visual_picture_properties.set_attributes(reader, e);
                     }
                     b"xdr:blipFill" => {
-                        &mut self
-                            .blip_fill
+                        self.blip_fill
                             .set_attributes(reader, e, drawing_relationships);
                     }
                     b"xdr:spPr" => {
-                        &mut self.shape_properties.set_attributes(reader, e);
+                        self.shape_properties.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -93,13 +92,13 @@ impl Picture {
         write_start_tag(writer, "xdr:pic", vec![], false);
 
         // xdr:nvPicPr
-        &self.non_visual_picture_properties.write_to(writer);
+        let _ = &self.non_visual_picture_properties.write_to(writer);
 
         // xdr:blipFill
-        &self.blip_fill.write_to(writer, r_id);
+        let _ = &self.blip_fill.write_to(writer, r_id);
 
         // xdr:spPr
-        &self.shape_properties.write_to(writer);
+        let _ = &self.shape_properties.write_to(writer);
 
         write_end_tag(writer, "xdr:pic");
     }

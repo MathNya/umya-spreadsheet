@@ -109,25 +109,25 @@ impl ShapeProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:xfrm" => {
-                        &mut self.transform2d.set_attributes(reader, e);
+                        self.transform2d.set_attributes(reader, e);
                     }
                     b"a:prstGeom" => {
-                        &mut self.preset_geometry.set_attributes(reader, e);
+                        self.preset_geometry.set_attributes(reader, e);
                     }
                     b"a:ln" => {
                         let mut outline = Outline::default();
                         outline.set_attributes(reader, e);
-                        &mut self.set_outline(outline);
+                        self.set_outline(outline);
                     }
                     b"a:solidFill" => {
                         let mut solid_fill = SolidFill::default();
                         solid_fill.set_attributes(reader, e);
-                        &mut self.set_solid_fill(solid_fill);
+                        self.set_solid_fill(solid_fill);
                     }
                     b"a:effectLst" => {
                         let mut effect_list = EffectList::default();
                         effect_list.set_attributes(reader, e, false);
-                        &mut self.set_effect_list(effect_list);
+                        self.set_effect_list(effect_list);
                     }
                     _ => (),
                 },
@@ -135,7 +135,7 @@ impl ShapeProperties {
                     b"a:noFill" => {
                         let mut obj = NoFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_no_fill(obj);
+                        self.set_no_fill(obj);
                     }
                     _ => (),
                 },
@@ -156,10 +156,10 @@ impl ShapeProperties {
         write_start_tag(writer, "xdr:spPr", vec![], false);
 
         // a:xfrm
-        &self.transform2d.write_to(writer);
+        let _ = &self.transform2d.write_to(writer);
 
         // a:prstGeom
-        &self.preset_geometry.write_to(writer);
+        let _ = &self.preset_geometry.write_to(writer);
 
         // a:solidFill
         match &self.solid_fill {

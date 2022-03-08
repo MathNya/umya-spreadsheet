@@ -1,4 +1,5 @@
 use super::driver::*;
+use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -10,7 +11,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     chart_space: &ChartSpace,
     spreadsheet: &Spreadsheet,
     writer_mng: &mut WriterManager<W>,
-) -> String {
+) -> Result<String, XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(
@@ -23,6 +24,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // c:chartSpace
     chart_space.write_to(&mut writer, spreadsheet);
 
-    let file_no = writer_mng.add_file_at_chart(writer);
-    file_no.to_string()
+    let file_no = writer_mng.add_file_at_chart(writer)?;
+    Ok(file_no.to_string())
 }

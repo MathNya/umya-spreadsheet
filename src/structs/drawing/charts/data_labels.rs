@@ -165,22 +165,22 @@ impl DataLabels {
         write_start_tag(writer, "c:dLbls", vec![], false);
 
         // c:showLegendKey
-        &self.show_legend_key.write_to(writer);
+        self.show_legend_key.write_to(writer);
 
         // c:showVal
-        &self.show_value.write_to(writer);
+        self.show_value.write_to(writer);
 
         // c:showCatName
-        &self.show_category_name.write_to(writer);
+        self.show_category_name.write_to(writer);
 
         // c:showSerName
-        &self.show_series_name.write_to(writer);
+        self.show_series_name.write_to(writer);
 
         // c:showPercent
-        &self.show_percent.write_to(writer);
+        self.show_percent.write_to(writer);
 
         // c:showBubbleSize
-        &self.show_bubble_size.write_to(writer);
+        self.show_bubble_size.write_to(writer);
 
         // c:showLeaderLines
         match &self.show_leader_lines {

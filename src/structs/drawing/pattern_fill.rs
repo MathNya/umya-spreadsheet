@@ -66,7 +66,7 @@ impl PatternFill {
     ) {
         match get_attribute(e, b"prst") {
             Some(v) => {
-                &mut self.set_preset(v);
+                self.set_preset(v);
             }
             None => {}
         }
@@ -100,10 +100,10 @@ impl PatternFill {
         write_start_tag(writer, "a:pattFill", vec![("prst", &self.preset)], false);
 
         // a:fgClr
-        &self.foreground_color.write_to(writer);
+        let _ = &self.foreground_color.write_to(writer);
 
         // a:bgClr
-        &self.background_color.write_to(writer);
+        let _ = &self.background_color.write_to(writer);
 
         write_end_tag(writer, "a:pattFill");
     }

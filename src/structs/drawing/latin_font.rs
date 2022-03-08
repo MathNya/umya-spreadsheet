@@ -47,19 +47,19 @@ impl LatinFont {
     ) {
         match get_attribute(e, b"typeface") {
             Some(v) => {
-                &mut self.set_typeface(v);
+                self.set_typeface(v);
             }
             None => {}
         }
         match get_attribute(e, b"pitchFamily") {
             Some(v) => {
-                &mut self.set_pitch_family(v);
+                self.set_pitch_family(v);
             }
             None => {}
         }
         match get_attribute(e, b"charset") {
             Some(v) => {
-                &mut self.set_charset(v);
+                self.set_charset(v);
             }
             None => {}
         }

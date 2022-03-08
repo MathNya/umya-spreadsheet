@@ -78,7 +78,7 @@ impl SchemeColor {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        &mut self.set_val(get_attribute(e, b"val").unwrap());
+        self.set_val(get_attribute(e, b"val").unwrap());
 
         if empty_flag == true {
             return;
@@ -89,19 +89,19 @@ impl SchemeColor {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"a:lumMod" => {
-                        &mut self.set_lum_mod(get_attribute(e, b"val").unwrap());
+                        self.set_lum_mod(get_attribute(e, b"val").unwrap());
                     }
                     b"a:lumOff" => {
-                        &mut self.set_lum_off(get_attribute(e, b"val").unwrap());
+                        self.set_lum_off(get_attribute(e, b"val").unwrap());
                     }
                     b"a:shade" => {
-                        &mut self.set_shade(get_attribute(e, b"val").unwrap());
+                        self.set_shade(get_attribute(e, b"val").unwrap());
                     }
                     b"a:satMod" => {
-                        &mut self.set_sat_mod(get_attribute(e, b"val").unwrap());
+                        self.set_sat_mod(get_attribute(e, b"val").unwrap());
                     }
                     b"a:alpha" => {
-                        &mut self.set_alpha(get_attribute(e, b"val").unwrap());
+                        self.set_alpha(get_attribute(e, b"val").unwrap());
                     }
                     _ => (),
                 },

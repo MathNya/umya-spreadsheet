@@ -3,6 +3,7 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
+use super::XlsxError;
 use structs::Worksheet;
 use structs::WriterManager;
 
@@ -16,7 +17,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     excel_no_list: &Vec<String>,
     printer_settings_no: &str,
     writer_mng: &mut WriterManager<W>,
-) {
+) -> Result<(), XlsxError> {
     let mut is_write = false;
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -39,7 +40,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         false,
     );
 
-    let mut r_id = 1;
+    let mut r_id: i32 = 1;
 
     // Write hyperlink relationships
     for (_, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
@@ -154,8 +155,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     if is_write {
         let file_path = format!("xl/worksheets/_rels/sheet{}.xml.rels", worksheet_no);
-        writer_mng.add_writer(&file_path, writer);
+        writer_mng.add_writer(&file_path, writer)?;
     }
+    Ok(())
 }
 
 fn write_relationship(

@@ -82,21 +82,21 @@ impl Transform2D {
 
         match get_attribute(e, b"rot") {
             Some(v) => {
-                &mut self.set_rot(v);
+                self.set_rot(v);
             }
             None => {}
         }
 
         match get_attribute(e, b"flipH") {
             Some(v) => {
-                &mut self.set_flip_h(v);
+                self.set_flip_h(v);
             }
             None => {}
         }
 
         match get_attribute(e, b"flipV") {
             Some(v) => {
-                &mut self.set_flip_v(v);
+                self.set_flip_v(v);
             }
             None => {}
         }
@@ -105,14 +105,12 @@ impl Transform2D {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"a:off" => {
-                        &mut self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
-                        &mut self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
+                        self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
+                        self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
                     }
                     b"a:ext" => {
-                        &mut self
-                            .set_width(get_attribute(e, b"cx").unwrap().parse::<usize>().unwrap());
-                        &mut self
-                            .set_height(get_attribute(e, b"cy").unwrap().parse::<usize>().unwrap());
+                        self.set_width(get_attribute(e, b"cx").unwrap().parse::<usize>().unwrap());
+                        self.set_height(get_attribute(e, b"cy").unwrap().parse::<usize>().unwrap());
                     }
                     _ => (),
                 },

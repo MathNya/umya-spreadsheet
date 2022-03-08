@@ -77,7 +77,7 @@ impl Title {
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"c:overlay" => {
-                        &mut self.overlay.set_attributes(reader, e);
+                        self.overlay.set_attributes(reader, e);
                     }
                     b"c:layout" => {
                         let mut obj = Layout::default();
@@ -119,7 +119,7 @@ impl Title {
         }
 
         // c:overlay
-        &self.overlay.write_to(writer);
+        self.overlay.write_to(writer);
 
         write_end_tag(writer, "c:title");
     }

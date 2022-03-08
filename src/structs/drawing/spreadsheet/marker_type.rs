@@ -116,11 +116,11 @@ impl MarkerType {
         }
     }
     pub(crate) fn write_to_from(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        &self.write_to(writer, "xdr:from");
+        let _ = &self.write_to(writer, "xdr:from");
     }
 
     pub(crate) fn write_to_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        &self.write_to(writer, "xdr:to");
+        let _ = &self.write_to(writer, "xdr:to");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {

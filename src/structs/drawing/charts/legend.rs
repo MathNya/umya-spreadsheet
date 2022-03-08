@@ -120,7 +120,7 @@ impl Legend {
         write_start_tag(writer, "c:legend", vec![], false);
 
         // c:legendPos
-        &self.legend_position.write_to(writer);
+        self.legend_position.write_to(writer);
 
         // c:layout
         match &self.layout {
@@ -131,7 +131,7 @@ impl Legend {
         }
 
         // c:overlay
-        &self.overlay.write_to(writer);
+        self.overlay.write_to(writer);
 
         // c:txPr
         match &self.text_properties {

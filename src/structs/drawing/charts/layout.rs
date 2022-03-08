@@ -45,7 +45,7 @@ impl Layout {
                     b"c:manualLayout" => {
                         let mut obj = ManualLayout::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_manual_layout(obj);
+                        self.set_manual_layout(obj);
                     }
                     _ => (),
                 },

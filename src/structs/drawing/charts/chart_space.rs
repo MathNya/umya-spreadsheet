@@ -130,10 +130,10 @@ impl ChartSpace {
                         self.set_style(obj);
                     }
                     b"c:chart" => {
-                        &mut self.chart.set_attributes(reader, e);
+                        self.chart.set_attributes(reader, e);
                     }
                     b"c:printSettings" => {
-                        &mut self.print_settings.set_attributes(reader, e);
+                        self.print_settings.set_attributes(reader, e);
                     }
                     b"c:spPr" => {
                         let mut obj = ShapeProperties::default();
@@ -144,13 +144,13 @@ impl ChartSpace {
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"c:date1904" => {
-                        &mut self.date1904.set_attributes(reader, e);
+                        self.date1904.set_attributes(reader, e);
                     }
                     b"c:lang" => {
-                        &mut self.editing_language.set_attributes(reader, e);
+                        self.editing_language.set_attributes(reader, e);
                     }
                     b"c:roundedCorners" => {
-                        &mut self.rounded_corners.set_attributes(reader, e);
+                        self.rounded_corners.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -189,19 +189,19 @@ impl ChartSpace {
         );
 
         // c:date1904
-        &self.date1904.write_to(writer);
+        self.date1904.write_to(writer);
 
         // c:lang
-        &self.editing_language.write_to(writer);
+        self.editing_language.write_to(writer);
 
         // c:roundedCorners
-        &self.rounded_corners.write_to(writer);
+        self.rounded_corners.write_to(writer);
 
         // mc:AlternateContent
-        &self.style.write_to(writer);
+        self.style.write_to(writer);
 
         // c:chart
-        &self.chart.write_to(writer, spreadsheet);
+        self.chart.write_to(writer, spreadsheet);
 
         // c:spPr
         match &self.shape_properties {
@@ -212,7 +212,7 @@ impl ChartSpace {
         }
 
         // c:printSettings
-        &self.print_settings.write_to(writer);
+        self.print_settings.write_to(writer);
 
         write_end_tag(writer, "c:chartSpace");
     }

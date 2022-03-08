@@ -3,6 +3,7 @@ use std::io;
 use std::io::Read;
 use structs::StringValue;
 use structs::WriterManager;
+use writer::xlsx::XlsxError;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {
@@ -65,9 +66,13 @@ impl RawFile {
         self.set_file_data(buf);
     }
 
-    pub(crate) fn write_to<W: io::Seek + io::Write>(&self, writer_mng: &mut WriterManager<W>) {
+    pub(crate) fn write_to<W: io::Seek + io::Write>(
+        &self,
+        writer_mng: &mut WriterManager<W>,
+    ) -> Result<(), XlsxError> {
         if self.get_file_data().len() > 0 {
-            writer_mng.add_bin(self.get_file_target(), self.get_file_data());
+            writer_mng.add_bin(self.get_file_target(), self.get_file_data())?;
         }
+        Ok(())
     }
 }

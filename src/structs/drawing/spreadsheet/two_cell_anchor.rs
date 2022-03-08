@@ -124,23 +124,23 @@ impl TwoCellAnchor {
     }
 
     pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
-        &mut self.from_marker._adjustment_insert_row(num_rows);
-        &mut self.to_marker._adjustment_insert_row(num_rows);
+        self.from_marker._adjustment_insert_row(num_rows);
+        self.to_marker._adjustment_insert_row(num_rows);
     }
 
     pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
-        &mut self.from_marker._adjustment_insert_colmun(num_cols);
-        &mut self.to_marker._adjustment_insert_colmun(num_cols);
+        self.from_marker._adjustment_insert_colmun(num_cols);
+        self.to_marker._adjustment_insert_colmun(num_cols);
     }
 
     pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
-        &mut self.from_marker._adjustment_remove_row(num_rows);
-        &mut self.to_marker._adjustment_remove_row(num_rows);
+        self.from_marker._adjustment_remove_row(num_rows);
+        self.to_marker._adjustment_remove_row(num_rows);
     }
 
     pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
-        &mut self.from_marker._adjustment_remove_colmun(num_cols);
-        &mut self.to_marker._adjustment_remove_colmun(num_cols);
+        self.from_marker._adjustment_remove_colmun(num_cols);
+        self.to_marker._adjustment_remove_colmun(num_cols);
     }
 
     pub(crate) fn is_support(&self) -> bool {
@@ -267,10 +267,10 @@ impl TwoCellAnchor {
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 
         // xdr:from
-        &self.from_marker.write_to_from(writer);
+        let _ = &self.from_marker.write_to_from(writer);
 
         // xdr:to
-        &self.to_marker.write_to_to(writer);
+        let _ = &self.to_marker.write_to_to(writer);
 
         // xdr:graphicFrame
         match &self.graphic_frame {

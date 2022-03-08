@@ -27,7 +27,7 @@ use structs::Protection;
 use structs::Range;
 use structs::Row;
 use structs::RowBreaks;
-use structs::SheetView;
+use structs::SheetViews;
 use structs::Style;
 
 /// A Worksheet Object.
@@ -45,7 +45,7 @@ pub struct Worksheet {
     page_setup: PageSetup,
     page_margins: PageMargins,
     header_footer: HeaderFooter,
-    sheet_view: SheetView,
+    sheet_views: SheetViews,
     protection: Protection,
     conditional_styles_collection: Vec<ConditionalSet>,
     breaks: Vec<String>,
@@ -360,7 +360,7 @@ impl Worksheet {
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.get_sheet_mut(0);
-    /// let mut cell_value_List = worksheet.get_cell_value_by_address("A1:C5");
+    /// let mut cell_value_List = worksheet.get_cell_value_by_range("A1:C5");
     /// ```
     pub fn get_cell_value_by_range<S: Into<String>>(&self, range: S) -> Vec<&CellValue> {
         self.cell_collection.get_cell_value_by_range(range)
@@ -1307,21 +1307,21 @@ impl Worksheet {
         self
     }
 
-    // Get Sheet View.
-    pub fn get_sheet_view(&self) -> &SheetView {
-        &self.sheet_view
+    // Get SheetViews.
+    pub fn get_sheets_views(&self) -> &SheetViews {
+        &self.sheet_views
     }
 
-    // Get Sheet View in mutable.
-    pub fn get_sheet_view_mut(&mut self) -> &mut SheetView {
-        &mut self.sheet_view
+    // Get SheetViews in mutable.
+    pub fn get_sheet_views_mut(&mut self) -> &mut SheetViews {
+        &mut self.sheet_views
     }
 
-    /// Set Sheet View.
+    /// Set SheetViews.
     /// # Arguments
-    /// * `value` - SheetView.
-    pub fn set_sheet_view(&mut self, value: SheetView) -> &mut Self {
-        self.sheet_view = value;
+    /// * `value` - SheetViews.
+    pub fn set_sheets_views(&mut self, value: SheetViews) -> &mut Self {
+        self.sheet_views = value;
         self
     }
 

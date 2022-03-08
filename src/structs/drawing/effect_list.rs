@@ -69,7 +69,7 @@ impl EffectList {
                     b"a:softEdge" => {
                         let mut obj = SoftEdge::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_soft_edge(obj);
+                        self.set_soft_edge(obj);
                     }
                     _ => (),
                 },
@@ -77,12 +77,12 @@ impl EffectList {
                     b"a:glow" => {
                         let mut obj = Glow::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_glow(obj);
+                        self.set_glow(obj);
                     }
                     b"a:outerShdw" => {
                         let mut obj = OuterShadow::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_outer_shadow(obj);
+                        self.set_outer_shadow(obj);
                     }
                     _ => (),
                 },

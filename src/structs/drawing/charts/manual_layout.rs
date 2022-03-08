@@ -174,47 +174,47 @@ impl ManualLayout {
                     b"c:h" => {
                         let mut obj = Height::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_height(obj);
+                        self.set_height(obj);
                     }
                     b"c:hMode" => {
                         let mut obj = HeightMode::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_height_mode(obj);
+                        self.set_height_mode(obj);
                     }
                     b"c:layoutTarget" => {
                         let mut obj = LayoutTarget::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_layout_target(obj);
+                        self.set_layout_target(obj);
                     }
                     b"c:x" => {
                         let mut obj = Left::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_left(obj);
+                        self.set_left(obj);
                     }
                     b"c:xMode" => {
                         let mut obj = LeftMode::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_left_mode(obj);
+                        self.set_left_mode(obj);
                     }
                     b"c:y" => {
                         let mut obj = Top::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_top(obj);
+                        self.set_top(obj);
                     }
                     b"c:yMode" => {
                         let mut obj = TopMode::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_top_mode(obj);
+                        self.set_top_mode(obj);
                     }
                     b"c:w" => {
                         let mut obj = Width::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_width(obj);
+                        self.set_width(obj);
                     }
                     b"c:wMode" => {
                         let mut obj = WidthMode::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_width_mode(obj);
+                        self.set_width_mode(obj);
                     }
                     _ => (),
                 },

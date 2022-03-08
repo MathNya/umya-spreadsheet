@@ -43,12 +43,12 @@ impl Scene3DType {
                     b"a:camera" => {
                         let mut obj = Camera::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_camera(obj);
+                        self.set_camera(obj);
                     }
                     b"a:lightRig" => {
                         let mut obj = LightRig::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_light_rig(obj);
+                        self.set_light_rig(obj);
                     }
                     _ => (),
                 },

@@ -57,7 +57,7 @@ impl GradientStop {
     ) {
         match get_attribute(e, b"pos") {
             Some(v) => {
-                &mut self.set_position(v.parse::<i32>().unwrap());
+                self.set_position(v.parse::<i32>().unwrap());
             }
             None => {}
         }

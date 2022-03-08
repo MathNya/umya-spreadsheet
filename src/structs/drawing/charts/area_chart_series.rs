@@ -334,10 +334,10 @@ impl AreaChartSeries {
         write_start_tag(writer, "c:ser", vec![], false);
 
         // c:idx
-        &self.index.write_to(writer);
+        self.index.write_to(writer);
 
         // c:order
-        &self.order.write_to(writer);
+        self.order.write_to(writer);
 
         // c:explosion
         match &self.explosion {

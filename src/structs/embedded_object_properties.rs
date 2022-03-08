@@ -91,11 +91,9 @@ impl EmbeddedObjectProperties {
         let r_id = get_attribute(e, b"r:id").unwrap();
         let attached_file = relationships.get_relationship_by_rid(r_id).get_raw_file();
 
-        &mut self
-            .get_image_mut()
+        self.get_image_mut()
             .set_image_name(attached_file.get_file_name());
-        &mut self
-            .get_image_mut()
+        self.get_image_mut()
             .set_image_data(attached_file.get_file_data().clone());
 
         match get_attribute(e, b"defaultSize") {
@@ -117,7 +115,7 @@ impl EmbeddedObjectProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"anchor" => {
-                        &mut self.object_anchor.set_attributes(reader, e);
+                        self.object_anchor.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -147,7 +145,7 @@ impl EmbeddedObjectProperties {
         write_start_tag(writer, "objectPr", attributes, false);
 
         // anchor
-        &mut self.object_anchor.write_to(writer);
+        self.object_anchor.write_to(writer);
 
         write_end_tag(writer, "objectPr");
     }

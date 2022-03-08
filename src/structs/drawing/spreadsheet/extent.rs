@@ -38,13 +38,13 @@ impl Extent {
     ) {
         match get_attribute(e, b"cx") {
             Some(v) => {
-                &mut self.cx.set_value_string(v);
+                self.cx.set_value_string(v);
             }
             None => {}
         }
         match get_attribute(e, b"cy") {
             Some(v) => {
-                &mut self.cy.set_value_string(v);
+                self.cy.set_value_string(v);
             }
             None => {}
         }

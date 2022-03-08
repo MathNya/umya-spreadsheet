@@ -34,9 +34,8 @@ impl EndConnection {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self.id.set_value_string(get_attribute(e, b"id").unwrap());
-        &mut self
-            .index
+        self.id.set_value_string(get_attribute(e, b"id").unwrap());
+        self.index
             .set_value_string(get_attribute(e, b"idx").unwrap());
     }
 

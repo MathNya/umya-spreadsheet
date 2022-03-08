@@ -49,12 +49,12 @@ impl SolidFill {
                     b"a:schemeClr" => {
                         let mut scheme_color = SchemeColor::default();
                         scheme_color.set_attributes(reader, e, false);
-                        &mut self.set_scheme_color(scheme_color);
+                        self.set_scheme_color(scheme_color);
                     }
                     b"a:srgbClr" => {
                         let mut rgb_color_model_hex = RgbColorModelHex::default();
                         rgb_color_model_hex.set_attributes(reader, e, false);
-                        &mut self.set_rgb_color_model_hex(rgb_color_model_hex);
+                        self.set_rgb_color_model_hex(rgb_color_model_hex);
                     }
                     _ => (),
                 },
@@ -62,12 +62,12 @@ impl SolidFill {
                     b"a:schemeClr" => {
                         let mut scheme_color = SchemeColor::default();
                         scheme_color.set_attributes(reader, e, true);
-                        &mut self.set_scheme_color(scheme_color);
+                        self.set_scheme_color(scheme_color);
                     }
                     b"a:srgbClr" => {
                         let mut rgb_color_model_hex = RgbColorModelHex::default();
                         rgb_color_model_hex.set_attributes(reader, e, true);
-                        &mut self.set_rgb_color_model_hex(rgb_color_model_hex);
+                        self.set_rgb_color_model_hex(rgb_color_model_hex);
                     }
                     _ => (),
                 },

@@ -35,7 +35,7 @@ impl StyleMatrixReferenceType {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        &mut self.set_index(get_attribute(e, b"idx").unwrap());
+        self.set_index(get_attribute(e, b"idx").unwrap());
 
         if empty_flag == true {
             return;
@@ -48,7 +48,7 @@ impl StyleMatrixReferenceType {
                     b"a:schemeClr" => {
                         let mut scheme_color = SchemeColor::default();
                         scheme_color.set_attributes(reader, e, false);
-                        &mut self.set_scheme_color(scheme_color);
+                        self.set_scheme_color(scheme_color);
                     }
                     _ => (),
                 },
@@ -56,7 +56,7 @@ impl StyleMatrixReferenceType {
                     b"a:schemeClr" => {
                         let mut scheme_color = SchemeColor::default();
                         scheme_color.set_attributes(reader, e, true);
-                        &mut self.set_scheme_color(scheme_color);
+                        self.set_scheme_color(scheme_color);
                     }
                     _ => (),
                 },

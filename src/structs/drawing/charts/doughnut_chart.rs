@@ -135,7 +135,7 @@ impl DoughnutChart {
         write_start_tag(writer, "c:doughnutChart", vec![], false);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -143,13 +143,13 @@ impl DoughnutChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         // c:firstSliceAng
-        &self.first_slice_angle.write_to(writer);
+        self.first_slice_angle.write_to(writer);
 
         // c:holeSize
-        &self.hole_size.write_to(writer);
+        self.hole_size.write_to(writer);
 
         write_end_tag(writer, "c:doughnutChart");
     }

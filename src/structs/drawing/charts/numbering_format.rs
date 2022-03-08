@@ -37,11 +37,9 @@ impl NumberingFormat {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self
-            .format_code
+        self.format_code
             .set_value_string(get_attribute(e, b"formatCode").unwrap());
-        &mut self
-            .source_linked
+        self.source_linked
             .set_value_string(get_attribute(e, b"sourceLinked").unwrap());
     }
 

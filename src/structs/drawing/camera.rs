@@ -29,7 +29,7 @@ impl Camera {
     ) {
         match get_attribute(e, b"prst") {
             Some(v) => {
-                &mut self.preset.set_value_string(v);
+                self.preset.set_value_string(v);
             }
             None => {}
         }

@@ -88,20 +88,20 @@ impl Shape {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"xdr:nvSpPr" => {
-                        &mut self.non_visual_shape_properties.set_attributes(reader, e);
+                        self.non_visual_shape_properties.set_attributes(reader, e);
                     }
                     b"xdr:spPr" => {
-                        &mut self.shape_properties.set_attributes(reader, e);
+                        self.shape_properties.set_attributes(reader, e);
                     }
                     b"xdr:style" => {
                         let mut obj = ShapeStyle::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_shape_style(obj);
+                        self.set_shape_style(obj);
                     }
                     b"xdr:txBody" => {
                         let mut obj = TextBody::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_text_body(obj);
+                        self.set_text_body(obj);
                     }
                     _ => (),
                 },
@@ -127,10 +127,10 @@ impl Shape {
         );
 
         // xdr:nvSpPr
-        &self.non_visual_shape_properties.write_to(writer, ole_id);
+        let _ = &self.non_visual_shape_properties.write_to(writer, ole_id);
 
         // xdr:spPr
-        &self.shape_properties.write_to(writer);
+        let _ = &self.shape_properties.write_to(writer);
 
         // xdr:style
         match &self.shape_style {

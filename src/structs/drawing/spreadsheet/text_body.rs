@@ -62,12 +62,12 @@ impl TextBody {
                     b"a:p" => {
                         let mut paragraph = Paragraph::default();
                         paragraph.set_attributes(reader, e);
-                        &mut self.add_paragraph(paragraph);
+                        self.add_paragraph(paragraph);
                     }
                     b"a:bodyPr" => {
                         let mut body_properties = BodyProperties::default();
                         body_properties.set_attributes(reader, e, false);
-                        &mut self.set_body_properties(body_properties);
+                        self.set_body_properties(body_properties);
                     }
                     _ => (),
                 },
@@ -75,7 +75,7 @@ impl TextBody {
                     b"a:bodyPr" => {
                         let mut body_properties = BodyProperties::default();
                         body_properties.set_attributes(reader, e, true);
-                        &mut self.set_body_properties(body_properties);
+                        self.set_body_properties(body_properties);
                     }
                     _ => (),
                 },
@@ -96,7 +96,7 @@ impl TextBody {
         write_start_tag(writer, "xdr:txBody", vec![], false);
 
         // a:bodyPr
-        &self.body_properties.write_to(writer);
+        let _ = &self.body_properties.write_to(writer);
 
         // a:lstStyle
         write_start_tag(writer, "a:lstStyle", vec![], true);

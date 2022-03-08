@@ -82,15 +82,14 @@ impl ConnectionShape {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"xdr:nvCxnSpPr" => {
-                        &mut self
-                            .non_visual_connection_shape_properties
+                        self.non_visual_connection_shape_properties
                             .set_attributes(reader, e);
                     }
                     b"xdr:spPr" => {
-                        &mut self.shape_properties.set_attributes(reader, e);
+                        self.shape_properties.set_attributes(reader, e);
                     }
                     b"xdr:style" => {
-                        &mut self.shape_style.set_attributes(reader, e);
+                        self.shape_style.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -111,13 +110,13 @@ impl ConnectionShape {
         write_start_tag(writer, "xdr:cxnSp", vec![("macro", "")], false);
 
         // xdr:nvCxnSpPr
-        &self.non_visual_connection_shape_properties.write_to(writer);
+        let _ = &self.non_visual_connection_shape_properties.write_to(writer);
 
         // xdr:spPr
-        &self.shape_properties.write_to(writer);
+        let _ = &self.shape_properties.write_to(writer);
 
         // xdr:style
-        &self.shape_style.write_to(writer);
+        let _ = &self.shape_style.write_to(writer);
 
         write_end_tag(writer, "xdr:cxnSp");
     }

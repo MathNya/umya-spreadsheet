@@ -25,16 +25,35 @@ impl PatternFill {
         self
     }
 
+    fn auto_set_pattern_type(&mut self) -> &mut Self {
+        if self.get_pattern_type() == &PatternValues::None {
+            if self.get_foreground_color().is_some() {
+                self.set_pattern_type(PatternValues::Solid);
+            }
+        } else {
+            if self.get_foreground_color().is_none() {
+                self.set_pattern_type(PatternValues::None);
+            }
+        }
+        self
+    }
+
     pub fn get_foreground_color(&self) -> &Option<Color> {
         &self.foreground_color
     }
 
-    pub fn get_foreground_color_mut(&mut self) -> &mut Option<Color> {
-        &mut self.foreground_color
+    pub fn get_foreground_color_mut(&mut self) -> &mut Color {
+        match &self.foreground_color {
+            Some(_) => return self.foreground_color.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_foreground_color(Color::default());
+        self.foreground_color.as_mut().unwrap()
     }
 
     pub fn set_foreground_color(&mut self, value: Color) -> &mut Self {
         self.foreground_color = Some(value);
+        self.auto_set_pattern_type();
         self
     }
 
@@ -42,8 +61,13 @@ impl PatternFill {
         &self.background_color
     }
 
-    pub fn get_background_color_mut(&mut self) -> &mut Option<Color> {
-        &mut self.background_color
+    pub fn get_background_color_mut(&mut self) -> &mut Color {
+        match &self.background_color {
+            Some(_) => return self.background_color.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_background_color(Color::default());
+        self.background_color.as_mut().unwrap()
     }
 
     pub fn set_background_color(&mut self, value: Color) -> &mut Self {
@@ -101,12 +125,12 @@ impl PatternFill {
                     b"fgColor" => {
                         let mut obj = Color::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_foreground_color(obj);
+                        self.set_foreground_color(obj);
                     }
                     b"bgColor" => {
                         let mut obj = Color::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_background_color(obj);
+                        self.set_background_color(obj);
                     }
                     _ => (),
                 },
@@ -127,9 +151,7 @@ impl PatternFill {
 
         // patternFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if self.pattern_type.has_value() == true {
-            attributes.push(("patternType", &self.pattern_type.get_value_string()));
-        }
+        attributes.push(("patternType", &self.pattern_type.get_value_string()));
         write_start_tag(writer, "patternFill", attributes, empty_flag);
 
         if empty_flag == false {

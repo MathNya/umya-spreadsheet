@@ -40,13 +40,13 @@ impl LightRig {
     ) {
         match get_attribute(e, b"rig") {
             Some(v) => {
-                &mut self.rig.set_value_string(v);
+                self.rig.set_value_string(v);
             }
             None => {}
         }
         match get_attribute(e, b"dir") {
             Some(v) => {
-                &mut self.definition.set_value_string(v);
+                self.definition.set_value_string(v);
             }
             None => {}
         }

@@ -49,12 +49,12 @@ impl NonVisualConnectorShapeDrawingProperties {
                     b"a:stCxn" => {
                         let mut connection_type = StartConnection::default();
                         connection_type.set_attributes(reader, e);
-                        &mut self.set_start_connection(connection_type);
+                        self.set_start_connection(connection_type);
                     }
                     b"a:endCxn" => {
                         let mut connection_type = EndConnection::default();
                         connection_type.set_attributes(reader, e);
-                        &mut self.set_end_connection(connection_type);
+                        self.set_end_connection(connection_type);
                     }
                     _ => (),
                 },

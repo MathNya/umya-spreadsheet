@@ -117,7 +117,7 @@ impl PieChart {
         write_start_tag(writer, "c:pieChart", vec![], false);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -125,10 +125,10 @@ impl PieChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         // c:firstSliceAng
-        &self.first_slice_angle.write_to(writer);
+        self.first_slice_angle.write_to(writer);
 
         write_end_tag(writer, "c:pieChart");
     }

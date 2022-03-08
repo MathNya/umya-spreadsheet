@@ -140,21 +140,20 @@ impl OleObject {
                     }
                     b"oleObject" => {
                         if alternate_content.as_str() == "Choice" {
-                            &mut self
-                                .prog_id
+                            self.prog_id
                                 .set_value_string(get_attribute(e, b"progId").unwrap());
 
                             let r_id = get_attribute(e, b"r:id").unwrap();
                             let attached_file =
                                 relationships.get_relationship_by_rid(r_id).get_raw_file();
-                            &mut self.set_object_extension(attached_file.get_extension());
-                            &mut self.set_object_data(attached_file.get_file_data().clone());
+                            self.set_object_extension(attached_file.get_extension());
+                            self.set_object_data(attached_file.get_file_data().clone());
                         }
                     }
                     b"objectPr" => {
                         let mut obj = EmbeddedObjectProperties::default();
                         obj.set_attributes(reader, e, relationships);
-                        &mut self.set_embedded_object_properties(obj);
+                        self.set_embedded_object_properties(obj);
                     }
                     _ => (),
                 },
@@ -205,7 +204,7 @@ impl OleObject {
         write_start_tag(writer, "oleObject", attributes, false);
 
         // objectPr
-        &self
+        let _ = &self
             .embedded_object_properties
             .write_to(writer, &(r_id + 1));
 

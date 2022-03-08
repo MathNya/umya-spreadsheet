@@ -120,7 +120,7 @@ impl TextElement {
         }
 
         // t
-        &self.text.write_to(writer);
+        let _ = &self.text.write_to(writer);
 
         write_end_tag(writer, "r");
     }

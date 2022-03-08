@@ -1,54 +1,34 @@
-//! # umya-spreadsheet
-//! [![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
-//! [![Crates.io](https://img.shields.io/crates/l/umya-spreadsheet)](https://github.com/MathNya/umya-spreadsheet#license)
-//!
-//! ## Description
-//! **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
-//!
-//! ## Support Status
-//! | Function | Remarks |
-//! | --- | --- |
-//! | file | read, lazy_read, write |
-//! | cell value | read, edit, formated value. |
-//! | cell style | read, edit |
-//! | columns | read, edit, auto width |
-//! | charts | detail to # Supported chart types |
-//! | drawings | read, edit(Still might be inconvenient.) |
-//! | images | read, edit(Still might be inconvenient.) |
-//! | ole objects | read, edit(Still might be inconvenient.) |
-//!
 //! ## Example
-// ![Result Image](images/sample1.png)
+//! ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample1.png)
 //! ### Reader or New File
 //! ```rust
-//! extern crate umya_spreadsheet;
+//! use umya_spreadsheet::*;
 //!
 //! // reader
-//! let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
-//! let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+//! let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+//! let mut book = reader::xlsx::read(path).unwrap();
 //! // or
 //! // lazy reader
 //! //  Delays the loading of the worksheet until it is needed.
 //! //  When loading a file with a large amount of data, response improvement can be expected.
-//! let path = std::path::Path::new("C:/spread_test_data/aaa.xlsx");
-//! let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+//! let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+//! let mut book = reader::xlsx::lazy_read(path).unwrap();
 //! // or
 //! // new file
-//! let mut book = umya_spreadsheet::new_file();
+//! let mut book = new_file();
 //! ```
 //! ### New worksheet
 //! ```rust
-//! extern crate umya_spreadsheet;
-//!
-//! let mut book = umya_spreadsheet::new_file();
+//! use umya_spreadsheet::*;
+//! let mut book = new_file();
 //!
 //! // new worksheet
 //! let _ = book.new_sheet("Sheet2");
 //! ```
 //! ### Copy worksheet
 //! ```rust
-//! extern crate umya_spreadsheet;
-//! let mut book = umya_spreadsheet::new_file();
+//! use umya_spreadsheet::*;
+//! let mut book = new_file();
 //!
 //! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
 //! clone_sheet.set_title("New Sheet");
@@ -56,9 +36,8 @@
 //! ```
 //! ### Change value
 //! ```rust
-//! extern crate umya_spreadsheet;
-//!
-//! let mut book = umya_spreadsheet::new_file();
+//! use umya_spreadsheet::*;
+//! let mut book = new_file();
 //! let _ = book.new_sheet("Sheet2");
 //!
 //! // change value
@@ -72,9 +51,8 @@
 //! ```
 //! ### Read value
 //! ```rust
-//! extern crate umya_spreadsheet;
-//!
-//! let mut book = umya_spreadsheet::new_file();
+//! use umya_spreadsheet::*;
+//! let mut book = new_file();
 //! let _ = book.new_sheet("Sheet2");
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
 //!
@@ -87,10 +65,10 @@
 //! assert_eq!("TEST1", a1_value);  // TEST1
 //! ```
 //! ### Change style
+//! more example is [**here**](Style).
 //! ```rust
-//! extern crate umya_spreadsheet;
-//!
-//! let mut book = umya_spreadsheet::new_file();
+//! use umya_spreadsheet::*;
+//! let mut book = new_file();
 //! let _ = book.new_sheet("Sheet2");
 //!
 //! // add bottom border
@@ -98,20 +76,19 @@
 //! .get_style_mut("A1")
 //! .get_borders_mut()
 //! .get_bottom_mut()
-//! .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+//! .set_border_style(Border::BORDER_MEDIUM);
 //! // or
 //! book.get_sheet_mut(1)
 //! .get_style_by_column_and_row_mut(1, 1)
 //! .get_borders_mut()
 //! .get_bottom_mut()
-//! .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
+//! .set_border_style(Border::BORDER_MEDIUM);
 //! ```
 //! ### Insert or Remove Rows(or Columns)
-// ![Result Image](images/sample2.png)
+//! ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample2.png)
 //! ```rust
-//! extern crate umya_spreadsheet;
-//!
-//! let mut book = umya_spreadsheet::new_file();
+//! use umya_spreadsheet::*;
+//! let mut book = new_file();
 //!
 //! // insert rows
 //! book.insert_new_row("Sheet1", 2, 3);
@@ -131,14 +108,13 @@
 //! ```
 //! ### Writer
 //! ```rust
-//! extern crate umya_spreadsheet;
-//!
-//! let mut book = umya_spreadsheet::new_file();
+//! use umya_spreadsheet::*;
+//! let mut book = new_file();
 //! let _ = book.new_sheet("Sheet2");
 //!
 //! // writer
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
-//! let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+//! let _ = writer::xlsx::write(&book, path);
 //! ```
 //! ## Supported graph types
 //! * AreaChart
@@ -157,7 +133,7 @@
 //! Other types will be supported sequentially.
 //!
 //! ## Add Chart
-// ![Result Image](images/sample3.png)
+//! ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample3.png)
 //! ```rust
 //! extern crate umya_spreadsheet;
 //!
@@ -181,8 +157,6 @@
 //! );
 //! book.get_sheet_by_name_mut("Sheet1").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
 //! ```
-//! ## License
-//! MIT
 
 extern crate chrono;
 extern crate md5;

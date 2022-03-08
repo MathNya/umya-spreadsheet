@@ -85,13 +85,13 @@ impl GradientFill {
     ) {
         match get_attribute(e, b"flip") {
             Some(v) => {
-                &mut self.flip.set_value_string(v);
+                self.flip.set_value_string(v);
             }
             None => {}
         }
         match get_attribute(e, b"rotWithShape") {
             Some(v) => {
-                &mut self.rotate_with_shape.set_value_string(v);
+                self.rotate_with_shape.set_value_string(v);
             }
             None => {}
         }
@@ -142,7 +142,7 @@ impl GradientFill {
         write_start_tag(writer, "a:gradFill", attributes, false);
 
         // a:gsLst
-        &self.gradient_stop_list.write_to(writer);
+        let _ = &self.gradient_stop_list.write_to(writer);
 
         // a:lin
         match &self.linear_gradient_fill {

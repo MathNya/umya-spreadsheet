@@ -55,7 +55,7 @@ impl Scaling {
         write_start_tag(writer, "c:scaling", vec![], false);
 
         // c:orientation
-        &self.orientation.write_to(writer);
+        self.orientation.write_to(writer);
 
         write_end_tag(writer, "c:scaling");
     }

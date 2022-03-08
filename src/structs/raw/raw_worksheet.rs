@@ -2,6 +2,7 @@ use std::io;
 use structs::raw::RawFile;
 use structs::raw::RawRelationships;
 use structs::WriterManager;
+use writer::xlsx::XlsxError;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {
@@ -80,24 +81,28 @@ impl RawWorksheet {
         }
     }
 
-    pub(crate) fn write_to<W: io::Seek + io::Write>(
+    pub(crate) fn write<W: io::Seek + io::Write>(
         &self,
         sheet_no: &i32,
         writer_mng: &mut WriterManager<W>,
-    ) {
+    ) -> Result<(), XlsxError> {
         // Add worksheet
         let target = format!("xl/worksheets/sheet{}.xml", sheet_no);
-        writer_mng.add_bin(&target, self.get_worksheet_file().get_file_data());
+        writer_mng.add_bin(&target, self.get_worksheet_file().get_file_data())?;
 
         // Add worksheet rels
         let target = format!("xl/worksheets/_rels/sheet{}.xml.rels", sheet_no);
-        self.get_relationships().write_to(writer_mng, Some(&target));
+        self.get_relationships()
+            .write_to(writer_mng, Some(&target))?;
 
         // Add drawing
-        self.get_drawing_relationships().write_to(writer_mng, None);
+        self.get_drawing_relationships()
+            .write_to(writer_mng, None)?;
 
         // Add vml drawing
         self.get_vml_drawing_relationships()
-            .write_to(writer_mng, None);
+            .write_to(writer_mng, None)?;
+
+        Ok(())
     }
 }

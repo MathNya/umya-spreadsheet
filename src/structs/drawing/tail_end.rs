@@ -26,7 +26,7 @@ impl TailEnd {
     ) {
         match get_attribute(e, b"type") {
             Some(v) => {
-                &mut self.set_type(v);
+                self.set_type(v);
             }
             None => {}
         }

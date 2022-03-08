@@ -41,8 +41,7 @@ impl StringPoint {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self
-            .index
+        self.index
             .set_value_string(get_attribute(e, b"idx").unwrap());
 
         let mut buf = Vec::new();
@@ -50,7 +49,7 @@ impl StringPoint {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"c:v" => {
-                        &mut self.numeric_value._set_attributes(reader, e);
+                        self.numeric_value._set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -76,7 +75,7 @@ impl StringPoint {
         );
 
         // c:v
-        &self.numeric_value._write_to(writer);
+        self.numeric_value._write_to(writer);
 
         write_end_tag(writer, "c:pt");
     }

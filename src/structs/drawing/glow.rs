@@ -46,7 +46,7 @@ impl Glow {
                     b"a:schemeClr" => {
                         let mut obj = SchemeColor::default();
                         obj.set_attributes(reader, e, false);
-                        &mut self.set_scheme_color(obj);
+                        self.set_scheme_color(obj);
                     }
                     _ => (),
                 },

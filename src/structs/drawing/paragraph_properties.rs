@@ -58,13 +58,13 @@ impl ParagraphProperties {
     ) {
         match get_attribute(e, b"rtl") {
             Some(v) => {
-                &mut self.set_right_to_left(v);
+                self.set_right_to_left(v);
             }
             None => {}
         }
         match get_attribute(e, b"algn") {
             Some(v) => {
-                &mut self.alignment.set_value_string(v);
+                self.alignment.set_value_string(v);
             }
             None => {}
         }
@@ -80,7 +80,7 @@ impl ParagraphProperties {
                     b"a:defRPr" => {
                         let mut obj = DefaultRunProperties::default();
                         obj.set_attributes(reader, e, false);
-                        &mut self.set_default_run_properties(obj);
+                        self.set_default_run_properties(obj);
                     }
                     _ => (),
                 },
@@ -88,7 +88,7 @@ impl ParagraphProperties {
                     b"a:defRPr" => {
                         let mut obj = DefaultRunProperties::default();
                         obj.set_attributes(reader, e, true);
-                        &mut self.set_default_run_properties(obj);
+                        self.set_default_run_properties(obj);
                     }
                     _ => (),
                 },

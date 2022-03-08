@@ -59,13 +59,11 @@ impl NonVisualGraphicFrameProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"xdr:cNvPr" => {
-                        &mut self
-                            .non_visual_drawing_properties
+                        self.non_visual_drawing_properties
                             .set_attributes(reader, e, true);
                     }
                     b"xdr:cNvGraphicFramePr" => {
-                        &mut self
-                            .non_visual_graphic_frame_drawing_properties
+                        self.non_visual_graphic_frame_drawing_properties
                             .set_attributes(reader, e);
                     }
                     _ => (),
@@ -87,10 +85,10 @@ impl NonVisualGraphicFrameProperties {
         write_start_tag(writer, "xdr:nvGraphicFramePr", vec![], false);
 
         // xdr:cNvPr
-        &self.non_visual_drawing_properties.write_to(writer, &0);
+        let _ = &self.non_visual_drawing_properties.write_to(writer, &0);
 
         // xdr:cNvGraphicFramePr
-        &self
+        let _ = &self
             .non_visual_graphic_frame_drawing_properties
             .write_to(writer);
 

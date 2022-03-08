@@ -132,43 +132,43 @@ impl OuterShadow {
     ) {
         match get_attribute(e, b"blurRad") {
             Some(v) => {
-                &mut self.set_blur_radius(v);
+                self.set_blur_radius(v);
             }
             None => {}
         }
         match get_attribute(e, b"dist") {
             Some(v) => {
-                &mut self.set_distance(v);
+                self.set_distance(v);
             }
             None => {}
         }
         match get_attribute(e, b"dir") {
             Some(v) => {
-                &mut self.set_direction(v);
+                self.set_direction(v);
             }
             None => {}
         }
         match get_attribute(e, b"sx") {
             Some(v) => {
-                &mut self.set_horizontal_ratio(v);
+                self.set_horizontal_ratio(v);
             }
             None => {}
         }
         match get_attribute(e, b"sy") {
             Some(v) => {
-                &mut self.set_vertical_ratio(v);
+                self.set_vertical_ratio(v);
             }
             None => {}
         }
         match get_attribute(e, b"algn") {
             Some(v) => {
-                &mut self.set_alignment(v);
+                self.set_alignment(v);
             }
             None => {}
         }
         match get_attribute(e, b"rotWithShape") {
             Some(v) => {
-                &mut self.set_rotate_with_shape(v);
+                self.set_rotate_with_shape(v);
             }
             None => {}
         }
@@ -180,7 +180,7 @@ impl OuterShadow {
                     b"a:schemeClr" => {
                         let mut obj = SchemeColor::default();
                         obj.set_attributes(reader, e, true);
-                        &mut self.set_scheme_color(obj);
+                        self.set_scheme_color(obj);
                     }
                     b"a:srgbClr" => {
                         let mut obj = RgbColorModelHex::default();
@@ -193,12 +193,12 @@ impl OuterShadow {
                     b"a:prstClr" => {
                         let mut obj = PresetColor::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_preset_color(obj);
+                        self.set_preset_color(obj);
                     }
                     b"a:schemeClr" => {
                         let mut obj = SchemeColor::default();
                         obj.set_attributes(reader, e, false);
-                        &mut self.set_scheme_color(obj);
+                        self.set_scheme_color(obj);
                     }
                     b"a:srgbClr" => {
                         let mut obj = RgbColorModelHex::default();

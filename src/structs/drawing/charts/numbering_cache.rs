@@ -64,7 +64,7 @@ impl NumberingCache {
         write_start_tag(writer, "c:numCache", vec![], false);
 
         // c:formatCode
-        &self.format_code.write_to(writer);
+        self.format_code.write_to(writer);
 
         // c:ptCount
         write_start_tag(

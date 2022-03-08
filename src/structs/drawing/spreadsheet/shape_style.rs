@@ -58,22 +58,22 @@ impl ShapeStyle {
                     b"a:lnRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, false);
-                        &mut self.set_line_reference(style_matrix_reference_type);
+                        self.set_line_reference(style_matrix_reference_type);
                     }
                     b"a:fillRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, false);
-                        &mut self.set_fill_reference(style_matrix_reference_type);
+                        self.set_fill_reference(style_matrix_reference_type);
                     }
                     b"a:effectRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, false);
-                        &mut self.set_effect_reference(style_matrix_reference_type);
+                        self.set_effect_reference(style_matrix_reference_type);
                     }
                     b"a:fontRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, false);
-                        &mut self.set_font_reference(style_matrix_reference_type);
+                        self.set_font_reference(style_matrix_reference_type);
                     }
                     _ => (),
                 },
@@ -81,22 +81,22 @@ impl ShapeStyle {
                     b"a:lnRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, true);
-                        &mut self.set_line_reference(style_matrix_reference_type);
+                        self.set_line_reference(style_matrix_reference_type);
                     }
                     b"a:fillRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, true);
-                        &mut self.set_fill_reference(style_matrix_reference_type);
+                        self.set_fill_reference(style_matrix_reference_type);
                     }
                     b"a:effectRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, true);
-                        &mut self.set_effect_reference(style_matrix_reference_type);
+                        self.set_effect_reference(style_matrix_reference_type);
                     }
                     b"a:fontRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, true);
-                        &mut self.set_font_reference(style_matrix_reference_type);
+                        self.set_font_reference(style_matrix_reference_type);
                     }
                     _ => (),
                 },

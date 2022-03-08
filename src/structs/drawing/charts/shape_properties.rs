@@ -141,42 +141,42 @@ impl ShapeProperties {
                     b"a:pattFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_pattern_fill(obj);
+                        self.set_pattern_fill(obj);
                     }
                     b"a:xfrm" => {
                         let mut obj = Transform2D::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_transform2d(obj);
+                        self.set_transform2d(obj);
                     }
                     b"a:prstGeom" => {
                         let mut obj = PresetGeometry::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_geometry(obj);
+                        self.set_geometry(obj);
                     }
                     b"a:ln" => {
                         let mut obj = Outline::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_outline(obj);
+                        self.set_outline(obj);
                     }
                     b"a:solidFill" => {
                         let mut obj = SolidFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_solid_fill(obj);
+                        self.set_solid_fill(obj);
                     }
                     b"a:effectLst" => {
                         let mut obj = EffectList::default();
                         obj.set_attributes(reader, e, false);
-                        &mut self.set_effect_list(obj);
+                        self.set_effect_list(obj);
                     }
                     b"a:scene3d" => {
                         let mut obj = Scene3DType::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_scene_3d_type(obj);
+                        self.set_scene_3d_type(obj);
                     }
                     b"a:sp3d" => {
                         let mut obj = Shape3DType::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_shape_3d_type(obj);
+                        self.set_shape_3d_type(obj);
                     }
                     _ => (),
                 },

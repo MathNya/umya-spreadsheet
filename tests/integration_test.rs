@@ -1,6 +1,9 @@
 extern crate chrono;
 extern crate umya_spreadsheet;
 
+use std::path::PathBuf;
+use umya_spreadsheet::*;
+
 #[test]
 fn read_and_wite() {
     // reader
@@ -121,6 +124,28 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .unwrap()
         .get_formatted_value("A1");
     assert_eq!("49,046,881.12", &value);
+
+    let fg = umya_spreadsheet::Color::default()
+        .set_argb(umya_spreadsheet::Color::COLOR_BLACK)
+        .to_owned();
+    let fill = umya_spreadsheet::PatternFill::default()
+        .set_foreground_color(fg)
+        .to_owned();
+    book.get_sheet_by_name_mut("Sheet5")
+        .unwrap()
+        .get_row_dimension_mut(&5u32)
+        .get_style_mut()
+        .get_fill_mut()
+        .set_pattern_fill(fill.clone());
+    let font_color = umya_spreadsheet::Color::default()
+        .set_argb(umya_spreadsheet::Color::COLOR_WHITE)
+        .to_owned();
+    book.get_sheet_by_name_mut("Sheet5")
+        .unwrap()
+        .get_row_dimension_mut(&5u32)
+        .get_style_mut()
+        .get_font_mut()
+        .set_color(font_color.clone());
 }
 
 #[test]
@@ -655,18 +680,4 @@ fn duplicate_sheet() {
         Ok(_) => panic!("getting new sheet.."),
         Err(_) => {}
     }
-}
-
-#[test]
-fn wite_large() {
-    // reader
-    dbg!(chrono::Local::now());
-    let path = std::path::Path::new("./tests/test_files/aaa_large.xlsx");
-    let book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
-
-    // writer
-    dbg!(chrono::Local::now());
-    let path = std::path::Path::new("./tests/result_files/bbb_large.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
-    dbg!(chrono::Local::now());
 }

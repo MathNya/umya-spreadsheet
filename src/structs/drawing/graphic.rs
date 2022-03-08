@@ -37,8 +37,7 @@ impl Graphic {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:graphicData" => {
-                        &mut self
-                            .graphic_data
+                        self.graphic_data
                             .set_attributes(reader, e, drawing_relationships);
                     }
                     _ => (),
@@ -60,7 +59,7 @@ impl Graphic {
         write_start_tag(writer, "a:graphic", vec![], false);
 
         // a:graphicData
-        &self.graphic_data.write_to(writer, r_id);
+        let _ = &self.graphic_data.write_to(writer, r_id);
 
         write_end_tag(writer, "a:graphic");
     }

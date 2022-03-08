@@ -28,7 +28,7 @@ impl PictureLocks {
             Some(v) => {
                 match &*v {
                     "1" => {
-                        &mut self.set_no_change_aspect(true);
+                        self.set_no_change_aspect(true);
                     }
                     _ => {}
                 };

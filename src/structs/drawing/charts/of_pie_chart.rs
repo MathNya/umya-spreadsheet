@@ -171,10 +171,10 @@ impl OfPieChart {
         write_start_tag(writer, "c:ofPieChart", vec![], false);
 
         // c:ofPieType
-        &self.of_pie_type.write_to(writer);
+        self.of_pie_type.write_to(writer);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -182,16 +182,16 @@ impl OfPieChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         // c:gapWidth
-        &self.gap_width.write_to(writer);
+        self.gap_width.write_to(writer);
 
         // c:secondPieSize
-        &self.second_pie_size.write_to(writer);
+        self.second_pie_size.write_to(writer);
 
         // c:serLines
-        &self.series_lines.write_to(writer);
+        self.series_lines.write_to(writer);
 
         write_end_tag(writer, "c:ofPieChart");
     }

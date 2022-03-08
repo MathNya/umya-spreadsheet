@@ -74,11 +74,10 @@ impl StringReference {
         write_start_tag(writer, "c:strRef", vec![], false);
 
         // c:f
-        &self.formula.write_to(writer);
+        self.formula.write_to(writer);
 
         // c:strCache
-        &self
-            .string_cache
+        self.string_cache
             .write_to(writer, self.get_formula().get_address(), spreadsheet);
 
         write_end_tag(writer, "c:strRef");

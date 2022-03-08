@@ -109,23 +109,19 @@ impl RgbColorModelHex {
         for a in e.attributes().with_checks(false) {
             match a {
                 Ok(ref attr) if attr.key == b"r" => {
-                    &mut self
-                        .red
+                    self.red
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"g" => {
-                    &mut self
-                        .green
+                    self.green
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"b" => {
-                    &mut self
-                        .blue
+                    self.blue
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"val" => {
-                    &mut self
-                        .val
+                    self.val
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(_) => {}

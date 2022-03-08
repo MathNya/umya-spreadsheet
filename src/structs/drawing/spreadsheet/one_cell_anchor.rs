@@ -55,19 +55,19 @@ impl OneCellAnchor {
     }
 
     pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
-        &mut self.from_marker._adjustment_insert_row(num_rows);
+        self.from_marker._adjustment_insert_row(num_rows);
     }
 
     pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
-        &mut self.from_marker._adjustment_insert_colmun(num_cols);
+        self.from_marker._adjustment_insert_colmun(num_cols);
     }
 
     pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
-        &mut self.from_marker._adjustment_remove_row(num_rows);
+        self.from_marker._adjustment_remove_row(num_rows);
     }
 
     pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
-        &mut self.from_marker._adjustment_remove_colmun(num_cols);
+        self.from_marker._adjustment_remove_colmun(num_cols);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -112,10 +112,10 @@ impl OneCellAnchor {
         write_start_tag(writer, "xdr:oneCellAnchor", vec![], false);
 
         // xdr:from
-        &self.from_marker.write_to_from(writer);
+        let _ = &self.from_marker.write_to_from(writer);
 
         // xdr:ext
-        &self.extent.write_to(writer);
+        let _ = &self.extent.write_to(writer);
 
         // xdr:sp
         match &self.shape {

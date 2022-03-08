@@ -3,6 +3,7 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
+use super::XlsxError;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -10,7 +11,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
     has_shared_string_table: bool,
     writer_mng: &mut WriterManager<W>,
-) {
+) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(
@@ -89,13 +90,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     write_end_tag(&mut writer, root_tag_name);
-    let _ = make_file_from_writer(
+    make_file_from_writer(
         "xl/_rels/workbook.xml.rels",
         writer_mng.get_arv_mut(),
         writer,
         None,
-    )
-    .unwrap();
+    )?;
+    Ok(())
 }
 
 fn write_relationship(

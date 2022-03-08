@@ -36,8 +36,8 @@ impl Extents {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self.cx.set_value_string(get_attribute(e, b"cx").unwrap());
-        &mut self.cy.set_value_string(get_attribute(e, b"cy").unwrap());
+        self.cx.set_value_string(get_attribute(e, b"cx").unwrap());
+        self.cy.set_value_string(get_attribute(e, b"cy").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

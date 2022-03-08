@@ -390,7 +390,7 @@ impl Shape {
         }
 
         // x:ClientData
-        &self.client_data.write_to(writer);
+        self.client_data.write_to(writer);
 
         write_end_tag(writer, "v:shape");
     }

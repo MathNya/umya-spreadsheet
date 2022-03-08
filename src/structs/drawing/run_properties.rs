@@ -218,49 +218,49 @@ impl RunProperties {
     ) {
         match get_attribute(e, b"kumimoji") {
             Some(v) => {
-                &mut self.set_kumimoji(v);
+                self.set_kumimoji(v);
             }
             None => {}
         }
         match get_attribute(e, b"lang") {
             Some(v) => {
-                &mut self.set_language(v);
+                self.set_language(v);
             }
             None => {}
         }
         match get_attribute(e, b"altLang") {
             Some(v) => {
-                &mut self.set_alternative_language(v);
+                self.set_alternative_language(v);
             }
             None => {}
         }
         match get_attribute(e, b"b") {
             Some(v) => {
-                &mut self.set_bold(v);
+                self.set_bold(v);
             }
             None => {}
         }
         match get_attribute(e, b"sz") {
             Some(v) => {
-                &mut self.set_sz(v);
+                self.set_sz(v);
             }
             None => {}
         }
         match get_attribute(e, b"i") {
             Some(v) => {
-                &mut self.set_italic(v);
+                self.set_italic(v);
             }
             None => {}
         }
         match get_attribute(e, b"cap") {
             Some(v) => {
-                &mut self.capital.set_value_string(v);
+                self.capital.set_value_string(v);
             }
             None => {}
         }
         match get_attribute(e, b"spc") {
             Some(v) => {
-                &mut self.spacing.set_value_string(v);
+                self.spacing.set_value_string(v);
             }
             None => {}
         }
@@ -276,22 +276,22 @@ impl RunProperties {
                     b"a:solidFill" => {
                         let mut obj = SolidFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_solid_fill(obj);
+                        self.set_solid_fill(obj);
                     }
                     b"a:ln" => {
                         let mut obj = Outline::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_outline(obj);
+                        self.set_outline(obj);
                     }
                     b"a:gradFill" => {
                         let mut obj = GradientFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_gradient_fill(obj);
+                        self.set_gradient_fill(obj);
                     }
                     b"a:effectLst" => {
                         let mut effect_list = EffectList::default();
                         effect_list.set_attributes(reader, e, false);
-                        &mut self.set_effect_list(effect_list);
+                        self.set_effect_list(effect_list);
                     }
                     _ => (),
                 },
@@ -299,22 +299,22 @@ impl RunProperties {
                     b"a:latin" => {
                         let mut obj = LatinFont::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_latin_font(obj);
+                        self.set_latin_font(obj);
                     }
                     b"a:ea" => {
                         let mut obj = EastAsianFont::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_east_asian_font(obj);
+                        self.set_east_asian_font(obj);
                     }
                     b"a:noFill" => {
                         let mut obj = NoFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_no_fill(obj);
+                        self.set_no_fill(obj);
                     }
                     b"a:effectLst" => {
                         let mut obj = EffectList::default();
                         obj.set_attributes(reader, e, true);
-                        &mut self.set_effect_list(obj);
+                        self.set_effect_list(obj);
                     }
                     _ => (),
                 },

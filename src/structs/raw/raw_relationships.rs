@@ -9,6 +9,7 @@ use structs::raw::RawRelationship;
 use structs::StringValue;
 use structs::WriterManager;
 use writer::driver::*;
+use writer::xlsx::XlsxError;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
@@ -122,9 +123,9 @@ impl RawRelationships {
         &self,
         writer_mng: &mut WriterManager<W>,
         ather_target: Option<&str>,
-    ) {
+    ) -> Result<(), XlsxError> {
         if self.get_relationship_list().len() == 0 {
-            return;
+            return Ok(());
         }
 
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -157,10 +158,12 @@ impl RawRelationships {
             Some(v) => v,
             None => self.get_file_target(),
         };
-        writer_mng.add_writer(target, writer);
+        writer_mng.add_writer(target, writer)?;
 
         for relationship in self.get_relationship_list() {
-            relationship.write_to_bin(writer_mng);
+            relationship.write_to_bin(writer_mng)?;
         }
+
+        Ok(())
     }
 }

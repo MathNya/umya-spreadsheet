@@ -3,15 +3,16 @@ use quick_xml::Writer;
 use std::io;
 
 use super::driver::*;
+use super::XlsxError;
 use structs::Worksheet;
 use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
-) -> String {
+) -> Result<String, XlsxError> {
     if worksheet.has_drawing_object() == false {
-        return String::from("");
+        return Ok(String::from(""));
     }
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -27,6 +28,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         .get_worksheet_drawing()
         .write_to(&mut writer, worksheet.get_ole_objects());
 
-    let file_no = writer_mng.add_file_at_drawing(writer);
-    file_no.to_string()
+    let file_no = writer_mng.add_file_at_drawing(writer)?;
+    Ok(file_no.to_string())
 }

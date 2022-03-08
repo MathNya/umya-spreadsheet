@@ -12,7 +12,6 @@ use structs::Hyperlink;
 use structs::OleObjects;
 use structs::Row;
 use structs::SharedStringTable;
-use structs::SheetView;
 use structs::Stylesheet;
 use structs::Theme;
 use structs::Worksheet;
@@ -43,10 +42,10 @@ pub(crate) fn read(
                         }
                     }
                 }
-                b"sheetView" => {
-                    let mut obj = SheetView::default();
-                    obj.set_attributes(&mut reader, e, false);
-                    worksheet.set_sheet_view(obj);
+                b"sheetViews" => {
+                    worksheet
+                        .get_sheet_views_mut()
+                        .set_attributes(&mut reader, e);
                 }
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {

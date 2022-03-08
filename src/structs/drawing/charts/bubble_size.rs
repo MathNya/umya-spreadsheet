@@ -56,7 +56,7 @@ impl BubbleSize {
         write_start_tag(writer, "c:bubbleSize", vec![], false);
 
         // c:numRef
-        &self.number_reference.write_to(writer, spreadsheet);
+        self.number_reference.write_to(writer, spreadsheet);
 
         write_end_tag(writer, "c:bubbleSize");
     }

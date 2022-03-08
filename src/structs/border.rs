@@ -88,7 +88,7 @@ impl Border {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"color" => {
-                        &mut self.color.set_attributes(reader, e);
+                        self.color.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -153,7 +153,7 @@ impl Border {
 
         if empty_flag == false {
             // color
-            &self.color.write_to_color(writer);
+            let _ = &self.color.write_to_color(writer);
 
             write_end_tag(writer, tag_name);
         }

@@ -81,7 +81,7 @@ impl GraphicFrame {
     ) {
         match get_attribute(e, b"macro") {
             Some(v) => {
-                &mut self.r#macro.set_value_string(v);
+                self.r#macro.set_value_string(v);
             }
             None => {}
         }
@@ -92,16 +92,14 @@ impl GraphicFrame {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"xdr:nvGraphicFramePr" => {
-                        &mut self
-                            .non_visual_graphic_frame_properties
+                        self.non_visual_graphic_frame_properties
                             .set_attributes(reader, e);
                     }
                     b"xdr:xfrm" => {
-                        &mut self.transform.set_attributes(reader, e);
+                        self.transform.set_attributes(reader, e);
                     }
                     b"a:graphic" => {
-                        &mut self
-                            .graphic
+                        self.graphic
                             .set_attributes(reader, e, drawing_relationships);
                     }
                     _ => (),
@@ -128,13 +126,13 @@ impl GraphicFrame {
         );
 
         // xdr:nvGraphicFramePr
-        &self.non_visual_graphic_frame_properties.write_to(writer);
+        let _ = &self.non_visual_graphic_frame_properties.write_to(writer);
 
         // xdr:xfrm
-        &self.transform.write_to(writer);
+        let _ = &self.transform.write_to(writer);
 
         // a:graphic
-        &self.graphic.write_to(writer, r_id);
+        let _ = &self.graphic.write_to(writer, r_id);
 
         write_end_tag(writer, "xdr:graphicFrame");
     }

@@ -59,16 +59,14 @@ impl NonVisualConnectionShapeProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"xdr:cNvCxnSpPr" => {
-                        &mut self
-                            .non_visual_connector_shape_drawing_properties
+                        self.non_visual_connector_shape_drawing_properties
                             .set_attributes(reader, e);
                     }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"xdr:cNvPr" => {
-                        &mut self
-                            .non_visual_drawing_properties
+                        self.non_visual_drawing_properties
                             .set_attributes(reader, e, true);
                     }
                     _ => (),
@@ -90,10 +88,10 @@ impl NonVisualConnectionShapeProperties {
         write_start_tag(writer, "xdr:nvCxnSpPr", vec![], false);
 
         // xdr:cNvPr
-        &self.non_visual_drawing_properties.write_to(writer, &0);
+        let _ = &self.non_visual_drawing_properties.write_to(writer, &0);
 
         // xdr:cNvCxnSpPr
-        &self
+        let _ = &self
             .non_visual_connector_shape_drawing_properties
             .write_to(writer);
 

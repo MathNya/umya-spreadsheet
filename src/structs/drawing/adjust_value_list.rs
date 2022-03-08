@@ -42,7 +42,7 @@ impl AdjustValueList {
                         let mut shape_guide = ShapeGuide::default();
                         shape_guide.set_name(get_attribute(e, b"name").unwrap());
                         shape_guide.set_fmla(get_attribute(e, b"fmla").unwrap());
-                        &mut self.add_shape_guide_collection(shape_guide);
+                        self.add_shape_guide_collection(shape_guide);
                     }
                     _ => (),
                 },

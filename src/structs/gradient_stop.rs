@@ -66,7 +66,7 @@ impl GradientStop {
                     b"color" => {
                         let mut obj = Color::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_color(obj);
+                        self.set_color(obj);
                     }
                     _ => (),
                 },
@@ -92,7 +92,7 @@ impl GradientStop {
         );
 
         // color
-        &self.color.write_to_color(writer);
+        let _ = &self.color.write_to_color(writer);
 
         write_end_tag(writer, "stop");
     }

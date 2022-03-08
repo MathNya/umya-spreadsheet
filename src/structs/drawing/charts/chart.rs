@@ -198,48 +198,48 @@ impl Chart {
                     b"c:title" => {
                         let mut obj = Title::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_title(obj);
+                        self.set_title(obj);
                     }
                     b"c:view3D" => {
                         let mut obj = View3D::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_view_3d(obj);
+                        self.set_view_3d(obj);
                     }
                     b"c:floor" => {
                         let mut obj = Floor::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_floor(obj);
+                        self.set_floor(obj);
                     }
                     b"c:sideWall" => {
                         let mut obj = SideWall::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_side_wall(obj);
+                        self.set_side_wall(obj);
                     }
                     b"c:backWall" => {
                         let mut obj = BackWall::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_back_wall(obj);
+                        self.set_back_wall(obj);
                     }
                     b"c:plotArea" => {
-                        &mut self.plot_area.set_attributes(reader, e);
+                        self.plot_area.set_attributes(reader, e);
                     }
                     b"c:legend" => {
-                        &mut self.legend.set_attributes(reader, e);
+                        self.legend.set_attributes(reader, e);
                     }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"c:autoTitleDeleted" => {
-                        &mut self.auto_title_deleted.set_attributes(reader, e);
+                        self.auto_title_deleted.set_attributes(reader, e);
                     }
                     b"c:plotVisOnly" => {
-                        &mut self.plot_visible_only.set_attributes(reader, e);
+                        self.plot_visible_only.set_attributes(reader, e);
                     }
                     b"c:dispBlanksAs" => {
-                        &mut self.display_blanks_as.set_attributes(reader, e);
+                        self.display_blanks_as.set_attributes(reader, e);
                     }
                     b"c:showDLblsOverMax" => {
-                        &mut self.show_data_labels_over_maximum.set_attributes(reader, e);
+                        self.show_data_labels_over_maximum.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -268,7 +268,7 @@ impl Chart {
         }
 
         // c:autoTitleDeleted
-        &self.auto_title_deleted.write_to(writer);
+        self.auto_title_deleted.write_to(writer);
 
         // c:view3D
         match &self.view_3d {
@@ -303,19 +303,19 @@ impl Chart {
         }
 
         // c:plotArea
-        &self.plot_area.write_to(writer, spreadsheet);
+        self.plot_area.write_to(writer, spreadsheet);
 
         // c:legend
-        &self.legend.write_to(writer);
+        self.legend.write_to(writer);
 
         // c:plotVisOnly
-        &self.plot_visible_only.write_to(writer);
+        self.plot_visible_only.write_to(writer);
 
         // c:dispBlanksAs
-        &self.display_blanks_as.write_to(writer);
+        self.display_blanks_as.write_to(writer);
 
         // c:showDLblsOverMax
-        &self.show_data_labels_over_maximum.write_to(writer);
+        self.show_data_labels_over_maximum.write_to(writer);
 
         write_end_tag(writer, "c:chart");
     }

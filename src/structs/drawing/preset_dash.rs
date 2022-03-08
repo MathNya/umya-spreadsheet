@@ -27,7 +27,7 @@ impl PresetDash {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self.val.set_value_string(get_attribute(e, b"val").unwrap());
+        self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

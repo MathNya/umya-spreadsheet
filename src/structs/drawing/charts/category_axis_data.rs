@@ -56,7 +56,7 @@ impl CategoryAxisData {
         write_start_tag(writer, "c:cat", vec![], false);
 
         // c:strRef
-        &self.string_reference.write_to(writer, spreadsheet);
+        self.string_reference.write_to(writer, spreadsheet);
 
         write_end_tag(writer, "c:cat");
     }

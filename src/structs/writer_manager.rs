@@ -2,6 +2,7 @@ use quick_xml::Writer;
 use std::io;
 use std::io::Cursor;
 use writer::driver::*;
+use writer::xlsx::XlsxError;
 
 pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
@@ -19,22 +20,22 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         &mut self,
         target: &str,
         writer: Writer<Cursor<Vec<u8>>>,
-    ) -> &mut Self {
+    ) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
         if is_match == false {
-            make_file_from_writer(target, &mut self.arv, writer, None).unwrap();
+            make_file_from_writer(target, &mut self.arv, writer, None)?;
             self.files.push(target.to_string());
         }
-        self
+        Ok(())
     }
 
-    pub(crate) fn add_bin(&mut self, target: &str, data: &Vec<u8>) -> &mut Self {
+    pub(crate) fn add_bin(&mut self, target: &str, data: &Vec<u8>) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
         if is_match == false {
-            make_file_from_bin(target, &mut self.arv, data, None).unwrap();
+            make_file_from_bin(target, &mut self.arv, data, None)?;
             self.files.push(target.to_string());
         }
-        self
+        Ok(())
     }
 
     pub(crate) fn get_arv_mut(&mut self) -> &mut zip::ZipWriter<W> {
@@ -60,7 +61,10 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         false
     }
 
-    pub(crate) fn add_file_at_drawing(&mut self, writer: Writer<Cursor<Vec<u8>>>) -> i32 {
+    pub(crate) fn add_file_at_drawing(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+    ) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
@@ -68,84 +72,96 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
                 self.add_writer(&file_path, writer);
-                return index;
+                return Ok(index);
             }
         }
     }
 
-    pub(crate) fn add_file_at_vml_drawing(&mut self, writer: Writer<Cursor<Vec<u8>>>) -> i32 {
+    pub(crate) fn add_file_at_vml_drawing(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+    ) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
             let file_path = format!("xl/drawings/vmlDrawing{}.vml", index);
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
-                self.add_writer(&file_path, writer);
-                return index;
+                self.add_writer(&file_path, writer)?;
+                return Ok(index);
             }
         }
     }
 
-    pub(crate) fn add_file_at_comment(&mut self, writer: Writer<Cursor<Vec<u8>>>) -> i32 {
+    pub(crate) fn add_file_at_comment(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+    ) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
             let file_path = format!("xl/comments{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
-                self.add_writer(&file_path, writer);
-                return index;
+                self.add_writer(&file_path, writer)?;
+                return Ok(index);
             }
         }
     }
 
-    pub(crate) fn add_file_at_chart(&mut self, writer: Writer<Cursor<Vec<u8>>>) -> i32 {
+    pub(crate) fn add_file_at_chart(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+    ) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
             let file_path = format!("xl/charts/chart{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
-                self.add_writer(&file_path, writer);
-                return index;
+                self.add_writer(&file_path, writer)?;
+                return Ok(index);
             }
         }
     }
 
-    pub(crate) fn add_file_at_ole_object(&mut self, writer: &Vec<u8>) -> i32 {
+    pub(crate) fn add_file_at_ole_object(&mut self, writer: &Vec<u8>) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
             let file_path = format!("xl/embeddings/oleObject{}.bin", index);
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
-                self.add_bin(&file_path, writer);
-                return index;
+                self.add_bin(&file_path, writer)?;
+                return Ok(index);
             }
         }
     }
 
-    pub(crate) fn add_file_at_excel(&mut self, writer: &Vec<u8>) -> i32 {
+    pub(crate) fn add_file_at_excel(&mut self, writer: &Vec<u8>) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
             let file_path = format!("xl/embeddings/Microsoft_Excel_Worksheet{}.xlsx", index);
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
-                self.add_bin(&file_path, writer);
-                return index;
+                self.add_bin(&file_path, writer)?;
+                return Ok(index);
             }
         }
     }
-    pub(crate) fn add_file_at_printer_settings(&mut self, writer: &Vec<u8>) -> i32 {
+    pub(crate) fn add_file_at_printer_settings(
+        &mut self,
+        writer: &Vec<u8>,
+    ) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
             let file_path = format!("xl/printerSettings/printerSettings{}.bin", index);
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
-                self.add_bin(&file_path, writer);
-                return index;
+                self.add_bin(&file_path, writer)?;
+                return Ok(index);
             }
         }
     }

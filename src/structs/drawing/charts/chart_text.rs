@@ -34,7 +34,7 @@ impl ChartText {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"c:rich" => {
-                        &mut self.rich_text.set_attributes(reader, e);
+                        self.rich_text.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -55,7 +55,7 @@ impl ChartText {
         write_start_tag(writer, "c:tx", vec![], false);
 
         // c:rich
-        &self.rich_text.write_to(writer);
+        self.rich_text.write_to(writer);
 
         write_end_tag(writer, "c:tx");
     }

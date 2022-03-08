@@ -35,7 +35,7 @@ impl Stretch {
                     b"a:fillRect" => {
                         let mut fill_rectangle = FillRectangle::default();
                         fill_rectangle.set_attributes(reader, e);
-                        &mut self.set_fill_rectangle(fill_rectangle);
+                        self.set_fill_rectangle(fill_rectangle);
                     }
                     _ => (),
                 },

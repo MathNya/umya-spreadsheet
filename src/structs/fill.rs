@@ -17,8 +17,13 @@ impl Fill {
         &self.pattern_fill
     }
 
-    pub fn get_pattern_fill_mut(&mut self) -> &mut Option<PatternFill> {
-        &mut self.pattern_fill
+    pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
+        match &self.pattern_fill {
+            Some(_) => return self.pattern_fill.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_pattern_fill(PatternFill::default());
+        self.pattern_fill.as_mut().unwrap()
     }
 
     pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut Self {
@@ -31,8 +36,13 @@ impl Fill {
         &self.gradient_fill
     }
 
-    pub fn get_gradient_fill_mut(&mut self) -> &mut Option<GradientFill> {
-        &mut self.gradient_fill
+    pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
+        match &self.gradient_fill {
+            Some(_) => return self.gradient_fill.as_mut().unwrap(),
+            None => {}
+        }
+        self.set_gradient_fill(GradientFill::default());
+        self.gradient_fill.as_mut().unwrap()
     }
 
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
@@ -49,7 +59,7 @@ impl Fill {
         def
     }
 
-    pub(crate) fn _get_defalut_value_2() -> Self {
+    pub(crate) fn get_defalut_value_2() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
         pfill.set_pattern_type(PatternValues::Gray125);
@@ -94,7 +104,7 @@ impl Fill {
                     b"patternFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e, true);
-                        &mut self.set_pattern_fill(obj);
+                        self.set_pattern_fill(obj);
                     }
                     _ => (),
                 },
@@ -102,12 +112,12 @@ impl Fill {
                     b"patternFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e, false);
-                        &mut self.set_pattern_fill(obj);
+                        self.set_pattern_fill(obj);
                     }
                     b"gradientFill" => {
                         let mut obj = GradientFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_gradient_fill(obj);
+                        self.set_gradient_fill(obj);
                     }
                     _ => (),
                 },

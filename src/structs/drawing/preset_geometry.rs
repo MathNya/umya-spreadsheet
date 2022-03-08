@@ -227,14 +227,14 @@ impl PresetGeometry {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self.set_geometry(get_attribute(e, b"prst").unwrap());
+        self.set_geometry(get_attribute(e, b"prst").unwrap());
 
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:avLst" => {
-                        &mut self.get_adjust_value_list_mut().set_attributes(reader, e);
+                        self.get_adjust_value_list_mut().set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -257,7 +257,7 @@ impl PresetGeometry {
         write_start_tag(writer, "a:prstGeom", vec![("prst", &self.geometry)], false);
 
         // a:avLst
-        &self.adjust_value_list.write_to(writer);
+        let _ = &self.adjust_value_list.write_to(writer);
 
         write_end_tag(writer, "a:prstGeom");
     }

@@ -34,8 +34,8 @@ impl Offset {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self.x.set_value_string(get_attribute(e, b"x").unwrap());
-        &mut self.y.set_value_string(get_attribute(e, b"y").unwrap());
+        self.x.set_value_string(get_attribute(e, b"x").unwrap());
+        self.y.set_value_string(get_attribute(e, b"y").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

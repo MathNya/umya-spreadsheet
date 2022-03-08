@@ -285,7 +285,7 @@ impl ClientData {
         }
 
         // x:Anchor
-        &self.anchor.write_to(writer);
+        let _ = &self.anchor.write_to(writer);
 
         // x:AutoFill
         match &self.auto_fill {

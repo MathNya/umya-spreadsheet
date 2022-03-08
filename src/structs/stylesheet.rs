@@ -318,6 +318,8 @@ impl Stylesheet {
     pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
         let style = Style::get_defalut_value();
         self.set_style(&style);
+        let style = Style::get_defalut_value_2();
+        self.set_style(&style);
         self
     }
 
@@ -397,31 +399,31 @@ impl Stylesheet {
         );
 
         // numFmts
-        &self.numbering_formats.write_to(writer);
+        let _ = &self.numbering_formats.write_to(writer);
 
         // fonts
-        &self.fonts.write_to(writer);
+        let _ = &self.fonts.write_to(writer);
 
         // fills
-        &self.fills.write_to(writer);
+        let _ = &self.fills.write_to(writer);
 
         // borders
-        &self.borders.write_to(writer);
+        let _ = &self.borders.write_to(writer);
 
         // cellStyleXfs
-        &self.cell_style_formats.write_to(writer);
+        let _ = &self.cell_style_formats.write_to(writer);
 
         // cellXfs
-        &self.cell_formats.write_to(writer);
+        let _ = &self.cell_formats.write_to(writer);
 
         // cellStyles
-        &self.cell_styles.write_to(writer);
+        let _ = &self.cell_styles.write_to(writer);
 
         // dxfs
-        &self.differential_formats.write_to(writer);
+        let _ = &self.differential_formats.write_to(writer);
 
         // colors
-        &self.colors.write_to(writer);
+        let _ = &self.colors.write_to(writer);
 
         // tableStyles
         write_start_tag(

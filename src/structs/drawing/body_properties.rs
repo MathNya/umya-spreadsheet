@@ -119,40 +119,35 @@ impl BodyProperties {
         for a in e.attributes().with_checks(false) {
             match a {
                 Ok(ref attr) if attr.key == b"vertOverflow" => {
-                    &mut self.set_vert_overflow(get_attribute_value(attr).unwrap());
+                    self.set_vert_overflow(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"horzOverflow" => {
-                    &mut self.set_horz_overflow(get_attribute_value(attr).unwrap());
+                    self.set_horz_overflow(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"rtlCol" => {
-                    &mut self.set_rtl_col(get_attribute_value(attr).unwrap());
+                    self.set_rtl_col(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"anchor" => {
-                    &mut self.set_anchor(get_attribute_value(attr).unwrap());
+                    self.set_anchor(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"wrap" => {
-                    &mut self
-                        .wrap
+                    self.wrap
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"lIns" => {
-                    &mut self
-                        .left_inset
+                    self.left_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"tIns" => {
-                    &mut self
-                        .top_inset
+                    self.top_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"rIns" => {
-                    &mut self
-                        .right_inset
+                    self.right_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(ref attr) if attr.key == b"bIns" => {
-                    &mut self
-                        .bottom_inset
+                    self.bottom_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
                 Ok(_) => {}
@@ -171,7 +166,7 @@ impl BodyProperties {
                     b"a:spAutoFit" => {
                         let mut obj = ShapeAutoFit::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_shape_auto_fit(obj);
+                        self.set_shape_auto_fit(obj);
                     }
                     _ => (),
                 },

@@ -1,4 +1,5 @@
 use super::driver::*;
+use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -15,7 +16,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     stylesheet: &mut Stylesheet,
     has_macros: bool,
     writer_mng: &mut WriterManager<W>,
-) {
+) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
     {
@@ -103,19 +104,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
 
         // sheetViews
-        write_start_tag(
-            &mut writer,
-            "sheetViews",
-            vec![
-                 // ("ref",  worksheet.calculate_worksheet_dimension().as_str()),
-            ],
-            false,
-        );
-
-        // sheetView
-        worksheet.get_sheet_view().write_to(&mut writer);
-
-        write_end_tag(&mut writer, "sheetViews");
+        worksheet.get_sheets_views().write_to(&mut writer);
 
         // sheetFormatPr
         write_start_tag(
@@ -402,5 +391,5 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "worksheet");
 
     let target = format!("xl/worksheets/sheet{}.xml", sheet_no);
-    writer_mng.add_writer(&target, writer);
+    writer_mng.add_writer(&target, writer)
 }

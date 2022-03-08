@@ -52,16 +52,14 @@ impl NonVisualPictureProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"xdr:cNvPicPr" => {
-                        &mut self
-                            .non_visual_picture_drawing_properties
+                        self.non_visual_picture_drawing_properties
                             .set_attributes(reader, e);
                     }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"xdr:cNvPr" => {
-                        &mut self
-                            .non_visual_drawing_properties
+                        self.non_visual_drawing_properties
                             .set_attributes(reader, e, true);
                     }
                     _ => (),
@@ -83,10 +81,10 @@ impl NonVisualPictureProperties {
         write_start_tag(writer, "xdr:nvPicPr", vec![], false);
 
         // xdr:cNvPr
-        &self.non_visual_drawing_properties.write_to(writer, &0);
+        let _ = &self.non_visual_drawing_properties.write_to(writer, &0);
 
         // xdr:cNvPicPr
-        &self.non_visual_picture_drawing_properties.write_to(writer);
+        let _ = &self.non_visual_picture_drawing_properties.write_to(writer);
 
         write_end_tag(writer, "xdr:nvPicPr");
     }

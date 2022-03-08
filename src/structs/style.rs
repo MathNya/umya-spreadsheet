@@ -14,6 +14,48 @@ pub struct Style {
     numbering_format: Option<NumberingFormat>,
     format_id: UInt32Value,
 }
+/// # Examples
+/// ## add border
+/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/style/style_border.png)
+/// ```rust
+/// use umya_spreadsheet::*;
+/// let mut book = new_file();
+/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("D2");
+///
+/// // add bottom border
+/// style.get_borders_mut().get_bottom_mut().set_border_style(Border::BORDER_MEDIUM);
+/// // add top border
+/// style.get_borders_mut().get_top_mut().set_border_style(Border::BORDER_MEDIUM);
+/// // add left border
+/// style.get_borders_mut().get_left_mut().set_border_style(Border::BORDER_MEDIUM);
+/// // add right border
+/// style.get_borders_mut().get_right_mut().set_border_style(Border::BORDER_MEDIUM);
+/// ```
+///
+/// ## change cell color
+/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/style/style_fill_color.png)
+/// ```rust
+/// use umya_spreadsheet::*;
+///
+/// let mut book = new_file();
+/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+///
+/// // fill color on red.
+/// style.get_fill_mut().get_pattern_fill_mut()
+/// .get_foreground_color_mut().set_argb(Color::COLOR_RED);
+/// ```
+///
+/// ## change font color
+/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/style/style_font_color.png)
+/// ```rust
+/// use umya_spreadsheet::*;
+///
+/// let mut book = new_file();
+/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+///
+/// // font color on red.
+/// style.get_font_mut().get_color_mut().set_argb(Color::COLOR_RED);
+/// ```
 impl Style {
     pub fn get_font(&self) -> &Option<Font> {
         &self.font
@@ -30,6 +72,11 @@ impl Style {
 
     pub fn set_font(&mut self, value: Font) -> &mut Self {
         self.font = Some(value);
+        self
+    }
+
+    pub fn remove_font(&mut self) -> &mut Self {
+        self.font = None;
         self
     }
 
@@ -56,6 +103,11 @@ impl Style {
         self
     }
 
+    pub fn remove_fill(&mut self) -> &mut Self {
+        self.fill = None;
+        self
+    }
+
     pub(crate) fn set_fill_crate(&mut self, value: Option<Fill>) -> &mut Self {
         self.fill = value;
         self
@@ -76,6 +128,11 @@ impl Style {
 
     pub fn set_borders(&mut self, value: Borders) -> &mut Self {
         self.borders = Some(value);
+        self
+    }
+
+    pub fn remove_borders(&mut self) -> &mut Self {
+        self.borders = None;
         self
     }
 
@@ -102,6 +159,11 @@ impl Style {
         self
     }
 
+    pub fn remove_alignment(&mut self) -> &mut Self {
+        self.alignment = None;
+        self
+    }
+
     pub(crate) fn set_alignment_crate(&mut self, value: Option<Alignment>) -> &mut Self {
         self.alignment = value;
         self
@@ -125,6 +187,11 @@ impl Style {
         self
     }
 
+    pub fn remove_numbering_format(&mut self) -> &mut Self {
+        self.numbering_format = None;
+        self
+    }
+
     pub fn get_number_format(&self) -> &Option<NumberingFormat> {
         &self.get_numbering_format()
     }
@@ -135,6 +202,10 @@ impl Style {
 
     pub fn set_number_format(&mut self, value: NumberingFormat) -> &mut Self {
         self.set_numbering_format(value)
+    }
+
+    pub fn remove_number_format(&mut self) -> &mut Self {
+        self.remove_numbering_format()
     }
 
     pub fn get_format_id(&self) -> &u32 {
@@ -151,6 +222,14 @@ impl Style {
         def.set_font(Font::get_defalut_value());
         def.set_borders(Borders::get_defalut_value());
         def.set_fill(Fill::get_defalut_value());
+        def
+    }
+
+    pub(crate) fn get_defalut_value_2() -> Self {
+        let mut def = Self::default();
+        def.set_font(Font::get_defalut_value());
+        def.set_borders(Borders::get_defalut_value());
+        def.set_fill(Fill::get_defalut_value_2());
         def
     }
 

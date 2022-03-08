@@ -192,7 +192,7 @@ impl WorksheetDrawing {
                         }
                         let mut obj = OneCellAnchor::default();
                         obj.set_attributes(reader, e);
-                        &mut self.add_one_cell_anchor_collection(obj);
+                        self.add_one_cell_anchor_collection(obj);
                     }
                     b"xdr:twoCellAnchor" => {
                         if is_alternate_content {
@@ -211,9 +211,9 @@ impl WorksheetDrawing {
                             if obj.is_chart() {
                                 let mut chart = Chart::default();
                                 chart.set_two_cell_anchor(obj);
-                                &mut self.add_chart_collection(chart);
+                                self.add_chart_collection(chart);
                             } else {
-                                &mut self.add_two_cell_anchor_collection(obj);
+                                self.add_two_cell_anchor_collection(obj);
                             }
                         }
                     }

@@ -34,7 +34,7 @@ impl NonVisualPictureDrawingProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"a:picLocks" => {
-                        &mut self.get_picture_locks_mut().set_attributes(reader, e);
+                        self.get_picture_locks_mut().set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -55,7 +55,7 @@ impl NonVisualPictureDrawingProperties {
         write_start_tag(writer, "xdr:cNvPicPr", vec![], false);
 
         // a:picLocks
-        &self.picture_locks.write_to(writer);
+        let _ = &self.picture_locks.write_to(writer);
 
         write_end_tag(writer, "xdr:cNvPicPr");
     }

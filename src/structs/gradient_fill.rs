@@ -66,7 +66,7 @@ impl GradientFill {
                     b"stop" => {
                         let mut obj = GradientStop::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_gradient_stop(obj);
+                        self.set_gradient_stop(obj);
                     }
                     _ => (),
                 },

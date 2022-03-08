@@ -142,10 +142,10 @@ impl RadarChart {
         write_start_tag(writer, "c:radarChart", vec![], false);
 
         // c:radarStyle
-        &self.radar_style.write_to(writer);
+        self.radar_style.write_to(writer);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -153,7 +153,7 @@ impl RadarChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         // c:axId
         for v in &self.axis_id {

@@ -78,21 +78,21 @@ impl Transform {
 
         match get_attribute(e, b"rot") {
             Some(v) => {
-                &mut self.rotation.set_value_string(v);
+                self.rotation.set_value_string(v);
             }
             None => {}
         }
 
         match get_attribute(e, b"flipH") {
             Some(v) => {
-                &mut self.vertical_flip.set_value_string(v);
+                self.vertical_flip.set_value_string(v);
             }
             None => {}
         }
 
         match get_attribute(e, b"flipV") {
             Some(v) => {
-                &mut self.horizontal_flip.set_value_string(v);
+                self.horizontal_flip.set_value_string(v);
             }
             None => {}
         }
@@ -101,10 +101,10 @@ impl Transform {
             match reader.read_event(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"a:off" => {
-                        &mut self.offset.set_attributes(reader, e);
+                        self.offset.set_attributes(reader, e);
                     }
                     b"a:ext" => {
-                        &mut self.extents.set_attributes(reader, e);
+                        self.extents.set_attributes(reader, e);
                     }
                     _ => (),
                 },
@@ -137,10 +137,10 @@ impl Transform {
         write_start_tag(writer, "xdr:xfrm", attributes, false);
 
         // a:off
-        &self.offset.write_to(writer);
+        let _ = &self.offset.write_to(writer);
 
         // a:ext
-        &self.extents.write_to(writer);
+        let _ = &self.extents.write_to(writer);
 
         write_end_tag(writer, "xdr:xfrm");
     }

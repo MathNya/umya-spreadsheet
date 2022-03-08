@@ -1,4 +1,5 @@
 use super::driver::*;
+use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -8,9 +9,9 @@ use structs::WriterManager;
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
-) -> String {
+) -> Result<String, XlsxError> {
     if worksheet.get_comments().len() == 0 {
-        return String::from("");
+        return Ok(String::from(""));
     }
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -64,8 +65,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "commentList");
     write_end_tag(&mut writer, "comments");
 
-    let file_no = writer_mng.add_file_at_comment(writer);
-    file_no.to_string()
+    let file_no = writer_mng.add_file_at_comment(writer)?;
+    Ok(file_no.to_string())
 }
 
 fn get_authors(worksheet: &Worksheet) -> Vec<String> {

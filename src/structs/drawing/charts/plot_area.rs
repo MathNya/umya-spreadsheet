@@ -668,7 +668,7 @@ impl PlotArea {
         write_start_tag(writer, "c:plotArea", vec![], false);
 
         // c:layout
-        &self.layout.write_to(writer);
+        self.layout.write_to(writer);
 
         // c:lineChart
         match &self.line_chart {

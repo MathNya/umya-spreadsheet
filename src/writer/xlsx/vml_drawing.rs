@@ -1,4 +1,5 @@
 use super::driver::*;
+use super::XlsxError;
 use quick_xml::Writer;
 use std::io;
 use structs::Worksheet;
@@ -7,9 +8,9 @@ use structs::WriterManager;
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
-) -> String {
+) -> Result<String, XlsxError> {
     if worksheet.has_legacy_drawing() == false {
-        return String::from("");
+        return Ok(String::from(""));
     }
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -170,6 +171,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "xml");
 
-    let file_no = writer_mng.add_file_at_vml_drawing(writer);
-    file_no.to_string()
+    let file_no = writer_mng.add_file_at_vml_drawing(writer)?;
+    Ok(file_no.to_string())
 }

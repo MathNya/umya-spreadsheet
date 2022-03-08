@@ -160,7 +160,7 @@ impl BubbleChart {
         write_start_tag(writer, "c:bubbleChart", vec![], false);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -168,13 +168,13 @@ impl BubbleChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         // c:bubbleScale
-        &self.bubble_scale.write_to(writer);
+        self.bubble_scale.write_to(writer);
 
         // c:showNegBubbles
-        &self.show_negative_bubbles.write_to(writer);
+        self.show_negative_bubbles.write_to(writer);
 
         // c:axId
         for v in &self.axis_id {

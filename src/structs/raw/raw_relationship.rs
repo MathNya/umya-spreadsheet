@@ -8,6 +8,7 @@ use structs::raw::RawFile;
 use structs::StringValue;
 use structs::WriterManager;
 use writer::driver::*;
+use writer::xlsx::XlsxError;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationship {
@@ -101,7 +102,10 @@ impl RawRelationship {
         write_start_tag(writer, "Relationship", attributes, true);
     }
 
-    pub(crate) fn write_to_bin<W: io::Seek + io::Write>(&self, writer_mng: &mut WriterManager<W>) {
-        self.get_raw_file().write_to(writer_mng);
+    pub(crate) fn write_to_bin<W: io::Seek + io::Write>(
+        &self,
+        writer_mng: &mut WriterManager<W>,
+    ) -> Result<(), XlsxError> {
+        self.get_raw_file().write_to(writer_mng)
     }
 }

@@ -50,19 +50,19 @@ impl BevelBottom {
     ) {
         match get_attribute(e, b"w") {
             Some(v) => {
-                &mut self.width.set_value_string(v);
+                self.width.set_value_string(v);
             }
             None => {}
         }
         match get_attribute(e, b"h") {
             Some(v) => {
-                &mut self.height.set_value_string(v);
+                self.height.set_value_string(v);
             }
             None => {}
         }
         match get_attribute(e, b"prst") {
             Some(v) => {
-                &mut self.preset.set_value_string(v);
+                self.preset.set_value_string(v);
             }
             None => {}
         }

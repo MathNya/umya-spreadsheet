@@ -148,21 +148,21 @@ impl Outline {
 
         match get_attribute(e, b"w") {
             Some(v) => {
-                &mut self.set_width(v.parse::<u32>().unwrap());
+                self.set_width(v.parse::<u32>().unwrap());
             }
             None => {}
         }
 
         match get_attribute(e, b"cap") {
             Some(v) => {
-                &mut self.set_cap_type(v);
+                self.set_cap_type(v);
             }
             None => {}
         }
 
         match get_attribute(e, b"cmpd") {
             Some(v) => {
-                &mut self.set_compound_line_type(v);
+                self.set_compound_line_type(v);
             }
             None => {}
         }
@@ -173,12 +173,12 @@ impl Outline {
                     b"a:solidFill" => {
                         let mut solid_fill = SolidFill::default();
                         solid_fill.set_attributes(reader, e);
-                        &mut self.set_solid_fill(solid_fill);
+                        self.set_solid_fill(solid_fill);
                     }
                     b"a:gradFill" => {
                         let mut obj = GradientFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_gradient_fill(obj);
+                        self.set_gradient_fill(obj);
                     }
                     _ => (),
                 },
@@ -186,27 +186,27 @@ impl Outline {
                     b"a:tailEnd" => {
                         let mut obj = TailEnd::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_tail_end(obj);
+                        self.set_tail_end(obj);
                     }
                     b"a:noFill" => {
                         let mut obj = NoFill::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_no_fill(obj);
+                        self.set_no_fill(obj);
                     }
                     b"a:bevel" => {
                         let mut obj = Bevel::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_bevel(obj);
+                        self.set_bevel(obj);
                     }
                     b"a:miter" => {
                         let mut obj = Miter::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_miter(obj);
+                        self.set_miter(obj);
                     }
                     b"a:prstDash" => {
                         let mut obj = PresetDash::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_preset_dash(obj);
+                        self.set_preset_dash(obj);
                     }
                     _ => (),
                 },

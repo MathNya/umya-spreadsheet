@@ -55,8 +55,7 @@ impl Shape3DType {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        &mut self
-            .preset_material
+        self.preset_material
             .set_value_string(get_attribute(e, b"prstMaterial").unwrap());
 
         let mut buf = Vec::new();
@@ -66,12 +65,12 @@ impl Shape3DType {
                     b"a:bevelT" => {
                         let mut obj = BevelTop::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_bevel_top(obj);
+                        self.set_bevel_top(obj);
                     }
                     b"a:bevelB" => {
                         let mut obj = BevelBottom::default();
                         obj.set_attributes(reader, e);
-                        &mut self.set_bevel_bottom(obj);
+                        self.set_bevel_bottom(obj);
                     }
                     _ => (),
                 },

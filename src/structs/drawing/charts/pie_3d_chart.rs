@@ -99,7 +99,7 @@ impl Pie3DChart {
         write_start_tag(writer, "c:pie3DChart", vec![], false);
 
         // c:varyColors
-        &self.vary_colors.write_to(writer);
+        self.vary_colors.write_to(writer);
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
@@ -107,7 +107,7 @@ impl Pie3DChart {
         }
 
         // c:dLbls
-        &self.data_labels.write_to(writer);
+        self.data_labels.write_to(writer);
 
         write_end_tag(writer, "c:pie3DChart");
     }
