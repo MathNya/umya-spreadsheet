@@ -157,19 +157,19 @@ impl Worksheet {
     // Cell
     // ************************
     /// Get Cell List.
-    pub fn get_cell_collection(&self) -> &Vec<Cell> {
+    pub fn get_cell_collection(&self) -> Vec<&Cell> {
         self.cell_collection.get_collection()
     }
 
     /// Get Cell List in mutable.
-    pub fn get_cell_collection_mut(&mut self) -> &mut Vec<Cell> {
+    pub fn get_cell_collection_mut(&mut self) -> Vec<&mut Cell> {
         self.cell_collection.get_collection_mut()
     }
 
     /// Get Cell List convert to HasMap.
-    pub fn get_cell_collection_to_hashmap(&self) -> HashMap<String, &Cell> {
-        self.cell_collection.get_collection_to_hashmap()
-    }
+    // pub fn get_cell_collection_to_hashmap(&self) -> HashMap<String, &Cell> {
+    //     self.cell_collection.get_collection_to_hashmap()
+    // }
 
     /// Get Cell List by Specified column.
     /// # Arguments
@@ -1234,10 +1234,10 @@ impl Worksheet {
     /// Calculate Worksheet Dimension.
     pub fn calculate_worksheet_dimension(&self) -> String {
         let highest = &self.cell_collection.get_highest_row_and_column();
-        if highest["row"] == &0 {
+        if highest["row"] == 0 {
             return "A1".to_string();
         }
-        let column_str = string_from_column_index(highest["column"]);
+        let column_str = string_from_column_index(&highest["column"]);
         format!("A1:{}{}", column_str, highest["row"])
     }
 
