@@ -35,7 +35,7 @@ fn lazy_read_and_wite_large_string() {
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
     let ns = book.new_sheet("new sheet").unwrap();
 
-    for r in 1..100 {
+    for r in 1..5000 {
         for c in 1..30 {
             let cell = ns.get_cell_by_column_and_row_mut(c, r);
             let _ = cell.set_value_from_string(format!("r{}c{}",r,c));
