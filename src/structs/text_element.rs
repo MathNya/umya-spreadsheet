@@ -1,6 +1,7 @@
 // r
 use super::Font;
 use super::Text;
+use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -59,7 +60,7 @@ impl TextElement {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}",
                 &self.text.get_value(),
                 match &self.run_properties {

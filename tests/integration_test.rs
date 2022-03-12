@@ -29,6 +29,25 @@ fn lazy_read_and_wite() {
 }
 
 #[test]
+fn lazy_read_and_wite_large_string() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+    let ns = book.new_sheet("new sheet").unwrap();
+
+    for r in 1..100 {
+        for c in 1..30 {
+            let cell = ns.get_cell_by_column_and_row_mut(c, r);
+            let _ = cell.set_value_from_string(format!("r{}c{}",r,c));
+        }
+    }
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_large_string.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn lazy_read_and_wite_no_edit() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");

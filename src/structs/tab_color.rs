@@ -164,7 +164,7 @@ impl TabColor {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}{}{}",
                 &self.indexed.get_hash_string(),
                 &self.theme_index.get_hash_string(),

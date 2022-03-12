@@ -2,6 +2,7 @@
 use super::Color;
 use super::EnumValue;
 use super::PatternValues;
+use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -78,7 +79,7 @@ impl PatternFill {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}{}",
                 &self.pattern_type.get_value_string(),
                 match &self.foreground_color {

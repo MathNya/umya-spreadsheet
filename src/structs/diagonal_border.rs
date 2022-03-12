@@ -60,7 +60,7 @@ impl DiagonalBorder {
     }
 
     pub(crate) fn get_hash_code(&self)-> String {
-        format!("{:x}", md5::compute(format!("{}{}",
+        format!("{:x}", md5::Md5::digest(format!("{}{}",
             &self.style.get_value_string(),
             &self.get_color().get_hash_code()
         )))

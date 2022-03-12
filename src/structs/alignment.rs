@@ -4,6 +4,7 @@ use super::EnumValue;
 use super::HorizontalAlignmentValues;
 use super::UInt32Value;
 use super::VerticalAlignmentValues;
+use md5::Digest;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -54,7 +55,7 @@ impl Alignment {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}{}{}",
                 &self.horizontal.get_hash_string(),
                 &self.vertical.get_hash_string(),

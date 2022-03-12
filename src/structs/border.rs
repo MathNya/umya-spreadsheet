@@ -2,6 +2,7 @@
 use super::BorderStyleValues;
 use super::Color;
 use super::EnumValue;
+use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -63,7 +64,7 @@ impl Border {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}",
                 &self.style.get_value_string(),
                 &self.get_color().get_hash_code()
