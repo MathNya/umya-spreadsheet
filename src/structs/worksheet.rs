@@ -38,7 +38,7 @@ pub struct Worksheet {
     sheet_id: String,
     title: String,
     cell_collection: Cells,
-    row_dimensions: Vec<Row>,
+    row_dimensions: HashMap<u32, Row>,
     column_dimensions: Columns,
     worksheet_drawing: WorksheetDrawing,
     sheet_state: String,
@@ -741,56 +741,41 @@ impl Worksheet {
     // Row Dimensions
     // ************************
     /// Get Row Dimension List.
-    pub fn get_row_dimensions(&self) -> &Vec<Row> {
-        &self.row_dimensions
+    pub fn get_row_dimensions(&self) -> Vec<&Row> {
+        self.row_dimensions.values().collect()
     }
 
     /// Get Row Dimension List in mutable.
-    pub fn get_row_dimensions_mut(&mut self) -> &mut Vec<Row> {
-        &mut self.row_dimensions
+    pub fn get_row_dimensions_mut(&mut self) -> Vec<&mut Row> {
+        self.row_dimensions.values_mut().collect()
     }
 
     /// Get Row Dimension convert BTreeMap.
-    pub fn get_row_dimensions_to_b_tree_map(&self) -> BTreeMap<u32, &Row> {
-        let mut result = BTreeMap::default();
-        for row_dimension in &self.row_dimensions {
-            result.insert(row_dimension.get_row_num().clone(), row_dimension);
-        }
-        result
+    pub fn get_row_dimensions_to_b_tree_map(&self) -> BTreeMap<&u32, &Row> {
+        let bt = self.row_dimensions.iter().collect();
+        
+        bt
     }
 
     /// Get Row Dimension.
     pub fn get_row_dimension(&self, row: &u32) -> Option<&Row> {
-        for row_dimension in &self.row_dimensions {
-            if row == row_dimension.get_row_num() {
-                return Some(row_dimension);
-            }
-        }
-        None
+        self.row_dimensions.get(row)
     }
 
     /// Get Row Dimension in mutable.
     pub fn get_row_dimension_mut(&mut self, row: &u32) -> &mut Row {
-        match self.get_row_dimension(row) {
-            Some(_) => {}
-            None => {
-                let mut obj = Row::default();
-                obj.set_row_num(row.clone());
-                self.set_row_dimension(obj);
-            }
-        }
-        for row_dimenstion in self.get_row_dimensions_mut() {
-            if row == row_dimenstion.get_row_num() {
-                return row_dimenstion;
-            }
-        }
-        panic!("Row not found.");
+        self.row_dimensions.entry(row.to_owned()).or_insert_with(|| {
+            let mut obj = Row::default();
+            obj.set_row_num(row.clone());
+            obj
+        })
     }
 
     /// (This method is crate only.)
     /// Set Row Dimension.
     pub(crate) fn set_row_dimension(&mut self, value: Row) -> &mut Self {
-        self.row_dimensions.push(value);
+        let row = value.get_row_num();
+        self.row_dimensions.insert(row.to_owned(),value);
         self
     }
 
@@ -840,7 +825,8 @@ impl Worksheet {
         if sheet_name == self.title && offset_row_num != &0 {
             // update row dimensions
             for row_dimension in &mut self.row_dimensions {
-                row_dimension.adjustment_insert_coordinate(root_row_num, offset_row_num);
+                //todo
+                //row_dimension.adjustment_insert_coordinate(root_row_num, offset_row_num);
             }
         }
         if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
@@ -967,12 +953,12 @@ impl Worksheet {
         }
         if sheet_name == self.title && offset_row_num != &0 {
             // update row dimensions
-            self.row_dimensions.retain(|x| {
-                !(x.get_row_num() > root_row_num
-                    && x.get_row_num() < &(root_row_num + offset_row_num))
+            self.row_dimensions.retain(|k,v| {
+                !(k > root_row_num
+                    && k < &(root_row_num + offset_row_num))
             });
             for row_dimension in &mut self.row_dimensions {
-                row_dimension.adjustment_remove_coordinate(root_row_num, offset_row_num);
+                //row_dimension.adjustment_remove_coordinate(root_row_num, offset_row_num);
             }
         }
         if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
