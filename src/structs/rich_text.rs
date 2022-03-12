@@ -1,4 +1,5 @@
 use super::TextElement;
+use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -48,7 +49,7 @@ impl RichText {
         for ele in &self.rich_text_elements {
             value += ele.get_hash_code().as_str();
         }
-        format!("{:x}", md5::compute(format!("{}", value)))
+        format!("{:x}", md5::Md5::digest(format!("{}", value)))
     }
 
     pub(crate) fn set_attributes_text<R: std::io::BufRead>(

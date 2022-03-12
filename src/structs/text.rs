@@ -1,4 +1,5 @@
 // t
+use md5::Digest;
 use onig::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -21,7 +22,7 @@ impl Text {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        format!("{:x}", md5::compute(format!("{}", self.value)))
+        format!("{:x}", md5::Md5::digest(format!("{}", self.value)))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

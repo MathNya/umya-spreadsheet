@@ -1,6 +1,7 @@
 // gradientFill
 use super::DoubleValue;
 use super::GradientStop;
+use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -43,7 +44,7 @@ impl GradientFill {
         }
         format!(
             "{:x}",
-            md5::compute(format!("{}{}", &self.degree.get_value_string(), value,))
+            md5::Md5::digest(format!("{}{}", &self.degree.get_value_string(), value,))
         )
     }
 

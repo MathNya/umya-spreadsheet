@@ -1,3 +1,4 @@
+use md5::Digest;
 use structs::Alignment;
 use structs::Borders;
 use structs::Fill;
@@ -236,7 +237,7 @@ impl Style {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}{}{}{}",
                 match &self.font {
                     Some(v) => {

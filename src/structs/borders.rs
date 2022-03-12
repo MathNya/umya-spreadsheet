@@ -1,6 +1,7 @@
 // border
 use super::BooleanValue;
 use super::Border;
+use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -217,7 +218,7 @@ impl Borders {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}{}{}{}{}{}{}{}",
                 &self.get_left_border().get_hash_code(),
                 &self.get_right_border().get_hash_code(),

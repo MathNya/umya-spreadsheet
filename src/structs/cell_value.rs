@@ -1,6 +1,7 @@
 use super::RichText;
 use super::SharedStringItem;
 use helper::formula::*;
+use md5::Digest;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
@@ -265,7 +266,7 @@ impl CellValue {
     pub(crate) fn _get_hash_code_by_value(&self) -> String {
         format!(
             "{:x}",
-            md5::compute(format!(
+            md5::Md5::digest(format!(
                 "{}{}",
                 match &self.value {
                     Some(v) => {
