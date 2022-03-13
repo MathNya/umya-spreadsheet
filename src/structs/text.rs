@@ -22,7 +22,7 @@ impl Text {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(format!("{}", self.value)))
+        format!("{:x}", md5::Md5::digest(&self.value))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -51,8 +51,10 @@ impl Text {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // t
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let re = Regex::new(r#"^(\s|　)"#).unwrap();
-        if re.find(&self.value).is_some() {
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r#"^(\s|　)"#).unwrap();
+        }
+        if RE.find(&self.value).is_some() {
             attributes.push(("xml:space", "preserve"));
         }
         write_start_tag(writer, "t", attributes, false);
