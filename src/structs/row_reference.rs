@@ -37,13 +37,6 @@ impl RowReference {
         )
     }
 
-    pub(crate) fn is_mine(&self, num: &u32) -> bool {
-        if &self.num != num {
-            return false;
-        }
-        true
-    }
-
     pub(crate) fn adjustment_insert_coordinate(
         &mut self,
         root_row_num: &u32,

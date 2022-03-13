@@ -7,57 +7,52 @@ use std::collections::HashMap;
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
-    index: Vec<Cell>,
+    map: HashMap<(u32, u32), Cell>,
     default_cell_value: CellValue,
     default_style: Style,
 }
 impl Cells {
-    pub(crate) fn get_collection(&self) -> &Vec<Cell> {
-        &self.index
+    pub(crate) fn get_collection(&self) -> Vec<&Cell> {
+        self.map.values().collect()
     }
 
-    pub(crate) fn get_collection_mut(&mut self) -> &mut Vec<Cell> {
-        &mut self.index
+    pub(crate) fn get_collection_mut(&mut self) -> Vec<&mut Cell> {
+        self.map.values_mut().collect()
     }
 
-    pub(crate) fn get_collection_to_hashmap(&self) -> HashMap<String, &Cell> {
-        let mut result = HashMap::default();
-        for cell in &self.index {
-            let coordinate = cell.get_coordinate().get_coordinate();
-            result.insert(coordinate, cell);
-        }
-        result
+    pub(crate) fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Cell> {
+        &self.map
+    }
+
+    pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Cell> {
+        &mut self.map
     }
 
     pub(crate) fn get_collection_by_row(&self, row_num: &u32) -> BTreeMap<u32, &Cell> {
-        let mut result = BTreeMap::default();
-        for cell in &self.index {
-            if row_num == cell.get_coordinate().get_row_num() {
-                result.insert(cell.get_coordinate().get_col_num().clone(), cell);
-            }
-        }
-        result
+        self.map
+            .iter()
+            .filter(|(k, _v)| &k.0 == row_num)
+            .map(|(k, v)| (k.1, v))
+            .collect()
     }
 
     pub(crate) fn get_collection_by_column(&self, column_num: &u32) -> BTreeMap<u32, &Cell> {
-        let mut result = BTreeMap::default();
-        for cell in &self.index {
-            if column_num == cell.get_coordinate().get_col_num() {
-                result.insert(cell.get_coordinate().get_row_num().clone(), cell);
-            }
-        }
-        result
+        self.map
+            .iter()
+            .filter(|(k, _v)| &k.1 == column_num)
+            .map(|(k, v)| (k.0, v))
+            .collect()
     }
 
-    pub(crate) fn get_highest_row_and_column(&self) -> HashMap<&str, &u32> {
-        let mut col_max: &u32 = &0;
-        let mut row_max: &u32 = &0;
-        for cell in &self.index {
-            if cell.get_coordinate().get_col_num() > &col_max {
-                col_max = cell.get_coordinate().get_col_num();
+    pub(crate) fn get_highest_row_and_column(&self) -> HashMap<&str, u32> {
+        let mut col_max: u32 = 0;
+        let mut row_max: u32 = 0;
+        for key in self.map.keys() {
+            if key.1 > col_max {
+                col_max = key.0;
             }
-            if cell.get_coordinate().get_row_num() > &row_max {
-                row_max = cell.get_coordinate().get_row_num();
+            if key.0 > row_max {
+                row_max = key.0;
             }
         }
         let mut result = HashMap::new();
@@ -66,72 +61,46 @@ impl Cells {
         result
     }
 
-    pub(crate) fn has(&self, col_num: &u32, row_num: &u32) -> bool {
-        for cell in &self.index {
-            if cell.get_coordinate().is_mine(col_num, row_num) {
-                return true;
-            }
-        }
-        false
+    pub(crate) fn has(&self, col_num: u32, row_num: u32) -> bool {
+        self.map.contains_key(&(col_num, row_num))
     }
 
     /// Has Hyperlink
     pub(crate) fn has_hyperlink(&self) -> bool {
-        for cell in &self.index {
-            match cell.get_hyperlink() {
-                Some(_) => {
-                    return true;
-                }
-                None => {}
-            }
-        }
-        false
+        self.map.values().any(|c| c.get_hyperlink().is_some())
     }
 
     pub(crate) fn get(&self, col_num: &u32, row_num: &u32) -> Option<&Cell> {
-        for cell in &self.index {
-            if cell.get_coordinate().is_mine(col_num, row_num) {
-                return Some(cell);
-            }
-        }
-        None
+        self.map.get(&(row_num.to_owned(), col_num.to_owned()))
     }
 
-    pub(crate) fn get_crate(&mut self, col_num: &u32, row_num: &u32) -> Option<&mut Cell> {
-        for cell in &mut self.index {
-            if cell.get_coordinate().is_mine(col_num, row_num) {
-                return Some(cell);
-            }
-        }
-        None
+    pub(crate) fn get_crate(&mut self, col_num: u32, row_num: u32) -> Option<&mut Cell> {
+        self.map.get_mut(&(row_num, col_num))
     }
 
     pub(crate) fn get_mut(&mut self, col_num: &u32, row_num: &u32) -> &mut Cell {
-        if self.has(col_num, row_num) == false {
-            let mut cell = Cell::default();
-            cell.get_coordinate_mut().set_col_num(col_num.clone());
-            cell.get_coordinate_mut().set_row_num(row_num.clone());
-            self.add(cell);
-        }
-        self.get_crate(col_num, row_num).unwrap()
+        self.map
+            .entry((row_num.to_owned(), col_num.to_owned()))
+            .or_insert_with(|| {
+                let mut c = Cell::default();
+                c.get_coordinate_mut().set_col_num(col_num.clone());
+                c.get_coordinate_mut().set_row_num(row_num.clone());
+                c
+            })
     }
 
     pub(crate) fn get_cell_value(&self, col_num: &u32, row_num: &u32) -> &CellValue {
-        for cell in &self.index {
-            if cell.get_coordinate().is_mine(col_num, row_num) {
-                return cell.get_cell_value();
-            }
-        }
-        &self.default_cell_value
+        self.map
+            .get(&(row_num.to_owned(), col_num.to_owned()))
+            .and_then(|c| Some(c.get_cell_value()))
+            .unwrap_or(&self.default_cell_value)
     }
 
     pub(crate) fn get_style(&self, col_num: &u32, row_num: &u32) -> &Style {
-        for cell in &self.index {
-            if cell.get_coordinate().is_mine(col_num, row_num) {
-                return cell.get_style();
-            }
-        }
-        &self.default_style
+        self.map
+            .get(&(row_num.to_owned(), col_num.to_owned()))
+            .and_then(|c| Some(c.get_style()))
+            .unwrap_or(&self.default_style)
     }
 
     pub(crate) fn set(&mut self, cell: Cell) -> &mut Self {
@@ -148,7 +117,10 @@ impl Cells {
     }
 
     pub(crate) fn add(&mut self, cell: Cell) {
-        self.index.push(cell);
+        let col_num = cell.get_coordinate().get_col_num();
+        let row_num = cell.get_coordinate().get_row_num();
+        let k = (row_num.to_owned(), col_num.to_owned());
+        self.map.insert(k, cell);
     }
 
     pub(crate) fn get_cell_value_by_range<S: Into<String>>(&self, range: S) -> Vec<&CellValue> {
@@ -161,10 +133,78 @@ impl Cells {
         result
     }
 
-    pub(crate) fn get_formatted_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
-        match self.get(col, row) {
+    pub(crate) fn get_formatted_value_by_column_and_row(
+        &self,
+        col_num: &u32,
+        row_num: &u32,
+    ) -> String {
+        match self.get(col_num, row_num) {
             Some(v) => v.get_formatted_value(),
             None => "".into(),
         }
+    }
+
+    // ************************
+    // update Coordinate
+    // ************************
+    /// (This method is crate only.)
+    /// Adjustment Insert Coordinate
+    pub(crate) fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // update cell
+        for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
+            cell.get_coordinate_mut().adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        self.rebuild_map();
+    }
+
+    /// (This method is crate only.)
+    /// Adjustment Remove Coordinate
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // update cell
+        self.get_collection_mut().retain(|x| {
+            !(x.get_coordinate().is_remove(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ))
+        });
+        for cell in self.get_collection_mut() {
+            cell.get_coordinate_mut().adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        self.rebuild_map();
+    }
+
+    pub(crate) fn rebuild_map(&mut self) {
+        let mut rebuild: HashMap<(u32, u32), Cell> = HashMap::new();
+        for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
+            let col_num = cell.get_coordinate().get_col_num();
+            let row_num = cell.get_coordinate().get_row_num();
+            let k = (row_num.to_owned(), col_num.to_owned());
+            rebuild.insert(k, cell.clone());
+        }
+        self.map = rebuild;
     }
 }
