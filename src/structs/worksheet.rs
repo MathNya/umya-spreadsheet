@@ -27,6 +27,7 @@ use structs::Protection;
 use structs::Range;
 use structs::Row;
 use structs::RowBreaks;
+use structs::Rows;
 use structs::SheetViews;
 use structs::Style;
 
@@ -38,7 +39,7 @@ pub struct Worksheet {
     sheet_id: String,
     title: String,
     cell_collection: Cells,
-    row_dimensions: HashMap<u32, Row>,
+    row_dimensions: Rows,
     column_dimensions: Columns,
     worksheet_drawing: WorksheetDrawing,
     sheet_state: String,
@@ -186,7 +187,7 @@ impl Worksheet {
 
     /// (This method is crate only.)
     /// Get Cells in mutable.
-    pub(crate) fn _get_cell_collection_crate_mut(&mut self) -> &mut Cells {
+    pub(crate) fn get_cell_collection_crate_mut(&mut self) -> &mut Cells {
         &mut self.cell_collection
     }
 
@@ -742,45 +743,50 @@ impl Worksheet {
     // ************************
     /// Get Row Dimension List.
     pub fn get_row_dimensions(&self) -> Vec<&Row> {
-        self.row_dimensions.values().collect()
+        self.row_dimensions.get_row_dimensions()
     }
 
     pub fn has_sheet_data(&self) -> bool {
-        !self.row_dimensions.is_empty()
+        self.row_dimensions.has_sheet_data()
     }
 
     /// Get Row Dimension List in mutable.
     pub fn get_row_dimensions_mut(&mut self) -> Vec<&mut Row> {
-        self.row_dimensions.values_mut().collect()
+        self.row_dimensions.get_row_dimensions_mut()
     }
 
     /// Get Row Dimension convert BTreeMap.
     pub fn get_row_dimensions_to_b_tree_map(&self) -> BTreeMap<&u32, &Row> {
-        let bt = self.row_dimensions.iter().collect();
-        
-        bt
+        self.row_dimensions.get_row_dimensions_to_b_tree_map()
     }
 
     /// Get Row Dimension.
     pub fn get_row_dimension(&self, row: &u32) -> Option<&Row> {
-        self.row_dimensions.get(row)
+        self.row_dimensions.get_row_dimension(row)
     }
 
     /// Get Row Dimension in mutable.
     pub fn get_row_dimension_mut(&mut self, row: &u32) -> &mut Row {
-        self.row_dimensions.entry(row.to_owned()).or_insert_with(|| {
-            let mut obj = Row::default();
-            obj.set_row_num(row.clone());
-            obj
-        })
+        self.row_dimensions.get_row_dimension_mut(row)
     }
 
     /// (This method is crate only.)
     /// Set Row Dimension.
     pub(crate) fn set_row_dimension(&mut self, value: Row) -> &mut Self {
-        let row = value.get_row_num();
-        self.row_dimensions.insert(row.to_owned(),value);
+        self.row_dimensions.set_row_dimension(value);
         self
+    }
+
+    /// (This method is crate only.)
+    /// Get Row Dimension in mutable.
+    pub(crate) fn get_row_dimensions_crate_mut(&mut self) -> &mut Rows {
+        &mut self.row_dimensions
+    }
+
+    /// (This method is crate only.)
+    /// Get Row Dimension.
+    pub(crate) fn _get_row_dimensions_crate(&self) -> &Rows {
+        &self.row_dimensions
     }
 
     // ************************
@@ -828,10 +834,8 @@ impl Worksheet {
         }
         if sheet_name == self.title && offset_row_num != &0 {
             // update row dimensions
-            for row_dimension in &mut self.row_dimensions {
-                //todo
-                //row_dimension.adjustment_insert_coordinate(root_row_num, offset_row_num);
-            }
+            self.get_row_dimensions_crate_mut()
+                .adjustment_insert_coordinate(root_row_num, offset_row_num);
         }
         if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
             // update defined_names
@@ -847,14 +851,13 @@ impl Worksheet {
                     );
             }
             // update cell
-            for cell in self.get_cell_collection_mut() {
-                cell.get_coordinate_mut().adjustment_insert_coordinate(
+            self.get_cell_collection_crate_mut()
+                .adjustment_insert_coordinate(
                     root_col_num,
                     offset_col_num,
                     root_row_num,
                     offset_row_num,
                 );
-            }
 
             // update comments
             for comment in &mut self.comments {
@@ -957,13 +960,8 @@ impl Worksheet {
         }
         if sheet_name == self.title && offset_row_num != &0 {
             // update row dimensions
-            self.row_dimensions.retain(|k,v| {
-                !(k > root_row_num
-                    && k < &(root_row_num + offset_row_num))
-            });
-            for row_dimension in &mut self.row_dimensions {
-                //row_dimension.adjustment_remove_coordinate(root_row_num, offset_row_num);
-            }
+            self.get_row_dimensions_crate_mut()
+                .adjustment_remove_coordinate(root_row_num, offset_row_num);
         }
         if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
             // update defined_names
@@ -989,22 +987,13 @@ impl Worksheet {
             }
 
             // update cell
-            self.get_cell_collection_mut().retain(|x| {
-                !(x.get_coordinate().is_remove(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                ))
-            });
-            for cell in self.get_cell_collection_mut() {
-                cell.get_coordinate_mut().adjustment_remove_coordinate(
+            self.get_cell_collection_crate_mut()
+                .adjustment_remove_coordinate(
                     root_col_num,
                     offset_col_num,
                     root_row_num,
                     offset_row_num,
                 );
-            }
 
             // update comments
             self.comments.retain(|x| {

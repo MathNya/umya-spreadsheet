@@ -20,14 +20,13 @@ impl Cells {
         self.map.values_mut().collect()
     }
 
-    // pub(crate) fn get_collection_to_hashmap(&self) -> HashMap<String, &Cell> {
-    //     let mut result = HashMap::default();
-    //     for cell in self.get_collection() {
-    //         let coordinate = cell.get_coordinate().get_coordinate();
-    //         result.insert(coordinate, cell.to_owned());
-    //     }
-    //     result
-    // }
+    pub(crate) fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Cell> {
+        &self.map
+    }
+
+    pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Cell> {
+        &mut self.map
+    }
 
     pub(crate) fn get_collection_by_row(&self, row_num: &u32) -> BTreeMap<u32, &Cell> {
         self.map
@@ -83,7 +82,7 @@ impl Cells {
         self.map
             .entry((row_num.to_owned(), col_num.to_owned()))
             .or_insert_with(|| {
-                let mut c =Cell::default();
+                let mut c = Cell::default();
                 c.get_coordinate_mut().set_col_num(col_num.clone());
                 c.get_coordinate_mut().set_row_num(row_num.clone());
                 c
@@ -143,5 +142,69 @@ impl Cells {
             Some(v) => v.get_formatted_value(),
             None => "".into(),
         }
+    }
+
+    // ************************
+    // update Coordinate
+    // ************************
+    /// (This method is crate only.)
+    /// Adjustment Insert Coordinate
+    pub(crate) fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // update cell
+        for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
+            cell.get_coordinate_mut().adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        self.rebuild_map();
+    }
+
+    /// (This method is crate only.)
+    /// Adjustment Remove Coordinate
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // update cell
+        self.get_collection_mut().retain(|x| {
+            !(x.get_coordinate().is_remove(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ))
+        });
+        for cell in self.get_collection_mut() {
+            cell.get_coordinate_mut().adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        self.rebuild_map();
+    }
+
+    pub(crate) fn rebuild_map(&mut self) {
+        let mut rebuild: HashMap<(u32, u32), Cell> = HashMap::new();
+        for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
+            let col_num = cell.get_coordinate().get_col_num();
+            let row_num = cell.get_coordinate().get_row_num();
+            let k = (row_num.to_owned(), col_num.to_owned());
+            rebuild.insert(k, cell.clone());
+        }
+        self.map = rebuild;
     }
 }

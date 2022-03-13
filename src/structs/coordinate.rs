@@ -62,10 +62,6 @@ impl Coordinate {
         )
     }
 
-    pub(crate) fn is_mine(&self, col_num: &u32, row_num: &u32) -> bool {
-        self.column.is_mine(col_num) && self.row.is_mine(row_num)
-    }
-
     pub(crate) fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,

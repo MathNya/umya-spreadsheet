@@ -37,7 +37,7 @@ impl SharedStringTable {
         // let l1 = self.shared_string_item.len();
         // let l2 = self.map.len();
         // println!("{}:::{}",l1,l2);
-        if self.shared_string_item.len()>0 && self.map.len()==0  {
+        if self.shared_string_item.len() > 0 && self.map.len() == 0 {
             let mut h: HashMap<String, usize> =
                 HashMap::with_capacity(self.shared_string_item.len());
             for i in 0..self.shared_string_item.len() {

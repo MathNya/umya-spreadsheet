@@ -38,7 +38,7 @@ fn lazy_read_and_wite_large_string() {
     for r in 1..5000 {
         for c in 1..30 {
             let cell = ns.get_cell_by_column_and_row_mut(c, r);
-            let _ = cell.set_value_from_string(format!("r{}c{}",r,c));
+            let _ = cell.set_value_from_string(format!("r{}c{}", r, c));
         }
     }
 

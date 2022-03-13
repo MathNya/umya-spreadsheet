@@ -369,3 +369,6 @@ pub use self::writer_manager::*;
 
 mod sheet_views;
 pub use self::sheet_views::*;
+
+mod rows;
+pub use self::rows::*;
