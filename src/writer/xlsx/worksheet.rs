@@ -123,14 +123,16 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         column_dimensions.write_to(&mut writer, stylesheet);
 
         // sheetData
-        let has_sheet_data = worksheet.get_row_dimensions().len() > 0;
+        let has_sheet_data = worksheet.has_sheet_data();
         write_start_tag(&mut writer, "sheetData", vec![], !has_sheet_data);
 
         // row dimensions sort.
-        let mut row_dimensions = worksheet.get_row_dimensions().clone();
+        let mut row_dimensions = worksheet.get_row_dimensions();
         row_dimensions.sort_by(|a, b| a.get_row_num().cmp(&b.get_row_num()));
+
+        // it's faster than get cell collection by row.
         // cells sort.
-        let mut cells = worksheet.get_cell_collection().clone();
+        let mut cells = worksheet.get_cell_collection();
         cells.sort_by(|a, b| {
             (
                 a.get_coordinate().get_row_num(),

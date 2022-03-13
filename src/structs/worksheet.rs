@@ -745,6 +745,10 @@ impl Worksheet {
         self.row_dimensions.values().collect()
     }
 
+    pub fn has_sheet_data(&self) -> bool {
+        !self.row_dimensions.is_empty()
+    }
+
     /// Get Row Dimension List in mutable.
     pub fn get_row_dimensions_mut(&mut self) -> Vec<&mut Row> {
         self.row_dimensions.values_mut().collect()
