@@ -49,7 +49,7 @@ impl RichText {
         for ele in &self.rich_text_elements {
             value += ele.get_hash_code().as_str();
         }
-        format!("{:x}", md5::Md5::digest(format!("{}", value)))
+        format!("{:x}", md5::Md5::digest(&value))
     }
 
     pub(crate) fn set_attributes_text<R: std::io::BufRead>(
