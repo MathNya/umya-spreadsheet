@@ -75,39 +75,19 @@ pub fn write_writer<W: io::Seek + io::Write>(
     let mut writer_manager = WriterManager::new(arv);
 
     // Add docProps App
-    let _ = doc_props_app::write(
-        spreadsheet,
-        writer_manager.get_arv_mut(),
-        "docProps",
-        "app.xml",
-    )?;
+    let _ = doc_props_app::write(spreadsheet, &mut writer_manager)?;
 
     // Add docProps Core
-    let _ = doc_props_core::write(
-        spreadsheet,
-        writer_manager.get_arv_mut(),
-        "docProps",
-        "core.xml",
-    )?;
+    let _ = doc_props_core::write(spreadsheet, &mut writer_manager)?;
 
     // Add vbaProject.bin
-    let _ = vba_project_bin::write(
-        spreadsheet,
-        writer_manager.get_arv_mut(),
-        "xl",
-        "vbaProject.bin",
-    )?;
+    let _ = vba_project_bin::write(spreadsheet, &mut writer_manager)?;
 
     // Add relationships
-    let _ = rels::write(spreadsheet, writer_manager.get_arv_mut(), "_rels", ".rels")?;
+    let _ = rels::write(spreadsheet, &mut writer_manager)?;
 
     // Add theme
-    let _ = theme::write(
-        spreadsheet.get_theme(),
-        writer_manager.get_arv_mut(),
-        "xl/theme",
-        "theme1.xml",
-    )?;
+    let _ = theme::write(spreadsheet.get_theme(), &mut writer_manager)?;
 
     // worksheet
     let mut shared_string_table = spreadsheet.get_shared_string_table().clone();
@@ -202,10 +182,10 @@ pub fn write_writer<W: io::Seek + io::Write>(
     writer_manager.file_list_sort();
 
     // Add SharedStrings
-    let _ = shared_strings::write(&shared_string_table, writer_manager.get_arv_mut())?;
+    let _ = shared_strings::write(&shared_string_table, &mut writer_manager)?;
 
     // Add Styles
-    let _ = styles::write(&stylesheet, writer_manager.get_arv_mut())?;
+    let _ = styles::write(&stylesheet, &mut writer_manager)?;
 
     // Add workbook
     workbook::write(spreadsheet, &mut writer_manager)?;

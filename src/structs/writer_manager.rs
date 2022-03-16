@@ -1,6 +1,7 @@
 use quick_xml::Writer;
 use std::io;
 use std::io::Cursor;
+use structs::Spreadsheet;
 use writer::driver::*;
 use writer::xlsx::XlsxError;
 
@@ -47,7 +48,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         self
     }
 
-    pub(crate) fn _get_file_list(&self) -> &Vec<String> {
+    pub(crate) fn get_file_list(&self) -> &Vec<String> {
         &self.files
     }
 
@@ -176,13 +177,98 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         false
     }
 
-    pub(crate) fn has_find(&self, find_str: &str) -> Vec<String> {
-        let mut result: Vec<String> = Vec::new();
+    pub(crate) fn make_context_type_override(
+        &mut self,
+        spreadsheet: &Spreadsheet,
+    ) -> Vec<(String, String)> {
+        self.file_list_sort();
+        let mut list: Vec<(String, String)> = Vec::new();
         for file in &self.files {
-            if file.starts_with(find_str) {
-                result.push(format!("/{}", file));
+            let file = format!("/{}", file);
+            let mut content_type = "";
+            // Override workbook
+            if file.starts_with("/xl/workbook.xml") {
+                content_type = match spreadsheet.get_has_macros() {
+                    true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
+                    false => {
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
+                    }
+                };
+            }
+
+            // Override sheet
+            if file.starts_with("/xl/worksheets/sheet") {
+                content_type =
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+            }
+
+            // Override comments
+            if file.starts_with("/xl/comments") {
+                content_type =
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml";
+            }
+
+            // Override theme
+            if file.starts_with("/xl/theme/theme") {
+                content_type = "application/vnd.openxmlformats-officedocument.theme+xml";
+            }
+
+            // Override styles
+            if file.starts_with("/xl/styles.xml") {
+                content_type =
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
+            }
+
+            // Override sharedStrings
+            if file.starts_with("/xl/sharedStrings.xml") {
+                content_type =
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
+            }
+
+            // Override drawing
+            if file.starts_with("/xl/drawings/drawing") {
+                content_type = "application/vnd.openxmlformats-officedocument.drawing+xml";
+            }
+
+            // Override chart
+            if file.starts_with("/xl/charts/chart") {
+                content_type = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml";
+            }
+
+            // Override embeddings
+            if file.starts_with("/xl/embeddings/oleObject") {
+                content_type = "application/vnd.openxmlformats-officedocument.oleObject";
+            }
+
+            // Override xl/vbaProject.bin
+            if file.starts_with("/xl/vbaProject.bin") {
+                content_type = "application/vnd.ms-office.vbaProject";
+            }
+
+            // Override docProps/core
+            if file.starts_with("/docProps/core.xml") {
+                content_type = "application/vnd.openxmlformats-package.core-properties+xml";
+            }
+
+            // Override docProps/app
+            if file.starts_with("/docProps/app.xml") {
+                content_type =
+                    "application/vnd.openxmlformats-officedocument.extended-properties+xml";
+            }
+
+            // Override Unsupported
+            if content_type == "" {
+                for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
+                    if old_part_name == &file {
+                        content_type = old_content_type;
+                    }
+                }
+            }
+
+            if content_type != "" {
+                list.push((file, content_type.to_string()));
             }
         }
-        result
+        list
     }
 }

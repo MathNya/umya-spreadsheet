@@ -5,12 +5,11 @@ use quick_xml::Writer;
 use std::io;
 use std::result;
 use structs::SharedStringTable;
-
-const SHARED_STRINGS: &'static str = "sharedStrings.xml";
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     shared_string_table: &SharedStringTable,
-    arv: &mut zip::ZipWriter<W>,
+    writer_mng: &mut WriterManager<W>,
 ) -> result::Result<(), XlsxError> {
     if shared_string_table.get_shared_string_item().len() == 0 {
         return Ok(());
@@ -27,6 +26,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     shared_string_table.write_to(&mut writer);
 
-    let _ = make_file_from_writer(SHARED_STRINGS, arv, writer, Some("xl"))?;
-    Ok(())
+    let target = "xl/sharedStrings.xml";
+    writer_mng.add_writer(target, writer)
 }

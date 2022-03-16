@@ -6,6 +6,7 @@ use super::driver::*;
 use super::XlsxError;
 
 use structs::Theme;
+use structs::WriterManager;
 
 const MAJOR_FONTS: &'static [(&'static str, &'static str)] = &[
     ("Jpan", "ＭＳ Ｐゴシック"),
@@ -75,9 +76,7 @@ const MINOR_FONTS: &'static [(&'static str, &'static str)] = &[
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     theme: &Theme,
-    arv: &mut zip::ZipWriter<W>,
-    sub_dir: &str,
-    file_name: &str,
+    writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
@@ -910,6 +909,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "a:theme");
 
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(sub_dir)).unwrap();
-    Ok(())
+    let target = "xl/theme/theme1.xml";
+    writer_mng.add_writer(target, writer)
 }

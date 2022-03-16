@@ -1,20 +1,18 @@
 use std::io;
 
-use super::driver::*;
 use super::XlsxError;
 use structs::Spreadsheet;
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
-    arv: &mut zip::ZipWriter<W>,
-    sub_dir: &str,
-    file_name: &str,
+    writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     match spreadsheet.get_has_macros() {
         true => {}
         false => return Ok(()),
     }
     let writer = spreadsheet.get_macros_code().as_ref().unwrap();
-    let _ = make_file_from_bin(&file_name, arv, writer, Some(sub_dir)).unwrap();
-    Ok(())
+    let target = "xl/vbaProject.bin";
+    writer_mng.add_bin(target, writer)
 }

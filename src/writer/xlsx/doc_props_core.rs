@@ -5,12 +5,11 @@ use std::io;
 use super::driver::*;
 use super::XlsxError;
 use structs::Spreadsheet;
+use structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
-    arv: &mut zip::ZipWriter<W>,
-    sub_dir: &str,
-    file_name: &str,
+    writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
@@ -121,6 +120,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     write_end_tag(&mut writer, "cp:coreProperties");
-    let _ = make_file_from_writer(&file_name, arv, writer, Some(sub_dir)).unwrap();
-    Ok(())
+
+    let target = "docProps/core.xml";
+    writer_mng.add_writer(target, writer)
 }

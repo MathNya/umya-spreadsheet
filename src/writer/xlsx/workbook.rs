@@ -168,6 +168,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "workbook");
 
-    make_file_from_writer("xl/workbook.xml", writer_mng.get_arv_mut(), writer, None)?;
-    Ok(())
+    let target = "xl/workbook.xml";
+    writer_mng.add_writer(target, writer)
 }

@@ -13,6 +13,7 @@ use structs::Worksheet;
 
 pub(crate) mod chart;
 pub(crate) mod comment;
+mod content_types;
 mod doc_props_app;
 mod doc_props_core;
 pub(crate) mod drawing;
@@ -73,6 +74,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
     doc_props_app::read(&mut arv, &mut book).unwrap();
     doc_props_core::read(&mut arv, &mut book).unwrap();
     vba_project_bin::read(&mut arv, &mut book).unwrap();
+    content_types::read(&mut arv, &mut book).unwrap();
     let workbook_rel = workbook_rels::read(&mut arv).unwrap();
 
     for (_, type_value, rel_target) in &workbook_rel {

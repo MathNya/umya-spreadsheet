@@ -38,6 +38,7 @@ pub struct Spreadsheet {
     stylesheet: Stylesheet,
     shared_string_table: SharedStringTable,
     workbook_view: WorkbookView,
+    backup_context_types: Vec<(String, String)>,
 }
 impl Spreadsheet {
     // ************************
@@ -613,5 +614,14 @@ impl Spreadsheet {
             }
         }
         result
+    }
+
+    pub(crate) fn get_backup_context_types(&self) -> &Vec<(String, String)> {
+        &self.backup_context_types
+    }
+
+    pub(crate) fn set_backup_context_types(&mut self, value: Vec<(String, String)>) -> &mut Self {
+        self.backup_context_types = value;
+        self
     }
 }
