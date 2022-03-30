@@ -75,7 +75,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
     doc_props_core::read(&mut arv, &mut book).unwrap();
     vba_project_bin::read(&mut arv, &mut book).unwrap();
     content_types::read(&mut arv, &mut book).unwrap();
-    let workbook_rel = workbook_rels::read(&mut arv).unwrap();
+    let workbook_rel = workbook_rels::read(&mut arv, &mut book).unwrap();
 
     for (_, type_value, rel_target) in &workbook_rel {
         match type_value.as_str() {
@@ -161,43 +161,42 @@ pub(crate) fn raw_to_serialize_by_worksheet(
     )
     .unwrap();
 
-    for relationship in raw_data_of_worksheet
-        .get_relationships()
-        .get_relationship_list()
-    {
-        match relationship.get_type() {
-            // drawing, chart
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
-                drawing::read(
-                    worksheet,
-                    relationship.get_raw_file(),
-                    raw_data_of_worksheet.get_drawing_relationships(),
-                )
-                .unwrap();
+    match raw_data_of_worksheet.get_worksheet_relationships() {
+        Some(v) => {
+            for relationship in v.get_relationship_list() {
+                match relationship.get_type() {
+                    // drawing, chart
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
+                        drawing::read(
+                            worksheet,
+                            relationship.get_raw_file(),
+                            raw_data_of_worksheet.get_drawing_relationships(),
+                        )
+                        .unwrap();
+                    }
+                    // comment
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
+                        let _ = comment::read(worksheet, relationship.get_raw_file()).unwrap();
+                    }
+                    _ => {}
+                }
             }
-            // comment
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
-                let _ = comment::read(worksheet, relationship.get_raw_file()).unwrap();
+            for relationship in v.get_relationship_list() {
+                match relationship.get_type() {
+                    // vmlDrawing
+                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" => {
+                        let _ = vml_drawing::read(
+                            worksheet,
+                            relationship.get_raw_file(),
+                            raw_data_of_worksheet.get_vml_drawing_relationships(),
+                        )
+                        .unwrap();
+                    }
+                    _ => {}
+                }
             }
-            _ => {}
         }
-    }
-    for relationship in raw_data_of_worksheet
-        .get_relationships()
-        .get_relationship_list()
-    {
-        match relationship.get_type() {
-            // vmlDrawing
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" => {
-                let _ = vml_drawing::read(
-                    worksheet,
-                    relationship.get_raw_file(),
-                    raw_data_of_worksheet.get_vml_drawing_relationships(),
-                )
-                .unwrap();
-            }
-            _ => {}
-        }
+        None => {}
     }
 
     worksheet.remove_raw_data_of_worksheet();

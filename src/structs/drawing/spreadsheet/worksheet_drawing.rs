@@ -11,16 +11,31 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
 use structs::Chart;
+use structs::Image;
 use structs::OleObjects;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
+    image_collection: Vec<Image>,
     chart_collection: Vec<Chart>,
     one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }
 impl WorksheetDrawing {
+    pub fn get_image_collection(&self) -> &Vec<Image> {
+        &self.image_collection
+    }
+
+    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+        &mut self.image_collection
+    }
+
+    pub fn add_image(&mut self, value: Image) -> &mut Self {
+        self.image_collection.push(value);
+        self
+    }
+
     pub fn get_chart_collection(&self) -> &Vec<Chart> {
         &self.chart_collection
     }
@@ -62,6 +77,7 @@ impl WorksheetDrawing {
 
     pub fn has_drawing_object(&self) -> bool {
         self.chart_collection.len() > 0
+            || self.image_collection.len() > 0
             || self.one_cell_anchor_collection.len() > 0
             || self.two_cell_anchor_collection.len() > 0
     }
@@ -174,7 +190,7 @@ impl WorksheetDrawing {
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        drawing_relationships: &RawRelationships,
+        drawing_relationships: Option<&RawRelationships>,
         ole_objects: &mut OleObjects,
     ) {
         let mut ole_index = 0;
@@ -191,8 +207,14 @@ impl WorksheetDrawing {
                             continue;
                         }
                         let mut obj = OneCellAnchor::default();
-                        obj.set_attributes(reader, e);
-                        self.add_one_cell_anchor_collection(obj);
+                        obj.set_attributes(reader, e, drawing_relationships);
+                        if obj.is_image() {
+                            let mut image = Image::default();
+                            image.set_one_cell_anchor(obj);
+                            self.add_image(image);
+                        } else {
+                            self.add_one_cell_anchor_collection(obj);
+                        }
                     }
                     b"xdr:twoCellAnchor" => {
                         if is_alternate_content {
@@ -212,6 +234,10 @@ impl WorksheetDrawing {
                                 let mut chart = Chart::default();
                                 chart.set_two_cell_anchor(obj);
                                 self.add_chart_collection(chart);
+                            } else if obj.is_image() {
+                                let mut image = Image::default();
+                                image.set_two_cell_anchor(obj);
+                                self.add_image(image);
                             } else {
                                 self.add_two_cell_anchor_collection(obj);
                             }
@@ -257,13 +283,16 @@ impl WorksheetDrawing {
         for chart in &self.chart_collection {
             chart.get_two_cell_anchor().write_to(writer, &mut r_id, &0);
         }
+        for image in &self.image_collection {
+            image.write_to(writer, &mut r_id);
+        }
         for two_cell_anchor in &self.two_cell_anchor_collection {
             two_cell_anchor.write_to(writer, &mut r_id, &0);
         }
 
         // xdr:oneCellAnchor
         for one_cell_anchor in &self.one_cell_anchor_collection {
-            one_cell_anchor.write_to(writer);
+            one_cell_anchor.write_to(writer, &mut r_id);
         }
 
         // mc:AlternateContent

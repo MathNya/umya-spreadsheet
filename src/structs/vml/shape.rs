@@ -203,7 +203,7 @@ impl Shape {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        drawing_relationships: &RawRelationships,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         match get_attribute(e, b"type") {
             Some(v) => {
@@ -280,7 +280,7 @@ impl Shape {
                     }
                     b"v:imagedata" => {
                         let mut obj = ImageData::default();
-                        obj.set_attributes(reader, e, drawing_relationships);
+                        obj.set_attributes(reader, e, drawing_relationships.unwrap());
                         self.set_image_data(obj);
                     }
                     _ => (),

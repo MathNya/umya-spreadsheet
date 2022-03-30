@@ -166,6 +166,23 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         true,
     );
 
+    // pivotCaches
+    let pivot_cache_definition_collection = spreadsheet.get_pivot_caches();
+    if pivot_cache_definition_collection.len() > 0 {
+        write_start_tag(&mut writer, "pivotCaches", vec![], false);
+        for (_, val2, _) in pivot_cache_definition_collection {
+            let r_id = format!("rId{}", index);
+            write_start_tag(
+                &mut writer,
+                "pivotCache",
+                vec![("cacheId", &val2), ("r:id", &r_id)],
+                true,
+            );
+            index += 1;
+        }
+        write_end_tag(&mut writer, "pivotCaches");
+    }
+
     write_end_tag(&mut writer, "workbook");
 
     let target = "xl/workbook.xml";

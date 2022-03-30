@@ -371,4 +371,7 @@ mod sheet_views;
 pub use self::sheet_views::*;
 
 mod rows;
-pub use self::rows::*;
+pub(crate) use self::rows::*;
+
+mod media_object;
+pub(crate) use self::media_object::*;

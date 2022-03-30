@@ -5,33 +5,35 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
-use structs::Image;
+use structs::MediaObject;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Blip {
-    image: Image,
+    image: MediaObject,
     cstate: String,
 }
 impl Blip {
-    pub fn get_image(&self) -> &Image {
+    pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
 
-    pub fn get_image_mut(&mut self) -> &mut Image {
+    pub fn get_image_mut(&mut self) -> &mut MediaObject {
         &mut self.image
     }
 
-    pub fn set_image(&mut self, value: Image) {
+    pub fn set_image(&mut self, value: MediaObject) -> &mut Self {
         self.image = value;
+        self
     }
 
     pub fn get_cstate(&self) -> &str {
         &self.cstate
     }
 
-    pub fn set_cstate<S: Into<String>>(&mut self, value: S) {
+    pub fn set_cstate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cstate = value.into();
+        self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

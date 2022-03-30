@@ -48,10 +48,6 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         self
     }
 
-    pub(crate) fn get_file_list(&self) -> &Vec<String> {
-        &self.files
-    }
-
     pub(crate) fn check_file_exist(&mut self, file_path: &str) -> bool {
         self.file_list_sort();
         for file in &self.files {
@@ -72,7 +68,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             let file_path = format!("xl/drawings/drawing{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
             if is_match == false {
-                self.add_writer(&file_path, writer);
+                self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
         }

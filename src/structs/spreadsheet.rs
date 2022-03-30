@@ -4,7 +4,6 @@ use reader::xlsx::*;
 use structs::Address;
 use structs::Calculation;
 use structs::CellValue;
-use structs::Image;
 use structs::Properties;
 use structs::Security;
 use structs::SharedStringTable;
@@ -39,6 +38,7 @@ pub struct Spreadsheet {
     shared_string_table: SharedStringTable,
     workbook_view: WorkbookView,
     backup_context_types: Vec<(String, String)>,
+    pivot_caches: Vec<(String, String, String)>,
 }
 impl Spreadsheet {
     // ************************
@@ -467,6 +467,35 @@ impl Spreadsheet {
         Err("not found.")
     }
 
+    /// Get Active Work Sheet.
+    /// # Return value
+    /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
+    pub fn get_active_sheet(&self) -> Result<&Worksheet, &'static str> {
+        let index = self.get_workbook_view().get_active_tab().clone();
+        match self.work_sheet_collection.get(index as usize) {
+            Some(v) => {
+                if v.is_serialized() == false {
+                    panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
+                }
+                return Ok(v);
+            }
+            None => return Err("Not found."),
+        }
+    }
+
+    /// Get Active Work Sheet in mutable.
+    /// # Return value
+    /// * `&mut Worksheet` - Work sheet.
+    pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
+        let theme = self.get_theme().clone();
+        let shared_string_table = self.get_shared_string_table().clone();
+        let stylesheet = self.get_stylesheet().clone();
+        let index = self.get_workbook_view().get_active_tab().clone();
+        let worksheet = self.work_sheet_collection.get_mut(index as usize).unwrap();
+        raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+        worksheet
+    }
+
     /// Add Work Sheet.
     /// # Arguments
     /// * `value` - Work Sheet
@@ -595,33 +624,53 @@ impl Spreadsheet {
         false
     }
 
-    /// Outputs all images contained in the spreadsheet.
-    /// # Return value
-    /// * `Vec<&Image>` - Image Object List.
-    pub fn get_image_collection(&self) -> Vec<&Image> {
-        let mut result: Vec<&Image> = Vec::new();
-        for worksheet in self.get_sheet_collection_no_check() {
-            for image in worksheet.get_image_collection() {
-                let mut is_new = true;
-                for v in &result {
-                    if v.get_image_name() == image.get_image_name() {
-                        is_new = false;
-                    }
-                }
-                if is_new {
-                    result.push(image);
-                }
-            }
-        }
-        result
-    }
-
     pub(crate) fn get_backup_context_types(&self) -> &Vec<(String, String)> {
         &self.backup_context_types
     }
 
     pub(crate) fn set_backup_context_types(&mut self, value: Vec<(String, String)>) -> &mut Self {
         self.backup_context_types = value;
+        self
+    }
+
+    pub(crate) fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
+        let mut result: Vec<(String, String, String)> = Vec::new();
+        for (val1, val2, val3) in &self.pivot_caches {
+            for worksheet in self.get_sheet_collection_no_check() {
+                for pivot_cache_definition in worksheet.get_pivot_cache_definition_collection() {
+                    let val3_up = format!("xl/{}", val3);
+                    if val3_up.as_str() == pivot_cache_definition {
+                        let mut is_new = true;
+                        for (_, _, r_val3) in &result {
+                            if r_val3 == val3 {
+                                is_new = false;
+                            }
+                        }
+                        if is_new {
+                            result.push((val1.clone(), val2.clone(), val3.clone()));
+                        }
+                    }
+                }
+            }
+        }
+        result
+    }
+
+    pub(crate) fn add_pivot_caches(&mut self, value: (String, String, String)) -> &mut Self {
+        self.pivot_caches.push(value);
+        self
+    }
+
+    pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
+        let mut result: Vec<(String, String, String)> = Vec::new();
+        for (val1, val2, val3) in &self.pivot_caches {
+            let mut result_value = value.clone();
+            if val1 != &key {
+                result_value = val3.clone();
+            }
+            result.push((val1.clone(), val2.clone(), result_value));
+        }
+        self.pivot_caches = result;
         self
     }
 }

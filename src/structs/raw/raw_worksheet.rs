@@ -7,9 +7,7 @@ use writer::xlsx::XlsxError;
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {
     worksheet_file: RawFile,
-    relationships: RawRelationships,
-    drawing_relationships: RawRelationships,
-    vml_drawing_relationships: RawRelationships,
+    relationships_list: Vec<RawRelationships>,
 }
 impl RawWorksheet {
     pub(crate) fn get_worksheet_file(&self) -> &RawFile {
@@ -20,28 +18,53 @@ impl RawWorksheet {
         &mut self.worksheet_file
     }
 
-    pub(crate) fn get_relationships(&self) -> &RawRelationships {
-        &self.relationships
+    pub(crate) fn get_relationships_list(&self) -> &Vec<RawRelationships> {
+        &self.relationships_list
     }
 
-    pub(crate) fn get_relationships_mut(&mut self) -> &mut RawRelationships {
-        &mut self.relationships
+    pub(crate) fn get_relationships_list_mut(&mut self) -> &mut Vec<RawRelationships> {
+        &mut self.relationships_list
     }
 
-    pub(crate) fn get_drawing_relationships(&self) -> &RawRelationships {
-        &self.drawing_relationships
+    pub(crate) fn set_relationships(&mut self, value: RawRelationships) -> &mut Self {
+        self.relationships_list.push(value);
+        self
     }
 
-    pub(crate) fn get_drawing_relationships_mut(&mut self) -> &mut RawRelationships {
-        &mut self.drawing_relationships
+    pub(crate) fn get_worksheet_relationships(&self) -> Option<&RawRelationships> {
+        for relationships in self.get_relationships_list() {
+            if relationships
+                .get_file_target()
+                .starts_with("xl/worksheets/_rels/sheet")
+            {
+                return Some(relationships);
+            }
+        }
+        None
     }
 
-    pub(crate) fn get_vml_drawing_relationships(&self) -> &RawRelationships {
-        &self.vml_drawing_relationships
+    pub(crate) fn get_drawing_relationships(&self) -> Option<&RawRelationships> {
+        for relationships in self.get_relationships_list() {
+            if relationships
+                .get_file_target()
+                .starts_with("xl/drawings/_rels/drawing")
+            {
+                return Some(relationships);
+            }
+        }
+        None
     }
 
-    pub(crate) fn get_vml_drawing_relationships_mut(&mut self) -> &mut RawRelationships {
-        &mut self.vml_drawing_relationships
+    pub(crate) fn get_vml_drawing_relationships(&self) -> Option<&RawRelationships> {
+        for relationships in self.get_relationships_list() {
+            if relationships
+                .get_file_target()
+                .starts_with("xl/drawings/_rels/vmlDrawing")
+            {
+                return Some(relationships);
+            }
+        }
+        None
     }
 
     pub(crate) fn read<R: io::Read + io::Seek>(
@@ -52,32 +75,25 @@ impl RawWorksheet {
         self.get_worksheet_file_mut()
             .set_attributes(arv, "xl", target);
 
-        let worksheet_rels_target = self.get_worksheet_file().make_rel_name();
-        self.get_relationships_mut()
-            .set_attributes(arv, "xl/worksheets", &worksheet_rels_target);
+        let base_path = self.get_worksheet_file().get_path();
+        let target = self.get_worksheet_file().make_rel_name();
+        self.read_rawrelationships(arv, &base_path, &target);
+    }
 
-        let relationships = self.get_relationships_mut().clone();
-        match relationships.get_drawing_raw_file() {
-            Some(v) => {
-                let drawing_target = v.make_rel_name();
-                self.get_drawing_relationships_mut().set_attributes(
-                    arv,
-                    "xl/drawings",
-                    &drawing_target,
-                );
+    pub(crate) fn read_rawrelationships<R: io::Read + io::Seek>(
+        &mut self,
+        arv: &mut zip::read::ZipArchive<R>,
+        base_path: &str,
+        target: &str,
+    ) {
+        let mut obj = RawRelationships::default();
+        if obj.set_attributes(arv, &base_path, &target) {
+            for relationship in obj.get_relationship_list() {
+                let rels_base_path = relationship.get_raw_file().get_path();
+                let rels_target = relationship.get_raw_file().make_rel_name();
+                self.read_rawrelationships(arv, &rels_base_path, &rels_target);
             }
-            None => {}
-        }
-        match relationships.get_vml_drawing_raw_file() {
-            Some(v) => {
-                let vml_drawing_target = v.make_rel_name();
-                self.get_vml_drawing_relationships_mut().set_attributes(
-                    arv,
-                    "xl/drawings",
-                    &vml_drawing_target,
-                );
-            }
-            None => {}
+            self.set_relationships(obj);
         }
     }
 
@@ -91,17 +107,9 @@ impl RawWorksheet {
         writer_mng.add_bin(&target, self.get_worksheet_file().get_file_data())?;
 
         // Add worksheet rels
-        let target = format!("xl/worksheets/_rels/sheet{}.xml.rels", sheet_no);
-        self.get_relationships()
-            .write_to(writer_mng, Some(&target))?;
-
-        // Add drawing
-        self.get_drawing_relationships()
-            .write_to(writer_mng, None)?;
-
-        // Add vml drawing
-        self.get_vml_drawing_relationships()
-            .write_to(writer_mng, None)?;
+        for relationships in self.get_relationships_list() {
+            relationships.write_to(writer_mng, None)?;
+        }
 
         Ok(())
     }

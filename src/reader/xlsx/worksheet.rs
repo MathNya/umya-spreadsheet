@@ -93,7 +93,11 @@ pub(crate) fn read(
                 }
                 b"oleObjects" => {
                     let mut obj = OleObjects::default();
-                    obj.set_attributes(&mut reader, e, raw_data_of_worksheet.get_relationships());
+                    obj.set_attributes(
+                        &mut reader,
+                        e,
+                        raw_data_of_worksheet.get_worksheet_relationships().unwrap(),
+                    );
                     worksheet.set_ole_objects(obj);
                 }
                 b"headerFooter" => {
@@ -175,7 +179,7 @@ pub(crate) fn read(
                     worksheet.get_page_setup_mut().set_attributes(
                         &mut reader,
                         e,
-                        raw_data_of_worksheet.get_relationships(),
+                        raw_data_of_worksheet.get_worksheet_relationships(),
                     );
                 }
                 _ => (),

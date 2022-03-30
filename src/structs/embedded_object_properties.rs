@@ -8,14 +8,14 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
-use structs::Image;
+use structs::MediaObject;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {
     prog_id: StringValue,
     shape_id: UInt32Value,
-    image: Image,
+    image: MediaObject,
     default_size: BooleanValue,
     auto_pict: BooleanValue,
     object_anchor: ObjectAnchor,
@@ -39,15 +39,15 @@ impl EmbeddedObjectProperties {
         self
     }
 
-    pub fn get_image(&self) -> &Image {
+    pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
 
-    pub fn get_image_mut(&mut self) -> &mut Image {
+    pub fn get_image_mut(&mut self) -> &mut MediaObject {
         &mut self.image
     }
 
-    pub fn set_image(&mut self, value: Image) {
+    pub fn set_image(&mut self, value: MediaObject) {
         self.image = value;
     }
 

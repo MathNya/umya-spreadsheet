@@ -1,15 +1,26 @@
 extern crate chrono;
 extern crate umya_spreadsheet;
 
-use std::path::PathBuf;
-use umya_spreadsheet::*;
-
 #[test]
 fn read_and_wite() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
     read_and_wite_method(&mut book);
+
+    book.get_sheet_by_name("Sheet1")
+        .unwrap()
+        .get_image_collection()
+        .get(0)
+        .unwrap()
+        .download_image("./tests/result_files/bbb.png");
+
+    book.get_sheet_by_name_mut("Sheet1")
+        .unwrap()
+        .get_image_collection_mut()
+        .get_mut(0)
+        .unwrap()
+        .change_image("./images/sample1.png");
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
@@ -483,6 +494,16 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .unwrap()
         .get_worksheet_drawing_mut()
         .add_chart_collection(chart);
+
+    // Add Image
+    let _ = book.new_sheet("Sheet Image");
+    let mut marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+    marker.set_coordinate("B3");
+    let mut image = umya_spreadsheet::structs::Image::default();
+    image.new_image("./images/sample1.png", marker);
+    book.get_sheet_by_name_mut("Sheet Image")
+        .unwrap()
+        .add_image(image);
 }
 
 #[test]

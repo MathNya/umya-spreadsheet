@@ -21,6 +21,12 @@ impl RawFile {
         format!("_rels/{}.rels", self.get_file_name())
     }
 
+    pub(crate) fn get_path(&self) -> String {
+        let mut v: Vec<&str> = self.get_file_target().split('/').collect();
+        v.pop();
+        v.join("/")
+    }
+
     pub(crate) fn get_extension(&self) -> String {
         let file_name = self.get_file_name();
         let v: Vec<&str> = file_name.split('.').collect();

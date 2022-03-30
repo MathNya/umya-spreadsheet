@@ -169,11 +169,21 @@ impl TwoCellAnchor {
         false
     }
 
+    pub(crate) fn is_image(&self) -> bool {
+        match &self.picture {
+            Some(_) => {
+                return true;
+            }
+            None => {}
+        }
+        false
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        drawing_relationships: &RawRelationships,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         match get_attribute(e, b"editAs") {
             Some(v) => {
@@ -194,7 +204,7 @@ impl TwoCellAnchor {
                     }
                     b"xdr:graphicFrame" => {
                         let mut obj = GraphicFrame::default();
-                        obj.set_attributes(reader, e, drawing_relationships);
+                        obj.set_attributes(reader, e, drawing_relationships.unwrap());
                         self.set_graphic_frame(obj);
                     }
                     b"xdr:sp" => {
@@ -209,7 +219,7 @@ impl TwoCellAnchor {
                     }
                     b"xdr:pic" => {
                         let mut obj = Picture::default();
-                        obj.set_attributes(reader, e, drawing_relationships);
+                        obj.set_attributes(reader, e, drawing_relationships.unwrap());
                         self.set_picture(obj);
                     }
                     _ => (),

@@ -63,12 +63,7 @@ impl Style {
     }
 
     pub fn get_font_mut(&mut self) -> &mut Font {
-        match &self.font {
-            Some(_) => return self.font.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_font(Font::get_defalut_value());
-        self.font.as_mut().unwrap()
+        self.font.get_or_insert(Font::get_defalut_value())
     }
 
     pub fn set_font(&mut self, value: Font) -> &mut Self {
@@ -91,12 +86,7 @@ impl Style {
     }
 
     pub fn get_fill_mut(&mut self) -> &mut Fill {
-        match &self.fill {
-            Some(_) => return self.fill.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_fill(Fill::get_defalut_value());
-        self.fill.as_mut().unwrap()
+        self.fill.get_or_insert(Fill::get_defalut_value())
     }
 
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
@@ -119,12 +109,7 @@ impl Style {
     }
 
     pub fn get_borders_mut(&mut self) -> &mut Borders {
-        match &self.borders {
-            Some(_) => return self.borders.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_borders(Borders::get_defalut_value());
-        self.borders.as_mut().unwrap()
+        self.borders.get_or_insert(Borders::get_defalut_value())
     }
 
     pub fn set_borders(&mut self, value: Borders) -> &mut Self {
@@ -147,12 +132,7 @@ impl Style {
     }
 
     pub fn get_alignment_mut(&mut self) -> &mut Alignment {
-        match &self.alignment {
-            Some(_) => return self.alignment.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_alignment(Alignment::default());
-        self.alignment.as_mut().unwrap()
+        self.alignment.get_or_insert(Alignment::default())
     }
 
     pub fn set_alignment(&mut self, value: Alignment) -> &mut Self {
@@ -175,12 +155,8 @@ impl Style {
     }
 
     pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
-        match &self.numbering_format {
-            Some(_) => return self.numbering_format.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_numbering_format(NumberingFormat::default());
-        self.numbering_format.as_mut().unwrap()
+        self.numbering_format
+            .get_or_insert(NumberingFormat::default())
     }
 
     pub fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {

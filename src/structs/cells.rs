@@ -20,10 +20,6 @@ impl Cells {
         self.map.values_mut().collect()
     }
 
-    pub(crate) fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Cell> {
-        &self.map
-    }
-
     pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Cell> {
         &mut self.map
     }
@@ -61,10 +57,6 @@ impl Cells {
         result
     }
 
-    pub(crate) fn has(&self, col_num: u32, row_num: u32) -> bool {
-        self.map.contains_key(&(col_num, row_num))
-    }
-
     /// Has Hyperlink
     pub(crate) fn has_hyperlink(&self) -> bool {
         self.map.values().any(|c| c.get_hyperlink().is_some())
@@ -72,10 +64,6 @@ impl Cells {
 
     pub(crate) fn get(&self, col_num: &u32, row_num: &u32) -> Option<&Cell> {
         self.map.get(&(row_num.to_owned(), col_num.to_owned()))
-    }
-
-    pub(crate) fn get_crate(&mut self, col_num: u32, row_num: u32) -> Option<&mut Cell> {
-        self.map.get_mut(&(row_num, col_num))
     }
 
     pub(crate) fn get_mut(&mut self, col_num: &u32, row_num: &u32) -> &mut Cell {

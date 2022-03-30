@@ -42,7 +42,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &path_str,
             "",
         );
+        index += 1;
+    }
 
+    // relationships pivot_cache_definition
+    for (_, _, pivot_cache_definition) in spreadsheet.get_pivot_caches() {
+        write_relationship(
+            &mut writer,
+            &index.to_string(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition",
+            pivot_cache_definition.as_str(),
+            "",
+        );
         index += 1;
     }
 

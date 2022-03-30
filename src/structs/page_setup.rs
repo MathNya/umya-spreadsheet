@@ -130,7 +130,7 @@ impl PageSetup {
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
-        relationships: &RawRelationships,
+        relationships: Option<&RawRelationships>,
     ) {
         match get_attribute(e, b"paperSize") {
             Some(v) => {
@@ -183,7 +183,10 @@ impl PageSetup {
 
         match get_attribute(e, b"r:id") {
             Some(r_id) => {
-                let attached_file = relationships.get_relationship_by_rid(r_id).get_raw_file();
+                let attached_file = relationships
+                    .unwrap()
+                    .get_relationship_by_rid(r_id)
+                    .get_raw_file();
                 self.set_object_data(attached_file.get_file_data().clone());
             }
             None => {}

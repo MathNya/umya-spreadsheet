@@ -58,6 +58,47 @@ pub struct Chart {
     two_cell_anchor: TwoCellAnchor,
     default_language: String,
 }
+/// ## Supported chart types
+/// * AreaChart
+/// * Area3DChart
+/// * BarChart
+/// * Bar3DChart
+/// * BubbleChart
+/// * DoughnutChart
+/// * LineChart
+/// * Line3DChart
+/// * OfPieChart
+/// * PieChart
+/// * RadarChart
+/// * ScatterChart
+///
+/// Other types will be supported sequentially.
+///
+/// ## Add Chart
+/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample3.png)
+/// ```rust
+/// extern crate umya_spreadsheet;
+///
+/// let mut book = umya_spreadsheet::new_file();
+///
+/// // add chart
+/// let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+/// let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+/// from_marker.set_coordinate("C1");
+/// to_marker.set_coordinate("D11");
+/// let area_chart_series_list = vec![
+///     "Sheet1!$A$1:$A$10",
+///     "Sheet1!$B$1:$B$10",
+/// ];
+/// let mut chart = umya_spreadsheet::structs::Chart::default();
+/// chart.new_chart(
+///     umya_spreadsheet::structs::ChartType::LineChart,
+///     from_marker,
+///     to_marker,
+///     area_chart_series_list,
+/// );
+/// book.get_sheet_by_name_mut("Sheet1").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+/// ```
 impl Default for Chart {
     fn default() -> Self {
         Self {
@@ -520,41 +561,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -667,41 +678,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -831,41 +812,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -972,41 +923,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1159,41 +1080,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1363,41 +1254,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1559,41 +1420,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1772,41 +1603,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1915,41 +1716,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -2178,41 +1949,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -2371,41 +2112,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -2595,41 +2306,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }

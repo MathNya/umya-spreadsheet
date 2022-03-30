@@ -1,11 +1,13 @@
 // xdr:oneCellAnchor
 use super::Extent;
 use super::MarkerType;
+use super::Picture;
 use super::Shape;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -13,6 +15,7 @@ pub struct OneCellAnchor {
     from_marker: MarkerType,
     extent: Extent,
     shape: Option<Shape>,
+    picture: Option<Picture>,
 }
 impl OneCellAnchor {
     pub fn get_from_marker(&self) -> &MarkerType {
@@ -54,6 +57,19 @@ impl OneCellAnchor {
         self
     }
 
+    pub fn get_picture(&self) -> &Option<Picture> {
+        &self.picture
+    }
+
+    pub fn get_picture_mut(&mut self) -> &mut Option<Picture> {
+        &mut self.picture
+    }
+
+    pub fn set_picture(&mut self, value: Picture) -> &mut Self {
+        self.picture = Some(value);
+        self
+    }
+
     pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
         self.from_marker._adjustment_insert_row(num_rows);
     }
@@ -70,10 +86,21 @@ impl OneCellAnchor {
         self.from_marker._adjustment_remove_colmun(num_cols);
     }
 
+    pub(crate) fn is_image(&self) -> bool {
+        match &self.picture {
+            Some(_) => {
+                return true;
+            }
+            None => {}
+        }
+        false
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         let mut buf = Vec::new();
         loop {
@@ -86,6 +113,11 @@ impl OneCellAnchor {
                         let mut obj = Shape::default();
                         obj.set_attributes(reader, e);
                         self.set_shape(obj);
+                    }
+                    b"xdr:pic" => {
+                        let mut obj = Picture::default();
+                        obj.set_attributes(reader, e, drawing_relationships.unwrap());
+                        self.set_picture(obj);
                     }
                     _ => (),
                 },
@@ -107,7 +139,7 @@ impl OneCellAnchor {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {
         // xdr:oneCellAnchor
         write_start_tag(writer, "xdr:oneCellAnchor", vec![], false);
 
@@ -120,6 +152,15 @@ impl OneCellAnchor {
         // xdr:sp
         match &self.shape {
             Some(v) => v.write_to(writer, &0),
+            None => {}
+        }
+
+        // xdr:pic
+        match &self.picture {
+            Some(v) => {
+                v.write_to(writer, r_id);
+                *r_id += 1i32;
+            }
             None => {}
         }
 

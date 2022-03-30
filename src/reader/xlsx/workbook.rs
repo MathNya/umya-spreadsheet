@@ -43,6 +43,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     worksheet.set_r_id(r_id_value);
                     let _ = spreadsheet.add_sheet(worksheet);
                 }
+                b"pivotCache" => {
+                    let cache_id = get_attribute(e, b"cacheId").unwrap();
+                    let r_id = get_attribute(e, b"r:id").unwrap();
+                    spreadsheet.add_pivot_caches((r_id, cache_id, String::from("")));
+                }
                 _ => (),
             },
             Ok(Event::Start(ref e)) => match e.name() {

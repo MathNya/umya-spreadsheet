@@ -10,7 +10,7 @@ use structs::Worksheet;
 pub(crate) fn read(
     worksheet: &mut Worksheet,
     drawing_file: &RawFile,
-    drawing_relationships: &RawRelationships,
+    drawing_relationships: Option<&RawRelationships>,
 ) -> result::Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);

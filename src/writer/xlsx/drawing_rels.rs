@@ -46,33 +46,16 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
         r_id += 1;
     }
-    for two_cell_anchor in worksheet
-        .get_worksheet_drawing()
-        .get_two_cell_anchor_collection()
-    {
-        match two_cell_anchor.get_picture() {
-            Some(picture) => {
-                is_write = write_relationship(
-                    &mut writer,
-                    &r_id,
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
-                    format!(
-                        "../media/{}",
-                        picture
-                            .get_blip_fill()
-                            .get_blip()
-                            .get_image()
-                            .get_image_name()
-                    )
-                    .as_str(),
-                    "",
-                );
-                r_id += 1;
-            }
-            None => {}
-        }
+    for image in worksheet.get_media_object_collection() {
+        is_write = write_relationship(
+            &mut writer,
+            &r_id,
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+            format!("../media/{}", image.get_image_name()).as_str(),
+            "",
+        );
+        r_id += 1;
     }
-
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {

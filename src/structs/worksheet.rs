@@ -18,6 +18,7 @@ use structs::DefinedName;
 use structs::HeaderFooter;
 use structs::Hyperlink;
 use structs::Image;
+use structs::MediaObject;
 use structs::MergeCells;
 use structs::OleObjects;
 use structs::PageMargins;
@@ -1220,6 +1221,10 @@ impl Worksheet {
         format!("A1:{}{}", column_str, highest["row"])
     }
 
+    pub fn get_highest_row_and_column(&self) -> HashMap<&str, u32> {
+        self.cell_collection.get_highest_row_and_column()
+    }
+
     /// Get Title.
     pub fn get_title(&self) -> &str {
         return &self.title;
@@ -1414,32 +1419,68 @@ impl Worksheet {
 
     /// Outputs all images contained in the worksheet.
     /// # Return value
-    /// * `Vec<&Image>` - Image Object List.
-    pub fn get_image_collection(&self) -> Vec<&Image> {
-        let mut result: Vec<&Image> = Vec::new();
-        for picture in self.get_worksheet_drawing().get_picture_collection() {
-            let image = picture.get_blip_fill().get_blip().get_image();
+    /// * `&Vec<Image>` - Image Object List.
+    pub fn get_image_collection(&self) -> &Vec<Image> {
+        self.get_worksheet_drawing().get_image_collection()
+    }
+
+    /// Outputs all images contained in the worksheet.
+    /// # Return value
+    /// * `&mut Vec<Image>` - Image Object List.
+    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+        self.get_worksheet_drawing_mut().get_image_collection_mut()
+    }
+
+    pub fn add_image(&mut self, value: Image) -> &mut Self {
+        self.get_worksheet_drawing_mut().add_image(value);
+        self
+    }
+
+    /// Outputs all media contained in the worksheet.
+    /// # Return value
+    /// * `Vec<&MediaObject>` - Media Object List.
+    pub(crate) fn get_media_object_collection(&self) -> Vec<&MediaObject> {
+        let mut result: Vec<&MediaObject> = Vec::new();
+        for image in self.get_worksheet_drawing().get_image_collection() {
+            let media_object = image.get_media_object();
             let mut is_new = true;
             for v in &result {
-                if v.get_image_name() == image.get_image_name() {
+                if v.get_image_name() == media_object.get_image_name() {
                     is_new = false;
                 }
             }
             if is_new {
-                result.push(image);
+                result.push(media_object);
             }
         }
         for ole_objects in self.get_ole_objects().get_ole_object() {
-            let image = ole_objects.get_embedded_object_properties().get_image();
+            let media_object = ole_objects.get_embedded_object_properties().get_image();
             let mut is_new = true;
             for v in &result {
-                if v.get_image_name() == image.get_image_name() {
+                if v.get_image_name() == media_object.get_image_name() {
                     is_new = false;
                 }
             }
             if is_new {
-                result.push(image);
+                result.push(media_object);
             }
+        }
+        result
+    }
+
+    pub(crate) fn get_pivot_cache_definition_collection(&self) -> Vec<&str> {
+        let mut result: Vec<&str> = Vec::new();
+        match &self.raw_data_of_worksheet {
+            Some(raw_data) => {
+                for relationships in raw_data.get_relationships_list() {
+                    for row in relationships.get_relationship_list() {
+                        if row.get_type() == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition" {
+                            result.push(row.get_raw_file().get_file_target());
+                        }
+                    }
+                }
+            }
+            None => {}
         }
         result
     }

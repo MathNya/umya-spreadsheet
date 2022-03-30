@@ -32,6 +32,11 @@ impl MarkerType {
         self
     }
 
+    pub fn add_col_off(&mut self, value: usize) -> &mut Self {
+        self.col_off = self.col_off + value;
+        self
+    }
+
     pub fn get_row(&self) -> &usize {
         &self.row
     }
@@ -47,6 +52,11 @@ impl MarkerType {
 
     pub fn set_row_off(&mut self, value: usize) -> &mut Self {
         self.row_off = value;
+        self
+    }
+
+    pub fn add_row_off(&mut self, value: usize) -> &mut Self {
+        self.row_off = self.row_off + value;
         self
     }
 

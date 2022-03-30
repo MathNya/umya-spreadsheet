@@ -40,28 +40,6 @@ impl RawRelationships {
         &mut self.relationship_list
     }
 
-    pub(crate) fn get_drawing_raw_file(&self) -> Option<&RawFile> {
-        for relationship in self.get_relationship_list() {
-            if relationship.get_type()
-                == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing"
-            {
-                return Some(relationship.get_raw_file());
-            }
-        }
-        None
-    }
-
-    pub(crate) fn get_vml_drawing_raw_file(&self) -> Option<&RawFile> {
-        for relationship in self.get_relationship_list() {
-            if relationship.get_type()
-                == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
-            {
-                return Some(relationship.get_raw_file());
-            }
-        }
-        None
-    }
-
     pub(crate) fn get_relationship_by_rid<S: Into<String>>(&self, r_id: S) -> &RawRelationship {
         let r_id_str = r_id.into();
         for relationship in self.get_relationship_list() {
@@ -82,13 +60,13 @@ impl RawRelationships {
         arv: &mut zip::read::ZipArchive<R>,
         base_path: &str,
         target: &str,
-    ) {
+    ) -> bool {
         let data = {
             let path_str = normalize_path_to_str(&format!("{}/{}", base_path, target));
             let file_path = match arv.by_name(&path_str) {
                 Ok(v) => v,
                 Err(_) => {
-                    return;
+                    return false;
                 }
             };
             self.set_file_target(path_str);
@@ -117,6 +95,7 @@ impl RawRelationships {
             }
             buf.clear();
         }
+        true
     }
 
     pub(crate) fn write_to<W: io::Seek + io::Write>(
