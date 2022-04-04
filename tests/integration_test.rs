@@ -73,6 +73,12 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
     let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
     let a1_value = book.get_sheet(0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
+    let _ =  book.get_sheet_mut(0).remove_cell_by_column_and_row_mut(1, 1);
+    let a1 = book.get_sheet(0).unwrap().get_cell("A1");
+    assert_eq!(a1, None);
+    let _ =  book.get_sheet_mut(0).remove_cell_by_column_and_row_mut(1, 2);
+    let a2_value = book.get_sheet(0).unwrap().get_value("A2");
+    assert_eq!(a2_value, "");
     let b5_value = book.get_sheet(0).unwrap().get_value("B5");
     assert_eq!(" ", b5_value);
 
