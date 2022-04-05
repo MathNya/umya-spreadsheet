@@ -44,12 +44,15 @@ impl Coordinate {
         self
     }
 
-    pub fn set_coordinate<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let result = index_from_coordinate(value.into());
-        self.column.set_num(result[0].unwrap());
-        self.row.set_num(result[1].unwrap());
-        self.column.set_is_lock_usize(result[2].unwrap());
-        self.row.set_is_lock_usize(result[3].unwrap());
+    pub fn set_coordinate<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
+        let result = index_from_coordinate(value.as_ref());
+        if let [c,r,cl,rl] = result[0..4] {
+            self.column.set_num(c.unwrap());
+            self.row.set_num(r.unwrap());
+            self.column.set_is_lock_usize(cl.unwrap());
+            self.row.set_is_lock_usize(rl.unwrap());
+        };
+        
         self
     }
 

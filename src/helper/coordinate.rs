@@ -57,8 +57,10 @@ pub fn string_from_column_index(column_index: &u32) -> String {
 }
 
 pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
-    let re = Regex::new(r"[A-Z]+").unwrap();
-    let caps = re.captures(coordinate);
+    lazy_static! {
+        static ref RE: Regex = Regex::new(r"[A-Z]+").unwrap();
+    }
+    let caps = RE.captures(coordinate);
     let col = match caps {
         Some(v) => Some(v.get(0).unwrap().as_str()),
         None => None,
@@ -71,8 +73,10 @@ pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
         None => None,
     };
 
-    let re = Regex::new(r"[0-9]+").unwrap();
-    let caps = re.captures(coordinate);
+    lazy_static! {
+        static ref RE_NUM: Regex = Regex::new(r"[0-9]+").unwrap();
+    }
+    let caps = RE_NUM.captures(coordinate);
     let row = match caps {
         Some(v) => Some(v.get(0).unwrap().as_str()),
         None => None,
@@ -107,9 +111,8 @@ pub fn coordinate_from_index_with_lock(
     )
 }
 
-pub fn index_from_coordinate<S: Into<String>>(coordinate: S) -> Vec<Option<u32>> {
-    let con = coordinate.into();
-    let split = coordinate_from_string(con.as_str());
+pub fn index_from_coordinate<S: AsRef<str>>(coordinate: S) -> Vec<Option<u32>> {
+    let split = coordinate_from_string(coordinate.as_ref());
     let col = match split[0] {
         Some(v) => Some(column_index_from_string(v)),
         None => None,
