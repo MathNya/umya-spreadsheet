@@ -11,6 +11,8 @@ use structs::Stylesheet;
 use structs::Theme;
 use structs::WorkbookView;
 use structs::Worksheet;
+use std::sync::Arc;
+use std::sync::RwLock;
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.
@@ -35,7 +37,7 @@ pub struct Spreadsheet {
     tab_ratio: i32,
     theme: Theme,
     stylesheet: Stylesheet,
-    shared_string_table: SharedStringTable,
+    shared_string_table: Arc<RwLock<SharedStringTable>>,
     workbook_view: WorkbookView,
     backup_context_types: Vec<(String, String)>,
     pivot_caches: Vec<(String, String, String)>,
@@ -330,8 +332,8 @@ impl Spreadsheet {
 
     /// (This method is crate only.)
     /// Get Shared String Table.
-    pub(crate) fn get_shared_string_table(&self) -> &SharedStringTable {
-        &self.shared_string_table
+    pub(crate) fn get_shared_string_table(&self) -> Arc<RwLock<SharedStringTable>> {
+        self.shared_string_table.clone()
     }
 
     /// (This method is crate only.)
@@ -339,7 +341,7 @@ impl Spreadsheet {
     /// # Arguments
     /// * `value` - Shared String Table
     pub(crate) fn set_shared_string_table(&mut self, value: SharedStringTable) -> &mut Self {
-        self.shared_string_table = value;
+        self.shared_string_table = Arc::new(RwLock::new(value));
         self
     }
 
@@ -378,7 +380,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table().clone();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+            raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table.clone(), &stylesheet);
         }
         self
     }
@@ -389,7 +391,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table().clone();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+        raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
         self
     }
 
@@ -420,7 +422,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table().clone();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+        raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
         worksheet
     }
 
@@ -455,12 +457,12 @@ impl Spreadsheet {
         sheet_name: S,
     ) -> Result<&mut Worksheet, &'static str> {
         let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
+        let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let v = sheet_name.into();
         for worksheet in &mut self.work_sheet_collection {
             if worksheet.get_title() == &v {
-                raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+                raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
                 return Ok(worksheet);
             }
         }
@@ -492,7 +494,7 @@ impl Spreadsheet {
         let stylesheet = self.get_stylesheet().clone();
         let index = self.get_workbook_view().get_active_tab().clone();
         let worksheet = self.work_sheet_collection.get_mut(index as usize).unwrap();
-        raw_to_serialize_by_worksheet(worksheet, &theme, &shared_string_table, &stylesheet);
+        raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
         worksheet
     }
 

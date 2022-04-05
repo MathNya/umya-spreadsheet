@@ -3,6 +3,8 @@ use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
+use std::sync::Arc;
+use std::sync::RwLock;
 use structs::Cell;
 use structs::SharedStringTable;
 use structs::Stylesheet;
@@ -12,7 +14,7 @@ use structs::WriterManager;
 pub(crate) fn write<W: io::Seek + io::Write>(
     sheet_no: &i32,
     worksheet: &Worksheet,
-    shared_string_table: &mut SharedStringTable,
+    shared_string_table: Arc<RwLock<SharedStringTable>>,
     stylesheet: &mut Stylesheet,
     has_macros: bool,
     writer_mng: &mut WriterManager<W>,
@@ -194,7 +196,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 row.write_to(&mut writer, stylesheet, spans, false);
                 // c
                 for cell in cells_in_row {
-                    cell.write_to(&mut writer, shared_string_table, stylesheet);
+                    cell.write_to(&mut writer, shared_string_table.clone(), stylesheet);
                 }
                 write_end_tag(&mut writer, "row");
             } else {

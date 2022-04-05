@@ -11,6 +11,8 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use std::sync::Arc;
+use std::sync::RwLock;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]

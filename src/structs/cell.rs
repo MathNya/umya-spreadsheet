@@ -4,6 +4,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use std::sync::{Arc, RwLock};
 use structs::CellValue;
 use structs::Coordinate;
 use structs::Hyperlink;
@@ -364,7 +365,7 @@ impl Cell {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        shared_string_table: &mut SharedStringTable,
+        shared_string_table: Arc<RwLock<SharedStringTable>>,
         stylesheet: &mut Stylesheet,
     ) {
         let empty_flag = self.cell_value.is_empty();
@@ -399,7 +400,7 @@ impl Cell {
             write_start_tag(writer, "v", vec![], false);
             match self.get_data_type() {
                 "s" => {
-                    let val_index = shared_string_table.set_cell(self.get_cell_value());
+                    let val_index = shared_string_table.write().unwrap().set_cell(self.get_cell_value());
                     write_text_node(writer, val_index.to_string());
                 }
                 "b" => {
