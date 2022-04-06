@@ -237,6 +237,13 @@ impl Cell {
         &self.cell_value.get_formula()
     }
 
+    pub(crate) fn get_formula_attributes(&self) -> Vec<(&str, &str)> {
+        self.cell_value.get_formula_attributes()
+    }
+    pub(crate) fn set_formula_attributes(&mut self, attributes: Vec<(String, String)>) {
+        self.cell_value.set_formula_attributes(attributes);
+    }
+
     pub(crate) fn get_width_point(&self, column_font_size: &f64) -> f64 {
         // get cell value len.
         let char_cnt = self.get_width_point_cell();
@@ -332,6 +339,22 @@ impl Cell {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
+                Ok(Event::Start(ref s)) => {
+                    if s.name() == b"f" {
+                        let mut attrs = vec![];
+                        s.attributes().for_each(|a| {
+                            if let Ok(attribute) = a {
+                                if let (Ok(key), Ok(value)) = (
+                                    std::str::from_utf8(attribute.key),
+                                    std::str::from_utf8(attribute.value.as_ref()),
+                                ) {
+                                    attrs.push((key.to_owned(), value.to_owned()));
+                                }
+                            }
+                        });
+                        self.set_formula_attributes(attrs);
+                    }
+                }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"f" => {
                         self.set_formula(string_value.clone());
@@ -383,13 +406,13 @@ impl Cell {
             xf_index_str = xf_index.to_string();
             attributes.push(("s", &xf_index_str));
         }
-        write_start_tag(writer, "c", attributes, empty_flag);
 
         if empty_flag == false {
+            write_start_tag(writer, "c", attributes, empty_flag);
             // f
             match &self.cell_value.formula {
                 Some(v) => {
-                    write_start_tag(writer, "f", vec![], false);
+                    write_start_tag(writer, "f", self.get_formula_attributes(), false);
                     write_text_node(writer, v);
                     write_end_tag(writer, "f");
                 }

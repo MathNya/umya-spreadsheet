@@ -9,6 +9,7 @@ pub struct CellValue {
     pub(crate) value: Option<String>,
     pub(crate) rich_text: Option<RichText>,
     pub(crate) formula: Option<String>,
+    pub(crate) formula_attributes: Vec<(String, String)>,
 }
 impl CellValue {
     // Data types
@@ -21,6 +22,15 @@ impl CellValue {
     pub const TYPE_INLINE: &'static str = "inlineStr";
     pub const TYPE_ERROR: &'static str = "e";
 
+    pub fn set_formula_attributes(&mut self, formula_attributes: Vec<(String, String)>) {
+        self.formula_attributes = formula_attributes;
+    }
+    pub fn get_formula_attributes(&self) -> Vec<(&str, &str)> {
+        self.formula_attributes
+            .iter()
+            .map(|(a, b)| (a.as_str(), b.as_str()))
+            .collect()
+    }
     pub fn get_value(&self) -> &str {
         match &self.value {
             Some(v) => {
