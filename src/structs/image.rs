@@ -42,7 +42,7 @@ pub struct Image {
 /// let image = worksheet.get_image_by_column_and_row(3, 1);
 /// let image = worksheet.get_image_mut("C1");
 /// let image = worksheet.get_image_by_column_and_row_mut(3, 1);
-/// 
+///
 /// // Use this if there are multiple Images in a given cell.
 /// let images = worksheet.get_images("C1");
 /// let images = worksheet.get_images_by_column_and_row(3, 1);

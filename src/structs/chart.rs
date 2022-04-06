@@ -120,14 +120,14 @@ pub struct Chart {
 /// let chart = worksheet.get_chart_by_column_and_row(3, 1);
 /// let chart = worksheet.get_chart_mut("C1");
 /// let chart = worksheet.get_chart_by_column_and_row_mut(3, 1);
-/// 
+///
 /// // Use this if there are multiple Charts in a given cell.
 /// let charts = worksheet.get_charts("C1");
 /// let charts = worksheet.get_charts_by_column_and_row(3, 1);
 /// let charts = worksheet.get_charts_mut("C1");
 /// let charts = worksheet.get_charts_by_column_and_row_mut(3, 1);
 /// ```
-/// 
+///
 /// ## Set Chart Title, Series Title, Horizonal Title and Vertical Title.
 /// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/chart/chart_title.png)
 /// ```rust
