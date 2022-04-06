@@ -120,7 +120,7 @@
 extern crate chrono;
 extern crate image;
 extern crate md5;
-extern crate onig;
+// extern crate onig;
 extern crate quick_xml;
 extern crate regex;
 extern crate thousands;

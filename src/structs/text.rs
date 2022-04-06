@@ -1,9 +1,10 @@
 // t
 use md5::Digest;
-use onig::*;
+// use onig::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use regex::Regex;
 use std::io::Cursor;
 use writer::driver::*;
 

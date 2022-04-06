@@ -1,6 +1,7 @@
 //use regex::Regex;
 use helper::date::*;
-use onig::*;
+use regex::Captures;
+use regex::Regex;
 use structs::Color;
 use structs::NumberingFormat;
 use thousands::Separable;
@@ -80,7 +81,7 @@ pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")
     let re =
         Regex::new(r#"(\\\(((.)(?!((AM\/PM)|(A\/P)))|([^ ])))(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
-    format = re.replace_all(&format, r#""$0""#);
+    format = re.replace_all(&format, r#""$0""#).into();
 
     // Get the sections, there can be up to four sections, separated with a semi-colon (but only if not a quoted literal)
     let re = Regex::new(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
@@ -93,7 +94,7 @@ pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
     // In Excel formats, "_" is used to add spacing,
     //    The following character indicates the size of the spacing, which we can't do in HTML, so we just use a standard space
     let re = Regex::new("_.").unwrap();
-    format = re.replace_all(&format, " ");
+    format = re.replace_all(&format, " ").into();
 
     // Let's begin inspecting the format and converting the value to a formatted string
 
@@ -175,7 +176,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         if color_re.find(section).is_some() {
             let mut item: Vec<String> = Vec::new();
             for ite in color_re.captures(section).unwrap().iter() {
-                item.push(ite.unwrap().to_string());
+                item.push(ite.unwrap().as_str().to_string());
             }
             let _ = std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "");
@@ -183,7 +184,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         if cond_regex.contains(section) {
             let mut item: Vec<String> = Vec::new();
             for ite in cond_re.captures(section).unwrap().iter() {
-                item.push(ite.unwrap().to_string());
+                item.push(ite.unwrap().as_str().to_string());
             }
             let _ = std::mem::replace(&mut condops[idx], item.get(1).unwrap().to_string());
             let _ = std::mem::replace(&mut condvals[idx], item.get(2).unwrap().to_string());
@@ -250,15 +251,17 @@ fn format_as_date(value: &f64, format: &str) -> String {
     // language info is in hexadecimal
     // strip off chinese part like [DBNum1][$-804]
     let re = Regex::new(r#"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])"#).unwrap();
-    format = re.replace_all(&format, r#""#);
+    format = re.replace_all(&format, r#""#).into();
 
     // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to lower-case;
     //    but we don't want to change any quoted strings
     let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
-    format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string: String = caps.at(0).unwrap().parse().unwrap();
-        caps_string.to_lowercase()
-    });
+    format = re
+        .replace_all(&format, |caps: &Captures| {
+            let caps_string = (&caps.get(0).unwrap()).as_str();
+            caps_string.to_lowercase()
+        })
+        .into();
 
     // Only process the non-quoted blocks for date format characters
     let blocks: Vec<&str> = format.split('"').collect();
@@ -295,10 +298,12 @@ fn format_as_date(value: &f64, format: &str) -> String {
 
     // escape any quoted characters so that DateTime format() will render them correctly
     let re = Regex::new(r#""(.*)""#).unwrap();
-    format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string: String = caps.at(0).unwrap().parse().unwrap();
-        caps_string.to_lowercase()
-    });
+    format = re
+        .replace_all(&format, |caps: &Captures| {
+            let caps_string = (&caps.get(0).unwrap()).as_str();
+            caps_string.to_lowercase()
+        })
+        .into();
 
     let date_obj = excel_to_date_time_object(value, None);
     date_obj.format(&format).to_string()
@@ -324,8 +329,8 @@ fn format_as_number(value: &f64, format: &str) -> String {
     let converted_format_clone = format.clone();
     let use_thousands = re.find(&converted_format_clone).is_some();
     if &use_thousands == &true {
-        format = Regex::new("0,0").unwrap().replace_all(&format, "00");
-        format = Regex::new("#,#").unwrap().replace_all(&format, "##");
+        format = Regex::new("0,0").unwrap().replace_all(&format, "00").into();
+        format = Regex::new("#,#").unwrap().replace_all(&format, "##").into();
     }
 
     // Scale thousands, millions,...
@@ -336,13 +341,13 @@ fn format_as_number(value: &f64, format: &str) -> String {
     if re.find(&format).is_some() {
         let mut matches: Vec<String> = Vec::new();
         for ite in re.captures(&format).unwrap().iter() {
-            matches.push(ite.unwrap().to_string());
+            matches.push(ite.unwrap().as_str().to_string());
         }
         scale = 1000i32.pow(matches[2].len() as u32) as f64;
 
         // strip the commas
-        format = Regex::new("0,+").unwrap().replace_all(&format, "0");
-        format = Regex::new("#,+").unwrap().replace_all(&format, "#");
+        format = Regex::new("0,+").unwrap().replace_all(&format, "0").into();
+        format = Regex::new("#,+").unwrap().replace_all(&format, "#").into();
     }
 
     if Regex::new(r#"#?.*\?\/\?"#).unwrap().find(&format).is_some() {
@@ -358,13 +363,17 @@ fn format_as_number(value: &f64, format: &str) -> String {
         // scale number
         value = (value.parse::<f64>().unwrap() / scale).to_string();
         // Strip #
-        format = Regex::new(r#"\#"#).unwrap().replace_all(&format, "0");
+        format = Regex::new(r#"\#"#)
+            .unwrap()
+            .replace_all(&format, "0")
+            .into();
         // Remove \
-        format = Regex::new(r#"\\"#).unwrap().replace_all(&format, "");
+        format = Regex::new(r#"\\"#).unwrap().replace_all(&format, "").into();
         // Remove locale code [$-###]
         format = Regex::new(r#"\[\$\-.*\]"#)
             .unwrap()
-            .replace_all(&format, "");
+            .replace_all(&format, "")
+            .into();
         // Trim
         format = format.trim().to_string();
 
@@ -376,7 +385,7 @@ fn format_as_number(value: &f64, format: &str) -> String {
         if re.find(&m).is_some() {
             let mut item: Vec<String> = Vec::new();
             for ite in re.captures(&m).unwrap().iter() {
-                item.push(ite.unwrap().to_string());
+                item.push(ite.unwrap().as_str().to_string());
             }
             value =
                 format_straight_numeric_value(&value, &format, &item, &use_thousands, number_regex);
@@ -387,7 +396,7 @@ fn format_as_number(value: &f64, format: &str) -> String {
     if re.find(&format).is_some() {
         let mut item: Vec<String> = Vec::new();
         for ite in re.captures(&format).unwrap().iter() {
-            item.push(ite.unwrap().to_string());
+            item.push(ite.unwrap().as_str().to_string());
         }
         value = format!("{}{}", item.get(0).unwrap(), value);
         //    //  Currency or Accounting
@@ -560,10 +569,10 @@ fn _process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     let mut masking_str: Vec<String> = Vec::new();
     let mut masking_beg: Vec<usize> = Vec::new();
     for ite in re.captures(&mask).unwrap().iter() {
-        masking_str.push(ite.unwrap().to_string());
+        masking_str.push(ite.unwrap().as_str().to_string());
     }
-    for (_, pos) in re.captures(&mask).unwrap().iter_pos().enumerate() {
-        let (beg, _) = pos.unwrap();
+    for pos in re.captures(&mask).unwrap().iter() {
+        let beg = pos.unwrap().start();
         masking_beg.push(beg);
     }
     for i in 0..masking_str.len() {
