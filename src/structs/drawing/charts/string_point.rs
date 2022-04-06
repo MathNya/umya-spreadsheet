@@ -1,28 +1,16 @@
 // c:pt
-use super::super::super::UInt32Value;
 use super::NumericValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct StringPoint {
-    index: UInt32Value,
     numeric_value: NumericValue,
 }
 impl StringPoint {
-    pub fn get_index(&self) -> &u32 {
-        &self.index.get_value()
-    }
-
-    pub fn set_index(&mut self, value: u32) -> &mut Self {
-        self.index.set_value(value);
-        self
-    }
-
     pub fn get_numeric_value(&self) -> &NumericValue {
         &self.numeric_value
     }
@@ -36,14 +24,11 @@ impl StringPoint {
         self
     }
 
-    pub(crate) fn _set_attributes<R: std::io::BufRead>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.index
-            .set_value_string(get_attribute(e, b"idx").unwrap());
-
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
@@ -65,14 +50,10 @@ impl StringPoint {
         }
     }
 
-    pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, index: &u32) {
         // c:pt
-        write_start_tag(
-            writer,
-            "c:pt",
-            vec![("idx", &self.index.get_value_string())],
-            false,
-        );
+        let index_str = index.to_string();
+        write_start_tag(writer, "c:pt", vec![("idx", index_str.as_str())], false);
 
         // c:v
         self.numeric_value._write_to(writer);

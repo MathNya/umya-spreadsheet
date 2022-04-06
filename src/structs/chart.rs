@@ -13,6 +13,7 @@ use structs::drawing::charts::BubbleSize;
 use structs::drawing::charts::CategoryAxis;
 use structs::drawing::charts::CategoryAxisData;
 use structs::drawing::charts::ChartSpace;
+use structs::drawing::charts::ChartText;
 use structs::drawing::charts::CrossBetweenValues;
 use structs::drawing::charts::DisplayBlanksAsValues;
 use structs::drawing::charts::DoughnutChart;
@@ -33,23 +34,31 @@ use structs::drawing::charts::RightAngleAxes;
 use structs::drawing::charts::RotateX;
 use structs::drawing::charts::RotateY;
 use structs::drawing::charts::ScatterChart;
+use structs::drawing::charts::SeriesText;
 use structs::drawing::charts::ShapeValues;
 use structs::drawing::charts::ShowLeaderLines;
 use structs::drawing::charts::Smooth;
+use structs::drawing::charts::StringLiteral;
+use structs::drawing::charts::StringPoint;
+use structs::drawing::charts::StringReference;
 use structs::drawing::charts::TextProperties;
 use structs::drawing::charts::TickLabelPositionValues;
 use structs::drawing::charts::TickMarkValues;
+use structs::drawing::charts::Title;
 use structs::drawing::charts::ValueAxis;
 use structs::drawing::charts::Values;
 use structs::drawing::charts::View3D;
 use structs::drawing::charts::XValues;
 use structs::drawing::charts::YValues;
+use structs::drawing::charts::PlotArea;
 use structs::drawing::spreadsheet::GraphicFrame;
 use structs::drawing::spreadsheet::MarkerType;
 use structs::drawing::spreadsheet::TwoCellAnchor;
 use structs::drawing::DefaultRunProperties;
 use structs::drawing::EndParagraphRunProperties;
 use structs::drawing::Paragraph;
+use structs::drawing::Run;
+use structs::drawing::RunProperties;
 use structs::drawing::TextCharacterPropertiesType;
 use structs::ChartType;
 
@@ -108,6 +117,123 @@ impl Default for Chart {
     }
 }
 impl Chart {
+    pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let title = self.make_title(value);
+        self.get_chart_space_mut().get_chart_mut().set_title(title);
+        self
+    }
+
+    pub fn set_vertical_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let title = self.make_title(value);
+        let plot_area = self.get_plot_area_mut();
+        match plot_area.get_value_axis_mut().len() {
+            1 => {
+                match plot_area.get_value_axis_mut().get_mut(0) {
+                    Some(v) => {
+                        v.set_title(title);
+                    },
+                    None => {}
+                }
+            },
+            2 => {
+                match plot_area.get_value_axis_mut().get_mut(1) {
+                    Some(v) => {
+                        v.set_title(title);
+                    },
+                    None => {}
+                }
+            },
+            _ => {}
+        }
+        self
+    }
+
+    pub fn set_horizontal_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let title = self.make_title(value);
+        let plot_area = self.get_plot_area_mut();
+        match plot_area.get_value_axis_mut().len() {
+            1 => {
+                match plot_area.get_category_axis_mut().get_mut(0) {
+                    Some(v) => {
+                        v.set_title(title);
+                    },
+                    None => {}
+                }
+            },
+            2 => {
+                match plot_area.get_value_axis_mut().get_mut(0) {
+                    Some(v) => {
+                        v.set_title(title);
+                    },
+                    None => {}
+                }
+            },
+            _ => {}
+        }
+        self
+    }
+
+    pub fn set_series_title<S: Into<String>>(&mut self, value: Vec<S>) -> &mut Self {
+        let mut vec_value: Vec<String> = Vec::new();
+        for v in value {
+            vec_value.push(v.into());
+        }
+        let mut value_iter = vec_value.iter();
+        for series in self
+            .get_area_chart_series_list_mut()
+            .get_area_chart_series_mut()
+        {
+            let value_raw = value_iter.next();
+            match value_raw {
+                Some(v) => {
+                    let mut series_text = SeriesText::default();
+                    series_text.set_value(v.clone());
+                    series.set_series_text(series_text);
+                }
+                None => {}
+            }
+        }
+        self
+    }
+
+    pub fn set_series_point_title<S: Into<String>>(&mut self, value: Vec<S>) -> &mut Self {
+        let mut string_literal = StringLiteral::default();
+        for v in value {
+            let mut string_point = StringPoint::default();
+            string_point.get_numeric_value_mut().set_text(v);
+            string_literal.add_string_point_list(string_point);
+        }
+        for series in self
+            .get_area_chart_series_list_mut()
+            .get_area_chart_series_mut()
+        {
+            match series.get_category_axis_data_mut() {
+                Some(v) => {
+                    v.remove_string_reference();
+                    v.set_string_literal(string_literal.clone());
+                }
+                None => {
+                    let mut obj = CategoryAxisData::default();
+                    obj.set_string_literal(string_literal.clone());
+                    series.set_category_axis_data(obj);
+                }
+            }
+        }
+        self
+    }
+    pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
+        self.get_chart_space_mut()
+            .get_chart_mut()
+            .get_plot_area_mut()
+    }
+
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.get_chart_space_mut()
+            .get_chart_mut()
+            .get_plot_area_mut()
+            .get_area_chart_series_list_mut()
+    }
+
     pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
@@ -137,13 +263,27 @@ impl Chart {
         }
     }
 
+    pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
+        match self.two_cell_anchor.get_graphic_frame_mut() {
+            Some(v) => {
+                return v
+                    .get_graphic_mut()
+                    .get_graphic_data_mut()
+                    .get_chart_space_mut();
+            }
+            None => {
+                panic!("Non-ChartSpace.");
+            }
+        }
+    }
+
     pub fn new_chart(
         &mut self,
         chart_type: ChartType,
         from_marker: MarkerType,
         to_marker: MarkerType,
         area_chart_series_list: Vec<&str>,
-    ) {
+    ) -> &mut Self {
         self.two_cell_anchor.set_from_marker(from_marker);
         self.two_cell_anchor.set_to_marker(to_marker);
 
@@ -188,6 +328,20 @@ impl Chart {
                 self.new_chart_scatter_chart(area_chart_series_list);
             }
         }
+
+        self
+    }
+
+    pub fn get_coordinate(&self) -> String {
+        self.two_cell_anchor.get_from_marker().get_coordinate()
+    }
+
+    pub(crate) fn get_col(&self) -> &u32 {
+        self.two_cell_anchor.get_from_marker().get_col()
+    }
+
+    pub(crate) fn get_row(&self) -> &u32 {
+        self.two_cell_anchor.get_from_marker().get_row()
     }
 
     pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: Vec<&str>) {
@@ -348,41 +502,11 @@ impl Chart {
             .get_chart_space_mut()
             .get_print_settings_mut()
             .get_page_margins_mut()
-            .set_bottom(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_left(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_right(0.7);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_top(0.75);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_header(0.3);
-        graphic_frame
-            .get_graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_bottom(0.75)
+            .set_left(0.7)
+            .set_right(0.7)
+            .set_top(0.75)
+            .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -828,12 +952,14 @@ impl Chart {
         let mut ptn = 0;
         for area_chart_series in area_chart_series_list {
             if ptn == 0 {
-                let mut category_axis_data = CategoryAxisData::default();
-                category_axis_data
-                    .get_string_reference_mut()
+                let mut string_reference = StringReference::default();
+                string_reference
                     .get_formula_mut()
                     .get_address_mut()
                     .set_address(area_chart_series);
+
+                let mut category_axis_data = CategoryAxisData::default();
+                category_axis_data.set_string_reference(string_reference);
                 acs_obj.set_category_axis_data(category_axis_data);
 
                 ptn += 1;
@@ -2313,5 +2439,31 @@ impl Chart {
             .set_header(0.3)
             .set_footer(0.3);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
+    }
+
+    pub(crate) fn make_title<S: Into<String>>(&self, value: S) -> Title {
+        let mut run_properties = RunProperties::default();
+        run_properties.set_language(&self.default_language);
+        run_properties.set_alternative_language("en-US");
+
+        let mut run = Run::default();
+        run.set_run_properties(run_properties);
+        run.set_text(value);
+
+        let default_run_properties = DefaultRunProperties::default();
+
+        let mut paragraph = Paragraph::default();
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_default_run_properties(default_run_properties);
+        paragraph.add_run(run);
+
+        let mut chart_text = ChartText::default();
+        chart_text.get_rich_text_mut().add_paragraph(paragraph);
+
+        let mut title = Title::default();
+        title.set_chart_text(chart_text);
+
+        title
     }
 }

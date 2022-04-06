@@ -87,14 +87,14 @@ impl Comment {
         );
         if &org_col_num != self.coordinate.get_col_num() {
             self.get_anchor_mut()
-                .adjustment_insert_colmun(offset_col_num);
+                .adjustment_insert_column(offset_col_num);
             match self
                 .get_shape_mut()
                 .get_client_data_mut()
                 .get_comment_column_target_mut()
             {
                 Some(v) => {
-                    v.adjustment_insert_colmun(offset_col_num);
+                    v.adjustment_insert_column(offset_col_num);
                 }
                 None => {}
             }
@@ -131,14 +131,14 @@ impl Comment {
         );
         if &org_col_num != self.coordinate.get_col_num() {
             self.get_anchor_mut()
-                .adjustment_remove_colmun(offset_col_num);
+                .adjustment_remove_column(offset_col_num);
             match self
                 .get_shape_mut()
                 .get_client_data_mut()
                 .get_comment_column_target_mut()
             {
                 Some(v) => {
-                    v.adjustment_remove_colmun(offset_col_num);
+                    v.adjustment_remove_column(offset_col_num);
                 }
                 None => {}
             }

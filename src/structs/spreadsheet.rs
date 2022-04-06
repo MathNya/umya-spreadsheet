@@ -64,7 +64,7 @@ impl Spreadsheet {
         self.adjustment_insert_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
     }
 
-    /// Insert new colmuns.
+    /// Insert new columns.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
     /// * `column` - Specify point of insert. ex) "B"
@@ -72,9 +72,9 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_colmun("Sheet1", "B", 3);
+    /// book.insert_new_column("Sheet1", "B", 3);
     /// ```
-    pub fn insert_new_colmun<S: Into<String>>(
+    pub fn insert_new_column<S: Into<String>>(
         &mut self,
         sheet_name: S,
         column: S,
@@ -82,10 +82,10 @@ impl Spreadsheet {
     ) {
         let column_upper = column.into().to_uppercase();
         let column_index = column_index_from_string(column_upper);
-        self.insert_new_colmun_by_index(&sheet_name.into(), column_index, num_columns);
+        self.insert_new_column_by_index(&sheet_name.into(), column_index, num_columns);
     }
 
-    /// Insert new colmuns.
+    /// Insert new columns.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
     /// * `column_index` - Specify point of insert. ex) 2
@@ -93,9 +93,9 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_colmun_by_index("Sheet1", 2, 3);
+    /// book.insert_new_column_by_index("Sheet1", 2, 3);
     /// ```
-    pub fn insert_new_colmun_by_index<S: Into<String>>(
+    pub fn insert_new_column_by_index<S: Into<String>>(
         &mut self,
         sheet_name: S,
         column_index: u32,
@@ -118,7 +118,7 @@ impl Spreadsheet {
         self.adjustment_remove_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
     }
 
-    /// Remove colmuns.
+    /// Remove columns.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
     /// * `column` - Specify point of remove. ex) "B"
@@ -126,15 +126,15 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_colmun("Sheet1", "B", 3);
+    /// book.remove_column("Sheet1", "B", 3);
     /// ```
-    pub fn remove_colmun<S: Into<String>>(&mut self, sheet_name: S, column: S, num_columns: u32) {
+    pub fn remove_column<S: Into<String>>(&mut self, sheet_name: S, column: S, num_columns: u32) {
         let column_upper = column.into().to_uppercase();
         let column_index = column_index_from_string(column_upper);
-        self.remove_colmun_by_index(&sheet_name.into(), column_index, num_columns);
+        self.remove_column_by_index(&sheet_name.into(), column_index, num_columns);
     }
 
-    /// Remove colmuns.
+    /// Remove columns.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
     /// * `column_index` - Specify point of remove. ex) 2
@@ -142,9 +142,9 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_colmun_by_index("Sheet1", 2, 3);
+    /// book.remove_column_by_index("Sheet1", 2, 3);
     /// ```
-    pub fn remove_colmun_by_index<S: Into<String>>(
+    pub fn remove_column_by_index<S: Into<String>>(
         &mut self,
         sheet_name: S,
         column_index: u32,
@@ -465,6 +465,11 @@ impl Spreadsheet {
             }
         }
         Err("not found.")
+    }
+
+    pub fn set_active_sheet(&mut self, index: usize) -> &mut Self {
+        self.get_workbook_view_mut().set_active_tab(index as u32);
+        self
     }
 
     /// Get Active Work Sheet.

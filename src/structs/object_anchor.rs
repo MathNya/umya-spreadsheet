@@ -55,9 +55,9 @@ impl ObjectAnchor {
         self.to_marker._adjustment_insert_row(num_rows);
     }
 
-    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
-        self.from_marker._adjustment_insert_colmun(num_cols);
-        self.to_marker._adjustment_insert_colmun(num_cols);
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &usize) {
+        self.from_marker._adjustment_insert_column(num_cols);
+        self.to_marker._adjustment_insert_column(num_cols);
     }
 
     pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
@@ -65,9 +65,9 @@ impl ObjectAnchor {
         self.to_marker._adjustment_remove_row(num_rows);
     }
 
-    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
-        self.from_marker._adjustment_remove_colmun(num_cols);
-        self.to_marker._adjustment_remove_colmun(num_cols);
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &usize) {
+        self.from_marker._adjustment_remove_column(num_cols);
+        self.to_marker._adjustment_remove_column(num_cols);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

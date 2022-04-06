@@ -53,7 +53,7 @@ impl FromMarker {
         self.row += num_rows;
     }
 
-    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &usize) {
         self.col += num_cols;
     }
 
@@ -65,7 +65,7 @@ impl FromMarker {
         };
     }
 
-    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &usize) {
         self.col = if &self.col > num_cols {
             self.col - num_cols
         } else {

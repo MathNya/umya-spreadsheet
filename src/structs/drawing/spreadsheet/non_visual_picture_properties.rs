@@ -55,6 +55,10 @@ impl NonVisualPictureProperties {
                         self.non_visual_picture_drawing_properties
                             .set_attributes(reader, e);
                     }
+                    b"xdr:cNvPr" => {
+                        self.non_visual_drawing_properties
+                            .set_attributes(reader, e, false);
+                    }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {

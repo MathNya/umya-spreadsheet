@@ -19,12 +19,12 @@ impl CommentColumnTarget {
         self
     }
 
-    pub(crate) fn adjustment_insert_colmun(&mut self, num_cols: &u32) {
+    pub(crate) fn adjustment_insert_column(&mut self, num_cols: &u32) {
         let value = self.value.get_value() + num_cols;
         self.value.set_value(value);
     }
 
-    pub(crate) fn adjustment_remove_colmun(&mut self, num_cols: &u32) {
+    pub(crate) fn adjustment_remove_column(&mut self, num_cols: &u32) {
         if self.value.get_value() > num_cols {
             let value = self.value.get_value() - num_cols;
             self.value.set_value(value);

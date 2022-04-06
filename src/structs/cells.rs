@@ -45,7 +45,7 @@ impl Cells {
         let mut row_max: u32 = 0;
         for key in self.map.keys() {
             if key.1 > col_max {
-                col_max = key.0;
+                col_max = key.1;
             }
             if key.0 > row_max {
                 row_max = key.0;

@@ -43,7 +43,7 @@ impl Chart {
         &mut self.title
     }
 
-    pub fn set_title(&mut self, value: Title) -> &mut Chart {
+    pub fn set_title(&mut self, value: Title) -> &mut Self {
         self.title = Some(value);
         self
     }
@@ -56,7 +56,7 @@ impl Chart {
         &mut self.auto_title_deleted
     }
 
-    pub fn set_auto_title_deleted(&mut self, value: AutoTitleDeleted) -> &mut Chart {
+    pub fn set_auto_title_deleted(&mut self, value: AutoTitleDeleted) -> &mut Self {
         self.auto_title_deleted = value;
         self
     }
@@ -69,7 +69,7 @@ impl Chart {
         &mut self.view_3d
     }
 
-    pub fn set_view_3d(&mut self, value: View3D) -> &mut Chart {
+    pub fn set_view_3d(&mut self, value: View3D) -> &mut Self {
         self.view_3d = Some(value);
         self
     }
@@ -82,7 +82,7 @@ impl Chart {
         &mut self.floor
     }
 
-    pub fn set_floor(&mut self, value: Floor) -> &mut Chart {
+    pub fn set_floor(&mut self, value: Floor) -> &mut Self {
         self.floor = Some(value);
         self
     }
@@ -95,7 +95,7 @@ impl Chart {
         &mut self.side_wall
     }
 
-    pub fn set_side_wall(&mut self, value: SideWall) -> &mut Chart {
+    pub fn set_side_wall(&mut self, value: SideWall) -> &mut Self {
         self.side_wall = Some(value);
         self
     }
@@ -108,7 +108,7 @@ impl Chart {
         &mut self.back_wall
     }
 
-    pub fn set_back_wall(&mut self, value: BackWall) -> &mut Chart {
+    pub fn set_back_wall(&mut self, value: BackWall) -> &mut Self {
         self.back_wall = Some(value);
         self
     }
@@ -121,7 +121,7 @@ impl Chart {
         &mut self.plot_area
     }
 
-    pub fn set_plot_area(&mut self, value: PlotArea) -> &mut Chart {
+    pub fn set_plot_area(&mut self, value: PlotArea) -> &mut Self {
         self.plot_area = value;
         self
     }
@@ -134,7 +134,7 @@ impl Chart {
         &mut self.legend
     }
 
-    pub fn set_legend(&mut self, value: Legend) -> &mut Chart {
+    pub fn set_legend(&mut self, value: Legend) -> &mut Self {
         self.legend = value;
         self
     }
@@ -147,7 +147,7 @@ impl Chart {
         &mut self.plot_visible_only
     }
 
-    pub fn set_plot_visible_only(&mut self, value: PlotVisibleOnly) -> &mut Chart {
+    pub fn set_plot_visible_only(&mut self, value: PlotVisibleOnly) -> &mut Self {
         self.plot_visible_only = value;
         self
     }
@@ -160,7 +160,7 @@ impl Chart {
         &mut self.display_blanks_as
     }
 
-    pub fn set_display_blanks_as(&mut self, value: DisplayBlanksAs) -> &mut Chart {
+    pub fn set_display_blanks_as(&mut self, value: DisplayBlanksAs) -> &mut Self {
         self.display_blanks_as = value;
         self
     }

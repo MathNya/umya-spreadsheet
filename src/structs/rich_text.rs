@@ -16,6 +16,14 @@ impl RichText {
         &self.text
     }
 
+    pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.rich_text_elements.clear();
+        let mut text_element = TextElement::default();
+        text_element.set_text(value);
+        self.add_rich_text_elements(text_element);
+        self
+    }
+
     pub fn get_rich_text_elements(&self) -> &Vec<TextElement> {
         &self.rich_text_elements
     }

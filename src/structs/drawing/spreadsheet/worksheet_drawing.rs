@@ -36,6 +36,44 @@ impl WorksheetDrawing {
         self
     }
 
+    pub fn get_image(&self, col: u32, row: u32) -> Option<&Image> {
+        for image in &self.image_collection {
+            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
+                return Some(image);
+            }
+        }
+        None
+    }
+
+    pub fn get_image_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
+        for image in &mut self.image_collection {
+            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
+                return Some(image);
+            }
+        }
+        None
+    }
+
+    pub fn get_images(&self, col: u32, row: u32) -> Vec<&Image> {
+        let mut result: Vec<&Image> = Vec::new();
+        for image in &self.image_collection {
+            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
+                result.push(image);
+            }
+        }
+        result
+    }
+
+    pub fn get_images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
+        let mut result: Vec<&mut Image> = Vec::new();
+        for image in &mut self.image_collection {
+            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
+                result.push(image);
+            }
+        }
+        result
+    }
+
     pub fn get_chart_collection(&self) -> &Vec<Chart> {
         &self.chart_collection
     }
@@ -47,6 +85,44 @@ impl WorksheetDrawing {
     pub fn add_chart_collection(&mut self, value: Chart) -> &mut Self {
         self.chart_collection.push(value);
         self
+    }
+
+    pub fn get_chart(&self, col: u32, row: u32) -> Option<&Chart> {
+        for chart in &self.chart_collection {
+            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
+                return Some(chart);
+            }
+        }
+        None
+    }
+
+    pub fn get_chart_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
+        for chart in &mut self.chart_collection {
+            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
+                return Some(chart);
+            }
+        }
+        None
+    }
+
+    pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
+        let mut result: Vec<&Chart> = Vec::new();
+        for chart in &self.chart_collection {
+            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
+                result.push(chart);
+            }
+        }
+        result
+    }
+
+    pub fn get_charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
+        let mut result: Vec<&mut Chart> = Vec::new();
+        for chart in &mut self.chart_collection {
+            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
+                result.push(chart);
+            }
+        }
+        result
     }
 
     pub fn get_one_cell_anchor_collection(&self) -> &Vec<OneCellAnchor> {

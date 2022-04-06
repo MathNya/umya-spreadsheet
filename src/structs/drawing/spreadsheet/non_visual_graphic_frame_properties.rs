@@ -68,6 +68,13 @@ impl NonVisualGraphicFrameProperties {
                     }
                     _ => (),
                 },
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"xdr:cNvPr" => {
+                        self.non_visual_drawing_properties
+                            .set_attributes(reader, e, false);
+                    }
+                    _ => (),
+                },
                 Ok(Event::End(ref e)) => match e.name() {
                     b"xdr:nvGraphicFramePr" => return,
                     _ => (),

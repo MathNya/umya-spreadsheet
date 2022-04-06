@@ -79,7 +79,7 @@ impl Anchor {
         self.bottom_row += num_rows;
     }
 
-    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &u32) {
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &u32) {
         self.left_column += num_cols;
         self.right_column += num_cols;
     }
@@ -97,7 +97,7 @@ impl Anchor {
         };
     }
 
-    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &u32) {
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &u32) {
         self.left_column = if &self.left_column > num_cols {
             self.left_column - num_cols
         } else {

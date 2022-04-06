@@ -3,6 +3,8 @@ use std::io;
 use std::path::Path;
 use std::string::FromUtf8Error;
 
+use structs::CsvEncodeValues;
+use structs::CsvWriterOption;
 use structs::Spreadsheet;
 
 #[derive(Debug)]
@@ -46,6 +48,7 @@ impl From<FromUtf8Error> for XlsxError {
 pub fn write_writer<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
     writer: &mut W,
+    option: &CsvWriterOption,
 ) -> Result<(), XlsxError> {
     // get worksheet.
     let worksheet = spreadsheet.get_active_sheet().unwrap();
@@ -56,14 +59,23 @@ pub fn write_writer<W: io::Seek + io::Write>(
     let max_row = &highest["row"];
 
     let mut data = String::from("");
-    for row in 1u32..max_row.clone() {
-        let mut row_vec: Vec<&str> = Vec::new();
-        for column in 1u32..max_column.clone() {
+    for row in 0u32..max_row.clone() {
+        let mut row_vec: Vec<String> = Vec::new();
+        for column in 0u32..max_column.clone() {
             // get value.
-            let value = match worksheet.get_cell_by_column_and_row(column, row) {
+            let mut value = match worksheet.get_cell_by_column_and_row(column + 1, row + 1) {
                 Some(cell) => cell.get_cell_value().get_value(),
                 None => "",
-            };
+            }
+            .to_string();
+            // do trim.
+            if option.get_do_trim() == &true {
+                value = value.trim().to_string();
+            }
+            // wrap_with_char.
+            if option.get_wrap_with_char() != "" {
+                value = format! {"{}{}{}", option.get_wrap_with_char(), value, option.get_wrap_with_char()};
+            }
             row_vec.push(value);
         }
         data += row_vec.join(",").as_str();
@@ -71,11 +83,58 @@ pub fn write_writer<W: io::Seek + io::Write>(
     }
 
     // encording.
-    let (res, _, _) = encoding_rs::SHIFT_JIS.decode(&data.as_bytes());
-    data = res.into_owned();
+    let mut res_into: Vec<u8> = Vec::new();
+    let data_bytes = match option.get_csv_encode_value() {
+        &CsvEncodeValues::ShiftJis => {
+            let (res, _, _) = encoding_rs::SHIFT_JIS.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::Koi8u => {
+            let (res, _, _) = encoding_rs::KOI8_U.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::Koi8r => {
+            let (res, _, _) = encoding_rs::KOI8_R.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::Iso88598i => {
+            let (res, _, _) = encoding_rs::ISO_8859_8_I.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::Gbk => {
+            let (res, _, _) = encoding_rs::GBK.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::EucKr => {
+            let (res, _, _) = encoding_rs::EUC_KR.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::Big5 => {
+            let (res, _, _) = encoding_rs::BIG5.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::Utf16Le => {
+            let (res, _, _) = encoding_rs::UTF_16LE.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        &CsvEncodeValues::Utf16Be => {
+            let (res, _, _) = encoding_rs::UTF_16BE.encode(&data);
+            res_into = res.into_owned();
+            &res_into[..]
+        }
+        _ => data.as_bytes(),
+    };
 
     // output.
-    writer.write(data.as_bytes()).unwrap();
+    writer.write(data_bytes).unwrap();
     Ok(())
 }
 
@@ -83,19 +142,35 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// # Arguments
 /// * `spreadsheet` - Spreadsheet structs object.
 /// * `path` - file path to save.
+/// * `option` - options.
 /// # Return value
 /// * `Result` - OK is void. Err is error message.
 /// # Examples
 /// ```
-/// let mut book = umya_spreadsheet::new_file();
+/// use umya_spreadsheet::*;
+/// let mut book = new_file();
 /// let path = std::path::Path::new("./tests/result_files/zzz.xlsx");
-/// let _ = umya_spreadsheet::writer::csv::write(&book, path);
+/// let mut option = structs::CsvWriterOption::default();
+/// option.set_csv_encode_value(structs::CsvEncodeValues::ShiftJis);
+/// option.set_do_trim(true);
+/// option.set_wrap_with_char("\"");
+/// let _ = writer::csv::write(&book, path, Some(&option));
 /// ```
-pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
+pub fn write(
+    spreadsheet: &Spreadsheet,
+    path: &Path,
+    option: Option<&CsvWriterOption>,
+) -> Result<(), XlsxError> {
     let path_tmp = format!("{}.tmp", path.to_str().unwrap());
+    let def_option = CsvWriterOption::default();
+    let option = match option {
+        Some(v) => v,
+        None => &def_option,
+    };
     match write_writer(
         spreadsheet,
         &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
+        option,
     ) {
         Ok(_) => {}
         Err(v) => {

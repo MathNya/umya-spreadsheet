@@ -1,6 +1,7 @@
 // c:plotArea
 use super::Area3DChart;
 use super::AreaChart;
+use super::AreaChartSeriesList;
 use super::Bar3DChart;
 use super::BarChart;
 use super::BubbleChart;
@@ -294,6 +295,88 @@ impl PlotArea {
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
         self.shape_properties = Some(value);
         self
+    }
+
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        match &mut self.line_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.line_3d_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.pie_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.pie_3d_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.doughnut_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.scatter_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.bar_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.bar_3d_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.radar_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.bubble_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.area_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.area_3d_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        match &mut self.of_pie_chart {
+            Some(chart) => {
+                return chart.get_area_chart_series_list_mut();
+            }
+            None => {}
+        }
+        panic! {"Non-ChartSeriesList."};
     }
 
     pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {

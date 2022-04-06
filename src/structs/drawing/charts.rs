@@ -109,8 +109,8 @@ pub use self::numbering_cache::*;
 mod format_code;
 pub use self::format_code::*;
 
-mod point_count;
-pub use self::point_count::*;
+mod string_literal;
+pub use self::string_literal::*;
 
 mod string_point;
 pub use self::string_point::*;
@@ -423,3 +423,6 @@ pub use self::explosion::*;
 
 mod area_chart_series_list;
 pub use self::area_chart_series_list::*;
+
+mod series_text;
+pub use self::series_text::*;

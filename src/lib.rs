@@ -94,17 +94,17 @@
 //! book.insert_new_row("Sheet1", 2, 3);
 //!
 //! // insert columns
-//! book.insert_new_colmun("Sheet1", "B", 3);
+//! book.insert_new_column("Sheet1", "B", 3);
 //! // or
-//! book.insert_new_colmun_by_index("Sheet1", 2, 3);
+//! book.insert_new_column_by_index("Sheet1", 2, 3);
 //!
 //! // remove rows
 //! book.remove_row("Sheet1", 6, 2);
 //!
 //! // remove columns
-//! book.remove_colmun("Sheet1", "F", 2);
+//! book.remove_column("Sheet1", "F", 2);
 //! // or
-//! book.remove_colmun_by_index("Sheet1", 6, 2);
+//! book.remove_column_by_index("Sheet1", 6, 2);
 //! ```
 //! ### Writer
 //! ```rust

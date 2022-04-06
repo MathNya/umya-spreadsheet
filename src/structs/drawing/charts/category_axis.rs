@@ -13,6 +13,7 @@ use super::MinorTickMark;
 use super::NoMultiLevelLabels;
 use super::Scaling;
 use super::TickLabelPosition;
+use super::Title;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -25,6 +26,7 @@ pub struct CategoryAxis {
     scaling: Scaling,
     delete: Delete,
     axis_position: AxisPosition,
+    title: Option<Title>,
     major_gridlines: Option<MajorGridlines>,
     major_tick_mark: MajorTickMark,
     minor_tick_mark: MinorTickMark,
@@ -86,6 +88,19 @@ impl CategoryAxis {
 
     pub fn set_axis_position(&mut self, value: AxisPosition) -> &mut Self {
         self.axis_position = value;
+        self
+    }
+
+    pub fn get_title(&self) -> &Option<Title> {
+        &self.title
+    }
+
+    pub fn get_title_mut(&mut self) -> &mut Option<Title> {
+        &mut self.title
+    }
+
+    pub fn set_title(&mut self, value: Title) -> &mut Self {
+        self.title = Some(value);
         self
     }
 
@@ -228,6 +243,11 @@ impl CategoryAxis {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
+                    b"c:title" => {
+                        let mut obj = Title::default();
+                        obj.set_attributes(reader, e);
+                        self.set_title(obj);
+                    }
                     b"c:scaling" => {
                         self.scaling.set_attributes(reader, e);
                     }
@@ -304,6 +324,14 @@ impl CategoryAxis {
 
         // c:axPos
         self.axis_position.write_to(writer);
+        
+        // c:title
+        match &self.title {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         // c:majorGridlines
         match &self.major_gridlines {

@@ -70,20 +70,20 @@ impl OneCellAnchor {
         self
     }
 
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &u32) {
         self.from_marker._adjustment_insert_row(num_rows);
     }
 
-    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
-        self.from_marker._adjustment_insert_colmun(num_cols);
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &u32) {
+        self.from_marker._adjustment_insert_column(num_cols);
     }
 
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &u32) {
         self.from_marker._adjustment_remove_row(num_rows);
     }
 
-    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
-        self.from_marker._adjustment_remove_colmun(num_cols);
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &u32) {
+        self.from_marker._adjustment_remove_column(num_cols);
     }
 
     pub(crate) fn is_image(&self) -> bool {

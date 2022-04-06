@@ -8,6 +8,7 @@ use super::Index;
 use super::InvertIfNegative;
 use super::Marker;
 use super::Order;
+use super::SeriesText;
 use super::ShapeProperties;
 use super::Smooth;
 use super::Values;
@@ -24,6 +25,7 @@ use writer::driver::*;
 pub struct AreaChartSeries {
     index: Index,
     order: Order,
+    series_text: Option<SeriesText>,
     explosion: Option<Explosion>,
     invert_if_negative: Option<InvertIfNegative>,
     marker: Option<Marker>,
@@ -60,6 +62,19 @@ impl AreaChartSeries {
 
     pub fn set_order(&mut self, value: Order) -> &mut Self {
         self.order = value;
+        self
+    }
+
+    pub fn get_series_text(&self) -> &Option<SeriesText> {
+        &self.series_text
+    }
+
+    pub fn get_series_text_mut(&mut self) -> &mut Option<SeriesText> {
+        &mut self.series_text
+    }
+
+    pub fn set_series_text(&mut self, value: SeriesText) -> &mut Self {
+        self.series_text = Some(value);
         self
     }
 
@@ -210,9 +225,12 @@ impl AreaChartSeries {
         let mut result: Vec<&mut Formula> = Vec::default();
 
         match &mut self.category_axis_data {
-            Some(v) => {
-                result.push(v.get_string_reference_mut().get_formula_mut());
-            }
+            Some(v) => match v.get_string_reference_mut() {
+                Some(h) => {
+                    result.push(h.get_formula_mut());
+                }
+                None => {}
+            },
             None => {}
         }
         match &mut self.values {
@@ -251,6 +269,11 @@ impl AreaChartSeries {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
+                    b"c:v" => {
+                        let mut obj = SeriesText::default();
+                        obj.set_attributes(reader, e);
+                        self.set_series_text(obj);
+                    }
                     b"c:marker" => {
                         let mut obj = Marker::default();
                         obj.set_attributes(reader, e, false);
@@ -338,6 +361,14 @@ impl AreaChartSeries {
 
         // c:order
         self.order.write_to(writer);
+
+        // c:v
+        match &self.series_text {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         // c:explosion
         match &self.explosion {

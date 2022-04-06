@@ -78,28 +78,6 @@ impl Image {
         self
     }
 
-    pub(crate) fn get_media_object(&self) -> &MediaObject {
-        match &self.two_cell_anchor {
-            Some(anchor) => match anchor.get_picture() {
-                Some(v) => {
-                    return v.get_blip_fill().get_blip().get_image();
-                }
-                None => {}
-            },
-            None => {}
-        }
-        match &self.one_cell_anchor {
-            Some(anchor) => match anchor.get_picture() {
-                Some(v) => {
-                    return v.get_blip_fill().get_blip().get_image();
-                }
-                None => {}
-            },
-            None => {}
-        }
-        panic!("Not Found MediaObject");
-    }
-
     pub fn new_image<S: Into<String>>(&mut self, path: S, marker: MarkerType) {
         let path_str = path.into();
         let path_obj = std::path::Path::new(path_str.as_str());
@@ -157,16 +135,7 @@ impl Image {
     }
 
     pub fn change_image<S: Into<String>>(&mut self, path: S) {
-        let marker = match self.get_two_cell_anchor() {
-            Some(v) => v.get_from_marker(),
-            None => match self.get_one_cell_anchor() {
-                Some(v) => v.get_from_marker(),
-                None => {
-                    panic!("Not Found MediaObject");
-                }
-            },
-        }
-        .clone();
+        let marker = self.get_from_marker_type().clone();
         self.two_cell_anchor = None;
         self.one_cell_anchor = None;
         self.new_image(path, marker);
@@ -174,6 +143,65 @@ impl Image {
 
     pub fn download_image<S: Into<String>>(&self, path: S) {
         fs::write(path.into(), self.get_media_object().get_image_data()).unwrap();
+    }
+
+    pub fn get_coordinate(&self) -> String {
+        self.get_from_marker_type().get_coordinate()
+    }
+
+    pub(crate) fn get_col(&self) -> &u32 {
+        self.get_from_marker_type().get_col()
+    }
+
+    pub(crate) fn get_row(&self) -> &u32 {
+        self.get_from_marker_type().get_row()
+    }
+
+    pub fn get_from_marker_type(&self) -> &MarkerType {
+        match &self.two_cell_anchor {
+            Some(anchor) => {
+                return anchor.get_from_marker();
+            }
+            None => {}
+        }
+        match &self.one_cell_anchor {
+            Some(anchor) => {
+                return anchor.get_from_marker();
+            }
+            None => {}
+        }
+        panic!("Not Found MediaObject");
+    }
+
+    pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
+        match &self.two_cell_anchor {
+            Some(anchor) => {
+                return Some(anchor.get_to_marker());
+            }
+            None => None,
+        }
+    }
+
+    pub(crate) fn get_media_object(&self) -> &MediaObject {
+        match &self.two_cell_anchor {
+            Some(anchor) => match anchor.get_picture() {
+                Some(v) => {
+                    return v.get_blip_fill().get_blip().get_image();
+                }
+                None => {}
+            },
+            None => {}
+        }
+        match &self.one_cell_anchor {
+            Some(anchor) => match anchor.get_picture() {
+                Some(v) => {
+                    return v.get_blip_fill().get_blip().get_image();
+                }
+                None => {}
+            },
+            None => {}
+        }
+        panic!("Not Found MediaObject");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {

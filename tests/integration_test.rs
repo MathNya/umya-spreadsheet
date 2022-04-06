@@ -10,15 +10,13 @@ fn read_and_wite() {
 
     book.get_sheet_by_name("Sheet1")
         .unwrap()
-        .get_image_collection()
-        .get(0)
+        .get_image("M17")
         .unwrap()
         .download_image("./tests/result_files/bbb.png");
 
     book.get_sheet_by_name_mut("Sheet1")
         .unwrap()
-        .get_image_collection_mut()
-        .get_mut(0)
+        .get_image_mut("M17")
         .unwrap()
         .change_image("./images/sample1.png");
 
@@ -259,17 +257,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("A1");
     to_marker.set_coordinate("B2");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::LineChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::LineChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (pie chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -277,17 +283,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("B1");
     to_marker.set_coordinate("C2");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::PieChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::PieChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (doughnut chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -295,17 +309,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("C1");
     to_marker.set_coordinate("D2");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::DoughnutChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::DoughnutChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (area chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -313,17 +335,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("D1");
     to_marker.set_coordinate("E2");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::AreaChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::AreaChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (bar chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -331,17 +361,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("E1");
     to_marker.set_coordinate("F2");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::BarChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::BarChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (bar 3d chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -349,17 +387,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("A2");
     to_marker.set_coordinate("B3");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::Bar3DChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::Bar3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (line 3d chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -367,17 +413,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("B2");
     to_marker.set_coordinate("C3");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::Line3DChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::Line3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (pie 3d chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -385,17 +439,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("C2");
     to_marker.set_coordinate("D3");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::Pie3DChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::Pie3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (area 3d chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -403,17 +465,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("D2");
     to_marker.set_coordinate("E3");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::Area3DChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::Area3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (of pie chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -421,17 +491,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("E2");
     to_marker.set_coordinate("F3");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::OfPieChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::OfPieChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (bubble chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -443,17 +521,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
         "New Sheet!$H$7:$H$10",
         "New Sheet!$I$7:$I$10",
     ];
+    let series_title_list = vec!["Line1", "Line2", "Line3"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::BubbleChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::BubbleChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (radar chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -465,17 +551,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
         "New Sheet!$H$7:$H$10",
         "New Sheet!$I$7:$I$10",
     ];
+    let series_title_list = vec!["Line1", "Line2", "Line3"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::RadarChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::RadarChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // add chart (scatter chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -483,17 +577,25 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     from_marker.set_coordinate("C3");
     to_marker.set_coordinate("D4");
     let area_chart_series_list = vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10"];
+    let series_title_list = vec!["Line1", "Line2"];
+    let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = umya_spreadsheet::structs::Chart::default();
-    chart.new_chart(
-        umya_spreadsheet::structs::ChartType::ScatterChart,
-        from_marker,
-        to_marker,
-        area_chart_series_list,
-    );
+    chart
+        .new_chart(
+            umya_spreadsheet::structs::ChartType::ScatterChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
+        .set_series_title(series_title_list)
+        .set_series_point_title(series_point_title_list)
+        .set_default_language("ja-JP")
+        .set_title("Chart Title")
+        .set_horizontal_title("Horizontal Title")
+        .set_vertical_title("Vertical Title");
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
-        .get_worksheet_drawing_mut()
-        .add_chart_collection(chart);
+        .add_chart(chart);
 
     // Add Image
     let _ = book.new_sheet("Sheet Image");
@@ -513,11 +615,11 @@ fn insert_and_remove_cells() {
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     book.insert_new_row("Sheet1", 2, 3);
-    book.insert_new_colmun("Sheet1", "B", 3);
-    book.insert_new_colmun_by_index("Sheet1", 2, 3);
+    book.insert_new_column("Sheet1", "B", 3);
+    book.insert_new_column_by_index("Sheet1", 2, 3);
 
     book.remove_row("Sheet1", 6, 2);
-    book.remove_colmun_by_index("Sheet1", 6, 2);
+    book.remove_column_by_index("Sheet1", 6, 2);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_insertCell.xlsx");
@@ -720,4 +822,31 @@ fn duplicate_sheet() {
         Ok(_) => panic!("getting new sheet.."),
         Err(_) => {}
     }
+}
+
+#[test]
+fn witer_csv() {
+    let mut book = umya_spreadsheet::new_file();
+    book.set_active_sheet(1);
+    let sheet = book.new_sheet("Sheet2").unwrap();
+    // ---
+    sheet.get_cell_mut("A1").set_value(" TEST");
+    sheet.get_cell_mut("B1").set_value("あいうえお");
+    sheet.get_cell_mut("C1").set_value("漢字");
+    sheet.get_cell_mut("E1").set_value("1");
+    // ---
+    sheet.get_cell_mut("A2").set_value("TEST ");
+    sheet.get_cell_mut("B2").set_value("あいうえお");
+    sheet.get_cell_mut("C2").set_value("漢字");
+    // ---
+    sheet.get_cell_mut("A3").set_value(" TEST ");
+    // ---
+
+    // writer
+    let mut option = umya_spreadsheet::structs::CsvWriterOption::default();
+    option.set_csv_encode_value(umya_spreadsheet::structs::CsvEncodeValues::ShiftJis);
+    option.set_do_trim(true);
+    option.set_wrap_with_char("\"");
+    let path = std::path::Path::new("./tests/result_files/bbb.csv");
+    let _ = umya_spreadsheet::writer::csv::write(&book, path, Some(&option));
 }

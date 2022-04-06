@@ -34,6 +34,10 @@ impl TailEnd {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:tailEnd
-        write_start_tag(writer, "a:tailEnd", vec![("type", &self.r#type)], true);
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if &self.r#type != "" {
+            attributes.push(("type", &self.r#type));
+        }
+        write_start_tag(writer, "a:tailEnd", attributes, true);
     }
 }

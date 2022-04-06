@@ -8,6 +8,7 @@ use structs::AutoFilter;
 use structs::Cell;
 use structs::CellValue;
 use structs::Cells;
+use structs::Chart;
 use structs::Color;
 use structs::Column;
 use structs::ColumnBreaks;
@@ -93,10 +94,7 @@ impl Worksheet {
     /// let value = worksheet.get_value("A1");
     /// ```
     pub fn get_value<S: Into<String>>(&self, coordinate: S) -> String {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_value_by_column_and_row(col, row)
     }
 
@@ -131,10 +129,7 @@ impl Worksheet {
     /// let value = worksheet.get_formatted_value("A1");
     /// ```
     pub fn get_formatted_value<S: Into<String>>(&self, coordinate: S) -> String {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_formatted_value_by_column_and_row(col, row)
     }
 
@@ -204,10 +199,7 @@ impl Worksheet {
     /// let cell = worksheet.get_cell("A1");
     /// ```
     pub fn get_cell<S: Into<String>>(&self, coordinate: S) -> Option<&Cell> {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_cell_by_column_and_row(col, row)
     }
 
@@ -239,10 +231,7 @@ impl Worksheet {
     /// let cell = worksheet.get_cell_mut("A1");
     /// ```
     pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate: S) -> &mut Cell {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_cell_by_column_and_row_mut(col, row)
     }
 
@@ -292,10 +281,7 @@ impl Worksheet {
     /// let cell_value = worksheet.get_cell_value("A1");
     /// ```
     pub fn get_cell_value<S: Into<String>>(&self, coordinate: S) -> &CellValue {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_cell_value_by_column_and_row(col, row)
     }
 
@@ -327,10 +313,7 @@ impl Worksheet {
     /// let cell_value = worksheet.get_cell_value_mut("A1");
     /// ```
     pub fn get_cell_value_mut<S: Into<String>>(&mut self, coordinate: S) -> &mut CellValue {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_cell_value_by_column_and_row_mut(col, row)
     }
 
@@ -380,10 +363,7 @@ impl Worksheet {
     /// let style = worksheet.get_style("A1");
     /// ```
     pub fn get_style<S: Into<String>>(&self, coordinate: S) -> &Style {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_style_by_column_and_row(col, row)
     }
 
@@ -415,10 +395,7 @@ impl Worksheet {
     /// let style = worksheet.get_style_mut("A1");
     /// ```
     pub fn get_style_mut<S: Into<String>>(&mut self, coordinate: S) -> &mut Style {
-        let coordinate_upper = coordinate.into().to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
+        let (col, row) = index_from_coordinate_simple(coordinate);
         self.get_style_by_column_and_row_mut(col, row)
     }
 
@@ -1434,6 +1411,97 @@ impl Worksheet {
     pub fn add_image(&mut self, value: Image) -> &mut Self {
         self.get_worksheet_drawing_mut().add_image(value);
         self
+    }
+
+    pub fn get_image<S: Into<String>>(&self, coordinate: S) -> Option<&Image> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing().get_image(col, row)
+    }
+
+    pub fn get_image_by_column_and_row(&self, col: u32, row: u32) -> Option<&Image> {
+        self.get_worksheet_drawing().get_image(col, row)
+    }
+
+    pub fn get_image_mut<S: Into<String>>(&mut self, coordinate: S) -> Option<&mut Image> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing_mut().get_image_mut(col, row)
+    }
+
+    pub fn get_image_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
+        self.get_worksheet_drawing_mut().get_image_mut(col, row)
+    }
+
+    pub fn get_images<S: Into<String>>(&self, coordinate: S) -> Vec<&Image> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing().get_images(col, row)
+    }
+
+    pub fn get_images_by_column_and_row(&self, col: u32, row: u32) -> Vec<&Image> {
+        self.get_worksheet_drawing().get_images(col, row)
+    }
+
+    pub fn get_images_mut<S: Into<String>>(&mut self, coordinate: S) -> Vec<&mut Image> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing_mut().get_images_mut(col, row)
+    }
+
+    pub fn get_images_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
+        self.get_worksheet_drawing_mut().get_images_mut(col, row)
+    }
+
+    /// Outputs all Charts contained in the worksheet.
+    /// # Return value
+    /// * `&Vec<Chart>` - Chart Object List.
+    pub fn get_chart_collection(&self) -> &Vec<Chart> {
+        self.get_worksheet_drawing().get_chart_collection()
+    }
+
+    /// Outputs all Charts contained in the worksheet.
+    /// # Return value
+    /// * `&mut Vec<Chart>` - Chart Object List.
+    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+        self.get_worksheet_drawing_mut().get_chart_collection_mut()
+    }
+
+    pub fn add_chart(&mut self, value: Chart) -> &mut Self {
+        self.get_worksheet_drawing_mut().add_chart_collection(value);
+        self
+    }
+
+    pub fn get_chart<S: Into<String>>(&self, coordinate: S) -> Option<&Chart> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing().get_chart(col, row)
+    }
+
+    pub fn get_chart_by_column_and_row(&self, col: u32, row: u32) -> Option<&Chart> {
+        self.get_worksheet_drawing().get_chart(col, row)
+    }
+
+    pub fn get_chart_mut<S: Into<String>>(&mut self, coordinate: S) -> Option<&mut Chart> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing_mut().get_chart_mut(col, row)
+    }
+
+    pub fn get_chart_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
+        self.get_worksheet_drawing_mut().get_chart_mut(col, row)
+    }
+
+    pub fn get_charts<S: Into<String>>(&self, coordinate: S) -> Vec<&Chart> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing().get_charts(col, row)
+    }
+
+    pub fn get_charts_by_column_and_row(&self, col: u32, row: u32) -> Vec<&Chart> {
+        self.get_worksheet_drawing().get_charts(col, row)
+    }
+
+    pub fn get_charts_mut<S: Into<String>>(&mut self, coordinate: S) -> Vec<&mut Chart> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing_mut().get_charts_mut(col, row)
+    }
+
+    pub fn get_charts_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
+        self.get_worksheet_drawing_mut().get_charts_mut(col, row)
     }
 
     /// Outputs all media contained in the worksheet.

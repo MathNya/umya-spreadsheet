@@ -8,17 +8,17 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {
-    col: usize,
+    col: u32,
     col_off: usize,
-    row: usize,
+    row: u32,
     row_off: usize,
 }
 impl MarkerType {
-    pub fn get_col(&self) -> &usize {
+    pub fn get_col(&self) -> &u32 {
         &self.col
     }
 
-    pub fn set_col(&mut self, value: usize) -> &mut Self {
+    pub fn set_col(&mut self, value: u32) -> &mut Self {
         self.col = value;
         self
     }
@@ -37,11 +37,11 @@ impl MarkerType {
         self
     }
 
-    pub fn get_row(&self) -> &usize {
+    pub fn get_row(&self) -> &u32 {
         &self.row
     }
 
-    pub fn set_row(&mut self, value: usize) -> &mut Self {
+    pub fn set_row(&mut self, value: u32) -> &mut Self {
         self.row = value;
         self
     }
@@ -60,22 +60,26 @@ impl MarkerType {
         self
     }
 
+    pub fn get_coordinate(&self) -> String {
+        coordinate_from_index(&(&self.col + 1), &(&self.row + 1))
+    }
+
     pub fn set_coordinate<S: Into<String>>(&mut self, value: S) {
         let value = value.into();
         let result = index_from_coordinate(value.as_str());
-        self.col = result[0].unwrap() as usize - 1;
-        self.row = result[1].unwrap() as usize - 1;
+        self.col = result[0].unwrap() - 1;
+        self.row = result[1].unwrap() - 1;
     }
 
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &u32) {
         self.row += num_rows;
     }
 
-    pub(crate) fn _adjustment_insert_colmun(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &u32) {
         self.col += num_cols;
     }
 
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &u32) {
         self.row = if &self.row > num_rows {
             self.row - num_rows
         } else {
@@ -83,7 +87,7 @@ impl MarkerType {
         };
     }
 
-    pub(crate) fn _adjustment_remove_colmun(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &u32) {
         self.col = if &self.col > num_cols {
             self.col - num_cols
         } else {
@@ -103,13 +107,13 @@ impl MarkerType {
                 Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
                 Ok(Event::End(ref e)) => match e.name() {
                     b"xdr:col" => {
-                        self.col = string_value.parse::<usize>().unwrap();
+                        self.col = string_value.parse::<u32>().unwrap();
                     }
                     b"xdr:colOff" => {
                         self.col_off = string_value.parse::<usize>().unwrap();
                     }
                     b"xdr:row" => {
-                        self.row = string_value.parse::<usize>().unwrap();
+                        self.row = string_value.parse::<u32>().unwrap();
                     }
                     b"xdr:rowOff" => {
                         self.row_off = string_value.parse::<usize>().unwrap();

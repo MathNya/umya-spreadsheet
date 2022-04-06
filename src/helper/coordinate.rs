@@ -129,6 +129,14 @@ pub fn index_from_coordinate<S: Into<String>>(coordinate: S) -> Vec<Option<u32>>
     vec![col, row, is_lock_col, is_lock_row]
 }
 
+pub fn index_from_coordinate_simple<S: Into<String>>(coordinate: S) -> (u32, u32) {
+    let coordinate_upper = coordinate.into().to_uppercase();
+    let split = index_from_coordinate(&coordinate_upper);
+    let col = split[0].unwrap();
+    let row = split[1].unwrap();
+    (col, row)
+}
+
 pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
     let mut result = num.clone();
     if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
