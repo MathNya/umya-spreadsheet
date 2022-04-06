@@ -46,13 +46,13 @@ impl Coordinate {
 
     pub fn set_coordinate<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
         let result = index_from_coordinate(value.as_ref());
-        if let [c,r,cl,rl] = result[0..4] {
+        if let [c, r, cl, rl] = result[0..4] {
             self.column.set_num(c.unwrap());
             self.row.set_num(r.unwrap());
             self.column.set_is_lock_usize(cl.unwrap());
             self.row.set_is_lock_usize(rl.unwrap());
         };
-        
+
         self
     }
 

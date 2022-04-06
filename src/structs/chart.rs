@@ -29,6 +29,7 @@ use structs::drawing::charts::OfPieValues;
 use structs::drawing::charts::OrientationValues;
 use structs::drawing::charts::Pie3DChart;
 use structs::drawing::charts::PieChart;
+use structs::drawing::charts::PlotArea;
 use structs::drawing::charts::RadarChart;
 use structs::drawing::charts::RightAngleAxes;
 use structs::drawing::charts::RotateX;
@@ -50,7 +51,6 @@ use structs::drawing::charts::Values;
 use structs::drawing::charts::View3D;
 use structs::drawing::charts::XValues;
 use structs::drawing::charts::YValues;
-use structs::drawing::charts::PlotArea;
 use structs::drawing::spreadsheet::GraphicFrame;
 use structs::drawing::spreadsheet::MarkerType;
 use structs::drawing::spreadsheet::TwoCellAnchor;
@@ -87,7 +87,6 @@ pub struct Chart {
 /// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample3.png)
 /// ```rust
 /// extern crate umya_spreadsheet;
-///
 /// let mut book = umya_spreadsheet::new_file();
 ///
 /// // add chart
@@ -106,7 +105,42 @@ pub struct Chart {
 ///     to_marker,
 ///     area_chart_series_list,
 /// );
-/// book.get_sheet_by_name_mut("Sheet1").unwrap().get_worksheet_drawing_mut().add_chart_collection(chart);
+/// book.get_sheet_by_name_mut("Sheet7")
+///     .unwrap()
+///     .add_chart(chart);
+/// ```
+///
+/// ## Get Chart by Worksheet.
+/// ```rust
+/// extern crate umya_spreadsheet;
+/// let mut book = umya_spreadsheet::new_file();
+///
+/// let worksheet = book.get_sheet_by_name_mut("Sheet7").unwrap();
+/// let chart = worksheet.get_chart("C1");
+/// let chart = worksheet.get_chart_by_column_and_row(3, 1);
+/// let chart = worksheet.get_chart_mut("C1");
+/// let chart = worksheet.get_chart_by_column_and_row_mut(3, 1);
+/// 
+/// // Use this if there are multiple Charts in a given cell.
+/// let charts = worksheet.get_charts("C1");
+/// let charts = worksheet.get_charts_by_column_and_row(3, 1);
+/// let charts = worksheet.get_charts_mut("C1");
+/// let charts = worksheet.get_charts_by_column_and_row_mut(3, 1);
+/// ```
+/// 
+/// ## Set Chart Title, Series Title, Horizonal Title and Vertical Title.
+/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/chart/chart_title.png)
+/// ```rust
+/// extern crate umya_spreadsheet;
+/// let mut book = umya_spreadsheet::new_file();
+///
+/// let mut chart = book.get_sheet_by_name_mut("Sheet7").get_chart_mut("C1").unwrap();
+/// chart
+///     .set_series_title(vec!["Line1", "Line2"])
+///     .set_series_point_title(vec!["Point1", "Point2", "Point3", "Point4"])
+///     .set_title("Chart Title")
+///     .set_horizontal_title("Horizontal Title")
+///     .set_vertical_title("Vertical Title");
 /// ```
 impl Default for Chart {
     fn default() -> Self {
@@ -127,21 +161,17 @@ impl Chart {
         let title = self.make_title(value);
         let plot_area = self.get_plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
-            1 => {
-                match plot_area.get_value_axis_mut().get_mut(0) {
-                    Some(v) => {
-                        v.set_title(title);
-                    },
-                    None => {}
+            1 => match plot_area.get_value_axis_mut().get_mut(0) {
+                Some(v) => {
+                    v.set_title(title);
                 }
+                None => {}
             },
-            2 => {
-                match plot_area.get_value_axis_mut().get_mut(1) {
-                    Some(v) => {
-                        v.set_title(title);
-                    },
-                    None => {}
+            2 => match plot_area.get_value_axis_mut().get_mut(1) {
+                Some(v) => {
+                    v.set_title(title);
                 }
+                None => {}
             },
             _ => {}
         }
@@ -152,21 +182,17 @@ impl Chart {
         let title = self.make_title(value);
         let plot_area = self.get_plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
-            1 => {
-                match plot_area.get_category_axis_mut().get_mut(0) {
-                    Some(v) => {
-                        v.set_title(title);
-                    },
-                    None => {}
+            1 => match plot_area.get_category_axis_mut().get_mut(0) {
+                Some(v) => {
+                    v.set_title(title);
                 }
+                None => {}
             },
-            2 => {
-                match plot_area.get_value_axis_mut().get_mut(0) {
-                    Some(v) => {
-                        v.set_title(title);
-                    },
-                    None => {}
+            2 => match plot_area.get_value_axis_mut().get_mut(0) {
+                Some(v) => {
+                    v.set_title(title);
                 }
+                None => {}
             },
             _ => {}
         }

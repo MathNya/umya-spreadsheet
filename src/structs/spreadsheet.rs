@@ -1,6 +1,8 @@
 use helper::address::*;
 use helper::coordinate::*;
 use reader::xlsx::*;
+use std::sync::Arc;
+use std::sync::RwLock;
 use structs::Address;
 use structs::Calculation;
 use structs::CellValue;
@@ -11,8 +13,6 @@ use structs::Stylesheet;
 use structs::Theme;
 use structs::WorkbookView;
 use structs::Worksheet;
-use std::sync::Arc;
-use std::sync::RwLock;
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.
@@ -380,7 +380,12 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table().clone();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table.clone(), &stylesheet);
+            raw_to_serialize_by_worksheet(
+                worksheet,
+                &theme,
+                shared_string_table.clone(),
+                &stylesheet,
+            );
         }
         self
     }

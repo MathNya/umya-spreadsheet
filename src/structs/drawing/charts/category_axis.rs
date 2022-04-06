@@ -324,7 +324,7 @@ impl CategoryAxis {
 
         // c:axPos
         self.axis_position.write_to(writer);
-        
+
         // c:title
         match &self.title {
             Some(v) => {

@@ -423,7 +423,10 @@ impl Cell {
             write_start_tag(writer, "v", vec![], false);
             match self.get_data_type() {
                 "s" => {
-                    let val_index = shared_string_table.write().unwrap().set_cell(self.get_cell_value());
+                    let val_index = shared_string_table
+                        .write()
+                        .unwrap()
+                        .set_cell(self.get_cell_value());
                     write_text_node(writer, val_index.to_string());
                 }
                 "b" => {

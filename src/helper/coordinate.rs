@@ -15,15 +15,12 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
             let a = &column_c[0..1];
             let b = &column_c[1..2];
             let c = &column_c[2..3];
-            get_index(a) * 676
-                + get_index(b) * 26
-                + get_index(c)
+            get_index(a) * 676 + get_index(b) * 26 + get_index(c)
         }
         2 => {
             let a = &column_c[0..1];
             let b = &column_c[1..2];
-            get_index(a) * 26
-                + get_index(b)
+            get_index(a) * 26 + get_index(b)
         }
         1 => get_index(&column_c[0..1]),
         _ => {

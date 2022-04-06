@@ -13,7 +13,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     shared_string_table: Arc<RwLock<SharedStringTable>>,
     writer_mng: &mut WriterManager<W>,
 ) -> result::Result<(), XlsxError> {
-    if shared_string_table.read().unwrap().get_shared_string_item().len() == 0 {
+    if shared_string_table
+        .read()
+        .unwrap()
+        .get_shared_string_item()
+        .len()
+        == 0
+    {
         return Ok(());
     }
 
