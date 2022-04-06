@@ -111,6 +111,11 @@ impl Cells {
         self.map.insert(k, cell);
     }
 
+    pub(crate) fn remove(&mut self, col_num: u32, row_num: u32) -> bool {
+        let k = (row_num, col_num);
+        self.map.remove(&k).is_some()
+    }
+
     pub(crate) fn get_cell_value_by_range<S: Into<String>>(&self, range: S) -> Vec<&CellValue> {
         let mut result: Vec<&CellValue> = Vec::new();
         let range_upper = range.into().to_uppercase();

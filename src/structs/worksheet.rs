@@ -271,6 +271,10 @@ impl Worksheet {
         self
     }
 
+    pub fn remove_cell_by_column_and_row_mut(&mut self, col: u32, row: u32) -> bool {
+        self.cell_collection.remove(col, row)
+    }
+
     /// (This method is crate only.)
     /// Set Cell
     /// # Arguments
