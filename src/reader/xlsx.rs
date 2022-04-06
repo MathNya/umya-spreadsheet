@@ -2,6 +2,8 @@ use std::fs::File;
 use std::io;
 use std::path::Path;
 use std::string::FromUtf8Error;
+use std::sync::Arc;
+use std::sync::RwLock;
 
 use super::driver;
 use structs::raw::RawWorksheet;
@@ -144,7 +146,7 @@ pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
 pub(crate) fn raw_to_serialize_by_worksheet(
     worksheet: &mut Worksheet,
     theme: &Theme,
-    shared_string_table: &SharedStringTable,
+    shared_string_table: Arc<RwLock<SharedStringTable>>,
     stylesheet: &Stylesheet,
 ) {
     if worksheet.is_serialized() {
@@ -152,11 +154,12 @@ pub(crate) fn raw_to_serialize_by_worksheet(
     }
 
     let raw_data_of_worksheet = worksheet.get_raw_data_of_worksheet().clone();
+    let shared_string_table = &*shared_string_table.read().unwrap();
     worksheet::read(
         worksheet,
         &raw_data_of_worksheet,
         theme,
-        shared_string_table,
+        &shared_string_table,
         stylesheet,
     )
     .unwrap();

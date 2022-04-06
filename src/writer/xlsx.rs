@@ -106,7 +106,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
                 worksheet::write(
                     &worksheet_no,
                     worksheet,
-                    &mut shared_string_table,
+                    shared_string_table.clone(),
                     &mut stylesheet,
                     spreadsheet.get_has_macros(),
                     &mut writer_manager,
@@ -182,7 +182,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     writer_manager.file_list_sort();
 
     // Add SharedStrings
-    let _ = shared_strings::write(&shared_string_table, &mut writer_manager)?;
+    let _ = shared_strings::write(shared_string_table.clone(), &mut writer_manager)?;
 
     // Add Styles
     let _ = styles::write(&stylesheet, &mut writer_manager)?;
@@ -191,7 +191,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     workbook::write(spreadsheet, &mut writer_manager)?;
 
     // Add workbook relationships
-    let has_shared_string_table = shared_string_table.has_value();
+    let has_shared_string_table = shared_string_table.read().unwrap().has_value();
     workbook_rels::write(spreadsheet, has_shared_string_table, &mut writer_manager)?;
 
     // Add Content_Types

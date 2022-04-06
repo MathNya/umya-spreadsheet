@@ -40,6 +40,14 @@ fn lazy_read_and_wite() {
 }
 
 #[test]
+fn read_large_string() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+    let ns = book.get_sheet_by_name_mut("Sheet1").unwrap();
+}
+
+#[test]
 fn lazy_read_and_wite_large_string() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
