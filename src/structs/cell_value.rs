@@ -5,12 +5,24 @@ use md5::Digest;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
-    pub(crate) data_type: String,
-    pub(crate) value: Option<String>,
+    pub(crate) value: Option<Value>,
+    pub(crate) raw_value: Option<String>,
     pub(crate) rich_text: Option<RichText>,
     pub(crate) formula: Option<String>,
     pub(crate) formula_attributes: Vec<(String, String)>,
 }
+
+#[derive(Clone, Debug, PartialEq, PartialOrd)]
+pub enum  Value {
+    String(String),
+    Formula(String),
+    Numeric(f64),
+    Bool(bool),
+    Inline,
+    Error,
+    Null,
+}
+
 impl CellValue {
     // Data types
     pub const TYPE_STRING2: &'static str = "str";
@@ -55,29 +67,22 @@ impl CellValue {
         &self.rich_text
     }
 
-    pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let value_org = value.into();
-        self.data_type = Self::data_type_for_value(&value_org).to_string();
-        self.value = Some(value_org);
+    pub fn set_value<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
+        self.value = Some(Self::guess_typed_data(value.as_ref()));
         self.rich_text = None;
         self.formula = None;
         self
     }
 
     pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.data_type = Self::TYPE_STRING.to_string();
-        self.value = Some(value.into());
+        self.value = Some(Value::String(value.into()));
         self.rich_text = None;
         self.formula = None;
         self
     }
 
     pub fn set_value_from_bool(&mut self, value: bool) -> &mut Self {
-        self.data_type = Self::TYPE_BOOL.to_string();
-        self.value = Some(match value {
-            true => "TRUE".to_string(),
-            false => "FALSE".to_string(),
-        });
+        self.value = Some(Value::Bool(value));
         self.rich_text = None;
         self.formula = None;
         self
@@ -87,95 +92,15 @@ impl CellValue {
         self.set_value_from_bool(value.clone())
     }
 
-    pub fn set_value_from_u16(&mut self, value: u16) -> &mut Self {
-        self.data_type = Self::TYPE_NUMERIC.to_string();
-        self.value = Some(value.to_string());
+    pub fn set_value_from_numberic<V: Into<f64>>(&mut self, value: V) -> &mut Self {
+        self.value = Some(Value::Numeric(value.into()));
         self.rich_text = None;
         self.formula = None;
         self
-    }
-
-    pub fn set_value_from_u16_ref(&mut self, value: &u16) -> &mut Self {
-        self.set_value_from_u16(value.clone())
-    }
-
-    pub fn set_value_from_u32(&mut self, value: u32) -> &mut Self {
-        self.data_type = Self::TYPE_NUMERIC.to_string();
-        self.value = Some(value.to_string());
-        self.rich_text = None;
-        self.formula = None;
-        self
-    }
-
-    pub fn set_value_from_u32_ref(&mut self, value: &u32) -> &mut Self {
-        self.set_value_from_u32(value.clone())
-    }
-
-    pub fn set_value_from_u64(&mut self, value: u64) -> &mut Self {
-        self.data_type = Self::TYPE_NUMERIC.to_string();
-        self.value = Some(value.to_string());
-        self.rich_text = None;
-        self.formula = None;
-        self
-    }
-
-    pub fn set_value_from_u64_ref(&mut self, value: &u64) -> &mut Self {
-        self.set_value_from_u64(value.clone())
-    }
-
-    pub fn set_value_from_i16(&mut self, value: i16) -> &mut Self {
-        self.data_type = Self::TYPE_NUMERIC.to_string();
-        self.value = Some(value.to_string());
-        self.rich_text = None;
-        self.formula = None;
-        self
-    }
-
-    pub fn set_value_from_i16_ref(&mut self, value: &i16) -> &mut Self {
-        self.set_value_from_i16(value.clone())
-    }
-
-    pub fn set_value_from_i32(&mut self, value: i32) -> &mut Self {
-        self.data_type = Self::TYPE_NUMERIC.to_string();
-        self.value = Some(value.to_string());
-        self.rich_text = None;
-        self.formula = None;
-        self
-    }
-
-    pub fn set_value_from_i32_ref(&mut self, value: &i32) -> &mut Self {
-        self.set_value_from_i32(value.clone())
-    }
-
-    pub fn set_value_from_i64(&mut self, value: i64) -> &mut Self {
-        self.data_type = Self::TYPE_NUMERIC.to_string();
-        self.value = Some(value.to_string());
-        self.rich_text = None;
-        self.formula = None;
-        self
-    }
-
-    pub fn set_value_from_i64_ref(&mut self, value: &i64) -> &mut Self {
-        self.set_value_from_i64(value.clone())
-    }
-
-    pub fn set_value_from_usize(&mut self, value: usize) -> &mut Self {
-        self.data_type = Self::TYPE_NUMERIC.to_string();
-        self.value = Some(value.to_string());
-        self.rich_text = None;
-        self.formula = None;
-        self
-    }
-
-    pub fn set_value_from_usize_ref(&mut self, value: &usize) -> &mut Self {
-        self.set_value_from_usize(value.clone())
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
-        self.data_type = Self::TYPE_STRING.to_string();
-        self.value = None;
         self.rich_text = Some(value);
-        self.formula = None;
         self
     }
 
@@ -184,9 +109,6 @@ impl CellValue {
     }
 
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.data_type = Self::TYPE_FORMULA.to_string();
-        self.value = None;
-        self.rich_text = None;
         self.formula = Some(value.into());
         self
     }
@@ -254,6 +176,29 @@ impl CellValue {
             None => {}
         }
         ""
+    }
+
+    pub(crate) fn guess_typed_data(value: &str) -> Value {
+        let uppercase_value = value.to_uppercase();
+
+        // Match the value against a few data types
+        if uppercase_value == "NULL" {
+            return Value::Null;
+        }
+
+        if let Ok(f) = value.parse::<f64>() {
+            return Value::Numeric(f);
+        }
+
+        if uppercase_value == "TRUE" {
+            return  Value::Bool(true);
+        }
+
+        if uppercase_value == "FALSE" {
+            return  Value::Bool(false);
+        }
+
+        Value::String(value.into())
     }
 
     pub(crate) fn data_type_for_value(value: &str) -> &str {
