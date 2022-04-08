@@ -31,7 +31,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 
 fn get_index(column: &str) -> u32 {
     self::ALPHABET
-        .into_iter()
+        .iter()
         .enumerate()
         .find_map(|(i, tar)| (tar == &column).then(|| i as u32))
         .expect("illegal character")
