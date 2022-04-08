@@ -62,7 +62,7 @@ impl StringLiteral {
 
         // c:pt
         let mut index = 0;
-        for obj in &self.string_point_list {
+        for (index, obj) in self.string_point_list.iter().enumerate() {
             obj.write_to(writer, &index);
             index += 1;
         }

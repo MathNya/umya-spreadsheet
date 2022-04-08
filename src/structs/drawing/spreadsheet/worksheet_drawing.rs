@@ -152,10 +152,10 @@ impl WorksheetDrawing {
     }
 
     pub fn has_drawing_object(&self) -> bool {
-        self.chart_collection.len() > 0
-            || self.image_collection.len() > 0
-            || self.one_cell_anchor_collection.len() > 0
-            || self.two_cell_anchor_collection.len() > 0
+        !self.chart_collection.is_empty()
+            || !self.image_collection.is_empty()
+            || !self.one_cell_anchor_collection.is_empty()
+            || !self.two_cell_anchor_collection.is_empty()
     }
 
     pub fn get_graphic_frame_collection(&self) -> Vec<&GraphicFrame> {

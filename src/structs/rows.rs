@@ -45,7 +45,7 @@ impl Rows {
     pub(crate) fn get_row_dimension_mut(&mut self, row: &u32) -> &mut Row {
         self.rows.entry(row.to_owned()).or_insert_with(|| {
             let mut obj = Row::default();
-            obj.set_row_num(row.clone());
+            obj.set_row_num(*row);
             obj
         })
     }

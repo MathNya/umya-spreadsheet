@@ -26,7 +26,7 @@ impl StyleMatrixReferenceType {
     }
 
     pub fn set_scheme_color(&mut self, value: SchemeColor) {
-        self.scheme_color = Some(value.into());
+        self.scheme_color = Some(value);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -37,7 +37,7 @@ impl StyleMatrixReferenceType {
     ) {
         self.set_index(get_attribute(e, b"idx").unwrap());
 
-        if empty_flag == true {
+        if empty_flag {
             return;
         }
 

@@ -12,7 +12,7 @@ pub struct ClipboardFormat {
 }
 impl ClipboardFormat {
     pub fn get_value(&self) -> &ClipboardFormatValues {
-        &self.value.get_value()
+        self.value.get_value()
     }
 
     pub fn set_value(&mut self, value: ClipboardFormatValues) -> &mut Self {
@@ -30,7 +30,7 @@ impl ClipboardFormat {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
                     self.value
-                        .set_value_string(e.unescape_and_decode(&reader).unwrap());
+                        .set_value_string(e.unescape_and_decode(reader).unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"x:CF" => return,

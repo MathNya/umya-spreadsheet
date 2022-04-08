@@ -84,7 +84,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_bool_ref(&mut self, value: &bool) -> &mut Self {
-        self.set_value_from_bool(value.clone())
+        self.set_value_from_bool(*value)
     }
 
     pub fn set_value_from_u16(&mut self, value: u16) -> &mut Self {
@@ -96,7 +96,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_u16_ref(&mut self, value: &u16) -> &mut Self {
-        self.set_value_from_u16(value.clone())
+        self.set_value_from_u16(*value)
     }
 
     pub fn set_value_from_u32(&mut self, value: u32) -> &mut Self {
@@ -108,7 +108,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_u32_ref(&mut self, value: &u32) -> &mut Self {
-        self.set_value_from_u32(value.clone())
+        self.set_value_from_u32(*value)
     }
 
     pub fn set_value_from_u64(&mut self, value: u64) -> &mut Self {
@@ -120,7 +120,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_u64_ref(&mut self, value: &u64) -> &mut Self {
-        self.set_value_from_u64(value.clone())
+        self.set_value_from_u64(*value)
     }
 
     pub fn set_value_from_i16(&mut self, value: i16) -> &mut Self {
@@ -132,7 +132,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_i16_ref(&mut self, value: &i16) -> &mut Self {
-        self.set_value_from_i16(value.clone())
+        self.set_value_from_i16(*value)
     }
 
     pub fn set_value_from_i32(&mut self, value: i32) -> &mut Self {
@@ -144,7 +144,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_i32_ref(&mut self, value: &i32) -> &mut Self {
-        self.set_value_from_i32(value.clone())
+        self.set_value_from_i32(*value)
     }
 
     pub fn set_value_from_i64(&mut self, value: i64) -> &mut Self {
@@ -156,7 +156,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_i64_ref(&mut self, value: &i64) -> &mut Self {
-        self.set_value_from_i64(value.clone())
+        self.set_value_from_i64(*value)
     }
 
     pub fn set_value_from_usize(&mut self, value: usize) -> &mut Self {
@@ -168,7 +168,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_usize_ref(&mut self, value: &usize) -> &mut Self {
-        self.set_value_from_usize(value.clone())
+        self.set_value_from_usize(*value)
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
@@ -211,7 +211,7 @@ impl CellValue {
     pub fn set_data_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let data_type = value.into();
         match Self::check_data_type(self.get_value(), &data_type) {
-            Ok(_) => self.data_type = data_type.into(),
+            Ok(_) => self.data_type = data_type,
             Err(e) => panic!("Error at set_data_type {:?}", e),
         }
         self
@@ -222,23 +222,23 @@ impl CellValue {
         data_type: S,
     ) -> Result<(), &'static str> {
         match data_type.into().as_str() {
-            Self::TYPE_STRING2 => return Ok(()),
-            Self::TYPE_STRING => return Ok(()),
-            Self::TYPE_FORMULA => return Ok(()),
+            Self::TYPE_STRING2 => Ok(()),
+            Self::TYPE_STRING => Ok(()),
+            Self::TYPE_FORMULA => Ok(()),
             Self::TYPE_NUMERIC => match &value.into().parse::<f64>() {
-                Ok(_) => return Ok(()),
-                Err(_) => return Err("Invalid numeric value for datatype Numeric"),
+                Ok(_) => Ok(()),
+                Err(_) => Err("Invalid numeric value for datatype Numeric"),
             },
             Self::TYPE_BOOL => {
                 let check_value = &value.into().to_uppercase();
                 if check_value == "TRUE" || check_value == "FALSE" {
-                    return Ok(());
+                    Ok(())
                 } else {
-                    return Err("Invalid value for datatype Bool");
+                    Err("Invalid value for datatype Bool")
                 }
             }
-            Self::TYPE_NULL => return Ok(()),
-            _ => return Err("Invalid datatype"),
+            Self::TYPE_NULL => Ok(()),
+            _ => Err("Invalid datatype"),
         }
     }
 

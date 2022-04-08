@@ -11,7 +11,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-const INDEXED_COLORS: &'static [&'static str] = &[
+const INDEXED_COLORS: &'static [&str] = &[
     "FF000000", //  System Colour #1 - Black
     "FFFFFFFF", //  System Colour #2 - White
     "FFFF0000", //  System Colour #3 - Red
@@ -95,7 +95,7 @@ impl Color {
     pub const COLOR_DARKYELLOW: &'static str = "FF808000";
 
     pub fn get_argb(&self) -> &str {
-        &self.argb.get_value()
+        self.argb.get_value()
     }
 
     pub fn set_argb<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -106,7 +106,7 @@ impl Color {
     }
 
     pub fn get_indexed(&self) -> &u32 {
-        &self.indexed.get_value()
+        self.indexed.get_value()
     }
 
     pub fn set_indexed(&mut self, index: u32) -> &mut Self {
@@ -121,7 +121,7 @@ impl Color {
     }
 
     pub fn get_theme_index(&self) -> &u32 {
-        &self.theme_index.get_value()
+        self.theme_index.get_value()
     }
 
     pub fn set_theme_index(&mut self, index: u32) -> &mut Self {
@@ -136,7 +136,7 @@ impl Color {
             self.argb.set_value(
                 match theme
                     .get_color_map()
-                    .get(self.theme_index.get_value().clone() as usize)
+                    .get(*self.theme_index.get_value() as usize)
                 {
                     Some(v) => v.to_string(),
                     None => String::from(""),
@@ -147,7 +147,7 @@ impl Color {
     }
 
     pub fn get_tint(&self) -> &f64 {
-        &self.tint.get_value()
+        self.tint.get_value()
     }
 
     pub fn set_tint(&mut self, value: f64) -> &mut Color {
@@ -237,7 +237,7 @@ impl Color {
             attributes.push(("tint", self.tint.get_value_string()));
         }
 
-        if attributes.len() > 0 {
+        if !attributes.is_empty() {
             write_start_tag(writer, tag_name, attributes, true);
         }
     }

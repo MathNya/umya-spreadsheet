@@ -11,7 +11,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<String, XlsxError> {
-    if worksheet.has_drawing_object() == false {
+    if !worksheet.has_drawing_object() {
         return Ok(String::from(""));
     }
 

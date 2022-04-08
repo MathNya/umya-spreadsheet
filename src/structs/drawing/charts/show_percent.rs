@@ -13,7 +13,7 @@ pub struct ShowPercent {
 }
 impl ShowPercent {
     pub fn get_val(&self) -> &bool {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut ShowPercent {
@@ -34,7 +34,7 @@ impl ShowPercent {
         write_start_tag(
             writer,
             "c:showPercent",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

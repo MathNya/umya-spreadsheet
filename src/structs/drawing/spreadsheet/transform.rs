@@ -46,7 +46,7 @@ impl Transform {
     }
 
     pub fn get_rotation(&self) -> &i32 {
-        &self.rotation.get_value()
+        self.rotation.get_value()
     }
 
     pub fn set_rotation(&mut self, value: i32) {
@@ -54,7 +54,7 @@ impl Transform {
     }
 
     pub fn get_vertical_flip(&self) -> &bool {
-        &self.vertical_flip.get_value()
+        self.vertical_flip.get_value()
     }
 
     pub fn set_vertical_flip(&mut self, value: bool) {
@@ -62,7 +62,7 @@ impl Transform {
     }
 
     pub fn get_horizontal_flip(&self) -> &bool {
-        &self.horizontal_flip.get_value()
+        self.horizontal_flip.get_value()
     }
 
     pub fn set_horizontal_flip(&mut self, value: bool) {
@@ -126,13 +126,13 @@ impl Transform {
         // xdr:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.rotation.has_value() == &true {
-            attributes.push(("rot", &self.rotation.get_value_string()));
+            attributes.push(("rot", self.rotation.get_value_string()));
         }
         if &self.horizontal_flip.has_value() == &true {
-            attributes.push(("flipH", &self.horizontal_flip.get_value_string()));
+            attributes.push(("flipH", self.horizontal_flip.get_value_string()));
         }
         if &self.vertical_flip.has_value() == &true {
-            attributes.push(("flipV", &self.vertical_flip.get_value_string()));
+            attributes.push(("flipV", self.vertical_flip.get_value_string()));
         }
         write_start_tag(writer, "xdr:xfrm", attributes, false);
 

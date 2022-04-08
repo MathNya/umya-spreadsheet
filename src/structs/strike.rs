@@ -13,7 +13,7 @@ pub struct Strike {
 }
 impl Strike {
     pub fn get_val(&self) -> &bool {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut Self {
@@ -37,10 +37,10 @@ impl Strike {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // strike
-        if self.val.has_value() == true {
+        if self.val.has_value() {
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             if self.val.get_value() == &false {
-                attributes.push(("val", &self.val.get_value_string()));
+                attributes.push(("val", self.val.get_value_string()));
             }
             write_start_tag(writer, "strike", attributes, true);
         }

@@ -348,7 +348,7 @@ impl Spreadsheet {
     /// Get Work Sheet List.
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
         for worksheet in &self.work_sheet_collection {
-            if worksheet.is_serialized() == false {
+            if !worksheet.is_serialized() {
                 panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
             }
         }
@@ -377,7 +377,7 @@ impl Spreadsheet {
     /// serialize by all worksheet.
     pub fn read_sheet_collection(&mut self) -> &mut Self {
         let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
+        let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
             raw_to_serialize_by_worksheet(
@@ -393,7 +393,7 @@ impl Spreadsheet {
     /// serialize a worksheet.
     pub fn read_sheet(&mut self, index: usize) -> &mut Self {
         let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
+        let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
         raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
@@ -408,12 +408,12 @@ impl Spreadsheet {
     pub fn get_sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
         match self.work_sheet_collection.get(index) {
             Some(v) => {
-                if v.is_serialized() == false {
+                if !v.is_serialized() {
                     panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
                 }
-                return Ok(v);
+                Ok(v)
             }
-            None => return Err("Not found."),
+            None => Err("Not found."),
         }
     }
 
@@ -424,7 +424,7 @@ impl Spreadsheet {
     /// * `&mut Worksheet` - Work sheet.
     pub fn get_sheet_mut(&mut self, index: usize) -> &mut Worksheet {
         let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
+        let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
         raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
@@ -443,7 +443,7 @@ impl Spreadsheet {
         let v = sheet_name.into();
         for sheet in &self.work_sheet_collection {
             if sheet.get_title() == &v {
-                if sheet.is_serialized() == false {
+                if !sheet.is_serialized() {
                     panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
                 }
                 return Ok(sheet);
@@ -483,15 +483,15 @@ impl Spreadsheet {
     /// # Return value
     /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
     pub fn get_active_sheet(&self) -> Result<&Worksheet, &'static str> {
-        let index = self.get_workbook_view().get_active_tab().clone();
+        let index = *self.get_workbook_view().get_active_tab();
         match self.work_sheet_collection.get(index as usize) {
             Some(v) => {
-                if v.is_serialized() == false {
+                if !v.is_serialized() {
                     panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
                 }
-                return Ok(v);
+                Ok(v)
             }
-            None => return Err("Not found."),
+            None => Err("Not found."),
         }
     }
 
@@ -500,9 +500,9 @@ impl Spreadsheet {
     /// * `&mut Worksheet` - Work sheet.
     pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
         let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
+        let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
-        let index = self.get_workbook_view().get_active_tab().clone();
+        let index = *self.get_workbook_view().get_active_tab();
         let worksheet = self.work_sheet_collection.get_mut(index as usize).unwrap();
         raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
         worksheet
@@ -581,7 +581,7 @@ impl Spreadsheet {
                 sheet.set_title(v);
                 Ok(())
             }
-            None => return Err("sheet not found."),
+            None => Err("sheet not found."),
         }
     }
 

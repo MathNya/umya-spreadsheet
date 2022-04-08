@@ -26,7 +26,7 @@ impl ParagraphProperties {
     }
 
     pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
-        &self.alignment.get_value()
+        self.alignment.get_value()
     }
 
     pub fn set_alignment(&mut self, value: TextAlignmentTypeValues) -> &mut ParagraphProperties {
@@ -115,7 +115,7 @@ impl ParagraphProperties {
             }
             None => {}
         }
-        if self.alignment.has_value() == true {
+        if self.alignment.has_value() {
             attributes.push(("algn", self.alignment.get_value_string()));
         }
         write_start_tag(writer, "a:pPr", attributes, *empty_flag);

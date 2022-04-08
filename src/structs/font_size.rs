@@ -13,7 +13,7 @@ pub struct FontSize {
 }
 impl FontSize {
     pub fn get_val(&self) -> &f64 {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: f64) -> &mut Self {
@@ -35,7 +35,7 @@ impl FontSize {
             write_start_tag(
                 writer,
                 "sz",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", self.val.get_value_string())],
                 true,
             );
         }

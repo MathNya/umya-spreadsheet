@@ -195,7 +195,7 @@ impl Borders {
     }
 
     pub fn get_diagonal_down(&self) -> &bool {
-        &self.diagonal_down.get_value()
+        self.diagonal_down.get_value()
     }
 
     pub fn set_diagonal_down(&mut self, value: bool) {
@@ -203,7 +203,7 @@ impl Borders {
     }
 
     pub fn get_diagonal_up(&self) -> &bool {
-        &self.diagonal_up.get_value()
+        self.diagonal_up.get_value()
     }
 
     pub fn set_diagonal_up(&mut self, value: bool) {
@@ -211,8 +211,8 @@ impl Borders {
     }
 
     pub(crate) fn get_defalut_value() -> Self {
-        let def = Self::default();
-        def
+        
+        Self::default()
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
@@ -294,10 +294,10 @@ impl Borders {
         // border
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.diagonal_up.has_value() {
-            attributes.push(("diagonalUp", &self.diagonal_up.get_value_string()));
+            attributes.push(("diagonalUp", self.diagonal_up.get_value_string()));
         }
         if self.diagonal_down.has_value() {
-            attributes.push(("diagonalDown", &self.diagonal_down.get_value_string()));
+            attributes.push(("diagonalDown", self.diagonal_down.get_value_string()));
         }
         write_start_tag(writer, "border", attributes, false);
 

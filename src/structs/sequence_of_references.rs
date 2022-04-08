@@ -23,8 +23,8 @@ impl SequenceOfReferences {
     }
 
     pub fn set_sqref<S: Into<String>>(&mut self, value: S) {
-        let org_value = value.into().clone();
-        let range_collection: Vec<&str> = org_value.split(" ").collect();
+        let org_value = value.into();
+        let range_collection: Vec<&str> = org_value.split(' ').collect();
         for range_value in range_collection {
             let mut range = Range::default();
             range.set_range(range_value);
@@ -35,7 +35,7 @@ impl SequenceOfReferences {
     pub fn get_sqref(&self) -> String {
         let mut result = String::from("");
         for range in &self.range_collection {
-            if result != "" {
+            if !result.is_empty() {
                 result = format!("{} ", result);
             }
             result = format!("{}{}", result, range.get_range());

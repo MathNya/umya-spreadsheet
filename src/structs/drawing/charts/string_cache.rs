@@ -50,7 +50,7 @@ impl StringCache {
         );
 
         let mut idx = 0;
-        for cell_value in cell_value_list {
+        for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
             write_start_tag(
                 writer,

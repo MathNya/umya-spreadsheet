@@ -141,7 +141,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Write comments relationship
-    if worksheet.get_comments().len() > 0 {
+    if !worksheet.get_comments().is_empty() {
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
@@ -173,7 +173,7 @@ fn write_relationship(
     attributes.push(("Id", r_id.as_str()));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));
-    if p_target_mode != "" {
+    if !p_target_mode.is_empty() {
         attributes.push(("TargetMode", p_target_mode));
     }
     write_start_tag(writer, tag_name, attributes, true);

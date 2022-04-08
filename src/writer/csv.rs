@@ -59,9 +59,9 @@ pub fn write_writer<W: io::Seek + io::Write>(
     let max_row = &highest["row"];
 
     let mut data = String::from("");
-    for row in 0u32..max_row.clone() {
+    for row in 0u32..*max_row {
         let mut row_vec: Vec<String> = Vec::new();
-        for column in 0u32..max_column.clone() {
+        for column in 0u32..*max_column {
             // get value.
             let mut value = match worksheet.get_cell_by_column_and_row(column + 1, row + 1) {
                 Some(cell) => cell.get_cell_value().get_value(),

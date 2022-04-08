@@ -82,7 +82,7 @@ impl ToMarker {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
+                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(reader).unwrap(),
                 Ok(Event::End(ref e)) => match e.name() {
                     b"xdr:col" => {
                         self.col = string_value.parse::<usize>().unwrap();

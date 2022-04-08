@@ -5,7 +5,7 @@ use std::{io, result};
 use structs::SharedStringTable;
 use structs::Spreadsheet;
 
-const FILE_PATH: &'static str = "xl/sharedStrings.xml";
+const FILE_PATH: &str = "xl/sharedStrings.xml";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

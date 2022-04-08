@@ -10,7 +10,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<String, XlsxError> {
-    if worksheet.get_comments().len() == 0 {
+    if worksheet.get_comments().is_empty() {
         return Ok(String::from(""));
     }
 
@@ -79,7 +79,7 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
                 break;
             }
         }
-        if is_match == false {
+        if !is_match {
             authors.push(comment.get_author().to_string());
         }
     }
@@ -88,7 +88,7 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
 
 fn get_author_id(authors: &Vec<String>, author: &str) -> String {
     let mut i = 0;
-    for value in authors {
+    for (i, value) in authors.into_iter().enumerate() {
         if author == value {
             return i.to_string();
         }

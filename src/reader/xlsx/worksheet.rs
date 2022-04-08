@@ -1,5 +1,5 @@
-use std::sync::Arc;
-use std::sync::RwLock;
+
+
 
 use super::driver::*;
 use super::XlsxError;
@@ -67,15 +67,15 @@ pub(crate) fn read(
                         &mut reader,
                         e,
                         worksheet,
-                        &shared_string_table,
-                        &stylesheet,
+                        shared_string_table,
+                        stylesheet,
                         false,
                     );
                     worksheet.set_row_dimension(obj);
                 }
                 b"cols" => {
                     let mut obj = Columns::default();
-                    obj.set_attributes(&mut reader, e, &stylesheet);
+                    obj.set_attributes(&mut reader, e, stylesheet);
                     worksheet.set_column_dimensions_crate(obj);
                 }
                 b"mergeCells" => {
@@ -90,7 +90,7 @@ pub(crate) fn read(
                         .get_sequence_of_references_mut()
                         .set_sqref(sqref);
                     let conditional_styles_collection =
-                        get_conditional_formatting(&mut reader, &stylesheet, &theme);
+                        get_conditional_formatting(&mut reader, stylesheet, theme);
                     conditional_set.set_conditional_collection(conditional_styles_collection);
                     worksheet.add_conditional_styles_collection(conditional_set);
                 }
@@ -134,7 +134,7 @@ pub(crate) fn read(
                 }
                 b"tabColor" => {
                     worksheet.get_tab_color_mut().set_attributes(&mut reader, e);
-                    worksheet.get_tab_color_mut().set_argb_by_theme(&theme);
+                    worksheet.get_tab_color_mut().set_argb_by_theme(theme);
                 }
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {
@@ -153,8 +153,8 @@ pub(crate) fn read(
                         &mut reader,
                         e,
                         worksheet,
-                        &shared_string_table,
-                        &stylesheet,
+                        shared_string_table,
+                        stylesheet,
                         true,
                     );
                     worksheet.set_row_dimension(obj);

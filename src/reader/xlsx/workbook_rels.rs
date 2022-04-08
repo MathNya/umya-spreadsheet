@@ -5,7 +5,7 @@ use quick_xml::Reader;
 use std::{io, result};
 use structs::Spreadsheet;
 
-const FILE_PATH: &'static str = "xl/_rels/workbook.xml.rels";
+const FILE_PATH: &str = "xl/_rels/workbook.xml.rels";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,

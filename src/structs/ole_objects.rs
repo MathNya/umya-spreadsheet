@@ -60,13 +60,13 @@ impl OleObjects {
         r_id: &usize,
         ole_id: &usize,
     ) {
-        if self.ole_object.len() > 0 {
+        if !self.ole_object.is_empty() {
             // oleObjects
             write_start_tag(writer, "oleObjects", vec![], false);
 
             // mc:AlternateContent
-            let mut r = r_id.clone();
-            let mut o = ole_id.clone();
+            let mut r = *r_id;
+            let mut o = *ole_id;
             for obj in &self.ole_object {
                 obj.write_to(writer, &r, &o);
                 r += 2;

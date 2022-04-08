@@ -25,7 +25,7 @@ impl TrueFalseValue {
     }
 
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value(if value.into() == "f" { false } else { true })
+        self.set_value(value.into() != "f")
     }
 
     pub(crate) fn has_value(&self) -> bool {

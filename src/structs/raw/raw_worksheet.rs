@@ -87,7 +87,7 @@ impl RawWorksheet {
         target: &str,
     ) {
         let mut obj = RawRelationships::default();
-        if obj.set_attributes(arv, &base_path, &target) {
+        if obj.set_attributes(arv, base_path, target) {
             for relationship in obj.get_relationship_list() {
                 let rels_base_path = relationship.get_raw_file().get_path();
                 let rels_target = relationship.get_raw_file().make_rel_name();

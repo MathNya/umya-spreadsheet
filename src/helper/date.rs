@@ -1,7 +1,7 @@
 use chrono::{Duration, NaiveDateTime};
 
-pub const CALENDAR_WINDOWS_1900: &'static str = "1900";
-pub const CALENDAR_MAC_1904: &'static str = "1904";
+pub const CALENDAR_WINDOWS_1900: &str = "1900";
+pub const CALENDAR_MAC_1904: &str = "1904";
 
 pub fn excel_to_date_time_object(
     excel_timestamp: &f64,
@@ -42,10 +42,10 @@ pub fn excel_to_date_time_object(
     let part_day = part_day * 60f64 - minutes;
     let seconds = (part_day * 60f64).round();
 
-    base_date = base_date + Duration::days(days as i64);
-    base_date = base_date + Duration::hours(hours as i64);
-    base_date = base_date + Duration::minutes(minutes as i64);
-    base_date = base_date + Duration::seconds(seconds as i64);
+    base_date += Duration::days(days as i64);
+    base_date += Duration::hours(hours as i64);
+    base_date += Duration::minutes(minutes as i64);
+    base_date += Duration::seconds(seconds as i64);
 
     base_date
 }

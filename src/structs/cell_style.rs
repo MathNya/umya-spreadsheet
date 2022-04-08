@@ -16,7 +16,7 @@ pub struct CellStyle {
 }
 impl CellStyle {
     pub fn get_name(&self) -> &str {
-        &self.name.get_value()
+        self.name.get_value()
     }
 
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -25,7 +25,7 @@ impl CellStyle {
     }
 
     pub fn get_builtin_id(&self) -> &u32 {
-        &self.builtin_id.get_value()
+        self.builtin_id.get_value()
     }
 
     pub fn set_builtin_id(&mut self, value: u32) -> &mut Self {
@@ -34,7 +34,7 @@ impl CellStyle {
     }
 
     pub fn get_format_id(&self) -> &u32 {
-        &self.format_id.get_value()
+        self.format_id.get_value()
     }
 
     pub fn set_format_id(&mut self, value: u32) -> &mut Self {
@@ -70,9 +70,9 @@ impl CellStyle {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cellStyle
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", &self.name.get_value_string()));
-        attributes.push(("xfId", &self.builtin_id.get_value_string()));
-        attributes.push(("builtinId", &self.format_id.get_value_string()));
+        attributes.push(("name", self.name.get_value_string()));
+        attributes.push(("xfId", self.builtin_id.get_value_string()));
+        attributes.push(("builtinId", self.format_id.get_value_string()));
         write_start_tag(writer, "cellStyle", attributes, true);
     }
 }

@@ -13,7 +13,7 @@ pub struct SoftEdge {
 }
 impl SoftEdge {
     pub fn get_radius(&self) -> &i64 {
-        &self.radius.get_value()
+        self.radius.get_value()
     }
 
     pub fn set_radius(&mut self, value: i64) -> &mut SoftEdge {
@@ -35,7 +35,7 @@ impl SoftEdge {
         write_start_tag(
             writer,
             "a:softEdge",
-            vec![("rad", &self.radius.get_value_string())],
+            vec![("rad", self.radius.get_value_string())],
             true,
         );
     }

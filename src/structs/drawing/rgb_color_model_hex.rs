@@ -23,7 +23,7 @@ pub struct RgbColorModelHex {
 }
 impl RgbColorModelHex {
     pub fn get_val(&self) -> &str {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut RgbColorModelHex {
@@ -32,7 +32,7 @@ impl RgbColorModelHex {
     }
 
     pub fn get_red(&self) -> &i32 {
-        &self.red.get_value()
+        self.red.get_value()
     }
 
     pub fn set_red(&mut self, value: i32) -> &mut RgbColorModelHex {
@@ -41,7 +41,7 @@ impl RgbColorModelHex {
     }
 
     pub fn get_green(&self) -> &i32 {
-        &self.green.get_value()
+        self.green.get_value()
     }
 
     pub fn set_green(&mut self, value: i32) -> &mut RgbColorModelHex {
@@ -50,7 +50,7 @@ impl RgbColorModelHex {
     }
 
     pub fn get_blue(&self) -> &i32 {
-        &self.blue.get_value()
+        self.blue.get_value()
     }
 
     pub fn set_blue(&mut self, value: i32) -> &mut RgbColorModelHex {
@@ -128,7 +128,7 @@ impl RgbColorModelHex {
                 Err(_) => {}
             }
         }
-        if empty_flag == true {
+        if empty_flag {
             return;
         }
 
@@ -172,20 +172,20 @@ impl RgbColorModelHex {
         // a:srgbClr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.red.has_value() == &true {
-            attributes.push(("r", &self.red.get_value_string()));
+            attributes.push(("r", self.red.get_value_string()));
         }
         if &self.green.has_value() == &true {
-            attributes.push(("g", &self.green.get_value_string()));
+            attributes.push(("g", self.green.get_value_string()));
         }
         if &self.blue.has_value() == &true {
-            attributes.push(("b", &self.blue.get_value_string()));
+            attributes.push(("b", self.blue.get_value_string()));
         }
         if &self.val.has_value() == &true {
-            attributes.push(("val", &self.val.get_value_string()));
+            attributes.push(("val", self.val.get_value_string()));
         }
         write_start_tag(writer, "a:srgbClr", attributes, empty_flag);
 
-        if empty_flag == false {
+        if !empty_flag {
             // a:tint
             match &self.tint {
                 Some(v) => {

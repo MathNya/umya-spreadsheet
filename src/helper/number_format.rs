@@ -5,7 +5,7 @@ use structs::Color;
 use structs::NumberingFormat;
 use thousands::Separable;
 
-const DATE_FORMAT_REPLACEMENTS: &'static [(&'static str, &'static str)] = &[
+const DATE_FORMAT_REPLACEMENTS: &'static [(&str, &str)] = &[
     // first remove escapes related to non-format characters
     ("\\", ""),
     // 12-hour suffix
@@ -50,10 +50,10 @@ const DATE_FORMAT_REPLACEMENTS: &'static [(&'static str, &'static str)] = &[
     (".s", ""),
 ];
 
-const DATE_FORMAT_REPLACEMENTS_24: &'static [(&'static str, &'static str)] =
+const DATE_FORMAT_REPLACEMENTS_24: &'static [(&str, &str)] =
     &[("hh", "%H"), ("h", "%-H")];
 
-const DATE_FORMAT_REPLACEMENTS_12: &'static [(&'static str, &'static str)] =
+const DATE_FORMAT_REPLACEMENTS_12: &'static [(&str, &str)] =
     &[("hh", "%I"), ("h", "%-I")];
 
 pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
@@ -61,7 +61,7 @@ pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
     let mut format = format.into();
 
     // is empty
-    if &value == "" {
+    if &value.is_empty() {
         return value;
     }
 
@@ -76,7 +76,7 @@ pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
         return value.parse::<f64>().unwrap().to_string();
     }
     if &format == NumberingFormat::FORMAT_TEXT {
-        return value.into();
+        return value;
     }
 
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")
@@ -106,7 +106,7 @@ pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
         // datetime format
         value = format_as_date(&value.parse::<f64>().unwrap(), &format);
     } else {
-        if &format.starts_with(r#"""#) == &true && &format.ends_with(r#"""#) == &true {
+        if &format.starts_with('"') == &true && &format.ends_with('"') == &true {
             let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
             value = conv_format.to_string();
         } else if re2.find(&format).is_some() {
@@ -122,7 +122,7 @@ pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
 fn format_as_percentage(value: &f64, format: &str) -> String {
     let mut value = value.to_string();
     let mut format = format.to_string();
-    format = format.replace("%", "");
+    format = format.replace('%', "");
     let blocks: Vec<&str> = format.split('.').collect();
     let len = match blocks.get(1) {
         Some(v) => v.len(),
@@ -151,7 +151,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     let color_regex: String = format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
     let cond_regex = r#"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]"#;
     let color_re = Regex::new(&color_regex).unwrap();
-    let cond_re = Regex::new(&cond_regex).unwrap();
+    let cond_re = Regex::new(cond_regex).unwrap();
 
     let mut colors = [
         String::from(""),
@@ -175,7 +175,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         String::from("0"),
     ];
     let mut idx = 0;
-    for section in sections {
+    for (idx, section) in sections.into_iter().enumerate() {
         let mut converted_section = section.to_string();
         if color_re.find(section).is_some() {
             let mut item: Vec<String> = Vec::new();
@@ -185,7 +185,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             let _ = std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "").to_string();
         }
-        if cond_regex.find(section).is_some() {
+        if cond_regex.contains(section) {
             let mut item: Vec<String> = Vec::new();
             for ite in cond_re.captures(section).unwrap().iter() {
                 item.push(ite.unwrap().to_string());
@@ -200,12 +200,12 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
 
     let mut color = colors[0].clone();
     let mut format: &str = &converted_sections[0];
-    let mut absval = value.clone();
+    let mut absval = *value;
     match cnt {
         2 => {
             absval = absval.abs();
             let condval_one = &condvals[0].parse::<f64>().unwrap();
-            if !split_format_compare(&value, &condops[0], condval_one, ">=", &0f64) {
+            if !split_format_compare(value, &condops[0], condval_one, ">=", &0f64) {
                 color = colors[1].clone();
                 format = &converted_sections[1];
             }
@@ -214,8 +214,8 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             absval = absval.abs();
             let condval_one = &condvals[0].parse::<f64>().unwrap();
             let condval_two = &condvals[1].parse::<f64>().unwrap();
-            if !split_format_compare(&value, &condops[0], condval_one, ">", &0f64) {
-                if split_format_compare(&value, &condops[1], condval_two, "<", &0f64) {
+            if !split_format_compare(value, &condops[0], condval_one, ">", &0f64) {
+                if split_format_compare(value, &condops[1], condval_two, "<", &0f64) {
                     color = colors[1].clone();
                     format = &converted_sections[1];
                 } else {
@@ -226,13 +226,13 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         }
         _ => {}
     }
-    (color.into(), format.into(), absval.to_string())
+    (color, format.into(), absval.to_string())
 }
 
 fn split_format_compare(value: &f64, cond: &str, val: &f64, dfcond: &str, dfval: &f64) -> bool {
     let mut check_cond = cond;
     let mut check_val = val;
-    if cond == "" {
+    if cond.is_empty() {
         check_cond = dfcond;
         check_val = dfval;
     }
@@ -262,7 +262,7 @@ fn format_as_date(value: &f64, format: &str) -> String {
     //    but we don't want to change any quoted strings
     let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
     format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string: String = (&caps.at(0).unwrap()).parse().unwrap();
+        let caps_string: String = caps.at(0).unwrap().parse().unwrap();
         caps_string.to_lowercase()
     });
 
@@ -302,7 +302,7 @@ fn format_as_date(value: &f64, format: &str) -> String {
     // escape any quoted characters so that DateTime format() will render them correctly
     let re = Regex::new(r#""(.*)""#).unwrap();
     format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string: String = (&caps.at(0).unwrap()).parse().unwrap();
+        let caps_string: String = caps.at(0).unwrap().parse().unwrap();
         caps_string.to_lowercase()
     });
 
@@ -321,7 +321,7 @@ fn format_as_number(value: &f64, format: &str) -> String {
     //}
 
     // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
-    let mut format = format.replace('"', "").replace("*", "");
+    let mut format = format.replace('"', "").replace('*', "");
 
     // Find out if we need thousands separator
     // This is indicated by a comma enclosed by a digit placeholder:
@@ -426,14 +426,14 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
     let adjusted_decimal_divisor = &decimal_divisor / &gcd;
 
     let mut result = String::from("");
-    match format.find("0") {
+    match format.find('0') {
         Some(_) => {
             result = format!(
                 "{}{} {}/{}",
                 &sign, &integer_part, &adjusted_decimal_part, &adjusted_decimal_divisor
             );
         }
-        None => match format.find("#") {
+        None => match format.find('#') {
             Some(_) => {
                 if integer_part == 0f64 {
                     result = format!(
@@ -459,8 +459,7 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
                         &sign, &integer_part_str, &adjusted_decimal_part, &adjusted_decimal_divisor
                     );
                 } else {
-                    adjusted_decimal_part =
-                        adjusted_decimal_part + (&integer_part * &adjusted_decimal_divisor);
+                    adjusted_decimal_part += (&integer_part * &adjusted_decimal_divisor);
                     result = format!(
                         "{}{}/{}",
                         &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
@@ -493,7 +492,7 @@ fn format_straight_numeric_value(
         Some(v) => v.to_string(),
         None => String::from("0"),
     };
-    if right.len() == 0 {
+    if right.is_empty() {
         return left_value;
     }
     if right.len() != right_value.len() {
@@ -576,17 +575,17 @@ fn _process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     for i in 0..masking_str.len() {
         masking_blocks.push((
             masking_str.get(i).unwrap().clone(),
-            masking_beg.get(i).unwrap().clone(),
+            *masking_beg.get(i).unwrap(),
         ));
     }
 
     if masking_blocks.len() > 1 {
-        let mut number = number.clone();
+        let mut number = *number;
         let mut offset: usize = 0;
         for (block, pos) in masking_blocks.iter().rev() {
             let divisor = format!("{}{}", 1, block).parse::<f64>().unwrap();
             let size = block.len();
-            offset = pos.clone();
+            offset = *pos;
 
             let block_value = format!("{:0width$}", (&number % &divisor), width = size);
 
@@ -607,7 +606,7 @@ fn _complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) 
     let sign = number < &0.0;
     let number = number.abs();
 
-    if split_on_point == &true && mask.find(".").is_some() && number.to_string().find(".").is_some()
+    if split_on_point == &true && mask.find('.').is_some() && number.to_string().find('.').is_some()
     {
         let number_str = number.to_string();
         let numbers_as: Vec<&str> = number_str.split('.').collect();
@@ -648,7 +647,7 @@ fn _complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) 
 
 fn gcd(a: &f64, b: &f64) -> f64 {
     if b == &0f64 {
-        a.clone()
+        *a
     } else {
         gcd(b, &(a % b))
     }

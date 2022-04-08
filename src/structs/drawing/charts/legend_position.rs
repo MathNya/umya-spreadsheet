@@ -14,7 +14,7 @@ pub struct LegendPosition {
 }
 impl LegendPosition {
     pub fn get_val(&self) -> &LegendPositionValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: LegendPositionValues) -> &mut LegendPosition {
@@ -35,7 +35,7 @@ impl LegendPosition {
         write_start_tag(
             writer,
             "c:legendPos",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

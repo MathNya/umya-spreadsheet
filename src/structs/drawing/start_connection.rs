@@ -14,7 +14,7 @@ pub struct StartConnection {
 }
 impl StartConnection {
     pub fn get_id(&self) -> &u32 {
-        &self.id.get_value()
+        self.id.get_value()
     }
 
     pub fn set_id(&mut self, value: u32) {
@@ -22,7 +22,7 @@ impl StartConnection {
     }
 
     pub fn get_index(&self) -> &u32 {
-        &self.index.get_value()
+        self.index.get_value()
     }
 
     pub fn set_index(&mut self, value: u32) {
@@ -44,8 +44,8 @@ impl StartConnection {
             writer,
             "a:stCxn",
             vec![
-                ("id", &self.id.get_value_string()),
-                ("idx", &self.index.get_value_string()),
+                ("id", self.id.get_value_string()),
+                ("idx", self.index.get_value_string()),
             ],
             true,
         );

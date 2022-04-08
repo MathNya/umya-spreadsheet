@@ -71,7 +71,7 @@ impl Anchor {
     }
 
     pub fn set_bottom_offset(&mut self, value: u32) {
-        self.bottom_offset = value.into();
+        self.bottom_offset = value;
     }
 
     pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &u32) {

@@ -20,7 +20,7 @@ pub struct BlipFill {
 }
 impl BlipFill {
     pub fn get_rotate_with_shape(&self) -> &bool {
-        &self.rotate_with_shape.get_value()
+        self.rotate_with_shape.get_value()
     }
 
     pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut BlipFill {

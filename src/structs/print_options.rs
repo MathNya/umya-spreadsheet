@@ -13,7 +13,7 @@ pub struct PrintOptions {
 }
 impl PrintOptions {
     pub fn get_horizontal_centered(&self) -> &bool {
-        &self.horizontal_centered.get_value()
+        self.horizontal_centered.get_value()
     }
 
     pub fn set_horizontal_centered(&mut self, value: bool) -> &mut Self {
@@ -22,7 +22,7 @@ impl PrintOptions {
     }
 
     pub fn get_vertical_centered(&self) -> &bool {
-        &self.vertical_centered.get_value()
+        self.vertical_centered.get_value()
     }
 
     pub fn set_vertical_centered(&mut self, value: bool) -> &mut Self {

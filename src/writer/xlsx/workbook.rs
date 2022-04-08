@@ -168,7 +168,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // pivotCaches
     let pivot_cache_definition_collection = spreadsheet.get_pivot_caches();
-    if pivot_cache_definition_collection.len() > 0 {
+    if !pivot_cache_definition_collection.is_empty() {
         write_start_tag(&mut writer, "pivotCaches", vec![], false);
         for (_, val2, _) in pivot_cache_definition_collection {
             let r_id = format!("rId{}", index);

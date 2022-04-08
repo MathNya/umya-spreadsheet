@@ -25,7 +25,7 @@ impl Legend {
     }
 
     pub fn set_legend_position(&mut self, value: LegendPosition) -> &mut Legend {
-        self.legend_position = value.into();
+        self.legend_position = value;
         self
     }
 

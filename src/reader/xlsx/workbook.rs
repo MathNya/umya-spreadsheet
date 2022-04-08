@@ -9,7 +9,7 @@ use structs::Spreadsheet;
 use structs::WorkbookView;
 use structs::Worksheet;
 
-const FILE_PATH: &'static str = "xl/workbook.xml";
+const FILE_PATH: &str = "xl/workbook.xml";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,

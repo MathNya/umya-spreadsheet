@@ -30,14 +30,14 @@ impl SharedStringTable {
     }
 
     pub(crate) fn has_value(&self) -> bool {
-        self.shared_string_item.len() > 0
+        !self.shared_string_item.is_empty()
     }
 
     pub(crate) fn ensure_map(&mut self) -> bool {
         // let l1 = self.shared_string_item.len();
         // let l2 = self.map.len();
         // println!("{}:::{}",l1,l2);
-        if self.shared_string_item.len() > 0 && self.map.len() == 0 {
+        if !self.shared_string_item.is_empty() && self.map.is_empty() {
             let mut h: HashMap<String, usize> =
                 HashMap::with_capacity(self.shared_string_item.len());
             for i in 0..self.shared_string_item.len() {
@@ -73,12 +73,12 @@ impl SharedStringTable {
 
         let id = self.map.get(&hash_code);
         match id {
-            Some(n) => return n.to_owned(),
+            Some(n) => n.to_owned(),
             None => {
                 let n = self.shared_string_item.len();
                 self.set_shared_string_item(shared_string_item);
                 self.map.insert(hash_code, n);
-                return n;
+                n
             }
         }
     }

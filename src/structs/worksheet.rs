@@ -522,7 +522,7 @@ impl Worksheet {
 
     /// Has Comments.
     pub fn has_comments(&self) -> bool {
-        self.comments.len() > 0
+        !self.comments.is_empty()
     }
 
     // ************************
@@ -580,7 +580,7 @@ impl Worksheet {
     // ************************
     // Get Merge Cells
     pub fn get_merge_cells(&self) -> &Vec<Range> {
-        &self.merge_cells.get_range_collection()
+        self.merge_cells.get_range_collection()
     }
 
     // Get Merge Cells in mutable.
@@ -652,7 +652,7 @@ impl Worksheet {
     // ************************
     /// Get Column Dimension List.
     pub fn get_column_dimensions(&self) -> &Vec<Column> {
-        &self.column_dimensions.get_column_collection()
+        self.column_dimensions.get_column_collection()
     }
 
     /// Get Column Dimension List in mutable.
@@ -1005,7 +1005,7 @@ impl Worksheet {
                     });
             }
             self.conditional_styles_collection
-                .retain(|x| !(x.get_sequence_of_references().get_range_collection().len() == 0));
+                .retain(|x| !x.get_sequence_of_references().get_range_collection().is_empty());
             for conditional_styles in &mut self.conditional_styles_collection {
                 for range in conditional_styles
                     .get_sequence_of_references_mut()
@@ -1208,7 +1208,7 @@ impl Worksheet {
 
     /// Get Title.
     pub fn get_title(&self) -> &str {
-        return &self.title;
+        &self.title
     }
 
     /// Set Title.
@@ -1560,7 +1560,7 @@ impl Worksheet {
     /// (This method is crate only.)
     /// Has Defined Names.
     pub(crate) fn has_defined_names(&self) -> bool {
-        if self.get_defined_names().len() > 0 {
+        if !self.get_defined_names().is_empty() {
             return true;
         }
         false
@@ -1593,7 +1593,7 @@ impl Worksheet {
     /// (This method is crate only.)
     /// Has Ole Objects.
     pub(crate) fn has_ole_objects(&self) -> bool {
-        self.ole_objects.get_ole_object().len() > 0
+        !self.ole_objects.get_ole_object().is_empty()
     }
 
     /// (This method is crate only.)

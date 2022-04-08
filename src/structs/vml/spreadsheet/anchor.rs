@@ -77,7 +77,7 @@ impl Anchor {
     }
 
     pub fn set_bottom_offset(&mut self, value: u32) {
-        self.bottom_offset = value.into();
+        self.bottom_offset = value;
     }
 
     pub(crate) fn adjustment_insert_row(&mut self, num_rows: &u32) {
@@ -125,7 +125,7 @@ impl Anchor {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    let text = e.unescape_and_decode(&reader).unwrap();
+                    let text = e.unescape_and_decode(reader).unwrap();
                     let split_str: Vec<&str> = text.split(", ").collect();
                     self.set_left_column(
                         split_str

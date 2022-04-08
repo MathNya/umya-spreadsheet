@@ -25,7 +25,7 @@ impl RowBreaks {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if self.break_list.len() > 0 {
+        if !self.break_list.is_empty() {
             return true;
         }
         false

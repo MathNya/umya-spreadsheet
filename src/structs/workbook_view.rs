@@ -12,7 +12,7 @@ pub struct WorkbookView {
 }
 impl WorkbookView {
     pub fn get_active_tab(&self) -> &u32 {
-        &self.active_tab.get_value()
+        self.active_tab.get_value()
     }
 
     pub fn set_active_tab(&mut self, value: u32) -> &mut Self {
@@ -41,7 +41,7 @@ impl WorkbookView {
         attributes.push(("windowWidth", "14805"));
         attributes.push(("windowHeight", "8010"));
         if self.active_tab.has_value() {
-            attributes.push(("activeTab", &self.active_tab.get_value_string()));
+            attributes.push(("activeTab", self.active_tab.get_value_string()));
         }
 
         // workbookView

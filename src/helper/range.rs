@@ -2,9 +2,9 @@ use helper::coordinate::*;
 
 pub fn get_coordinate_list<S: Into<String>>(range_str: S) -> Vec<(u32, u32)> {
     let value = range_str.into();
-    let coordinate_collection: Vec<&str> = value.split(":").collect();
+    let coordinate_collection: Vec<&str> = value.split(':').collect();
 
-    if coordinate_collection.len() == 0 || coordinate_collection.len() > 2 {
+    if coordinate_collection.is_empty() || coordinate_collection.len() > 2 {
         panic!("Non-standard range.");
     }
 
@@ -46,7 +46,7 @@ pub fn get_coordinate_list<S: Into<String>>(range_str: S) -> Vec<(u32, u32)> {
                 col_end = v;
             }
             None => {
-                if is_col_select == false {
+                if !is_col_select {
                     panic!("Non-standard range.");
                 }
             }
@@ -56,7 +56,7 @@ pub fn get_coordinate_list<S: Into<String>>(range_str: S) -> Vec<(u32, u32)> {
                 row_end = v;
             }
             None => {
-                if is_row_select == false {
+                if !is_row_select {
                     panic!("Non-standard range.");
                 }
             }

@@ -17,7 +17,7 @@ pub struct Selection {
 }
 impl Selection {
     pub fn get_pane(&self) -> &PaneValues {
-        &self.pane.get_value()
+        self.pane.get_value()
     }
 
     pub fn set_pane(&mut self, value: PaneValues) -> &mut Self {

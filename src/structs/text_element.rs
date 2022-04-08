@@ -15,7 +15,7 @@ pub struct TextElement {
 }
 impl TextElement {
     pub fn get_text(&self) -> &str {
-        &self.text.get_value()
+        self.text.get_value()
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -46,7 +46,7 @@ impl TextElement {
     }
 
     pub fn get_font(&self) -> &Option<Font> {
-        &self.get_run_properties()
+        self.get_run_properties()
     }
 
     pub fn get_font_mut(&mut self) -> &mut Font {

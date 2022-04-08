@@ -9,7 +9,7 @@ pub struct CsvWriterOption {
 }
 impl CsvWriterOption {
     pub fn get_csv_encode_value(&self) -> &CsvEncodeValues {
-        &self.csv_encode_values.get_value()
+        self.csv_encode_values.get_value()
     }
 
     pub fn set_csv_encode_value(&mut self, value: CsvEncodeValues) -> &mut Self {

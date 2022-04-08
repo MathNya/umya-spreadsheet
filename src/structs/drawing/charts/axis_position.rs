@@ -14,7 +14,7 @@ pub struct AxisPosition {
 }
 impl AxisPosition {
     pub fn get_val(&self) -> &AxisPositionValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: AxisPositionValues) -> &mut AxisPosition {
@@ -35,7 +35,7 @@ impl AxisPosition {
         write_start_tag(
             writer,
             "c:axPos",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

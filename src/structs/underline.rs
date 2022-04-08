@@ -16,7 +16,7 @@ pub struct Underline {
 impl Underline {
     pub fn get_val(&self) -> &UnderlineValues {
         if self.val.has_value() {
-            return &self.val.get_value();
+            return self.val.get_value();
         }
         &UnderlineValues::None
     }
@@ -42,10 +42,10 @@ impl Underline {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // u
-        if self.val.has_value() == true {
+        if self.val.has_value() {
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             if &self.val.get_value_string() != &UnderlineValues::Single.get_value_string() {
-                attributes.push(("val", &self.val.get_value_string()));
+                attributes.push(("val", self.val.get_value_string()));
             }
             write_start_tag(writer, "u", attributes, true);
         }

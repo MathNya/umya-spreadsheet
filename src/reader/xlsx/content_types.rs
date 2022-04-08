@@ -5,7 +5,7 @@ use quick_xml::Reader;
 use std::{io, result};
 use structs::Spreadsheet;
 
-const FILE_PATH: &'static str = "[Content_Types].xml";
+const FILE_PATH: &str = "[Content_Types].xml";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

@@ -31,12 +31,12 @@ impl RawFile {
         let file_name = self.get_file_name();
         let v: Vec<&str> = file_name.split('.').collect();
         let extension = v.last().unwrap().clone();
-        let extension_lower = extension.to_lowercase();
-        extension_lower
+        
+        extension.to_lowercase()
     }
 
     pub(crate) fn get_file_target(&self) -> &str {
-        &self.file_target.get_value()
+        self.file_target.get_value()
     }
 
     pub(crate) fn set_file_target<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -76,7 +76,7 @@ impl RawFile {
         &self,
         writer_mng: &mut WriterManager<W>,
     ) -> Result<(), XlsxError> {
-        if self.get_file_data().len() > 0 {
+        if !self.get_file_data().is_empty() {
             writer_mng.add_bin(self.get_file_target(), self.get_file_data())?;
         }
         Ok(())

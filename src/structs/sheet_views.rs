@@ -62,7 +62,7 @@ impl SheetViews {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sheetViews
-        if self.sheet_view_list.len() > 0 {
+        if !self.sheet_view_list.is_empty() {
             write_start_tag(writer, "sheetViews", vec![], false);
 
             // sheetView

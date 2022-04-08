@@ -16,7 +16,7 @@ pub struct ObjectAnchor {
 }
 impl ObjectAnchor {
     pub fn get_move_with_cells(&self) -> &bool {
-        &self.move_with_cells.get_value()
+        self.move_with_cells.get_value()
     }
 
     pub fn set_move_with_cells(&mut self, value: bool) -> &mut Self {
@@ -116,7 +116,7 @@ impl ObjectAnchor {
         // anchor
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.move_with_cells.has_value() == &true {
-            attributes.push(("moveWithCells", &self.move_with_cells.get_value_string()));
+            attributes.push(("moveWithCells", self.move_with_cells.get_value_string()));
         }
         write_start_tag(writer, "anchor", attributes, false);
 

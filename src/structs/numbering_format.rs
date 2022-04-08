@@ -108,7 +108,7 @@ impl NumberingFormat {
         self.format_code = value.into();
         for (index, format) in FILL_BUILT_IN_FORMAT_CODES.iter() {
             if &self.format_code == format {
-                self.number_format_id = index.clone();
+                self.number_format_id = *index;
                 self.is_build_in = true;
                 return self;
             }
@@ -132,7 +132,7 @@ impl NumberingFormat {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(format!("{}", &self.format_code)))
+        format!("{:x}", md5::Md5::digest((&self.format_code).to_string()))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

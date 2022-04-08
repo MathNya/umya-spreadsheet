@@ -17,7 +17,7 @@ pub struct BevelBottom {
 }
 impl BevelBottom {
     pub fn get_width(&self) -> &i64 {
-        &self.width.get_value()
+        self.width.get_value()
     }
 
     pub fn set_width(&mut self, value: i64) -> &mut BevelBottom {
@@ -26,7 +26,7 @@ impl BevelBottom {
     }
 
     pub fn get_height(&self) -> &i64 {
-        &self.height.get_value()
+        self.height.get_value()
     }
 
     pub fn set_height(&mut self, value: i64) -> &mut BevelBottom {
@@ -35,7 +35,7 @@ impl BevelBottom {
     }
 
     pub fn get_preset(&self) -> &BevelPresetValues {
-        &self.preset.get_value()
+        self.preset.get_value()
     }
 
     pub fn set_preset(&mut self, value: BevelPresetValues) -> &mut BevelBottom {
@@ -72,13 +72,13 @@ impl BevelBottom {
         // a:bevelB
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.width.has_value() == &true {
-            attributes.push(("w", &self.width.get_value_string()));
+            attributes.push(("w", self.width.get_value_string()));
         }
         if &self.height.has_value() == &true {
-            attributes.push(("h", &self.height.get_value_string()));
+            attributes.push(("h", self.height.get_value_string()));
         }
         if &self.preset.has_value() == &true {
-            attributes.push(("prst", &self.preset.get_value_string()));
+            attributes.push(("prst", self.preset.get_value_string()));
         }
 
         write_start_tag(writer, "a:bevelB", attributes, true);

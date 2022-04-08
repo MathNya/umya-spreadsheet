@@ -9,7 +9,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<String, XlsxError> {
-    if worksheet.has_legacy_drawing() == false {
+    if !worksheet.has_legacy_drawing() {
         return Ok(String::from(""));
     }
 

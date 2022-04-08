@@ -99,7 +99,7 @@ impl RichText {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        if tag_name != "" {
+        if !tag_name.is_empty() {
             write_start_tag(writer, tag_name, vec![], false);
         }
 
@@ -108,7 +108,7 @@ impl RichText {
             obj.write_to(writer);
         }
 
-        if tag_name != "" {
+        if !tag_name.is_empty() {
             write_end_tag(writer, tag_name);
         }
     }

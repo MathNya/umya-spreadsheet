@@ -78,7 +78,7 @@ fn write_relationship(
     attributes.push(("Id", &r_id_str));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));
-    if p_target_mode != "" {
+    if !p_target_mode.is_empty() {
         attributes.push(("TargetMode", p_target_mode));
     }
     write_start_tag(writer, tag_name, attributes, true);
