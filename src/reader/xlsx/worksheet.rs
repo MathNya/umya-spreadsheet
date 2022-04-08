@@ -1,6 +1,3 @@
-use std::sync::Arc;
-use std::sync::RwLock;
-
 use super::driver::*;
 use super::XlsxError;
 use quick_xml::events::Event;

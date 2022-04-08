@@ -96,15 +96,15 @@ impl Image {
         self
     }
 
-    pub fn new_image<S: Into<String>>(&mut self, path: S, marker: MarkerType) {
+    pub fn new_image(&mut self, path: &str, marker: MarkerType) {
         let path_str = path.into();
-        let path_obj = std::path::Path::new(path_str.as_str());
+        let path_obj = std::path::Path::new(path_str);
         let image_name = path_obj.file_name().unwrap().to_str().unwrap();
 
         let img = image::open(path_obj).unwrap();
         let (width, height) = img.dimensions();
 
-        let mut file = File::open(path_str.as_str()).unwrap();
+        let mut file = File::open(path_str).unwrap();
         let mut buf = Vec::new();
         let _ = file.read_to_end(&mut buf).unwrap();
 
@@ -152,15 +152,15 @@ impl Image {
         self.one_cell_anchor = Some(one_cell_anchor);
     }
 
-    pub fn change_image<S: Into<String>>(&mut self, path: S) {
+    pub fn change_image(&mut self, path: &str) {
         let marker = self.get_from_marker_type().clone();
         self.two_cell_anchor = None;
         self.one_cell_anchor = None;
         self.new_image(path, marker);
     }
 
-    pub fn download_image<S: Into<String>>(&self, path: S) {
-        fs::write(path.into(), self.get_media_object().get_image_data()).unwrap();
+    pub fn download_image(&self, path: &str) {
+        fs::write(path, self.get_media_object().get_image_data()).unwrap();
     }
 
     pub fn get_coordinate(&self) -> String {
