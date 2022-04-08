@@ -28,12 +28,11 @@ pub(crate) fn read(
                     obj.set_attributes(&mut reader, e, drawing_relationships);
                     match obj.get_client_data().get_comment_column_target() {
                         Some(_) => {
-                            worksheet.get_comments_mut()[comment_index].set_shape(obj);
+                            worksheet.get_comments_mut().get_mut(comment_index).map(|comment| comment.set_shape(obj));
                             comment_index += 1;
                         }
                         None => {
-                            worksheet.get_ole_objects_mut().get_ole_object_mut()[ole_index]
-                                .set_shape(obj);
+                            worksheet.get_ole_objects_mut().get_ole_object_mut().get_mut(ole_index).map(|ole_obj| ole_obj.set_shape(obj));
                             ole_index += 1;
                         }
                     }
