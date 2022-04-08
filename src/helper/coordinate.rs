@@ -30,14 +30,11 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 }
 
 fn get_index(column: &str) -> u32 {
-    let mut i = 0;
-    for tar in self::ALPHABET {
-        if tar == &column {
-            return i + 1;
-        }
-        i += 1;
-    }
-    panic!("illegal character");
+    self::ALPHABET
+        .into_iter()
+        .enumerate()
+        .find_map(|(i, tar)| (tar == &column).then(|| i as u32))
+        .expect("illegal character")
 }
 
 pub fn string_from_column_index(column_index: &u32) -> String {

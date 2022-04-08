@@ -31,7 +31,7 @@ impl RawFile {
         let file_name = self.get_file_name();
         let v: Vec<&str> = file_name.split('.').collect();
         let extension = v.last().unwrap().clone();
-        
+
         extension.to_lowercase()
     }
 

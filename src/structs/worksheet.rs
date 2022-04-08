@@ -1004,8 +1004,11 @@ impl Worksheet {
                         !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
                     });
             }
-            self.conditional_styles_collection
-                .retain(|x| !x.get_sequence_of_references().get_range_collection().is_empty());
+            self.conditional_styles_collection.retain(|x| {
+                !x.get_sequence_of_references()
+                    .get_range_collection()
+                    .is_empty()
+            });
             for conditional_styles in &mut self.conditional_styles_collection {
                 for range in conditional_styles
                     .get_sequence_of_references_mut()

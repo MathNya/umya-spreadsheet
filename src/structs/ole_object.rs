@@ -103,7 +103,7 @@ impl OleObject {
         let value_org = value.into();
         let v: Vec<&str> = value_org.split('.').collect();
         let extension = v.last().unwrap().clone();
-        
+
         extension.to_lowercase()
     }
 

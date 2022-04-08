@@ -211,7 +211,6 @@ impl Borders {
     }
 
     pub(crate) fn get_defalut_value() -> Self {
-        
         Self::default()
     }
 

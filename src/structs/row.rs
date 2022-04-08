@@ -12,7 +12,6 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 
-
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]

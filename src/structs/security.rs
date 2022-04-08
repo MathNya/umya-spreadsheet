@@ -12,7 +12,9 @@ impl Security {
             true
         } else if self.lock_structure {
             true
-        } else { self.lock_windows }
+        } else {
+            self.lock_windows
+        }
     }
     pub fn get_lock_revision(&self) -> &bool {
         &self.lock_revision

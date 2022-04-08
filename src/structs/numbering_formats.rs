@@ -23,8 +23,7 @@ impl NumberingFormats {
 
     pub(crate) fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
         let number_format_id = value.get_number_format_id();
-        self.numbering_format
-            .insert(*number_format_id, value);
+        self.numbering_format.insert(*number_format_id, value);
         self
     }
 

@@ -180,10 +180,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             // row
             let include_cell = !cells_in_row.is_empty();
             if include_cell {
-                let fist_num = cells_in_row.get(0)
-                    .unwrap()
-                    .get_coordinate()
-                    .get_col_num();
+                let fist_num = cells_in_row.get(0).unwrap().get_coordinate().get_col_num();
                 let last_num = cells_in_row
                     .iter()
                     .last()

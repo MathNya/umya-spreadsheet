@@ -79,13 +79,15 @@ impl Cells {
 
     pub(crate) fn get_cell_value(&self, col_num: &u32, row_num: &u32) -> &CellValue {
         self.map
-            .get(&(row_num.to_owned(), col_num.to_owned())).map(|c| c.get_cell_value())
+            .get(&(row_num.to_owned(), col_num.to_owned()))
+            .map(|c| c.get_cell_value())
             .unwrap_or(&self.default_cell_value)
     }
 
     pub(crate) fn get_style(&self, col_num: &u32, row_num: &u32) -> &Style {
         self.map
-            .get(&(row_num.to_owned(), col_num.to_owned())).map(|c| c.get_style())
+            .get(&(row_num.to_owned(), col_num.to_owned()))
+            .map(|c| c.get_style())
             .unwrap_or(&self.default_style)
     }
 

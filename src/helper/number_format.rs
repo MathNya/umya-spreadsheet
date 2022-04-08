@@ -50,11 +50,9 @@ const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     (".s", ""),
 ];
 
-const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] =
-    &[("hh", "%H"), ("h", "%-H")];
+const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] = &[("hh", "%H"), ("h", "%-H")];
 
-const DATE_FORMAT_REPLACEMENTS_12: &[(&str, &str)] =
-    &[("hh", "%I"), ("h", "%-I")];
+const DATE_FORMAT_REPLACEMENTS_12: &[(&str, &str)] = &[("hh", "%I"), ("h", "%-I")];
 
 pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
     let mut value = value.into();
@@ -172,8 +170,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         String::from("0"),
         String::from("0"),
     ];
-    let mut idx = 0;
-    for section in sections {
+    sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
         if color_re.find(section).is_some() {
             let mut item: Vec<String> = Vec::new();
@@ -193,8 +190,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             converted_section = cond_re.replace_all(section, "").to_string();
         }
         converted_sections.insert(idx, converted_section);
-        idx += 1;
-    }
+     });
 
     let mut color = colors[0].clone();
     let mut format: &str = &converted_sections[0];
