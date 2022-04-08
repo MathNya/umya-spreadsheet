@@ -132,7 +132,7 @@ impl NumberingFormat {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest((&self.format_code)))
+        format!("{:x}", md5::Md5::digest(&self.format_code))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
