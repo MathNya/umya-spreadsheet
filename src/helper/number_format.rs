@@ -5,7 +5,7 @@ use structs::Color;
 use structs::NumberingFormat;
 use thousands::Separable;
 
-const DATE_FORMAT_REPLACEMENTS: &'static [(&str, &str)] = &[
+const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     // first remove escapes related to non-format characters
     ("\\", ""),
     // 12-hour suffix
@@ -50,10 +50,10 @@ const DATE_FORMAT_REPLACEMENTS: &'static [(&str, &str)] = &[
     (".s", ""),
 ];
 
-const DATE_FORMAT_REPLACEMENTS_24: &'static [(&str, &str)] =
+const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] =
     &[("hh", "%H"), ("h", "%-H")];
 
-const DATE_FORMAT_REPLACEMENTS_12: &'static [(&str, &str)] =
+const DATE_FORMAT_REPLACEMENTS_12: &[(&str, &str)] =
     &[("hh", "%I"), ("h", "%-I")];
 
 pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
@@ -105,16 +105,14 @@ pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
     if re.find(&format).is_some() {
         // datetime format
         value = format_as_date(&value.parse::<f64>().unwrap(), &format);
+    } else if &format.starts_with('"') == &true && &format.ends_with('"') == &true {
+        let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
+        value = conv_format.to_string();
+    } else if re2.find(&format).is_some() {
+        // % number format
+        value = format_as_percentage(&value.parse::<f64>().unwrap(), &format);
     } else {
-        if &format.starts_with('"') == &true && &format.ends_with('"') == &true {
-            let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
-            value = conv_format.to_string();
-        } else if re2.find(&format).is_some() {
-            // % number format
-            value = format_as_percentage(&value.parse::<f64>().unwrap(), &format);
-        } else {
-            value = format_as_number(&value.parse::<f64>().unwrap(), &format);
-        }
+        value = format_as_number(&value.parse::<f64>().unwrap(), &format);
     }
     value.trim().to_string()
 }
@@ -175,7 +173,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         String::from("0"),
     ];
     let mut idx = 0;
-    for section in sections {
+    for (idx, section) in sections.into_iter().enumerate() {
         let mut converted_section = section.to_string();
         if color_re.find(section).is_some() {
             let mut item: Vec<String> = Vec::new();
@@ -459,7 +457,7 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
                         &sign, &integer_part_str, &adjusted_decimal_part, &adjusted_decimal_divisor
                     );
                 } else {
-                    adjusted_decimal_part += (&integer_part * &adjusted_decimal_divisor);
+                    adjusted_decimal_part += &integer_part * &adjusted_decimal_divisor;
                     result = format!(
                         "{}{}/{}",
                         &sign, &adjusted_decimal_part, &adjusted_decimal_divisor

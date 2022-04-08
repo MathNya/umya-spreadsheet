@@ -8,7 +8,7 @@ use super::XlsxError;
 use structs::Theme;
 use structs::WriterManager;
 
-const MAJOR_FONTS: &'static [(&str, &str)] = &[
+const MAJOR_FONTS: &[(&str, &str)] = &[
     ("Jpan", "ＭＳ Ｐゴシック"),
     ("Hang", "맑은 고딕"),
     ("Hans", "宋体"),
@@ -41,7 +41,7 @@ const MAJOR_FONTS: &'static [(&str, &str)] = &[
     ("Geor", "Sylfaen"),
 ];
 
-const MINOR_FONTS: &'static [(&str, &str)] = &[
+const MINOR_FONTS: &[(&str, &str)] = &[
     ("Jpan", "ＭＳ Ｐゴシック"),
     ("Hang", "맑은 고딕"),
     ("Hans", "宋体"),

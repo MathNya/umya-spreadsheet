@@ -11,7 +11,8 @@ pub fn adjustment_insert_formula_coordinate(
     self_worksheet_name: &str,
 ) -> String {
     let re = Regex::new(r#"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+"#).unwrap();
-    let result = re.replace_all(formula, |caps: &Captures| {
+    
+    re.replace_all(formula, |caps: &Captures| {
         let caps_string: String = caps.at(0).unwrap().parse().unwrap();
         let split_str: Vec<&str> = caps_string.split('!').collect();
         let with_wksheet: bool;
@@ -50,8 +51,7 @@ pub fn adjustment_insert_formula_coordinate(
             result = format!("{}!{}", wksheet, result);
         }
         result
-    });
-    result
+    })
 }
 
 pub fn adjustment_remove_formula_coordinate(
@@ -64,7 +64,8 @@ pub fn adjustment_remove_formula_coordinate(
     self_worksheet_name: &str,
 ) -> String {
     let re = Regex::new(r#"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+"#).unwrap();
-    let result = re.replace_all(formula, |caps: &Captures| {
+    
+    re.replace_all(formula, |caps: &Captures| {
         let caps_string: String = caps.at(0).unwrap().parse().unwrap();
         let split_str: Vec<&str> = caps_string.split('!').collect();
         let with_wksheet: bool;
@@ -103,6 +104,5 @@ pub fn adjustment_remove_formula_coordinate(
             result = format!("{}!{}", wksheet, result);
         }
         result
-    });
-    result
+    })
 }

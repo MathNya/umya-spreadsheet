@@ -1,6 +1,6 @@
 use regex::Regex;
 
-const ALPHABET: &'static [&str] = &[
+const ALPHABET: &[&str] = &[
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
     "T", "U", "V", "W", "X", "Y", "Z",
 ];
@@ -31,7 +31,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 
 fn get_index(column: &str) -> u32 {
     let mut i = 0;
-    for tar in self::ALPHABET {
+    for (i, tar) in self::ALPHABET.into_iter().enumerate() {
         if tar == &column {
             return i + 1;
         }

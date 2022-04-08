@@ -11,7 +11,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-const INDEXED_COLORS: &'static [&str] = &[
+const INDEXED_COLORS: &[&str] = &[
     "FF000000", //  System Colour #1 - Black
     "FFFFFFFF", //  System Colour #2 - White
     "FFFF0000", //  System Colour #3 - Red

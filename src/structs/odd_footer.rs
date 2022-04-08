@@ -22,7 +22,7 @@ impl OddFooter {
     }
 
     pub(crate) fn _get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(self.get_value().to_string()))
+        format!("{:x}", md5::Md5::digest(self.get_value()))
     }
 
     pub(crate) fn has_param(&self) -> bool {
