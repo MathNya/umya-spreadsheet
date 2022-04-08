@@ -79,7 +79,7 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
                 break;
             }
         }
-        if !is_match {
+        if is_match == false {
             authors.push(comment.get_author().to_string());
         }
     }
@@ -88,7 +88,7 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
 
 fn get_author_id(authors: &Vec<String>, author: &str) -> String {
     let mut i = 0;
-    for (i, value) in authors.into_iter().enumerate() {
+    for value in authors {
         if author == value {
             return i.to_string();
         }

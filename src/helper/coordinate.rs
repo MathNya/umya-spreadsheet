@@ -31,7 +31,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 
 fn get_index(column: &str) -> u32 {
     let mut i = 0;
-    for (i, tar) in self::ALPHABET.into_iter().enumerate() {
+    for tar in self::ALPHABET {
         if tar == &column {
             return i + 1;
         }

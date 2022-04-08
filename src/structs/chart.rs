@@ -269,7 +269,7 @@ impl Chart {
     }
 
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
-        self.two_cell_anchor = value;
+        self.two_cell_anchor = value.into();
         self
     }
 
@@ -373,7 +373,7 @@ impl Chart {
     pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -551,7 +551,7 @@ impl Chart {
 
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -723,7 +723,7 @@ impl Chart {
     pub(crate) fn new_chart_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -851,7 +851,7 @@ impl Chart {
 
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -1087,7 +1087,7 @@ impl Chart {
     pub(crate) fn new_chart_area_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -1255,7 +1255,7 @@ impl Chart {
 
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -1418,7 +1418,7 @@ impl Chart {
     pub(crate) fn new_chart_bar_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -1595,7 +1595,7 @@ impl Chart {
 
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -1767,7 +1767,7 @@ impl Chart {
     pub(crate) fn new_chart_of_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -2113,7 +2113,7 @@ impl Chart {
     pub(crate) fn new_chart_radar_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
         let mut idx = 0;
-        for (idx, area_chart_series) in area_chart_series_list.into_iter().enumerate() {
+        for area_chart_series in area_chart_series_list {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()

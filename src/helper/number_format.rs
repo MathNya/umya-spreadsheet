@@ -173,7 +173,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         String::from("0"),
     ];
     let mut idx = 0;
-    for (idx, section) in sections.into_iter().enumerate() {
+    for section in sections {
         let mut converted_section = section.to_string();
         if color_re.find(section).is_some() {
             let mut item: Vec<String> = Vec::new();
