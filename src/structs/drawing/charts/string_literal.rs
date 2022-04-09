@@ -61,10 +61,8 @@ impl StringLiteral {
         write_start_tag(writer, "c:ptCount", vec![("val", count.as_str())], true);
 
         // c:pt
-        let mut index = 0;
-        for obj in &self.string_point_list {
-            obj.write_to(writer, &index);
-            index += 1;
+        for (index, obj) in self.string_point_list.iter().enumerate() {
+            obj.write_to(writer, &(index as u32));
         }
 
         write_end_tag(writer, "c:strLit");

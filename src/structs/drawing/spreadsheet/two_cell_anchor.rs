@@ -28,7 +28,7 @@ pub struct TwoCellAnchor {
 }
 impl TwoCellAnchor {
     pub fn get_edit_as(&self) -> &EditAsValues {
-        &self.edit_as.get_value()
+        self.edit_as.get_value()
     }
 
     pub fn set_edit_as(&mut self, value: EditAsValues) -> &mut Self {
@@ -115,7 +115,7 @@ impl TwoCellAnchor {
     }
 
     pub fn get_is_alternate_content(&self) -> &bool {
-        &self.is_alternate_content.get_value()
+        self.is_alternate_content.get_value()
     }
 
     pub fn set_is_alternate_content(&mut self, value: bool) -> &mut Self {
@@ -272,7 +272,7 @@ impl TwoCellAnchor {
         // xdr:twoCellAnchor
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.edit_as.has_value() == &true {
-            attributes.push(("editAs", &self.edit_as.get_value_string()));
+            attributes.push(("editAs", self.edit_as.get_value_string()));
         }
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 

@@ -57,7 +57,7 @@ impl EffectList {
         _e: &BytesStart,
         empty_flag: bool,
     ) {
-        if empty_flag == true {
+        if empty_flag {
             return;
         }
 
@@ -105,7 +105,7 @@ impl EffectList {
         // a:effectLst
         write_start_tag(writer, "a:effectLst", vec![], empty_flag);
 
-        if empty_flag == false {
+        if !empty_flag {
             // a:glow
             match &self.glow {
                 Some(v) => v.write_to(writer),

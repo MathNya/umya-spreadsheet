@@ -66,7 +66,7 @@ impl Blip {
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
         ));
         attributes.push(("r:embed", r_id_str.as_str()));
-        if &self.cstate != "" {
+        if !&self.cstate.is_empty() {
             attributes.push(("cstate", &self.cstate));
         }
         write_start_tag(writer, "a:blip", attributes, false);

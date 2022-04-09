@@ -13,7 +13,7 @@ pub struct OddFooter {
 }
 impl OddFooter {
     pub fn get_value(&self) -> &str {
-        &self.value.get_value()
+        self.value.get_value()
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -22,7 +22,7 @@ impl OddFooter {
     }
 
     pub(crate) fn _get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(format!("{}", self.get_value())))
+        format!("{:x}", md5::Md5::digest(self.get_value()))
     }
 
     pub(crate) fn has_param(&self) -> bool {
@@ -41,7 +41,7 @@ impl OddFooter {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    self.set_value(e.unescape_and_decode(&reader).unwrap());
+                    self.set_value(e.unescape_and_decode(reader).unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"oddFooter" => return,

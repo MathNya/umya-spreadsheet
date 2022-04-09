@@ -13,7 +13,7 @@ pub struct Perspective {
 }
 impl Perspective {
     pub fn get_val(&self) -> &u8 {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: u8) -> &mut Perspective {

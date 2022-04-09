@@ -64,8 +64,8 @@ impl Cells {
             .entry((row_num.to_owned(), col_num.to_owned()))
             .or_insert_with(|| {
                 let mut c = Cell::default();
-                c.get_coordinate_mut().set_col_num(col_num.clone());
-                c.get_coordinate_mut().set_row_num(row_num.clone());
+                c.get_coordinate_mut().set_col_num(*col_num);
+                c.get_coordinate_mut().set_row_num(*row_num);
                 c
             })
     }
@@ -73,14 +73,14 @@ impl Cells {
     pub(crate) fn get_cell_value(&self, col_num: &u32, row_num: &u32) -> &CellValue {
         self.map
             .get(&(row_num.to_owned(), col_num.to_owned()))
-            .and_then(|c| Some(c.get_cell_value()))
+            .map(|c| c.get_cell_value())
             .unwrap_or(&self.default_cell_value)
     }
 
     pub(crate) fn get_style(&self, col_num: &u32, row_num: &u32) -> &Style {
         self.map
             .get(&(row_num.to_owned(), col_num.to_owned()))
-            .and_then(|c| Some(c.get_style()))
+            .map(|c| c.get_style())
             .unwrap_or(&self.default_style)
     }
 

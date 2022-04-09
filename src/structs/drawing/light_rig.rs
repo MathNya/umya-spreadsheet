@@ -16,7 +16,7 @@ pub struct LightRig {
 }
 impl LightRig {
     pub fn get_rig(&self) -> &LightRigValues {
-        &self.rig.get_value()
+        self.rig.get_value()
     }
 
     pub fn set_rig(&mut self, value: LightRigValues) -> &mut LightRig {
@@ -25,7 +25,7 @@ impl LightRig {
     }
 
     pub fn get_definition(&self) -> &LightRigDirectionValues {
-        &self.definition.get_value()
+        self.definition.get_value()
     }
 
     pub fn set_definition(&mut self, value: LightRigDirectionValues) -> &mut LightRig {
@@ -58,8 +58,8 @@ impl LightRig {
             writer,
             "a:lightRig",
             vec![
-                ("rig", &self.rig.get_value_string()),
-                ("dir", &self.definition.get_value_string()),
+                ("rig", self.rig.get_value_string()),
+                ("dir", self.definition.get_value_string()),
             ],
             true,
         );

@@ -11,6 +11,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
@@ -25,7 +26,7 @@ pub struct Row {
 }
 impl Row {
     pub fn get_row_num(&self) -> &u32 {
-        &self.row_num.get_value()
+        self.row_num.get_value()
     }
 
     pub(crate) fn set_row_num(&mut self, value: u32) -> &mut Self {
@@ -34,7 +35,7 @@ impl Row {
     }
 
     pub fn get_height(&self) -> &f64 {
-        &self.height.get_value()
+        self.height.get_value()
     }
 
     pub fn set_height(&mut self, value: f64) -> &mut Self {
@@ -43,7 +44,7 @@ impl Row {
     }
 
     pub fn get_descent(&self) -> &f64 {
-        &self.descent.get_value()
+        self.descent.get_value()
     }
 
     pub fn set_descent(&mut self, value: f64) -> &mut Self {
@@ -52,7 +53,7 @@ impl Row {
     }
 
     pub fn get_thick_bot(&self) -> &bool {
-        &self.thick_bot.get_value()
+        self.thick_bot.get_value()
     }
 
     pub fn set_thick_bot(&mut self, value: bool) -> &mut Self {
@@ -61,7 +62,7 @@ impl Row {
     }
 
     pub fn get_custom_height(&self) -> &bool {
-        &self.custom_height.get_value()
+        self.custom_height.get_value()
     }
 
     pub fn set_custom_height(&mut self, value: bool) -> &mut Self {
@@ -70,7 +71,7 @@ impl Row {
     }
 
     pub fn get_hidden(&self) -> &bool {
-        &self.hidden.get_value()
+        self.hidden.get_value()
     }
 
     pub fn set_hidden(&mut self, value: bool) -> &mut Self {
@@ -159,7 +160,7 @@ impl Row {
 
         match get_attribute(e, b"x14ac:dyDescent") {
             Some(v) => {
-                if v != "" {
+                if !v.is_empty() {
                     self.descent.set_value_string(v);
                 }
             }
@@ -184,7 +185,7 @@ impl Row {
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"c" => {
                         let mut obj = Cell::default();
-                        obj.set_attributes(reader, e, &shared_string_table, &stylesheet, true);
+                        obj.set_attributes(reader, e, shared_string_table, stylesheet, true);
                         worksheet.set_cell(obj);
                     }
                     _ => (),
@@ -192,7 +193,7 @@ impl Row {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"c" => {
                         let mut obj = Cell::default();
-                        obj.set_attributes(reader, e, &shared_string_table, &stylesheet, false);
+                        obj.set_attributes(reader, e, shared_string_table, stylesheet, false);
                         worksheet.set_cell_crate(obj);
                     }
                     _ => (),
@@ -222,7 +223,7 @@ impl Row {
         // row
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("r", self.row_num.get_value_string()));
-        if empty_flag == false {
+        if !empty_flag {
             attributes.push(("spans", &spans));
         }
         if self.height.get_value() != &0f64 {

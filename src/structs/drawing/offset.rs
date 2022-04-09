@@ -14,7 +14,7 @@ pub struct Offset {
 }
 impl Offset {
     pub fn get_x(&self) -> &i64 {
-        &self.x.get_value()
+        self.x.get_value()
     }
 
     pub fn set_x(&mut self, value: i64) {
@@ -22,7 +22,7 @@ impl Offset {
     }
 
     pub fn get_y(&self) -> &i64 {
-        &self.y.get_value()
+        self.y.get_value()
     }
 
     pub fn set_y(&mut self, value: i64) {
@@ -44,8 +44,8 @@ impl Offset {
             writer,
             "a:off",
             vec![
-                ("x", &self.x.get_value_string()),
-                ("y", &self.y.get_value_string()),
+                ("x", self.x.get_value_string()),
+                ("y", self.y.get_value_string()),
             ],
             true,
         );

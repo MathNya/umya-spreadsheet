@@ -55,7 +55,7 @@ impl Border {
     pub const BORDER_THIN: &'static str = "thin";
 
     pub fn get_border_style(&self) -> &str {
-        &self.style.get_value_string()
+        self.style.get_value_string()
     }
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
@@ -143,16 +143,16 @@ impl Border {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let empty_flag = self.color.has_value() == false;
+        let empty_flag = !self.color.has_value();
 
         // left,right,top,bottom,diagonal,vertical,horizontal
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.style.has_value() {
-            attributes.push(("style", &self.style.get_value_string()));
+            attributes.push(("style", self.style.get_value_string()));
         }
         write_start_tag(writer, tag_name, attributes, empty_flag);
 
-        if empty_flag == false {
+        if !empty_flag {
             // color
             let _ = &self.color.write_to_color(writer);
 

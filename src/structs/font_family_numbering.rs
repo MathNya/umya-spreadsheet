@@ -13,7 +13,7 @@ pub struct FontFamilyNumbering {
 }
 impl FontFamilyNumbering {
     pub fn get_val(&self) -> &i32 {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: i32) -> &mut Self {
@@ -40,7 +40,7 @@ impl FontFamilyNumbering {
             write_start_tag(
                 writer,
                 "family",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", self.val.get_value_string())],
                 true,
             );
         }

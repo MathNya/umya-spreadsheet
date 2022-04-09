@@ -13,7 +13,7 @@ pub struct ShowNegativeBubbles {
 }
 impl ShowNegativeBubbles {
     pub fn get_val(&self) -> &bool {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut ShowNegativeBubbles {
@@ -34,7 +34,7 @@ impl ShowNegativeBubbles {
         write_start_tag(
             writer,
             "c:showNegBubbles",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

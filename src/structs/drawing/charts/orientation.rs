@@ -14,7 +14,7 @@ pub struct Orientation {
 }
 impl Orientation {
     pub fn get_val(&self) -> &OrientationValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: OrientationValues) -> &mut Orientation {
@@ -35,7 +35,7 @@ impl Orientation {
         write_start_tag(
             writer,
             "c:orientation",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

@@ -42,7 +42,7 @@ fn read_large_string() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
-    let ns = book.get_sheet_by_name_mut("Sheet1").unwrap();
+    let _ns = book.get_sheet_by_name_mut("Sheet1").unwrap();
 }
 
 #[test]
@@ -188,7 +188,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_row_dimension_mut(&5u32)
         .get_style_mut()
         .get_fill_mut()
-        .set_pattern_fill(fill.clone());
+        .set_pattern_fill(fill);
     let font_color = umya_spreadsheet::Color::default()
         .set_argb(umya_spreadsheet::Color::COLOR_WHITE)
         .to_owned();
@@ -197,7 +197,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_row_dimension_mut(&5u32)
         .get_style_mut()
         .get_font_mut()
-        .set_color(font_color.clone());
+        .set_color(font_color);
 }
 
 #[test]

@@ -12,9 +12,9 @@ pub struct Range {
 impl Range {
     pub fn set_range<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let org_value = value.into();
-        let coordinate_collection: Vec<&str> = org_value.split(":").collect();
+        let coordinate_collection: Vec<&str> = org_value.split(':').collect();
 
-        if coordinate_collection.len() == 0 || coordinate_collection.len() > 2 {
+        if coordinate_collection.is_empty() || coordinate_collection.len() > 2 {
             panic!("Non-standard coordinate");
         }
 

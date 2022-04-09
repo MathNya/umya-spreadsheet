@@ -170,7 +170,7 @@ impl Style {
     }
 
     pub fn get_number_format(&self) -> &Option<NumberingFormat> {
-        &self.get_numbering_format()
+        self.get_numbering_format()
     }
 
     pub fn get_number_format_mut(&mut self) -> &mut NumberingFormat {

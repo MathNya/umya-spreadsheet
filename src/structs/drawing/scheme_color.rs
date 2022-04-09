@@ -80,7 +80,7 @@ impl SchemeColor {
     ) {
         self.set_val(get_attribute(e, b"val").unwrap());
 
-        if empty_flag == true {
+        if empty_flag {
             return;
         }
 

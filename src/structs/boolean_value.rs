@@ -25,7 +25,7 @@ impl BooleanValue {
     }
 
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut BooleanValue {
-        self.set_value(if value.into() == "0" { false } else { true })
+        self.set_value(value.into() != "0")
     }
 
     pub(crate) fn has_value(&self) -> bool {

@@ -29,8 +29,8 @@ impl Address {
     }
 
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Address {
-        let org_value = value.into().clone();
-        let split_value: Vec<&str> = org_value.split("!").collect();
+        let org_value = value.into();
+        let split_value: Vec<&str> = org_value.split('!').collect();
 
         if split_value.len() == 1 {
             self.range.set_range(split_value[0]);
@@ -45,7 +45,7 @@ impl Address {
 
     pub fn get_address(&self) -> String {
         let range = self.range.get_range();
-        if self.sheet_name == "" {
+        if self.sheet_name.is_empty() {
             return range;
         }
         let mut with_space_char = String::from("");

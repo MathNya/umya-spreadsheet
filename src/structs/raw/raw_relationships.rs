@@ -4,6 +4,7 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io;
 use std::io::Read;
+
 use structs::raw::RawRelationship;
 use structs::StringValue;
 use structs::WriterManager;
@@ -101,7 +102,7 @@ impl RawRelationships {
         writer_mng: &mut WriterManager<W>,
         ather_target: Option<&str>,
     ) -> Result<(), XlsxError> {
-        if self.get_relationship_list().len() == 0 {
+        if self.get_relationship_list().is_empty() {
             return Ok(());
         }
 

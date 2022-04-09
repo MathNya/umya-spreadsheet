@@ -22,7 +22,7 @@ pub struct GradientFill {
 }
 impl GradientFill {
     pub fn get_flip(&self) -> &TileFlipValues {
-        &self.flip.get_value()
+        self.flip.get_value()
     }
 
     pub fn set_flip(&mut self, value: TileFlipValues) -> &mut GradientFill {
@@ -31,7 +31,7 @@ impl GradientFill {
     }
 
     pub fn get_rotate_with_shape(&self) -> &bool {
-        &self.rotate_with_shape.get_value()
+        self.rotate_with_shape.get_value()
     }
 
     pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut GradientFill {
@@ -134,10 +134,10 @@ impl GradientFill {
         // a:gradFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.flip.has_value() == &true {
-            attributes.push(("flip", &self.flip.get_value_string()));
+            attributes.push(("flip", self.flip.get_value_string()));
         }
         if &self.rotate_with_shape.has_value() == &true {
-            attributes.push(("rotWithShape", &self.rotate_with_shape.get_value_string()));
+            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()));
         }
         write_start_tag(writer, "a:gradFill", attributes, false);
 

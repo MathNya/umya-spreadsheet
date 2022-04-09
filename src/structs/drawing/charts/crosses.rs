@@ -14,7 +14,7 @@ pub struct Crosses {
 }
 impl Crosses {
     pub fn get_val(&self) -> &CrossesValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: CrossesValues) -> &mut Crosses {
@@ -35,7 +35,7 @@ impl Crosses {
         write_start_tag(
             writer,
             "c:crosses",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

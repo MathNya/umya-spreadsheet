@@ -234,7 +234,7 @@ impl Cell {
     }
 
     pub fn get_formula(&self) -> &str {
-        &self.cell_value.get_formula()
+        self.cell_value.get_formula()
     }
 
     pub(crate) fn get_formula_attributes(&self) -> Vec<(&str, &str)> {
@@ -263,7 +263,7 @@ impl Cell {
     pub(crate) fn get_width_point_cell(&self) -> f64 {
         let mut max_point = 0f64;
         let value = self.get_formatted_value();
-        let value_list: Vec<&str> = value.split("\n").collect();
+        let value_list: Vec<&str> = value.split('\n').collect();
         for value in value_list {
             let mut point = 0f64;
             for chr in value.chars() {
@@ -338,7 +338,7 @@ impl Cell {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
+                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(reader).unwrap(),
                 Ok(Event::Start(ref s)) => {
                     if s.name() == b"f" {
                         let mut attrs = vec![];
@@ -368,9 +368,9 @@ impl Cell {
                                 .unwrap();
                             self.set_shared_string_item(shared_string_item.clone());
                         } else if type_value == "b" {
-                            let prm = if &string_value == "1" { true } else { false };
+                            let prm = &string_value == "1";
                             let _ = self.set_value_from_bool(prm);
-                        } else if type_value == "" || type_value == "n" {
+                        } else if type_value.is_empty() || type_value == "n" {
                             let _ = self.set_value(&string_value);
                         };
                     }
@@ -407,7 +407,7 @@ impl Cell {
             attributes.push(("s", &xf_index_str));
         }
 
-        if empty_flag == false {
+        if !empty_flag {
             write_start_tag(writer, "c", attributes, empty_flag);
             // f
             match &self.cell_value.formula {

@@ -14,7 +14,7 @@ pub struct Shape {
 }
 impl Shape {
     pub fn get_val(&self) -> &ShapeValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: ShapeValues) -> &mut Shape {
@@ -35,7 +35,7 @@ impl Shape {
         write_start_tag(
             writer,
             "c:shape",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

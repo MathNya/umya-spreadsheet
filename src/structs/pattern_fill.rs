@@ -18,7 +18,7 @@ pub struct PatternFill {
 }
 impl PatternFill {
     pub fn get_pattern_type(&self) -> &PatternValues {
-        &self.pattern_type.get_value()
+        self.pattern_type.get_value()
     }
 
     pub fn set_pattern_type(&mut self, value: PatternValues) -> &mut Self {
@@ -31,10 +31,8 @@ impl PatternFill {
             if self.get_foreground_color().is_some() {
                 self.set_pattern_type(PatternValues::Solid);
             }
-        } else {
-            if self.get_foreground_color().is_none() {
-                self.set_pattern_type(PatternValues::None);
-            }
+        } else if self.get_foreground_color().is_none() {
+            self.set_pattern_type(PatternValues::None);
         }
         self
     }
@@ -152,10 +150,10 @@ impl PatternFill {
 
         // patternFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("patternType", &self.pattern_type.get_value_string()));
+        attributes.push(("patternType", self.pattern_type.get_value_string()));
         write_start_tag(writer, "patternFill", attributes, empty_flag);
 
-        if empty_flag == false {
+        if !empty_flag {
             // fgColor
             match &self.foreground_color {
                 Some(v) => {

@@ -14,7 +14,7 @@ pub struct Symbol {
 }
 impl Symbol {
     pub fn get_val(&self) -> &MarkerStyleValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: MarkerStyleValues) -> &mut Symbol {
@@ -35,7 +35,7 @@ impl Symbol {
         write_start_tag(
             writer,
             "c:symbol",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

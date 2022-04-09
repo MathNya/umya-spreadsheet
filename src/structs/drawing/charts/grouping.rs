@@ -14,7 +14,7 @@ pub struct Grouping {
 }
 impl Grouping {
     pub fn get_val(&self) -> &GroupingValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: GroupingValues) -> &mut Grouping {
@@ -35,7 +35,7 @@ impl Grouping {
         write_start_tag(
             writer,
             "c:grouping",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

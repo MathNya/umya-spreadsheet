@@ -14,7 +14,7 @@ pub struct TopMode {
 }
 impl TopMode {
     pub fn get_val(&self) -> &LayoutModeValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: LayoutModeValues) -> &mut TopMode {
@@ -35,7 +35,7 @@ impl TopMode {
         write_start_tag(
             writer,
             "c:yMode",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

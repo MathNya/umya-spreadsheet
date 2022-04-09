@@ -13,7 +13,7 @@ pub struct Miter {
 }
 impl Miter {
     pub fn get_limit(&self) -> &i32 {
-        &self.limit.get_value()
+        self.limit.get_value()
     }
 
     pub fn set_limit(&mut self, value: i32) -> &mut Self {
@@ -38,7 +38,7 @@ impl Miter {
         // a:miter
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.limit.has_value() == &true {
-            attributes.push(("lim", &self.limit.get_value_string()));
+            attributes.push(("lim", self.limit.get_value_string()));
         }
         write_start_tag(writer, "a:miter", attributes, true);
     }

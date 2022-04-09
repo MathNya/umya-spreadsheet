@@ -16,7 +16,7 @@ pub struct GradientFill {
 }
 impl GradientFill {
     pub fn get_degree(&self) -> &f64 {
-        &self.degree.get_value()
+        self.degree.get_value()
     }
 
     pub fn set_degree(&mut self, value: f64) -> &mut Self {

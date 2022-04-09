@@ -90,7 +90,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     let _ = theme::write(spreadsheet.get_theme(), &mut writer_manager)?;
 
     // worksheet
-    let shared_string_table = spreadsheet.get_shared_string_table().clone();
+    let shared_string_table = spreadsheet.get_shared_string_table();
     let mut stylesheet = spreadsheet.get_stylesheet().clone();
     let mut worksheet_no = 1;
     for worksheet in spreadsheet.get_sheet_collection_no_check() {

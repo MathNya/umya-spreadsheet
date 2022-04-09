@@ -13,7 +13,7 @@ pub struct SecondPieSize {
 }
 impl SecondPieSize {
     pub fn get_val(&self) -> &u16 {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: u16) -> &mut SecondPieSize {
@@ -34,7 +34,7 @@ impl SecondPieSize {
         write_start_tag(
             writer,
             "c:secondPieSize",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

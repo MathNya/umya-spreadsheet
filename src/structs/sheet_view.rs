@@ -26,7 +26,7 @@ pub struct SheetView {
 }
 impl SheetView {
     pub fn get_tab_selected(&self) -> &bool {
-        &self.tab_selected.get_value()
+        self.tab_selected.get_value()
     }
 
     pub fn set_tab_selected(&mut self, value: bool) -> &mut Self {
@@ -35,7 +35,7 @@ impl SheetView {
     }
 
     pub fn get_workbook_view_id(&self) -> &u32 {
-        &self.workbook_view_id.get_value()
+        self.workbook_view_id.get_value()
     }
 
     pub fn set_workbook_view_id(&mut self, value: u32) -> &mut Self {
@@ -57,7 +57,7 @@ impl SheetView {
     }
 
     pub fn get_view(&self) -> &SheetViewValues {
-        &self.view.get_value()
+        self.view.get_value()
     }
 
     pub fn set_view(&mut self, value: SheetViewValues) -> &mut Self {
@@ -66,7 +66,7 @@ impl SheetView {
     }
 
     pub fn get_zoom_scale(&self) -> &u32 {
-        &self.zoom_scale.get_value()
+        self.zoom_scale.get_value()
     }
 
     pub fn set_zoom_scale(&mut self, value: u32) -> &mut Self {
@@ -75,7 +75,7 @@ impl SheetView {
     }
 
     pub fn get_zoom_scale_normal(&self) -> &u32 {
-        &self.zoom_scale_normal.get_value()
+        self.zoom_scale_normal.get_value()
     }
 
     pub fn set_zoom_scale_normal(&mut self, value: u32) -> &mut Self {
@@ -84,7 +84,7 @@ impl SheetView {
     }
 
     pub fn get_zoom_scale_page_layout_view(&self) -> &u32 {
-        &self.zoom_scale_page_layout_view.get_value()
+        self.zoom_scale_page_layout_view.get_value()
     }
 
     pub fn set_zoom_scale_page_layout_view(&mut self, value: u32) -> &mut Self {
@@ -93,7 +93,7 @@ impl SheetView {
     }
 
     pub fn get_zoom_scale_sheet_layout_view(&self) -> &u32 {
-        &self.zoom_scale_sheet_layout_view.get_value()
+        self.zoom_scale_sheet_layout_view.get_value()
     }
 
     pub fn set_zoom_scale_sheet_layout_view(&mut self, value: u32) -> &mut Self {
@@ -202,7 +202,7 @@ impl SheetView {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let empty_flag = self.pane.is_none() && self.selection.len() == 0;
+        let empty_flag = self.pane.is_none() && self.selection.is_empty();
 
         // sheetView
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -234,7 +234,7 @@ impl SheetView {
 
         write_start_tag(writer, "sheetView", attributes, empty_flag);
 
-        if empty_flag == false {
+        if !empty_flag {
             // pane
             match &self.pane {
                 Some(v) => v.write_to(writer),

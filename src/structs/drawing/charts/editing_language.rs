@@ -13,7 +13,7 @@ pub struct EditingLanguage {
 }
 impl EditingLanguage {
     pub fn get_val(&self) -> &str {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut EditingLanguage {
@@ -34,7 +34,7 @@ impl EditingLanguage {
         write_start_tag(
             writer,
             "c:lang",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

@@ -18,7 +18,7 @@ pub struct Shape3DType {
 }
 impl Shape3DType {
     pub fn get_preset_material(&self) -> &PresetMaterialTypeValues {
-        &self.preset_material.get_value()
+        self.preset_material.get_value()
     }
 
     pub fn set_preset_material(&mut self, value: PresetMaterialTypeValues) -> &mut Shape3DType {
@@ -91,7 +91,7 @@ impl Shape3DType {
         write_start_tag(
             writer,
             "a:sp3d",
-            vec![("prstMaterial", &self.preset_material.get_value_string())],
+            vec![("prstMaterial", self.preset_material.get_value_string())],
             false,
         );
 

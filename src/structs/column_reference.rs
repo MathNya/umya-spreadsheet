@@ -25,7 +25,7 @@ impl ColumnReference {
     }
 
     pub fn set_is_lock_usize(&mut self, value: u32) -> &mut Self {
-        self.is_lock = if value == 1 { true } else { false };
+        self.is_lock = value == 1;
         self
     }
 

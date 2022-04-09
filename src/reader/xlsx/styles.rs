@@ -5,7 +5,7 @@ use std::{io, result};
 use structs::Spreadsheet;
 use structs::Stylesheet;
 
-const FILE_PATH: &'static str = "xl/styles.xml";
+const FILE_PATH: &str = "xl/styles.xml";
 
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

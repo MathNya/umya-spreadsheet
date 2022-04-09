@@ -53,7 +53,7 @@ impl MruColors {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.color.len() > 0 {
+        if !self.color.is_empty() {
             // mruColors
             write_start_tag(writer, "mruColors", vec![], false);
 

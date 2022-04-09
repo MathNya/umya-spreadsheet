@@ -14,7 +14,7 @@ pub struct Camera {
 }
 impl Camera {
     pub fn get_preset(&self) -> &PresetCameraValues {
-        &self.preset.get_value()
+        self.preset.get_value()
     }
 
     pub fn set_preset(&mut self, value: PresetCameraValues) -> &mut Camera {
@@ -40,7 +40,7 @@ impl Camera {
         write_start_tag(
             writer,
             "a:camera",
-            vec![("prst", &self.preset.get_value_string())],
+            vec![("prst", self.preset.get_value_string())],
             true,
         );
     }

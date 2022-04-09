@@ -64,7 +64,7 @@ impl CellStyles {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.cell_style.len() > 0 {
+        if !self.cell_style.is_empty() {
             // cellStyles
             write_start_tag(
                 writer,

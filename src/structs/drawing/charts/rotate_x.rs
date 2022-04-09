@@ -13,7 +13,7 @@ pub struct RotateX {
 }
 impl RotateX {
     pub fn get_val(&self) -> &i8 {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: i8) -> &mut RotateX {

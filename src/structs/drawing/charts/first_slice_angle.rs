@@ -13,7 +13,7 @@ pub struct FirstSliceAngle {
 }
 impl FirstSliceAngle {
     pub fn get_val(&self) -> &u16 {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: u16) -> &mut FirstSliceAngle {
@@ -34,7 +34,7 @@ impl FirstSliceAngle {
         write_start_tag(
             writer,
             "c:firstSliceAng",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

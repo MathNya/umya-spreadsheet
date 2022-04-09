@@ -77,8 +77,8 @@ impl Comment {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        let org_col_num = self.coordinate.get_col_num().clone();
-        let org_row_num = self.coordinate.get_row_num().clone();
+        let org_col_num = *self.coordinate.get_col_num();
+        let org_row_num = *self.coordinate.get_row_num();
         self.coordinate.adjustment_insert_coordinate(
             root_col_num,
             offset_col_num,
@@ -121,8 +121,8 @@ impl Comment {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        let org_col_num = self.coordinate.get_col_num().clone();
-        let org_row_num = self.coordinate.get_row_num().clone();
+        let org_col_num = *self.coordinate.get_col_num();
+        let org_row_num = *self.coordinate.get_row_num();
         self.coordinate.adjustment_remove_coordinate(
             root_col_num,
             offset_col_num,

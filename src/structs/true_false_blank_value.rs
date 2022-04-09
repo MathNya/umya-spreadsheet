@@ -40,11 +40,7 @@ impl TrueFalseBlankValue {
 
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let value_str = value.into();
-        self.set_value(if &value_str == "f" || &value_str == "False" {
-            false
-        } else {
-            true
-        })
+        self.set_value(!(&value_str == "f" || &value_str == "False"))
     }
 
     pub(crate) fn has_value(&self) -> bool {

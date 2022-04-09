@@ -42,7 +42,7 @@ impl Formula {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    self.set_address_str(e.unescape_and_decode(&reader).unwrap());
+                    self.set_address_str(e.unescape_and_decode(reader).unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"c:f" => return,

@@ -37,7 +37,7 @@ impl Fills {
                     id += 1;
                 }
                 self.set_fill(v.clone());
-                return id;
+                id
             }
             None => 0,
         }
@@ -72,7 +72,7 @@ impl Fills {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.fill.len() > 0 {
+        if !self.fill.is_empty() {
             // fills
             write_start_tag(
                 writer,

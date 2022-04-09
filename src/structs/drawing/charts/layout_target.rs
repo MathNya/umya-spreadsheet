@@ -14,7 +14,7 @@ pub struct LayoutTarget {
 }
 impl LayoutTarget {
     pub fn get_val(&self) -> &LayoutTargetValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: LayoutTargetValues) -> &mut LayoutTarget {
@@ -35,7 +35,7 @@ impl LayoutTarget {
         write_start_tag(
             writer,
             "c:hMode",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

@@ -17,7 +17,7 @@ pub struct NonVisualDrawingProperties {
 }
 impl NonVisualDrawingProperties {
     pub fn get_id(&self) -> &u32 {
-        &self.id.get_value()
+        self.id.get_value()
     }
 
     pub fn set_id(&mut self, value: u32) -> &mut Self {
@@ -26,7 +26,7 @@ impl NonVisualDrawingProperties {
     }
 
     pub fn get_name(&self) -> &str {
-        &self.name.get_value()
+        self.name.get_value()
     }
 
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -35,7 +35,7 @@ impl NonVisualDrawingProperties {
     }
 
     pub fn get_hidden(&self) -> &bool {
-        &self.hidden.get_value()
+        self.hidden.get_value()
     }
 
     pub fn set_hidden(&mut self, value: bool) -> &mut Self {
@@ -82,10 +82,10 @@ impl NonVisualDrawingProperties {
         let with_inner = ole_id > &0;
         // xdr:cNvPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("id", &self.id.get_value_string()));
-        attributes.push(("name", &self.name.get_value_string()));
+        attributes.push(("id", self.id.get_value_string()));
+        attributes.push(("name", self.name.get_value_string()));
         if self.hidden.has_value() {
-            attributes.push(("hidden", &self.hidden.get_value_string()));
+            attributes.push(("hidden", self.hidden.get_value_string()));
         }
         write_start_tag(writer, "xdr:cNvPr", attributes, !with_inner);
 

@@ -22,7 +22,7 @@ pub struct EmbeddedObjectProperties {
 }
 impl EmbeddedObjectProperties {
     pub fn get_prog_id(&self) -> &str {
-        &self.prog_id.get_value()
+        self.prog_id.get_value()
     }
 
     pub fn set_prog_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -31,7 +31,7 @@ impl EmbeddedObjectProperties {
     }
 
     pub fn get_shape_id(&self) -> &u32 {
-        &self.shape_id.get_value()
+        self.shape_id.get_value()
     }
 
     pub fn set_shape_id(&mut self, value: u32) -> &mut Self {
@@ -52,7 +52,7 @@ impl EmbeddedObjectProperties {
     }
 
     pub fn get_default_size(&self) -> &bool {
-        &self.default_size.get_value()
+        self.default_size.get_value()
     }
 
     pub fn set_default_size(&mut self, value: bool) -> &mut Self {
@@ -61,7 +61,7 @@ impl EmbeddedObjectProperties {
     }
 
     pub fn get_auto_pict(&self) -> &bool {
-        &self.auto_pict.get_value()
+        self.auto_pict.get_value()
     }
 
     pub fn set_auto_pict(&mut self, value: bool) -> &mut Self {

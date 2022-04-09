@@ -269,7 +269,7 @@ impl Chart {
     }
 
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
-        self.two_cell_anchor = value.into();
+        self.two_cell_anchor = value;
         self
     }
 
@@ -370,10 +370,9 @@ impl Chart {
         self.two_cell_anchor.get_from_marker().get_row()
     }
 
-    pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: Vec<&str>) {
+    fn convert_series(&self, area_chart_series_list: Vec<&str>, smooth: bool) -> AreaChartSeriesList {
         let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
+        area_chart_series_list.into_iter().enumerate().for_each(|(idx, area_chart_series)| {
             let mut values = Values::default();
             values
                 .get_number_reference_mut()
@@ -386,17 +385,24 @@ impl Chart {
                 .get_format_code_mut()
                 .set_text("General");
 
-            let smooth = Smooth::default();
-
             let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
+            acs_obj.get_index_mut().set_val(idx as u32);
+            acs_obj.get_order_mut().set_val(idx as u32);
             acs_obj.set_values(values);
-            acs_obj.set_smooth(smooth);
+            if smooth {
+                acs_obj.set_smooth(Smooth::default());
+            } else {
+                let mut invert_if_negative = InvertIfNegative::default();
+                invert_if_negative.set_val(0f64);
+                acs_obj.set_invert_if_negative(invert_if_negative);
+            }
             acsl_obj.add_area_chart_series(acs_obj);
+        });
+        acsl_obj
+    }
 
-            idx += 1;
-        }
+    pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: Vec<&str>) {
+        let acsl_obj = self.convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213468160);
@@ -549,32 +555,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let smooth = Smooth::default();
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_values(values);
-            acs_obj.set_smooth(smooth);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213468160);
@@ -721,29 +702,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_values(values);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, true);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -849,29 +808,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_values(values);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, true);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -1085,29 +1022,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_area_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_values(values);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213468160);
@@ -1253,29 +1168,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_values(values);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213468160);
@@ -1416,33 +1309,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_bar_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let mut invert_if_negative = InvertIfNegative::default();
-            invert_if_negative.set_val(0f64);
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_invert_if_negative(invert_if_negative);
-            acs_obj.set_values(values);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, false);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213468160);
@@ -1593,33 +1460,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let mut invert_if_negative = InvertIfNegative::default();
-            invert_if_negative.set_val(0f64);
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_invert_if_negative(invert_if_negative);
-            acs_obj.set_values(values);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, false);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213468160);
@@ -1765,33 +1606,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_of_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let mut invert_if_negative = InvertIfNegative::default();
-            invert_if_negative.set_val(0f64);
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_invert_if_negative(invert_if_negative);
-            acs_obj.set_values(values);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, false);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -2111,32 +1926,7 @@ impl Chart {
     }
 
     pub(crate) fn new_chart_radar_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let mut acsl_obj = AreaChartSeriesList::default();
-        let mut idx = 0;
-        for area_chart_series in area_chart_series_list {
-            let mut values = Values::default();
-            values
-                .get_number_reference_mut()
-                .get_formula_mut()
-                .get_address_mut()
-                .set_address(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
-
-            let smooth = Smooth::default();
-
-            let mut acs_obj = AreaChartSeries::default();
-            acs_obj.get_index_mut().set_val(idx);
-            acs_obj.get_order_mut().set_val(idx);
-            acs_obj.set_values(values);
-            acs_obj.set_smooth(smooth);
-            acsl_obj.add_area_chart_series(acs_obj);
-
-            idx += 1;
-        }
+        let acsl_obj = self.convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
         axis_id1.set_val(213468160);

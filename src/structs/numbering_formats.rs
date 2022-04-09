@@ -23,8 +23,7 @@ impl NumberingFormats {
 
     pub(crate) fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
         let number_format_id = value.get_number_format_id();
-        self.numbering_format
-            .insert(number_format_id.clone(), value);
+        self.numbering_format.insert(*number_format_id, value);
         self
     }
 
@@ -36,7 +35,7 @@ impl NumberingFormats {
     pub(crate) fn get_build_in_formats(&mut self) {
         for (index, code) in super::numbering_format::FILL_BUILT_IN_FORMAT_CODES.iter() {
             let mut obj = NumberingFormat::default();
-            obj.set_number_format_id_crate(index.clone())
+            obj.set_number_format_id_crate(*index)
                 .set_format_code_crate(code.clone());
             self.set_numbering_format(obj);
         }
@@ -49,17 +48,17 @@ impl NumberingFormats {
                 let mut id = 175;
                 for (index, numbering_format) in &self.numbering_format {
                     if numbering_format.get_hash_code() == hash_code {
-                        return index.clone();
+                        return *index;
                     }
                     if &id < index {
-                        id = index.clone();
+                        id = *index;
                     }
                 }
                 id += 1;
                 let mut num = v.clone();
                 num.set_number_format_id_crate(id);
                 self.set_numbering_format(num);
-                return id;
+                id
             }
             None => 0,
         }

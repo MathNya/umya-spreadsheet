@@ -85,7 +85,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 write_end_tag(&mut writer, "sheetPr");
             }
             None => {
-                if attributes.len() > 0 {
+                if !attributes.is_empty() {
                     write_start_tag(&mut writer, "sheetPr", attributes, true);
                 }
             }
@@ -130,7 +130,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // row dimensions sort.
         let mut row_dimensions = worksheet.get_row_dimensions();
-        row_dimensions.sort_by(|a, b| a.get_row_num().cmp(&b.get_row_num()));
+        row_dimensions.sort_by(|a, b| a.get_row_num().cmp(b.get_row_num()));
 
         // it's faster than get cell collection by row.
         // cells sort.
@@ -178,14 +178,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             }
 
             // row
-            let include_cell = cells_in_row.len() > 0;
+            let include_cell = !cells_in_row.is_empty();
             if include_cell {
-                let fist_num = cells_in_row
-                    .iter()
-                    .next()
-                    .unwrap()
-                    .get_coordinate()
-                    .get_col_num();
+                let fist_num = cells_in_row.get(0).unwrap().get_coordinate().get_col_num();
                 let last_num = cells_in_row
                     .iter()
                     .last()
