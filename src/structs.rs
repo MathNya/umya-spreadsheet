@@ -82,9 +82,6 @@ pub use self::rich_text::*;
 mod text_element;
 pub use self::text_element::*;
 
-mod picture;
-pub use self::picture::*;
-
 mod theme;
 pub use self::theme::*;
 

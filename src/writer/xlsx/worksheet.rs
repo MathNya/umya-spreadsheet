@@ -70,7 +70,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             true => {
                 let code_name = match worksheet.has_code_name() {
                     true => worksheet.get_code_name().as_ref().unwrap(),
-                    false => worksheet.get_title(),
+                    false => worksheet.get_name(),
                 };
                 attributes.push(("codeName", code_name));
             }

@@ -93,9 +93,9 @@ impl Worksheet {
     /// let worksheet = book.get_sheet(0).unwrap();
     /// let value = worksheet.get_value("A1");
     /// ```
-    pub fn get_value<S: Into<String>>(&self, coordinate: S) -> String {
+    pub fn get_value(&self, coordinate: &str) -> String {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_value_by_column_and_row(col, row)
+        self.get_value_by_column_and_row(&col, &row)
     }
 
     /// Get value by specifying the column number and row number.
@@ -108,9 +108,9 @@ impl Worksheet {
     /// ```
     /// let book = umya_spreadsheet::new_file();
     /// let worksheet = book.get_sheet(0).unwrap();
-    /// let value = worksheet.get_value_by_column_and_row(1, 1);
+    /// let value = worksheet.get_value_by_column_and_row(&1, &1);
     /// ```
-    pub fn get_value_by_column_and_row(&self, col: u32, row: u32) -> String {
+    pub fn get_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
         match self.get_cell_by_column_and_row(col, row) {
             Some(v) => v.get_value().into(),
             None => "".into(),
@@ -128,9 +128,9 @@ impl Worksheet {
     /// let worksheet = book.get_sheet(0).unwrap();
     /// let value = worksheet.get_formatted_value("A1");
     /// ```
-    pub fn get_formatted_value<S: Into<String>>(&self, coordinate: S) -> String {
+    pub fn get_formatted_value(&self, coordinate: &str) -> String {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_formatted_value_by_column_and_row(col, row)
+        self.get_formatted_value_by_column_and_row(&col, &row)
     }
 
     /// Get formatted value by specifying the column number and row number.
@@ -143,11 +143,11 @@ impl Worksheet {
     /// ```
     /// let book = umya_spreadsheet::new_file();
     /// let worksheet = book.get_sheet(0).unwrap();
-    /// let value = worksheet.get_formatted_value_by_column_and_row(1, 1);
+    /// let value = worksheet.get_formatted_value_by_column_and_row(&1, &1);
     /// ```
-    pub fn get_formatted_value_by_column_and_row(&self, col: u32, row: u32) -> String {
+    pub fn get_formatted_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
         self.cell_collection
-            .get_formatted_value_by_column_and_row(&col, &row)
+            .get_formatted_value_by_column_and_row(col, row)
     }
 
     // ************************
@@ -163,16 +163,12 @@ impl Worksheet {
         self.cell_collection.get_collection_mut()
     }
 
-    /// Get Cell List convert to HasMap.
-    // pub fn get_cell_collection_to_hashmap(&self) -> HashMap<String, &Cell> {
-    //     self.cell_collection.get_collection_to_hashmap()
-    // }
+    pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Cell> {
+        self.cell_collection.get_collection_to_hashmap()
+    }
 
-    /// Get Cell List by Specified column.
-    /// # Arguments
-    /// * `row_num` - Row Number. ex) "1"
-    pub fn get_collection_by_row(&self, row_num: &u32) -> BTreeMap<u32, &Cell> {
-        self.cell_collection.get_collection_by_row(row_num)
+    pub fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Cell> {
+        self.cell_collection.get_collection_to_hashmap_mut()
     }
 
     /// (This method is crate only.)
@@ -198,9 +194,9 @@ impl Worksheet {
     /// let worksheet = book.get_sheet(0).unwrap();
     /// let cell = worksheet.get_cell("A1");
     /// ```
-    pub fn get_cell<S: Into<String>>(&self, coordinate: S) -> Option<&Cell> {
+    pub fn get_cell(&self, coordinate: &str) -> Option<&Cell> {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_cell_by_column_and_row(col, row)
+        self.get_cell_by_column_and_row(&col, &row)
     }
 
     /// Gets the cell by specifying the column number and row number.
@@ -213,10 +209,10 @@ impl Worksheet {
     /// ```
     /// let book = umya_spreadsheet::new_file();
     /// let worksheet = book.get_sheet(0).unwrap();
-    /// let cell = worksheet.get_cell_by_column_and_row(1, 1);  // get cell from A1.
+    /// let cell = worksheet.get_cell_by_column_and_row(&1, &1);  // get cell from A1.
     /// ```
-    pub fn get_cell_by_column_and_row(&self, col: u32, row: u32) -> Option<&Cell> {
-        self.cell_collection.get(&col, &row)
+    pub fn get_cell_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Cell> {
+        self.cell_collection.get(col, row)
     }
 
     /// Get cell with mutable.
@@ -230,9 +226,9 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(0);
     /// let cell = worksheet.get_cell_mut("A1");
     /// ```
-    pub fn get_cell_mut<S: Into<String>>(&mut self, coordinate: S) -> &mut Cell {
+    pub fn get_cell_mut(&mut self, coordinate: &str) -> &mut Cell {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_cell_by_column_and_row_mut(col, row)
+        self.get_cell_by_column_and_row_mut(&col, &row)
     }
 
     /// Gets the cell with mutable by specifying the column number and row number.
@@ -247,9 +243,9 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(0);
     /// let cell = worksheet.get_cell_by_column_and_row_mut(1, 1);  // get cell from A1.
     /// ```
-    pub fn get_cell_by_column_and_row_mut(&mut self, col: u32, row: u32) -> &mut Cell {
-        self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row)
+    pub fn get_cell_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Cell {
+        self.get_row_dimension_mut(row);
+        self.cell_collection.get_mut(col, row)
     }
 
     /// Set Cell
@@ -260,7 +256,7 @@ impl Worksheet {
         self
     }
 
-    pub fn remove_cell_by_column_and_row_mut(&mut self, col: u32, row: u32) -> bool {
+    pub fn remove_cell_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> bool {
         self.cell_collection.remove(col, row)
     }
 
@@ -284,9 +280,9 @@ impl Worksheet {
     /// let worksheet = book.get_sheet(0).unwrap();
     /// let cell_value = worksheet.get_cell_value("A1");
     /// ```
-    pub fn get_cell_value<S: Into<String>>(&self, coordinate: S) -> &CellValue {
+    pub fn get_cell_value(&self, coordinate: &str) -> &CellValue {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_cell_value_by_column_and_row(col, row)
+        self.get_cell_value_by_column_and_row(&col, &row)
     }
 
     /// Gets the cell value by specifying the column number and row number.
@@ -301,8 +297,8 @@ impl Worksheet {
     /// let worksheet = book.get_sheet(0).unwrap();
     /// let cell_value = worksheet.get_style_by_column_and_row(1, 1);  // get cell from A1.
     /// ```
-    pub fn get_cell_value_by_column_and_row(&self, col: u32, row: u32) -> &CellValue {
-        self.cell_collection.get_cell_value(&col, &row)
+    pub fn get_cell_value_by_column_and_row(&self, col: &u32, row: &u32) -> &CellValue {
+        self.cell_collection.get_cell_value(col, row)
     }
 
     /// Get cell value with mutable.
@@ -316,9 +312,9 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(0);
     /// let cell_value = worksheet.get_cell_value_mut("A1");
     /// ```
-    pub fn get_cell_value_mut<S: Into<String>>(&mut self, coordinate: S) -> &mut CellValue {
+    pub fn get_cell_value_mut(&mut self, coordinate: &str) -> &mut CellValue {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_cell_value_by_column_and_row_mut(col, row)
+        self.get_cell_value_by_column_and_row_mut(&col, &row)
     }
 
     /// Gets the cell value with mutable by specifying the column number and row number.
@@ -333,11 +329,9 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(0);
     /// let cell_value = worksheet.get_cell_value_by_column_and_row_mut(1, 1);  // get cell_value from A1.
     /// ```
-    pub fn get_cell_value_by_column_and_row_mut(&mut self, col: u32, row: u32) -> &mut CellValue {
+    pub fn get_cell_value_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut CellValue {
         self.get_row_dimension_mut(&row);
-        self.cell_collection
-            .get_mut(&col, &row)
-            .get_cell_value_mut()
+        self.cell_collection.get_mut(col, row).get_cell_value_mut()
     }
 
     /// Gets the cell value by specifying an range.
@@ -351,7 +345,7 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(0);
     /// let mut cell_value_List = worksheet.get_cell_value_by_range("A1:C5");
     /// ```
-    pub fn get_cell_value_by_range<S: Into<String>>(&self, range: S) -> Vec<&CellValue> {
+    pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         self.cell_collection.get_cell_value_by_range(range)
     }
 
@@ -366,9 +360,9 @@ impl Worksheet {
     /// let worksheet = book.get_sheet(0).unwrap();
     /// let style = worksheet.get_style("A1");
     /// ```
-    pub fn get_style<S: Into<String>>(&self, coordinate: S) -> &Style {
+    pub fn get_style(&self, coordinate: &str) -> &Style {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_style_by_column_and_row(col, row)
+        self.get_style_by_column_and_row(&col, &row)
     }
 
     /// Gets the style by specifying the column number and row number.
@@ -381,10 +375,10 @@ impl Worksheet {
     /// ```
     /// let book = umya_spreadsheet::new_file();
     /// let worksheet = book.get_sheet(0).unwrap();
-    /// let style = worksheet.get_style_by_column_and_row(1, 1);  // get cell from A1.
+    /// let style = worksheet.get_style_by_column_and_row(&1, &1);  // get cell from A1.
     /// ```
-    pub fn get_style_by_column_and_row(&self, col: u32, row: u32) -> &Style {
-        self.cell_collection.get_style(&col, &row)
+    pub fn get_style_by_column_and_row(&self, col: &u32, row: &u32) -> &Style {
+        self.cell_collection.get_style(col, row)
     }
 
     /// Get style with mutable.
@@ -398,9 +392,9 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(0);
     /// let style = worksheet.get_style_mut("A1");
     /// ```
-    pub fn get_style_mut<S: Into<String>>(&mut self, coordinate: S) -> &mut Style {
+    pub fn get_style_mut(&mut self, coordinate: &str) -> &mut Style {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_style_by_column_and_row_mut(col, row)
+        self.get_style_by_column_and_row_mut(&col, &row)
     }
 
     /// Gets the style with mutable by specifying the column number and row number.
@@ -413,11 +407,11 @@ impl Worksheet {
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.get_sheet_mut(0);
-    /// let style = worksheet.get_style_by_column_and_row_mut(1, 1);  // get style from A1.
+    /// let style = worksheet.get_style_by_column_and_row_mut(&1, &1);  // get style from A1.
     /// ```
-    pub fn get_style_by_column_and_row_mut(&mut self, col: u32, row: u32) -> &mut Style {
+    pub fn get_style_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Style {
         self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row).get_style_mut()
+        self.cell_collection.get_mut(col, row).get_style_mut()
     }
 
     /// Set the style by specifying the column number and row number.
@@ -433,11 +427,11 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(0);
     /// let mut style = umya_spreadsheet::Style::default();
     /// style.get_borders_mut().get_bottom_mut().set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
-    /// let style = worksheet.set_style_by_column_and_row(1, 1, style);  // set style to A1.
+    /// let style = worksheet.set_style_by_column_and_row(&1, &1, style);  // set style to A1.
     /// ```
-    pub fn set_style_by_column_and_row(&mut self, col: u32, row: u32, style: Style) -> &mut Self {
-        self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row).set_style(style);
+    pub fn set_style_by_column_and_row(&mut self, col: &u32, row: &u32, style: Style) -> &mut Self {
+        self.get_row_dimension_mut(row);
+        self.cell_collection.get_mut(col, row).set_style(style);
         self
     }
 
@@ -455,8 +449,8 @@ impl Worksheet {
     /// style.get_borders_mut().get_bottom_mut().set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     /// worksheet.set_style_by_range("A1:A3", style);
     /// ```
-    pub fn set_style_by_range<S: Into<String>>(&mut self, range: S, style: Style) -> &mut Self {
-        let range_upper = range.into().to_uppercase();
+    pub fn set_style_by_range(&mut self, range: &str, style: Style) -> &mut Self {
+        let range_upper = range.to_uppercase();
         let coordinate_list = get_coordinate_list(&range_upper);
 
         let (col_num_start, row_num_start) = coordinate_list[0];
@@ -478,7 +472,7 @@ impl Worksheet {
         }
 
         for (col_num, row_num) in coordinate_list {
-            self.set_style_by_column_and_row(col_num, row_num, style.clone());
+            self.set_style_by_column_and_row(&col_num, &row_num, style.clone());
         }
         self
     }
@@ -633,7 +627,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
     /// worksheet.set_auto_filter("A2:K2");
     /// ```
     pub fn set_auto_filter<S: Into<String>>(&mut self, range: S) {
@@ -672,8 +666,8 @@ impl Worksheet {
     /// Get Column Dimension.
     /// # Arguments
     /// * `column` - Column Char. ex) "A"
-    pub fn get_column_dimension<S: Into<String>>(&self, column: S) -> Option<&Column> {
-        let column_upper = column.into().to_uppercase();
+    pub fn get_column_dimension(&self, column: &str) -> Option<&Column> {
+        let column_upper = column.to_uppercase();
         let col = column_index_from_string(&column_upper);
         self.get_column_dimension_by_number(&col)
     }
@@ -681,8 +675,8 @@ impl Worksheet {
     /// Get Column Dimension in mutable.
     /// # Arguments
     /// * `column` - Column Char. ex) "A"
-    pub fn get_column_dimension_mut<S: Into<String>>(&mut self, column: S) -> &mut Column {
-        let column_upper = column.into().to_uppercase();
+    pub fn get_column_dimension_mut(&mut self, column: &str) -> &mut Column {
+        let column_upper = column.to_uppercase();
         let col = column_index_from_string(&column_upper);
         self.get_column_dimension_by_number_mut(&col)
     }
@@ -723,13 +717,13 @@ impl Worksheet {
     // ************************
     // Row Dimensions
     // ************************
+    pub fn has_sheet_data(&self) -> bool {
+        self.row_dimensions.has_sheet_data()
+    }
+
     /// Get Row Dimension List.
     pub fn get_row_dimensions(&self) -> Vec<&Row> {
         self.row_dimensions.get_row_dimensions()
-    }
-
-    pub fn has_sheet_data(&self) -> bool {
-        self.row_dimensions.has_sheet_data()
     }
 
     /// Get Row Dimension List in mutable.
@@ -737,9 +731,13 @@ impl Worksheet {
         self.row_dimensions.get_row_dimensions_mut()
     }
 
-    /// Get Row Dimension convert BTreeMap.
-    pub fn get_row_dimensions_to_b_tree_map(&self) -> BTreeMap<&u32, &Row> {
-        self.row_dimensions.get_row_dimensions_to_b_tree_map()
+    /// Get Row Dimension convert Hashmap.
+    pub fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Row> {
+        self.row_dimensions.get_row_dimensions_to_hashmap()
+    }
+
+    pub fn get_row_dimensions_to_hashmap_mut(&mut self) -> &mut HashMap<u32, Row> {
+        self.row_dimensions.get_row_dimensions_to_hashmap_mut()
     }
 
     /// Get Row Dimension.
@@ -799,40 +797,206 @@ impl Worksheet {
     // ************************
     // update Coordinate
     // ************************
+    /// Insert new rows.
+    /// # Arguments
+    /// * `row_index` - Specify point of insert. ex) 1
+    /// * `num_rows` - Specify number to insert. ex) 2
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// worksheet.insert_new_row(&2, &3);
+    /// ```
+    pub fn insert_new_row(&mut self, row_index: &u32, num_rows: &u32) {
+        self.adjustment_insert_coordinate(&0, &0, row_index, num_rows);
+    }
+
+    /// Adjust for references to other sheets.
+    pub fn insert_new_row_from_other_sheet(
+        &mut self,
+        sheet_name: &str,
+        row_index: &u32,
+        num_rows: &u32,
+    ) {
+        self.adjustment_insert_coordinate_from_other_sheet(sheet_name, &0, &0, row_index, num_rows);
+    }
+
+    /// Insert new columns.
+    /// # Arguments
+    /// * `column` - Specify point of insert. ex) "B"
+    /// * `num_columns` - Specify number to insert. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// worksheet.insert_new_column("B", &3);
+    /// ```
+    pub fn insert_new_column(&mut self, column: &str, num_columns: &u32) {
+        let column_upper = column.to_uppercase();
+        let column_index = column_index_from_string(column_upper);
+        self.insert_new_column_by_index(&column_index, num_columns);
+    }
+
+    /// Adjust for references to other sheets.
+    pub fn insert_new_column_from_other_sheet(
+        &mut self,
+        sheet_name: &str,
+        column: &str,
+        num_columns: &u32,
+    ) {
+        let column_upper = column.to_uppercase();
+        let column_index = column_index_from_string(column_upper);
+        self.insert_new_column_by_index_from_other_sheet(sheet_name, &column_index, num_columns);
+    }
+
+    /// Insert new columns.
+    /// # Arguments
+    /// * `column_index` - Specify point of insert. ex) 2
+    /// * `num_columns` - Specify number to insert. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// worksheet.insert_new_column_by_index(2, 3);
+    /// ```
+    pub fn insert_new_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
+        self.adjustment_insert_coordinate(column_index, num_columns, &0, &0);
+    }
+
+    /// Adjust for references to other sheets.
+    pub fn insert_new_column_by_index_from_other_sheet(
+        &mut self,
+        sheet_name: &str,
+        column_index: &u32,
+        num_columns: &u32,
+    ) {
+        self.adjustment_insert_coordinate_from_other_sheet(
+            sheet_name,
+            column_index,
+            num_columns,
+            &0,
+            &0,
+        );
+    }
+
+    /// Remove rows.
+    /// # Arguments
+    /// * `row_index` - Specify point of remove. ex) 1
+    /// * `num_rows` - Specify number to remove. ex) 2
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// worksheet.remove_row(&2, &3);
+    /// ```
+    pub fn remove_row(&mut self, row_index: &u32, num_rows: &u32) {
+        self.adjustment_remove_coordinate(&0, &0, row_index, num_rows);
+    }
+
+    /// Adjust for references to other sheets.
+    pub fn remove_row_from_other_sheet(
+        &mut self,
+        sheet_name: &str,
+        row_index: &u32,
+        num_rows: &u32,
+    ) {
+        self.adjustment_remove_coordinate_from_other_sheet(sheet_name, &0, &0, row_index, num_rows);
+    }
+
+    /// Remove columns.
+    /// # Arguments
+    /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
+    /// * `column` - Specify point of remove. ex) "B"
+    /// * `num_columns` - Specify number to remove. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// worksheet.remove_column("B", 3);
+    /// ```
+    pub fn remove_column(&mut self, column: &str, num_columns: &u32) {
+        let column_upper = column.to_uppercase();
+        let column_index = column_index_from_string(column_upper);
+        self.remove_column_by_index(&column_index, num_columns);
+    }
+
+    /// Adjust for references to other sheets.
+    pub fn remove_column_from_other_sheet(
+        &mut self,
+        sheet_name: &str,
+        column: &str,
+        num_columns: &u32,
+    ) {
+        let column_upper = column.to_uppercase();
+        let column_index = column_index_from_string(column_upper);
+        self.remove_column_by_index_from_other_sheet(sheet_name, &column_index, num_columns);
+    }
+
+    /// Remove columns.
+    /// # Arguments
+    /// * `column_index` - Specify point of remove. ex) 2
+    /// * `num_columns` - Specify number to remove. ex) 3
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// worksheet.remove_column_by_index(2, 3);
+    /// ```
+    pub fn remove_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
+        self.adjustment_remove_coordinate(column_index, num_columns, &0, &0);
+    }
+
+    /// Adjust for references to other sheets.
+    pub fn remove_column_by_index_from_other_sheet(
+        &mut self,
+        sheet_name: &str,
+        column_index: &u32,
+        num_columns: &u32,
+    ) {
+        self.adjustment_remove_coordinate_from_other_sheet(
+            sheet_name,
+            column_index,
+            num_columns,
+            &0,
+            &0,
+        );
+    }
+
     /// (This method is crate only.)
     /// Adjustment Insert Coordinate
     pub(crate) fn adjustment_insert_coordinate(
         &mut self,
-        sheet_name: &str,
         root_col_num: &u32,
         offset_col_num: &u32,
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if sheet_name == self.title && offset_col_num != &0 {
-            // update column dimensions
+        if offset_col_num != &0 {
+            // column dimensions
             self.column_dimensions
                 .adjustment_insert_coordinate(root_col_num, offset_col_num);
         }
-        if sheet_name == self.title && offset_row_num != &0 {
-            // update row dimensions
+        if offset_row_num != &0 {
+            // row dimensions
             self.get_row_dimensions_crate_mut()
                 .adjustment_insert_coordinate(root_row_num, offset_row_num);
         }
-        if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
-            // update defined_names
+        if offset_col_num != &0 || offset_row_num != &0 {
+            // defined_names
+            let title = self.title.clone();
             for defined_name in &mut self.defined_names {
                 defined_name
                     .get_address_obj_mut()
                     .adjustment_insert_coordinate(
-                        sheet_name,
+                        &title,
                         root_col_num,
                         offset_col_num,
                         root_row_num,
                         offset_row_num,
                     );
             }
-            // update cell
+
+            // cell
             self.get_cell_collection_crate_mut()
                 .adjustment_insert_coordinate(
                     root_col_num,
@@ -841,7 +1005,7 @@ impl Worksheet {
                     offset_row_num,
                 );
 
-            // update comments
+            // comments
             for comment in &mut self.comments {
                 comment.adjustment_insert_coordinate(
                     root_col_num,
@@ -851,7 +1015,7 @@ impl Worksheet {
                 );
             }
 
-            // update conditional styles
+            // conditional styles
             for conditional_styles in &mut self.conditional_styles_collection {
                 for range in conditional_styles
                     .get_sequence_of_references_mut()
@@ -866,7 +1030,7 @@ impl Worksheet {
                 }
             }
 
-            // update merge cells
+            // merge cells
             for merge_cell in self.get_merge_cells_mut() {
                 merge_cell.adjustment_insert_coordinate(
                     root_col_num,
@@ -876,7 +1040,7 @@ impl Worksheet {
                 );
             }
 
-            // update auto filter
+            // auto filter
             match self.get_auto_filter_mut() {
                 Some(v) => {
                     v.get_range_mut().adjustment_insert_coordinate(
@@ -889,45 +1053,9 @@ impl Worksheet {
                 None => {}
             };
         }
-
-        if offset_col_num != &0 || offset_row_num != &0 {
-            // update cell formula coordinate
-            let title = self.title.clone();
-            for cell in self.get_cell_collection_mut() {
-                cell.cell_value.adjustment_insert_formula_coordinate(
-                    &title,
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-
-            // update chart
-            for graphic_frame in self.worksheet_drawing.get_graphic_frame_collection_mut() {
-                for formula in graphic_frame
-                    .get_graphic_mut()
-                    .get_graphic_data_mut()
-                    .get_chart_space_mut()
-                    .get_chart_mut()
-                    .get_formula_mut()
-                {
-                    formula.get_address_mut().adjustment_insert_coordinate(
-                        sheet_name,
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-            }
-        }
     }
 
-    /// (This method is crate only.)
-    /// Adjustment Remove Coordinate
-    pub(crate) fn adjustment_remove_coordinate(
+    pub(crate) fn adjustment_insert_coordinate_from_other_sheet(
         &mut self,
         sheet_name: &str,
         root_col_num: &u32,
@@ -935,21 +1063,55 @@ impl Worksheet {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if sheet_name == self.title && offset_col_num != &0 {
-            // update column dimensions
+        if offset_col_num != &0 || offset_row_num != &0 {
+            // cell formula coordinate
+            let title = self.title.clone();
+            self.get_cell_collection_crate_mut()
+                .adjustment_insert_formula_coordinate(
+                    &title,
+                    sheet_name,
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+
+            // chart
+            self.worksheet_drawing.adjustment_insert_coordinate(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+    }
+
+    /// (This method is crate only.)
+    /// Adjustment Remove Coordinate
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        if offset_col_num != &0 {
+            // column dimensions
             self.column_dimensions
                 .adjustment_remove_coordinate(root_col_num, offset_col_num);
         }
-        if sheet_name == self.title && offset_row_num != &0 {
-            // update row dimensions
+        if offset_row_num != &0 {
+            // row dimensions
             self.get_row_dimensions_crate_mut()
                 .adjustment_remove_coordinate(root_row_num, offset_row_num);
         }
-        if sheet_name == self.title && (offset_col_num != &0 || offset_row_num != &0) {
-            // update defined_names
+        if offset_col_num != &0 || offset_row_num != &0 {
+            // defined_names
+            let title = self.title.clone();
             self.defined_names.retain(|x| {
                 !(x.get_address_obj().is_remove(
-                    sheet_name,
+                    &title,
                     root_col_num,
                     offset_col_num,
                     root_row_num,
@@ -960,7 +1122,7 @@ impl Worksheet {
                 defined_name
                     .get_address_obj_mut()
                     .adjustment_remove_coordinate(
-                        sheet_name,
+                        &title,
                         root_col_num,
                         offset_col_num,
                         root_row_num,
@@ -968,7 +1130,7 @@ impl Worksheet {
                     );
             }
 
-            // update cell
+            // cell
             self.get_cell_collection_crate_mut()
                 .adjustment_remove_coordinate(
                     root_col_num,
@@ -977,7 +1139,7 @@ impl Worksheet {
                     offset_row_num,
                 );
 
-            // update comments
+            // comments
             self.comments.retain(|x| {
                 !(x.get_coordinate().is_remove(
                     root_col_num,
@@ -995,7 +1157,7 @@ impl Worksheet {
                 );
             }
 
-            // update conditional styles
+            // conditional styles
             for conditional_styles in &mut self.conditional_styles_collection {
                 conditional_styles
                     .get_sequence_of_references_mut()
@@ -1020,7 +1182,7 @@ impl Worksheet {
                 }
             }
 
-            // update merge cells
+            // merge cells
             self.get_merge_cells_mut().retain(|x| {
                 !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
             });
@@ -1033,7 +1195,7 @@ impl Worksheet {
                 );
             }
 
-            // update auto filter
+            // auto filter
             let is_remove = match self.get_auto_filter() {
                 Some(v) => v.get_range().is_remove(
                     root_col_num,
@@ -1058,12 +1220,23 @@ impl Worksheet {
                 None => {}
             };
         }
+    }
 
+    /// (This method is crate only.)
+    /// Adjustment Remove Coordinate
+    pub(crate) fn adjustment_remove_coordinate_from_other_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
         if offset_col_num != &0 || offset_row_num != &0 {
-            // update cell formula coordinate
+            // cell formula coordinate
             let title = self.title.clone();
-            for cell in self.get_cell_collection_mut() {
-                cell.cell_value.adjustment_remove_formula_coordinate(
+            self.get_cell_collection_crate_mut()
+                .adjustment_remove_formula_coordinate(
                     &title,
                     sheet_name,
                     root_col_num,
@@ -1071,26 +1244,15 @@ impl Worksheet {
                     root_row_num,
                     offset_row_num,
                 );
-            }
 
-            // update chart
-            for graphic_frame in self.worksheet_drawing.get_graphic_frame_collection_mut() {
-                for formula in graphic_frame
-                    .get_graphic_mut()
-                    .get_graphic_data_mut()
-                    .get_chart_space_mut()
-                    .get_chart_mut()
-                    .get_formula_mut()
-                {
-                    formula.get_address_mut().adjustment_remove_coordinate(
-                        sheet_name,
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-            }
+            // chart
+            self.worksheet_drawing.adjustment_remove_coordinate(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 
@@ -1194,29 +1356,58 @@ impl Worksheet {
 
     /// Calculate Worksheet Dimension.
     pub fn calculate_worksheet_dimension(&self) -> String {
-        let highest = &self.cell_collection.get_highest_row_and_column();
-        if highest["row"] == 0 {
+        let (column, row) = self.cell_collection.get_highest_column_and_row();
+        if row == 0 {
             return "A1".to_string();
         }
-        let column_str = string_from_column_index(&highest["column"]);
-        format!("A1:{}{}", column_str, highest["row"])
+        let column_str = string_from_column_index(&column);
+        format!("A1:{}{}", column_str, row)
     }
 
-    pub fn get_highest_row_and_column(&self) -> HashMap<&str, u32> {
-        self.cell_collection.get_highest_row_and_column()
+    // Get Highest Column and Row Index
+    /// # Return value
+    /// *`(u32, u32)` - (column, row)
+    pub fn get_highest_column_and_row(&self) -> (u32, u32) {
+        self.cell_collection.get_highest_column_and_row()
+    }
+
+    // Get Highest Column Index
+    pub fn get_highest_column(&self) -> u32 {
+        let (column, _row) = self.cell_collection.get_highest_column_and_row();
+        column
+    }
+
+    // Get Highest Row Index
+    pub fn get_highest_row(&self) -> u32 {
+        let (_column, row) = self.cell_collection.get_highest_column_and_row();
+        row
     }
 
     /// Get Title.
+    #[deprecated(since = "1.0.0", note = "please use `get_name` instead")]
     pub fn get_title(&self) -> &str {
+        self.get_name()
+    }
+
+    /// Get SheetName.
+    pub fn get_name(&self) -> &str {
         return &self.title;
     }
 
     /// Set Title.
     /// # Arguments
     /// * `sheet_title` - Sheet Title. [Caution] no duplicate other worksheet.
+    #[deprecated(since = "1.0.0", note = "please use `set_name` instead")]
     pub fn set_title<S: Into<String>>(&mut self, sheet_title: S) -> &mut Self {
-        self.title = sheet_title.into();
-        let title = self.get_title().to_string();
+        self.set_name(sheet_title)
+    }
+
+    /// Set SheetName.
+    /// # Arguments
+    /// * `sheet_name` - Sheet Name. [Caution] no duplicate other worksheet.
+    pub fn set_name<S: Into<String>>(&mut self, sheet_name: S) -> &mut Self {
+        self.title = sheet_name.into();
+        let title = self.get_name().to_string();
         for defined_name in self.get_defined_names_mut() {
             defined_name.get_address_obj_mut().set_sheet_name(&title);
         }
@@ -1417,39 +1608,39 @@ impl Worksheet {
         self
     }
 
-    pub fn get_image<S: Into<String>>(&self, coordinate: S) -> Option<&Image> {
+    pub fn get_image(&self, coordinate: &str) -> Option<&Image> {
         let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing().get_image(&col, &row)
+    }
+
+    pub fn get_image_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Image> {
         self.get_worksheet_drawing().get_image(col, row)
     }
 
-    pub fn get_image_by_column_and_row(&self, col: u32, row: u32) -> Option<&Image> {
-        self.get_worksheet_drawing().get_image(col, row)
+    pub fn get_image_mut(&mut self, coordinate: &str) -> Option<&mut Image> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing_mut().get_image_mut(&col, &row)
     }
 
-    pub fn get_image_mut<S: Into<String>>(&mut self, coordinate: S) -> Option<&mut Image> {
-        let (col, row) = index_from_coordinate_simple(coordinate);
+    pub fn get_image_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
         self.get_worksheet_drawing_mut().get_image_mut(col, row)
     }
 
-    pub fn get_image_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
-        self.get_worksheet_drawing_mut().get_image_mut(col, row)
+    pub fn get_images(&self, coordinate: &str) -> Vec<&Image> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing().get_images(&col, &row)
     }
 
-    pub fn get_images<S: Into<String>>(&self, coordinate: S) -> Vec<&Image> {
-        let (col, row) = index_from_coordinate_simple(coordinate);
+    pub fn get_images_by_column_and_row(&self, col: &u32, row: &u32) -> Vec<&Image> {
         self.get_worksheet_drawing().get_images(col, row)
     }
 
-    pub fn get_images_by_column_and_row(&self, col: u32, row: u32) -> Vec<&Image> {
-        self.get_worksheet_drawing().get_images(col, row)
-    }
-
-    pub fn get_images_mut<S: Into<String>>(&mut self, coordinate: S) -> Vec<&mut Image> {
+    pub fn get_images_mut(&mut self, coordinate: &str) -> Vec<&mut Image> {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_worksheet_drawing_mut().get_images_mut(col, row)
+        self.get_worksheet_drawing_mut().get_images_mut(&col, &row)
     }
 
-    pub fn get_images_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
+    pub fn get_images_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Image> {
         self.get_worksheet_drawing_mut().get_images_mut(col, row)
     }
 
@@ -1472,39 +1663,39 @@ impl Worksheet {
         self
     }
 
-    pub fn get_chart<S: Into<String>>(&self, coordinate: S) -> Option<&Chart> {
+    pub fn get_chart(&self, coordinate: &str) -> Option<&Chart> {
         let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing().get_chart(&col, &row)
+    }
+
+    pub fn get_chart_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Chart> {
         self.get_worksheet_drawing().get_chart(col, row)
     }
 
-    pub fn get_chart_by_column_and_row(&self, col: u32, row: u32) -> Option<&Chart> {
-        self.get_worksheet_drawing().get_chart(col, row)
+    pub fn get_chart_mut(&mut self, coordinate: &str) -> Option<&mut Chart> {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.get_worksheet_drawing_mut().get_chart_mut(&col, &row)
     }
 
-    pub fn get_chart_mut<S: Into<String>>(&mut self, coordinate: S) -> Option<&mut Chart> {
-        let (col, row) = index_from_coordinate_simple(coordinate);
+    pub fn get_chart_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
         self.get_worksheet_drawing_mut().get_chart_mut(col, row)
     }
 
-    pub fn get_chart_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
-        self.get_worksheet_drawing_mut().get_chart_mut(col, row)
-    }
-
-    pub fn get_charts<S: Into<String>>(&self, coordinate: S) -> Vec<&Chart> {
+    pub fn get_charts(&self, coordinate: &str) -> Vec<&Chart> {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_worksheet_drawing().get_charts(col, row)
+        self.get_worksheet_drawing().get_charts(&col, &row)
     }
 
-    pub fn get_charts_by_column_and_row(&self, col: u32, row: u32) -> Vec<&Chart> {
-        self.get_worksheet_drawing().get_charts(col, row)
+    pub fn get_charts_by_column_and_row(&self, col: &u32, row: &u32) -> Vec<&Chart> {
+        self.get_worksheet_drawing().get_charts(&col, &row)
     }
 
-    pub fn get_charts_mut<S: Into<String>>(&mut self, coordinate: S) -> Vec<&mut Chart> {
+    pub fn get_charts_mut(&mut self, coordinate: &str) -> Vec<&mut Chart> {
         let (col, row) = index_from_coordinate_simple(coordinate);
-        self.get_worksheet_drawing_mut().get_charts_mut(col, row)
+        self.get_worksheet_drawing_mut().get_charts_mut(&col, &row)
     }
 
-    pub fn get_charts_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
+    pub fn get_charts_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Chart> {
         self.get_worksheet_drawing_mut().get_charts_mut(col, row)
     }
 

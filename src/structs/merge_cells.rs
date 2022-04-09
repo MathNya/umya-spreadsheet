@@ -23,7 +23,7 @@ impl MergeCells {
 
     pub(crate) fn add_range<S: Into<String>>(&mut self, range: S) -> &mut Self {
         let mut obj = Range::default();
-        obj.set_range(range.into());
+        obj.set_range(range);
         self.range.push(obj);
         self
     }
