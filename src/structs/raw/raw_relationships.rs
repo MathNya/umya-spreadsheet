@@ -40,14 +40,13 @@ impl RawRelationships {
         &mut self.relationship_list
     }
 
-    pub(crate) fn get_relationship_by_rid<S: Into<String>>(&self, r_id: S) -> &RawRelationship {
-        let r_id_str = r_id.into();
+    pub(crate) fn get_relationship_by_rid(&self, r_id: &str) -> &RawRelationship {
         for relationship in self.get_relationship_list() {
-            if relationship.get_id() == r_id_str.as_str() {
+            if relationship.get_id() == r_id {
                 return relationship;
             }
         }
-        panic!("not found relationship as {}.", &r_id_str);
+        panic!("not found relationship as {}.", r_id);
     }
 
     pub(crate) fn add_relationship_list(&mut self, value: RawRelationship) -> &mut Self {

@@ -138,7 +138,7 @@ pub struct Chart {
 /// chart
 ///     .set_series_title(vec!["Line1", "Line2"])
 ///     .set_series_point_title(vec!["Point1", "Point2", "Point3", "Point4"])
-///     .set_title("Chart Title")
+///     .set_name("Chart Title")
 ///     .set_horizontal_title("Horizontal Title")
 ///     .set_vertical_title("Vertical Title");
 /// ```

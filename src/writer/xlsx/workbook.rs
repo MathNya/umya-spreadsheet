@@ -118,7 +118,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let id = index.to_string();
         let r_id = format!("rId{}", index);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", worksheet.get_title()));
+        attributes.push(("name", worksheet.get_name()));
         attributes.push(("sheetId", &id));
         attributes.push(("r:id", &r_id));
 

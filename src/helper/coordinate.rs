@@ -113,8 +113,8 @@ pub fn index_from_coordinate<S: AsRef<str>>(coordinate: S) -> Vec<Option<u32>> {
     vec![col, row, is_lock_col, is_lock_row]
 }
 
-pub fn index_from_coordinate_simple<S: Into<String>>(coordinate: S) -> (u32, u32) {
-    let coordinate_upper = coordinate.into().to_uppercase();
+pub fn index_from_coordinate_simple(coordinate: &str) -> (u32, u32) {
+    let coordinate_upper = coordinate.to_uppercase();
     let split = index_from_coordinate(&coordinate_upper);
     let col = split[0].unwrap();
     let row = split[1].unwrap();

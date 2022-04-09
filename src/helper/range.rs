@@ -1,9 +1,7 @@
 use helper::coordinate::*;
 
-pub fn get_coordinate_list<S: Into<String>>(range_str: S) -> Vec<(u32, u32)> {
-    let value = range_str.into();
+pub fn get_coordinate_list(range_str: &str) -> Vec<(u32, u32)> {
     let coordinate_collection: Vec<&str> = value.split(':').collect();
-
     if coordinate_collection.is_empty() || coordinate_collection.len() > 2 {
         panic!("Non-standard range.");
     }

@@ -99,14 +99,6 @@ impl OleObject {
         self
     }
 
-    pub(crate) fn _get_extension<S: Into<String>>(&self, value: S) -> String {
-        let value_org = value.into();
-        let v: Vec<&str> = value_org.split('.').collect();
-        let extension = v.last().unwrap().clone();
-
-        extension.to_lowercase()
-    }
-
     pub(crate) fn is_bin(&self) -> bool {
         &self.object_extension == "bin"
     }
@@ -145,7 +137,7 @@ impl OleObject {
 
                             let r_id = get_attribute(e, b"r:id").unwrap();
                             let attached_file =
-                                relationships.get_relationship_by_rid(r_id).get_raw_file();
+                                relationships.get_relationship_by_rid(&r_id).get_raw_file();
                             self.set_object_extension(attached_file.get_extension());
                             self.set_object_data(attached_file.get_file_data().clone());
                         }

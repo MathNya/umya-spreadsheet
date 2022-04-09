@@ -1,7 +1,6 @@
 #[derive(Clone, Default, Debug)]
 pub struct TrueFalseBlankValue {
     value: Option<bool>,
-    value_default: bool,
 }
 impl TrueFalseBlankValue {
     pub(crate) fn get_value(&self) -> &Option<bool> {

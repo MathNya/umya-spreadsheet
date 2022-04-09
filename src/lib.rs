@@ -31,7 +31,7 @@
 //! let mut book = new_file();
 //!
 //! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
-//! clone_sheet.set_title("New Sheet");
+//! clone_sheet.set_name("New Sheet");
 //! let _ = book.add_sheet(clone_sheet);
 //! ```
 //! ### Change value
@@ -150,5 +150,24 @@ pub fn new_file() -> structs::Spreadsheet {
     spreadsheet.set_stylesheet_defalut_value();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
+    spreadsheet.set_active_sheet(0);
+    spreadsheet
+}
+
+/// create new spreadsheet file.
+/// not include worksheet.
+/// At least one additional worksheet must be added before the correct file can be generated.
+///
+/// # Arguments
+/// # Return value
+/// * Spreadsheet structs object.
+/// # Examples
+/// ```
+/// let mut book = umya_spreadsheet::new_file_empty_worksheet();
+/// ```
+pub fn new_file_empty_worksheet() -> structs::Spreadsheet {
+    let mut spreadsheet = structs::Spreadsheet::default();
+    spreadsheet.set_theme(Theme::get_defalut_value());
+    spreadsheet.set_stylesheet_defalut_value();
     spreadsheet
 }

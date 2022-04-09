@@ -39,7 +39,7 @@ impl ImageData {
     ) {
         match get_attribute(e, b"o:relid") {
             Some(relid) => {
-                let relationship = drawing_relationships.get_relationship_by_rid(relid);
+                let relationship = drawing_relationships.get_relationship_by_rid(&relid);
                 self.image_name
                     .set_value_string(relationship.get_raw_file().get_file_name());
             }

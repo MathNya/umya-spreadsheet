@@ -89,7 +89,7 @@ impl EmbeddedObjectProperties {
         relationships: &RawRelationships,
     ) {
         let r_id = get_attribute(e, b"r:id").unwrap();
-        let attached_file = relationships.get_relationship_by_rid(r_id).get_raw_file();
+        let attached_file = relationships.get_relationship_by_rid(&r_id).get_raw_file();
 
         self.get_image_mut()
             .set_image_name(attached_file.get_file_name());

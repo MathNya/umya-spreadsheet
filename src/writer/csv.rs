@@ -51,19 +51,17 @@ pub fn write_writer<W: io::Seek + io::Write>(
     option: &CsvWriterOption,
 ) -> Result<(), XlsxError> {
     // get worksheet.
-    let worksheet = spreadsheet.get_active_sheet().unwrap();
+    let worksheet = spreadsheet.get_active_sheet();
 
     // get max column and row.
-    let highest = worksheet.get_highest_row_and_column();
-    let max_column = &highest["column"];
-    let max_row = &highest["row"];
+    let (max_column, max_row) = worksheet.get_highest_column_and_row();
 
     let mut data = String::from("");
     for row in 0u32..*max_row {
         let mut row_vec: Vec<String> = Vec::new();
         for column in 0u32..*max_column {
             // get value.
-            let mut value = match worksheet.get_cell_by_column_and_row(column + 1, row + 1) {
+            let mut value = match worksheet.get_cell_by_column_and_row(&(column + 1), &(row + 1)) {
                 Some(cell) => cell.get_cell_value().get_value(),
                 None => "",
             }
