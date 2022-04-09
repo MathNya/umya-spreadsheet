@@ -46,7 +46,8 @@ impl CellValue {
             .collect()
     }
 
-    pub fn get_typed_value(&self) -> &Option<Value> {
+    // need to keep raw value in case set data type is called afterwards.
+    pub fn get_typed_value(&mut self) -> &Option<Value> {
         &self.value.or_else(|| {
             self.raw_value.and_then(|r| {
                 let v = Some(Self::guess_typed_data(r.as_ref()));
@@ -145,12 +146,13 @@ impl CellValue {
         &self.data_type
     }
 
-    pub fn set_data_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let data_type = value.into();
-        match Self::check_data_type(self.get_value(), &data_type) {
-            Ok(_) => self.data_type = data_type.into(),
-            Err(e) => panic!("Error at set_data_type {:?}", e),
+    pub fn set_data_type<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
+        match value.as_ref() {
+            _ => {
+                todo!()
+            }
         }
+
         self
     }
 
