@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use super::RichText;
 use super::SharedStringItem;
 use helper::formula::*;
@@ -43,20 +45,31 @@ impl CellValue {
             .map(|(a, b)| (a.as_str(), b.as_str()))
             .collect()
     }
-    pub fn get_value(&self) -> &str {
-        match &self.value {
+
+    pub fn get_typed_value(&self) -> &Option<Value> {
+        &self.value.or_else(|| {
+            self.raw_value.and_then(|r| {
+                let v = Some(Self::guess_typed_data(r.as_ref()));
+                self.value = v;
+                v
+            })
+        })
+    }
+
+    pub fn get_value(&self) -> Cow<'static, str> {
+        match self.get_typed_value() {
             Some(v) => {
-                return v;
+                return v.to_string().into();
             }
             None => {}
         }
         match &self.rich_text {
             Some(v) => {
-                return v.get_text();
+                return v.get_text().into();
             }
             None => {}
         }
-        ""
+        "".into()
     }
 
     pub(crate) fn get_value_crate(&self) -> &Option<String> {
@@ -67,8 +80,10 @@ impl CellValue {
         &self.rich_text
     }
 
-    pub fn set_value<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
-        self.value = Some(Self::guess_typed_data(value.as_ref()));
+    pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        //set value lazily. parse the value if need.
+        //self.value = Some(Self::guess_typed_data(value.as_ref()));
+        self.raw_value = Some(value.into());
         self.rich_text = None;
         self.formula = None;
         self

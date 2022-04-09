@@ -86,6 +86,10 @@ impl Cell {
         self
     }
 
+    pub fn get_typed_value(&self) -> &Option<super::cell_value::Value> {
+        &self.cell_value.get_typed_value()
+    }
+
     pub fn get_value(&self) -> &str {
         match &self.cell_value.value {
             Some(v) => {
@@ -371,7 +375,7 @@ impl Cell {
                             let prm = if &string_value == "1" { true } else { false };
                             let _ = self.set_value_from_bool(prm);
                         } else if type_value == "" || type_value == "n" {
-                            let _ = self.set_value(&string_value);
+                            let _ = self.set_value(string_value.clone());
                         };
                     }
                     b"c" => return,
@@ -421,6 +425,8 @@ impl Cell {
 
             // v
             write_start_tag(writer, "v", vec![], false);
+            
+            //todo use typed value
             match self.get_data_type() {
                 "s" => {
                     let val_index = shared_string_table
