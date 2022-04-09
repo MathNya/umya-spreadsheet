@@ -104,8 +104,9 @@ impl Column {
             None => 11f64,
         };
 
-        let cell_list = cells.get_collection_by_column(self.get_col_num());
-        for (_, cell) in cell_list {
+        let mut cell_list = cells.get_collection_by_column(self.get_col_num());
+        cell_list.sort_by(|a, b| a.get_coordinate().get_row_num().cmp(b.get_coordinate().get_row_num()));
+        for cell in cell_list {
             let column_width = cell.get_width_point(&column_font_size);
 
             if column_width > column_width_max {

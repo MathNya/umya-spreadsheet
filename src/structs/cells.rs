@@ -2,7 +2,6 @@ use super::Cell;
 use super::CellValue;
 use super::Style;
 use helper::range::*;
-use std::collections::BTreeMap;
 use std::collections::HashMap;
 
 #[derive(Clone, Default, Debug)]
@@ -24,11 +23,33 @@ impl Cells {
         &self.map
     }
 
-    pub(crate) fn get_collection_by_column(&self, column_num: &u32) -> BTreeMap<u32, &Cell> {
+    pub(crate) fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
+        self.map
+            .values()
+            .filter(|k| k.get_coordinate().get_col_num() == column_num)
+            .collect()
+    }
+
+    pub(crate) fn get_collection_by_row(&self, row_num: &u32) -> Vec<&Cell> {
+        self.map
+            .values()
+            .filter(|k| k.get_coordinate().get_row_num() == row_num)
+            .collect()
+    }
+
+    pub(crate) fn get_collection_by_column_to_hashmap(&self, column_num: &u32) -> HashMap<u32, &Cell> {
         self.map
             .iter()
             .filter(|(k, _v)| &k.1 == column_num)
             .map(|(k, v)| (k.0, v))
+            .collect()
+    }
+
+    pub(crate) fn get_collection_by_row_to_hashmap(&self, row_num: &u32) -> HashMap<u32, &Cell> {
+        self.map
+            .iter()
+            .filter(|(k, _v)| &k.0 == row_num)
+            .map(|(k, v)| (k.1, v))
             .collect()
     }
 

@@ -34,7 +34,7 @@ fn get_index(column: &str) -> u32 {
         .iter()
         .enumerate()
         .find_map(|(i, tar)| (tar == &column).then(|| i as u32))
-        .expect("illegal character")
+        .expect("illegal character") + 1
 }
 
 pub fn string_from_column_index(column_index: &u32) -> String {

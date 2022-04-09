@@ -248,6 +248,22 @@ impl Worksheet {
         self.cell_collection.get_mut(col, row)
     }
 
+    pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
+        self.cell_collection.get_collection_by_column(column_num)
+    }
+
+    pub fn get_collection_by_row(&self, row_num: &u32) -> Vec<&Cell> {
+        self.cell_collection.get_collection_by_row(row_num)
+    }
+
+    pub fn get_collection_by_column_to_hashmap(&self, column_num: &u32) -> HashMap<u32, &Cell> {
+        self.cell_collection.get_collection_by_column_to_hashmap(column_num)
+    }
+
+    pub fn get_collection_by_row_to_hashmap(&self, row_num: &u32) -> HashMap<u32, &Cell> {
+        self.cell_collection.get_collection_by_row_to_hashmap(row_num)
+    }
+
     /// Set Cell
     /// # Arguments
     /// * `cell` - Cell
