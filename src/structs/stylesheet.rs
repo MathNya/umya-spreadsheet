@@ -157,8 +157,8 @@ impl Stylesheet {
                 .cell_style_formats
                 .get_cell_format()
                 .get(*cell_format.get_format_id() as usize)
-                .unwrap()
-                .clone();
+                .cloned()
+                .unwrap_or_default();
 
             let mut style = Style::default();
             self.get_style_by_cell_format(&mut style, &def_cell_format, cell_format);
