@@ -2,10 +2,10 @@
 use super::CellValue;
 use super::SharedStringItem;
 use super::Text;
+use hashbrown::HashMap;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::collections::HashMap;
 use std::io::Cursor;
 use writer::driver::*;
 

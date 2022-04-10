@@ -1,7 +1,7 @@
 use helper::coordinate::*;
 use helper::range::*;
 use std::collections::BTreeMap;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use structs::drawing::spreadsheet::WorksheetDrawing;
 use structs::raw::RawWorksheet;
 use structs::AutoFilter;

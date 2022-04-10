@@ -2,7 +2,7 @@ use super::Cell;
 use super::CellValue;
 use super::Style;
 use helper::range::*;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
