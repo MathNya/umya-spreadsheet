@@ -21,6 +21,8 @@ onig = { version = "6.1.1", default-features = false }
 chrono = "0.4.19"
 encoding_rs = "0.8.30"
 image = "0.24.1"
+hashbrown = "0.12.0"
+ahash = "0.7.6"
 
 [lib]
 doctest = false

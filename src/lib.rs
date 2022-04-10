@@ -125,6 +125,7 @@ extern crate quick_xml;
 extern crate regex;
 extern crate thousands;
 extern crate zip;
+extern crate hashbrown;
 
 #[macro_use]
 extern crate lazy_static;

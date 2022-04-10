@@ -7,8 +7,11 @@ use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use std::hash::Hasher;
 use std::io::Cursor;
 use writer::driver::*;
+extern crate ahash;
+use self::ahash::AHasher;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringItem {
@@ -66,6 +69,31 @@ impl SharedStringItem {
             None => {}
         }
         ""
+    }
+
+    pub(crate) fn get_hash_u64(&self) -> u64 {
+        let mut h = AHasher::default();
+        let content = format!(
+            "{}{}",
+            match &self.text {
+                Some(v) => {
+                    v.get_hash_code()
+                }
+                None => {
+                    String::from("NONE")
+                }
+            },
+            match &self.rich_text {
+                Some(v) => {
+                    v.get_hash_code()
+                }
+                None => {
+                    String::from("NONE")
+                }
+            }
+        );
+        h.write(content.as_bytes());
+        h.finish()
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
