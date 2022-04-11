@@ -430,6 +430,11 @@ impl Worksheet {
         self.cell_collection.get_mut(col, row).get_style_mut()
     }
 
+    pub fn set_style(&mut self, coordinate: &str, style: Style) -> &mut Self {
+        let (col, row) = index_from_coordinate_simple(coordinate);
+        self.set_style_by_column_and_row(&col, &row, style)
+    }
+
     /// Set the style by specifying the column number and row number.
     /// # Arguments
     /// * `col` - Specify the column number. (first column number is 1)

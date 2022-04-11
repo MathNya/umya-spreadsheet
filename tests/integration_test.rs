@@ -750,6 +750,28 @@ fn new_file_and_edit() {
         .get_color_mut()
         .set_argb("00FF0000");
 
+    // change background color.
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .get_style_mut("A1")
+        .get_fill_mut()
+        .get_pattern_fill_mut()
+        .get_foreground_color_mut()
+        .set_argb(umya_spreadsheet::Color::COLOR_BLUE);
+
+    // change background color part2.
+    let mut color = umya_spreadsheet::Color::default();
+    color.set_argb(umya_spreadsheet::Color::COLOR_BLUE);
+    let mut pattern_fill = umya_spreadsheet::PatternFill::default();
+    pattern_fill.set_foreground_color(color);
+    let mut fill = umya_spreadsheet::Fill::default();
+    fill.set_pattern_fill(pattern_fill);
+    let mut style = umya_spreadsheet::Style::default();
+    style.set_fill(fill);
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .set_style("A2", style);
+    
     let worksheet = book.get_sheet_by_name_mut("Sheet3").unwrap();
     worksheet.get_column_dimension_mut("A").set_auto_width(true);
 

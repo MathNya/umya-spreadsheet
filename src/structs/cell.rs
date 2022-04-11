@@ -391,7 +391,11 @@ impl Cell {
         shared_string_table: Arc<RwLock<SharedStringTable>>,
         stylesheet: &mut Stylesheet,
     ) {
-        let empty_flag = self.cell_value.is_empty();
+        let empty_flag_value = self.cell_value.is_empty();
+        let empty_flag_style = self.style.is_empty();
+        if empty_flag_value && empty_flag_style {
+            return;
+        }
 
         // c
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -407,8 +411,8 @@ impl Cell {
             attributes.push(("s", &xf_index_str));
         }
 
-        if !empty_flag {
-            write_start_tag(writer, "c", attributes, empty_flag);
+        if !empty_flag_value {
+            write_start_tag(writer, "c", attributes, false);
             // f
             match &self.cell_value.formula {
                 Some(v) => {
@@ -439,6 +443,8 @@ impl Cell {
             write_end_tag(writer, "v");
 
             write_end_tag(writer, "c");
+        } else {
+            write_start_tag(writer, "c", attributes, true);
         }
     }
 }

@@ -194,6 +194,25 @@ impl Style {
         self
     }
 
+    pub(crate) fn is_empty(&self) -> bool {
+        if self.font.is_some() {
+            return false;
+        }
+        if self.fill.is_some() {
+            return false;
+        }
+        if self.borders.is_some() {
+            return false;
+        }
+        if self.alignment.is_some() {
+            return false;
+        }
+        if self.numbering_format.is_some() {
+            return false;
+        }
+        true
+    }
+
     pub(crate) fn get_defalut_value() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_defalut_value());
