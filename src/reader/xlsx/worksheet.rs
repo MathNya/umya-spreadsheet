@@ -379,14 +379,14 @@ fn get_hyperlink(e: &quick_xml::events::BytesStart<'_>) -> (String, String, Hype
     let mut hyperlink = Hyperlink::default();
     let mut rid = String::from("");
 
-    let coordition = get_attribute(e, b"ref").unwrap();
+    let coordition = get_attribute(e, b"ref").unwrap_or_default();
     match get_attribute(e, b"location") {
         Some(v) => {
             let _ = hyperlink.set_url(v);
             let _ = hyperlink.set_location(true);
         }
         None => {
-            rid = get_attribute(e, b"r:id").unwrap();
+            rid = get_attribute(e, b"r:id").unwrap_or_default();
         }
     }
     (coordition, rid, hyperlink)
