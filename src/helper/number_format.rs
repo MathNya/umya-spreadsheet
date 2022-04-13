@@ -179,7 +179,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
                 item.push(ite.unwrap().as_str().to_string());
             }
             let _ = std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
-            converted_section = color_re.replace_all(section, "");
+            converted_section = color_re.replace_all(section, "").to_string();
         }
         if cond_regex.contains(section) {
             let mut item: Vec<String> = Vec::new();
@@ -188,10 +188,10 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             }
             let _ = std::mem::replace(&mut condops[idx], item.get(1).unwrap().to_string());
             let _ = std::mem::replace(&mut condvals[idx], item.get(2).unwrap().to_string());
-            converted_section = cond_re.replace_all(section, "");
+            converted_section = cond_re.replace_all(section, "").to_string();
         }
         converted_sections.insert(idx, converted_section);
-     });
+    });
 
     let mut color = colors[0].clone();
     let mut format: &str = &converted_sections[0];
