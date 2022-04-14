@@ -122,7 +122,7 @@ extern crate image;
 extern crate md5;
 // extern crate onig;
 extern crate quick_xml;
-extern crate regex;
+extern crate fancy_regex;
 extern crate thousands;
 extern crate zip;
 extern crate hashbrown;
