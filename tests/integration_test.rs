@@ -911,3 +911,25 @@ fn new_file_empty_worksheet() {
     let path = std::path::Path::new("./tests/result_files/empty_worksheet.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn google() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/google.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/google.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn libre() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/libre.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/libre.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
