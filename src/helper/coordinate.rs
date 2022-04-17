@@ -1,4 +1,4 @@
-use regex::Regex;
+use fancy_regex::Regex;
 
 const ALPHABET: &[&str] = &[
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
@@ -34,7 +34,8 @@ fn get_index(column: &str) -> u32 {
         .iter()
         .enumerate()
         .find_map(|(i, tar)| (tar == &column).then(|| i as u32))
-        .expect("illegal character") + 1
+        .expect("illegal character")
+        + 1
 }
 
 pub fn string_from_column_index(column_index: &u32) -> String {
@@ -60,29 +61,34 @@ pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
         static ref RE: Regex = Regex::new(r"[A-Z]+").unwrap();
     }
     let caps = RE.captures(coordinate);
-    let col = caps.map(|v| v.get(0).unwrap().as_str());
+    let col = caps.map(|v| v.and_then(|v| v.get(0)).and_then(|v| Some(v.as_str())));
     let is_lock_col = match col {
-        Some(v) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
+        Ok(Some(v)) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
             Some(_) => Some("1"),
             None => Some("0"),
         },
-        None => None,
+        _ => None,
     };
 
     lazy_static! {
         static ref RE_NUM: Regex = Regex::new(r"[0-9]+").unwrap();
     }
     let caps = RE_NUM.captures(coordinate);
-    let row = caps.map(|v| v.get(0).unwrap().as_str());
+    let row = caps.map(|v| v.and_then(|v| v.get(0)).and_then(|v| Some(v.as_str())));
     let is_lock_row = match row {
-        Some(v) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
+        Ok(Some(v)) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
             Some(_) => Some("1"),
             None => Some("0"),
         },
-        None => None,
+        _ => None,
     };
 
-    vec![col, row, is_lock_col, is_lock_row]
+    vec![
+        col.ok().flatten(),
+        row.ok().flatten(),
+        is_lock_col,
+        is_lock_row,
+    ]
 }
 
 pub fn coordinate_from_index(col: &u32, row: &u32) -> String {
