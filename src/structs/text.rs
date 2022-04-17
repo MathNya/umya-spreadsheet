@@ -1,6 +1,7 @@
 // t
 use md5::Digest;
-use onig::*;
+// use onig::*;
+use fancy_regex::Regex;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -34,7 +35,7 @@ impl Text {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    self.set_value(e.unescape_and_decode(&reader).unwrap());
+                    self.set_value(e.unescape_and_decode(reader).unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"t" => return,
@@ -54,7 +55,7 @@ impl Text {
         lazy_static! {
             static ref RE: Regex = Regex::new(r#"^(\s|　)"#).unwrap();
         }
-        if RE.find(&self.value).is_some() {
+        if RE.find(&self.value).ok().flatten().is_some() {
             attributes.push(("xml:space", "preserve"));
         }
         write_start_tag(writer, "t", attributes, false);

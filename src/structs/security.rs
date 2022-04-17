@@ -9,13 +9,11 @@ pub struct Security {
 impl Security {
     pub(crate) fn is_security_enabled(&self) -> bool {
         if self.lock_revision {
-            return true;
+            true
         } else if self.lock_structure {
-            return true;
-        } else if self.lock_windows {
-            return true;
+            true
         } else {
-            return false;
+            self.lock_windows
         }
     }
     pub fn get_lock_revision(&self) -> &bool {

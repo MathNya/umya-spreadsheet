@@ -44,7 +44,7 @@ impl DifferentialFormats {
         }
 
         self.set_differential_format(differential_format);
-        return id;
+        id
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -76,7 +76,7 @@ impl DifferentialFormats {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.differential_format.len() > 0 {
+        if !self.differential_format.is_empty() {
             // dxfs
             write_start_tag(
                 writer,

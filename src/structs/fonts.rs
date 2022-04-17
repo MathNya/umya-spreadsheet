@@ -37,7 +37,7 @@ impl Fonts {
                     id += 1;
                 }
                 self.set_font(v.clone());
-                return id;
+                id
             }
             None => 0,
         }
@@ -72,7 +72,7 @@ impl Fonts {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.font.len() > 0 {
+        if !self.font.is_empty() {
             // fonts
             write_start_tag(
                 writer,

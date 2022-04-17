@@ -13,7 +13,7 @@ pub struct Delete {
 }
 impl Delete {
     pub fn get_val(&self) -> &bool {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut Delete {
@@ -34,7 +34,7 @@ impl Delete {
         write_start_tag(
             writer,
             "c:delete",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

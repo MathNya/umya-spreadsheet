@@ -13,7 +13,7 @@ pub struct Smooth {
 }
 impl Smooth {
     pub fn get_val(&self) -> &bool {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut Self {
@@ -34,7 +34,7 @@ impl Smooth {
         write_start_tag(
             writer,
             "c:smooth",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

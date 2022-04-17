@@ -2,17 +2,17 @@
 use super::CellValue;
 use super::SharedStringItem;
 use super::Text;
+use hashbrown::HashMap;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::collections::HashMap;
 use std::io::Cursor;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringTable {
     shared_string_item: Vec<SharedStringItem>,
-    map: HashMap<String, usize>,
+    map: HashMap<u64, usize>,
     regist_count: usize,
 }
 impl SharedStringTable {
@@ -30,19 +30,28 @@ impl SharedStringTable {
     }
 
     pub(crate) fn has_value(&self) -> bool {
-        self.shared_string_item.len() > 0
+        !self.shared_string_item.is_empty()
     }
 
     pub(crate) fn ensure_map(&mut self) -> bool {
         // let l1 = self.shared_string_item.len();
         // let l2 = self.map.len();
         // println!("{}:::{}",l1,l2);
-        if self.shared_string_item.len() > 0 && self.map.len() == 0 {
-            let mut h: HashMap<String, usize> =
+        if !self.shared_string_item.is_empty() && self.map.is_empty() {
+            let mut h: HashMap<u64, usize> =
                 HashMap::with_capacity(self.shared_string_item.len());
             for i in 0..self.shared_string_item.len() {
-                let hash = self.shared_string_item[i].get_hash_code();
-                h.insert(hash, i);
+                let hash = self.shared_string_item[i].get_hash_u64();
+                
+                match h.raw_entry_mut().from_key_hashed_nocheck(hash, &hash) {
+                    hashbrown::hash_map::RawEntryMut::Occupied(mut o) => {
+                        Some(o.insert(i))
+                    },
+                    hashbrown::hash_map::RawEntryMut::Vacant(v) => {
+                        v.insert(hash, i);
+                        None
+                    },
+                };
             }
             self.map = h;
         }
@@ -68,19 +77,27 @@ impl SharedStringTable {
             None => {}
         }
 
-        let hash_code = shared_string_item.get_hash_code();
+        let hash_code = shared_string_item.get_hash_u64();
         self.ensure_map();
 
-        let id = self.map.get(&hash_code);
-        match id {
-            Some(n) => return n.to_owned(),
-            None => {
+        let mut is_new = false;
+        let n = match self.map.raw_entry_mut().from_key_hashed_nocheck(hash_code, &hash_code) {
+            hashbrown::hash_map::RawEntryMut::Occupied(o) => {
+                o.get().to_owned()
+            },
+            hashbrown::hash_map::RawEntryMut::Vacant(v) => {
                 let n = self.shared_string_item.len();
-                self.set_shared_string_item(shared_string_item);
-                self.map.insert(hash_code, n);
-                return n;
-            }
+                is_new =true;
+                v.insert(hash_code, n);
+                n
+            },
+        };
+
+        if is_new {
+            self.set_shared_string_item(shared_string_item);
         }
+
+        n
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

@@ -13,7 +13,7 @@ pub struct FontCharSet {
 }
 impl FontCharSet {
     pub fn get_val(&self) -> &i32 {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: i32) -> &mut Self {
@@ -38,7 +38,7 @@ impl FontCharSet {
         // charset
         if &self.val.has_value() == &true {
             let mut attributes: Vec<(&str, &str)> = Vec::new();
-            attributes.push(("val", &self.val.get_value_string()));
+            attributes.push(("val", self.val.get_value_string()));
             write_start_tag(writer, "charset", attributes, true);
         }
     }

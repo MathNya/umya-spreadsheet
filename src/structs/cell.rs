@@ -238,7 +238,7 @@ impl Cell {
     }
 
     pub fn get_formula(&self) -> &str {
-        &self.cell_value.get_formula()
+        self.cell_value.get_formula()
     }
 
     pub(crate) fn get_formula_attributes(&self) -> Vec<(&str, &str)> {
@@ -267,7 +267,7 @@ impl Cell {
     pub(crate) fn get_width_point_cell(&self) -> f64 {
         let mut max_point = 0f64;
         let value = self.get_formatted_value();
-        let value_list: Vec<&str> = value.split("\n").collect();
+        let value_list: Vec<&str> = value.split('\n').collect();
         for value in value_list {
             let mut point = 0f64;
             for chr in value.chars() {
@@ -289,8 +289,10 @@ impl Cell {
 
         // convert value
         let result = match self.get_style().get_number_format() {
-            Some(nmuber_format) => to_formatted_string(value, nmuber_format.get_format_code()),
-            None => to_formatted_string(value, NumberingFormat::FORMAT_GENERAL),
+            Some(nmuber_format) => {
+                to_formatted_string(&value, &nmuber_format.get_format_code())
+            }
+            None => to_formatted_string(&value, &NumberingFormat::FORMAT_GENERAL),
         };
         result
     }
@@ -342,7 +344,7 @@ impl Cell {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
+                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(reader).unwrap(),
                 Ok(Event::Start(ref s)) => {
                     if s.name() == b"f" {
                         let mut attrs = vec![];
@@ -372,7 +374,7 @@ impl Cell {
                                 .unwrap();
                             self.set_shared_string_item(shared_string_item.clone());
                         } else if type_value == "b" {
-                            let prm = if &string_value == "1" { true } else { false };
+                            let prm = &string_value == "1";
                             let _ = self.set_value_from_bool(prm);
                         } else if type_value == "" || type_value == "n" {
                             let _ = self.set_value(string_value.clone());
@@ -395,7 +397,11 @@ impl Cell {
         shared_string_table: Arc<RwLock<SharedStringTable>>,
         stylesheet: &mut Stylesheet,
     ) {
-        let empty_flag = self.cell_value.is_empty();
+        let empty_flag_value = self.cell_value.is_empty();
+        let empty_flag_style = self.style.is_empty();
+        if empty_flag_value && empty_flag_style {
+            return;
+        }
 
         // c
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -411,8 +417,8 @@ impl Cell {
             attributes.push(("s", &xf_index_str));
         }
 
-        if empty_flag == false {
-            write_start_tag(writer, "c", attributes, empty_flag);
+        if !empty_flag_value {
+            write_start_tag(writer, "c", attributes, false);
             // f
             match &self.cell_value.formula {
                 Some(v) => {
@@ -445,6 +451,8 @@ impl Cell {
             write_end_tag(writer, "v");
 
             write_end_tag(writer, "c");
+        } else {
+            write_start_tag(writer, "c", attributes, true);
         }
     }
 }

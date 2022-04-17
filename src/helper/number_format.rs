@@ -1,11 +1,50 @@
-//use regex::Regex;
+use std::borrow::Cow;
+
+use fancy_regex::Captures;
+use fancy_regex::Matches;
+use fancy_regex::Regex;
+//use fancy_regex::Regex;
 use helper::date::*;
-use onig::*;
 use structs::Color;
 use structs::NumberingFormat;
 use thousands::Separable;
 
-const DATE_FORMAT_REPLACEMENTS: &'static [(&'static str, &'static str)] = &[
+pub struct Split<'r, 't> {
+    finder: Matches<'r, 't>,
+    last: usize,
+}
+pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
+    Split {
+        finder: regex.find_iter(text),
+        last: 0,
+    }
+}
+
+impl<'r, 't> Iterator for Split<'r, 't> {
+    type Item = &'t str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let text = self.finder.text();
+        match self.finder.next() {
+            Some(Ok(m)) => {
+                let matched = &text[self.last..m.start()];
+                self.last = m.end();
+                Some(matched)
+            }
+            _ => {
+                if self.last > text.len() {
+                    None
+                } else {
+                    let s = &text[self.last..];
+                    self.last = text.len() + 1;
+                    Some(s)
+                }
+            }
+        }
+    }
+}
+
+const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     // first remove escapes related to non-format characters
     ("\\", ""),
     // 12-hour suffix
@@ -50,79 +89,78 @@ const DATE_FORMAT_REPLACEMENTS: &'static [(&'static str, &'static str)] = &[
     (".s", ""),
 ];
 
-const DATE_FORMAT_REPLACEMENTS_24: &'static [(&'static str, &'static str)] =
-    &[("hh", "%H"), ("h", "%-H")];
+const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] = &[("hh", "%H"), ("h", "%-H")];
 
-const DATE_FORMAT_REPLACEMENTS_12: &'static [(&'static str, &'static str)] =
-    &[("hh", "%I"), ("h", "%-I")];
+const DATE_FORMAT_REPLACEMENTS_12: &[(&str, &str)] = &[("hh", "%I"), ("h", "%-I")];
 
-pub fn to_formatted_string<S: Into<String>>(value: S, format: S) -> String {
-    let mut value = value.into();
-    let mut format = format.into();
+lazy_static! {
+    pub static ref ESCAPE_REGEX: Regex =
+        Regex::new(r#"(\\\(((.)(?!((AM\/PM)|(A\/P)))|([^ ])))(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
+    pub static ref SECTION_REGEX: Regex = Regex::new(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
+    pub static ref DATE_TIME_REGEX: Regex =
+        Regex::new(r#"(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy](?=(?:[^"]|"[^"]*")*$)"#).unwrap();
+    pub static ref PERCENT_DOLLAR_REGEX: Regex = Regex::new("%$").unwrap();
+}
+
+pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) -> String {
+    let mut value: Cow<str> = Cow::Borrowed(value.as_ref());
+    let format = Cow::Borrowed(format.as_ref());
 
     // is empty
-    if &value == "" {
-        return value;
+    if value.is_empty() {
+        return value.to_string();
     }
-
     // is numeric
     match &value.parse::<f64>() {
-        Ok(_) => {}
-        Err(_) => return value,
-    }
-
-    // convert value
-    if &format == NumberingFormat::FORMAT_GENERAL {
-        return value.parse::<f64>().unwrap().to_string();
-    }
-    if &format == NumberingFormat::FORMAT_TEXT {
-        return value.into();
+        // convert value
+        Ok(val) if format == NumberingFormat::FORMAT_GENERAL => {
+            return val.to_string();
+        }
+        Ok(_) if format == NumberingFormat::FORMAT_TEXT => return value.to_string(),
+        Err(_) => return value.to_string(),
+        _ => {}
     }
 
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")
-    let re =
-        Regex::new(r#"(\\\(((.)(?!((AM\/PM)|(A\/P)))|([^ ])))(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
-    format = re.replace_all(&format, r#""$0""#);
+
+    let mut format = ESCAPE_REGEX.replace_all(&format, r#""$0""#).to_owned();
 
     // Get the sections, there can be up to four sections, separated with a semi-colon (but only if not a quoted literal)
-    let re = Regex::new(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
-    let sections: Vec<&str> = re.split(&format).collect();
+
+    let sections: Vec<&str> = split(&SECTION_REGEX, &format).collect();
 
     let (_, split_format, split_value) = split_format(sections, &value.parse::<f64>().unwrap());
-    format = split_format;
-    value = split_value;
+    format = Cow::Owned(split_format);
+    value = Cow::Owned(split_value);
 
     // In Excel formats, "_" is used to add spacing,
     //    The following character indicates the size of the spacing, which we can't do in HTML, so we just use a standard space
     let re = Regex::new("_.").unwrap();
-    format = re.replace_all(&format, " ");
+    let format = re.replace_all(&format, " ");
 
     // Let's begin inspecting the format and converting the value to a formatted string
 
     //  Check for date/time characters (not inside quotes)
-    let re = Regex::new(r#"(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy](?=(?:[^"]|"[^"]*")*$)"#).unwrap();
-    let re2 = Regex::new("%$").unwrap();
-    if re.find(&format).is_some() {
+
+    if DATE_TIME_REGEX.is_match(&format).unwrap_or(false) {
         // datetime format
         value = format_as_date(&value.parse::<f64>().unwrap(), &format);
+    } else if format.starts_with('"') && format.ends_with('"') {
+        let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
+        value = Cow::Owned(conv_format.to_string());
+    } else if PERCENT_DOLLAR_REGEX.is_match(&format).unwrap_or(false) {
+        // % number format
+        value = format_as_percentage(&value.parse::<f64>().unwrap(), &format);
     } else {
-        if &format.starts_with(r#"""#) == &true && &format.ends_with(r#"""#) == &true {
-            let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
-            value = conv_format.to_string();
-        } else if re2.find(&format).is_some() {
-            // % number format
-            value = format_as_percentage(&value.parse::<f64>().unwrap(), &format);
-        } else {
-            value = format_as_number(&value.parse::<f64>().unwrap(), &format);
-        }
+        value = format_as_number(&value.parse::<f64>().unwrap(), &format);
     }
     value.trim().to_string()
 }
 
-fn format_as_percentage(value: &f64, format: &str) -> String {
+fn format_as_percentage<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
     let mut value = value.to_string();
-    let mut format = format.to_string();
-    format = format.replace("%", "");
+    let mut format = Cow::Borrowed(format);
+    format = Cow::Owned(format.replace('%', ""));
     let blocks: Vec<&str> = format.split('.').collect();
     let len = match blocks.get(1) {
         Some(v) => v.len(),
@@ -134,7 +172,7 @@ fn format_as_percentage(value: &f64, format: &str) -> String {
         width = 1,
         len = len
     );
-    value
+    Cow::Owned(value)
 }
 
 fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
@@ -151,7 +189,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     let color_regex: String = format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
     let cond_regex = r#"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]"#;
     let color_re = Regex::new(&color_regex).unwrap();
-    let cond_re = Regex::new(&cond_regex).unwrap();
+    let cond_re = Regex::new(cond_regex).unwrap();
 
     let mut colors = [
         String::from(""),
@@ -174,38 +212,36 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         String::from("0"),
         String::from("0"),
     ];
-    let mut idx = 0;
-    for section in sections {
+    sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
-        if color_re.find(section).is_some() {
+        if color_re.find(section).ok().flatten().is_some() {
             let mut item: Vec<String> = Vec::new();
-            for ite in color_re.captures(section).unwrap().iter() {
-                item.push(ite.unwrap().to_string());
+            for ite in color_re.captures(section).ok().flatten().unwrap().iter() {
+                item.push(ite.unwrap().as_str().to_string());
             }
             let _ = std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "").to_string();
         }
-        if cond_regex.find(section).is_some() {
+        if cond_regex.contains(section) {
             let mut item: Vec<String> = Vec::new();
-            for ite in cond_re.captures(section).unwrap().iter() {
-                item.push(ite.unwrap().to_string());
+            for ite in cond_re.captures(section).ok().flatten().unwrap().iter() {
+                item.push(ite.unwrap().as_str().to_string());
             }
             let _ = std::mem::replace(&mut condops[idx], item.get(1).unwrap().to_string());
             let _ = std::mem::replace(&mut condvals[idx], item.get(2).unwrap().to_string());
             converted_section = cond_re.replace_all(section, "").to_string();
         }
         converted_sections.insert(idx, converted_section);
-        idx += 1;
-    }
+    });
 
     let mut color = colors[0].clone();
     let mut format: &str = &converted_sections[0];
-    let mut absval = value.clone();
+    let mut absval = *value;
     match cnt {
         2 => {
             absval = absval.abs();
             let condval_one = &condvals[0].parse::<f64>().unwrap();
-            if !split_format_compare(&value, &condops[0], condval_one, ">=", &0f64) {
+            if !split_format_compare(value, &condops[0], condval_one, ">=", &0f64) {
                 color = colors[1].clone();
                 format = &converted_sections[1];
             }
@@ -214,8 +250,8 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             absval = absval.abs();
             let condval_one = &condvals[0].parse::<f64>().unwrap();
             let condval_two = &condvals[1].parse::<f64>().unwrap();
-            if !split_format_compare(&value, &condops[0], condval_one, ">", &0f64) {
-                if split_format_compare(&value, &condops[1], condval_two, "<", &0f64) {
+            if !split_format_compare(value, &condops[0], condval_one, ">", &0f64) {
+                if split_format_compare(value, &condops[1], condval_two, "<", &0f64) {
                     color = colors[1].clone();
                     format = &converted_sections[1];
                 } else {
@@ -226,13 +262,13 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         }
         _ => {}
     }
-    (color.into(), format.into(), absval.to_string())
+    (color, format.into(), absval.to_string())
 }
 
 fn split_format_compare(value: &f64, cond: &str, val: &f64, dfcond: &str, dfval: &f64) -> bool {
     let mut check_cond = cond;
     let mut check_val = val;
-    if cond == "" {
+    if cond.is_empty() {
         check_cond = dfcond;
         check_val = dfval;
     }
@@ -247,24 +283,25 @@ fn split_format_compare(value: &f64, cond: &str, val: &f64, dfcond: &str, dfval:
     value >= check_val
 }
 
-fn format_as_date(value: &f64, format: &str) -> String {
+fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
     let value = value;
-    let mut format = format.to_string();
+    let format = Cow::Borrowed(format);
 
     // strip off first part containing e.g. [$-F800] or [$USD-409]
     // general syntax: [$<Currency string>-<language info>]
     // language info is in hexadecimal
     // strip off chinese part like [DBNum1][$-804]
     let re = Regex::new(r#"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])"#).unwrap();
-    format = re.replace_all(&format, r#""#);
+    let format = re.replace_all(&format, r#""#);
 
     // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to lower-case;
     //    but we don't want to change any quoted strings
     let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
-    format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string: String = (&caps.at(0).unwrap()).parse().unwrap();
-        caps_string.to_lowercase()
-    });
+    let mut format = re
+        .replace_all(&format, |caps: &Captures| {
+            let caps_string = (&caps.get(0).unwrap()).as_str();
+            caps_string.to_lowercase()
+        });
 
     // Only process the non-quoted blocks for date format characters
     let blocks: Vec<&str> = format.split('"').collect();
@@ -272,7 +309,7 @@ fn format_as_date(value: &f64, format: &str) -> String {
     let mut i = 0;
     for block in blocks {
         let mut block = block.to_string();
-        if &i % &2 == 0 {
+        if i % 2 == 0 {
             for (before, after) in DATE_FORMAT_REPLACEMENTS {
                 block = block.replace(before, after);
             }
@@ -280,7 +317,7 @@ fn format_as_date(value: &f64, format: &str) -> String {
                 // 24-hour time format
                 // when [h]:mm format, the [h] should replace to the hours of the value * 24
                 if block.find("[h]") != None {
-                    let hours = value * &24f64;
+                    let hours = value * 24f64;
                     block = block.replace("[h]", hours.to_string().as_str());
                     converted_blocks.push(block);
                     continue;
@@ -297,20 +334,30 @@ fn format_as_date(value: &f64, format: &str) -> String {
         converted_blocks.push(block);
         i += 1;
     }
-    format = converted_blocks.join(r#""#);
+    format = Cow::Owned(converted_blocks.join(r#""#));
 
     // escape any quoted characters so that DateTime format() will render them correctly
     let re = Regex::new(r#""(.*)""#).unwrap();
-    format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string: String = (&caps.at(0).unwrap()).parse().unwrap();
-        caps_string.to_lowercase()
-    });
+    let format = re
+        .replace_all(&format, |caps: &Captures| {
+            let caps_string = (&caps.get(0).unwrap()).as_str();
+            caps_string.to_lowercase()
+        });
 
     let date_obj = excel_to_date_time_object(value, None);
-    date_obj.format(&format).to_string()
+    Cow::Owned(date_obj.format(&format).to_string())
 }
 
-fn format_as_number(value: &f64, format: &str) -> String {
+fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
+    lazy_static! {
+        static ref THOUSANDS_SEP_REGEX: Regex = Regex::new(r#"(#,#|0,0)"#).unwrap();
+        static ref SCALE_REGEX: Regex = Regex::new(r#"(#|0)(,+)"#).unwrap();
+        static ref TRAILING_COMMA_REGEX: Regex = Regex::new("(#|0),+").unwrap();
+        static ref FRACTION_REGEX: Regex = Regex::new(r#"#?.*\?{1,2}\/\?{1,2}"#).unwrap();
+        static ref SQUARE_BRACKET_REGEX: Regex = Regex::new(r#"\[[^\]]+\]"#).unwrap();
+        static ref NUMBER_REGEX: Regex = Regex::new(r#"(0+)(\.?)(0*)"#).unwrap();
+    }
+
     let mut value = value.to_string();
 
     // The "_" in this string has already been stripped out,
@@ -321,40 +368,40 @@ fn format_as_number(value: &f64, format: &str) -> String {
     //}
 
     // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
-    let mut format = format.replace('"', "").replace("*", "");
+    let mut format = format.replace('"', "").replace('*', "");
 
     // Find out if we need thousands separator
     // This is indicated by a comma enclosed by a digit placeholder:
     //        #,#   or   0,0
-    let re = Regex::new(r#"(#,#|0,0)"#).unwrap();
-    let converted_format_clone = format.clone();
-    let use_thousands = re.find(&converted_format_clone).is_some();
-    if &use_thousands == &true {
-        format = Regex::new("0,0").unwrap().replace_all(&format, "00");
-        format = Regex::new("#,#").unwrap().replace_all(&format, "##");
+
+    let use_thousands = THOUSANDS_SEP_REGEX
+        .is_match(&format)
+        .unwrap_or(false);
+    if use_thousands {
+        format = format.replace("0,0", "00");
+        format = format.replace("#,#", "##");
     }
 
     // Scale thousands, millions,...
     // This is indicated by a number of commas after a digit placeholder:
     //        #,   or    0.0,,
     let mut scale: f64 = 1f64; // same as no scale
-    let re = Regex::new(r#"(#|0)(,+)"#).unwrap();
-    if re.find(&format).is_some() {
+
+    if SCALE_REGEX.is_match(&format).unwrap_or(false) {
         let mut matches: Vec<String> = Vec::new();
-        for ite in re.captures(&format).unwrap().iter() {
-            matches.push(ite.unwrap().to_string());
+        for ite in SCALE_REGEX.captures(&format).ok().flatten().unwrap().iter() {
+            matches.push(ite.unwrap().as_str().to_string());
         }
         scale = 1000i32.pow(matches[2].len() as u32) as f64;
 
         // strip the commas
-        format = Regex::new("0,+").unwrap().replace_all(&format, "0");
-        format = Regex::new("#,+").unwrap().replace_all(&format, "#");
+        format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into()
     }
-
-    if Regex::new(r#"#?.*\?\/\?"#).unwrap().find(&format).is_some() {
+    if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
         match &value.parse::<usize>() {
             Ok(_) => {}
             Err(_) => {
+                println!("format as fraction {} {}", value, format);
                 value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
             }
         }
@@ -364,36 +411,36 @@ fn format_as_number(value: &f64, format: &str) -> String {
         // scale number
         value = (value.parse::<f64>().unwrap() / scale).to_string();
         // Strip #
-        format = Regex::new(r#"\#"#).unwrap().replace_all(&format, "0");
+        format = format.replace('#', "0");
         // Remove \
-        format = Regex::new(r#"\\"#).unwrap().replace_all(&format, "");
+        format = format.replace('\\', "");
         // Remove locale code [$-###]
-        format = Regex::new(r#"\[\$\-.*\]"#)
-            .unwrap()
-            .replace_all(&format, "");
+        format = format.replace("[$-.*]", "");
         // Trim
         format = format.trim().to_string();
 
-        let m = Regex::new(r#"\[[^\]]+\]"#)
-            .unwrap()
-            .replace_all(&format, "");
-        let number_regex = r#"(0+)(\.?)(0*)"#;
-        let re = Regex::new(number_regex).unwrap();
-        if re.find(&m).is_some() {
+        let m = SQUARE_BRACKET_REGEX.replace_all(&format, "");
+
+        if NUMBER_REGEX.is_match(&m).unwrap_or(false) {
             let mut item: Vec<String> = Vec::new();
-            for ite in re.captures(&m).unwrap().iter() {
-                item.push(ite.unwrap().to_string());
+            for ite in NUMBER_REGEX.captures(&m).ok().flatten().unwrap().iter() {
+                item.push(ite.unwrap().as_str().to_string());
             }
-            value =
-                format_straight_numeric_value(&value, &format, &item, &use_thousands, number_regex);
+            value = format_straight_numeric_value(
+                &value,
+                &format,
+                &item,
+                &use_thousands,
+                r#"(0+)(\.?)(0*)"#,
+            );
         }
     }
 
     let re = Regex::new(r#"\$[^0-9]*"#).unwrap();
-    if re.find(&format).is_some() {
+    if re.find(&format).ok().flatten().is_some() {
         let mut item: Vec<String> = Vec::new();
-        for ite in re.captures(&format).unwrap().iter() {
-            item.push(ite.unwrap().to_string());
+        for ite in re.captures(&format).ok().flatten().unwrap().iter() {
+            item.push(ite.unwrap().as_str().to_string());
         }
         value = format!("{}{}", item.get(0).unwrap(), value);
         //    //  Currency or Accounting
@@ -401,7 +448,7 @@ fn format_as_number(value: &f64, format: &str) -> String {
         //    value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value, currency_code.as_str()).to_string();
     }
 
-    value
+    Cow::Owned(value)
 }
 
 fn format_as_fraction(value: &f64, format: &str) -> String {
@@ -422,18 +469,18 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
 
     let gcd = gcd(&decimal_part, &decimal_divisor);
 
-    let mut adjusted_decimal_part = &decimal_part / &gcd;
-    let adjusted_decimal_divisor = &decimal_divisor / &gcd;
+    let mut adjusted_decimal_part = decimal_part / gcd;
+    let adjusted_decimal_divisor = decimal_divisor / gcd;
 
-    let mut result = String::from("");
-    match format.find("0") {
+    let result;
+    match format.find('0') {
         Some(_) => {
             result = format!(
                 "{}{} {}/{}",
                 &sign, &integer_part, &adjusted_decimal_part, &adjusted_decimal_divisor
             );
         }
-        None => match format.find("#") {
+        None => match format.find('#') {
             Some(_) => {
                 if integer_part == 0f64 {
                     result = format!(
@@ -459,8 +506,7 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
                         &sign, &integer_part_str, &adjusted_decimal_part, &adjusted_decimal_divisor
                     );
                 } else {
-                    adjusted_decimal_part =
-                        adjusted_decimal_part + (&integer_part * &adjusted_decimal_divisor);
+                    adjusted_decimal_part += integer_part * adjusted_decimal_divisor;
                     result = format!(
                         "{}{}/{}",
                         &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
@@ -475,7 +521,7 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
 fn format_straight_numeric_value(
     value: &str,
     _format: &str,
-    matches: &Vec<String>,
+    matches: &[String],
     use_thousands: &bool,
     _number_regex: &str,
 ) -> String {
@@ -493,7 +539,7 @@ fn format_straight_numeric_value(
         Some(v) => v.to_string(),
         None => String::from("0"),
     };
-    if right.len() == 0 {
+    if right.is_empty() {
         return left_value;
     }
     if right.len() != right_value.len() {
@@ -540,23 +586,20 @@ fn format_straight_numeric_value(
     //    value
 }
 
-fn _merge_complex_number_format_masks(numbers: &Vec<String>, masks: &Vec<String>) -> Vec<String> {
+fn _merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Vec<String> {
     let mut decimal_count = numbers[1].len();
     let mut post_decimal_masks: Vec<String> = Vec::new();
 
     for mask in masks.iter().rev() {
         post_decimal_masks.push(mask.to_string());
         decimal_count -= mask.to_string().len();
-        if decimal_count <= 0 {
+        if decimal_count == 0 {
             break;
         }
     }
 
     post_decimal_masks.reverse();
-    let mut result: Vec<String> = Vec::new();
-    result.push(masks.join("."));
-    result.push(post_decimal_masks.join("."));
-    result
+    vec![masks.join("."), post_decimal_masks.join(".")]
 }
 
 fn _process_complex_number_format_mask(number: &f64, mask: &str) -> String {
@@ -566,29 +609,29 @@ fn _process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     let mut masking_blocks: Vec<(String, usize)> = Vec::new();
     let mut masking_str: Vec<String> = Vec::new();
     let mut masking_beg: Vec<usize> = Vec::new();
-    for ite in re.captures(&mask).unwrap().iter() {
-        masking_str.push(ite.unwrap().to_string());
+    for ite in re.captures(&mask).ok().flatten().unwrap().iter() {
+        masking_str.push(ite.unwrap().as_str().to_string());
     }
-    for (_, pos) in re.captures(&mask).unwrap().iter_pos().enumerate() {
-        let (beg, _) = pos.unwrap();
+    for pos in re.captures(&mask).ok().flatten().unwrap().iter() {
+        let beg = pos.unwrap().start();
         masking_beg.push(beg);
     }
     for i in 0..masking_str.len() {
         masking_blocks.push((
             masking_str.get(i).unwrap().clone(),
-            masking_beg.get(i).unwrap().clone(),
+            *masking_beg.get(i).unwrap(),
         ));
     }
 
     if masking_blocks.len() > 1 {
-        let mut number = number.clone();
+        let mut number = *number;
         let mut offset: usize = 0;
         for (block, pos) in masking_blocks.iter().rev() {
             let divisor = format!("{}{}", 1, block).parse::<f64>().unwrap();
             let size = block.len();
-            offset = pos.clone();
+            offset = *pos;
 
-            let block_value = format!("{:0width$}", (&number % &divisor), width = size);
+            let block_value = format!("{:0width$}", (number % divisor), width = size);
 
             number = (number / divisor) as f64;
             let from: String = mask.chars().skip(offset).take(size).collect();
@@ -607,7 +650,7 @@ fn _complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) 
     let sign = number < &0.0;
     let number = number.abs();
 
-    if split_on_point == &true && mask.find(".").is_some() && number.to_string().find(".").is_some()
+    if split_on_point == &true && mask.find('.').is_some() && number.to_string().find('.').is_some()
     {
         let number_str = number.to_string();
         let numbers_as: Vec<&str> = number_str.split('.').collect();
@@ -648,7 +691,7 @@ fn _complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) 
 
 fn gcd(a: &f64, b: &f64) -> f64 {
     if b == &0f64 {
-        a.clone()
+        *a
     } else {
         gcd(b, &(a % b))
     }
@@ -659,180 +702,180 @@ fn test_to_formatted_string_date() {
     let value = String::from("45435"); // 2024/5/23
     assert_eq!(
         r#"2024-05-23"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_YYYYMMDD2)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD2)
     );
     assert_eq!(
         r#"2024-05-23"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_YYYYMMDD)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD)
     );
     assert_eq!(
         r#"23-05-2024"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DDMMYYYY)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYY)
     );
     assert_eq!(
         r#"23/05/2024"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
     );
     assert_eq!(
         r#"23/5/24"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DMYSLASH)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYSLASH)
     );
     assert_eq!(
         r#"23-5-24"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DMYMINUS)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYMINUS)
     );
     assert_eq!(
         r#"23-5"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DMMINUS)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMMINUS)
     );
     assert_eq!(
         r#"5-24"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_MYMINUS)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_MYMINUS)
     );
     assert_eq!(
         r#"05-23-24"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX14)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX14)
     );
     assert_eq!(
         r#"23-May-24"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX15)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX15)
     );
     assert_eq!(
         r#"23-May"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX16)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX16)
     );
     assert_eq!(
         r#"May-24"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX17)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX17)
     );
     assert_eq!(
         r#"5/23/24 0:00"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX22)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX22)
     );
     assert_eq!(
         r#"23/5/24 0:00"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DATETIME)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DATETIME)
     );
     assert_eq!(
         r#"12:00 am"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME1)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME1)
     );
     assert_eq!(
         r#"12:00:00 am"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME2)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME2)
     );
     assert_eq!(
         r#"0:00"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME3)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME3)
     );
     assert_eq!(
         r#"0:00:00"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME4)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME4)
     );
     assert_eq!(
         r#"00:00"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME5)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME5)
     );
     assert_eq!(
         r#"0:00:00"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME6)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME6)
     );
     assert_eq!(
         r#"0:00:00"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME8)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME8)
     );
     assert_eq!(
         r#"2024/05/23"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
     );
 
     let value = String::from("44349.211134259262"); // 2021/06/02 05:04:02
     assert_eq!(
         r#"2021-06-02"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_YYYYMMDD2)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD2)
     );
     assert_eq!(
         r#"2021-06-02"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_YYYYMMDD)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD)
     );
     assert_eq!(
         r#"02-06-2021"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DDMMYYYY)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYY)
     );
     assert_eq!(
         r#"02/06/2021"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
     );
     assert_eq!(
         r#"2/6/21"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DMYSLASH)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYSLASH)
     );
     assert_eq!(
         r#"2-6-21"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DMYMINUS)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYMINUS)
     );
     assert_eq!(
         r#"2-6"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DMMINUS)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMMINUS)
     );
     assert_eq!(
         r#"6-21"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_MYMINUS)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_MYMINUS)
     );
     assert_eq!(
         r#"06-02-21"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX14)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX14)
     );
     assert_eq!(
         r#"2-Jun-21"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX15)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX15)
     );
     assert_eq!(
         r#"2-Jun"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX16)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX16)
     );
     assert_eq!(
         r#"Jun-21"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX17)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX17)
     );
     assert_eq!(
         r#"6/2/21 5:04"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_XLSX22)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX22)
     );
     assert_eq!(
         r#"2/6/21 5:04"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_DATETIME)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DATETIME)
     );
     assert_eq!(
         r#"5:04 am"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME1)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME1)
     );
     assert_eq!(
         r#"5:04:02 am"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME2)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME2)
     );
     assert_eq!(
         r#"5:04"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME3)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME3)
     );
     assert_eq!(
         r#"5:04:02"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME4)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME4)
     );
     assert_eq!(
         r#"04:02"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME5)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME5)
     );
     assert_eq!(
         r#"5:04:02"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME6)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME6)
     );
     assert_eq!(
         r#"5:04:02"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_TIME8)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME8)
     );
     assert_eq!(
         r#"2021/06/02"#,
-        to_formatted_string(value.as_str(), NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
+        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
     );
 }

@@ -27,7 +27,7 @@ impl PageMargins {
     }
 
     pub fn get_right(&self) -> &f64 {
-        &self.right.get_value()
+        self.right.get_value()
     }
 
     pub fn set_right(&mut self, value: f64) -> &mut Self {

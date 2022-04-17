@@ -170,7 +170,7 @@ impl Style {
     }
 
     pub fn get_number_format(&self) -> &Option<NumberingFormat> {
-        &self.get_numbering_format()
+        self.get_numbering_format()
     }
 
     pub fn get_number_format_mut(&mut self) -> &mut NumberingFormat {
@@ -192,6 +192,25 @@ impl Style {
     pub fn set_format_id(&mut self, value: u32) -> &mut Self {
         self.format_id.set_value(value);
         self
+    }
+
+    pub(crate) fn is_empty(&self) -> bool {
+        if self.font.is_some() {
+            return false;
+        }
+        if self.fill.is_some() {
+            return false;
+        }
+        if self.borders.is_some() {
+            return false;
+        }
+        if self.alignment.is_some() {
+            return false;
+        }
+        if self.numbering_format.is_some() {
+            return false;
+        }
+        true
     }
 
     pub(crate) fn get_defalut_value() -> Self {

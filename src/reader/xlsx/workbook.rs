@@ -9,7 +9,7 @@ use structs::Spreadsheet;
 use structs::WorkbookView;
 use structs::Worksheet;
 
-const FILE_PATH: &'static str = "xl/workbook.xml";
+const FILE_PATH: &str = "xl/workbook.xml";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
@@ -38,7 +38,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let sheet_id_value = get_attribute(e, b"sheetId").unwrap();
                     let r_id_value = get_attribute(e, b"r:id").unwrap();
                     let mut worksheet = Worksheet::default();
-                    worksheet.set_title(name_value);
+                    worksheet.set_name(name_value);
                     worksheet.set_sheet_id(sheet_id_value);
                     worksheet.set_r_id(r_id_value);
                     let _ = spreadsheet.add_sheet(worksheet);
@@ -84,7 +84,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     for sheet in spreadsheet.get_sheet_collection_mut() {
         for defined_name in &defined_names {
             let def_sheet_name = defined_name.get_address_obj().get_sheet_name();
-            if sheet.get_title() == def_sheet_name {
+            if sheet.get_name() == def_sheet_name {
                 sheet.add_defined_names(defined_name.clone());
             }
         }

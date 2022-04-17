@@ -28,7 +28,7 @@ impl NumericValue {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    self.set_text(e.unescape_and_decode(&reader).unwrap());
+                    self.set_text(e.unescape_and_decode(reader).unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"c:v" => return,

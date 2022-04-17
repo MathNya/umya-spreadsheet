@@ -14,7 +14,7 @@ pub struct ScatterStyle {
 }
 impl ScatterStyle {
     pub fn get_val(&self) -> &ScatterStyleValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: ScatterStyleValues) -> &mut ScatterStyle {
@@ -35,7 +35,7 @@ impl ScatterStyle {
         write_start_tag(
             writer,
             "c:scatterStyle",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

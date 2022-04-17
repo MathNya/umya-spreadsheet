@@ -13,7 +13,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     pub fn new(arv: zip::ZipWriter<W>) -> Self {
         WriterManager {
             files: Vec::new(),
-            arv: arv,
+            arv,
         }
     }
 
@@ -23,7 +23,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         writer: Writer<Cursor<Vec<u8>>>,
     ) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
-        if is_match == false {
+        if !is_match {
             make_file_from_writer(target, &mut self.arv, writer, None)?;
             self.files.push(target.to_string());
         }
@@ -32,7 +32,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
 
     pub(crate) fn add_bin(&mut self, target: &str, data: &Vec<u8>) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
-        if is_match == false {
+        if !is_match {
             make_file_from_bin(target, &mut self.arv, data, None)?;
             self.files.push(target.to_string());
         }
@@ -67,7 +67,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             index += 1;
             let file_path = format!("xl/drawings/drawing{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
-            if is_match == false {
+            if !is_match {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -83,7 +83,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             index += 1;
             let file_path = format!("xl/drawings/vmlDrawing{}.vml", index);
             let is_match = self.check_file_exist(&file_path);
-            if is_match == false {
+            if !is_match {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -99,7 +99,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             index += 1;
             let file_path = format!("xl/comments{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
-            if is_match == false {
+            if !is_match {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -115,7 +115,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             index += 1;
             let file_path = format!("xl/charts/chart{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
-            if is_match == false {
+            if !is_match {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -128,7 +128,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             index += 1;
             let file_path = format!("xl/embeddings/oleObject{}.bin", index);
             let is_match = self.check_file_exist(&file_path);
-            if is_match == false {
+            if !is_match {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
             }
@@ -141,7 +141,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             index += 1;
             let file_path = format!("xl/embeddings/Microsoft_Excel_Worksheet{}.xlsx", index);
             let is_match = self.check_file_exist(&file_path);
-            if is_match == false {
+            if !is_match {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
             }
@@ -156,7 +156,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             index += 1;
             let file_path = format!("xl/printerSettings/printerSettings{}.bin", index);
             let is_match = self.check_file_exist(&file_path);
-            if is_match == false {
+            if !is_match {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
             }
@@ -253,7 +253,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             }
 
             // Override Unsupported
-            if content_type == "" {
+            if content_type.is_empty() {
                 for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
                     if old_part_name == &file {
                         content_type = old_content_type;
@@ -261,7 +261,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
                 }
             }
 
-            if content_type != "" {
+            if !content_type.is_empty() {
                 list.push((file, content_type.to_string()));
             }
         }

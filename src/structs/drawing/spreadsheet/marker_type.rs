@@ -33,7 +33,7 @@ impl MarkerType {
     }
 
     pub fn add_col_off(&mut self, value: usize) -> &mut Self {
-        self.col_off = self.col_off + value;
+        self.col_off += value;
         self
     }
 
@@ -56,7 +56,7 @@ impl MarkerType {
     }
 
     pub fn add_row_off(&mut self, value: usize) -> &mut Self {
-        self.row_off = self.row_off + value;
+        self.row_off += value;
         self
     }
 
@@ -104,7 +104,7 @@ impl MarkerType {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
-                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
+                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(reader).unwrap(),
                 Ok(Event::End(ref e)) => match e.name() {
                     b"xdr:col" => {
                         self.col = string_value.parse::<u32>().unwrap();

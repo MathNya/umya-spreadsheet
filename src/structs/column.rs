@@ -24,7 +24,7 @@ impl Default for Column {
         width.set_value(8.38f64);
         Self {
             col_num: UInt32Value::default(),
-            width: width,
+            width,
             hidden: BooleanValue::default(),
             best_fit: BooleanValue::default(),
             style: Style::default(),
@@ -34,7 +34,7 @@ impl Default for Column {
 }
 impl Column {
     pub fn get_col_num(&self) -> &u32 {
-        &self.col_num.get_value()
+        self.col_num.get_value()
     }
 
     pub fn set_col_num(&mut self, value: u32) -> &mut Self {
@@ -43,7 +43,7 @@ impl Column {
     }
 
     pub fn get_width(&self) -> &f64 {
-        &self.width.get_value()
+        self.width.get_value()
     }
 
     pub fn set_width(&mut self, value: f64) -> &mut Self {
@@ -52,7 +52,7 @@ impl Column {
     }
 
     pub fn get_hidden(&self) -> &bool {
-        &self.hidden.get_value()
+        self.hidden.get_value()
     }
 
     pub fn set_hidden(&mut self, value: bool) -> &mut Self {
@@ -61,7 +61,7 @@ impl Column {
     }
 
     pub fn get_best_fit(&self) -> &bool {
-        &self.best_fit.get_value()
+        self.best_fit.get_value()
     }
 
     pub fn set_best_fit(&mut self, value: bool) -> &mut Self {
@@ -83,7 +83,7 @@ impl Column {
     }
 
     pub fn get_auto_width(&self) -> &bool {
-        &self.auto_width.get_value()
+        self.auto_width.get_value()
     }
 
     pub fn set_auto_width(&mut self, value: bool) -> &mut Self {
@@ -100,12 +100,13 @@ impl Column {
 
         // default font size len.
         let column_font_size = match self.get_style().get_font() {
-            Some(font) => font.get_font_size().get_val().clone(),
+            Some(font) => *font.get_font_size().get_val(),
             None => 11f64,
         };
 
-        let cell_list = cells.get_collection_by_column(self.get_col_num());
-        for (_, cell) in cell_list {
+        let mut cell_list = cells.get_collection_by_column(self.get_col_num());
+        cell_list.sort_by(|a, b| a.get_coordinate().get_row_num().cmp(b.get_coordinate().get_row_num()));
+        for cell in cell_list {
             let column_width = cell.get_width_point(&column_font_size);
 
             if column_width > column_width_max {

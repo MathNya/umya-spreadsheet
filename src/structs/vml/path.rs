@@ -13,7 +13,7 @@ pub struct Path {
 }
 impl Path {
     pub fn get_connection_point_type(&self) -> &ConnectValues {
-        &self.connection_point_type.get_value()
+        self.connection_point_type.get_value()
     }
 
     pub fn set_connection_point_type(&mut self, value: ConnectValues) -> &mut Self {

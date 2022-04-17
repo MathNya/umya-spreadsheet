@@ -1,5 +1,5 @@
 use helper::coordinate::*;
-use onig::*;
+use fancy_regex::{Regex, Captures};
 
 pub fn adjustment_insert_formula_coordinate(
     formula: &str,
@@ -12,7 +12,7 @@ pub fn adjustment_insert_formula_coordinate(
 ) -> String {
     let re = Regex::new(r#"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+"#).unwrap();
     let result = re.replace_all(formula, |caps: &Captures| {
-        let caps_string: String = (&caps.at(0).unwrap()).parse().unwrap();
+        let caps_string = (&caps.get(0).unwrap()).as_str().to_string();
         let split_str: Vec<&str> = caps_string.split("!").collect();
         let with_wksheet: bool;
         let wksheet: String;
@@ -29,7 +29,7 @@ pub fn adjustment_insert_formula_coordinate(
         if &wksheet != &worksheet_name {
             return caps_string;
         }
-        let split_range: Vec<&str> = range.split(":").collect();
+        let split_range: Vec<&str> = range.split(':').collect();
         let mut result = String::from("");
         for coordinate in split_range {
             let index_coordinate = index_from_coordinate(coordinate);
@@ -41,7 +41,7 @@ pub fn adjustment_insert_formula_coordinate(
             row_num = adjustment_insert_coordinate(&row_num, root_row_num, offset_row_num);
             let new_corrdinate =
                 coordinate_from_index_with_lock(&col_num, &row_num, &is_lock_col, &is_lock_row);
-            if &result != "" {
+            if !&result.is_empty() {
                 result = format!("{}:", result);
             }
             result = format!("{}{}", result, new_corrdinate);
@@ -51,7 +51,7 @@ pub fn adjustment_insert_formula_coordinate(
         }
         result
     });
-    result
+    result.to_string()
 }
 
 pub fn adjustment_remove_formula_coordinate(
@@ -65,7 +65,7 @@ pub fn adjustment_remove_formula_coordinate(
 ) -> String {
     let re = Regex::new(r#"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+"#).unwrap();
     let result = re.replace_all(formula, |caps: &Captures| {
-        let caps_string: String = (&caps.at(0).unwrap()).parse().unwrap();
+        let caps_string = (&caps.get(0).unwrap()).as_str().to_string();
         let split_str: Vec<&str> = caps_string.split("!").collect();
         let with_wksheet: bool;
         let wksheet: String;
@@ -82,7 +82,7 @@ pub fn adjustment_remove_formula_coordinate(
         if &wksheet != &worksheet_name {
             return caps_string;
         }
-        let split_range: Vec<&str> = range.split(":").collect();
+        let split_range: Vec<&str> = range.split(':').collect();
         let mut result = String::from("");
         for coordinate in split_range {
             let index_coordinate = index_from_coordinate(coordinate);
@@ -94,7 +94,7 @@ pub fn adjustment_remove_formula_coordinate(
             row_num = adjustment_remove_coordinate(&row_num, root_row_num, offset_row_num);
             let new_corrdinate =
                 coordinate_from_index_with_lock(&col_num, &row_num, &is_lock_col, &is_lock_row);
-            if &result != "" {
+            if !&result.is_empty() {
                 result = format!("{}:", result);
             }
             result = format!("{}{}", result, new_corrdinate);
@@ -104,5 +104,5 @@ pub fn adjustment_remove_formula_coordinate(
         }
         result
     });
-    result
+    result.into()
 }

@@ -50,7 +50,7 @@ impl Blip {
         }
 
         let picture_id = get_attribute(e, b"r:embed").unwrap();
-        let relationship = drawing_relationships.get_relationship_by_rid(picture_id);
+        let relationship = drawing_relationships.get_relationship_by_rid(&picture_id);
         self.get_image_mut()
             .set_image_name(relationship.get_raw_file().get_file_name());
         self.get_image_mut()
@@ -66,7 +66,7 @@ impl Blip {
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
         ));
         attributes.push(("r:embed", r_id_str.as_str()));
-        if &self.cstate != "" {
+        if !&self.cstate.is_empty() {
             attributes.push(("cstate", &self.cstate));
         }
         write_start_tag(writer, "a:blip", attributes, false);

@@ -20,7 +20,7 @@ pub struct Pane {
 }
 impl Pane {
     pub fn get_horizontal_split(&self) -> &f64 {
-        &self.horizontal_split.get_value()
+        self.horizontal_split.get_value()
     }
 
     pub fn set_horizontal_split(&mut self, value: f64) -> &mut Self {
@@ -29,7 +29,7 @@ impl Pane {
     }
 
     pub fn get_vertical_split(&self) -> &f64 {
-        &self.vertical_split.get_value()
+        self.vertical_split.get_value()
     }
 
     pub fn set_vertical_split(&mut self, value: f64) -> &mut Self {
@@ -51,7 +51,7 @@ impl Pane {
     }
 
     pub fn get_active_pane(&self) -> &PaneValues {
-        &self.active_pane.get_value()
+        self.active_pane.get_value()
     }
 
     pub fn set_active_pane(&mut self, value: PaneValues) -> &mut Self {
@@ -60,7 +60,7 @@ impl Pane {
     }
 
     pub fn get_state(&self) -> &PaneStateValues {
-        &self.state.get_value()
+        self.state.get_value()
     }
 
     pub fn set_state(&mut self, value: PaneStateValues) -> &mut Self {

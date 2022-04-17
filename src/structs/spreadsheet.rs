@@ -46,7 +46,6 @@ impl Spreadsheet {
     // ************************
     // update Coordinate
     // ************************
-
     /// Insert new rows.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
@@ -57,13 +56,8 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_row("Sheet1", 2, 3);
     /// ```
-    pub fn insert_new_row<S: Into<String>>(
-        &mut self,
-        sheet_name: S,
-        row_index: u32,
-        num_rows: u32,
-    ) {
-        self.adjustment_insert_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
+    pub fn insert_new_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
+        self.adjustment_insert_coordinate(sheet_name, &0, &0, row_index, num_rows);
     }
 
     /// Insert new columns.
@@ -76,15 +70,10 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_column("Sheet1", "B", 3);
     /// ```
-    pub fn insert_new_column<S: Into<String>>(
-        &mut self,
-        sheet_name: S,
-        column: S,
-        num_columns: u32,
-    ) {
-        let column_upper = column.into().to_uppercase();
+    pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: &u32) {
+        let column_upper = column.to_uppercase();
         let column_index = column_index_from_string(column_upper);
-        self.insert_new_column_by_index(&sheet_name.into(), column_index, num_columns);
+        self.insert_new_column_by_index(sheet_name, &column_index, num_columns);
     }
 
     /// Insert new columns.
@@ -97,27 +86,27 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_column_by_index("Sheet1", 2, 3);
     /// ```
-    pub fn insert_new_column_by_index<S: Into<String>>(
+    pub fn insert_new_column_by_index(
         &mut self,
-        sheet_name: S,
-        column_index: u32,
-        num_columns: u32,
+        sheet_name: &str,
+        column_index: &u32,
+        num_columns: &u32,
     ) {
-        self.adjustment_insert_coordinate(&sheet_name.into(), &column_index, &num_columns, &0, &0);
+        self.adjustment_insert_coordinate(sheet_name, column_index, num_columns, &0, &0);
     }
 
     /// Remove rows.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
-    /// * `row_index` - Specify point of remove. ex) 1
-    /// * `num_rows` - Specify number to remove. ex) 2
+    /// * `row_index` - Specify point of remove. ex) &1
+    /// * `num_rows` - Specify number to remove. ex) &2
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_row("Sheet1", 2, 3);
     /// ```
-    pub fn remove_row<S: Into<String>>(&mut self, sheet_name: S, row_index: u32, num_rows: u32) {
-        self.adjustment_remove_coordinate(&sheet_name.into(), &0, &0, &row_index, &num_rows);
+    pub fn remove_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
+        self.adjustment_remove_coordinate(sheet_name, &0, &0, row_index, num_rows);
     }
 
     /// Remove columns.
@@ -130,10 +119,10 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_column("Sheet1", "B", 3);
     /// ```
-    pub fn remove_column<S: Into<String>>(&mut self, sheet_name: S, column: S, num_columns: u32) {
-        let column_upper = column.into().to_uppercase();
+    pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: &u32) {
+        let column_upper = column.to_uppercase();
         let column_index = column_index_from_string(column_upper);
-        self.remove_column_by_index(&sheet_name.into(), column_index, num_columns);
+        self.remove_column_by_index(sheet_name, &column_index, num_columns);
     }
 
     /// Remove columns.
@@ -146,13 +135,13 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_column_by_index("Sheet1", 2, 3);
     /// ```
-    pub fn remove_column_by_index<S: Into<String>>(
+    pub fn remove_column_by_index(
         &mut self,
-        sheet_name: S,
-        column_index: u32,
-        num_columns: u32,
+        sheet_name: &str,
+        column_index: &u32,
+        num_columns: &u32,
     ) {
-        self.adjustment_remove_coordinate(&sheet_name.into(), &column_index, &num_columns, &0, &0);
+        self.adjustment_remove_coordinate(sheet_name, column_index, num_columns, &0, &0);
     }
 
     /// (This method is crate only.)
@@ -167,7 +156,8 @@ impl Spreadsheet {
     ) {
         self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {
-            worksheet.adjustment_insert_coordinate(
+            worksheet.adjustment_insert_coordinate(column_index, num_columns, row_index, num_rows);
+            worksheet.adjustment_insert_coordinate_from_other_sheet(
                 sheet_name,
                 column_index,
                 num_columns,
@@ -189,7 +179,8 @@ impl Spreadsheet {
     ) {
         self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {
-            worksheet.adjustment_remove_coordinate(
+            worksheet.adjustment_remove_coordinate(column_index, num_columns, row_index, num_rows);
+            worksheet.adjustment_remove_coordinate_from_other_sheet(
                 sheet_name,
                 column_index,
                 num_columns,
@@ -209,11 +200,11 @@ impl Spreadsheet {
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
     /// ```
-    pub fn get_cell_value_by_address<S: Into<String>>(&self, address: S) -> Vec<&CellValue> {
+    pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
-        self.get_sheet_by_name(sheet_name)
+        self.get_sheet_by_name(&sheet_name)
             .unwrap()
-            .get_cell_value_by_range(range)
+            .get_cell_value_by_range(&range)
     }
 
     /// (This method is crate only.)
@@ -225,7 +216,7 @@ impl Spreadsheet {
     pub(crate) fn get_cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
         self.get_sheet_by_name(address.get_sheet_name())
             .unwrap()
-            .get_cell_value_by_range(address.get_range().get_range())
+            .get_cell_value_by_range(&address.get_range().get_range())
     }
 
     /// Get Theme.
@@ -348,7 +339,7 @@ impl Spreadsheet {
     /// Get Work Sheet List.
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
         for worksheet in &self.work_sheet_collection {
-            if worksheet.is_serialized() == false {
+            if !worksheet.is_serialized() {
                 panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
             }
         }
@@ -377,7 +368,7 @@ impl Spreadsheet {
     /// serialize by all worksheet.
     pub fn read_sheet_collection(&mut self) -> &mut Self {
         let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
+        let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
             raw_to_serialize_by_worksheet(
@@ -393,11 +384,25 @@ impl Spreadsheet {
     /// serialize a worksheet.
     pub fn read_sheet(&mut self, index: usize) -> &mut Self {
         let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
+        let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
         raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
         self
+    }
+
+    pub(crate) fn find_sheeet_index_by_name(
+        &self,
+        sheet_name: &str,
+    ) -> Result<usize, &'static str> {
+        let mut result = 0;
+        for sheet in &self.work_sheet_collection {
+            if sheet.get_name() == sheet_name {
+                return Ok(result);
+            }
+            result += 1;
+        }
+        Err("not found.")
     }
 
     /// Get Work Sheet.
@@ -408,27 +413,13 @@ impl Spreadsheet {
     pub fn get_sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
         match self.work_sheet_collection.get(index) {
             Some(v) => {
-                if v.is_serialized() == false {
+                if !v.is_serialized() {
                     panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
                 }
-                return Ok(v);
+                Ok(v)
             }
-            None => return Err("Not found."),
+            None => Err("Not found."),
         }
-    }
-
-    /// Get Work Sheet in mutable.
-    /// # Arguments
-    /// * `index` - sheet index
-    /// # Return value
-    /// * `&mut Worksheet` - Work sheet.
-    pub fn get_sheet_mut(&mut self, index: usize) -> &mut Worksheet {
-        let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
-        let stylesheet = self.get_stylesheet().clone();
-        let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
-        worksheet
     }
 
     /// Get Work Sheet.
@@ -436,20 +427,33 @@ impl Spreadsheet {
     /// * `sheet_name` - sheet name
     /// # Return value
     /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet_by_name<S: Into<String>>(
-        &self,
-        sheet_name: S,
-    ) -> Result<&Worksheet, &'static str> {
-        let v = sheet_name.into();
-        for sheet in &self.work_sheet_collection {
-            if sheet.get_title() == &v {
-                if sheet.is_serialized() == false {
-                    panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
-                }
-                return Ok(sheet);
+    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
+        match self.find_sheeet_index_by_name(sheet_name) {
+            Ok(index) => {
+                return self.get_sheet(index);
+            }
+            Err(e) => {
+                return Err(e);
             }
         }
-        Err("not found.")
+    }
+
+    /// Get Work Sheet in mutable.
+    /// # Arguments
+    /// * `index` - sheet index
+    /// # Return value
+    /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
+    pub fn get_sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, &'static str> {
+        let theme = self.get_theme().clone();
+        let shared_string_table = self.get_shared_string_table();
+        let stylesheet = self.get_stylesheet().clone();
+        match self.work_sheet_collection.get_mut(index) {
+            Some(v) => {
+                raw_to_serialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
+                return Ok(v);
+            }
+            None => return Err("Not found."),
+        }
     }
 
     /// Get Work Sheet in mutable.
@@ -457,55 +461,39 @@ impl Spreadsheet {
     /// * `sheet_name` - sheet name
     /// # Return value
     /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet_by_name_mut<S: Into<String>>(
+    pub fn get_sheet_by_name_mut(
         &mut self,
-        sheet_name: S,
+        sheet_name: &str,
     ) -> Result<&mut Worksheet, &'static str> {
-        let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table();
-        let stylesheet = self.get_stylesheet().clone();
-        let v = sheet_name.into();
-        for worksheet in &mut self.work_sheet_collection {
-            if worksheet.get_title() == &v {
-                raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
-                return Ok(worksheet);
+        match self.find_sheeet_index_by_name(sheet_name) {
+            Ok(index) => {
+                return self.get_sheet_mut(index);
+            }
+            Err(e) => {
+                return Err(e);
             }
         }
-        Err("not found.")
     }
 
-    pub fn set_active_sheet(&mut self, index: usize) -> &mut Self {
-        self.get_workbook_view_mut().set_active_tab(index as u32);
+    pub fn set_active_sheet(&mut self, index: u32) -> &mut Self {
+        self.get_workbook_view_mut().set_active_tab(index);
         self
     }
 
     /// Get Active Work Sheet.
     /// # Return value
-    /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_active_sheet(&self) -> Result<&Worksheet, &'static str> {
+    /// * `&Worksheet` - Work sheet.
+    pub fn get_active_sheet(&self) -> &Worksheet {
         let index = self.get_workbook_view().get_active_tab().clone();
-        match self.work_sheet_collection.get(index as usize) {
-            Some(v) => {
-                if v.is_serialized() == false {
-                    panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
-                }
-                return Ok(v);
-            }
-            None => return Err("Not found."),
-        }
+        self.get_sheet(index as usize).unwrap()
     }
 
     /// Get Active Work Sheet in mutable.
     /// # Return value
     /// * `&mut Worksheet` - Work sheet.
     pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
-        let theme = self.get_theme().clone();
-        let shared_string_table = self.get_shared_string_table().clone();
-        let stylesheet = self.get_stylesheet().clone();
         let index = self.get_workbook_view().get_active_tab().clone();
-        let worksheet = self.work_sheet_collection.get_mut(index as usize).unwrap();
-        raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
-        worksheet
+        self.get_sheet_mut(index as usize).unwrap()
     }
 
     /// Add Work Sheet.
@@ -514,13 +502,42 @@ impl Spreadsheet {
     /// # Return value
     /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet. Err:Error.
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
-        let title = value.get_title();
-        match Spreadsheet::check_sheet_title(self, title) {
+        let title = value.get_name();
+        match Spreadsheet::check_sheet_name(self, title) {
             Ok(_) => {}
             Err(e) => return Err(e),
         }
         self.work_sheet_collection.push(value);
         Ok(self.work_sheet_collection.last_mut().unwrap())
+    }
+
+    /// Remove Work Sheet.
+    /// # Arguments
+    /// * `index` - sheet index
+    /// # Return value
+    /// * `Result<(), &'static str>` - OK:removed worksheet. Err:Error.
+    pub fn remove_sheet(&mut self, index: usize) -> Result<(), &'static str> {
+        if self.work_sheet_collection.len() <= index {
+            return Err("out of index.");
+        }
+        self.work_sheet_collection.remove(index);
+        Ok(())
+    }
+
+    /// Remove Work Sheet.
+    /// # Arguments
+    /// * `sheet_name` - sheet name
+    /// # Return value
+    /// * `Result<(), &'static str>` - OK:removed worksheet. Err:Error.
+    pub fn remove_sheet_by_name(&mut self, sheet_name: &str) -> Result<(), &'static str> {
+        let cnt_before = self.work_sheet_collection.len();
+        self.work_sheet_collection
+            .retain(|x| !(x.get_name() == sheet_name));
+        let cnt_after = self.work_sheet_collection.len();
+        if cnt_before == cnt_after {
+            return Err("out of index.");
+        }
+        Ok(())
     }
 
     /// Add New Work Sheet.
@@ -533,7 +550,7 @@ impl Spreadsheet {
         sheet_title: S,
     ) -> Result<&mut Worksheet, &'static str> {
         let v = sheet_title.into();
-        match Spreadsheet::check_sheet_title(self, &v) {
+        match Spreadsheet::check_sheet_name(self, &v) {
             Ok(_) => {}
             Err(e) => return Err(e),
         }
@@ -555,47 +572,42 @@ impl Spreadsheet {
     ) -> &mut Worksheet {
         let mut worksheet = Worksheet::default();
         worksheet.set_sheet_id(sheet_id);
-        worksheet.set_title(sheet_title.into());
+        worksheet.set_name(sheet_title.into());
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }
 
-    /// Set Sheet Title.
+    /// Set Sheet Name.
     /// # Arguments
     /// * `index` - target sheet index
-    /// * `sheet_title` - sheet title
+    /// * `sheet_name` - sheet name
     /// # Return value
     /// * `Result<(), &'static str>` - OK:Success  Err:Error.
-    pub fn set_sheet_title<S: Into<String>>(
+    pub fn set_sheet_name<S: Into<String>>(
         &mut self,
         index: usize,
-        sheet_title: S,
+        sheet_name: S,
     ) -> Result<(), &'static str> {
-        let v = sheet_title.into();
-        match Spreadsheet::check_sheet_title(self, &v) {
+        let sheet_name_str = sheet_name.into();
+        match Spreadsheet::check_sheet_name(self, sheet_name_str.as_ref()) {
             Ok(_) => {}
             Err(e) => return Err(e),
         }
         match self.work_sheet_collection.get_mut(index) {
             Some(sheet) => {
-                sheet.set_title(v);
+                sheet.set_name(sheet_name_str);
                 Ok(())
             }
-            None => return Err("sheet not found."),
+            None => Err("sheet not found."),
         }
     }
 
     /// (This method is crate only.)
-    /// Check for duplicate sheet title.
-    /// # Arguments
-    /// * `value` - sheet title
-    /// # Return value
-    /// * `Result<(), &'static str>` - OK:Not duplicate Err:Duplicate.
-    pub(crate) fn check_sheet_title<S: Into<String>>(&self, value: S) -> Result<(), &'static str> {
-        let v = value.into();
+    /// Check for duplicate sheet name.
+    pub(crate) fn check_sheet_name(&self, value: &str) -> Result<(), &'static str> {
         for work_sheet in &self.work_sheet_collection {
-            if &v == work_sheet.get_title() {
-                return Err("title duplicate.");
+            if value == work_sheet.get_name() {
+                return Err("name duplicate.");
             }
         }
         Ok(())

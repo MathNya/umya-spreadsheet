@@ -157,11 +157,11 @@ impl Stylesheet {
                 .cell_style_formats
                 .get_cell_format()
                 .get(*cell_format.get_format_id() as usize)
-                .unwrap()
-                .clone();
+                .cloned()
+                .unwrap_or_default();
 
             let mut style = Style::default();
-            self.get_style_by_cell_format(&mut style, &def_cell_format, &cell_format);
+            self.get_style_by_cell_format(&mut style, &def_cell_format, cell_format);
             self.maked_style_list.push(style);
         }
 
@@ -176,11 +176,11 @@ impl Stylesheet {
     ) {
         // number_format
         let mut apply = true;
-        if def_cell_format.has_apply_number_format() == true {
-            apply = def_cell_format.get_apply_number_format().clone();
+        if def_cell_format.has_apply_number_format() {
+            apply = *def_cell_format.get_apply_number_format();
         }
-        if cell_format.has_apply_number_format() == true {
-            apply = cell_format.get_apply_number_format().clone();
+        if cell_format.has_apply_number_format() {
+            apply = *cell_format.get_apply_number_format();
         }
         if apply {
             let id = cell_format.get_number_format_id();
@@ -194,56 +194,56 @@ impl Stylesheet {
 
         // font
         let mut apply = true;
-        if def_cell_format.has_apply_font() == true {
-            apply = def_cell_format.get_apply_font().clone();
+        if def_cell_format.has_apply_font() {
+            apply = *def_cell_format.get_apply_font();
         }
-        if cell_format.has_apply_font() == true {
-            apply = cell_format.get_apply_font().clone();
+        if cell_format.has_apply_font() {
+            apply = *cell_format.get_apply_font();
         }
         if apply {
-            let id = cell_format.get_font_id().clone() as usize;
+            let id = *cell_format.get_font_id() as usize;
             let obj = self.fonts.get_font().get(id).unwrap();
             style.set_font(obj.clone());
         }
 
         // fill
         let mut apply = true;
-        if def_cell_format.has_apply_fill() == true {
-            apply = def_cell_format.get_apply_fill().clone();
+        if def_cell_format.has_apply_fill() {
+            apply = *def_cell_format.get_apply_fill();
         }
-        if cell_format.has_apply_fill() == true {
-            apply = cell_format.get_apply_fill().clone();
+        if cell_format.has_apply_fill() {
+            apply = *cell_format.get_apply_fill();
         }
         if apply {
-            let id = cell_format.get_fill_id().clone() as usize;
+            let id = *cell_format.get_fill_id() as usize;
             let obj = self.fills.get_fill().get(id).unwrap();
             style.set_fill(obj.clone());
         }
 
         // borders
         let mut apply = true;
-        if def_cell_format.has_apply_border() == true {
-            apply = def_cell_format.get_apply_border().clone();
+        if def_cell_format.has_apply_border() {
+            apply = *def_cell_format.get_apply_border();
         }
-        if cell_format.has_apply_border() == true {
-            apply = cell_format.get_apply_border().clone();
+        if cell_format.has_apply_border() {
+            apply = *cell_format.get_apply_border();
         }
         if apply {
-            let id = cell_format.get_border_id().clone() as usize;
+            let id = *cell_format.get_border_id() as usize;
             let obj = self.borders.get_borders().get(id).unwrap();
             style.set_borders(obj.clone());
         }
 
         // format_id
-        style.set_format_id(cell_format.get_format_id().clone());
+        style.set_format_id(*cell_format.get_format_id());
 
         // alignment
         let mut apply = true;
-        if def_cell_format.has_apply_alignment() == true {
-            apply = def_cell_format.get_apply_alignment().clone();
+        if def_cell_format.has_apply_alignment() {
+            apply = *def_cell_format.get_apply_alignment();
         }
-        if cell_format.has_apply_alignment() == true {
-            apply = cell_format.get_apply_alignment().clone();
+        if cell_format.has_apply_alignment() {
+            apply = *cell_format.get_apply_alignment();
         }
         if apply {
             match def_cell_format.get_alignment() {

@@ -37,7 +37,7 @@ pub struct Shape {
 }
 impl Shape {
     pub fn get_style(&self) -> &str {
-        &self.style.get_value()
+        self.style.get_value()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -46,7 +46,7 @@ impl Shape {
     }
 
     pub fn get_type(&self) -> &str {
-        &self.r_type.get_value()
+        self.r_type.get_value()
     }
 
     pub fn set_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -55,7 +55,7 @@ impl Shape {
     }
 
     pub fn get_filled(&self) -> &bool {
-        &self.filled.get_value()
+        self.filled.get_value()
     }
 
     pub fn set_filled(&mut self, value: bool) -> &mut Self {
@@ -64,7 +64,7 @@ impl Shape {
     }
 
     pub fn get_fill_color(&self) -> &str {
-        &self.fill_color.get_value()
+        self.fill_color.get_value()
     }
 
     pub fn set_fill_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -73,7 +73,7 @@ impl Shape {
     }
 
     pub fn get_stroked(&self) -> &bool {
-        &self.stroked.get_value()
+        self.stroked.get_value()
     }
 
     pub fn set_stroked(&mut self, value: bool) -> &mut Self {
@@ -82,7 +82,7 @@ impl Shape {
     }
 
     pub fn get_stroke_color(&self) -> &str {
-        &self.stroke_color.get_value()
+        self.stroke_color.get_value()
     }
 
     pub fn set_stroke_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -91,7 +91,7 @@ impl Shape {
     }
 
     pub fn get_stroke_weight(&self) -> &str {
-        &self.stroke_weight.get_value()
+        self.stroke_weight.get_value()
     }
 
     pub fn set_stroke_weight<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -100,7 +100,7 @@ impl Shape {
     }
 
     pub fn get_inset_mode(&self) -> &InsetMarginValues {
-        &self.inset_mode.get_value()
+        self.inset_mode.get_value()
     }
 
     pub fn set_inset_mode(&mut self, value: InsetMarginValues) -> &mut Self {

@@ -107,7 +107,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     for workseet in spreadsheet.get_sheet_collection_no_check() {
         // vt:lpstr
         write_start_tag(&mut writer, "vt:lpstr", vec![], false);
-        write_text_node(&mut writer, workseet.get_title());
+        write_text_node(&mut writer, workseet.get_name());
         write_end_tag(&mut writer, "vt:lpstr");
     }
 

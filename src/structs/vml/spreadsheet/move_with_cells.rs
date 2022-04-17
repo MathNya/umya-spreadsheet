@@ -11,7 +11,7 @@ pub struct MoveWithCells {
 }
 impl MoveWithCells {
     pub fn get_value(&self) -> &Option<bool> {
-        &self.value.get_value()
+        self.value.get_value()
     }
 
     pub fn set_value(&mut self, value: bool) -> &mut Self {
@@ -33,7 +33,7 @@ impl MoveWithCells {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
                     self.value
-                        .set_value_string(e.unescape_and_decode(&reader).unwrap());
+                        .set_value_string(e.unescape_and_decode(reader).unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"x:MoveWithCells" => return,

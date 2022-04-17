@@ -36,7 +36,7 @@ impl WorksheetDrawing {
         self
     }
 
-    pub fn get_image(&self, col: u32, row: u32) -> Option<&Image> {
+    pub fn get_image(&self, col: &u32, row: &u32) -> Option<&Image> {
         for image in &self.image_collection {
             if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
                 return Some(image);
@@ -45,7 +45,7 @@ impl WorksheetDrawing {
         None
     }
 
-    pub fn get_image_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
+    pub fn get_image_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
         for image in &mut self.image_collection {
             if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
                 return Some(image);
@@ -54,7 +54,7 @@ impl WorksheetDrawing {
         None
     }
 
-    pub fn get_images(&self, col: u32, row: u32) -> Vec<&Image> {
+    pub fn get_images(&self, col: &u32, row: &u32) -> Vec<&Image> {
         let mut result: Vec<&Image> = Vec::new();
         for image in &self.image_collection {
             if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
@@ -64,7 +64,7 @@ impl WorksheetDrawing {
         result
     }
 
-    pub fn get_images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
+    pub fn get_images_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Image> {
         let mut result: Vec<&mut Image> = Vec::new();
         for image in &mut self.image_collection {
             if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
@@ -87,7 +87,7 @@ impl WorksheetDrawing {
         self
     }
 
-    pub fn get_chart(&self, col: u32, row: u32) -> Option<&Chart> {
+    pub fn get_chart(&self, col: &u32, row: &u32) -> Option<&Chart> {
         for chart in &self.chart_collection {
             if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
                 return Some(chart);
@@ -96,7 +96,7 @@ impl WorksheetDrawing {
         None
     }
 
-    pub fn get_chart_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
+    pub fn get_chart_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
         for chart in &mut self.chart_collection {
             if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
                 return Some(chart);
@@ -105,7 +105,7 @@ impl WorksheetDrawing {
         None
     }
 
-    pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
+    pub fn get_charts(&self, col: &u32, row: &u32) -> Vec<&Chart> {
         let mut result: Vec<&Chart> = Vec::new();
         for chart in &self.chart_collection {
             if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
@@ -115,7 +115,7 @@ impl WorksheetDrawing {
         result
     }
 
-    pub fn get_charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
+    pub fn get_charts_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Chart> {
         let mut result: Vec<&mut Chart> = Vec::new();
         for chart in &mut self.chart_collection {
             if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
@@ -152,10 +152,10 @@ impl WorksheetDrawing {
     }
 
     pub fn has_drawing_object(&self) -> bool {
-        self.chart_collection.len() > 0
-            || self.image_collection.len() > 0
-            || self.one_cell_anchor_collection.len() > 0
-            || self.two_cell_anchor_collection.len() > 0
+        !self.chart_collection.is_empty()
+            || !self.image_collection.is_empty()
+            || !self.one_cell_anchor_collection.is_empty()
+            || !self.two_cell_anchor_collection.is_empty()
     }
 
     pub fn get_graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
@@ -260,6 +260,65 @@ impl WorksheetDrawing {
             }
         }
         result
+    }
+    /// (This method is crate only.)
+    /// Adjustment Insert Coordinate
+    pub(crate) fn adjustment_insert_coordinate(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // chart
+        for graphic_frame in self.get_graphic_frame_collection_mut() {
+            for formula in graphic_frame
+                .get_graphic_mut()
+                .get_graphic_data_mut()
+                .get_chart_space_mut()
+                .get_chart_mut()
+                .get_formula_mut()
+            {
+                formula.get_address_mut().adjustment_insert_coordinate(
+                    sheet_name,
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+        }
+    }
+
+    /// (This method is crate only.)
+    /// Adjustment Remove Coordinate
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // chart
+        for graphic_frame in self.get_graphic_frame_collection_mut() {
+            for formula in graphic_frame
+                .get_graphic_mut()
+                .get_graphic_data_mut()
+                .get_chart_space_mut()
+                .get_chart_mut()
+                .get_formula_mut()
+            {
+                formula.get_address_mut().adjustment_remove_coordinate(
+                    sheet_name,
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+        }
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

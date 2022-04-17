@@ -14,7 +14,7 @@ pub struct PresetDash {
 }
 impl PresetDash {
     pub fn get_val(&self) -> &PresetLineDashValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: PresetLineDashValues) -> &mut PresetDash {
@@ -35,7 +35,7 @@ impl PresetDash {
         write_start_tag(
             writer,
             "a:prstDash",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

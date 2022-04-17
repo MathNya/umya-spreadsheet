@@ -23,7 +23,7 @@ impl DoubleValue {
     }
 
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value(value.into().parse::<f64>().unwrap())
+        self.set_value(value.into().parse::<f64>().unwrap_or_default())
     }
 
     pub(crate) fn has_value(&self) -> bool {

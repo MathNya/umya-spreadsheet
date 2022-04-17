@@ -4,7 +4,7 @@ use std::{io, result};
 
 use structs::Spreadsheet;
 
-const FILE_PATH: &'static str = "xl/vbaProject.bin";
+const FILE_PATH: &str = "xl/vbaProject.bin";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

@@ -39,7 +39,7 @@ impl Columns {
             Some(_) => {}
             None => {
                 let mut obj = Column::default();
-                obj.set_col_num(value.clone());
+                obj.set_col_num(*value);
                 self.set_column(obj);
             }
         }
@@ -133,11 +133,11 @@ impl Columns {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         stylesheet: &mut Stylesheet,
     ) {
-        if self.column.len() > 0 {
+        if !self.column.is_empty() {
             let mut column_index: Vec<ColumnSort> = Vec::new();
             for column in self.get_column_collection() {
                 let mut obj = ColumnSort::default();
-                obj.col_num = column.get_col_num().clone();
+                obj.col_num = *column.get_col_num();
                 obj.hash_code = column.get_hash_code();
                 column_index.push(obj);
             }
@@ -148,11 +148,11 @@ impl Columns {
 
             // col
             let mut hash_code = column_index[0].hash_code.clone();
-            let mut min = column_index[0].col_num.clone();
-            let mut max = column_index[0].col_num.clone();
+            let mut min = column_index[0].col_num;
+            let mut max = column_index[0].col_num;
             for index in &column_index {
                 if max + 1 >= index.col_num && hash_code == index.hash_code {
-                    max = index.col_num.clone();
+                    max = index.col_num;
                 } else {
                     for column in self.get_column_collection() {
                         if &min == column.get_col_num() {
@@ -160,8 +160,8 @@ impl Columns {
                         }
                     }
                     hash_code = index.hash_code.clone();
-                    min = index.col_num.clone();
-                    max = index.col_num.clone();
+                    min = index.col_num;
+                    max = index.col_num;
                 }
             }
             for column in self.get_column_collection() {

@@ -14,7 +14,7 @@ pub struct Extent {
 }
 impl Extent {
     pub fn get_cx(&self) -> &i64 {
-        &self.cx.get_value()
+        self.cx.get_value()
     }
 
     pub fn set_cx(&mut self, value: i64) -> &mut Extent {
@@ -23,7 +23,7 @@ impl Extent {
     }
 
     pub fn get_cy(&self) -> &i64 {
-        &self.cy.get_value()
+        self.cy.get_value()
     }
 
     pub fn set_cy(&mut self, value: i64) -> &mut Extent {
@@ -56,8 +56,8 @@ impl Extent {
             writer,
             "xdr:ext",
             vec![
-                ("cx", &self.cx.get_value_string()),
-                ("cy", &self.cy.get_value_string()),
+                ("cx", self.cx.get_value_string()),
+                ("cy", self.cy.get_value_string()),
             ],
             true,
         );

@@ -23,7 +23,7 @@ impl MergeCells {
 
     pub(crate) fn add_range<S: Into<String>>(&mut self, range: S) -> &mut Self {
         let mut obj = Range::default();
-        obj.set_range(range.into());
+        obj.set_range(range);
         self.range.push(obj);
         self
     }
@@ -42,10 +42,8 @@ impl MergeCells {
                     return true;
                 }
             };
-            if start_num <= row_num && row_num <= end_num {
-                if start_num != end_num {
-                    return true;
-                }
+            if start_num <= row_num && row_num <= end_num && start_num != end_num {
+                return true;
             }
         }
         false
@@ -65,10 +63,8 @@ impl MergeCells {
                     return true;
                 }
             };
-            if start_num <= col_num && col_num <= end_num {
-                if start_num != end_num {
-                    return true;
-                }
+            if start_num <= col_num && col_num <= end_num && start_num != end_num {
+                return true;
             }
         }
         false
@@ -101,7 +97,7 @@ impl MergeCells {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.get_range_collection().len() > 0 {
+        if !self.get_range_collection().is_empty() {
             // mergeCells
             write_start_tag(
                 writer,

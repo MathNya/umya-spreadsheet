@@ -15,7 +15,7 @@ pub struct LinearGradientFill {
 }
 impl LinearGradientFill {
     pub fn get_angle(&self) -> &i32 {
-        &self.angle.get_value()
+        self.angle.get_value()
     }
 
     pub fn set_angle(&mut self, value: i32) -> &mut LinearGradientFill {
@@ -24,7 +24,7 @@ impl LinearGradientFill {
     }
 
     pub fn get_scaled(&self) -> &bool {
-        &self.scaled.get_value()
+        self.scaled.get_value()
     }
 
     pub fn set_scaled(&mut self, value: bool) -> &mut LinearGradientFill {
@@ -55,10 +55,10 @@ impl LinearGradientFill {
         // a:lin
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if &self.angle.has_value() == &true {
-            attributes.push(("ang", &self.angle.get_value_string()));
+            attributes.push(("ang", self.angle.get_value_string()));
         }
         if &self.scaled.has_value() == &true {
-            attributes.push(("scaled", &self.scaled.get_value_string()));
+            attributes.push(("scaled", self.scaled.get_value_string()));
         }
         write_start_tag(writer, "a:lin", attributes, true);
     }

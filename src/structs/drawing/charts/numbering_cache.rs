@@ -74,8 +74,7 @@ impl NumberingCache {
             true,
         );
 
-        let mut idx = 0;
-        for cell_value in cell_value_list {
+        for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
             write_start_tag(
                 writer,
@@ -90,7 +89,6 @@ impl NumberingCache {
             write_end_tag(writer, "c:v");
 
             write_end_tag(writer, "c:pt");
-            idx += 1;
         }
 
         write_end_tag(writer, "c:numCache");

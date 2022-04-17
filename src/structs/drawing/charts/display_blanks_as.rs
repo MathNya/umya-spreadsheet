@@ -14,7 +14,7 @@ pub struct DisplayBlanksAs {
 }
 impl DisplayBlanksAs {
     pub fn get_val(&self) -> &DisplayBlanksAsValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: DisplayBlanksAsValues) -> &mut DisplayBlanksAs {
@@ -35,7 +35,7 @@ impl DisplayBlanksAs {
         write_start_tag(
             writer,
             "c:dispBlanksAs",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

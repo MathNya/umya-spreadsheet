@@ -21,7 +21,7 @@ pub struct Alignment {
 }
 impl Alignment {
     pub fn get_horizontal(&self) -> &HorizontalAlignmentValues {
-        &self.horizontal.get_value()
+        self.horizontal.get_value()
     }
 
     pub fn set_horizontal(&mut self, value: HorizontalAlignmentValues) {
@@ -29,7 +29,7 @@ impl Alignment {
     }
 
     pub fn get_vertical(&self) -> &VerticalAlignmentValues {
-        &self.vertical.get_value()
+        self.vertical.get_value()
     }
 
     pub fn set_vertical(&mut self, value: VerticalAlignmentValues) {
@@ -37,7 +37,7 @@ impl Alignment {
     }
 
     pub fn get_wrap_text(&self) -> &bool {
-        &self.wrap_text.get_value()
+        self.wrap_text.get_value()
     }
 
     pub fn set_wrap_text(&mut self, value: bool) {
@@ -45,7 +45,7 @@ impl Alignment {
     }
 
     pub fn get_text_rotation(&self) -> &u32 {
-        &self.text_rotation.get_value()
+        self.text_rotation.get_value()
     }
 
     pub fn set_text_rotation(&mut self, value: u32) {
@@ -100,16 +100,16 @@ impl Alignment {
         // alignment
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.horizontal.has_value() {
-            attributes.push(("horizontal", &self.horizontal.get_value_string()));
+            attributes.push(("horizontal", self.horizontal.get_value_string()));
         }
         if self.vertical.has_value() {
-            attributes.push(("vertical", &self.vertical.get_value_string()));
+            attributes.push(("vertical", self.vertical.get_value_string()));
         }
         if self.wrap_text.has_value() {
-            attributes.push(("wrapText", &self.wrap_text.get_value_string()));
+            attributes.push(("wrapText", self.wrap_text.get_value_string()));
         }
         if self.text_rotation.has_value() {
-            attributes.push(("textRotation", &self.text_rotation.get_value_string()));
+            attributes.push(("textRotation", self.text_rotation.get_value_string()));
         }
         write_start_tag(writer, "alignment", attributes, true);
     }

@@ -99,7 +99,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
                 continue;
             }
             let mut raw_worksheet = RawWorksheet::default();
-            raw_worksheet.read(&mut arv, &rel_target);
+            raw_worksheet.read(&mut arv, rel_target);
             sheet.set_raw_data_of_worksheet(raw_worksheet);
         }
     }
@@ -159,7 +159,7 @@ pub(crate) fn raw_to_serialize_by_worksheet(
         worksheet,
         &raw_data_of_worksheet,
         theme,
-        &shared_string_table,
+        shared_string_table,
         stylesheet,
     )
     .unwrap();

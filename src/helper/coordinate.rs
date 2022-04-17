@@ -1,6 +1,6 @@
-use regex::Regex;
+use fancy_regex::Regex;
 
-const ALPHABET: &'static [&'static str] = &[
+const ALPHABET: &[&str] = &[
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
     "T", "U", "V", "W", "X", "Y", "Z",
 ];
@@ -30,14 +30,12 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 }
 
 fn get_index(column: &str) -> u32 {
-    let mut i = 0;
-    for tar in self::ALPHABET {
-        if tar == &column {
-            return i + 1;
-        }
-        i += 1;
-    }
-    panic!("illegal character");
+    self::ALPHABET
+        .iter()
+        .enumerate()
+        .find_map(|(i, tar)| (tar == &column).then(|| i as u32))
+        .expect("illegal character")
+        + 1
 }
 
 pub fn string_from_column_index(column_index: &u32) -> String {
@@ -63,39 +61,38 @@ pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
         static ref RE: Regex = Regex::new(r"[A-Z]+").unwrap();
     }
     let caps = RE.captures(coordinate);
-    let col = match caps {
-        Some(v) => Some(v.get(0).unwrap().as_str()),
-        None => None,
-    };
+    let col = caps.map(|v| v.and_then(|v| v.get(0)).and_then(|v| Some(v.as_str())));
     let is_lock_col = match col {
-        Some(v) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
+        Ok(Some(v)) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
             Some(_) => Some("1"),
             None => Some("0"),
         },
-        None => None,
+        _ => None,
     };
 
     lazy_static! {
         static ref RE_NUM: Regex = Regex::new(r"[0-9]+").unwrap();
     }
     let caps = RE_NUM.captures(coordinate);
-    let row = match caps {
-        Some(v) => Some(v.get(0).unwrap().as_str()),
-        None => None,
-    };
+    let row = caps.map(|v| v.and_then(|v| v.get(0)).and_then(|v| Some(v.as_str())));
     let is_lock_row = match row {
-        Some(v) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
+        Ok(Some(v)) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
             Some(_) => Some("1"),
             None => Some("0"),
         },
-        None => None,
+        _ => None,
     };
 
-    vec![col, row, is_lock_col, is_lock_row]
+    vec![
+        col.ok().flatten(),
+        row.ok().flatten(),
+        is_lock_col,
+        is_lock_row,
+    ]
 }
 
 pub fn coordinate_from_index(col: &u32, row: &u32) -> String {
-    format!("{}{}", string_from_column_index(&col), row)
+    format!("{}{}", string_from_column_index(col), row)
 }
 
 pub fn coordinate_from_index_with_lock(
@@ -107,7 +104,7 @@ pub fn coordinate_from_index_with_lock(
     format!(
         "{}{}{}{}",
         if is_lock_col == &true { "$" } else { "" },
-        string_from_column_index(&col),
+        string_from_column_index(col),
         if is_lock_row == &true { "$" } else { "" },
         row
     )
@@ -115,27 +112,15 @@ pub fn coordinate_from_index_with_lock(
 
 pub fn index_from_coordinate<S: AsRef<str>>(coordinate: S) -> Vec<Option<u32>> {
     let split = coordinate_from_string(coordinate.as_ref());
-    let col = match split[0] {
-        Some(v) => Some(column_index_from_string(v)),
-        None => None,
-    };
-    let row = match split[1] {
-        Some(v) => Some(v.parse::<u32>().unwrap()),
-        None => None,
-    };
-    let is_lock_col = match split[2] {
-        Some(v) => Some(v.parse::<u32>().unwrap()),
-        None => None,
-    };
-    let is_lock_row = match split[3] {
-        Some(v) => Some(v.parse::<u32>().unwrap()),
-        None => None,
-    };
+    let col = split[0].map(column_index_from_string);
+    let row = split[1].map(|v| v.parse::<u32>().unwrap());
+    let is_lock_col = split[2].map(|v| v.parse::<u32>().unwrap());
+    let is_lock_row = split[3].map(|v| v.parse::<u32>().unwrap());
     vec![col, row, is_lock_col, is_lock_row]
 }
 
-pub fn index_from_coordinate_simple<S: Into<String>>(coordinate: S) -> (u32, u32) {
-    let coordinate_upper = coordinate.into().to_uppercase();
+pub fn index_from_coordinate_simple(coordinate: &str) -> (u32, u32) {
+    let coordinate_upper = coordinate.to_uppercase();
     let split = index_from_coordinate(&coordinate_upper);
     let col = split[0].unwrap();
     let row = split[1].unwrap();
@@ -143,7 +128,7 @@ pub fn index_from_coordinate_simple<S: Into<String>>(coordinate: S) -> (u32, u32
 }
 
 pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
-    let mut result = num.clone();
+    let mut result = *num;
     if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
         result += offset_num;
     }
@@ -151,7 +136,7 @@ pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num
 }
 
 pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
-    let mut result = num.clone();
+    let mut result = *num;
     if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
         result -= offset_num;
     }

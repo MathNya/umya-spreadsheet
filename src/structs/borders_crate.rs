@@ -37,7 +37,7 @@ impl BordersCrate {
                     id += 1;
                 }
                 self.set_borders(v.clone());
-                return id;
+                id
             }
             None => 0,
         }
@@ -72,7 +72,7 @@ impl BordersCrate {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.borders.len() > 0 {
+        if !self.borders.is_empty() {
             // borders
             write_start_tag(
                 writer,

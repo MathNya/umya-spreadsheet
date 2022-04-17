@@ -61,7 +61,7 @@ impl BodyProperties {
     }
 
     pub fn get_wrap(&self) -> &TextWrappingValues {
-        &self.wrap.get_value()
+        self.wrap.get_value()
     }
 
     pub fn set_wrap(&mut self, value: TextWrappingValues) -> &mut BodyProperties {
@@ -70,7 +70,7 @@ impl BodyProperties {
     }
 
     pub fn get_left_inset(&self) -> &i32 {
-        &self.left_inset.get_value()
+        self.left_inset.get_value()
     }
 
     pub fn set_left_inset(&mut self, value: i32) {
@@ -78,7 +78,7 @@ impl BodyProperties {
     }
 
     pub fn get_top_inset(&self) -> &i32 {
-        &self.top_inset.get_value()
+        self.top_inset.get_value()
     }
 
     pub fn set_top_inset(&mut self, value: i32) {
@@ -86,7 +86,7 @@ impl BodyProperties {
     }
 
     pub fn get_right_inset(&self) -> &i32 {
-        &self.right_inset.get_value()
+        self.right_inset.get_value()
     }
 
     pub fn set_right_inset(&mut self, value: i32) {
@@ -94,7 +94,7 @@ impl BodyProperties {
     }
 
     pub fn get_bottom_inset(&self) -> &i32 {
-        &self.bottom_inset.get_value()
+        self.bottom_inset.get_value()
     }
 
     pub fn set_bottom_inset(&mut self, value: i32) {
@@ -204,19 +204,19 @@ impl BodyProperties {
             None => {}
         }
         if &self.wrap.has_value() == &true {
-            attributes.push(("wrap", &self.wrap.get_value_string()));
+            attributes.push(("wrap", self.wrap.get_value_string()));
         }
         if &self.left_inset.has_value() == &true {
-            attributes.push(("lIns", &self.left_inset.get_value_string()));
+            attributes.push(("lIns", self.left_inset.get_value_string()));
         }
         if &self.top_inset.has_value() == &true {
-            attributes.push(("tIns", &self.top_inset.get_value_string()));
+            attributes.push(("tIns", self.top_inset.get_value_string()));
         }
         if &self.right_inset.has_value() == &true {
-            attributes.push(("rIns", &self.right_inset.get_value_string()));
+            attributes.push(("rIns", self.right_inset.get_value_string()));
         }
         if &self.bottom_inset.has_value() == &true {
-            attributes.push(("bIns", &self.bottom_inset.get_value_string()));
+            attributes.push(("bIns", self.bottom_inset.get_value_string()));
         }
 
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);

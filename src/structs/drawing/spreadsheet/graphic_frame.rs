@@ -21,7 +21,7 @@ pub struct GraphicFrame {
 }
 impl GraphicFrame {
     pub fn get_macro(&self) -> &str {
-        &self.r#macro.get_value()
+        self.r#macro.get_value()
     }
 
     pub fn set_macro<S: Into<String>>(&mut self, value: S) -> &mut GraphicFrame {
@@ -121,7 +121,7 @@ impl GraphicFrame {
         write_start_tag(
             writer,
             "xdr:graphicFrame",
-            vec![("macro", &self.r#macro.get_value_string())],
+            vec![("macro", self.r#macro.get_value_string())],
             false,
         );
 

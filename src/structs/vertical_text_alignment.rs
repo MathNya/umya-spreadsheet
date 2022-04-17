@@ -14,7 +14,7 @@ pub struct VerticalTextAlignment {
 }
 impl VerticalTextAlignment {
     pub fn get_val(&self) -> &VerticalAlignmentRunValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: VerticalAlignmentRunValues) -> &mut Self {
@@ -41,7 +41,7 @@ impl VerticalTextAlignment {
             write_start_tag(
                 writer,
                 "vertAlign",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", self.val.get_value_string())],
                 true,
             );
         }

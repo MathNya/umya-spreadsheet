@@ -100,7 +100,7 @@ impl TextCharacterPropertiesType for RunProperties {
     }
 
     fn get_capital(&self) -> &TextCapsValues {
-        &self.capital.get_value()
+        self.capital.get_value()
     }
 
     fn set_capital(&mut self, value: TextCapsValues) -> &mut Self {
@@ -109,7 +109,7 @@ impl TextCharacterPropertiesType for RunProperties {
     }
 
     fn get_spacing(&self) -> &i32 {
-        &self.spacing.get_value()
+        self.spacing.get_value()
     }
 
     fn set_spacing(&mut self, value: i32) -> &mut Self {
@@ -356,10 +356,10 @@ impl RunProperties {
             Some(v) => attributes.push(("i", v)),
             None => {}
         }
-        if self.capital.has_value() == true {
+        if self.capital.has_value() {
             attributes.push(("cap", self.capital.get_value_string()));
         }
-        if self.spacing.has_value() == true {
+        if self.spacing.has_value() {
             attributes.push(("spc", self.spacing.get_value_string()));
         }
         if self.solid_fill.is_some()

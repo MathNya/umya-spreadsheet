@@ -13,7 +13,7 @@ pub struct FontName {
 }
 impl FontName {
     pub fn get_val(&self) -> &str {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -35,7 +35,7 @@ impl FontName {
             write_start_tag(
                 writer,
                 tag_name,
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", self.val.get_value_string())],
                 true,
             );
         }

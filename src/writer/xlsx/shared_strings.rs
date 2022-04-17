@@ -17,8 +17,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         .read()
         .unwrap()
         .get_shared_string_item()
-        .len()
-        == 0
+        .is_empty()
     {
         return Ok(());
     }

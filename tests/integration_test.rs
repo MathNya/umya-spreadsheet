@@ -42,7 +42,7 @@ fn read_large_string() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
-    let ns = book.get_sheet_by_name_mut("Sheet1").unwrap();
+    let _ns = book.get_sheet_by_name_mut("Sheet1").unwrap();
 }
 
 #[test]
@@ -54,7 +54,7 @@ fn lazy_read_and_wite_large_string() {
 
     for r in 1..5000 {
         for c in 1..30 {
-            let cell = ns.get_cell_by_column_and_row_mut(c, r);
+            let cell = ns.get_cell_by_column_and_row_mut(&c, &r);
             let _ = cell.set_value_from_string(format!("r{}c{}", r, c));
         }
     }
@@ -76,17 +76,23 @@ fn lazy_read_and_wite_no_edit() {
 }
 
 fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
-    let _ = book.get_sheet_mut(0).get_cell_mut("A1").set_value("TEST1");
+    let _ = book
+        .get_sheet_mut(0)
+        .unwrap()
+        .get_cell_mut("A1")
+        .set_value("TEST1");
     let a1_value = book.get_sheet(0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
     let _ = book
         .get_sheet_mut(0)
-        .remove_cell_by_column_and_row_mut(1, 1);
+        .unwrap()
+        .remove_cell_by_column_and_row_mut(&1, &1);
     let a1 = book.get_sheet(0).unwrap().get_cell("A1");
     assert_eq!(a1, None);
     let _ = book
         .get_sheet_mut(0)
-        .remove_cell_by_column_and_row_mut(1, 2);
+        .unwrap()
+        .remove_cell_by_column_and_row_mut(&1, &2);
     let a2_value = book.get_sheet(0).unwrap().get_value("A2");
     assert_eq!(a2_value, "");
     let b5_value = book.get_sheet(0).unwrap().get_value("B5");
@@ -96,7 +102,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         "1.0000",
         book.get_sheet(0)
             .unwrap()
-            .get_formatted_value_by_column_and_row(2, 20)
+            .get_formatted_value_by_column_and_row(&2, &20)
     );
     assert_eq!(
         "$3,333.0000",
@@ -182,7 +188,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_row_dimension_mut(&5u32)
         .get_style_mut()
         .get_fill_mut()
-        .set_pattern_fill(fill.clone());
+        .set_pattern_fill(fill);
     let font_color = umya_spreadsheet::Color::default()
         .set_argb(umya_spreadsheet::Color::COLOR_WHITE)
         .to_owned();
@@ -191,7 +197,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_row_dimension_mut(&5u32)
         .get_style_mut()
         .get_font_mut()
-        .set_color(font_color.clone());
+        .set_color(font_color);
 }
 
 #[test]
@@ -254,20 +260,28 @@ fn lazy_read_and_wite_xlsm_no_edit() {
 fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     let _ = book
         .get_sheet_mut(0)
-        .get_cell_by_column_and_row_mut(1, 1)
+        .unwrap()
+        .get_cell_by_column_and_row_mut(&1, &1)
         .set_value("TEST1");
     let a1_value = book
         .get_sheet(0)
         .unwrap()
-        .get_cell_by_column_and_row(1, 1)
+        .get_cell_by_column_and_row(&1, &1)
         .unwrap()
         .get_value();
     assert_eq!("TEST1", a1_value);
 
     // copy sheet
     let mut clone_sheet = book.get_sheet(0).unwrap().clone();
-    clone_sheet.set_title("New Sheet");
+    clone_sheet.set_name("New Sheet");
     let _ = book.add_sheet(clone_sheet);
+
+    // remove sheet
+    let mut clone_sheet = book.get_sheet(0).unwrap().clone();
+    clone_sheet.set_name("DeletedSheet");
+    let _ = book.add_sheet(clone_sheet);
+    book.get_sheet_by_name("DeletedSheet").unwrap();
+    book.remove_sheet_by_name("DeletedSheet").unwrap();
 
     // add chart (line chart)
     let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
@@ -632,12 +646,12 @@ fn insert_and_remove_cells() {
     let path = std::path::Path::new("./tests/test_files/aaa_insertCell.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    book.insert_new_row("Sheet1", 2, 3);
-    book.insert_new_column("Sheet1", "B", 3);
-    book.insert_new_column_by_index("Sheet1", 2, 3);
+    book.insert_new_row("Sheet1", &2, &3);
+    book.insert_new_column("Sheet1", "B", &3);
+    book.insert_new_column_by_index("Sheet1", &2, &3);
 
-    book.remove_row("Sheet1", 6, 2);
-    book.remove_column_by_index("Sheet1", 6, 2);
+    book.remove_row("Sheet1", &6, &2);
+    book.remove_column_by_index("Sheet1", &6, &2);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_insertCell.xlsx");
@@ -668,48 +682,48 @@ fn new_file_and_edit() {
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(2, 2)
+        .get_cell_by_column_and_row_mut(&2, &2)
         .set_value_from_i32(1);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(2, 2)
+        .get_cell_by_column_and_row(&2, &2)
         .unwrap()
         .get_value();
     assert_eq!("1", a1_value);
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(2, 2)
+        .get_cell_by_column_and_row_mut(&2, &2)
         .set_value_from_i32_ref(&1);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(2, 2)
+        .get_cell_by_column_and_row(&2, &2)
         .unwrap()
         .get_value();
     assert_eq!("1", a1_value);
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(3, 3)
+        .get_cell_by_column_and_row_mut(&3, &3)
         .set_value_from_bool(true);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(3, 3)
+        .get_cell_by_column_and_row(&3, &3)
         .unwrap()
         .get_value();
     assert_eq!("TRUE", a1_value);
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(3, 3)
+        .get_cell_by_column_and_row_mut(&3, &3)
         .set_value_from_bool_ref(&true);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(3, 3)
+        .get_cell_by_column_and_row(&3, &3)
         .unwrap()
         .get_value();
     assert_eq!("TRUE", a1_value);
@@ -723,7 +737,7 @@ fn new_file_and_edit() {
         .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_style_by_column_and_row_mut(3, 2)
+        .get_style_by_column_and_row_mut(&3, &2)
         .get_borders_mut()
         .get_left_mut()
         .set_border_style(umya_spreadsheet::Border::BORDER_THIN);
@@ -736,6 +750,28 @@ fn new_file_and_edit() {
         .get_color_mut()
         .set_argb("00FF0000");
 
+    // change background color.
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .get_style_mut("A1")
+        .get_fill_mut()
+        .get_pattern_fill_mut()
+        .get_foreground_color_mut()
+        .set_argb(umya_spreadsheet::Color::COLOR_BLUE);
+
+    // change background color part2.
+    let mut color = umya_spreadsheet::Color::default();
+    color.set_argb(umya_spreadsheet::Color::COLOR_BLUE);
+    let mut pattern_fill = umya_spreadsheet::PatternFill::default();
+    pattern_fill.set_foreground_color(color);
+    let mut fill = umya_spreadsheet::Fill::default();
+    fill.set_pattern_fill(pattern_fill);
+    let mut style = umya_spreadsheet::Style::default();
+    style.set_fill(fill);
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .set_style("A2", style);
+    
     let worksheet = book.get_sheet_by_name_mut("Sheet3").unwrap();
     worksheet.get_column_dimension_mut("A").set_auto_width(true);
 
@@ -867,4 +903,11 @@ fn witer_csv() {
     option.set_wrap_with_char("\"");
     let path = std::path::Path::new("./tests/result_files/bbb.csv");
     let _ = umya_spreadsheet::writer::csv::write(&book, path, Some(&option));
+}
+
+#[test]
+fn new_file_empty_worksheet() {
+    let book = umya_spreadsheet::new_file_empty_worksheet();
+    let path = std::path::Path::new("./tests/result_files/empty_worksheet.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

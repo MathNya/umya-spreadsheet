@@ -12,7 +12,7 @@ pub struct Stroke {
 }
 impl Stroke {
     pub fn get_dash_style(&self) -> &str {
-        &self.dash_style.get_value()
+        self.dash_style.get_value()
     }
 
     pub fn set_dash_style<S: Into<String>>(&mut self, value: S) -> &mut Self {

@@ -15,7 +15,7 @@ pub struct Shadow {
 }
 impl Shadow {
     pub fn get_on(&self) -> &bool {
-        &self.on.get_value()
+        self.on.get_value()
     }
 
     pub fn set_on(&mut self, value: bool) -> &mut Self {
@@ -24,7 +24,7 @@ impl Shadow {
     }
 
     pub fn get_color(&self) -> &str {
-        &self.color.get_value()
+        self.color.get_value()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -33,7 +33,7 @@ impl Shadow {
     }
 
     pub fn get_obscured(&self) -> &bool {
-        &self.obscured.get_value()
+        self.obscured.get_value()
     }
 
     pub fn set_obscured(&mut self, value: bool) -> &mut Self {

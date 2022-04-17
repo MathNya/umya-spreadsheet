@@ -9,7 +9,7 @@ pub struct Coordinate {
 }
 impl Coordinate {
     pub fn get_col_num(&self) -> &u32 {
-        &self.column.get_num()
+        self.column.get_num()
     }
 
     pub fn set_col_num(&mut self, value: u32) -> &mut Self {
@@ -18,7 +18,7 @@ impl Coordinate {
     }
 
     pub fn get_row_num(&self) -> &u32 {
-        &self.row.get_num()
+        self.row.get_num()
     }
 
     pub fn set_row_num(&mut self, value: u32) -> &mut Self {
@@ -58,10 +58,10 @@ impl Coordinate {
 
     pub fn get_coordinate(&self) -> String {
         coordinate_from_index_with_lock(
-            &self.column.get_num(),
-            &self.row.get_num(),
-            &self.column.get_is_lock(),
-            &self.row.get_is_lock(),
+            self.column.get_num(),
+            self.row.get_num(),
+            self.column.get_is_lock(),
+            self.row.get_is_lock(),
         )
     }
 

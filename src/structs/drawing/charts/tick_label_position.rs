@@ -14,7 +14,7 @@ pub struct TickLabelPosition {
 }
 impl TickLabelPosition {
     pub fn get_val(&self) -> &TickLabelPositionValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: TickLabelPositionValues) -> &mut TickLabelPosition {
@@ -35,7 +35,7 @@ impl TickLabelPosition {
         write_start_tag(
             writer,
             "c:tickLblPos",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

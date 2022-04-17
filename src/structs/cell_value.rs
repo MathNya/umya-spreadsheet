@@ -105,7 +105,7 @@ impl CellValue {
     }
 
     pub fn set_value_from_bool_ref(&mut self, value: &bool) -> &mut Self {
-        self.set_value_from_bool(value.clone())
+        self.set_value_from_bool(*value)
     }
 
     pub fn set_value_from_numberic<V: Into<f64>>(&mut self, value: V) -> &mut Self {
@@ -161,23 +161,23 @@ impl CellValue {
         data_type: S,
     ) -> Result<(), &'static str> {
         match data_type.into().as_str() {
-            Self::TYPE_STRING2 => return Ok(()),
-            Self::TYPE_STRING => return Ok(()),
-            Self::TYPE_FORMULA => return Ok(()),
+            Self::TYPE_STRING2 => Ok(()),
+            Self::TYPE_STRING => Ok(()),
+            Self::TYPE_FORMULA => Ok(()),
             Self::TYPE_NUMERIC => match &value.into().parse::<f64>() {
-                Ok(_) => return Ok(()),
-                Err(_) => return Err("Invalid numeric value for datatype Numeric"),
+                Ok(_) => Ok(()),
+                Err(_) => Err("Invalid numeric value for datatype Numeric"),
             },
             Self::TYPE_BOOL => {
                 let check_value = &value.into().to_uppercase();
                 if check_value == "TRUE" || check_value == "FALSE" {
-                    return Ok(());
+                    Ok(())
                 } else {
-                    return Err("Invalid value for datatype Bool");
+                    Err("Invalid value for datatype Bool")
                 }
             }
-            Self::TYPE_NULL => return Ok(()),
-            _ => return Err("Invalid datatype"),
+            Self::TYPE_NULL => Ok(()),
+            _ => Err("Invalid datatype"),
         }
     }
 

@@ -14,7 +14,7 @@ pub struct LabelAlignment {
 }
 impl LabelAlignment {
     pub fn get_val(&self) -> &LabelAlignmentValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: LabelAlignmentValues) -> &mut LabelAlignment {
@@ -35,7 +35,7 @@ impl LabelAlignment {
         write_start_tag(
             writer,
             "c:lblAlgn",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", self.val.get_value_string())],
             true,
         );
     }

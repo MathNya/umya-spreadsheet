@@ -12,7 +12,7 @@ pub struct Fill {
 }
 impl Fill {
     pub fn get_color_2(&self) -> &str {
-        &self.color_2.get_value()
+        self.color_2.get_value()
     }
 
     pub fn set_color_2<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -38,7 +38,7 @@ impl Fill {
         write_start_tag(
             writer,
             "v:fill",
-            vec![("color2", &self.color_2.get_value())],
+            vec![("color2", self.color_2.get_value())],
             true,
         );
     }

@@ -1,5 +1,4 @@
-use std::collections::BTreeMap;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use structs::Row;
 
 #[derive(Clone, Default, Debug)]
@@ -7,13 +6,13 @@ pub(crate) struct Rows {
     rows: HashMap<u32, Row>,
 }
 impl Rows {
+    pub(crate) fn has_sheet_data(&self) -> bool {
+        !self.rows.is_empty()
+    }
+
     /// Get Row Dimension List.
     pub(crate) fn get_row_dimensions(&self) -> Vec<&Row> {
         self.rows.values().collect()
-    }
-
-    pub(crate) fn has_sheet_data(&self) -> bool {
-        !self.rows.is_empty()
     }
 
     /// Get Row Dimension List in mutable.
@@ -21,14 +20,8 @@ impl Rows {
         self.rows.values_mut().collect()
     }
 
-    /// Get Row Dimension convert BTreeMap.
-    pub(crate) fn get_row_dimensions_to_b_tree_map(&self) -> BTreeMap<&u32, &Row> {
-        let bt = self.rows.iter().collect();
-        bt
-    }
-
     /// Get Row Dimension convert Hashmap.
-    pub(crate) fn _get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Row> {
+    pub(crate) fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Row> {
         &self.rows
     }
 
@@ -45,7 +38,7 @@ impl Rows {
     pub(crate) fn get_row_dimension_mut(&mut self, row: &u32) -> &mut Row {
         self.rows.entry(row.to_owned()).or_insert_with(|| {
             let mut obj = Row::default();
-            obj.set_row_num(row.clone());
+            obj.set_row_num(*row);
             obj
         })
     }
@@ -56,14 +49,6 @@ impl Rows {
         let row = value.get_row_num();
         self.rows.insert(row.to_owned(), value);
         self
-    }
-
-    pub(crate) fn _get_row_collection(&self) -> &HashMap<u32, Row> {
-        &self.rows
-    }
-
-    pub(crate) fn _get_row_collection_mut(&mut self) -> &mut HashMap<u32, Row> {
-        &mut self.rows
     }
 
     /// (This method is crate only.)

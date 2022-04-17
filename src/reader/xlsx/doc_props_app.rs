@@ -5,7 +5,7 @@ use std::{io, result};
 
 use structs::Spreadsheet;
 
-const FILE_PATH: &'static str = "docProps/app.xml";
+const FILE_PATH: &str = "docProps/app.xml";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

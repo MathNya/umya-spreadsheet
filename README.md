@@ -1,9 +1,13 @@
 # umya-spreadsheet
 [![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
 [![Crates.io](https://img.shields.io/crates/l/umya-spreadsheet)](https://github.com/MathNya/umya-spreadsheet#license)
+[![Join the chat at https://gitter.im/MathNya/umya-spreadsheet](https://badges.gitter.im/MathNya/umya-spreadsheet.svg)](https://gitter.im/MathNya/umya-spreadsheet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Description
 **umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
+
+## Chatting
+Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## Support Status
 | Function | detail | example |

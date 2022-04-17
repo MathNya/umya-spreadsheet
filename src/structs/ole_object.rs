@@ -22,7 +22,7 @@ pub struct OleObject {
 }
 impl OleObject {
     pub fn get_requires(&self) -> &str {
-        &self.requires.get_value()
+        self.requires.get_value()
     }
 
     pub fn set_requires<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -31,7 +31,7 @@ impl OleObject {
     }
 
     pub fn get_prog_id(&self) -> &str {
-        &self.prog_id.get_value()
+        self.prog_id.get_value()
     }
 
     pub fn set_prog_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -99,14 +99,6 @@ impl OleObject {
         self
     }
 
-    pub(crate) fn _get_extension<S: Into<String>>(&self, value: S) -> String {
-        let value_org = value.into();
-        let v: Vec<&str> = value_org.split('.').collect();
-        let extension = v.last().unwrap().clone();
-        let extension_lower = extension.to_lowercase();
-        extension_lower
-    }
-
     pub(crate) fn is_bin(&self) -> bool {
         &self.object_extension == "bin"
     }
@@ -145,7 +137,7 @@ impl OleObject {
 
                             let r_id = get_attribute(e, b"r:id").unwrap();
                             let attached_file =
-                                relationships.get_relationship_by_rid(r_id).get_raw_file();
+                                relationships.get_relationship_by_rid(&r_id).get_raw_file();
                             self.set_object_extension(attached_file.get_extension());
                             self.set_object_data(attached_file.get_file_data().clone());
                         }
@@ -190,7 +182,7 @@ impl OleObject {
         write_start_tag(
             writer,
             "mc:Choice",
-            vec![("Requires", &self.requires.get_value_string())],
+            vec![("Requires", self.requires.get_value_string())],
             false,
         );
 
@@ -198,7 +190,7 @@ impl OleObject {
         let r_id_str = format!("rId{}", r_id);
         let shape_id_str = format!("{}", ole_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("progId", &self.prog_id.get_value_string()));
+        attributes.push(("progId", self.prog_id.get_value_string()));
         attributes.push(("shapeId", shape_id_str.as_str()));
         attributes.push(("r:id", r_id_str.as_str()));
         write_start_tag(writer, "oleObject", attributes, false);
@@ -218,7 +210,7 @@ impl OleObject {
         // oleObject
         let r_id_str = format!("rId{}", r_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("progId", &self.prog_id.get_value_string()));
+        attributes.push(("progId", self.prog_id.get_value_string()));
         attributes.push(("shapeId", shape_id_str.as_str()));
         attributes.push(("r:id", r_id_str.as_str()));
         write_start_tag(writer, "oleObject", attributes, true);

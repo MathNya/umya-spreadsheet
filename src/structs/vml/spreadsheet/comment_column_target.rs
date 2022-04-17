@@ -11,7 +11,7 @@ pub struct CommentColumnTarget {
 }
 impl CommentColumnTarget {
     pub fn get_value(&self) -> &u32 {
-        &self.value.get_value()
+        self.value.get_value()
     }
 
     pub fn set_value(&mut self, value: u32) -> &mut Self {
@@ -43,7 +43,7 @@ impl CommentColumnTarget {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => {
                     self.value
-                        .set_value_string(e.unescape_and_decode(&reader).unwrap());
+                        .set_value_string(e.unescape_and_decode(reader).unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"x:Column" => return,

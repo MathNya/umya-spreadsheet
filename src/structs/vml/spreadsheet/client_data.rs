@@ -31,7 +31,7 @@ pub struct ClientData {
 }
 impl ClientData {
     pub fn get_object_type(&self) -> &ObjectValues {
-        &self.object_type.get_value()
+        self.object_type.get_value()
     }
 
     pub fn set_object_type(&mut self, value: ObjectValues) -> &mut Self {
@@ -264,7 +264,7 @@ impl ClientData {
         write_start_tag(
             writer,
             "x:ClientData",
-            vec![("ObjectType", &self.object_type.get_value_string())],
+            vec![("ObjectType", self.object_type.get_value_string())],
             false,
         );
 
