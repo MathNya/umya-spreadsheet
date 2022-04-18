@@ -124,11 +124,11 @@ impl Image {
             .get_non_visual_drawing_properties_mut()
             .set_name(image_name);
 
+        // prefer_relative_resize
         picture
             .get_non_visual_picture_properties_mut()
             .get_non_visual_picture_drawing_properties_mut()
-            .get_picture_locks_mut()
-            .set_no_change_aspect(true);
+            .set_prefer_relative_resize(false);
 
         // stretch
         let fill_rectangle = FillRectangle::default();

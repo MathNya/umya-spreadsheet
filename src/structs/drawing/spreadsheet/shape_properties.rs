@@ -13,7 +13,7 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    transform2d: Transform2D,
+    transform2d: Option<Transform2D>,
     preset_geometry: PresetGeometry,
     solid_fill: Option<SolidFill>,
     outline: Option<Outline>,
@@ -34,16 +34,16 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_transform2d(&self) -> &Transform2D {
+    pub fn get_transform2d(&self) -> &Option<Transform2D> {
         &self.transform2d
     }
 
-    pub fn get_transform2d_mut(&mut self) -> &mut Transform2D {
+    pub fn get_transform2d_mut(&mut self) -> &mut Option<Transform2D> {
         &mut self.transform2d
     }
 
     pub fn set_transform2d(&mut self, value: Transform2D) -> &mut ShapeProperties {
-        self.transform2d = value;
+        self.transform2d = Some(value);
         self
     }
 
@@ -109,7 +109,9 @@ impl ShapeProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:xfrm" => {
-                        self.transform2d.set_attributes(reader, e);
+                        let mut obj = Transform2D::default();
+                        obj.set_attributes(reader, e);
+                        self.set_transform2d(obj);
                     }
                     b"a:prstGeom" => {
                         self.preset_geometry.set_attributes(reader, e);
@@ -156,7 +158,12 @@ impl ShapeProperties {
         write_start_tag(writer, "xdr:spPr", vec![], false);
 
         // a:xfrm
-        let _ = &self.transform2d.write_to(writer);
+        match &self.transform2d {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         // a:prstGeom
         let _ = &self.preset_geometry.write_to(writer);

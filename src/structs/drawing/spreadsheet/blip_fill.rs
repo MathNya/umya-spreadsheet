@@ -94,6 +94,9 @@ impl BlipFill {
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:blip" => {
+                        self.blip.set_attributes(reader, e, drawing_relationships);
+                    }
                     b"a:srcRect" => {
                         let mut source_rectangle = SourceRectangle::default();
                         source_rectangle.set_attributes(reader, e);
