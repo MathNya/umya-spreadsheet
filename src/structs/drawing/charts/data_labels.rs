@@ -27,11 +27,11 @@ impl DataLabels {
         &self.show_legend_key
     }
 
-    pub fn get_show_legend_key_mut(&mut self) -> &ShowLegendKey {
+    pub fn get_show_legend_key_mut(&mut self) -> &mut ShowLegendKey {
         &mut self.show_legend_key
     }
 
-    pub fn set_show_legend_key(&mut self, value: ShowLegendKey) -> &mut DataLabels {
+    pub fn set_show_legend_key(&mut self, value: ShowLegendKey) -> &mut Self {
         self.show_legend_key = value;
         self
     }
@@ -40,11 +40,11 @@ impl DataLabels {
         &self.show_value
     }
 
-    pub fn get_show_value_mut(&mut self) -> &ShowValue {
+    pub fn get_show_value_mut(&mut self) -> &mut ShowValue {
         &mut self.show_value
     }
 
-    pub fn set_show_value(&mut self, value: ShowValue) -> &mut DataLabels {
+    pub fn set_show_value(&mut self, value: ShowValue) -> &mut Self {
         self.show_value = value;
         self
     }
@@ -53,11 +53,11 @@ impl DataLabels {
         &self.show_category_name
     }
 
-    pub fn get_show_category_name_mut(&mut self) -> &ShowCategoryName {
+    pub fn get_show_category_name_mut(&mut self) -> &mut ShowCategoryName {
         &mut self.show_category_name
     }
 
-    pub fn set_show_category_name(&mut self, value: ShowCategoryName) -> &mut DataLabels {
+    pub fn set_show_category_name(&mut self, value: ShowCategoryName) -> &mut Self {
         self.show_category_name = value;
         self
     }
@@ -66,11 +66,11 @@ impl DataLabels {
         &self.show_series_name
     }
 
-    pub fn get_show_series_name_mut(&mut self) -> &ShowSeriesName {
+    pub fn get_show_series_name_mut(&mut self) -> &mut ShowSeriesName {
         &mut self.show_series_name
     }
 
-    pub fn set_show_series_name(&mut self, value: ShowSeriesName) -> &mut DataLabels {
+    pub fn set_show_series_name(&mut self, value: ShowSeriesName) -> &mut Self {
         self.show_series_name = value;
         self
     }
@@ -79,11 +79,11 @@ impl DataLabels {
         &self.show_percent
     }
 
-    pub fn get_show_percent_mut(&mut self) -> &ShowPercent {
+    pub fn get_show_percent_mut(&mut self) -> &mut ShowPercent {
         &mut self.show_percent
     }
 
-    pub fn set_show_percent(&mut self, value: ShowPercent) -> &mut DataLabels {
+    pub fn set_show_percent(&mut self, value: ShowPercent) -> &mut Self {
         self.show_percent = value;
         self
     }
@@ -92,11 +92,11 @@ impl DataLabels {
         &self.show_bubble_size
     }
 
-    pub fn get_show_bubble_size_mut(&mut self) -> &ShowBubbleSize {
+    pub fn get_show_bubble_size_mut(&mut self) -> &mut ShowBubbleSize {
         &mut self.show_bubble_size
     }
 
-    pub fn set_show_bubble_size(&mut self, value: ShowBubbleSize) -> &mut DataLabels {
+    pub fn set_show_bubble_size(&mut self, value: ShowBubbleSize) -> &mut Self {
         self.show_bubble_size = value;
         self
     }
@@ -105,11 +105,11 @@ impl DataLabels {
         &self.show_leader_lines
     }
 
-    pub fn get_show_leader_lines_mut(&mut self) -> &Option<ShowLeaderLines> {
+    pub fn get_show_leader_lines_mut(&mut self) -> &mut Option<ShowLeaderLines> {
         &mut self.show_leader_lines
     }
 
-    pub fn set_show_leader_lines(&mut self, value: ShowLeaderLines) -> &mut DataLabels {
+    pub fn set_show_leader_lines(&mut self, value: ShowLeaderLines) -> &mut Self {
         self.show_leader_lines = Some(value);
         self
     }

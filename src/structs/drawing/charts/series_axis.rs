@@ -35,7 +35,7 @@ impl SeriesAxis {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &AxisId {
+    pub fn get_axis_id_mut(&mut self) -> &mut AxisId {
         &mut self.axis_id
     }
 
@@ -48,7 +48,7 @@ impl SeriesAxis {
         &self.scaling
     }
 
-    pub fn get_scaling_mut(&mut self) -> &Scaling {
+    pub fn get_scaling_mut(&mut self) -> &mut Scaling {
         &mut self.scaling
     }
 
@@ -61,7 +61,7 @@ impl SeriesAxis {
         &self.delete
     }
 
-    pub fn get_delete_mut(&mut self) -> &Delete {
+    pub fn get_delete_mut(&mut self) -> &mut Delete {
         &mut self.delete
     }
 
@@ -74,7 +74,7 @@ impl SeriesAxis {
         &self.axis_position
     }
 
-    pub fn get_axis_position_mut(&mut self) -> &AxisPosition {
+    pub fn get_axis_position_mut(&mut self) -> &mut AxisPosition {
         &mut self.axis_position
     }
 
@@ -87,7 +87,7 @@ impl SeriesAxis {
         &self.major_gridlines
     }
 
-    pub fn get_major_gridlines_mut(&mut self) -> &Option<MajorGridlines> {
+    pub fn get_major_gridlines_mut(&mut self) -> &mut Option<MajorGridlines> {
         &mut self.major_gridlines
     }
 
@@ -100,7 +100,7 @@ impl SeriesAxis {
         &self.title
     }
 
-    pub fn get_title_mut(&mut self) -> &Option<Title> {
+    pub fn get_title_mut(&mut self) -> &mut Option<Title> {
         &mut self.title
     }
 
@@ -113,7 +113,7 @@ impl SeriesAxis {
         &self.major_tick_mark
     }
 
-    pub fn get_major_tick_mark_mut(&mut self) -> &MajorTickMark {
+    pub fn get_major_tick_mark_mut(&mut self) -> &mut MajorTickMark {
         &mut self.major_tick_mark
     }
 
@@ -126,7 +126,7 @@ impl SeriesAxis {
         &self.minor_tick_mark
     }
 
-    pub fn get_minor_tick_mark_mut(&mut self) -> &MinorTickMark {
+    pub fn get_minor_tick_mark_mut(&mut self) -> &mut MinorTickMark {
         &mut self.minor_tick_mark
     }
 
@@ -139,7 +139,7 @@ impl SeriesAxis {
         &self.tick_label_position
     }
 
-    pub fn get_tick_label_position_mut(&mut self) -> &TickLabelPosition {
+    pub fn get_tick_label_position_mut(&mut self) -> &mut TickLabelPosition {
         &mut self.tick_label_position
     }
 
@@ -152,7 +152,7 @@ impl SeriesAxis {
         &self.crossing_axis
     }
 
-    pub fn get_tick_crossing_axis_mut(&mut self) -> &CrossingAxis {
+    pub fn get_tick_crossing_axis_mut(&mut self) -> &mut CrossingAxis {
         &mut self.crossing_axis
     }
 
@@ -165,7 +165,7 @@ impl SeriesAxis {
         &self.crosses
     }
 
-    pub fn get_crosses_mut(&mut self) -> &Crosses {
+    pub fn get_crosses_mut(&mut self) -> &mut Crosses {
         &mut self.crosses
     }
 
