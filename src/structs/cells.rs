@@ -1,8 +1,8 @@
 use super::Cell;
 use super::CellValue;
 use super::Style;
-use helper::range::*;
 use hashbrown::HashMap;
+use helper::range::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
@@ -37,7 +37,10 @@ impl Cells {
             .collect()
     }
 
-    pub(crate) fn get_collection_by_column_to_hashmap(&self, column_num: &u32) -> HashMap<u32, &Cell> {
+    pub(crate) fn get_collection_by_column_to_hashmap(
+        &self,
+        column_num: &u32,
+    ) -> HashMap<u32, &Cell> {
         self.map
             .iter()
             .filter(|(k, _v)| &k.1 == column_num)

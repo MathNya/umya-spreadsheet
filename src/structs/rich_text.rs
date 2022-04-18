@@ -3,17 +3,21 @@ use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use std::borrow::Cow;
 use std::io::Cursor;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {
     rich_text_elements: Vec<TextElement>,
-    text: String,
 }
 impl RichText {
-    pub fn get_text(&self) -> &str {
-        &self.text
+    pub fn get_text(&self) -> Cow<'static, str> {
+        let mut text = String::from("");
+        for rich_text_elements in &self.rich_text_elements {
+            text = format!("{}{}", text, rich_text_elements.get_text());
+        }
+        text.into()
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -34,22 +38,12 @@ impl RichText {
 
     pub fn set_rich_text_elements(&mut self, value: Vec<TextElement>) -> &mut Self {
         self.rich_text_elements = value;
-        self.refresh_text();
         self
     }
 
     pub fn add_rich_text_elements(&mut self, value: TextElement) -> &mut Self {
         self.rich_text_elements.push(value);
-        self.refresh_text();
         self
-    }
-
-    pub fn refresh_text(&mut self) {
-        let mut text = String::from("");
-        for rich_text_elements in &self.rich_text_elements {
-            text = format!("{}{}", text, rich_text_elements.get_text());
-        }
-        self.text = text;
     }
 
     pub(crate) fn get_hash_code(&self) -> String {

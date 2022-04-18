@@ -378,3 +378,6 @@ pub use self::csv_writer_option::*;
 
 mod csv_encode_values;
 pub use self::csv_encode_values::*;
+
+mod cell_raw_value;
+pub use self::cell_raw_value::*;

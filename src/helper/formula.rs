@@ -1,5 +1,5 @@
+use fancy_regex::{Captures, Regex};
 use helper::coordinate::*;
-use fancy_regex::{Regex, Captures};
 
 pub fn adjustment_insert_formula_coordinate(
     formula: &str,

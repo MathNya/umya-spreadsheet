@@ -297,11 +297,10 @@ fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> 
     // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to lower-case;
     //    but we don't want to change any quoted strings
     let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
-    let mut format = re
-        .replace_all(&format, |caps: &Captures| {
-            let caps_string = (&caps.get(0).unwrap()).as_str();
-            caps_string.to_lowercase()
-        });
+    let mut format = re.replace_all(&format, |caps: &Captures| {
+        let caps_string = (&caps.get(0).unwrap()).as_str();
+        caps_string.to_lowercase()
+    });
 
     // Only process the non-quoted blocks for date format characters
     let blocks: Vec<&str> = format.split('"').collect();
@@ -338,11 +337,10 @@ fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> 
 
     // escape any quoted characters so that DateTime format() will render them correctly
     let re = Regex::new(r#""(.*)""#).unwrap();
-    let format = re
-        .replace_all(&format, |caps: &Captures| {
-            let caps_string = (&caps.get(0).unwrap()).as_str();
-            caps_string.to_lowercase()
-        });
+    let format = re.replace_all(&format, |caps: &Captures| {
+        let caps_string = (&caps.get(0).unwrap()).as_str();
+        caps_string.to_lowercase()
+    });
 
     let date_obj = excel_to_date_time_object(value, None);
     Cow::Owned(date_obj.format(&format).to_string())
@@ -374,9 +372,7 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
     // This is indicated by a comma enclosed by a digit placeholder:
     //        #,#   or   0,0
 
-    let use_thousands = THOUSANDS_SEP_REGEX
-        .is_match(&format)
-        .unwrap_or(false);
+    let use_thousands = THOUSANDS_SEP_REGEX.is_match(&format).unwrap_or(false);
     if use_thousands {
         format = format.replace("0,0", "00");
         format = format.replace("#,#", "##");
@@ -401,7 +397,7 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
         match &value.parse::<usize>() {
             Ok(_) => {}
             Err(_) => {
-                println!("format as fraction {} {}", value, format);
+                //println!("format as fraction {} {}", value, format);
                 value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
             }
         }

@@ -38,19 +38,16 @@ impl SharedStringTable {
         // let l2 = self.map.len();
         // println!("{}:::{}",l1,l2);
         if !self.shared_string_item.is_empty() && self.map.is_empty() {
-            let mut h: HashMap<u64, usize> =
-                HashMap::with_capacity(self.shared_string_item.len());
+            let mut h: HashMap<u64, usize> = HashMap::with_capacity(self.shared_string_item.len());
             for i in 0..self.shared_string_item.len() {
                 let hash = self.shared_string_item[i].get_hash_u64();
-                
+
                 match h.raw_entry_mut().from_key_hashed_nocheck(hash, &hash) {
-                    hashbrown::hash_map::RawEntryMut::Occupied(mut o) => {
-                        Some(o.insert(i))
-                    },
+                    hashbrown::hash_map::RawEntryMut::Occupied(mut o) => Some(o.insert(i)),
                     hashbrown::hash_map::RawEntryMut::Vacant(v) => {
                         v.insert(hash, i);
                         None
-                    },
+                    }
                 };
             }
             self.map = h;
@@ -62,17 +59,15 @@ impl SharedStringTable {
         self.regist_count += 1;
 
         let mut shared_string_item = SharedStringItem::default();
-        match value.get_value_crate() {
+        match value.get_text() {
             Some(v) => {
-                let mut text = Text::default();
-                text.set_value(v);
-                shared_string_item.set_text(text);
+                shared_string_item.set_text(v);
             }
             None => {}
         }
         match value.get_rich_text() {
             Some(v) => {
-                shared_string_item.set_rich_text(v.clone());
+                shared_string_item.set_rich_text(v);
             }
             None => {}
         }
@@ -81,16 +76,18 @@ impl SharedStringTable {
         self.ensure_map();
 
         let mut is_new = false;
-        let n = match self.map.raw_entry_mut().from_key_hashed_nocheck(hash_code, &hash_code) {
-            hashbrown::hash_map::RawEntryMut::Occupied(o) => {
-                o.get().to_owned()
-            },
+        let n = match self
+            .map
+            .raw_entry_mut()
+            .from_key_hashed_nocheck(hash_code, &hash_code)
+        {
+            hashbrown::hash_map::RawEntryMut::Occupied(o) => o.get().to_owned(),
             hashbrown::hash_map::RawEntryMut::Vacant(v) => {
                 let n = self.shared_string_item.len();
-                is_new =true;
+                is_new = true;
                 v.insert(hash_code, n);
                 n
-            },
+            }
         };
 
         if is_new {

@@ -771,7 +771,7 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .set_style("A2", style);
-    
+
     let worksheet = book.get_sheet_by_name_mut("Sheet3").unwrap();
     worksheet.get_column_dimension_mut("A").set_auto_width(true);
 
@@ -912,7 +912,7 @@ fn new_file_empty_worksheet() {
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
-#[test]
+//#[test]
 fn google() {
     // reader
     let path = std::path::Path::new("./tests/test_files/google.xlsx");
@@ -923,13 +923,13 @@ fn google() {
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
-#[test]
+//#[test]
 fn libre() {
     // reader
-    let path = std::path::Path::new("./tests/test_files/libre.xlsx");
+    let path = std::path::Path::new("./tests/test_files/libre.xlsm");
     let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     // writer
-    let path = std::path::Path::new("./tests/result_files/libre.xlsx");
+    let path = std::path::Path::new("./tests/result_files/libre.xlsm");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

@@ -3,6 +3,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
+use std::borrow::Cow;
 use std::io::Cursor;
 use std::sync::{Arc, RwLock};
 use structs::CellValue;
@@ -86,36 +87,21 @@ impl Cell {
         self
     }
 
-    pub fn get_typed_value(&self) -> &Option<super::cell_value::Value> {
-        &self.cell_value.get_typed_value()
+    pub fn get_value(&self) -> Cow<'static, str> {
+        self.cell_value.get_value()
     }
 
-    pub fn get_value(&self) -> &str {
-        match &self.cell_value.value {
-            Some(v) => {
-                return v;
-            }
-            None => {}
-        }
-        match &self.cell_value.rich_text {
-            Some(v) => {
-                return v.get_text();
-            }
-            None => {}
-        }
-        ""
-    }
-
-    pub(crate) fn _get_value_crate(&self) -> &Option<String> {
-        &self.cell_value.value
-    }
-
-    pub fn get_rich_text(&self) -> &Option<RichText> {
-        &self.cell_value.rich_text
+    pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
+        self.cell_value.get_value_lazy()
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value(value);
+        self
+    }
+
+    pub fn set_value_lazy<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value_lazy(value);
         self
     }
 
@@ -225,12 +211,7 @@ impl Cell {
     }
 
     pub fn get_data_type(&self) -> &str {
-        &self.cell_value.data_type
-    }
-
-    pub fn set_data_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.cell_value.set_data_type(value);
-        self
+        self.cell_value.get_data_type()
     }
 
     pub fn is_formula(&self) -> bool {
@@ -289,9 +270,7 @@ impl Cell {
 
         // convert value
         let result = match self.get_style().get_number_format() {
-            Some(nmuber_format) => {
-                to_formatted_string(&value, &nmuber_format.get_format_code())
-            }
+            Some(nmuber_format) => to_formatted_string(&value, &nmuber_format.get_format_code()),
             None => to_formatted_string(&value, &NumberingFormat::FORMAT_GENERAL),
         };
         result
@@ -431,7 +410,7 @@ impl Cell {
 
             // v
             write_start_tag(writer, "v", vec![], false);
-            
+
             //todo use typed value
             match self.get_data_type() {
                 "s" => {

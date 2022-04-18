@@ -121,11 +121,11 @@ extern crate chrono;
 extern crate image;
 extern crate md5;
 // extern crate onig;
-extern crate quick_xml;
 extern crate fancy_regex;
+extern crate hashbrown;
+extern crate quick_xml;
 extern crate thousands;
 extern crate zip;
-extern crate hashbrown;
 
 #[macro_use]
 extern crate lazy_static;

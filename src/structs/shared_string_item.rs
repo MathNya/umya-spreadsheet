@@ -55,22 +55,6 @@ impl SharedStringItem {
         self
     }
 
-    pub(crate) fn _get_value(&self) -> &str {
-        match &self.text {
-            Some(v) => {
-                return v.get_value();
-            }
-            None => {}
-        }
-        match &self.rich_text {
-            Some(v) => {
-                return v.get_text();
-            }
-            None => {}
-        }
-        ""
-    }
-
     pub(crate) fn get_hash_u64(&self) -> u64 {
         let mut h = AHasher::default();
         let content = format!(
@@ -149,9 +133,11 @@ impl SharedStringItem {
                 },
                 Ok(Event::End(ref e)) => match e.name() {
                     b"si" => {
-                        let mut obj = RichText::default();
-                        obj.set_rich_text_elements(vec_text_element);
-                        self.set_rich_text(obj);
+                        if vec_text_element.len() > 0 {
+                            let mut obj = RichText::default();
+                            obj.set_rich_text_elements(vec_text_element);
+                            self.set_rich_text(obj);
+                        }
                         return;
                     }
                     _ => (),
