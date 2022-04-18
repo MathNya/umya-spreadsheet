@@ -67,10 +67,10 @@ impl NonVisualDrawingProperties {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::End(ref e)) => match e.name() {
-                    b"a:extLst" => return,
+                    b"xdr:cNvPr" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:extLst"),
+                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cNvPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

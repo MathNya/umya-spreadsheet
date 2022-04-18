@@ -923,7 +923,7 @@ fn google() {
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
-//#[test]
+#[test]
 fn libre() {
     // reader
     let path = std::path::Path::new("./tests/test_files/libre.xlsm");
