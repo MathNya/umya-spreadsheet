@@ -24,19 +24,6 @@ impl CellFormats {
         self
     }
 
-    pub(crate) fn set_cell_format_crate(&mut self, value: CellFormat) -> u32 {
-        let hash_code = value.get_hash_code();
-        let mut id = 0;
-        for cell_format in &self.cell_format {
-            if cell_format.get_hash_code() == hash_code {
-                return id;
-            }
-            id += 1;
-        }
-        self.set_cell_format(value);
-        id
-    }
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

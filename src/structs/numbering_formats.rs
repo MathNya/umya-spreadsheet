@@ -44,6 +44,10 @@ impl NumberingFormats {
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_numbering_format() {
             Some(v) => {
+                let number_format_id = v.get_number_format_id();
+                if self.numbering_format.get(number_format_id).is_some() {
+                    return number_format_id.clone();
+                }
                 let hash_code = v.get_hash_code();
                 let mut id = 175;
                 for (index, numbering_format) in &self.numbering_format {

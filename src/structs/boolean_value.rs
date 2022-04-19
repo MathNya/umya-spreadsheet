@@ -19,13 +19,18 @@ impl BooleanValue {
         }
     }
 
-    pub(crate) fn set_value(&mut self, value: bool) -> &mut BooleanValue {
+    pub(crate) fn set_value(&mut self, value: bool) -> &mut Self {
         self.value = Some(value);
         self
     }
 
-    pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut BooleanValue {
-        self.set_value(value.into() != "0")
+    pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let v = match value.into().as_str() {
+            "true" => true,
+            "1" => true,
+            _ => false,
+        };
+        self.set_value(v)
     }
 
     pub(crate) fn has_value(&self) -> bool {

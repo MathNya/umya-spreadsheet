@@ -11,11 +11,12 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::UInt32Value;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Outline {
-    width: u32,
+    width: UInt32Value,
     cap_type: Option<String>,
     compound_line_type: Option<String>,
     solid_fill: Option<SolidFill>,
@@ -28,11 +29,11 @@ pub struct Outline {
 }
 impl Outline {
     pub fn get_width(&self) -> &u32 {
-        &self.width
+        self.width.get_value()
     }
 
     pub fn set_width(&mut self, value: u32) {
-        self.width = value;
+        self.width.set_value(value);
     }
 
     pub fn get_cap_type(&self) -> &Option<String> {
@@ -227,9 +228,8 @@ impl Outline {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:ln
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let width_str = &self.width.to_string();
-        if &self.width > &0 {
-            attributes.push(("w", width_str.as_str()));
+        if self.width.has_value() {
+            attributes.push(("w", self.width.get_value_string()));
         }
         match &self.cap_type {
             Some(v) => {

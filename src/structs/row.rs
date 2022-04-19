@@ -241,7 +241,9 @@ impl Row {
         if self.hidden.get_value() == &true {
             attributes.push(("hidden", self.hidden.get_value_string()));
         }
-        attributes.push(("x14ac:dyDescent", self.descent.get_value_string()));
+        if self.descent.has_value() {
+            attributes.push(("x14ac:dyDescent", self.descent.get_value_string()));
+        }
 
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();

@@ -24,17 +24,6 @@ impl CellStyles {
         self
     }
 
-    pub(crate) fn _get_defalut_value() -> CellStyle {
-        let mut def = CellStyle::default();
-        def.set_name("Normal");
-        def
-    }
-
-    pub(crate) fn _set_defalut_value(&mut self) -> &mut Self {
-        self.add_cell_style(Self::_get_defalut_value());
-        self
-    }
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

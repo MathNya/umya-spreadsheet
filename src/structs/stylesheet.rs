@@ -262,6 +262,17 @@ impl Stylesheet {
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
+        let style_hash_code = style.get_hash_code();
+        let mut index = 0;
+        if style_hash_code == Style::default().get_hash_code() {
+            return index;
+        }
+        for maked_style in &self.maked_style_list {
+            if style_hash_code == maked_style.get_hash_code() {
+                return index;
+            }
+            index += 1;
+        }
         let mut cell_format = CellFormat::default();
 
         let number_format_id = self.numbering_formats.set_style(style);
@@ -312,7 +323,9 @@ impl Stylesheet {
             None => {}
         }
 
-        self.cell_formats.set_cell_format_crate(cell_format)
+        self.maked_style_list.push(style.clone());
+        self.cell_formats.set_cell_format(cell_format);
+        index
     }
 
     pub(crate) fn set_defalut_value(&mut self) -> &mut Self {

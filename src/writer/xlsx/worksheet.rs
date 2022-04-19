@@ -343,8 +343,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // pageSetup
         if worksheet.get_page_setup().has_param() {
-            worksheet.get_page_setup().write_to(&mut writer, &r_id);
-            r_id += 1;
+            worksheet.get_page_setup().write_to(&mut writer, &mut r_id);
         }
 
         // headerFooter

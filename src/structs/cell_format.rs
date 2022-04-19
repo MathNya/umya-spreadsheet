@@ -298,6 +298,9 @@ impl CellFormat {
         if is_cell_xfs {
             attributes.push(("xfId", self.format_id.get_value_string()));
         }
+        if self.apply_font.has_value() {
+            attributes.push(("applyFont", self.apply_font.get_value_string()));
+        }
         if self.apply_number_format.has_value() {
             attributes.push((
                 "applyNumberFormat",

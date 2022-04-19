@@ -193,7 +193,7 @@ impl PageSetup {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut usize) {
         if self.has_param() {
             // pageSetup
             let r_id_str = format!("rId{}", r_id);
@@ -221,6 +221,7 @@ impl PageSetup {
             }
             if self.object_data.is_some() {
                 attributes.push(("r:id", r_id_str.as_str()));
+                *r_id += 1;
             }
             write_start_tag(writer, "pageSetup", attributes, true);
         }

@@ -361,6 +361,35 @@ fn get_cfvo<R: std::io::BufRead>(
                 }
                 _ => (),
             },
+            Ok(Event::Start(ref e)) => match e.name() {
+                b"cfvo" => {
+                    for a in e.attributes().with_checks(false) {
+                        match a {
+                            Ok(ref attr) if attr.key == b"type" => {
+                                r#type = get_attribute_value(attr).unwrap()
+                            }
+                            Ok(ref attr) if attr.key == b"value" => {
+                                value = Some(get_attribute_value(attr).unwrap())
+                            }
+                            Ok(_) => {}
+                            Err(_) => {}
+                        }
+                    }
+                    cfvo.push((r#type, value));
+                    r#type = String::from("");
+                    value = None;
+                }
+                b"color" => {
+                    let mut color = Color::default();
+                    color.set_attributes(reader, e);
+                    color.set_argb_by_theme(theme);
+
+                    let (t, v) = cfvo.get(color_count).unwrap();
+                    result.insert(color_count, (t.clone(), v.clone(), Some(color)));
+                    color_count += 1;
+                }
+                _ => (),
+            },
             Ok(Event::End(ref e)) => match e.name() {
                 b"dataBar" => return result,
                 b"colorScale" => return result,
