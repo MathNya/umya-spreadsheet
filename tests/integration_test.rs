@@ -1,5 +1,6 @@
 extern crate chrono;
 extern crate umya_spreadsheet;
+use std::time::{Instant};
 
 #[test]
 fn read_and_wite() {
@@ -48,20 +49,30 @@ fn read_large_string() {
 #[test]
 fn lazy_read_and_wite_large_string() {
     // reader
+    let start = Instant::now();
     let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
     let ns = book.new_sheet("new sheet").unwrap();
+    let end = start.elapsed();
+    println!("read:{}.{:03}sec.", end.as_secs(), end.subsec_nanos() / 1_000_000);
 
+    let start = Instant::now();
     for r in 1..5000 {
         for c in 1..30 {
             let cell = ns.get_cell_by_column_and_row_mut(&c, &r);
             let _ = cell.set_value_from_string(format!("r{}c{}", r, c));
         }
     }
+    let end = start.elapsed();
+    println!("edit:{}.{:03}sec.", end.as_secs(), end.subsec_nanos() / 1_000_000);
 
     // writer
+    let start = Instant::now();
     let path = std::path::Path::new("./tests/result_files/bbb_large_string.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+    let end = start.elapsed();
+    println!("write:{}.{:03}sec.", end.as_secs(), end.subsec_nanos() / 1_000_000);
+
 }
 
 #[test]

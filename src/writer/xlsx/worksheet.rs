@@ -146,32 +146,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 ))
         });
         let mut cells_iter = cells.iter();
+
         // row loop
-        let mut is_cells_active = true;
-        let mut cell_bk: Option<&Cell> = None;
+        let mut cell_raw = cells_iter.next();
         for row in &row_dimensions {
-            let mut do_next_cells = true;
             let mut cells_in_row: Vec<&Cell> = Vec::new();
-            if cell_bk.is_some() {
-                if row.get_row_num() == cell_bk.unwrap().get_coordinate().get_row_num() {
-                    cells_in_row.push(cell_bk.unwrap());
-                    cell_bk = None;
-                } else {
-                    do_next_cells = false;
-                }
-            }
-            if is_cells_active && do_next_cells {
-                'cell_loop: loop {
-                    let cell_raw = cells_iter.next();
-                    if cell_raw.is_none() {
-                        is_cells_active = false;
-                        break 'cell_loop;
-                    }
-                    cell_bk = Some(cell_raw.unwrap());
-                    if row.get_row_num() == cell_bk.unwrap().get_coordinate().get_row_num() {
-                        cells_in_row.push(cell_bk.unwrap());
-                        cell_bk = None;
-                    } else {
+            'cell_loop: loop {
+                match cell_raw {
+                    Some(cell) => {
+                        if row.get_row_num() == cell.get_coordinate().get_row_num() {
+                            cells_in_row.push(cell);
+                            cell_raw = cells_iter.next();
+                        } else {
+                            break 'cell_loop;
+                        }
+                    },
+                    None => {
                         break 'cell_loop;
                     }
                 }
@@ -187,8 +177,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     .unwrap()
                     .get_coordinate()
                     .get_col_num();
-                let spans = format!("{}:{}", fist_num, last_num);
-                row.write_to(&mut writer, stylesheet, spans, false);
+                    let spans = format!("{}:{}", fist_num, last_num);
+                    row.write_to(&mut writer, stylesheet, spans, false);
                 // c
                 for cell in cells_in_row {
                     cell.write_to(&mut writer, shared_string_table.clone(), stylesheet);
@@ -197,7 +187,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             } else {
                 let spans = format!("{}:{}", 0, 0);
                 row.write_to(&mut writer, stylesheet, spans, true);
-            }
+            }    
         }
 
         if has_sheet_data {
