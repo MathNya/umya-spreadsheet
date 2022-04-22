@@ -160,7 +160,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                         } else {
                             break 'cell_loop;
                         }
-                    },
+                    }
                     None => {
                         break 'cell_loop;
                     }
@@ -177,8 +177,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     .unwrap()
                     .get_coordinate()
                     .get_col_num();
-                    let spans = format!("{}:{}", fist_num, last_num);
-                    row.write_to(&mut writer, stylesheet, spans, false);
+                let spans = format!("{}:{}", fist_num, last_num);
+                row.write_to(&mut writer, stylesheet, spans, false);
                 // c
                 for cell in cells_in_row {
                     cell.write_to(&mut writer, shared_string_table.clone(), stylesheet);
@@ -187,7 +187,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             } else {
                 let spans = format!("{}:{}", 0, 0);
                 row.write_to(&mut writer, stylesheet, spans, true);
-            }    
+            }
         }
 
         if has_sheet_data {

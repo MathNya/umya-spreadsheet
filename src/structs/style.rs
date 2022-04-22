@@ -4,6 +4,7 @@ use structs::Borders;
 use structs::Fill;
 use structs::Font;
 use structs::NumberingFormat;
+use structs::PatternValues;
 use structs::UInt32Value;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
@@ -42,8 +43,7 @@ pub struct Style {
 /// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
 ///
 /// // fill color on red.
-/// style.get_fill_mut().get_pattern_fill_mut()
-/// .get_foreground_color_mut().set_argb(Color::COLOR_RED);
+/// style.set_background_color(Color::COLOR_RED);
 /// ```
 ///
 /// ## change font color
@@ -91,6 +91,39 @@ impl Style {
 
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill = Some(value);
+        self
+    }
+
+    pub fn set_background_color<S: Into<String>>(&mut self, color: S) -> &mut Self {
+        self.set_background_color_solid(color);
+        self
+    }
+
+    pub fn set_background_color_solid<S: Into<String>>(&mut self, color: S) -> &mut Self {
+        self.get_fill_mut()
+            .get_pattern_fill_mut()
+            .set_pattern_type(PatternValues::Solid)
+            .remove_background_color()
+            .get_foreground_color_mut()
+            .set_argb(color);
+        self
+    }
+
+    pub fn set_background_color_with_pattern<S: Into<String>>(
+        &mut self,
+        color1: S,
+        color2: S,
+        pattern: PatternValues,
+    ) -> &mut Self {
+        self.get_fill_mut()
+            .get_pattern_fill_mut()
+            .set_pattern_type(pattern)
+            .get_background_color_mut()
+            .set_argb(color1);
+        self.get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .set_argb(color2);
         self
     }
 

@@ -80,7 +80,7 @@ impl SharedStringItem {
         h.finish()
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn _get_hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(

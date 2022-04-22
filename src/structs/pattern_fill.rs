@@ -42,12 +42,7 @@ impl PatternFill {
     }
 
     pub fn get_foreground_color_mut(&mut self) -> &mut Color {
-        match &self.foreground_color {
-            Some(_) => return self.foreground_color.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_foreground_color(Color::default());
-        self.foreground_color.as_mut().unwrap()
+        self.foreground_color.get_or_insert(Color::default())
     }
 
     pub fn set_foreground_color(&mut self, value: Color) -> &mut Self {
@@ -56,21 +51,26 @@ impl PatternFill {
         self
     }
 
+    pub fn remove_foreground_color(&mut self) -> &mut Self {
+        self.foreground_color = None;
+        self
+    }
+
     pub fn get_background_color(&self) -> &Option<Color> {
         &self.background_color
     }
 
     pub fn get_background_color_mut(&mut self) -> &mut Color {
-        match &self.background_color {
-            Some(_) => return self.background_color.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_background_color(Color::default());
-        self.background_color.as_mut().unwrap()
+        self.background_color.get_or_insert(Color::default())
     }
 
     pub fn set_background_color(&mut self, value: Color) -> &mut Self {
         self.background_color = Some(value);
+        self
+    }
+
+    pub fn remove_background_color(&mut self) -> &mut Self {
+        self.background_color = None;
         self
     }
 

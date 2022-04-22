@@ -136,7 +136,7 @@ impl CellFormat {
         self.apply_alignment.has_value()
     }
 
-    pub(crate) fn get_apply_protection(&self) -> &bool {
+    pub(crate) fn _get_apply_protection(&self) -> &bool {
         self.apply_protection.get_value()
     }
 
@@ -158,7 +158,7 @@ impl CellFormat {
         self
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn _get_hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -173,7 +173,7 @@ impl CellFormat {
                 &self.get_apply_border(),
                 &self.get_apply_font(),
                 &self.get_apply_alignment(),
-                &self.get_apply_protection(),
+                &self._get_apply_protection(),
                 match &self.get_alignment() {
                     Some(v) => {
                         v.get_hash_code()

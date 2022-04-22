@@ -266,7 +266,7 @@ impl Stylesheet {
         let def_style = Style::default();
         if style == &def_style {
             return index;
-        } 
+        }
         for maked_style in &self.maked_style_list {
             if style == maked_style {
                 return index;

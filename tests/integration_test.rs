@@ -1,6 +1,6 @@
 extern crate chrono;
 extern crate umya_spreadsheet;
-use std::time::{Instant};
+use std::time::Instant;
 
 #[test]
 fn read_and_wite() {
@@ -54,7 +54,11 @@ fn lazy_read_and_wite_large_string() {
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
     let ns = book.new_sheet("new sheet").unwrap();
     let end = start.elapsed();
-    println!("read:{}.{:03}sec.", end.as_secs(), end.subsec_nanos() / 1_000_000);
+    println!(
+        "read:{}.{:03}sec.",
+        end.as_secs(),
+        end.subsec_nanos() / 1_000_000
+    );
 
     let start = Instant::now();
     for r in 1..5000 {
@@ -64,15 +68,22 @@ fn lazy_read_and_wite_large_string() {
         }
     }
     let end = start.elapsed();
-    println!("edit:{}.{:03}sec.", end.as_secs(), end.subsec_nanos() / 1_000_000);
+    println!(
+        "edit:{}.{:03}sec.",
+        end.as_secs(),
+        end.subsec_nanos() / 1_000_000
+    );
 
     // writer
     let start = Instant::now();
     let path = std::path::Path::new("./tests/result_files/bbb_large_string.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
     let end = start.elapsed();
-    println!("write:{}.{:03}sec.", end.as_secs(), end.subsec_nanos() / 1_000_000);
-
+    println!(
+        "write:{}.{:03}sec.",
+        end.as_secs(),
+        end.subsec_nanos() / 1_000_000
+    );
 }
 
 #[test]
@@ -765,23 +776,16 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_style_mut("A1")
-        .get_fill_mut()
-        .get_pattern_fill_mut()
-        .get_foreground_color_mut()
-        .set_argb(umya_spreadsheet::Color::COLOR_BLUE);
+        .set_background_color(umya_spreadsheet::Color::COLOR_BLUE);
 
-    // change background color part2.
-    let mut color = umya_spreadsheet::Color::default();
-    color.set_argb(umya_spreadsheet::Color::COLOR_BLUE);
-    let mut pattern_fill = umya_spreadsheet::PatternFill::default();
-    pattern_fill.set_foreground_color(color);
-    let mut fill = umya_spreadsheet::Fill::default();
-    fill.set_pattern_fill(pattern_fill);
-    let mut style = umya_spreadsheet::Style::default();
-    style.set_fill(fill);
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .set_style("A2", style);
+        .get_style_mut("A2")
+        .set_background_color_with_pattern(
+            umya_spreadsheet::Color::COLOR_BLUE,
+            umya_spreadsheet::Color::COLOR_RED,
+            umya_spreadsheet::PatternValues::DarkGrid,
+        );
 
     let worksheet = book.get_sheet_by_name_mut("Sheet3").unwrap();
     worksheet.get_column_dimension_mut("A").set_auto_width(true);
