@@ -262,13 +262,13 @@ impl Stylesheet {
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
-        let style_hash_code = style.get_hash_code();
         let mut index = 0;
-        if style_hash_code == Style::default().get_hash_code() {
+        let def_style = Style::default();
+        if style == &def_style {
             return index;
-        }
+        } 
         for maked_style in &self.maked_style_list {
-            if style_hash_code == maked_style.get_hash_code() {
+            if style == maked_style {
                 return index;
             }
             index += 1;
