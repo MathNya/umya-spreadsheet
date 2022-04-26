@@ -206,17 +206,21 @@ impl BodyProperties {
         if &self.wrap.has_value() == &true {
             attributes.push(("wrap", self.wrap.get_value_string()));
         }
+        let l_ins = self.left_inset.get_value_string();
         if &self.left_inset.has_value() == &true {
-            attributes.push(("lIns", self.left_inset.get_value_string()));
+            attributes.push(("lIns", &l_ins));
         }
+        let t_ins = self.top_inset.get_value_string();
         if &self.top_inset.has_value() == &true {
-            attributes.push(("tIns", self.top_inset.get_value_string()));
+            attributes.push(("tIns", &t_ins));
         }
+        let r_ins = self.right_inset.get_value_string();
         if &self.right_inset.has_value() == &true {
-            attributes.push(("rIns", self.right_inset.get_value_string()));
+            attributes.push(("rIns", &r_ins));
         }
+        let b_ins = self.bottom_inset.get_value_string();
         if &self.bottom_inset.has_value() == &true {
-            attributes.push(("bIns", self.bottom_inset.get_value_string()));
+            attributes.push(("bIns", &b_ins));
         }
 
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);

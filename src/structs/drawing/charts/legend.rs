@@ -1,6 +1,7 @@
 use super::Layout;
 use super::LegendPosition;
 use super::Overlay;
+use super::ShapeProperties;
 use super::TextProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -13,6 +14,7 @@ pub struct Legend {
     legend_position: LegendPosition,
     layout: Option<Layout>,
     overlay: Overlay,
+    shape_properties: Option<ShapeProperties>,
     text_properties: Option<TextProperties>,
 }
 impl Legend {
@@ -24,7 +26,7 @@ impl Legend {
         &mut self.legend_position
     }
 
-    pub fn set_legend_position(&mut self, value: LegendPosition) -> &mut Legend {
+    pub fn set_legend_position(&mut self, value: LegendPosition) -> &mut Self {
         self.legend_position = value;
         self
     }
@@ -37,7 +39,7 @@ impl Legend {
         &mut self.layout
     }
 
-    pub fn set_layout(&mut self, value: Layout) -> &mut Legend {
+    pub fn set_layout(&mut self, value: Layout) -> &mut Self {
         self.layout = Some(value);
         self
     }
@@ -50,8 +52,21 @@ impl Legend {
         &mut self.overlay
     }
 
-    pub fn set_overlay(&mut self, value: Overlay) -> &mut Legend {
+    pub fn set_overlay(&mut self, value: Overlay) -> &mut Self {
         self.overlay = value;
+        self
+    }
+
+    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
+        &self.shape_properties
+    }
+
+    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
+        &mut self.shape_properties
+    }
+
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
+        self.shape_properties = Some(value);
         self
     }
 
@@ -63,7 +78,7 @@ impl Legend {
         &mut self.text_properties
     }
 
-    pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Legend {
+    pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {
         self.text_properties = Some(value);
         self
     }
@@ -81,6 +96,11 @@ impl Legend {
                         let mut obj = Layout::default();
                         obj.set_attributes(reader, e, false);
                         self.set_layout(obj);
+                    }
+                    b"c:spPr" => {
+                        let mut obj = ShapeProperties::default();
+                        obj.set_attributes(reader, e);
+                        self.set_shape_properties(obj);
                     }
                     b"c:txPr" => {
                         let mut obj = TextProperties::default();
@@ -132,6 +152,14 @@ impl Legend {
 
         // c:overlay
         self.overlay.write_to(writer);
+
+        // c:spPr
+        match &self.shape_properties {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         // c:txPr
         match &self.text_properties {

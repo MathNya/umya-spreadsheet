@@ -37,8 +37,9 @@ impl Miter {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:miter
         let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let lim = self.limit.get_value_string();
         if &self.limit.has_value() == &true {
-            attributes.push(("lim", self.limit.get_value_string()));
+            attributes.push(("lim", &lim));
         }
         write_start_tag(writer, "a:miter", attributes, true);
     }

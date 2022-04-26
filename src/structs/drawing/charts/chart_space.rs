@@ -21,7 +21,7 @@ pub struct ChartSpace {
     style: Style,
     chart: Chart,
     shape_properties: Option<ShapeProperties>,
-    print_settings: PrintSettings,
+    print_settings: Option<PrintSettings>,
 }
 impl ChartSpace {
     pub fn get_date1904(&self) -> &Date1904 {
@@ -102,16 +102,16 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_print_settings(&self) -> &PrintSettings {
+    pub fn get_print_settings(&self) -> &Option<PrintSettings> {
         &self.print_settings
     }
 
-    pub fn get_print_settings_mut(&mut self) -> &mut PrintSettings {
+    pub fn get_print_settings_mut(&mut self) -> &mut Option<PrintSettings> {
         &mut self.print_settings
     }
 
     pub fn set_print_settings(&mut self, value: PrintSettings) -> &mut Self {
-        self.print_settings = value;
+        self.print_settings = Some(value);
         self
     }
 
@@ -133,7 +133,9 @@ impl ChartSpace {
                         self.chart.set_attributes(reader, e);
                     }
                     b"c:printSettings" => {
-                        self.print_settings.set_attributes(reader, e);
+                        let mut obj = PrintSettings::default();
+                        obj.set_attributes(reader, e);
+                        self.set_print_settings(obj);
                     }
                     b"c:spPr" => {
                         let mut obj = ShapeProperties::default();
@@ -212,7 +214,12 @@ impl ChartSpace {
         }
 
         // c:printSettings
-        self.print_settings.write_to(writer);
+        match &self.print_settings {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         write_end_tag(writer, "c:chartSpace");
     }

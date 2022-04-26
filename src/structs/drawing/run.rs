@@ -71,7 +71,7 @@ impl Run {
         write_start_tag(writer, "a:r", vec![], false);
 
         // a:rPr
-        self.run_properties.write_to(writer);
+        self.run_properties.write_to_rpr(writer);
 
         // a:t
         write_start_tag(writer, "a:t", vec![], false);

@@ -82,7 +82,8 @@ impl NonVisualDrawingProperties {
         let with_inner = ole_id > &0;
         // xdr:cNvPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("id", self.id.get_value_string()));
+        let id = self.id.get_value_string();
+        attributes.push(("id", &id));
         attributes.push(("name", self.name.get_value_string()));
         if self.hidden.has_value() {
             attributes.push(("hidden", self.hidden.get_value_string()));

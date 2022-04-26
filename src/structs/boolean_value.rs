@@ -1,13 +1,12 @@
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct BooleanValue {
     value: Option<bool>,
-    value_default: bool,
 }
 impl BooleanValue {
     pub(crate) fn get_value(&self) -> &bool {
         match &self.value {
             Some(v) => v,
-            None => &self.value_default,
+            None => &false,
         }
     }
 

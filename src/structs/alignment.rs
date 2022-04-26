@@ -108,8 +108,9 @@ impl Alignment {
         if self.wrap_text.has_value() {
             attributes.push(("wrapText", self.wrap_text.get_value_string()));
         }
+        let text_rotation = self.text_rotation.get_value_string();
         if self.text_rotation.has_value() {
-            attributes.push(("textRotation", self.text_rotation.get_value_string()));
+            attributes.push(("textRotation", &text_rotation));
         }
         write_start_tag(writer, "alignment", attributes, true);
     }

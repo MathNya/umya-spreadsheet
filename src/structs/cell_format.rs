@@ -291,12 +291,18 @@ impl CellFormat {
 
         // xf
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("numFmtId", self.number_format_id.get_value_string()));
-        attributes.push(("fontId", self.font_id.get_value_string()));
-        attributes.push(("fillId", self.fill_id.get_value_string()));
-        attributes.push(("borderId", self.border_id.get_value_string()));
+        let number_format_id = self.number_format_id.get_value_string();
+        attributes.push(("numFmtId", &number_format_id));
+        let font_id = self.font_id.get_value_string();
+        attributes.push(("fontId", &font_id));
+        let fill_id = self.fill_id.get_value_string();
+        attributes.push(("fillId", &fill_id));
+        let border_id = self.border_id.get_value_string();
+        attributes.push(("borderId", &border_id));
+
+        let format_id = self.format_id.get_value_string();
         if is_cell_xfs {
-            attributes.push(("xfId", self.format_id.get_value_string()));
+            attributes.push(("xfId", &format_id));
         }
         if self.apply_font.has_value() {
             attributes.push(("applyFont", self.apply_font.get_value_string()));

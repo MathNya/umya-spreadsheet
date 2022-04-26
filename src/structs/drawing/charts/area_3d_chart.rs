@@ -17,7 +17,7 @@ pub struct Area3DChart {
     grouping: Grouping,
     vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
+    data_labels: Option<DataLabels>,
     axis_id: Vec<AxisId>,
 }
 impl Area3DChart {
@@ -29,7 +29,7 @@ impl Area3DChart {
         &mut self.grouping
     }
 
-    pub fn set_grouping(&mut self, value: Grouping) -> &mut Area3DChart {
+    pub fn set_grouping(&mut self, value: Grouping) -> &mut Self {
         self.grouping = value;
         self
     }
@@ -42,7 +42,7 @@ impl Area3DChart {
         &mut self.vary_colors
     }
 
-    pub fn set_vary_colors(&mut self, value: VaryColors) -> &mut Area3DChart {
+    pub fn set_vary_colors(&mut self, value: VaryColors) -> &mut Self {
         self.vary_colors = value;
         self
     }
@@ -60,16 +60,16 @@ impl Area3DChart {
         self
     }
 
-    pub fn get_data_labels(&self) -> &DataLabels {
+    pub fn get_data_labels(&self) -> &Option<DataLabels> {
         &self.data_labels
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+    pub fn get_data_labels_mut(&mut self) -> &mut Option<DataLabels> {
         &mut self.data_labels
     }
 
-    pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Area3DChart {
-        self.data_labels = value;
+    pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Self {
+        self.data_labels = Some(value);
         self
     }
 
@@ -81,12 +81,12 @@ impl Area3DChart {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: Vec<AxisId>) -> &mut Area3DChart {
+    pub fn set_axis_id(&mut self, value: Vec<AxisId>) -> &mut Self {
         self.axis_id = value;
         self
     }
 
-    pub fn add_axis_id(&mut self, value: AxisId) -> &mut Area3DChart {
+    pub fn add_axis_id(&mut self, value: AxisId) -> &mut Self {
         self.axis_id.push(value);
         self
     }
@@ -107,7 +107,9 @@ impl Area3DChart {
                             .add_area_chart_series(obj);
                     }
                     b"c:dLbls" => {
-                        self.data_labels.set_attributes(reader, e);
+                        let mut obj = DataLabels::default();
+                        obj.set_attributes(reader, e);
+                        self.set_data_labels(obj);
                     }
                     _ => (),
                 },
@@ -153,7 +155,12 @@ impl Area3DChart {
         }
 
         // c:dLbls
-        self.data_labels.write_to(writer);
+        match &self.data_labels {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         // c:axId
         for v in &self.axis_id {

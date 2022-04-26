@@ -56,8 +56,8 @@ impl Extent {
             writer,
             "xdr:ext",
             vec![
-                ("cx", self.cx.get_value_string()),
-                ("cy", self.cy.get_value_string()),
+                ("cx", &self.cx.get_value_string()),
+                ("cy", &self.cy.get_value_string()),
             ],
             true,
         );

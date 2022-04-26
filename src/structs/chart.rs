@@ -30,6 +30,7 @@ use structs::drawing::charts::OrientationValues;
 use structs::drawing::charts::Pie3DChart;
 use structs::drawing::charts::PieChart;
 use structs::drawing::charts::PlotArea;
+use structs::drawing::charts::PrintSettings;
 use structs::drawing::charts::RadarChart;
 use structs::drawing::charts::RightAngleAxes;
 use structs::drawing::charts::RotateX;
@@ -54,12 +55,9 @@ use structs::drawing::charts::YValues;
 use structs::drawing::spreadsheet::GraphicFrame;
 use structs::drawing::spreadsheet::MarkerType;
 use structs::drawing::spreadsheet::TwoCellAnchor;
-use structs::drawing::DefaultRunProperties;
-use structs::drawing::EndParagraphRunProperties;
 use structs::drawing::Paragraph;
 use structs::drawing::Run;
 use structs::drawing::RunProperties;
-use structs::drawing::TextCharacterPropertiesType;
 use structs::ChartType;
 
 #[derive(Clone, Debug)]
@@ -539,14 +537,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -697,14 +688,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -723,8 +707,8 @@ impl Chart {
 
         let layout = Layout::default();
 
-        let default_run_properties = DefaultRunProperties::default();
-        let mut end_paragraph_run_properties = EndParagraphRunProperties::default();
+        let default_run_properties = RunProperties::default();
+        let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
@@ -792,14 +776,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -829,8 +806,8 @@ impl Chart {
 
         let layout = Layout::default();
 
-        let default_run_properties = DefaultRunProperties::default();
-        let mut end_paragraph_run_properties = EndParagraphRunProperties::default();
+        let default_run_properties = RunProperties::default();
+        let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
@@ -904,14 +881,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1017,14 +987,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1152,14 +1115,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1304,14 +1260,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1444,14 +1393,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1601,14 +1543,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1626,8 +1561,8 @@ impl Chart {
             .get_data_labels_mut()
             .set_show_leader_lines(show_leader_lines);
 
-        let default_run_properties = DefaultRunProperties::default();
-        let mut end_paragraph_run_properties = EndParagraphRunProperties::default();
+        let default_run_properties = RunProperties::default();
+        let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
@@ -1688,14 +1623,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1845,8 +1773,8 @@ impl Chart {
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
-        let default_run_properties = DefaultRunProperties::default();
-        let mut end_paragraph_run_properties = EndParagraphRunProperties::default();
+        let default_run_properties = RunProperties::default();
+        let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
@@ -1921,14 +1849,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -2059,14 +1980,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
-            .set_bottom(0.75)
-            .set_left(0.7)
-            .set_right(0.7)
-            .set_top(0.75)
-            .set_header(0.3)
-            .set_footer(0.3);
+            .set_print_settings(self.make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -2253,15 +2167,20 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_print_settings_mut()
-            .get_page_margins_mut()
+            .set_print_settings(self.make_print_settings());
+        self.two_cell_anchor.set_graphic_frame(graphic_frame);
+    }
+
+    pub(crate) fn make_print_settings(&self) -> PrintSettings {
+        let mut obj = PrintSettings::default();
+        obj.get_page_margins_mut()
             .set_bottom(0.75)
             .set_left(0.7)
             .set_right(0.7)
             .set_top(0.75)
             .set_header(0.3)
             .set_footer(0.3);
-        self.two_cell_anchor.set_graphic_frame(graphic_frame);
+        obj
     }
 
     pub(crate) fn make_title<S: Into<String>>(&self, value: S) -> Title {
@@ -2273,7 +2192,7 @@ impl Chart {
         run.set_run_properties(run_properties);
         run.set_text(value);
 
-        let default_run_properties = DefaultRunProperties::default();
+        let default_run_properties = RunProperties::default();
 
         let mut paragraph = Paragraph::default();
         paragraph

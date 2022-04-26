@@ -40,8 +40,9 @@ impl WorkbookView {
         attributes.push(("yWindow", "105"));
         attributes.push(("windowWidth", "14805"));
         attributes.push(("windowHeight", "8010"));
+        let active_tab = self.active_tab.get_value_string();
         if self.active_tab.has_value() {
-            attributes.push(("activeTab", self.active_tab.get_value_string()));
+            attributes.push(("activeTab", &active_tab));
         }
 
         // workbookView

@@ -2,6 +2,7 @@
 use super::Bubble3D;
 use super::BubbleSize;
 use super::CategoryAxisData;
+use super::DataLabels;
 use super::Explosion;
 use super::Formula;
 use super::Index;
@@ -37,6 +38,7 @@ pub struct AreaChartSeries {
     bubble_size: Option<BubbleSize>,
     bubble_3d: Option<Bubble3D>,
     smooth: Option<Smooth>,
+    data_labels: Option<DataLabels>,
 }
 impl AreaChartSeries {
     pub fn get_index(&self) -> &Index {
@@ -221,6 +223,19 @@ impl AreaChartSeries {
         self
     }
 
+    pub fn get_data_labels(&self) -> &Option<DataLabels> {
+        &self.data_labels
+    }
+
+    pub fn get_data_labels_mut(&mut self) -> &mut Option<DataLabels> {
+        &mut self.data_labels
+    }
+
+    pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Self {
+        self.data_labels = Some(value);
+        self
+    }
+
     pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
 
@@ -309,6 +324,11 @@ impl AreaChartSeries {
                         obj.set_attributes(reader, e);
                         self.set_bubble_size(obj);
                     }
+                    b"c:dLbls" => {
+                        let mut obj = DataLabels::default();
+                        obj.set_attributes(reader, e);
+                        self.set_data_labels(obj);
+                    }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
@@ -396,6 +416,14 @@ impl AreaChartSeries {
 
         // c:spPr
         match &self.shape_properties {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
+
+        // c:dLbls
+        match &self.data_labels {
             Some(v) => {
                 v.write_to(writer);
             }

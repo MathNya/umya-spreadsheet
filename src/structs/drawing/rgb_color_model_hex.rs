@@ -171,14 +171,17 @@ impl RgbColorModelHex {
 
         // a:srgbClr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let r = self.red.get_value_string();
         if &self.red.has_value() == &true {
-            attributes.push(("r", self.red.get_value_string()));
+            attributes.push(("r", &r));
         }
+        let g = self.green.get_value_string();
         if &self.green.has_value() == &true {
-            attributes.push(("g", self.green.get_value_string()));
+            attributes.push(("g", &g));
         }
+        let b = self.blue.get_value_string();
         if &self.blue.has_value() == &true {
-            attributes.push(("b", self.blue.get_value_string()));
+            attributes.push(("b", &b));
         }
         if &self.val.has_value() == &true {
             attributes.push(("val", self.val.get_value_string()));

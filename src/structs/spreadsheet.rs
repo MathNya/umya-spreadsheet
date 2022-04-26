@@ -4,7 +4,6 @@ use reader::xlsx::*;
 use std::sync::Arc;
 use std::sync::RwLock;
 use structs::Address;
-use structs::Calculation;
 use structs::CellValue;
 use structs::Properties;
 use structs::Security;
@@ -21,20 +20,8 @@ pub struct Spreadsheet {
     properties: Properties,
     security: Security,
     work_sheet_collection: Vec<Worksheet>,
-    calculation_engine: Calculation,
-    named_ranges: Vec<String>,
     macros_code: Option<Vec<u8>>,
-    macros_certificate: String,
     ribbon_xml_data: Option<String>,
-    ribbon_bin_objects: Option<Vec<String>>,
-    show_horizontal_scroll: bool,
-    show_vertical_scroll: bool,
-    show_sheet_tabs: bool,
-    minimized: bool,
-    auto_filter_date_grouping: bool,
-    first_sheet_index: i32,
-    visibility: String,
-    tab_ratio: i32,
     theme: Theme,
     stylesheet: Stylesheet,
     shared_string_table: Arc<RwLock<SharedStringTable>>,

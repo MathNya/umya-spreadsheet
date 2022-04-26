@@ -6,6 +6,7 @@ use super::ShowLegendKey;
 use super::ShowPercent;
 use super::ShowSeriesName;
 use super::ShowValue;
+use super::TextProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -21,6 +22,7 @@ pub struct DataLabels {
     show_percent: ShowPercent,
     show_bubble_size: ShowBubbleSize,
     show_leader_lines: Option<ShowLeaderLines>,
+    text_properties: Option<TextProperties>,
 }
 impl DataLabels {
     pub fn get_show_legend_key(&self) -> &ShowLegendKey {
@@ -114,6 +116,19 @@ impl DataLabels {
         self
     }
 
+    pub fn get_text_properties(&self) -> &Option<TextProperties> {
+        &self.text_properties
+    }
+
+    pub fn get_text_properties_mut(&mut self) -> &mut Option<TextProperties> {
+        &mut self.text_properties
+    }
+
+    pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {
+        self.text_properties = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -122,6 +137,14 @@ impl DataLabels {
         let mut buf = Vec::new();
         loop {
             match reader.read_event(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"c:txPr" => {
+                        let mut obj = TextProperties::default();
+                        obj.set_attributes(reader, e);
+                        self.set_text_properties(obj);
+                    }
+                    _ => (),
+                },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"c:showLegendKey" => {
                         self.show_legend_key.set_attributes(reader, e);
@@ -163,6 +186,14 @@ impl DataLabels {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:dLbls
         write_start_tag(writer, "c:dLbls", vec![], false);
+
+        // c:txPr
+        match &self.text_properties {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         // c:showLegendKey
         self.show_legend_key.write_to(writer);

@@ -35,7 +35,7 @@ impl SoftEdge {
         write_start_tag(
             writer,
             "a:softEdge",
-            vec![("rad", self.radius.get_value_string())],
+            vec![("rad", &self.radius.get_value_string())],
             true,
         );
     }

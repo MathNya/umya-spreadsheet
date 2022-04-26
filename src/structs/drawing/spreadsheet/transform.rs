@@ -125,8 +125,9 @@ impl Transform {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let rot = self.rotation.get_value_string();
         if &self.rotation.has_value() == &true {
-            attributes.push(("rot", self.rotation.get_value_string()));
+            attributes.push(("rot", &rot));
         }
         if &self.horizontal_flip.has_value() == &true {
             attributes.push(("flipH", self.horizontal_flip.get_value_string()));

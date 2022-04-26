@@ -1,6 +1,7 @@
 // a:pPr
 use super::super::EnumValue;
-use super::DefaultRunProperties;
+use super::LineSpacing;
+use super::RunProperties;
 use super::TextAlignmentTypeValues;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -13,7 +14,8 @@ use writer::driver::*;
 pub struct ParagraphProperties {
     right_to_left: Option<String>,
     alignment: EnumValue<TextAlignmentTypeValues>,
-    default_run_properties: Option<DefaultRunProperties>,
+    default_run_properties: Option<RunProperties>,
+    line_spacing: Option<LineSpacing>,
 }
 impl ParagraphProperties {
     pub fn get_right_to_left(&self) -> &Option<String> {
@@ -34,19 +36,29 @@ impl ParagraphProperties {
         self
     }
 
-    pub fn get_default_run_properties(&self) -> &Option<DefaultRunProperties> {
+    pub fn get_default_run_properties(&self) -> &Option<RunProperties> {
         &self.default_run_properties
     }
 
-    pub fn get_default_run_properties_mut(&mut self) -> &mut Option<DefaultRunProperties> {
+    pub fn get_default_run_properties_mut(&mut self) -> &mut Option<RunProperties> {
         &mut self.default_run_properties
     }
 
-    pub fn set_default_run_properties(
-        &mut self,
-        value: DefaultRunProperties,
-    ) -> &mut ParagraphProperties {
+    pub fn set_default_run_properties(&mut self, value: RunProperties) -> &mut ParagraphProperties {
         self.default_run_properties = Some(value);
+        self
+    }
+
+    pub fn get_line_spacing(&self) -> &Option<LineSpacing> {
+        &self.line_spacing
+    }
+
+    pub fn get_line_spacing_mut(&mut self) -> &mut Option<LineSpacing> {
+        &mut self.line_spacing
+    }
+
+    pub fn set_line_spacing(&mut self, value: LineSpacing) -> &mut Self {
+        self.line_spacing = Some(value);
         self
     }
 
@@ -78,15 +90,20 @@ impl ParagraphProperties {
             match reader.read_event(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name() {
                     b"a:defRPr" => {
-                        let mut obj = DefaultRunProperties::default();
+                        let mut obj = RunProperties::default();
                         obj.set_attributes(reader, e, false);
                         self.set_default_run_properties(obj);
+                    }
+                    b"a:lnSpc" => {
+                        let mut obj = LineSpacing::default();
+                        obj.set_attributes(reader, e);
+                        self.set_line_spacing(obj);
                     }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
                     b"a:defRPr" => {
-                        let mut obj = DefaultRunProperties::default();
+                        let mut obj = RunProperties::default();
                         obj.set_attributes(reader, e, true);
                         self.set_default_run_properties(obj);
                     }
@@ -105,7 +122,7 @@ impl ParagraphProperties {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let empty_flag = &self.default_run_properties.is_none();
+        let empty_flag = self.default_run_properties.is_none() && self.line_spacing.is_none();
 
         // a:pPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -118,11 +135,17 @@ impl ParagraphProperties {
         if self.alignment.has_value() {
             attributes.push(("algn", self.alignment.get_value_string()));
         }
-        write_start_tag(writer, "a:pPr", attributes, *empty_flag);
+        write_start_tag(writer, "a:pPr", attributes, empty_flag);
 
-        if empty_flag == &false {
+        if empty_flag == false {
             // a:defRPr
             match &self.default_run_properties {
+                Some(v) => v.write_to_def_rpr(writer),
+                None => {}
+            }
+
+            // a:lnSpc
+            match &self.line_spacing {
                 Some(v) => v.write_to(writer),
                 None => {}
             }

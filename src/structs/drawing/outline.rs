@@ -4,6 +4,7 @@ use super::GradientFill;
 use super::Miter;
 use super::NoFill;
 use super::PresetDash;
+use super::Round;
 use super::SolidFill;
 use super::TailEnd;
 use quick_xml::events::{BytesStart, Event};
@@ -26,30 +27,34 @@ pub struct Outline {
     bevel: Option<Bevel>,
     preset_dash: Option<PresetDash>,
     miter: Option<Miter>,
+    round: Option<Round>,
 }
 impl Outline {
     pub fn get_width(&self) -> &u32 {
         self.width.get_value()
     }
 
-    pub fn set_width(&mut self, value: u32) {
+    pub fn set_width(&mut self, value: u32) -> &mut Self {
         self.width.set_value(value);
+        self
     }
 
     pub fn get_cap_type(&self) -> &Option<String> {
         &self.cap_type
     }
 
-    pub fn set_cap_type<S: Into<String>>(&mut self, value: S) {
+    pub fn set_cap_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cap_type = Some(value.into());
+        self
     }
 
     pub fn get_compound_line_type(&self) -> &Option<String> {
         &self.compound_line_type
     }
 
-    pub fn set_compound_line_type<S: Into<String>>(&mut self, value: S) {
+    pub fn set_compound_line_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.compound_line_type = Some(value.into());
+        self
     }
 
     pub fn get_solid_fill(&self) -> &Option<SolidFill> {
@@ -60,8 +65,9 @@ impl Outline {
         &mut self.solid_fill
     }
 
-    pub fn set_solid_fill(&mut self, value: SolidFill) {
+    pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
         self.solid_fill = Some(value);
+        self
     }
 
     pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
@@ -72,8 +78,9 @@ impl Outline {
         &mut self.gradient_fill
     }
 
-    pub fn set_gradient_fill(&mut self, value: GradientFill) {
+    pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
         self.gradient_fill = Some(value);
+        self
     }
 
     pub fn get_tail_end(&self) -> &Option<TailEnd> {
@@ -84,8 +91,9 @@ impl Outline {
         &mut self.tail_end
     }
 
-    pub fn set_tail_end(&mut self, value: TailEnd) {
+    pub fn set_tail_end(&mut self, value: TailEnd) -> &mut Self {
         self.tail_end = Some(value);
+        self
     }
 
     pub fn get_no_fill(&self) -> &Option<NoFill> {
@@ -96,7 +104,7 @@ impl Outline {
         &mut self.no_fill
     }
 
-    pub fn set_no_fill(&mut self, value: NoFill) -> &mut Outline {
+    pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
         self.no_fill = Some(value);
         self
     }
@@ -109,7 +117,7 @@ impl Outline {
         &mut self.bevel
     }
 
-    pub fn set_bevel(&mut self, value: Bevel) -> &mut Outline {
+    pub fn set_bevel(&mut self, value: Bevel) -> &mut Self {
         self.bevel = Some(value);
         self
     }
@@ -122,7 +130,7 @@ impl Outline {
         &mut self.preset_dash
     }
 
-    pub fn set_preset_dash(&mut self, value: PresetDash) -> &mut Outline {
+    pub fn set_preset_dash(&mut self, value: PresetDash) -> &mut Self {
         self.preset_dash = Some(value);
         self
     }
@@ -135,8 +143,21 @@ impl Outline {
         &mut self.miter
     }
 
-    pub fn set_miter(&mut self, value: Miter) -> &mut Outline {
+    pub fn set_miter(&mut self, value: Miter) -> &mut Self {
         self.miter = Some(value);
+        self
+    }
+
+    pub fn get_round(&self) -> &Option<Round> {
+        &self.round
+    }
+
+    pub fn get_round_mut(&mut self) -> &mut Option<Round> {
+        &mut self.round
+    }
+
+    pub fn set_round(&mut self, value: Round) -> &mut Self {
+        self.round = Some(value);
         self
     }
 
@@ -209,6 +230,11 @@ impl Outline {
                         obj.set_attributes(reader, e);
                         self.set_preset_dash(obj);
                     }
+                    b"a:round" => {
+                        let mut obj = Round::default();
+                        obj.set_attributes(reader, e);
+                        self.set_round(obj);
+                    }
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name() {
@@ -228,8 +254,9 @@ impl Outline {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:ln
         let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let width = self.width.get_value_string();
         if self.width.has_value() {
-            attributes.push(("w", self.width.get_value_string()));
+            attributes.push(("w", &width));
         }
         match &self.cap_type {
             Some(v) => {
@@ -253,6 +280,12 @@ impl Outline {
 
         // a:gradFill
         match &self.gradient_fill {
+            Some(v) => v.write_to(writer),
+            None => {}
+        }
+
+        // a:round
+        match &self.round {
             Some(v) => v.write_to(writer),
             None => {}
         }

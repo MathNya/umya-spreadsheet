@@ -1,4 +1,5 @@
 // c:backWall
+use super::ShapeProperties;
 use super::Thickness;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -9,6 +10,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct BackWall {
     thickness: Option<Thickness>,
+    shape_properties: Option<ShapeProperties>,
 }
 impl BackWall {
     pub fn get_thickness(&self) -> &Option<Thickness> {
@@ -21,6 +23,19 @@ impl BackWall {
 
     pub fn set_thickness(&mut self, value: Thickness) -> &mut BackWall {
         self.thickness = Some(value);
+        self
+    }
+
+    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
+        &self.shape_properties
+    }
+
+    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
+        &mut self.shape_properties
+    }
+
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
+        self.shape_properties = Some(value);
         self
     }
 
@@ -37,6 +52,14 @@ impl BackWall {
                         let mut obj = Thickness::default();
                         obj.set_attributes(reader, e);
                         self.set_thickness(obj);
+                    }
+                    _ => (),
+                },
+                Ok(Event::Start(ref e)) => match e.name() {
+                    b"c:spPr" => {
+                        let mut obj = ShapeProperties::default();
+                        obj.set_attributes(reader, e);
+                        self.set_shape_properties(obj);
                     }
                     _ => (),
                 },
@@ -58,6 +81,14 @@ impl BackWall {
 
         // c:thickness
         match &self.thickness {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
+
+        // c:spPr
+        match &self.shape_properties {
             Some(v) => {
                 v.write_to(writer);
             }

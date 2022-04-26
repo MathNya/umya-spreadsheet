@@ -34,7 +34,7 @@ impl SecondPieSize {
         write_start_tag(
             writer,
             "c:secondPieSize",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", &self.val.get_value_string())],
             true,
         );
     }

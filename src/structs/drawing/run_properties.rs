@@ -8,25 +8,26 @@ use super::NoFill;
 use super::Outline;
 use super::SolidFill;
 use super::TextCapsValues;
-use super::TextCharacterPropertiesType;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::StringValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct RunProperties {
     text: String,
-    kumimoji: Option<String>,
-    language: Option<String>,
-    alternative_language: Option<String>,
-    bold: Option<String>,
-    sz: Option<String>,
-    italic: Option<String>,
+    kumimoji: StringValue,
+    language: StringValue,
+    alternative_language: StringValue,
+    bold: StringValue,
+    sz: StringValue,
+    italic: StringValue,
     capital: EnumValue<TextCapsValues>,
     spacing: Int32Value,
+    strike: StringValue,
     outline: Option<Outline>,
     solid_fill: Option<SolidFill>,
     latin_font: Option<LatinFont>,
@@ -35,181 +36,188 @@ pub struct RunProperties {
     no_fill: Option<NoFill>,
     effect_list: Option<EffectList>,
 }
-impl TextCharacterPropertiesType for RunProperties {
-    fn get_text(&self) -> &str {
+impl RunProperties {
+    pub fn get_text(&self) -> &str {
         &self.text
     }
 
-    fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
+    pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.text = value.into();
         self
     }
 
-    fn get_kumimoji(&self) -> &Option<String> {
-        &self.kumimoji
+    pub fn get_kumimoji(&self) -> &str {
+        self.kumimoji.get_value_string()
     }
 
-    fn set_kumimoji<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.kumimoji = Some(value.into());
+    pub fn set_kumimoji<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.kumimoji.set_value_string(value.into());
         self
     }
 
-    fn get_language(&self) -> &Option<String> {
-        &self.language
+    pub fn get_language(&self) -> &str {
+        self.language.get_value_string()
     }
 
-    fn set_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.language = Some(value.into());
+    pub fn set_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.language.set_value_string(value.into());
         self
     }
 
-    fn get_alternative_language(&self) -> &Option<String> {
-        &self.alternative_language
+    pub fn get_alternative_language(&self) -> &str {
+        self.alternative_language.get_value_string()
     }
 
-    fn set_alternative_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.alternative_language = Some(value.into());
+    pub fn set_alternative_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.alternative_language.set_value_string(value.into());
         self
     }
 
-    fn get_bold(&self) -> &Option<String> {
-        &self.bold
+    pub fn get_bold(&self) -> &str {
+        self.bold.get_value_string()
     }
 
-    fn set_bold<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.bold = Some(value.into());
+    pub fn set_bold<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.bold.set_value_string(value.into());
         self
     }
 
-    fn get_sz(&self) -> &Option<String> {
-        &self.sz
+    pub fn get_sz(&self) -> &str {
+        self.sz.get_value_string()
     }
 
-    fn set_sz<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.sz = Some(value.into());
+    pub fn set_sz<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.sz.set_value_string(value.into());
         self
     }
 
-    fn get_italic(&self) -> &Option<String> {
-        &self.italic
+    pub fn get_italic(&self) -> &str {
+        self.italic.get_value_string()
     }
 
-    fn set_italic<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.italic = Some(value.into());
+    pub fn set_italic<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.italic.set_value_string(value.into());
         self
     }
 
-    fn get_capital(&self) -> &TextCapsValues {
+    pub fn get_capital(&self) -> &TextCapsValues {
         self.capital.get_value()
     }
 
-    fn set_capital(&mut self, value: TextCapsValues) -> &mut Self {
+    pub fn set_capital(&mut self, value: TextCapsValues) -> &mut Self {
         self.capital.set_value(value);
         self
     }
 
-    fn get_spacing(&self) -> &i32 {
+    pub fn get_spacing(&self) -> &i32 {
         self.spacing.get_value()
     }
 
-    fn set_spacing(&mut self, value: i32) -> &mut Self {
+    pub fn set_spacing(&mut self, value: i32) -> &mut Self {
         self.spacing.set_value(value);
         self
     }
 
-    fn get_solid_fill(&self) -> &Option<SolidFill> {
+    pub fn get_strike(&self) -> &str {
+        self.strike.get_value_string()
+    }
+
+    pub fn set_strike<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.strike.set_value_string(value.into());
+        self
+    }
+
+    pub fn get_solid_fill(&self) -> &Option<SolidFill> {
         &self.solid_fill
     }
 
-    fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
+    pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
         &mut self.solid_fill
     }
 
-    fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
+    pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
         self.solid_fill = Some(value);
         self
     }
 
-    fn get_outline(&self) -> &Option<Outline> {
+    pub fn get_outline(&self) -> &Option<Outline> {
         &self.outline
     }
 
-    fn get_outline_mut(&mut self) -> &mut Option<Outline> {
+    pub fn get_outline_mut(&mut self) -> &mut Option<Outline> {
         &mut self.outline
     }
 
-    fn set_outline(&mut self, value: Outline) -> &mut Self {
+    pub fn set_outline(&mut self, value: Outline) -> &mut Self {
         self.outline = Some(value);
         self
     }
 
-    fn get_latin_font(&self) -> &Option<LatinFont> {
+    pub fn get_latin_font(&self) -> &Option<LatinFont> {
         &self.latin_font
     }
 
-    fn get_latin_font_mut(&mut self) -> &mut Option<LatinFont> {
+    pub fn get_latin_font_mut(&mut self) -> &mut Option<LatinFont> {
         &mut self.latin_font
     }
 
-    fn set_latin_font(&mut self, value: LatinFont) -> &mut Self {
+    pub fn set_latin_font(&mut self, value: LatinFont) -> &mut Self {
         self.latin_font = Some(value);
         self
     }
 
-    fn get_east_asian_font(&self) -> &Option<EastAsianFont> {
+    pub fn get_east_asian_font(&self) -> &Option<EastAsianFont> {
         &self.east_asian_font
     }
 
-    fn get_east_asian_font_mut(&mut self) -> &mut Option<EastAsianFont> {
+    pub fn get_east_asian_font_mut(&mut self) -> &mut Option<EastAsianFont> {
         &mut self.east_asian_font
     }
 
-    fn set_east_asian_font(&mut self, value: EastAsianFont) -> &mut Self {
+    pub fn set_east_asian_font(&mut self, value: EastAsianFont) -> &mut Self {
         self.east_asian_font = Some(value);
         self
     }
 
-    fn get_gradient_fill(&self) -> &Option<GradientFill> {
+    pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
         &self.gradient_fill
     }
 
-    fn get_gradient_fill_mut(&mut self) -> &mut Option<GradientFill> {
+    pub fn get_gradient_fill_mut(&mut self) -> &mut Option<GradientFill> {
         &mut self.gradient_fill
     }
 
-    fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
+    pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
         self.gradient_fill = Some(value);
         self
     }
 
-    fn get_no_fill(&self) -> &Option<NoFill> {
+    pub fn get_no_fill(&self) -> &Option<NoFill> {
         &self.no_fill
     }
 
-    fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
+    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
         &mut self.no_fill
     }
 
-    fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
+    pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
         self.no_fill = Some(value);
         self
     }
 
-    fn get_effect_list(&self) -> &Option<EffectList> {
+    pub fn get_effect_list(&self) -> &Option<EffectList> {
         &self.effect_list
     }
 
-    fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
+    pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
         &mut self.effect_list
     }
 
-    fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
+    pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
         self.effect_list = Some(value);
         self
     }
-}
 
-impl RunProperties {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -243,6 +251,12 @@ impl RunProperties {
         match get_attribute(e, b"sz") {
             Some(v) => {
                 self.set_sz(v);
+            }
+            None => {}
+        }
+        match get_attribute(e, b"strike") {
+            Some(v) => {
+                self.set_strike(v);
             }
             None => {}
         }
@@ -320,9 +334,14 @@ impl RunProperties {
                 },
                 Ok(Event::End(ref e)) => match e.name() {
                     b"a:rPr" => return,
+                    b"a:endParaRPr" => return,
+                    b"a:defRPr" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:rPr"),
+                Ok(Event::Eof) => panic!(
+                    "Error not find {} end element",
+                    "a:rPr, a:endParaRPr, a:defRPr"
+                ),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
@@ -330,37 +349,47 @@ impl RunProperties {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "a:rPr")
+    }
+
+    pub(crate) fn write_to_end_para_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "a:endParaRPr")
+    }
+
+    pub(crate) fn write_to_def_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        self.write_to(writer, "a:defRPr")
+    }
+
+    fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.kumimoji {
-            Some(v) => attributes.push(("kumimoji", v)),
-            None => {}
+        if self.kumimoji.has_value() {
+            attributes.push(("kumimoji", self.kumimoji.get_value_string()))
         }
-        match &self.language {
-            Some(v) => attributes.push(("lang", v)),
-            None => {}
+        if self.language.has_value() {
+            attributes.push(("lang", self.language.get_value_string()))
         }
-        match &self.alternative_language {
-            Some(v) => attributes.push(("altLang", v)),
-            None => {}
+        if self.alternative_language.has_value() {
+            attributes.push(("altLang", self.alternative_language.get_value_string()))
         }
-        match &self.sz {
-            Some(v) => attributes.push(("sz", v)),
-            None => {}
+        if self.sz.has_value() {
+            attributes.push(("sz", self.sz.get_value_string()))
         }
-        match &self.bold {
-            Some(v) => attributes.push(("b", v)),
-            None => {}
+        if self.bold.has_value() {
+            attributes.push(("b", self.bold.get_value_string()))
         }
-        match &self.italic {
-            Some(v) => attributes.push(("i", v)),
-            None => {}
+        if self.italic.has_value() {
+            attributes.push(("i", self.italic.get_value_string()))
         }
         if self.capital.has_value() {
             attributes.push(("cap", self.capital.get_value_string()));
         }
+        let spc = self.spacing.get_value_string();
         if self.spacing.has_value() {
-            attributes.push(("spc", self.spacing.get_value_string()));
+            attributes.push(("spc", &spc));
+        }
+        if self.strike.has_value() {
+            attributes.push(("strike", self.strike.get_value_string()));
         }
         if self.solid_fill.is_some()
             || self.outline.is_some()
@@ -369,7 +398,7 @@ impl RunProperties {
             || self.gradient_fill.is_some()
             || self.effect_list.is_some()
         {
-            write_start_tag(writer, "a:rPr", attributes, false);
+            write_start_tag(writer, tag_name, attributes, false);
 
             // a:solidFill
             match &self.solid_fill {
@@ -427,9 +456,9 @@ impl RunProperties {
                 None => {}
             }
 
-            write_end_tag(writer, "a:rPr");
+            write_end_tag(writer, tag_name);
         } else {
-            write_start_tag(writer, "a:rPr", attributes, true);
+            write_start_tag(writer, tag_name, attributes, true);
         }
     }
 }

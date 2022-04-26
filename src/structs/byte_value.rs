@@ -1,13 +1,12 @@
 #[derive(Clone, Default, Debug)]
 pub struct ByteValue {
     value: Option<u8>,
-    value_default: u8,
 }
 impl ByteValue {
     pub(crate) fn get_value(&self) -> &u8 {
         match &self.value {
             Some(v) => v,
-            None => &self.value_default,
+            None => &0,
         }
     }
 

@@ -34,7 +34,7 @@ impl Shade {
         write_start_tag(
             writer,
             "a:shade",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", &self.val.get_value_string())],
             true,
         );
     }

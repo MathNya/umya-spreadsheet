@@ -212,25 +212,30 @@ impl SheetView {
         if self.view.has_value() {
             attributes.push(("view", self.view.get_value_string()));
         }
+        let zoom_scale = self.zoom_scale.get_value_string();
         if self.zoom_scale.has_value() {
-            attributes.push(("zoomScale", self.zoom_scale.get_value_string()));
+            attributes.push(("zoomScale", &zoom_scale));
         }
+        let zoom_scale_normal = self.zoom_scale_normal.get_value_string();
         if self.zoom_scale_normal.has_value() {
-            attributes.push(("zoomScaleNormal", self.zoom_scale_normal.get_value_string()));
+            attributes.push(("zoomScaleNormal", &zoom_scale_normal));
         }
+        let zoom_scale_page_layout_view = self.zoom_scale_page_layout_view.get_value_string();
         if self.zoom_scale_page_layout_view.has_value() {
             attributes.push((
                 "zoomScalePageLayoutView",
-                self.zoom_scale_page_layout_view.get_value_string(),
+                &zoom_scale_page_layout_view,
             ));
         }
+        let zoom_scale_sheet_layout_view = self.zoom_scale_sheet_layout_view.get_value_string();
         if self.zoom_scale_sheet_layout_view.has_value() {
             attributes.push((
                 "zoomScaleSheetLayoutView",
-                self.zoom_scale_sheet_layout_view.get_value_string(),
+                &zoom_scale_sheet_layout_view,
             ));
         }
-        attributes.push(("workbookViewId", self.workbook_view_id.get_value_string()));
+        let workbook_view_id = self.workbook_view_id.get_value_string();
+        attributes.push(("workbookViewId", &workbook_view_id));
 
         write_start_tag(writer, "sheetView", attributes, empty_flag);
 

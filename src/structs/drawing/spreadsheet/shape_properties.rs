@@ -176,6 +176,12 @@ impl ShapeProperties {
             None => {}
         }
 
+        // a:noFill
+        match &self.no_fill {
+            Some(v) => v.write_to(writer),
+            None => {}
+        }
+
         // a:ln
         match &self.outline {
             Some(v) => {
@@ -189,12 +195,6 @@ impl ShapeProperties {
             Some(v) => {
                 v.write_to(writer);
             }
-            None => {}
-        }
-
-        // a:noFill
-        match &self.no_fill {
-            Some(v) => v.write_to(writer),
             None => {}
         }
 

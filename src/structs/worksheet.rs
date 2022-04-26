@@ -24,7 +24,6 @@ use structs::OleObjects;
 use structs::PageMargins;
 use structs::PageSetup;
 use structs::PrintOptions;
-use structs::Protection;
 use structs::Range;
 use structs::Row;
 use structs::RowBreaks;
@@ -42,33 +41,18 @@ pub struct Worksheet {
     cell_collection: Cells,
     row_dimensions: Rows,
     column_dimensions: Columns,
-    worksheet_drawing: WorksheetDrawing,
+    worksheet_drawing: Box<WorksheetDrawing>,
     sheet_state: String,
     page_setup: PageSetup,
     page_margins: PageMargins,
     header_footer: HeaderFooter,
     sheet_views: SheetViews,
-    protection: Protection,
     conditional_styles_collection: Vec<ConditionalSet>,
-    breaks: Vec<String>,
     merge_cells: MergeCells,
-    protected_cells: Vec<String>,
     auto_filter: Option<AutoFilter>,
-    freeze_pane: Option<String>,
-    top_left_cell: Option<String>,
-    show_gridlines: bool,
-    print_gridlines: bool,
-    show_row_col_headers: bool,
-    show_summary_below: bool,
-    show_summary_right: bool,
     comments: Vec<Comment>,
     active_cell: String,
-    selected_cells: String,
-    right_to_left: bool,
-    data_validation_collection: Vec<String>,
     tab_color: Option<Color>,
-    dirty: bool,
-    hash: String,
     code_name: Option<String>,
     ole_objects: OleObjects,
     defined_names: Vec<DefinedName>,
@@ -808,7 +792,7 @@ impl Worksheet {
     /// # Arguments
     /// * `value` - WorksheetDrawing
     pub fn set_worksheet_drawing(&mut self, value: WorksheetDrawing) {
-        self.worksheet_drawing = value;
+        self.worksheet_drawing = Box::new(value);
     }
 
     /// Has WorksheetDrawing.

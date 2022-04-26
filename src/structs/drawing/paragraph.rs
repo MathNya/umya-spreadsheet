@@ -1,7 +1,7 @@
 // a:p
-use super::EndParagraphRunProperties;
 use super::ParagraphProperties;
 use super::Run;
+use super::RunProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,7 +12,7 @@ use writer::driver::*;
 pub struct Paragraph {
     paragraph_properties: ParagraphProperties,
     run: Vec<Run>,
-    end_para_run_properties: Option<EndParagraphRunProperties>,
+    end_para_run_properties: Option<RunProperties>,
 }
 impl Paragraph {
     pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
@@ -36,18 +36,15 @@ impl Paragraph {
         self.run.push(value);
     }
 
-    pub fn get_end_para_run_properties(&self) -> &Option<EndParagraphRunProperties> {
+    pub fn get_end_para_run_properties(&self) -> &Option<RunProperties> {
         &self.end_para_run_properties
     }
 
-    pub fn get_end_para_run_properties_mut(&mut self) -> &mut Option<EndParagraphRunProperties> {
+    pub fn get_end_para_run_properties_mut(&mut self) -> &mut Option<RunProperties> {
         &mut self.end_para_run_properties
     }
 
-    pub fn set_end_para_run_properties(
-        &mut self,
-        value: EndParagraphRunProperties,
-    ) -> &mut Paragraph {
+    pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Paragraph {
         self.end_para_run_properties = Some(value);
         self
     }
@@ -74,7 +71,7 @@ impl Paragraph {
                         self.add_run(run);
                     }
                     b"a:endParaRPr" => {
-                        let mut run_properties = EndParagraphRunProperties::default();
+                        let mut run_properties = RunProperties::default();
                         run_properties.set_attributes(reader, e, false);
                         self.set_end_para_run_properties(run_properties);
                     }
@@ -85,7 +82,7 @@ impl Paragraph {
                         self.paragraph_properties.set_attributes(reader, e, true);
                     }
                     b"a:endParaRPr" => {
-                        let mut run_properties = EndParagraphRunProperties::default();
+                        let mut run_properties = RunProperties::default();
                         run_properties.set_attributes(reader, e, true);
                         self.set_end_para_run_properties(run_properties);
                     }
@@ -117,7 +114,7 @@ impl Paragraph {
 
         // a:endParaRPr
         match &self.end_para_run_properties {
-            Some(v) => v.write_to(writer),
+            Some(v) => v.write_to_end_para_rpr(writer),
             None => {}
         }
 

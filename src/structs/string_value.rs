@@ -1,13 +1,12 @@
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct StringValue {
     value: Option<String>,
-    value_default: String,
 }
 impl StringValue {
     pub(crate) fn get_value(&self) -> &str {
         match &self.value {
             Some(v) => v,
-            None => &self.value_default,
+            None => "",
         }
     }
 

@@ -90,12 +90,6 @@ pub use self::graphic_data::*;
 mod paragraph_properties;
 pub use self::paragraph_properties::*;
 
-mod default_run_properties;
-pub use self::default_run_properties::*;
-
-mod end_paragraph_run_properties;
-pub use self::end_paragraph_run_properties::*;
-
 mod latin_font;
 pub use self::latin_font::*;
 
@@ -207,8 +201,14 @@ pub use self::preset_line_dash_values::*;
 mod preset_dash;
 pub use self::preset_dash::*;
 
-mod text_character_properties_type;
-pub use self::text_character_properties_type::*;
-
 mod miter;
 pub use self::miter::*;
+
+mod line_spacing;
+pub use self::line_spacing::*;
+
+mod spacing_percent;
+pub use self::spacing_percent::*;
+
+mod round;
+pub use self::round::*;

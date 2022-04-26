@@ -191,6 +191,11 @@ impl SeriesAxis {
                         obj.set_attributes(reader, e);
                         self.set_title(obj);
                     }
+                    b"c:majorGridlines" => {
+                        let mut obj = MajorGridlines::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_major_gridlines(obj);
+                    }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
@@ -205,7 +210,7 @@ impl SeriesAxis {
                     }
                     b"c:majorGridlines" => {
                         let mut obj = MajorGridlines::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_major_gridlines(obj);
                     }
                     b"c:majorTickMark" => {

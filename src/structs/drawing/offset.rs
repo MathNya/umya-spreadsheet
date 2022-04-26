@@ -44,8 +44,8 @@ impl Offset {
             writer,
             "a:off",
             vec![
-                ("x", self.x.get_value_string()),
-                ("y", self.y.get_value_string()),
+                ("x", &self.x.get_value_string()),
+                ("y", &self.y.get_value_string()),
             ],
             true,
         );

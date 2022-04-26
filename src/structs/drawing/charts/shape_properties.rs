@@ -1,5 +1,6 @@
 // c:spPr
 use super::super::EffectList;
+use super::super::NoFill;
 use super::super::Outline;
 use super::super::PatternFill;
 use super::super::PresetGeometry;
@@ -19,6 +20,7 @@ pub struct ShapeProperties {
     transform2d: Option<Transform2D>,
     preset_geometry: Option<PresetGeometry>,
     solid_fill: Option<SolidFill>,
+    no_fill: Option<NoFill>,
     outline: Option<Outline>,
     effect_list: Option<EffectList>,
     scene_3d_type: Option<Scene3DType>,
@@ -33,7 +35,7 @@ impl ShapeProperties {
         &mut self.pattern_fill
     }
 
-    pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut ShapeProperties {
+    pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut Self {
         self.pattern_fill = Some(value);
         self
     }
@@ -46,7 +48,7 @@ impl ShapeProperties {
         &mut self.transform2d
     }
 
-    pub fn set_transform2d(&mut self, value: Transform2D) -> &mut ShapeProperties {
+    pub fn set_transform2d(&mut self, value: Transform2D) -> &mut Self {
         self.transform2d = Some(value);
         self
     }
@@ -59,7 +61,7 @@ impl ShapeProperties {
         &mut self.preset_geometry
     }
 
-    pub fn set_geometry(&mut self, value: PresetGeometry) -> &mut ShapeProperties {
+    pub fn set_geometry(&mut self, value: PresetGeometry) -> &mut Self {
         self.preset_geometry = Some(value);
         self
     }
@@ -72,8 +74,21 @@ impl ShapeProperties {
         &mut self.solid_fill
     }
 
-    pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut ShapeProperties {
+    pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
         self.solid_fill = Some(value);
+        self
+    }
+
+    pub fn get_no_fill(&self) -> &Option<NoFill> {
+        &self.no_fill
+    }
+
+    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
+        &mut self.no_fill
+    }
+
+    pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
+        self.no_fill = Some(value);
         self
     }
 
@@ -85,7 +100,7 @@ impl ShapeProperties {
         &mut self.outline
     }
 
-    pub fn set_outline(&mut self, value: Outline) -> &mut ShapeProperties {
+    pub fn set_outline(&mut self, value: Outline) -> &mut Self {
         self.outline = Some(value);
         self
     }
@@ -98,7 +113,7 @@ impl ShapeProperties {
         &mut self.effect_list
     }
 
-    pub fn set_effect_list(&mut self, value: EffectList) -> &mut ShapeProperties {
+    pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
         self.effect_list = Some(value);
         self
     }
@@ -111,7 +126,7 @@ impl ShapeProperties {
         &mut self.scene_3d_type
     }
 
-    pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut ShapeProperties {
+    pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut Self {
         self.scene_3d_type = Some(value);
         self
     }
@@ -124,7 +139,7 @@ impl ShapeProperties {
         &mut self.shape_3d_type
     }
 
-    pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut ShapeProperties {
+    pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut Self {
         self.shape_3d_type = Some(value);
         self
     }
@@ -180,6 +195,14 @@ impl ShapeProperties {
                     }
                     _ => (),
                 },
+                Ok(Event::Empty(ref e)) => match e.name() {
+                    b"a:noFill" => {
+                        let mut obj = NoFill::default();
+                        obj.set_attributes(reader, e);
+                        self.set_no_fill(obj);
+                    }
+                    _ => (),
+                },
                 Ok(Event::End(ref e)) => match e.name() {
                     b"c:spPr" => return,
                     _ => (),
@@ -222,6 +245,14 @@ impl ShapeProperties {
 
         // a:solidFill
         match &self.solid_fill {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
+
+        // a:noFill
+        match &self.no_fill {
             Some(v) => {
                 v.write_to(writer);
             }

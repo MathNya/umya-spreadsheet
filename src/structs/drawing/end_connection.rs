@@ -44,8 +44,8 @@ impl EndConnection {
             writer,
             "a:endCxn",
             vec![
-                ("id", self.id.get_value_string()),
-                ("idx", self.index.get_value_string()),
+                ("id", &self.id.get_value_string()),
+                ("idx", &self.index.get_value_string()),
             ],
             true,
         );

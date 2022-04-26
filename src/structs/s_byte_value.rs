@@ -1,13 +1,12 @@
 #[derive(Clone, Default, Debug)]
 pub struct SByteValue {
     value: Option<i8>,
-    value_default: i8,
 }
 impl SByteValue {
     pub(crate) fn get_value(&self) -> &i8 {
         match &self.value {
             Some(v) => v,
-            None => &self.value_default,
+            None => &0,
         }
     }
 

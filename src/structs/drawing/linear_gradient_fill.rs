@@ -54,8 +54,9 @@ impl LinearGradientFill {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lin
         let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let ang = self.angle.get_value_string();
         if &self.angle.has_value() == &true {
-            attributes.push(("ang", self.angle.get_value_string()));
+            attributes.push(("ang", &ang));
         }
         if &self.scaled.has_value() == &true {
             attributes.push(("scaled", self.scaled.get_value_string()));

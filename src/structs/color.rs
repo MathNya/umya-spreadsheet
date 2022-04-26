@@ -226,10 +226,12 @@ impl Color {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let theme_index = self.theme_index.get_value_string();
+        let indexed = self.indexed.get_value_string();
         if self.theme_index.has_value() {
-            attributes.push(("theme", self.theme_index.get_value_string()));
+            attributes.push(("theme", &theme_index));
         } else if self.indexed.has_value() {
-            attributes.push(("indexed", self.indexed.get_value_string()));
+            attributes.push(("indexed", &indexed));
         } else if self.argb.has_value() {
             attributes.push(("rgb", self.argb.get_value_string()));
         }

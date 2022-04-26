@@ -10,6 +10,8 @@ use super::MajorTickMark;
 use super::MinorTickMark;
 use super::NumberingFormat;
 use super::Scaling;
+use super::ShapeProperties;
+use super::TextProperties;
 use super::TickLabelPosition;
 use super::Title;
 use quick_xml::events::{BytesStart, Event};
@@ -33,6 +35,8 @@ pub struct ValueAxis {
     crossing_axis: CrossingAxis,
     crosses: Crosses,
     cross_between: CrossBetween,
+    shape_properties: Option<ShapeProperties>,
+    text_properties: Option<TextProperties>,
 }
 impl ValueAxis {
     pub fn get_axis_id(&self) -> &AxisId {
@@ -204,6 +208,32 @@ impl ValueAxis {
         self
     }
 
+    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
+        &self.shape_properties
+    }
+
+    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
+        &mut self.shape_properties
+    }
+
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
+        self.shape_properties = Some(value);
+        self
+    }
+
+    pub fn get_text_properties(&self) -> &Option<TextProperties> {
+        &self.text_properties
+    }
+
+    pub fn get_text_properties_mut(&mut self) -> &mut Option<TextProperties> {
+        &mut self.text_properties
+    }
+
+    pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {
+        self.text_properties = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -221,6 +251,21 @@ impl ValueAxis {
                         obj.set_attributes(reader, e);
                         self.set_title(obj);
                     }
+                    b"c:spPr" => {
+                        let mut obj = ShapeProperties::default();
+                        obj.set_attributes(reader, e);
+                        self.set_shape_properties(obj);
+                    }
+                    b"c:txPr" => {
+                        let mut obj = TextProperties::default();
+                        obj.set_attributes(reader, e);
+                        self.set_text_properties(obj);
+                    }
+                    b"c:majorGridlines" => {
+                        let mut obj = MajorGridlines::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_major_gridlines(obj);
+                    }
                     _ => (),
                 },
                 Ok(Event::Empty(ref e)) => match e.name() {
@@ -235,7 +280,7 @@ impl ValueAxis {
                     }
                     b"c:majorGridlines" => {
                         let mut obj = MajorGridlines::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_major_gridlines(obj);
                     }
                     b"c:numFmt" => {
@@ -316,6 +361,22 @@ impl ValueAxis {
 
         // c:tickLblPos
         self.tick_label_position.write_to(writer);
+
+        // c:spPr
+        match &self.shape_properties {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
+
+        // c:txPr
+        match &self.text_properties {
+            Some(v) => {
+                v.write_to(writer);
+            }
+            None => {}
+        }
 
         // c:crossAx
         self.crossing_axis.write_to(writer);

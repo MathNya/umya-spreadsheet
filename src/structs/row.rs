@@ -222,7 +222,8 @@ impl Row {
 
         // row
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("r", self.row_num.get_value_string()));
+        let row_num = self.row_num.get_value_string();
+        attributes.push(("r", &row_num));
         if !empty_flag {
             attributes.push(("spans", &spans));
         }

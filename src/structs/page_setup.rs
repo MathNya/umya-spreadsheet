@@ -198,26 +198,33 @@ impl PageSetup {
             // pageSetup
             let r_id_str = format!("rId{}", r_id);
             let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let paper_size = self.paper_size.get_value_string();
             if self.paper_size.has_value() {
-                attributes.push(("paperSize", self.paper_size.get_value_string()));
+                attributes.push(("paperSize", &paper_size));
             }
+            let scale = self.scale.get_value_string();
             if self.scale.has_value() {
-                attributes.push(("scale", self.scale.get_value_string()));
+                attributes.push(("scale", &scale));
             }
+            let orientation = self.orientation.get_value_string();
             if self.orientation.has_value() {
-                attributes.push(("orientation", self.orientation.get_value_string()));
+                attributes.push(("orientation", &orientation));
             }
+            let fit_to_height = self.fit_to_height.get_value_string();
             if self.fit_to_height.has_value() {
-                attributes.push(("fitToHeight", self.fit_to_height.get_value_string()));
+                attributes.push(("fitToHeight", &fit_to_height));
             }
+            let fit_to_width = self.fit_to_width.get_value_string();
             if self.fit_to_width.has_value() {
-                attributes.push(("fitToWidth", self.fit_to_width.get_value_string()));
+                attributes.push(("fitToWidth", &fit_to_width));
             }
+            let horizontal_dpi = self.horizontal_dpi.get_value_string();
             if self.horizontal_dpi.has_value() {
-                attributes.push(("horizontalDpi", self.horizontal_dpi.get_value_string()));
+                attributes.push(("horizontalDpi", &horizontal_dpi));
             }
+            let vertical_dpi = self.vertical_dpi.get_value_string();
             if self.vertical_dpi.has_value() {
-                attributes.push(("verticalDpi", self.vertical_dpi.get_value_string()));
+                attributes.push(("verticalDpi", &vertical_dpi));
             }
             if self.object_data.is_some() {
                 attributes.push(("r:id", r_id_str.as_str()));

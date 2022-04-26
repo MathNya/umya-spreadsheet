@@ -38,7 +38,8 @@ impl FontCharSet {
         // charset
         if &self.val.has_value() == &true {
             let mut attributes: Vec<(&str, &str)> = Vec::new();
-            attributes.push(("val", self.val.get_value_string()));
+            let val = self.val.get_value_string();
+            attributes.push(("val", &val));
             write_start_tag(writer, "charset", attributes, true);
         }
     }
