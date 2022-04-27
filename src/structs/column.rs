@@ -12,9 +12,9 @@ use structs::Cells;
 #[derive(Clone, Debug)]
 pub struct Column {
     col_num: UInt32Value,
-    pub(crate)width: DoubleValue,
-    pub(crate)hidden: BooleanValue,
-    pub(crate)best_fit: BooleanValue,
+    pub(crate) width: DoubleValue,
+    pub(crate) hidden: BooleanValue,
+    pub(crate) best_fit: BooleanValue,
     style: Style,
     auto_width: BooleanValue,
 }

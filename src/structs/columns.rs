@@ -148,7 +148,10 @@ impl Columns {
                 column_raw = column_iter.next();
                 match column_raw {
                     Some(column) => {
-                        if column.get_col_num() == &(max + 1) && column.get_hash_code() == obj.get_hash_code() && column.get_style() == obj.get_style() {
+                        if column.get_col_num() == &(max + 1)
+                            && column.get_hash_code() == obj.get_hash_code()
+                            && column.get_style() == obj.get_style()
+                        {
                             max += 1;
                         } else {
                             self.write_to_column(writer, &min, &max, obj, stylesheet);

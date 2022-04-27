@@ -22,9 +22,6 @@ pub use self::cells::*;
 mod hyperlink;
 pub use self::hyperlink::*;
 
-mod shadow;
-pub(crate) use self::shadow::*;
-
 mod color;
 pub use self::color::*;
 
@@ -48,9 +45,6 @@ pub use self::column::*;
 
 mod security;
 pub use self::security::*;
-
-mod calculation;
-pub(crate) use self::calculation::*;
 
 mod style;
 pub use self::style::*;

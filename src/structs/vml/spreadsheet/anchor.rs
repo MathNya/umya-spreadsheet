@@ -148,15 +148,13 @@ impl Anchor {
         }
     }
 
-    fn get_number(value:Option<&&str>) -> u32 {
+    fn get_number(value: Option<&&str>) -> u32 {
         match value {
-            Some(v) => {
-                match v.to_string().parse::<u32>() {
-                    Ok(w) => {w}
-                    Err(_) => {0}
-                }
-            }
-            None => {0}
+            Some(v) => match v.to_string().parse::<u32>() {
+                Ok(w) => w,
+                Err(_) => 0,
+            },
+            None => 0,
         }
     }
 

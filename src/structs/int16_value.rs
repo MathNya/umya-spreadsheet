@@ -1,33 +1,21 @@
-#[derive(Clone, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Int16Value {
     value: Option<i16>,
-    value_string: String,
-    value_default: i16,
-}
-impl Default for Int16Value {
-    fn default() -> Self {
-        Self {
-            value: None,
-            value_string: "0".into(),
-            value_default: 0,
-        }
-    }
 }
 impl Int16Value {
     pub(crate) fn _get_value(&self) -> &i16 {
         match &self.value {
             Some(v) => v,
-            None => &self.value_default,
+            None => &0,
         }
     }
 
-    pub(crate) fn _get_value_string(&self) -> &str {
-        &self.value_string
+    pub(crate) fn _get_value_string(&self) -> String {
+        self._get_value().to_string()
     }
 
     pub(crate) fn _set_value(&mut self, value: i16) -> &mut Int16Value {
         self.value = Some(value);
-        self.value_string = value.to_string();
         self
     }
 
@@ -42,10 +30,10 @@ impl Int16Value {
         }
     }
 
-    pub(crate) fn _get_hash_string(&self) -> &str {
+    pub(crate) fn _get_hash_string(&self) -> String {
         if self._has_value() {
             return self._get_value_string();
         }
-        "empty!!"
+        String::from("empty!!")
     }
 }

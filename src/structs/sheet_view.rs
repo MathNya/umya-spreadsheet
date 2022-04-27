@@ -222,17 +222,11 @@ impl SheetView {
         }
         let zoom_scale_page_layout_view = self.zoom_scale_page_layout_view.get_value_string();
         if self.zoom_scale_page_layout_view.has_value() {
-            attributes.push((
-                "zoomScalePageLayoutView",
-                &zoom_scale_page_layout_view,
-            ));
+            attributes.push(("zoomScalePageLayoutView", &zoom_scale_page_layout_view));
         }
         let zoom_scale_sheet_layout_view = self.zoom_scale_sheet_layout_view.get_value_string();
         if self.zoom_scale_sheet_layout_view.has_value() {
-            attributes.push((
-                "zoomScaleSheetLayoutView",
-                &zoom_scale_sheet_layout_view,
-            ));
+            attributes.push(("zoomScaleSheetLayoutView", &zoom_scale_sheet_layout_view));
         }
         let workbook_view_id = self.workbook_view_id.get_value_string();
         attributes.push(("workbookViewId", &workbook_view_id));
