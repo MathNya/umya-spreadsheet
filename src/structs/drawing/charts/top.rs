@@ -34,7 +34,7 @@ impl Top {
         write_start_tag(
             writer,
             "c:y",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", &self.val.get_value_string())],
             true,
         );
     }

@@ -280,9 +280,6 @@ pub use self::column_reference::*;
 mod columns;
 pub(crate) use self::columns::*;
 
-mod column_sort;
-pub use self::column_sort::*;
-
 mod sequence_of_references;
 pub use self::sequence_of_references::*;
 

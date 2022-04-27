@@ -235,8 +235,9 @@ impl Color {
         } else if self.argb.has_value() {
             attributes.push(("rgb", self.argb.get_value_string()));
         }
+        let tint = self.tint.get_value_string();
         if self.tint.has_value() {
-            attributes.push(("tint", self.tint.get_value_string()));
+            attributes.push(("tint", &tint));
         }
 
         if !attributes.is_empty() {

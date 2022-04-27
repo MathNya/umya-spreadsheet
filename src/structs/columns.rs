@@ -1,7 +1,6 @@
 // fills
 use structs::Cells;
 use structs::Column;
-use structs::ColumnSort;
 use structs::MergeCells;
 use structs::Stylesheet;
 
@@ -134,39 +133,34 @@ impl Columns {
         stylesheet: &mut Stylesheet,
     ) {
         if !self.column.is_empty() {
-            let mut column_index: Vec<ColumnSort> = Vec::new();
-            for column in self.get_column_collection() {
-                let mut obj = ColumnSort::default();
-                obj.col_num = *column.get_col_num();
-                obj.hash_code = column.get_hash_code();
-                column_index.push(obj);
-            }
-            column_index.sort();
-
             // cols
             write_start_tag(writer, "cols", vec![], false);
 
             // col
-            let mut hash_code = column_index[0].hash_code.clone();
-            let mut min = column_index[0].col_num;
-            let mut max = column_index[0].col_num;
-            for index in &column_index {
-                if max + 1 >= index.col_num && hash_code == index.hash_code {
-                    max = index.col_num;
-                } else {
-                    for column in self.get_column_collection() {
-                        if &min == column.get_col_num() {
-                            self.write_to_column(writer, &min, &max, column, stylesheet);
+            let mut column_copy = self.column.clone();
+            column_copy.sort_by(|a, b| a.get_col_num().cmp(b.get_col_num()));
+            let mut column_iter = column_copy.iter();
+            let mut column_raw = column_iter.next();
+            let mut obj = column_raw.unwrap();
+            let mut min = obj.get_col_num().clone();
+            let mut max = min;
+            loop {
+                column_raw = column_iter.next();
+                match column_raw {
+                    Some(column) => {
+                        if column.get_col_num() == &(max + 1) && column.get_hash_code() == obj.get_hash_code() && column.get_style() == obj.get_style() {
+                            max += 1;
+                        } else {
+                            self.write_to_column(writer, &min, &max, obj, stylesheet);
+                            obj = column;
+                            min = obj.get_col_num().clone();
+                            max = min;
                         }
                     }
-                    hash_code = index.hash_code.clone();
-                    min = index.col_num;
-                    max = index.col_num;
-                }
-            }
-            for column in self.get_column_collection() {
-                if &min == column.get_col_num() {
-                    self.write_to_column(writer, &min, &max, column, stylesheet);
+                    None => {
+                        self.write_to_column(writer, &min, &max, obj, stylesheet);
+                        break;
+                    }
                 }
             }
 
@@ -188,7 +182,8 @@ impl Columns {
         let max_str = max.to_string();
         attributes.push(("min", min_str.as_str()));
         attributes.push(("max", max_str.as_str()));
-        attributes.push(("width", column.width.get_value_string()));
+        let width = column.width.get_value_string();
+        attributes.push(("width", &width));
         if column.hidden.get_value() == &true {
             attributes.push(("hidden", column.hidden.get_value_string()));
         }

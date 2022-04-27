@@ -92,12 +92,18 @@ impl PageMargins {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pageMargins
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("left", self.left.get_value_string()));
-        attributes.push(("right", self.right.get_value_string()));
-        attributes.push(("top", self.top.get_value_string()));
-        attributes.push(("bottom", self.bottom.get_value_string()));
-        attributes.push(("header", self.header.get_value_string()));
-        attributes.push(("footer", self.footer.get_value_string()));
+        let left = self.left.get_value_string();
+        attributes.push(("left", &left));
+        let right = self.right.get_value_string();
+        attributes.push(("right", &right));
+        let top = self.top.get_value_string();
+        attributes.push(("top", &top));
+        let bottom = self.bottom.get_value_string();
+        attributes.push(("bottom", &bottom));
+        let header = self.header.get_value_string();
+        attributes.push(("header", &header));
+        let footer = self.footer.get_value_string();
+        attributes.push(("footer", &footer));
         write_start_tag(writer, "pageMargins", attributes, true);
     }
 }

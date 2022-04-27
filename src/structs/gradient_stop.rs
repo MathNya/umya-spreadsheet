@@ -88,7 +88,7 @@ impl GradientStop {
         write_start_tag(
             writer,
             "stop",
-            vec![("position", self.position.get_value_string())],
+            vec![("position", &self.position.get_value_string())],
             false,
         );
 

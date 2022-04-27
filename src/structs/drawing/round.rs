@@ -2,7 +2,6 @@
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 

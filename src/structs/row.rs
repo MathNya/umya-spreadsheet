@@ -227,8 +227,9 @@ impl Row {
         if !empty_flag {
             attributes.push(("spans", &spans));
         }
+        let height = self.height.get_value_string();
         if self.height.get_value() != &0f64 {
-            attributes.push(("ht", self.height.get_value_string()));
+            attributes.push(("ht", &height));
         }
         if self.thick_bot.get_value() == &true {
             attributes.push(("thickBot", self.thick_bot.get_value_string()));
@@ -242,8 +243,9 @@ impl Row {
         if self.hidden.get_value() == &true {
             attributes.push(("hidden", self.hidden.get_value_string()));
         }
+        let descent = self.descent.get_value_string();
         if self.descent.has_value() {
-            attributes.push(("x14ac:dyDescent", self.descent.get_value_string()));
+            attributes.push(("x14ac:dyDescent", &descent));
         }
 
         if xf_index > 0 {

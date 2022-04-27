@@ -11,12 +11,12 @@ use structs::Cells;
 
 #[derive(Clone, Debug)]
 pub struct Column {
-    pub(crate) col_num: UInt32Value,
-    pub(crate) width: DoubleValue,
-    pub(crate) hidden: BooleanValue,
-    pub(crate) best_fit: BooleanValue,
-    pub(crate) style: Style,
-    pub(crate) auto_width: BooleanValue,
+    col_num: UInt32Value,
+    pub(crate)width: DoubleValue,
+    pub(crate)hidden: BooleanValue,
+    pub(crate)best_fit: BooleanValue,
+    style: Style,
+    auto_width: BooleanValue,
 }
 impl Default for Column {
     fn default() -> Self {
@@ -153,11 +153,10 @@ impl Column {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
-                "{}{}{}{}",
+                "{}{}{}",
                 &self.width.get_value_string(),
                 &self.hidden.get_value_string(),
                 &self.best_fit.get_value_string(),
-                &self.style.get_hash_code(),
             ))
         )
     }

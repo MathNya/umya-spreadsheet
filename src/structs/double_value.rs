@@ -1,24 +1,21 @@
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct DoubleValue {
     value: Option<f64>,
-    value_string: String,
-    value_default: f64,
 }
 impl DoubleValue {
     pub(crate) fn get_value(&self) -> &f64 {
         match &self.value {
             Some(v) => v,
-            None => &self.value_default,
+            None => &0f64,
         }
     }
 
-    pub(crate) fn get_value_string(&self) -> &str {
-        &self.value_string
+    pub(crate) fn get_value_string(&self) -> String {
+        self.get_value().to_string()
     }
 
     pub(crate) fn set_value(&mut self, value: f64) -> &mut Self {
         self.value = Some(value);
-        self.value_string = self.value.unwrap().to_string();
         self
     }
 
@@ -33,10 +30,10 @@ impl DoubleValue {
         }
     }
 
-    pub(crate) fn get_hash_string(&self) -> &str {
+    pub(crate) fn get_hash_string(&self) -> String {
         if self.has_value() {
             return self.get_value_string();
         }
-        "empty!!"
+        String::from("empty!!")
     }
 }
