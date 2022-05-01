@@ -25,16 +25,6 @@ pub struct Cell {
     hyperlink: Option<Hyperlink>,
 }
 impl Cell {
-    // Data types
-    pub const TYPE_STRING2: &'static str = "str";
-    pub const TYPE_STRING: &'static str = "s";
-    pub const TYPE_FORMULA: &'static str = "f";
-    pub const TYPE_NUMERIC: &'static str = "n";
-    pub const TYPE_BOOL: &'static str = "b";
-    pub const TYPE_NULL: &'static str = "null";
-    pub const TYPE_INLINE: &'static str = "inlineStr";
-    pub const TYPE_ERROR: &'static str = "e";
-
     pub fn get_cell_value(&self) -> &CellValue {
         &self.cell_value
     }

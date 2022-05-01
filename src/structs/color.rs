@@ -1,7 +1,6 @@
 // color
 use super::DoubleValue;
 use super::StringValue;
-use super::Theme;
 use super::UInt32Value;
 use md5::Digest;
 use quick_xml::events::BytesStart;
@@ -9,6 +8,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::drawing::Theme;
 use writer::driver::*;
 
 const INDEXED_COLORS: &[&str] = &[

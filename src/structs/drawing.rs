@@ -212,3 +212,12 @@ pub use self::spacing_percent::*;
 
 mod round;
 pub use self::round::*;
+
+mod supplemental_font;
+pub use self::supplemental_font::*;
+
+mod theme;
+pub use self::theme::*;
+
+mod font_collection_type;
+pub use self::font_collection_type::*;

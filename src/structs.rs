@@ -76,9 +76,6 @@ pub use self::rich_text::*;
 mod text_element;
 pub use self::text_element::*;
 
-mod theme;
-pub use self::theme::*;
-
 mod cell_style;
 pub use self::cell_style::*;
 

@@ -3,13 +3,13 @@ use helper::coordinate::*;
 use reader::xlsx::*;
 use std::sync::Arc;
 use std::sync::RwLock;
+use structs::drawing::Theme;
 use structs::Address;
 use structs::CellValue;
 use structs::Properties;
 use structs::Security;
 use structs::SharedStringTable;
 use structs::Stylesheet;
-use structs::Theme;
 use structs::WorkbookView;
 use structs::Worksheet;
 

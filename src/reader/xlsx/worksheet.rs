@@ -3,6 +3,7 @@ use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 
+use structs::drawing::Theme;
 use structs::raw::RawWorksheet;
 use structs::Color;
 use structs::Columns;
@@ -13,7 +14,6 @@ use structs::OleObjects;
 use structs::Row;
 use structs::SharedStringTable;
 use structs::Stylesheet;
-use structs::Theme;
 use structs::Worksheet;
 
 pub(crate) fn read(

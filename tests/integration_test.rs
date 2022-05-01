@@ -948,3 +948,14 @@ fn libre() {
     let path = std::path::Path::new("./tests/result_files/libre.xlsm");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn read_and_wite_theme() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa_theme.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_theme.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

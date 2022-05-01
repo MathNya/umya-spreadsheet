@@ -6,11 +6,11 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use super::driver;
+use structs::drawing::Theme;
 use structs::raw::RawWorksheet;
 use structs::SharedStringTable;
 use structs::Spreadsheet;
 use structs::Stylesheet;
-use structs::Theme;
 use structs::Worksheet;
 
 pub(crate) mod chart;

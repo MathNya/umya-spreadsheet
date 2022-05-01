@@ -5,74 +5,8 @@ use std::io;
 use super::driver::*;
 use super::XlsxError;
 
-use structs::Theme;
+use structs::drawing::Theme;
 use structs::WriterManager;
-
-const MAJOR_FONTS: &[(&str, &str)] = &[
-    ("Jpan", "ＭＳ Ｐゴシック"),
-    ("Hang", "맑은 고딕"),
-    ("Hans", "宋体"),
-    ("Hant", "新細明體"),
-    ("Arab", "Times New Roman"),
-    ("Hebr", "Times New Roman"),
-    ("Thai", "Tahoma"),
-    ("Ethi", "Nyala"),
-    ("Beng", "Vrinda"),
-    ("Gujr", "Shruti"),
-    ("Khmr", "MoolBoran"),
-    ("Knda", "Tunga"),
-    ("Guru", "Raavi"),
-    ("Cans", "Euphemia"),
-    ("Cher", "Plantagenet Cherokee"),
-    ("Yiii", "Microsoft Yi Baiti"),
-    ("Tibt", "Microsoft Himalaya"),
-    ("Thaa", "MV Boli"),
-    ("Deva", "Mangal"),
-    ("Telu", "Gautami"),
-    ("Taml", "Latha"),
-    ("Syrc", "Estrangelo Edessa"),
-    ("Orya", "Kalinga"),
-    ("Mlym", "Kartika"),
-    ("Laoo", "DokChampa"),
-    ("Sinh", "Iskoola Pota"),
-    ("Mong", "Mongolian Baiti"),
-    ("Viet", "Times New Roman"),
-    ("Uigh", "Microsoft Uighur"),
-    ("Geor", "Sylfaen"),
-];
-
-const MINOR_FONTS: &[(&str, &str)] = &[
-    ("Jpan", "ＭＳ Ｐゴシック"),
-    ("Hang", "맑은 고딕"),
-    ("Hans", "宋体"),
-    ("Hant", "新細明體"),
-    ("Arab", "Arial"),
-    ("Hebr", "Arial"),
-    ("Thai", "Tahoma"),
-    ("Ethi", "Nyala"),
-    ("Beng", "Vrinda"),
-    ("Gujr", "Shruti"),
-    ("Khmr", "DaunPenh"),
-    ("Knda", "Tunga"),
-    ("Guru", "Raavi"),
-    ("Cans", "Euphemia"),
-    ("Cher", "Plantagenet Cherokee"),
-    ("Yiii", "Microsoft Yi Baiti"),
-    ("Tibt", "Microsoft Himalaya"),
-    ("Thaa", "MV Boli"),
-    ("Deva", "Mangal"),
-    ("Telu", "Gautami"),
-    ("Taml", "Latha"),
-    ("Syrc", "Estrangelo Edessa"),
-    ("Orya", "Kalinga"),
-    ("Mlym", "Kartika"),
-    ("Laoo", "DokChampa"),
-    ("Sinh", "Iskoola Pota"),
-    ("Mong", "Mongolian Baiti"),
-    ("Viet", "Arial"),
-    ("Uigh", "Microsoft Uighur"),
-    ("Geor", "Sylfaen"),
-];
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     theme: &Theme,
@@ -279,52 +213,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "a:fontScheme", vec![("name", "Office")], false);
 
     // a:majorFont
-    write_start_tag(&mut writer, "a:majorFont", vec![], false);
-
-    // a:latin
-    write_start_tag(&mut writer, "a:latin", vec![("typeface", "Cambria")], true);
-
-    // a:ea
-    write_start_tag(&mut writer, "a:ea", vec![("typeface", "")], true);
-
-    // a:cs
-    write_start_tag(&mut writer, "a:cs", vec![("typeface", "")], true);
-
-    for (font_script, typeface) in self::MAJOR_FONTS {
-        // a:cs
-        write_start_tag(
-            &mut writer,
-            "a:font",
-            vec![("script", font_script), ("typeface", typeface)],
-            true,
-        );
-    }
-
-    write_end_tag(&mut writer, "a:majorFont");
+    theme.get_major_font().write_to_major_font(&mut writer);
 
     // a:minorFont
-    write_start_tag(&mut writer, "a:minorFont", vec![], false);
-
-    // a:latin
-    write_start_tag(&mut writer, "a:latin", vec![("typeface", "Calibri")], true);
-
-    // a:ea
-    write_start_tag(&mut writer, "a:ea", vec![("typeface", "")], true);
-
-    // a:cs
-    write_start_tag(&mut writer, "a:cs", vec![("typeface", "")], true);
-
-    for (font_script, typeface) in self::MINOR_FONTS {
-        // a:cs
-        write_start_tag(
-            &mut writer,
-            "a:font",
-            vec![("script", font_script), ("typeface", typeface)],
-            true,
-        );
-    }
-
-    write_end_tag(&mut writer, "a:minorFont");
+    theme.get_minor_font().write_to_minor_font(&mut writer);
 
     write_end_tag(&mut writer, "a:fontScheme");
 

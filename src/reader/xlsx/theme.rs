@@ -5,7 +5,7 @@ use quick_xml::Reader;
 use std::mem;
 use std::{io, result};
 
-use structs::Theme;
+use structs::drawing::Theme;
 
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
@@ -26,12 +26,30 @@ pub fn read<R: io::Read + io::Seek>(
     loop {
         match reader.read_event(&mut buf) {
             Ok(Event::Start(ref e)) => match e.name() {
-                b"a:theme" => theme.set_theme_name(get_attribute(e, b"name").unwrap()),
-                b"a:clrScheme" => theme.set_color_scheme_name(get_attribute(e, b"name").unwrap()),
-                b"a:dk1" => tag_name = "dk1".into(),
-                b"a:lt1" => tag_name = "lt1".into(),
-                b"a:dk2" => tag_name = "dk2".into(),
-                b"a:lt2" => tag_name = "lt2".into(),
+                b"a:theme" => {
+                    theme.set_theme_name(get_attribute(e, b"name").unwrap());
+                }
+                b"a:clrScheme" => {
+                    theme.set_color_scheme_name(get_attribute(e, b"name").unwrap());
+                }
+                b"a:dk1" => {
+                    tag_name = "dk1".into();
+                }
+                b"a:lt1" => {
+                    tag_name = "lt1".into();
+                }
+                b"a:dk2" => {
+                    tag_name = "dk2".into();
+                }
+                b"a:lt2" => {
+                    tag_name = "lt2".into();
+                }
+                b"a:majorFont" => {
+                    theme.get_major_font_mut().set_attributes(&mut reader, e);
+                }
+                b"a:minorFont" => {
+                    theme.get_minor_font_mut().set_attributes(&mut reader, e);
+                }
                 _ => (),
             },
             Ok(Event::Empty(ref e)) => match e.name() {
