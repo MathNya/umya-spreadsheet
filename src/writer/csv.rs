@@ -153,12 +153,13 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// option.set_wrap_with_char("\"");
 /// let _ = writer::csv::write(&book, path, Some(&option));
 /// ```
-pub fn write(
+pub fn write<P: AsRef<Path>>(
     spreadsheet: &Spreadsheet,
-    path: &Path,
+    path: P,
     option: Option<&CsvWriterOption>,
 ) -> Result<(), XlsxError> {
-    let path_tmp = format!("{}.tmp", path.to_str().unwrap());
+    let mut path_tmp = path.as_ref().to_path_buf();
+    path_tmp.set_extension(format!("{}.tmp", path_tmp.extension().and_then(|s|s.to_str()).unwrap_or_default()));
     let def_option = CsvWriterOption::default();
     let option = match option {
         Some(v) => v,
@@ -166,7 +167,7 @@ pub fn write(
     };
     match write_writer(
         spreadsheet,
-        &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
+        &mut io::BufWriter::new(fs::File::create(path_tmp.as_ref() as &Path)?),
         option,
     ) {
         Ok(_) => {}
@@ -175,6 +176,6 @@ pub fn write(
             return Err(v);
         }
     }
-    fs::rename(path_tmp, path.to_str().unwrap())?;
+    fs::rename(path_tmp, path)?;
     Ok(())
 }
