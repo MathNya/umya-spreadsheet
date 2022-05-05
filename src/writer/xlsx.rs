@@ -214,8 +214,8 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), XlsxError> {
-    let mut path_tmp = path.as_ref().to_path_buf();
-    path_tmp.set_extension(format!("{}.tmp", path_tmp.extension().and_then(|s|s.to_str()).unwrap_or_default()));
+    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
+    let path_tmp = path.as_ref().with_extension(format!("{}{}", extension, "tmp"));
     match write_writer(
         spreadsheet,
         &mut io::BufWriter::new(fs::File::create(&path_tmp)?),

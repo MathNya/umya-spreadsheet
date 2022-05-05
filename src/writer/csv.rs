@@ -158,8 +158,8 @@ pub fn write<P: AsRef<Path>>(
     path: P,
     option: Option<&CsvWriterOption>,
 ) -> Result<(), XlsxError> {
-    let mut path_tmp = path.as_ref().to_path_buf();
-    path_tmp.set_extension(format!("{}.tmp", path_tmp.extension().and_then(|s|s.to_str()).unwrap_or_default()));
+    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
+    let path_tmp = path.as_ref().with_extension(format!("{}{}", extension, "tmp"));
     let def_option = CsvWriterOption::default();
     let option = match option {
         Some(v) => v,
