@@ -121,7 +121,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 /// ```
-pub fn read(path: &Path) -> Result<Spreadsheet, XlsxError> {
+pub fn read<P: AsRef<Path>>(path: P) -> Result<Spreadsheet, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, true)
 }

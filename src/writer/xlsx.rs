@@ -213,8 +213,9 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// let path = std::path::Path::new("./tests/result_files/zzz.xlsx");
 /// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
-pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
-    let path_tmp = format!("{}.tmp", path.to_str().unwrap());
+pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), XlsxError> {
+    let mut path_tmp = path.as_ref().to_path_buf();
+    path_tmp.set_extension(format!("{}.tmp", path_tmp.extension().and_then(|s|s.to_str()).unwrap_or_default()));
     match write_writer(
         spreadsheet,
         &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
@@ -225,6 +226,6 @@ pub fn write(spreadsheet: &Spreadsheet, path: &Path) -> Result<(), XlsxError> {
             return Err(v);
         }
     }
-    fs::rename(path_tmp, path.to_str().unwrap())?;
+    fs::rename(path_tmp, path)?;
     Ok(())
 }
