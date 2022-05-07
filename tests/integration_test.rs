@@ -39,6 +39,17 @@ fn lazy_read_and_wite() {
 }
 
 #[test]
+fn read_and_wite_libre2() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/libre2.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/libre2.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn read_large_string() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");

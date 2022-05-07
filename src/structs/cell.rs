@@ -16,6 +16,7 @@ use structs::SharedStringTable;
 use structs::Style;
 use structs::Stylesheet;
 use writer::driver::*;
+use structs::CellRawValue;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {
@@ -200,8 +201,16 @@ impl Cell {
         self
     }
 
-    pub fn get_data_type(&self) -> &str {
+    pub fn get_data_type(&self) -> &CellRawValue {
         self.cell_value.get_data_type()
+    }
+
+    pub fn get_raw_value(&self) -> &CellRawValue {
+        self.cell_value.get_raw_value()
+    }
+
+    pub(crate) fn get_data_type_crate(&self) -> &str {
+        self.cell_value.get_data_type_crate()
     }
 
     pub fn is_formula(&self) -> bool {
@@ -215,6 +224,7 @@ impl Cell {
     pub(crate) fn get_formula_attributes(&self) -> Vec<(&str, &str)> {
         self.cell_value.get_formula_attributes()
     }
+
     pub(crate) fn set_formula_attributes(&mut self, attributes: Vec<(String, String)>) {
         self.cell_value.set_formula_attributes(attributes);
     }
@@ -376,8 +386,8 @@ impl Cell {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let coordinate = self.coordinate.get_coordinate();
         attributes.push(("r", &coordinate));
-        if self.get_data_type() == "s" || self.get_data_type() == "b" {
-            attributes.push(("t", self.get_data_type()));
+        if self.get_data_type_crate() == "s" || self.get_data_type_crate() == "b" {
+            attributes.push(("t", self.get_data_type_crate()));
         }
         let xf_index_str: String;
         let xf_index = stylesheet.set_style(self.get_style());
@@ -402,7 +412,7 @@ impl Cell {
             write_start_tag(writer, "v", vec![], false);
 
             //todo use typed value
-            match self.get_data_type() {
+            match self.get_data_type_crate() {
                 "s" => {
                     let val_index = shared_string_table
                         .write()

@@ -7,19 +7,27 @@ use structs::CellRawValue;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
-    pub(crate) value: CellRawValue,
+    pub(crate) raw_value: CellRawValue,
     pub(crate) formula: Option<String>,
     pub(crate) formula_attributes: Vec<(String, String)>,
 }
 impl CellValue {
-    pub fn get_data_type(&self) -> &str {
+    pub fn get_data_type(&self) -> &CellRawValue {
+        &self.raw_value
+    }
+
+    pub fn get_raw_value(&self) -> &CellRawValue {
+        &self.raw_value
+    }
+
+    pub(crate) fn get_data_type_crate(&self) -> &str {
         match &self.formula {
             Some(_) => {
                 return "f";
             }
             None => {}
         }
-        &self.value.get_data_type()
+        &self.raw_value.get_data_type()
     }
 
     pub fn set_formula_attributes(&mut self, formula_attributes: Vec<(String, String)>) {
@@ -34,48 +42,48 @@ impl CellValue {
     }
 
     pub fn get_value(&self) -> Cow<'static, str> {
-        self.value.to_string().into()
+        self.raw_value.to_string().into()
     }
 
     pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
-        match &self.value {
+        match &self.raw_value {
             CellRawValue::Lazy(v) => {
-                self.value = Self::guess_typed_data(v);
+                self.raw_value = Self::guess_typed_data(v);
             }
             _ => {}
         }
         self.formula = None;
-        self.value.to_string().into()
+        self.raw_value.to_string().into()
     }
 
     pub(crate) fn get_text(&self) -> Option<Text> {
-        self.value.get_text()
+        self.raw_value.get_text()
     }
 
     pub(crate) fn get_rich_text(&self) -> Option<RichText> {
-        self.value.get_rich_text()
+        self.raw_value.get_rich_text()
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.value = Self::guess_typed_data(&value.into());
+        self.raw_value = Self::guess_typed_data(&value.into());
         self.formula = None;
         self
     }
 
     pub fn set_value_lazy<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.value = CellRawValue::Lazy(value.into());
+        self.raw_value = CellRawValue::Lazy(value.into());
         self.formula = None;
         self
     }
 
     pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.value = CellRawValue::String(value.into());
+        self.raw_value = CellRawValue::String(value.into());
         self.formula = None;
         self
     }
 
     pub fn set_value_from_bool(&mut self, value: bool) -> &mut Self {
-        self.value = CellRawValue::Bool(value);
+        self.raw_value = CellRawValue::Bool(value);
         self.formula = None;
         self
     }
@@ -85,13 +93,13 @@ impl CellValue {
     }
 
     pub fn set_value_from_numberic<V: Into<f64>>(&mut self, value: V) -> &mut Self {
-        self.value = CellRawValue::Numeric(value.into());
+        self.raw_value = CellRawValue::Numeric(value.into());
         self.formula = None;
         self
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
-        self.value = CellRawValue::RichText(value);
+        self.raw_value = CellRawValue::RichText(value);
         self.formula = None;
         self
     }
@@ -216,7 +224,7 @@ impl CellValue {
     }
 
     pub(crate) fn is_empty(&self) -> bool {
-        if &self.value != &CellRawValue::Null {
+        if &self.raw_value != &CellRawValue::Null {
             return false;
         }
         match &self.formula {
