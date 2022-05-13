@@ -41,7 +41,7 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_row("Sheet1", 2, 3);
+    /// book.insert_new_row("Sheet1", &2, &3);
     /// ```
     pub fn insert_new_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
         self.adjustment_insert_coordinate(sheet_name, &0, &0, row_index, num_rows);
@@ -55,7 +55,7 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column("Sheet1", "B", 3);
+    /// book.insert_new_column("Sheet1", "B", &3);
     /// ```
     pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: &u32) {
         let column_upper = column.to_uppercase();
@@ -71,7 +71,7 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.insert_new_column_by_index("Sheet1", 2, 3);
+    /// book.insert_new_column_by_index("Sheet1", &2, &3);
     /// ```
     pub fn insert_new_column_by_index(
         &mut self,
@@ -90,7 +90,7 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_row("Sheet1", 2, 3);
+    /// book.remove_row("Sheet1", &2, &3);
     /// ```
     pub fn remove_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
         self.adjustment_remove_coordinate(sheet_name, &0, &0, row_index, num_rows);
@@ -104,7 +104,7 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column("Sheet1", "B", 3);
+    /// book.remove_column("Sheet1", "B", &3);
     /// ```
     pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: &u32) {
         let column_upper = column.to_uppercase();
@@ -120,7 +120,7 @@ impl Spreadsheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// book.remove_column_by_index("Sheet1", 2, 3);
+    /// book.remove_column_by_index("Sheet1", &2, &3);
     /// ```
     pub fn remove_column_by_index(
         &mut self,
@@ -397,8 +397,8 @@ impl Spreadsheet {
     /// * `index` - sheet index
     /// # Return value
     /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
-        match self.work_sheet_collection.get(index) {
+    pub fn get_sheet(&self, index: &usize) -> Result<&Worksheet, &'static str> {
+        match self.work_sheet_collection.get(index.clone()) {
             Some(v) => {
                 if !v.is_serialized() {
                     panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
@@ -417,7 +417,7 @@ impl Spreadsheet {
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
         match self.find_sheeet_index_by_name(sheet_name) {
             Ok(index) => {
-                return self.get_sheet(index);
+                return self.get_sheet(&index);
             }
             Err(e) => {
                 return Err(e);
@@ -430,11 +430,11 @@ impl Spreadsheet {
     /// * `index` - sheet index
     /// # Return value
     /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, &'static str> {
+    pub fn get_sheet_mut(&mut self, index: &usize) -> Result<&mut Worksheet, &'static str> {
         let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
-        match self.work_sheet_collection.get_mut(index) {
+        match self.work_sheet_collection.get_mut(index.clone()) {
             Some(v) => {
                 raw_to_serialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
                 return Ok(v);
@@ -454,7 +454,7 @@ impl Spreadsheet {
     ) -> Result<&mut Worksheet, &'static str> {
         match self.find_sheeet_index_by_name(sheet_name) {
             Ok(index) => {
-                return self.get_sheet_mut(index);
+                return self.get_sheet_mut(&index);
             }
             Err(e) => {
                 return Err(e);
@@ -472,7 +472,7 @@ impl Spreadsheet {
     /// * `&Worksheet` - Work sheet.
     pub fn get_active_sheet(&self) -> &Worksheet {
         let index = self.get_workbook_view().get_active_tab().clone();
-        self.get_sheet(index as usize).unwrap()
+        self.get_sheet(&(index as usize)).unwrap()
     }
 
     /// Get Active Work Sheet in mutable.
@@ -480,7 +480,7 @@ impl Spreadsheet {
     /// * `&mut Worksheet` - Work sheet.
     pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
         let index = self.get_workbook_view().get_active_tab().clone();
-        self.get_sheet_mut(index as usize).unwrap()
+        self.get_sheet_mut(&(index as usize)).unwrap()
     }
 
     /// Add Work Sheet.

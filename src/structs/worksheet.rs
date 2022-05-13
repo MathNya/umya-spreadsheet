@@ -73,7 +73,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let value = worksheet.get_value("A1");
     /// ```
     pub fn get_value(&self, coordinate: &str) -> String {
@@ -90,7 +90,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let value = worksheet.get_value_by_column_and_row(&1, &1);
     /// ```
     pub fn get_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
@@ -108,7 +108,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let value = worksheet.get_formatted_value("A1");
     /// ```
     pub fn get_formatted_value(&self, coordinate: &str) -> String {
@@ -125,7 +125,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let value = worksheet.get_formatted_value_by_column_and_row(&1, &1);
     /// ```
     pub fn get_formatted_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
@@ -174,7 +174,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let cell = worksheet.get_cell("A1");
     /// ```
     pub fn get_cell(&self, coordinate: &str) -> Option<&Cell> {
@@ -191,7 +191,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let cell = worksheet.get_cell_by_column_and_row(&1, &1);  // get cell from A1.
     /// ```
     pub fn get_cell_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Cell> {
@@ -206,7 +206,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let cell = worksheet.get_cell_mut("A1");
     /// ```
     pub fn get_cell_mut(&mut self, coordinate: &str) -> &mut Cell {
@@ -223,8 +223,8 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
-    /// let cell = worksheet.get_cell_by_column_and_row_mut(1, 1);  // get cell from A1.
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// let cell = worksheet.get_cell_by_column_and_row_mut(&1, &1);  // get cell from A1.
     /// ```
     pub fn get_cell_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Cell {
         self.get_row_dimension_mut(row);
@@ -278,7 +278,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let cell_value = worksheet.get_cell_value("A1");
     /// ```
     pub fn get_cell_value(&self, coordinate: &str) -> &CellValue {
@@ -295,8 +295,8 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
-    /// let cell_value = worksheet.get_style_by_column_and_row(1, 1);  // get cell from A1.
+    /// let worksheet = book.get_sheet(&0).unwrap();
+    /// let cell_value = worksheet.get_style_by_column_and_row(&1, &1);  // get cell from A1.
     /// ```
     pub fn get_cell_value_by_column_and_row(&self, col: &u32, row: &u32) -> &CellValue {
         self.cell_collection.get_cell_value(col, row)
@@ -310,7 +310,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let cell_value = worksheet.get_cell_value_mut("A1");
     /// ```
     pub fn get_cell_value_mut(&mut self, coordinate: &str) -> &mut CellValue {
@@ -327,8 +327,8 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
-    /// let cell_value = worksheet.get_cell_value_by_column_and_row_mut(1, 1);  // get cell_value from A1.
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// let cell_value = worksheet.get_cell_value_by_column_and_row_mut(&1, &1);  // get cell_value from A1.
     /// ```
     pub fn get_cell_value_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut CellValue {
         self.get_row_dimension_mut(&row);
@@ -343,7 +343,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let mut cell_value_List = worksheet.get_cell_value_by_range("A1:C5");
     /// ```
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
@@ -358,7 +358,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let style = worksheet.get_style("A1");
     /// ```
     pub fn get_style(&self, coordinate: &str) -> &Style {
@@ -375,7 +375,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(0).unwrap();
+    /// let worksheet = book.get_sheet(&0).unwrap();
     /// let style = worksheet.get_style_by_column_and_row(&1, &1);  // get cell from A1.
     /// ```
     pub fn get_style_by_column_and_row(&self, col: &u32, row: &u32) -> &Style {
@@ -390,7 +390,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let style = worksheet.get_style_mut("A1");
     /// ```
     pub fn get_style_mut(&mut self, coordinate: &str) -> &mut Style {
@@ -407,7 +407,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let style = worksheet.get_style_by_column_and_row_mut(&1, &1);  // get style from A1.
     /// ```
     pub fn get_style_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Style {
@@ -430,7 +430,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let mut style = umya_spreadsheet::Style::default();
     /// style.get_borders_mut().get_bottom_mut().set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     /// let style = worksheet.set_style_by_column_and_row(&1, &1, style);  // set style to A1.
@@ -450,7 +450,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let mut style = umya_spreadsheet::Style::default();
     /// style.get_borders_mut().get_bottom_mut().set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     /// worksheet.set_style_by_range("A1:A3", style);
@@ -594,7 +594,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// worksheet.add_merge_cells("A1:C5");
     /// ```
     pub fn add_merge_cells<S: Into<String>>(&mut self, range: S) -> &mut Self {
@@ -633,7 +633,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// worksheet.set_auto_filter("A2:K2");
     /// ```
     pub fn set_auto_filter<S: Into<String>>(&mut self, range: S) {
@@ -810,7 +810,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// worksheet.insert_new_row(&2, &3);
     /// ```
     pub fn insert_new_row(&mut self, row_index: &u32, num_rows: &u32) {
@@ -834,7 +834,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// worksheet.insert_new_column("B", &3);
     /// ```
     pub fn insert_new_column(&mut self, column: &str, num_columns: &u32) {
@@ -862,8 +862,8 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
-    /// worksheet.insert_new_column_by_index(2, 3);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// worksheet.insert_new_column_by_index(&2, &3);
     /// ```
     pub fn insert_new_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
         self.adjustment_insert_coordinate(column_index, num_columns, &0, &0);
@@ -892,7 +892,7 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// worksheet.remove_row(&2, &3);
     /// ```
     pub fn remove_row(&mut self, row_index: &u32, num_rows: &u32) {
@@ -917,8 +917,8 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
-    /// worksheet.remove_column("B", 3);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// worksheet.remove_column("B", &3);
     /// ```
     pub fn remove_column(&mut self, column: &str, num_columns: &u32) {
         let column_upper = column.to_uppercase();
@@ -945,8 +945,8 @@ impl Worksheet {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
-    /// worksheet.remove_column_by_index(2, 3);
+    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// worksheet.remove_column_by_index(&2, &3);
     /// ```
     pub fn remove_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
         self.adjustment_remove_coordinate(column_index, num_columns, &0, &0);

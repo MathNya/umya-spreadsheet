@@ -6,6 +6,7 @@ use reader::driver::*;
 use std::borrow::Cow;
 use std::io::Cursor;
 use std::sync::{Arc, RwLock};
+use structs::CellRawValue;
 use structs::CellValue;
 use structs::Coordinate;
 use structs::Hyperlink;
@@ -16,7 +17,6 @@ use structs::SharedStringTable;
 use structs::Style;
 use structs::Stylesheet;
 use writer::driver::*;
-use structs::CellRawValue;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {

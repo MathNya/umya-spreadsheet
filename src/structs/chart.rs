@@ -81,13 +81,13 @@ pub struct Chart {
 ///
 /// Other types will be supported sequentially.
 ///
-/// ## Add Chart
-/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample3.png)
+/// ## Example
+/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/chart/chart_title.png)
 /// ```rust
 /// extern crate umya_spreadsheet;
 /// let mut book = umya_spreadsheet::new_file();
 ///
-/// // add chart
+/// // Add Chart
 /// let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
 /// let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
 /// from_marker.set_coordinate("C1");
@@ -103,40 +103,28 @@ pub struct Chart {
 ///     to_marker,
 ///     area_chart_series_list,
 /// );
-/// book.get_sheet_by_name_mut("Sheet7")
-///     .unwrap()
+/// book.get_sheet_by_name_mut("Sheet1").unwrap()
 ///     .add_chart(chart);
-/// ```
 ///
-/// ## Get Chart by Worksheet.
-/// ```rust
-/// extern crate umya_spreadsheet;
-/// let mut book = umya_spreadsheet::new_file();
-///
-/// let worksheet = book.get_sheet_by_name_mut("Sheet7").unwrap();
+/// // Get Chart by Worksheet.
+/// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
 /// let chart = worksheet.get_chart("C1");
-/// let chart = worksheet.get_chart_by_column_and_row(3, 1);
+/// let chart = worksheet.get_chart_by_column_and_row(&3, &1);
 /// let chart = worksheet.get_chart_mut("C1");
-/// let chart = worksheet.get_chart_by_column_and_row_mut(3, 1);
+/// let chart = worksheet.get_chart_by_column_and_row_mut(&3, &1);
 ///
 /// // Use this if there are multiple Charts in a given cell.
 /// let charts = worksheet.get_charts("C1");
-/// let charts = worksheet.get_charts_by_column_and_row(3, 1);
+/// let charts = worksheet.get_charts_by_column_and_row(&3, &1);
 /// let charts = worksheet.get_charts_mut("C1");
-/// let charts = worksheet.get_charts_by_column_and_row_mut(3, 1);
-/// ```
+/// let charts = worksheet.get_charts_by_column_and_row_mut(&3, &1);
 ///
-/// ## Set Chart Title, Series Title, Horizonal Title and Vertical Title.
-/// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/chart/chart_title.png)
-/// ```rust
-/// extern crate umya_spreadsheet;
-/// let mut book = umya_spreadsheet::new_file();
-///
-/// let mut chart = book.get_sheet_by_name_mut("Sheet7").get_chart_mut("C1").unwrap();
+/// // Set Chart Title, Series Title, Horizonal Title and Vertical Title.
+/// let mut chart = book.get_sheet_by_name_mut("Sheet1").unwrap().get_chart_mut("C1").unwrap();
 /// chart
 ///     .set_series_title(vec!["Line1", "Line2"])
 ///     .set_series_point_title(vec!["Point1", "Point2", "Point3", "Point4"])
-///     .set_name("Chart Title")
+///     .set_title("Chart Title")
 ///     .set_horizontal_title("Horizontal Title")
 ///     .set_vertical_title("Vertical Title");
 /// ```

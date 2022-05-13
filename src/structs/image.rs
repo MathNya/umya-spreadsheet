@@ -18,52 +18,41 @@ pub struct Image {
     two_cell_anchor: Option<TwoCellAnchor>,
     one_cell_anchor: Option<OneCellAnchor>,
 }
-/// ## Add Image
+/// ## Example
 /// ```rust
 /// extern crate umya_spreadsheet;
 /// let mut book = umya_spreadsheet::new_file();
 ///
+/// // Add Image
 /// let mut marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
 /// marker.set_coordinate("B3");
 /// let mut image = umya_spreadsheet::structs::Image::default();
 /// image.new_image("./images/sample1.png", marker);
-/// book.get_sheet_by_name_mut("Sheet1")
-///     .unwrap()
+/// book.get_sheet_by_name_mut("Sheet1").unwrap()
 ///     .add_image(image);
-/// ```
 ///
-/// ## Get Image by Worksheet.
-/// ```rust
-/// extern crate umya_spreadsheet;
-/// let mut book = umya_spreadsheet::new_file();
-///
-/// let worksheet = book.get_sheet_by_name_mut("Sheet7").unwrap();
-/// let image = worksheet.get_image("C1");
-/// let image = worksheet.get_image_by_column_and_row(3, 1);
-/// let image = worksheet.get_image_mut("C1");
-/// let image = worksheet.get_image_by_column_and_row_mut(3, 1);
+/// // Get Image by Worksheet.
+/// let worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+/// let image = worksheet.get_image("B3");
+/// let image = worksheet.get_image_by_column_and_row(&2, &1);
+/// let image = worksheet.get_image_mut("B3");
+/// let image = worksheet.get_image_by_column_and_row_mut(&2, &1);
 ///
 /// // Use this if there are multiple Images in a given cell.
-/// let images = worksheet.get_images("C1");
-/// let images = worksheet.get_images_by_column_and_row(3, 1);
-/// let images = worksheet.get_images_mut("C1");
-/// let images = worksheet.get_images_by_column_and_row_mut(3, 1);
-/// ```
+/// let images = worksheet.get_images("B3");
+/// let images = worksheet.get_images_by_column_and_row(&2, &1);
+/// let images = worksheet.get_images_mut("B3");
+/// let images = worksheet.get_images_by_column_and_row_mut(&2, &1);
 ///
-/// ## Download Image
-/// ```rust
-/// book.get_sheet_by_name("Sheet1")
-/// .unwrap()
+/// // Download Image
+/// book.get_sheet_by_name("Sheet1").unwrap()
 /// .get_image_collection()
 /// .get(0)
 /// .unwrap()
 /// .download_image("./tests/result_files/bbb.png");
-/// ```
 ///
-/// ## Change Image
-/// ```rust
-/// book.get_sheet_by_name_mut("Sheet1")
-/// .unwrap()
+/// // Change Image
+/// book.get_sheet_by_name_mut("Sheet1").unwrap()
 /// .get_image_collection_mut()
 /// .get_mut(0)
 /// .unwrap()
