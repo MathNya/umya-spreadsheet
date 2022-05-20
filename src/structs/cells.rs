@@ -125,7 +125,7 @@ impl Cells {
         let col_num = cell.get_coordinate().get_col_num();
         let row_num = cell.get_coordinate().get_row_num();
         let k = (row_num.to_owned(), col_num.to_owned());
-        self.map.insert(k, cell);
+        self.map.insert_unique_unchecked(k, cell);
     }
 
     pub(crate) fn remove(&mut self, col_num: &u32, row_num: &u32) -> bool {

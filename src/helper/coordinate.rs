@@ -58,34 +58,39 @@ pub fn string_from_column_index(column_index: &u32) -> String {
 
 pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
     lazy_static! {
-        static ref RE: Regex = Regex::new(r"[A-Z]+").unwrap();
+        static ref RE: Regex = Regex::new(r"((\$)?([A-Z]+))?((\$)?([0-9]+))?").unwrap();
     }
-    let caps = RE.captures(coordinate);
-    let col = caps.map(|v| v.and_then(|v| v.get(0)).and_then(|v| Some(v.as_str())));
-    let is_lock_col = match col {
-        Ok(Some(v)) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
-            Some(_) => Some("1"),
-            None => Some("0"),
+    let caps = RE.captures(coordinate).ok().flatten();
+    let cols = caps.map(|v| {
+        (
+                v.get(2).map(|v| v.as_str()),
+                v.get(3).map(|v| v.as_str()),
+                v.get(5).map(|v| v.as_str()),
+                v.get(6).map(|v| v.as_str()),
+        )
+    });
+
+    let col = cols.map(|v| v.1);
+    let is_lock_col = match cols {
+        Some(v) => match v.0.map(|v| v.len()) {
+            Some(1..) => Some("1"),
+            _ => Some("0"),
         },
         _ => None,
     };
 
-    lazy_static! {
-        static ref RE_NUM: Regex = Regex::new(r"[0-9]+").unwrap();
-    }
-    let caps = RE_NUM.captures(coordinate);
-    let row = caps.map(|v| v.and_then(|v| v.get(0)).and_then(|v| Some(v.as_str())));
-    let is_lock_row = match row {
-        Ok(Some(v)) => match coordinate.find(format!("{}{}", "$", v).as_str()) {
-            Some(_) => Some("1"),
-            None => Some("0"),
+    let row = cols.map(|v| v.3);
+    let is_lock_row = match cols {
+        Some(v) => match v.2.map(|v| v.len()) {
+            Some(1..) => Some("1"),
+            _ => Some("0"),
         },
         _ => None,
     };
 
     vec![
-        col.ok().flatten(),
-        row.ok().flatten(),
+        col.flatten(),
+        row.flatten(),
         is_lock_col,
         is_lock_row,
     ]

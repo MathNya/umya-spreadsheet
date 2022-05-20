@@ -186,7 +186,7 @@ impl Row {
                     b"c" => {
                         let mut obj = Cell::default();
                         obj.set_attributes(reader, e, shared_string_table, stylesheet, true);
-                        worksheet.set_cell(obj);
+                        worksheet.set_cell_crate(obj);
                     }
                     _ => (),
                 },
