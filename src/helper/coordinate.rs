@@ -71,21 +71,31 @@ pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
     });
 
     let col = cols.map(|v| v.1);
-    let is_lock_col = match cols {
-        Some(v) => match v.0.map(|v| v.len()) {
-            Some(1..) => Some("1"),
-            _ => Some("0"),
+    let is_lock_col = match col.flatten() {
+        Some(_) => {
+            match cols {
+                Some(v) => match v.0.map(|v| v.len()) {
+                    Some(1..) => Some("1"),
+                    _ => Some("0"),
+                },
+                _ => None,
+            }
         },
-        _ => None,
+        None => None,
     };
 
     let row = cols.map(|v| v.3);
-    let is_lock_row = match cols {
-        Some(v) => match v.2.map(|v| v.len()) {
-            Some(1..) => Some("1"),
-            _ => Some("0"),
+    let is_lock_row  = match row.flatten() {
+        Some(_) => {
+            match cols {
+                Some(v) => match v.2.map(|v| v.len()) {
+                    Some(1..) => Some("1"),
+                    _ => Some("0"),
+                },
+                _ => None,
+            }
         },
-        _ => None,
+        None => None,
     };
 
     vec![
