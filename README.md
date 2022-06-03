@@ -9,6 +9,75 @@
 ## Chatting
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
+## Usage
+### Installation
+Add the following code to Cargo.toml
+```toml
+[dependencies]
+umya-spreadsheet = "0.7"
+```
+Add the following code to main.rs
+```rust
+extern crate umya_spreadsheet;
+```
+### Read file
+```rust
+let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+```
+### Read file (Lazy)
+Delays the loading of the worksheet until it is needed.
+When loading a file with a large amount of data, response improvement can be expected.
+```rust
+let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+```
+### New file
+```rust
+let mut book = umya_spreadsheet::new_file();
+```
+### Wite file
+```rust
+let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
+let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+```
+### Change Value
+```rust
+let mut book = umya_spreadsheet::new_file();
+let _ = book.new_sheet("Sheet2");
+book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+```
+### Change Style
+```rust
+let mut book = umya_spreadsheet::new_file();
+let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+// fill color on red.
+style.set_background_color(umya_spreadsheet::Color::COLOR_RED);
+```
+### New Chart
+```rust
+let mut book = umya_spreadsheet::new_file();
+// Add Chart
+let mut from_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+from_marker.set_coordinate("C1");
+let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
+to_marker.set_coordinate("D11");
+let area_chart_series_list = vec![
+    "Sheet1!$A$1:$A$10",
+    "Sheet1!$B$1:$B$10",
+];
+let mut chart = umya_spreadsheet::structs::Chart::default();
+chart.new_chart(
+    umya_spreadsheet::structs::ChartType::LineChart,
+    from_marker,
+    to_marker,
+    area_chart_series_list,
+);
+book.get_sheet_by_name_mut("Sheet1").unwrap()
+    .add_chart(chart);
+```
+See the next chapter for implementation status and more detailed usage.
+
 ## Support Status
 | Function | detail | example |
 | --- | --- | --- |

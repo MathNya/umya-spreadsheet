@@ -289,6 +289,21 @@ fn lazy_read_and_wite_xlsm() {
 }
 
 #[test]
+fn lazy_read_and_wite_xlsm2() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsm");
+    let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+
+    let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+    let cell = sheet.get_cell_by_column_and_row_mut(&1,&2);
+    cell.set_value("test");
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_lazy2.xlsm");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn lazy_read_and_wite_xlsm_no_edit() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsm");
