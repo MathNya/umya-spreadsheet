@@ -27,6 +27,26 @@ fn read_and_wite() {
 }
 
 #[test]
+fn read_and_wite_with_password() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    read_and_wite_method(&mut book);
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_password.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
+}
+
+#[test]
+fn wite_with_password() {
+    // writer
+    let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let to_path = std::path::Path::new("./tests/result_files/bbb_password2.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
+}
+
+#[test]
 fn lazy_read_and_wite() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
@@ -295,7 +315,7 @@ fn lazy_read_and_wite_xlsm2() {
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 
     let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
-    let cell = sheet.get_cell_by_column_and_row_mut(&1,&2);
+    let cell = sheet.get_cell_by_column_and_row_mut(&1, &2);
     cell.set_value("test");
 
     // writer

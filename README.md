@@ -9,12 +9,25 @@
 ## Chatting
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
+## New feature
+###  ver 0.8.0
+A password can now be set when saving a file.
+```rust
+let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
+let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
+```
+```rust
+let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+let to_path = std::path::Path::new("./tests/result_files/bbb.xlsx");
+let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
+```
+
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "0.7"
+umya-spreadsheet = "0.8"
 ```
 Add the following code to main.rs
 ```rust
@@ -40,6 +53,16 @@ let mut book = umya_spreadsheet::new_file();
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
 let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+```
+### Wite file with password
+```rust
+let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
+let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
+```
+```rust
+let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+let to_path = std::path::Path::new("./tests/result_files/bbb.xlsx");
+let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
 ```
 ### Change Value
 ```rust
@@ -85,6 +108,7 @@ See the next chapter for implementation status and more detailed usage.
 | file lazy_reader | xlsx, xlsm | [**here**](https://docs.rs/umya-spreadsheet/latest/umya_spreadsheet/reader/xlsx/fn.lazy_read.html). |
 | file writer | xlsx, xlsm | [**here**](https://docs.rs/umya-spreadsheet/latest/umya_spreadsheet/writer/xlsx/fn.write.html). |
 |  | csv | [**here**](https://docs.rs/umya-spreadsheet/latest/umya_spreadsheet/writer/csv/fn.write.html). |
+| file writer with password | xlsx, xlsm | [**here**](https://docs.rs/umya-spreadsheet/latest/umya_spreadsheet/writer/xlsx/fn.write.html). |
 | worksheet | read, new, copy | [**here**](https://docs.rs/umya-spreadsheet/latest/umya_spreadsheet/). |
 | cell value | read, edit, formated value. | [**here**](https://docs.rs/umya-spreadsheet/latest/umya_spreadsheet/). |
 | cell style | read, edit | [**here**](https://docs.rs/umya-spreadsheet/latest/umya_spreadsheet/structs/struct.Style.html).  |

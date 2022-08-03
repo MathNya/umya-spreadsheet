@@ -117,14 +117,19 @@
 //! ```
 
 extern crate chrono;
-extern crate image;
-extern crate md5;
-// extern crate onig;
 extern crate fancy_regex;
 extern crate hashbrown;
+extern crate image;
+extern crate md5;
 extern crate quick_xml;
 extern crate thousands;
 extern crate zip;
+
+extern crate base64;
+extern crate byteorder;
+extern crate cfb;
+extern crate crypto;
+extern crate getrandom;
 
 #[macro_use]
 extern crate lazy_static;

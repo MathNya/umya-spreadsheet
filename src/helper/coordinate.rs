@@ -63,47 +63,38 @@ pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
     let caps = RE.captures(coordinate).ok().flatten();
     let cols = caps.map(|v| {
         (
-                v.get(2).map(|v| v.as_str()),
-                v.get(3).map(|v| v.as_str()),
-                v.get(5).map(|v| v.as_str()),
-                v.get(6).map(|v| v.as_str()),
+            v.get(2).map(|v| v.as_str()),
+            v.get(3).map(|v| v.as_str()),
+            v.get(5).map(|v| v.as_str()),
+            v.get(6).map(|v| v.as_str()),
         )
     });
 
     let col = cols.map(|v| v.1);
     let is_lock_col = match col.flatten() {
-        Some(_) => {
-            match cols {
-                Some(v) => match v.0.map(|v| v.len()) {
-                    Some(1..) => Some("1"),
-                    _ => Some("0"),
-                },
-                _ => None,
-            }
+        Some(_) => match cols {
+            Some(v) => match v.0.map(|v| v.len()) {
+                Some(1..) => Some("1"),
+                _ => Some("0"),
+            },
+            _ => None,
         },
         None => None,
     };
 
     let row = cols.map(|v| v.3);
-    let is_lock_row  = match row.flatten() {
-        Some(_) => {
-            match cols {
-                Some(v) => match v.2.map(|v| v.len()) {
-                    Some(1..) => Some("1"),
-                    _ => Some("0"),
-                },
-                _ => None,
-            }
+    let is_lock_row = match row.flatten() {
+        Some(_) => match cols {
+            Some(v) => match v.2.map(|v| v.len()) {
+                Some(1..) => Some("1"),
+                _ => Some("0"),
+            },
+            _ => None,
         },
         None => None,
     };
 
-    vec![
-        col.flatten(),
-        row.flatten(),
-        is_lock_col,
-        is_lock_row,
-    ]
+    vec![col.flatten(), row.flatten(), is_lock_col, is_lock_row]
 }
 
 pub fn coordinate_from_index(col: &u32, row: &u32) -> String {

@@ -1,9 +1,11 @@
+use super::driver;
+use helper::crypt::*;
 use std::fs;
+use std::fs::File;
 use std::io;
+use std::io::Read;
 use std::path::Path;
 use std::string::FromUtf8Error;
-
-use super::driver;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -61,17 +63,8 @@ impl From<FromUtf8Error> for XlsxError {
     }
 }
 
-/// write spreadsheet file to arbitrary writer.
-/// # Arguments
-/// * `spreadsheet` - Spreadsheet structs object.
-/// * `writer` - writer to write to.
-/// # Return value
-/// * `Result` - OK is void. Err is error message.
-pub fn write_writer<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
-    writer: W,
-) -> Result<(), XlsxError> {
-    let arv = zip::ZipWriter::new(writer);
+fn make_buffer(spreadsheet: &Spreadsheet) -> Result<std::vec::Vec<u8>, XlsxError> {
+    let arv = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
     let mut writer_manager = WriterManager::new(arv);
 
     // Add docProps App
@@ -197,7 +190,23 @@ pub fn write_writer<W: io::Seek + io::Write>(
     // Add Content_Types
     content_types::write(spreadsheet, &mut writer_manager)?;
 
-    writer_manager.get_arv_mut().finish()?;
+    let result = writer_manager.get_arv_mut().finish()?;
+    Ok(result.into_inner())
+}
+
+/// write spreadsheet file to arbitrary writer.
+/// # Arguments
+/// * `spreadsheet` - Spreadsheet structs object.
+/// * `writer` - writer to write to.
+/// # Return value
+/// * `Result` - OK is void. Err is error message.
+pub fn write_writer<W: io::Seek + io::Write>(
+    spreadsheet: &Spreadsheet,
+    writer: W,
+) -> Result<(), XlsxError> {
+    let buffer = make_buffer(spreadsheet)?;
+    let mut writer = writer;
+    writer.write_all(&buffer)?;
     Ok(())
 }
 
@@ -229,5 +238,70 @@ pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), X
         }
     }
     fs::rename(path_tmp, path)?;
+    Ok(())
+}
+
+/// write spreadsheet file with password.
+/// # Arguments
+/// * `spreadsheet` - Spreadsheet structs object.
+/// * `path` - file path to save.
+/// * `password` - password.
+/// # Return value
+/// * `Result` - OK is void. Err is error message.
+/// # Examples
+/// ```
+/// let mut book = umya_spreadsheet::new_file();
+/// let path = std::path::Path::new("./tests/result_files/zzz_password.xlsx");
+/// let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
+/// ```
+pub fn write_with_password<P: AsRef<Path>>(
+    spreadsheet: &Spreadsheet,
+    path: P,
+    password: &str,
+) -> Result<(), XlsxError> {
+    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
+    let path_tmp = path
+        .as_ref()
+        .with_extension(format!("{}{}", extension, "tmp"));
+    let buffer = match make_buffer(spreadsheet) {
+        Ok(v) => v,
+        Err(v) => {
+            fs::remove_file(path_tmp)?;
+            return Err(v);
+        }
+    };
+
+    // set password
+    encrypt(&path_tmp, &buffer, password);
+
+    fs::rename(path_tmp, path)?;
+    Ok(())
+}
+
+/// write spreadsheet file with password.
+/// # Arguments
+/// * `from_path` - file path from readfile.
+/// * `to_path` - file path to save.
+/// * `password` - password.
+/// # Return value
+/// * `Result` - OK is void. Err is error message.
+/// # Examples
+/// ```
+/// let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+/// let to_path = std::path::Path::new("./tests/result_files/zzz_password2.xlsx");
+/// let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
+/// ```
+pub fn set_password<P: AsRef<Path>>(
+    from_path: P,
+    to_path: P,
+    password: &str,
+) -> Result<(), XlsxError> {
+    let mut file = File::open(from_path).unwrap();
+    let mut buffer = Vec::new();
+    let _ = file.read_to_end(&mut buffer).unwrap();
+
+    // set password
+    encrypt(&to_path, &buffer, password);
+
     Ok(())
 }

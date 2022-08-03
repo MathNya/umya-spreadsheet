@@ -1,5 +1,6 @@
 pub mod address;
 pub mod coordinate;
+pub mod crypt;
 pub mod date;
 pub mod formula;
 pub mod number_format;
