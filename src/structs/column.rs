@@ -9,6 +9,21 @@ use quick_xml::Reader;
 use reader::driver::*;
 use structs::Cells;
 
+/// # Examples
+/// ## set auto width
+/// ```rust
+/// use umya_spreadsheet::*;
+/// let mut book = new_file();
+/// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+/// worksheet.get_column_dimension_mut("A").set_auto_width(true);
+/// ```
+/// ## set manual width
+/// ```rust
+/// use umya_spreadsheet::*;
+/// let mut book = new_file();
+/// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+/// worksheet.get_column_dimension_mut("A").set_width(60f64);
+/// ```
 #[derive(Clone, Debug)]
 pub struct Column {
     col_num: UInt32Value,

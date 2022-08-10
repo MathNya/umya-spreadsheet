@@ -60,11 +60,6 @@ use structs::drawing::Run;
 use structs::drawing::RunProperties;
 use structs::ChartType;
 
-#[derive(Clone, Debug)]
-pub struct Chart {
-    two_cell_anchor: TwoCellAnchor,
-    default_language: String,
-}
 /// ## Supported chart types
 /// * AreaChart
 /// * Area3DChart
@@ -128,6 +123,12 @@ pub struct Chart {
 ///     .set_horizontal_title("Horizontal Title")
 ///     .set_vertical_title("Vertical Title");
 /// ```
+#[derive(Clone, Debug)]
+pub struct Chart {
+    two_cell_anchor: TwoCellAnchor,
+    default_language: String,
+}
+
 impl Default for Chart {
     fn default() -> Self {
         Self {

@@ -7,15 +7,6 @@ use structs::NumberingFormat;
 use structs::PatternValues;
 use structs::UInt32Value;
 
-#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
-pub struct Style {
-    font: Option<Font>,
-    fill: Option<Fill>,
-    borders: Option<Borders>,
-    alignment: Option<Alignment>,
-    numbering_format: Option<NumberingFormat>,
-    format_id: UInt32Value,
-}
 /// # Examples
 /// ## add border
 /// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/style/style_border.png)
@@ -57,6 +48,15 @@ pub struct Style {
 /// // font color on red.
 /// style.get_font_mut().get_color_mut().set_argb(Color::COLOR_RED);
 /// ```
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
+pub struct Style {
+    font: Option<Font>,
+    fill: Option<Fill>,
+    borders: Option<Borders>,
+    alignment: Option<Alignment>,
+    numbering_format: Option<NumberingFormat>,
+    format_id: UInt32Value,
+}
 impl Style {
     pub fn get_font(&self) -> &Option<Font> {
         &self.font
