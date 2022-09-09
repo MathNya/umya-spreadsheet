@@ -191,6 +191,11 @@ impl Cell {
         self
     }
 
+    pub fn set_error(&mut self) -> &mut Self {
+        self.cell_value.set_error();
+        self
+    }
+
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_formula(value);
         self
@@ -340,6 +345,22 @@ impl Cell {
                         self.set_formula_attributes(attrs);
                     }
                 }
+                Ok(Event::Empty(ref s)) => {
+                    if s.name() == b"f" {
+                        let mut attrs = vec![];
+                        s.attributes().for_each(|a| {
+                            if let Ok(attribute) = a {
+                                if let (Ok(key), Ok(value)) = (
+                                    std::str::from_utf8(attribute.key),
+                                    std::str::from_utf8(attribute.value.as_ref()),
+                                ) {
+                                    attrs.push((key.to_owned(), value.to_owned()));
+                                }
+                            }
+                        });
+                        self.set_formula_attributes(attrs);
+                    }
+                }
                 Ok(Event::End(ref e)) => match e.name() {
                     b"f" => {
                         self.set_formula(string_value.clone());
@@ -355,6 +376,8 @@ impl Cell {
                         } else if type_value == "b" {
                             let prm = &string_value == "1";
                             let _ = self.set_value_from_bool(prm);
+                        } else if type_value == "e" {
+                            let _ = self.set_error();
                         } else if type_value == "" || type_value == "n" {
                             let _ = self.set_value(string_value.clone());
                         };
@@ -405,29 +428,37 @@ impl Cell {
                     write_text_node(writer, v);
                     write_end_tag(writer, "f");
                 }
-                None => {}
+                None => {
+                    if self.get_formula_attributes().len() > 0 {
+                        write_start_tag(writer, "f", self.get_formula_attributes(), true);
+                    }
+                }
             }
 
             // v
-            write_start_tag(writer, "v", vec![], false);
+            if self.cell_value.is_value_empty() == false {
+                write_start_tag(writer, "v", vec![], false);
 
-            //todo use typed value
-            match self.get_data_type_crate() {
-                "s" => {
-                    let val_index = shared_string_table
-                        .write()
-                        .unwrap()
-                        .set_cell(self.get_cell_value());
-                    write_text_node(writer, val_index.to_string());
+                //todo use typed value
+                match self.get_data_type_crate() {
+                    "s" => {
+                        let val_index = shared_string_table
+                            .write()
+                            .unwrap()
+                            .set_cell(self.get_cell_value());
+                        write_text_node(writer, val_index.to_string());
+                    }
+                    "b" => {
+                        let upper_value = self.get_value().to_uppercase();
+                        let prm = if upper_value == "TRUE" { "1" } else { "0" };
+                        write_text_node(writer, prm);
+                    }
+                    _ => write_text_node(writer, self.get_value()),
                 }
-                "b" => {
-                    let upper_value = self.get_value().to_uppercase();
-                    let prm = if upper_value == "TRUE" { "1" } else { "0" };
-                    write_text_node(writer, prm);
-                }
-                _ => write_text_node(writer, self.get_value()),
+                write_end_tag(writer, "v");
+            } else {
+                write_start_tag(writer, "v", vec![], true);
             }
-            write_end_tag(writer, "v");
 
             write_end_tag(writer, "c");
         } else {

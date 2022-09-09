@@ -66,25 +66,21 @@ impl CellValue {
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
-        self.formula = None;
         self
     }
 
     pub fn set_value_lazy<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::Lazy(value.into());
-        self.formula = None;
         self
     }
 
     pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into());
-        self.formula = None;
         self
     }
 
     pub fn set_value_from_bool(&mut self, value: bool) -> &mut Self {
         self.raw_value = CellRawValue::Bool(value);
-        self.formula = None;
         self
     }
 
@@ -94,13 +90,11 @@ impl CellValue {
 
     pub fn set_value_from_numberic<V: Into<f64>>(&mut self, value: V) -> &mut Self {
         self.raw_value = CellRawValue::Numeric(value.into());
-        self.formula = None;
         self
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.raw_value = CellRawValue::RichText(value);
-        self.formula = None;
         self
     }
 
@@ -110,6 +104,11 @@ impl CellValue {
 
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.formula = Some(value.into());
+        self
+    }
+
+    pub fn set_error(&mut self) -> &mut Self {
+        self.set_value("#VALUE!");
         self
     }
 
@@ -220,18 +219,27 @@ impl CellValue {
             return CellRawValue::Bool(false);
         }
 
+        if uppercase_value == "#VALUE!" {
+            return CellRawValue::Error;
+        }
+
         CellRawValue::String(value.into())
     }
 
     pub(crate) fn is_empty(&self) -> bool {
-        if &self.raw_value != &CellRawValue::Null {
-            return false;
-        }
-        match &self.formula {
-            Some(_) => return false,
-            None => {}
-        }
-        true
+        self.is_value_empty() && self.is_formula_empty() && self.is_formula_attributes_empty()
+    }
+
+    pub(crate) fn is_value_empty(&self) -> bool {
+        self.get_value() == ""
+    }
+
+    pub(crate) fn is_formula_empty(&self) -> bool {
+        !self.is_formula()
+    }
+
+    pub(crate) fn is_formula_attributes_empty(&self) -> bool {
+        self.get_formula_attributes().len() == 0
     }
 
     pub(crate) fn adjustment_insert_formula_coordinate(
