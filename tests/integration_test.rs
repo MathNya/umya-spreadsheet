@@ -260,6 +260,13 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_style_mut()
         .get_font_mut()
         .set_color(font_color);
+
+    let _ = book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .get_cell_mut("A1")
+        .get_style_mut()
+        .get_font_mut()
+        .set_name("Arial");
 }
 
 #[test]

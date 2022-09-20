@@ -91,6 +91,11 @@ impl Cell {
         self
     }
 
+    pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value_crate(value);
+        self
+    }
+
     pub fn set_value_lazy<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value_lazy(value);
         self
@@ -379,7 +384,7 @@ impl Cell {
                         } else if type_value == "e" {
                             let _ = self.set_error();
                         } else if type_value == "" || type_value == "n" {
-                            let _ = self.set_value(string_value.clone());
+                            let _ = self.set_value_crate(string_value.clone());
                         };
                     }
                     b"c" => return,
@@ -451,6 +456,10 @@ impl Cell {
                     "b" => {
                         let upper_value = self.get_value().to_uppercase();
                         let prm = if upper_value == "TRUE" { "1" } else { "0" };
+                        write_text_node(writer, prm);
+                    }
+                    "e" => {
+                        let prm = "#VALUE!";
                         write_text_node(writer, prm);
                     }
                     _ => write_text_node(writer, self.get_value()),

@@ -83,6 +83,13 @@ impl Font {
 
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.font_name.set_val(value);
+        self.set_scheme("none");
+        self
+    }
+
+    pub fn set_name_with_scheme<S: Into<String>>(&mut self, name: S, scheme: S) -> &mut Self {
+        self.set_name(name);
+        self.set_scheme(scheme);
         self
     }
 
@@ -295,10 +302,9 @@ impl Font {
     pub(crate) fn get_defalut_value() -> Self {
         let mut def = Self::default();
         def.set_size(11.0);
-        def.set_name("Calibri");
+        def.set_name_with_scheme("Calibri", "minor");
         def.get_color_mut().set_theme_index(1);
         def.set_family(2);
-        def.set_scheme("minor");
         def
     }
 
