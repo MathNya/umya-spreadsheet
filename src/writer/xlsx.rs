@@ -1,5 +1,7 @@
 use super::driver;
 use helper::crypt::*;
+use std::error::Error;
+use std::fmt;
 use std::fs;
 use std::fs::File;
 use std::io;
@@ -62,6 +64,20 @@ impl From<FromUtf8Error> for XlsxError {
         XlsxError::Uft8(err)
     }
 }
+
+impl fmt::Display for XlsxError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use self::XlsxError::*;
+        match self {
+            Io(i) => write!(f, "IoError: {}", i),
+            Xml(s) => write!(f, "XmlError: {}", s),
+            Zip(s) => write!(f, "ZipError: {}", s),
+            Uft8(s) => write!(f, "Uft8Error: {}", s),
+        }
+    }
+}
+
+impl Error for XlsxError {}
 
 fn make_buffer(spreadsheet: &Spreadsheet) -> Result<std::vec::Vec<u8>, XlsxError> {
     let arv = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
