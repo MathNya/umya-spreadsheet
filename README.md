@@ -51,12 +51,12 @@ let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 ```rust
 let mut book = umya_spreadsheet::new_file();
 ```
-### Wite file
+### Write file
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
 let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 ```
-### Wite file with password
+### Write file with password
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
 let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
