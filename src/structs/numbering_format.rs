@@ -73,16 +73,19 @@ impl NumberingFormat {
     }
 
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
-        self.format_code = FILL_BUILT_IN_FORMAT_CODES
+        let format_code_result = FILL_BUILT_IN_FORMAT_CODES
             .iter()
             .find_map(|(key, val)| {
                 if key == &value {
                     Some(val.clone())
                 } else {
-                    panic!("Not Found NumberFormatId.")
+                    None
                 }
-            })
-            .unwrap();
+            });
+        if format_code_result.is_none() {
+            panic!("Not Found NumberFormatId.");
+        }
+        self.format_code = format_code_result.unwrap();
         self.number_format_id = value;
         self.is_build_in = true;
         self
@@ -235,4 +238,20 @@ lazy_static! {
 
         map
     };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn set_number_format_id() {
+        let mut obj = NumberingFormat::default();
+
+        obj.set_number_format_id(0);
+        assert_eq!(obj.get_format_code(), "General");
+
+        obj.set_number_format_id(1);
+        assert_eq!(obj.get_format_code(), "0");
+    }
 }
