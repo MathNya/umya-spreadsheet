@@ -1,6 +1,6 @@
 [package]
 name = "umya-spreadsheet"
-version = "0.8.4"
+version = "0.8.5"
 authors = ["MathNya <umya.net.info@gmail.com>"]
 repository = "https://github.com/MathNya/umya-spreadsheet"
 keywords = ["excel", "spreadsheet", "xlsx", "reader", "writer"]
@@ -12,13 +12,13 @@ description = "umya-spreadsheet is a library written in pure Rust and read and w
 
 [dependencies]
 quick-xml = { version = "0.22", features = [ "serialize" ] }
-zip = {version = "0.6.2", default-features = false, features = ["deflate"]}
+zip = {version = "0.6.3", default-features = false, features = ["deflate"]}
 md-5 = "0.10.1"
 lazy_static = "1.4.0"
 thousands = "0.2.0"
 chrono = "0.4.19"
 encoding_rs = "0.8.30"
-image = "0.24.1"
+image = "0.24.5"
 hashbrown = "0.12.0"
 ahash = "0.7.6"
 fancy-regex = "0.10.0"
