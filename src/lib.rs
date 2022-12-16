@@ -125,11 +125,14 @@ extern crate quick_xml;
 extern crate thousands;
 extern crate zip;
 
+extern crate aes;
 extern crate base64;
 extern crate byteorder;
+extern crate cbc;
 extern crate cfb;
-extern crate crypto;
 extern crate getrandom;
+extern crate hmac;
+extern crate sha2;
 
 #[macro_use]
 extern crate lazy_static;

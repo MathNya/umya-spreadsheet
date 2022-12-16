@@ -1,17 +1,17 @@
+use aes::cipher::{block_padding::NoPadding, BlockEncryptMut, KeyIvInit};
 use base64::encode;
 use byteorder::{ByteOrder, LittleEndian};
 use cfb;
-use crypto::buffer::{BufferResult, ReadBuffer, WriteBuffer};
-use crypto::digest::Digest;
-use crypto::hmac::Hmac;
-use crypto::mac::Mac;
-use crypto::{aes, blockmodes, buffer, sha2};
+use hmac::{Hmac, Mac};
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
+use sha2::{Digest, Sha512};
 use std::io;
 use std::io::Write;
 use std::path::Path;
 use writer::driver::*;
+
+type Aes256CbcEnc = cbc::Encryptor<aes::Aes256>;
 
 const ENCRYPTION_INFO_PREFIX: &[u8] = &[0x04, 0x00, 0x04, 0x00, 0x40, 0x00, 0x00, 0x00]; // First 4 bytes are the version number, second 4 bytes are reserved.
 const PACKAGE_ENCRYPTION_CHUNK_SIZE: usize = 4096;
@@ -292,50 +292,35 @@ fn crypt(
     iv: &Vec<u8>,
     input: &Vec<u8>,
 ) -> Result<Vec<u8>, String> {
-    let key_size = match key.len() * 8 {
-        256 => aes::KeySize::KeySize256,
+    let mut buf = [0u8; 4096];
+    let pt_len = input.len();
+    buf[..pt_len].copy_from_slice(input);
+    let ct = match key.len() * 8 {
+        256 => Aes256CbcEnc::new_from_slices(key, iv)
+            .unwrap()
+            .encrypt_padded_mut::<NoPadding>(&mut buf, pt_len)
+            .unwrap(),
         _ => {
             return Err(format!("key size not supported!"));
         }
     };
-    let mut encryptor = aes::cbc_encryptor(key_size, key, iv, blockmodes::NoPadding);
-    let mut final_result = Vec::<u8>::new();
-    let mut read_buffer = buffer::RefReadBuffer::new(input);
-    let mut buffer = [0; 4096];
-    let mut write_buffer = buffer::RefWriteBuffer::new(&mut buffer);
-    loop {
-        let result = encryptor
-            .encrypt(&mut read_buffer, &mut write_buffer, true)
-            .unwrap();
-        final_result.extend(
-            write_buffer
-                .take_read_buffer()
-                .take_remaining()
-                .iter()
-                .map(|&i| i),
-        );
-
-        match result {
-            BufferResult::BufferUnderflow => break,
-            BufferResult::BufferOverflow => {}
-        }
-    }
-    return Ok(final_result);
+    return Ok(ct.to_vec());
 }
 
 fn hmac(algorithm: &str, key: &Vec<u8>, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
-    let digest = match algorithm {
-        "SHA512" => sha2::Sha512::new(),
+    let mut mac = match algorithm {
+        "SHA512" => {
+            type HmacSha512 = Hmac<Sha512>;
+            HmacSha512::new_from_slice(&key).unwrap()
+        }
         _ => {
             return Err(format!("algorithm {} not supported!", algorithm));
         }
     };
+    mac.update(&buffer_concat(buffers));
 
-    let mut h = Hmac::new(digest, &key);
-    h.input(&buffer_concat(buffers));
-
-    let result = h.result();
-    return Ok(result.code().to_vec());
+    let result = mac.finalize();
+    return Ok(result.into_bytes()[..].to_vec());
 }
 
 fn convert_password_to_key(
@@ -383,18 +368,13 @@ fn convert_password_to_key(
 // Calculate a hash of the concatenated buffers with the given algorithm.
 fn hash(algorithm: &str, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
     let mut digest = match algorithm {
-        "SHA512" => sha2::Sha512::new(),
+        "SHA512" => Sha512::new(),
         _ => {
             return Err(format!("algorithm {} not supported!", algorithm));
         }
     };
-
-    digest.input(&buffer_concat(buffers)[..]);
-
-    let mut buf: Vec<u8> = Vec::with_capacity(digest.output_bytes());
-    buf.resize(digest.output_bytes(), 0);
-    digest.result(&mut buf);
-    return Ok(buf.to_vec());
+    digest.update(&buffer_concat(buffers)[..]);
+    return Ok(digest.finalize().to_vec());
 }
 
 fn gen_random_16() -> Vec<u8> {

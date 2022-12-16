@@ -16,18 +16,22 @@ zip = {version = "0.6.3", default-features = false, features = ["deflate"]}
 md-5 = "0.10.1"
 lazy_static = "1.4.0"
 thousands = "0.2.0"
-chrono = "0.4.19"
+chrono = {version = "0.4.23", default-features = false, features = ["clock"]}
 encoding_rs = "0.8.30"
 image = "0.24.5"
 hashbrown = "0.12.0"
 ahash = "0.7.6"
+regex = "1.7.0"
 fancy-regex = "0.10.0"
 
 base64 = "0.13.0"
-rust-crypto = "^0.2"
 getrandom = "0.2"
 byteorder = "1.4.3"
 cfb = "0.7.3"
+hmac = "0.12.1"
+sha2 = "0.10.6"
+aes = "0.8.2"
+cbc = "0.1.2"
 
 [lib]
 doctest = false

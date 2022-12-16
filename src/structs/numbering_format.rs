@@ -73,15 +73,13 @@ impl NumberingFormat {
     }
 
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
-        let format_code_result = FILL_BUILT_IN_FORMAT_CODES
-            .iter()
-            .find_map(|(key, val)| {
-                if key == &value {
-                    Some(val.clone())
-                } else {
-                    None
-                }
-            });
+        let format_code_result = FILL_BUILT_IN_FORMAT_CODES.iter().find_map(|(key, val)| {
+            if key == &value {
+                Some(val.clone())
+            } else {
+                None
+            }
+        });
         if format_code_result.is_none() {
             panic!("Not Found NumberFormatId.");
         }
