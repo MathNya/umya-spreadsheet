@@ -19,6 +19,12 @@ pub(crate) fn read(
     let mut value: String = String::from("");
     loop {
         match reader.read_event(&mut buf) {
+            Ok(Event::Empty(ref e)) => match e.name() {
+                b"author" => {
+                    authors.push(String::from(""));
+                }
+                _ => (),
+            },
             Ok(Event::Start(ref e)) => match e.name() {
                 b"comment" => {
                     let mut obj = Comment::default();
