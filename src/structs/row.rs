@@ -40,6 +40,7 @@ impl Row {
 
     pub fn set_height(&mut self, value: f64) -> &mut Self {
         self.height.set_value(value);
+        self.custom_height.set_value(true);
         self
     }
 

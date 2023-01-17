@@ -268,6 +268,9 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_style_mut()
         .get_font_mut()
         .set_name("Arial");
+
+        book.get_sheet_by_name_mut("Sheet1").unwrap().get_row_dimension_mut(&3).set_height(46.0);
+    
 }
 
 #[test]

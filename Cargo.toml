@@ -1,6 +1,6 @@
 [package]
 name = "umya-spreadsheet"
-version = "0.8.6"
+version = "0.8.7"
 authors = ["MathNya <umya.net.info@gmail.com>"]
 repository = "https://github.com/MathNya/umya-spreadsheet"
 keywords = ["excel", "spreadsheet", "xlsx", "reader", "writer"]
