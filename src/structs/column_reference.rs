@@ -1,10 +1,20 @@
 use helper::coordinate::*;
 
-#[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct ColumnReference {
     num: u32,
     is_lock: bool,
 }
+
+impl Default for ColumnReference {
+    fn default() -> Self {
+        Self {
+            num: 1,
+            is_lock: false,
+        }
+    }
+}
+
 impl ColumnReference {
     pub fn get_num(&self) -> &u32 {
         &self.num
