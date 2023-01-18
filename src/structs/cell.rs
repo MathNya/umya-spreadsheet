@@ -387,6 +387,11 @@ impl Cell {
                             let _ = self.set_value_crate(string_value.clone());
                         };
                     }
+                    b"is" => {
+                        if type_value == "inlineStr" {
+                            self.set_value_crate(string_value.clone());
+                        }
+                    }
                     b"c" => return,
                     _ => (),
                 },
