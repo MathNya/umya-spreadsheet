@@ -1031,9 +1031,10 @@ fn read_and_wite_theme() {
 fn openpyxl() {
     let path = std::path::Path::new("./tests/test_files/openpyxl.xlsx");
     let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let sheet = book.get_active_sheet();
 
-    let a1_value = book.get_active_sheet().get_cell("A1").unwrap().get_value();
-    assert_eq!(a1_value, "TEST");
+    assert_eq!(sheet.get_cell("A1").unwrap().get_value(), "TEST");
+    assert_eq!(sheet.get_cell("A2").unwrap().get_value(), " TEST ");
 
     let path = std::path::Path::new("./tests/result_files/openpyxl.xlsx");
     umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
