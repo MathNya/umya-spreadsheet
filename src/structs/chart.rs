@@ -122,6 +122,11 @@ use structs::ChartType;
 ///     .set_title("Chart Title")
 ///     .set_horizontal_title("Horizontal Title")
 ///     .set_vertical_title("Vertical Title");
+/// 
+/// // line chart is a stack line chart by default.
+/// // To change it to an actual line chart, configure as follows
+/// chart
+///     .set_grouping(umya_spreadsheet::drawing::charts::GroupingValues::Standard);
 /// ```
 #[derive(Clone, Debug)]
 pub struct Chart {
@@ -141,6 +146,11 @@ impl Chart {
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
         self.get_chart_space_mut().get_chart_mut().set_title(title);
+        self
+    }
+
+    pub fn set_grouping(&mut self, value: GroupingValues) -> &mut Self {
+        self.get_plot_area_mut().set_grouping(value);
         self
     }
 

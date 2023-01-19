@@ -19,6 +19,7 @@ use super::ScatterChart;
 use super::SeriesAxis;
 use super::ShapeProperties;
 use super::ValueAxis;
+use super::GroupingValues;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -295,6 +296,52 @@ impl PlotArea {
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
         self.shape_properties = Some(value);
         self
+    }
+
+    pub fn set_grouping(&mut self, value: GroupingValues) -> &mut Self {
+        match &mut self.line_chart {
+            Some(chart) => {
+                chart.get_grouping_mut().set_val(value);
+                return self;
+            }
+            None => {}
+        }
+        match &mut self.line_3d_chart {
+            Some(chart) => {
+                chart.get_grouping_mut().set_val(value);
+                return self;
+            }
+            None => {}
+        }
+        match &mut self.bar_chart {
+            Some(chart) => {
+                chart.get_grouping_mut().set_val(value);
+                return self;
+            }
+            None => {}
+        }
+        match &mut self.bar_3d_chart {
+            Some(chart) => {
+                chart.get_grouping_mut().set_val(value);
+                return self;
+            }
+            None => {}
+        }
+        match &mut self.area_chart {
+            Some(chart) => {
+                chart.get_grouping_mut().set_val(value);
+                return self;
+            }
+            None => {}
+        }
+        match &mut self.area_3d_chart {
+            Some(chart) => {
+                chart.get_grouping_mut().set_val(value);
+                return self;
+            }
+            None => {}
+        }
+        panic! {"Non-Grouping."};
     }
 
     pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {

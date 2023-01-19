@@ -392,7 +392,8 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
-        .set_vertical_title("Vertical Title");
+        .set_vertical_title("Vertical Title")
+        .set_grouping(umya_spreadsheet::drawing::charts::GroupingValues::Standard);
     book.get_sheet_by_name_mut("Sheet7")
         .unwrap()
         .add_chart(chart);
