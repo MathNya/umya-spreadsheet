@@ -1,7 +1,6 @@
 // t
 use md5::Digest;
 // use onig::*;
-use fancy_regex::Regex;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -52,10 +51,9 @@ impl Text {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // t
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        lazy_static! {
-            static ref RE: Regex = Regex::new(r#"^(\s|　)"#).unwrap();
-        }
-        if RE.find(&self.value).ok().flatten().is_some() {
+        if self.value.starts_with(|c: char| c.is_whitespace())
+            || self.value.ends_with(|c: char| c.is_whitespace())
+        {
             attributes.push(("xml:space", "preserve"));
         }
         write_start_tag(writer, "t", attributes, false);
