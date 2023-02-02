@@ -334,8 +334,8 @@ impl Cell {
         loop {
             match reader.read_event(&mut buf) {
                 Ok(Event::Text(e)) => string_value = e.unescape_and_decode(reader).unwrap(),
-                Ok(Event::Start(ref s)) => {
-                    if s.name() == b"f" {
+                Ok(Event::Start(ref s)) => match s.name() {
+                    b"f" => {
                         let mut attrs = vec![];
                         s.attributes().for_each(|a| {
                             if let Ok(attribute) = a {
@@ -349,7 +349,17 @@ impl Cell {
                         });
                         self.set_formula_attributes(attrs);
                     }
-                }
+                    b"t" => {
+                        if let Some(Ok(attribute)) = s.attributes().next() {
+                            if attribute.key == b"xml:space"
+                                && attribute.value.as_ref() == b"preserve"
+                            {
+                                reader.trim_text(false);
+                            }
+                        }
+                    }
+                    _ => (),
+                },
                 Ok(Event::Empty(ref s)) => {
                     if s.name() == b"f" {
                         let mut attrs = vec![];
@@ -387,7 +397,15 @@ impl Cell {
                             let _ = self.set_value_crate(string_value.clone());
                         };
                     }
+                    b"is" => {
+                        if type_value == "inlineStr" {
+                            self.set_value_crate(string_value.clone());
+                        }
+                    }
                     b"c" => return,
+                    b"t" => {
+                        reader.trim_text(true);
+                    }
                     _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "c"),

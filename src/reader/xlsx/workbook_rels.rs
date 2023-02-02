@@ -25,6 +25,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let id_value = get_attribute(e, b"Id").unwrap();
                     let type_value = get_attribute(e, b"Type").unwrap();
                     let target_value = get_attribute(e, b"Target").unwrap();
+                    let target_value = target_value
+                        .strip_prefix("/xl/")
+                        .map(|t| t.to_owned())
+                        .unwrap_or(target_value);
                     if type_value == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition" {
                         spreadsheet.update_pivot_caches(id_value, target_value);
                     } else {
