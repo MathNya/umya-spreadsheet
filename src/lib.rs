@@ -44,9 +44,9 @@
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("B2").set_value_from_i32(1);
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("C3").set_value_from_bool(true);
 //! // or
-//! book.get_sheet_mut(&1).unwrap().get_cell_by_column_and_row_mut(&1, &1).set_value("TEST1");
-//! book.get_sheet_mut(&1).unwrap().get_cell_by_column_and_row_mut(&2, &2).set_value_from_i32(1);
-//! book.get_sheet_mut(&1).unwrap().get_cell_by_column_and_row_mut(&3, &3).set_value_from_bool(true);
+//! book.get_sheet_mut(&1).unwrap().get_cell_mut((1, 1)).set_value("TEST1");
+//! book.get_sheet_mut(&1).unwrap().get_cell_mut((2, 2)).set_value_from_i32(1));
+//! book.get_sheet_mut(&1).unwrap().get_cell_mut((3, 3)).set_value_from_bool(true));
 //! ```
 //! ### Read value
 //! ```rust
@@ -58,7 +58,7 @@
 //! // read value
 //! let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");
 //! // or
-//! let a1_value = book.get_sheet(&1).unwrap().get_value_by_column_and_row(&1, &1);
+//! let a1_value = book.get_sheet(&1).unwrap().get_value((1, 1));
 //! // or formatted value
 //! let a1_value = book.get_sheet(&1).unwrap().get_formatted_value("A1");
 //! assert_eq!("TEST1", a1_value);  // TEST1
@@ -78,7 +78,7 @@
 //! .set_border_style(Border::BORDER_MEDIUM);
 //! // or
 //! book.get_sheet_mut(&1).unwrap()
-//! .get_style_by_column_and_row_mut(&1, &1)
+//! .get_style_mut((1, 1))
 //! .get_borders_mut()
 //! .get_bottom_mut()
 //! .set_border_style(Border::BORDER_MEDIUM);

@@ -167,7 +167,7 @@ pub(crate) fn read(
                 b"hyperlink" => {
                     let (coor, _rid, hyperlink) = get_hyperlink(e);
                     let _ = worksheet
-                        .get_cell_mut(&coor.to_string())
+                        .get_cell_mut(coor)
                         .set_hyperlink(hyperlink);
                 }
                 b"printOptions" => {

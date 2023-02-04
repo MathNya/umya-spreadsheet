@@ -94,7 +94,7 @@ fn lazy_read_and_wite_large_string() {
     let start = Instant::now();
     for r in 1..5000 {
         for c in 1..30 {
-            let cell = ns.get_cell_by_column_and_row_mut(&c, &r);
+            let cell = ns.get_cell_mut((c, r));
             let _ = cell.set_value_from_string(format!("r{}c{}", r, c));
         }
     }
@@ -326,7 +326,7 @@ fn lazy_read_and_wite_xlsm2() {
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 
     let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
-    let cell = sheet.get_cell_by_column_and_row_mut(&1, &2);
+    let cell = sheet.get_cell_mut((1, 2));
     cell.set_value("test");
 
     // writer
@@ -349,7 +349,7 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     let _ = book
         .get_sheet_mut(&0)
         .unwrap()
-        .get_cell_by_column_and_row_mut(&1, &1)
+        .get_cell_mut((1, 1))
         .set_value("TEST1");
     let a1_value = book
         .get_sheet(&0)
@@ -771,7 +771,7 @@ fn new_file_and_edit() {
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(&2, &2)
+        .get_cell_mut((2, 2))
         .set_value_from_i32(1);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
@@ -783,7 +783,7 @@ fn new_file_and_edit() {
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(&2, &2)
+        .get_cell_mut((2, 2))
         .set_value_from_i32_ref(&1);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
@@ -795,7 +795,7 @@ fn new_file_and_edit() {
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(&3, &3)
+        .get_cell_mut((3, 3))
         .set_value_from_bool(true);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
@@ -807,7 +807,7 @@ fn new_file_and_edit() {
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row_mut(&3, &3)
+        .get_cell_mut((3, 3))
         .set_value_from_bool_ref(&true);
     let a1_value = book
         .get_sheet_by_name("Sheet2")

@@ -125,6 +125,7 @@ pub fn index_from_coordinate<S: AsRef<str>>(coordinate: S) -> Vec<Option<u32>> {
     vec![col, row, is_lock_col, is_lock_row]
 }
 
+#[deprecated(note = "use `CellCoordinates::from` instead")]
 pub fn index_from_coordinate_simple(coordinate: &str) -> (u32, u32) {
     let coordinate_upper = coordinate.to_uppercase();
     let split = index_from_coordinate(&coordinate_upper);
@@ -147,6 +148,41 @@ pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num
         result -= offset_num;
     }
     result
+}
+
+/// Struct for representing cell coordinates with row and column numbers
+pub struct CellCoordinates {
+    pub row: u32,
+    pub col: u32,
+}
+
+impl CellCoordinates {
+    fn new(col: u32, row: u32) -> Self {
+        CellCoordinates { row, col }
+    }
+}
+
+impl From<(u32, u32)> for CellCoordinates {
+    fn from(value: (u32, u32)) -> Self {
+        CellCoordinates::new(value.0, value.1)
+    }
+}
+
+impl From<String> for CellCoordinates {
+    fn from(value: String) -> Self {
+        let str_ref: &str = value.as_ref();
+        str_ref.into()
+    }
+}
+
+impl From<&str> for CellCoordinates {
+    fn from(value: &str) -> Self {
+        let coordinate_upper = value.to_uppercase();
+        let split = index_from_coordinate(&coordinate_upper);
+        let col = split[0].unwrap();
+        let row = split[1].unwrap();
+        CellCoordinates::new(col, row)
+    }
 }
 
 #[cfg(test)]
