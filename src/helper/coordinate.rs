@@ -1,100 +1,91 @@
+use std::iter::successors;
+
 use fancy_regex::Regex;
 
-const ALPHABET: &[&str] = &[
-    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
-    "T", "U", "V", "W", "X", "Y", "Z",
-];
+fn index_to_alpha(index: u32) -> String {
+    if index < 1 {
+        panic!("Index cannot be less than one.")
+    }
+
+    const BASE_CHAR_CODE: u32 = 'A' as u32;
+    // below code is based on the source code of `radix_fmt`
+    successors(Some(index - 1), |index| match index / 26u32 {
+        0 => None,
+        n => Some(n - 1),
+    })
+    .map(|v| BASE_CHAR_CODE + (v % 26))
+    .collect::<Vec<u32>>()
+    .into_iter()
+    .rev()
+    .map(|v| char::from_u32(v).unwrap())
+    .collect()
+}
+
+fn alpha_to_index<S>(alpha: S) -> u32
+where
+    S: AsRef<str>,
+{
+    const BASE_CHAR_CODE: u32 = 'A' as u32;
+    // since we only allow up to three characters, we can use pre-computed powers of 26
+    /// powers of 26 `[26^0, 26^1, 26^2]`
+    const POSITIONAL_CONSTANTS: [u32; 3] = [1, 26, 676];
+
+    alpha
+        .as_ref()
+        .chars()
+        .into_iter()
+        .rev()
+        .enumerate()
+        .map(|(index, v)| {
+            let vn = (v as u32 - BASE_CHAR_CODE) + 1;
+
+            // 26u32.pow(index as u32) * vn
+            POSITIONAL_CONSTANTS[index] * vn
+        })
+        .sum::<u32>()
+}
 
 pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
     let column_c = column.as_ref();
     if column_c == "0" {
         return 0;
     }
-    match column_c.len() {
-        3 => {
-            let a = &column_c[0..1];
-            let b = &column_c[1..2];
-            let c = &column_c[2..3];
-            get_index(a) * 676 + get_index(b) * 26 + get_index(c)
-        }
-        2 => {
-            let a = &column_c[0..1];
-            let b = &column_c[1..2];
-            get_index(a) * 26 + get_index(b)
-        }
-        1 => get_index(&column_c[0..1]),
-        _ => {
-            panic!("longer than 3 characters");
-        }
-    }
-}
 
-fn get_index(column: &str) -> u32 {
-    self::ALPHABET
-        .iter()
-        .enumerate()
-        .find_map(|(i, tar)| (tar == &column).then(|| i as u32))
-        .expect("illegal character")
-        + 1
+    alpha_to_index(column_c)
 }
 
 pub fn string_from_column_index(column_index: &u32) -> String {
     if column_index < &1u32 {
         panic!("Column number starts from 1.");
     }
-    let mut result: String = String::from("");
-    let mut index_value = *column_index;
-    while index_value > 0 {
-        let character_value = (index_value - 1) % 26 + 1;
-        index_value = (index_value - character_value) / 26;
-        result = format!(
-            "{}{}",
-            self::ALPHABET.get((character_value - 1) as usize).unwrap(),
-            result
-        );
-    }
-    result
+
+    index_to_alpha(*column_index)
 }
 
-pub fn coordinate_from_string(coordinate: &str) -> Vec<Option<&str>> {
+pub fn coordinate_from_string(coordinate: &str) -> [Option<&str>; 4] {
     lazy_static! {
-        static ref RE: Regex = Regex::new(r"((\$)?([A-Z]+))?((\$)?([0-9]+))?").unwrap();
+        static ref RE: Regex = Regex::new(r"((\$)?([A-Z]{1,3}))?((\$)?([0-9]+))?").unwrap();
     }
+
     let caps = RE.captures(coordinate).ok().flatten();
-    let cols = caps.map(|v| {
-        (
-            v.get(2).map(|v| v.as_str()),
-            v.get(3).map(|v| v.as_str()),
-            v.get(5).map(|v| v.as_str()),
-            v.get(6).map(|v| v.as_str()),
-        )
-    });
 
-    let col = cols.map(|v| v.1);
-    let is_lock_col = match col.flatten() {
-        Some(_) => match cols {
-            Some(v) => match v.0.map(|v| v.len()) {
-                Some(1..) => Some("1"),
-                _ => Some("0"),
-            },
-            _ => None,
-        },
-        None => None,
-    };
+    caps.map(|v| {
+        let col = v.get(3).map(|v| v.as_str()); // col number: [A-Z]{1,3}
+        let row = v.get(6).map(|v| v.as_str()); // row number: [0-9]+
 
-    let row = cols.map(|v| v.3);
-    let is_lock_row = match row.flatten() {
-        Some(_) => match cols {
-            Some(v) => match v.2.map(|v| v.len()) {
-                Some(1..) => Some("1"),
-                _ => Some("0"),
-            },
-            _ => None,
-        },
-        None => None,
-    };
+        let lock_col_flg = v
+            .get(2) // col lock flag: \$
+            .map(|_v| "1")
+            .or_else(|| if col.is_some() { Some("0") } else { None });
 
-    vec![col.flatten(), row.flatten(), is_lock_col, is_lock_row]
+        let lock_row_flg = v
+            .get(5) // row lock flag: \$
+            .map(|_v| "1")
+            .or_else(|| if row.is_some() { Some("0") } else { None });
+
+        [col, row, lock_col_flg, lock_row_flg]
+    })
+    .unwrap_or_default()
 }
 
 pub fn coordinate_from_index(col: &u32, row: &u32) -> String {
