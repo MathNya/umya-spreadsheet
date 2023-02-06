@@ -61,7 +61,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
         let mut row_vec: Vec<String> = Vec::new();
         for column in 0u32..max_column {
             // get value.
-            let mut value = match worksheet.get_cell_by_column_and_row(&(column + 1), &(row + 1)) {
+            let mut value = match worksheet.get_cell((column + 1, row + 1)) {
                 Some(cell) => cell.get_cell_value().get_value().into(),
                 None => String::from(""),
             };
