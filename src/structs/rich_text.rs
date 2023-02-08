@@ -6,6 +6,7 @@ use quick_xml::Writer;
 use std::borrow::Cow;
 use std::io::Cursor;
 use writer::driver::*;
+use std::fmt::Write;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {
@@ -49,7 +50,7 @@ impl RichText {
     pub(crate) fn get_hash_code(&self) -> String {
         let mut value = String::from("");
         for ele in &self.rich_text_elements {
-            value += ele.get_hash_code().as_str();
+            write!(value, "{}", ele.get_hash_code().as_str()).unwrap();
         }
         format!("{:x}", md5::Md5::digest(&value))
     }
