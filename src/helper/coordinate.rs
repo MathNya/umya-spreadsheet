@@ -73,15 +73,17 @@ pub fn coordinate_from_string(coordinate: &str) -> [Option<&str>; 4] {
         let col = v.get(3).map(|v| v.as_str()); // col number: [A-Z]{1,3}
         let row = v.get(6).map(|v| v.as_str()); // row number: [0-9]+
 
-        let lock_col_flg = v
-            .get(2) // col lock flag: \$
-            .map(|_v| "1")
-            .or_else(|| if col.is_some() { Some("0") } else { None });
+        let lock_col_flg = col.map(|_col| {
+            v.get(2) // col lock flag: (\$)?
+                .map(|_v| "1")
+                .unwrap_or("0")
+        });
 
-        let lock_row_flg = v
-            .get(5) // row lock flag: \$
-            .map(|_v| "1")
-            .or_else(|| if row.is_some() { Some("0") } else { None });
+        let lock_row_flg = row.map(|_row| {
+            v.get(5) // row lock flag: (\$)?
+                .map(|_v| "1")
+                .unwrap_or("0")
+        });
 
         [col, row, lock_col_flg, lock_row_flg]
     })
