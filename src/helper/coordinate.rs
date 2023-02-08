@@ -26,7 +26,7 @@ where
     S: AsRef<str>,
 {
     const BASE_CHAR_CODE: u32 = 'A' as u32;
-    // since we only allow up to three characters, we can use pre-computed powers of 26
+    // since we only allow up to three characters, we can use pre-computed
     /// powers of 26 `[26^0, 26^1, 26^2]`
     const POSITIONAL_CONSTANTS: [u32; 3] = [1, 26, 676];
 
@@ -62,30 +62,36 @@ pub fn string_from_column_index(column_index: &u32) -> String {
     index_to_alpha(*column_index)
 }
 
-pub fn coordinate_from_string(coordinate: &str) -> [Option<&str>; 4] {
+///
+/// # Returns
+/// A tuple with the column, and row address indexes and their respective lock flags.
+/// <br />
+/// i.e. `(col, row, col_lock_flg, row_lock_flg)`
+/// ## Note:
+/// The minimum value for `col` and `row` is 1
+pub fn index_from_coordinate<T>(coordinate: T) -> CellIndex
+where
+    T: AsRef<str>,
+{
     lazy_static! {
         static ref RE: Regex = Regex::new(r"((\$)?([A-Z]{1,3}))?((\$)?([0-9]+))?").unwrap();
     }
 
-    let caps = RE.captures(coordinate).ok().flatten();
+    let caps = RE.captures(coordinate.as_ref()).ok().flatten();
 
     caps.map(|v| {
-        let col = v.get(3).map(|v| v.as_str()); // col number: [A-Z]{1,3}
-        let row = v.get(6).map(|v| v.as_str()); // row number: [0-9]+
+        let col = v.get(3).map(|v| alpha_to_index(v.as_str())); // col number: [A-Z]{1,3}
+        let row = v.get(6).map(|v| v.as_str().parse::<u32>().ok()).flatten(); // row number: [0-9]+
 
-        let lock_col_flg = col.map(|_col| {
-            v.get(2) // col lock flag: (\$)?
-                .map(|_v| "1")
-                .unwrap_or("0")
+        let col_lock_flg = col.map(|_col| {
+            v.get(2).is_some() // col lock flag: (\$)?
         });
 
-        let lock_row_flg = row.map(|_row| {
-            v.get(5) // row lock flag: (\$)?
-                .map(|_v| "1")
-                .unwrap_or("0")
+        let row_lock_flg = row.map(|_row| {
+            v.get(5).is_some() // row lock flag: (\$)?
         });
 
-        [col, row, lock_col_flg, lock_row_flg]
+        (col, row, col_lock_flg, row_lock_flg)
     })
     .unwrap_or_default()
 }
@@ -109,22 +115,11 @@ pub fn coordinate_from_index_with_lock(
     )
 }
 
-pub fn index_from_coordinate<S: AsRef<str>>(coordinate: S) -> Vec<Option<u32>> {
-    let split = coordinate_from_string(coordinate.as_ref());
-    let col = split[0].map(column_index_from_string);
-    let row = split[1].map(|v| v.parse::<u32>().unwrap());
-    let is_lock_col = split[2].map(|v| v.parse::<u32>().unwrap());
-    let is_lock_row = split[3].map(|v| v.parse::<u32>().unwrap());
-    vec![col, row, is_lock_col, is_lock_row]
-}
-
 #[deprecated(note = "use `CellCoordinates::from` instead")]
 pub fn index_from_coordinate_simple(coordinate: &str) -> (u32, u32) {
     let coordinate_upper = coordinate.to_uppercase();
-    let split = index_from_coordinate(&coordinate_upper);
-    let col = split[0].unwrap();
-    let row = split[1].unwrap();
-    (col, row)
+    let (col, row, ..) = index_from_coordinate(&coordinate_upper);
+    (col.unwrap(), row.unwrap())
 }
 
 pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
@@ -142,6 +137,8 @@ pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num
     }
     result
 }
+
+pub type CellIndex = (Option<u32>, Option<u32>, Option<bool>, Option<bool>);
 
 /// Struct for representing cell coordinates with row and column numbers
 pub struct CellCoordinates {
@@ -171,10 +168,8 @@ impl From<String> for CellCoordinates {
 impl From<&str> for CellCoordinates {
     fn from(value: &str) -> Self {
         let coordinate_upper = value.to_uppercase();
-        let split = index_from_coordinate(&coordinate_upper);
-        let col = split[0].unwrap();
-        let row = split[1].unwrap();
-        CellCoordinates::new(col, row)
+        let (col, row, ..) = index_from_coordinate(&coordinate_upper);
+        CellCoordinates::new(col.unwrap(), row.unwrap())
     }
 }
 
@@ -213,51 +208,51 @@ mod tests {
     fn index_from_coordinate_1() {
         assert_eq!(
             index_from_coordinate("$A$4"),
-            vec![Some(1), Some(4), Some(1), Some(1)]
+            (Some(1), Some(4), Some(true), Some(true))
         );
         assert_eq!(
             index_from_coordinate("$A4"),
-            vec![Some(1), Some(4), Some(1), Some(0)]
+            (Some(1), Some(4), Some(true), Some(false))
         );
         assert_eq!(
             index_from_coordinate("A4"),
-            vec![Some(1), Some(4), Some(0), Some(0)]
+            (Some(1), Some(4), Some(false), Some(false))
         );
         assert_eq!(
             index_from_coordinate("Z91"),
-            vec![Some(26), Some(91), Some(0), Some(0)]
+            (Some(26), Some(91), Some(false), Some(false))
         );
         assert_eq!(
             index_from_coordinate("AA91"),
-            vec![Some(27), Some(91), Some(0), Some(0)]
+            (Some(27), Some(91), Some(false), Some(false))
         );
         assert_eq!(
             index_from_coordinate("AA$91"),
-            vec![Some(27), Some(91), Some(0), Some(1)]
+            (Some(27), Some(91), Some(false), Some(true))
         );
         assert_eq!(
             index_from_coordinate("$AA91"),
-            vec![Some(27), Some(91), Some(1), Some(0)]
+            (Some(27), Some(91), Some(true), Some(false))
         );
         assert_eq!(
             index_from_coordinate("$AA$91"),
-            vec![Some(27), Some(91), Some(1), Some(1)]
+            (Some(27), Some(91), Some(true), Some(true))
         );
         assert_eq!(
             index_from_coordinate("A"),
-            vec![Some(1), None, Some(0), None]
+            (Some(1), None, Some(false), None)
         );
         assert_eq!(
             index_from_coordinate("$A"),
-            vec![Some(1), None, Some(1), None]
+            (Some(1), None, Some(true), None)
         );
         assert_eq!(
             index_from_coordinate("5"),
-            vec![None, Some(5), None, Some(0)]
+            (None, Some(5), None, Some(false))
         );
         assert_eq!(
             index_from_coordinate("$5"),
-            vec![None, Some(5), None, Some(1)]
+            (None, Some(5), None, Some(true))
         );
     }
 }

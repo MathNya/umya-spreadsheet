@@ -65,10 +65,9 @@ impl MarkerType {
     }
 
     pub fn set_coordinate<S: Into<String>>(&mut self, value: S) {
-        let value = value.into();
-        let result = index_from_coordinate(value.as_str());
-        self.col = result[0].unwrap() - 1;
-        self.row = result[1].unwrap() - 1;
+        let (col, row, ..) = index_from_coordinate(value.into());
+        self.col = col.unwrap() - 1;
+        self.row = row.unwrap() - 1;
     }
 
     pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &u32) {

@@ -20,21 +20,26 @@ impl Range {
 
         if coordinate_collection.len() == 1 || coordinate_collection.len() == 2 {
             let coordinate_str = coordinate_collection[0].to_string();
-            let nums = index_from_coordinate(coordinate_str);
-            match nums[0] {
+            let (
+                row,         //
+                col,         //
+                is_lock_col, //
+                is_lock_row,
+            ) = index_from_coordinate(coordinate_str);
+            match row {
                 Some(v) => {
                     let mut coordinate_start_col = ColumnReference::default();
                     coordinate_start_col.set_num(v);
-                    coordinate_start_col.set_is_lock_usize(nums[2].unwrap());
+                    coordinate_start_col.set_is_lock(is_lock_col.unwrap());
                     self.coordinate_start_col = Some(coordinate_start_col);
                 }
                 None => {}
             };
-            match nums[1] {
+            match col {
                 Some(v) => {
                     let mut coordinate_start_row = RowReference::default();
                     coordinate_start_row.set_num(v);
-                    coordinate_start_row.set_is_lock_usize(nums[3].unwrap());
+                    coordinate_start_row.set_is_lock(is_lock_row.unwrap());
                     self.coordinate_start_row = Some(coordinate_start_row);
                 }
                 None => {}
@@ -43,21 +48,26 @@ impl Range {
 
         if coordinate_collection.len() == 2 {
             let coordinate_str = coordinate_collection[1].to_string();
-            let nums = index_from_coordinate(coordinate_str);
-            match nums[0] {
+            let (
+                row,         //
+                col,         //
+                is_lock_col, //
+                is_lock_row,
+            ) = index_from_coordinate(coordinate_str);
+            match row {
                 Some(v) => {
                     let mut coordinate_end_col = ColumnReference::default();
                     coordinate_end_col.set_num(v);
-                    coordinate_end_col.set_is_lock_usize(nums[2].unwrap());
+                    coordinate_end_col.set_is_lock(is_lock_col.unwrap());
                     self.coordinate_end_col = Some(coordinate_end_col);
                 }
                 None => {}
             };
-            match nums[1] {
+            match col {
                 Some(v) => {
                     let mut coordinate_end_row = RowReference::default();
                     coordinate_end_row.set_num(v);
-                    coordinate_end_row.set_is_lock_usize(nums[3].unwrap());
+                    coordinate_end_row.set_is_lock(is_lock_row.unwrap());
                     self.coordinate_end_row = Some(coordinate_end_row);
                 }
                 None => {}
