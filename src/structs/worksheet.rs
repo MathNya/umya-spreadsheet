@@ -315,84 +315,6 @@ impl Worksheet {
         self
     }
 
-    /// Get cell value.
-    /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
-    /// # Return value
-    /// * `&CellValue` - CellValue.
-    /// # Examples
-    /// ```
-    /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let cell_value = worksheet.get_cell_value("A1");
-    /// // or pass in a tuple `(col, row)`, both col and row starting at `1`
-    /// let cell_value = worksheet.get_cell_value((1, 1));
-    /// ```
-    pub fn get_cell_value<T>(&self, coordinate: T) -> &CellValue
-    where
-        T: Into<CellCoordinates>,
-    {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.cell_collection.get_cell_value(&col, &row)
-    }
-
-    /// Gets the cell value by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// * `&CellValue` - CellValue.
-    /// # Examples
-    /// ```
-    /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let cell_value = worksheet.get_style_by_column_and_row(&1, &1);  // get cell from A1.
-    /// ```
-    #[deprecated(note = "use `get_cell_value` instead")]
-    pub fn get_cell_value_by_column_and_row(&self, col: &u32, row: &u32) -> &CellValue {
-        self.cell_collection.get_cell_value(col, row)
-    }
-
-    /// Get cell value with mutable.
-    /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
-    /// # Return value
-    /// * `&mut CellValue` - CellValue with mutable.
-    /// # Examples
-    /// ```
-    /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
-    /// let cell_value = worksheet.get_cell_value_mut("A1");
-    /// // or pass in a tuple `(col, row)`, both col and row starting at `1`
-    /// let cell_value = worksheet.get_cell_value_mut((1, 1));
-    /// ```
-    pub fn get_cell_value_mut<T>(&mut self, coordinate: T) -> &mut CellValue
-    where
-        T: Into<CellCoordinates>,
-    {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row).get_cell_value_mut()
-    }
-
-    /// Gets the cell value with mutable by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// *`&mut CellValue` - CellValue with mutable.
-    /// # Examples
-    /// ```
-    /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
-    /// let cell_value = worksheet.get_cell_value_by_column_and_row_mut(&1, &1);  // get cell_value from A1.
-    /// ```
-    #[deprecated(note = "use `get_cell_value_mut` instead")]
-    pub fn get_cell_value_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut CellValue {
-        self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(col, row).get_cell_value_mut()
-    }
-
     /// Gets the cell value by specifying an range.
     /// # Arguments
     /// * `range` - range. ex) "A1:C5"
@@ -404,7 +326,7 @@ impl Worksheet {
     /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
     /// let mut cell_value_List = worksheet.get_cell_value_by_range("A1:C5");
     /// ```
-    pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
+    pub(crate) fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         self.cell_collection.get_cell_value_by_range(range)
     }
 
