@@ -64,7 +64,15 @@ impl CellValue {
         self.raw_value.get_rich_text()
     }
 
-    pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
+    /// Set the raw value after trying to convert `value` into one of the supported data types.
+    /// <br />
+    /// Types that `value` may be converted to:
+    /// - `Null` - if the string was `"NULL"`
+    /// - `Numeric` - if the string can be parsed to an `f64`
+    /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
+    /// - `Error` - if the string was `"#VALUE!"`
+    /// - `String` - if the string does not fulfill any of the other conditions
+    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
         self.remove_formula();
         self

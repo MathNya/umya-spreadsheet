@@ -86,8 +86,16 @@ impl Cell {
         self.cell_value.get_value_lazy()
     }
 
-    pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.cell_value.set_value(value);
+    /// Set the cell's value after trying to convert `value` into one of the supported data types.
+    /// <br />
+    /// Types that `value` may be converted to:
+    /// - `Null` - if the string was `"NULL"`
+    /// - `Numeric` - if the string can be parsed to an `f64`
+    /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
+    /// - `Error` - if the string was `"#VALUE!"`
+    /// - `String` - if the string does not fulfill any of the other conditions
+    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value_from_string(value);
         self
     }
 
