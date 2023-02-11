@@ -101,89 +101,98 @@ impl Cell {
         self
     }
 
-    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.cell_value.set_value_from_string(value);
+    pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value_string(value);
         self
     }
 
-    pub fn set_value_from_bool(&mut self, value: bool) -> &mut Self {
-        self.cell_value.set_value_from_bool(value);
+    pub fn set_value_bool(&mut self, value: bool) -> &mut Self {
+        self.cell_value.set_value_bool(value);
         self
     }
 
+    #[deprecated(note = "use `set_value_bool` instead")]
     pub fn set_value_from_bool_ref(&mut self, value: &bool) -> &mut Self {
         self.cell_value.set_value_from_bool_ref(value);
         self
     }
 
+    pub fn set_value_number<T>(&mut self, value: T) -> &mut Self
+    where
+        T: Into<f64>,
+    {
+        self.cell_value.set_value_number(value);
+        self
+    }
+
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u16(&mut self, value: u16) -> &mut Self {
-        self.cell_value.set_value_from_u16(value);
-        self
+        self.set_value_number(value)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u16_ref(&mut self, value: &u16) -> &mut Self {
-        self.cell_value.set_value_from_u16_ref(value);
-        self
+        self.set_value_number(value.clone())
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u32(&mut self, value: u32) -> &mut Self {
-        self.cell_value.set_value_from_u32(value);
-        self
+        self.set_value_number(value)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u32_ref(&mut self, value: &u32) -> &mut Self {
-        self.cell_value.set_value_from_u32_ref(value);
-        self
+        self.set_value_number(value.clone() as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u64(&mut self, value: u64) -> &mut Self {
-        self.cell_value.set_value_from_u64(value);
-        self
+        self.set_value_number(value as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u64_ref(&mut self, value: &u64) -> &mut Self {
-        self.cell_value.set_value_from_u64_ref(value);
-        self
+        self.set_value_number(value.clone() as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i16(&mut self, value: i16) -> &mut Self {
-        self.cell_value.set_value_from_i16(value);
-        self
+        self.set_value_number(value)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i16_ref(&mut self, value: &i16) -> &mut Self {
-        self.cell_value.set_value_from_i16_ref(value);
-        self
+        self.set_value_number(value.clone() as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i32(&mut self, value: i32) -> &mut Self {
-        self.cell_value.set_value_from_i32(value);
-        self
+        self.set_value_number(value)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i32_ref(&mut self, value: &i32) -> &mut Self {
-        self.cell_value.set_value_from_i32_ref(value);
-        self
+        self.set_value_number(value.clone() as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i64(&mut self, value: i64) -> &mut Self {
-        self.cell_value.set_value_from_i64(value);
-        self
+        self.set_value_number(value as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i64_ref(&mut self, value: &i64) -> &mut Self {
-        self.cell_value.set_value_from_i64_ref(value);
-        self
+        self.set_value_number(value.clone() as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_usize(&mut self, value: usize) -> &mut Self {
-        self.cell_value.set_value_from_usize(value);
-        self
+        self.set_value_number(value as f64)
     }
 
+    #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_usize_ref(&mut self, value: &usize) -> &mut Self {
-        self.cell_value.set_value_from_usize_ref(value);
-        self
+        self.set_value_number(value.clone() as f64)
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
@@ -191,6 +200,7 @@ impl Cell {
         self
     }
 
+    #[deprecated(note = "use `set_rich_text` instead")]
     pub fn set_rich_text_ref(&mut self, value: &RichText) -> &mut Self {
         self.cell_value.set_rich_text_ref(value);
         self
@@ -390,7 +400,7 @@ impl Cell {
                             self.set_shared_string_item(shared_string_item.clone());
                         } else if type_value == "b" {
                             let prm = &string_value == "1";
-                            let _ = self.set_value_from_bool(prm);
+                            let _ = self.set_value_bool(prm);
                         } else if type_value == "e" {
                             let _ = self.set_error();
                         } else if type_value == "" || type_value == "n" {

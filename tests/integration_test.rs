@@ -95,7 +95,7 @@ fn lazy_read_and_wite_large_string() {
     for r in 1..5000 {
         for c in 1..30 {
             let cell = ns.get_cell_mut((c, r));
-            let _ = cell.set_value_from_string(format!("r{}c{}", r, c));
+            let _ = cell.set_value_string(format!("r{}c{}", r, c));
         }
     }
     let end = start.elapsed();
@@ -796,7 +796,7 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_cell_mut((3, 3))
-        .set_value_from_bool(true);
+        .set_value_bool(true);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
