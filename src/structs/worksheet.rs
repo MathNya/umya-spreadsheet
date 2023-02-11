@@ -88,6 +88,29 @@ impl Worksheet {
             .unwrap_or("".into())
     }
 
+    /// Get value number.
+    /// # Arguments
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// # Return value
+    /// * `Option<f64>` - Value of the specified cell.
+    /// # Examples
+    /// ```
+    /// let book = umya_spreadsheet::new_file();
+    /// let worksheet = book.get_sheet(&0).unwrap();
+    /// let value = worksheet.get_value_number("A1");
+    /// // or pass in a tuple `(col, row)`, both col and row starting at `1`
+    /// let value = worksheet.get_value_number((1, 1));
+    /// ```
+    pub fn get_value_number<T>(&self, coordinate: T) -> Option<f64>
+    where
+        T: Into<CellCoordinates>,
+    {
+        let CellCoordinates { col, row } = coordinate.into();
+        self.get_cell((col, row))
+            .map(|v| v.get_value_number())
+            .flatten()
+    }
+
     /// Get value by specifying the column number and row number.
     /// # Arguments
     /// * `col` - Specify the column number. (first column number is 1)
