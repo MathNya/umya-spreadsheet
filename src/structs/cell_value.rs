@@ -358,6 +358,9 @@ mod tests {
         obj.set_value_from_bool_ref(&true);
         assert_eq!(obj.get_value(), "TRUE");
 
+        obj.set_value_number(1);
+        assert_eq!(obj.get_value(), "1");
+
         obj.set_value_from_u16(1);
         assert_eq!(obj.get_value(), "1");
 
