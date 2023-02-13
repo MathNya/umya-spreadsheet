@@ -82,6 +82,10 @@ impl Cell {
         self.cell_value.get_value()
     }
 
+    pub fn get_value_number(&self) -> Option<f64> {
+        self.cell_value.get_value_number()
+    }
+
     pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
         self.cell_value.get_value_lazy()
     }

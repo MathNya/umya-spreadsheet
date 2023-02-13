@@ -45,6 +45,10 @@ impl CellValue {
         self.raw_value.to_string().into()
     }
 
+    pub fn get_value_number(&self) -> Option<f64> {
+        self.raw_value.get_number()
+    }
+
     pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
         match &self.raw_value {
             CellRawValue::Lazy(v) => {
@@ -348,6 +352,7 @@ mod tests {
 
         obj.set_value_string(String::from("TEST"));
         assert_eq!(obj.get_value(), "TEST");
+        assert!(obj.get_value_number().is_none());
 
         obj.set_value_string("TEST");
         assert_eq!(obj.get_value(), "TEST");
