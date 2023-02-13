@@ -177,23 +177,6 @@ impl Spreadsheet {
         }
     }
 
-    /// Gets the cell value by specifying an address.
-    /// # Arguments
-    /// * `address` - address. ex) "Sheet1!A1:C5"
-    /// # Return value
-    /// *`Vec<&CellValue>` - CellValue List.
-    /// # Examples
-    /// ```
-    /// let mut book = umya_spreadsheet::new_file();
-    /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
-    /// ```
-    pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
-        let (sheet_name, range) = split_address(address);
-        self.get_sheet_by_name(&sheet_name)
-            .unwrap()
-            .get_cell_value_by_range(&range)
-    }
-
     /// (This method is crate only.)
     /// Gets the cell value by specifying an Address Object.
     /// # Arguments

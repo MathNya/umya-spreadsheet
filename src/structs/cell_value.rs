@@ -6,7 +6,7 @@ use std::borrow::Cow;
 use structs::CellRawValue;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
-pub struct CellValue {
+pub(crate) struct CellValue {
     pub(crate) raw_value: CellRawValue,
     pub(crate) formula: Option<String>,
     pub(crate) formula_attributes: Vec<(String, String)>,

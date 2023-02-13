@@ -26,17 +26,12 @@ pub struct Cell {
     hyperlink: Option<Hyperlink>,
 }
 impl Cell {
-    pub fn get_cell_value(&self) -> &CellValue {
+    pub(crate) fn get_cell_value(&self) -> &CellValue {
         &self.cell_value
     }
 
-    pub fn get_cell_value_mut(&mut self) -> &mut CellValue {
+    pub(crate) fn get_cell_value_mut(&mut self) -> &mut CellValue {
         &mut self.cell_value
-    }
-
-    pub fn set_cell_value(&mut self, value: CellValue) -> &mut Self {
-        self.cell_value = value;
-        self
     }
 
     pub fn get_style(&self) -> &Style {
