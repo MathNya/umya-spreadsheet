@@ -8,6 +8,7 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
+use std::fmt::Write;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientFill {
@@ -40,7 +41,7 @@ impl GradientFill {
     pub(crate) fn get_hash_code(&self) -> String {
         let mut value = String::from("");
         for stop in &self.gradient_stop {
-            value += stop.get_hash_code().as_str();
+            write!(value, "{}", stop.get_hash_code().as_str()).unwrap();
         }
         format!(
             "{:x}",
