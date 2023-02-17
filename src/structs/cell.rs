@@ -356,7 +356,7 @@ impl Cell {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
-                Ok(Event::Start(ref s)) => match s.name().0 {
+                Ok(Event::Start(ref s)) => match s.name().into_inner() {
                     b"f" => {
                         let mut attrs = vec![];
                         s.attributes().for_each(|a| {
