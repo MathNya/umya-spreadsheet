@@ -17,8 +17,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut buf = Vec::new();
     let mut list: Vec<(String, String)> = Vec::new();
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"Override" => {
                     let part_name = get_attribute(e, b"PartName").unwrap();
                     let content_type = get_attribute(e, b"ContentType").unwrap();

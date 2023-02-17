@@ -86,8 +86,8 @@ impl SchemeColor {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:lumMod" => {
                         self.set_lum_mod(get_attribute(e, b"val").unwrap());
                     }
@@ -105,7 +105,7 @@ impl SchemeColor {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:schemeClr" => return,
                     _ => (),
                 },

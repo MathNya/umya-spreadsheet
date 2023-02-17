@@ -26,8 +26,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut defined_names: Vec<DefinedName> = Vec::new();
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"workbookView" => {
                     let mut obj = WorkbookView::default();
                     obj.set_attributes(&mut reader, e);
@@ -50,7 +50,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 }
                 _ => (),
             },
-            Ok(Event::Start(ref e)) => match e.name() {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"definedName" => {
                     defined_name_value = get_attribute(e, b"name").unwrap();
                     is_local_only = match get_attribute(e, b"localSheetId") {
@@ -60,8 +60,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 }
                 _ => (),
             },
-            Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
-            Ok(Event::End(ref e)) => match e.name() {
+            Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
+            Ok(Event::End(ref e)) => match e.name().into_inner() {
                 b"definedName" => {
                     let mut defined_name = DefinedName::default();
                     defined_name.set_name(defined_name_value);

@@ -53,8 +53,8 @@ impl ShapeStyle {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"a:lnRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, false);
@@ -77,7 +77,7 @@ impl ShapeStyle {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:lnRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, true);
@@ -100,7 +100,7 @@ impl ShapeStyle {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xdr:style" => {
                         return;
                     }

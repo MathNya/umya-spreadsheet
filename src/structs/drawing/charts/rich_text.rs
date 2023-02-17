@@ -58,8 +58,8 @@ impl RichText {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().0 {
                     b"a:p" => {
                         let mut paragraph = Paragraph::default();
                         paragraph.set_attributes(reader, e);
@@ -72,7 +72,7 @@ impl RichText {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().0 {
                     b"a:bodyPr" => {
                         let mut body_properties = BodyProperties::default();
                         body_properties.set_attributes(reader, e, true);
@@ -80,7 +80,7 @@ impl RichText {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"c:rich" => return,
                     _ => (),
                 },

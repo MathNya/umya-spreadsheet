@@ -29,12 +29,12 @@ pub(crate) fn read(
     let mut buf = Vec::new();
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Start(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"sheetPr" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"codeName" => {
+                            Ok(ref attr) if attr.key.0 == b"codeName" => {
                                 worksheet.set_code_name(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}
@@ -50,7 +50,7 @@ pub(crate) fn read(
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"activeCell" => {
+                            Ok(ref attr) if attr.key.0 == b"activeCell" => {
                                 worksheet.set_active_cell(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}
@@ -117,11 +117,11 @@ pub(crate) fn read(
                 }
                 _ => (),
             },
-            Ok(Event::Empty(ref e)) => match e.name() {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"sheetPr" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"codeName" => {
+                            Ok(ref attr) if attr.key.0 == b"codeName" => {
                                 worksheet.set_code_name(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}
@@ -136,7 +136,7 @@ pub(crate) fn read(
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"activeCell" => {
+                            Ok(ref attr) if attr.key.0 == b"activeCell" => {
                                 worksheet.set_active_cell(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}
@@ -204,36 +204,36 @@ fn get_conditional_formatting<R: std::io::BufRead>(
 
     let mut conditional = Conditional::default();
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"cfRule" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"type" => {
+                            Ok(ref attr) if attr.key.0 == b"type" => {
                                 conditional.set_condition_type(get_attribute_value(attr).unwrap());
                             }
-                            Ok(ref attr) if attr.key == b"dxfId" => {
+                            Ok(ref attr) if attr.key.0 == b"dxfId" => {
                                 let dxf_id =
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
                                 let style = stylesheet.get_differential_formats().get_style(dxf_id);
                                 conditional.set_style(style);
                             }
-                            Ok(ref attr) if attr.key == b"priority" => {
+                            Ok(ref attr) if attr.key.0 == b"priority" => {
                                 conditional.set_priority(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
                             }
-                            Ok(ref attr) if attr.key == b"percent" => {
+                            Ok(ref attr) if attr.key.0 == b"percent" => {
                                 conditional.set_percent(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
                             }
-                            Ok(ref attr) if attr.key == b"bottom" => {
+                            Ok(ref attr) if attr.key.0 == b"bottom" => {
                                 conditional.set_bottom(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
                             }
-                            Ok(ref attr) if attr.key == b"rank" => {
+                            Ok(ref attr) if attr.key.0 == b"rank" => {
                                 conditional.set_rank(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
@@ -247,35 +247,35 @@ fn get_conditional_formatting<R: std::io::BufRead>(
                 }
                 _ => (),
             },
-            Ok(Event::Start(ref e)) => match e.name() {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"cfRule" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"type" => {
+                            Ok(ref attr) if attr.key.0 == b"type" => {
                                 conditional.set_condition_type(get_attribute_value(attr).unwrap());
                             }
-                            Ok(ref attr) if attr.key == b"dxfId" => {
+                            Ok(ref attr) if attr.key.0 == b"dxfId" => {
                                 let dxf_id =
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
                                 let style = stylesheet.get_differential_formats().get_style(dxf_id);
                                 conditional.set_style(style);
                             }
-                            Ok(ref attr) if attr.key == b"priority" => {
+                            Ok(ref attr) if attr.key.0 == b"priority" => {
                                 conditional.set_priority(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
                             }
-                            Ok(ref attr) if attr.key == b"percent" => {
+                            Ok(ref attr) if attr.key.0 == b"percent" => {
                                 conditional.set_percent(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
                             }
-                            Ok(ref attr) if attr.key == b"bottom" => {
+                            Ok(ref attr) if attr.key.0 == b"bottom" => {
                                 conditional.set_bottom(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
                             }
-                            Ok(ref attr) if attr.key == b"rank" => {
+                            Ok(ref attr) if attr.key.0 == b"rank" => {
                                 conditional.set_rank(
                                     get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
                                 );
@@ -299,7 +299,7 @@ fn get_conditional_formatting<R: std::io::BufRead>(
                 }
                 _ => (),
             },
-            Ok(Event::End(ref e)) => match e.name() {
+            Ok(Event::End(ref e)) => match e.name().into_inner() {
                 b"conditionalFormatting" => {
                     return conditional_vec;
                 }
@@ -331,15 +331,15 @@ fn get_cfvo<R: std::io::BufRead>(
     let mut color_count = 0;
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"cfvo" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"type" => {
+                            Ok(ref attr) if attr.key.0 == b"type" => {
                                 r#type = get_attribute_value(attr).unwrap()
                             }
-                            Ok(ref attr) if attr.key == b"value" => {
+                            Ok(ref attr) if attr.key.0 == b"value" => {
                                 value = Some(get_attribute_value(attr).unwrap())
                             }
                             Ok(_) => {}
@@ -361,14 +361,14 @@ fn get_cfvo<R: std::io::BufRead>(
                 }
                 _ => (),
             },
-            Ok(Event::Start(ref e)) => match e.name() {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"cfvo" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"type" => {
+                            Ok(ref attr) if attr.key.0 == b"type" => {
                                 r#type = get_attribute_value(attr).unwrap()
                             }
-                            Ok(ref attr) if attr.key == b"value" => {
+                            Ok(ref attr) if attr.key.0 == b"value" => {
                                 value = Some(get_attribute_value(attr).unwrap())
                             }
                             Ok(_) => {}
@@ -390,7 +390,7 @@ fn get_cfvo<R: std::io::BufRead>(
                 }
                 _ => (),
             },
-            Ok(Event::End(ref e)) => match e.name() {
+            Ok(Event::End(ref e)) => match e.name().into_inner() {
                 b"dataBar" => return result,
                 b"colorScale" => return result,
                 b"iconSet" => return result,

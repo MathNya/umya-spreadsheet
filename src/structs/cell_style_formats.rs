@@ -31,8 +31,8 @@ impl CellStyleFormats {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"xf" => {
                         let mut obj = CellFormat::default();
                         obj.set_attributes(reader, e, true);
@@ -40,7 +40,7 @@ impl CellStyleFormats {
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"xf" => {
                         let mut obj = CellFormat::default();
                         obj.set_attributes(reader, e, false);
@@ -48,7 +48,7 @@ impl CellStyleFormats {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"cellStyleXfs" => return,
                     _ => (),
                 },

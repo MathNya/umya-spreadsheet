@@ -339,9 +339,9 @@ impl RunProperties {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
+            match reader.read_event_into(&mut buf) {
                 Ok(Event::Empty(ref e)) => {
-                    match e.name() {
+                    match e.name().into_inner() {
                         b"name" => {self.font_name.set_attributes(reader,e);},
                         b"sz" => {self.font_size.set_attributes(reader,e);},
                         b"family" => {self.font_family_numbering.set_attributes(reader,e);},
@@ -356,7 +356,7 @@ impl RunProperties {
                     }
                 },
                 Ok(Event::End(ref e)) => {
-                    match e.name() {
+                    match e.name().into_inner() {
                         b"rPr" => return,
                         _ => (),
                     }

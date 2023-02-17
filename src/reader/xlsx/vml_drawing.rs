@@ -21,8 +21,8 @@ pub(crate) fn read(
     let mut comment_index = 0;
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Start(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"v:shape" => {
                     let mut obj = Shape::default();
                     obj.set_attributes(&mut reader, e, drawing_relationships);

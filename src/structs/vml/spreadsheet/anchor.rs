@@ -123,9 +123,9 @@ impl Anchor {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
+            match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    let text = e.unescape_and_decode(reader).unwrap();
+                    let text = e.unescape().unwrap();
                     let split_str: Vec<&str> = text.split(", ").collect();
                     self.set_left_column(Self::get_number(split_str.get(0)));
                     self.set_left_offset(Self::get_number(split_str.get(1)));
@@ -136,7 +136,7 @@ impl Anchor {
                     self.set_bottom_row(Self::get_number(split_str.get(6)));
                     self.set_bottom_offset(Self::get_number(split_str.get(7)));
                 }
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"x:Anchor" => return,
                     _ => (),
                 },

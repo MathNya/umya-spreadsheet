@@ -143,8 +143,8 @@ impl Bar3DChart {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"c:ser" => {
                         let mut obj = AreaChartSeries::default();
                         obj.set_attributes(reader, e);
@@ -156,7 +156,7 @@ impl Bar3DChart {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c:barDir" => {
                         self.bar_direction.set_attributes(reader, e);
                     }
@@ -179,7 +179,7 @@ impl Bar3DChart {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"c:bar3DChart" => return,
                     _ => (),
                 },

@@ -98,8 +98,8 @@ impl Transform {
         }
 
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:off" => {
                         self.offset.set_attributes(reader, e);
                     }
@@ -108,7 +108,7 @@ impl Transform {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xdr:xfrm" => {
                         return;
                     }

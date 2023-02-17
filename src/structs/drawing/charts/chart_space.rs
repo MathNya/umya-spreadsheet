@@ -122,8 +122,8 @@ impl ChartSpace {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"mc:AlternateContent" => {
                         let mut obj = Style::default();
                         obj.set_attributes(reader, e);
@@ -144,7 +144,7 @@ impl ChartSpace {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c:date1904" => {
                         self.date1904.set_attributes(reader, e);
                     }
@@ -156,7 +156,7 @@ impl ChartSpace {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"c:chartSpace" => return,
                     _ => (),
                 },

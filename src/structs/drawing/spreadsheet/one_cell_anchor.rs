@@ -104,8 +104,8 @@ impl OneCellAnchor {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"xdr:from" => {
                         self.from_marker.set_attributes(reader, e);
                     }
@@ -121,13 +121,13 @@ impl OneCellAnchor {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"xdr:ext" => {
                         self.extent.set_attributes(reader, e);
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xdr:oneCellAnchor" => return,
                     _ => (),
                 },

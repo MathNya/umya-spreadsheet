@@ -46,8 +46,8 @@ impl BackWall {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c:thickness" => {
                         let mut obj = Thickness::default();
                         obj.set_attributes(reader, e);
@@ -55,7 +55,7 @@ impl BackWall {
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"c:spPr" => {
                         let mut obj = ShapeProperties::default();
                         obj.set_attributes(reader, e);
@@ -63,7 +63,7 @@ impl BackWall {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"c:backWall" => return,
                     _ => (),
                 },

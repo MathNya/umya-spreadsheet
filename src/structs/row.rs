@@ -182,8 +182,8 @@ impl Row {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c" => {
                         let mut obj = Cell::default();
                         obj.set_attributes(reader, e, shared_string_table, stylesheet, true);
@@ -191,7 +191,7 @@ impl Row {
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"c" => {
                         let mut obj = Cell::default();
                         obj.set_attributes(reader, e, shared_string_table, stylesheet, false);
@@ -199,7 +199,7 @@ impl Row {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"row" => return,
                     _ => (),
                 },

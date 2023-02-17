@@ -33,8 +33,8 @@ impl OleObjects {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"mc:AlternateContent" => {
                         let mut obj = OleObject::default();
                         obj.set_attributes(reader, e, relationships);
@@ -42,7 +42,7 @@ impl OleObjects {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"oleObjects" => return,
                     _ => (),
                 },

@@ -38,7 +38,7 @@ pub(crate) fn normalize_path_to_str(path: &str) -> String {
 pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -> Option<String> {
     for a in e.attributes().with_checks(false) {
         match a {
-            Ok(ref attr) if attr.key == key => {
+            Ok(ref attr) if attr.key.into_inner() == key => {
                 return Some(get_attribute_value(attr).unwrap());
             }
             Ok(_) => {}

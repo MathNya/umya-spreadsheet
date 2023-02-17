@@ -100,8 +100,8 @@ impl Fill {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"patternFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e, true);
@@ -109,7 +109,7 @@ impl Fill {
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"patternFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e, false);
@@ -122,7 +122,7 @@ impl Fill {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"fill" => return,
                     _ => (),
                 },

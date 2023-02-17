@@ -90,8 +90,8 @@ impl Legend {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"c:layout" => {
                         let mut obj = Layout::default();
                         obj.set_attributes(reader, e, false);
@@ -109,7 +109,7 @@ impl Legend {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c:legendPos" => {
                         self.legend_position.set_attributes(reader, e);
                     }
@@ -123,7 +123,7 @@ impl Legend {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"c:legend" => return,
                     _ => (),
                 },

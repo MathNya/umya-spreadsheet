@@ -50,15 +50,15 @@ impl Fonts {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"font" => {
                         let obj = Font::default();
                         self.set_font(obj);
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"font" => {
                         let mut obj = Font::default();
                         obj.set_attributes(reader, e);
@@ -66,7 +66,7 @@ impl Fonts {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"fonts" => return,
                     _ => (),
                 },

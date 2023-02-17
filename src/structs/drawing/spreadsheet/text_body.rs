@@ -57,8 +57,8 @@ impl TextBody {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"a:p" => {
                         let mut paragraph = Paragraph::default();
                         paragraph.set_attributes(reader, e);
@@ -71,7 +71,7 @@ impl TextBody {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:bodyPr" => {
                         let mut body_properties = BodyProperties::default();
                         body_properties.set_attributes(reader, e, true);
@@ -79,7 +79,7 @@ impl TextBody {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xdr:txBody" => return,
                     _ => (),
                 },

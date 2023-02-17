@@ -56,22 +56,22 @@ impl NonVisualConnectionShapeProperties {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"xdr:cNvCxnSpPr" => {
                         self.non_visual_connector_shape_drawing_properties
                             .set_attributes(reader, e);
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"xdr:cNvPr" => {
                         self.non_visual_drawing_properties
                             .set_attributes(reader, e, true);
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xdr:nvCxnSpPr" => return,
                     _ => (),
                 },

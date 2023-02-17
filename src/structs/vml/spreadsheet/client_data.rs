@@ -170,8 +170,8 @@ impl ClientData {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"x:MoveWithCells" => {
                         let mut obj = MoveWithCells::default();
                         obj.set_attributes(reader, e, true);
@@ -199,7 +199,7 @@ impl ClientData {
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"x:Anchor" => {
                         let mut obj = Anchor::default();
                         obj.set_attributes(reader, e);
@@ -247,7 +247,7 @@ impl ClientData {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"x:ClientData" => return,
                     _ => (),
                 },

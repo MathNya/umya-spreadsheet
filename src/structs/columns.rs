@@ -101,8 +101,8 @@ impl Columns {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"col" => {
                         let mut obj = Column::default();
                         obj.set_attributes(reader, e, stylesheet);
@@ -115,7 +115,7 @@ impl Columns {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"cols" => return,
                     _ => (),
                 },

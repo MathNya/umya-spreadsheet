@@ -19,8 +19,8 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut result: Vec<(String, String, String)> = Vec::new();
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"Relationship" => {
                     let id_value = get_attribute(e, b"Id").unwrap();
                     let type_value = get_attribute(e, b"Type").unwrap();

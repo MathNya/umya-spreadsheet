@@ -18,14 +18,14 @@ pub(crate) fn read(
     let mut authors: Vec<String> = Vec::new();
     let mut value: String = String::from("");
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"author" => {
                     authors.push(String::from(""));
                 }
                 _ => (),
             },
-            Ok(Event::Start(ref e)) => match e.name() {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"comment" => {
                     let mut obj = Comment::default();
                     obj.set_attributes(&mut reader, e, &authors);
@@ -34,9 +34,9 @@ pub(crate) fn read(
                 _ => (),
             },
             Ok(Event::Text(e)) => {
-                value = e.unescape_and_decode(&reader).unwrap();
+                value = e.unescape().unwrap().to_string();
             }
-            Ok(Event::End(ref e)) => match e.name() {
+            Ok(Event::End(ref e)) => match e.name().into_inner() {
                 b"author" => {
                     authors.push(value.clone());
                 }
