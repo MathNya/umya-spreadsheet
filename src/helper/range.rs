@@ -1,6 +1,11 @@
 use helper::coordinate::*;
 
-pub fn get_coordinate_list(range_str: &str) -> Vec<(u32, u32)> {
+/// `(col, row)`
+pub type BasicCellIndex = (u32, u32);
+
+/// # Returns
+/// `Vec<(col, row)>`
+pub fn get_coordinate_list(range_str: &str) -> Vec<BasicCellIndex> {
     let coordinate_collection: Vec<&str> = range_str.split(':').collect();
     if coordinate_collection.is_empty() || coordinate_collection.len() > 2 {
         panic!("Non-standard range.");
@@ -17,29 +22,26 @@ pub fn get_coordinate_list(range_str: &str) -> Vec<(u32, u32)> {
 
     if coordinate_collection.len() == 1 || coordinate_collection.len() == 2 {
         let coordinate_str = coordinate_collection[0].to_string();
-        let nums = index_from_coordinate(coordinate_str);
-        match nums[0] {
-            Some(v) => {
-                is_col_select = true;
-                col_start = v;
-                col_end = v;
-            }
-            None => {}
-        };
-        match nums[1] {
-            Some(v) => {
-                is_row_select = true;
-                row_start = v;
-                row_end = v;
-            }
-            None => {}
+        let (col, row, ..) = index_from_coordinate(coordinate_str);
+
+        if let Some(v) = col {
+            is_col_select = true;
+            col_start = v;
+            col_end = v;
+        }
+
+        if let Some(v) = row {
+            is_row_select = true;
+            row_start = v;
+            row_end = v;
         }
     }
 
     if coordinate_collection.len() == 2 {
         let coordinate_str = coordinate_collection[1].to_string();
-        let nums = index_from_coordinate(coordinate_str);
-        match nums[0] {
+        let (col, row, ..) = index_from_coordinate(coordinate_str);
+
+        match col {
             Some(v) => {
                 col_end = v;
             }
@@ -49,7 +51,8 @@ pub fn get_coordinate_list(range_str: &str) -> Vec<(u32, u32)> {
                 }
             }
         };
-        match nums[1] {
+
+        match row {
             Some(v) => {
                 row_end = v;
             }

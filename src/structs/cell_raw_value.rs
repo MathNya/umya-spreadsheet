@@ -42,22 +42,20 @@ impl CellRawValue {
 
     pub(crate) fn get_text(&self) -> Option<Text> {
         match self {
-            Self::String(_) => {
-                let mut text = Text::default();
-                text.set_value(self.to_string());
-                Some(text)
-            }
-            Self::RichText(_) => None,
-            Self::Numeric(_) => {
-                let mut text = Text::default();
-                text.set_value(self.to_string());
-                Some(text)
-            }
+            Self::String(_) | // _
+            Self::Numeric(_) | // _
             Self::Bool(_) => {
                 let mut text = Text::default();
                 text.set_value(self.to_string());
                 Some(text)
             }
+            _ => None,
+        }
+    }
+
+    pub(crate) fn get_number(&self) -> Option<f64> {
+        match self {
+            Self::Numeric(number) => Some(*number),
             _ => None,
         }
     }

@@ -95,7 +95,7 @@ fn lazy_read_and_wite_large_string() {
     for r in 1..5000 {
         for c in 1..30 {
             let cell = ns.get_cell_mut((c, r));
-            let _ = cell.set_value_from_string(format!("r{}c{}", r, c));
+            let _ = cell.set_value_string(format!("r{}c{}", r, c));
         }
     }
     let end = start.elapsed();
@@ -133,7 +133,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_sheet_mut(&0)
         .unwrap()
         .get_cell_mut("A1")
-        .set_value("TEST1");
+        .set_value_from_string("TEST1");
     let a1_value = book.get_sheet(&0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
     let _ = book
@@ -224,7 +224,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_sheet_by_name_mut("Sheet1")
         .unwrap()
         .get_cell_mut("A1")
-        .set_value("49046881.119999997");
+        .set_value_from_string("49046881.119999997");
 
     let _ = book
         .get_sheet_by_name_mut("Sheet1")
@@ -327,7 +327,7 @@ fn lazy_read_and_wite_xlsm2() {
 
     let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
     let cell = sheet.get_cell_mut((1, 2));
-    cell.set_value("test");
+    cell.set_value_from_string("test");
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_lazy2.xlsm");
@@ -350,7 +350,7 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_sheet_mut(&0)
         .unwrap()
         .get_cell_mut((1, 1))
-        .set_value("TEST1");
+        .set_value_from_string("TEST1");
     let a1_value = book
         .get_sheet(&0)
         .unwrap()
@@ -760,7 +760,7 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_cell_mut("A1")
-        .set_value("TEST1");
+        .set_value_from_string("TEST1");
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
@@ -796,7 +796,7 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_cell_mut((3, 3))
-        .set_value_from_bool(true);
+        .set_value_bool(true);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
@@ -857,54 +857,54 @@ fn new_file_and_edit() {
     let worksheet = book.get_sheet_by_name_mut("Sheet3").unwrap();
     worksheet.get_column_dimension_mut("A").set_auto_width(true);
 
-    worksheet.get_cell_mut("E1").set_value("テスト");
-    worksheet.get_cell_mut("E2").set_value("うみゃーねっと");
-    worksheet.get_cell_mut("E3").set_value("案案案案");
+    worksheet.get_cell_mut("E1").set_value_from_string("テスト");
+    worksheet.get_cell_mut("E2").set_value_from_string("うみゃーねっと");
+    worksheet.get_cell_mut("E3").set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("E").set_auto_width(true);
 
-    worksheet.get_cell_mut("F1").set_value("AAAAAAAAAAAAAAAAAA");
-    worksheet.get_cell_mut("F2").set_value("BBBBBBBBBBB");
+    worksheet.get_cell_mut("F1").set_value_from_string("AAAAAAAAAAAAAAAAAA");
+    worksheet.get_cell_mut("F2").set_value_from_string("BBBBBBBBBBB");
     worksheet
         .get_cell_mut("F4")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+        .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("F").set_auto_width(true);
 
-    worksheet.get_cell_mut("G1").set_value("AAAAAAAAAAAAAAAAAA");
-    worksheet.get_cell_mut("G2").set_value("BBBBBBBBBBB");
+    worksheet.get_cell_mut("G1").set_value_from_string("AAAAAAAAAAAAAAAAAA");
+    worksheet.get_cell_mut("G2").set_value_from_string("BBBBBBBBBBB");
     worksheet
         .get_cell_mut("G3")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+        .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("G").set_width(60f64);
 
-    worksheet.get_cell_mut("D1").set_value("テスト");
-    worksheet.get_cell_mut("D2").set_value("うみゃーねっと");
-    worksheet.get_cell_mut("D3").set_value("案案案案");
+    worksheet.get_cell_mut("D1").set_value_from_string("テスト");
+    worksheet.get_cell_mut("D2").set_value_from_string("うみゃーねっと");
+    worksheet.get_cell_mut("D3").set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("D").set_auto_width(true);
 
-    worksheet.get_cell_mut("H1").set_value("テスト");
+    worksheet.get_cell_mut("H1").set_value_from_string("テスト");
     worksheet
         .get_cell_mut("H2")
-        .set_value("うみゃーねっと\nうみゃーねっと")
+        .set_value_from_string("うみゃーねっと\nうみゃーねっと")
         .get_style_mut()
         .get_alignment_mut()
         .set_wrap_text(true);
-    worksheet.get_cell_mut("H3").set_value("案案案案");
+    worksheet.get_cell_mut("H3").set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("H").set_auto_width(true);
 
-    worksheet.get_cell_mut("I1").set_value("テスト");
+    worksheet.get_cell_mut("I1").set_value_from_string("テスト");
     worksheet
         .get_cell_mut("I2")
-        .set_value("うみゃーねっと")
+        .set_value_from_string("うみゃーねっと")
         .get_style_mut()
         .get_font_mut()
         .get_font_size_mut()
         .set_val(20f64);
-    worksheet.get_cell_mut("I3").set_value("案案案案");
+    worksheet.get_cell_mut("I3").set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("I").set_auto_width(true);
 
     worksheet
         .get_cell_mut("J2")
-        .set_value("うみゃーねっと")
+        .set_value_from_string("うみゃーねっと")
         .get_style_mut()
         .get_font_mut()
         .get_font_size_mut()
@@ -913,22 +913,22 @@ fn new_file_and_edit() {
 
     worksheet
         .get_cell_mut("K4")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+        .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("K").set_auto_width(true);
 
     worksheet
         .get_cell_mut("L4")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+        .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("L").set_auto_width(true);
 
     worksheet
         .get_cell_mut("M4")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+        .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("M").set_auto_width(true);
 
     worksheet
         .get_cell_mut("N1")
-        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+        .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("N").set_auto_width(true);
 
     worksheet.add_merge_cells("K8:L8");
@@ -966,16 +966,16 @@ fn witer_csv() {
     book.set_active_sheet(1);
     let sheet = book.new_sheet("Sheet2").unwrap();
     // ---
-    sheet.get_cell_mut("A1").set_value(" TEST");
-    sheet.get_cell_mut("B1").set_value("あいうえお");
-    sheet.get_cell_mut("C1").set_value("漢字");
-    sheet.get_cell_mut("E1").set_value("1");
+    sheet.get_cell_mut("A1").set_value_from_string(" TEST");
+    sheet.get_cell_mut("B1").set_value_from_string("あいうえお");
+    sheet.get_cell_mut("C1").set_value_from_string("漢字");
+    sheet.get_cell_mut("E1").set_value_from_string("1");
     // ---
-    sheet.get_cell_mut("A2").set_value("TEST ");
-    sheet.get_cell_mut("B2").set_value("あいうえお");
-    sheet.get_cell_mut("C2").set_value("漢字");
+    sheet.get_cell_mut("A2").set_value_from_string("TEST ");
+    sheet.get_cell_mut("B2").set_value_from_string("あいうえお");
+    sheet.get_cell_mut("C2").set_value_from_string("漢字");
     // ---
-    sheet.get_cell_mut("A3").set_value(" TEST ");
+    sheet.get_cell_mut("A3").set_value_from_string(" TEST ");
     // ---
 
     // writer

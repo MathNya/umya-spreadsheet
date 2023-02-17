@@ -3,6 +3,7 @@ use std::io;
 use std::path::Path;
 use std::string::FromUtf8Error;
 
+use std::fmt::Write;
 use structs::CsvEncodeValues;
 use structs::CsvWriterOption;
 use structs::Spreadsheet;
@@ -75,12 +76,12 @@ pub fn write_writer<W: io::Seek + io::Write>(
             }
             row_vec.push(value);
         }
-        data += row_vec.join(",").as_str();
-        data += "\r\n";
+        write!(data, "{}", row_vec.join(",")).unwrap();
+        write!(data, "\r\n").unwrap();
     }
 
-    // encording.
-    let mut res_into: Vec<u8> = Vec::new();
+    // encoding.
+    let res_into: Vec<u8>;
     let data_bytes = match option.get_csv_encode_value() {
         &CsvEncodeValues::ShiftJis => {
             let (res, _, _) = encoding_rs::SHIFT_JIS.encode(&data);
