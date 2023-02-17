@@ -168,6 +168,12 @@ impl From<(u32, u32)> for CellCoordinates {
     }
 }
 
+impl From<(&u32, &u32)> for CellCoordinates {
+    fn from(value: (&u32, &u32)) -> Self {
+        CellCoordinates::new(value.0.clone(), value.1.clone())
+    }
+}
+
 impl From<String> for CellCoordinates {
     fn from(value: String) -> Self {
         let str_ref: &str = value.as_ref();

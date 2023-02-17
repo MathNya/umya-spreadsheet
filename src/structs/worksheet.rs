@@ -67,7 +67,7 @@ impl Worksheet {
 
     /// Get value.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `String` - Value of the specified cell.
     /// # Examples
@@ -110,7 +110,7 @@ impl Worksheet {
 
     /// Get formatted value.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `String` - Formatted value of the specified cell.
     /// # Examples
@@ -183,7 +183,7 @@ impl Worksheet {
 
     /// Get cell.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `Option` - Cell in the Some.
     /// # Examples
@@ -221,7 +221,7 @@ impl Worksheet {
 
     /// Get cell with mutable.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&mut Cell` - Cell with mutable.
     /// # Examples
@@ -286,7 +286,7 @@ impl Worksheet {
 
     /// Remove Cell
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Examples
     /// ```
     /// worksheet.remove_cell("A1");
@@ -317,7 +317,7 @@ impl Worksheet {
 
     /// Get cell value.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&CellValue` - CellValue.
     /// # Examples
@@ -355,7 +355,7 @@ impl Worksheet {
 
     /// Get cell value with mutable.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&mut CellValue` - CellValue with mutable.
     /// # Examples
@@ -410,7 +410,7 @@ impl Worksheet {
 
     /// Get style.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&Style` - Style.
     /// # Examples
@@ -448,7 +448,7 @@ impl Worksheet {
 
     /// Get style with mutable.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&mut Style` - Style with mutable.
     /// # Examples
