@@ -1039,3 +1039,14 @@ fn openpyxl() {
     let path = std::path::Path::new("./tests/result_files/openpyxl.xlsx");
     umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
 }
+
+#[test]
+fn read_and_wite_2() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa_2.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_2.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
