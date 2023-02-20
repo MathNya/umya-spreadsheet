@@ -139,13 +139,13 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
     let _ = book
         .get_sheet_mut(&0)
         .unwrap()
-        .remove_cell_by_column_and_row_mut(&1, &1);
+        .remove_cell((&1, &1));
     let a1 = book.get_sheet(&0).unwrap().get_cell("A1");
     assert_eq!(a1, None);
     let _ = book
         .get_sheet_mut(&0)
         .unwrap()
-        .remove_cell_by_column_and_row_mut(&1, &2);
+        .remove_cell((&1, &2));
     let a2_value = book.get_sheet(&0).unwrap().get_value("A2");
     assert_eq!(a2_value, "");
     let b5_value = book.get_sheet(&0).unwrap().get_value("B5");
@@ -155,7 +155,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         "1.0000",
         book.get_sheet(&0)
             .unwrap()
-            .get_formatted_value_by_column_and_row(&2, &20)
+            .get_formatted_value((&2, &20))
     );
     assert_eq!(
         "$3,333.0000",
@@ -354,7 +354,7 @@ fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     let a1_value = book
         .get_sheet(&0)
         .unwrap()
-        .get_cell_by_column_and_row(&1, &1)
+        .get_cell((&1, &1))
         .unwrap()
         .get_value();
     assert_eq!("TEST1", a1_value);
@@ -776,7 +776,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(&2, &2)
+        .get_cell((&2, &2))
         .unwrap()
         .get_value();
     assert_eq!("1", a1_value);
@@ -788,7 +788,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(&2, &2)
+        .get_cell((&2, &2))
         .unwrap()
         .get_value();
     assert_eq!("1", a1_value);
@@ -800,7 +800,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(&3, &3)
+        .get_cell((&3, &3))
         .unwrap()
         .get_value();
     assert_eq!("TRUE", a1_value);
@@ -812,7 +812,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell_by_column_and_row(&3, &3)
+        .get_cell((&3, &3))
         .unwrap()
         .get_value();
     assert_eq!("TRUE", a1_value);
@@ -826,7 +826,7 @@ fn new_file_and_edit() {
         .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_style_by_column_and_row_mut(&3, &2)
+        .get_style_mut((&3, &2))
         .get_borders_mut()
         .get_left_mut()
         .set_border_style(umya_spreadsheet::Border::BORDER_THIN);
@@ -1038,4 +1038,15 @@ fn openpyxl() {
 
     let path = std::path::Path::new("./tests/result_files/openpyxl.xlsx");
     umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
+}
+
+#[test]
+fn read_and_wite_2() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa_2.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_2.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

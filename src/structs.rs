@@ -64,8 +64,8 @@ pub use self::border::*;
 mod alignment;
 pub use self::alignment::*;
 
-mod conditional;
-pub use self::conditional::*;
+mod conditional_formatting_rule;
+pub use self::conditional_formatting_rule::*;
 
 mod protection;
 pub use self::protection::*;
@@ -91,8 +91,8 @@ pub use self::coordinate::*;
 mod range;
 pub use self::range::*;
 
-mod conditional_set;
-pub use self::conditional_set::*;
+mod conditional_formatting;
+pub use self::conditional_formatting::*;
 
 mod address;
 pub use self::address::*;
@@ -369,3 +369,30 @@ pub use self::csv_encode_values::*;
 
 mod cell_raw_value;
 pub use self::cell_raw_value::*;
+
+mod conditional_format_values;
+pub use self::conditional_format_values::*;
+
+mod conditional_formatting_operator_values;
+pub use self::conditional_formatting_operator_values::*;
+
+mod timePeriod_values;
+pub use self::timePeriod_values::*;
+
+mod color_scale;
+pub use self::color_scale::*;
+
+mod conditional_format_value_object;
+pub use self::conditional_format_value_object::*;
+
+mod conditional_format_value_object_values;
+pub use self::conditional_format_value_object_values::*;
+
+mod data_bar;
+pub use self::data_bar::*;
+
+mod icon_set;
+pub use self::icon_set::*;
+
+mod formula;
+pub use self::formula::*;

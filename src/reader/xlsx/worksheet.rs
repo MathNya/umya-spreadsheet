@@ -5,10 +5,8 @@ use quick_xml::Reader;
 
 use structs::drawing::Theme;
 use structs::raw::RawWorksheet;
-use structs::Color;
 use structs::Columns;
-use structs::Conditional;
-use structs::ConditionalSet;
+use structs::ConditionalFormatting;
 use structs::Hyperlink;
 use structs::OleObjects;
 use structs::Row;
@@ -81,15 +79,9 @@ pub(crate) fn read(
                         .set_attributes(&mut reader, e);
                 }
                 b"conditionalFormatting" => {
-                    let mut conditional_set = ConditionalSet::default();
-                    let sqref = get_attribute(e, b"sqref").unwrap();
-                    conditional_set
-                        .get_sequence_of_references_mut()
-                        .set_sqref(sqref);
-                    let conditional_styles_collection =
-                        get_conditional_formatting(&mut reader, stylesheet, theme);
-                    conditional_set.set_conditional_collection(conditional_styles_collection);
-                    worksheet.add_conditional_styles_collection(conditional_set);
+                    let mut obj = ConditionalFormatting::default();
+                    obj.set_attributes(&mut reader, e, stylesheet.get_differential_formats());
+                    worksheet.add_conditional_formatting_collection(obj);
                 }
                 b"oleObjects" => {
                     let mut obj = OleObjects::default();
@@ -192,216 +184,6 @@ pub(crate) fn read(
     }
 
     Ok(())
-}
-
-fn get_conditional_formatting<R: std::io::BufRead>(
-    reader: &mut Reader<R>,
-    stylesheet: &Stylesheet,
-    theme: &Theme,
-) -> Vec<Conditional> {
-    let mut buf = Vec::new();
-    let mut conditional_vec: Vec<Conditional> = Vec::new();
-
-    let mut conditional = Conditional::default();
-    loop {
-        match reader.read_event_into(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                b"cfRule" => {
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) if attr.key.0 == b"type" => {
-                                conditional.set_condition_type(get_attribute_value(attr).unwrap());
-                            }
-                            Ok(ref attr) if attr.key.0 == b"dxfId" => {
-                                let dxf_id =
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
-                                let style = stylesheet.get_differential_formats().get_style(dxf_id);
-                                conditional.set_style(style);
-                            }
-                            Ok(ref attr) if attr.key.0 == b"priority" => {
-                                conditional.set_priority(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(ref attr) if attr.key.0 == b"percent" => {
-                                conditional.set_percent(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(ref attr) if attr.key.0 == b"bottom" => {
-                                conditional.set_bottom(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(ref attr) if attr.key.0 == b"rank" => {
-                                conditional.set_rank(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(_) => {}
-                            Err(_) => {}
-                        }
-                    }
-                    conditional_vec.push(conditional);
-                    conditional = Conditional::default();
-                }
-                _ => (),
-            },
-            Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                b"cfRule" => {
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) if attr.key.0 == b"type" => {
-                                conditional.set_condition_type(get_attribute_value(attr).unwrap());
-                            }
-                            Ok(ref attr) if attr.key.0 == b"dxfId" => {
-                                let dxf_id =
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap();
-                                let style = stylesheet.get_differential_formats().get_style(dxf_id);
-                                conditional.set_style(style);
-                            }
-                            Ok(ref attr) if attr.key.0 == b"priority" => {
-                                conditional.set_priority(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(ref attr) if attr.key.0 == b"percent" => {
-                                conditional.set_percent(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(ref attr) if attr.key.0 == b"bottom" => {
-                                conditional.set_bottom(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(ref attr) if attr.key.0 == b"rank" => {
-                                conditional.set_rank(
-                                    get_attribute_value(attr).unwrap().parse::<usize>().unwrap(),
-                                );
-                            }
-                            Ok(_) => {}
-                            Err(_) => {}
-                        }
-                    }
-                }
-                b"dataBar" => {
-                    conditional.set_data_type("dataBar");
-                    conditional.set_cfvo_collection(get_cfvo(reader, theme));
-                }
-                b"colorScale" => {
-                    conditional.set_data_type("colorScale");
-                    conditional.set_cfvo_collection(get_cfvo(reader, theme));
-                }
-                b"iconSet" => {
-                    conditional.set_data_type("iconSet");
-                    conditional.set_cfvo_collection(get_cfvo(reader, theme));
-                }
-                _ => (),
-            },
-            Ok(Event::End(ref e)) => match e.name().into_inner() {
-                b"conditionalFormatting" => {
-                    return conditional_vec;
-                }
-                b"cfRule" => {
-                    conditional_vec.push(conditional);
-                    conditional = Conditional::default();
-                }
-                _ => (),
-            },
-            Ok(Event::Eof) => panic!("Error not find {} end element", "conditionalFormatting"),
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-            _ => (),
-        }
-        buf.clear();
-    }
-}
-
-fn get_cfvo<R: std::io::BufRead>(
-    reader: &mut Reader<R>,
-    theme: &Theme,
-) -> Vec<(String, Option<String>, Option<Color>)> {
-    let mut buf = Vec::new();
-    let mut cfvo: Vec<(String, Option<String>)> = Vec::new();
-    let mut result: Vec<(String, Option<String>, Option<Color>)> = Vec::new();
-
-    let mut r#type: String = String::from("");
-    let mut value: Option<String> = None;
-
-    let mut color_count = 0;
-
-    loop {
-        match reader.read_event_into(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                b"cfvo" => {
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) if attr.key.0 == b"type" => {
-                                r#type = get_attribute_value(attr).unwrap()
-                            }
-                            Ok(ref attr) if attr.key.0 == b"value" => {
-                                value = Some(get_attribute_value(attr).unwrap())
-                            }
-                            Ok(_) => {}
-                            Err(_) => {}
-                        }
-                    }
-                    cfvo.push((r#type, value));
-                    r#type = String::from("");
-                    value = None;
-                }
-                b"color" => {
-                    let mut color = Color::default();
-                    color.set_attributes(reader, e);
-                    color.set_argb_by_theme(theme);
-
-                    let (t, v) = cfvo.get(color_count).unwrap();
-                    result.insert(color_count, (t.clone(), v.clone(), Some(color)));
-                    color_count += 1;
-                }
-                _ => (),
-            },
-            Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                b"cfvo" => {
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) if attr.key.0 == b"type" => {
-                                r#type = get_attribute_value(attr).unwrap()
-                            }
-                            Ok(ref attr) if attr.key.0 == b"value" => {
-                                value = Some(get_attribute_value(attr).unwrap())
-                            }
-                            Ok(_) => {}
-                            Err(_) => {}
-                        }
-                    }
-                    cfvo.push((r#type, value));
-                    r#type = String::from("");
-                    value = None;
-                }
-                b"color" => {
-                    let mut color = Color::default();
-                    color.set_attributes(reader, e);
-                    color.set_argb_by_theme(theme);
-
-                    let (t, v) = cfvo.get(color_count).unwrap();
-                    result.insert(color_count, (t.clone(), v.clone(), Some(color)));
-                    color_count += 1;
-                }
-                _ => (),
-            },
-            Ok(Event::End(ref e)) => match e.name().into_inner() {
-                b"dataBar" => return result,
-                b"colorScale" => return result,
-                b"iconSet" => return result,
-                _ => (),
-            },
-            Ok(Event::Eof) => panic!("Error not find {} end element", "cfRule"),
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-            _ => (),
-        }
-        buf.clear();
-    }
 }
 
 fn get_hyperlink(e: &quick_xml::events::BytesStart<'_>) -> (String, String, Hyperlink) {

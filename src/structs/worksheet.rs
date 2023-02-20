@@ -13,7 +13,7 @@ use structs::Column;
 use structs::ColumnBreaks;
 use structs::Columns;
 use structs::Comment;
-use structs::ConditionalSet;
+use structs::ConditionalFormatting;
 use structs::DefinedName;
 use structs::HeaderFooter;
 use structs::Hyperlink;
@@ -47,7 +47,7 @@ pub struct Worksheet {
     page_margins: PageMargins,
     header_footer: HeaderFooter,
     sheet_views: SheetViews,
-    conditional_styles_collection: Vec<ConditionalSet>,
+    conditional_formatting_collection: Vec<ConditionalFormatting>,
     merge_cells: MergeCells,
     auto_filter: Option<AutoFilter>,
     comments: Vec<Comment>,
@@ -67,7 +67,7 @@ impl Worksheet {
 
     /// Get value.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `String` - Value of the specified cell.
     /// # Examples
@@ -133,7 +133,7 @@ impl Worksheet {
 
     /// Get formatted value.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `String` - Formatted value of the specified cell.
     /// # Examples
@@ -206,7 +206,7 @@ impl Worksheet {
 
     /// Get cell.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `Option` - Cell in the Some.
     /// # Examples
@@ -244,7 +244,7 @@ impl Worksheet {
 
     /// Get cell with mutable.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&mut Cell` - Cell with mutable.
     /// # Examples
@@ -309,7 +309,7 @@ impl Worksheet {
 
     /// Remove Cell
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Examples
     /// ```
     /// worksheet.remove_cell("A1");
@@ -340,7 +340,7 @@ impl Worksheet {
 
     /// Get cell value.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&CellValue` - CellValue.
     /// # Examples
@@ -378,7 +378,7 @@ impl Worksheet {
 
     /// Get cell value with mutable.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&mut CellValue` - CellValue with mutable.
     /// # Examples
@@ -433,7 +433,7 @@ impl Worksheet {
 
     /// Get style.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&Style` - Style.
     /// # Examples
@@ -471,7 +471,7 @@ impl Worksheet {
 
     /// Get style with mutable.
     /// # Arguments
-    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)`
+    /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
     /// * `&mut Style` - Style with mutable.
     /// # Examples
@@ -626,23 +626,23 @@ impl Worksheet {
     // ************************
     // Conditional
     // ************************
-    /// Get ConditionalSet list.
-    pub fn get_conditional_styles_collection(&self) -> &Vec<ConditionalSet> {
-        &self.conditional_styles_collection
+    /// Get ConditionalFormatting list.
+    pub fn get_conditional_formatting_collection(&self) -> &Vec<ConditionalFormatting> {
+        &self.conditional_formatting_collection
     }
 
-    /// Set ConditionalSet.
+    /// Set ConditionalFormatting.
     /// # Arguments
     /// * `value` - ConditionalSet List (Vec)
-    pub fn set_conditional_styles_collection(&mut self, value: Vec<ConditionalSet>) {
-        self.conditional_styles_collection = value;
+    pub fn set_conditional_formatting_collection(&mut self, value: Vec<ConditionalFormatting>) {
+        self.conditional_formatting_collection = value;
     }
 
-    /// Add ConditionalSet.
+    /// Add ConditionalFormatting.
     /// # Arguments
-    /// * `value` - ConditionalSet
-    pub fn add_conditional_styles_collection(&mut self, value: ConditionalSet) {
-        self.conditional_styles_collection.push(value);
+    /// * `value` - ConditionalFormatting
+    pub fn add_conditional_formatting_collection(&mut self, value: ConditionalFormatting) {
+        self.conditional_formatting_collection.push(value);
     }
 
     // ************************
@@ -1120,7 +1120,7 @@ impl Worksheet {
             }
 
             // conditional styles
-            for conditional_styles in &mut self.conditional_styles_collection {
+            for conditional_styles in &mut self.conditional_formatting_collection {
                 for range in conditional_styles
                     .get_sequence_of_references_mut()
                     .get_range_collection_mut()
@@ -1262,7 +1262,7 @@ impl Worksheet {
             }
 
             // conditional styles
-            for conditional_styles in &mut self.conditional_styles_collection {
+            for conditional_styles in &mut self.conditional_formatting_collection {
                 conditional_styles
                     .get_sequence_of_references_mut()
                     .get_range_collection_mut()
@@ -1270,12 +1270,12 @@ impl Worksheet {
                         !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
                     });
             }
-            self.conditional_styles_collection.retain(|x| {
+            self.conditional_formatting_collection.retain(|x| {
                 !x.get_sequence_of_references()
                     .get_range_collection()
                     .is_empty()
             });
-            for conditional_styles in &mut self.conditional_styles_collection {
+            for conditional_styles in &mut self.conditional_formatting_collection {
                 for range in conditional_styles
                     .get_sequence_of_references_mut()
                     .get_range_collection_mut()
