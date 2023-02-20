@@ -19,9 +19,9 @@ pub fn read<R: io::Read + io::Seek>(
     let theme = spreadsheet.get_theme().clone();
 
     loop {
-        match reader.read_event(&mut buf) {
+        match reader.read_event_into(&mut buf) {
             Ok(Event::Start(ref e)) => {
-                match e.name() {
+                match e.name().into_inner() {
                     b"styleSheet" => {
                         let mut obj = Stylesheet::default();
                         obj.set_attributes(&mut reader, e);

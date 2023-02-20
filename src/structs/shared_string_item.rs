@@ -113,8 +113,8 @@ impl SharedStringItem {
         let mut vec_text_element: Vec<TextElement> = Vec::new();
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"t" => {
                         let mut obj = Text::default();
                         obj.set_attributes(reader, e);
@@ -131,7 +131,7 @@ impl SharedStringItem {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"si" => {
                         if vec_text_element.len() > 0 {
                             let mut obj = RichText::default();

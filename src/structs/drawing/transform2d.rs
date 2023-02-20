@@ -102,8 +102,8 @@ impl Transform2D {
         }
 
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:off" => {
                         self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
                         self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
@@ -114,7 +114,7 @@ impl Transform2D {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:xfrm" => {
                         return;
                     }

@@ -18,8 +18,8 @@ pub(crate) fn read(
     let mut buf = Vec::new();
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Start(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"xdr:wsDr" => {
                     let mut obj = WorksheetDrawing::default();
                     obj.set_attributes(

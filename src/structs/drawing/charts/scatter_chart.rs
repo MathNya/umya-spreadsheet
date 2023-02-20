@@ -98,8 +98,8 @@ impl ScatterChart {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().0 {
                     b"c:ser" => {
                         let mut obj = AreaChartSeries::default();
                         obj.set_attributes(reader, e);
@@ -111,7 +111,7 @@ impl ScatterChart {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().0 {
                     b"c:scatterStyle" => {
                         self.scatter_style.set_attributes(reader, e);
                     }
@@ -125,7 +125,7 @@ impl ScatterChart {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"c:scatterChart" => return,
                     _ => (),
                 },

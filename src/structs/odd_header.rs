@@ -39,11 +39,11 @@ impl OddHeader {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
+            match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    self.set_value(e.unescape_and_decode(reader).unwrap());
+                    self.set_value(e.unescape().unwrap());
                 }
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"oddHeader" => return,
                     _ => (),
                 },

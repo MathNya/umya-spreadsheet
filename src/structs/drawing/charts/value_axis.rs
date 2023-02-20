@@ -241,8 +241,8 @@ impl ValueAxis {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().0 {
                     b"c:scaling" => {
                         self.scaling.set_attributes(reader, e);
                     }
@@ -268,7 +268,7 @@ impl ValueAxis {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().0 {
                     b"c:axId" => {
                         self.axis_id.set_attributes(reader, e);
                     }
@@ -306,7 +306,7 @@ impl ValueAxis {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"c:valAx" => return,
                     _ => (),
                 },

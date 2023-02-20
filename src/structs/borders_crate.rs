@@ -50,15 +50,15 @@ impl BordersCrate {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"border" => {
                         let obj = Borders::default();
                         self.set_borders(obj);
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"border" => {
                         let mut obj = Borders::default();
                         obj.set_attributes(reader, e);
@@ -66,7 +66,7 @@ impl BordersCrate {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"borders" => return,
                     _ => (),
                 },

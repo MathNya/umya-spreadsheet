@@ -73,10 +73,10 @@ impl FromMarker {
         let mut string_value:String = String::from("");
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
+            match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
                 Ok(Event::End(ref e)) => {
-                    match e.name() {
+                    match e.name().into_inner() {
                         b"xdr:col" => {
                             self.col = string_value.parse::<usize>().unwrap();
                         },

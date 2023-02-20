@@ -13,7 +13,8 @@ pub(crate) fn write_start_tag<'a, S>(
     S: Into<Cow<'a, str>>,
 {
     let tag_name = tag_name.into();
-    let mut elem = BytesStart::owned(tag_name.as_bytes().to_vec(), tag_name.len());
+    let len = tag_name.len();
+    let mut elem = BytesStart::from_content(tag_name, len);
     for attribute in &attributes {
         elem.push_attribute((attribute.0, attribute.1));
     }
@@ -28,21 +29,21 @@ pub(crate) fn write_end_tag<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, tag_nam
 where
     S: Into<Cow<'a, str>>,
 {
-    let _ = writer.write_event(Event::End(BytesEnd::borrowed(tag_name.into().as_bytes())));
+    let _ = writer.write_event(Event::End(BytesEnd::new(tag_name.into())));
 }
 
 pub(crate) fn write_text_node<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
 where
     S: Into<Cow<'a, str>>,
 {
-    let _ = writer.write_event(Event::Text(BytesText::from_plain_str(&data.into())));
+    let _ = writer.write_event(Event::Text(BytesText::new(&data.into())));
 }
 
 pub(crate) fn write_text_node_no_escape<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
 where
     S: Into<Cow<'a, str>>,
 {
-    let _ = writer.write(data.into().as_bytes());
+    let _ = writer.inner().write(data.into().as_bytes());
 }
 
 pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>) {

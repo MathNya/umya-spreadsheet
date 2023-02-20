@@ -64,8 +64,8 @@ impl EffectList {
         let mut buf = Vec::new();
 
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:softEdge" => {
                         let mut obj = SoftEdge::default();
                         obj.set_attributes(reader, e);
@@ -73,7 +73,7 @@ impl EffectList {
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"a:glow" => {
                         let mut obj = Glow::default();
                         obj.set_attributes(reader, e);
@@ -86,7 +86,7 @@ impl EffectList {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:effectLst" => return,
                     _ => (),
                 },

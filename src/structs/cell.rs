@@ -354,15 +354,15 @@ impl Cell {
         let mut string_value: String = String::from("");
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Text(e)) => string_value = e.unescape_and_decode(reader).unwrap(),
-                Ok(Event::Start(ref s)) => match s.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
+                Ok(Event::Start(ref s)) => match s.name().into_inner() {
                     b"f" => {
                         let mut attrs = vec![];
                         s.attributes().for_each(|a| {
                             if let Ok(attribute) = a {
                                 if let (Ok(key), Ok(value)) = (
-                                    std::str::from_utf8(attribute.key),
+                                    std::str::from_utf8(attribute.key.into_inner()),
                                     std::str::from_utf8(attribute.value.as_ref()),
                                 ) {
                                     attrs.push((key.to_owned(), value.to_owned()));
@@ -373,7 +373,7 @@ impl Cell {
                     }
                     b"t" => {
                         if let Some(Ok(attribute)) = s.attributes().next() {
-                            if attribute.key == b"xml:space"
+                            if attribute.key.into_inner() == b"xml:space"
                                 && attribute.value.as_ref() == b"preserve"
                             {
                                 reader.trim_text(false);
@@ -383,12 +383,12 @@ impl Cell {
                     _ => (),
                 },
                 Ok(Event::Empty(ref s)) => {
-                    if s.name() == b"f" {
+                    if s.name().into_inner() == b"f" {
                         let mut attrs = vec![];
                         s.attributes().for_each(|a| {
                             if let Ok(attribute) = a {
                                 if let (Ok(key), Ok(value)) = (
-                                    std::str::from_utf8(attribute.key),
+                                    std::str::from_utf8(attribute.key.into_inner()),
                                     std::str::from_utf8(attribute.value.as_ref()),
                                 ) {
                                     attrs.push((key.to_owned(), value.to_owned()));
@@ -398,7 +398,7 @@ impl Cell {
                         self.set_formula_attributes(attrs);
                     }
                 }
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"f" => {
                         self.set_formula(string_value.clone());
                     }

@@ -136,8 +136,8 @@ impl DataLabels {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"c:txPr" => {
                         let mut obj = TextProperties::default();
                         obj.set_attributes(reader, e);
@@ -145,7 +145,7 @@ impl DataLabels {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c:showLegendKey" => {
                         self.show_legend_key.set_attributes(reader, e);
                     }
@@ -171,7 +171,7 @@ impl DataLabels {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"c:dLbls" => return,
                     _ => (),
                 },

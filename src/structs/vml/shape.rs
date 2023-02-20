@@ -256,8 +256,8 @@ impl Shape {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"v:fill" => {
                         let mut obj = Fill::default();
                         obj.set_attributes(reader, e);
@@ -285,7 +285,7 @@ impl Shape {
                     }
                     _ => (),
                 },
-                Ok(Event::Start(ref e)) => match e.name() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"v:textbox" => {
                         let mut obj = TextBox::default();
                         obj.set_attributes(reader, e);
@@ -298,7 +298,7 @@ impl Shape {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"v:shape" => return,
                     _ => (),
                 },

@@ -285,8 +285,8 @@ impl RunProperties {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"a:solidFill" => {
                         let mut obj = SolidFill::default();
                         obj.set_attributes(reader, e);
@@ -309,7 +309,7 @@ impl RunProperties {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:latin" => {
                         let mut obj = LatinFont::default();
                         obj.set_attributes(reader, e);
@@ -332,7 +332,7 @@ impl RunProperties {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:rPr" => return,
                     b"a:endParaRPr" => return,
                     b"a:defRPr" => return,

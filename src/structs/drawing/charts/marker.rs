@@ -36,8 +36,8 @@ impl Marker {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().0 {
                     b"c:symbol" => {
                         let mut obj = Symbol::default();
                         obj.set_attributes(reader, e);
@@ -45,7 +45,7 @@ impl Marker {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"c:marker" => return,
                     _ => (),
                 },

@@ -79,8 +79,8 @@ impl RawRelationships {
         let mut buf = Vec::new();
 
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"Relationship" => {
                         let mut obj = RawRelationship::default();
                         obj.set_attributes(&mut reader, e, arv, base_path);
@@ -109,9 +109,9 @@ impl RawRelationships {
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
         // XML header
         let _ = writer.write_event(Event::Decl(BytesDecl::new(
-            b"1.0",
-            Some(b"UTF-8"),
-            Some(b"yes"),
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
         )));
         write_new_line(&mut writer);
 

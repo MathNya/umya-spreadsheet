@@ -25,10 +25,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut buf = Vec::new();
     let mut string_value: String = String::from("");
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Text(e)) => string_value = e.unescape_and_decode(&reader).unwrap(),
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
             Ok(Event::End(ref e)) => {
-                match e.name() {
+                match e.name().into_inner() {
                     b"Manager" => {
                         spreadsheet
                             .get_properties_mut()

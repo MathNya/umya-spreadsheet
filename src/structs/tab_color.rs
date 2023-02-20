@@ -181,19 +181,19 @@ impl TabColor {
     ) {
         for a in e.attributes().with_checks(false) {
             match a {
-                Ok(ref attr) if attr.key == b"indexed" => {
+                Ok(ref attr) if attr.key.0 == b"indexed" => {
                     self.indexed
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"theme" => {
+                Ok(ref attr) if attr.key.0 == b"theme" => {
                     self.theme_index
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"rgb" => {
+                Ok(ref attr) if attr.key.0 == b"rgb" => {
                     self.argb
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"tint" => {
+                Ok(ref attr) if attr.key.0 == b"tint" => {
                     self.tint
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }

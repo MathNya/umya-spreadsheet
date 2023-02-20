@@ -151,8 +151,8 @@ impl ShapeProperties {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().0 {
                     b"a:pattFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e);
@@ -195,7 +195,7 @@ impl ShapeProperties {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().0 {
                     b"a:noFill" => {
                         let mut obj = NoFill::default();
                         obj.set_attributes(reader, e);
@@ -203,7 +203,7 @@ impl ShapeProperties {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"c:spPr" => return,
                     _ => (),
                 },

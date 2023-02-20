@@ -27,12 +27,12 @@ pub(crate) fn read(
     let mut buf = Vec::new();
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Start(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"sheetPr" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"codeName" => {
+                            Ok(ref attr) if attr.key.0 == b"codeName" => {
                                 worksheet.set_code_name(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}
@@ -48,7 +48,7 @@ pub(crate) fn read(
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"activeCell" => {
+                            Ok(ref attr) if attr.key.0 == b"activeCell" => {
                                 worksheet.set_active_cell(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}
@@ -109,11 +109,11 @@ pub(crate) fn read(
                 }
                 _ => (),
             },
-            Ok(Event::Empty(ref e)) => match e.name() {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"sheetPr" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"codeName" => {
+                            Ok(ref attr) if attr.key.0 == b"codeName" => {
                                 worksheet.set_code_name(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}
@@ -128,7 +128,7 @@ pub(crate) fn read(
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
-                            Ok(ref attr) if attr.key == b"activeCell" => {
+                            Ok(ref attr) if attr.key.0 == b"activeCell" => {
                                 worksheet.set_active_cell(get_attribute_value(attr)?);
                             }
                             Ok(_) => {}

@@ -118,35 +118,35 @@ impl BodyProperties {
     ) {
         for a in e.attributes().with_checks(false) {
             match a {
-                Ok(ref attr) if attr.key == b"vertOverflow" => {
+                Ok(ref attr) if attr.key.into_inner() == b"vertOverflow" => {
                     self.set_vert_overflow(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"horzOverflow" => {
+                Ok(ref attr) if attr.key.into_inner() == b"horzOverflow" => {
                     self.set_horz_overflow(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"rtlCol" => {
+                Ok(ref attr) if attr.key.into_inner() == b"rtlCol" => {
                     self.set_rtl_col(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"anchor" => {
+                Ok(ref attr) if attr.key.into_inner() == b"anchor" => {
                     self.set_anchor(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"wrap" => {
+                Ok(ref attr) if attr.key.into_inner() == b"wrap" => {
                     self.wrap
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"lIns" => {
+                Ok(ref attr) if attr.key.into_inner() == b"lIns" => {
                     self.left_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"tIns" => {
+                Ok(ref attr) if attr.key.into_inner() == b"tIns" => {
                     self.top_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"rIns" => {
+                Ok(ref attr) if attr.key.into_inner() == b"rIns" => {
                     self.right_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"bIns" => {
+                Ok(ref attr) if attr.key.into_inner() == b"bIns" => {
                     self.bottom_inset
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
@@ -161,8 +161,8 @@ impl BodyProperties {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:spAutoFit" => {
                         let mut obj = ShapeAutoFit::default();
                         obj.set_attributes(reader, e);
@@ -170,7 +170,7 @@ impl BodyProperties {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:bodyPr" => return,
                     _ => (),
                 },

@@ -40,12 +40,12 @@ impl CommentRowTarget {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
+            match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => {
                     self.value
-                        .set_value_string(e.unescape_and_decode(reader).unwrap());
+                        .set_value_string(e.unescape().unwrap());
                 }
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"x:Row" => return,
                     _ => (),
                 },

@@ -108,19 +108,19 @@ impl RgbColorModelHex {
     ) {
         for a in e.attributes().with_checks(false) {
             match a {
-                Ok(ref attr) if attr.key == b"r" => {
+                Ok(ref attr) if attr.key.into_inner() == b"r" => {
                     self.red
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"g" => {
+                Ok(ref attr) if attr.key.into_inner() == b"g" => {
                     self.green
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"b" => {
+                Ok(ref attr) if attr.key.into_inner() == b"b" => {
                     self.blue
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
-                Ok(ref attr) if attr.key == b"val" => {
+                Ok(ref attr) if attr.key.into_inner() == b"val" => {
                     self.val
                         .set_value_string(get_attribute_value(attr).unwrap());
                 }
@@ -134,8 +134,8 @@ impl RgbColorModelHex {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:tint" => {
                         let mut obj = Tint::default();
                         obj.set_attributes(reader, e);
@@ -153,7 +153,7 @@ impl RgbColorModelHex {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:srgbClr" => return,
                     _ => (),
                 },

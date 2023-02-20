@@ -265,8 +265,8 @@ impl CellFormat {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"alignment" => {
                         let mut obj = Alignment::default();
                         obj.set_attributes(reader, e);
@@ -274,7 +274,7 @@ impl CellFormat {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xf" => return,
                     _ => (),
                 },

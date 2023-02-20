@@ -24,8 +24,8 @@ pub fn read<R: io::Read + io::Seek>(
     let mut tag_name = String::from("");
 
     loop {
-        match reader.read_event(&mut buf) {
-            Ok(Event::Start(ref e)) => match e.name() {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"a:theme" => {
                     theme.set_theme_name(get_attribute(e, b"name").unwrap());
                 }
@@ -52,7 +52,7 @@ pub fn read<R: io::Read + io::Seek>(
                 }
                 _ => (),
             },
-            Ok(Event::Empty(ref e)) => match e.name() {
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"a:sysClr" => {
                     let value = get_attribute(e, b"lastClr").unwrap();
                     set_value(&mut theme, &tag_name, &value);

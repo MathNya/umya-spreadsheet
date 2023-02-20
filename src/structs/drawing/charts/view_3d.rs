@@ -76,8 +76,8 @@ impl View3D {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().0 {
                     b"c:rotX" => {
                         let mut obj = RotateX::default();
                         obj.set_attributes(reader, e);
@@ -100,7 +100,7 @@ impl View3D {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().0 {
                     b"c:view3D" => return,
                     _ => (),
                 },

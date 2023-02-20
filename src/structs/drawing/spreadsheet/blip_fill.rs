@@ -83,8 +83,8 @@ impl BlipFill {
         }
 
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"a:blip" => {
                         self.blip.set_attributes(reader, e, drawing_relationships);
                     }
@@ -93,7 +93,7 @@ impl BlipFill {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:blip" => {
                         self.blip.set_attributes(reader, e, drawing_relationships);
                     }
@@ -104,7 +104,7 @@ impl BlipFill {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xdr:blipFill" => return,
                     _ => (),
                 },

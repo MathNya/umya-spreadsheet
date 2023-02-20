@@ -36,8 +36,8 @@ impl GraphicData {
         let mut buf = Vec::new();
 
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c:chart" => {
                         let chart_id = get_attribute(e, b"r:id").unwrap();
                         let relationship = drawing_relationships.get_relationship_by_rid(&chart_id);
@@ -45,7 +45,7 @@ impl GraphicData {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:graphicData" => return,
                     _ => (),
                 },

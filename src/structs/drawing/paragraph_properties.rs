@@ -87,8 +87,8 @@ impl ParagraphProperties {
 
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"a:defRPr" => {
                         let mut obj = RunProperties::default();
                         obj.set_attributes(reader, e, false);
@@ -101,7 +101,7 @@ impl ParagraphProperties {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => match e.name() {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:defRPr" => {
                         let mut obj = RunProperties::default();
                         obj.set_attributes(reader, e, true);
@@ -109,7 +109,7 @@ impl ParagraphProperties {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:pPr" => return,
                     _ => (),
                 },

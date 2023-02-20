@@ -24,9 +24,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     {
         // XML header
         let _ = writer.write_event(Event::Decl(BytesDecl::new(
-            b"1.0",
-            Some(b"UTF-8"),
-            Some(b"yes"),
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
         )));
         write_new_line(&mut writer);
 

@@ -82,8 +82,8 @@ impl TextElement {
     ) {
         let mut buf = Vec::new();
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"t" => {
                         let mut obj = Text::default();
                         obj.set_attributes(reader, e);
@@ -96,7 +96,7 @@ impl TextElement {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"r" => return,
                     _ => (),
                 },

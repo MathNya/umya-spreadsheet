@@ -36,8 +36,8 @@ impl AdjustValueList {
         let mut buf = Vec::new();
 
         loop {
-            match reader.read_event(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name() {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:gd" => {
                         let mut shape_guide = ShapeGuide::default();
                         shape_guide.set_name(get_attribute(e, b"name").unwrap());
@@ -46,7 +46,7 @@ impl AdjustValueList {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name() {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"a:avLst" => {
                         return;
                     }
