@@ -122,7 +122,7 @@ use structs::ChartType;
 ///     .set_title("Chart Title")
 ///     .set_horizontal_title("Horizontal Title")
 ///     .set_vertical_title("Vertical Title");
-/// 
+///
 /// // line chart is a stack line chart by default.
 /// // To change it to an actual line chart, configure as follows
 /// chart

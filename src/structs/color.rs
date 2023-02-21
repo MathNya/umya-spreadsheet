@@ -135,6 +135,8 @@ impl Color {
         if self.theme_index.has_value() {
             self.argb.set_value(
                 match theme
+                    .get_theme_elements()
+                    .get_color_scheme()
                     .get_color_map()
                     .get(*self.theme_index.get_value() as usize)
                 {
@@ -224,7 +226,7 @@ impl Color {
         self.write_to(writer, "tabColor");
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
+    fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let theme_index = self.theme_index.get_value_string();
         let indexed = self.indexed.get_value_string();

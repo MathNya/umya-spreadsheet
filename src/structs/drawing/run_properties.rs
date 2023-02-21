@@ -1,13 +1,12 @@
 use super::super::EnumValue;
 use super::super::Int32Value;
-use super::EastAsianFont;
 use super::EffectList;
 use super::GradientFill;
-use super::LatinFont;
 use super::NoFill;
 use super::Outline;
 use super::SolidFill;
 use super::TextCapsValues;
+use super::TextFontType;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -30,8 +29,8 @@ pub struct RunProperties {
     strike: StringValue,
     outline: Option<Outline>,
     solid_fill: Option<SolidFill>,
-    latin_font: Option<LatinFont>,
-    east_asian_font: Option<EastAsianFont>,
+    latin_font: Option<TextFontType>,
+    east_asian_font: Option<TextFontType>,
     gradient_fill: Option<GradientFill>,
     no_fill: Option<NoFill>,
     effect_list: Option<EffectList>,
@@ -153,28 +152,28 @@ impl RunProperties {
         self
     }
 
-    pub fn get_latin_font(&self) -> &Option<LatinFont> {
+    pub fn get_latin_font(&self) -> &Option<TextFontType> {
         &self.latin_font
     }
 
-    pub fn get_latin_font_mut(&mut self) -> &mut Option<LatinFont> {
+    pub fn get_latin_font_mut(&mut self) -> &mut Option<TextFontType> {
         &mut self.latin_font
     }
 
-    pub fn set_latin_font(&mut self, value: LatinFont) -> &mut Self {
+    pub fn set_latin_font(&mut self, value: TextFontType) -> &mut Self {
         self.latin_font = Some(value);
         self
     }
 
-    pub fn get_east_asian_font(&self) -> &Option<EastAsianFont> {
+    pub fn get_east_asian_font(&self) -> &Option<TextFontType> {
         &self.east_asian_font
     }
 
-    pub fn get_east_asian_font_mut(&mut self) -> &mut Option<EastAsianFont> {
+    pub fn get_east_asian_font_mut(&mut self) -> &mut Option<TextFontType> {
         &mut self.east_asian_font
     }
 
-    pub fn set_east_asian_font(&mut self, value: EastAsianFont) -> &mut Self {
+    pub fn set_east_asian_font(&mut self, value: TextFontType) -> &mut Self {
         self.east_asian_font = Some(value);
         self
     }
@@ -311,12 +310,12 @@ impl RunProperties {
                 },
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:latin" => {
-                        let mut obj = LatinFont::default();
+                        let mut obj = TextFontType::default();
                         obj.set_attributes(reader, e);
                         self.set_latin_font(obj);
                     }
                     b"a:ea" => {
-                        let mut obj = EastAsianFont::default();
+                        let mut obj = TextFontType::default();
                         obj.set_attributes(reader, e);
                         self.set_east_asian_font(obj);
                     }
@@ -419,7 +418,7 @@ impl RunProperties {
             // a:latin
             match &self.latin_font {
                 Some(v) => {
-                    v.write_to(writer);
+                    v.write_to_latin(writer);
                 }
                 None => {}
             }
@@ -427,7 +426,7 @@ impl RunProperties {
             // a:ea
             match &self.east_asian_font {
                 Some(v) => {
-                    v.write_to(writer);
+                    v.write_to_ea(writer);
                 }
                 None => {}
             }

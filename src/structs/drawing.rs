@@ -90,12 +90,6 @@ pub use self::graphic_data::*;
 mod paragraph_properties;
 pub use self::paragraph_properties::*;
 
-mod latin_font;
-pub use self::latin_font::*;
-
-mod east_asian_font;
-pub use self::east_asian_font::*;
-
 mod no_fill;
 pub use self::no_fill::*;
 
@@ -186,15 +180,6 @@ pub use self::text_alignment_type_values::*;
 mod text_caps_values;
 pub use self::text_caps_values::*;
 
-mod tint;
-pub use self::tint::*;
-
-mod shade;
-pub use self::shade::*;
-
-mod saturation_modulation;
-pub use self::saturation_modulation::*;
-
 mod preset_line_dash_values;
 pub use self::preset_line_dash_values::*;
 
@@ -221,3 +206,57 @@ pub use self::theme::*;
 
 mod font_collection_type;
 pub use self::font_collection_type::*;
+
+mod theme_elements;
+pub use self::theme_elements::*;
+
+mod color_scheme;
+pub use self::color_scheme::*;
+
+mod font_scheme;
+pub use self::font_scheme::*;
+
+mod format_scheme;
+pub use self::format_scheme::*;
+
+mod color2_type;
+pub use self::color2_type::*;
+
+mod fill_style_list;
+pub use self::fill_style_list::*;
+
+mod line_style_list;
+pub use self::line_style_list::*;
+
+mod effect_style_list;
+pub use self::effect_style_list::*;
+
+mod effect_style;
+pub use self::effect_style::*;
+
+mod background_fill_style_list;
+pub use self::background_fill_style_list::*;
+
+mod system_color;
+pub use self::system_color::*;
+
+mod system_color_values;
+pub use self::system_color_values::*;
+
+mod text_font_type;
+pub use self::text_font_type::*;
+
+mod scheme_color_values;
+pub use self::scheme_color_values::*;
+
+mod percentage_type;
+pub use self::percentage_type::*;
+
+mod positive_fixed_percentage_type;
+pub use self::positive_fixed_percentage_type::*;
+
+mod pen_alignment_values;
+pub use self::pen_alignment_values::*;
+
+mod rotation;
+pub use self::rotation::*;

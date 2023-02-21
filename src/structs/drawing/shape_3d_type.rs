@@ -55,8 +55,12 @@ impl Shape3DType {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.preset_material
-            .set_value_string(get_attribute(e, b"prstMaterial").unwrap());
+        match get_attribute(e, b"prstMaterial") {
+            Some(v) => {
+                self.preset_material.set_value_string(v);
+            }
+            None => {}
+        }
 
         let mut buf = Vec::new();
         loop {
@@ -88,12 +92,12 @@ impl Shape3DType {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:sp3d
-        write_start_tag(
-            writer,
-            "a:sp3d",
-            vec![("prstMaterial", self.preset_material.get_value_string())],
-            false,
-        );
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let preset_material = self.preset_material.get_value_string();
+        if self.preset_material.has_value() {
+            attributes.push(("prstMaterial", &preset_material));
+        }
+        write_start_tag(writer, "a:sp3d", attributes, false);
 
         // a:bevelT
         match &self.bevel_top {

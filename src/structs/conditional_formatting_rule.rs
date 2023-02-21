@@ -1,19 +1,19 @@
-use quick_xml::events::Event;
-use super::Style;
-use super::StringValue;
-use super::EnumValue;
 use super::BooleanValue;
-use super::Int32Value;
-use super::UInt32Value;
+use super::ColorScale;
 use super::ConditionalFormatValues;
 use super::ConditionalFormattingOperatorValues;
-use super::TimePeriodValues;
-use super::ColorScale;
 use super::DataBar;
-use super::IconSet;
-use super::Formula;
 use super::DifferentialFormats;
+use super::EnumValue;
+use super::Formula;
+use super::IconSet;
+use super::Int32Value;
+use super::StringValue;
+use super::Style;
+use super::TimePeriodValues;
+use super::UInt32Value;
 use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
@@ -58,7 +58,7 @@ impl ConditionalFormattingRule {
         self.operator.set_value(value);
         self
     }
-    
+
     pub fn get_text(&self) -> &str {
         &self.text.get_value()
     }
@@ -171,7 +171,7 @@ impl ConditionalFormattingRule {
         self.color_scale = Some(value);
         self
     }
-    
+
     pub fn remove_color_scale(&mut self) -> &mut Self {
         self.color_scale = None;
         self
@@ -185,7 +185,7 @@ impl ConditionalFormattingRule {
         self.data_bar = Some(value);
         self
     }
-    
+
     pub fn remove_data_bar(&mut self) -> &mut Self {
         self.data_bar = None;
         self
@@ -199,7 +199,7 @@ impl ConditionalFormattingRule {
         self.icon_set = Some(value);
         self
     }
-    
+
     pub fn remove_icon_set(&mut self) -> &mut Self {
         self.icon_set = None;
         self
@@ -213,7 +213,7 @@ impl ConditionalFormattingRule {
         self.formula = Some(value);
         self
     }
-    
+
     pub fn remove_formula(&mut self) -> &mut Self {
         self.formula = None;
         self
@@ -224,7 +224,7 @@ impl ConditionalFormattingRule {
         reader: &mut Reader<R>,
         e: &BytesStart,
         differential_formats: &DifferentialFormats,
-        empty_flag: bool
+        empty_flag: bool,
     ) {
         match get_attribute(e, b"type") {
             Some(v) => {
@@ -242,7 +242,7 @@ impl ConditionalFormattingRule {
 
         match get_attribute(e, b"dxfId") {
             Some(v) => {
-                let dxf_id =v.parse::<usize>().unwrap();
+                let dxf_id = v.parse::<usize>().unwrap();
                 let style = differential_formats.get_style(dxf_id);
                 self.set_style(style);
             }
@@ -324,22 +324,22 @@ impl ConditionalFormattingRule {
                         let mut obj = ColorScale::default();
                         obj.set_attributes(reader, e);
                         self.color_scale = Some(obj);
-                    },
+                    }
                     b"dataBar" => {
                         let mut obj = DataBar::default();
                         obj.set_attributes(reader, e);
                         self.data_bar = Some(obj);
-                    },
+                    }
                     b"iconSet" => {
                         let mut obj = IconSet::default();
                         obj.set_attributes(reader, e);
                         self.icon_set = Some(obj);
-                    },
+                    }
                     b"formula" => {
                         let mut obj = Formula::default();
                         obj.set_attributes(reader, e);
                         self.formula = Some(obj);
-                    },
+                    }
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
@@ -354,8 +354,15 @@ impl ConditionalFormattingRule {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, differential_formats: &mut DifferentialFormats) {
-        let is_inner = self.color_scale.is_some() || self.data_bar.is_some() || self.icon_set.is_some() || self.formula.is_some();
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        differential_formats: &mut DifferentialFormats,
+    ) {
+        let is_inner = self.color_scale.is_some()
+            || self.data_bar.is_some()
+            || self.icon_set.is_some()
+            || self.formula.is_some();
 
         // cfRule
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -388,7 +395,7 @@ impl ConditionalFormattingRule {
         let percent = self.percent.get_value_string();
         if self.percent.has_value() {
             attributes.push(("percent", &percent));
-        }        
+        }
 
         let bottom = self.bottom.get_value_string();
         if self.bottom.has_value() {
@@ -433,7 +440,7 @@ impl ConditionalFormattingRule {
                 Some(v) => v.write_to(writer),
                 None => {}
             }
-    
+
             // dataBar
             match &self.data_bar {
                 Some(v) => v.write_to(writer),

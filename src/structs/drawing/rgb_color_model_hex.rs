@@ -1,9 +1,8 @@
 // a:srgbClr
-use super::super::super::Int32Value;
-use super::super::super::StringValue;
-use super::SaturationModulation;
-use super::Shade;
-use super::Tint;
+use super::super::StringValue;
+use super::PercentageType;
+use super::PositiveFixedPercentageType;
+use super::SchemeColorValues;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -11,93 +10,134 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
+
 #[derive(Clone, Default, Debug)]
 pub struct RgbColorModelHex {
     val: StringValue,
-    red: Int32Value,
-    green: Int32Value,
-    blue: Int32Value,
-    tint: Option<Tint>,
-    shade: Option<Shade>,
-    saturation_modulation: Option<SaturationModulation>,
+    luminance: Option<PercentageType>,
+    luminance_modulation: Option<PercentageType>,
+    luminance_offset: Option<PercentageType>,
+    saturation: Option<PercentageType>,
+    saturation_modulation: Option<PercentageType>,
+    shade: Option<PositiveFixedPercentageType>,
+    alpha: Option<PositiveFixedPercentageType>,
+    tint: Option<PositiveFixedPercentageType>,
 }
 impl RgbColorModelHex {
     pub fn get_val(&self) -> &str {
-        self.val.get_value()
+        &self.val.get_value()
     }
 
-    pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut RgbColorModelHex {
+    pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
-    pub fn get_red(&self) -> &i32 {
-        self.red.get_value()
+    pub fn get_luminance(&self) -> &Option<PercentageType> {
+        &self.luminance
     }
 
-    pub fn set_red(&mut self, value: i32) -> &mut RgbColorModelHex {
-        self.red.set_value(value);
-        self
+    pub fn get_luminance_mut(&mut self) -> &mut Option<PercentageType> {
+        &mut self.luminance
     }
 
-    pub fn get_green(&self) -> &i32 {
-        self.green.get_value()
+    pub fn set_luminance(&mut self, value: PercentageType) {
+        self.luminance = Some(value);
     }
 
-    pub fn set_green(&mut self, value: i32) -> &mut RgbColorModelHex {
-        self.green.set_value(value);
-        self
+    pub fn get_luminance_modulation(&self) -> &Option<PercentageType> {
+        &self.luminance_modulation
     }
 
-    pub fn get_blue(&self) -> &i32 {
-        self.blue.get_value()
+    pub fn get_luminance_modulation_mut(&mut self) -> &mut Option<PercentageType> {
+        &mut self.luminance_modulation
     }
 
-    pub fn set_blue(&mut self, value: i32) -> &mut RgbColorModelHex {
-        self.blue.set_value(value);
-        self
+    pub fn set_luminance_modulation(&mut self, value: PercentageType) {
+        self.luminance_modulation = Some(value);
     }
 
-    pub fn get_tint(&self) -> &Option<Tint> {
-        &self.tint
+    pub fn get_luminance_offset(&self) -> &Option<PercentageType> {
+        &self.luminance_offset
     }
 
-    pub fn get_tint_mut(&mut self) -> &mut Option<Tint> {
-        &mut self.tint
+    pub fn get_luminance_offset_mut(&mut self) -> &mut Option<PercentageType> {
+        &mut self.luminance_offset
     }
 
-    pub fn set_tint(&mut self, value: Tint) -> &mut RgbColorModelHex {
-        self.tint = Some(value);
-        self
+    pub fn set_luminance_offset(&mut self, value: PercentageType) {
+        self.luminance_offset = Some(value);
     }
 
-    pub fn get_shade(&self) -> &Option<Shade> {
-        &self.shade
+    pub fn get_saturation(&self) -> &Option<PercentageType> {
+        &self.saturation
     }
 
-    pub fn get_shade_mut(&mut self) -> &mut Option<Shade> {
-        &mut self.shade
+    pub fn get_saturation_mut(&mut self) -> &mut Option<PercentageType> {
+        &mut self.saturation
     }
 
-    pub fn set_shade(&mut self, value: Shade) -> &mut RgbColorModelHex {
-        self.shade = Some(value);
-        self
+    pub fn set_saturation(&mut self, value: PercentageType) {
+        self.saturation = Some(value);
     }
 
-    pub fn get_saturation_modulation(&self) -> &Option<SaturationModulation> {
+    pub fn get_saturation_modulation(&self) -> &Option<PercentageType> {
         &self.saturation_modulation
     }
 
-    pub fn get_saturation_modulation_mut(&mut self) -> &mut Option<SaturationModulation> {
+    pub fn get_saturation_modulation_mut(&mut self) -> &mut Option<PercentageType> {
         &mut self.saturation_modulation
     }
 
-    pub fn set_saturation_modulation(
-        &mut self,
-        value: SaturationModulation,
-    ) -> &mut RgbColorModelHex {
+    pub fn set_saturation_modulation(&mut self, value: PercentageType) {
         self.saturation_modulation = Some(value);
-        self
+    }
+
+    pub fn get_shade(&self) -> &Option<PositiveFixedPercentageType> {
+        &self.shade
+    }
+
+    pub fn get_shade_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
+        &mut self.shade
+    }
+
+    pub fn set_shade(&mut self, value: PositiveFixedPercentageType) {
+        self.shade = Some(value);
+    }
+
+    pub fn get_alpha(&self) -> &Option<PositiveFixedPercentageType> {
+        &self.alpha
+    }
+
+    pub fn get_alpha_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
+        &mut self.alpha
+    }
+
+    pub fn set_alpha(&mut self, value: PositiveFixedPercentageType) {
+        self.alpha = Some(value);
+    }
+
+    pub fn get_tint(&self) -> &Option<PositiveFixedPercentageType> {
+        &self.tint
+    }
+
+    pub fn get_tint_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
+        &mut self.tint
+    }
+
+    pub fn set_tint(&mut self, value: PositiveFixedPercentageType) {
+        self.tint = Some(value);
+    }
+
+    pub(crate) fn with_inner_params(&self) -> bool {
+        self.luminance.is_some()
+            || self.luminance_modulation.is_some()
+            || self.luminance_offset.is_some()
+            || self.saturation.is_some()
+            || self.saturation_modulation.is_some()
+            || self.shade.is_some()
+            || self.alpha.is_some()
+            || self.tint.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -106,28 +146,8 @@ impl RgbColorModelHex {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        for a in e.attributes().with_checks(false) {
-            match a {
-                Ok(ref attr) if attr.key.into_inner() == b"r" => {
-                    self.red
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.into_inner() == b"g" => {
-                    self.green
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.into_inner() == b"b" => {
-                    self.blue
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.into_inner() == b"val" => {
-                    self.val
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(_) => {}
-                Err(_) => {}
-            }
-        }
+        self.val.set_value_string(get_attribute(e, b"val").unwrap());
+
         if empty_flag {
             return;
         }
@@ -136,20 +156,45 @@ impl RgbColorModelHex {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:tint" => {
-                        let mut obj = Tint::default();
+                    b"a:lum" => {
+                        let mut obj = PercentageType::default();
                         obj.set_attributes(reader, e);
-                        self.set_tint(obj);
+                        self.luminance = Some(obj);
                     }
-                    b"a:shade" => {
-                        let mut obj = Shade::default();
+                    b"a:lumMod" => {
+                        let mut obj = PercentageType::default();
                         obj.set_attributes(reader, e);
-                        self.set_shade(obj);
+                        self.luminance_modulation = Some(obj);
+                    }
+                    b"a:lumOff" => {
+                        let mut obj = PercentageType::default();
+                        obj.set_attributes(reader, e);
+                        self.luminance_offset = Some(obj);
+                    }
+                    b"a:sat" => {
+                        let mut obj = PercentageType::default();
+                        obj.set_attributes(reader, e);
+                        self.saturation = Some(obj);
                     }
                     b"a:satMod" => {
-                        let mut obj = SaturationModulation::default();
+                        let mut obj = PercentageType::default();
                         obj.set_attributes(reader, e);
-                        self.set_saturation_modulation(obj);
+                        self.saturation_modulation = Some(obj);
+                    }
+                    b"a:shade" => {
+                        let mut obj = PositiveFixedPercentageType::default();
+                        obj.set_attributes(reader, e);
+                        self.shade = Some(obj);
+                    }
+                    b"a:alpha" => {
+                        let mut obj = PositiveFixedPercentageType::default();
+                        obj.set_attributes(reader, e);
+                        self.alpha = Some(obj);
+                    }
+                    b"a:tint" => {
+                        let mut obj = PositiveFixedPercentageType::default();
+                        obj.set_attributes(reader, e);
+                        self.tint = Some(obj);
                     }
                     _ => (),
                 },
@@ -166,41 +211,43 @@ impl RgbColorModelHex {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let empty_flag =
-            self.tint.is_none() && self.shade.is_none() && self.saturation_modulation.is_none();
-
         // a:srgbClr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let r = self.red.get_value_string();
-        if &self.red.has_value() == &true {
-            attributes.push(("r", &r));
-        }
-        let g = self.green.get_value_string();
-        if &self.green.has_value() == &true {
-            attributes.push(("g", &g));
-        }
-        let b = self.blue.get_value_string();
-        if &self.blue.has_value() == &true {
-            attributes.push(("b", &b));
-        }
-        if &self.val.has_value() == &true {
-            attributes.push(("val", self.val.get_value_string()));
-        }
-        write_start_tag(writer, "a:srgbClr", attributes, empty_flag);
+        if self.with_inner_params() {
+            write_start_tag(
+                writer,
+                "a:srgbClr",
+                vec![("val", &self.val.get_value_string())],
+                false,
+            );
 
-        if !empty_flag {
-            // a:tint
-            match &self.tint {
+            // a:luminance
+            match &self.luminance {
                 Some(v) => {
-                    v.write_to(writer);
+                    v.write_to_lum(writer);
                 }
                 None => {}
             }
 
-            // a:shade
-            match &self.shade {
+            // a:lumMod
+            match &self.luminance_modulation {
                 Some(v) => {
-                    v.write_to(writer);
+                    v.write_to_lum_mod(writer);
+                }
+                None => {}
+            }
+
+            // a:lumOff
+            match &self.luminance_offset {
+                Some(v) => {
+                    v.write_to_lum_off(writer);
+                }
+                None => {}
+            }
+
+            // a:sat
+            match &self.saturation {
+                Some(v) => {
+                    v.write_to_sat(writer);
                 }
                 None => {}
             }
@@ -208,12 +255,43 @@ impl RgbColorModelHex {
             // a:satMod
             match &self.saturation_modulation {
                 Some(v) => {
-                    v.write_to(writer);
+                    v.write_to_sat_mod(writer);
+                }
+                None => {}
+            }
+
+            // a:shade
+            match &self.shade {
+                Some(v) => {
+                    v.write_to_shade(writer);
+                }
+                None => {}
+            }
+
+            // a:alpha
+            match &self.alpha {
+                Some(v) => {
+                    v.write_to_alpha(writer);
+                }
+                None => {}
+            }
+
+            // a:tint
+            match &self.tint {
+                Some(v) => {
+                    v.write_to_tint(writer);
                 }
                 None => {}
             }
 
             write_end_tag(writer, "a:srgbClr");
+        } else {
+            write_start_tag(
+                writer,
+                "a:srgbClr",
+                vec![("val", &self.val.get_value_string())],
+                true,
+            );
         }
     }
 }

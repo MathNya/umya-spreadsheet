@@ -32,8 +32,7 @@ impl AutoFill {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => {
-                    self.value
-                        .set_value_string(e.unescape().unwrap());
+                    self.value.set_value_string(e.unescape().unwrap());
                 }
                 Ok(Event::End(ref e)) => match e.name().0 {
                     b"x:AutoFill" => return,

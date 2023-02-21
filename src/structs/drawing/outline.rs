@@ -7,12 +7,14 @@ use super::PresetDash;
 use super::Round;
 use super::SolidFill;
 use super::TailEnd;
+use super::PenAlignmentValues;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::UInt32Value;
+use structs::EnumValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -28,6 +30,7 @@ pub struct Outline {
     preset_dash: Option<PresetDash>,
     miter: Option<Miter>,
     round: Option<Round>,
+    alignment: EnumValue<PenAlignmentValues>,
 }
 impl Outline {
     pub fn get_width(&self) -> &u32 {
@@ -161,6 +164,14 @@ impl Outline {
         self
     }
 
+    pub fn get_alignment(&self) -> &PenAlignmentValues {
+        self.alignment.get_value()
+    }
+
+    pub fn set_alignment(&mut self, value: PenAlignmentValues) {
+        self.alignment.set_value(value);
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -185,6 +196,13 @@ impl Outline {
         match get_attribute(e, b"cmpd") {
             Some(v) => {
                 self.set_compound_line_type(v);
+            }
+            None => {}
+        }
+
+        match get_attribute(e, b"algn") {
+            Some(v) => {
+                self.alignment.set_value_string(v);
             }
             None => {}
         }
@@ -269,6 +287,9 @@ impl Outline {
                 attributes.push(("cmpd", v));
             }
             None => {}
+        }
+        if self.alignment.has_value() {
+            attributes.push(("algn", &self.alignment.get_value_string()));
         }
         write_start_tag(writer, "a:ln", attributes, false);
 

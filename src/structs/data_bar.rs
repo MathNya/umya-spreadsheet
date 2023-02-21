@@ -1,7 +1,7 @@
 use super::Color;
 use super::ConditionalFormatValueObject;
-use quick_xml::events::Event;
 use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -76,12 +76,7 @@ impl DataBar {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // dataBar
-        write_start_tag(
-            writer,
-            "dataBar",
-            vec![],
-            false,
-        );
+        write_start_tag(writer, "dataBar", vec![], false);
 
         // cfvo
         for v in &self.cfvo_collection {

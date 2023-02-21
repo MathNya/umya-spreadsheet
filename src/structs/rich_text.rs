@@ -4,9 +4,9 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::borrow::Cow;
+use std::fmt::Write;
 use std::io::Cursor;
 use writer::driver::*;
-use std::fmt::Write;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {

@@ -1,7 +1,7 @@
 use super::Color;
 use super::ConditionalFormatValueObject;
-use quick_xml::events::Event;
 use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -76,12 +76,7 @@ impl ColorScale {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // colorScale
-        write_start_tag(
-            writer,
-            "colorScale",
-            vec![],
-            false,
-        );
+        write_start_tag(writer, "colorScale", vec![], false);
 
         // cfvo
         for v in &self.cfvo_collection {

@@ -42,12 +42,25 @@ impl Scene3DType {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:camera" => {
                         let mut obj = Camera::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_camera(obj);
                     }
                     b"a:lightRig" => {
                         let mut obj = LightRig::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
+                        self.set_light_rig(obj);
+                    }
+                    _ => (),
+                },
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+                    b"a:camera" => {
+                        let mut obj = Camera::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_camera(obj);
+                    }
+                    b"a:lightRig" => {
+                        let mut obj = LightRig::default();
+                        obj.set_attributes(reader, e, false);
                         self.set_light_rig(obj);
                     }
                     _ => (),

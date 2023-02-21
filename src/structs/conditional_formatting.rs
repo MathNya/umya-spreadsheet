@@ -1,8 +1,8 @@
 use super::ConditionalFormattingRule;
-use super::SequenceOfReferences;
 use super::DifferentialFormats;
-use quick_xml::events::Event;
+use super::SequenceOfReferences;
 use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
@@ -36,12 +36,15 @@ impl ConditionalFormatting {
         &mut self.conditional_collection
     }
 
-    pub fn set_conditional_collection(&mut self, value: Vec<ConditionalFormattingRule>) -> &mut Self  {
+    pub fn set_conditional_collection(
+        &mut self,
+        value: Vec<ConditionalFormattingRule>,
+    ) -> &mut Self {
         self.conditional_collection = value;
         self
     }
 
-    pub fn add_conditional_collection(&mut self, value: ConditionalFormattingRule) -> &mut Self  {
+    pub fn add_conditional_collection(&mut self, value: ConditionalFormattingRule) -> &mut Self {
         self.conditional_collection.push(value);
         self
     }
@@ -50,7 +53,7 @@ impl ConditionalFormatting {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        differential_formats: &DifferentialFormats
+        differential_formats: &DifferentialFormats,
     ) {
         match get_attribute(e, b"sqref") {
             Some(v) => {
@@ -67,7 +70,7 @@ impl ConditionalFormatting {
                         let mut obj = ConditionalFormattingRule::default();
                         obj.set_attributes(reader, e, differential_formats, true);
                         self.conditional_collection.push(obj);
-                    },
+                    }
                     _ => (),
                 },
                 Ok(Event::Start(ref e)) => match e.name().into_inner() {
@@ -75,7 +78,7 @@ impl ConditionalFormatting {
                         let mut obj = ConditionalFormattingRule::default();
                         obj.set_attributes(reader, e, differential_formats, false);
                         self.conditional_collection.push(obj);
-                    },
+                    }
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
@@ -90,7 +93,11 @@ impl ConditionalFormatting {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, differential_formats: &mut DifferentialFormats) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        differential_formats: &mut DifferentialFormats,
+    ) {
         let is_inner = self.conditional_collection.len() > 0;
 
         // conditionalFormatting

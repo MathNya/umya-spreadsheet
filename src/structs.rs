@@ -376,8 +376,8 @@ pub use self::conditional_format_values::*;
 mod conditional_formatting_operator_values;
 pub use self::conditional_formatting_operator_values::*;
 
-mod timePeriod_values;
-pub use self::timePeriod_values::*;
+mod time_period_values;
+pub use self::time_period_values::*;
 
 mod color_scale;
 pub use self::color_scale::*;

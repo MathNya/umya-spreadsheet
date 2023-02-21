@@ -135,19 +135,27 @@ mod tests {
         let mut obj = NumberingFormats::default();
 
         let mut style = Style::default();
-        style.get_number_format_mut().set_format_code(NumberingFormat::FORMAT_TEXT);
+        style
+            .get_number_format_mut()
+            .set_format_code(NumberingFormat::FORMAT_TEXT);
         assert_eq!(obj.set_style(&style), 49);
 
         let mut style = Style::default();
-        style.get_number_format_mut().set_format_code("test-yyyy-mm-dd");
+        style
+            .get_number_format_mut()
+            .set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();
-        style.get_number_format_mut().set_format_code("test-yyyy/mm/dd");
+        style
+            .get_number_format_mut()
+            .set_format_code("test-yyyy/mm/dd");
         assert_eq!(obj.set_style(&style), 177);
 
         let mut style = Style::default();
-        style.get_number_format_mut().set_format_code("test-yyyy-mm-dd");
+        style
+            .get_number_format_mut()
+            .set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();
@@ -155,12 +163,15 @@ mod tests {
         assert_eq!(obj.set_style(&style), 30);
 
         let mut style = Style::default();
-        style.get_number_format_mut().set_format_code(NumberingFormat::FORMAT_TEXT);
+        style
+            .get_number_format_mut()
+            .set_format_code(NumberingFormat::FORMAT_TEXT);
         assert_eq!(obj.set_style(&style), 49);
 
         let mut style = Style::default();
-        style.get_number_format_mut().set_format_code(NumberingFormat::FORMAT_DATE_TIME5);
+        style
+            .get_number_format_mut()
+            .set_format_code(NumberingFormat::FORMAT_DATE_TIME5);
         assert_eq!(obj.set_style(&style), 45);
-
     }
 }

@@ -136,16 +136,10 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .set_value_from_string("TEST1");
     let a1_value = book.get_sheet(&0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
-    let _ = book
-        .get_sheet_mut(&0)
-        .unwrap()
-        .remove_cell((&1, &1));
+    let _ = book.get_sheet_mut(&0).unwrap().remove_cell((&1, &1));
     let a1 = book.get_sheet(&0).unwrap().get_cell("A1");
     assert_eq!(a1, None);
-    let _ = book
-        .get_sheet_mut(&0)
-        .unwrap()
-        .remove_cell((&1, &2));
+    let _ = book.get_sheet_mut(&0).unwrap().remove_cell((&1, &2));
     let a2_value = book.get_sheet(&0).unwrap().get_value("A2");
     assert_eq!(a2_value, "");
     let b5_value = book.get_sheet(&0).unwrap().get_value("B5");
@@ -153,9 +147,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
 
     assert_eq!(
         "1.0000",
-        book.get_sheet(&0)
-            .unwrap()
-            .get_formatted_value((&2, &20))
+        book.get_sheet(&0).unwrap().get_formatted_value((&2, &20))
     );
     assert_eq!(
         "$3,333.0000",
@@ -269,8 +261,10 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .get_font_mut()
         .set_name("Arial");
 
-        book.get_sheet_by_name_mut("Sheet1").unwrap().get_row_dimension_mut(&3).set_height(46.0);
-    
+    book.get_sheet_by_name_mut("Sheet1")
+        .unwrap()
+        .get_row_dimension_mut(&3)
+        .set_height(46.0);
 }
 
 #[test]
@@ -858,27 +852,43 @@ fn new_file_and_edit() {
     worksheet.get_column_dimension_mut("A").set_auto_width(true);
 
     worksheet.get_cell_mut("E1").set_value_from_string("テスト");
-    worksheet.get_cell_mut("E2").set_value_from_string("うみゃーねっと");
-    worksheet.get_cell_mut("E3").set_value_from_string("案案案案");
+    worksheet
+        .get_cell_mut("E2")
+        .set_value_from_string("うみゃーねっと");
+    worksheet
+        .get_cell_mut("E3")
+        .set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("E").set_auto_width(true);
 
-    worksheet.get_cell_mut("F1").set_value_from_string("AAAAAAAAAAAAAAAAAA");
-    worksheet.get_cell_mut("F2").set_value_from_string("BBBBBBBBBBB");
+    worksheet
+        .get_cell_mut("F1")
+        .set_value_from_string("AAAAAAAAAAAAAAAAAA");
+    worksheet
+        .get_cell_mut("F2")
+        .set_value_from_string("BBBBBBBBBBB");
     worksheet
         .get_cell_mut("F4")
         .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("F").set_auto_width(true);
 
-    worksheet.get_cell_mut("G1").set_value_from_string("AAAAAAAAAAAAAAAAAA");
-    worksheet.get_cell_mut("G2").set_value_from_string("BBBBBBBBBBB");
+    worksheet
+        .get_cell_mut("G1")
+        .set_value_from_string("AAAAAAAAAAAAAAAAAA");
+    worksheet
+        .get_cell_mut("G2")
+        .set_value_from_string("BBBBBBBBBBB");
     worksheet
         .get_cell_mut("G3")
         .set_value_from_string("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("G").set_width(60f64);
 
     worksheet.get_cell_mut("D1").set_value_from_string("テスト");
-    worksheet.get_cell_mut("D2").set_value_from_string("うみゃーねっと");
-    worksheet.get_cell_mut("D3").set_value_from_string("案案案案");
+    worksheet
+        .get_cell_mut("D2")
+        .set_value_from_string("うみゃーねっと");
+    worksheet
+        .get_cell_mut("D3")
+        .set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("D").set_auto_width(true);
 
     worksheet.get_cell_mut("H1").set_value_from_string("テスト");
@@ -888,7 +898,9 @@ fn new_file_and_edit() {
         .get_style_mut()
         .get_alignment_mut()
         .set_wrap_text(true);
-    worksheet.get_cell_mut("H3").set_value_from_string("案案案案");
+    worksheet
+        .get_cell_mut("H3")
+        .set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("H").set_auto_width(true);
 
     worksheet.get_cell_mut("I1").set_value_from_string("テスト");
@@ -899,7 +911,9 @@ fn new_file_and_edit() {
         .get_font_mut()
         .get_font_size_mut()
         .set_val(20f64);
-    worksheet.get_cell_mut("I3").set_value_from_string("案案案案");
+    worksheet
+        .get_cell_mut("I3")
+        .set_value_from_string("案案案案");
     worksheet.get_column_dimension_mut("I").set_auto_width(true);
 
     worksheet

@@ -395,7 +395,9 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row).get_cell_value_mut()
+        self.cell_collection
+            .get_mut(&col, &row)
+            .get_cell_value_mut()
     }
 
     /// Gets the cell value with mutable by specifying the column number and row number.

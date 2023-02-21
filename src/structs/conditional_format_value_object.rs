@@ -1,6 +1,6 @@
-use super::StringValue;
-use super::EnumValue;
 use super::ConditionalFormatValueObjectValues;
+use super::EnumValue;
+use super::StringValue;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -22,7 +22,7 @@ impl ConditionalFormatValueObject {
         self.r#type.set_value(value);
         self
     }
-    
+
     pub fn get_val(&self) -> &str {
         &self.val.get_value()
     }

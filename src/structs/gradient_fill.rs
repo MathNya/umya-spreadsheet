@@ -6,9 +6,9 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
+use std::fmt::Write;
 use std::io::Cursor;
 use writer::driver::*;
-use std::fmt::Write;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientFill {
