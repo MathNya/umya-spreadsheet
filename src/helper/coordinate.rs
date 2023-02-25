@@ -62,6 +62,11 @@ pub fn string_from_column_index(column_index: &u32) -> String {
     index_to_alpha(*column_index)
 }
 
+pub fn is_coordinate<S: AsRef<str>>(input: S) -> bool {
+    let re = Regex::new(r"\$?[A-Z]{1,3}\$?[0-9]+").unwrap();
+    re.is_match(input.as_ref()).unwrap()
+}
+
 ///
 /// # Returns
 /// A tuple with the column, and row address indexes and their respective lock flags.

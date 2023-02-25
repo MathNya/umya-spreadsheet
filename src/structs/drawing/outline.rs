@@ -3,18 +3,18 @@ use super::Bevel;
 use super::GradientFill;
 use super::Miter;
 use super::NoFill;
+use super::PenAlignmentValues;
 use super::PresetDash;
 use super::Round;
 use super::SolidFill;
 use super::TailEnd;
-use super::PenAlignmentValues;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
-use structs::UInt32Value;
 use structs::EnumValue;
+use structs::UInt32Value;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]

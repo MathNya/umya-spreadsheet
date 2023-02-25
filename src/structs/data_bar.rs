@@ -52,12 +52,12 @@ impl DataBar {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"cfvo" => {
                         let mut obj = ConditionalFormatValueObject::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.cfvo_collection.push(obj);
                     }
                     b"color" => {
                         let mut obj = Color::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.color_collection.push(obj);
                     }
                     _ => (),

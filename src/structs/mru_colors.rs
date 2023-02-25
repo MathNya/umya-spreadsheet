@@ -35,7 +35,7 @@ impl MruColors {
                 Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"color" => {
                         let mut obj = Color::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_color(obj);
                     }
                     _ => (),

@@ -359,7 +359,7 @@ impl Font {
                         self.font_strike.set_attributes(reader, e);
                     }
                     b"color" => {
-                        self.color.set_attributes(reader, e);
+                        self.color.set_attributes(reader, e, true);
                     }
                     b"charset" => {
                         self.font_char_set.set_attributes(reader, e);

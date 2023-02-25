@@ -92,7 +92,7 @@ impl Camera {
             match &self.rotation {
                 Some(v) => {
                     v.write_to(writer);
-                },
+                }
                 _ => {}
             }
             write_end_tag(writer, "a:camera");

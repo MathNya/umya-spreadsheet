@@ -123,12 +123,12 @@ impl PatternFill {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"fgColor" => {
                         let mut obj = Color::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_foreground_color(obj);
                     }
                     b"bgColor" => {
                         let mut obj = Color::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_background_color(obj);
                     }
                     _ => (),
@@ -150,7 +150,9 @@ impl PatternFill {
 
         // patternFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("patternType", self.pattern_type.get_value_string()));
+        if self.pattern_type.has_value() {
+            attributes.push(("patternType", self.pattern_type.get_value_string()));
+        }
         write_start_tag(writer, "patternFill", attributes, empty_flag);
 
         if !empty_flag {

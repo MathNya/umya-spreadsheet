@@ -3,7 +3,7 @@ use super::DoubleValue;
 use super::StringValue;
 use super::UInt32Value;
 use md5::Digest;
-use quick_xml::events::BytesStart;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
@@ -179,8 +179,9 @@ impl Color {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flg: bool,
     ) {
         for a in e.attributes().with_checks(false) {
             match a {
@@ -203,6 +204,30 @@ impl Color {
                 Ok(_) => {}
                 Err(_) => {}
             }
+        }
+
+        if empty_flg {
+            return;
+        }
+
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
+                    b"color" => return,
+                    b"fgColor" => return,
+                    b"bgColor" => return,
+                    b"tabColor" => return,
+                    _ => (),
+                },
+                Ok(Event::Eof) => panic!(
+                    "Error not find {} end element",
+                    "color,fgColor,bgColor,tabColor"
+                ),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
         }
     }
 

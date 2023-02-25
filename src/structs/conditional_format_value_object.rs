@@ -1,7 +1,7 @@
 use super::ConditionalFormatValueObjectValues;
 use super::EnumValue;
 use super::StringValue;
-use quick_xml::events::BytesStart;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
@@ -34,8 +34,9 @@ impl ConditionalFormatValueObject {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flg: bool,
     ) {
         match get_attribute(e, b"type") {
             Some(v) => {
@@ -49,6 +50,24 @@ impl ConditionalFormatValueObject {
                 self.val.set_value_string(v);
             }
             None => {}
+        }
+
+        if empty_flg {
+            return;
+        }
+
+        let mut buf = Vec::new();
+        loop {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
+                    b"cfvo" => return,
+                    _ => (),
+                },
+                Ok(Event::Eof) => panic!("Error not find {} end element", "cfvo"),
+                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+                _ => (),
+            }
+            buf.clear();
         }
     }
 

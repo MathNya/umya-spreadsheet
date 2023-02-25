@@ -95,7 +95,6 @@ impl LightRig {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-
         let with_inner = self.rotation.is_some();
         // a:lightRig
         write_start_tag(
@@ -113,11 +112,10 @@ impl LightRig {
             match &self.rotation {
                 Some(v) => {
                     v.write_to(writer);
-                },
+                }
                 _ => {}
             }
             write_end_tag(writer, "a:lightRig");
         }
-
     }
 }

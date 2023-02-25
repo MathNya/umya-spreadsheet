@@ -1,24 +1,24 @@
 use super::super::StringValue;
-use super::SystemColor;
-use super::SystemColorValues;
-use super::RgbColorModelHex;
-use super::ThemeElements;
-use super::SolidFill;
-use super::SchemeColor;
-use super::SchemeColorValues;
+use super::EffectList;
+use super::EffectStyle;
 use super::GradientFill;
 use super::GradientStop;
-use super::PercentageType;
-use super::PositiveFixedPercentageType;
 use super::LinearGradientFill;
+use super::Miter;
+use super::OuterShadow;
 use super::Outline;
 use super::PenAlignmentValues;
+use super::PercentageType;
+use super::PositiveFixedPercentageType;
 use super::PresetDash;
 use super::PresetLineDashValues;
-use super::Miter;
-use super::EffectStyle;
-use super::EffectList;
-use super::OuterShadow;
+use super::RgbColorModelHex;
+use super::SchemeColor;
+use super::SchemeColorValues;
+use super::SolidFill;
+use super::SystemColor;
+use super::SystemColorValues;
+use super::ThemeElements;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -195,7 +195,9 @@ impl Theme {
         tint.set_val(67000);
         scheme_color.set_tint(tint);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(50000);
@@ -211,7 +213,9 @@ impl Theme {
         tint.set_val(73000);
         scheme_color.set_tint(tint);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(100000);
@@ -227,7 +231,9 @@ impl Theme {
         tint.set_val(81000);
         scheme_color.set_tint(tint);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
         linear_gradient_fill.set_angle(5400000);
@@ -256,7 +262,9 @@ impl Theme {
         lum_mod.set_val(102000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(50000);
@@ -272,7 +280,9 @@ impl Theme {
         lum_mod.set_val(100000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(100000);
@@ -288,7 +298,9 @@ impl Theme {
         lum_mod.set_val(99000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
         linear_gradient_fill.set_angle(5400000);
@@ -456,7 +468,9 @@ impl Theme {
         lum_mod.set_val(102000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(50000);
@@ -475,7 +489,9 @@ impl Theme {
         lum_mod.set_val(103000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(100000);
@@ -488,7 +504,9 @@ impl Theme {
         sat_mod.set_val(120000);
         scheme_color.set_saturation_modulation(sat_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
+        gradient_fill
+            .get_gradient_stop_list_mut()
+            .add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
         linear_gradient_fill.set_angle(5400000);

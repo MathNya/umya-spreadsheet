@@ -89,7 +89,7 @@ impl Border {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"color" => {
-                        self.color.set_attributes(reader, e);
+                        self.color.set_attributes(reader, e, true);
                     }
                     _ => (),
                 },

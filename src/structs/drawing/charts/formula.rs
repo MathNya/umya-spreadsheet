@@ -1,5 +1,7 @@
 // c:f
 use super::super::super::Address;
+use super::super::super::StringValue;
+use helper::coordinate::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -9,6 +11,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Formula {
     address: Address,
+    string_value: StringValue,
 }
 impl Formula {
     pub fn get_address(&self) -> &Address {
@@ -20,16 +23,31 @@ impl Formula {
     }
 
     pub fn get_address_str(&self) -> String {
+        if self.string_value.has_value() {
+            return self.string_value.get_value_string().to_string();
+        }
         self.address.get_address()
     }
 
-    pub fn set_address(&mut self, value: Address) -> &mut Formula {
+    pub fn set_address(&mut self, value: Address) -> &mut Self {
         self.address = value;
+        self.string_value.remove_value();
         self
     }
 
-    pub fn set_address_str<S: Into<String>>(&mut self, value: S) -> &mut Formula {
-        self.address.set_address(value);
+    pub fn set_string_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.address = Address::default();
+        self.string_value.set_value(value);
+        self
+    }
+
+    pub fn set_address_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let value = value.into();
+        if is_coordinate(&value) {
+            self.address.set_address(value);
+        } else {
+            self.set_string_value(value);
+        }
         self
     }
 

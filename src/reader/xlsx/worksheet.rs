@@ -122,7 +122,9 @@ pub(crate) fn read(
                     }
                 }
                 b"tabColor" => {
-                    worksheet.get_tab_color_mut().set_attributes(&mut reader, e);
+                    worksheet
+                        .get_tab_color_mut()
+                        .set_attributes(&mut reader, e, true);
                     worksheet.get_tab_color_mut().set_argb_by_theme(theme);
                 }
                 b"selection" => {
