@@ -12,7 +12,22 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New feature
-###  ver 0.8.0
+### ver 0.9
+The way cells are referenced has changed.
+```rust
+// old
+let value = worksheet.get_value("A1");
+let value = worksheet.get_value_by_column_and_row(&1, &1);
+// This one has been deprecated.
+// It will eventually disappear.
+
+// NEW
+let value = worksheet.get_value("A1");
+let value = worksheet.get_value((1, 1));
+let value = worksheet.get_value((&1, &1));
+```
+
+### ver 0.8
 A password can now be set when saving a file.
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
@@ -29,7 +44,7 @@ let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "pass
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "0.8"
+umya-spreadsheet = "0.9"
 ```
 Add the following code to main.rs
 ```rust
