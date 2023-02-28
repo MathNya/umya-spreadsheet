@@ -86,7 +86,7 @@ impl Image {
     }
 
     pub fn new_image(&mut self, path: &str, marker: MarkerType) {
-        let path_str = path.into();
+        let path_str = path;
         let path_obj = std::path::Path::new(path_str);
         let image_name = path_obj.file_name().unwrap().to_str().unwrap();
 

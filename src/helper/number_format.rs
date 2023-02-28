@@ -298,7 +298,7 @@ fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> 
     //    but we don't want to change any quoted strings
     let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
     let mut format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string = (&caps.get(0).unwrap()).as_str();
+        let caps_string = caps.get(0).unwrap().as_str();
         caps_string.to_lowercase()
     });
 
@@ -312,10 +312,10 @@ fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> 
             for (before, after) in DATE_FORMAT_REPLACEMENTS {
                 block = block.replace(before, after);
             }
-            if block.find("%P") == None {
+            if !block.contains("%P") {
                 // 24-hour time format
                 // when [h]:mm format, the [h] should replace to the hours of the value * 24
-                if block.find("[h]") != None {
+                if block.contains("[h]") {
                     let hours = value * 24f64;
                     block = block.replace("[h]", hours.to_string().as_str());
                     converted_blocks.push(block);
@@ -338,7 +338,7 @@ fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> 
     // escape any quoted characters so that DateTime format() will render them correctly
     let re = Regex::new(r#""(.*)""#).unwrap();
     let format = re.replace_all(&format, |caps: &Captures| {
-        let caps_string = (&caps.get(0).unwrap()).as_str();
+        let caps_string = caps.get(0).unwrap().as_str();
         caps_string.to_lowercase()
     });
 
@@ -366,7 +366,7 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
     //}
 
     // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
-    let mut format = format.replace('"', "").replace('*', "");
+    let mut format = format.replace(['"', '*'], "");
 
     // Find out if we need thousands separator
     // This is indicated by a comma enclosed by a digit placeholder:
@@ -530,7 +530,7 @@ fn format_straight_numeric_value(
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();
-    let left_value = blocks.get(0).unwrap().to_string();
+    let left_value = blocks.first().unwrap().to_string();
     let mut right_value = match blocks.get(1) {
         Some(v) => v.to_string(),
         None => String::from("0"),
@@ -629,7 +629,7 @@ fn _process_complex_number_format_mask(number: &f64, mask: &str) -> String {
 
             let block_value = format!("{:0width$}", (number % divisor), width = size);
 
-            number = (number / divisor) as f64;
+            number /= divisor;
             let from: String = mask.chars().skip(offset).take(size).collect();
             mask = mask.replace(&from, &block_value);
         }
@@ -698,180 +698,180 @@ fn test_to_formatted_string_date() {
     let value = String::from("45435"); // 2024/5/23
     assert_eq!(
         r#"2024-05-23"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD2)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_YYYYMMDD2)
     );
     assert_eq!(
         r#"2024-05-23"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_YYYYMMDD)
     );
     assert_eq!(
         r#"23-05-2024"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYY)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DDMMYYYY)
     );
     assert_eq!(
         r#"23/05/2024"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
     );
     assert_eq!(
         r#"23/5/24"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYSLASH)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DMYSLASH)
     );
     assert_eq!(
         r#"23-5-24"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYMINUS)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DMYMINUS)
     );
     assert_eq!(
         r#"23-5"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMMINUS)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DMMINUS)
     );
     assert_eq!(
         r#"5-24"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_MYMINUS)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_MYMINUS)
     );
     assert_eq!(
         r#"05-23-24"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX14)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX14)
     );
     assert_eq!(
         r#"23-May-24"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX15)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX15)
     );
     assert_eq!(
         r#"23-May"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX16)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX16)
     );
     assert_eq!(
         r#"May-24"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX17)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX17)
     );
     assert_eq!(
         r#"5/23/24 0:00"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX22)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX22)
     );
     assert_eq!(
         r#"23/5/24 0:00"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DATETIME)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DATETIME)
     );
     assert_eq!(
         r#"12:00 am"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME1)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME1)
     );
     assert_eq!(
         r#"12:00:00 am"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME2)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME2)
     );
     assert_eq!(
         r#"0:00"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME3)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME3)
     );
     assert_eq!(
         r#"0:00:00"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME4)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME4)
     );
     assert_eq!(
         r#"00:00"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME5)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME5)
     );
     assert_eq!(
         r#"0:00:00"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME6)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME6)
     );
     assert_eq!(
         r#"0:00:00"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME8)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME8)
     );
     assert_eq!(
         r#"2024/05/23"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
     );
 
     let value = String::from("44349.211134259262"); // 2021/06/02 05:04:02
     assert_eq!(
         r#"2021-06-02"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD2)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_YYYYMMDD2)
     );
     assert_eq!(
         r#"2021-06-02"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDD)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_YYYYMMDD)
     );
     assert_eq!(
         r#"02-06-2021"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYY)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DDMMYYYY)
     );
     assert_eq!(
         r#"02/06/2021"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DDMMYYYYSLASH)
     );
     assert_eq!(
         r#"2/6/21"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYSLASH)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DMYSLASH)
     );
     assert_eq!(
         r#"2-6-21"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMYMINUS)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DMYMINUS)
     );
     assert_eq!(
         r#"2-6"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DMMINUS)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DMMINUS)
     );
     assert_eq!(
         r#"6-21"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_MYMINUS)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_MYMINUS)
     );
     assert_eq!(
         r#"06-02-21"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX14)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX14)
     );
     assert_eq!(
         r#"2-Jun-21"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX15)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX15)
     );
     assert_eq!(
         r#"2-Jun"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX16)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX16)
     );
     assert_eq!(
         r#"Jun-21"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX17)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX17)
     );
     assert_eq!(
         r#"6/2/21 5:04"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_XLSX22)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_XLSX22)
     );
     assert_eq!(
         r#"2/6/21 5:04"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_DATETIME)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_DATETIME)
     );
     assert_eq!(
         r#"5:04 am"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME1)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME1)
     );
     assert_eq!(
         r#"5:04:02 am"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME2)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME2)
     );
     assert_eq!(
         r#"5:04"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME3)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME3)
     );
     assert_eq!(
         r#"5:04:02"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME4)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME4)
     );
     assert_eq!(
         r#"04:02"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME5)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME5)
     );
     assert_eq!(
         r#"5:04:02"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME6)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME6)
     );
     assert_eq!(
         r#"5:04:02"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_TIME8)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_TIME8)
     );
     assert_eq!(
         r#"2021/06/02"#,
-        to_formatted_string(&value, &NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
+        to_formatted_string(&value, NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
     );
 }

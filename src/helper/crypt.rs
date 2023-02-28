@@ -53,7 +53,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &Vec<u8>, password: &str) {
         &package_block_size,
         &package_salt_value,
         &package_key,
-        &data,
+        data,
     );
 
     // hmac key
@@ -184,8 +184,6 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &Vec<u8>, password: &str) {
         let mut stream_package = comp.create_stream("EncryptedPackage").unwrap();
         stream_package.write_all(&encrypted_package).unwrap();
     }
-
-    return;
 }
 
 // Encrypt/decrypt the package
@@ -260,7 +258,7 @@ fn crypt_package(
         output = output[0..length as usize].to_vec();
     }
 
-    return output;
+    output
 }
 
 // Create an initialization vector (IV)
@@ -280,7 +278,7 @@ fn create_iv(
     } else if &iv.len() > block_size {
         iv = buffer_slice(&iv, 0, *block_size);
     }
-    return iv;
+    iv
 }
 
 // Encrypt/decrypt input
@@ -301,17 +299,17 @@ fn crypt(
             .encrypt_padded_mut::<NoPadding>(&mut buf, pt_len)
             .unwrap(),
         _ => {
-            return Err(format!("key size not supported!"));
+            return Err("key size not supported!".to_string());
         }
     };
-    return Ok(ct.to_vec());
+    Ok(ct.to_vec())
 }
 
 fn hmac(algorithm: &str, key: &Vec<u8>, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
     let mut mac = match algorithm {
         "SHA512" => {
             type HmacSha512 = Hmac<Sha512>;
-            HmacSha512::new_from_slice(&key).unwrap()
+            HmacSha512::new_from_slice(key).unwrap()
         }
         _ => {
             return Err(format!("algorithm {} not supported!", algorithm));
@@ -320,7 +318,7 @@ fn hmac(algorithm: &str, key: &Vec<u8>, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8
     mac.update(&buffer_concat(buffers));
 
     let result = mac.finalize();
-    return Ok(result.into_bytes()[..].to_vec());
+    Ok(result.into_bytes()[..].to_vec())
 }
 
 fn convert_password_to_key(
@@ -362,7 +360,7 @@ fn convert_password_to_key(
         key = buffer_slice(&key, 0, key_bytes);
     }
 
-    return key;
+    key
 }
 
 // Calculate a hash of the concatenated buffers with the given algorithm.
@@ -374,7 +372,7 @@ fn hash(algorithm: &str, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
         }
     };
     digest.update(&buffer_concat(buffers)[..]);
-    return Ok(digest.finalize().to_vec());
+    Ok(digest.finalize().to_vec())
 }
 
 fn gen_random_16() -> Vec<u8> {
@@ -397,13 +395,10 @@ fn gen_random_64() -> Vec<u8> {
 
 // Create a buffer of an integer encoded as a uint32le
 fn create_uint32_le_buffer(value: &u32, buffer_size: Option<&usize>) -> Vec<u8> {
-    let bs_prm = match buffer_size {
-        Some(v) => v,
-        None => &4,
-    };
+    let bs_prm = buffer_size.unwrap_or(&4);
     let mut buffer = buffer_alloc(0, *bs_prm);
     buffer_write_u_int32_le(&mut buffer, value, &0);
-    return buffer;
+    buffer
 }
 
 fn build_encryption_info(
@@ -461,7 +456,7 @@ fn build_encryption_info(
     let str_package_block_size = package_block_size.to_string();
     let str_package_key_bits = package_key_bits.to_string();
     let str_package_hash_size = package_hash_size.to_string();
-    let str_package_salt_value = STANDARD.encode(&package_salt_value);
+    let str_package_salt_value = STANDARD.encode(package_salt_value);
     write_start_tag(
         &mut writer,
         "keyData",
@@ -477,8 +472,8 @@ fn build_encryption_info(
         ],
         true,
     );
-    let str_data_integrity_encrypted_hmac_key = STANDARD.encode(&data_integrity_encrypted_hmac_key);
-    let str_data_integrity_encrypted_hmac_value = STANDARD.encode(&data_integrity_encrypted_hmac_value);
+    let str_data_integrity_encrypted_hmac_key = STANDARD.encode(data_integrity_encrypted_hmac_key);
+    let str_data_integrity_encrypted_hmac_value = STANDARD.encode(data_integrity_encrypted_hmac_value);
     write_start_tag(
         &mut writer,
         "dataIntegrity",
@@ -506,10 +501,10 @@ fn build_encryption_info(
     let str_key_block_size = key_block_size.to_string();
     let str_key_key_bits = key_key_bits.to_string();
     let str_key_hash_size = key_hash_size.to_string();
-    let str_key_salt_value = STANDARD.encode(&key_salt_value);
-    let str_key_encrypted_verifier_hash_input = STANDARD.encode(&key_encrypted_verifier_hash_input);
-    let str_key_encrypted_verifier_hash_value = STANDARD.encode(&key_encrypted_verifier_hash_value);
-    let str_key_key_encrypted_key_value = STANDARD.encode(&key_encrypted_key_value);
+    let str_key_salt_value = STANDARD.encode(key_salt_value);
+    let str_key_encrypted_verifier_hash_input = STANDARD.encode(key_encrypted_verifier_hash_input);
+    let str_key_encrypted_verifier_hash_value = STANDARD.encode(key_encrypted_verifier_hash_value);
+    let str_key_key_encrypted_key_value = STANDARD.encode(key_encrypted_key_value);
     write_start_tag(
         &mut writer,
         "p:encryptedKey",
@@ -568,8 +563,8 @@ fn buffer_copy(buffer1: &mut Vec<u8>, buffer2: &Vec<u8>) {
 }
 
 fn buffer_read_u_int32_le(buffer: &Vec<u8>, _cnt: &usize) -> u32 {
-    let result = LittleEndian::read_u32(&buffer);
-    result
+    
+    LittleEndian::read_u32(buffer)
 }
 
 fn buffer_write_u_int32_le(buffer: &mut Vec<u8>, value: &u32, _cnt: &usize) {
@@ -690,7 +685,7 @@ mod tests {
 
         // key
         let key = convert_password_to_key(
-            &password,
+            password,
             key_hash_algorithm,
             &key_salt_value,
             &key_spin_count,
@@ -721,7 +716,7 @@ mod tests {
         // verifier_hash_input
         let verifier_hash_input = "8f54777cba87efa55ea2db8399873815".as_bytes().to_vec();
         let verifier_hash_input_key = convert_password_to_key(
-            &password,
+            password,
             key_hash_algorithm,
             &key_salt_value,
             &key_spin_count,
@@ -752,7 +747,7 @@ mod tests {
         //assert_eq!(&converted, "920b1de74f38d9cb3ccb3394119ed37e958404fdc47560b1bf647d3c49c22549625fe4a0bd36798bd68a0d98ae64f6ab64a330c9890c62bb740aa492c226ae1f");
 
         let verifier_hash_value_key = convert_password_to_key(
-            &password,
+            password,
             key_hash_algorithm,
             &key_salt_value,
             &key_spin_count,
@@ -797,8 +792,6 @@ mod tests {
             &encrypted_verifier_hash_value,
             &encrypted_key_value,
         );
-
-        return;
     }
 
     #[test]

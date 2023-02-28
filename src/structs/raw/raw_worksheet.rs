@@ -32,39 +32,21 @@ impl RawWorksheet {
     }
 
     pub(crate) fn get_worksheet_relationships(&self) -> Option<&RawRelationships> {
-        for relationships in self.get_relationships_list() {
-            if relationships
+        self.get_relationships_list().iter().find(|&relationships| relationships
                 .get_file_target()
-                .starts_with("xl/worksheets/_rels/sheet")
-            {
-                return Some(relationships);
-            }
-        }
-        None
+                .starts_with("xl/worksheets/_rels/sheet"))
     }
 
     pub(crate) fn get_drawing_relationships(&self) -> Option<&RawRelationships> {
-        for relationships in self.get_relationships_list() {
-            if relationships
+        self.get_relationships_list().iter().find(|&relationships| relationships
                 .get_file_target()
-                .starts_with("xl/drawings/_rels/drawing")
-            {
-                return Some(relationships);
-            }
-        }
-        None
+                .starts_with("xl/drawings/_rels/drawing"))
     }
 
     pub(crate) fn get_vml_drawing_relationships(&self) -> Option<&RawRelationships> {
-        for relationships in self.get_relationships_list() {
-            if relationships
+        self.get_relationships_list().iter().find(|&relationships| relationships
                 .get_file_target()
-                .starts_with("xl/drawings/_rels/vmlDrawing")
-            {
-                return Some(relationships);
-            }
-        }
-        None
+                .starts_with("xl/drawings/_rels/vmlDrawing"))
     }
 
     pub(crate) fn read<R: io::Read + io::Seek>(

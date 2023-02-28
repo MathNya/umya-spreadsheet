@@ -25,7 +25,7 @@ impl SystemColor {
     }
 
     pub fn get_last_color(&self) -> &str {
-        &self.last_color.get_value()
+        self.last_color.get_value()
     }
 
     pub fn set_last_color<S: Into<String>>(&mut self, value: S) {
@@ -56,11 +56,11 @@ impl SystemColor {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let val = self.val.get_value_string();
         if self.val.has_value() {
-            attributes.push(("val", &val));
+            attributes.push(("val", val));
         }
         let last_color = self.last_color.get_value_string();
         if self.last_color.has_value() {
-            attributes.push(("lastClr", &last_color));
+            attributes.push(("lastClr", last_color));
         }
         write_start_tag(writer, "a:sysClr", attributes, true);
     }

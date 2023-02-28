@@ -398,7 +398,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
     pub fn get_sheet(&self, index: &usize) -> Result<&Worksheet, &'static str> {
-        match self.work_sheet_collection.get(index.clone()) {
+        match self.work_sheet_collection.get(*index) {
             Some(v) => {
                 if !v.is_serialized() {
                     panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
@@ -420,7 +420,7 @@ impl Spreadsheet {
                 return self.get_sheet(&index);
             }
             Err(e) => {
-                return Err(e);
+                Err(e)
             }
         }
     }
@@ -434,12 +434,12 @@ impl Spreadsheet {
         let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
-        match self.work_sheet_collection.get_mut(index.clone()) {
+        match self.work_sheet_collection.get_mut(*index) {
             Some(v) => {
                 raw_to_serialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
-                return Ok(v);
+                Ok(v)
             }
-            None => return Err("Not found."),
+            None => Err("Not found."),
         }
     }
 
@@ -457,7 +457,7 @@ impl Spreadsheet {
                 return self.get_sheet_mut(&index);
             }
             Err(e) => {
-                return Err(e);
+                Err(e)
             }
         }
     }
@@ -471,7 +471,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `&Worksheet` - Work sheet.
     pub fn get_active_sheet(&self) -> &Worksheet {
-        let index = self.get_workbook_view().get_active_tab().clone();
+        let index = *self.get_workbook_view().get_active_tab();
         self.get_sheet(&(index as usize)).unwrap()
     }
 
@@ -479,7 +479,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `&mut Worksheet` - Work sheet.
     pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
-        let index = self.get_workbook_view().get_active_tab().clone();
+        let index = *self.get_workbook_view().get_active_tab();
         self.get_sheet_mut(&(index as usize)).unwrap()
     }
 
@@ -519,7 +519,7 @@ impl Spreadsheet {
     pub fn remove_sheet_by_name(&mut self, sheet_name: &str) -> Result<(), &'static str> {
         let cnt_before = self.work_sheet_collection.len();
         self.work_sheet_collection
-            .retain(|x| !(x.get_name() == sheet_name));
+            .retain(|x| x.get_name() != sheet_name);
         let cnt_after = self.work_sheet_collection.len();
         if cnt_before == cnt_after {
             return Err("out of index.");

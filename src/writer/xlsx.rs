@@ -84,19 +84,19 @@ fn make_buffer(spreadsheet: &Spreadsheet) -> Result<std::vec::Vec<u8>, XlsxError
     let mut writer_manager = WriterManager::new(arv);
 
     // Add docProps App
-    let _ = doc_props_app::write(spreadsheet, &mut writer_manager)?;
+    doc_props_app::write(spreadsheet, &mut writer_manager)?;
 
     // Add docProps Core
-    let _ = doc_props_core::write(spreadsheet, &mut writer_manager)?;
+    doc_props_core::write(spreadsheet, &mut writer_manager)?;
 
     // Add vbaProject.bin
-    let _ = vba_project_bin::write(spreadsheet, &mut writer_manager)?;
+    vba_project_bin::write(spreadsheet, &mut writer_manager)?;
 
     // Add relationships
-    let _ = rels::write(spreadsheet, &mut writer_manager)?;
+    rels::write(spreadsheet, &mut writer_manager)?;
 
     // Add theme
-    let _ = theme::write(spreadsheet.get_theme(), &mut writer_manager)?;
+    theme::write(spreadsheet.get_theme(), &mut writer_manager)?;
 
     // worksheet
     let shared_string_table = spreadsheet.get_shared_string_table();
@@ -191,10 +191,10 @@ fn make_buffer(spreadsheet: &Spreadsheet) -> Result<std::vec::Vec<u8>, XlsxError
     writer_manager.file_list_sort();
 
     // Add SharedStrings
-    let _ = shared_strings::write(shared_string_table.clone(), &mut writer_manager)?;
+    shared_strings::write(shared_string_table.clone(), &mut writer_manager)?;
 
     // Add Styles
-    let _ = styles::write(&stylesheet, &mut writer_manager)?;
+    styles::write(&stylesheet, &mut writer_manager)?;
 
     // Add workbook
     workbook::write(spreadsheet, &mut writer_manager)?;

@@ -129,7 +129,7 @@ impl Cells {
     }
 
     pub(crate) fn remove(&mut self, col_num: &u32, row_num: &u32) -> bool {
-        let k = (row_num.clone(), col_num.clone());
+        let k = (*row_num, *col_num);
         self.map.remove(&k).is_some()
     }
 

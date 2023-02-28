@@ -27,7 +27,7 @@ impl CellValue {
             }
             None => {}
         }
-        &self.raw_value.get_data_type()
+        self.raw_value.get_data_type()
     }
 
     pub fn set_formula_attributes(&mut self, formula_attributes: Vec<(String, String)>) {
@@ -183,7 +183,7 @@ impl CellValue {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u16_ref(&mut self, value: &u16) -> &mut Self {
-        self.set_value_number(value.clone())
+        self.set_value_number(*value)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -193,7 +193,7 @@ impl CellValue {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u32_ref(&mut self, value: &u32) -> &mut Self {
-        self.set_value_number(value.clone())
+        self.set_value_number(*value)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -203,7 +203,7 @@ impl CellValue {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u64_ref(&mut self, value: &u64) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -213,7 +213,7 @@ impl CellValue {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i16_ref(&mut self, value: &i16) -> &mut Self {
-        self.set_value_number(value.clone())
+        self.set_value_number(*value)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -223,7 +223,7 @@ impl CellValue {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i32_ref(&mut self, value: &i32) -> &mut Self {
-        self.set_value_number(value.clone())
+        self.set_value_number(*value)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -233,7 +233,7 @@ impl CellValue {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i64_ref(&mut self, value: &i64) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -243,7 +243,7 @@ impl CellValue {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_usize_ref(&mut self, value: &usize) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     pub(crate) fn guess_typed_data(value: &str) -> CellRawValue {
@@ -286,7 +286,7 @@ impl CellValue {
     }
 
     pub(crate) fn is_formula_attributes_empty(&self) -> bool {
-        self.get_formula_attributes().len() == 0
+        self.get_formula_attributes().is_empty()
     }
 
     pub(crate) fn adjustment_insert_formula_coordinate(

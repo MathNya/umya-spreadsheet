@@ -12,20 +12,20 @@ pub fn adjustment_insert_formula_coordinate(
 ) -> String {
     let re = Regex::new(r#"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+"#).unwrap();
     let result = re.replace_all(formula, |caps: &Captures| {
-        let caps_string = (&caps.get(0).unwrap()).as_str().to_string();
-        let split_str: Vec<&str> = caps_string.split("!").collect();
+        let caps_string = caps.get(0).unwrap().as_str().to_string();
+        let split_str: Vec<&str> = caps_string.split('!').collect();
         let with_wksheet: bool;
         let wksheet: String;
         let range: String;
 
         if split_str.len() == 2 {
             with_wksheet = true;
-            wksheet = split_str.get(0).unwrap().to_string();
+            wksheet = split_str.first().unwrap().to_string();
             range = split_str.get(1).unwrap().to_string();
         } else {
             with_wksheet = false;
             wksheet = self_worksheet_name.to_string();
-            range = split_str.get(0).unwrap().to_string();
+            range = split_str.first().unwrap().to_string();
         }
 
         if &wksheet != &worksheet_name {
@@ -79,20 +79,20 @@ pub fn adjustment_remove_formula_coordinate(
 ) -> String {
     let re = Regex::new(r#"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+"#).unwrap();
     let result = re.replace_all(formula, |caps: &Captures| {
-        let caps_string = (&caps.get(0).unwrap()).as_str().to_string();
-        let split_str: Vec<&str> = caps_string.split("!").collect();
+        let caps_string = caps.get(0).unwrap().as_str().to_string();
+        let split_str: Vec<&str> = caps_string.split('!').collect();
         let with_wksheet: bool;
         let wksheet: String;
         let range: String;
 
         if split_str.len() == 2 {
             with_wksheet = true;
-            wksheet = split_str.get(0).unwrap().to_string();
+            wksheet = split_str.first().unwrap().to_string();
             range = split_str.get(1).unwrap().to_string();
         } else {
             with_wksheet = false;
             wksheet = self_worksheet_name.to_string();
-            range = split_str.get(0).unwrap().to_string();
+            range = split_str.first().unwrap().to_string();
         }
 
         if &wksheet != &worksheet_name {

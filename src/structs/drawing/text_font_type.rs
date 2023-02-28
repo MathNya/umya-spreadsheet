@@ -15,7 +15,7 @@ pub struct TextFontType {
 }
 impl TextFontType {
     pub fn get_typeface(&self) -> &str {
-        &self.typeface.get_value()
+        self.typeface.get_value()
     }
 
     pub fn set_typeface<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -24,7 +24,7 @@ impl TextFontType {
     }
 
     pub fn get_pitch_family(&self) -> &str {
-        &self.pitch_family.get_value()
+        self.pitch_family.get_value()
     }
 
     pub fn set_pitch_family<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -33,7 +33,7 @@ impl TextFontType {
     }
 
     pub fn get_charset(&self) -> &str {
-        &self.charset.get_value()
+        self.charset.get_value()
     }
 
     pub fn set_charset<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -42,7 +42,7 @@ impl TextFontType {
     }
 
     pub fn get_panose(&self) -> &str {
-        &self.panose.get_value()
+        self.panose.get_value()
     }
 
     pub fn set_panose<S: Into<String>>(&mut self, value: S) -> &mut Self {

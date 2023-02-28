@@ -289,7 +289,7 @@ impl Outline {
             None => {}
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", &self.alignment.get_value_string()));
+            attributes.push(("algn", (self.alignment.get_value_string())));
         }
         write_start_tag(writer, "a:ln", attributes, false);
 

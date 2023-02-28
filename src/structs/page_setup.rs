@@ -208,7 +208,7 @@ impl PageSetup {
             }
             let orientation = self.orientation.get_value_string();
             if self.orientation.has_value() {
-                attributes.push(("orientation", &orientation));
+                attributes.push(("orientation", orientation));
             }
             let fit_to_height = self.fit_to_height.get_value_string();
             if self.fit_to_height.has_value() {

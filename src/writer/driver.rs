@@ -47,7 +47,7 @@ where
 }
 
 pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>) {
-    let _ = write_text_node(writer, "\r\n");
+    write_text_node(writer, "\r\n");
 }
 
 pub(crate) fn make_file_from_writer<W: io::Seek + io::Write>(

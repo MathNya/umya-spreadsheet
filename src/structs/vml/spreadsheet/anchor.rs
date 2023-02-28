@@ -127,7 +127,7 @@ impl Anchor {
                 Ok(Event::Text(e)) => {
                     let text = e.unescape().unwrap();
                     let split_str: Vec<&str> = text.split(", ").collect();
-                    self.set_left_column(Self::get_number(split_str.get(0)));
+                    self.set_left_column(Self::get_number(split_str.first()));
                     self.set_left_offset(Self::get_number(split_str.get(1)));
                     self.set_top_row(Self::get_number(split_str.get(2)));
                     self.set_top_offset(Self::get_number(split_str.get(3)));
@@ -150,10 +150,7 @@ impl Anchor {
 
     fn get_number(value: Option<&&str>) -> u32 {
         match value {
-            Some(v) => match v.to_string().parse::<u32>() {
-                Ok(w) => w,
-                Err(_) => 0,
-            },
+            Some(v) => v.to_string().parse::<u32>().unwrap_or(0),
             None => 0,
         }
     }

@@ -46,10 +46,10 @@ impl NumberingFormats {
             Some(v) => {
                 let number_format_id = v.get_number_format_id();
                 if v.get_is_build_in() == &true {
-                    return number_format_id.clone();
+                    return *number_format_id;
                 }
                 if self.numbering_format.get(number_format_id).is_some() {
-                    return number_format_id.clone();
+                    return *number_format_id;
                 }
                 let hash_code = v.get_hash_code();
                 let mut id = 175;

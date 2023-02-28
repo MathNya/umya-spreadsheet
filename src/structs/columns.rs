@@ -25,12 +25,7 @@ impl Columns {
     }
 
     pub(crate) fn get_column(&self, value: &u32) -> Option<&Column> {
-        for column in &self.column {
-            if value == column.get_col_num() {
-                return Some(column);
-            }
-        }
-        None
+        self.column.iter().find(|&column| value == column.get_col_num())
     }
 
     pub(crate) fn get_column_mut(&mut self, value: &u32) -> &mut Column {
@@ -142,7 +137,7 @@ impl Columns {
             let mut column_iter = column_copy.iter();
             let mut column_raw = column_iter.next();
             let mut obj = column_raw.unwrap();
-            let mut min = obj.get_col_num().clone();
+            let mut min = *obj.get_col_num();
             let mut max = min;
             loop {
                 column_raw = column_iter.next();
@@ -156,7 +151,7 @@ impl Columns {
                         } else {
                             self.write_to_column(writer, &min, &max, obj, stylesheet);
                             obj = column;
-                            min = obj.get_col_num().clone();
+                            min = *obj.get_col_num();
                             max = min;
                         }
                     }

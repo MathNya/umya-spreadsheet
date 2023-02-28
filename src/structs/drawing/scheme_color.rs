@@ -24,7 +24,7 @@ pub struct SchemeColor {
 }
 impl SchemeColor {
     pub fn get_val(&self) -> &SchemeColorValues {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val(&mut self, value: SchemeColorValues) -> &mut Self {
@@ -215,7 +215,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", (self.val.get_value_string()))],
                 false,
             );
 
@@ -288,7 +288,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", (self.val.get_value_string()))],
                 true,
             );
         }

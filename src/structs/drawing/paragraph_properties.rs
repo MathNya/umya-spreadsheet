@@ -137,7 +137,7 @@ impl ParagraphProperties {
         }
         write_start_tag(writer, "a:pPr", attributes, empty_flag);
 
-        if empty_flag == false {
+        if !empty_flag {
             // a:defRPr
             match &self.default_run_properties {
                 Some(v) => v.write_to_def_rpr(writer),

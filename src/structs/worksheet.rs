@@ -107,8 +107,7 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_cell((col, row))
-            .map(|v| v.get_value_number())
-            .flatten()
+            .and_then(|v| v.get_value_number())
     }
 
     /// Get value by specifying the column number and row number.
@@ -414,7 +413,7 @@ impl Worksheet {
     /// ```
     #[deprecated(note = "use `get_cell_value_mut` instead")]
     pub fn get_cell_value_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut CellValue {
-        self.get_row_dimension_mut(&row);
+        self.get_row_dimension_mut(row);
         self.cell_collection.get_mut(col, row).get_cell_value_mut()
     }
 
@@ -506,7 +505,7 @@ impl Worksheet {
     /// ```
     #[deprecated(note = "use `get_style_mut` instead")]
     pub fn get_style_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Style {
-        self.get_row_dimension_mut(&row);
+        self.get_row_dimension_mut(row);
         self.cell_collection.get_mut(col, row).get_style_mut()
     }
 
@@ -774,7 +773,7 @@ impl Worksheet {
     /// * `column` - Column Char. ex) "A"
     pub fn get_column_dimension(&self, column: &str) -> Option<&Column> {
         let column_upper = column.to_uppercase();
-        let col = column_index_from_string(&column_upper);
+        let col = column_index_from_string(column_upper);
         self.get_column_dimension_by_number(&col)
     }
 
@@ -783,7 +782,7 @@ impl Worksheet {
     /// * `column` - Column Char. ex) "A"
     pub fn get_column_dimension_mut(&mut self, column: &str) -> &mut Column {
         let column_upper = column.to_uppercase();
-        let col = column_index_from_string(&column_upper);
+        let col = column_index_from_string(column_upper);
         self.get_column_dimension_by_number_mut(&col)
     }
 
@@ -1500,7 +1499,7 @@ impl Worksheet {
 
     /// Get SheetName.
     pub fn get_name(&self) -> &str {
-        return &self.title;
+        &self.title
     }
 
     /// Set Title.
@@ -1823,7 +1822,7 @@ impl Worksheet {
 
     #[deprecated(note = "use `get_charts` instead")]
     pub fn get_charts_by_column_and_row(&self, col: &u32, row: &u32) -> Vec<&Chart> {
-        self.get_worksheet_drawing().get_charts(&col, &row)
+        self.get_worksheet_drawing().get_charts(col, row)
     }
 
     pub fn get_charts_mut<T>(&mut self, coordinate: T) -> Vec<&mut Chart>
