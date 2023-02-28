@@ -66,7 +66,7 @@ pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
     dir: Option<&str>,
 ) -> Result<(), io::Error> {
     let zip_opt =
-        zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored);
+        zip::write::FileOptions::default().compression_method(zip::CompressionMethod::DEFLATE);
     arv.start_file(&to_path(path, dir), zip_opt)?;
     arv.write_all(writer)
 }
