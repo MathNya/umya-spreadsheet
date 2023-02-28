@@ -1,5 +1,5 @@
 use aes::cipher::{block_padding::NoPadding, BlockEncryptMut, KeyIvInit};
-use base64::encode;
+use base64::{engine::general_purpose::STANDARD, Engine as _};
 use byteorder::{ByteOrder, LittleEndian};
 use cfb;
 use hmac::{Hmac, Mac};
@@ -461,7 +461,7 @@ fn build_encryption_info(
     let str_package_block_size = package_block_size.to_string();
     let str_package_key_bits = package_key_bits.to_string();
     let str_package_hash_size = package_hash_size.to_string();
-    let str_package_salt_value = encode(&package_salt_value);
+    let str_package_salt_value = STANDARD.encode(&package_salt_value);
     write_start_tag(
         &mut writer,
         "keyData",
@@ -477,8 +477,8 @@ fn build_encryption_info(
         ],
         true,
     );
-    let str_data_integrity_encrypted_hmac_key = encode(&data_integrity_encrypted_hmac_key);
-    let str_data_integrity_encrypted_hmac_value = encode(&data_integrity_encrypted_hmac_value);
+    let str_data_integrity_encrypted_hmac_key = STANDARD.encode(&data_integrity_encrypted_hmac_key);
+    let str_data_integrity_encrypted_hmac_value = STANDARD.encode(&data_integrity_encrypted_hmac_value);
     write_start_tag(
         &mut writer,
         "dataIntegrity",
@@ -506,10 +506,10 @@ fn build_encryption_info(
     let str_key_block_size = key_block_size.to_string();
     let str_key_key_bits = key_key_bits.to_string();
     let str_key_hash_size = key_hash_size.to_string();
-    let str_key_salt_value = encode(&key_salt_value);
-    let str_key_encrypted_verifier_hash_input = encode(&key_encrypted_verifier_hash_input);
-    let str_key_encrypted_verifier_hash_value = encode(&key_encrypted_verifier_hash_value);
-    let str_key_key_encrypted_key_value = encode(&key_encrypted_key_value);
+    let str_key_salt_value = STANDARD.encode(&key_salt_value);
+    let str_key_encrypted_verifier_hash_input = STANDARD.encode(&key_encrypted_verifier_hash_input);
+    let str_key_encrypted_verifier_hash_value = STANDARD.encode(&key_encrypted_verifier_hash_value);
+    let str_key_key_encrypted_key_value = STANDARD.encode(&key_encrypted_key_value);
     write_start_tag(
         &mut writer,
         "p:encryptedKey",
