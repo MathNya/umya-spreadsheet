@@ -742,6 +742,28 @@ fn insert_and_remove_cells() {
 }
 
 #[test]
+fn new_sheet_and_edit() {
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+
+    let sheet = book.new_sheet("Sheet2233").unwrap();
+    let cell = sheet.get_cell_mut("A2");
+    let _ = cell.set_value_from_string("test");
+
+    let path = std::path::Path::new("./tests/result_files/bbb_new_sheet_value.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+
+    let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+    let a2_value = book
+    .get_sheet_by_name_mut("Sheet2233")
+    .unwrap()
+    .get_cell("A2")
+    .unwrap()
+    .get_value();
+    assert_eq!("test", a2_value);
+}
+
+#[test]
 fn new_file_and_edit() {
     // new file.
     let mut book = umya_spreadsheet::new_file();

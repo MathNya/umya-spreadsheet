@@ -259,6 +259,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
+        self.get_row_dimension_mut(&row);
         self.cell_collection.get_mut(&col, &row)
     }
 
