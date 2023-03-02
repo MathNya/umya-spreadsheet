@@ -95,7 +95,7 @@ impl Break {
 
         let manual_page_break = self.manual_page_break.get_value_string();
         if self.manual_page_break.has_value() {
-            attributes.push(("man", &manual_page_break));
+            attributes.push(("man", manual_page_break));
         }
         write_start_tag(writer, "brk", attributes, true);
     }

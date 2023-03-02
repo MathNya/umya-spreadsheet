@@ -15,7 +15,7 @@ pub struct ConditionalFormatValueObject {
 }
 impl ConditionalFormatValueObject {
     pub fn get_type(&self) -> &ConditionalFormatValueObjectValues {
-        &self.r#type.get_value()
+        self.r#type.get_value()
     }
 
     pub fn set_type(&mut self, value: ConditionalFormatValueObjectValues) -> &mut Self {
@@ -24,7 +24,7 @@ impl ConditionalFormatValueObject {
     }
 
     pub fn get_val(&self) -> &str {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -76,11 +76,11 @@ impl ConditionalFormatValueObject {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let ctype = self.r#type.get_value_string();
         if self.r#type.has_value() {
-            attributes.push(("type", &ctype));
+            attributes.push(("type", ctype));
         }
         let val = self.val.get_value_string();
         if self.val.has_value() {
-            attributes.push(("val", &val));
+            attributes.push(("val", val));
         }
 
         write_start_tag(writer, "cfvo", attributes, true);

@@ -194,7 +194,7 @@ pub(crate) fn raw_to_serialize_by_worksheet(
                     }
                     // comment
                     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
-                        let _ = comment::read(worksheet, relationship.get_raw_file()).unwrap();
+                        comment::read(worksheet, relationship.get_raw_file()).unwrap();
                     }
                     _ => {}
                 }
@@ -203,7 +203,7 @@ pub(crate) fn raw_to_serialize_by_worksheet(
                 match relationship.get_type() {
                     // vmlDrawing
                     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing" => {
-                        let _ = vml_drawing::read(
+                        vml_drawing::read(
                             worksheet,
                             relationship.get_raw_file(),
                             raw_data_of_worksheet.get_vml_drawing_relationships(),

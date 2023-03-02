@@ -86,7 +86,7 @@ where
 
     caps.map(|v| {
         let col = v.get(3).map(|v| alpha_to_index(v.as_str())); // col number: [A-Z]{1,3}
-        let row = v.get(6).map(|v| v.as_str().parse::<u32>().ok()).flatten(); // row number: [0-9]+
+        let row = v.get(6).and_then(|v| v.as_str().parse::<u32>().ok()); // row number: [0-9]+
 
         let col_lock_flg = col.map(|_col| {
             v.get(2).is_some() // col lock flag: (\$)?
@@ -123,7 +123,7 @@ pub fn coordinate_from_index_with_lock(
 #[deprecated(note = "use `CellCoordinates::from` instead")]
 pub fn index_from_coordinate_simple(coordinate: &str) -> (u32, u32) {
     let coordinate_upper = coordinate.to_uppercase();
-    let (col, row, ..) = index_from_coordinate(&coordinate_upper);
+    let (col, row, ..) = index_from_coordinate(coordinate_upper);
     (col.unwrap(), row.unwrap())
 }
 
@@ -165,7 +165,7 @@ impl From<(u32, u32)> for CellCoordinates {
 
 impl From<(&u32, &u32)> for CellCoordinates {
     fn from(value: (&u32, &u32)) -> Self {
-        CellCoordinates::new(value.0.clone(), value.1.clone())
+        CellCoordinates::new(*value.0, *value.1)
     }
 }
 
@@ -179,7 +179,7 @@ impl From<String> for CellCoordinates {
 impl From<&str> for CellCoordinates {
     fn from(value: &str) -> Self {
         let coordinate_upper = value.to_uppercase();
-        let (col, row, ..) = index_from_coordinate(&coordinate_upper);
+        let (col, row, ..) = index_from_coordinate(coordinate_upper);
         CellCoordinates::new(col.unwrap(), row.unwrap())
     }
 }

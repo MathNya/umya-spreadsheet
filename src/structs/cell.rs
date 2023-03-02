@@ -144,7 +144,7 @@ impl Cell {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u16_ref(&mut self, value: &u16) -> &mut Self {
-        self.set_value_number(value.clone())
+        self.set_value_number(*value)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -154,7 +154,7 @@ impl Cell {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u32_ref(&mut self, value: &u32) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -164,7 +164,7 @@ impl Cell {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_u64_ref(&mut self, value: &u64) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -174,7 +174,7 @@ impl Cell {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i16_ref(&mut self, value: &i16) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -184,7 +184,7 @@ impl Cell {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i32_ref(&mut self, value: &i32) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -194,7 +194,7 @@ impl Cell {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_i64_ref(&mut self, value: &i64) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     #[deprecated(note = "use `set_value_number` instead")]
@@ -204,7 +204,7 @@ impl Cell {
 
     #[deprecated(note = "use `set_value_number` instead")]
     pub fn set_value_from_usize_ref(&mut self, value: &usize) -> &mut Self {
-        self.set_value_number(value.clone() as f64)
+        self.set_value_number(*value as f64)
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
@@ -271,7 +271,7 @@ impl Cell {
             None => column_font_size,
         };
 
-        let mut column_width = 1.4 * char_cnt as f64;
+        let mut column_width = 1.4 * char_cnt;
         column_width = column_width * font_size / 11f64;
 
         column_width
@@ -302,8 +302,8 @@ impl Cell {
 
         // convert value
         let result = match self.get_style().get_number_format() {
-            Some(nmuber_format) => to_formatted_string(&value, &nmuber_format.get_format_code()),
-            None => to_formatted_string(&value, &NumberingFormat::FORMAT_GENERAL),
+            Some(nmuber_format) => to_formatted_string(&value, nmuber_format.get_format_code()),
+            None => to_formatted_string(&value, NumberingFormat::FORMAT_GENERAL),
         };
         result
     }
@@ -415,7 +415,7 @@ impl Cell {
                             let _ = self.set_value_bool(prm);
                         } else if type_value == "e" {
                             let _ = self.set_error();
-                        } else if type_value == "" || type_value == "n" {
+                        } else if type_value.is_empty() || type_value == "n" {
                             let _ = self.set_value_crate(string_value.clone());
                         };
                     }
@@ -474,14 +474,14 @@ impl Cell {
                     write_end_tag(writer, "f");
                 }
                 None => {
-                    if self.get_formula_attributes().len() > 0 {
+                    if !self.get_formula_attributes().is_empty() {
                         write_start_tag(writer, "f", self.get_formula_attributes(), true);
                     }
                 }
             }
 
             // v
-            if self.cell_value.is_value_empty() == false {
+            if !self.cell_value.is_value_empty() {
                 write_start_tag(writer, "v", vec![], false);
 
                 //todo use typed value

@@ -48,7 +48,7 @@ pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -
     None
 }
 pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Error> {
-    let value = (&attr.value).clone().into_owned();
+    let value = attr.value.clone().into_owned();
     String::from_utf8(value)
 }
 

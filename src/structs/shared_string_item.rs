@@ -133,7 +133,7 @@ impl SharedStringItem {
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"si" => {
-                        if vec_text_element.len() > 0 {
+                        if !vec_text_element.is_empty() {
                             let mut obj = RichText::default();
                             obj.set_rich_text_elements(vec_text_element);
                             self.set_rich_text(obj);

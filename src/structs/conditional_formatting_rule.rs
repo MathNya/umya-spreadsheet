@@ -42,7 +42,7 @@ pub struct ConditionalFormattingRule {
 }
 impl ConditionalFormattingRule {
     pub fn get_type(&self) -> &ConditionalFormatValues {
-        &self.r#type.get_value()
+        self.r#type.get_value()
     }
 
     pub fn set_type(&mut self, value: ConditionalFormatValues) -> &mut Self {
@@ -51,7 +51,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_operator(&self) -> &ConditionalFormattingOperatorValues {
-        &self.operator.get_value()
+        self.operator.get_value()
     }
 
     pub fn set_operator(&mut self, value: ConditionalFormattingOperatorValues) -> &mut Self {
@@ -60,7 +60,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_text(&self) -> &str {
-        &self.text.get_value()
+        self.text.get_value()
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -69,7 +69,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_priority(&self) -> &i32 {
-        &self.priority.get_value()
+        self.priority.get_value()
     }
 
     pub fn set_priority(&mut self, value: i32) -> &mut Self {
@@ -78,7 +78,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_percent(&self) -> &bool {
-        &self.percent.get_value()
+        self.percent.get_value()
     }
 
     pub fn set_percent(&mut self, value: bool) -> &mut Self {
@@ -87,7 +87,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_bottom(&self) -> &bool {
-        &self.bottom.get_value()
+        self.bottom.get_value()
     }
 
     pub fn set_bottom(&mut self, value: bool) -> &mut Self {
@@ -96,7 +96,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_rank(&self) -> &u32 {
-        &self.rank.get_value()
+        self.rank.get_value()
     }
 
     pub fn set_rank(&mut self, value: u32) -> &mut Self {
@@ -105,7 +105,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_stop_if_true(&self) -> &bool {
-        &self.stop_if_true.get_value()
+        self.stop_if_true.get_value()
     }
 
     pub fn set_stop_if_true(&mut self, value: bool) -> &mut Self {
@@ -114,7 +114,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_std_dev(&self) -> &i32 {
-        &self.std_dev.get_value()
+        self.std_dev.get_value()
     }
 
     pub fn set_std_dev(&mut self, value: i32) -> &mut Self {
@@ -123,7 +123,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_above_average(&self) -> &bool {
-        &self.above_average.get_value()
+        self.above_average.get_value()
     }
 
     pub fn set_above_average(&mut self, value: bool) -> &mut Self {
@@ -132,7 +132,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_equal_average(&self) -> &bool {
-        &self.equal_average.get_value()
+        self.equal_average.get_value()
     }
 
     pub fn set_equal_average(&mut self, value: bool) -> &mut Self {
@@ -141,7 +141,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_time_period(&self) -> &TimePeriodValues {
-        &self.time_period.get_value()
+        self.time_period.get_value()
     }
 
     pub fn set_time_period(&mut self, value: TimePeriodValues) -> &mut Self {
@@ -369,12 +369,12 @@ impl ConditionalFormattingRule {
 
         let r#type = self.r#type.get_value_string();
         if self.r#type.has_value() {
-            attributes.push(("type", &r#type));
+            attributes.push(("type", r#type));
         }
 
         let operator = self.operator.get_value_string();
         if self.operator.has_value() {
-            attributes.push(("operator", &operator));
+            attributes.push(("operator", operator));
         }
 
         let dxf_id_str: String;
@@ -394,12 +394,12 @@ impl ConditionalFormattingRule {
 
         let percent = self.percent.get_value_string();
         if self.percent.has_value() {
-            attributes.push(("percent", &percent));
+            attributes.push(("percent", percent));
         }
 
         let bottom = self.bottom.get_value_string();
         if self.bottom.has_value() {
-            attributes.push(("bottom", &bottom));
+            attributes.push(("bottom", bottom));
         }
 
         let rank = self.rank.get_value_string();
@@ -409,7 +409,7 @@ impl ConditionalFormattingRule {
 
         let stop_if_true = self.stop_if_true.get_value_string();
         if self.stop_if_true.has_value() {
-            attributes.push(("stopIfTrue", &stop_if_true));
+            attributes.push(("stopIfTrue", stop_if_true));
         }
 
         let std_dev = self.std_dev.get_value_string();
@@ -419,17 +419,17 @@ impl ConditionalFormattingRule {
 
         let time_period = self.time_period.get_value_string();
         if self.time_period.has_value() {
-            attributes.push(("timePeriod", &time_period));
+            attributes.push(("timePeriod", time_period));
         }
 
         let above_average = self.above_average.get_value_string();
         if self.above_average.has_value() {
-            attributes.push(("aboveAverage", &above_average));
+            attributes.push(("aboveAverage", above_average));
         }
 
         let equal_average = self.equal_average.get_value_string();
         if self.equal_average.has_value() {
-            attributes.push(("equalAverage", &equal_average));
+            attributes.push(("equalAverage", equal_average));
         }
 
         write_start_tag(writer, "cfRule", attributes, !is_inner);

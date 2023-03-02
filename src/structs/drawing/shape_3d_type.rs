@@ -95,7 +95,7 @@ impl Shape3DType {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let preset_material = self.preset_material.get_value_string();
         if self.preset_material.has_value() {
-            attributes.push(("prstMaterial", &preset_material));
+            attributes.push(("prstMaterial", preset_material));
         }
         write_start_tag(writer, "a:sp3d", attributes, false);
 

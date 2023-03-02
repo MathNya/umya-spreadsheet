@@ -2,7 +2,7 @@
 use super::super::StringValue;
 use super::PercentageType;
 use super::PositiveFixedPercentageType;
-use super::SchemeColorValues;
+
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -24,7 +24,7 @@ pub struct RgbColorModelHex {
 }
 impl RgbColorModelHex {
     pub fn get_val(&self) -> &str {
-        &self.val.get_value()
+        self.val.get_value()
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -215,7 +215,7 @@ impl RgbColorModelHex {
             write_start_tag(
                 writer,
                 "a:srgbClr",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", (self.val.get_value_string()))],
                 false,
             );
 
@@ -288,7 +288,7 @@ impl RgbColorModelHex {
             write_start_tag(
                 writer,
                 "a:srgbClr",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", (self.val.get_value_string()))],
                 true,
             );
         }

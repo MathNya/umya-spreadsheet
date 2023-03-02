@@ -37,12 +37,7 @@ impl WorksheetDrawing {
     }
 
     pub fn get_image(&self, col: &u32, row: &u32) -> Option<&Image> {
-        for image in &self.image_collection {
-            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
-                return Some(image);
-            }
-        }
-        None
+        self.image_collection.iter().find(|&image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
     }
 
     pub fn get_image_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
@@ -88,12 +83,7 @@ impl WorksheetDrawing {
     }
 
     pub fn get_chart(&self, col: &u32, row: &u32) -> Option<&Chart> {
-        for chart in &self.chart_collection {
-            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
-                return Some(chart);
-            }
-        }
-        None
+        self.chart_collection.iter().find(|&chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
     }
 
     pub fn get_chart_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {

@@ -88,7 +88,7 @@ fn lazy_read_and_wite_large_string() {
     println!(
         "read:{}.{:03}sec.",
         end.as_secs(),
-        end.subsec_nanos() / 1_000_000
+        end.subsec_millis()
     );
 
     let start = Instant::now();
@@ -102,7 +102,7 @@ fn lazy_read_and_wite_large_string() {
     println!(
         "edit:{}.{:03}sec.",
         end.as_secs(),
-        end.subsec_nanos() / 1_000_000
+        end.subsec_millis()
     );
 
     // writer
@@ -113,7 +113,7 @@ fn lazy_read_and_wite_large_string() {
     println!(
         "write:{}.{:03}sec.",
         end.as_secs(),
-        end.subsec_nanos() / 1_000_000
+        end.subsec_millis()
     );
 }
 
@@ -951,7 +951,7 @@ fn new_file_and_edit() {
 
     // writer.
     let path = std::path::Path::new("./tests/result_files/eee.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
+    umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
 }
 
 #[test]
@@ -961,7 +961,7 @@ fn new_and_wite() {
 
     // writer.
     let path = std::path::Path::new("./tests/result_files/fff.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
+    umya_spreadsheet::writer::xlsx::write(&book, path).unwrap();
 }
 
 #[test]
