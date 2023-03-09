@@ -1,8 +1,12 @@
+use crate::Row;
+
 use super::driver::*;
 use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
+use std::collections::HashMap;
 use std::io;
+use std::iter::Map;
 use std::sync::Arc;
 use std::sync::RwLock;
 use structs::Cell;
@@ -145,48 +149,67 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     b.get_coordinate().get_col_num(),
                 ))
         });
-        let mut cells_iter = cells.iter();
 
         // row loop
-        let mut cell_raw = cells_iter.next();
-        for row in &row_dimensions {
-            let mut cells_in_row: Vec<&Cell> = Vec::new();
-            'cell_loop: loop {
-                match cell_raw {
-                    Some(cell) => {
-                        if row.get_row_num() == cell.get_coordinate().get_row_num() {
-                            cells_in_row.push(cell);
-                            cell_raw = cells_iter.next();
-                        } else {
-                            break 'cell_loop;
-                        }
-                    }
-                    None => {
-                        break 'cell_loop;
-                    }
-                }
+        let cell_map = cells
+            .iter()
+            .fold(HashMap::<u32, Vec<&Cell>>::new(), |mut acc, cell| {
+                acc.entry(cell.get_coordinate().get_row_num().to_owned())
+                    .or_insert_with(|| Vec::default())
+                    .push(cell);
+                acc
+            });
+
+        let mut row_map = HashMap::<u32, (Option<&Row>, Option<&[&Cell]>)>::new();
+
+        let mut cell_map_iter = cell_map.iter().peekable();
+        let mut row_dimensions_iter = row_dimensions.iter().peekable();
+
+        while cell_map_iter.peek().is_some() || row_dimensions_iter.peek().is_some() {
+            if let Some((row_n, cells)) = cell_map_iter.next() {
+                row_map
+                    .entry(row_n.to_owned())
+                    .or_insert_with(|| (Option::default(), Option::default()))
+                    .1
+                    .replace(cells);
             }
 
-            // row
-            let include_cell = !cells_in_row.is_empty();
-            if include_cell {
-                let fist_num = cells_in_row.get(0).unwrap().get_coordinate().get_col_num();
-                let last_num = cells_in_row
+            if let Some(row_dim) = row_dimensions_iter.next() {
+                row_map
+                    .entry(row_dim.get_row_num().to_owned())
+                    .or_insert_with(|| (Option::default(), Option::default()))
+                    .0
+                    .replace(row_dim);
+            }
+        }
+
+        for (_, (row, row_cells)) in row_map {
+            let default_row = &Row::default();
+            let row = row.unwrap_or(default_row);
+            let default_cells = &Vec::<&Cell>::new();
+            let row_cells = row_cells.unwrap_or(default_cells);
+
+            if !row_cells.is_empty() {
+                let first_num = row_cells.get(0).unwrap().get_coordinate().get_col_num();
+                let last_num = row_cells
                     .iter()
                     .last()
                     .unwrap()
                     .get_coordinate()
                     .get_col_num();
-                let spans = format!("{}:{}", fist_num, last_num);
+                let spans = format!("{}:{}", first_num, last_num);
+
                 row.write_to(&mut writer, stylesheet, spans, false);
+
                 // c
-                for cell in cells_in_row {
+                for cell in row_cells {
                     cell.write_to(&mut writer, shared_string_table.clone(), stylesheet);
                 }
                 write_end_tag(&mut writer, "row");
             } else {
                 let spans = format!("{}:{}", 0, 0);
-                row.write_to(&mut writer, stylesheet, spans, true);
+
+                row.write_to(&mut writer, stylesheet, spans, false);
             }
         }
 
