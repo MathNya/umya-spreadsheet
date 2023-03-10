@@ -145,47 +145,37 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     b.get_coordinate().get_col_num(),
                 ))
         });
-        let mut cells_iter = cells.iter();
+
+        let mut cells_iter = cells.iter().peekable();
 
         // row loop
-        let mut cell_raw = cells_iter.next();
         for row in &row_dimensions {
             let mut cells_in_row: Vec<&Cell> = Vec::new();
-            'cell_loop: loop {
-                match cell_raw {
-                    Some(cell) => {
-                        if row.get_row_num() == cell.get_coordinate().get_row_num() {
-                            cells_in_row.push(cell);
-                            cell_raw = cells_iter.next();
-                        } else {
-                            break 'cell_loop;
-                        }
-                    }
-                    None => {
-                        break 'cell_loop;
-                    }
+
+            while let Some(cell) = cells_iter.peek() {
+                if row.get_row_num() != cell.get_coordinate().get_row_num() {
+                    break;
                 }
+
+                cells_in_row.push(cells_iter.next().unwrap());
             }
 
             // row
             let include_cell = !cells_in_row.is_empty();
             if include_cell {
-                let fist_num = cells_in_row.get(0).unwrap().get_coordinate().get_col_num();
-                let last_num = cells_in_row
-                    .iter()
-                    .last()
-                    .unwrap()
-                    .get_coordinate()
-                    .get_col_num();
-                let spans = format!("{}:{}", fist_num, last_num);
+                let first_num = cells_in_row.first().unwrap().get_coordinate().get_col_num();
+                let last_num = cells_in_row.last().unwrap().get_coordinate().get_col_num();
+                let spans = format!("{first_num}:{last_num}");
+
                 row.write_to(&mut writer, stylesheet, spans, false);
                 // c
                 for cell in cells_in_row {
                     cell.write_to(&mut writer, shared_string_table.clone(), stylesheet);
                 }
+
                 write_end_tag(&mut writer, "row");
             } else {
-                let spans = format!("{}:{}", 0, 0);
+                let spans = "0:0".to_string();
                 row.write_to(&mut writer, stylesheet, spans, true);
             }
         }
