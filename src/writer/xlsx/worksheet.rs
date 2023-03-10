@@ -2,11 +2,10 @@ use crate::Row;
 
 use super::driver::*;
 use super::XlsxError;
+use hashbrown::HashMap;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
-use std::collections::HashMap;
 use std::io;
-use std::iter::Map;
 use std::sync::Arc;
 use std::sync::RwLock;
 use structs::Cell;
