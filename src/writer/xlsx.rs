@@ -79,9 +79,10 @@ impl fmt::Display for XlsxError {
 
 impl Error for XlsxError {}
 
-fn make_buffer(spreadsheet: &Spreadsheet) -> Result<std::vec::Vec<u8>, XlsxError> {
+fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Vec<u8>, XlsxError> {
     let arv = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
     let mut writer_manager = WriterManager::new(arv);
+    writer_manager.set_is_light(is_light);
 
     // Add docProps App
     doc_props_app::write(spreadsheet, &mut writer_manager)?;
@@ -218,9 +219,25 @@ fn make_buffer(spreadsheet: &Spreadsheet) -> Result<std::vec::Vec<u8>, XlsxError
 /// * `Result` - OK is void. Err is error message.
 pub fn write_writer<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
-    writer: W,
+    writer: W
 ) -> Result<(), XlsxError> {
-    let buffer = make_buffer(spreadsheet)?;
+    let buffer = make_buffer(spreadsheet, false)?;
+    let mut writer = writer;
+    writer.write_all(&buffer)?;
+    Ok(())
+}
+
+/// write spreadsheet file to arbitrary writer.
+/// # Arguments
+/// * `spreadsheet` - Spreadsheet structs object.
+/// * `writer` - writer to write to.
+/// # Return value
+/// * `Result` - OK is void. Err is error message.
+pub fn write_writer_light<W: io::Seek + io::Write>(
+    spreadsheet: &Spreadsheet,
+    writer: W
+) -> Result<(), XlsxError> {
+    let buffer = make_buffer(spreadsheet, true)?;
     let mut writer = writer;
     writer.write_all(&buffer)?;
     Ok(())
@@ -244,6 +261,37 @@ pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), X
         .as_ref()
         .with_extension(format!("{}{}", extension, "tmp"));
     match write_writer(
+        spreadsheet,
+        &mut io::BufWriter::new(fs::File::create(&path_tmp)?)
+    ) {
+        Ok(_) => {}
+        Err(v) => {
+            fs::remove_file(path_tmp)?;
+            return Err(v);
+        }
+    }
+    fs::rename(path_tmp, path)?;
+    Ok(())
+}
+
+/// write spreadsheet file.
+/// # Arguments
+/// * `spreadsheet` - Spreadsheet structs object.
+/// * `path` - file path to save.
+/// # Return value
+/// * `Result` - OK is void. Err is error message.
+/// # Examples
+/// ```
+/// let mut book = umya_spreadsheet::new_file();
+/// let path = std::path::Path::new("./tests/result_files/zzz.xlsx");
+/// let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
+/// ```
+pub fn write_light<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), XlsxError> {
+    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
+    let path_tmp = path
+        .as_ref()
+        .with_extension(format!("{}{}", extension, "tmp"));
+    match write_writer_light(
         spreadsheet,
         &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
     ) {
@@ -279,7 +327,44 @@ pub fn write_with_password<P: AsRef<Path>>(
     let path_tmp = path
         .as_ref()
         .with_extension(format!("{}{}", extension, "tmp"));
-    let buffer = match make_buffer(spreadsheet) {
+    let buffer = match make_buffer(spreadsheet, false) {
+        Ok(v) => v,
+        Err(v) => {
+            fs::remove_file(path_tmp)?;
+            return Err(v);
+        }
+    };
+
+    // set password
+    encrypt(&path_tmp, &buffer, password);
+
+    fs::rename(path_tmp, path)?;
+    Ok(())
+}
+
+/// write spreadsheet file with password.
+/// # Arguments
+/// * `spreadsheet` - Spreadsheet structs object.
+/// * `path` - file path to save.
+/// * `password` - password.
+/// # Return value
+/// * `Result` - OK is void. Err is error message.
+/// # Examples
+/// ```
+/// let mut book = umya_spreadsheet::new_file();
+/// let path = std::path::Path::new("./tests/result_files/zzz_password.xlsx");
+/// let _ = umya_spreadsheet::writer::xlsx::write_with_password_light(&book, path, "password");
+/// ```
+pub fn write_with_password_light<P: AsRef<Path>>(
+    spreadsheet: &Spreadsheet,
+    path: P,
+    password: &str,
+) -> Result<(), XlsxError> {
+    let extension = path.as_ref().extension().unwrap().to_str().unwrap();
+    let path_tmp = path
+        .as_ref()
+        .with_extension(format!("{}{}", extension, "tmp"));
+    let buffer = match make_buffer(spreadsheet, true) {
         Ok(v) => v,
         Err(v) => {
             fs::remove_file(path_tmp)?;

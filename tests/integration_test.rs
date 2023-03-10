@@ -1086,3 +1086,33 @@ fn read_and_wite_2() {
     let path = std::path::Path::new("./tests/result_files/bbb_2.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_110() {
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    
+    let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+    let cell = sheet.get_cell_mut("A1");
+    // work on 0.87
+    // cell.set_value("test".to_string());
+    // work on 0.9
+    cell.set_value_from_string("test");
+    let path = std::path::Path::new("./tests/result_files/aaa_issue_110.xlsx");
+    let r = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn compression_test() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_comp_standard.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+
+    // writer
+    let path = std::path::Path::new("./tests/result_files/bbb_comp_light.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
+}

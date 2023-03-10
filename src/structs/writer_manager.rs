@@ -8,13 +8,24 @@ use writer::xlsx::XlsxError;
 pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: zip::ZipWriter<W>,
+    is_light: bool,
 }
 impl<W: io::Seek + io::Write> WriterManager<W> {
     pub fn new(arv: zip::ZipWriter<W>) -> Self {
         WriterManager {
             files: Vec::new(),
             arv,
+            is_light: false,
         }
+    }
+
+    pub fn set_is_light(&mut self, value: bool) -> &mut Self {
+        self.is_light = value;
+        self
+    }
+
+    pub fn get_is_light(&self) -> &bool {
+        &self.is_light
     }
 
     pub(crate) fn add_writer(
@@ -24,7 +35,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     ) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
         if !is_match {
-            make_file_from_writer(target, &mut self.arv, writer, None)?;
+            make_file_from_writer(target, &mut self.arv, writer, None, &self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
@@ -33,7 +44,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     pub(crate) fn add_bin(&mut self, target: &str, data: &Vec<u8>) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
         if !is_match {
-            make_file_from_bin(target, &mut self.arv, data, None)?;
+            make_file_from_bin(target, &mut self.arv, data, None, &self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
