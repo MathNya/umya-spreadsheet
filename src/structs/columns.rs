@@ -25,7 +25,9 @@ impl Columns {
     }
 
     pub(crate) fn get_column(&self, value: &u32) -> Option<&Column> {
-        self.column.iter().find(|&column| value == column.get_col_num())
+        self.column
+            .iter()
+            .find(|&column| value == column.get_col_num())
     }
 
     pub(crate) fn get_column_mut(&mut self, value: &u32) -> &mut Column {

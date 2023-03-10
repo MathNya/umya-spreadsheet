@@ -85,11 +85,7 @@ fn lazy_read_and_wite_large_string() {
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
     let ns = book.new_sheet("new sheet").unwrap();
     let end = start.elapsed();
-    println!(
-        "read:{}.{:03}sec.",
-        end.as_secs(),
-        end.subsec_millis()
-    );
+    println!("read:{}.{:03}sec.", end.as_secs(), end.subsec_millis());
 
     let start = Instant::now();
     for r in 1..5000 {
@@ -99,22 +95,14 @@ fn lazy_read_and_wite_large_string() {
         }
     }
     let end = start.elapsed();
-    println!(
-        "edit:{}.{:03}sec.",
-        end.as_secs(),
-        end.subsec_millis()
-    );
+    println!("edit:{}.{:03}sec.", end.as_secs(), end.subsec_millis());
 
     // writer
     let start = Instant::now();
     let path = std::path::Path::new("./tests/result_files/bbb_large_string.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
     let end = start.elapsed();
-    println!(
-        "write:{}.{:03}sec.",
-        end.as_secs(),
-        end.subsec_millis()
-    );
+    println!("write:{}.{:03}sec.", end.as_secs(), end.subsec_millis());
 }
 
 #[test]
@@ -755,11 +743,11 @@ fn new_sheet_and_edit() {
 
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
     let a2_value = book
-    .get_sheet_by_name_mut("Sheet2233")
-    .unwrap()
-    .get_cell("A2")
-    .unwrap()
-    .get_value();
+        .get_sheet_by_name_mut("Sheet2233")
+        .unwrap()
+        .get_cell("A2")
+        .unwrap()
+        .get_value();
     assert_eq!("test", a2_value);
 }
 
@@ -1091,7 +1079,7 @@ fn read_and_wite_2() {
 fn issue_110() {
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    
+
     let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
     let cell = sheet.get_cell_mut("A1");
     // work on 0.87

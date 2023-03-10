@@ -67,10 +67,13 @@ pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
     dir: Option<&str>,
     is_light: &bool,
 ) -> Result<(), io::Error> {
-    let zip_opt = match is_light {
-        &false => zip::write::FileOptions::default().compression_method(zip::CompressionMethod::DEFLATE),
-        &true => zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored)
-    };
+    let zip_opt =
+        match is_light {
+            &false => zip::write::FileOptions::default()
+                .compression_method(zip::CompressionMethod::DEFLATE),
+            &true => zip::write::FileOptions::default()
+                .compression_method(zip::CompressionMethod::Stored),
+        };
     arv.start_file(&to_path(path, dir), zip_opt)?;
     arv.write_all(writer)
 }

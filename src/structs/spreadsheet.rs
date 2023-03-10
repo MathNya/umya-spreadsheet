@@ -419,9 +419,7 @@ impl Spreadsheet {
             Ok(index) => {
                 return self.get_sheet(&index);
             }
-            Err(e) => {
-                Err(e)
-            }
+            Err(e) => Err(e),
         }
     }
 
@@ -456,9 +454,7 @@ impl Spreadsheet {
             Ok(index) => {
                 return self.get_sheet_mut(&index);
             }
-            Err(e) => {
-                Err(e)
-            }
+            Err(e) => Err(e),
         }
     }
 

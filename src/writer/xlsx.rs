@@ -219,7 +219,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
 /// * `Result` - OK is void. Err is error message.
 pub fn write_writer<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
-    writer: W
+    writer: W,
 ) -> Result<(), XlsxError> {
     let buffer = make_buffer(spreadsheet, false)?;
     let mut writer = writer;
@@ -235,7 +235,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// * `Result` - OK is void. Err is error message.
 pub fn write_writer_light<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
-    writer: W
+    writer: W,
 ) -> Result<(), XlsxError> {
     let buffer = make_buffer(spreadsheet, true)?;
     let mut writer = writer;
@@ -262,7 +262,7 @@ pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), X
         .with_extension(format!("{}{}", extension, "tmp"));
     match write_writer(
         spreadsheet,
-        &mut io::BufWriter::new(fs::File::create(&path_tmp)?)
+        &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
     ) {
         Ok(_) => {}
         Err(v) => {

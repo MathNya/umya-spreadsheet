@@ -473,7 +473,8 @@ fn build_encryption_info(
         true,
     );
     let str_data_integrity_encrypted_hmac_key = STANDARD.encode(data_integrity_encrypted_hmac_key);
-    let str_data_integrity_encrypted_hmac_value = STANDARD.encode(data_integrity_encrypted_hmac_value);
+    let str_data_integrity_encrypted_hmac_value =
+        STANDARD.encode(data_integrity_encrypted_hmac_value);
     write_start_tag(
         &mut writer,
         "dataIntegrity",
@@ -563,7 +564,6 @@ fn buffer_copy(buffer1: &mut Vec<u8>, buffer2: &Vec<u8>) {
 }
 
 fn buffer_read_u_int32_le(buffer: &Vec<u8>, _cnt: &usize) -> u32 {
-    
     LittleEndian::read_u32(buffer)
 }
 

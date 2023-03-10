@@ -106,8 +106,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.get_cell((col, row))
-            .and_then(|v| v.get_value_number())
+        self.get_cell((col, row)).and_then(|v| v.get_value_number())
     }
 
     /// Get value by specifying the column number and row number.
