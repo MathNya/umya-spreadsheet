@@ -2,6 +2,8 @@ extern crate chrono;
 extern crate umya_spreadsheet;
 use std::time::Instant;
 
+use umya_spreadsheet::Style;
+
 #[test]
 fn read_and_wite() {
     // reader
@@ -731,24 +733,59 @@ fn insert_and_remove_cells() {
 
 #[test]
 fn new_sheet_and_edit() {
+    const BG_COLOR: &str = "#333";
+    const TEST_SHEET: &str = "Sheet2233";
+
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 
-    let sheet = book.new_sheet("Sheet2233").unwrap();
+    // set cell value
+    let sheet = book.new_sheet(TEST_SHEET).unwrap();
     let cell = sheet.get_cell_mut("A2");
     let _ = cell.set_value_from_string("test");
+
+    // set style by range
+    let mut style = Style::default();
+    style.set_background_color(BG_COLOR);
+    sheet.set_style_by_range("A3:A4", style);
 
     let path = std::path::Path::new("./tests/result_files/bbb_new_sheet_value.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
     let a2_value = book
-        .get_sheet_by_name_mut("Sheet2233")
+        .get_sheet_by_name_mut(TEST_SHEET)
         .unwrap()
         .get_cell("A2")
         .unwrap()
         .get_value();
     assert_eq!("test", a2_value);
+
+    {
+        let a3_bg = book
+            .get_sheet_by_name_mut(TEST_SHEET)
+            .unwrap()
+            .get_style_mut("A3")
+            .get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .get_argb();
+
+        assert_eq!(a3_bg, BG_COLOR);
+    }
+
+    {
+        let a4_bg = book
+            .get_sheet_by_name_mut(TEST_SHEET)
+            .unwrap()
+            .get_style_mut("A4")
+            .get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .get_argb();
+
+        assert_eq!(a4_bg, BG_COLOR);
+    }
 }
 
 #[test]
