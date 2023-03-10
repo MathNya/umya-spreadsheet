@@ -12,6 +12,14 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New feature
+### ver 0.9.1
+Changed file compression logic when writing.
+The file size is smaller than before, but the processing time is longer.
+If you want to use the previous logic, use this method.
+```rust
+umya_spreadsheet::writer::xlsx::write_light(&book, path);
+umya_spreadsheet::writer::xlsx::write_with_password_light(&book, path, "password");
+```
 ### ver 0.9
 The way cells are referenced has changed.
 ```rust
