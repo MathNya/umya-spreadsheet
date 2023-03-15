@@ -76,7 +76,7 @@ impl CellValue {
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
     /// - `Error` - if the string was `"#VALUE!"`
     /// - `String` - if the string does not fulfill any of the other conditions
-    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+    pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
         self.remove_formula();
         self

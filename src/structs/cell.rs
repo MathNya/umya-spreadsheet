@@ -98,8 +98,8 @@ impl Cell {
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
     /// - `Error` - if the string was `"#VALUE!"`
     /// - `String` - if the string does not fulfill any of the other conditions
-    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.cell_value.set_value_from_string(value);
+    pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value(value);
         self
     }
 
