@@ -82,6 +82,12 @@ impl CellValue {
         self
     }
 
+    #[deprecated(note = "use `set_value` or `set_value_string` instead")]
+    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.set_value(value);
+        self
+    }
+
     pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
         self

@@ -103,6 +103,12 @@ impl Cell {
         self
     }
 
+    #[deprecated(note = "use `set_value` or `set_value_string` instead")]
+    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value_from_string(value);
+        self
+    }
+
     pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value_crate(value);
         self
