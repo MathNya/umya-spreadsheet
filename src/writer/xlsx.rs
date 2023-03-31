@@ -104,15 +104,15 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
     let mut stylesheet = spreadsheet.get_stylesheet().clone();
     let mut worksheet_no = 1;
     for worksheet in spreadsheet.get_sheet_collection_no_check() {
-        match worksheet.is_serialized() {
+        match worksheet.is_deserialized() {
             false => {
-                // from no serialized.
+                // from no deserialized.
                 worksheet
                     .get_raw_data_of_worksheet()
                     .write(&worksheet_no, &mut writer_manager)?;
             }
             true => {
-                // from serialized.
+                // from deserialized.
                 worksheet::write(
                     &worksheet_no,
                     worksheet,
@@ -129,12 +129,12 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
     // Objects associated with worksheets
     let mut worksheet_no: i32 = 1;
     for worksheet in spreadsheet.get_sheet_collection_no_check() {
-        match worksheet.is_serialized() {
+        match worksheet.is_deserialized() {
             false => {
-                // from no serialized.
+                // from no deserialized.
             }
             true => {
-                // from serialized.
+                // from deserialized.
                 // Add charts
                 let mut chart_no_list: Vec<String> = Vec::new();
                 for chart in worksheet.get_worksheet_drawing().get_chart_collection() {

@@ -113,6 +113,10 @@ fn lazy_read_and_wite_no_edit() {
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 
+    let cells = book.get_lazy_read_sheet_cells(&0).unwrap();
+    assert_eq!("英語", cells.get_cell_value((&5, &12)).get_value());
+    assert_eq!("英語", cells.get_cell_value("E12").get_value());
+
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_lazy_no_edit.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);

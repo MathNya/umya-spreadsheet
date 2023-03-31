@@ -6,6 +6,7 @@ use std::sync::RwLock;
 use structs::drawing::Theme;
 use structs::Address;
 use structs::CellValue;
+use structs::Cells;
 use structs::Properties;
 use structs::Security;
 use structs::SharedStringTable;
@@ -326,15 +327,15 @@ impl Spreadsheet {
     /// Get Work Sheet List.
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
         for worksheet in &self.work_sheet_collection {
-            if !worksheet.is_serialized() {
-                panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
+            if !worksheet.is_deserialized() {
+                panic!("This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
             }
         }
         &self.work_sheet_collection
     }
 
     /// Get Work Sheet List.
-    /// No check serialized.
+    /// No check deserialized.
     pub fn get_sheet_collection_no_check(&self) -> &Vec<Worksheet> {
         &self.work_sheet_collection
     }
@@ -352,13 +353,13 @@ impl Spreadsheet {
         self.work_sheet_collection.len()
     }
 
-    /// serialize by all worksheet.
+    /// deserialize by all worksheet.
     pub fn read_sheet_collection(&mut self) -> &mut Self {
         let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_serialize_by_worksheet(
+            raw_to_deserialize_by_worksheet(
                 worksheet,
                 &theme,
                 shared_string_table.clone(),
@@ -368,13 +369,13 @@ impl Spreadsheet {
         self
     }
 
-    /// serialize a worksheet.
+    /// deserialize a worksheet.
     pub fn read_sheet(&mut self, index: usize) -> &mut Self {
         let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_serialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
+        raw_to_deserialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
         self
     }
 
@@ -400,8 +401,8 @@ impl Spreadsheet {
     pub fn get_sheet(&self, index: &usize) -> Result<&Worksheet, &'static str> {
         match self.work_sheet_collection.get(*index) {
             Some(v) => {
-                if !v.is_serialized() {
-                    panic!("This Worksheet is Not Serialized. Please exec to read_sheet(&mut self, index: usize);");
+                if !v.is_deserialized() {
+                    panic!("This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
                 }
                 Ok(v)
             }
@@ -423,6 +424,17 @@ impl Spreadsheet {
         }
     }
 
+    pub fn get_lazy_read_sheet_cells(&self, index: &usize) -> Result<Cells, &'static str> {
+        let shared_string_table = self.get_shared_string_table();
+        match self.work_sheet_collection.get(*index) {
+            Some(v) => Ok(v.get_cell_collection_stream(
+                &*shared_string_table.read().unwrap(),
+                self.get_stylesheet(),
+            )),
+            None => Err("Not found."),
+        }
+    }
+
     /// Get Work Sheet in mutable.
     /// # Arguments
     /// * `index` - sheet index
@@ -434,7 +446,7 @@ impl Spreadsheet {
         let stylesheet = self.get_stylesheet().clone();
         match self.work_sheet_collection.get_mut(*index) {
             Some(v) => {
-                raw_to_serialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
+                raw_to_deserialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
                 Ok(v)
             }
             None => Err("Not found."),

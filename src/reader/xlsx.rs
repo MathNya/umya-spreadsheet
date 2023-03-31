@@ -158,13 +158,13 @@ pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
     read_reader(file, false)
 }
 
-pub(crate) fn raw_to_serialize_by_worksheet(
+pub(crate) fn raw_to_deserialize_by_worksheet(
     worksheet: &mut Worksheet,
     theme: &Theme,
     shared_string_table: Arc<RwLock<SharedStringTable>>,
     stylesheet: &Stylesheet,
 ) {
-    if worksheet.is_serialized() {
+    if worksheet.is_deserialized() {
         return;
     }
 

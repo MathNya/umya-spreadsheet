@@ -5,6 +5,7 @@ use quick_xml::Reader;
 
 use structs::drawing::Theme;
 use structs::raw::RawWorksheet;
+use structs::Cells;
 use structs::Columns;
 use structs::ConditionalFormatting;
 use structs::Hyperlink;
@@ -61,7 +62,7 @@ pub(crate) fn read(
                     obj.set_attributes(
                         &mut reader,
                         e,
-                        worksheet,
+                        worksheet.get_cell_collection_crate_mut(),
                         shared_string_table,
                         stylesheet,
                         false,
@@ -143,7 +144,7 @@ pub(crate) fn read(
                     obj.set_attributes(
                         &mut reader,
                         e,
-                        worksheet,
+                        worksheet.get_cell_collection_crate_mut(),
                         shared_string_table,
                         stylesheet,
                         true,
@@ -184,6 +185,58 @@ pub(crate) fn read(
     }
 
     Ok(())
+}
+
+pub(crate) fn read_lite(
+    raw_data_of_worksheet: &RawWorksheet,
+    shared_string_table: &SharedStringTable,
+    stylesheet: &Stylesheet,
+) -> Result<Cells, XlsxError> {
+    let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
+    let mut reader = Reader::from_reader(data);
+    reader.trim_text(true);
+    let mut buf = Vec::new();
+
+    let mut cells = Cells::default();
+
+    loop {
+        match reader.read_event_into(&mut buf) {
+            Ok(Event::Start(ref e)) => match e.name().into_inner() {
+                b"row" => {
+                    let mut obj = Row::default();
+                    obj.set_attributes(
+                        &mut reader,
+                        e,
+                        &mut cells,
+                        shared_string_table,
+                        stylesheet,
+                        false,
+                    );
+                }
+                _ => (),
+            },
+            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                b"row" => {
+                    let mut obj = Row::default();
+                    obj.set_attributes(
+                        &mut reader,
+                        e,
+                        &mut cells,
+                        shared_string_table,
+                        stylesheet,
+                        true,
+                    );
+                }
+                _ => (),
+            },
+            Ok(Event::Eof) => break,
+            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+            _ => (),
+        }
+        buf.clear();
+    }
+
+    Ok(cells)
 }
 
 fn get_hyperlink(e: &quick_xml::events::BytesStart<'_>) -> (String, String, Hyperlink) {

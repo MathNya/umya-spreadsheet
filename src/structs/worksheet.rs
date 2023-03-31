@@ -28,8 +28,12 @@ use structs::Range;
 use structs::Row;
 use structs::RowBreaks;
 use structs::Rows;
+use structs::SharedStringTable;
 use structs::SheetViews;
 use structs::Style;
+use structs::Stylesheet;
+
+use reader::xlsx::worksheet::*;
 
 /// A Worksheet Object.
 #[derive(Clone, Debug, Default)]
@@ -190,6 +194,22 @@ impl Worksheet {
         self.cell_collection.get_collection_to_hashmap_mut()
     }
 
+    pub(crate) fn get_cell_collection_stream(
+        &self,
+        shared_string_table: &SharedStringTable,
+        stylesheet: &Stylesheet,
+    ) -> Cells {
+        if self.is_deserialized() {
+            panic!("This Worksheet is Deserialized.");
+        }
+        read_lite(
+            self.raw_data_of_worksheet.as_ref().unwrap(),
+            shared_string_table,
+            stylesheet,
+        )
+        .unwrap()
+    }
+
     /// (This method is crate only.)
     /// Get Cells.
     pub(crate) fn get_cell_collection_crate(&self) -> &Cells {
@@ -219,8 +239,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.cell_collection.get(&col, &row)
+        self.cell_collection.get(coordinate)
     }
 
     /// Gets the cell by specifying the column number and row number.
@@ -237,7 +256,7 @@ impl Worksheet {
     /// ```
     #[deprecated(note = "use `get_cell` instead")]
     pub fn get_cell_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Cell> {
-        self.cell_collection.get(col, row)
+        self.cell_collection.get((col, row))
     }
 
     /// Get cell with mutable.
@@ -259,7 +278,7 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row)
+        self.cell_collection.get_mut((col, row))
     }
 
     /// Gets the cell with mutable by specifying the column number and row number.
@@ -277,7 +296,7 @@ impl Worksheet {
     #[deprecated(note = "please use `get_cell_mut` instead")]
     pub fn get_cell_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Cell {
         self.get_row_dimension_mut(row);
-        self.cell_collection.get_mut(col, row)
+        self.cell_collection.get_mut((col, row))
     }
 
     pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
@@ -328,15 +347,6 @@ impl Worksheet {
         self.cell_collection.remove(col, row)
     }
 
-    /// (This method is crate only.)
-    /// Set Cell
-    /// # Arguments
-    /// * `cell` - Cell
-    pub(crate) fn set_cell_crate(&mut self, cell: Cell) -> &mut Self {
-        self.cell_collection.set_fast(cell);
-        self
-    }
-
     /// Get cell value.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
@@ -354,8 +364,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.cell_collection.get_cell_value(&col, &row)
+        self.cell_collection.get_cell_value(coordinate)
     }
 
     /// Gets the cell value by specifying the column number and row number.
@@ -372,7 +381,7 @@ impl Worksheet {
     /// ```
     #[deprecated(note = "use `get_cell_value` instead")]
     pub fn get_cell_value_by_column_and_row(&self, col: &u32, row: &u32) -> &CellValue {
-        self.cell_collection.get_cell_value(col, row)
+        self.cell_collection.get_cell_value((col, row))
     }
 
     /// Get cell value with mutable.
@@ -395,7 +404,7 @@ impl Worksheet {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
         self.cell_collection
-            .get_mut(&col, &row)
+            .get_mut((col, row))
             .get_cell_value_mut()
     }
 
@@ -414,7 +423,9 @@ impl Worksheet {
     #[deprecated(note = "use `get_cell_value_mut` instead")]
     pub fn get_cell_value_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut CellValue {
         self.get_row_dimension_mut(row);
-        self.cell_collection.get_mut(col, row).get_cell_value_mut()
+        self.cell_collection
+            .get_mut((col, row))
+            .get_cell_value_mut()
     }
 
     /// Gets the cell value by specifying an range.
@@ -449,8 +460,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.cell_collection.get_style(&col, &row)
+        self.cell_collection.get_style(coordinate)
     }
 
     /// Gets the style by specifying the column number and row number.
@@ -467,7 +477,7 @@ impl Worksheet {
     /// ```
     #[deprecated(note = "use `get_style` instead")]
     pub fn get_style_by_column_and_row(&self, col: &u32, row: &u32) -> &Style {
-        self.cell_collection.get_style(col, row)
+        self.cell_collection.get_style((col, row))
     }
 
     /// Get style with mutable.
@@ -489,7 +499,7 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row).get_style_mut()
+        self.cell_collection.get_mut((col, row)).get_style_mut()
     }
 
     /// Gets the style with mutable by specifying the column number and row number.
@@ -507,7 +517,7 @@ impl Worksheet {
     #[deprecated(note = "use `get_style_mut` instead")]
     pub fn get_style_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Style {
         self.get_row_dimension_mut(row);
-        self.cell_collection.get_mut(col, row).get_style_mut()
+        self.cell_collection.get_mut((col, row)).get_style_mut()
     }
 
     pub fn set_style<T>(&mut self, coordinate: T, style: Style) -> &mut Self
@@ -516,7 +526,7 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut(&col, &row).set_style(style);
+        self.cell_collection.get_mut((&col, &row)).set_style(style);
         self
     }
 
@@ -538,7 +548,7 @@ impl Worksheet {
     #[deprecated(note = "use `set_style` instead")]
     pub fn set_style_by_column_and_row(&mut self, col: &u32, row: &u32, style: Style) -> &mut Self {
         self.get_row_dimension_mut(row);
-        self.cell_collection.get_mut(col, row).set_style(style);
+        self.cell_collection.get_mut((col, row)).set_style(style);
         self
     }
 
@@ -1898,7 +1908,7 @@ impl Worksheet {
         false
     }
 
-    pub(crate) fn is_serialized(&self) -> bool {
+    pub(crate) fn is_deserialized(&self) -> bool {
         self.raw_data_of_worksheet.is_none()
     }
 

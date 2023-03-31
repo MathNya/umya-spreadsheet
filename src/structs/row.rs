@@ -1,11 +1,11 @@
 use super::BooleanValue;
 use super::Cell;
+use super::Cells;
 use super::DoubleValue;
 use super::SharedStringTable;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use super::Worksheet;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -119,7 +119,7 @@ impl Row {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        worksheet: &mut Worksheet,
+        cells: &mut Cells,
         shared_string_table: &SharedStringTable,
         stylesheet: &Stylesheet,
         empty_flag: bool,
@@ -187,7 +187,7 @@ impl Row {
                     b"c" => {
                         let mut obj = Cell::default();
                         obj.set_attributes(reader, e, shared_string_table, stylesheet, true);
-                        worksheet.set_cell_crate(obj);
+                        cells.set_fast(obj);
                     }
                     _ => (),
                 },
@@ -195,7 +195,7 @@ impl Row {
                     b"c" => {
                         let mut obj = Cell::default();
                         obj.set_attributes(reader, e, shared_string_table, stylesheet, false);
-                        worksheet.set_cell_crate(obj);
+                        cells.set_fast(obj);
                     }
                     _ => (),
                 },
