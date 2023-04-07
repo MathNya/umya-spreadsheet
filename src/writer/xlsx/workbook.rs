@@ -143,7 +143,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     attributes.push(("hidden", "1"));
                 }
                 write_start_tag(&mut writer, "definedName", attributes, false);
-                write_text_node_no_escape(&mut writer, defined_name.get_address());
+                write_text_node_no_escape(&mut writer, defined_name.get_address_str());
                 write_end_tag(&mut writer, "definedName");
             }
         }

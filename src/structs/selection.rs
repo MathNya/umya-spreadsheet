@@ -12,7 +12,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Selection {
     pane: EnumValue<PaneValues>,
-    active_cell: Coordinate,
+    active_cell: Option<Coordinate>,
     sequence_of_references: SequenceOfReferences,
 }
 impl Selection {
@@ -25,16 +25,16 @@ impl Selection {
         self
     }
 
-    pub fn get_active_cell(&self) -> &Coordinate {
+    pub fn get_active_cell(&self) -> &Option<Coordinate> {
         &self.active_cell
     }
 
-    pub fn get_active_cell_mut(&mut self) -> &mut Coordinate {
+    pub fn get_active_cell_mut(&mut self) -> &mut Option<Coordinate> {
         &mut self.active_cell
     }
 
     pub fn set_active_cell(&mut self, value: Coordinate) -> &mut Self {
-        self.active_cell = value;
+        self.active_cell = Some(value);
         self
     }
 
@@ -65,7 +65,9 @@ impl Selection {
 
         match get_attribute(e, b"activeCell") {
             Some(v) => {
-                self.active_cell.set_coordinate(v);
+                let mut obj = Coordinate::default();
+                obj.set_coordinate(v);
+                self.set_active_cell(obj);
             }
             None => {}
         }
@@ -81,28 +83,46 @@ impl Selection {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let active_cell = self.active_cell.get_coordinate();
-        let sqref = self.sequence_of_references.get_sqref();
+
         let mut active_cell_id = 0;
-        for range in self.sequence_of_references.get_range_collection() {
-            let range_str = range.get_range();
-            match range_str.find(active_cell.as_str()) {
-                Some(_) => {
-                    break;
+        match &self.active_cell {
+            Some(active_cell) => {
+                for range in self.sequence_of_references.get_range_collection() {
+                    let range_str = range.get_range();
+                    match range_str.find(active_cell.get_coordinate().as_str()) {
+                        Some(_) => {
+                            break;
+                        }
+                        None => {}
+                    }
+                    active_cell_id += 1;
                 }
-                None => {}
             }
-            active_cell_id += 1;
+            None => {}
         }
+
         if self.pane.has_value() {
             attributes.push(("pane", self.pane.get_value_string()));
         }
-        attributes.push(("activeCell", active_cell.as_str()));
+
+        let active_cell_str = match &self.active_cell {
+            Some(active_cell) => active_cell.get_coordinate(),
+            None => String::from(""),
+        };
+        if active_cell_str != "" {
+            attributes.push(("activeCell", active_cell_str.as_str()));
+        }
+
         let active_cell_id_str = active_cell_id.to_string();
         if active_cell_id > 0 {
             attributes.push(("activeCellId", active_cell_id_str.as_str()));
         }
-        attributes.push(("sqref", sqref.as_str()));
+
+        let sqref = self.sequence_of_references.get_sqref();
+        if sqref != "" {
+            attributes.push(("sqref", sqref.as_str()));
+        }
+
         write_start_tag(writer, "selection", attributes, true);
     }
 }

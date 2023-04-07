@@ -1112,6 +1112,22 @@ fn issue_110() {
 }
 
 #[test]
+fn issue_114() {
+    return;
+    let path = std::path::Path::new("./tests/test_files/test.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+    let cell = sheet.get_cell_mut("A1");
+    // work on 0.87
+    // cell.set_value("test".to_string());
+    // work on 0.9
+    cell.set_value("test");
+    let path = std::path::Path::new("./tests/result_files/test_issue_114.xlsx");
+    let r = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn compression_test() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");

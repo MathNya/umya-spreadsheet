@@ -114,9 +114,13 @@ impl Pane {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let coordinate = self.top_left_cell.get_coordinate();
         let horizontal_split = self.horizontal_split.get_value_string();
-        attributes.push(("xSplit", &horizontal_split));
+        if self.horizontal_split.has_value() {
+            attributes.push(("xSplit", &horizontal_split));
+        }
         let vertical_split = self.vertical_split.get_value_string();
-        attributes.push(("ySplit", &vertical_split));
+        if self.vertical_split.has_value() {
+            attributes.push(("ySplit", &vertical_split));
+        }
         attributes.push(("topLeftCell", coordinate.as_str()));
         attributes.push(("activePane", self.active_pane.get_value_string()));
         attributes.push(("state", self.state.get_value_string()));

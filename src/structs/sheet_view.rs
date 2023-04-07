@@ -4,6 +4,7 @@ use super::EnumValue;
 use super::Pane;
 use super::Selection;
 use super::SheetViewValues;
+use super::StringValue;
 use super::UInt32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -22,6 +23,7 @@ pub struct SheetView {
     zoom_scale_normal: UInt32Value,
     zoom_scale_page_layout_view: UInt32Value,
     zoom_scale_sheet_layout_view: UInt32Value,
+    top_left_cell: StringValue,
     selection: Vec<Selection>,
 }
 impl SheetView {
@@ -101,6 +103,15 @@ impl SheetView {
         self
     }
 
+    pub fn get_top_left_cell(&self) -> &str {
+        self.top_left_cell.get_value()
+    }
+
+    pub fn set_top_left_cell<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.top_left_cell.set_value(value);
+        self
+    }
+
     pub fn get_selection(&self) -> &Vec<Selection> {
         &self.selection
     }
@@ -169,6 +180,13 @@ impl SheetView {
             None => {}
         }
 
+        match get_attribute(e, b"topLeftCell") {
+            Some(v) => {
+                self.top_left_cell.set_value_string(v);
+            }
+            None => {}
+        }
+
         if empty_flag {
             return;
         }
@@ -227,6 +245,10 @@ impl SheetView {
         let zoom_scale_sheet_layout_view = self.zoom_scale_sheet_layout_view.get_value_string();
         if self.zoom_scale_sheet_layout_view.has_value() {
             attributes.push(("zoomScaleSheetLayoutView", &zoom_scale_sheet_layout_view));
+        }
+        let top_left_cell = self.top_left_cell.get_value_string();
+        if self.top_left_cell.has_value() {
+            attributes.push(("topLeftCell", &top_left_cell));
         }
         let workbook_view_id = self.workbook_view_id.get_value_string();
         attributes.push(("workbookViewId", &workbook_view_id));

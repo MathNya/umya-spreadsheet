@@ -8,6 +8,7 @@ use structs::raw::RawWorksheet;
 use structs::Cells;
 use structs::Columns;
 use structs::ConditionalFormatting;
+use structs::DataValidations;
 use structs::Hyperlink;
 use structs::OleObjects;
 use structs::Row;
@@ -69,6 +70,9 @@ pub(crate) fn read(
                     );
                     worksheet.set_row_dimension(obj);
                 }
+                b"autoFilter" => {
+                    worksheet.set_auto_filter(get_attribute(e, b"ref").unwrap());
+                }
                 b"cols" => {
                     let mut obj = Columns::default();
                     obj.set_attributes(&mut reader, e, stylesheet);
@@ -83,6 +87,11 @@ pub(crate) fn read(
                     let mut obj = ConditionalFormatting::default();
                     obj.set_attributes(&mut reader, e, stylesheet.get_differential_formats());
                     worksheet.add_conditional_formatting_collection(obj);
+                }
+                b"dataValidations" => {
+                    let mut obj = DataValidations::default();
+                    obj.set_attributes(&mut reader, e);
+                    worksheet.set_dataValidations(obj);
                 }
                 b"oleObjects" => {
                     let mut obj = OleObjects::default();

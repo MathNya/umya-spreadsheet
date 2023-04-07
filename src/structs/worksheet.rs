@@ -14,6 +14,7 @@ use structs::ColumnBreaks;
 use structs::Columns;
 use structs::Comment;
 use structs::ConditionalFormatting;
+use structs::DataValidations;
 use structs::DefinedName;
 use structs::HeaderFooter;
 use structs::Hyperlink;
@@ -63,6 +64,7 @@ pub struct Worksheet {
     print_options: PrintOptions,
     column_breaks: ColumnBreaks,
     row_breaks: RowBreaks,
+    dataValidations: Option<DataValidations>,
 }
 impl Worksheet {
     // ************************
@@ -1706,6 +1708,24 @@ impl Worksheet {
     /// * `value` - RowBreaks.
     pub fn set_row_breaks(&mut self, value: RowBreaks) -> &mut Self {
         self.row_breaks = value;
+        self
+    }
+
+    pub fn get_dataValidations(&self) -> &Option<DataValidations> {
+        &self.dataValidations
+    }
+
+    pub fn get_dataValidations_mut(&mut self) -> &mut Option<DataValidations> {
+        &mut self.dataValidations
+    }
+
+    pub fn set_dataValidations(&mut self, value: DataValidations) -> &mut Self {
+        self.dataValidations = Some(value);
+        self
+    }
+
+    pub fn remove_dataValidations(&mut self) -> &mut Self {
+        self.dataValidations = None;
         self
     }
 

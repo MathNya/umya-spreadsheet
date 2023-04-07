@@ -396,3 +396,12 @@ pub use self::icon_set::*;
 
 mod formula;
 pub use self::formula::*;
+
+mod data_validation_values;
+pub use self::data_validation_values::*;
+
+mod data_validation;
+pub use self::data_validation::*;
+
+mod data_validations;
+pub use self::data_validations::*;

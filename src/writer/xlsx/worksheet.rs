@@ -208,6 +208,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             conditional_formatting.write_to(&mut writer, stylesheet.get_differential_formats_mut());
         }
 
+        // dataValidations
+        match worksheet.get_dataValidations() {
+            Some(v) => {
+                v.write_to(&mut writer);
+            }
+            None => {}
+        }
+
         let mut r_id = 1;
 
         // hyperlinks

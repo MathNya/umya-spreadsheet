@@ -1,7 +1,7 @@
 // formula
 use super::Address;
 use super::StringValue;
-use helper::coordinate::*;
+use helper::address::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -43,7 +43,7 @@ impl Formula {
 
     pub fn set_address_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let value = value.into();
-        if is_coordinate(&value) {
+        if is_address(&value) {
             self.address.set_address(value);
         } else {
             self.set_string_value(value);
