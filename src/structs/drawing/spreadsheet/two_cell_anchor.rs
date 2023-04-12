@@ -219,7 +219,7 @@ impl TwoCellAnchor {
                     }
                     b"xdr:pic" => {
                         let mut obj = Picture::default();
-                        obj.set_attributes(reader, e, drawing_relationships.unwrap());
+                        obj.set_attributes(reader, e, drawing_relationships);
                         self.set_picture(obj);
                     }
                     _ => (),

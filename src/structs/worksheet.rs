@@ -30,6 +30,7 @@ use structs::Row;
 use structs::RowBreaks;
 use structs::Rows;
 use structs::SharedStringTable;
+use structs::SheetFormatProperties;
 use structs::SheetViews;
 use structs::Style;
 use structs::Stylesheet;
@@ -64,7 +65,8 @@ pub struct Worksheet {
     print_options: PrintOptions,
     column_breaks: ColumnBreaks,
     row_breaks: RowBreaks,
-    dataValidations: Option<DataValidations>,
+    data_validations: Option<DataValidations>,
+    sheet_format_properties: SheetFormatProperties,
 }
 impl Worksheet {
     // ************************
@@ -1711,21 +1713,34 @@ impl Worksheet {
         self
     }
 
-    pub fn get_dataValidations(&self) -> &Option<DataValidations> {
-        &self.dataValidations
+    pub fn get_data_validations(&self) -> &Option<DataValidations> {
+        &self.data_validations
     }
 
-    pub fn get_dataValidations_mut(&mut self) -> &mut Option<DataValidations> {
-        &mut self.dataValidations
+    pub fn get_data_validations_mut(&mut self) -> &mut Option<DataValidations> {
+        &mut self.data_validations
     }
 
-    pub fn set_dataValidations(&mut self, value: DataValidations) -> &mut Self {
-        self.dataValidations = Some(value);
+    pub fn set_data_validations(&mut self, value: DataValidations) -> &mut Self {
+        self.data_validations = Some(value);
         self
     }
 
-    pub fn remove_dataValidations(&mut self) -> &mut Self {
-        self.dataValidations = None;
+    pub fn remove_data_validations(&mut self) -> &mut Self {
+        self.data_validations = None;
+        self
+    }
+
+    pub fn get_sheet_format_properties(&self) -> &SheetFormatProperties {
+        &self.sheet_format_properties
+    }
+
+    pub fn get_sheet_format_properties_mut(&mut self) -> &mut SheetFormatProperties {
+        &mut self.sheet_format_properties
+    }
+
+    pub fn set_sheet_format_properties(&mut self, value: SheetFormatProperties) -> &mut Self {
+        self.sheet_format_properties = value;
         self
     }
 

@@ -109,12 +109,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         worksheet.get_sheets_views().write_to(&mut writer);
 
         // sheetFormatPr
-        write_start_tag(
-            &mut writer,
-            "sheetFormatPr",
-            vec![("defaultRowHeight", "13.5"), ("x14ac:dyDescent", "0.15")],
-            true,
-        );
+        worksheet
+            .get_sheet_format_properties()
+            .write_to(&mut writer);
 
         // cols
         let mut column_dimensions = worksheet.get_column_dimensions_crate().clone();
@@ -209,7 +206,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         }
 
         // dataValidations
-        match worksheet.get_dataValidations() {
+        match worksheet.get_data_validations() {
             Some(v) => {
                 v.write_to(&mut writer);
             }

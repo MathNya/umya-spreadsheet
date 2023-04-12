@@ -71,7 +71,7 @@ impl BlipFill {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        drawing_relationships: &RawRelationships,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         let mut buf = Vec::new();
 
@@ -86,7 +86,8 @@ impl BlipFill {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"a:blip" => {
-                        self.blip.set_attributes(reader, e, drawing_relationships);
+                        self.blip
+                            .set_attributes(reader, e, drawing_relationships.unwrap());
                     }
                     b"a:stretch" => {
                         self.stretch.set_attributes(reader, e);
@@ -95,7 +96,8 @@ impl BlipFill {
                 },
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:blip" => {
-                        self.blip.set_attributes(reader, e, drawing_relationships);
+                        self.blip
+                            .set_attributes(reader, e, drawing_relationships.unwrap());
                     }
                     b"a:srcRect" => {
                         let mut source_rectangle = SourceRectangle::default();

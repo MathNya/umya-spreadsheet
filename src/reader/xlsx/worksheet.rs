@@ -47,6 +47,11 @@ pub(crate) fn read(
                         .get_sheet_views_mut()
                         .set_attributes(&mut reader, e);
                 }
+                b"sheetFormatPr" => {
+                    worksheet
+                        .get_sheet_format_properties_mut()
+                        .set_attributes(&mut reader, e);
+                }
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {
                         match a {
@@ -91,7 +96,7 @@ pub(crate) fn read(
                 b"dataValidations" => {
                     let mut obj = DataValidations::default();
                     obj.set_attributes(&mut reader, e);
-                    worksheet.set_dataValidations(obj);
+                    worksheet.set_data_validations(obj);
                 }
                 b"oleObjects" => {
                     let mut obj = OleObjects::default();
@@ -136,6 +141,11 @@ pub(crate) fn read(
                         .get_tab_color_mut()
                         .set_attributes(&mut reader, e, true);
                     worksheet.get_tab_color_mut().set_argb_by_theme(theme);
+                }
+                b"sheetFormatPr" => {
+                    worksheet
+                        .get_sheet_format_properties_mut()
+                        .set_attributes(&mut reader, e);
                 }
                 b"selection" => {
                     for a in e.attributes().with_checks(false) {

@@ -1114,7 +1114,7 @@ fn issue_110() {
 #[test]
 fn issue_114() {
     return;
-    let path = std::path::Path::new("./tests/test_files/test.xlsx");
+    let path = std::path::Path::new("./tests/test_files/test1.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     let sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();

@@ -568,6 +568,9 @@ impl Spreadsheet {
         let mut worksheet = Worksheet::default();
         worksheet.set_sheet_id(sheet_id);
         worksheet.set_name(sheet_title.into());
+        worksheet
+            .get_sheet_format_properties_mut()
+            .set_defalut_value();
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }

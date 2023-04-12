@@ -405,3 +405,6 @@ pub use self::data_validation::*;
 
 mod data_validations;
 pub use self::data_validations::*;
+
+mod sheet_format_properties;
+pub use self::sheet_format_properties::*;
