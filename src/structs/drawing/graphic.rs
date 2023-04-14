@@ -29,7 +29,7 @@ impl Graphic {
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        drawing_relationships: &RawRelationships,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         let mut buf = Vec::new();
 

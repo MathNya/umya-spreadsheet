@@ -280,7 +280,7 @@ impl Shape {
                     }
                     b"v:imagedata" => {
                         let mut obj = ImageData::default();
-                        obj.set_attributes(reader, e, drawing_relationships.unwrap());
+                        obj.set_attributes(reader, e, drawing_relationships);
                         self.set_image_data(obj);
                     }
                     _ => (),

@@ -204,7 +204,7 @@ impl TwoCellAnchor {
                     }
                     b"xdr:graphicFrame" => {
                         let mut obj = GraphicFrame::default();
-                        obj.set_attributes(reader, e, drawing_relationships.unwrap());
+                        obj.set_attributes(reader, e, drawing_relationships);
                         self.set_graphic_frame(obj);
                     }
                     b"xdr:sp" => {

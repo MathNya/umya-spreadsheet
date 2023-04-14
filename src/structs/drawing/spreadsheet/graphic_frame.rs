@@ -77,7 +77,7 @@ impl GraphicFrame {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        drawing_relationships: &RawRelationships,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         match get_attribute(e, b"macro") {
             Some(v) => {

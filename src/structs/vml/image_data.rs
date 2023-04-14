@@ -35,11 +35,11 @@ impl ImageData {
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
-        drawing_relationships: &RawRelationships,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         match get_attribute(e, b"o:relid") {
             Some(relid) => {
-                let relationship = drawing_relationships.get_relationship_by_rid(&relid);
+                let relationship = drawing_relationships.unwrap().get_relationship_by_rid(&relid);
                 self.image_name
                     .set_value_string(relationship.get_raw_file().get_file_name());
             }
