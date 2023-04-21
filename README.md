@@ -12,9 +12,25 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New feature
+### ver 0.9.2
+#### **new function get_lazy_read_sheet_cells**
+Cell information can now be retrieved from a worksheet loaded with lazy_read.
+```rust
+let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+let cells = book.get_lazy_read_sheet_cells(&0).unwrap();
+let value = cells.get_cell_value((&5, &12)).get_value();
+let value = cells.get_cell_value("E12").get_value();
+```
+
+#### **set_value_from_string is deprecated**
+Cell.set_value_from_string had different behavior in different versions.  
+This function is deprecated.  
+From now on, set_value or set_value_string.
+
 ### ver 0.9.1
-Changed file compression logic when writing.
-The file size is smaller than before, but the processing time is longer.
+Changed file compression logic when writing.  
+The file size is smaller than before, but the processing time is longer.  
 If you want to use the previous logic, use this method.
 ```rust
 umya_spreadsheet::writer::xlsx::write_light(&book, path);
@@ -64,7 +80,7 @@ let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 ```
 ### Read file (Lazy)
-Delays the loading of the worksheet until it is needed.
+Delays the loading of the worksheet until it is needed.  
 When loading a file with a large amount of data, response improvement can be expected.
 ```rust
 let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
