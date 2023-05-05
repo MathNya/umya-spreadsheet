@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "../umya-spreadsheet"
+		},
+	],
+	"settings": {
+		"debug.allowBreakpointsEverywhere": true
+	}
+}
