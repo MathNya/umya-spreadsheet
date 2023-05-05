@@ -397,6 +397,9 @@ pub use self::icon_set::*;
 mod formula;
 pub use self::formula::*;
 
+mod table;
+pub use self::table::*;
+
 mod data_validation_values;
 pub use self::data_validation_values::*;
 

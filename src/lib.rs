@@ -116,6 +116,9 @@
 //! let _ = writer::xlsx::write(&book, path);
 //! ```
 
+#![allow(warnings)]
+#![allow(clippy::all)]
+
 extern crate chrono;
 extern crate fancy_regex;
 extern crate hashbrown;
