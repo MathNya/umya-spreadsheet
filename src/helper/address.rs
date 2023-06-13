@@ -1,17 +1,32 @@
 use fancy_regex::Regex;
 
 pub fn split_address(address: &str) -> (String, String) {
-    let mut sheet_name = String::from("");
-    let split_value: Vec<&str> = address.split('!').collect();
-    let range = if split_value.len() == 1 {
-        split_value[0].to_string()
-    } else if split_value.len() == 2 {
-        sheet_name = split_value[0].to_string();
-        split_value[1].to_string()
-    } else {
-        panic!("Non-standard address");
-    };
-    (sheet_name, range)
+    address
+        .rsplit_once('!')
+        .map(|(sheet_name, range)| {
+            (
+                sheet_name.trim_matches(&['\'', '"'][..]).to_string(),
+                range.to_string(),
+            )
+        })
+        .unwrap_or(("".to_string(), address.to_string()))
+}
+
+#[test]
+fn split_address_test() {
+    assert_eq!(split_address("A1"), ("".to_string(), "A1".to_string()));
+    assert_eq!(
+        split_address("A1:B2"),
+        ("".to_string(), "A1:B2".to_string())
+    );
+    assert_eq!(
+        split_address("sheet1!A1:B2"),
+        ("sheet1".to_string(), "A1:B2".to_string())
+    );
+    assert_eq!(
+        split_address("'she!et1'!A1:B2"),
+        ("she!et1".to_string(), "A1:B2".to_string())
+    );
 }
 
 pub fn is_address<S: AsRef<str>>(input: S) -> bool {
