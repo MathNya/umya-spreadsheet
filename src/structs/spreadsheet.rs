@@ -379,7 +379,7 @@ impl Spreadsheet {
         self
     }
 
-    pub(crate) fn find_sheeet_index_by_name(
+    pub(crate) fn find_sheet_index_by_name(
         &self,
         sheet_name: &str,
     ) -> Result<usize, &'static str> {
@@ -416,7 +416,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
-        match self.find_sheeet_index_by_name(sheet_name) {
+        match self.find_sheet_index_by_name(sheet_name) {
             Ok(index) => {
                 return self.get_sheet(&index);
             }
@@ -462,7 +462,7 @@ impl Spreadsheet {
         &mut self,
         sheet_name: &str,
     ) -> Result<&mut Worksheet, &'static str> {
-        match self.find_sheeet_index_by_name(sheet_name) {
+        match self.find_sheet_index_by_name(sheet_name) {
             Ok(index) => {
                 return self.get_sheet_mut(&index);
             }
