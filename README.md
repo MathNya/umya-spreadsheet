@@ -110,6 +110,7 @@ let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "pass
 let mut book = umya_spreadsheet::new_file();
 let _ = book.new_sheet("Sheet2");
 book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+book.get_sheet_mut(1).unwrap().get_cell_mut("A1").set_value("TEST2");
 ```
 ### Change Style
 ```rust
@@ -140,6 +141,22 @@ chart.new_chart(
 book.get_sheet_by_name_mut("Sheet1").unwrap()
     .add_chart(chart);
 ```
+
+### Struct 
+
+Pass the book as a ```Spreadsheet``` to modify it in other functions. 
+
+```rust
+
+let mut book = umya_spreadsheet::new_file();
+let _ = book.new_sheet("Sheet2");
+update_excel(&mut book);
+
+fn update_excel(book: &mut Spreadsheet) {
+   book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("Test"); 
+}
+```
+
 See the next chapter for implementation status and more detailed usage.
 
 ## Support Status
