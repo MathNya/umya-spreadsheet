@@ -118,7 +118,7 @@ pub struct TableColumn {
 }
 impl TableColumn {
     pub fn new(name: &str) -> Self {
-        TableColumn {
+        Self {
             name: name.to_string(),
         }
     }
