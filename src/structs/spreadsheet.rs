@@ -96,7 +96,7 @@ impl Spreadsheet {
     pub fn remove_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
         self.adjustment_remove_coordinate(sheet_name, &0, &0, row_index, num_rows);
     }
-
+
     /// Remove columns.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
@@ -379,10 +379,7 @@ impl Spreadsheet {
         self
     }
 
-    pub(crate) fn find_sheet_index_by_name(
-        &self,
-        sheet_name: &str,
-    ) -> Result<usize, &'static str> {
+    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Result<usize, &'static str> {
         let mut result = 0;
         for sheet in &self.work_sheet_collection {
             if sheet.get_name() == sheet_name {
@@ -700,21 +697,19 @@ impl Spreadsheet {
     // Moving range of cells
     // *********************
 
-    /// Moving a section of the sheet 
+    /// Moving a section of the sheet
     /// # Arguments
     /// 'sheet name' - specify the sheet. ex) "Sheet 1"
     /// 'coordinates' - Specify two coordinates like "A1:G8"
     /// 'row' - The number of rows to move by (negative numbers mean move 'left')
     /// 'column' - the number of columns to move by (negative numbers mean move 'up')
-    //pub fn move_range(&mut self, sheet_name: &str, coordinates: &str, row: &u32, column: &u32) {
-    //    Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
-    //    impossible)
-    //    Iterate row by row, collecting cell information (do I copy?)
-    //    Delete cell information as iterating through 
-    //    repaste by setting cell values
-    //}
+    pub fn move_range(&mut self, sheet_name: &str, coordinates: &str, row: &u32, column: &u32) {
+        //    Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
+        //    impossible)
+        //    Iterate row by row, collecting cell information (do I copy?)
+        //    Delete cell information as iterating through
+        //    repaste by setting cell values
+    }
 
     //pub fn merge_cells(&mut self, sheet_name: &str, row_column: &str) {}
-
 }
-
