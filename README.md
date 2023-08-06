@@ -112,6 +112,15 @@ let _ = book.new_sheet("Sheet2");
 book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
 book.get_sheet_mut(1).unwrap().get_cell_mut("A1").set_value("TEST2");
 ```
+
+### Move Values
+```rust
+let range = "A1:A3";
+let row = 10;
+let column = 2;
+book.get_sheet_by_name_mut("Sheet1").unwrap().move_range(range, &row, &column);
+```
+
 ### Change Style
 ```rust
 let mut book = umya_spreadsheet::new_file();
