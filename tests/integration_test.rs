@@ -1141,3 +1141,19 @@ fn compression_test() {
     let path = std::path::Path::new("./tests/result_files/bbb_comp_light.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
 }
+
+#[test]
+fn move_range_test() {
+    // reader
+    let path = std::path::Path::new("./tests/test_files/aaa_move_range.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let sheet_name = "Sheet1";
+    let range = "C5:F9";
+    let row = 12;
+    let column = 4;
+    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range, &row, &column);
+
+    let path = std::path::Path::new("./tests/result_files/bbb_move_range.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
+}

@@ -325,6 +325,7 @@ impl Worksheet {
     /// # Arguments
     /// * `cell` - Cell
     pub fn set_cell(&mut self, cell: Cell) -> &mut Self {
+        self.get_row_dimension_mut(cell.get_coordinate().get_row_num());
         self.cell_collection.set(cell);
         self
     }
@@ -1977,5 +1978,58 @@ impl Worksheet {
     /// Has Legacy Drawing.
     pub(crate) fn has_legacy_drawing(&self) -> bool {
         self.has_comments() || self.has_ole_objects()
+    }
+
+    /// Moving a section of the sheet 
+    /// # Arguments
+    /// 'range' - Specify like "A1:G8"
+    /// 'row' - The number of rows to move by (negative numbers mean move 'left')
+    /// 'column' - the number of columns to move by (negative numbers mean move 'up')
+    pub fn move_range(&mut self, range: &str, row: &i32, column: &i32) -> &mut Self
+    {
+        // Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
+        // impossible)
+        let range_upper = range.to_uppercase();
+        let (row_start, row_end, col_start, col_end) = get_start_and_end_point(&range_upper);
+        if (col_start as i32 + column) < 1 {
+            panic!("Out of Range.");
+        }
+        if (row_start as i32  + row) < 1 {
+            panic!("Out of Range.");
+        }
+        if (col_end as i32  + column) > 16384 {
+            panic!("Out of Range.");
+        }
+        if (row_end as i32  + row) > 1048576 {
+            panic!("Out of Range.");
+        }
+
+        // Iterate row by row, collecting cell information (do I copy)
+        let mut copy_cells: Vec<Cell> = Vec::new();
+        let cells = self.cell_collection.get_cell_by_range(range);
+        for cell in cells {
+            match cell {
+                Some(v) => {
+                    copy_cells.push(v.clone());
+                },
+                None => {}
+            }
+        }
+        
+        // Delete cell information as iterating through
+        let coordinate_list = get_coordinate_list(&range_upper);
+        for (col_num, row_num) in &coordinate_list {
+            self.cell_collection.remove(col_num, row_num);
+            self.cell_collection.remove(&((*col_num as i32  + column) as u32), &((*row_num as i32  + row) as u32));
+        }
+
+        // repaste by setting cell values
+        for cell in &mut copy_cells {
+            cell.get_coordinate_mut().offset_col_num(*column);
+            cell.get_coordinate_mut().offset_row_num(*row);
+            self.set_cell(cell.clone());
+        }
+
+        self
     }
 }

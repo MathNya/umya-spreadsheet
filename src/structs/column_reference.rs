@@ -25,6 +25,26 @@ impl ColumnReference {
         self
     }
 
+    pub(crate) fn offset_num(&mut self, value: i32) -> &mut Self {
+        if &value > &0 {
+            self.plus_num(value as u32);
+        }
+        if &value < &0 {
+            self.minus_num((value * -1) as u32);
+        }
+        self
+    }
+
+    pub(crate) fn plus_num(&mut self, value: u32) -> &mut Self {
+        self.num += value;
+        self
+    }
+
+    pub(crate) fn minus_num(&mut self, value: u32) -> &mut Self {
+        self.num -= value;
+        self
+    }
+
     pub fn get_is_lock(&self) -> &bool {
         &self.is_lock
     }

@@ -147,6 +147,16 @@ impl Cells {
         self.map.remove(&k).is_some()
     }
 
+    pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
+        let mut result: Vec<Option<&Cell>> = Vec::new();
+        let range_upper = range.to_uppercase();
+        let coordinate_list = get_coordinate_list(&range_upper);
+        for (col_num, row_num) in coordinate_list {
+            result.push(self.get((&col_num, &row_num)));
+        }
+        result
+    }
+
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         let mut result: Vec<&CellValue> = Vec::new();
         let range_upper = range.to_uppercase();
