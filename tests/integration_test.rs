@@ -1154,6 +1154,11 @@ fn move_range_test() {
     let column = 4;
     book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range, &row, &column);
 
+    // Checking to ensure cells that move into another cell overwrites it
+    let range_2 = "A14:A14";
+    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range, &row, &column);
+    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range_2, &0, &1);
+
     let path = std::path::Path::new("./tests/result_files/bbb_move_range.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
 }
