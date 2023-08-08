@@ -40,7 +40,9 @@ impl GraphicData {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"c:chart" => {
                         let chart_id = get_attribute(e, b"r:id").unwrap();
-                        let relationship = drawing_relationships.unwrap().get_relationship_by_rid(&chart_id);
+                        let relationship = drawing_relationships
+                            .unwrap()
+                            .get_relationship_by_rid(&chart_id);
                         let _ = chart::read(relationship.get_raw_file(), &mut self.chart_space);
                     }
                     _ => (),

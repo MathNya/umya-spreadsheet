@@ -817,7 +817,7 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_cell_mut((2, 2))
-        .set_value_from_i32(1);
+        .set_value_number(1);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
@@ -829,7 +829,7 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_cell_mut((2, 2))
-        .set_value_from_i32_ref(&1);
+        .set_value_number(1);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
@@ -853,7 +853,7 @@ fn new_file_and_edit() {
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_cell_mut((3, 3))
-        .set_value_from_bool_ref(&true);
+        .set_value_bool(true);
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
@@ -1152,12 +1152,18 @@ fn move_range_test() {
     let range = "C5:F9";
     let row = 12;
     let column = 4;
-    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range, &row, &column);
+    book.get_sheet_by_name_mut(sheet_name)
+        .unwrap()
+        .move_range(range, &row, &column);
 
     // Checking to ensure cells that move into another cell overwrites it
     let range_2 = "A14:A14";
-    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range, &row, &column);
-    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range_2, &0, &1);
+    book.get_sheet_by_name_mut(sheet_name)
+        .unwrap()
+        .move_range(range, &row, &column);
+    book.get_sheet_by_name_mut(sheet_name)
+        .unwrap()
+        .move_range(range_2, &0, &1);
 
     let path = std::path::Path::new("./tests/result_files/bbb_move_range.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);

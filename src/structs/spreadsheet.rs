@@ -379,10 +379,7 @@ impl Spreadsheet {
         self
     }
 
-    pub(crate) fn find_sheet_index_by_name(
-        &self,
-        sheet_name: &str,
-    ) -> Result<usize, &'static str> {
+    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Result<usize, &'static str> {
         let mut result = 0;
         for sheet in &self.work_sheet_collection {
             if sheet.get_name() == sheet_name {

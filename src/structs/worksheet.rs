@@ -117,26 +117,6 @@ impl Worksheet {
         self.get_cell((col, row)).and_then(|v| v.get_value_number())
     }
 
-    /// Get value by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// * `String` - Value of the specified cell.
-    /// # Examples
-    /// ```
-    /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let value = worksheet.get_value_by_column_and_row(&1, &1);
-    /// ```
-    #[deprecated(note = "use `get_value` instead")]
-    pub fn get_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
-        match self.get_cell_by_column_and_row(col, row) {
-            Some(v) => v.get_value().into(),
-            None => "".into(),
-        }
-    }
-
     /// Get formatted value.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
@@ -157,24 +137,6 @@ impl Worksheet {
         let CellCoordinates { col, row } = coordinate.into();
         self.cell_collection
             .get_formatted_value_by_column_and_row(&col, &row)
-    }
-
-    /// Get formatted value by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// * `String` - Formatted value of the specified cell.
-    /// # Examples
-    /// ```
-    /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let value = worksheet.get_formatted_value_by_column_and_row(&1, &1);
-    /// ```
-    #[deprecated(note = "use `get_formated_value` instead")]
-    pub fn get_formatted_value_by_column_and_row(&self, col: &u32, row: &u32) -> String {
-        self.cell_collection
-            .get_formatted_value_by_column_and_row(col, row)
     }
 
     // ************************
@@ -246,23 +208,6 @@ impl Worksheet {
         self.cell_collection.get(coordinate)
     }
 
-    /// Gets the cell by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// * `Option` - Cell in the Some.
-    /// # Examples
-    /// ```
-    /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let cell = worksheet.get_cell_by_column_and_row(&1, &1);  // get cell from A1.
-    /// ```
-    #[deprecated(note = "use `get_cell` instead")]
-    pub fn get_cell_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Cell> {
-        self.cell_collection.get((col, row))
-    }
-
     /// Get cell with mutable.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
@@ -282,24 +227,6 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut((col, row))
-    }
-
-    /// Gets the cell with mutable by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// *`&mut Cell` - Cell with mutable.
-    /// # Examples
-    /// ```
-    /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
-    /// let cell = worksheet.get_cell_mut((&1, &1));  // get cell from A1.
-    /// ```
-    #[deprecated(note = "please use `get_cell_mut` instead")]
-    pub fn get_cell_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Cell {
-        self.get_row_dimension_mut(row);
         self.cell_collection.get_mut((col, row))
     }
 
@@ -347,11 +274,6 @@ impl Worksheet {
         self.cell_collection.remove(&col, &row)
     }
 
-    #[deprecated(note = "use `remove_cell` instead")]
-    pub fn remove_cell_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> bool {
-        self.cell_collection.remove(col, row)
-    }
-
     /// Get cell value.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
@@ -370,23 +292,6 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         self.cell_collection.get_cell_value(coordinate)
-    }
-
-    /// Gets the cell value by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// * `&CellValue` - CellValue.
-    /// # Examples
-    /// ```
-    /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let cell_value = worksheet.get_style_by_column_and_row(&1, &1);  // get cell from A1.
-    /// ```
-    #[deprecated(note = "use `get_cell_value` instead")]
-    pub fn get_cell_value_by_column_and_row(&self, col: &u32, row: &u32) -> &CellValue {
-        self.cell_collection.get_cell_value((col, row))
     }
 
     /// Get cell value with mutable.
@@ -408,26 +313,6 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
-        self.cell_collection
-            .get_mut((col, row))
-            .get_cell_value_mut()
-    }
-
-    /// Gets the cell value with mutable by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// *`&mut CellValue` - CellValue with mutable.
-    /// # Examples
-    /// ```
-    /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
-    /// let cell_value = worksheet.get_cell_value_by_column_and_row_mut(&1, &1);  // get cell_value from A1.
-    /// ```
-    #[deprecated(note = "use `get_cell_value_mut` instead")]
-    pub fn get_cell_value_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut CellValue {
-        self.get_row_dimension_mut(row);
         self.cell_collection
             .get_mut((col, row))
             .get_cell_value_mut()
@@ -468,23 +353,6 @@ impl Worksheet {
         self.cell_collection.get_style(coordinate)
     }
 
-    /// Gets the style by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// * `&Style` - Style.
-    /// # Examples
-    /// ```
-    /// let book = umya_spreadsheet::new_file();
-    /// let worksheet = book.get_sheet(&0).unwrap();
-    /// let style = worksheet.get_style_by_column_and_row(&1, &1);  // get cell from A1.
-    /// ```
-    #[deprecated(note = "use `get_style` instead")]
-    pub fn get_style_by_column_and_row(&self, col: &u32, row: &u32) -> &Style {
-        self.cell_collection.get_style((col, row))
-    }
-
     /// Get style with mutable.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
@@ -507,24 +375,6 @@ impl Worksheet {
         self.cell_collection.get_mut((col, row)).get_style_mut()
     }
 
-    /// Gets the style with mutable by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// # Return value
-    /// *`&mut Style` - Style with mutable.
-    /// # Examples
-    /// ```
-    /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
-    /// let style = worksheet.get_style_by_column_and_row_mut(&1, &1);  // get style from A1.
-    /// ```
-    #[deprecated(note = "use `get_style_mut` instead")]
-    pub fn get_style_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> &mut Style {
-        self.get_row_dimension_mut(row);
-        self.cell_collection.get_mut((col, row)).get_style_mut()
-    }
-
     pub fn set_style<T>(&mut self, coordinate: T, style: Style) -> &mut Self
     where
         T: Into<CellCoordinates>,
@@ -532,28 +382,6 @@ impl Worksheet {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
         self.cell_collection.get_mut((&col, &row)).set_style(style);
-        self
-    }
-
-    /// Set the style by specifying the column number and row number.
-    /// # Arguments
-    /// * `col` - Specify the column number. (first column number is 1)
-    /// * `row` - Specify the row number. (first row number is 1)
-    /// * `style` - Style.
-    /// # Return value
-    /// *`&mut Self` - self.
-    /// # Examples
-    /// ```
-    /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
-    /// let mut style = umya_spreadsheet::Style::default();
-    /// style.get_borders_mut().get_bottom_mut().set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
-    /// let style = worksheet.set_style_by_column_and_row(&1, &1, style);  // set style to A1.
-    /// ```
-    #[deprecated(note = "use `set_style` instead")]
-    pub fn set_style_by_column_and_row(&mut self, col: &u32, row: &u32, style: Style) -> &mut Self {
-        self.get_row_dimension_mut(row);
-        self.cell_collection.get_mut((col, row)).set_style(style);
         self
     }
 
@@ -1508,23 +1336,9 @@ impl Worksheet {
         row
     }
 
-    /// Get Title.
-    #[deprecated(since = "1.0.0", note = "please use `get_name` instead")]
-    pub fn get_title(&self) -> &str {
-        self.get_name()
-    }
-
     /// Get SheetName.
     pub fn get_name(&self) -> &str {
         &self.title
-    }
-
-    /// Set Title.
-    /// # Arguments
-    /// * `sheet_title` - Sheet Title. [Caution] no duplicate other worksheet.
-    #[deprecated(since = "1.0.0", note = "please use `set_name` instead")]
-    pub fn set_title<S: Into<String>>(&mut self, sheet_title: S) -> &mut Self {
-        self.set_name(sheet_title)
     }
 
     /// Set SheetName.
@@ -1772,11 +1586,6 @@ impl Worksheet {
         self.get_worksheet_drawing().get_image(&col, &row)
     }
 
-    #[deprecated(note = "use `get_image` instead")]
-    pub fn get_image_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Image> {
-        self.get_worksheet_drawing().get_image(col, row)
-    }
-
     pub fn get_image_mut<T>(&mut self, coordinate: T) -> Option<&mut Image>
     where
         T: Into<CellCoordinates>,
@@ -1797,22 +1606,12 @@ impl Worksheet {
         self.get_worksheet_drawing().get_images(&col, &row)
     }
 
-    #[deprecated(note = "use `get_images` instead")]
-    pub fn get_images_by_column_and_row(&self, col: &u32, row: &u32) -> Vec<&Image> {
-        self.get_worksheet_drawing().get_images(col, row)
-    }
-
     pub fn get_images_mut<T>(&mut self, coordinate: T) -> Vec<&mut Image>
     where
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_worksheet_drawing_mut().get_images_mut(&col, &row)
-    }
-
-    #[deprecated(note = "use `get_images_mut` instead")]
-    pub fn get_images_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Image> {
-        self.get_worksheet_drawing_mut().get_images_mut(col, row)
     }
 
     /// Outputs all Charts contained in the worksheet.
@@ -1842,22 +1641,12 @@ impl Worksheet {
         self.get_worksheet_drawing().get_chart(&col, &row)
     }
 
-    #[deprecated(note = "use `get_chart` instead")]
-    pub fn get_chart_by_column_and_row(&self, col: &u32, row: &u32) -> Option<&Chart> {
-        self.get_worksheet_drawing().get_chart(col, row)
-    }
-
     pub fn get_chart_mut<T>(&mut self, coordinate: T) -> Option<&mut Chart>
     where
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_worksheet_drawing_mut().get_chart_mut(&col, &row)
-    }
-
-    #[deprecated(note = "use `get_chart_mut` instead")]
-    pub fn get_chart_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
-        self.get_worksheet_drawing_mut().get_chart_mut(col, row)
     }
 
     pub fn get_charts<T>(&self, coordinate: T) -> Vec<&Chart>
@@ -1868,22 +1657,12 @@ impl Worksheet {
         self.get_worksheet_drawing().get_charts(&col, &row)
     }
 
-    #[deprecated(note = "use `get_charts` instead")]
-    pub fn get_charts_by_column_and_row(&self, col: &u32, row: &u32) -> Vec<&Chart> {
-        self.get_worksheet_drawing().get_charts(col, row)
-    }
-
     pub fn get_charts_mut<T>(&mut self, coordinate: T) -> Vec<&mut Chart>
     where
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_worksheet_drawing_mut().get_charts_mut(&col, &row)
-    }
-
-    #[deprecated(note = "use `get_charts_mut` instead")]
-    pub fn get_charts_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Chart> {
-        self.get_worksheet_drawing_mut().get_charts_mut(col, row)
     }
 
     /// Outputs all media contained in the worksheet.
@@ -1980,13 +1759,12 @@ impl Worksheet {
         self.has_comments() || self.has_ole_objects()
     }
 
-    /// Moving a section of the sheet 
+    /// Moving a section of the sheet
     /// # Arguments
     /// 'range' - Specify like "A1:G8"
     /// 'row' - The number of rows to move by (negative numbers mean move 'left')
     /// 'column' - the number of columns to move by (negative numbers mean move 'up')
-    pub fn move_range(&mut self, range: &str, row: &i32, column: &i32) -> &mut Self
-    {
+    pub fn move_range(&mut self, range: &str, row: &i32, column: &i32) -> &mut Self {
         // Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
         // impossible)
         let range_upper = range.to_uppercase();
@@ -1994,13 +1772,13 @@ impl Worksheet {
         if (col_start as i32 + column) < 1 {
             panic!("Out of Range.");
         }
-        if (row_start as i32  + row) < 1 {
+        if (row_start as i32 + row) < 1 {
             panic!("Out of Range.");
         }
-        if (col_end as i32  + column) > 16384 {
+        if (col_end as i32 + column) > 16384 {
             panic!("Out of Range.");
         }
-        if (row_end as i32  + row) > 1048576 {
+        if (row_end as i32 + row) > 1048576 {
             panic!("Out of Range.");
         }
 
@@ -2011,16 +1789,19 @@ impl Worksheet {
             match cell {
                 Some(v) => {
                     copy_cells.push(v.clone());
-                },
+                }
                 None => {}
             }
         }
-        
+
         // Delete cell information as iterating through
         let coordinate_list = get_coordinate_list(&range_upper);
         for (col_num, row_num) in &coordinate_list {
             self.cell_collection.remove(col_num, row_num);
-            self.cell_collection.remove(&((*col_num as i32  + column) as u32), &((*row_num as i32  + row) as u32));
+            self.cell_collection.remove(
+                &((*col_num as i32 + column) as u32),
+                &((*row_num as i32 + row) as u32),
+            );
         }
 
         // repaste by setting cell values

@@ -115,13 +115,6 @@ pub fn coordinate_from_index_with_lock(
     )
 }
 
-#[deprecated(note = "use `CellCoordinates::from` instead")]
-pub fn index_from_coordinate_simple(coordinate: &str) -> (u32, u32) {
-    let coordinate_upper = coordinate.to_uppercase();
-    let (col, row, ..) = index_from_coordinate(coordinate_upper);
-    (col.unwrap(), row.unwrap())
-}
-
 pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
     let mut result = *num;
     if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {

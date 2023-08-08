@@ -82,12 +82,6 @@ impl CellValue {
         self
     }
 
-    #[deprecated(note = "use `set_value` or `set_value_string` instead")]
-    pub fn set_value_from_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value(value);
-        self
-    }
-
     pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
         self
@@ -110,11 +104,6 @@ impl CellValue {
         self
     }
 
-    #[deprecated(note = "use `set_value_bool` instead")]
-    pub fn set_value_from_bool_ref(&mut self, value: &bool) -> &mut Self {
-        self.set_value_bool(*value)
-    }
-
     pub fn set_value_number<T>(&mut self, value: T) -> &mut Self
     where
         T: Into<f64>,
@@ -128,11 +117,6 @@ impl CellValue {
         self.raw_value = CellRawValue::RichText(value);
         self.remove_formula();
         self
-    }
-
-    #[deprecated(note = "use `set_rich_text` instead")]
-    pub fn set_rich_text_ref(&mut self, value: &RichText) -> &mut Self {
-        self.set_rich_text(value.clone())
     }
 
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -160,7 +144,7 @@ impl CellValue {
         }
         match value.get_rich_text() {
             Some(v) => {
-                self.set_rich_text_ref(v);
+                self.set_rich_text(v.clone());
             }
             None => {}
         }
@@ -180,76 +164,6 @@ impl CellValue {
             None => {}
         }
         ""
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_u16(&mut self, value: u16) -> &mut Self {
-        self.set_value_number(value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_u16_ref(&mut self, value: &u16) -> &mut Self {
-        self.set_value_number(*value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_u32(&mut self, value: u32) -> &mut Self {
-        self.set_value_number(value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_u32_ref(&mut self, value: &u32) -> &mut Self {
-        self.set_value_number(*value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_u64(&mut self, value: u64) -> &mut Self {
-        self.set_value_number(value as f64)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_u64_ref(&mut self, value: &u64) -> &mut Self {
-        self.set_value_number(*value as f64)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_i16(&mut self, value: i16) -> &mut Self {
-        self.set_value_number(value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_i16_ref(&mut self, value: &i16) -> &mut Self {
-        self.set_value_number(*value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_i32(&mut self, value: i32) -> &mut Self {
-        self.set_value_number(value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_i32_ref(&mut self, value: &i32) -> &mut Self {
-        self.set_value_number(*value)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_i64(&mut self, value: i64) -> &mut Self {
-        self.set_value_number(value as f64)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_i64_ref(&mut self, value: &i64) -> &mut Self {
-        self.set_value_number(*value as f64)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_usize(&mut self, value: usize) -> &mut Self {
-        self.set_value_number(value as f64)
-    }
-
-    #[deprecated(note = "use `set_value_number` instead")]
-    pub fn set_value_from_usize_ref(&mut self, value: &usize) -> &mut Self {
-        self.set_value_number(*value as f64)
     }
 
     pub(crate) fn guess_typed_data(value: &str) -> CellRawValue {
@@ -366,52 +280,7 @@ mod tests {
         obj.set_value_bool(true);
         assert_eq!(obj.get_value(), "TRUE");
 
-        obj.set_value_from_bool_ref(&true);
-        assert_eq!(obj.get_value(), "TRUE");
-
         obj.set_value_number(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_u16(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_u16_ref(&1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_u32(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_u32_ref(&1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_u64(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_u64_ref(&1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_i16(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_i16_ref(&1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_i32(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_i32_ref(&1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_i64(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_i64_ref(&1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_usize(1);
-        assert_eq!(obj.get_value(), "1");
-
-        obj.set_value_from_usize_ref(&1);
         assert_eq!(obj.get_value(), "1");
     }
 }
