@@ -12,6 +12,17 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New feature
+### ver 1.0.0
+#### **remove deprecated functions**
+#### **new function move_range**
+Moving cell functionality.
+```rust
+let range = "C5:F9";
+let row = 12;
+let column = 4;
+book.get_sheet_by_name_mut("Sheet1").unwrap().move_range(range, &row, &column);
+```
+
 ### ver 0.9.2
 #### **new function get_lazy_read_sheet_cells**
 Cell information can now be retrieved from a worksheet loaded with lazy_read.
