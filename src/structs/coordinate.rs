@@ -17,12 +17,22 @@ impl Coordinate {
         self
     }
 
+    pub(crate) fn offset_col_num(&mut self, value: i32) -> &mut Self {
+        self.column.offset_num(value);
+        self
+    }
+
     pub fn get_row_num(&self) -> &u32 {
         self.row.get_num()
     }
 
     pub fn set_row_num(&mut self, value: u32) -> &mut Self {
         self.row.set_num(value);
+        self
+    }
+
+    pub(crate) fn offset_row_num(&mut self, value: i32) -> &mut Self {
+        self.row.offset_num(value);
         self
     }
 
