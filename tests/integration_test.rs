@@ -1108,7 +1108,7 @@ fn issue_110() {
     // work on 0.9
     cell.set_value("test");
     let path = std::path::Path::new("./tests/result_files/aaa_issue_110.xlsx");
-    let r = umya_spreadsheet::writer::xlsx::write(&book, path);
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
 #[test]
@@ -1124,7 +1124,7 @@ fn issue_114() {
     // work on 0.9
     cell.set_value("test");
     let path = std::path::Path::new("./tests/result_files/test_issue_114.xlsx");
-    let r = umya_spreadsheet::writer::xlsx::write(&book, path);
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
 #[test]
@@ -1167,4 +1167,15 @@ fn move_range_test() {
 
     let path = std::path::Path::new("./tests/result_files/bbb_move_range.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
+}
+
+#[test]
+fn issue_72() {
+    let xlsx_path = std::path::Path::new("./tests/test_files/wps_comment.xlsx");
+
+    let wb = umya_spreadsheet::reader::xlsx::read(xlsx_path).unwrap();
+
+    // save to new file
+    let path = std::path::Path::new("./tests/result_files/wps_comment_corrupted.xlsx");
+    umya_spreadsheet::writer::xlsx::write(&wb, path).unwrap();
 }

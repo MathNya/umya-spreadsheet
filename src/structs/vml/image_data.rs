@@ -58,12 +58,15 @@ impl ImageData {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {
         // v:imagedata
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         let r_id_str = format!("rId{}", r_id);
-        write_start_tag(
-            writer,
-            "v:imagedata",
-            vec![("o:relid", &r_id_str), ("o:title", self.title.get_value())],
-            true,
-        );
+        if self.image_name.has_value() {
+            attributes.push(("o:relid", &r_id_str));
+        }
+        if self.title.has_value() {
+            attributes.push(("o:title", self.title.get_value()));
+        }
+
+        write_start_tag(writer, "v:imagedata", attributes, true);
     }
 }
