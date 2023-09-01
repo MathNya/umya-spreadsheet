@@ -1179,3 +1179,16 @@ fn issue_72() {
     let path = std::path::Path::new("./tests/result_files/wps_comment_corrupted.xlsx");
     umya_spreadsheet::writer::xlsx::write(&wb, path).unwrap();
 }
+
+#[test]
+fn issue_128() {
+    let xlsx_path = std::path::Path::new("./tests/test_files/wb_with_shared_strings.xlsx");
+
+    let book = umya_spreadsheet::reader::xlsx::read(xlsx_path).unwrap();
+    let sheet = book.get_sheet_by_name("Sheet To Read From").unwrap();
+    assert_eq!(sheet.get_formatted_value("A2"), "11");
+    assert_eq!(sheet.get_formatted_value("A3"), "22");
+    assert_eq!(sheet.get_formatted_value("A4"), "ABCdef");
+    assert_eq!(sheet.get_formatted_value("A5"), "ABCdef");
+    assert_eq!(sheet.get_formatted_value("A6"), "ABCdef");
+}

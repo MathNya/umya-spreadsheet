@@ -321,6 +321,9 @@ impl Cell {
                         self.set_formula(string_value.clone());
                     }
                     b"v" => {
+                        if type_value == "str" {
+                            self.set_value_crate(string_value.clone());
+                        }
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
                             let shared_string_item = shared_string_table
