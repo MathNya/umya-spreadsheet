@@ -21,12 +21,6 @@ impl CellValue {
     }
 
     pub(crate) fn get_data_type_crate(&self) -> &str {
-        match &self.formula {
-            Some(_) => {
-                return "f";
-            }
-            None => {}
-        }
         self.raw_value.get_data_type()
     }
 
@@ -95,6 +89,11 @@ impl CellValue {
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into());
         self.remove_formula();
+        self
+    }
+
+    pub(crate) fn set_value_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.raw_value = CellRawValue::Str(value.into());
         self
     }
 

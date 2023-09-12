@@ -1,3 +1,4 @@
+use base64::{engine::general_purpose::STANDARD, Engine as _};
 use image::GenericImageView;
 use quick_xml::Writer;
 use std::fs;
@@ -152,15 +153,27 @@ impl Image {
         fs::write(path, self.get_media_object().get_image_data()).unwrap();
     }
 
+    pub fn get_image_name(&self) -> &str {
+        self.get_media_object().get_image_name()
+    }
+
+    pub fn get_image_data(&self) -> &Vec<u8> {
+        self.get_media_object().get_image_data()
+    }
+
+    pub fn get_image_data_base64(&self) -> String {
+        STANDARD.encode(self.get_image_data())
+    }
+
     pub fn get_coordinate(&self) -> String {
         self.get_from_marker_type().get_coordinate()
     }
 
-    pub(crate) fn get_col(&self) -> &u32 {
+    pub fn get_col(&self) -> &u32 {
         self.get_from_marker_type().get_col()
     }
 
-    pub(crate) fn get_row(&self) -> &u32 {
+    pub fn get_row(&self) -> &u32 {
         self.get_from_marker_type().get_row()
     }
 

@@ -1181,14 +1181,37 @@ fn issue_72() {
 }
 
 #[test]
-fn issue_128() {
-    let xlsx_path = std::path::Path::new("./tests/test_files/wb_with_shared_strings.xlsx");
+fn issue_129() {
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let img = book
+        .get_sheet_by_name("Sheet1")
+        .unwrap()
+        .get_image("M17")
+        .unwrap();
+    //dbg!(img.get_one_cell_anchor().is_some());
+    //dbg!(img.get_two_cell_anchor().is_some());
+    assert_eq!(img.get_image_name(), "image1.png");
+    assert_eq!(img.get_coordinate(), "M17");
+    assert_eq!(img.get_col(), &12);
+    assert_eq!(img.get_row(), &16);
 
-    let book = umya_spreadsheet::reader::xlsx::read(xlsx_path).unwrap();
+    let path = std::path::Path::new("./tests/result_files/issue_129.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn wb_with_shared_strings() {
+    let path = std::path::Path::new("./tests/test_files/wb_with_shared_strings.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
     let sheet = book.get_sheet_by_name("Sheet To Read From").unwrap();
-    assert_eq!(sheet.get_formatted_value("A2"), "11");
-    assert_eq!(sheet.get_formatted_value("A3"), "22");
-    assert_eq!(sheet.get_formatted_value("A4"), "ABCdef");
-    assert_eq!(sheet.get_formatted_value("A5"), "ABCdef");
-    assert_eq!(sheet.get_formatted_value("A6"), "ABCdef");
+
+    assert_eq!(sheet.get_cell("A2").unwrap().get_value(), "11");
+    assert_eq!(sheet.get_cell("A3").unwrap().get_value(), "22");
+    assert_eq!(sheet.get_cell("A4").unwrap().get_value(), "ABCdef");
+    assert_eq!(sheet.get_cell("A5").unwrap().get_value(), "ABCdef");
+    assert_eq!(sheet.get_cell("A6").unwrap().get_value(), "ABCdef");
+
+    let path = std::path::Path::new("./tests/result_files/wb_with_shared_strings.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
