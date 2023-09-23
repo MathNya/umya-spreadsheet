@@ -299,7 +299,7 @@ impl Font {
         self
     }
 
-    pub(crate) fn get_defalut_value() -> Self {
+    pub(crate) fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_size(11.0);
         def.set_name_with_scheme("Calibri", "minor");
