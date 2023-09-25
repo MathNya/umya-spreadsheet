@@ -54,7 +54,7 @@ impl Theme {
         self
     }
 
-    pub(crate) fn get_defalut_value() -> Theme {
+    pub(crate) fn get_default_value() -> Theme {
         let mut def = Theme::default();
         def.set_name("Office Theme");
 

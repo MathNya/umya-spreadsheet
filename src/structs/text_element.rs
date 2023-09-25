@@ -32,7 +32,7 @@ impl TextElement {
             Some(_) => return self.run_properties.as_mut().unwrap(),
             None => {}
         }
-        self.set_run_properties(Font::get_defalut_value());
+        self.set_run_properties(Font::get_default_value());
         self.run_properties.as_mut().unwrap()
     }
 

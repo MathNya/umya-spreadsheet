@@ -94,7 +94,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
     content_types::read(&mut arv, &mut book).unwrap();
     let workbook_rel = workbook_rels::read(&mut arv, &mut book).unwrap();
 
-    book.set_theme(Theme::get_defalut_value());
+    book.set_theme(Theme::get_default_value());
     for (_, type_value, rel_target) in &workbook_rel {
         match type_value.as_str() {
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" => {

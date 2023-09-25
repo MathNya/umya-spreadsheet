@@ -63,7 +63,7 @@ impl Style {
     }
 
     pub fn get_font_mut(&mut self) -> &mut Font {
-        self.font.get_or_insert(Font::get_defalut_value())
+        self.font.get_or_insert(Font::get_default_value())
     }
 
     pub fn set_font(&mut self, value: Font) -> &mut Self {
@@ -86,7 +86,7 @@ impl Style {
     }
 
     pub fn get_fill_mut(&mut self) -> &mut Fill {
-        self.fill.get_or_insert(Fill::get_defalut_value())
+        self.fill.get_or_insert(Fill::get_default_value())
     }
 
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
@@ -142,7 +142,7 @@ impl Style {
     }
 
     pub fn get_borders_mut(&mut self) -> &mut Borders {
-        self.borders.get_or_insert(Borders::get_defalut_value())
+        self.borders.get_or_insert(Borders::get_default_value())
     }
 
     pub fn set_borders(&mut self, value: Borders) -> &mut Self {
@@ -246,19 +246,19 @@ impl Style {
         true
     }
 
-    pub(crate) fn get_defalut_value() -> Self {
+    pub(crate) fn get_default_value() -> Self {
         let mut def = Self::default();
-        def.set_font(Font::get_defalut_value());
-        def.set_borders(Borders::get_defalut_value());
-        def.set_fill(Fill::get_defalut_value());
+        def.set_font(Font::get_default_value());
+        def.set_borders(Borders::get_default_value());
+        def.set_fill(Fill::get_default_value());
         def
     }
 
-    pub(crate) fn get_defalut_value_2() -> Self {
+    pub(crate) fn get_default_value_2() -> Self {
         let mut def = Self::default();
-        def.set_font(Font::get_defalut_value());
-        def.set_borders(Borders::get_defalut_value());
-        def.set_fill(Fill::get_defalut_value_2());
+        def.set_font(Font::get_default_value());
+        def.set_borders(Borders::get_default_value());
+        def.set_fill(Fill::get_default_value_2());
         def
     }
 

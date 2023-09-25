@@ -329,9 +329,9 @@ impl Stylesheet {
     }
 
     pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
-        let style = Style::get_defalut_value();
+        let style = Style::get_default_value();
         self.set_style(&style);
-        let style = Style::get_defalut_value_2();
+        let style = Style::get_default_value_2();
         self.set_style(&style);
         self
     }

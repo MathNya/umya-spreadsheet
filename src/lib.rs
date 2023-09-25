@@ -154,7 +154,7 @@ pub use self::structs::*;
 /// ```
 pub fn new_file() -> structs::Spreadsheet {
     let mut spreadsheet = structs::Spreadsheet::default();
-    spreadsheet.set_theme(structs::drawing::Theme::get_defalut_value());
+    spreadsheet.set_theme(structs::drawing::Theme::get_default_value());
     spreadsheet.set_stylesheet_defalut_value();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
@@ -175,7 +175,7 @@ pub fn new_file() -> structs::Spreadsheet {
 /// ```
 pub fn new_file_empty_worksheet() -> structs::Spreadsheet {
     let mut spreadsheet = structs::Spreadsheet::default();
-    spreadsheet.set_theme(structs::drawing::Theme::get_defalut_value());
+    spreadsheet.set_theme(structs::drawing::Theme::get_default_value());
     spreadsheet.set_stylesheet_defalut_value();
     spreadsheet
 }
