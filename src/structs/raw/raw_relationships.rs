@@ -61,7 +61,7 @@ impl RawRelationships {
         target: &str,
     ) -> bool {
         let data = {
-            let path_str = normalize_path_to_str(&format!("{}/{}", base_path, target));
+            let path_str = join_paths(base_path, target);
             let file_path = match arv.by_name(&path_str) {
                 Ok(v) => v,
                 Err(_) => {
