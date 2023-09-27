@@ -184,12 +184,9 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.get_number_format_id();
-            let obj = self
-                .numbering_formats
-                .get_numbering_format()
-                .get(id)
-                .unwrap();
-            style.set_numbering_format(obj.clone());
+            if let Some(obj) = self.numbering_formats.get_numbering_format().get(id) {
+                style.set_numbering_format(obj.clone());
+            }
         }
 
         // font
