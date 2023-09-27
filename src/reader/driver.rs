@@ -30,6 +30,13 @@ pub(crate) fn normalize_path(path: &str) -> PathBuf {
     ret
 }
 
+pub(crate) fn join_paths(base_path: &str, target: &str) -> String {
+    match target.split_once('/') {
+        Some(("", target)) => normalize_path_to_str(target),
+        _ => normalize_path_to_str(&format!("{}/{}", base_path, target)),
+    }
+}
+
 pub(crate) fn normalize_path_to_str(path: &str) -> String {
     let ret = normalize_path(path);
     ret.to_str().unwrap_or("").to_string().replace('\\', "/")

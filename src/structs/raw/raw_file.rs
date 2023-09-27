@@ -63,7 +63,7 @@ impl RawFile {
         base_path: &str,
         target: &str,
     ) {
-        let path_str = normalize_path_to_str(&format!("{}/{}", base_path, target));
+        let path_str = join_paths(base_path, target);
         let mut r = io::BufReader::new(arv.by_name(&path_str).unwrap());
         let mut buf = Vec::new();
         r.read_to_end(&mut buf).unwrap();
