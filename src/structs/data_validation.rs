@@ -36,6 +36,15 @@ impl DataValidation {
         self
     }
 
+    pub fn get_operator(&self) -> &DataValidationOperatorValues {
+        self.operator.get_value()
+    }
+
+    pub fn set_operator(&mut self, value: DataValidationOperatorValues) -> &mut Self {
+        self.operator.set_value(value);
+        self
+    }
+
     pub fn get_allow_blank(&self) -> &bool {
         self.allow_blank.get_value()
     }
