@@ -1,5 +1,6 @@
 // dataValidation
 use super::BooleanValue;
+use super::DataValidationOperatorValues;
 use super::DataValidationValues;
 use super::EnumValue;
 use super::SequenceOfReferences;
@@ -15,6 +16,7 @@ use writer::driver::*;
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
     r#type: EnumValue<DataValidationValues>,
+    operator: EnumValue<DataValidationOperatorValues>,
     allow_blank: BooleanValue,
     show_input_message: BooleanValue,
     show_error_message: BooleanValue,
@@ -217,6 +219,10 @@ impl DataValidation {
             ));
         }
 
+        if self.operator.has_value() {
+            attributes.push(("operator", self.operator.get_value_string()));
+        }
+
         if self.show_error_message.has_value() {
             attributes.push((
                 "showErrorMessage",
@@ -233,7 +239,7 @@ impl DataValidation {
         }
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
-        if sequence_of_references != "" {
+        if !sequence_of_references.is_empty() {
             attributes.push(("sqref", sequence_of_references));
         }
 

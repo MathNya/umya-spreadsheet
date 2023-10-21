@@ -400,6 +400,9 @@ pub use self::formula::*;
 mod data_validation_values;
 pub use self::data_validation_values::*;
 
+mod data_validation_operator_values;
+pub use self::data_validation_operator_values::*;
+
 mod data_validation;
 pub use self::data_validation::*;
 
