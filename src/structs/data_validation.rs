@@ -118,53 +118,32 @@ impl DataValidation {
         e: &BytesStart,
         empty_flg: bool,
     ) {
-        match get_attribute(e, b"type") {
-            Some(v) => {
-                self.r#type.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"type") {
+            self.r#type.set_value_string(v);
         }
 
-        match get_attribute(e, b"allowBlank") {
-            Some(v) => {
-                self.allow_blank.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"allowBlank") {
+            self.allow_blank.set_value_string(v);
         }
 
-        match get_attribute(e, b"showInputMessage") {
-            Some(v) => {
-                self.show_input_message.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"showInputMessage") {
+            self.show_input_message.set_value_string(v);
         }
 
-        match get_attribute(e, b"showErrorMessage") {
-            Some(v) => {
-                self.show_error_message.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"showErrorMessage") {
+            self.show_error_message.set_value_string(v);
         }
 
-        match get_attribute(e, b"promptTitle") {
-            Some(v) => {
-                self.prompt_title.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"promptTitle") {
+            self.prompt_title.set_value_string(v);
         }
 
-        match get_attribute(e, b"prompt") {
-            Some(v) => {
-                self.prompt.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"prompt") {
+            self.prompt.set_value_string(v);
         }
 
-        match get_attribute(e, b"sqref") {
-            Some(v) => {
-                self.sequence_of_references.set_sqref(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"sqref") {
+            self.sequence_of_references.set_sqref(v);
         }
 
         if empty_flg {
