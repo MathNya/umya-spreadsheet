@@ -131,6 +131,10 @@ impl DataValidation {
             self.r#type.set_value_string(v);
         }
 
+        if let Some(v) = get_attribute(e, b"operator") {
+            self.operator.set_value_string(v);
+        }
+
         if let Some(v) = get_attribute(e, b"allowBlank") {
             self.allow_blank.set_value_string(v);
         }
