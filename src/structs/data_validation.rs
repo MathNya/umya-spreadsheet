@@ -1,5 +1,6 @@
 // dataValidation
 use super::BooleanValue;
+use super::DataValidationOperatorValues;
 use super::DataValidationValues;
 use super::EnumValue;
 use super::SequenceOfReferences;
@@ -15,6 +16,7 @@ use writer::driver::*;
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
     r#type: EnumValue<DataValidationValues>,
+    operator: EnumValue<DataValidationOperatorValues>,
     allow_blank: BooleanValue,
     show_input_message: BooleanValue,
     show_error_message: BooleanValue,
@@ -31,6 +33,15 @@ impl DataValidation {
 
     pub fn set_type(&mut self, value: DataValidationValues) -> &mut Self {
         self.r#type.set_value(value);
+        self
+    }
+
+    pub fn get_operator(&self) -> &DataValidationOperatorValues {
+        self.operator.get_value()
+    }
+
+    pub fn set_operator(&mut self, value: DataValidationOperatorValues) -> &mut Self {
+        self.operator.set_value(value);
         self
     }
 
@@ -116,53 +127,36 @@ impl DataValidation {
         e: &BytesStart,
         empty_flg: bool,
     ) {
-        match get_attribute(e, b"type") {
-            Some(v) => {
-                self.r#type.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"type") {
+            self.r#type.set_value_string(v);
         }
 
-        match get_attribute(e, b"allowBlank") {
-            Some(v) => {
-                self.allow_blank.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"operator") {
+            self.operator.set_value_string(v);
         }
 
-        match get_attribute(e, b"showInputMessage") {
-            Some(v) => {
-                self.show_input_message.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"allowBlank") {
+            self.allow_blank.set_value_string(v);
         }
 
-        match get_attribute(e, b"showErrorMessage") {
-            Some(v) => {
-                self.show_error_message.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"showInputMessage") {
+            self.show_input_message.set_value_string(v);
         }
 
-        match get_attribute(e, b"promptTitle") {
-            Some(v) => {
-                self.prompt_title.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"showErrorMessage") {
+            self.show_error_message.set_value_string(v);
         }
 
-        match get_attribute(e, b"prompt") {
-            Some(v) => {
-                self.prompt.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"promptTitle") {
+            self.prompt_title.set_value_string(v);
         }
 
-        match get_attribute(e, b"sqref") {
-            Some(v) => {
-                self.sequence_of_references.set_sqref(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"prompt") {
+            self.prompt.set_value_string(v);
+        }
+
+        if let Some(v) = get_attribute(e, b"sqref") {
+            self.sequence_of_references.set_sqref(v);
         }
 
         if empty_flg {
@@ -217,6 +211,10 @@ impl DataValidation {
             ));
         }
 
+        if self.operator.has_value() {
+            attributes.push(("operator", self.operator.get_value_string()));
+        }
+
         if self.show_error_message.has_value() {
             attributes.push((
                 "showErrorMessage",
@@ -233,7 +231,7 @@ impl DataValidation {
         }
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
-        if sequence_of_references != "" {
+        if !sequence_of_references.is_empty() {
             attributes.push(("sqref", sequence_of_references));
         }
 
