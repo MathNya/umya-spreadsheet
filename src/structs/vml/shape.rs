@@ -13,6 +13,7 @@ use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
 use structs::EnumValue;
+use structs::Int32Value;
 use structs::StringValue;
 use structs::TrueFalseValue;
 use writer::driver::*;
@@ -34,6 +35,8 @@ pub struct Shape {
     path: Option<Path>,
     text_box: Option<TextBox>,
     client_data: ClientData,
+    optional_number: Int32Value,
+    coordinate_size: StringValue,
 }
 impl Shape {
     pub fn get_style(&self) -> &str {
@@ -199,6 +202,24 @@ impl Shape {
         self
     }
 
+    pub fn get_optional_number(&self) -> &i32 {
+        self.optional_number.get_value()
+    }
+
+    pub fn set_optional_number(&mut self, value: i32) -> &mut Self {
+        self.optional_number.set_value(value);
+        self
+    }
+
+    pub fn get_coordinate_size(&self) -> &str {
+        self.coordinate_size.get_value()
+    }
+
+    pub fn set_coordinate_size<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.coordinate_size.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -250,6 +271,18 @@ impl Shape {
         match get_attribute(e, b"o:insetmode") {
             Some(v) => {
                 self.inset_mode.set_value_string(v);
+            }
+            None => {}
+        }
+        match get_attribute(e, b"o:spt") {
+            Some(v) => {
+                self.optional_number.set_value_string(v);
+            }
+            None => {}
+        }
+        match get_attribute(e, b"coordsize") {
+            Some(v) => {
+                self.coordinate_size.set_value_string(v);
             }
             None => {}
         }
@@ -338,6 +371,13 @@ impl Shape {
         }
         if self.inset_mode.has_value() {
             attributes.push(("o:insetmode", self.inset_mode.get_value_string()));
+        }
+        let optional_number_str = self.optional_number.get_value_string();
+        if self.optional_number.has_value() {
+            attributes.push(("o:spt", &optional_number_str));
+        }
+        if self.coordinate_size.has_value() {
+            attributes.push(("coordsize", self.coordinate_size.get_value_string()));
         }
         write_start_tag(writer, "v:shape", attributes, false);
 

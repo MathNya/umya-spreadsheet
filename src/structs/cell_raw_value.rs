@@ -5,6 +5,7 @@ use std::fmt;
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub enum CellRawValue {
     String(String),
+    Str(String),
     RichText(RichText),
     Lazy(String),
     Numeric(f64),
@@ -17,6 +18,7 @@ impl fmt::Display for CellRawValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::String(v) => write!(f, "{}", v),
+            Self::Str(v) => write!(f, "{}", v),
             Self::RichText(v) => write!(f, "{}", v.get_text()),
             Self::Numeric(v) => write!(f, "{}", &v),
             Self::Bool(v) => write!(f, "{}", if v == &true { "TRUE" } else { "FALSE" }),
@@ -33,9 +35,11 @@ impl CellRawValue {
     pub fn get_data_type(&self) -> &str {
         match self {
             Self::String(_) => "s",
+            Self::Str(_) => "str",
             Self::RichText(_) => "s",
             Self::Numeric(_) => "n",
             Self::Bool(_) => "b",
+            Self::Error => "e",
             _ => "",
         }
     }
@@ -43,6 +47,7 @@ impl CellRawValue {
     pub(crate) fn get_text(&self) -> Option<Text> {
         match self {
             Self::String(_) | // _
+            Self::Str(_) | // _
             Self::Numeric(_) | // _
             Self::Bool(_) => {
                 let mut text = Text::default();

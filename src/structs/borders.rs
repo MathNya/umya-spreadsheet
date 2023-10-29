@@ -210,7 +210,7 @@ impl Borders {
         self.diagonal_up.set_value(value);
     }
 
-    pub(crate) fn get_defalut_value() -> Self {
+    pub(crate) fn get_default_value() -> Self {
         Self::default()
     }
 

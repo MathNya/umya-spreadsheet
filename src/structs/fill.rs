@@ -52,7 +52,7 @@ impl Fill {
         self
     }
 
-    pub(crate) fn get_defalut_value() -> Self {
+    pub(crate) fn get_default_value() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
         pfill.set_pattern_type(PatternValues::None);
@@ -60,7 +60,7 @@ impl Fill {
         def
     }
 
-    pub(crate) fn get_defalut_value_2() -> Self {
+    pub(crate) fn get_default_value_2() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
         pfill.set_pattern_type(PatternValues::Gray125);

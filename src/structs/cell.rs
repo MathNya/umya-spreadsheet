@@ -118,6 +118,11 @@ impl Cell {
         self
     }
 
+    pub(crate) fn set_value_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value_str(value);
+        self
+    }
+
     pub fn set_value_bool(&mut self, value: bool) -> &mut Self {
         self.cell_value.set_value_bool(value);
         self
@@ -321,6 +326,9 @@ impl Cell {
                         self.set_formula(string_value.clone());
                     }
                     b"v" => {
+                        if type_value == "str" {
+                            self.set_value_str(string_value.clone());
+                        }
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
                             let shared_string_item = shared_string_table
@@ -372,7 +380,11 @@ impl Cell {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let coordinate = self.coordinate.get_coordinate();
         attributes.push(("r", &coordinate));
-        if self.get_data_type_crate() == "s" || self.get_data_type_crate() == "b" {
+        if self.get_data_type_crate() == "s"
+            || self.get_data_type_crate() == "b"
+            || self.get_data_type_crate() == "str"
+            || self.get_data_type_crate() == "e"
+        {
             attributes.push(("t", self.get_data_type_crate()));
         }
         let xf_index_str: String;

@@ -12,6 +12,28 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New feature
+### ver 1.0.2
+#### **Image data is now easier to acquire.**
+```rust
+// get image data.
+let img = book.get_sheet_by_name("Sheet1").unwrap().get_image("M17").unwrap();
+// or
+let img_list = book.get_sheet_by_name("Sheet1").unwrap().get_image_collection();
+
+// get Coordinate.
+assert_eq!(img.get_coordinate(), "M17");
+assert_eq!(img.get_col(), &12);
+assert_eq!(img.get_row(), &16);
+
+// get file name.
+assert_eq!(img.get_image_name(), "image1.png");
+
+// get binary data.
+dbg!(img.get_image_data());
+
+// get base64 data.
+dbg!(img.get_image_data_base64());
+```
 ### ver 1.0.0
 #### **remove deprecated functions**
 #### **new function move_range**

@@ -184,12 +184,9 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.get_number_format_id();
-            let obj = self
-                .numbering_formats
-                .get_numbering_format()
-                .get(id)
-                .unwrap();
-            style.set_numbering_format(obj.clone());
+            if let Some(obj) = self.numbering_formats.get_numbering_format().get(id) {
+                style.set_numbering_format(obj.clone());
+            }
         }
 
         // font
@@ -329,9 +326,9 @@ impl Stylesheet {
     }
 
     pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
-        let style = Style::get_defalut_value();
+        let style = Style::get_default_value();
         self.set_style(&style);
-        let style = Style::get_defalut_value_2();
+        let style = Style::get_default_value_2();
         self.set_style(&style);
         self
     }
