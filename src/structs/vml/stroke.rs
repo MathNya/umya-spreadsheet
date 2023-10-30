@@ -12,6 +12,7 @@ pub struct Stroke {
     color_2: StringValue,
     dash_style: StringValue,
 }
+
 impl Stroke {
     pub fn get_color(&self) -> &str {
         self.color.get_value()
@@ -45,24 +46,9 @@ impl Stroke {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"color") {
-            Some(v) => {
-                self.color.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"color2") {
-            Some(v) => {
-                self.color_2.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"dashstyle") {
-            Some(v) => {
-                self.dash_style.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, color, "color");
+        set_string_from_xml!(self, e, color_2, "color2");
+        set_string_from_xml!(self, e, dash_style, "dashstyle");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

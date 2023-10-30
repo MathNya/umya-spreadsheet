@@ -1,13 +1,12 @@
-use structs::EnumValue;
-use structs::OrientationValues;
-use structs::UInt32Value;
-
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
+use structs::EnumValue;
+use structs::OrientationValues;
+use structs::UInt32Value;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -21,6 +20,7 @@ pub struct PageSetup {
     vertical_dpi: UInt32Value,
     object_data: Option<Vec<u8>>,
 }
+
 impl PageSetup {
     pub fn get_paper_size(&self) -> &u32 {
         self.paper_size.get_value()
@@ -132,64 +132,20 @@ impl PageSetup {
         e: &BytesStart,
         relationships: Option<&RawRelationships>,
     ) {
-        match get_attribute(e, b"paperSize") {
-            Some(v) => {
-                self.paper_size.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, paper_size, "paperSize");
+        set_string_from_xml!(self, e, orientation, "orientation");
+        set_string_from_xml!(self, e, scale, "scale");
+        set_string_from_xml!(self, e, fit_to_height, "fitToHeight");
+        set_string_from_xml!(self, e, fit_to_width, "fitToWidth");
+        set_string_from_xml!(self, e, horizontal_dpi, "horizontalDpi");
+        set_string_from_xml!(self, e, vertical_dpi, "verticalDpi");
 
-        match get_attribute(e, b"orientation") {
-            Some(v) => {
-                self.orientation.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"scale") {
-            Some(v) => {
-                self.scale.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"fitToHeight") {
-            Some(v) => {
-                self.fit_to_height.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"fitToWidth") {
-            Some(v) => {
-                self.fit_to_width.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"horizontalDpi") {
-            Some(v) => {
-                self.horizontal_dpi.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"verticalDpi") {
-            Some(v) => {
-                self.vertical_dpi.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"r:id") {
-            Some(r_id) => {
-                let attached_file = relationships
-                    .unwrap()
-                    .get_relationship_by_rid(&r_id)
-                    .get_raw_file();
-                self.set_object_data(attached_file.get_file_data().clone());
-            }
-            None => {}
+        if let Some(r_id) = get_attribute(e, b"r:id") {
+            let attached_file = relationships
+                .unwrap()
+                .get_relationship_by_rid(&r_id)
+                .get_raw_file();
+            self.set_object_data(attached_file.get_file_data().clone());
         }
     }
 

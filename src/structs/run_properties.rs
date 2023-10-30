@@ -1,23 +1,23 @@
 // rPr
-use super::FontName;
-use super::FontSize;
-use super::FontFamilyNumbering;
 use super::Bold;
-use super::Italic;
-use super::Underline;
-use super::UnderlineValues;
-use super::Strike;
 use super::Color;
+use super::Font;
 use super::FontCharSet;
+use super::FontFamilyNumbering;
+use super::FontName;
 use super::FontScheme;
 use super::FontSchemeValues;
-use super::Font;
-use std::str::FromStr;
-use writer::driver::*;
+use super::FontSize;
+use super::Italic;
+use super::Strike;
+use super::Underline;
+use super::UnderlineValues;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use quick_xml::events::{Event, BytesStart};
 use quick_xml::Writer;
 use std::io::Cursor;
+use std::str::FromStr;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct RunProperties {
@@ -32,6 +32,7 @@ pub struct RunProperties {
     font_char_set: FontCharSet,
     font_scheme: FontScheme,
 }
+
 impl RunProperties {
     // Charset
     pub const CHARSET_ANSI: i32 = 0;
@@ -62,216 +63,218 @@ impl RunProperties {
     pub const UNDERLINE_SINGLE: &'static str = "single";
     pub const UNDERLINE_SINGLEACCOUNTING: &'static str = "singleAccounting";
 
-    pub fn get_font_name(&self)-> &FontName {
+    pub fn get_font_name(&self) -> &FontName {
         &self.font_name
     }
 
-    pub fn get_font_name_mut(&mut self)-> &mut FontName {
+    pub fn get_font_name_mut(&mut self) -> &mut FontName {
         &mut self.font_name
     }
 
-    pub fn set_font_name(&mut self, value:FontName)-> &mut Self {
+    pub fn set_font_name(&mut self, value: FontName) -> &mut Self {
         self.font_name = value;
         self
     }
 
-    pub fn get_name(&self)-> &str {
+    pub fn get_name(&self) -> &str {
         self.font_name.get_val()
     }
 
-    pub fn set_name<S: Into<String>>(&mut self, value:S)-> &mut Self {
+    pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.font_name.set_val(value);
         self
     }
 
-    pub fn get_font_size(&self)-> &FontSize {
+    pub fn get_font_size(&self) -> &FontSize {
         &self.font_size
     }
 
-    pub fn get_font_size_mut(&mut self)-> &mut FontSize {
+    pub fn get_font_size_mut(&mut self) -> &mut FontSize {
         &mut self.font_size
     }
 
-    pub fn set_font_size(&mut self, value:FontSize)-> &mut Self {
+    pub fn set_font_size(&mut self, value: FontSize) -> &mut Self {
         self.font_size = value;
         self
     }
 
-    pub fn get_size(&self)-> &f64 {
+    pub fn get_size(&self) -> &f64 {
         self.font_size.get_val()
     }
 
-    pub fn set_size(&mut self, value:f64)-> &mut Self {
+    pub fn set_size(&mut self, value: f64) -> &mut Self {
         self.font_size.set_val(value);
         self
     }
 
-    pub fn get_font_family_numbering(&self)-> &FontFamilyNumbering {
+    pub fn get_font_family_numbering(&self) -> &FontFamilyNumbering {
         &self.font_family_numbering
     }
 
-    pub fn get_font_family_numbering_mut(&mut self)-> &mut FontFamilyNumbering {
+    pub fn get_font_family_numbering_mut(&mut self) -> &mut FontFamilyNumbering {
         &mut self.font_family_numbering
     }
 
-    pub fn set_font_family_numbering(&mut self, value:FontFamilyNumbering)-> &mut Self {
+    pub fn set_font_family_numbering(&mut self, value: FontFamilyNumbering) -> &mut Self {
         self.font_family_numbering = value;
         self
     }
-    
-    pub fn get_family(&self)-> &i32 {
+
+    pub fn get_family(&self) -> &i32 {
         self.font_family_numbering.get_val()
     }
 
-    pub fn set_family(&mut self, value:i32)-> &mut Self {
+    pub fn set_family(&mut self, value: i32) -> &mut Self {
         self.font_family_numbering.set_val(value);
         self
     }
 
-    pub fn get_font_bold(&self)-> &Bold {
+    pub fn get_font_bold(&self) -> &Bold {
         &self.font_bold
     }
 
-    pub fn get_font_bold_mut(&mut self)-> &mut Bold {
+    pub fn get_font_bold_mut(&mut self) -> &mut Bold {
         &mut self.font_bold
     }
 
-    pub fn set_font_bold(&mut self, value:Bold)-> &mut Self {
+    pub fn set_font_bold(&mut self, value: Bold) -> &mut Self {
         self.font_bold = value;
         self
     }
 
-    pub fn get_bold(&self)-> &bool {
+    pub fn get_bold(&self) -> &bool {
         self.font_bold.get_val()
     }
 
-    pub fn set_bold(&mut self, value:bool)-> &mut Self {
+    pub fn set_bold(&mut self, value: bool) -> &mut Self {
         self.font_bold.set_val(value);
         self
     }
 
-    pub fn get_font_italic(&self)-> &Italic {
+    pub fn get_font_italic(&self) -> &Italic {
         &self.font_italic
     }
 
-    pub fn get_font_italic_mut(&mut self)-> &mut Italic {
+    pub fn get_font_italic_mut(&mut self) -> &mut Italic {
         &mut self.font_italic
     }
 
-    pub fn set_font_italic(&mut self, value:Italic)-> &mut Self {
+    pub fn set_font_italic(&mut self, value: Italic) -> &mut Self {
         self.font_italic = value;
         self
     }
 
-    pub fn get_italic(&self)-> &bool {
+    pub fn get_italic(&self) -> &bool {
         self.font_italic.get_val()
     }
 
-    pub fn set_italic(&mut self, value:bool)-> &mut Self {
+    pub fn set_italic(&mut self, value: bool) -> &mut Self {
         self.font_italic.set_val(value);
         self
     }
 
-    pub fn get_font_underline(&self)-> &Underline {
+    pub fn get_font_underline(&self) -> &Underline {
         &self.font_underline
     }
 
-    pub fn get_font_underline_mut(&mut self)-> &mut Underline {
+    pub fn get_font_underline_mut(&mut self) -> &mut Underline {
         &mut self.font_underline
     }
 
-    pub fn set_font_underline(&mut self, value:Underline)-> &mut Self {
+    pub fn set_font_underline(&mut self, value: Underline) -> &mut Self {
         self.font_underline = value;
         self
     }
 
-    pub fn get_underline(&self)-> &str {
+    pub fn get_underline(&self) -> &str {
         self.font_underline.val.get_value_string()
     }
 
-    pub fn set_underline<S: Into<String>>(&mut self, value:S)-> &mut Self {
+    pub fn set_underline<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
-        self.font_underline.set_val(UnderlineValues::from_str(&obj).unwrap());
+        self.font_underline
+            .set_val(UnderlineValues::from_str(&obj).unwrap());
         self
     }
 
-    pub fn get_font_strike(&self)-> &Strike {
+    pub fn get_font_strike(&self) -> &Strike {
         &self.font_strike
     }
 
-    pub fn get_font_strike_mut(&mut self)-> &mut Strike {
+    pub fn get_font_strike_mut(&mut self) -> &mut Strike {
         &mut self.font_strike
     }
 
-    pub fn set_font_strike(&mut self, value:Strike)-> &mut Self {
+    pub fn set_font_strike(&mut self, value: Strike) -> &mut Self {
         self.font_strike = value;
         self
     }
 
-    pub fn get_strikethrough(&self)-> &bool {
+    pub fn get_strikethrough(&self) -> &bool {
         self.font_strike.get_val()
     }
 
-    pub fn set_strikethrough(&mut self, value:bool)-> &mut Self {
+    pub fn set_strikethrough(&mut self, value: bool) -> &mut Self {
         self.font_strike.set_val(value);
         self
     }
 
-    pub fn get_color(&self)-> &Color {
+    pub fn get_color(&self) -> &Color {
         &self.color
     }
 
-    pub fn get_color_mut(&mut self)-> &mut Color {
+    pub fn get_color_mut(&mut self) -> &mut Color {
         &mut self.color
     }
 
-    pub fn set_color(&mut self, value:Color)-> &mut Self {
+    pub fn set_color(&mut self, value: Color) -> &mut Self {
         self.color = value;
         self
     }
 
-    pub fn get_font_char_set(&self)-> &FontCharSet {
+    pub fn get_font_char_set(&self) -> &FontCharSet {
         &self.font_char_set
     }
 
-    pub fn get_font_char_set_mut(&mut self)-> &mut FontCharSet {
+    pub fn get_font_char_set_mut(&mut self) -> &mut FontCharSet {
         &mut self.font_char_set
     }
 
-    pub fn set_font_char_set(&mut self, value:FontCharSet)-> &mut Self {
+    pub fn set_font_char_set(&mut self, value: FontCharSet) -> &mut Self {
         self.font_char_set = value;
         self
     }
 
-    pub fn get_charset(&self)-> &i32 {
+    pub fn get_charset(&self) -> &i32 {
         self.font_char_set.get_val()
     }
 
-    pub fn set_charset(&mut self, value:i32)-> &mut Self {
+    pub fn set_charset(&mut self, value: i32) -> &mut Self {
         self.font_char_set.set_val(value);
         self
     }
 
-    pub fn get_font_scheme(&self)-> &FontScheme {
+    pub fn get_font_scheme(&self) -> &FontScheme {
         &self.font_scheme
     }
 
-    pub fn get_font_scheme_mut(&mut self)-> &mut FontScheme {
+    pub fn get_font_scheme_mut(&mut self) -> &mut FontScheme {
         &mut self.font_scheme
     }
 
-    pub fn set_font_scheme(&mut self, value:FontScheme)-> &mut Self {
+    pub fn set_font_scheme(&mut self, value: FontScheme) -> &mut Self {
         self.font_scheme = value;
         self
     }
 
-    pub fn get_scheme(&self)-> &str {
+    pub fn get_scheme(&self) -> &str {
         self.font_scheme.val.get_value_string()
     }
 
-    pub fn set_scheme<S: Into<String>>(&mut self, value:S)-> &mut Self {
+    pub fn set_scheme<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
-        self.font_scheme.set_val(FontSchemeValues::from_str(&obj).unwrap());
+        self.font_scheme
+            .set_val(FontSchemeValues::from_str(&obj).unwrap());
         self
     }
 
@@ -301,7 +304,7 @@ impl RunProperties {
         obj
     }
 
-    pub(crate) fn from_font(&mut self, value:Font) -> &mut Self {
+    pub(crate) fn from_font(&mut self, value: Font) -> &mut Self {
         self.set_font_name(value.get_font_name().clone());
         self.set_font_size(value.get_font_size().clone());
         self.set_font_family_numbering(value.get_font_family_numbering().clone());
@@ -316,50 +319,69 @@ impl RunProperties {
         self
     }
 
-    pub(crate) fn get_hash_code(&self)-> String
-    {
-        format!("{:x}", md5::Md5::digest(format!("{}{}{}{}{}{}{}{}{}{}",
-            &self.font_name.val.get_hash_string(),
-            &self.font_size.val.get_hash_string(),
-            &self.font_family_numbering.val.get_hash_string(),
-            &self.font_bold.val.get_hash_string(),
-            &self.font_italic.val.get_hash_string(),
-            &self.font_underline.val.get_hash_string(),
-            &self.font_strike.val.get_hash_string(),
-            &self.color.get_hash_code(),
-            &self.font_char_set.val.get_hash_string(),
-            &self.font_scheme.val.get_hash_string(),
-        )))
+    pub(crate) fn get_hash_code(&self) -> String {
+        format!(
+            "{:x}",
+            md5::Md5::digest(format!(
+                "{}{}{}{}{}{}{}{}{}{}",
+                &self.font_name.val.get_hash_string(),
+                &self.font_size.val.get_hash_string(),
+                &self.font_family_numbering.val.get_hash_string(),
+                &self.font_bold.val.get_hash_string(),
+                &self.font_italic.val.get_hash_string(),
+                &self.font_underline.val.get_hash_string(),
+                &self.font_strike.val.get_hash_string(),
+                &self.color.get_hash_code(),
+                &self.font_char_set.val.get_hash_string(),
+                &self.font_scheme.val.get_hash_string(),
+            ))
+        )
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        reader:&mut Reader<R>,
-        _e:&BytesStart
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
     ) {
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => {
-                    match e.name().into_inner() {
-                        b"name" => {self.font_name.set_attributes(reader,e);},
-                        b"sz" => {self.font_size.set_attributes(reader,e);},
-                        b"family" => {self.font_family_numbering.set_attributes(reader,e);},
-                        b"b" => {self.font_bold.set_attributes(reader,e);},
-                        b"i" => {self.font_italic.set_attributes(reader,e);},
-                        b"u" => {self.font_underline.set_attributes(reader,e);},
-                        b"strike" => {self.font_strike.set_attributes(reader,e);},
-                        b"color" => {self.color.set_attributes(reader,e);},
-                        b"charset" => {self.font_char_set.set_attributes(reader,e);},
-                        b"scheme" => {self.font_scheme.set_attributes(reader,e);},
-                        _ => (),
+                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                    b"name" => {
+                        self.font_name.set_attributes(reader, e);
                     }
+                    b"sz" => {
+                        self.font_size.set_attributes(reader, e);
+                    }
+                    b"family" => {
+                        self.font_family_numbering.set_attributes(reader, e);
+                    }
+                    b"b" => {
+                        self.font_bold.set_attributes(reader, e);
+                    }
+                    b"i" => {
+                        self.font_italic.set_attributes(reader, e);
+                    }
+                    b"u" => {
+                        self.font_underline.set_attributes(reader, e);
+                    }
+                    b"strike" => {
+                        self.font_strike.set_attributes(reader, e);
+                    }
+                    b"color" => {
+                        self.color.set_attributes(reader, e);
+                    }
+                    b"charset" => {
+                        self.font_char_set.set_attributes(reader, e);
+                    }
+                    b"scheme" => {
+                        self.font_scheme.set_attributes(reader, e);
+                    }
+                    _ => (),
                 },
-                Ok(Event::End(ref e)) => {
-                    match e.name().into_inner() {
-                        b"rPr" => return,
-                        _ => (),
-                    }
+                Ok(Event::End(ref e)) => match e.name().into_inner() {
+                    b"rPr" => return,
+                    _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "rPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -393,7 +415,7 @@ impl RunProperties {
 
         // charset
         self.font_char_set.write_to(writer);
-        
+
         // scheme
         self.font_scheme.write_to(writer);
 

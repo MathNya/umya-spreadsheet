@@ -29,6 +29,7 @@ pub struct ClientData {
     clipboard_format: Option<ClipboardFormat>,
     auto_size_picture: Option<AutoSizePicture>,
 }
+
 impl ClientData {
     pub fn get_object_type(&self) -> &ObjectValues {
         self.object_type.get_value()
@@ -161,17 +162,12 @@ impl ClientData {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"ObjectType") {
-            Some(v) => {
-                self.object_type.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, object_type, "ObjectType");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"x:MoveWithCells" => {
                         let mut obj = MoveWithCells::default();
                         obj.set_attributes(reader, e, true);
@@ -198,8 +194,10 @@ impl ClientData {
                         self.set_auto_size_picture(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"x:Anchor" => {
                         let mut obj = Anchor::default();
                         obj.set_attributes(reader, e);
@@ -246,17 +244,15 @@ impl ClientData {
                         self.set_auto_size_picture(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"x:ClientData" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "x:ClientData"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"x:ClientData" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "x:ClientData")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -269,70 +265,46 @@ impl ClientData {
         );
 
         // x:MoveWithCells
-        match &self.move_with_cells {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.move_with_cells {
+            v.write_to(writer);
         }
 
         // x:SizeWithCells
-        match &self.resize_with_cells {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.resize_with_cells {
+            v.write_to(writer);
         }
 
         // x:Anchor
         let _ = &self.anchor.write_to(writer);
 
         // x:AutoFill
-        match &self.auto_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.auto_fill {
+            v.write_to(writer);
         }
 
         // x:Row
-        match &self.comment_row_target {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.comment_row_target {
+            v.write_to(writer);
         }
 
         // x:Column
-        match &self.comment_column_target {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.comment_column_target {
+            v.write_to(writer);
         }
 
         // x:Visible
-        match &self.visible {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.visible {
+            v.write_to(writer);
         }
 
         // x:CF
-        match &self.clipboard_format {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.clipboard_format {
+            v.write_to(writer);
         }
 
         // x:AutoPict
-        match &self.auto_size_picture {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.auto_size_picture {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "x:ClientData");

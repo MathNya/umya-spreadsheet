@@ -2,6 +2,7 @@
 pub struct BooleanValue {
     value: Option<bool>,
 }
+
 impl BooleanValue {
     pub(crate) fn get_value(&self) -> &bool {
         match &self.value {
@@ -11,10 +12,10 @@ impl BooleanValue {
     }
 
     pub(crate) fn get_value_string(&self) -> &str {
-        if self.get_value() == &false {
-            "0"
-        } else {
+        if *self.get_value() {
             "1"
+        } else {
+            "0"
         }
     }
 
@@ -24,19 +25,11 @@ impl BooleanValue {
     }
 
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let v = match value.into().as_str() {
-            "true" => true,
-            "1" => true,
-            _ => false,
-        };
-        self.set_value(v)
+        self.set_value(matches!(value.into().as_str(), "true" | "1"))
     }
 
     pub(crate) fn has_value(&self) -> bool {
-        match &self.value {
-            Some(_) => true,
-            None => false,
-        }
+        self.value.is_some()
     }
 
     pub(crate) fn get_hash_string(&self) -> &str {

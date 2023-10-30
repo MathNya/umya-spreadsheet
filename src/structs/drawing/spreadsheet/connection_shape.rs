@@ -6,6 +6,7 @@ use super::ShapeStyle;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -16,6 +17,7 @@ pub struct ConnectionShape {
     shape_properties: ShapeProperties,
     shape_style: ShapeStyle,
 }
+
 impl ConnectionShape {
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
@@ -77,14 +79,14 @@ impl ConnectionShape {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"xdr:nvCxnSpPr" => {
                         self.non_visual_connection_shape_properties
                             .set_attributes(reader, e);
-                    }
+                        }
                     b"xdr:spPr" => {
                         self.shape_properties.set_attributes(reader, e);
                     }
@@ -92,17 +94,15 @@ impl ConnectionShape {
                         self.shape_style.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:cxnSp" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cxnSp"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:cxnSp" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:cxnSp")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

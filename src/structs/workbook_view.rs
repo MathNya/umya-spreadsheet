@@ -10,6 +10,7 @@ use writer::driver::*;
 pub struct WorkbookView {
     active_tab: UInt32Value,
 }
+
 impl WorkbookView {
     pub fn get_active_tab(&self) -> &u32 {
         self.active_tab.get_value()
@@ -25,21 +26,17 @@ impl WorkbookView {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"activeTab") {
-            Some(v) => {
-                self.active_tab.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, active_tab, "activeTab")
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("xWindow", "240"));
-        attributes.push(("yWindow", "105"));
-        attributes.push(("windowWidth", "14805"));
-        attributes.push(("windowHeight", "8010"));
+        let mut attributes = vec![
+            ("xWindow", "240"),
+            ("yWindow", "105"),
+            ("windowWidth", "14805"),
+            ("windowHeight", "8010"),
+        ];
         let active_tab = self.active_tab.get_value_string();
         if self.active_tab.has_value() {
             attributes.push(("activeTab", &active_tab));

@@ -1,17 +1,15 @@
 use super::super::super::EnumTrait;
 use std::str::FromStr;
 #[derive(Clone, Debug)]
+#[derive(Default)]
 pub enum TickMarkValues {
+    #[default]
     Cross,
     Inside,
     None,
     Outside,
 }
-impl Default for TickMarkValues {
-    fn default() -> Self {
-        TickMarkValues::Cross
-    }
-}
+
 impl EnumTrait for TickMarkValues {
     fn get_value_string(&self) -> &str {
         match &self {

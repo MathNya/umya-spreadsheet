@@ -25,6 +25,7 @@ pub(crate) struct CellFormat {
     apply_protection: BooleanValue,
     alignment: Option<Alignment>,
 }
+
 impl CellFormat {
     pub(crate) fn get_number_format_id(&self) -> &u32 {
         self.number_format_id.get_value()
@@ -192,98 +193,37 @@ impl CellFormat {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"numFmtId") {
-            Some(v) => {
-                self.number_format_id.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"fontId") {
-            Some(v) => {
-                self.font_id.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"fillId") {
-            Some(v) => {
-                self.fill_id.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"borderId") {
-            Some(v) => {
-                self.border_id.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"xfId") {
-            Some(v) => {
-                self.format_id.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"applyNumberFormat") {
-            Some(v) => {
-                self.apply_number_format.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"applyBorder") {
-            Some(v) => {
-                self.apply_border.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"applyFont") {
-            Some(v) => {
-                self.apply_font.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"applyFill") {
-            Some(v) => {
-                self.apply_fill.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"applyAlignment") {
-            Some(v) => {
-                self.apply_alignment.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"applyProtection") {
-            Some(v) => {
-                self.apply_protection.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, number_format_id, "numFmtId");
+        set_string_from_xml!(self, e, font_id, "fontId");
+        set_string_from_xml!(self, e, fill_id, "fillId");
+        set_string_from_xml!(self, e, border_id, "borderId");
+        set_string_from_xml!(self, e, apply_number_format, "applyNumberFormat");
+        set_string_from_xml!(self, e, apply_border, "applyBorder");
+        set_string_from_xml!(self, e, apply_font, "applyFont");
+        set_string_from_xml!(self, e, apply_fill, "applyFill");
+        set_string_from_xml!(self, e, apply_alignment, "applyAlignment");
+        set_string_from_xml!(self, e, apply_protection, "applyProtection");
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"alignment" => {
-                        let mut obj = Alignment::default();
-                        obj.set_attributes(reader, e);
-                        self.set_alignment(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xf" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xf"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"alignment" {
+                    let mut obj = Alignment::default();
+                    obj.set_attributes(reader, e);
+                    self.set_alignment(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xf" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xf")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, is_cell_xfs: bool) {

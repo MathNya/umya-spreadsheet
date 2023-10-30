@@ -1,4 +1,5 @@
 use super::XlsxError;
+use crate::xml_read_loop;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::result;
@@ -15,15 +16,14 @@ pub(crate) fn read(
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.trim_text(true);
-    let mut buf = Vec::new();
 
     let mut ole_index = 0;
     let mut comment_index = 0;
 
-    loop {
-        match reader.read_event_into(&mut buf) {
-            Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                b"v:shape" => {
+    xml_read_loop!(
+        reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"v:shape" {
                     let mut obj = Shape::default();
                     obj.set_attributes(&mut reader, e, drawing_relationships);
                     match obj.get_client_data().get_comment_column_target() {
@@ -44,14 +44,9 @@ pub(crate) fn read(
                         }
                     }
                 }
-                _ => (),
             },
-            Ok(Event::Eof) => break,
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-            _ => (),
-        }
-        buf.clear();
-    }
+            Event::Eof => break,
+    );
 
     Ok(())
 }

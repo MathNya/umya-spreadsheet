@@ -46,24 +46,9 @@ impl Shadow {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"on") {
-            Some(v) => {
-                self.on.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"color") {
-            Some(v) => {
-                self.color.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"obscured") {
-            Some(v) => {
-                self.obscured.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, on, "on");
+        set_string_from_xml!(self, e, color, "color");
+        set_string_from_xml!(self, e, obscured, "obscured");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

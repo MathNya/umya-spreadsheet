@@ -15,6 +15,7 @@ pub struct Selection {
     active_cell: Option<Coordinate>,
     sequence_of_references: SequenceOfReferences,
 }
+
 impl Selection {
     pub fn get_pane(&self) -> &PaneValues {
         self.pane.get_value()
@@ -56,27 +57,16 @@ impl Selection {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"pane") {
-            Some(v) => {
-                self.pane.set_value_string(v);
-            }
-            None => {}
+        set_string_from_xml!(self, e, pane, "pane");
+
+        if let Some(v) = get_attribute(e, b"activeCell") {
+            let mut obj = Coordinate::default();
+            obj.set_coordinate(v);
+            self.set_active_cell(obj);
         }
 
-        match get_attribute(e, b"activeCell") {
-            Some(v) => {
-                let mut obj = Coordinate::default();
-                obj.set_coordinate(v);
-                self.set_active_cell(obj);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"sqref") {
-            Some(v) => {
-                self.sequence_of_references.set_sqref(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"sqref") {
+            self.sequence_of_references.set_sqref(v);
         }
     }
 
@@ -89,11 +79,8 @@ impl Selection {
             Some(active_cell) => {
                 for range in self.sequence_of_references.get_range_collection() {
                     let range_str = range.get_range();
-                    match range_str.find(active_cell.get_coordinate().as_str()) {
-                        Some(_) => {
-                            break;
-                        }
-                        None => {}
+                    if range_str.contains(active_cell.get_coordinate().as_str()) {
+                        break;
                     }
                     active_cell_id += 1;
                 }
@@ -109,7 +96,7 @@ impl Selection {
             Some(active_cell) => active_cell.get_coordinate(),
             None => String::from(""),
         };
-        if active_cell_str != "" {
+        if !active_cell_str.is_empty() {
             attributes.push(("activeCell", active_cell_str.as_str()));
         }
 
@@ -119,7 +106,7 @@ impl Selection {
         }
 
         let sqref = self.sequence_of_references.get_sqref();
-        if sqref != "" {
+        if !sqref.is_empty() {
             attributes.push(("sqref", sqref.as_str()));
         }
 

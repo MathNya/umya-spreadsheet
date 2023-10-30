@@ -86,7 +86,7 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
     authors
 }
 
-fn get_author_id(authors: &Vec<String>, author: &str) -> String {
+fn get_author_id(authors: &[String], author: &str) -> String {
     for (i, value) in authors.iter().enumerate() {
         if author == value {
             return i.to_string();

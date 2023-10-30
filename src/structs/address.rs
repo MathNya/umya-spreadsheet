@@ -5,6 +5,7 @@ pub struct Address {
     sheet_name: String,
     range: Range,
 }
+
 impl Address {
     pub fn get_sheet_name(&self) -> &str {
         &self.sheet_name
@@ -49,11 +50,8 @@ impl Address {
             return range;
         }
         let mut with_space_char = String::from("");
-        match self.get_sheet_name().find(char::is_whitespace) {
-            Some(_) => {
-                with_space_char = String::from("'");
-            }
-            None => {}
+        if self.get_sheet_name().contains(char::is_whitespace) {
+            with_space_char = String::from("'");
         }
         format!(
             "{}{}{}!{}",
@@ -72,7 +70,7 @@ impl Address {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if &self.sheet_name == sheet_name {
+        if self.sheet_name == sheet_name {
             self.range.adjustment_insert_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -90,7 +88,7 @@ impl Address {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if &self.sheet_name == sheet_name {
+        if self.sheet_name == sheet_name {
             self.range.adjustment_remove_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -108,7 +106,7 @@ impl Address {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) -> bool {
-        if &self.sheet_name == sheet_name {
+        if self.sheet_name == sheet_name {
             return self.range.is_remove(
                 root_col_num,
                 offset_col_num,

@@ -1,6 +1,7 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -15,6 +16,7 @@ pub struct Anchor {
     bottom_row: u32,
     bottom_offset: u32,
 }
+
 impl Anchor {
     pub fn get_left_column(&self) -> &u32 {
         &self.left_column
@@ -121,31 +123,27 @@ impl Anchor {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => {
-                    let text = e.unescape().unwrap();
-                    let split_str: Vec<&str> = text.split(",").collect();
-                    self.set_left_column(Self::get_number(split_str.first()));
-                    self.set_left_offset(Self::get_number(split_str.get(1)));
-                    self.set_top_row(Self::get_number(split_str.get(2)));
-                    self.set_top_offset(Self::get_number(split_str.get(3)));
-                    self.set_right_column(Self::get_number(split_str.get(4)));
-                    self.set_right_offset(Self::get_number(split_str.get(5)));
-                    self.set_bottom_row(Self::get_number(split_str.get(6)));
-                    self.set_bottom_offset(Self::get_number(split_str.get(7)));
+        xml_read_loop!(
+            reader,
+            Event::Text(e) => {
+                let text = e.unescape().unwrap();
+                let split_str: Vec<&str> = text.split(',').collect();
+                self.set_left_column(Self::get_number(split_str.first()));
+                self.set_left_offset(Self::get_number(split_str.get(1)));
+                self.set_top_row(Self::get_number(split_str.get(2)));
+                self.set_top_offset(Self::get_number(split_str.get(3)));
+                self.set_right_column(Self::get_number(split_str.get(4)));
+                self.set_right_offset(Self::get_number(split_str.get(5)));
+                self.set_bottom_row(Self::get_number(split_str.get(6)));
+                self.set_bottom_offset(Self::get_number(split_str.get(7)));
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"x:Anchor" {
+                    return
                 }
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"x:Anchor" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "x:Anchor"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Eof => panic!("Error not find {} end element", "x:Anchor")
+        );
     }
 
     fn get_number(value: Option<&&str>) -> u32 {

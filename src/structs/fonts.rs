@@ -2,6 +2,7 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::Font;
 use structs::Style;
@@ -11,6 +12,7 @@ use writer::driver::*;
 pub(crate) struct Fonts {
     font: Vec<Font>,
 }
+
 impl Fonts {
     pub(crate) fn get_font(&self) -> &Vec<Font> {
         &self.font
@@ -48,34 +50,28 @@ impl Fonts {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"font" => {
-                        let obj = Font::default();
-                        self.set_font(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"font" => {
-                        let mut obj = Font::default();
-                        obj.set_attributes(reader, e);
-                        self.set_font(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"fonts" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "fonts"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"font" {
+                    let obj = Font::default();
+                    self.set_font(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"font" {
+                    let mut obj = Font::default();
+                    obj.set_attributes(reader, e);
+                    self.set_font(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"fonts" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "fonts")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

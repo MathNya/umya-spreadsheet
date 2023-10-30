@@ -13,6 +13,7 @@ use writer::driver::*;
 pub struct GraphicData {
     chart_space: ChartSpace,
 }
+
 impl GraphicData {
     pub fn get_chart_space(&self) -> &ChartSpace {
         &self.chart_space
@@ -33,30 +34,24 @@ impl GraphicData {
         _e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        let mut buf = Vec::new();
-
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"c:chart" => {
-                        let chart_id = get_attribute(e, b"r:id").unwrap();
-                        let relationship = drawing_relationships
-                            .unwrap()
-                            .get_relationship_by_rid(&chart_id);
-                        let _ = chart::read(relationship.get_raw_file(), &mut self.chart_space);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:graphicData" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:graphicData"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"c:chart" {
+                    let chart_id = get_attribute(e, b"r:id").unwrap();
+                    let relationship = drawing_relationships
+                        .unwrap()
+                        .get_relationship_by_rid(&chart_id);
+                    let _ = chart::read(relationship.get_raw_file(), &mut self.chart_space);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:graphicData" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:graphicData")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {

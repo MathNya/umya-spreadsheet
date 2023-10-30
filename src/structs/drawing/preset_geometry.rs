@@ -12,8 +12,9 @@ pub struct PresetGeometry {
     geometry: String,
     adjust_value_list: AdjustValueList,
 }
+
 impl PresetGeometry {
-    // Geometryes
+    // Geometry
     pub const GEOMETRY_ACCENTBORDERCALLOUT1: &'static str = "accentBorderCallout1";
     pub const GEOMETRY_ACCENTBORDERCALLOUT2: &'static str = "accentBorderCallout2";
     pub const GEOMETRY_ACCENTBORDERCALLOUT3: &'static str = "accentBorderCallout3";
@@ -229,27 +230,20 @@ impl PresetGeometry {
     ) {
         self.set_geometry(get_attribute(e, b"prst").unwrap());
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:avLst" => {
-                        self.get_adjust_value_list_mut().set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:prstGeom" => {
-                        return;
-                    }
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:prstGeom"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"a:avLst" {
+                    self.get_adjust_value_list_mut().set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:prstGeom" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:prstGeom")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

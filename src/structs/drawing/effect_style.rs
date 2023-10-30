@@ -4,6 +4,7 @@ use super::Shape3DType;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use std::vec;
 use writer::driver::*;
@@ -14,6 +15,7 @@ pub struct EffectStyle {
     scene_3d_type: Option<Scene3DType>,
     shape_3d_type: Option<Shape3DType>,
 }
+
 impl EffectStyle {
     pub fn get_effect_list(&self) -> &Option<EffectList> {
         &self.effect_list
@@ -59,45 +61,42 @@ impl EffectStyle {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:effectLst" => {
-                        let mut obj = EffectList::default();
-                        obj.set_attributes(reader, e, false);
-                        self.effect_list = Some(obj);
-                    }
-                    b"a:scene3d" => {
-                        let mut obj = Scene3DType::default();
-                        obj.set_attributes(reader, e);
-                        self.scene_3d_type = Some(obj);
-                    }
-                    b"a:sp3d" => {
-                        let mut obj = Shape3DType::default();
-                        obj.set_attributes(reader, e);
-                        self.shape_3d_type = Some(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:effectLst" => {
-                        let mut obj = EffectList::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_effect_list(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:effectStyle" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:effectStyle"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                b"a:effectLst" => {
+                    let mut obj = EffectList::default();
+                    obj.set_attributes(reader, e, false);
+                    self.effect_list = Some(obj);
+                }
+                b"a:scene3d" => {
+                    let mut obj = Scene3DType::default();
+                    obj.set_attributes(reader, e);
+                    self.scene_3d_type = Some(obj);
+                }
+                b"a:sp3d" => {
+                    let mut obj = Shape3DType::default();
+                    obj.set_attributes(reader, e);
+                    self.shape_3d_type = Some(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:effectLst" {
+                    let mut obj = EffectList::default();
+                    obj.set_attributes(reader, e, true);
+                    self.set_effect_list(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:effectStyle" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:effectStyle")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

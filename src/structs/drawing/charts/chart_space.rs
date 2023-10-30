@@ -1,3 +1,5 @@
+use crate::xml_read_loop;
+
 // c:chartSpace
 use super::Chart;
 use super::Date1904;
@@ -23,6 +25,7 @@ pub struct ChartSpace {
     shape_properties: Option<ShapeProperties>,
     print_settings: Option<PrintSettings>,
 }
+
 impl ChartSpace {
     pub fn get_date1904(&self) -> &Date1904 {
         &self.date1904
@@ -120,52 +123,48 @@ impl ChartSpace {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"mc:AlternateContent" => {
-                        let mut obj = Style::default();
-                        obj.set_attributes(reader, e);
-                        self.set_style(obj);
-                    }
-                    b"c:chart" => {
-                        self.chart.set_attributes(reader, e);
-                    }
-                    b"c:printSettings" => {
-                        let mut obj = PrintSettings::default();
-                        obj.set_attributes(reader, e);
-                        self.set_print_settings(obj);
-                    }
-                    b"c:spPr" => {
-                        let mut obj = ShapeProperties::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape_properties(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"c:date1904" => {
-                        self.date1904.set_attributes(reader, e);
-                    }
-                    b"c:lang" => {
-                        self.editing_language.set_attributes(reader, e);
-                    }
-                    b"c:roundedCorners" => {
-                        self.rounded_corners.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:chartSpace" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:chartSpace"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().into_inner() {
+                b"mc:AlternateContent" => {
+                    let mut obj = Style::default();
+                    obj.set_attributes(reader, e);
+                    self.set_style(obj);
+                }
+                b"c:chart" => {
+                    self.chart.set_attributes(reader, e);
+                }
+                b"c:printSettings" => {
+                    let mut obj = PrintSettings::default();
+                    obj.set_attributes(reader, e);
+                    self.set_print_settings(obj);
+                }
+                b"c:spPr" => {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => match e.name().into_inner() {
+                b"c:date1904" => {
+                    self.date1904.set_attributes(reader, e);
+                }
+                b"c:lang" => {
+                    self.editing_language.set_attributes(reader, e);
+                }
+                b"c:roundedCorners" => {
+                    self.rounded_corners.set_attributes(reader, e);
+                }
+                _ => (),
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:chartSpace" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:chartSpace"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
@@ -206,19 +205,13 @@ impl ChartSpace {
         self.chart.write_to(writer, spreadsheet);
 
         // c:spPr
-        match &self.shape_properties {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_properties {
+            v.write_to(writer);
         }
 
         // c:printSettings
-        match &self.print_settings {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.print_settings {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:chartSpace");

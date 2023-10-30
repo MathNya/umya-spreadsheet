@@ -18,6 +18,7 @@ pub(crate) struct RawRelationship {
     raw_file: RawFile,
     target_mode: StringValue,
 }
+
 impl RawRelationship {
     pub(crate) fn get_id(&self) -> &str {
         self.id.get_value()
@@ -78,11 +79,8 @@ impl RawRelationship {
         self.set_id(get_attribute(e, b"Id").unwrap());
         self.set_type(get_attribute(e, b"Type").unwrap());
         self.set_target(get_attribute(e, b"Target").unwrap());
-        match get_attribute(e, b"TargetMode") {
-            Some(v) => {
-                self.set_target_mode(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"TargetMode") {
+            self.set_target_mode(v);
         }
         if self.get_target_mode() != "External" {
             let target = self.get_target().to_string();

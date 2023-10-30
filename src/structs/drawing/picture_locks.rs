@@ -10,6 +10,7 @@ use writer::driver::*;
 pub struct PictureLocks {
     no_change_aspect: bool,
 }
+
 impl PictureLocks {
     pub fn get_no_change_aspect(&self) -> &bool {
         &self.no_change_aspect
@@ -24,26 +25,16 @@ impl PictureLocks {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"noChangeAspect") {
-            Some(v) => {
-                match &*v {
-                    "1" => {
-                        self.set_no_change_aspect(true);
-                    }
-                    _ => {}
-                };
+        if let Some(v) = get_attribute(e, b"noChangeAspect") {
+            if v == "1" {
+                self.set_no_change_aspect(true);
             }
-            None => {}
         }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:picLocks
-        let no_change_aspect = if &self.no_change_aspect == &true {
-            "1"
-        } else {
-            "2"
-        };
+        let no_change_aspect = if self.no_change_aspect { "1" } else { "2" };
         write_start_tag(
             writer,
             "a:picLocks",

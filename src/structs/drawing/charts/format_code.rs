@@ -5,10 +5,13 @@ use quick_xml::Writer;
 use std::io::Cursor;
 use writer::driver::*;
 
+use crate::xml_read_loop;
+
 #[derive(Clone, Default, Debug)]
 pub struct FormatCode {
     text: String,
 }
+
 impl FormatCode {
     pub fn get_text(&self) -> &str {
         &self.text
@@ -24,22 +27,18 @@ impl FormatCode {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => {
-                    self.set_text(e.unescape().unwrap());
+        xml_read_loop!(
+            reader,
+            Event::Text(e) => {
+                self.set_text(e.unescape().unwrap());
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:formatCode" {
+                    return;
                 }
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:formatCode" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:formatCode"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:formatCode"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

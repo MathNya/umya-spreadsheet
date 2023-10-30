@@ -3,6 +3,7 @@ use super::SolidFill;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -11,6 +12,7 @@ pub struct BackgroundFillStyleList {
     solid_fill: Vec<SolidFill>,
     gradient_fill_collection: Vec<GradientFill>,
 }
+
 impl BackgroundFillStyleList {
     pub fn get_solid_fill(&self) -> &Vec<SolidFill> {
         &self.solid_fill
@@ -53,32 +55,30 @@ impl BackgroundFillStyleList {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:solidFill" => {
-                        let mut obj = SolidFill::default();
-                        obj.set_attributes(reader, e);
-                        self.solid_fill.push(obj);
-                    }
-                    b"a:gradFill" => {
-                        let mut obj = GradientFill::default();
-                        obj.set_attributes(reader, e);
-                        self.gradient_fill_collection.push(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:bgFillStyleLst" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "bgFillStyleLst"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                b"a:solidFill" => {
+                    let mut obj = SolidFill::default();
+                    obj.set_attributes(reader, e);
+                    self.solid_fill.push(obj);
+                }
+                b"a:gradFill" => {
+                    let mut obj = GradientFill::default();
+                    obj.set_attributes(reader, e);
+                    self.gradient_fill_collection.push(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if  e.name().into_inner() == b"a:bgFillStyleLst" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "bgFillStyleLst")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

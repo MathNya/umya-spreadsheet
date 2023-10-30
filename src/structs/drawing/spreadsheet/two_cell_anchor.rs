@@ -26,6 +26,7 @@ pub struct TwoCellAnchor {
     picture: Option<Picture>,
     is_alternate_content: BooleanValue,
 }
+
 impl TwoCellAnchor {
     pub fn get_edit_as(&self) -> &EditAsValues {
         self.edit_as.get_value()
@@ -185,55 +186,48 @@ impl TwoCellAnchor {
         e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        match get_attribute(e, b"editAs") {
-            Some(v) => {
-                self.edit_as.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, edit_as, "editAs");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"xdr:from" => {
-                        self.from_marker.set_attributes(reader, e);
-                    }
-                    b"xdr:to" => {
-                        self.to_marker.set_attributes(reader, e);
-                    }
-                    b"xdr:graphicFrame" => {
-                        let mut obj = GraphicFrame::default();
-                        obj.set_attributes(reader, e, drawing_relationships);
-                        self.set_graphic_frame(obj);
-                    }
-                    b"xdr:sp" => {
-                        let mut obj = Shape::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape(obj);
-                    }
-                    b"xdr:cxnSp" => {
-                        let mut obj = ConnectionShape::default();
-                        obj.set_attributes(reader, e);
-                        self.set_connection_shape(obj);
-                    }
-                    b"xdr:pic" => {
-                        let mut obj = Picture::default();
-                        obj.set_attributes(reader, e, drawing_relationships);
-                        self.set_picture(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:twoCellAnchor" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:twoCellAnchor"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                b"xdr:from" => {
+                    self.from_marker.set_attributes(reader, e);
+                }
+                b"xdr:to" => {
+                    self.to_marker.set_attributes(reader, e);
+                }
+                b"xdr:graphicFrame" => {
+                    let mut obj = GraphicFrame::default();
+                    obj.set_attributes(reader, e, drawing_relationships);
+                    self.set_graphic_frame(obj);
+                }
+                b"xdr:sp" => {
+                    let mut obj = Shape::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape(obj);
+                }
+                b"xdr:cxnSp" => {
+                    let mut obj = ConnectionShape::default();
+                    obj.set_attributes(reader, e);
+                    self.set_connection_shape(obj);
+                }
+                b"xdr:pic" => {
+                    let mut obj = Picture::default();
+                    obj.set_attributes(reader, e, drawing_relationships);
+                    self.set_picture(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:twoCellAnchor" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:twoCellAnchor")
+        );
     }
 
     pub(crate) fn write_to(
@@ -271,7 +265,7 @@ impl TwoCellAnchor {
 
         // xdr:twoCellAnchor
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if &self.edit_as.has_value() == &true {
+        if self.edit_as.has_value() {
             attributes.push(("editAs", self.edit_as.get_value_string()));
         }
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);

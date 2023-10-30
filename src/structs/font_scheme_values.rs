@@ -1,16 +1,19 @@
 use super::EnumTrait;
 use std::str::FromStr;
+
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum FontSchemeValues {
     Major,
     Minor,
     None,
 }
+
 impl Default for FontSchemeValues {
     fn default() -> Self {
         Self::None
     }
 }
+
 impl EnumTrait for FontSchemeValues {
     fn get_value_string(&self) -> &str {
         match &self {
@@ -20,6 +23,7 @@ impl EnumTrait for FontSchemeValues {
         }
     }
 }
+
 impl FromStr for FontSchemeValues {
     type Err = ();
     fn from_str(input: &str) -> Result<Self, Self::Err> {

@@ -13,6 +13,7 @@ pub struct Blip {
     image: MediaObject,
     cstate: String,
 }
+
 impl Blip {
     pub fn get_image(&self) -> &MediaObject {
         &self.image
@@ -42,11 +43,8 @@ impl Blip {
         e: &BytesStart,
         drawing_relationships: &RawRelationships,
     ) {
-        match get_attribute(e, b"cstate") {
-            Some(v) => {
-                self.set_cstate(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"cstate") {
+            self.set_cstate(v);
         }
 
         let picture_id = get_attribute(e, b"r:embed").unwrap();

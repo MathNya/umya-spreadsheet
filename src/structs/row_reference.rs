@@ -26,11 +26,11 @@ impl RowReference {
     }
 
     pub(crate) fn offset_num(&mut self, value: i32) -> &mut Self {
-        if &value > &0 {
+        if value > 0 {
             self.plus_num(value as u32);
         }
-        if &value < &0 {
-            self.minus_num((value * -1) as u32);
+        if value < 0 {
+            self.minus_num(-value as u32);
         }
         self
     }
@@ -60,11 +60,7 @@ impl RowReference {
     }
 
     pub fn get_coordinate(&self) -> String {
-        format!(
-            "{}{}",
-            if &self.is_lock == &true { "$" } else { "" },
-            &self.num,
-        )
+        format!("{}{}", if self.is_lock { "$" } else { "" }, self.num)
     }
 
     pub(crate) fn adjustment_insert_coordinate(
@@ -85,9 +81,7 @@ impl RowReference {
 
     pub(crate) fn is_remove(&self, root_row_num: &u32, offset_row_num: &u32) -> bool {
         if root_row_num > &0 {
-            let row_result =
-                &self.num >= root_row_num && &self.num < &(root_row_num + offset_row_num);
-            return row_result;
+            return &self.num >= root_row_num && self.num < (root_row_num + offset_row_num);
         }
         false
     }

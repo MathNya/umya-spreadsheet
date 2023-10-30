@@ -33,6 +33,7 @@ pub struct Column {
     style: Style,
     auto_width: BooleanValue,
 }
+
 impl Default for Column {
     fn default() -> Self {
         let mut width = DoubleValue::default();
@@ -47,6 +48,7 @@ impl Default for Column {
         }
     }
 }
+
 impl Column {
     pub fn get_col_num(&self) -> &u32 {
         self.col_num.get_value()
@@ -182,33 +184,13 @@ impl Column {
         e: &BytesStart,
         stylesheet: &Stylesheet,
     ) {
-        match get_attribute(e, b"width") {
-            Some(v) => {
-                self.width.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, width, "width");
+        set_string_from_xml!(self, e, hidden, "hidden");
+        set_string_from_xml!(self, e, best_fit, "bestFit");
 
-        match get_attribute(e, b"hidden") {
-            Some(v) => {
-                self.hidden.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"bestFit") {
-            Some(v) => {
-                self.best_fit.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"style") {
-            Some(v) => {
-                let style = stylesheet.get_style(v.parse::<usize>().unwrap());
-                self.set_style(style);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"style") {
+            let style = stylesheet.get_style(v.parse::<usize>().unwrap());
+            self.set_style(style);
         }
     }
 }

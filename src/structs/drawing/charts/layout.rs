@@ -1,5 +1,6 @@
 // c:layout
 use super::ManualLayout;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -10,6 +11,7 @@ use writer::driver::*;
 pub struct Layout {
     manual_layout: Option<ManualLayout>,
 }
+
 impl Layout {
     pub fn get_manual_layout(&self) -> &Option<ManualLayout> {
         &self.manual_layout
@@ -38,27 +40,22 @@ impl Layout {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c:manualLayout" => {
-                        let mut obj = ManualLayout::default();
-                        obj.set_attributes(reader, e);
-                        self.set_manual_layout(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:layout" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:layout"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"c:manualLayout" {
+                    let mut obj = ManualLayout::default();
+                    obj.set_attributes(reader, e);
+                    self.set_manual_layout(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:layout" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:layout"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -70,11 +67,8 @@ impl Layout {
             write_start_tag(writer, "c:layout", vec![], false);
 
             // c:manualLayout
-            match &self.manual_layout {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.manual_layout {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "c:layout");

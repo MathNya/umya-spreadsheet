@@ -11,7 +11,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
-    let is_light = writer_mng.get_is_light().clone();
+    let is_light = *writer_mng.get_is_light();
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     let _ = writer.write_event(Event::Decl(BytesDecl::new(

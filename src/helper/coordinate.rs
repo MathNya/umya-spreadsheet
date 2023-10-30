@@ -33,7 +33,6 @@ where
     alpha
         .as_ref()
         .chars()
-        .into_iter()
         .rev()
         .enumerate()
         .map(|(index, v)| {

@@ -13,6 +13,7 @@ pub struct TailEnd {
     width: StringValue,
     length: StringValue,
 }
+
 impl TailEnd {
     pub fn get_type(&self) -> &str {
         self.t_type.get_value()
@@ -43,25 +44,16 @@ impl TailEnd {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"type") {
-            Some(v) => {
-                self.set_type(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"type") {
+            self.set_type(v);
         }
 
-        match get_attribute(e, b"w") {
-            Some(v) => {
-                self.set_width(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"w") {
+            self.set_width(v);
         }
 
-        match get_attribute(e, b"len") {
-            Some(v) => {
-                self.set_length(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"len") {
+            self.set_length(v);
         }
     }
 

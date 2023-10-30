@@ -10,6 +10,7 @@ pub struct WriterManager<W: io::Seek + io::Write> {
     arv: zip::ZipWriter<W>,
     is_light: bool,
 }
+
 impl<W: io::Seek + io::Write> WriterManager<W> {
     pub fn new(arv: zip::ZipWriter<W>) -> Self {
         WriterManager {
@@ -41,7 +42,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         Ok(())
     }
 
-    pub(crate) fn add_bin(&mut self, target: &str, data: &Vec<u8>) -> Result<(), XlsxError> {
+    pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
         if !is_match {
             make_file_from_bin(target, &mut self.arv, data, None, &self.is_light)?;
@@ -62,7 +63,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     pub(crate) fn check_file_exist(&mut self, file_path: &str) -> bool {
         self.file_list_sort();
         for file in &self.files {
-            if file == &file_path {
+            if file == file_path {
                 return true;
             }
         }
@@ -133,7 +134,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         }
     }
 
-    pub(crate) fn add_file_at_ole_object(&mut self, writer: &Vec<u8>) -> Result<i32, XlsxError> {
+    pub(crate) fn add_file_at_ole_object(&mut self, writer: &[u8]) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
@@ -146,7 +147,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         }
     }
 
-    pub(crate) fn add_file_at_excel(&mut self, writer: &Vec<u8>) -> Result<i32, XlsxError> {
+    pub(crate) fn add_file_at_excel(&mut self, writer: &[u8]) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
@@ -158,10 +159,8 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             }
         }
     }
-    pub(crate) fn add_file_at_printer_settings(
-        &mut self,
-        writer: &Vec<u8>,
-    ) -> Result<i32, XlsxError> {
+
+    pub(crate) fn add_file_at_printer_settings(&mut self, writer: &[u8]) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;

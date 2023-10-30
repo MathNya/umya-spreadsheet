@@ -12,6 +12,7 @@ use writer::driver::*;
 pub struct FontScheme {
     pub(crate) val: EnumValue<FontSchemeValues>,
 }
+
 impl FontScheme {
     pub fn get_val(&self) -> &FontSchemeValues {
         self.val.get_value()
@@ -33,8 +34,7 @@ impl FontScheme {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // scheme
         if self.val.has_value() {
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            attributes.push(("val", self.val.get_value_string()));
+            let attributes = vec![("val", self.val.get_value_string())];
             write_start_tag(writer, "scheme", attributes, true);
         }
     }

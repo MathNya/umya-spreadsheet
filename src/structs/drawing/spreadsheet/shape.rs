@@ -6,6 +6,7 @@ use super::TextBody;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -17,6 +18,7 @@ pub struct Shape {
     shape_style: Option<ShapeStyle>,
     text_body: Option<TextBody>,
 }
+
 impl Shape {
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
@@ -83,38 +85,36 @@ impl Shape {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"xdr:nvSpPr" => {
-                        self.non_visual_shape_properties.set_attributes(reader, e);
+        xml_read_loop!(
+            reader,
+                Event::Start(ref e) => {
+                    match e.name().into_inner() {
+                        b"xdr:nvSpPr" => {
+                            self.non_visual_shape_properties.set_attributes(reader, e);
+                        }
+                        b"xdr:spPr" => {
+                            self.shape_properties.set_attributes(reader, e);
+                        }
+                        b"xdr:style" => {
+                            let mut obj = ShapeStyle::default();
+                            obj.set_attributes(reader, e);
+                            self.set_shape_style(obj);
+                        }
+                        b"xdr:txBody" => {
+                            let mut obj = TextBody::default();
+                            obj.set_attributes(reader, e);
+                            self.set_text_body(obj);
+                        }
+                        _ => (),
                     }
-                    b"xdr:spPr" => {
-                        self.shape_properties.set_attributes(reader, e);
-                    }
-                    b"xdr:style" => {
-                        let mut obj = ShapeStyle::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape_style(obj);
-                    }
-                    b"xdr:txBody" => {
-                        let mut obj = TextBody::default();
-                        obj.set_attributes(reader, e);
-                        self.set_text_body(obj);
-                    }
-                    _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:sp" => return,
-                    _ => (),
+                Event::End(ref e) => {
+                    if e.name().into_inner() == b"xdr:sp" {
+                        return;
+                    }
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:sp"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                Event::Eof => panic!("Error not find {} end element", "xdr:sp")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
@@ -133,19 +133,13 @@ impl Shape {
         let _ = &self.shape_properties.write_to(writer);
 
         // xdr:style
-        match &self.shape_style {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_style {
+            v.write_to(writer);
         }
 
         // xdr:txBody
-        match &self.text_body {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_body {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "xdr:sp");

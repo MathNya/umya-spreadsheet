@@ -2,6 +2,7 @@ use super::run_properties::RunProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -10,6 +11,7 @@ pub struct Run {
     text: String,
     run_properties: RunProperties,
 }
+
 impl Run {
     pub fn get_text(&self) -> &str {
         &self.text
@@ -36,34 +38,28 @@ impl Run {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
-                    b"a:rPr" => {
-                        self.run_properties.set_attributes(reader, e, false);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"a:rPr" => {
-                        self.run_properties.set_attributes(reader, e, true);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Text(e)) => {
-                    self.set_text(e.unescape().unwrap());
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().0 == b"a:rPr" {
+                    self.run_properties.set_attributes(reader, e, false);
                 }
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"a:r" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:r"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => {
+                if e.name().0 == b"a:rPr" {
+                    self.run_properties.set_attributes(reader, e, true);
+                }
+            },
+            Event::Text(e) => {
+                self.set_text(e.unescape().unwrap());
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"a:r" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:r")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

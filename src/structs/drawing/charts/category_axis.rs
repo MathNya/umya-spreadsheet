@@ -1,3 +1,5 @@
+use crate::xml_read_loop;
+
 // c:catAx
 use super::AutoLabeled;
 use super::AxisId;
@@ -42,6 +44,7 @@ pub struct CategoryAxis {
     shape_properties: Option<ShapeProperties>,
     text_properties: Option<TextProperties>,
 }
+
 impl CategoryAxis {
     pub fn get_axis_id(&self) -> &AxisId {
         &self.axis_id
@@ -269,89 +272,85 @@ impl CategoryAxis {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c:title" => {
-                        let mut obj = Title::default();
-                        obj.set_attributes(reader, e);
-                        self.set_title(obj);
-                    }
-                    b"c:scaling" => {
-                        self.scaling.set_attributes(reader, e);
-                    }
-                    b"c:spPr" => {
-                        let mut obj = ShapeProperties::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape_properties(obj);
-                    }
-                    b"c:txPr" => {
-                        let mut obj = TextProperties::default();
-                        obj.set_attributes(reader, e);
-                        self.set_text_properties(obj);
-                    }
-                    b"c:majorGridlines" => {
-                        let mut obj = MajorGridlines::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_major_gridlines(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"c:axId" => {
-                        self.axis_id.set_attributes(reader, e);
-                    }
-                    b"c:delete" => {
-                        self.delete.set_attributes(reader, e);
-                    }
-                    b"c:axPos" => {
-                        self.axis_position.set_attributes(reader, e);
-                    }
-                    b"c:majorGridlines" => {
-                        let mut obj = MajorGridlines::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_major_gridlines(obj);
-                    }
-                    b"c:majorTickMark" => {
-                        self.major_tick_mark.set_attributes(reader, e);
-                    }
-                    b"c:minorTickMark" => {
-                        self.minor_tick_mark.set_attributes(reader, e);
-                    }
-                    b"c:tickLblPos" => {
-                        self.tick_label_position.set_attributes(reader, e);
-                    }
-                    b"c:crossAx" => {
-                        self.crossing_axis.set_attributes(reader, e);
-                    }
-                    b"c:crosses" => {
-                        self.crosses.set_attributes(reader, e);
-                    }
-                    b"c:auto" => {
-                        self.auto_labeled.set_attributes(reader, e);
-                    }
-                    b"c:lblAlgn" => {
-                        self.label_alignment.set_attributes(reader, e);
-                    }
-                    b"c:lblOffset" => {
-                        self.label_offset.set_attributes(reader, e);
-                    }
-                    b"c:noMultiLvlLbl" => {
-                        self.no_multi_level_labels.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:catAx" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:catAx"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().into_inner() {
+                b"c:title" => {
+                    let mut obj = Title::default();
+                    obj.set_attributes(reader, e);
+                    self.set_title(obj);
+                }
+                b"c:scaling" => {
+                    self.scaling.set_attributes(reader, e);
+                }
+                b"c:spPr" => {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
+                }
+                b"c:txPr" => {
+                    let mut obj = TextProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_text_properties(obj);
+                }
+                b"c:majorGridlines" => {
+                    let mut obj = MajorGridlines::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_major_gridlines(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => match e.name().into_inner() {
+                b"c:axId" => {
+                    self.axis_id.set_attributes(reader, e);
+                }
+                b"c:delete" => {
+                    self.delete.set_attributes(reader, e);
+                }
+                b"c:axPos" => {
+                    self.axis_position.set_attributes(reader, e);
+                }
+                b"c:majorGridlines" => {
+                    let mut obj = MajorGridlines::default();
+                    obj.set_attributes(reader, e, true);
+                    self.set_major_gridlines(obj);
+                }
+                b"c:majorTickMark" => {
+                    self.major_tick_mark.set_attributes(reader, e);
+                }
+                b"c:minorTickMark" => {
+                    self.minor_tick_mark.set_attributes(reader, e);
+                }
+                b"c:tickLblPos" => {
+                    self.tick_label_position.set_attributes(reader, e);
+                }
+                b"c:crossAx" => {
+                    self.crossing_axis.set_attributes(reader, e);
+                }
+                b"c:crosses" => {
+                    self.crosses.set_attributes(reader, e);
+                }
+                b"c:auto" => {
+                    self.auto_labeled.set_attributes(reader, e);
+                }
+                b"c:lblAlgn" => {
+                    self.label_alignment.set_attributes(reader, e);
+                }
+                b"c:lblOffset" => {
+                    self.label_offset.set_attributes(reader, e);
+                }
+                b"c:noMultiLvlLbl" => {
+                    self.no_multi_level_labels.set_attributes(reader, e);
+                }
+                _ => (),
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:catAx" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:catAx"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -371,19 +370,13 @@ impl CategoryAxis {
         self.axis_position.write_to(writer);
 
         // c:title
-        match &self.title {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.title {
+            v.write_to(writer);
         }
 
         // c:majorGridlines
-        match &self.major_gridlines {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.major_gridlines {
+            v.write_to(writer);
         }
 
         // c:majorTickMark
@@ -396,19 +389,13 @@ impl CategoryAxis {
         self.tick_label_position.write_to(writer);
 
         // c:spPr
-        match &self.shape_properties {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_properties {
+            v.write_to(writer);
         }
 
         // c:txPr
-        match &self.text_properties {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_properties {
+            v.write_to(writer);
         }
 
         // c:crossAx

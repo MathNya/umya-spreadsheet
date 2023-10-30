@@ -14,6 +14,7 @@ pub struct GradientStop {
     position: DoubleValue,
     color: Color,
 }
+
 impl GradientStop {
     pub fn get_position(&self) -> &f64 {
         self.position.get_value()
@@ -53,34 +54,24 @@ impl GradientStop {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"position") {
-            Some(v) => {
-                self.position.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, position, "position");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"color" => {
-                        let mut obj = Color::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_color(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"stop" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "stop"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"color" {
+                    let mut obj = Color::default();
+                    obj.set_attributes(reader, e, true);
+                    self.set_color(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"stop" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "stop")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

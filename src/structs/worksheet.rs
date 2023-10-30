@@ -68,6 +68,7 @@ pub struct Worksheet {
     data_validations: Option<DataValidations>,
     sheet_format_properties: SheetFormatProperties,
 }
+
 impl Worksheet {
     // ************************
     // Value
@@ -1785,13 +1786,8 @@ impl Worksheet {
         // Iterate row by row, collecting cell information (do I copy)
         let mut copy_cells: Vec<Cell> = Vec::new();
         let cells = self.cell_collection.get_cell_by_range(range);
-        for cell in cells {
-            match cell {
-                Some(v) => {
-                    copy_cells.push(v.clone());
-                }
-                None => {}
-            }
+        for cell in cells.into_iter().flatten() {
+            copy_cells.push(cell.clone());
         }
 
         // Delete cell information as iterating through

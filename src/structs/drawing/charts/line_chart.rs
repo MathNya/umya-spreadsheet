@@ -1,3 +1,5 @@
+use crate::xml_read_loop;
+
 // lineChart
 use super::AreaChartSeries;
 use super::AreaChartSeriesList;
@@ -24,6 +26,7 @@ pub struct LineChart {
     smooth: Smooth,
     axis_id: Vec<AxisId>,
 }
+
 impl LineChart {
     pub fn get_grouping(&self) -> &Grouping {
         &self.grouping
@@ -126,51 +129,47 @@ impl LineChart {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c:ser" => {
-                        let mut obj = AreaChartSeries::default();
-                        obj.set_attributes(reader, e);
-                        self.get_area_chart_series_list_mut()
-                            .add_area_chart_series(obj);
-                    }
-                    b"c:dLbls" => {
-                        self.data_labels.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"c:grouping" => {
-                        self.grouping.set_attributes(reader, e);
-                    }
-                    b"c:varyColors" => {
-                        self.vary_colors.set_attributes(reader, e);
-                    }
-                    b"c:marker" => {
-                        self.show_marker.set_attributes(reader, e);
-                    }
-                    b"c:smooth" => {
-                        self.smooth.set_attributes(reader, e);
-                    }
-                    b"c:axId" => {
-                        let mut obj = AxisId::default();
-                        obj.set_attributes(reader, e);
-                        self.add_axis_id(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:lineChart" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:lineChart"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().into_inner() {
+                b"c:ser" => {
+                    let mut obj = AreaChartSeries::default();
+                    obj.set_attributes(reader, e);
+                    self.get_area_chart_series_list_mut()
+                        .add_area_chart_series(obj);
+                }
+                b"c:dLbls" => {
+                    self.data_labels.set_attributes(reader, e);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => match e.name().into_inner() {
+                b"c:grouping" => {
+                    self.grouping.set_attributes(reader, e);
+                }
+                b"c:varyColors" => {
+                    self.vary_colors.set_attributes(reader, e);
+                }
+                b"c:marker" => {
+                    self.show_marker.set_attributes(reader, e);
+                }
+                b"c:smooth" => {
+                    self.smooth.set_attributes(reader, e);
+                }
+                b"c:axId" => {
+                    let mut obj = AxisId::default();
+                    obj.set_attributes(reader, e);
+                    self.add_axis_id(obj);
+                }
+                _ => (),
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:lineChart" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:lineChart"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {

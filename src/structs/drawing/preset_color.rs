@@ -12,6 +12,7 @@ pub struct PresetColor {
     val: String,
     alpha: Option<Alpha>,
 }
+
 impl PresetColor {
     pub fn get_val(&self) -> &str {
         &self.val
@@ -40,27 +41,22 @@ impl PresetColor {
     ) {
         self.set_val(get_attribute(e, b"val").unwrap());
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:alpha" => {
-                        let mut alpha = Alpha::default();
-                        alpha.set_attributes(reader, e);
-                        self.set_alpha(alpha);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:prstClr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:prstClr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:alpha" {
+                    let mut alpha = Alpha::default();
+                    alpha.set_attributes(reader, e);
+                    self.set_alpha(alpha);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:prstClr" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:prstClr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

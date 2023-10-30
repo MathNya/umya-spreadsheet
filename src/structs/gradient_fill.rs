@@ -15,6 +15,7 @@ pub struct GradientFill {
     degree: DoubleValue,
     gradient_stop: Vec<GradientStop>,
 }
+
 impl GradientFill {
     pub fn get_degree(&self) -> &f64 {
         self.degree.get_value()
@@ -54,34 +55,24 @@ impl GradientFill {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"degree") {
-            Some(v) => {
-                self.degree.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, degree, "degree");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"stop" => {
-                        let mut obj = GradientStop::default();
-                        obj.set_attributes(reader, e);
-                        self.set_gradient_stop(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"gradientFill" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "gradientFill"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"stop" {
+                    let mut obj = GradientStop::default();
+                    obj.set_attributes(reader, e);
+                    self.set_gradient_stop(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"gradientFill" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "gradientFill")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -16,16 +16,11 @@ pub fn excel_to_date_time_object(
         // Unix timestamp base date
         NaiveDateTime::parse_from_str("1970-01-01 00:00:00", "%Y-%m-%d %T").unwrap()
     } else {
-        // MS Excel calendar base dates
-        if CALENDAR_WINDOWS_1900 == CALENDAR_WINDOWS_1900 {
-            // Allow adjustment for 1900 Leap Year in MS Excel
-            if excel_timestamp < &60f64 {
-                NaiveDateTime::parse_from_str("1899-12-31 00:00:00", "%Y-%m-%d %T").unwrap()
-            } else {
-                NaiveDateTime::parse_from_str("1899-12-30 00:00:00", "%Y-%m-%d %T").unwrap()
-            }
+        // Allow adjustment for 1900 Leap Year in MS Excel
+        if excel_timestamp < &60f64 {
+            NaiveDateTime::parse_from_str("1899-12-31 00:00:00", "%Y-%m-%d %T").unwrap()
         } else {
-            NaiveDateTime::parse_from_str("1904-01-01 00:00:00", "%Y-%m-%d %T").unwrap()
+            NaiveDateTime::parse_from_str("1899-12-30 00:00:00", "%Y-%m-%d %T").unwrap()
         }
     };
 

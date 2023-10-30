@@ -14,6 +14,7 @@ pub struct Fill {
     on: TrueFalseValue,
     focus_size: StringValue,
 }
+
 impl Fill {
     pub fn get_color(&self) -> &str {
         self.color.get_value()
@@ -56,30 +57,10 @@ impl Fill {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"color") {
-            Some(v) => {
-                self.color.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"color2") {
-            Some(v) => {
-                self.color_2.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"on") {
-            Some(v) => {
-                self.on.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"focussize") {
-            Some(v) => {
-                self.focus_size.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, color, "color");
+        set_string_from_xml!(self, e, color_2, "color2");
+        set_string_from_xml!(self, e, on, "on");
+        set_string_from_xml!(self, e, focus_size, "focussize");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

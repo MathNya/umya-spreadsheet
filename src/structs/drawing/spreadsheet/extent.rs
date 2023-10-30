@@ -12,6 +12,7 @@ pub struct Extent {
     cx: Int64Value,
     cy: Int64Value,
 }
+
 impl Extent {
     pub fn get_cx(&self) -> &i64 {
         self.cx.get_value()
@@ -36,18 +37,8 @@ impl Extent {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"cx") {
-            Some(v) => {
-                self.cx.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"cy") {
-            Some(v) => {
-                self.cy.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, cx, "cx");
+        set_string_from_xml!(self, e, cy, "cy");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

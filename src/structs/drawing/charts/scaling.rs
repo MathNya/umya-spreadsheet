@@ -3,6 +3,7 @@ use super::Orientation;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -10,6 +11,7 @@ use writer::driver::*;
 pub struct Scaling {
     orientation: Orientation,
 }
+
 impl Scaling {
     pub fn get_orientation(&self) -> &Orientation {
         &self.orientation
@@ -29,25 +31,20 @@ impl Scaling {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"c:orientation" => {
-                        self.orientation.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:scaling" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:scaling"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().0 == b"c:orientation" {
+                    self.orientation.set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:scaling" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:scaling")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

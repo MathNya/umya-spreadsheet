@@ -31,6 +31,7 @@ pub struct Theme {
     name: StringValue,
     theme_elements: ThemeElements,
 }
+
 impl Theme {
     pub fn get_name(&self) -> &str {
         self.name.get_value()
@@ -526,32 +527,24 @@ impl Theme {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"name") {
-            Some(v) => {
-                self.name.set_value(v);
-            }
-            _ => {}
+        if let Some(v) = get_attribute(e, b"name") {
+            self.name.set_value(v);
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:themeElements" => {
-                        self.theme_elements.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:theme" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:theme"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"a:themeElements" {
+                    self.theme_elements.set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:theme" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:theme")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

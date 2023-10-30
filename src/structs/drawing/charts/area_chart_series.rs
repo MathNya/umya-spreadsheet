@@ -15,6 +15,7 @@ use super::Smooth;
 use super::Values;
 use super::XValues;
 use super::YValues;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -40,6 +41,7 @@ pub struct AreaChartSeries {
     smooth: Option<Smooth>,
     data_labels: Option<DataLabels>,
 }
+
 impl AreaChartSeries {
     pub fn get_index(&self) -> &Index {
         &self.index
@@ -239,38 +241,22 @@ impl AreaChartSeries {
     pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
 
-        match &mut self.category_axis_data {
-            Some(v) => match v.get_string_reference_mut() {
-                Some(h) => {
-                    result.push(h.get_formula_mut());
-                }
-                None => {}
-            },
-            None => {}
-        }
-        match &mut self.values {
-            Some(v) => {
-                result.push(v.get_number_reference_mut().get_formula_mut());
+        if let Some(v) = &mut self.category_axis_data {
+            if let Some(h) = v.get_string_reference_mut() {
+                result.push(h.get_formula_mut());
             }
-            None => {}
         }
-        match &mut self.x_values {
-            Some(v) => {
-                result.push(v.get_number_reference_mut().get_formula_mut());
-            }
-            None => {}
+        if let Some(v) = &mut self.values {
+            result.push(v.get_number_reference_mut().get_formula_mut());
         }
-        match &mut self.y_values {
-            Some(v) => {
-                result.push(v.get_number_reference_mut().get_formula_mut());
-            }
-            None => {}
+        if let Some(v) = &mut self.x_values {
+            result.push(v.get_number_reference_mut().get_formula_mut());
         }
-        match &mut self.bubble_size {
-            Some(v) => {
-                result.push(v.get_number_reference_mut().get_formula_mut());
-            }
-            None => {}
+        if let Some(v) = &mut self.y_values {
+            result.push(v.get_number_reference_mut().get_formula_mut());
+        }
+        if let Some(v) = &mut self.bubble_size {
+            result.push(v.get_number_reference_mut().get_formula_mut());
         }
         result
     }
@@ -280,96 +266,92 @@ impl AreaChartSeries {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c:v" => {
-                        let mut obj = SeriesText::default();
-                        obj.set_attributes(reader, e);
-                        self.set_series_text(obj);
-                    }
-                    b"c:marker" => {
-                        let mut obj = Marker::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_marker(obj);
-                    }
-                    b"c:spPr" => {
-                        let mut obj = ShapeProperties::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape_properties(obj);
-                    }
-                    b"c:cat" => {
-                        let mut obj = CategoryAxisData::default();
-                        obj.set_attributes(reader, e);
-                        self.set_category_axis_data(obj);
-                    }
-                    b"c:val" => {
-                        let mut obj = Values::default();
-                        obj.set_attributes(reader, e);
-                        self.set_values(obj);
-                    }
-                    b"c:xVal" => {
-                        let mut obj = XValues::default();
-                        obj.set_attributes(reader, e);
-                        self.set_x_values(obj);
-                    }
-                    b"c:yVal" => {
-                        let mut obj = YValues::default();
-                        obj.set_attributes(reader, e);
-                        self.set_y_values(obj);
-                    }
-                    b"c:bubbleSize" => {
-                        let mut obj = BubbleSize::default();
-                        obj.set_attributes(reader, e);
-                        self.set_bubble_size(obj);
-                    }
-                    b"c:dLbls" => {
-                        let mut obj = DataLabels::default();
-                        obj.set_attributes(reader, e);
-                        self.set_data_labels(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"c:idx" => {
-                        self.index.set_attributes(reader, e);
-                    }
-                    b"c:order" => {
-                        self.order.set_attributes(reader, e);
-                    }
-                    b"c:explosion" => {
-                        let mut obj = Explosion::default();
-                        obj.set_attributes(reader, e);
-                        self.set_explosion(obj);
-                    }
-                    b"c:invertIfNegative" => {
-                        let mut obj = InvertIfNegative::default();
-                        obj.set_attributes(reader, e);
-                        self.set_invert_if_negative(obj);
-                    }
-                    b"c:bubble3D" => {
-                        let mut obj = Bubble3D::default();
-                        obj.set_attributes(reader, e);
-                        self.set_bubble_3d(obj);
-                    }
-                    b"c:smooth" => {
-                        let mut obj = Smooth::default();
-                        obj.set_attributes(reader, e);
-                        self.set_smooth(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:ser" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:ser"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().into_inner() {
+                b"c:v" => {
+                    let mut obj = SeriesText::default();
+                    obj.set_attributes(reader, e);
+                    self.set_series_text(obj);
+                }
+                b"c:marker" => {
+                    let mut obj = Marker::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_marker(obj);
+                }
+                b"c:spPr" => {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
+                }
+                b"c:cat" => {
+                    let mut obj = CategoryAxisData::default();
+                    obj.set_attributes(reader, e);
+                    self.set_category_axis_data(obj);
+                }
+                b"c:val" => {
+                    let mut obj = Values::default();
+                    obj.set_attributes(reader, e);
+                    self.set_values(obj);
+                }
+                b"c:xVal" => {
+                    let mut obj = XValues::default();
+                    obj.set_attributes(reader, e);
+                    self.set_x_values(obj);
+                }
+                b"c:yVal" => {
+                    let mut obj = YValues::default();
+                    obj.set_attributes(reader, e);
+                    self.set_y_values(obj);
+                }
+                b"c:bubbleSize" => {
+                    let mut obj = BubbleSize::default();
+                    obj.set_attributes(reader, e);
+                    self.set_bubble_size(obj);
+                }
+                b"c:dLbls" => {
+                    let mut obj = DataLabels::default();
+                    obj.set_attributes(reader, e);
+                    self.set_data_labels(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => match e.name().into_inner() {
+                b"c:idx" => {
+                    self.index.set_attributes(reader, e);
+                }
+                b"c:order" => {
+                    self.order.set_attributes(reader, e);
+                }
+                b"c:explosion" => {
+                    let mut obj = Explosion::default();
+                    obj.set_attributes(reader, e);
+                    self.set_explosion(obj);
+                }
+                b"c:invertIfNegative" => {
+                    let mut obj = InvertIfNegative::default();
+                    obj.set_attributes(reader, e);
+                    self.set_invert_if_negative(obj);
+                }
+                b"c:bubble3D" => {
+                    let mut obj = Bubble3D::default();
+                    obj.set_attributes(reader, e);
+                    self.set_bubble_3d(obj);
+                }
+                b"c:smooth" => {
+                    let mut obj = Smooth::default();
+                    obj.set_attributes(reader, e);
+                    self.set_smooth(obj);
+                }
+                _ => (),
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:ser" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:ser"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
@@ -383,107 +365,68 @@ impl AreaChartSeries {
         self.order.write_to(writer);
 
         // c:v
-        match &self.series_text {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.series_text {
+            v.write_to(writer);
         }
 
         // c:explosion
-        match &self.explosion {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.explosion {
+            v.write_to(writer);
         }
 
         // c:invertIfNegative
-        match &self.invert_if_negative {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.invert_if_negative {
+            v.write_to(writer);
         }
 
         // c:marker
-        match &self.marker {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.marker {
+            v.write_to(writer);
         }
 
         // c:spPr
-        match &self.shape_properties {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_properties {
+            v.write_to(writer);
         }
 
         // c:dLbls
-        match &self.data_labels {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.data_labels {
+            v.write_to(writer);
         }
 
         // c:cat
-        match &self.category_axis_data {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.category_axis_data {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:val
-        match &self.values {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.values {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:xVal
-        match &self.x_values {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.x_values {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:yVal
-        match &self.y_values {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.y_values {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:bubbleSize
-        match &self.bubble_size {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.bubble_size {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:bubble3D
-        match &self.bubble_3d {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.bubble_3d {
+            v.write_to(writer);
         }
 
         // c:smooth
-        match &self.smooth {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.smooth {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:ser");

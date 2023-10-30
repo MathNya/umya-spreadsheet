@@ -8,6 +8,7 @@ use super::VaryColors;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::Spreadsheet;
 use writer::driver::*;
@@ -20,6 +21,7 @@ pub struct ScatterChart {
     data_labels: DataLabels,
     axis_id: Vec<AxisId>,
 }
+
 impl ScatterChart {
     pub fn get_scatter_style(&self) -> &ScatterStyle {
         &self.scatter_style
@@ -96,45 +98,45 @@ impl ScatterChart {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
-                    b"c:ser" => {
-                        let mut obj = AreaChartSeries::default();
-                        obj.set_attributes(reader, e);
-                        self.get_area_chart_series_list_mut()
-                            .add_area_chart_series(obj);
-                    }
-                    b"c:dLbls" => {
-                        self.data_labels.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"c:scatterStyle" => {
-                        self.scatter_style.set_attributes(reader, e);
-                    }
-                    b"c:varyColors" => {
-                        self.vary_colors.set_attributes(reader, e);
-                    }
-                    b"c:axId" => {
-                        let mut obj = AxisId::default();
-                        obj.set_attributes(reader, e);
-                        self.add_axis_id(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:scatterChart" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:scatterChart"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().0 {
+                b"c:ser" => {
+                    let mut obj = AreaChartSeries::default();
+                    obj.set_attributes(reader, e);
+                    self.get_area_chart_series_list_mut()
+                        .add_area_chart_series(obj);
+                }
+                b"c:dLbls" => {
+                    self.data_labels.set_attributes(reader, e);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().0 {
+                b"c:scatterStyle" => {
+                    self.scatter_style.set_attributes(reader, e);
+                }
+                b"c:varyColors" => {
+                    self.vary_colors.set_attributes(reader, e);
+                }
+                b"c:axId" => {
+                    let mut obj = AxisId::default();
+                    obj.set_attributes(reader, e);
+                    self.add_axis_id(obj);
+                }
+                _ => (),
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:scatterChart" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:scatterChart")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {

@@ -11,6 +11,7 @@ use writer::driver::*;
 pub struct FontCharSet {
     pub(crate) val: Int32Value,
 }
+
 impl FontCharSet {
     pub fn get_val(&self) -> &i32 {
         self.val.get_value()
@@ -26,17 +27,12 @@ impl FontCharSet {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"val") {
-            Some(v) => {
-                self.val.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, val, "val");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // charset
-        if &self.val.has_value() == &true {
+        if self.val.has_value() {
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             let val = self.val.get_value_string();
             attributes.push(("val", &val));

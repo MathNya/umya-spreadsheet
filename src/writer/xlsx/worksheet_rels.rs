@@ -7,14 +7,15 @@ use super::XlsxError;
 use structs::Worksheet;
 use structs::WriterManager;
 
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     worksheet_no: &str,
     drawing_no: &str,
     vml_drawing_no: &str,
     comment_no: &str,
-    ole_object_no_list: &Vec<String>,
-    excel_no_list: &Vec<String>,
+    ole_object_no_list: &[String],
+    excel_no_list: &[String],
     printer_settings_no: &str,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {

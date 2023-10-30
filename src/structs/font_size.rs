@@ -11,6 +11,7 @@ use writer::driver::*;
 pub struct FontSize {
     pub(crate) val: DoubleValue,
 }
+
 impl FontSize {
     pub fn get_val(&self) -> &f64 {
         self.val.get_value()
@@ -31,7 +32,7 @@ impl FontSize {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sz
-        if &self.val.has_value() == &true {
+        if self.val.has_value() {
             write_start_tag(
                 writer,
                 "sz",

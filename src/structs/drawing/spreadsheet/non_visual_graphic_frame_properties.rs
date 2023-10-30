@@ -4,6 +4,7 @@ use super::NonVisualGraphicFrameDrawingProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -12,6 +13,7 @@ pub struct NonVisualGraphicFrameProperties {
     non_visual_drawing_properties: NonVisualDrawingProperties,
     non_visual_graphic_frame_drawing_properties: NonVisualGraphicFrameDrawingProperties,
 }
+
 impl NonVisualGraphicFrameProperties {
     pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
@@ -54,37 +56,34 @@ impl NonVisualGraphicFrameProperties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"xdr:cNvPr" => {
                         self.non_visual_drawing_properties
                             .set_attributes(reader, e, true);
-                    }
+                    },
                     b"xdr:cNvGraphicFramePr" => {
                         self.non_visual_graphic_frame_drawing_properties
                             .set_attributes(reader, e);
-                    }
+                    },
                     _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"xdr:cNvPr" => {
-                        self.non_visual_drawing_properties
-                            .set_attributes(reader, e, false);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:nvGraphicFramePr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:nvGraphicFramePr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"xdr:cNvPr" {
+                    self.non_visual_drawing_properties
+                        .set_attributes(reader, e, false);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:nvGraphicFramePr" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:nvGraphicFramePr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

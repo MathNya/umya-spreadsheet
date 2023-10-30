@@ -5,6 +5,7 @@ use super::PageSetup;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -14,6 +15,7 @@ pub struct PrintSettings {
     page_margins: PageMargins,
     page_setup: PageSetup,
 }
+
 impl PrintSettings {
     pub fn get_header_footer(&self) -> &HeaderFooter {
         &self.header_footer
@@ -59,34 +61,31 @@ impl PrintSettings {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
-                    b"c:headerFooter" => {
-                        self.header_footer.set_attributes(reader, e);
-                    }
-                    b"c:pageSetup" => {
-                        self.page_setup.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"c:pageMargins" => {
-                        self.page_margins.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:printSettings" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:printSettings"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().0 {
+                b"c:headerFooter" => {
+                    self.header_footer.set_attributes(reader, e);
+                }
+                b"c:pageSetup" => {
+                    self.page_setup.set_attributes(reader, e);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Empty(ref e) => {
+                if e.name().0 == b"c:pageMargins" {
+                    self.page_margins.set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:printSettings" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:printSettings")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

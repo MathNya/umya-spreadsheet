@@ -6,6 +6,7 @@ use hmac::{Hmac, Mac};
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use sha2::{Digest, Sha512};
+use std::cmp::Ordering;
 use std::io;
 use std::io::Write;
 use std::path::Path;
@@ -187,6 +188,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &Vec<u8>, password: &str) {
 }
 
 // Encrypt/decrypt the package
+#[allow(clippy::too_many_arguments)]
 fn crypt_package(
     encrypt: &bool,
     cipher_algorithm: &str,
@@ -271,12 +273,16 @@ fn create_iv(
     // Create the initialization vector by hashing the salt with the block key.
     // Truncate or pad as needed to meet the block size.
     let mut iv = hash(hash_algorithm, vec![salt_value, block_key]).unwrap();
-    if &iv.len() < block_size {
-        let mut tmp = buffer_alloc(0x36, *block_size);
-        buffer_copy(&mut tmp, &iv);
-        iv = tmp;
-    } else if &iv.len() > block_size {
-        iv = buffer_slice(&iv, 0, *block_size);
+    match iv.len().cmp(block_size) {
+        Ordering::Less => {
+            let mut tmp = buffer_alloc(0x36, *block_size);
+            buffer_copy(&mut tmp, &iv);
+            iv = tmp;
+        }
+        Ordering::Greater => {
+            iv = buffer_slice(&iv, 0, *block_size);
+        }
+        _ => {}
     }
     iv
 }
@@ -287,7 +293,7 @@ fn crypt(
     _cipher_algorithm: &str,
     _cipher_chaining: &str,
     key: &Vec<u8>,
-    iv: &Vec<u8>,
+    iv: &[u8],
     input: &Vec<u8>,
 ) -> Result<Vec<u8>, String> {
     let mut buf = [0u8; 4096];
@@ -305,7 +311,7 @@ fn crypt(
     Ok(ct.to_vec())
 }
 
-fn hmac(algorithm: &str, key: &Vec<u8>, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
+fn hmac(algorithm: &str, key: &[u8], buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
     let mut mac = match algorithm {
         "SHA512" => {
             type HmacSha512 = Hmac<Sha512>;
@@ -352,15 +358,15 @@ fn convert_password_to_key(
 
     // Truncate or pad as needed to get to length of keyBits
     let key_bytes = key_bits / 8;
-    if key.len() < key_bytes {
-        let mut tmp = buffer_alloc(0x36, key_bytes);
-        buffer_copy(&mut tmp, &key);
-        key = tmp;
-    } else if key.len() > key_bytes {
-        key = buffer_slice(&key, 0, key_bytes);
+    match key.len().cmp(&key_bytes) {
+        Ordering::Less => {
+            let mut tmp = buffer_alloc(0x36, key_bytes);
+            buffer_copy(&mut tmp, &key);
+            tmp
+        }
+        Ordering::Greater => buffer_slice(&key, 0, key_bytes),
+        _ => key,
     }
-
-    key
 }
 
 // Calculate a hash of the concatenated buffers with the given algorithm.
@@ -401,6 +407,7 @@ fn create_uint32_le_buffer(value: &u32, buffer_size: Option<&usize>) -> Vec<u8> 
     buffer
 }
 
+#[allow(clippy::too_many_arguments)]
 fn build_encryption_info(
     package_salt_value: &Vec<u8>,
     package_block_size: &usize,
@@ -540,7 +547,7 @@ fn build_encryption_info(
     buffer_concat(vec![&ENCRYPTION_INFO_PREFIX.to_vec(), &result])
 }
 
-fn buffer_slice(buffer: &Vec<u8>, start: usize, end: usize) -> Vec<u8> {
+fn buffer_slice(buffer: &[u8], start: usize, end: usize) -> Vec<u8> {
     buffer[start..end].to_vec()
 }
 
@@ -555,19 +562,17 @@ fn buffer_concat(buffers: Vec<&Vec<u8>>) -> Vec<u8> {
     }
     result
 }
-fn buffer_copy(buffer1: &mut Vec<u8>, buffer2: &Vec<u8>) {
-    let mut i = 0;
-    for byte in buffer2 {
+fn buffer_copy(buffer1: &mut [u8], buffer2: &[u8]) {
+    for (i, byte) in buffer2.iter().enumerate() {
         let _ = std::mem::replace(&mut buffer1[i], *byte);
-        i += 1;
     }
 }
 
-fn buffer_read_u_int32_le(buffer: &Vec<u8>, _cnt: &usize) -> u32 {
+fn buffer_read_u_int32_le(buffer: &[u8], _cnt: &usize) -> u32 {
     LittleEndian::read_u32(buffer)
 }
 
-fn buffer_write_u_int32_le(buffer: &mut Vec<u8>, value: &u32, _cnt: &usize) {
+fn buffer_write_u_int32_le(buffer: &mut [u8], value: &u32, _cnt: &usize) {
     LittleEndian::write_u32(buffer, *value);
 }
 

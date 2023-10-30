@@ -14,6 +14,7 @@ pub struct FontScheme {
     major_font: FontCollectionType,
     minor_font: FontCollectionType,
 }
+
 impl FontScheme {
     pub fn get_name(&self) -> &str {
         self.name.get_value()
@@ -55,35 +56,30 @@ impl FontScheme {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"name") {
-            Some(v) => {
-                self.name.set_value(v);
-            }
-            _ => {}
+        if let Some(v) = get_attribute(e, b"name") {
+            self.name.set_value(v);
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:majorFont" => {
-                        self.major_font.set_attributes(reader, e);
-                    }
-                    b"a:minorFont" => {
-                        self.minor_font.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:fontScheme" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:fontScheme"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                b"a:majorFont" => {
+                    self.major_font.set_attributes(reader, e);
+                }
+                b"a:minorFont" => {
+                    self.minor_font.set_attributes(reader, e);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:fontScheme" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:fontScheme")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
