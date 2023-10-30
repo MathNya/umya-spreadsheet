@@ -13,7 +13,7 @@ pub(crate) struct RawFile {
 impl RawFile {
     pub(crate) fn get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
-        let object_name = v.last().unwrap().clone();
+        let object_name = v.last().unwrap();
         object_name.to_string()
     }
 
@@ -30,7 +30,7 @@ impl RawFile {
     pub(crate) fn get_extension(&self) -> String {
         let file_name = self.get_file_name();
         let v: Vec<&str> = file_name.split('.').collect();
-        let extension = v.last().unwrap().clone();
+        let extension = v.last().unwrap();
 
         extension.to_lowercase()
     }
