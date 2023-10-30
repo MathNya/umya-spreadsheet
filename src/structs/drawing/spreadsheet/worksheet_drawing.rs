@@ -346,13 +346,16 @@ impl WorksheetDrawing {
                         }
                     }
                     b"xdr:twoCellAnchor" => {
-                        if is_alternate_content {
-                            ole_objects.get_ole_object_mut()[ole_index]
+                        let os = ole_objects.get_ole_object_mut();
+                        if is_alternate_content && !os.is_empty() {
+                            os[ole_index]
                                 .get_two_cell_anchor_mut()
                                 .set_is_alternate_content(true);
-                            ole_objects.get_ole_object_mut()[ole_index]
-                                .get_two_cell_anchor_mut()
-                                .set_attributes(reader, e, drawing_relationships);
+                            os[ole_index].get_two_cell_anchor_mut().set_attributes(
+                                reader,
+                                e,
+                                drawing_relationships,
+                            );
                             ole_index += 1;
                             continue;
                         }

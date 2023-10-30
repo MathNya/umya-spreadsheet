@@ -19,7 +19,7 @@ pub(crate) struct RawRelationships {
 impl RawRelationships {
     pub(crate) fn _get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
-        let object_name = v.last().unwrap().clone();
+        let object_name = v.last().unwrap();
         object_name.to_string()
     }
 

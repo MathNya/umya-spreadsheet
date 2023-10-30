@@ -1112,8 +1112,8 @@ fn issue_110() {
 }
 
 #[test]
+#[ignore]
 fn issue_114() {
-    return;
     let path = std::path::Path::new("./tests/test_files/test1.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
