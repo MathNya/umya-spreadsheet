@@ -85,14 +85,14 @@ impl Transform {
 
         match get_attribute(e, b"flipH") {
             Some(v) => {
-                self.vertical_flip.set_value_string(v);
+                self.horizontal_flip.set_value_string(v);
             }
             None => {}
         }
 
         match get_attribute(e, b"flipV") {
             Some(v) => {
-                self.horizontal_flip.set_value_string(v);
+                self.vertical_flip.set_value_string(v);
             }
             None => {}
         }
