@@ -1,7 +1,6 @@
 use super::super::super::EnumTrait;
 use std::str::FromStr;
-#[derive(Clone, Debug)]
-#[derive(Default)]
+#[derive(Clone, Debug, Default)]
 pub enum TickMarkValues {
     #[default]
     Cross,
