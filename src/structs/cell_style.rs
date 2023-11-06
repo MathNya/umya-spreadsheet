@@ -55,13 +55,13 @@ impl CellStyle {
         }
         match get_attribute(e, b"xfId") {
             Some(v) => {
-                self.builtin_id.set_value_string(v);
+                self.format_id.set_value_string(v);
             }
             None => {}
         }
         match get_attribute(e, b"builtinId") {
             Some(v) => {
-                self.format_id.set_value_string(v);
+                self.builtin_id.set_value_string(v);
             }
             None => {}
         }
