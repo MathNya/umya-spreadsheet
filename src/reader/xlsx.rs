@@ -24,6 +24,7 @@ pub(crate) mod drawing;
 mod rels;
 mod shared_strings;
 mod styles;
+pub(crate) mod table;
 mod theme;
 mod vba_project_bin;
 pub(crate) mod vml_drawing;
@@ -189,6 +190,20 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                         raw_data_of_worksheet.get_drawing_relationships(),
                     )
                     .unwrap();
+                }
+                // comment
+                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
+                    comment::read(worksheet, relationship.get_raw_file()).unwrap();
+                }
+                // table
+                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" => {
+                      table::read(
+                          worksheet,
+                          relationship.get_raw_file()
+                      )
+                      .unwrap();
+                  }
+                  _ => {}
                 }
                 // comment
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {

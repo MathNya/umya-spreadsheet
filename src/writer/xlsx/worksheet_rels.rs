@@ -17,6 +17,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     ole_object_no_list: &[String],
     excel_no_list: &[String],
     printer_settings_no: &str,
+    table_no_list: &Vec<String>,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut is_write = false;
@@ -66,6 +67,19 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings",
             format!("../printerSettings/{}", object_name).as_str(),
             "",
+        );
+        r_id += 1;
+    }
+
+    // write table relationships
+    for table_no in table_no_list.iter()
+    {
+        is_write = write_relationship(
+            &mut writer,
+            r_id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table",
+            format!("../tables/table{}.xml", table_no.to_string().as_str()).as_str(),
+            ""
         );
         r_id += 1;
     }
