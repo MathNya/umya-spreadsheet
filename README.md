@@ -12,7 +12,7 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New feature
-### ver 1.0.2
+### ver 1.0.3
 #### **Image data is now easier to acquire.**
 ```rust
 // get image data.
@@ -34,74 +34,13 @@ dbg!(img.get_image_data());
 // get base64 data.
 dbg!(img.get_image_data_base64());
 ```
-### ver 1.0.0
-#### **remove deprecated functions**
-#### **new function move_range**
-Moving cell functionality.
-```rust
-let range = "C5:F9";
-let row = 12;
-let column = 4;
-book.get_sheet_by_name_mut("Sheet1").unwrap().move_range(range, &row, &column);
-```
-
-### ver 0.9.2
-#### **new function get_lazy_read_sheet_cells**
-Cell information can now be retrieved from a worksheet loaded with lazy_read.
-```rust
-let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
-let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
-let cells = book.get_lazy_read_sheet_cells(&0).unwrap();
-let value = cells.get_cell_value((&5, &12)).get_value();
-let value = cells.get_cell_value("E12").get_value();
-```
-
-#### **set_value_from_string is deprecated**
-Cell.set_value_from_string had different behavior in different versions.  
-This function is deprecated.  
-From now on, set_value or set_value_string.
-
-### ver 0.9.1
-Changed file compression logic when writing.  
-The file size is smaller than before, but the processing time is longer.  
-If you want to use the previous logic, use this method.
-```rust
-umya_spreadsheet::writer::xlsx::write_light(&book, path);
-umya_spreadsheet::writer::xlsx::write_with_password_light(&book, path, "password");
-```
-### ver 0.9
-The way cells are referenced has changed.
-```rust
-// old
-let value = worksheet.get_value("A1");
-let value = worksheet.get_value_by_column_and_row(&1, &1);
-// This one has been deprecated.
-// It will eventually disappear.
-
-// NEW
-let value = worksheet.get_value("A1");
-let value = worksheet.get_value((1, 1));
-let value = worksheet.get_value((&1, &1));
-```
-
-### ver 0.8
-A password can now be set when saving a file.
-```rust
-let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
-```
-```rust
-let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
-let to_path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
-```
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "0.9"
+umya-spreadsheet = "1.0"
 ```
 Add the following code to main.rs
 ```rust
@@ -138,14 +77,20 @@ let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 let to_path = std::path::Path::new("./tests/result_files/bbb.xlsx");
 let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
 ```
+### Read Value
+```rust
+let mut book = umya_spreadsheet::new_file();
+book.get_sheet_by_name("Sheet1").unwrap().get_cell("A1").get_value();
+book.get_sheet_by_name("Sheet1").unwrap().get_cell((1, 1)).get_value();
+book.get_sheet_by_name("Sheet1").unwrap().get_cell((&1, &1)).get_value();
+book.get_sheet_mut(0).unwrap().get_cell((&1, &1)).get_value();
+```
 ### Change Value
 ```rust
 let mut book = umya_spreadsheet::new_file();
-let _ = book.new_sheet("Sheet2");
-book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
-book.get_sheet_mut(1).unwrap().get_cell_mut("A1").set_value("TEST2");
+book.get_sheet_by_name_mut("Sheet1").unwrap().get_cell_mut("A1").set_value("TEST1");
+book.get_sheet_mut(0).unwrap().get_cell_mut("A1").set_value("TEST2");
 ```
-
 ### Move Values
 ```rust
 let range = "A1:A3";
@@ -153,7 +98,6 @@ let row = 10;
 let column = 2;
 book.get_sheet_by_name_mut("Sheet1").unwrap().move_range(range, &row, &column);
 ```
-
 ### Change Style
 ```rust
 let mut book = umya_spreadsheet::new_file();
