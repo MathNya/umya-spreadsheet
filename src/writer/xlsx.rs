@@ -24,6 +24,7 @@ mod printer_settings;
 mod rels;
 mod shared_strings;
 mod styles;
+mod table;
 mod theme;
 mod vba_project_bin;
 mod vml_drawing;
@@ -171,6 +172,9 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
                     None => String::from(""),
                 };
 
+                // Add tables
+                let table_no_list = table::write(worksheet, &mut writer_manager)?;
+
                 // Add worksheet rels
                 worksheet_rels::write(
                     worksheet,
@@ -181,6 +185,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
                     &ole_object_no_list,
                     &excel_no_list,
                     &printer_settings_no,
+                    &table_no_list,
                     &mut writer_manager,
                 )?;
             }

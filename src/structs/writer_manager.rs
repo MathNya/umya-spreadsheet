@@ -9,6 +9,7 @@ pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: zip::ZipWriter<W>,
     is_light: bool,
+    table_no: i32,
 }
 impl<W: io::Seek + io::Write> WriterManager<W> {
     pub fn new(arv: zip::ZipWriter<W>) -> Self {
@@ -16,6 +17,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             files: Vec::new(),
             arv,
             is_light: false,
+            table_no: 0,
         }
     }
 
@@ -26,6 +28,15 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
 
     pub fn get_is_light(&self) -> &bool {
         &self.is_light
+    }
+
+    pub fn get_num_tables(&self) -> i32 {
+        self.table_no
+    }
+
+    pub fn next_table_no(&mut self) -> i32 {
+        self.table_no += 1;
+        self.table_no
     }
 
     pub(crate) fn add_writer(
@@ -174,6 +185,16 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         }
     }
 
+    pub(crate) fn add_file_at_table(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+        table_no: i32,
+    ) -> Result<i32, XlsxError> {
+        let file_path = format!("xl/tables/table{}.xml", table_no);
+        self.add_writer(&file_path, writer)?;
+        return Ok(table_no);
+    }
+
     pub(crate) fn has_extension(&self, extension: &str) -> bool {
         let extension = format!(".{}", extension);
         for file in &self.files {
@@ -207,6 +228,12 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             if file.starts_with("/xl/worksheets/sheet") {
                 content_type =
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+            }
+
+            // Override table
+            if file.starts_with("/xl/tables/table") {
+                content_type =
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
             }
 
             // Override comments
