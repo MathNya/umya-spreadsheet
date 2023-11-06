@@ -202,12 +202,6 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                           relationship.get_raw_file()
                       )
                       .unwrap();
-                  }
-                  _ => {}
-                }
-                // comment
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
-                    comment::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
                 _ => {}
             }
