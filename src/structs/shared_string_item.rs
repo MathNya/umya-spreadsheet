@@ -7,6 +7,7 @@ use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::hash::Hasher;
 use std::io::Cursor;
 use writer::driver::*;
@@ -18,6 +19,7 @@ pub(crate) struct SharedStringItem {
     text: Option<Text>,
     rich_text: Option<RichText>,
 }
+
 impl SharedStringItem {
     pub(crate) fn get_text(&self) -> &Option<Text> {
         &self.text
@@ -111,10 +113,11 @@ impl SharedStringItem {
         _e: &BytesStart,
     ) {
         let mut vec_text_element: Vec<TextElement> = Vec::new();
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"t" => {
                         let mut obj = Text::default();
                         obj.set_attributes(reader, e);
@@ -130,24 +133,20 @@ impl SharedStringItem {
                         obj.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"si" => {
-                        if !vec_text_element.is_empty() {
-                            let mut obj = RichText::default();
-                            obj.set_rich_text_elements(vec_text_element);
-                            self.set_rich_text(obj);
-                        }
-                        return;
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"si" {
+                    if !vec_text_element.is_empty() {
+                        let mut obj = RichText::default();
+                        obj.set_rich_text_elements(vec_text_element);
+                        self.set_rich_text(obj);
                     }
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "si"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "si")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -155,19 +154,13 @@ impl SharedStringItem {
         write_start_tag(writer, "si", vec![], false);
 
         // t
-        match &self.text {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text {
+            v.write_to(writer);
         }
 
         // r
-        match &self.rich_text {
-            Some(v) => {
-                v.write_to_none(writer);
-            }
-            None => {}
+        if let Some(v) = &self.rich_text {
+            v.write_to_none(writer);
         }
 
         write_start_tag(writer, "phoneticPr", vec![("fontId", "1")], true);

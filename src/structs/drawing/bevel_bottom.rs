@@ -15,6 +15,7 @@ pub struct BevelBottom {
     height: Int64Value,
     preset: EnumValue<BevelPresetValues>,
 }
+
 impl BevelBottom {
     pub fn get_width(&self) -> &i64 {
         self.width.get_value()
@@ -48,38 +49,23 @@ impl BevelBottom {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"w") {
-            Some(v) => {
-                self.width.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"h") {
-            Some(v) => {
-                self.height.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"prst") {
-            Some(v) => {
-                self.preset.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, width, "w");
+        set_string_from_xml!(self, e, height, "h");
+        set_string_from_xml!(self, e, preset, "prst");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:bevelB
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let width = self.width.get_value_string();
-        if &self.width.has_value() == &true {
+        if self.width.has_value() {
             attributes.push(("w", &width));
         }
         let height = self.height.get_value_string();
-        if &self.height.has_value() == &true {
+        if self.height.has_value() {
             attributes.push(("h", &height));
         }
-        if &self.preset.has_value() == &true {
+        if self.preset.has_value() {
             attributes.push(("prst", self.preset.get_value_string()));
         }
 

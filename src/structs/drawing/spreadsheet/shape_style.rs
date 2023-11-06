@@ -3,6 +3,7 @@ use super::super::StyleMatrixReferenceType;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -13,6 +14,7 @@ pub struct ShapeStyle {
     effect_reference: Option<StyleMatrixReferenceType>,
     font_reference: Option<StyleMatrixReferenceType>,
 }
+
 impl ShapeStyle {
     pub fn get_line_reference(&self) -> &Option<StyleMatrixReferenceType> {
         &self.line_reference
@@ -51,10 +53,10 @@ impl ShapeStyle {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:lnRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, false);
@@ -76,8 +78,10 @@ impl ShapeStyle {
                         self.set_font_reference(style_matrix_reference_type);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:lnRef" => {
                         let mut style_matrix_reference_type = StyleMatrixReferenceType::default();
                         style_matrix_reference_type.set_attributes(reader, e, true);
@@ -99,19 +103,15 @@ impl ShapeStyle {
                         self.set_font_reference(style_matrix_reference_type);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:style" => {
-                        return;
-                    }
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:style"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:style" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:style")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -119,35 +119,23 @@ impl ShapeStyle {
         write_start_tag(writer, "xdr:style", vec![], false);
 
         // a:lnRef
-        match &self.line_reference {
-            Some(style) => {
-                style.write_to(writer, "a:lnRef");
-            }
-            None => {}
+        if let Some(style) = &self.line_reference {
+            style.write_to(writer, "a:lnRef");
         }
 
         // a:fillRef
-        match &self.fill_reference {
-            Some(style) => {
-                style.write_to(writer, "a:fillRef");
-            }
-            None => {}
+        if let Some(style) = &self.fill_reference {
+            style.write_to(writer, "a:fillRef");
         }
 
         // a:effectRef
-        match &self.effect_reference {
-            Some(style) => {
-                style.write_to(writer, "a:effectRef");
-            }
-            None => {}
+        if let Some(style) = &self.effect_reference {
+            style.write_to(writer, "a:effectRef");
         }
 
         // a:fontRef
-        match &self.font_reference {
-            Some(style) => {
-                style.write_to(writer, "a:fontRef");
-            }
-            None => {}
+        if let Some(style) = &self.font_reference {
+            style.write_to(writer, "a:fontRef");
         }
 
         write_end_tag(writer, "xdr:style");

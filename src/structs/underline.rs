@@ -13,6 +13,7 @@ use writer::driver::*;
 pub struct Underline {
     pub(crate) val: EnumValue<UnderlineValues>,
 }
+
 impl Underline {
     pub fn get_val(&self) -> &UnderlineValues {
         if self.val.has_value() {
@@ -32,19 +33,14 @@ impl Underline {
         e: &BytesStart,
     ) {
         self.set_val(UnderlineValues::default());
-        match get_attribute(e, b"val") {
-            Some(v) => {
-                self.val.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, val, "val")
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // u
         if self.val.has_value() {
             let mut attributes: Vec<(&str, &str)> = Vec::new();
-            if &self.val.get_value_string() != &UnderlineValues::Single.get_value_string() {
+            if self.val.get_value_string() != UnderlineValues::Single.get_value_string() {
                 attributes.push(("val", self.val.get_value_string()));
             }
             write_start_tag(writer, "u", attributes, true);

@@ -248,26 +248,17 @@ impl Cell {
     ) {
         let mut type_value: String = String::from("");
 
-        match get_attribute(e, b"r") {
-            Some(v) => {
-                self.coordinate.set_coordinate(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"r") {
+            self.coordinate.set_coordinate(v);
         }
 
-        match get_attribute(e, b"s") {
-            Some(v) => {
-                let style = stylesheet.get_style(v.parse::<usize>().unwrap());
-                self.set_style(style);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"s") {
+            let style = stylesheet.get_style(v.parse::<usize>().unwrap());
+            self.set_style(style);
         }
 
-        match get_attribute(e, b"t") {
-            Some(v) => {
-                type_value = v;
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"t") {
+            type_value = v;
         }
 
         if empty_flag {

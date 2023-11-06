@@ -12,6 +12,7 @@ use writer::driver::*;
 pub struct VerticalTextAlignment {
     pub(crate) val: EnumValue<VerticalAlignmentRunValues>,
 }
+
 impl VerticalTextAlignment {
     pub fn get_val(&self) -> &VerticalAlignmentRunValues {
         self.val.get_value()
@@ -27,17 +28,12 @@ impl VerticalTextAlignment {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"val") {
-            Some(v) => {
-                self.val.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, val, "val");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // vertAlign
-        if &self.val.has_value() == &true {
+        if self.val.has_value() {
             write_start_tag(
                 writer,
                 "vertAlign",

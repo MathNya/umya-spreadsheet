@@ -3,6 +3,7 @@ use super::OleObject;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
 use writer::driver::*;
@@ -11,6 +12,7 @@ use writer::driver::*;
 pub struct OleObjects {
     ole_object: Vec<OleObject>,
 }
+
 impl OleObjects {
     pub fn get_ole_object(&self) -> &Vec<OleObject> {
         &self.ole_object
@@ -31,27 +33,22 @@ impl OleObjects {
         _e: &BytesStart,
         relationships: &RawRelationships,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"mc:AlternateContent" => {
-                        let mut obj = OleObject::default();
-                        obj.set_attributes(reader, e, relationships);
-                        self.set_ole_object(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"oleObjects" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "oleObjects"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"mc:AlternateContent" {
+                    let mut obj = OleObject::default();
+                    obj.set_attributes(reader, e, relationships);
+                    self.set_ole_object(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"oleObjects" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "oleObjects")
+        );
     }
 
     pub(crate) fn write_to(

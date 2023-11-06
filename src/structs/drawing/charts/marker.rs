@@ -3,6 +3,7 @@ use super::Symbol;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -10,6 +11,7 @@ use writer::driver::*;
 pub struct Marker {
     symbol: Option<Symbol>,
 }
+
 impl Marker {
     pub fn get_symbol(&self) -> &Option<Symbol> {
         &self.symbol
@@ -34,27 +36,22 @@ impl Marker {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"c:symbol" => {
-                        let mut obj = Symbol::default();
-                        obj.set_attributes(reader, e);
-                        self.set_symbol(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:marker" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:marker"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().0 == b"c:symbol" {
+                    let mut obj = Symbol::default();
+                    obj.set_attributes(reader, e);
+                    self.set_symbol(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:marker" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:marker")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -63,11 +60,8 @@ impl Marker {
             write_start_tag(writer, "c:marker", vec![], false);
 
             // a:symbol
-            match &self.symbol {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.symbol {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "c:marker");

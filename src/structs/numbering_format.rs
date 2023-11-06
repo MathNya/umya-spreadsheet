@@ -13,6 +13,7 @@ pub struct NumberingFormat {
     format_code: String,
     is_build_in: bool,
 }
+
 impl Default for NumberingFormat {
     fn default() -> Self {
         Self {
@@ -22,6 +23,7 @@ impl Default for NumberingFormat {
         }
     }
 }
+
 impl NumberingFormat {
     // Pre-defined formats
     pub const FORMAT_GENERAL: &'static str = "General";
@@ -59,14 +61,14 @@ impl NumberingFormat {
     pub const FORMAT_DATE_TIME8: &'static str = "h:mm:ss;@";
     pub const FORMAT_DATE_YYYYMMDDSLASH: &'static str = "yyyy/mm/dd;@";
 
-    pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r###""$"#,##0.00_-"###;
+    pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r##""$"#,##0.00_-"##;
     pub const FORMAT_CURRENCY_USD: &'static str = r###"$#,##0_-"###;
-    pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r###"#,##0.00_-"€""###;
-    pub const FORMAT_CURRENCY_EUR: &'static str = r###"#,##0_-"€""###;
+    pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r#"#,##0.00_-"€""#;
+    pub const FORMAT_CURRENCY_EUR: &'static str = r#"#,##0_-"€""#;
     pub const FORMAT_ACCOUNTING_USD: &'static str =
-        r###"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"###;
+        r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#;
     pub const FORMAT_ACCOUNTING_EUR: &'static str =
-        r###"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"###;
+        r#"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"#;
 
     pub fn get_number_format_id(&self) -> &u32 {
         &self.number_format_id
@@ -194,7 +196,7 @@ lazy_static! {
         map.insert(39, "#,##0.00_);(#,##0.00)".to_string()); //  Despite ECMA '#,##0.00;(#,##0.00)");
         map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string()); //  Despite ECMA '#,##0.00;[Red](#,##0.00)");
 
-        map.insert(44, r###"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"###.to_string());
+        map.insert(44, r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string());
         map.insert(45, "mm:ss".to_string());
         map.insert(46, "[h]:mm:ss".to_string());
         map.insert(47, "mm:ss.0".to_string()); //  Despite ECMA 'mmss.0");
@@ -219,20 +221,20 @@ lazy_static! {
         map.insert(70, "t# ??/??".to_string());
 
         // JPN
-        map.insert(28, r###"[$-411]ggge"年"m"月"d"日""###.to_string());
-        map.insert(29, r###"[$-411]ggge"年"m"月"d"日""###.to_string());
-        map.insert(31, r###"yyyy"年"m"月"d"日""###.to_string());
-        map.insert(32, r###"h"時"mm"分""###.to_string());
-        map.insert(33, r###"h"時"mm"分"ss"秒""###.to_string());
-        map.insert(34, r###"yyyy"年"m"月""###.to_string());
-        map.insert(35, r###"m"月"d"日""###.to_string());
-        map.insert(51, r###"[$-411]ggge"年"m"月"d"日""###.to_string());
-        map.insert(52, r###"yyyy"年"m"月""###.to_string());
-        map.insert(53, r###"m"月"d"日""###.to_string());
-        map.insert(54, r###"[$-411]ggge"年"m"月"d"日""###.to_string());
-        map.insert(55, r###"yyyy"年"m"月""###.to_string());
-        map.insert(56, r###"m"月"d"日""###.to_string());
-        map.insert(58, r###"[$-411]ggge"年"m"月"d"日""###.to_string());
+        map.insert(28, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
+        map.insert(29, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
+        map.insert(31, r#"yyyy"年"m"月"d"日""#.to_string());
+        map.insert(32, r#"h"時"mm"分""#.to_string());
+        map.insert(33, r#"h"時"mm"分"ss"秒""#.to_string());
+        map.insert(34, r#"yyyy"年"m"月""#.to_string());
+        map.insert(35, r#"m"月"d"日""#.to_string());
+        map.insert(51, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
+        map.insert(52, r#"yyyy"年"m"月""#.to_string());
+        map.insert(53, r#"m"月"d"日""#.to_string());
+        map.insert(54, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
+        map.insert(55, r#"yyyy"年"m"月""#.to_string());
+        map.insert(56, r#"m"月"d"日""#.to_string());
+        map.insert(58, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
 
         map
     };

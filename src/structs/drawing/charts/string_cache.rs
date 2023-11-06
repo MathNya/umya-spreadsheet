@@ -2,6 +2,7 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::Address;
 use structs::Spreadsheet;
@@ -9,25 +10,22 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct StringCache {}
+
 impl StringCache {
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:strCache" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:strCache"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().0 == b"c:strCache" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:strCache")
+        );
     }
 
     pub(crate) fn write_to(

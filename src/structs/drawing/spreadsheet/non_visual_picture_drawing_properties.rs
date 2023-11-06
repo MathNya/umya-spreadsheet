@@ -13,6 +13,7 @@ pub struct NonVisualPictureDrawingProperties {
     prefer_relative_resize: BooleanValue,
     picture_locks: Option<PictureLocks>,
 }
+
 impl NonVisualPictureDrawingProperties {
     pub fn get_prefer_relative_resize(&self) -> &bool {
         self.prefer_relative_resize.get_value()
@@ -38,40 +39,30 @@ impl NonVisualPictureDrawingProperties {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        empty_flg: bool,
+        empty_flag: bool,
     ) {
-        match get_attribute(e, b"preferRelativeResize") {
-            Some(v) => {
-                self.prefer_relative_resize.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, prefer_relative_resize, "preferRelativeResize");
 
-        if empty_flg {
+        if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:picLocks" => {
-                        let mut obj = PictureLocks::default();
-                        obj.set_attributes(reader, e);
-                        self.set_picture_locks(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:cNvPicPr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cNvPicPr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:picLocks" {
+                    let mut obj = PictureLocks::default();
+                    obj.set_attributes(reader, e);
+                    self.set_picture_locks(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:cNvPicPr" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:cNvPicPr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

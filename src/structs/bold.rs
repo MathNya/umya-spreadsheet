@@ -11,6 +11,7 @@ use writer::driver::*;
 pub struct Bold {
     pub(crate) val: BooleanValue,
 }
+
 impl Bold {
     pub fn get_val(&self) -> &bool {
         self.val.get_value()
@@ -27,12 +28,7 @@ impl Bold {
         e: &BytesStart,
     ) {
         self.val.set_value(true);
-        match get_attribute(e, b"val") {
-            Some(v) => {
-                self.val.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, val, "val");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

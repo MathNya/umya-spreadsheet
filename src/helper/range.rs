@@ -74,5 +74,5 @@ pub fn get_start_and_end_point(range_str: &str) -> (u32, u32, u32, u32) {
             }
         }
     }
-    return (row_start, row_end, col_start, col_end);
+    (row_start, row_end, col_start, col_end)
 }

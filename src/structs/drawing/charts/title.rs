@@ -2,6 +2,7 @@
 use super::ChartText;
 use super::Layout;
 use super::Overlay;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +15,7 @@ pub struct Title {
     layout: Option<Layout>,
     overlay: Overlay,
 }
+
 impl Title {
     pub fn get_chart_text(&self) -> &Option<ChartText> {
         &self.chart_text
@@ -59,43 +61,39 @@ impl Title {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
-                    b"c:tx" => {
-                        let mut obj = ChartText::default();
-                        obj.set_attributes(reader, e);
-                        self.set_chart_text(obj);
-                    }
-                    b"c:layout" => {
-                        let mut obj = Layout::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_layout(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"c:overlay" => {
-                        self.overlay.set_attributes(reader, e);
-                    }
-                    b"c:layout" => {
-                        let mut obj = Layout::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_layout(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:title" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:title"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().0 {
+                b"c:tx" => {
+                    let mut obj = ChartText::default();
+                    obj.set_attributes(reader, e);
+                    self.set_chart_text(obj);
+                }
+                b"c:layout" => {
+                    let mut obj = Layout::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_layout(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => match e.name().0 {
+                b"c:overlay" => {
+                    self.overlay.set_attributes(reader, e);
+                }
+                b"c:layout" => {
+                    let mut obj = Layout::default();
+                    obj.set_attributes(reader, e, true);
+                    self.set_layout(obj);
+                }
+                _ => (),
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:title" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:title"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -103,19 +101,13 @@ impl Title {
         write_start_tag(writer, "c:title", vec![], false);
 
         // c:tx
-        match &self.chart_text {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.chart_text {
+            v.write_to(writer);
         }
 
         // c:layout
-        match &self.layout {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.layout {
+            v.write_to(writer);
         }
 
         // c:overlay

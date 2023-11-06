@@ -1,3 +1,5 @@
+use crate::xml_read_loop;
+
 // c:f
 use super::super::super::Address;
 use super::super::super::StringValue;
@@ -13,6 +15,7 @@ pub struct Formula {
     address: Address,
     string_value: StringValue,
 }
+
 impl Formula {
     pub fn get_address(&self) -> &Address {
         &self.address
@@ -56,22 +59,18 @@ impl Formula {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => {
-                    self.set_address_str(e.unescape().unwrap());
-                }
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:f" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:f"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Text(e) => {
+                self.set_address_str(e.unescape().unwrap());
+            },
+            Event::End(ref e) => {
+               if  e.name().0 == b"c:f" {
+                   return;
+               }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:f"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -3,6 +3,7 @@ use super::SystemColor;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -11,6 +12,7 @@ pub struct Color2Type {
     rgb_color_model_hex: Option<RgbColorModelHex>,
     system_color: Option<SystemColor>,
 }
+
 impl Color2Type {
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) {
         self.rgb_color_model_hex = Some(value);
@@ -37,13 +39,11 @@ impl Color2Type {
     }
 
     pub fn get_val(&self) -> String {
-        match &self.rgb_color_model_hex {
-            Some(v) => return v.get_val().to_string(),
-            _ => {}
+        if let Some(v) = &self.rgb_color_model_hex {
+            return v.get_val().to_string();
         }
-        match &self.system_color {
-            Some(v) => return v.get_last_color().to_string(),
-            _ => {}
+        if let Some(v) = &self.system_color {
+            return v.get_last_color().to_string();
         }
         String::from("")
     }
@@ -53,51 +53,49 @@ impl Color2Type {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:srgbClr" => {
-                        let mut obj = RgbColorModelHex::default();
-                        obj.set_attributes(reader, e, true);
-                        self.rgb_color_model_hex = Some(obj);
-                    }
-                    b"a:sysClr" => {
-                        let mut obj = SystemColor::default();
-                        obj.set_attributes(reader, e);
-                        self.system_color = Some(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:srgbClr" => {
-                        let mut obj = RgbColorModelHex::default();
-                        obj.set_attributes(reader, e, false);
-                        self.rgb_color_model_hex = Some(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:accent1" => return,
-                    b"a:accent2" => return,
-                    b"a:accent3" => return,
-                    b"a:accent4" => return,
-                    b"a:accent5" => return,
-                    b"a:accent6" => return,
-                    b"a:dk1" => return,
-                    b"a:dk2" => return,
-                    b"a:folHlink" => return,
-                    b"a:hlink" => return,
-                    b"a:lt1" => return,
-                    b"a:lt2" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "Color2Type"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
+                b"a:srgbClr" => {
+                    let mut obj = RgbColorModelHex::default();
+                    obj.set_attributes(reader, e, true);
+                    self.rgb_color_model_hex = Some(obj);
+                }
+                b"a:sysClr" => {
+                    let mut obj = SystemColor::default();
+                    obj.set_attributes(reader, e);
+                    self.system_color = Some(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"a:srgbClr" {
+                    let mut obj = RgbColorModelHex::default();
+                    obj.set_attributes(reader, e, false);
+                    self.rgb_color_model_hex = Some(obj);
+                }
+            },
+            Event::End(ref e) => {
+                match e.name().into_inner() {
+                b"a:accent1" => return,
+                b"a:accent2" => return,
+                b"a:accent3" => return,
+                b"a:accent4" => return,
+                b"a:accent5" => return,
+                b"a:accent6" => return,
+                b"a:dk1" => return,
+                b"a:dk2" => return,
+                b"a:folHlink" => return,
+                b"a:hlink" => return,
+                b"a:lt1" => return,
+                b"a:lt2" => return,
+                _ => (),
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "Color2Type")
+        );
     }
 
     pub(crate) fn write_to_accent1(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -165,19 +163,13 @@ impl Color2Type {
         write_start_tag(writer, tag_name, vec![], false);
 
         // a:srgbClr
-        match &self.rgb_color_model_hex {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            _ => {}
+        if let Some(v) = &self.rgb_color_model_hex {
+            v.write_to(writer);
         }
 
         // a:sysClr
-        match &self.system_color {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            _ => {}
+        if let Some(v) = &self.system_color {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, tag_name);

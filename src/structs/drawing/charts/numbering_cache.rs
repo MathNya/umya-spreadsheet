@@ -1,5 +1,6 @@
 // c:numCache
 use super::FormatCode;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,6 +13,7 @@ use writer::driver::*;
 pub struct NumberingCache {
     format_code: FormatCode,
 }
+
 impl NumberingCache {
     pub fn get_format_code(&self) -> &FormatCode {
         &self.format_code
@@ -31,25 +33,20 @@ impl NumberingCache {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
-                    b"c:formatCode" => {
-                        self.format_code.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:numCache" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:numCache"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().0 == b"c:formatCode" {
+                    self.format_code.set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+               if e.name().0 == b"c:numCache" {
+                   return;
+               }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:numCache"),
+        );
     }
 
     pub(crate) fn write_to(

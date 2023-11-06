@@ -2,6 +2,39 @@ use quick_xml::events::attributes::Attribute;
 use std::path::{Component, Path, PathBuf};
 use std::string::FromUtf8Error;
 
+#[macro_export]
+macro_rules! xml_read_loop {
+    ($reader:ident $(,$pat:pat => $result:expr)+ $(,)?) => {
+        let mut buf = Vec::new();
+        loop {
+            let ev = match $reader.read_event_into(&mut buf) {
+                Ok(v) => v,
+                Err(e) => panic!("Error at position {}: {e:?}", $reader.buffer_position()),
+            };
+
+            match ev {
+                $($pat => $result,)+
+                _ => (),
+            }
+
+            buf.clear();
+        }
+    };
+}
+
+pub(crate) use xml_read_loop;
+
+#[macro_export]
+macro_rules! set_string_from_xml {
+    ($self:ident, $e:ident, $attr:ident, $xml_attr:expr) => {{
+        if let Some(v) = get_attribute($e, $xml_attr.as_bytes()) {
+            $self.$attr.set_value_string(v);
+        }
+    }};
+}
+
+pub(crate) use set_string_from_xml;
+
 pub(crate) fn normalize_path(path: &str) -> PathBuf {
     let path = Path::new(path);
     let mut components = path.components().peekable();

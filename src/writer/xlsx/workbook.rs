@@ -117,10 +117,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     for worksheet in spreadsheet.get_sheet_collection_no_check() {
         let id = index.to_string();
         let r_id = format!("rId{}", index);
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", worksheet.get_name()));
-        attributes.push(("sheetId", &id));
-        attributes.push(("r:id", &r_id));
+        let attributes: Vec<(&str, &str)> = vec![
+            ("name", worksheet.get_name()),
+            ("sheetId", &id),
+            ("r:id", &r_id),
+        ];
 
         // sheet
         write_start_tag(&mut writer, "sheet", attributes, true);

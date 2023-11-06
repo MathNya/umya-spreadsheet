@@ -3,7 +3,6 @@ use std::borrow::Cow;
 use fancy_regex::Captures;
 use fancy_regex::Matches;
 use fancy_regex::Regex;
-//use fancy_regex::Regex;
 use helper::date::*;
 use structs::Color;
 use structs::NumberingFormat;
@@ -13,6 +12,7 @@ pub struct Split<'r, 't> {
     finder: Matches<'r, 't>,
     last: usize,
 }
+
 pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     Split {
         finder: regex.find_iter(text),
@@ -123,7 +123,7 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")
 
-    let mut format = ESCAPE_REGEX.replace_all(&format, r#""$0""#).to_owned();
+    let mut format = ESCAPE_REGEX.replace_all(&format, r#""$0""#);
 
     // Get the sections, there can be up to four sections, separated with a semi-colon (but only if not a quoted literal)
 
@@ -187,7 +187,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     //   4 sections:  [POSITIVE] [NEGATIVE] [ZERO] [TEXT]
     let cnt: usize = sections.len();
     let color_regex: String = format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
-    let cond_regex = r#"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]"#;
+    let cond_regex = r"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]";
     let color_re = Regex::new(&color_regex).unwrap();
     let cond_re = Regex::new(cond_regex).unwrap();
 
@@ -284,14 +284,13 @@ fn split_format_compare(value: &f64, cond: &str, val: &f64, dfcond: &str, dfval:
 }
 
 fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
-    let value = value;
     let format = Cow::Borrowed(format);
 
     // strip off first part containing e.g. [$-F800] or [$USD-409]
     // general syntax: [$<Currency string>-<language info>]
     // language info is in hexadecimal
     // strip off chinese part like [DBNum1][$-804]
-    let re = Regex::new(r#"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])"#).unwrap();
+    let re = Regex::new(r"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])").unwrap();
     let format = re.replace_all(&format, r#""#);
 
     // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to lower-case;
@@ -351,9 +350,9 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
         static ref THOUSANDS_SEP_REGEX: Regex = Regex::new(r#"(#,#|0,0)"#).unwrap();
         static ref SCALE_REGEX: Regex = Regex::new(r#"(#|0)(,+)"#).unwrap();
         static ref TRAILING_COMMA_REGEX: Regex = Regex::new("(#|0),+").unwrap();
-        static ref FRACTION_REGEX: Regex = Regex::new(r#"#?.*\?{1,2}\/\?{1,2}"#).unwrap();
-        static ref SQUARE_BRACKET_REGEX: Regex = Regex::new(r#"\[[^\]]+\]"#).unwrap();
-        static ref NUMBER_REGEX: Regex = Regex::new(r#"(0+)(\.?)(0*)"#).unwrap();
+        static ref FRACTION_REGEX: Regex = Regex::new(r"#?.*\?{1,2}\/\?{1,2}").unwrap();
+        static ref SQUARE_BRACKET_REGEX: Regex = Regex::new(r"\[[^\]]+\]").unwrap();
+        static ref NUMBER_REGEX: Regex = Regex::new(r"(0+)(\.?)(0*)").unwrap();
     }
 
     let mut value = value.to_string();
@@ -427,12 +426,12 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
                 &format,
                 &item,
                 &use_thousands,
-                r#"(0+)(\.?)(0*)"#,
+                r"(0+)(\.?)(0*)",
             );
         }
     }
 
-    let re = Regex::new(r#"\$[^0-9]*"#).unwrap();
+    let re = Regex::new(r"\$[^0-9]*").unwrap();
     if re.find(&format).ok().flatten().is_some() {
         let mut item: Vec<String> = Vec::new();
         for ite in re.captures(&format).ok().flatten().unwrap().iter() {
@@ -545,8 +544,7 @@ fn format_straight_numeric_value(
             let pow = 10i32.pow(right.len() as u32);
             right_value = format!("{}", right_value.parse::<i32>().unwrap() * pow);
         } else {
-            let mut right_value_conv: String =
-                right_value.chars().skip(0).take(right.len()).collect();
+            let mut right_value_conv: String = right_value.chars().take(right.len()).collect();
             let ajst_str: String = right_value.chars().skip(right.len()).take(1).collect();
             let ajst_int = ajst_str.parse::<i32>().unwrap();
             if ajst_int > 4 {

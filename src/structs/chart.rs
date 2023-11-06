@@ -158,18 +158,16 @@ impl Chart {
         let title = self.make_title(value);
         let plot_area = self.get_plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
-            1 => match plot_area.get_value_axis_mut().get_mut(0) {
-                Some(v) => {
+            1 => {
+                if let Some(v) = plot_area.get_value_axis_mut().get_mut(0) {
                     v.set_title(title);
                 }
-                None => {}
-            },
-            2 => match plot_area.get_value_axis_mut().get_mut(1) {
-                Some(v) => {
+            }
+            2 => {
+                if let Some(v) = plot_area.get_value_axis_mut().get_mut(1) {
                     v.set_title(title);
                 }
-                None => {}
-            },
+            }
             _ => {}
         }
         self
@@ -179,18 +177,16 @@ impl Chart {
         let title = self.make_title(value);
         let plot_area = self.get_plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
-            1 => match plot_area.get_category_axis_mut().get_mut(0) {
-                Some(v) => {
+            1 => {
+                if let Some(v) = plot_area.get_category_axis_mut().get_mut(0) {
                     v.set_title(title);
                 }
-                None => {}
-            },
-            2 => match plot_area.get_value_axis_mut().get_mut(0) {
-                Some(v) => {
+            }
+            2 => {
+                if let Some(v) = plot_area.get_value_axis_mut().get_mut(0) {
                     v.set_title(title);
                 }
-                None => {}
-            },
+            }
             _ => {}
         }
         self
@@ -207,13 +203,10 @@ impl Chart {
             .get_area_chart_series_mut()
         {
             let value_raw = value_iter.next();
-            match value_raw {
-                Some(v) => {
-                    let mut series_text = SeriesText::default();
-                    series_text.set_value(v.clone());
-                    series.set_series_text(series_text);
-                }
-                None => {}
+            if let Some(v) = value_raw {
+                let mut series_text = SeriesText::default();
+                series_text.set_value(v.clone());
+                series.set_series_text(series_text);
             }
         }
         self

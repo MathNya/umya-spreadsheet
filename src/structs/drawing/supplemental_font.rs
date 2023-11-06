@@ -12,6 +12,7 @@ pub struct SupplementalFont {
     script: StringValue,
     typeface: StringValue,
 }
+
 impl SupplementalFont {
     pub fn get_script(&self) -> &str {
         self.script.get_value()
@@ -36,18 +37,8 @@ impl SupplementalFont {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"script") {
-            Some(v) => {
-                self.script.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"typeface") {
-            Some(v) => {
-                self.typeface.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, script, "script");
+        set_string_from_xml!(self, e, typeface, "typeface");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

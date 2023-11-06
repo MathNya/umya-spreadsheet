@@ -16,6 +16,7 @@ pub struct LightRig {
     definition: EnumValue<LightRigDirectionValues>,
     rotation: Option<Rotation>,
 }
+
 impl LightRig {
     pub fn get_rig(&self) -> &LightRigValues {
         self.rig.get_value()
@@ -54,44 +55,29 @@ impl LightRig {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"rig") {
-            Some(v) => {
-                self.rig.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"dir") {
-            Some(v) => {
-                self.definition.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, rig, "rig");
+        set_string_from_xml!(self, e, definition, "dir");
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:rot" => {
-                        let mut obj = Rotation::default();
-                        obj.set_attributes(reader, e);
-                        self.rotation = Some(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:lightRig" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:lightRig"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:rot" {
+                    let mut obj = Rotation::default();
+                    obj.set_attributes(reader, e);
+                    self.rotation = Some(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:lightRig" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:lightRig")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -109,11 +95,8 @@ impl LightRig {
 
         if with_inner {
             // a:rot
-            match &self.rotation {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                _ => {}
+            if let Some(v) = &self.rotation {
+                v.write_to(writer);
             }
             write_end_tag(writer, "a:lightRig");
         }

@@ -10,6 +10,7 @@ use super::TextProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -24,6 +25,7 @@ pub struct DataLabels {
     show_leader_lines: Option<ShowLeaderLines>,
     text_properties: Option<TextProperties>,
 }
+
 impl DataLabels {
     pub fn get_show_legend_key(&self) -> &ShowLegendKey {
         &self.show_legend_key
@@ -134,18 +136,17 @@ impl DataLabels {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c:txPr" => {
-                        let mut obj = TextProperties::default();
-                        obj.set_attributes(reader, e);
-                        self.set_text_properties(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"c:txPr" {
+                    let mut obj = TextProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_text_properties(obj);
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"c:showLegendKey" => {
                         self.show_legend_key.set_attributes(reader, e);
                     }
@@ -170,17 +171,15 @@ impl DataLabels {
                         self.set_show_leader_lines(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:dLbls" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:dLbls"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:dLbls" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:dLbls")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -188,11 +187,8 @@ impl DataLabels {
         write_start_tag(writer, "c:dLbls", vec![], false);
 
         // c:txPr
-        match &self.text_properties {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_properties {
+            v.write_to(writer);
         }
 
         // c:showLegendKey
@@ -214,11 +210,8 @@ impl DataLabels {
         self.show_bubble_size.write_to(writer);
 
         // c:showLeaderLines
-        match &self.show_leader_lines {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.show_leader_lines {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:dLbls");

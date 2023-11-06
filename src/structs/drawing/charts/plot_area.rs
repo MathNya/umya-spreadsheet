@@ -20,6 +20,7 @@ use super::ScatterChart;
 use super::SeriesAxis;
 use super::ShapeProperties;
 use super::ValueAxis;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -48,6 +49,7 @@ pub struct PlotArea {
     series_axis: Vec<SeriesAxis>,
     shape_properties: Option<ShapeProperties>,
 }
+
 impl PlotArea {
     pub fn get_layout(&self) -> &Layout {
         &self.layout
@@ -299,385 +301,250 @@ impl PlotArea {
     }
 
     pub fn set_grouping(&mut self, value: GroupingValues) -> &mut Self {
-        match &mut self.line_chart {
-            Some(chart) => {
-                chart.get_grouping_mut().set_val(value);
-                return self;
-            }
-            None => {}
+        if let Some(chart) = &mut self.line_chart {
+            chart.get_grouping_mut().set_val(value);
+            return self;
         }
-        match &mut self.line_3d_chart {
-            Some(chart) => {
-                chart.get_grouping_mut().set_val(value);
-                return self;
-            }
-            None => {}
+        if let Some(chart) = &mut self.line_3d_chart {
+            chart.get_grouping_mut().set_val(value);
+            return self;
         }
-        match &mut self.bar_chart {
-            Some(chart) => {
-                chart.get_grouping_mut().set_val(value);
-                return self;
-            }
-            None => {}
+        if let Some(chart) = &mut self.bar_chart {
+            chart.get_grouping_mut().set_val(value);
+            return self;
         }
-        match &mut self.bar_3d_chart {
-            Some(chart) => {
-                chart.get_grouping_mut().set_val(value);
-                return self;
-            }
-            None => {}
+        if let Some(chart) = &mut self.bar_3d_chart {
+            chart.get_grouping_mut().set_val(value);
+            return self;
         }
-        match &mut self.area_chart {
-            Some(chart) => {
-                chart.get_grouping_mut().set_val(value);
-                return self;
-            }
-            None => {}
+        if let Some(chart) = &mut self.area_chart {
+            chart.get_grouping_mut().set_val(value);
+            return self;
         }
-        match &mut self.area_3d_chart {
-            Some(chart) => {
-                chart.get_grouping_mut().set_val(value);
-                return self;
-            }
-            None => {}
+        if let Some(chart) = &mut self.area_3d_chart {
+            chart.get_grouping_mut().set_val(value);
+            return self;
         }
         panic! {"Non-Grouping."};
     }
 
     pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
-        match &mut self.line_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.line_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.line_3d_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.line_3d_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.pie_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.pie_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.pie_3d_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.pie_3d_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.doughnut_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.doughnut_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.scatter_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.scatter_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.bar_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.bar_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.bar_3d_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.bar_3d_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.radar_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.radar_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.bubble_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.bubble_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.area_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.area_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.area_3d_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.area_3d_chart {
+            return chart.get_area_chart_series_list_mut();
         }
-        match &mut self.of_pie_chart {
-            Some(chart) => {
-                return chart.get_area_chart_series_list_mut();
-            }
-            None => {}
+        if let Some(chart) = &mut self.of_pie_chart {
+            return chart.get_area_chart_series_list_mut();
         }
         panic! {"Non-ChartSeriesList."};
     }
 
     pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
-        match &mut self.line_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.line_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.line_3d_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.line_3d_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.pie_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.pie_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.pie_3d_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.pie_3d_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.doughnut_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.doughnut_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.scatter_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.scatter_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.bar_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.bar_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.bar_3d_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.bar_3d_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.radar_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.radar_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.bubble_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.bubble_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.area_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.area_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.area_3d_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.area_3d_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
-        match &mut self.of_pie_chart {
-            Some(v) => {
-                for ser in v
-                    .get_area_chart_series_list_mut()
-                    .get_area_chart_series_mut()
-                {
-                    for formula in ser.get_formula_mut() {
-                        result.push(formula);
-                    }
+        if let Some(v) = &mut self.of_pie_chart {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
+                for formula in ser.get_formula_mut() {
+                    result.push(formula);
                 }
             }
-            None => {}
         }
         result
     }
 
     pub(crate) fn is_support(&self) -> bool {
-        match &self.line_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.line_chart.is_some() {
+            return true;
         }
-        match &self.line_3d_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.line_3d_chart.is_some() {
+            return true;
         }
-        match &self.pie_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.pie_chart.is_some() {
+            return true;
         }
-        match &self.pie_3d_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.pie_3d_chart.is_some() {
+            return true;
         }
-        match &self.doughnut_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.doughnut_chart.is_some() {
+            return true;
         }
-        match &self.scatter_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.scatter_chart.is_some() {
+            return true;
         }
-        match &self.bar_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.bar_chart.is_some() {
+            return true;
         }
-        match &self.bar_3d_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.bar_3d_chart.is_some() {
+            return true;
         }
-        match &self.radar_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.radar_chart.is_some() {
+            return true;
         }
-        match &self.bubble_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.bubble_chart.is_some() {
+            return true;
         }
-        match &self.area_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.area_chart.is_some() {
+            return true;
         }
-        match &self.area_3d_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.area_3d_chart.is_some() {
+            return true;
         }
-        match &self.of_pie_chart {
-            Some(_) => {
-                return true;
-            }
-            None => {}
+        if self.of_pie_chart.is_some() {
+            return true;
         }
         false
     }
@@ -687,110 +554,106 @@ impl PlotArea {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
-                    b"c:layout" => {
-                        self.layout.set_attributes(reader, e, false);
-                    }
-                    b"c:lineChart" => {
-                        let mut obj = LineChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_line_chart(obj);
-                    }
-                    b"c:line3DChart" => {
-                        let mut obj = Line3DChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_line_3d_chart(obj);
-                    }
-                    b"c:pieChart" => {
-                        let mut obj = PieChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_pie_chart(obj);
-                    }
-                    b"c:pie3DChart" => {
-                        let mut obj = Pie3DChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_pie_3d_chart(obj);
-                    }
-                    b"c:doughnutChart" => {
-                        let mut obj = DoughnutChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_doughnut_chart(obj);
-                    }
-                    b"c:scatterChart" => {
-                        let mut obj = ScatterChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_scatter_chart(obj);
-                    }
-                    b"c:barChart" => {
-                        let mut obj = BarChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_bar_chart(obj);
-                    }
-                    b"c:bar3DChart" => {
-                        let mut obj = Bar3DChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_bar_3d_chart(obj);
-                    }
-                    b"c:radarChart" => {
-                        let mut obj = RadarChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_radar_chart(obj);
-                    }
-                    b"c:bubbleChart" => {
-                        let mut obj = BubbleChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_bubble_chart(obj);
-                    }
-                    b"c:areaChart" => {
-                        let mut obj = AreaChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_area_chart(obj);
-                    }
-                    b"c:area3DChart" => {
-                        let mut obj = Area3DChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_area_3d_chart(obj);
-                    }
-                    b"c:ofPieChart" => {
-                        let mut obj = OfPieChart::default();
-                        obj.set_attributes(reader, e);
-                        self.set_of_pie_chart(obj);
-                    }
-                    b"c:catAx" => {
-                        let mut obj = CategoryAxis::default();
-                        obj.set_attributes(reader, e);
-                        self.add_category_axis(obj);
-                    }
-                    b"c:valAx" => {
-                        let mut obj = ValueAxis::default();
-                        obj.set_attributes(reader, e);
-                        self.add_value_axis(obj);
-                    }
-                    b"c:serAx" => {
-                        let mut obj = SeriesAxis::default();
-                        obj.set_attributes(reader, e);
-                        self.add_series_axis(obj);
-                    }
-                    b"c:spPr" => {
-                        let mut obj = ShapeProperties::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape_properties(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:plotArea" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:plotArea"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().0 {
+                b"c:layout" => {
+                    self.layout.set_attributes(reader, e, false);
+                }
+                b"c:lineChart" => {
+                    let mut obj = LineChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_line_chart(obj);
+                }
+                b"c:line3DChart" => {
+                    let mut obj = Line3DChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_line_3d_chart(obj);
+                }
+                b"c:pieChart" => {
+                    let mut obj = PieChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_pie_chart(obj);
+                }
+                b"c:pie3DChart" => {
+                    let mut obj = Pie3DChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_pie_3d_chart(obj);
+                }
+                b"c:doughnutChart" => {
+                    let mut obj = DoughnutChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_doughnut_chart(obj);
+                }
+                b"c:scatterChart" => {
+                    let mut obj = ScatterChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_scatter_chart(obj);
+                }
+                b"c:barChart" => {
+                    let mut obj = BarChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_bar_chart(obj);
+                }
+                b"c:bar3DChart" => {
+                    let mut obj = Bar3DChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_bar_3d_chart(obj);
+                }
+                b"c:radarChart" => {
+                    let mut obj = RadarChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_radar_chart(obj);
+                }
+                b"c:bubbleChart" => {
+                    let mut obj = BubbleChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_bubble_chart(obj);
+                }
+                b"c:areaChart" => {
+                    let mut obj = AreaChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_area_chart(obj);
+                }
+                b"c:area3DChart" => {
+                    let mut obj = Area3DChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_area_3d_chart(obj);
+                }
+                b"c:ofPieChart" => {
+                    let mut obj = OfPieChart::default();
+                    obj.set_attributes(reader, e);
+                    self.set_of_pie_chart(obj);
+                }
+                b"c:catAx" => {
+                    let mut obj = CategoryAxis::default();
+                    obj.set_attributes(reader, e);
+                    self.add_category_axis(obj);
+                }
+                b"c:valAx" => {
+                    let mut obj = ValueAxis::default();
+                    obj.set_attributes(reader, e);
+                    self.add_value_axis(obj);
+                }
+                b"c:serAx" => {
+                    let mut obj = SeriesAxis::default();
+                    obj.set_attributes(reader, e);
+                    self.add_series_axis(obj);
+                }
+                b"c:spPr" => {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:plotArea" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:plotArea"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
@@ -801,107 +664,68 @@ impl PlotArea {
         self.layout.write_to(writer);
 
         // c:lineChart
-        match &self.line_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.line_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:line3DChart
-        match &self.line_3d_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.line_3d_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:pieChart
-        match &self.pie_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.pie_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:pie3DChart
-        match &self.pie_3d_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.pie_3d_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:doughnutChart
-        match &self.doughnut_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.doughnut_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:scatterChart
-        match &self.scatter_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.scatter_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:barChart
-        match &self.bar_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.bar_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:bar3DChart
-        match &self.bar_3d_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.bar_3d_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:radarChart
-        match &self.radar_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.radar_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:bubbleChart
-        match &self.bubble_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.bubble_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:areaChart
-        match &self.area_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.area_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:area3DChart
-        match &self.area_3d_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.area_3d_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:ofPieChart
-        match &self.of_pie_chart {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.of_pie_chart {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:catAx
@@ -920,11 +744,8 @@ impl PlotArea {
         }
 
         // c:spPr
-        match &self.shape_properties {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_properties {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:plotArea");

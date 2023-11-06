@@ -19,6 +19,7 @@ pub struct FormatScheme {
     effect_style_list: EffectStyleList,
     background_fill_style_list: BackgroundFillStyleList,
 }
+
 impl FormatScheme {
     pub fn get_name(&self) -> &str {
         self.name.get_value()
@@ -82,17 +83,14 @@ impl FormatScheme {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"name") {
-            Some(v) => {
-                self.name.set_value(v);
-            }
-            _ => {}
+        if let Some(v) = get_attribute(e, b"name") {
+            self.name.set_value(v);
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:fillStyleLst" => {
                         let mut obj = FillStyleList::default();
                         obj.set_attributes(reader, e);
@@ -114,17 +112,15 @@ impl FormatScheme {
                         self.background_fill_style_list = obj;
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:fmtScheme" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:fmtScheme"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:fmtScheme" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:fmtScheme")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

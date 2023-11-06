@@ -1,6 +1,7 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::UInt32Value;
 use writer::driver::*;
@@ -9,6 +10,7 @@ use writer::driver::*;
 pub struct CommentColumnTarget {
     value: UInt32Value,
 }
+
 impl CommentColumnTarget {
     pub fn get_value(&self) -> &u32 {
         self.value.get_value()
@@ -38,22 +40,18 @@ impl CommentColumnTarget {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => {
-                    self.value.set_value_string(e.unescape().unwrap());
+        xml_read_loop!(
+            reader,
+            Event::Text(e) => {
+                self.value.set_value_string(e.unescape().unwrap());
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"x:Column" {
+                    return
                 }
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"x:Column" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "x:Column"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Eof => panic!("Error not find {} end element", "x:Column")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

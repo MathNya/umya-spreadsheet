@@ -29,10 +29,7 @@ impl TrueFalseValue {
     }
 
     pub(crate) fn has_value(&self) -> bool {
-        match &self.value {
-            Some(_) => true,
-            None => false,
-        }
+        self.value.is_some()
     }
 
     pub(crate) fn _get_hash_string(&self) -> &str {

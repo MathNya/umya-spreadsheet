@@ -1,3 +1,5 @@
+use crate::xml_read_loop;
+
 use super::driver::*;
 use super::XlsxError;
 use quick_xml::events::Event;
@@ -17,7 +19,6 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
-    let mut buf = Vec::new();
     let mut spreadsheet = Spreadsheet::default();
 
     let mut defined_name_value = String::from("");
@@ -25,9 +26,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut string_value = String::from("");
     let mut defined_names: Vec<DefinedName> = Vec::new();
 
-    loop {
-        match reader.read_event_into(&mut buf) {
-            Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+    xml_read_loop!(
+        reader,
+        Event::Empty(ref e) => {
+            match e.name().into_inner() {
                 b"workbookView" => {
                     let mut obj = WorkbookView::default();
                     obj.set_attributes(&mut reader, e);
@@ -49,38 +51,31 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     spreadsheet.add_pivot_caches((r_id, cache_id, String::from("")));
                 }
                 _ => (),
-            },
-            Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                b"definedName" => {
-                    defined_name_value = get_attribute(e, b"name").unwrap();
-                    is_local_only = match get_attribute(e, b"localSheetId") {
-                        Some(_) => true,
-                        None => false,
-                    };
-                }
-                _ => (),
-            },
-            Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
-            Ok(Event::End(ref e)) => match e.name().into_inner() {
-                b"definedName" => {
-                    let mut defined_name = DefinedName::default();
-                    defined_name.set_name(defined_name_value);
-                    defined_name.set_address(string_value);
-                    defined_name.set_is_local_only(is_local_only);
-                    defined_names.push(defined_name);
+            }
+        },
+        Event::Start(ref e) => {
+            if e.name().into_inner() == b"definedName" {
+                defined_name_value = get_attribute(e, b"name").unwrap();
+                is_local_only = get_attribute(e, b"localSheetId").is_some();
+            }
+        },
+        Event::Text(e) => string_value = e.unescape().unwrap().to_string(),
+        Event::End(ref e) => {
+            if e.name().into_inner() == b"definedName" {
+                let mut defined_name = DefinedName::default();
+                defined_name.set_name(defined_name_value);
+                defined_name.set_address(string_value);
+                defined_name.set_is_local_only(is_local_only);
+                defined_names.push(defined_name);
 
-                    defined_name_value = String::from("");
-                    string_value = String::from("");
-                    is_local_only = false;
-                }
-                _ => (),
-            },
-            Ok(Event::Eof) => break,
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-            _ => (),
-        }
-        buf.clear();
-    }
+                defined_name_value = String::from("");
+                string_value = String::from("");
+                is_local_only = false;
+            }
+        },
+        Event::Eof => break
+    );
+
     for sheet in spreadsheet.get_sheet_collection_mut() {
         for defined_name in &defined_names {
             let def_sheet_name = defined_name.get_address_obj().get_sheet_name();

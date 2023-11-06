@@ -44,11 +44,8 @@ impl CellValue {
     }
 
     pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
-        match &self.raw_value {
-            CellRawValue::Lazy(v) => {
-                self.raw_value = Self::guess_typed_data(v);
-            }
-            _ => {}
+        if let CellRawValue::Lazy(v) = &self.raw_value {
+            self.raw_value = Self::guess_typed_data(v);
         }
         self.remove_formula();
         self.raw_value.to_string().into()

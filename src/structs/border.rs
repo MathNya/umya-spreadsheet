@@ -15,6 +15,7 @@ pub struct Border {
     color: Color,
     style: EnumValue<BorderStyleValues>,
 }
+
 impl Border {
     pub fn get_color(&self) -> &Color {
         &self.color
@@ -77,23 +78,17 @@ impl Border {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"style") {
-            Some(v) => {
-                self.style.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, style, "style");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"color" => {
-                        self.color.set_attributes(reader, e, true);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"color" {
+                    self.color.set_attributes(reader, e, true);
+                }
+            },
+            Event::End(ref e) => {
+                match e.name().into_inner() {
                     b"left" => return,
                     b"right" => return,
                     b"top" => return,
@@ -102,16 +97,13 @@ impl Border {
                     b"vertical" => return,
                     b"horizontal" => return,
                     _ => (),
-                },
-                Ok(Event::Eof) => panic!(
-                    "Error not find {} end element",
-                    "left,right,top,bottom,diagonal,vertical,horizontal"
-                ),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Eof => panic!(
+                "Error not find {} end element",
+                "left,right,top,bottom,diagonal,vertical,horizontal"
+            )
+        );
     }
 
     pub(crate) fn write_to_left(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

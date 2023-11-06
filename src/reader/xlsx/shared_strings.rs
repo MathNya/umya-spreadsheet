@@ -1,3 +1,5 @@
+use crate::xml_read_loop;
+
 use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
@@ -22,47 +24,33 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     });
     let mut reader = Reader::from_reader(r);
     reader.trim_text(false);
-    let mut buf = Vec::new();
 
     let theme = spreadsheet.get_theme().clone();
 
-    loop {
-        match reader.read_event_into(&mut buf) {
-            Ok(Event::Start(ref e)) => {
-                match e.name().into_inner() {
-                    b"sst" => {
-                        let mut obj = SharedStringTable::default();
-                        obj.set_attributes(&mut reader, e);
+    xml_read_loop!(
+        reader,
+        Event::Start(ref e) => {
+            if e.name().into_inner() == b"sst" {
+                let mut obj = SharedStringTable::default();
+                obj.set_attributes(&mut reader, e);
 
-                        // set ThemeColor
-                        for item in obj.get_shared_string_item_mut() {
-                            match item.get_rich_text_mut() {
-                                Some(v) => {
-                                    for element in v.get_rich_text_elements_mut() {
-                                        match element.get_run_properties_crate() {
-                                            Some(r) => {
-                                                let color = r.get_color_mut();
-                                                color.set_argb_by_theme(&theme);
-                                            }
-                                            None => {}
-                                        }
-                                    }
-                                }
-                                None => {}
+                // set ThemeColor
+                for item in obj.get_shared_string_item_mut() {
+                    if let Some(v) = item.get_rich_text_mut() {
+                        for element in v.get_rich_text_elements_mut() {
+                            if let Some(r) = element.get_run_properties_crate() {
+                                let color = r.get_color_mut();
+                                color.set_argb_by_theme(&theme);
                             }
                         }
-
-                        spreadsheet.set_shared_string_table(obj);
                     }
-                    _ => (),
                 }
+
+                spreadsheet.set_shared_string_table(obj);
             }
-            Ok(Event::Eof) => break,
-            Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-            _ => (),
-        }
-        buf.clear();
-    }
+        },
+        Event::Eof => break,
+    );
 
     Ok(())
 }

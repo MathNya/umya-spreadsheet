@@ -22,6 +22,7 @@ pub struct SchemeColor {
     alpha: Option<PositiveFixedPercentageType>,
     tint: Option<PositiveFixedPercentageType>,
 }
+
 impl SchemeColor {
     pub fn get_val(&self) -> &SchemeColorValues {
         self.val.get_value()
@@ -151,10 +152,10 @@ impl SchemeColor {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:lum" => {
                         let mut obj = PercentageType::default();
                         obj.set_attributes(reader, e);
@@ -196,17 +197,15 @@ impl SchemeColor {
                         self.tint = Some(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:schemeClr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:schemeClr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:schemeClr" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:schemeClr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -220,67 +219,43 @@ impl SchemeColor {
             );
 
             // a:luminance
-            match &self.luminance {
-                Some(v) => {
-                    v.write_to_lum(writer);
-                }
-                None => {}
+            if let Some(v) = &self.luminance {
+                v.write_to_lum(writer);
             }
 
             // a:lumMod
-            match &self.luminance_modulation {
-                Some(v) => {
-                    v.write_to_lum_mod(writer);
-                }
-                None => {}
+            if let Some(v) = &self.luminance_modulation {
+                v.write_to_lum_mod(writer);
             }
 
             // a:lumOff
-            match &self.luminance_offset {
-                Some(v) => {
-                    v.write_to_lum_off(writer);
-                }
-                None => {}
+            if let Some(v) = &self.luminance_offset {
+                v.write_to_lum_off(writer);
             }
 
             // a:sat
-            match &self.saturation {
-                Some(v) => {
-                    v.write_to_sat(writer);
-                }
-                None => {}
+            if let Some(v) = &self.saturation {
+                v.write_to_sat(writer);
             }
 
             // a:satMod
-            match &self.saturation_modulation {
-                Some(v) => {
-                    v.write_to_sat_mod(writer);
-                }
-                None => {}
+            if let Some(v) = &self.saturation_modulation {
+                v.write_to_sat_mod(writer);
             }
 
             // a:shade
-            match &self.shade {
-                Some(v) => {
-                    v.write_to_shade(writer);
-                }
-                None => {}
+            if let Some(v) = &self.shade {
+                v.write_to_shade(writer);
             }
 
             // a:alpha
-            match &self.alpha {
-                Some(v) => {
-                    v.write_to_alpha(writer);
-                }
-                None => {}
+            if let Some(v) = &self.alpha {
+                v.write_to_alpha(writer);
             }
 
             // a:tint
-            match &self.tint {
-                Some(v) => {
-                    v.write_to_tint(writer);
-                }
-                None => {}
+            if let Some(v) = &self.tint {
+                v.write_to_tint(writer);
             }
 
             write_end_tag(writer, "a:schemeClr");

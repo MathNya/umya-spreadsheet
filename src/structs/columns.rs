@@ -15,6 +15,7 @@ use writer::driver::*;
 pub(crate) struct Columns {
     column: Vec<Column>,
 }
+
 impl Columns {
     pub(crate) fn get_column_collection(&self) -> &Vec<Column> {
         &self.column
@@ -96,32 +97,27 @@ impl Columns {
         _e: &BytesStart,
         stylesheet: &Stylesheet,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"col" => {
-                        let mut obj = Column::default();
-                        obj.set_attributes(reader, e, stylesheet);
-                        let min = get_attribute(e, b"min").unwrap().parse::<u32>().unwrap();
-                        let max = get_attribute(e, b"max").unwrap().parse::<u32>().unwrap();
-                        for i in min..=max {
-                            obj.set_col_num(i);
-                            self.set_column(obj.clone());
-                        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"col" {
+                    let mut obj = Column::default();
+                    obj.set_attributes(reader, e, stylesheet);
+                    let min = get_attribute(e, b"min").unwrap().parse::<u32>().unwrap();
+                    let max = get_attribute(e, b"max").unwrap().parse::<u32>().unwrap();
+                    for i in min..=max {
+                        obj.set_col_num(i);
+                        self.set_column(obj.clone());
                     }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"cols" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "cols"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"cols" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "cols")
+        );
     }
 
     pub(crate) fn write_to(

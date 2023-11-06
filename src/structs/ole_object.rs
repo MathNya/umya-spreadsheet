@@ -20,6 +20,7 @@ pub struct OleObject {
     two_cell_anchor: TwoCellAnchor,
     shape: Shape,
 }
+
 impl OleObject {
     pub fn get_requires(&self) -> &str {
         self.requires.get_value()
@@ -114,18 +115,14 @@ impl OleObject {
         relationships: &RawRelationships,
     ) {
         let mut alternate_content = String::from("");
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"mc:Choice" => {
                         alternate_content = String::from("Choice");
-                        match get_attribute(e, b"Requires") {
-                            Some(v) => {
-                                self.requires.set_value_string(v);
-                            }
-                            None => {}
-                        }
+                        set_string_from_xml!(self, e, requires, "Requires");
                     }
                     b"mc:Fallback" => {
                         alternate_content = String::from("Fallback");
@@ -148,17 +145,15 @@ impl OleObject {
                         self.set_embedded_object_properties(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"mc:AlternateContent" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "mc:AlternateContent"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"mc:AlternateContent" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "mc:AlternateContent")
+        );
     }
 
     pub(crate) fn write_to(
@@ -189,10 +184,11 @@ impl OleObject {
         // oleObject
         let r_id_str = format!("rId{}", r_id);
         let shape_id_str = format!("{}", ole_id);
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("progId", self.prog_id.get_value_string()));
-        attributes.push(("shapeId", shape_id_str.as_str()));
-        attributes.push(("r:id", r_id_str.as_str()));
+        let attributes = vec![
+            ("progId", self.prog_id.get_value_string()),
+            ("shapeId", shape_id_str.as_str()),
+            ("r:id", r_id_str.as_str()),
+        ];
         write_start_tag(writer, "oleObject", attributes, false);
 
         // objectPr
@@ -209,10 +205,11 @@ impl OleObject {
 
         // oleObject
         let r_id_str = format!("rId{}", r_id);
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("progId", self.prog_id.get_value_string()));
-        attributes.push(("shapeId", shape_id_str.as_str()));
-        attributes.push(("r:id", r_id_str.as_str()));
+        let attributes = vec![
+            ("progId", self.prog_id.get_value_string()),
+            ("shapeId", shape_id_str.as_str()),
+            ("r:id", r_id_str.as_str()),
+        ];
         write_start_tag(writer, "oleObject", attributes, true);
 
         write_end_tag(writer, "mc:Fallback");

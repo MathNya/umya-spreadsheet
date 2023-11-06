@@ -1,10 +1,12 @@
 use super::EnumTrait;
 use std::str::FromStr;
+
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct EnumValue<T: EnumTrait + FromStr> {
     value: Option<T>,
     value_default: T,
 }
+
 impl<T: EnumTrait + FromStr> EnumValue<T> {
     pub(crate) fn get_value(&self) -> &T {
         match &self.value {
@@ -23,20 +25,14 @@ impl<T: EnumTrait + FromStr> EnumValue<T> {
     }
 
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut EnumValue<T> {
-        match T::from_str(value.into().as_str()) {
-            Ok(v) => {
-                self.set_value(v);
-            }
-            Err(_) => {}
+        if let Ok(v) = T::from_str(value.into().as_str()) {
+            self.set_value(v);
         }
         self
     }
 
     pub(crate) fn has_value(&self) -> bool {
-        match &self.value {
-            Some(_) => true,
-            None => false,
-        }
+        self.value.is_some()
     }
 
     pub(crate) fn get_hash_string(&self) -> &str {

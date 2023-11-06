@@ -16,6 +16,7 @@ pub struct Transform2D {
     flip_v: Option<String>,
     flip_h: Option<String>,
 }
+
 impl Transform2D {
     pub fn get_x(&self) -> &usize {
         &self.x
@@ -78,32 +79,22 @@ impl Transform2D {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-
-        match get_attribute(e, b"rot") {
-            Some(v) => {
-                self.set_rot(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"rot") {
+            self.set_rot(v);
         }
 
-        match get_attribute(e, b"flipH") {
-            Some(v) => {
-                self.set_flip_h(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"flipH") {
+            self.set_flip_h(v);
         }
 
-        match get_attribute(e, b"flipV") {
-            Some(v) => {
-                self.set_flip_v(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"flipV") {
+            self.set_flip_v(v);
         }
 
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:off" => {
                         self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
                         self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
@@ -113,19 +104,15 @@ impl Transform2D {
                         self.set_height(get_attribute(e, b"cy").unwrap().parse::<usize>().unwrap());
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:xfrm" => {
-                        return;
-                    }
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:xfrm"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:xfrm" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:xfrm")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

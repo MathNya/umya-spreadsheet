@@ -20,6 +20,7 @@ pub struct GradientFill {
     linear_gradient_fill: Option<LinearGradientFill>,
     tile_rectangle: Option<TileRectangle>,
 }
+
 impl GradientFill {
     pub fn get_flip(&self) -> &TileFlipValues {
         self.flip.get_value()
@@ -83,60 +84,47 @@ impl GradientFill {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"flip") {
-            Some(v) => {
-                self.flip.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"rotWithShape") {
-            Some(v) => {
-                self.rotate_with_shape.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, flip, "flip");
+        set_string_from_xml!(self, e, rotate_with_shape, "rotWithShape");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:lin" => {
-                        let mut obj = LinearGradientFill::default();
-                        obj.set_attributes(reader, e);
-                        self.set_linear_gradient_fill(obj);
-                    }
-                    b"a:tileRect" => {
-                        let mut obj = TileRectangle::default();
-                        obj.set_attributes(reader, e);
-                        self.set_tile_rectangle(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:gsLst" => {
-                        self.gradient_stop_list.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:gradFill" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:gradFill"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
+                b"a:lin" => {
+                    let mut obj = LinearGradientFill::default();
+                    obj.set_attributes(reader, e);
+                    self.set_linear_gradient_fill(obj);
+                }
+                b"a:tileRect" => {
+                    let mut obj = TileRectangle::default();
+                    obj.set_attributes(reader, e);
+                    self.set_tile_rectangle(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"a:gsLst" {
+                    self.gradient_stop_list.set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:gradFill" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:gradFill")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:gradFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if &self.flip.has_value() == &true {
+        if self.flip.has_value() {
             attributes.push(("flip", self.flip.get_value_string()));
         }
-        if &self.rotate_with_shape.has_value() == &true {
+        if self.rotate_with_shape.has_value() {
             attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()));
         }
         write_start_tag(writer, "a:gradFill", attributes, false);

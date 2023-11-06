@@ -15,6 +15,7 @@ pub struct Break {
     min: UInt32Value,
     manual_page_break: BooleanValue,
 }
+
 impl Break {
     pub fn get_id(&self) -> &u32 {
         self.id.get_value()
@@ -48,33 +49,10 @@ impl Break {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"id") {
-            Some(v) => {
-                self.id.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"max") {
-            Some(v) => {
-                self.max.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"min") {
-            Some(v) => {
-                self.min.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"man") {
-            Some(v) => {
-                self.manual_page_break.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, id, "id");
+        set_string_from_xml!(self, e, max, "max");
+        set_string_from_xml!(self, e, min, "min");
+        set_string_from_xml!(self, e, manual_page_break, "man");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

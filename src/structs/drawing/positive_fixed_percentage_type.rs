@@ -10,6 +10,7 @@ use writer::driver::*;
 pub struct PositiveFixedPercentageType {
     val: Int32Value,
 }
+
 impl PositiveFixedPercentageType {
     pub fn get_val(&self) -> &i32 {
         self.val.get_value()
@@ -25,12 +26,7 @@ impl PositiveFixedPercentageType {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"val") {
-            Some(v) => {
-                self.val.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, val, "val");
     }
 
     pub(crate) fn write_to_shade(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

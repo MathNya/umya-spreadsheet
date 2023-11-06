@@ -9,6 +9,7 @@ pub struct Range {
     coordinate_end_col: Option<ColumnReference>,
     coordinate_end_row: Option<RowReference>,
 }
+
 impl Range {
     pub fn set_range<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let org_value = value.into();
@@ -26,23 +27,17 @@ impl Range {
                 is_lock_col, //
                 is_lock_row,
             ) = index_from_coordinate(coordinate_str);
-            match row {
-                Some(v) => {
-                    let mut coordinate_start_col = ColumnReference::default();
-                    coordinate_start_col.set_num(v);
-                    coordinate_start_col.set_is_lock(is_lock_col.unwrap());
-                    self.coordinate_start_col = Some(coordinate_start_col);
-                }
-                None => {}
+            if let Some(v) = row {
+                let mut coordinate_start_col = ColumnReference::default();
+                coordinate_start_col.set_num(v);
+                coordinate_start_col.set_is_lock(is_lock_col.unwrap());
+                self.coordinate_start_col = Some(coordinate_start_col);
             };
-            match col {
-                Some(v) => {
-                    let mut coordinate_start_row = RowReference::default();
-                    coordinate_start_row.set_num(v);
-                    coordinate_start_row.set_is_lock(is_lock_row.unwrap());
-                    self.coordinate_start_row = Some(coordinate_start_row);
-                }
-                None => {}
+            if let Some(v) = col {
+                let mut coordinate_start_row = RowReference::default();
+                coordinate_start_row.set_num(v);
+                coordinate_start_row.set_is_lock(is_lock_row.unwrap());
+                self.coordinate_start_row = Some(coordinate_start_row);
             }
         }
 
@@ -54,23 +49,17 @@ impl Range {
                 is_lock_col, //
                 is_lock_row,
             ) = index_from_coordinate(coordinate_str);
-            match row {
-                Some(v) => {
-                    let mut coordinate_end_col = ColumnReference::default();
-                    coordinate_end_col.set_num(v);
-                    coordinate_end_col.set_is_lock(is_lock_col.unwrap());
-                    self.coordinate_end_col = Some(coordinate_end_col);
-                }
-                None => {}
+            if let Some(v) = row {
+                let mut coordinate_end_col = ColumnReference::default();
+                coordinate_end_col.set_num(v);
+                coordinate_end_col.set_is_lock(is_lock_col.unwrap());
+                self.coordinate_end_col = Some(coordinate_end_col);
             };
-            match col {
-                Some(v) => {
-                    let mut coordinate_end_row = RowReference::default();
-                    coordinate_end_row.set_num(v);
-                    coordinate_end_row.set_is_lock(is_lock_row.unwrap());
-                    self.coordinate_end_row = Some(coordinate_end_row);
-                }
-                None => {}
+            if let Some(v) = col {
+                let mut coordinate_end_row = RowReference::default();
+                coordinate_end_row.set_num(v);
+                coordinate_end_row.set_is_lock(is_lock_row.unwrap());
+                self.coordinate_end_row = Some(coordinate_end_row);
             }
         }
         self

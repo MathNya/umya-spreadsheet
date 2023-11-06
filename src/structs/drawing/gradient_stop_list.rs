@@ -3,6 +3,7 @@ use super::GradientStop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -10,6 +11,7 @@ use writer::driver::*;
 pub struct GradientStopList {
     gradient_stop: Vec<GradientStop>,
 }
+
 impl GradientStopList {
     pub fn get_gradient_stop(&self) -> &Vec<GradientStop> {
         &self.gradient_stop
@@ -34,27 +36,22 @@ impl GradientStopList {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:gs" => {
-                        let mut obj = GradientStop::default();
-                        obj.set_attributes(reader, e);
-                        self.add_gradient_stop(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:gsLst" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:gsLst"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"a:gs" {
+                    let mut obj = GradientStop::default();
+                    obj.set_attributes(reader, e);
+                    self.add_gradient_stop(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:gsLst" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:gsLst")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

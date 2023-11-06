@@ -5,6 +5,7 @@ use super::SoftEdge;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -14,6 +15,7 @@ pub struct EffectList {
     outer_shadow: Option<OuterShadow>,
     soft_edge: Option<SoftEdge>,
 }
+
 impl EffectList {
     pub fn get_glow(&self) -> &Option<Glow> {
         &self.glow
@@ -61,19 +63,17 @@ impl EffectList {
             return;
         }
 
-        let mut buf = Vec::new();
-
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:softEdge" => {
-                        let mut obj = SoftEdge::default();
-                        obj.set_attributes(reader, e);
-                        self.set_soft_edge(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:softEdge" {
+                    let mut obj = SoftEdge::default();
+                    obj.set_attributes(reader, e);
+                    self.set_soft_edge(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:glow" => {
                         let mut obj = Glow::default();
                         obj.set_attributes(reader, e);
@@ -85,17 +85,15 @@ impl EffectList {
                         self.set_outer_shadow(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:effectLst" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:effectLst"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:effectLst" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:effectLst")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -107,21 +105,18 @@ impl EffectList {
 
         if !empty_flag {
             // a:glow
-            match &self.glow {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.glow {
+                v.write_to(writer);
             }
 
             // a:outerShdow
-            match &self.outer_shadow {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.outer_shadow {
+                v.write_to(writer);
             }
 
             // a:softEdge
-            match &self.soft_edge {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.soft_edge {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "a:effectLst");

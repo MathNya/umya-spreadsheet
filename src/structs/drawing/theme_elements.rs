@@ -5,6 +5,7 @@ use super::FormatScheme;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -14,6 +15,7 @@ pub struct ThemeElements {
     font_scheme: FontScheme,
     format_scheme: FormatScheme,
 }
+
 impl ThemeElements {
     pub fn set_color_scheme(&mut self, value: ColorScheme) {
         self.color_scheme = value;
@@ -56,10 +58,10 @@ impl ThemeElements {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:clrScheme" => {
                         self.color_scheme.set_attributes(reader, e);
                     }
@@ -70,17 +72,15 @@ impl ThemeElements {
                         self.format_scheme.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:themeElements" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:themeElements"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:themeElements" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:themeElements")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

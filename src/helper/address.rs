@@ -38,32 +38,32 @@ pub fn is_address<S: AsRef<str>>(input: S) -> bool {
 
 #[test]
 fn is_address_test() {
-    assert_eq!(is_address("A1"), true);
-    assert_eq!(is_address("$A1"), true);
-    assert_eq!(is_address("A$1"), true);
-    assert_eq!(is_address("$A$1"), true);
+    assert!(is_address("A1"));
+    assert!(is_address("$A1"));
+    assert!(is_address("A$1"));
+    assert!(is_address("$A$1"));
 
-    assert_eq!(is_address("A1:B2"), true);
-    assert_eq!(is_address("$A1:B2"), true);
-    assert_eq!(is_address("$A$1:B2"), true);
-    assert_eq!(is_address("$A$1:$B2"), true);
-    assert_eq!(is_address("$A$1:$B$2"), true);
+    assert!(is_address("A1:B2"));
+    assert!(is_address("$A1:B2"));
+    assert!(is_address("$A$1:B2"));
+    assert!(is_address("$A$1:$B2"));
+    assert!(is_address("$A$1:$B$2"));
 
-    assert_eq!(is_address("Sheet1!A1"), true);
-    assert_eq!(is_address("Sheet1!$A1"), true);
-    assert_eq!(is_address("Sheet1!A$1"), true);
-    assert_eq!(is_address("Sheet1!A$1"), true);
+    assert!(is_address("Sheet1!A1"));
+    assert!(is_address("Sheet1!$A1"));
+    assert!(is_address("Sheet1!A$1"));
+    assert!(is_address("Sheet1!A$1"));
 
-    assert_eq!(is_address("Sheet1!A1:B2"), true);
-    assert_eq!(is_address("Sheet1!$A1:B2"), true);
-    assert_eq!(is_address("Sheet1!$A$1:B2"), true);
-    assert_eq!(is_address("Sheet1!$A$1:$B2"), true);
-    assert_eq!(is_address("Sheet1!$A$1:$B$2"), true);
-    assert_eq!(is_address("New Sheet!$H$7:$H$10"), true);
+    assert!(is_address("Sheet1!A1:B2"));
+    assert!(is_address("Sheet1!$A1:B2"));
+    assert!(is_address("Sheet1!$A$1:B2"));
+    assert!(is_address("Sheet1!$A$1:$B2"));
+    assert!(is_address("Sheet1!$A$1:$B$2"));
+    assert!(is_address("New Sheet!$H$7:$H$10"));
 
-    assert_eq!(is_address("(Sheet1!A1:B2)"), false);
-    assert_eq!(is_address("Sheet1!A1:"), false);
-    assert_eq!(is_address("Sheet1!A1:B"), false);
-    assert_eq!(is_address("Sheet1!A:B2"), false);
-    assert_eq!(is_address("Sheet1"), false);
+    assert!(!is_address("(Sheet1!A1:B2)"));
+    assert!(!is_address("Sheet1!A1:"));
+    assert!(!is_address("Sheet1!A1:B"));
+    assert!(!is_address("Sheet1!A:B2"));
+    assert!(!is_address("Sheet1"));
 }

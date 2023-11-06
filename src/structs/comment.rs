@@ -1,3 +1,5 @@
+use crate::xml_read_loop;
+
 use super::vml::spreadsheet::Anchor;
 use super::Coordinate;
 use super::RichText;
@@ -13,6 +15,7 @@ pub struct Comment {
     text: RichText,
     shape: Shape,
 }
+
 impl Comment {
     pub fn get_coordinate(&self) -> &Coordinate {
         &self.coordinate
@@ -162,7 +165,7 @@ impl Comment {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
-        authors: &Vec<String>,
+        authors: &[String],
     ) {
         let coordinate = get_attribute(e, b"ref").unwrap();
         self.get_coordinate_mut().set_coordinate(coordinate);
@@ -174,24 +177,19 @@ impl Comment {
         let author = authors.get(author_id).unwrap();
         self.set_author(author);
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"text" => {
-                        self.get_text_mut().set_attributes_text(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"comment" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "comment"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"text" {
+                    self.get_text_mut().set_attributes_text(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"comment" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "comment")
+        );
     }
 }

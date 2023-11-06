@@ -6,6 +6,7 @@ use super::Shape;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
 use writer::driver::*;
@@ -17,6 +18,7 @@ pub struct OneCellAnchor {
     shape: Option<Shape>,
     picture: Option<Picture>,
 }
+
 impl OneCellAnchor {
     pub fn get_from_marker(&self) -> &MarkerType {
         &self.from_marker
@@ -102,10 +104,10 @@ impl OneCellAnchor {
         _e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"xdr:from" => {
                         self.from_marker.set_attributes(reader, e);
                     }
@@ -120,23 +122,20 @@ impl OneCellAnchor {
                         self.set_picture(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"xdr:ext" => {
-                        self.extent.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:oneCellAnchor" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:oneCellAnchor"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"xdr:ext" {
+                    self.extent.set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:oneCellAnchor" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:oneCellAnchor")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {

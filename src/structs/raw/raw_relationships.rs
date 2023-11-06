@@ -16,6 +16,7 @@ pub(crate) struct RawRelationships {
     file_target: StringValue,
     relationship_list: Vec<RawRelationship>,
 }
+
 impl RawRelationships {
     pub(crate) fn _get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
@@ -76,24 +77,19 @@ impl RawRelationships {
         };
         let mut reader = Reader::from_reader(data);
         reader.trim_text(true);
-        let mut buf = Vec::new();
 
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"Relationship" => {
-                        let mut obj = RawRelationship::default();
-                        obj.set_attributes(&mut reader, e, arv, base_path);
-                        self.add_relationship_list(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Eof) => break,
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"Relationship" {
+                    let mut obj = RawRelationship::default();
+                    obj.set_attributes(&mut reader, e, arv, base_path);
+                    self.add_relationship_list(obj);
+                }
+            },
+            Event::Eof => break
+        );
+
         true
     }
 

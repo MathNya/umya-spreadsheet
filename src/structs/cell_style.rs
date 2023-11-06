@@ -14,6 +14,7 @@ pub struct CellStyle {
     builtin_id: UInt32Value,
     format_id: UInt32Value,
 }
+
 impl CellStyle {
     pub fn get_name(&self) -> &str {
         self.name.get_value()
@@ -47,24 +48,9 @@ impl CellStyle {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"name") {
-            Some(v) => {
-                self.name.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"xfId") {
-            Some(v) => {
-                self.format_id.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"builtinId") {
-            Some(v) => {
-                self.builtin_id.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, name, "name");
+        set_string_from_xml!(self, e, builtin_id, "builtinId");
+        set_string_from_xml!(self, e, format_id, "xfId");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

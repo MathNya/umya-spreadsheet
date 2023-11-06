@@ -3,6 +3,7 @@ use super::GraphicData;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
 use writer::driver::*;
@@ -11,6 +12,7 @@ use writer::driver::*;
 pub struct Graphic {
     graphic_data: GraphicData,
 }
+
 impl Graphic {
     pub fn get_graphic_data(&self) -> &GraphicData {
         &self.graphic_data
@@ -31,27 +33,21 @@ impl Graphic {
         _e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        let mut buf = Vec::new();
-
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:graphicData" => {
-                        self.graphic_data
-                            .set_attributes(reader, e, drawing_relationships);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:graphic" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:graphic"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"a:graphicData" {
+                    self.graphic_data
+                        .set_attributes(reader, e, drawing_relationships);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:graphic" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:graphic")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {

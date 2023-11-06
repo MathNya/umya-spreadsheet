@@ -26,12 +26,7 @@ impl Path {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"o:connecttype") {
-            Some(v) => {
-                self.connection_point_type.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, connection_point_type, "o:connecttype");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

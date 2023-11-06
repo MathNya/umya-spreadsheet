@@ -4,6 +4,7 @@ use super::Style;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -11,6 +12,7 @@ use writer::driver::*;
 pub(crate) struct BordersCrate {
     borders: Vec<Borders>,
 }
+
 impl BordersCrate {
     pub(crate) fn get_borders(&self) -> &Vec<Borders> {
         &self.borders
@@ -48,34 +50,28 @@ impl BordersCrate {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"border" => {
-                        let obj = Borders::default();
-                        self.set_borders(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"border" => {
-                        let mut obj = Borders::default();
-                        obj.set_attributes(reader, e);
-                        self.set_borders(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"borders" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "borders"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"border" {
+                    let obj = Borders::default();
+                    self.set_borders(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"border" {
+                    let mut obj = Borders::default();
+                    obj.set_attributes(reader, e);
+                    self.set_borders(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"borders" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "borders")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -3,6 +3,7 @@ use super::ShapeProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -10,6 +11,7 @@ use writer::driver::*;
 pub struct MajorGridlines {
     shape_properties: Option<ShapeProperties>,
 }
+
 impl MajorGridlines {
     pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
         &self.shape_properties
@@ -34,27 +36,22 @@ impl MajorGridlines {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c:spPr" => {
-                        let mut obj = ShapeProperties::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape_properties(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:majorGridlines" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:majorGridlines"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"c:spPr" {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:majorGridlines" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:majorGridlines")
+        );
     }
 
     fn with_include(&self) -> bool {
@@ -70,11 +67,8 @@ impl MajorGridlines {
             write_start_tag(writer, "c:majorGridlines", vec![], false);
 
             // c:spPr
-            match &self.shape_properties {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.shape_properties {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "c:majorGridlines");

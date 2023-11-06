@@ -11,6 +11,7 @@ use writer::driver::*;
 pub struct Style {
     val: ByteValue,
 }
+
 impl Style {
     pub fn get_val(&self) -> &u8 {
         self.val.get_value()

@@ -26,11 +26,11 @@ impl ColumnReference {
     }
 
     pub(crate) fn offset_num(&mut self, value: i32) -> &mut Self {
-        if &value > &0 {
+        if value > 0 {
             self.plus_num(value as u32);
         }
-        if &value < &0 {
-            self.minus_num((value * -1) as u32);
+        if value < 0 {
+            self.minus_num(-value as u32);
         }
         self
     }
@@ -62,7 +62,7 @@ impl ColumnReference {
     pub(crate) fn get_coordinate(&self) -> String {
         format!(
             "{}{}",
-            if &self.is_lock == &true { "$" } else { "" },
+            if self.is_lock { "$" } else { "" },
             string_from_column_index(&self.num),
         )
     }
@@ -85,9 +85,7 @@ impl ColumnReference {
 
     pub(crate) fn is_remove(&self, root_col_num: &u32, offset_col_num: &u32) -> bool {
         if root_col_num > &0 {
-            let col_result =
-                &self.num >= root_col_num && &self.num < &(root_col_num + offset_col_num);
-            return col_result;
+            return &self.num >= root_col_num && self.num < (root_col_num + offset_col_num);
         }
         false
     }

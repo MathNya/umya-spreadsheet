@@ -1,0 +1,32 @@
+name: umya-spreadsheet
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Rust
+      run: rustup component add rustfmt clippy
+
+    - name: Build
+      run: cargo build
+
+    - name: Lint (clippy)
+      run: cargo clippy -- -D warnings
+
+    - name: Lint (rustfmt)
+      run: cargo fmt --all -- --check
+
+    - name: Tests
+      run: cargo test

@@ -5,6 +5,7 @@ use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -13,6 +14,7 @@ pub struct Fill {
     pattern_fill: Option<PatternFill>,
     gradient_fill: Option<GradientFill>,
 }
+
 impl Fill {
     pub fn get_pattern_fill(&self) -> &Option<PatternFill> {
         &self.pattern_fill
@@ -98,18 +100,17 @@ impl Fill {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"patternFill" => {
-                        let mut obj = PatternFill::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_pattern_fill(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"patternFill" {
+                    let mut obj = PatternFill::default();
+                    obj.set_attributes(reader, e, true);
+                    self.set_pattern_fill(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"patternFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e, false);
@@ -121,17 +122,15 @@ impl Fill {
                         self.set_gradient_fill(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"fill" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "fill"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"fill" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "fill")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -9,6 +9,7 @@ pub struct Anchor {
     bottom_row: u32,
     bottom_offset: u32,
 }
+
 impl Anchor {
     pub fn get_left_column(&self) -> &u32 {
         &self.left_column

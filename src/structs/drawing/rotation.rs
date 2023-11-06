@@ -13,6 +13,7 @@ pub struct Rotation {
     longitude: Int32Value,
     revolution: Int32Value,
 }
+
 impl Rotation {
     pub fn get_latitude(&self) -> &i32 {
         self.latitude.get_value()
@@ -46,26 +47,9 @@ impl Rotation {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"lat") {
-            Some(v) => {
-                self.latitude.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"lon") {
-            Some(v) => {
-                self.longitude.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"rev") {
-            Some(v) => {
-                self.revolution.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, latitude, "lat");
+        set_string_from_xml!(self, e, longitude, "lon");
+        set_string_from_xml!(self, e, revolution, "rev");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
