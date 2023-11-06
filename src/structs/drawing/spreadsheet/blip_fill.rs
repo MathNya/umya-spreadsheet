@@ -18,6 +18,7 @@ pub struct BlipFill {
     source_rectangle: Option<SourceRectangle>,
     stretch: Stretch,
 }
+
 impl BlipFill {
     pub fn get_rotate_with_shape(&self) -> &bool {
         self.rotate_with_shape.get_value()
@@ -73,55 +74,49 @@ impl BlipFill {
         e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        let mut buf = Vec::new();
+        set_string_from_xml!(self, e, rotate_with_shape, "rotWithShape");
 
-        match get_attribute(e, b"rotWithShape") {
-            Some(v) => {
-                self.rotate_with_shape.set_value_string(v);
-            }
-            None => {}
-        }
-
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:blip" => {
                         self.blip
                             .set_attributes(reader, e, drawing_relationships.unwrap());
-                    }
+                        }
                     b"a:stretch" => {
                         self.stretch.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:blip" => {
                         self.blip
                             .set_attributes(reader, e, drawing_relationships.unwrap());
-                    }
+                        }
                     b"a:srcRect" => {
                         let mut source_rectangle = SourceRectangle::default();
                         source_rectangle.set_attributes(reader, e);
                         self.set_source_rectangle(source_rectangle);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:blipFill" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:blipFill"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:blipFill" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:blipFill")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
         // xdr:blipFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if &self.rotate_with_shape.has_value() == &true {
+        if self.rotate_with_shape.has_value() {
             attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()))
         }
         write_start_tag(writer, "xdr:blipFill", attributes, false);
@@ -130,9 +125,8 @@ impl BlipFill {
         let _ = &self.blip.write_to(writer, r_id);
 
         // a:srcRect
-        match &self.source_rectangle {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.source_rectangle {
+            v.write_to(writer);
         }
 
         // a:stretch

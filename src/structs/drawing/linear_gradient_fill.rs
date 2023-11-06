@@ -13,6 +13,7 @@ pub struct LinearGradientFill {
     angle: Int32Value,
     scaled: BooleanValue,
 }
+
 impl LinearGradientFill {
     pub fn get_angle(&self) -> &i32 {
         self.angle.get_value()
@@ -37,28 +38,18 @@ impl LinearGradientFill {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"ang") {
-            Some(v) => {
-                self.angle.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"scaled") {
-            Some(v) => {
-                self.scaled.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, angle, "ang");
+        set_string_from_xml!(self, e, scaled, "scaled");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lin
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let ang = self.angle.get_value_string();
-        if &self.angle.has_value() == &true {
+        if self.angle.has_value() {
             attributes.push(("ang", &ang));
         }
-        if &self.scaled.has_value() == &true {
+        if self.scaled.has_value() {
             attributes.push(("scaled", self.scaled.get_value_string()));
         }
         write_start_tag(writer, "a:lin", attributes, true);

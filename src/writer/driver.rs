@@ -63,17 +63,15 @@ pub(crate) fn make_file_from_writer<W: io::Seek + io::Write>(
 pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
     path: &str,
     arv: &mut zip::ZipWriter<W>,
-    writer: &Vec<u8>,
+    writer: &[u8],
     dir: Option<&str>,
     is_light: &bool,
 ) -> Result<(), io::Error> {
-    let zip_opt =
-        match is_light {
-            &false => zip::write::FileOptions::default()
-                .compression_method(zip::CompressionMethod::DEFLATE),
-            &true => zip::write::FileOptions::default()
-                .compression_method(zip::CompressionMethod::Stored),
-        };
+    let zip_opt = if *is_light {
+        zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored)
+    } else {
+        zip::write::FileOptions::default().compression_method(zip::CompressionMethod::DEFLATE)
+    };
     arv.start_file(&to_path(path, dir), zip_opt)?;
     arv.write_all(writer)
 }

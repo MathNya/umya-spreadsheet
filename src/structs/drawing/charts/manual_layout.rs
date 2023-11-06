@@ -8,7 +8,7 @@ use super::Top;
 use super::TopMode;
 use super::Width;
 use super::WidthMode;
-
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -27,6 +27,7 @@ pub struct ManualLayout {
     width: Option<Width>,
     width_mode: Option<WidthMode>,
 }
+
 impl ManualLayout {
     pub fn get_height(&self) -> &Option<Height> {
         &self.height
@@ -167,67 +168,63 @@ impl ManualLayout {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"c:h" => {
-                        let mut obj = Height::default();
-                        obj.set_attributes(reader, e);
-                        self.set_height(obj);
-                    }
-                    b"c:hMode" => {
-                        let mut obj = HeightMode::default();
-                        obj.set_attributes(reader, e);
-                        self.set_height_mode(obj);
-                    }
-                    b"c:layoutTarget" => {
-                        let mut obj = LayoutTarget::default();
-                        obj.set_attributes(reader, e);
-                        self.set_layout_target(obj);
-                    }
-                    b"c:x" => {
-                        let mut obj = Left::default();
-                        obj.set_attributes(reader, e);
-                        self.set_left(obj);
-                    }
-                    b"c:xMode" => {
-                        let mut obj = LeftMode::default();
-                        obj.set_attributes(reader, e);
-                        self.set_left_mode(obj);
-                    }
-                    b"c:y" => {
-                        let mut obj = Top::default();
-                        obj.set_attributes(reader, e);
-                        self.set_top(obj);
-                    }
-                    b"c:yMode" => {
-                        let mut obj = TopMode::default();
-                        obj.set_attributes(reader, e);
-                        self.set_top_mode(obj);
-                    }
-                    b"c:w" => {
-                        let mut obj = Width::default();
-                        obj.set_attributes(reader, e);
-                        self.set_width(obj);
-                    }
-                    b"c:wMode" => {
-                        let mut obj = WidthMode::default();
-                        obj.set_attributes(reader, e);
-                        self.set_width_mode(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:manualLayout" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:manualLayout"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => match e.name().0 {
+                b"c:h" => {
+                    let mut obj = Height::default();
+                    obj.set_attributes(reader, e);
+                    self.set_height(obj);
+                }
+                b"c:hMode" => {
+                    let mut obj = HeightMode::default();
+                    obj.set_attributes(reader, e);
+                    self.set_height_mode(obj);
+                }
+                b"c:layoutTarget" => {
+                    let mut obj = LayoutTarget::default();
+                    obj.set_attributes(reader, e);
+                    self.set_layout_target(obj);
+                }
+                b"c:x" => {
+                    let mut obj = Left::default();
+                    obj.set_attributes(reader, e);
+                    self.set_left(obj);
+                }
+                b"c:xMode" => {
+                    let mut obj = LeftMode::default();
+                    obj.set_attributes(reader, e);
+                    self.set_left_mode(obj);
+                }
+                b"c:y" => {
+                    let mut obj = Top::default();
+                    obj.set_attributes(reader, e);
+                    self.set_top(obj);
+                }
+                b"c:yMode" => {
+                    let mut obj = TopMode::default();
+                    obj.set_attributes(reader, e);
+                    self.set_top_mode(obj);
+                }
+                b"c:w" => {
+                    let mut obj = Width::default();
+                    obj.set_attributes(reader, e);
+                    self.set_width(obj);
+                }
+                b"c:wMode" => {
+                    let mut obj = WidthMode::default();
+                    obj.set_attributes(reader, e);
+                    self.set_width_mode(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:manualLayout" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:manualLayout"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -235,75 +232,48 @@ impl ManualLayout {
         write_start_tag(writer, "c:manualLayout", vec![], false);
 
         // c:hMode
-        match &self.height_mode {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.height_mode {
+            v.write_to(writer);
         }
 
         // c:xMode
-        match &self.left_mode {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.left_mode {
+            v.write_to(writer);
         }
 
         // c:yMode
-        match &self.top_mode {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.top_mode {
+            v.write_to(writer);
         }
 
         // c:wMode
-        match &self.width_mode {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.width_mode {
+            v.write_to(writer);
         }
 
         // c:h
-        match &self.height {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.height {
+            v.write_to(writer);
         }
 
         // c:x
-        match &self.left {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.left {
+            v.write_to(writer);
         }
 
         // c:y
-        match &self.top {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.top {
+            v.write_to(writer);
         }
 
         // c:w
-        match &self.width {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.width {
+            v.write_to(writer);
         }
 
         // c:layoutTarget
-        match &self.layout_target {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.layout_target {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:manualLayout");

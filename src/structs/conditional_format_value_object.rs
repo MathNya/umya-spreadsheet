@@ -13,6 +13,7 @@ pub struct ConditionalFormatValueObject {
     r#type: EnumValue<ConditionalFormatValueObjectValues>,
     val: StringValue,
 }
+
 impl ConditionalFormatValueObject {
     pub fn get_type(&self) -> &ConditionalFormatValueObjectValues {
         self.r#type.get_value()
@@ -38,37 +39,22 @@ impl ConditionalFormatValueObject {
         e: &BytesStart,
         empty_flg: bool,
     ) {
-        match get_attribute(e, b"type") {
-            Some(v) => {
-                self.r#type.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"val") {
-            Some(v) => {
-                self.val.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, r#type, "type");
+        set_string_from_xml!(self, e, val, "val");
 
         if empty_flg {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"cfvo" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "cfvo"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"cfvo" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "cfvo")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -82,48 +82,48 @@ pub fn write_writer<W: io::Seek + io::Write>(
 
     // encoding.
     let res_into: Vec<u8>;
-    let data_bytes = match option.get_csv_encode_value() {
-        &CsvEncodeValues::ShiftJis => {
+    let data_bytes = match *option.get_csv_encode_value() {
+        CsvEncodeValues::ShiftJis => {
             let (res, _, _) = encoding_rs::SHIFT_JIS.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::Koi8u => {
+        CsvEncodeValues::Koi8u => {
             let (res, _, _) = encoding_rs::KOI8_U.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::Koi8r => {
+        CsvEncodeValues::Koi8r => {
             let (res, _, _) = encoding_rs::KOI8_R.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::Iso88598i => {
+        CsvEncodeValues::Iso88598i => {
             let (res, _, _) = encoding_rs::ISO_8859_8_I.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::Gbk => {
+        CsvEncodeValues::Gbk => {
             let (res, _, _) = encoding_rs::GBK.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::EucKr => {
+        CsvEncodeValues::EucKr => {
             let (res, _, _) = encoding_rs::EUC_KR.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::Big5 => {
+        CsvEncodeValues::Big5 => {
             let (res, _, _) = encoding_rs::BIG5.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::Utf16Le => {
+        CsvEncodeValues::Utf16Le => {
             let (res, _, _) = encoding_rs::UTF_16LE.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
         }
-        &CsvEncodeValues::Utf16Be => {
+        CsvEncodeValues::Utf16Be => {
             let (res, _, _) = encoding_rs::UTF_16BE.encode(&data);
             res_into = res.into_owned();
             &res_into[..]
@@ -132,7 +132,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     };
 
     // output.
-    writer.write(data_bytes).unwrap();
+    writer.write_all(data_bytes).unwrap();
     Ok(())
 }
 

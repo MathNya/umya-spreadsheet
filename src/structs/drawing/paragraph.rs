@@ -5,6 +5,7 @@ use super::RunProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -14,6 +15,7 @@ pub struct Paragraph {
     run: Vec<Run>,
     end_para_run_properties: Option<RunProperties>,
 }
+
 impl Paragraph {
     pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
         &self.paragraph_properties
@@ -58,10 +60,10 @@ impl Paragraph {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:pPr" => {
                         self.paragraph_properties.set_attributes(reader, e, false);
                     }
@@ -76,8 +78,10 @@ impl Paragraph {
                         self.set_end_para_run_properties(run_properties);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:pPr" => {
                         self.paragraph_properties.set_attributes(reader, e, true);
                     }
@@ -87,17 +91,15 @@ impl Paragraph {
                         self.set_end_para_run_properties(run_properties);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:p" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:p"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:p" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:p")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -113,9 +115,8 @@ impl Paragraph {
         }
 
         // a:endParaRPr
-        match &self.end_para_run_properties {
-            Some(v) => v.write_to_end_para_rpr(writer),
-            None => {}
+        if let Some(v) = &self.end_para_run_properties {
+            v.write_to_end_para_rpr(writer);
         }
 
         write_end_tag(writer, "a:p");

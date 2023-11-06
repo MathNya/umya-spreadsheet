@@ -1,3 +1,6 @@
+#![allow(warnings)]
+#![allow(clippy::all)]
+
 extern crate chrono;
 extern crate umya_spreadsheet;
 use std::time::Instant;

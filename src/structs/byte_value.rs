@@ -24,9 +24,6 @@ impl ByteValue {
     }
 
     pub(crate) fn has_value(&self) -> bool {
-        match &self.value {
-            Some(_) => true,
-            None => false,
-        }
+        self.value.is_some()
     }
 }

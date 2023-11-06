@@ -14,6 +14,7 @@ pub struct GradientStop {
     scheme_color: Option<SchemeColor>,
     rgb_color_model_hex: Option<RgbColorModelHex>,
 }
+
 impl GradientStop {
     pub fn get_position(&self) -> &i32 {
         &self.position
@@ -55,17 +56,14 @@ impl GradientStop {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"pos") {
-            Some(v) => {
-                self.set_position(v.parse::<i32>().unwrap());
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"pos") {
+            self.set_position(v.parse::<i32>().unwrap());
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:schemeClr" => {
                         let mut obj = SchemeColor::default();
                         obj.set_attributes(reader, e, false);
@@ -77,8 +75,10 @@ impl GradientStop {
                         self.set_rgb_color_model_hex(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:schemeClr" => {
                         let mut obj = SchemeColor::default();
                         obj.set_attributes(reader, e, true);
@@ -90,17 +90,15 @@ impl GradientStop {
                         self.set_rgb_color_model_hex(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:gs" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:gs"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:gs" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:gs")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

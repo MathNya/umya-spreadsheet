@@ -11,18 +11,17 @@ pub struct TextBox {
     style: StringValue,
     innder: StringValue,
 }
+
 impl Default for TextBox {
     fn default() -> Self {
         let mut style = StringValue::default();
         style.set_value_string("mso-direction-alt:auto");
         let mut innder = StringValue::default();
         innder.set_value_string("<div style=\"text-align:left\"/>");
-        Self {
-            style: style,
-            innder: innder,
-        }
+        Self { style, innder }
     }
 }
+
 impl TextBox {
     pub fn get_style(&self) -> &str {
         self.style.get_value()
@@ -47,26 +46,17 @@ impl TextBox {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"style") {
-            Some(v) => {
-                self.style.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, style, "style");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"v:textbox" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "v:textbox"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"v:textbox" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "v:textbox")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

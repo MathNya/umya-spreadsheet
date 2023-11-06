@@ -38,6 +38,7 @@ pub struct Shape {
     optional_number: Int32Value,
     coordinate_size: StringValue,
 }
+
 impl Shape {
     pub fn get_style(&self) -> &str {
         self.style.get_value()
@@ -226,121 +227,71 @@ impl Shape {
         e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        match get_attribute(e, b"type") {
-            Some(v) => {
-                self.r_type.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"style") {
-            Some(v) => {
-                self.style.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"filled") {
-            Some(v) => {
-                self.filled.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"fillcolor") {
-            Some(v) => {
-                self.fill_color.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"stroked") {
-            Some(v) => {
-                self.stroked.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"strokecolor") {
-            Some(v) => {
-                self.stroke_color.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"strokeweight") {
-            Some(v) => {
-                self.stroke_weight.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"o:insetmode") {
-            Some(v) => {
-                self.inset_mode.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"o:spt") {
-            Some(v) => {
-                self.optional_number.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"coordsize") {
-            Some(v) => {
-                self.coordinate_size.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, r_type, "type");
+        set_string_from_xml!(self, e, style, "style");
+        set_string_from_xml!(self, e, filled, "filled");
+        set_string_from_xml!(self, e, fill_color, "fillcolor");
+        set_string_from_xml!(self, e, stroked, "stoked");
+        set_string_from_xml!(self, e, stroke_color, "stokecolor");
+        set_string_from_xml!(self, e, stroke_weight, "stokeweight");
+        set_string_from_xml!(self, e, inset_mode, "o:insetmode");
+        set_string_from_xml!(self, e, optional_number, "o:spt");
+        set_string_from_xml!(self, e, coordinate_size, "coordsize");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"v:fill" => {
-                        let mut obj = Fill::default();
-                        obj.set_attributes(reader, e);
-                        self.set_fill(obj);
-                    }
-                    b"v:shadow" => {
-                        let mut obj = Shadow::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shadow(obj);
-                    }
-                    b"v:path" => {
-                        let mut obj = Path::default();
-                        obj.set_attributes(reader, e);
-                        self.set_path(obj);
-                    }
-                    b"v:stroke" => {
-                        let mut obj = Stroke::default();
-                        obj.set_attributes(reader, e);
-                        self.set_stroke(obj);
-                    }
-                    b"v:imagedata" => {
-                        let mut obj = ImageData::default();
-                        obj.set_attributes(reader, e, drawing_relationships);
-                        self.set_image_data(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"v:textbox" => {
-                        let mut obj = TextBox::default();
-                        obj.set_attributes(reader, e);
-                        self.set_text_box(obj);
-                    }
-                    b"x:ClientData" => {
-                        let mut obj = ClientData::default();
-                        obj.set_attributes(reader, e);
-                        self.set_client_data(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"v:shape" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "v:shape"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
+                b"v:fill" => {
+                    let mut obj = Fill::default();
+                    obj.set_attributes(reader, e);
+                    self.set_fill(obj);
+                }
+                b"v:shadow" => {
+                    let mut obj = Shadow::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shadow(obj);
+                }
+                b"v:path" => {
+                    let mut obj = Path::default();
+                    obj.set_attributes(reader, e);
+                    self.set_path(obj);
+                }
+                b"v:stroke" => {
+                    let mut obj = Stroke::default();
+                    obj.set_attributes(reader, e);
+                    self.set_stroke(obj);
+                }
+                b"v:imagedata" => {
+                    let mut obj = ImageData::default();
+                    obj.set_attributes(reader, e, drawing_relationships);
+                    self.set_image_data(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                b"v:textbox" => {
+                    let mut obj = TextBox::default();
+                    obj.set_attributes(reader, e);
+                    self.set_text_box(obj);
+                }
+                b"x:ClientData" => {
+                    let mut obj = ClientData::default();
+                    obj.set_attributes(reader, e);
+                    self.set_client_data(obj);
+                }
+                _ => (),
+                }
+            },
+            Event::End(ref e) => {
+                if  e.name().into_inner() == b"v:shape" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "v:shape")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, id: &usize, r_id: &usize) {
@@ -382,51 +333,33 @@ impl Shape {
         write_start_tag(writer, "v:shape", attributes, false);
 
         // v:fill
-        match &self.fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.fill {
+            v.write_to(writer);
         }
 
         // v:shadow
-        match &self.shadow {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shadow {
+            v.write_to(writer);
         }
 
         // v:path
-        match &self.path {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.path {
+            v.write_to(writer);
         }
 
         // v:textbox
-        match &self.text_box {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_box {
+            v.write_to(writer);
         }
 
         // v:stroke
-        match &self.stroke {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.stroke {
+            v.write_to(writer);
         }
 
         // v:imagedata
-        match &self.image_data {
-            Some(v) => {
-                v.write_to(writer, r_id);
-            }
-            None => {}
+        if let Some(v) = &self.image_data {
+            v.write_to(writer, r_id);
         }
 
         // x:ClientData

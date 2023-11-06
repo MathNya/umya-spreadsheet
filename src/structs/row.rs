@@ -24,6 +24,7 @@ pub struct Row {
     hidden: BooleanValue,
     style: Style,
 }
+
 impl Row {
     pub fn get_row_num(&self) -> &u32 {
         self.row_num.get_value()
@@ -124,91 +125,50 @@ impl Row {
         stylesheet: &Stylesheet,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"r") {
-            Some(v) => {
-                self.row_num.set_value_string(v);
+        set_string_from_xml!(self, e, row_num, "r");
+        set_string_from_xml!(self, e, height, "ht");
+        set_string_from_xml!(self, e, thick_bot, "thickBot");
+        set_string_from_xml!(self, e, custom_height, "customHeight");
+        set_string_from_xml!(self, e, hidden, "hidden");
+
+        if let Some(v) = get_attribute(e, b"x14ac:dyDescent") {
+            if !v.is_empty() {
+                self.descent.set_value_string(v);
             }
-            None => {}
         }
 
-        match get_attribute(e, b"ht") {
-            Some(v) => {
-                self.height.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"thickBot") {
-            Some(v) => {
-                self.thick_bot.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"customHeight") {
-            Some(v) => {
-                self.custom_height.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"hidden") {
-            Some(v) => {
-                self.hidden.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"x14ac:dyDescent") {
-            Some(v) => {
-                if !v.is_empty() {
-                    self.descent.set_value_string(v);
-                }
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"s") {
-            Some(v) => {
-                let style = stylesheet.get_style(v.parse::<usize>().unwrap());
-                self.set_style(style);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"s") {
+            let style = stylesheet.get_style(v.parse::<usize>().unwrap());
+            self.set_style(style);
         }
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"c" => {
-                        let mut obj = Cell::default();
-                        obj.set_attributes(reader, e, shared_string_table, stylesheet, true);
-                        cells.set_fast(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c" => {
-                        let mut obj = Cell::default();
-                        obj.set_attributes(reader, e, shared_string_table, stylesheet, false);
-                        cells.set_fast(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"row" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "row"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"c" {
+                    let mut obj = Cell::default();
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, true);
+                    cells.set_fast(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"c" {
+                    let mut obj = Cell::default();
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, false);
+                    cells.set_fast(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"row" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "row")
+        );
     }
 
     pub(crate) fn write_to(

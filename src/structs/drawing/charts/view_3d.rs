@@ -6,6 +6,7 @@ use super::RotateY;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -16,6 +17,7 @@ pub struct View3D {
     right_angle_axes: Option<RightAngleAxes>,
     perspective: Option<Perspective>,
 }
+
 impl View3D {
     pub fn get_rotate_x(&self) -> &Option<RotateX> {
         &self.rotate_x
@@ -74,10 +76,10 @@ impl View3D {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().0 {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().0 {
                     b"c:rotX" => {
                         let mut obj = RotateX::default();
                         obj.set_attributes(reader, e);
@@ -99,17 +101,15 @@ impl View3D {
                         self.set_perspective(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:view3D" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:view3D"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:view3D" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:view3D")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -117,35 +117,23 @@ impl View3D {
         write_start_tag(writer, "c:view3D", vec![], false);
 
         // c:rotX
-        match &self.rotate_x {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.rotate_x {
+            v.write_to(writer);
         }
 
         // c:rotY
-        match &self.rotate_y {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.rotate_y {
+            v.write_to(writer);
         }
 
         // c:rAngAx
-        match &self.right_angle_axes {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.right_angle_axes {
+            v.write_to(writer);
         }
 
         // c:perspective
-        match &self.perspective {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.perspective {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:view3D");

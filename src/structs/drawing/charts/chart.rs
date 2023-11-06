@@ -10,6 +10,7 @@ use super::ShowDataLabelsOverMaximum;
 use super::SideWall;
 use super::Title;
 use super::View3D;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -31,6 +32,7 @@ pub struct Chart {
     display_blanks_as: DisplayBlanksAs,
     show_data_labels_over_maximum: ShowDataLabelsOverMaximum,
 }
+
 impl Chart {
     pub const LANG_EN_GB: &'static str = "en_GB";
     pub const LANG_JA_JP: &'static str = "ja-JP";
@@ -190,69 +192,64 @@ impl Chart {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"c:title" => {
-                        let mut obj = Title::default();
-                        obj.set_attributes(reader, e);
-                        self.set_title(obj);
-                    }
-                    b"c:view3D" => {
-                        let mut obj = View3D::default();
-                        obj.set_attributes(reader, e);
-                        self.set_view_3d(obj);
-                    }
-                    b"c:floor" => {
-                        let mut obj = Floor::default();
-                        obj.set_attributes(reader, e);
-                        self.set_floor(obj);
-                    }
-                    b"c:sideWall" => {
-                        let mut obj = SideWall::default();
-                        obj.set_attributes(reader, e);
-                        self.set_side_wall(obj);
-                    }
-                    b"c:backWall" => {
-                        let mut obj = BackWall::default();
-                        obj.set_attributes(reader, e);
-                        self.set_back_wall(obj);
-                    }
-                    b"c:plotArea" => {
-                        self.plot_area.set_attributes(reader, e);
-                    }
-                    b"c:legend" => {
-                        self.legend.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"c:autoTitleDeleted" => {
-                        self.auto_title_deleted.set_attributes(reader, e);
-                    }
-                    b"c:plotVisOnly" => {
-                        self.plot_visible_only.set_attributes(reader, e);
-                    }
-                    b"c:dispBlanksAs" => {
-                        self.display_blanks_as.set_attributes(reader, e);
-                    }
-                    b"c:showDLblsOverMax" => {
-                        self.show_data_labels_over_maximum.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:chart" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:chart"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().into_inner() {
+                b"c:title" => {
+                    let mut obj = Title::default();
+                    obj.set_attributes(reader, e);
+                    self.set_title(obj);
+                }
+                b"c:view3D" => {
+                    let mut obj = View3D::default();
+                    obj.set_attributes(reader, e);
+                    self.set_view_3d(obj);
+                }
+                b"c:floor" => {
+                    let mut obj = Floor::default();
+                    obj.set_attributes(reader, e);
+                    self.set_floor(obj);
+                }
+                b"c:sideWall" => {
+                    let mut obj = SideWall::default();
+                    obj.set_attributes(reader, e);
+                    self.set_side_wall(obj);
+                }
+                b"c:backWall" => {
+                    let mut obj = BackWall::default();
+                    obj.set_attributes(reader, e);
+                    self.set_back_wall(obj);
+                }
+                b"c:plotArea" => {
+                    self.plot_area.set_attributes(reader, e);
+                }
+                b"c:legend" => {
+                    self.legend.set_attributes(reader, e);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => match e.name().into_inner() {
+                b"c:autoTitleDeleted" => {
+                    self.auto_title_deleted.set_attributes(reader, e);
+                }
+                b"c:plotVisOnly" => {
+                    self.plot_visible_only.set_attributes(reader, e);
+                }
+                b"c:dispBlanksAs" => {
+                    self.display_blanks_as.set_attributes(reader, e);
+                }
+                b"c:showDLblsOverMax" => {
+                    self.show_data_labels_over_maximum.set_attributes(reader, e);
+                }
+                _ => (),
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:chart" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:chart"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
@@ -260,46 +257,31 @@ impl Chart {
         write_start_tag(writer, "c:chart", vec![], false);
 
         // c:title
-        match &self.title {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.title {
+            v.write_to(writer);
         }
 
         // c:autoTitleDeleted
         self.auto_title_deleted.write_to(writer);
 
         // c:view3D
-        match &self.view_3d {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.view_3d {
+            v.write_to(writer);
         }
 
         // c:floor
-        match &self.floor {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.floor {
+            v.write_to(writer);
         }
 
         // c:sideWall
-        match &self.side_wall {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.side_wall {
+            v.write_to(writer);
         }
 
         // c:backWall
-        match &self.back_wall {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.back_wall {
+            v.write_to(writer);
         }
 
         // c:plotArea

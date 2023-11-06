@@ -8,6 +8,7 @@ use super::TwoCellAnchor;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
 use structs::Chart;
@@ -22,6 +23,7 @@ pub struct WorksheetDrawing {
     one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }
+
 impl WorksheetDrawing {
     pub fn get_image_collection(&self) -> &Vec<Image> {
         &self.image_collection
@@ -43,12 +45,9 @@ impl WorksheetDrawing {
     }
 
     pub fn get_image_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
-        for image in &mut self.image_collection {
-            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
-                return Some(image);
-            }
-        }
-        None
+        self.image_collection
+            .iter_mut()
+            .find(|image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
     }
 
     pub fn get_images(&self, col: &u32, row: &u32) -> Vec<&Image> {
@@ -91,12 +90,9 @@ impl WorksheetDrawing {
     }
 
     pub fn get_chart_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
-        for chart in &mut self.chart_collection {
-            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
-                return Some(chart);
-            }
-        }
-        None
+        self.chart_collection
+            .iter_mut()
+            .find(|chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
     }
 
     pub fn get_charts(&self, col: &u32, row: &u32) -> Vec<&Chart> {
@@ -155,11 +151,8 @@ impl WorksheetDrawing {
     pub fn get_graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
         let mut result: Vec<&GraphicFrame> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            match two_cell_anchor.get_graphic_frame() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_graphic_frame() {
+                result.push(v);
             }
         }
         result
@@ -168,11 +161,8 @@ impl WorksheetDrawing {
     pub fn get_graphic_frame_collection_mut(&mut self) -> Vec<&mut GraphicFrame> {
         let mut result: Vec<&mut GraphicFrame> = Vec::new();
         for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            match two_cell_anchor.get_graphic_frame_mut() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_graphic_frame_mut() {
+                result.push(v);
             }
         }
         result
@@ -181,11 +171,8 @@ impl WorksheetDrawing {
     pub fn get_shape_collection(&self) -> Vec<&Shape> {
         let mut result: Vec<&Shape> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            match two_cell_anchor.get_shape() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_shape() {
+                result.push(v);
             }
         }
         result
@@ -194,11 +181,8 @@ impl WorksheetDrawing {
     pub fn get_shape_collection_mut(&mut self) -> Vec<&mut Shape> {
         let mut result: Vec<&mut Shape> = Vec::new();
         for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            match two_cell_anchor.get_shape_mut() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_shape_mut() {
+                result.push(v);
             }
         }
         result
@@ -207,11 +191,8 @@ impl WorksheetDrawing {
     pub fn get_connection_shape_collection(&self) -> Vec<&ConnectionShape> {
         let mut result: Vec<&ConnectionShape> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            match two_cell_anchor.get_connection_shape() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_connection_shape() {
+                result.push(v);
             }
         }
         result
@@ -220,11 +201,8 @@ impl WorksheetDrawing {
     pub fn get_connection_shape_collection_mut(&mut self) -> Vec<&mut ConnectionShape> {
         let mut result: Vec<&mut ConnectionShape> = Vec::new();
         for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            match two_cell_anchor.get_connection_shape_mut() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_connection_shape_mut() {
+                result.push(v);
             }
         }
         result
@@ -233,11 +211,8 @@ impl WorksheetDrawing {
     pub fn get_picture_collection(&self) -> Vec<&Picture> {
         let mut result: Vec<&Picture> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            match two_cell_anchor.get_picture() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_picture() {
+                result.push(v);
             }
         }
         result
@@ -246,11 +221,8 @@ impl WorksheetDrawing {
     pub fn get_picture_collection_mut(&mut self) -> Vec<&mut Picture> {
         let mut result: Vec<&mut Picture> = Vec::new();
         for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            match two_cell_anchor.get_picture_mut() {
-                Some(v) => {
-                    result.push(v);
-                }
-                None => {}
+            if let Some(v) = two_cell_anchor.get_picture_mut() {
+                result.push(v);
             }
         }
         result
@@ -324,10 +296,11 @@ impl WorksheetDrawing {
     ) {
         let mut ole_index = 0;
         let mut is_alternate_content = false;
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"mc:AlternateContent" => {
                         is_alternate_content = true;
                     }
@@ -376,20 +349,21 @@ impl WorksheetDrawing {
                         }
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
+                }
+            },
+
+            Event::End(ref e) => {
+                match e.name().into_inner() {
                     b"mc:AlternateContent" => {
                         is_alternate_content = false;
                     }
                     b"xdr:wsDr" => return,
                     _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:wsDr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+
+            Event::Eof => panic!("Error not find {} end element", "xdr:wsDr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_objects: &OleObjects) {

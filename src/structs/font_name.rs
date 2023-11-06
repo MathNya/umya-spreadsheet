@@ -11,6 +11,7 @@ use writer::driver::*;
 pub struct FontName {
     pub(crate) val: StringValue,
 }
+
 impl FontName {
     pub fn get_val(&self) -> &str {
         self.val.get_value()
@@ -31,7 +32,7 @@ impl FontName {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         // name, rFont
-        if &self.val.has_value() == &true {
+        if self.val.has_value() {
             write_start_tag(
                 writer,
                 tag_name,

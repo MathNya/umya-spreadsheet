@@ -13,6 +13,7 @@ pub struct Glow {
     radius: Int64Value,
     scheme_color: Option<SchemeColor>,
 }
+
 impl Glow {
     pub fn get_radius(&self) -> &i64 {
         self.radius.get_value()
@@ -39,27 +40,22 @@ impl Glow {
         self.radius
             .set_value_string(get_attribute(e, b"rad").unwrap());
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:schemeClr" => {
-                        let mut obj = SchemeColor::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_scheme_color(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:glow" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:glow"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"a:schemeClr" {
+                    let mut obj = SchemeColor::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_scheme_color(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:glow" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:glow")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -72,11 +68,8 @@ impl Glow {
         );
 
         // a:schemeClr
-        match &self.scheme_color {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.scheme_color {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:glow");

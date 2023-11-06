@@ -26,6 +26,7 @@ pub struct SheetView {
     top_left_cell: StringValue,
     selection: Vec<Selection>,
 }
+
 impl SheetView {
     pub fn get_tab_selected(&self) -> &bool {
         self.tab_selected.get_value()
@@ -131,70 +132,33 @@ impl SheetView {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"tabSelected") {
-            Some(v) => {
-                self.tab_selected.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"workbookViewId") {
-            Some(v) => {
-                self.workbook_view_id.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"view") {
-            Some(v) => {
-                self.view.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"zoomScale") {
-            Some(v) => {
-                self.zoom_scale.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"zoomScaleNormal") {
-            Some(v) => {
-                self.zoom_scale_normal.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"zoomScalePageLayoutView") {
-            Some(v) => {
-                self.zoom_scale_page_layout_view.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"zoomScaleSheetLayoutView") {
-            Some(v) => {
-                self.zoom_scale_sheet_layout_view.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"topLeftCell") {
-            Some(v) => {
-                self.top_left_cell.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, tab_selected, "tabSelected");
+        set_string_from_xml!(self, e, workbook_view_id, "workbookViewId");
+        set_string_from_xml!(self, e, view, "view");
+        set_string_from_xml!(self, e, zoom_scale, "zoomScale");
+        set_string_from_xml!(self, e, zoom_scale_normal, "zoomScaleNormal");
+        set_string_from_xml!(
+            self,
+            e,
+            zoom_scale_page_layout_view,
+            "zoomScalePageLayoutView"
+        );
+        set_string_from_xml!(
+            self,
+            e,
+            zoom_scale_sheet_layout_view,
+            "zoomScaleSheetLayoutView"
+        );
+        set_string_from_xml!(self, e, top_left_cell, "topLeftCell");
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"pane" => {
                         let mut obj = Pane::default();
                         obj.set_attributes(reader, e);
@@ -206,17 +170,15 @@ impl SheetView {
                         self.set_selection(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"sheetView" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "sheetView"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"sheetView" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "sheetView")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

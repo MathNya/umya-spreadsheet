@@ -19,6 +19,7 @@ pub struct Alignment {
     wrap_text: BooleanValue,
     text_rotation: UInt32Value,
 }
+
 impl Alignment {
     pub fn get_horizontal(&self) -> &HorizontalAlignmentValues {
         self.horizontal.get_value()
@@ -70,30 +71,10 @@ impl Alignment {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"horizontal") {
-            Some(v) => {
-                self.horizontal.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"vertical") {
-            Some(v) => {
-                self.vertical.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"wrapText") {
-            Some(v) => {
-                self.wrap_text.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"textRotation") {
-            Some(v) => {
-                self.text_rotation.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, horizontal, "horizontal");
+        set_string_from_xml!(self, e, vertical, "vertical");
+        set_string_from_xml!(self, e, wrap_text, "wrapText");
+        set_string_from_xml!(self, e, text_rotation, "textRotation");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

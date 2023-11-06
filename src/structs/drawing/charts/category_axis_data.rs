@@ -4,6 +4,7 @@ use super::StringReference;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::Spreadsheet;
 use writer::driver::*;
@@ -13,6 +14,7 @@ pub struct CategoryAxisData {
     string_reference: Option<StringReference>,
     string_literal: Option<StringLiteral>,
 }
+
 impl CategoryAxisData {
     pub fn get_string_reference(&self) -> &Option<StringReference> {
         &self.string_reference
@@ -55,10 +57,10 @@ impl CategoryAxisData {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"c:strRef" => {
                         let mut obj = StringReference::default();
                         obj.set_attributes(reader, e);
@@ -70,17 +72,15 @@ impl CategoryAxisData {
                         self.set_string_literal(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"c:cat" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:cat"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"c:cat" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:cat")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
@@ -88,19 +88,13 @@ impl CategoryAxisData {
         write_start_tag(writer, "c:cat", vec![], false);
 
         // c:strRef
-        match &self.string_reference {
-            Some(v) => {
-                v.write_to(writer, spreadsheet);
-            }
-            None => {}
+        if let Some(v) = &self.string_reference {
+            v.write_to(writer, spreadsheet);
         }
 
         // c:strLit
-        match &self.string_literal {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.string_literal {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:cat");

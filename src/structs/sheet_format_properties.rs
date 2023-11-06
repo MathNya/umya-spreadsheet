@@ -22,6 +22,7 @@ pub struct SheetFormatProperties {
     thick_bottom: BooleanValue,
     thick_top: BooleanValue,
 }
+
 impl SheetFormatProperties {
     pub fn get_base_column_width(&self) -> &u32 {
         self.base_column_width.get_value()
@@ -115,68 +116,15 @@ impl SheetFormatProperties {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"baseColWidth") {
-            Some(v) => {
-                self.base_column_width.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"customHeight") {
-            Some(v) => {
-                self.custom_height.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"defaultColWidth") {
-            Some(v) => {
-                self.default_column_width.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"defaultRowHeight") {
-            Some(v) => {
-                self.default_row_height.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"x14ac:dyDescent") {
-            Some(v) => {
-                self.dy_descent.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"outlineLevelCol") {
-            Some(v) => {
-                self.outline_level_column.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"outlineLevelRow") {
-            Some(v) => {
-                self.outline_level_row.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"thickBottom") {
-            Some(v) => {
-                self.thick_bottom.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"thickTop") {
-            Some(v) => {
-                self.thick_top.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, base_column_width, "baseColWidth");
+        set_string_from_xml!(self, e, custom_height, "customHeight");
+        set_string_from_xml!(self, e, default_column_width, "defaultColWidth");
+        set_string_from_xml!(self, e, default_row_height, "defaultRowHeight");
+        set_string_from_xml!(self, e, dy_descent, "x14ac:dyDescent");
+        set_string_from_xml!(self, e, outline_level_column, "outlineLevelCol");
+        set_string_from_xml!(self, e, outline_level_row, "outlineLevelRow");
+        set_string_from_xml!(self, e, thick_bottom, "thickBottom");
+        set_string_from_xml!(self, e, thick_top, "thickTop");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

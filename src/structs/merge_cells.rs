@@ -12,6 +12,7 @@ use writer::driver::*;
 pub(crate) struct MergeCells {
     range: Vec<Range>,
 }
+
 impl MergeCells {
     pub(crate) fn get_range_collection(&self) -> &Vec<Range> {
         &self.range
@@ -75,25 +76,20 @@ impl MergeCells {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"mergeCell" => {
-                        self.add_range(get_attribute(e, b"ref").unwrap());
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"mergeCells" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "mergeCells"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"mergeCell" {
+                    self.add_range(get_attribute(e, b"ref").unwrap());
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"mergeCells" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "mergeCells")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

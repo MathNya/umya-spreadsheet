@@ -11,6 +11,7 @@ pub struct PrintOptions {
     horizontal_centered: BooleanValue,
     vertical_centered: BooleanValue,
 }
+
 impl PrintOptions {
     pub fn get_horizontal_centered(&self) -> &bool {
         self.horizontal_centered.get_value()
@@ -45,19 +46,8 @@ impl PrintOptions {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"horizontalCentered") {
-            Some(v) => {
-                self.horizontal_centered.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"verticalCentered") {
-            Some(v) => {
-                self.vertical_centered.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, horizontal_centered, "horizontalCentered");
+        set_string_from_xml!(self, e, vertical_centered, "verticalCentered");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

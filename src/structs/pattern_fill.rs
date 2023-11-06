@@ -16,6 +16,7 @@ pub struct PatternFill {
     foreground_color: Option<Color>,
     background_color: Option<Color>,
 }
+
 impl PatternFill {
     pub fn get_pattern_type(&self) -> &PatternValues {
         self.pattern_type.get_value()
@@ -106,21 +107,16 @@ impl PatternFill {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"patternType") {
-            Some(v) => {
-                self.pattern_type.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, pattern_type, "patternType");
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"fgColor" => {
                         let mut obj = Color::default();
                         obj.set_attributes(reader, e, true);
@@ -132,17 +128,15 @@ impl PatternFill {
                         self.set_background_color(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"patternFill" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "patternFill"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"patternFill" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "patternFill")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -157,19 +151,13 @@ impl PatternFill {
 
         if !empty_flag {
             // fgColor
-            match &self.foreground_color {
-                Some(v) => {
-                    v.write_to_fg_color(writer);
-                }
-                None => {}
+            if let Some(v) = &self.foreground_color {
+                v.write_to_fg_color(writer);
             }
 
             // bgColor
-            match &self.background_color {
-                Some(v) => {
-                    v.write_to_bg_color(writer);
-                }
-                None => {}
+            if let Some(v) = &self.background_color {
+                v.write_to_bg_color(writer);
             }
 
             write_end_tag(writer, "patternFill");

@@ -23,6 +23,7 @@ pub struct BodyProperties {
     bottom_inset: Int32Value,
     shape_auto_fit: Option<ShapeAutoFit>,
 }
+
 impl BodyProperties {
     pub fn get_vert_overflow(&self) -> &Option<String> {
         &self.vert_overflow
@@ -159,27 +160,22 @@ impl BodyProperties {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:spAutoFit" => {
-                        let mut obj = ShapeAutoFit::default();
-                        obj.set_attributes(reader, e);
-                        self.set_shape_auto_fit(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:bodyPr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:bodyPr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:spAutoFit" {
+                    let mut obj = ShapeAutoFit::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_auto_fit(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:bodyPr" {
+                     return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:bodyPr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -187,50 +183,43 @@ impl BodyProperties {
 
         // a:bodyPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.vert_overflow {
-            Some(v) => attributes.push(("vertOverflow", v)),
-            None => {}
+        if let Some(v) = &self.vert_overflow {
+            attributes.push(("vertOverflow", v));
         }
-        match &self.horz_overflow {
-            Some(v) => attributes.push(("horzOverflow", v)),
-            None => {}
+        if let Some(v) = &self.horz_overflow {
+            attributes.push(("horzOverflow", v));
         }
-        match &self.rtl_col {
-            Some(v) => attributes.push(("rtlCol", v)),
-            None => {}
+        if let Some(v) = &self.rtl_col {
+            attributes.push(("rtlCol", v));
         }
-        match &self.anchor {
-            Some(v) => attributes.push(("anchor", v)),
-            None => {}
+        if let Some(v) = &self.anchor {
+            attributes.push(("anchor", v));
         }
-        if &self.wrap.has_value() == &true {
+        if self.wrap.has_value() {
             attributes.push(("wrap", self.wrap.get_value_string()));
         }
         let l_ins = self.left_inset.get_value_string();
-        if &self.left_inset.has_value() == &true {
+        if self.left_inset.has_value() {
             attributes.push(("lIns", &l_ins));
         }
         let t_ins = self.top_inset.get_value_string();
-        if &self.top_inset.has_value() == &true {
+        if self.top_inset.has_value() {
             attributes.push(("tIns", &t_ins));
         }
         let r_ins = self.right_inset.get_value_string();
-        if &self.right_inset.has_value() == &true {
+        if self.right_inset.has_value() {
             attributes.push(("rIns", &r_ins));
         }
         let b_ins = self.bottom_inset.get_value_string();
-        if &self.bottom_inset.has_value() == &true {
+        if self.bottom_inset.has_value() {
             attributes.push(("bIns", &b_ins));
         }
 
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);
 
         if empty_flag == &false {
-            match &self.shape_auto_fit {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.shape_auto_fit {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "a:bodyPr");

@@ -14,6 +14,7 @@ pub struct ConditionalFormatting {
     sequence_of_references: SequenceOfReferences,
     conditional_collection: Vec<ConditionalFormattingRule>,
 }
+
 impl ConditionalFormatting {
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
@@ -55,42 +56,33 @@ impl ConditionalFormatting {
         e: &BytesStart,
         differential_formats: &DifferentialFormats,
     ) {
-        match get_attribute(e, b"sqref") {
-            Some(v) => {
-                self.sequence_of_references.set_sqref(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"sqref") {
+            self.sequence_of_references.set_sqref(v);
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"cfRule" => {
-                        let mut obj = ConditionalFormattingRule::default();
-                        obj.set_attributes(reader, e, differential_formats, true);
-                        self.conditional_collection.push(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"cfRule" => {
-                        let mut obj = ConditionalFormattingRule::default();
-                        obj.set_attributes(reader, e, differential_formats, false);
-                        self.conditional_collection.push(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"conditionalFormatting" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "conditionalFormatting"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"cfRule" {
+                    let mut obj = ConditionalFormattingRule::default();
+                    obj.set_attributes(reader, e, differential_formats, true);
+                    self.conditional_collection.push(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"cfRule" {
+                    let mut obj = ConditionalFormattingRule::default();
+                    obj.set_attributes(reader, e, differential_formats, false);
+                    self.conditional_collection.push(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"conditionalFormatting" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "conditionalFormatting")
+        );
     }
 
     pub(crate) fn write_to(

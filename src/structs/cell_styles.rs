@@ -3,6 +3,7 @@ use super::CellStyle;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -10,6 +11,7 @@ use writer::driver::*;
 pub struct CellStyles {
     cell_style: Vec<CellStyle>,
 }
+
 impl CellStyles {
     pub fn _get_cell_style(&self) -> &Vec<CellStyle> {
         &self.cell_style
@@ -29,27 +31,22 @@ impl CellStyles {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"cellStyle" => {
-                        let mut obj = CellStyle::default();
-                        obj.set_attributes(reader, e);
-                        self.add_cell_style(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"cellStyles" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "cellStyles"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"cellStyle" {
+                    let mut obj = CellStyle::default();
+                    obj.set_attributes(reader, e);
+                    self.add_cell_style(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"cellStyles" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "cellStyles")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

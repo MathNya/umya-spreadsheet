@@ -14,6 +14,7 @@ pub struct SystemColor {
     val: EnumValue<SystemColorValues>,
     last_color: StringValue,
 }
+
 impl SystemColor {
     pub fn get_val(&self) -> &SystemColorValues {
         self.val.get_value()
@@ -37,18 +38,8 @@ impl SystemColor {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"val") {
-            Some(v) => {
-                self.val.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"lastClr") {
-            Some(v) => {
-                self.last_color.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, val, "val");
+        set_string_from_xml!(self, e, last_color, "lastClr");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

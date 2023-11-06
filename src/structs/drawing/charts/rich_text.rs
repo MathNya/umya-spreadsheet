@@ -2,6 +2,7 @@
 use super::super::BodyProperties;
 use super::super::ListStyle;
 use super::super::Paragraph;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +15,7 @@ pub struct RichText {
     list_style: ListStyle,
     paragraph: Vec<Paragraph>,
 }
+
 impl RichText {
     pub fn get_body_properties(&self) -> &BodyProperties {
         &self.body_properties
@@ -56,40 +58,35 @@ impl RichText {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
-                    b"a:p" => {
-                        let mut paragraph = Paragraph::default();
-                        paragraph.set_attributes(reader, e);
-                        self.add_paragraph(paragraph);
-                    }
-                    b"a:bodyPr" => {
-                        let mut body_properties = BodyProperties::default();
-                        body_properties.set_attributes(reader, e, false);
-                        self.set_body_properties(body_properties);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"a:bodyPr" => {
-                        let mut body_properties = BodyProperties::default();
-                        body_properties.set_attributes(reader, e, true);
-                        self.set_body_properties(body_properties);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:rich" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:rich"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => match e.name().0 {
+                b"a:p" => {
+                    let mut paragraph = Paragraph::default();
+                    paragraph.set_attributes(reader, e);
+                    self.add_paragraph(paragraph);
+                }
+                b"a:bodyPr" => {
+                    let mut body_properties = BodyProperties::default();
+                    body_properties.set_attributes(reader, e, false);
+                    self.set_body_properties(body_properties);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Empty(ref e) => {
+                if e.name().0 == b"a:bodyPr" {
+                    let mut body_properties = BodyProperties::default();
+                    body_properties.set_attributes(reader, e, true);
+                    self.set_body_properties(body_properties);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:rich" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:rich"),
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

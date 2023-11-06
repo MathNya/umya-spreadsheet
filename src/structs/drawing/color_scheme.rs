@@ -24,6 +24,7 @@ pub struct ColorScheme {
     lt1: Color2Type,
     lt2: Color2Type,
 }
+
 impl ColorScheme {
     pub fn get_name(&self) -> &str {
         self.name.get_value()
@@ -179,20 +180,20 @@ impl ColorScheme {
     }
 
     pub fn get_color_map(&self) -> Vec<String> {
-        let mut result: Vec<String> = Vec::new();
-        result.push(self.dk1.get_val());
-        result.push(self.lt1.get_val());
-        result.push(self.dk2.get_val());
-        result.push(self.lt2.get_val());
-        result.push(self.accent1.get_val());
-        result.push(self.accent2.get_val());
-        result.push(self.accent3.get_val());
-        result.push(self.accent4.get_val());
-        result.push(self.accent5.get_val());
-        result.push(self.accent6.get_val());
-        result.push(self.hlink.get_val());
-        result.push(self.fol_hlink.get_val());
-        result
+        vec![
+            self.dk1.get_val(),
+            self.lt1.get_val(),
+            self.dk2.get_val(),
+            self.lt2.get_val(),
+            self.accent1.get_val(),
+            self.accent2.get_val(),
+            self.accent3.get_val(),
+            self.accent4.get_val(),
+            self.accent5.get_val(),
+            self.accent6.get_val(),
+            self.hlink.get_val(),
+            self.fol_hlink.get_val(),
+        ]
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -200,17 +201,12 @@ impl ColorScheme {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"name") {
-            Some(v) => {
-                self.name.set_value(v);
-            }
-            _ => {}
-        }
+        set_string_from_xml!(self, e, name, "name");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:accent1" => {
                         self.accent1.set_attributes(reader, e);
                     }
@@ -248,17 +244,15 @@ impl ColorScheme {
                         self.lt2.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:clrScheme" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:clrScheme"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:clrScheme" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:clrScheme")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

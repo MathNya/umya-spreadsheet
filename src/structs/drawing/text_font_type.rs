@@ -13,6 +13,7 @@ pub struct TextFontType {
     charset: StringValue,
     panose: StringValue,
 }
+
 impl TextFontType {
     pub fn get_typeface(&self) -> &str {
         self.typeface.get_value()
@@ -55,29 +56,17 @@ impl TextFontType {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"typeface") {
-            Some(v) => {
-                self.set_typeface(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"typeface") {
+            self.set_typeface(v);
         }
-        match get_attribute(e, b"pitchFamily") {
-            Some(v) => {
-                self.set_pitch_family(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"pitchFamily") {
+            self.set_pitch_family(v);
         }
-        match get_attribute(e, b"charset") {
-            Some(v) => {
-                self.set_charset(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"charset") {
+            self.set_charset(v);
         }
-        match get_attribute(e, b"panose") {
-            Some(v) => {
-                self.set_panose(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"panose") {
+            self.set_panose(v);
         }
     }
 

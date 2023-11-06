@@ -256,6 +256,26 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         // colBreaks
         worksheet.get_column_breaks().write_to(&mut writer);
 
+        // tableParts
+        if worksheet.has_table() {
+            let tables = worksheet.get_tables();
+            write_start_tag(
+                &mut writer,
+                "tableParts",
+                vec![("count", &tables.len().to_string())],
+                false);
+            for table in worksheet.get_tables().iter() {
+                let r_id_str = format!("rId{}", &r_id);
+                write_start_tag(
+                    &mut writer,
+                    "tablePart",
+                    vec![("r:id", r_id_str.as_str())],
+                    true);
+                r_id += 1;
+            }
+            write_end_tag(&mut writer, "tableParts");
+        }
+
         if worksheet.has_drawing_object() {
             // drawing
             let r_id_str = format!("rId{}", &r_id);

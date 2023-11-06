@@ -2,6 +2,7 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -12,6 +13,7 @@ pub struct FromMarker {
     row: usize,
     row_off: usize,
 }
+
 impl FromMarker {
     pub fn get_col(&self) -> &usize {
         &self.col
@@ -79,32 +81,27 @@ impl FromMarker {
         _e: &BytesStart,
     ) {
         let mut string_value: String = String::from("");
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:col" => {
-                        self.col = string_value.parse::<usize>().unwrap();
-                    }
-                    b"xdr:colOff" => {
-                        self.col_off = string_value.parse::<usize>().unwrap();
-                    }
-                    b"xdr:row" => {
-                        self.row = string_value.parse::<usize>().unwrap();
-                    }
-                    b"xdr:rowOff" => {
-                        self.row_off = string_value.parse::<usize>().unwrap();
-                    }
-                    b"from" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "from"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Text(e) => string_value = e.unescape().unwrap().to_string(),
+            Event::End(ref e) => match e.name().into_inner() {
+                b"xdr:col" => {
+                    self.col = string_value.parse::<usize>().unwrap();
+                }
+                b"xdr:colOff" => {
+                    self.col_off = string_value.parse::<usize>().unwrap();
+                }
+                b"xdr:row" => {
+                    self.row = string_value.parse::<usize>().unwrap();
+                }
+                b"xdr:rowOff" => {
+                    self.row_off = string_value.parse::<usize>().unwrap();
+                }
+                b"from" => return,
                 _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Eof => panic!("Error not find {} end element", "from")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

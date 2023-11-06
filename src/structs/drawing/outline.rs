@@ -32,6 +32,7 @@ pub struct Outline {
     round: Option<Round>,
     alignment: EnumValue<PenAlignmentValues>,
 }
+
 impl Outline {
     pub fn get_width(&self) -> &u32 {
         self.width.get_value()
@@ -177,39 +178,24 @@ impl Outline {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-
-        match get_attribute(e, b"w") {
-            Some(v) => {
-                self.set_width(v.parse::<u32>().unwrap());
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"w") {
+            self.set_width(v.parse::<u32>().unwrap());
         }
 
-        match get_attribute(e, b"cap") {
-            Some(v) => {
-                self.set_cap_type(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"cap") {
+            self.set_cap_type(v);
         }
 
-        match get_attribute(e, b"cmpd") {
-            Some(v) => {
-                self.set_compound_line_type(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"cmpd") {
+            self.set_compound_line_type(v);
         }
 
-        match get_attribute(e, b"algn") {
-            Some(v) => {
-                self.alignment.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, alignment, "algn");
 
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:solidFill" => {
                         let mut solid_fill = SolidFill::default();
                         solid_fill.set_attributes(reader, e);
@@ -221,8 +207,10 @@ impl Outline {
                         self.set_gradient_fill(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:tailEnd" => {
                         let mut obj = TailEnd::default();
                         obj.set_attributes(reader, e);
@@ -254,19 +242,15 @@ impl Outline {
                         self.set_round(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:ln" => {
-                        return;
-                    }
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:ln"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if  e.name().into_inner() == b"a:ln" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:ln")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -276,17 +260,11 @@ impl Outline {
         if self.width.has_value() {
             attributes.push(("w", &width));
         }
-        match &self.cap_type {
-            Some(v) => {
-                attributes.push(("cap", v));
-            }
-            None => {}
+        if let Some(v) = &self.cap_type {
+            attributes.push(("cap", v));
         }
-        match &self.compound_line_type {
-            Some(v) => {
-                attributes.push(("cmpd", v));
-            }
-            None => {}
+        if let Some(v) = &self.compound_line_type {
+            attributes.push(("cmpd", v));
         }
         if self.alignment.has_value() {
             attributes.push(("algn", (self.alignment.get_value_string())));
@@ -294,51 +272,43 @@ impl Outline {
         write_start_tag(writer, "a:ln", attributes, false);
 
         // a:solidFill
-        match &self.solid_fill {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.solid_fill {
+            v.write_to(writer);
         }
 
         // a:gradFill
-        match &self.gradient_fill {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.gradient_fill {
+            v.write_to(writer);
         }
 
         // a:round
-        match &self.round {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.round {
+            v.write_to(writer);
         }
 
         // a:tailEnd
-        match &self.tail_end {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.tail_end {
+            v.write_to(writer);
         }
 
         // a:noFill
-        match &self.no_fill {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.no_fill {
+            v.write_to(writer);
         }
 
         // a:bevel
-        match &self.bevel {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.bevel {
+            v.write_to(writer);
         }
 
         // a:miter
-        match &self.miter {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.miter {
+            v.write_to(writer);
         }
 
         // a:prstDash
-        match &self.preset_dash {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.preset_dash {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:ln");

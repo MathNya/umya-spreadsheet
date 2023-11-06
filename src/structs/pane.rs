@@ -18,6 +18,7 @@ pub struct Pane {
     active_pane: EnumValue<PaneValues>,
     state: EnumValue<PaneStateValues>,
 }
+
 impl Pane {
     pub fn get_horizontal_split(&self) -> &f64 {
         self.horizontal_split.get_value()
@@ -73,39 +74,13 @@ impl Pane {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"xSplit") {
-            Some(v) => {
-                self.horizontal_split.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, horizontal_split, "xSplit");
+        set_string_from_xml!(self, e, vertical_split, "ySplit");
+        set_string_from_xml!(self, e, active_pane, "activePane");
+        set_string_from_xml!(self, e, state, "state");
 
-        match get_attribute(e, b"ySplit") {
-            Some(v) => {
-                self.vertical_split.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"topLeftCell") {
-            Some(v) => {
-                self.top_left_cell.set_coordinate(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"activePane") {
-            Some(v) => {
-                self.active_pane.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"state") {
-            Some(v) => {
-                self.state.set_value_string(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"topLeftCell") {
+            self.top_left_cell.set_coordinate(v);
         }
     }
 

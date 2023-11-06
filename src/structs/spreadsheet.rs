@@ -30,6 +30,7 @@ pub struct Spreadsheet {
     backup_context_types: Vec<(String, String)>,
     pivot_caches: Vec<(String, String, String)>,
 }
+
 impl Spreadsheet {
     // ************************
     // update Coordinate
@@ -380,12 +381,10 @@ impl Spreadsheet {
     }
 
     pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Result<usize, &'static str> {
-        let mut result = 0;
-        for sheet in &self.work_sheet_collection {
+        for (result, sheet) in self.work_sheet_collection.iter().enumerate() {
             if sheet.get_name() == sheet_name {
                 return Ok(result);
             }
-            result += 1;
         }
         Err("not found.")
     }
@@ -425,7 +424,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table();
         match self.work_sheet_collection.get(*index) {
             Some(v) => Ok(v.get_cell_collection_stream(
-                &*shared_string_table.read().unwrap(),
+                &shared_string_table.read().unwrap(),
                 self.get_stylesheet(),
             )),
             None => Err("Not found."),

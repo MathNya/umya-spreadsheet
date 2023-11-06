@@ -21,6 +21,7 @@ pub struct Borders {
     diagonal_down: BooleanValue,
     diagonal_up: BooleanValue,
 }
+
 impl Borders {
     // Border style
     pub const BORDER_NONE: &'static str = "none";
@@ -237,23 +238,13 @@ impl Borders {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"diagonalUp") {
-            Some(v) => {
-                self.diagonal_up.set_value_string(v);
-            }
-            None => {}
-        }
-        match get_attribute(e, b"diagonalDown") {
-            Some(v) => {
-                self.diagonal_down.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, diagonal_up, "diagonalUp");
+        set_string_from_xml!(self, e, diagonal_down, "diagonalDown");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"left" => {
                         self.left_border.set_attributes(reader, e);
                     }
@@ -276,17 +267,15 @@ impl Borders {
                         self.horizontal_border.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"border" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "border"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"border" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "border")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

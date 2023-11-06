@@ -9,13 +9,16 @@ pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: zip::ZipWriter<W>,
     is_light: bool,
+    table_no: i32,
 }
+
 impl<W: io::Seek + io::Write> WriterManager<W> {
     pub fn new(arv: zip::ZipWriter<W>) -> Self {
         WriterManager {
             files: Vec::new(),
             arv,
             is_light: false,
+            table_no: 0,
         }
     }
 
@@ -26,6 +29,15 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
 
     pub fn get_is_light(&self) -> &bool {
         &self.is_light
+    }
+
+    pub fn get_num_tables(&self) -> i32 {
+        self.table_no
+    }
+
+    pub fn next_table_no(&mut self) -> i32 {
+        self.table_no += 1;
+        self.table_no
     }
 
     pub(crate) fn add_writer(
@@ -41,7 +53,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         Ok(())
     }
 
-    pub(crate) fn add_bin(&mut self, target: &str, data: &Vec<u8>) -> Result<(), XlsxError> {
+    pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         let is_match = self.check_file_exist(target);
         if !is_match {
             make_file_from_bin(target, &mut self.arv, data, None, &self.is_light)?;
@@ -62,7 +74,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     pub(crate) fn check_file_exist(&mut self, file_path: &str) -> bool {
         self.file_list_sort();
         for file in &self.files {
-            if file == &file_path {
+            if file == file_path {
                 return true;
             }
         }
@@ -133,7 +145,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         }
     }
 
-    pub(crate) fn add_file_at_ole_object(&mut self, writer: &Vec<u8>) -> Result<i32, XlsxError> {
+    pub(crate) fn add_file_at_ole_object(&mut self, writer: &[u8]) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
@@ -146,7 +158,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         }
     }
 
-    pub(crate) fn add_file_at_excel(&mut self, writer: &Vec<u8>) -> Result<i32, XlsxError> {
+    pub(crate) fn add_file_at_excel(&mut self, writer: &[u8]) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
@@ -158,10 +170,8 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             }
         }
     }
-    pub(crate) fn add_file_at_printer_settings(
-        &mut self,
-        writer: &Vec<u8>,
-    ) -> Result<i32, XlsxError> {
+
+    pub(crate) fn add_file_at_printer_settings(&mut self, writer: &[u8]) -> Result<i32, XlsxError> {
         let mut index = 0;
         loop {
             index += 1;
@@ -172,6 +182,16 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
                 return Ok(index);
             }
         }
+    }
+
+    pub(crate) fn add_file_at_table(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+        table_no: i32,
+    ) -> Result<i32, XlsxError> {
+        let file_path = format!("xl/tables/table{}.xml", table_no);
+        self.add_writer(&file_path, writer)?;
+        return Ok(table_no);
     }
 
     pub(crate) fn has_extension(&self, extension: &str) -> bool {
@@ -207,6 +227,12 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             if file.starts_with("/xl/worksheets/sheet") {
                 content_type =
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+            }
+
+            // Override table
+            if file.starts_with("/xl/tables/table") {
+                content_type =
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
             }
 
             // Override comments

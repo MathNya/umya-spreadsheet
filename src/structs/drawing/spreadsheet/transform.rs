@@ -1,8 +1,6 @@
 // xdr:xfrm
-use super::super::super::BooleanValue;
-use super::super::super::Int32Value;
-use super::super::Extents;
-use super::super::Offset;
+use super::super::{Extents, Offset};
+use crate::{BooleanValue, Int32Value};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +16,7 @@ pub struct Transform {
     vertical_flip: BooleanValue,
     horizontal_flip: BooleanValue,
 }
+
 impl Transform {
     pub fn get_offset(&self) -> &Offset {
         &self.offset
@@ -74,32 +73,14 @@ impl Transform {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
+        set_string_from_xml!(self, e, rotation, "rot");
+        set_string_from_xml!(self, e, horizontal_flip, "flipH");
+        set_string_from_xml!(self, e, vertical_flip, "flipV");
 
-        match get_attribute(e, b"rot") {
-            Some(v) => {
-                self.rotation.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"flipH") {
-            Some(v) => {
-                self.vertical_flip.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"flipV") {
-            Some(v) => {
-                self.horizontal_flip.set_value_string(v);
-            }
-            None => {}
-        }
-
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:off" => {
                         self.offset.set_attributes(reader, e);
                     }
@@ -107,32 +88,28 @@ impl Transform {
                         self.extents.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:xfrm" => {
-                        return;
-                    }
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:xfrm"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if  e.name().into_inner() == b"xdr:xfrm" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:xfrm")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let rot = self.rotation.get_value_string();
-        if &self.rotation.has_value() == &true {
+        if self.rotation.has_value() {
             attributes.push(("rot", &rot));
         }
-        if &self.horizontal_flip.has_value() == &true {
+        if self.horizontal_flip.has_value() {
             attributes.push(("flipH", self.horizontal_flip.get_value_string()));
         }
-        if &self.vertical_flip.has_value() == &true {
+        if self.vertical_flip.has_value() {
             attributes.push(("flipV", self.vertical_flip.get_value_string()));
         }
         write_start_tag(writer, "xdr:xfrm", attributes, false);

@@ -5,6 +5,7 @@ use helper::address::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -13,6 +14,7 @@ pub struct Formula {
     address: Address,
     string_value: StringValue,
 }
+
 impl Formula {
     pub fn get_address(&self) -> &Address {
         &self.address
@@ -56,22 +58,18 @@ impl Formula {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => {
-                    self.set_address_str(e.unescape().unwrap().to_string());
+        xml_read_loop!(
+            reader,
+            Event::Text(e) => {
+                self.set_address_str(e.unescape().unwrap().to_string());
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"formula" {
+                    return
                 }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"formula" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "formula"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Eof => panic!("Error not find {} end element", "formula")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -4,6 +4,7 @@ use super::Style;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::collections::HashMap;
 use std::io::Cursor;
 use writer::driver::*;
@@ -12,6 +13,7 @@ use writer::driver::*;
 pub(crate) struct NumberingFormats {
     numbering_format: HashMap<u32, NumberingFormat>,
 }
+
 impl NumberingFormats {
     pub(crate) fn get_numbering_format(&self) -> &HashMap<u32, NumberingFormat> {
         &self.numbering_format
@@ -76,33 +78,28 @@ impl NumberingFormats {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"numFmt" => {
-                        let mut obj = NumberingFormat::default();
-                        obj.set_attributes(reader, e);
-                        self.set_numbering_format(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"numFmts" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "numFmts"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"numFmt" {
+                    let mut obj = NumberingFormat::default();
+                    obj.set_attributes(reader, e);
+                    self.set_numbering_format(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"numFmts" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "numFmts")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         let mut has_format = false;
         let mut cnt = 0;
-        for (_, numbering_format) in &self.numbering_format {
+        for numbering_format in self.numbering_format.values() {
             if numbering_format.get_is_build_in() == &false {
                 has_format = true;
                 cnt += 1;

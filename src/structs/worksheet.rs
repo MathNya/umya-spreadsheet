@@ -34,6 +34,7 @@ use structs::SheetFormatProperties;
 use structs::SheetViews;
 use structs::Style;
 use structs::Stylesheet;
+use structs::Table;
 
 use reader::xlsx::worksheet::*;
 
@@ -65,9 +66,11 @@ pub struct Worksheet {
     print_options: PrintOptions,
     column_breaks: ColumnBreaks,
     row_breaks: RowBreaks,
+    tables: Vec<Table>,
     data_validations: Option<DataValidations>,
     sheet_format_properties: SheetFormatProperties,
 }
+
 impl Worksheet {
     // ************************
     // Value
@@ -1528,6 +1531,22 @@ impl Worksheet {
         self
     }
 
+    pub fn has_table(&self) -> bool {
+        !self.tables.is_empty()
+    }
+
+    pub fn add_table(&mut self, table: Table) {
+        self.tables.push(table);
+    }
+
+    pub fn get_tables(&self) -> &Vec<Table> {
+        &self.tables
+    }
+
+    pub fn get_tables_mut(&mut self) -> &mut Vec<Table> {
+        &mut self.tables
+    }
+
     pub fn get_data_validations(&self) -> &Option<DataValidations> {
         &self.data_validations
     }
@@ -1785,13 +1804,8 @@ impl Worksheet {
         // Iterate row by row, collecting cell information (do I copy)
         let mut copy_cells: Vec<Cell> = Vec::new();
         let cells = self.cell_collection.get_cell_by_range(range);
-        for cell in cells {
-            match cell {
-                Some(v) => {
-                    copy_cells.push(v.clone());
-                }
-                None => {}
-            }
+        for cell in cells.into_iter().flatten() {
+            copy_cells.push(cell.clone());
         }
 
         // Delete cell information as iterating through

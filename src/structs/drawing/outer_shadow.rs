@@ -22,6 +22,7 @@ pub struct OuterShadow {
     scheme_color: Option<SchemeColor>,
     rgb_color_model_hex: Option<RgbColorModelHex>,
 }
+
 impl OuterShadow {
     pub fn get_blur_radius(&self) -> &Option<String> {
         &self.blur_radius
@@ -130,53 +131,32 @@ impl OuterShadow {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"blurRad") {
-            Some(v) => {
-                self.set_blur_radius(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"blurRad") {
+            self.set_blur_radius(v);
         }
-        match get_attribute(e, b"dist") {
-            Some(v) => {
-                self.set_distance(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"dist") {
+            self.set_distance(v);
         }
-        match get_attribute(e, b"dir") {
-            Some(v) => {
-                self.set_direction(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"dir") {
+            self.set_direction(v);
         }
-        match get_attribute(e, b"sx") {
-            Some(v) => {
-                self.set_horizontal_ratio(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"sx") {
+            self.set_horizontal_ratio(v);
         }
-        match get_attribute(e, b"sy") {
-            Some(v) => {
-                self.set_vertical_ratio(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"sy") {
+            self.set_vertical_ratio(v);
         }
-        match get_attribute(e, b"algn") {
-            Some(v) => {
-                self.set_alignment(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"algn") {
+            self.set_alignment(v);
         }
-        match get_attribute(e, b"rotWithShape") {
-            Some(v) => {
-                self.set_rotate_with_shape(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"rotWithShape") {
+            self.set_rotate_with_shape(v);
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:schemeClr" => {
                         let mut obj = SchemeColor::default();
                         obj.set_attributes(reader, e, true);
@@ -188,8 +168,10 @@ impl OuterShadow {
                         self.set_rgb_color_model_hex(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:prstClr" => {
                         let mut obj = PresetColor::default();
                         obj.set_attributes(reader, e);
@@ -206,17 +188,15 @@ impl OuterShadow {
                         self.set_rgb_color_model_hex(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:outerShdw" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:outerShdw"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:outerShdw" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:outerShdw")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

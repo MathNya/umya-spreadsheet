@@ -11,6 +11,7 @@ use writer::driver::*;
 pub struct AdjustValueList {
     shape_guide_collection: Vec<ShapeGuide>,
 }
+
 impl AdjustValueList {
     pub fn get_shape_guide_collection(&self) -> &Vec<ShapeGuide> {
         &self.shape_guide_collection
@@ -33,31 +34,23 @@ impl AdjustValueList {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:gd" => {
-                        let mut shape_guide = ShapeGuide::default();
-                        shape_guide.set_name(get_attribute(e, b"name").unwrap());
-                        shape_guide.set_fmla(get_attribute(e, b"fmla").unwrap());
-                        self.add_shape_guide_collection(shape_guide);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:avLst" => {
-                        return;
-                    }
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:avLst"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:gd" {
+                    let mut shape_guide = ShapeGuide::default();
+                    shape_guide.set_name(get_attribute(e, b"name").unwrap());
+                    shape_guide.set_fmla(get_attribute(e, b"fmla").unwrap());
+                    self.add_shape_guide_collection(shape_guide);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:avLst" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:avLst")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

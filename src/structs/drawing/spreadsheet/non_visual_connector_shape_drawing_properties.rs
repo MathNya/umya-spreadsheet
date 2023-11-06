@@ -4,6 +4,7 @@ use super::super::StartConnection;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -12,6 +13,7 @@ pub struct NonVisualConnectorShapeDrawingProperties {
     start_connection: Option<StartConnection>,
     end_connection: Option<EndConnection>,
 }
+
 impl NonVisualConnectorShapeDrawingProperties {
     pub fn get_start_connection(&self) -> &Option<StartConnection> {
         &self.start_connection
@@ -42,10 +44,10 @@ impl NonVisualConnectorShapeDrawingProperties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:stCxn" => {
                         let mut connection_type = StartConnection::default();
                         connection_type.set_attributes(reader, e);
@@ -57,17 +59,15 @@ impl NonVisualConnectorShapeDrawingProperties {
                         self.set_end_connection(connection_type);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:cNvCxnSpPr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:cNvCxnSpPr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:cNvCxnSpPr" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:cNvCxnSpPr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -76,19 +76,13 @@ impl NonVisualConnectorShapeDrawingProperties {
             write_start_tag(writer, "xdr:cNvCxnSpPr", vec![], false);
 
             // a:stCxn
-            match &self.start_connection {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.start_connection {
+                v.write_to(writer);
             }
 
             // a:endCxn
-            match &self.end_connection {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.end_connection {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "xdr:cNvCxnSpPr");

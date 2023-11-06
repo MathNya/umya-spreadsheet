@@ -14,6 +14,7 @@ pub struct PatternFill {
     foreground_color: ForegroundColor,
     background_color: BackgroundColor,
 }
+
 impl Default for PatternFill {
     fn default() -> Self {
         Self {
@@ -23,6 +24,7 @@ impl Default for PatternFill {
         }
     }
 }
+
 impl PatternFill {
     pub fn get_preset(&self) -> &String {
         &self.preset
@@ -64,35 +66,30 @@ impl PatternFill {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"prst") {
-            Some(v) => {
-                self.set_preset(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"prst") {
+            self.set_preset(v);
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"a:fgClr" => {
                         self.foreground_color.set_attributes(reader, e);
-                    }
+                    },
                     b"a:bgClr" => {
                         self.background_color.set_attributes(reader, e);
-                    }
+                    },
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:pattFill" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:pattFill"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:pattFill" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:pattFill")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

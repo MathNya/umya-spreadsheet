@@ -20,6 +20,7 @@ pub struct EmbeddedObjectProperties {
     auto_pict: BooleanValue,
     object_anchor: ObjectAnchor,
 }
+
 impl EmbeddedObjectProperties {
     pub fn get_prog_id(&self) -> &str {
         self.prog_id.get_value()
@@ -96,39 +97,23 @@ impl EmbeddedObjectProperties {
         self.get_image_mut()
             .set_image_data(attached_file.get_file_data().clone());
 
-        match get_attribute(e, b"defaultSize") {
-            Some(v) => {
-                self.default_size.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, default_size, "defaultSize");
+        set_string_from_xml!(self, e, auto_pict, "autoPict");
 
-        match get_attribute(e, b"autoPict") {
-            Some(v) => {
-                self.auto_pict.set_value_string(v);
-            }
-            None => {}
-        }
-
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"anchor" => {
+        xml_read_loop!(
+            reader,
+                Event::Start(ref e) => {
+                    if e.name().into_inner() == b"anchor" {
                         self.object_anchor.set_attributes(reader, e);
                     }
-                    _ => (),
                 },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"objectPr" => return,
-                    _ => (),
+                Event::End(ref e) => {
+                    if e.name().into_inner() == b"objectPr" {
+                        return
+                    }
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "objectPr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                Event::Eof => panic!("Error not find {} end element", "objectPr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {

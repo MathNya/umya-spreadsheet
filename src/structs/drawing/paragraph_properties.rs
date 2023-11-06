@@ -17,6 +17,7 @@ pub struct ParagraphProperties {
     default_run_properties: Option<RunProperties>,
     line_spacing: Option<LineSpacing>,
 }
+
 impl ParagraphProperties {
     pub fn get_right_to_left(&self) -> &Option<String> {
         &self.right_to_left
@@ -68,57 +69,46 @@ impl ParagraphProperties {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"rtl") {
-            Some(v) => {
-                self.set_right_to_left(v);
-            }
-            None => {}
+        if let Some(v) = get_attribute(e, b"rtl") {
+            self.set_right_to_left(v);
         }
-        match get_attribute(e, b"algn") {
-            Some(v) => {
-                self.alignment.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, alignment, "algn");
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"a:defRPr" => {
-                        let mut obj = RunProperties::default();
-                        obj.set_attributes(reader, e, false);
-                        self.set_default_run_properties(obj);
-                    }
-                    b"a:lnSpc" => {
-                        let mut obj = LineSpacing::default();
-                        obj.set_attributes(reader, e);
-                        self.set_line_spacing(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:defRPr" => {
-                        let mut obj = RunProperties::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_default_run_properties(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:pPr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:pPr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                b"a:defRPr" => {
+                    let mut obj = RunProperties::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_default_run_properties(obj);
+                }
+                b"a:lnSpc" => {
+                    let mut obj = LineSpacing::default();
+                    obj.set_attributes(reader, e);
+                    self.set_line_spacing(obj);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:defRPr" {
+                    let mut obj = RunProperties::default();
+                    obj.set_attributes(reader, e, true);
+                    self.set_default_run_properties(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if  e.name().into_inner() == b"a:pPr" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:pPr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

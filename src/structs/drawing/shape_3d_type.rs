@@ -16,6 +16,7 @@ pub struct Shape3DType {
     bevel_top: Option<BevelTop>,
     bevel_bottom: Option<BevelBottom>,
 }
+
 impl Shape3DType {
     pub fn get_preset_material(&self) -> &PresetMaterialTypeValues {
         self.preset_material.get_value()
@@ -55,17 +56,12 @@ impl Shape3DType {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"prstMaterial") {
-            Some(v) => {
-                self.preset_material.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, preset_material, "prstMaterial");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"a:bevelT" => {
                         let mut obj = BevelTop::default();
                         obj.set_attributes(reader, e);
@@ -77,17 +73,15 @@ impl Shape3DType {
                         self.set_bevel_bottom(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:sp3d" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:sp3d"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:sp3d" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:sp3d")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -100,15 +94,13 @@ impl Shape3DType {
         write_start_tag(writer, "a:sp3d", attributes, false);
 
         // a:bevelT
-        match &self.bevel_top {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.bevel_top {
+            v.write_to(writer)
         }
 
         // a:bevelB
-        match &self.bevel_bottom {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.bevel_bottom {
+            v.write_to(writer)
         }
 
         write_end_tag(writer, "a:sp3d");

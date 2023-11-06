@@ -3,6 +3,7 @@ use super::MruColors;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -10,6 +11,7 @@ use writer::driver::*;
 pub(crate) struct Colors {
     mru_colors: MruColors,
 }
+
 impl Colors {
     pub(crate) fn _get_mru_colors(&self) -> &MruColors {
         &self.mru_colors
@@ -29,25 +31,20 @@ impl Colors {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"mruColors" => {
-                        self.mru_colors.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"colors" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "colors"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"mruColors" {
+                    self.mru_colors.set_attributes(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"colors" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "colors")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

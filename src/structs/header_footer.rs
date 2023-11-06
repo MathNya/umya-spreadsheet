@@ -2,6 +2,7 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::OddFooter;
 use structs::OddHeader;
@@ -12,6 +13,7 @@ pub struct HeaderFooter {
     odd_header: OddHeader,
     odd_footer: OddFooter,
 }
+
 impl HeaderFooter {
     pub fn get_odd_header(&self) -> &OddHeader {
         &self.odd_header
@@ -40,13 +42,7 @@ impl HeaderFooter {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if self.odd_header.has_param() {
-            return true;
-        }
-        if self.odd_footer.has_param() {
-            return true;
-        }
-        false
+        self.odd_header.has_param() || self.odd_footer.has_param()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -54,28 +50,26 @@ impl HeaderFooter {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"oddHeader" => {
-                        self.odd_header.set_attributes(reader, e);
-                    }
-                    b"oddFooter" => {
-                        self.odd_footer.set_attributes(reader, e);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"headerFooter" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "headerFooter"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                b"oddHeader" => {
+                    self.odd_header.set_attributes(reader, e);
+                }
+                b"oddFooter" => {
+                    self.odd_footer.set_attributes(reader, e);
+                }
                 _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"headerFooter" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "headerFooter")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

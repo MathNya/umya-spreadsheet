@@ -13,6 +13,7 @@ use super::Title;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -30,6 +31,7 @@ pub struct SeriesAxis {
     crossing_axis: CrossingAxis,
     crosses: Crosses,
 }
+
 impl SeriesAxis {
     pub fn get_axis_id(&self) -> &AxisId {
         &self.axis_id
@@ -179,10 +181,10 @@ impl SeriesAxis {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().0 {
                     b"c:scaling" => {
                         self.scaling.set_attributes(reader, e);
                     }
@@ -197,8 +199,10 @@ impl SeriesAxis {
                         self.set_major_gridlines(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().0 {
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().0 {
                     b"c:axId" => {
                         self.axis_id.set_attributes(reader, e);
                     }
@@ -229,17 +233,15 @@ impl SeriesAxis {
                         self.crosses.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:serAx" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:serAx"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:serAx" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:serAx")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -259,19 +261,13 @@ impl SeriesAxis {
         self.axis_position.write_to(writer);
 
         // c:majorGridlines
-        match &self.major_gridlines {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.major_gridlines {
+            v.write_to(writer);
         }
 
         // c:title
-        match &self.title {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.title {
+            v.write_to(writer);
         }
 
         // c:majorTickMark

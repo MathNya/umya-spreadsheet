@@ -12,6 +12,7 @@ pub struct ImageData {
     image_name: StringValue,
     title: StringValue,
 }
+
 impl ImageData {
     pub fn get_image_name(&self) -> &str {
         self.image_name.get_value()
@@ -37,23 +38,15 @@ impl ImageData {
         e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
-        match get_attribute(e, b"o:relid") {
-            Some(relid) => {
-                let relationship = drawing_relationships
-                    .unwrap()
-                    .get_relationship_by_rid(&relid);
-                self.image_name
-                    .set_value_string(relationship.get_raw_file().get_file_name());
-            }
-            None => {}
+        if let Some(relid) = get_attribute(e, b"o:relid") {
+            let relationship = drawing_relationships
+                .unwrap()
+                .get_relationship_by_rid(&relid);
+            self.image_name
+                .set_value_string(relationship.get_raw_file().get_file_name());
         }
 
-        match get_attribute(e, b"o:title") {
-            Some(v) => {
-                self.title.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, title, "o:title");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {

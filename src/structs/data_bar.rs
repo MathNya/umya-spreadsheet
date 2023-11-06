@@ -4,6 +4,7 @@ use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -12,6 +13,7 @@ pub struct DataBar {
     cfvo_collection: Vec<ConditionalFormatValueObject>,
     color_collection: Vec<Color>,
 }
+
 impl DataBar {
     pub fn get_cfvo_collection(&self) -> &Vec<ConditionalFormatValueObject> {
         &self.cfvo_collection
@@ -46,10 +48,10 @@ impl DataBar {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"cfvo" => {
                         let mut obj = ConditionalFormatValueObject::default();
                         obj.set_attributes(reader, e, true);
@@ -61,17 +63,15 @@ impl DataBar {
                         self.color_collection.push(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"dataBar" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "dataBar"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"dataBar" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "dataBar")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

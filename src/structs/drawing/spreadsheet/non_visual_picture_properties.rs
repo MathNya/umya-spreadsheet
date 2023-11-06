@@ -4,6 +4,7 @@ use super::NonVisualPictureDrawingProperties;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -12,6 +13,7 @@ pub struct NonVisualPictureProperties {
     non_visual_drawing_properties: NonVisualDrawingProperties,
     non_visual_picture_drawing_properties: NonVisualPictureDrawingProperties,
 }
+
 impl NonVisualPictureProperties {
     pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
@@ -47,41 +49,41 @@ impl NonVisualPictureProperties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"xdr:cNvPicPr" => {
                         self.non_visual_picture_drawing_properties
                             .set_attributes(reader, e, false);
-                    }
+                        }
                     b"xdr:cNvPr" => {
                         self.non_visual_drawing_properties
                             .set_attributes(reader, e, false);
-                    }
+                        }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
+                }
+            },
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
                     b"xdr:cNvPicPr" => {
                         self.non_visual_picture_drawing_properties
                             .set_attributes(reader, e, true);
-                    }
+                        }
                     b"xdr:cNvPr" => {
                         self.non_visual_drawing_properties
                             .set_attributes(reader, e, true);
-                    }
+                        }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xdr:nvPicPr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:nvPicPr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"xdr:nvPicPr" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "xdr:nvPicPr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

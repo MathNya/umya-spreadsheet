@@ -11,6 +11,7 @@ use super::super::Transform2D;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
@@ -26,6 +27,7 @@ pub struct ShapeProperties {
     scene_3d_type: Option<Scene3DType>,
     shape_3d_type: Option<Shape3DType>,
 }
+
 impl ShapeProperties {
     pub fn get_pattern_fill(&self) -> &Option<PatternFill> {
         &self.pattern_fill
@@ -149,10 +151,10 @@ impl ShapeProperties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().0 {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().0 {
                     b"a:pattFill" => {
                         let mut obj = PatternFill::default();
                         obj.set_attributes(reader, e);
@@ -194,25 +196,22 @@ impl ShapeProperties {
                         self.set_shape_3d_type(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::Empty(ref e)) => match e.name().0 {
-                    b"a:noFill" => {
-                        let mut obj = NoFill::default();
-                        obj.set_attributes(reader, e);
-                        self.set_no_fill(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"c:spPr" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c:spPr"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::Empty(ref e) => {
+                if e.name().0 == b"a:noFill" {
+                    let mut obj = NoFill::default();
+                    obj.set_attributes(reader, e);
+                    self.set_no_fill(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"c:spPr" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "c:spPr")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -220,75 +219,48 @@ impl ShapeProperties {
         write_start_tag(writer, "c:spPr", vec![], false);
 
         // a:pattFill
-        match &self.pattern_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.pattern_fill {
+            v.write_to(writer);
         }
 
         // a:xfrm
-        match &self.transform2d {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.transform2d {
+            v.write_to(writer);
         }
 
         // a:prstGeom
-        match &self.preset_geometry {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.preset_geometry {
+            v.write_to(writer);
         }
 
         // a:solidFill
-        match &self.solid_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.solid_fill {
+            v.write_to(writer);
         }
 
         // a:noFill
-        match &self.no_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.no_fill {
+            v.write_to(writer);
         }
 
         // a:ln
-        match &self.outline {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.outline {
+            v.write_to(writer);
         }
 
         // a:effectLst
-        match &self.effect_list {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.effect_list {
+            v.write_to(writer);
         }
 
         // a:scene3d
-        match &self.scene_3d_type {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.scene_3d_type {
+            v.write_to(writer);
         }
 
         // a:sp3d
-        match &self.shape_3d_type {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_3d_type {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "c:spPr");

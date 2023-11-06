@@ -3,6 +3,7 @@ use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::io::Cursor;
 use structs::StringValue;
 use writer::driver::*;
@@ -11,6 +12,7 @@ use writer::driver::*;
 pub struct OddHeader {
     value: StringValue,
 }
+
 impl OddHeader {
     pub fn get_value(&self) -> &str {
         self.value.get_value()
@@ -26,10 +28,7 @@ impl OddHeader {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if self.value.has_value() {
-            return true;
-        }
-        false
+        self.value.has_value()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -37,22 +36,18 @@ impl OddHeader {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Text(e)) => {
-                    self.set_value(e.unescape().unwrap());
+        xml_read_loop!(
+            reader,
+            Event::Text(e) => {
+                self.set_value(e.unescape().unwrap());
+            },
+            Event::End(ref e) => {
+                if e.name().0 == b"oddHeader" {
+                    return
                 }
-                Ok(Event::End(ref e)) => match e.name().0 {
-                    b"oddHeader" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "oddHeader"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+            },
+            Event::Eof => panic!("Error not find {} end element", "oddHeader")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -14,6 +14,7 @@ pub struct Camera {
     preset: EnumValue<PresetCameraValues>,
     rotation: Option<Rotation>,
 }
+
 impl Camera {
     pub fn get_preset(&self) -> &PresetCameraValues {
         self.preset.get_value()
@@ -43,38 +44,28 @@ impl Camera {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"prst") {
-            Some(v) => {
-                self.preset.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, preset, "prst");
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"a:rot" => {
-                        let mut obj = Rotation::default();
-                        obj.set_attributes(reader, e);
-                        self.rotation = Some(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:camera" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "a:camera"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Empty(ref e) => {
+                if e.name().into_inner() == b"a:rot" {
+                    let mut obj = Rotation::default();
+                    obj.set_attributes(reader, e);
+                    self.rotation = Some(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:camera" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:camera")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -89,11 +80,8 @@ impl Camera {
 
         if with_inner {
             // a:rot
-            match &self.rotation {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                _ => {}
+            if let Some(v) = &self.rotation {
+                v.write_to(writer);
             }
             write_end_tag(writer, "a:camera");
         }

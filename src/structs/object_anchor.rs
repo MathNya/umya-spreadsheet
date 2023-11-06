@@ -14,6 +14,7 @@ pub struct ObjectAnchor {
     from_marker: FromMarker,
     to_marker: ToMarker,
 }
+
 impl ObjectAnchor {
     pub fn get_move_with_cells(&self) -> &bool {
         self.move_with_cells.get_value()
@@ -75,17 +76,12 @@ impl ObjectAnchor {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        match get_attribute(e, b"moveWithCells") {
-            Some(v) => {
-                self.move_with_cells.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, move_with_cells, "moveWithCells");
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"from" => {
                         self.from_marker.set_attributes(reader, e);
                     }
@@ -99,23 +95,21 @@ impl ObjectAnchor {
                         self.to_marker.set_attributes(reader, e);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"anchor" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "anchor"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"anchor" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "anchor")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // anchor
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if &self.move_with_cells.has_value() == &true {
+        if self.move_with_cells.has_value() {
             attributes.push(("moveWithCells", self.move_with_cells.get_value_string()));
         }
         write_start_tag(writer, "anchor", attributes, false);

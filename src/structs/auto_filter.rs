@@ -4,6 +4,7 @@ use super::Range;
 pub struct AutoFilter {
     range: Range,
 }
+
 impl AutoFilter {
     pub fn get_range(&self) -> &Range {
         &self.range

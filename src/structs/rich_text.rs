@@ -3,6 +3,7 @@ use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use reader::driver::*;
 use std::borrow::Cow;
 use std::fmt::Write;
 use std::io::Cursor;
@@ -12,6 +13,7 @@ use writer::driver::*;
 pub struct RichText {
     rich_text_elements: Vec<TextElement>,
 }
+
 impl RichText {
     pub fn get_text(&self) -> Cow<'static, str> {
         let mut text = String::from("");
@@ -60,27 +62,22 @@ impl RichText {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"r" => {
-                        let mut obj = TextElement::default();
-                        obj.set_attributes(reader, e);
-                        self.add_rich_text_elements(obj);
-                    }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"text" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "text"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"r" {
+                    let mut obj = TextElement::default();
+                    obj.set_attributes(reader, e);
+                    self.add_rich_text_elements(obj);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"text" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "text")
+        );
     }
 
     pub(crate) fn write_to_none(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

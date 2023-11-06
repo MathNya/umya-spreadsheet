@@ -40,6 +40,7 @@ pub struct ConditionalFormattingRule {
     icon_set: Option<IconSet>,
     formula: Option<Formula>,
 }
+
 impl ConditionalFormattingRule {
     pub fn get_type(&self) -> &ConditionalFormatValues {
         self.r#type.get_value()
@@ -226,100 +227,33 @@ impl ConditionalFormattingRule {
         differential_formats: &DifferentialFormats,
         empty_flag: bool,
     ) {
-        match get_attribute(e, b"type") {
-            Some(v) => {
-                self.r#type.set_value_string(v);
-            }
-            None => {}
+        set_string_from_xml!(self, e, r#type, "type");
+        set_string_from_xml!(self, e, operator, "operator");
+
+        if let Some(v) = get_attribute(e, b"dxfId") {
+            let dxf_id = v.parse::<usize>().unwrap();
+            let style = differential_formats.get_style(dxf_id);
+            self.set_style(style);
         }
 
-        match get_attribute(e, b"operator") {
-            Some(v) => {
-                self.operator.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"dxfId") {
-            Some(v) => {
-                let dxf_id = v.parse::<usize>().unwrap();
-                let style = differential_formats.get_style(dxf_id);
-                self.set_style(style);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"priority") {
-            Some(v) => {
-                self.priority.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"percent") {
-            Some(v) => {
-                self.percent.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"bottom") {
-            Some(v) => {
-                self.bottom.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"rank") {
-            Some(v) => {
-                self.rank.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"stopIfTrue") {
-            Some(v) => {
-                self.stop_if_true.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"stdDev") {
-            Some(v) => {
-                self.std_dev.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"timePeriod") {
-            Some(v) => {
-                self.time_period.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"aboveAverage") {
-            Some(v) => {
-                self.above_average.set_value_string(v);
-            }
-            None => {}
-        }
-
-        match get_attribute(e, b"equalAverage") {
-            Some(v) => {
-                self.equal_average.set_value_string(v);
-            }
-            None => {}
-        }
+        set_string_from_xml!(self, e, priority, "priority");
+        set_string_from_xml!(self, e, percent, "percent");
+        set_string_from_xml!(self, e, bottom, "bottom");
+        set_string_from_xml!(self, e, rank, "rank");
+        set_string_from_xml!(self, e, stop_if_true, "stopIfTrue");
+        set_string_from_xml!(self, e, std_dev, "stdDev");
+        set_string_from_xml!(self, e, time_period, "timePeriod");
+        set_string_from_xml!(self, e, above_average, "aboveAverage");
+        set_string_from_xml!(self, e, equal_average, "equalAverage");
 
         if empty_flag {
             return;
         }
 
-        let mut buf = Vec::new();
-        loop {
-            match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
                     b"colorScale" => {
                         let mut obj = ColorScale::default();
                         obj.set_attributes(reader, e);
@@ -341,17 +275,15 @@ impl ConditionalFormattingRule {
                         self.formula = Some(obj);
                     }
                     _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"cfRule" => return,
-                    _ => (),
-                },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "cfRule"),
-                Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
-            }
-            buf.clear();
-        }
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"cfRule" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "cfRule")
+        );
     }
 
     pub(crate) fn write_to(
