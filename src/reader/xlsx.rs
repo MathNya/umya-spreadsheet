@@ -197,11 +197,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                 }
                 // table
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" => {
-                      table::read(
-                          worksheet,
-                          relationship.get_raw_file()
-                      )
-                      .unwrap();
+                    table::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
                 _ => {}
             }

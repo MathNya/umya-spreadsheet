@@ -263,14 +263,16 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 &mut writer,
                 "tableParts",
                 vec![("count", &tables.len().to_string())],
-                false);
+                false,
+            );
             for table in worksheet.get_tables().iter() {
                 let r_id_str = format!("rId{}", &r_id);
                 write_start_tag(
                     &mut writer,
                     "tablePart",
                     vec![("r:id", r_id_str.as_str())],
-                    true);
+                    true,
+                );
                 r_id += 1;
             }
             write_end_tag(&mut writer, "tableParts");

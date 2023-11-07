@@ -2,6 +2,7 @@
 ![Result Image](./images/title.png)
 
 [![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
+![Github CI](https://github.com/MathNya/umya-spreadsheet/actions/workflows/rust.yml/badge.svg)
 [![Crates.io](https://img.shields.io/crates/l/umya-spreadsheet)](https://github.com/MathNya/umya-spreadsheet#license)
 [![Join the chat at https://gitter.im/MathNya/umya-spreadsheet](https://badges.gitter.im/MathNya/umya-spreadsheet.svg)](https://gitter.im/MathNya/umya-spreadsheet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -165,3 +166,10 @@ See the next chapter for implementation status and more detailed usage.
 
 ## License
 MIT
+
+## Contributing
+
+Contributions by way of pull requests are welcome!  Please make sure your code uses:
+
+* `cargo fmt` for formatting
+* [clippy](https://github.com/rust-lang/rust-clippy)
