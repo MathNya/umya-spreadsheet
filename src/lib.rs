@@ -135,8 +135,8 @@ extern crate cbc;
 extern crate cfb;
 extern crate getrandom;
 extern crate hmac;
-extern crate sha2;
 extern crate html_parser;
+extern crate sha2;
 
 #[macro_use]
 extern crate lazy_static;
