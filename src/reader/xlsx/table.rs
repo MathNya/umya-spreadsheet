@@ -56,7 +56,7 @@ pub(crate) fn read(
                                         show_first_col = attr_val == "1";
                                     }
                                     b"showLastColumn" => {
-                                        show_first_col = attr_val == "1";
+                                        show_last_col = attr_val == "1";
                                     }
                                     b"showRowStripes" => {
                                         show_row_stripes = attr_val == "1";
