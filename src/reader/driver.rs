@@ -92,7 +92,7 @@ pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Er
     String::from_utf8(value)
 }
 
-pub(crate) fn condvert_character_reference(src: &str) -> String {
+pub(crate) fn convert_character_reference(src: &str) -> String {
     src.replace("&amp;", "&")
         .replace("&lt;", "<")
         .replace("&gt;", ">")

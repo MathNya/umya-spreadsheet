@@ -148,7 +148,7 @@ impl NumberingFormat {
             .parse::<u32>()
             .unwrap();
         self.format_code =
-            condvert_character_reference(get_attribute(e, b"formatCode").unwrap().as_str());
+            convert_character_reference(get_attribute(e, b"formatCode").unwrap().as_str());
         self.is_build_in = false;
     }
 
