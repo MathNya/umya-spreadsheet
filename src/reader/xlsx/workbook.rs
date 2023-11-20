@@ -2,6 +2,7 @@ use crate::xml_read_loop;
 
 use super::driver::*;
 use super::XlsxError;
+use quick_xml::escape;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::{io, result};
@@ -40,7 +41,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let sheet_id_value = get_attribute(e, b"sheetId").unwrap();
                     let r_id_value = get_attribute(e, b"r:id").unwrap();
                     let mut worksheet = Worksheet::default();
-                    worksheet.set_name(name_value);
+                    worksheet.set_name(escape::unescape(&name_value).unwrap());
                     worksheet.set_sheet_id(sheet_id_value);
                     worksheet.set_r_id(r_id_value);
                     let _ = spreadsheet.add_sheet(worksheet);
