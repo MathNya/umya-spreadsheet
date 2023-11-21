@@ -4,6 +4,7 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 
 use structs::drawing::Theme;
+use structs::raw::RawRelationships;
 use structs::raw::RawWorksheet;
 use structs::Cells;
 use structs::Columns;
@@ -178,7 +179,7 @@ pub(crate) fn read(
                     .set_attributes(&mut reader, e);
             }
             b"hyperlink" => {
-                let (coor, _rid, hyperlink) = get_hyperlink(e);
+                let (coor, hyperlink) = get_hyperlink(e, raw_data_of_worksheet.get_worksheet_relationships());
                 let _ = worksheet.get_cell_mut(coor).set_hyperlink(hyperlink);
             }
             b"printOptions" => {
@@ -246,7 +247,10 @@ pub(crate) fn read_lite(
     Ok(cells)
 }
 
-fn get_hyperlink(e: &quick_xml::events::BytesStart<'_>) -> (String, String, Hyperlink) {
+fn get_hyperlink(
+    e: &quick_xml::events::BytesStart<'_>,
+    raw_relationships: Option<&RawRelationships>,
+) -> (String, Hyperlink) {
     let mut hyperlink = Hyperlink::default();
     let mut rid = String::from("");
 
@@ -256,9 +260,14 @@ fn get_hyperlink(e: &quick_xml::events::BytesStart<'_>) -> (String, String, Hype
             let _ = hyperlink.set_url(v);
             let _ = hyperlink.set_location(true);
         }
-        None => {
-            rid = get_attribute(e, b"r:id").unwrap_or_default();
-        }
+        None => {}
     }
-    (coordition, rid, hyperlink)
+    match get_attribute(e, b"r:id") {
+        Some(v) => {
+            let relationship = raw_relationships.unwrap().get_relationship_by_rid(&v);
+            hyperlink.set_url(relationship.get_target());
+        }
+        None => {}
+    }
+    (coordition, hyperlink)
 }

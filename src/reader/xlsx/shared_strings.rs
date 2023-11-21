@@ -32,20 +32,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         Event::Start(ref e) => {
             if e.name().into_inner() == b"sst" {
                 let mut obj = SharedStringTable::default();
-                obj.set_attributes(&mut reader, e);
-
-                // set ThemeColor
-                for item in obj.get_shared_string_item_mut() {
-                    if let Some(v) = item.get_rich_text_mut() {
-                        for element in v.get_rich_text_elements_mut() {
-                            if let Some(r) = element.get_run_properties_crate() {
-                                let color = r.get_color_mut();
-                                color.set_argb_by_theme(&theme);
-                            }
-                        }
-                    }
-                }
-
+                obj.set_attributes(&mut reader, e, &theme);
                 spreadsheet.set_shared_string_table(obj);
             }
         },

@@ -1,6 +1,7 @@
 use md5::Digest;
 use structs::Alignment;
 use structs::Borders;
+use structs::Color;
 use structs::Fill;
 use structs::Font;
 use structs::NumberingFormat;
@@ -92,6 +93,16 @@ impl Style {
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill = Some(value);
         self
+    }
+
+    pub fn get_background_color(&self) -> &Option<Color> {
+        match self.get_fill() {
+            Some(fill) => match fill.get_pattern_fill() {
+                Some(pattern_fill) => pattern_fill.get_foreground_color(),
+                _ => &None,
+            },
+            _ => &None,
+        }
     }
 
     pub fn set_background_color<S: Into<String>>(&mut self, color: S) -> &mut Self {

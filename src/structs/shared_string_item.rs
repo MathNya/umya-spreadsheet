@@ -82,31 +82,6 @@ impl SharedStringItem {
         h.finish()
     }
 
-    pub(crate) fn _get_hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}",
-                match &self.text {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        String::from("NONE")
-                    }
-                },
-                match &self.rich_text {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        String::from("NONE")
-                    }
-                }
-            ))
-        )
-    }
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

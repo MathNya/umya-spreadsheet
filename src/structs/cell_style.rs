@@ -57,10 +57,10 @@ impl CellStyle {
         // cellStyle
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("name", self.name.get_value_string()));
-        let builtin_id = self.builtin_id.get_value_string();
-        attributes.push(("xfId", &builtin_id));
         let format_id = self.format_id.get_value_string();
-        attributes.push(("builtinId", &format_id));
+        attributes.push(("xfId", &format_id));
+        let builtin_id = self.builtin_id.get_value_string();
+        attributes.push(("builtinId", &builtin_id));
         write_start_tag(writer, "cellStyle", attributes, true);
     }
 }

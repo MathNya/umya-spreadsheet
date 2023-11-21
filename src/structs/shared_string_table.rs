@@ -1,4 +1,7 @@
+use crate::drawing::charts::View3D;
+
 // sst
+use super::drawing::Theme;
 use super::CellValue;
 use super::SharedStringItem;
 use hashbrown::HashMap;
@@ -34,28 +37,6 @@ impl SharedStringTable {
         !self.shared_string_item.is_empty()
     }
 
-    pub(crate) fn ensure_map(&mut self) -> bool {
-        // let l1 = self.shared_string_item.len();
-        // let l2 = self.map.len();
-        // println!("{}:::{}",l1,l2);
-        if !self.shared_string_item.is_empty() && self.map.is_empty() {
-            let mut h: HashMap<u64, usize> = HashMap::with_capacity(self.shared_string_item.len());
-            for i in 0..self.shared_string_item.len() {
-                let hash = self.shared_string_item[i].get_hash_u64();
-
-                match h.raw_entry_mut().from_key_hashed_nocheck(hash, &hash) {
-                    hashbrown::hash_map::RawEntryMut::Occupied(mut o) => Some(o.insert(i)),
-                    hashbrown::hash_map::RawEntryMut::Vacant(v) => {
-                        v.insert(hash, i);
-                        None
-                    }
-                };
-            }
-            self.map = h;
-        }
-        true
-    }
-
     pub(crate) fn set_cell(&mut self, value: &CellValue) -> usize {
         self.regist_count += 1;
 
@@ -68,34 +49,37 @@ impl SharedStringTable {
         }
 
         let hash_code = shared_string_item.get_hash_u64();
-        self.ensure_map();
-
-        let mut is_new = false;
-        let n = match self
-            .map
-            .raw_entry_mut()
-            .from_key_hashed_nocheck(hash_code, &hash_code)
-        {
-            hashbrown::hash_map::RawEntryMut::Occupied(o) => o.get().to_owned(),
-            hashbrown::hash_map::RawEntryMut::Vacant(v) => {
+        let n = match self.map.get(&hash_code) {
+            Some(v) => v.to_owned(),
+            None => {
                 let n = self.shared_string_item.len();
-                is_new = true;
-                v.insert(hash_code, n);
+                self.map.insert(hash_code, n);
+                self.set_shared_string_item(shared_string_item);
                 n
             }
         };
-
-        if is_new {
-            self.set_shared_string_item(shared_string_item);
-        }
-
         n
+    }
+
+    pub(crate) fn reflash_map(&mut self) {
+        self.map.clear();
+        for i in 0..self.shared_string_item.len() {
+            let obj = self.shared_string_item.get(i).unwrap();
+            let hash_code = obj.get_hash_u64();
+            match self.map.get(&hash_code) {
+                Some(v) => {}
+                None => {
+                    self.map.insert(hash_code, i);
+                }
+            };
+        }
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
+        theme: &Theme,
     ) {
         xml_read_loop!(
             reader,
@@ -103,7 +87,19 @@ impl SharedStringTable {
                 if e.name().into_inner() == b"si" {
                     let mut obj = SharedStringItem::default();
                     obj.set_attributes(reader, e);
+
+                    // set ThemeColor
+                    if let Some(v) = obj.get_rich_text_mut() {
+                        for element in v.get_rich_text_elements_mut() {
+                            if let Some(r) = element.get_run_properties_crate() {
+                                let color = r.get_color_mut();
+                                color.set_argb_by_theme(&theme);
+                            }
+                        }
+                    }
+
                     self.set_shared_string_item(obj);
+                    self.reflash_map();
                 }
             },
             Event::End(ref e) => {
