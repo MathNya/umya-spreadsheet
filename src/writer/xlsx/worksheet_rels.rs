@@ -71,18 +71,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         r_id += 1;
     }
 
-    // write table relationships
-    for table_no in table_no_list.iter() {
-        is_write = write_relationship(
-            &mut writer,
-            r_id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table",
-            format!("../tables/table{}.xml", table_no.to_string().as_str()).as_str(),
-            "",
-        );
-        r_id += 1;
-    }
-
     // write drawing relationships
     if worksheet.has_drawing_object() {
         is_write = write_relationship(
@@ -106,6 +94,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 vml_drawing_no.to_string().as_str()
             )
             .as_str(),
+            "",
+        );
+        r_id += 1;
+    }
+
+    // write table relationships
+    for table_no in table_no_list.iter() {
+        is_write = write_relationship(
+            &mut writer,
+            r_id.to_string().as_str(),
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table",
+            format!("../tables/table{}.xml", table_no.to_string().as_str()).as_str(),
             "",
         );
         r_id += 1;

@@ -1221,9 +1221,9 @@ fn wb_with_shared_strings() {
 
 #[test]
 fn issue_test() {
-    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let path = std::path::Path::new("./tests/test_files/table.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    let path = std::path::Path::new("./tests/result_files/aaa_issue_test.xlsx");
+    let path = std::path::Path::new("./tests/result_files/table.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
