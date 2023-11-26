@@ -10,6 +10,8 @@ use std::cmp::Ordering;
 use std::io;
 use std::io::Write;
 use std::path::Path;
+use structs::SheetProtection;
+use structs::WorkbookProtection;
 use writer::driver::*;
 
 type Aes256CbcEnc = cbc::Encryptor<aes::Aes256>;
@@ -23,6 +25,72 @@ const BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE: &[u8] =
 const BLOCK_KEYS_KEY: &[u8] = &[0x14, 0x6e, 0x0b, 0xe7, 0xab, 0xac, 0xd0, 0xd6];
 const BLOCK_VERIFIER_HASH_INPUT: &[u8] = &[0xfe, 0xa7, 0xd2, 0x76, 0x3b, 0x4b, 0x9e, 0x79];
 const BLOCK_VERIFIER_HASH_VALUE: &[u8] = &[0xd7, 0xaa, 0x0f, 0x6d, 0x30, 0x61, 0x34, 0x4e];
+
+pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProtection) {
+    let key_salt_value = gen_random_16();
+    let key_hash_algorithm = "SHA-512";
+    let key_spin_count = 100000;
+
+    let key = convert_password_to_hash(
+        password,
+        key_hash_algorithm,
+        &key_salt_value,
+        &key_spin_count,
+    );
+
+    let salt_value_str = STANDARD.encode(key_salt_value);
+    let hash_value_str = STANDARD.encode(key);
+
+    sheet_protection.set_algorithm_name(key_hash_algorithm);
+    sheet_protection.set_salt_value(salt_value_str);
+    sheet_protection.set_spin_count(key_spin_count as u32);
+    sheet_protection.set_hash_value(hash_value_str);
+    sheet_protection.remove_password_raw();
+}
+
+pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut WorkbookProtection) {
+    let key_salt_value = gen_random_16();
+    let key_hash_algorithm = "SHA-512";
+    let key_spin_count = 100000;
+
+    let key = convert_password_to_hash(
+        password,
+        key_hash_algorithm,
+        &key_salt_value,
+        &key_spin_count,
+    );
+
+    let salt_value_str = STANDARD.encode(key_salt_value);
+    let hash_value_str = STANDARD.encode(key);
+
+    workbook_protection.set_workbook_algorithm_name(key_hash_algorithm);
+    workbook_protection.set_workbook_salt_value(salt_value_str);
+    workbook_protection.set_workbook_spin_count(key_spin_count as u32);
+    workbook_protection.set_workbook_hash_value(hash_value_str);
+    workbook_protection.remove_workbook_password_raw();
+}
+
+pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut WorkbookProtection) {
+    let key_salt_value = gen_random_16();
+    let key_hash_algorithm = "SHA-512";
+    let key_spin_count = 100000;
+
+    let key = convert_password_to_hash(
+        password,
+        key_hash_algorithm,
+        &key_salt_value,
+        &key_spin_count,
+    );
+
+    let salt_value_str = STANDARD.encode(key_salt_value);
+    let hash_value_str = STANDARD.encode(key);
+
+    workbook_protection.set_revisions_algorithm_name(key_hash_algorithm);
+    workbook_protection.set_revisions_salt_value(salt_value_str);
+    workbook_protection.set_revisions_spin_count(key_spin_count as u32);
+    workbook_protection.set_revisions_hash_value(hash_value_str);
+    workbook_protection.remove_revisions_password_raw();
+}
 
 pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &Vec<u8>, password: &str) {
     // package params
@@ -369,10 +437,38 @@ fn convert_password_to_key(
     }
 }
 
+fn convert_password_to_hash(
+    password: &str,
+    hash_algorithm: &str,
+    salt_value: &Vec<u8>,
+    spin_count: &usize,
+) -> Vec<u8> {
+    // Password must be in unicode buffer
+    let mut password_buffer: Vec<u8> = Vec::new();
+    let v: Vec<u16> = password.encode_utf16().collect();
+    for a in v {
+        let d = a.to_le_bytes();
+        password_buffer.push(d[0]);
+        password_buffer.push(d[1]);
+    }
+
+    // Generate the initial hash
+    let mut key = hash(hash_algorithm, vec![salt_value, &password_buffer]).unwrap();
+
+    // Now regenerate until spin count
+    for i in 0..*spin_count {
+        let iterator = create_uint32_le_buffer(&(i as u32), None);
+        key = hash(hash_algorithm, vec![&key, &iterator]).unwrap();
+    }
+
+    key
+}
+
 // Calculate a hash of the concatenated buffers with the given algorithm.
 fn hash(algorithm: &str, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
     let mut digest = match algorithm {
         "SHA512" => Sha512::new(),
+        "SHA-512" => Sha512::new(),
         _ => {
             return Err(format!("algorithm {} not supported!", algorithm));
         }

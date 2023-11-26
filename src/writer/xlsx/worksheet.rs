@@ -181,6 +181,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             write_end_tag(&mut writer, "sheetData");
         }
 
+        // sheetProtection
+        match worksheet.get_sheet_protection() {
+            Some(v) => {
+                v.write_to(&mut writer);
+            }
+            None => {}
+        }
+
         // autoFilter
         match worksheet.get_auto_filter() {
             Some(v) => {
@@ -192,7 +200,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 );
             }
             None => {}
-        };
+        }
 
         // mergeCells
         worksheet.get_merge_cells_crate().write_to(&mut writer);

@@ -60,46 +60,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 
     // workbookProtection
-    if spreadsheet.get_security().is_security_enabled() {
-        let tag_name = "workbookProtection";
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push((
-            "lockRevision",
-            if spreadsheet.get_security().get_lock_revision() == &true {
-                "true"
-            } else {
-                "false"
-            },
-        ));
-        attributes.push((
-            "lockStructure",
-            if spreadsheet.get_security().get_lock_structure() == &true {
-                "true"
-            } else {
-                "false"
-            },
-        ));
-        attributes.push((
-            "lockWindows",
-            if spreadsheet.get_security().get_lock_windows() == &true {
-                "true"
-            } else {
-                "false"
-            },
-        ));
-        if spreadsheet.get_security().get_revisions_password() != "" {
-            attributes.push((
-                "lockWindows",
-                spreadsheet.get_security().get_revisions_password(),
-            ));
+    match spreadsheet.get_workbook_protection() {
+        Some(v) => {
+            v.write_to(&mut writer);
         }
-        if spreadsheet.get_security().get_workbook_password() != "" {
-            attributes.push((
-                "workbookPassword",
-                spreadsheet.get_security().get_workbook_password(),
-            ));
-        }
-        write_start_tag(&mut writer, tag_name, attributes, true);
+        None => {}
     }
 
     // bookViews

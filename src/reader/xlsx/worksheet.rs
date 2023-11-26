@@ -14,6 +14,7 @@ use structs::Hyperlink;
 use structs::OleObjects;
 use structs::Row;
 use structs::SharedStringTable;
+use structs::SheetProtection;
 use structs::Stylesheet;
 use structs::Worksheet;
 
@@ -193,6 +194,14 @@ pub(crate) fn read(
                     e,
                     raw_data_of_worksheet.get_worksheet_relationships(),
                 );
+            }
+            b"sheetProtection" => {
+                let mut obj = SheetProtection::default();
+                obj.set_attributes(
+                    &mut reader,
+                    e,
+                );
+                worksheet.set_sheet_protection(obj);
             }
             _ => (),
         },

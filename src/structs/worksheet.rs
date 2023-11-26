@@ -31,6 +31,7 @@ use structs::RowBreaks;
 use structs::Rows;
 use structs::SharedStringTable;
 use structs::SheetFormatProperties;
+use structs::SheetProtection;
 use structs::SheetViews;
 use structs::Style;
 use structs::Stylesheet;
@@ -69,6 +70,7 @@ pub struct Worksheet {
     tables: Vec<Table>,
     data_validations: Option<DataValidations>,
     sheet_format_properties: SheetFormatProperties,
+    sheet_protection: Option<SheetProtection>,
 }
 
 impl Worksheet {
@@ -1763,6 +1765,25 @@ impl Worksheet {
 
     pub(crate) fn remove_raw_data_of_worksheet(&mut self) -> &mut Self {
         self.raw_data_of_worksheet = None;
+        self
+    }
+
+    pub fn get_sheet_protection(&self) -> &Option<SheetProtection> {
+        &self.sheet_protection
+    }
+
+    pub fn get_sheet_protection_mut(&mut self) -> &mut SheetProtection {
+        self.sheet_protection
+            .get_or_insert(SheetProtection::default())
+    }
+
+    pub fn set_sheet_protection(&mut self, value: SheetProtection) -> &mut Self {
+        self.sheet_protection = Some(value);
+        self
+    }
+
+    pub fn remove_sheet_protection(&mut self) -> &mut Self {
+        self.sheet_protection = None;
         self
     }
 

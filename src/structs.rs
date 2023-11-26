@@ -43,9 +43,6 @@ pub use self::auto_filter::*;
 mod column;
 pub use self::column::*;
 
-mod security;
-pub use self::security::*;
-
 mod style;
 pub use self::style::*;
 
@@ -414,3 +411,9 @@ pub use self::data_validations::*;
 
 mod sheet_format_properties;
 pub use self::sheet_format_properties::*;
+
+mod sheet_protection;
+pub use self::sheet_protection::*;
+
+mod workbook_protection;
+pub use self::workbook_protection::*;

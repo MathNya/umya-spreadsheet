@@ -6,7 +6,10 @@ use structs::Fill;
 use structs::Font;
 use structs::NumberingFormat;
 use structs::PatternValues;
+use structs::Protection;
 use structs::UInt32Value;
+
+use crate::BooleanValue;
 
 /// # Examples
 /// ## add border
@@ -57,6 +60,7 @@ pub struct Style {
     alignment: Option<Alignment>,
     numbering_format: Option<NumberingFormat>,
     format_id: UInt32Value,
+    protection: Option<Protection>,
 }
 impl Style {
     pub fn get_font(&self) -> &Option<Font> {
@@ -238,6 +242,29 @@ impl Style {
         self
     }
 
+    pub fn get_protection(&self) -> &Option<Protection> {
+        &self.protection
+    }
+
+    pub fn get_protection_mut(&mut self) -> &mut Protection {
+        self.protection.get_or_insert(Protection::default())
+    }
+
+    pub fn set_protection(&mut self, value: Protection) -> &mut Self {
+        self.protection = Some(value);
+        self
+    }
+
+    pub fn remove_protection(&mut self) -> &mut Self {
+        self.protection = None;
+        self
+    }
+
+    pub(crate) fn set_protection_crate(&mut self, value: Option<Protection>) -> &mut Self {
+        self.protection = value;
+        self
+    }
+
     pub(crate) fn is_empty(&self) -> bool {
         if self.font.is_some() {
             return false;
@@ -252,6 +279,9 @@ impl Style {
             return false;
         }
         if self.numbering_format.is_some() {
+            return false;
+        }
+        if self.protection.is_some() {
             return false;
         }
         true
@@ -271,54 +301,5 @@ impl Style {
         def.set_borders(Borders::get_default_value());
         def.set_fill(Fill::get_default_value_2());
         def
-    }
-
-    pub(crate) fn _get_hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}{}",
-                match &self.font {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.fill {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.borders {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.alignment {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.numbering_format {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-            ))
-        )
     }
 }

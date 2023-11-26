@@ -9,6 +9,7 @@ use std::{io, result};
 
 use structs::DefinedName;
 use structs::Spreadsheet;
+use structs::WorkbookProtection;
 use structs::WorkbookView;
 use structs::Worksheet;
 
@@ -35,6 +36,11 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let mut obj = WorkbookView::default();
                     obj.set_attributes(&mut reader, e);
                     spreadsheet.set_workbook_view(obj);
+                }
+                b"workbookProtection" => {
+                    let mut obj = WorkbookProtection::default();
+                    obj.set_attributes(&mut reader, e);
+                    spreadsheet.set_workbook_protection(obj);
                 }
                 b"sheet" => {
                     let name_value = get_attribute(e, b"name").unwrap();

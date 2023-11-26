@@ -9,6 +9,7 @@ use super::DifferentialFormats;
 use super::Fills;
 use super::Fonts;
 use super::NumberingFormats;
+use super::Protection;
 use super::Style;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -258,6 +259,29 @@ impl Stylesheet {
                 None => {}
             }
         }
+
+        // protection
+        let mut apply = true;
+        if def_cell_format.has_apply_protection() {
+            apply = *def_cell_format.get_apply_protection();
+        }
+        if cell_format.has_apply_protection() {
+            apply = *cell_format.get_apply_protection();
+        }
+        if apply {
+            match def_cell_format.get_protection() {
+                Some(v) => {
+                    style.set_protection(v.clone());
+                }
+                None => {}
+            }
+            match cell_format.get_protection() {
+                Some(v) => {
+                    style.set_protection(v.clone());
+                }
+                None => {}
+            }
+        }
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
@@ -318,6 +342,14 @@ impl Stylesheet {
             Some(v) => {
                 cell_format.set_alignment(v.clone());
                 cell_format.set_apply_alignment(true);
+            }
+            None => {}
+        }
+
+        match style.get_protection() {
+            Some(v) => {
+                cell_format.set_protection(v.clone());
+                cell_format.set_apply_protection(true);
             }
             None => {}
         }

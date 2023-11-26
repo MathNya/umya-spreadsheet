@@ -1,6 +1,7 @@
 // xf
 use super::Alignment;
 use super::BooleanValue;
+use super::Protection;
 use super::UInt32Value;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
@@ -24,6 +25,7 @@ pub(crate) struct CellFormat {
     apply_alignment: BooleanValue,
     apply_protection: BooleanValue,
     alignment: Option<Alignment>,
+    protection: Option<Protection>,
 }
 
 impl CellFormat {
@@ -137,13 +139,17 @@ impl CellFormat {
         self.apply_alignment.has_value()
     }
 
-    pub(crate) fn _get_apply_protection(&self) -> &bool {
+    pub(crate) fn get_apply_protection(&self) -> &bool {
         self.apply_protection.get_value()
     }
 
-    pub(crate) fn _set_apply_protection(&mut self, value: bool) -> &mut Self {
+    pub(crate) fn set_apply_protection(&mut self, value: bool) -> &mut Self {
         self.apply_protection.set_value(value);
         self
+    }
+
+    pub(crate) fn has_apply_protection(&self) -> bool {
+        self.apply_protection.has_value()
     }
 
     pub(crate) fn get_alignment(&self) -> &Option<Alignment> {
@@ -159,32 +165,17 @@ impl CellFormat {
         self
     }
 
-    pub(crate) fn _get_hash_code(&self) -> String {
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}{}{}{}{}{}{}{}{}{}{}",
-                &self.get_number_format_id(),
-                &self.get_font_id(),
-                &self.get_fill_id(),
-                &self.get_border_id(),
-                &self.get_format_id(),
-                &self.get_apply_number_format(),
-                &self.get_apply_fill(),
-                &self.get_apply_border(),
-                &self.get_apply_font(),
-                &self.get_apply_alignment(),
-                &self._get_apply_protection(),
-                match &self.get_alignment() {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        String::from("NONE")
-                    }
-                },
-            ))
-        )
+    pub(crate) fn get_protection(&self) -> &Option<Protection> {
+        &self.protection
+    }
+
+    pub(crate) fn _get_protection_mut(&mut self) -> &mut Option<Protection> {
+        &mut self.protection
+    }
+
+    pub(crate) fn set_protection(&mut self, value: Protection) -> &mut Self {
+        self.protection = Some(value);
+        self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -216,6 +207,11 @@ impl CellFormat {
                     obj.set_attributes(reader, e);
                     self.set_alignment(obj);
                 }
+                if e.name().into_inner() == b"protection" {
+                    let mut obj = Protection::default();
+                    obj.set_attributes(reader, e);
+                    self.set_protection(obj);
+                }
             },
             Event::End(ref e) => {
                 if e.name().into_inner() == b"xf" {
@@ -227,7 +223,7 @@ impl CellFormat {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, is_cell_xfs: bool) {
-        let empty_flag = self.alignment.is_none();
+        let empty_flag = self.alignment.is_none() && self.protection.is_none();
 
         // xf
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -270,6 +266,13 @@ impl CellFormat {
         if !empty_flag {
             // alignment
             match &self.alignment {
+                Some(v) => {
+                    v.write_to(writer);
+                }
+                None => {}
+            }
+            // protection
+            match &self.protection {
                 Some(v) => {
                     v.write_to(writer);
                 }

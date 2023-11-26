@@ -8,9 +8,9 @@ use structs::Address;
 use structs::CellValue;
 use structs::Cells;
 use structs::Properties;
-use structs::Security;
 use structs::SharedStringTable;
 use structs::Stylesheet;
+use structs::WorkbookProtection;
 use structs::WorkbookView;
 use structs::Worksheet;
 
@@ -19,7 +19,6 @@ use structs::Worksheet;
 #[derive(Clone, Default, Debug)]
 pub struct Spreadsheet {
     properties: Properties,
-    security: Security,
     work_sheet_collection: Vec<Worksheet>,
     macros_code: Option<Vec<u8>>,
     ribbon_xml_data: Option<String>,
@@ -29,6 +28,7 @@ pub struct Spreadsheet {
     workbook_view: WorkbookView,
     backup_context_types: Vec<(String, String)>,
     pivot_caches: Vec<(String, String, String)>,
+    workbook_protection: Option<WorkbookProtection>,
 }
 
 impl Spreadsheet {
@@ -241,24 +241,6 @@ impl Spreadsheet {
     /// * `value` - Properties
     pub fn set_properties(&mut self, value: Properties) -> &mut Self {
         self.properties = value;
-        self
-    }
-
-    /// Get Security.
-    pub fn get_security(&self) -> &Security {
-        &self.security
-    }
-
-    /// Get Security in mutable.
-    pub fn get_security_mut(&mut self) -> &mut Security {
-        &mut self.security
-    }
-
-    /// Set Security.
-    /// # Arguments
-    /// * `value` - Security
-    pub fn set_security(&mut self, value: Security) -> &mut Self {
-        self.security = value;
         self
     }
 
@@ -689,6 +671,25 @@ impl Spreadsheet {
             result.push((val1.clone(), val2.clone(), result_value));
         }
         self.pivot_caches = result;
+        self
+    }
+
+    pub fn get_workbook_protection(&self) -> &Option<WorkbookProtection> {
+        &self.workbook_protection
+    }
+
+    pub fn get_workbook_protection_mut(&mut self) -> &mut WorkbookProtection {
+        self.workbook_protection
+            .get_or_insert(WorkbookProtection::default())
+    }
+
+    pub fn set_workbook_protection(&mut self, value: WorkbookProtection) -> &mut Self {
+        self.workbook_protection = Some(value);
+        self
+    }
+
+    pub fn remove_workbook_protection(&mut self) -> &mut Self {
+        self.workbook_protection = None;
         self
     }
 }

@@ -1227,3 +1227,30 @@ fn issue_test() {
     let path = std::path::Path::new("./tests/result_files/table.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn sheetlock_test() {
+    let path = std::path::Path::new("./tests/test_files/sheet_lock.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let mut sheet = book.get_sheet_mut(&2).unwrap();
+    sheet
+        .get_sheet_protection_mut()
+        .set_password("password")
+        .set_sheet(true);
+
+    let path = std::path::Path::new("./tests/result_files/sheet_lock.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn workbooklock_test() {
+    let path = std::path::Path::new("./tests/test_files/book_lock.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    book.get_workbook_protection_mut()
+        .set_workbook_password("password");
+
+    let path = std::path::Path::new("./tests/result_files/book_lock.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
