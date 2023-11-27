@@ -11,6 +11,8 @@ use writer::driver::*;
 #[derive(Default, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Protection {
     locked: BooleanValue,
+    hidden: BooleanValue,
+
 }
 
 impl Protection {
@@ -20,6 +22,14 @@ impl Protection {
 
     pub fn set_locked(&mut self, value: bool) {
         self.locked.set_value(value);
+    }
+
+    pub fn get_hidden(&mut self) -> &bool {
+        self.hidden.get_value()
+    }
+
+    pub fn set_hidden(&mut self, value: bool) {
+        self.hidden.set_value(value);
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
@@ -35,6 +45,8 @@ impl Protection {
         e: &BytesStart,
     ) {
         set_string_from_xml!(self, e, locked, "locked");
+        set_string_from_xml!(self, e, hidden, "hidden");
+
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -42,6 +54,9 @@ impl Protection {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.locked.has_value() {
             attributes.push(("locked", self.locked.get_value_string()));
+        }
+        if self.hidden.has_value() {
+            attributes.push(("hidden", self.hidden.get_value_string()));
         }
         write_start_tag(writer, "protection", attributes, true);
     }
