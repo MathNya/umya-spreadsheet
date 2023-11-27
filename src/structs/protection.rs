@@ -12,7 +12,6 @@ use writer::driver::*;
 pub struct Protection {
     locked: BooleanValue,
     hidden: BooleanValue,
-
 }
 
 impl Protection {
@@ -46,7 +45,6 @@ impl Protection {
     ) {
         set_string_from_xml!(self, e, locked, "locked");
         set_string_from_xml!(self, e, hidden, "hidden");
-
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
