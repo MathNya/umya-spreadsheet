@@ -1254,3 +1254,19 @@ fn workbooklock_test() {
     let path = std::path::Path::new("./tests/result_files/book_lock.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_147() {
+    let path = std::path::Path::new("./tests/test_files/issue_147.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let from_sheet = book.get_sheet(&0).unwrap();
+    let source_cell = from_sheet.get_cell((2, 3)).unwrap();
+    let mut target_cell = source_cell.clone();
+
+    let mut to_sheet = book.get_sheet_mut(&1).unwrap();
+    to_sheet.set_cell(target_cell);
+
+    let path = std::path::Path::new("./tests/result_files/issue_147.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
