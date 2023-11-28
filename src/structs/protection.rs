@@ -34,7 +34,11 @@ impl Protection {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::Md5::digest(format!("{}{}", &self.locked.get_hash_string(), &self.hidden.get_hash_string()))
+            md5::Md5::digest(format!(
+                "{}{}",
+                &self.locked.get_hash_string(),
+                &self.hidden.get_hash_string()
+            ))
         )
     }
 
