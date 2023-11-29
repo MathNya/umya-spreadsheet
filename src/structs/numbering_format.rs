@@ -1,4 +1,5 @@
 use md5::Digest;
+use quick_xml::escape;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -147,8 +148,9 @@ impl NumberingFormat {
             .unwrap()
             .parse::<u32>()
             .unwrap();
-        self.format_code =
-            convert_character_reference(get_attribute(e, b"formatCode").unwrap().as_str());
+        self.format_code = escape::unescape(get_attribute(e, b"formatCode").unwrap().as_str())
+            .unwrap()
+            .to_string();
         self.is_build_in = false;
     }
 
