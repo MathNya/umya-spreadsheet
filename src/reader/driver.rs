@@ -91,11 +91,3 @@ pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Er
     let value = attr.value.clone().into_owned();
     String::from_utf8(value)
 }
-
-pub(crate) fn convert_character_reference(src: &str) -> String {
-    src.replace("&amp;", "&")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&apos;", "'")
-}
