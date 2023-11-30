@@ -41,7 +41,7 @@ dbg!(img.get_image_data_base64());
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.0"
+umya-spreadsheet = "1.0.3"
 ```
 Add the following code to main.rs
 ```rust
