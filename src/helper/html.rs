@@ -8,10 +8,36 @@ use structs::TextElement;
 use structs::UnderlineValues;
 use structs::VerticalAlignmentRunValues;
 
+/// Generate rich text from html.
+/// # Arguments
+/// * `html` - HTML String.
+/// # Return value
+/// * `Result<RichText, html_parser::Error>`
+/// # Examples
+/// ```
+/// let html = r##"<font color="red">test</font><br><font class="test" color="#48D1CC">TE<b>S</b>T<br/>TEST</font>"##;
+/// let richtext = umya_spreadsheet::helper::html::html_to_richtext(html).unwrap();
+///
+/// let mut book = umya_spreadsheet::new_file();
+/// let mut sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+/// sheet.get_cell_mut("A1").set_rich_text(richtext);
+/// // Enable line breaks.
+/// sheet
+///     .get_cell_mut("A1")
+///     .get_style_mut()
+///     .get_alignment_mut()
+///     .set_wrap_text(true);
+/// ```
 pub fn html_to_richtext(html: &str) -> Result<RichText, html_parser::Error> {
     html_to_richtext_custom(html, &DataAnalysis::default())
 }
 
+/// Use here for custom html parsing.
+/// # Arguments
+/// * `html` - HTML String.
+/// * `method` - struct for analysis.
+/// # Return value
+/// * `Result<RichText, html_parser::Error>`
 pub fn html_to_richtext_custom(
     html: &str,
     method: &AnalysisMethod,
@@ -111,10 +137,10 @@ fn make_rich_text(html_flat_data_list: &Vec<HtmlFlatData>, method: &AnalysisMeth
         }
         match color {
             Some(v) => {
-                let argb = "";
-                let mut color = Color::default();
-                color.set_argb(argb);
-                font.set_color(color);
+                let argb = v;
+                let mut clr = Color::default();
+                clr.set_argb(argb);
+                font.set_color(clr);
             }
             None => {}
         }
@@ -244,12 +270,17 @@ impl AnalysisMethod for DataAnalysis {
                     let mut is_match = false;
                     for (key, value) in COLOR_MAP {
                         if &v == key {
-                            result = Some(value.to_string());
+                            let mut color = value.to_string();
+                            color = color.to_uppercase();
+                            result = Some(color);
                             is_match = true;
                         }
                     }
                     if is_match == false {
-                        result = Some(v.to_string());
+                        let mut color = v.to_string();
+                        color.retain(|c| c != '#');
+                        color = color.to_uppercase();
+                        result = Some(color);
                     }
                 }
                 _ => {}

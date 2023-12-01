@@ -1270,3 +1270,23 @@ fn issue_147() {
     let path = std::path::Path::new("./tests/result_files/issue_147.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn html_to_richtext_test() {
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let mut sheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
+
+    let html = r##"<font color="red">test</font><br><font class="test" color="#48D1CC">TE<b>S</b>T<br/>TEST</font>"##;
+    let richtext = umya_spreadsheet::helper::html::html_to_richtext(html).unwrap();
+
+    sheet.get_cell_mut("G16").set_rich_text(richtext);
+    sheet
+        .get_cell_mut("G16")
+        .get_style_mut()
+        .get_alignment_mut()
+        .set_wrap_text(true);
+
+    let path = std::path::Path::new("./tests/result_files/bbb_html_to_richtext.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
