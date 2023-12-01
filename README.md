@@ -13,35 +13,38 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New feature
-### ver 1.0.3
-#### **Image data is now easier to acquire.**
+### ver 1.1.0
+#### **Table support availabled.** (Thank you, [vonkruel](https://github.com/vonkruel).)
+#### **Sheet Protection support availabled.**
 ```rust
-// get image data.
-let img = book.get_sheet_by_name("Sheet1").unwrap().get_image("M17").unwrap();
-// or
-let img_list = book.get_sheet_by_name("Sheet1").unwrap().get_image_collection();
-
-// get Coordinate.
-assert_eq!(img.get_coordinate(), "M17");
-assert_eq!(img.get_col(), &12);
-assert_eq!(img.get_row(), &16);
-
-// get file name.
-assert_eq!(img.get_image_name(), "image1.png");
-
-// get binary data.
-dbg!(img.get_image_data());
-
-// get base64 data.
-dbg!(img.get_image_data_base64());
+sheet
+    .get_sheet_protection_mut()
+    .set_password("password")
+    .set_sheet(true);
 ```
+
+#### **Workbook Protection support availabled.**
+```rust
+book.get_workbook_protection_mut()
+    .set_workbook_password("password");
+```
+
+#### **HTML to Richtext support availabled.**
+```rust
+let html = r##"<font color="red">test</font><br><font class="test" color="#48D1CC">TE<b>S</b>T<br/>TEST</font>"##;
+let richtext = umya_spreadsheet::helper::html::html_to_richtext(html).unwrap();
+sheet.get_cell_mut("G16").set_rich_text(richtext);
+// Enable line breaks.
+sheet.get_cell_mut("G16").get_style_mut().get_alignment_mut().set_wrap_text(true);
+```
+![Result Image](./images/sample4.png)
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.0"
+umya-spreadsheet = "1.1.0"
 ```
 Add the following code to main.rs
 ```rust
