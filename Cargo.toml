@@ -11,7 +11,7 @@ description = "umya-spreadsheet is a library written in pure Rust and read and w
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-quick-xml = { version = "0.27", features = [ "serialize" ] }
+quick-xml = { version = "0.31.0", features = [ "serialize" ] }
 zip = {version = "0.6.3", default-features = false, features = ["deflate"]}
 md-5 = "0.10.1"
 lazy_static = "1.4.0"
