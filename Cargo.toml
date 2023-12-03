@@ -12,26 +12,25 @@ description = "umya-spreadsheet is a library written in pure Rust and read and w
 
 [dependencies]
 quick-xml = { version = "0.31.0", features = [ "serialize" ] }
-zip = {version = "0.6.3", default-features = false, features = ["deflate"]}
-md-5 = "0.10.1"
+zip = {version = "0.6.6", default-features = false, features = ["deflate"]}
+md-5 = "0.10.6"
 lazy_static = "1.4.0"
 thousands = "0.2.0"
-chrono = {version = "0.4.23", default-features = false, features = ["clock"]}
-encoding_rs = "0.8.30"
-image = "0.24.5"
+chrono = {version = "0.4.31", default-features = false, features = ["clock"]}
+encoding_rs = "0.8.33"
+image = "0.24.7"
 hashbrown = "0.14.3"
-ahash = "0.8"
-regex = "1.7.0"
+ahash = "0.8.6"
+regex = "1.10.2"
 fancy-regex = "0.12.0"
-base64 = "0.21"
-getrandom = "0.2"
-byteorder = "1.4.3"
+base64 = "0.21.5"
+getrandom = "0.2.11"
+byteorder = "1.5"
 cfb = "0.9.0"
 hmac = "0.12.1"
-sha2 = "0.10.6"
-aes = "0.8.2"
+sha2 = "0.10.8"
+aes = "0.8.3"
 cbc = "0.1.2"
 html_parser = "0.7.0"
-
 [lib]
 doctest = false
