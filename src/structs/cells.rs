@@ -232,7 +232,7 @@ impl Cells {
         offset_row_num: &u32,
     ) {
         // update cell
-        self.get_collection_mut().retain(|x| {
+        self.map.retain(|k,x| {
             !(x.get_coordinate().is_remove(
                 root_col_num,
                 offset_col_num,
