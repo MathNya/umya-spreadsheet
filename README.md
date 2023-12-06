@@ -12,7 +12,7 @@
 ## Chatting
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
-## New feature
+## New features
 ### ver 1.1.0
 #### **Table support made available.** (Thank you, [vonkruel](https://github.com/vonkruel).)
 #### **Sheet Protection support made available.**
