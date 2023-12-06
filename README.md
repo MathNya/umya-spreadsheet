@@ -13,10 +13,10 @@
 ## Chatting
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
-## New feature
+## New features
 ### ver 1.1.0
-#### **Table support availabled.** (Thank you, [vonkruel](https://github.com/vonkruel).)
-#### **Sheet Protection support availabled.**
+#### **Table support made available.** (Thank you, [vonkruel](https://github.com/vonkruel).)
+#### **Sheet Protection support made available.**
 ```rust
 sheet
     .get_sheet_protection_mut()
@@ -24,13 +24,13 @@ sheet
     .set_sheet(true);
 ```
 
-#### **Workbook Protection support availabled.**
+#### **Workbook Protection support made available.**
 ```rust
 book.get_workbook_protection_mut()
     .set_workbook_password("password");
 ```
 
-#### **HTML to Richtext support availabled.**
+#### **HTML to Richtext support made available.**
 ```rust
 let html = r##"<font color="red">test</font><br><font class="test" color="#48D1CC">TE<b>S</b>T<br/>TEST</font>"##;
 let richtext = umya_spreadsheet::helper::html::html_to_richtext(html).unwrap();
