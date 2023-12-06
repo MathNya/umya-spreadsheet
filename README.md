@@ -45,7 +45,7 @@ sheet.get_cell_mut("G16").get_style_mut().get_alignment_mut().set_wrap_text(true
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.1.0"
+umya-spreadsheet = "1.1.1"
 ```
 Add the following code to main.rs
 ```rust
