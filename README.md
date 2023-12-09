@@ -8,7 +8,7 @@
 [![GitHub Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=ff69b4)](https://github.com/sponsors/MathNya)
 
 ## Description
-**umya-spreadsheet** is a library written in pure Rust and read and write xlsx file.
+**umya-spreadsheet** is a library written in pure Rust to read and write xlsx file.
 
 ## Chatting
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
