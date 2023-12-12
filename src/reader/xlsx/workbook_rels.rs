@@ -6,6 +6,8 @@ use std::{io, result};
 use structs::Spreadsheet;
 
 const FILE_PATH: &str = "xl/_rels/workbook.xml.rels";
+const PIVOT_CACHE_NS: &str =
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition";
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
@@ -28,7 +30,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     .strip_prefix("/xl/")
                     .map(|t| t.to_owned())
                     .unwrap_or(target_value);
-                if type_value == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition" {
+                if type_value == PIVOT_CACHE_NS {
                     spreadsheet.update_pivot_caches(id_value, target_value);
                 } else {
                     result.push((id_value, type_value, target_value));
