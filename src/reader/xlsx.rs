@@ -106,7 +106,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
 
     book.set_theme(Theme::get_default_value());
     for (_, type_value, rel_target) in &workbook_rel {
-        if type_value.as_str() == THEME_NS {
+        if type_value == THEME_NS {
             let theme = theme::read(&mut arv, rel_target).unwrap();
             book.set_theme(theme);
         }
