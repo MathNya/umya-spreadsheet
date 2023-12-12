@@ -5,6 +5,31 @@ use structs::Spreadsheet;
 use writer::driver::*;
 use writer::xlsx::XlsxError;
 
+const CHART_TYPE: &str = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml";
+const CORE_PROPS_TYPE: &str = "application/vnd.openxmlformats-package.core-properties+xml";
+const DRAWING_TYPE: &str = "application/vnd.openxmlformats-officedocument.drawing+xml";
+const OLE_OBJECT_TYPE: &str = "application/vnd.openxmlformats-officedocument.oleObject";
+const PACKAGE_CHARTS: &str = "xl/charts";
+const PACKAGE_DRAWINGS: &str = "xl/drawings";
+const PACKAGE_EMBEDDINGS: &str = "xl/embeddings";
+const PACKAGE_PRINTER_SETTINGS: &str = "xl/printerSettings";
+const PACKAGE_TABLES: &str = "xl/tables";
+const SHARED_STRINGS_TYPE: &str =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
+const PACKAGE_WORKBOOK: &str = "/xl/workbook.xml";
+const STYLES_TYPE: &str = "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
+const VBA_TYPE: &str = "application/vnd.ms-office.vbaProject";
+const XPROPS_TYPE: &str = "application/vnd.openxmlformats-officedocument.extended-properties+xml";
+const THEME_TYPE: &str = "application/vnd.openxmlformats-officedocument.theme+xml";
+const COMMENTS_TYPE: &str =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml";
+const TABLE_TYPE: &str = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
+const SHEET_TYPE: &str =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+const WORKBOOK_MACRO_TYPE: &str = "application/vnd.ms-excel.sheet.macroEnabled.main+xml";
+const WORKBOOK_TYPE: &str =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml";
+
 pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: zip::ZipWriter<W>,
@@ -88,7 +113,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/drawings/drawing{}.xml", index);
+            let file_path = format!("{PACKAGE_DRAWINGS}/drawing{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -104,7 +129,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/drawings/vmlDrawing{}.vml", index);
+            let file_path = format!("{PACKAGE_DRAWINGS}/vmlDrawing{}.vml", index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -136,7 +161,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/charts/chart{}.xml", index);
+            let file_path = format!("{PACKAGE_CHARTS}/chart{}.xml", index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -149,7 +174,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/embeddings/oleObject{}.bin", index);
+            let file_path = format!("{PACKAGE_EMBEDDINGS}/oleObject{}.bin", index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -162,7 +187,10 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/embeddings/Microsoft_Excel_Worksheet{}.xlsx", index);
+            let file_path = format!(
+                "{PACKAGE_EMBEDDINGS}/Microsoft_Excel_Worksheet{}.xlsx",
+                index
+            );
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -175,7 +203,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/printerSettings/printerSettings{}.bin", index);
+            let file_path = format!("{PACKAGE_PRINTER_SETTINGS}/printerSettings{}.bin", index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -189,7 +217,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         writer: Writer<Cursor<Vec<u8>>>,
         table_no: i32,
     ) -> Result<i32, XlsxError> {
-        let file_path = format!("xl/tables/table{}.xml", table_no);
+        let file_path = format!("{PACKAGE_TABLES}/table{}.xml", table_no);
         self.add_writer(&file_path, writer)?;
         return Ok(table_no);
     }
@@ -214,79 +242,71 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             let file = format!("/{}", file);
             let mut content_type = "";
             // Override workbook
-            if file.starts_with("/xl/workbook.xml") {
+            if file.starts_with(PACKAGE_WORKBOOK) {
                 content_type = match spreadsheet.get_has_macros() {
-                    true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
-                    false => {
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-                    }
+                    true => WORKBOOK_MACRO_TYPE,
+                    false => WORKBOOK_TYPE,
                 };
             }
 
             // Override sheet
             if file.starts_with("/xl/worksheets/sheet") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+                content_type = SHEET_TYPE;
             }
 
             // Override table
             if file.starts_with("/xl/tables/table") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
+                content_type = TABLE_TYPE;
             }
 
             // Override comments
             if file.starts_with("/xl/comments") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml";
+                content_type = COMMENTS_TYPE;
             }
 
             // Override theme
             if file.starts_with("/xl/theme/theme") {
-                content_type = "application/vnd.openxmlformats-officedocument.theme+xml";
+                content_type = THEME_TYPE;
             }
 
             // Override styles
             if file.starts_with("/xl/styles.xml") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
+                content_type = STYLES_TYPE;
             }
 
             // Override sharedStrings
             if file.starts_with("/xl/sharedStrings.xml") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
+                content_type = SHARED_STRINGS_TYPE;
             }
 
             // Override drawing
             if file.starts_with("/xl/drawings/drawing") {
-                content_type = "application/vnd.openxmlformats-officedocument.drawing+xml";
+                content_type = DRAWING_TYPE;
             }
 
             // Override chart
             if file.starts_with("/xl/charts/chart") {
-                content_type = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml";
+                content_type = CHART_TYPE;
             }
 
             // Override embeddings
             if file.starts_with("/xl/embeddings/oleObject") {
-                content_type = "application/vnd.openxmlformats-officedocument.oleObject";
+                content_type = OLE_OBJECT_TYPE;
             }
 
             // Override xl/vbaProject.bin
             if file.starts_with("/xl/vbaProject.bin") {
-                content_type = "application/vnd.ms-office.vbaProject";
+                content_type = VBA_TYPE;
             }
 
             // Override docProps/core
             if file.starts_with("/docProps/core.xml") {
-                content_type = "application/vnd.openxmlformats-package.core-properties+xml";
+                content_type = CORE_PROPS_TYPE;
             }
 
             // Override docProps/app
             if file.starts_with("/docProps/app.xml") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.extended-properties+xml";
+                content_type = XPROPS_TYPE;
             }
 
             // Override Unsupported
