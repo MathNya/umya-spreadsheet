@@ -240,6 +240,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
 
         let mut list: Vec<(String, String)> = Vec::new();
         for file in &self.files {
+            let file = format!("/{}", file);
             let mut content_type = match file.as_str() {
                 f if f.starts_with("/xl/workbook.xml") => match spreadsheet.get_has_macros() {
                     true => WORKBOOK_MACRO_TYPE.to_string(),
@@ -261,7 +262,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
                     let mut content_type: String = String::new();
                     for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types()
                     {
-                        if old_part_name == file {
+                        if old_part_name == &file {
                             content_type = old_content_type.to_string();
                             break;
                         }
@@ -271,8 +272,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             };
 
             if !content_type.is_empty() {
-                let file_with_slash = format!("/{}", file);
-                list.push((file_with_slash, content_type));
+                list.push((file.to_string(), content_type.to_string()));
             }
         }
 
