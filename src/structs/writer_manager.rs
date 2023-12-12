@@ -272,7 +272,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             };
 
             if !content_type.is_empty() {
-                list.push((file.to_string(), content_type.to_string()));
+                list.push((file, content_type.to_string()));
             }
         }
 
