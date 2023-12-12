@@ -237,91 +237,45 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         spreadsheet: &Spreadsheet,
     ) -> Vec<(String, String)> {
         self.file_list_sort();
+
         let mut list: Vec<(String, String)> = Vec::new();
         for file in &self.files {
-            let file = format!("/{}", file);
-            let mut content_type = "";
-            // Override workbook
-            if file.starts_with(PACKAGE_WORKBOOK) {
-                content_type = match spreadsheet.get_has_macros() {
-                    true => WORKBOOK_MACRO_TYPE,
-                    false => WORKBOOK_TYPE,
-                };
-            }
-
-            // Override sheet
-            if file.starts_with("/xl/worksheets/sheet") {
-                content_type = SHEET_TYPE;
-            }
-
-            // Override table
-            if file.starts_with("/xl/tables/table") {
-                content_type = TABLE_TYPE;
-            }
-
-            // Override comments
-            if file.starts_with("/xl/comments") {
-                content_type = COMMENTS_TYPE;
-            }
-
-            // Override theme
-            if file.starts_with("/xl/theme/theme") {
-                content_type = THEME_TYPE;
-            }
-
-            // Override styles
-            if file.starts_with("/xl/styles.xml") {
-                content_type = STYLES_TYPE;
-            }
-
-            // Override sharedStrings
-            if file.starts_with("/xl/sharedStrings.xml") {
-                content_type = SHARED_STRINGS_TYPE;
-            }
-
-            // Override drawing
-            if file.starts_with("/xl/drawings/drawing") {
-                content_type = DRAWING_TYPE;
-            }
-
-            // Override chart
-            if file.starts_with("/xl/charts/chart") {
-                content_type = CHART_TYPE;
-            }
-
-            // Override embeddings
-            if file.starts_with("/xl/embeddings/oleObject") {
-                content_type = OLE_OBJECT_TYPE;
-            }
-
-            // Override xl/vbaProject.bin
-            if file.starts_with("/xl/vbaProject.bin") {
-                content_type = VBA_TYPE;
-            }
-
-            // Override docProps/core
-            if file.starts_with("/docProps/core.xml") {
-                content_type = CORE_PROPS_TYPE;
-            }
-
-            // Override docProps/app
-            if file.starts_with("/docProps/app.xml") {
-                content_type = XPROPS_TYPE;
-            }
-
-            // Override Unsupported
-            if content_type.is_empty() {
-                for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
-                    if old_part_name == &file {
-                        content_type = old_content_type;
+            let mut content_type = match file.as_str() {
+                f if f.starts_with("/xl/workbook.xml") => match spreadsheet.get_has_macros() {
+                    true => WORKBOOK_MACRO_TYPE.to_string(),
+                    false => WORKBOOK_TYPE.to_string(),
+                },
+                f if f.starts_with("/xl/worksheets/sheet") => SHEET_TYPE.to_string(),
+                f if f.starts_with("/xl/tables/table") => TABLE_TYPE.to_string(),
+                f if f.starts_with("/xl/comments") => COMMENTS_TYPE.to_string(),
+                f if f.starts_with("/xl/theme/theme") => THEME_TYPE.to_string(),
+                f if f.starts_with("/xl/styles.xml") => STYLES_TYPE.to_string(),
+                f if f.starts_with("/xl/sharedStrings.xml") => SHARED_STRINGS_TYPE.to_string(),
+                f if f.starts_with("/xl/drawings/drawing") => DRAWING_TYPE.to_string(),
+                f if f.starts_with("/xl/charts/chart") => CHART_TYPE.to_string(),
+                f if f.starts_with("/xl/embeddings/oleObject") => OLE_OBJECT_TYPE.to_string(),
+                f if f.starts_with("/xl/vbaProject.bin") => VBA_TYPE.to_string(),
+                f if f.starts_with("/docProps/core.xml") => CORE_PROPS_TYPE.to_string(),
+                f if f.starts_with("/docProps/app.xml") => XPROPS_TYPE.to_string(),
+                _ => {
+                    let mut content_type: String = String::new();
+                    for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types()
+                    {
+                        if old_part_name == file {
+                            content_type = old_content_type.to_string();
+                            break;
+                        }
                     }
+                    content_type
                 }
-            }
+            };
 
             if !content_type.is_empty() {
-                list.push((file, content_type.to_string()));
+                let file_with_slash = format!("/{}", file);
+                list.push((file_with_slash, content_type));
             }
         }
+
         list
     }
 }
