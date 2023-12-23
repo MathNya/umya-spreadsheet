@@ -39,11 +39,11 @@ impl ImageData {
         drawing_relationships: Option<&RawRelationships>,
     ) {
         if let Some(relid) = get_attribute(e, b"o:relid") {
-            let relationship = drawing_relationships
-                .unwrap()
-                .get_relationship_by_rid(&relid);
-            self.image_name
-                .set_value_string(relationship.get_raw_file().get_file_name());
+            if let Some(rel) = drawing_relationships {
+                let relationship = rel.get_relationship_by_rid(&relid);
+                self.image_name
+                    .set_value_string(relationship.get_raw_file().get_file_name());
+            }
         }
 
         set_string_from_xml!(self, e, title, "o:title");
