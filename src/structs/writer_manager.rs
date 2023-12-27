@@ -1,35 +1,10 @@
+use helper::const_str::*;
 use quick_xml::Writer;
 use std::io;
 use std::io::Cursor;
 use structs::Spreadsheet;
 use writer::driver::*;
 use writer::xlsx::XlsxError;
-
-const CHART_TYPE: &str = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml";
-const CORE_PROPS_TYPE: &str = "application/vnd.openxmlformats-package.core-properties+xml";
-const DRAWING_TYPE: &str = "application/vnd.openxmlformats-officedocument.drawing+xml";
-const OLE_OBJECT_TYPE: &str = "application/vnd.openxmlformats-officedocument.oleObject";
-const PACKAGE_CHARTS: &str = "xl/charts";
-const PACKAGE_DRAWINGS: &str = "xl/drawings";
-const PACKAGE_EMBEDDINGS: &str = "xl/embeddings";
-const PACKAGE_PRINTER_SETTINGS: &str = "xl/printerSettings";
-const PACKAGE_TABLES: &str = "xl/tables";
-const SHARED_STRINGS_TYPE: &str =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
-const PACKAGE_WORKBOOK: &str = "/xl/workbook.xml";
-const STYLES_TYPE: &str = "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
-const VBA_TYPE: &str = "application/vnd.ms-office.vbaProject";
-const XPROPS_TYPE: &str = "application/vnd.openxmlformats-officedocument.extended-properties+xml";
-const THEME_TYPE: &str = "application/vnd.openxmlformats-officedocument.theme+xml";
-const COMMENTS_TYPE: &str =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml";
-const TABLE_TYPE: &str = "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
-const SHEET_TYPE: &str =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
-const WORKBOOK_MACRO_TYPE: &str = "application/vnd.ms-excel.sheet.macroEnabled.main+xml";
-const WORKBOOK_TYPE: &str =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml";
-
 pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: zip::ZipWriter<W>,
@@ -113,7 +88,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{PACKAGE_DRAWINGS}/drawing{}.xml", index);
+            let file_path = format!("{}/drawing{}.xml", PKG_DRAWINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -129,7 +104,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{PACKAGE_DRAWINGS}/vmlDrawing{}.vml", index);
+            let file_path = format!("{}/vmlDrawing{}.vml", PKG_DRAWINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -161,7 +136,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{PACKAGE_CHARTS}/chart{}.xml", index);
+            let file_path = format!("{}/chart{}.xml", PKG_CHARTS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -174,7 +149,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{PACKAGE_EMBEDDINGS}/oleObject{}.bin", index);
+            let file_path = format!("{}/oleObject{}.bin", PKG_EMBEDDINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -187,10 +162,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!(
-                "{PACKAGE_EMBEDDINGS}/Microsoft_Excel_Worksheet{}.xlsx",
-                index
-            );
+            let file_path = format!("{}/Microsoft_Excel_Worksheet{}.xlsx", PKG_EMBEDDINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -203,7 +175,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("{PACKAGE_PRINTER_SETTINGS}/printerSettings{}.bin", index);
+            let file_path = format!("{}/printerSettings{}.bin", PKG_PRNTR_SETTINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -217,7 +189,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         writer: Writer<Cursor<Vec<u8>>>,
         table_no: i32,
     ) -> Result<i32, XlsxError> {
-        let file_path = format!("{PACKAGE_TABLES}/table{}.xml", table_no);
+        let file_path = format!("{}/table{}.xml", PKG_TABLES, table_no);
         self.add_writer(&file_path, writer)?;
         return Ok(table_no);
     }

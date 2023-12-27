@@ -1,5 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -33,6 +34,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     shared_string_table.write().unwrap().write_to(&mut writer);
 
-    let target = "xl/sharedStrings.xml";
+    let target = PKG_SHARED_STRINGS;
     writer_mng.add_writer(target, writer)
 }

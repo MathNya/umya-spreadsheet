@@ -1,5 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -35,18 +36,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             "worksheet",
             vec![
-                (
-                    "xmlns",
-                    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-                ),
-                (
-                    "xmlns:r",
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-                ),
-                (
-                    "xmlns:xdr",
-                    "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
-                ),
+                ("xmlns", SHEET_MAIN_NS),
+                ("xmlns:r", REL_OFC_NS),
+                ("xmlns:xdr", SHEET_DRAWING_NS),
                 (
                     "xmlns:x14",
                     "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main",

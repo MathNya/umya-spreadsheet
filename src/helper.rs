@@ -1,4 +1,5 @@
 pub mod address;
+pub mod const_str;
 pub mod coordinate;
 pub mod crypt;
 pub mod date;

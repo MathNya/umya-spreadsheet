@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Worksheet;
 use structs::WriterManager;
 
@@ -24,15 +25,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(
-        &mut writer,
-        "Relationships",
-        vec![(
-            "xmlns",
-            "http://schemas.openxmlformats.org/package/2006/relationships",
-        )],
-        false,
-    );
+    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
     let mut r_id = 1;
     for ole_object in worksheet.get_ole_objects().get_ole_object() {
@@ -41,7 +34,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 is_write = write_relationship(
                     &mut writer,
                     &r_id,
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+                    IMAGE_NS,
                     format!("../media/{}", v.get_image_name()).as_str(),
                     "",
                 );

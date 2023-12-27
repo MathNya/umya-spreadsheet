@@ -8,6 +8,7 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use super::driver;
+use helper::const_str::*;
 use structs::drawing::Theme;
 use structs::raw::RawWorksheet;
 use structs::SharedStringTable;
@@ -74,15 +75,6 @@ impl fmt::Display for XlsxError {
         }
     }
 }
-
-const VML_NS: &str =
-    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing";
-const COMMENTS_NS: &str =
-    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments";
-const DRAWINGS_NS: &str =
-    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing";
-const TABLE_NS: &str = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table";
-const THEME_NS: &str = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme";
 
 impl Error for XlsxError {}
 
@@ -211,7 +203,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         }
         for relationship in v.get_relationship_list() {
             // vmlDrawing
-            if relationship.get_type() == VML_NS {
+            if relationship.get_type() == VML_DRAWING_NS {
                 vml_drawing::read(
                     worksheet,
                     relationship.get_raw_file(),

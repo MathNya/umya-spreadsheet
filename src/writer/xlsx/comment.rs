@@ -1,5 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -27,10 +28,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "comments",
-        vec![(
-            "xmlns",
-            "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-        )],
+        vec![("xmlns", SHEET_MAIN_NS)],
         false,
     );
 
