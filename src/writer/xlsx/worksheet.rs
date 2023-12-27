@@ -43,10 +43,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     "xmlns:x14",
                     "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main",
                 ),
-                (
-                    "xmlns:mc",
-                    "http://schemas.openxmlformats.org/markup-compatibility/2006",
-                ),
+                ("xmlns:mc", MC_NS),
                 ("mc:Ignorable", "x14ac"),
                 (
                     "xmlns:x14ac",

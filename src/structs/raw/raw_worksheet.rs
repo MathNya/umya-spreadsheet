@@ -1,3 +1,4 @@
+use helper::const_str::*;
 use std::io;
 use structs::raw::RawFile;
 use structs::raw::RawRelationships;
@@ -32,18 +33,16 @@ impl RawWorksheet {
     }
 
     pub(crate) fn get_worksheet_relationships(&self) -> Option<&RawRelationships> {
-        self.get_relationships_list().iter().find(|&relationships| {
-            relationships
-                .get_file_target()
-                .starts_with("xl/worksheets/_rels/sheet")
-        })
+        self.get_relationships_list()
+            .iter()
+            .find(|&relationships| relationships.get_file_target().starts_with(PKG_SHEET_RELS))
     }
 
     pub(crate) fn get_drawing_relationships(&self) -> Option<&RawRelationships> {
         self.get_relationships_list().iter().find(|&relationships| {
             relationships
                 .get_file_target()
-                .starts_with("xl/drawings/_rels/drawing")
+                .starts_with(PKG_DRAWINGS_RELS)
         })
     }
 
@@ -51,7 +50,7 @@ impl RawWorksheet {
         self.get_relationships_list().iter().find(|&relationships| {
             relationships
                 .get_file_target()
-                .starts_with("xl/drawings/_rels/vmlDrawing")
+                .starts_with(PKG_VML_DRAWING_RELS)
         })
     }
 

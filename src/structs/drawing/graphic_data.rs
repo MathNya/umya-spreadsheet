@@ -1,5 +1,6 @@
 // *:graphicData
 use super::charts::ChartSpace;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -59,10 +60,7 @@ impl GraphicData {
         write_start_tag(
             writer,
             "a:graphicData",
-            vec![(
-                "uri",
-                "http://schemas.openxmlformats.org/drawingml/2006/chart",
-            )],
+            vec![("uri", DRAWINGML_CHART_NS)],
             false,
         );
 
@@ -71,14 +69,8 @@ impl GraphicData {
             writer,
             "c:chart",
             vec![
-                (
-                    "xmlns:c",
-                    "http://schemas.openxmlformats.org/drawingml/2006/chart",
-                ),
-                (
-                    "xmlns:r",
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-                ),
+                ("xmlns:c", DRAWINGML_CHART_NS),
+                ("xmlns:r", REL_OFC_NS),
                 ("r:id", format!("rId{}", r_id).as_str()),
             ],
             true,

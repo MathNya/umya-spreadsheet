@@ -1,4 +1,5 @@
 // a:blip
+use helper::const_str::*;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -59,10 +60,7 @@ impl Blip {
         // a:blip
         let r_id_str = format!("rId{}", r_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push((
-            "xmlns:r",
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-        ));
+        attributes.push(("xmlns:r", REL_OFC_NS));
         attributes.push(("r:embed", r_id_str.as_str()));
         if !&self.cstate.is_empty() {
             attributes.push(("cstate", &self.cstate));

@@ -19,6 +19,7 @@ use super::SolidFill;
 use super::SystemColor;
 use super::SystemColorValues;
 use super::ThemeElements;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -550,10 +551,7 @@ impl Theme {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:theme
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push((
-            "xmlns:a",
-            "http://schemas.openxmlformats.org/drawingml/2006/main",
-        ));
+        attributes.push(("xmlns:a", DRAWINGML_MAIN_NS));
         if self.name.has_value() {
             attributes.push(("name", self.name.get_value_string()));
         }

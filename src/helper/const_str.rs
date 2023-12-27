@@ -9,6 +9,9 @@ pub(crate) const COREPROPS_NS: &str =
     "http://schemas.openxmlformats.org/package/2006/metadata/core-properties";
 pub(crate) const CUSTOMUI_NS: &str =
     "http://schemas.microsoft.com/office/2006/relationships/ui/extensibility";
+pub(crate) const DRAWINGML_CHART_NS: &str =
+    "http://schemas.openxmlformats.org/drawingml/2006/chart";
+pub(crate) const DRAWINGML_MAIN_NS: &str = "http://schemas.openxmlformats.org/drawingml/2006/main";
 pub(crate) const DRAWINGS_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing";
 pub(crate) const DCMITYPE_NS: &str = "http://purl.org/dc/dcmitype/";
@@ -19,6 +22,7 @@ pub(crate) const HYPERLINK_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink";
 pub(crate) const IMAGE_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image";
+pub(crate) const MC_NS: &str = "http://schemas.openxmlformats.org/markup-compatibility/2006";
 pub(crate) const OFCDOC_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
 pub(crate) const OLE_OBJECT_NS: &str =
@@ -90,14 +94,17 @@ pub(crate) const XPROPS_TYPE: &str =
 
 pub(crate) const PKG_CHARTS: &str = "xl/charts";
 pub(crate) const PKG_DRAWINGS: &str = "xl/drawings";
+pub(crate) const PKG_DRAWINGS_RELS: &str = "xl/drawings/_rels/drawing";
 pub(crate) const PKG_EMBEDDINGS: &str = "xl/embeddings";
 pub(crate) const PKG_PRNTR_SETTINGS: &str = "xl/printerSettings";
 pub(crate) const PKG_SHARED_STRINGS: &str = "xl/sharedStrings.xml";
+pub(crate) const PKG_SHEET_RELS: &str = "xl/worksheets/_rels/sheet";
 pub(crate) const PKG_STYLES: &str = "xl/styles.xml";
 pub(crate) const PKG_TABLES: &str = "xl/tables";
 pub(crate) const PKG_WORKBOOK: &str = "xl/workbook.xml";
 pub(crate) const PKG_WORKBOOK_RELS: &str = "xl/_rels/workbook.xml.rels";
 pub(crate) const PKG_VBA_PROJECT: &str = "xl/vbaProject.bin";
+pub(crate) const PKG_VML_DRAWING_RELS: &str = "xl/drawings/_rels/vmlDrawing";
 
 pub(crate) const ARC_APP: &str = "docProps/app.xml";
 pub(crate) const ARC_CORE: &str = "docProps/core.xml";

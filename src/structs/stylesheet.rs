@@ -11,6 +11,7 @@ use super::Fonts;
 use super::NumberingFormats;
 use super::Protection;
 use super::Style;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -423,14 +424,8 @@ impl Stylesheet {
             writer,
             "styleSheet",
             vec![
-                (
-                    "xmlns",
-                    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-                ),
-                (
-                    "xmlns:mc",
-                    "http://schemas.openxmlformats.org/markup-compatibility/2006",
-                ),
+                ("xmlns", SHEET_MAIN_NS),
+                ("xmlns:mc", MC_NS),
                 ("mc:Ignorable", "x14ac"),
                 (
                     "xmlns:x14ac",
