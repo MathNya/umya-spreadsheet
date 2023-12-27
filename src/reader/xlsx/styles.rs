@@ -1,19 +1,18 @@
 use crate::xml_read_loop;
 
 use super::XlsxError;
+use helper::const_str::*;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::{io, result};
 use structs::Spreadsheet;
 use structs::Stylesheet;
 
-const FILE_PATH: &str = "xl/styles.xml";
-
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     spreadsheet: &mut Spreadsheet,
 ) -> result::Result<(), XlsxError> {
-    let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
+    let r = io::BufReader::new(arv.by_name(PKG_STYLES)?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
 

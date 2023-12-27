@@ -1,3 +1,5 @@
+pub(crate) const CERTIFICATE_NS: &str =
+    "http://schemas.microsoft.com/office/2006/keyEncryptor/certificate";
 pub(crate) const CHART_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart";
 pub(crate) const COMMENTS_NS: &str =
@@ -12,6 +14,7 @@ pub(crate) const DRAWINGS_NS: &str =
 pub(crate) const DCMITYPE_NS: &str = "http://purl.org/dc/dcmitype/";
 pub(crate) const DCORE_NS: &str = "http://purl.org/dc/elements/1.1/";
 pub(crate) const DCTERMS_NS: &str = "http://purl.org/dc/terms/";
+pub(crate) const ENCRYPTION_NS: &str = "http://schemas.microsoft.com/office/2006/encryption";
 pub(crate) const HYPERLINK_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink";
 pub(crate) const IMAGE_NS: &str =
@@ -20,6 +23,8 @@ pub(crate) const OFCDOC_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
 pub(crate) const OLE_OBJECT_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject";
+pub(crate) const PASSWORD_NS: &str =
+    "http://schemas.microsoft.com/office/2006/keyEncryptor/password";
 pub(crate) const PACKAGE_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package";
 pub(crate) const REL_NS: &str = "http://schemas.openxmlformats.org/package/2006/relationships";
@@ -96,3 +101,5 @@ pub(crate) const PKG_VBA_PROJECT: &str = "xl/vbaProject.bin";
 
 pub(crate) const ARC_APP: &str = "docProps/app.xml";
 pub(crate) const ARC_CORE: &str = "docProps/core.xml";
+
+pub(crate) const CONTENT_TYPES: &str = "[Content_Types].xml";
