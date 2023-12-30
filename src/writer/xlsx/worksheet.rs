@@ -39,16 +39,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 ("xmlns", SHEET_MAIN_NS),
                 ("xmlns:r", REL_OFC_NS),
                 ("xmlns:xdr", SHEET_DRAWING_NS),
-                (
-                    "xmlns:x14",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main",
-                ),
+                ("xmlns:x14", SHEET_MS_MAIN_NS),
                 ("xmlns:mc", MC_NS),
                 ("mc:Ignorable", "x14ac"),
-                (
-                    "xmlns:x14ac",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac",
-                ),
+                ("xmlns:x14ac", SHEETML_AC_NS),
             ],
             false,
         );

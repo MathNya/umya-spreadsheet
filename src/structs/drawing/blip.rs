@@ -82,13 +82,7 @@ impl Blip {
         write_start_tag(
             writer,
             "a14:useLocalDpi",
-            vec![
-                (
-                    "xmlns:a14",
-                    "http://schemas.microsoft.com/office/drawing/2010/main",
-                ),
-                ("val", "0"),
-            ],
+            vec![("xmlns:a14", DRAWING_MAIN_NS), ("val", "0")],
             true,
         );
         write_end_tag(writer, "a:ext");

@@ -427,10 +427,7 @@ impl Stylesheet {
                 ("xmlns", SHEET_MAIN_NS),
                 ("xmlns:mc", MC_NS),
                 ("mc:Ignorable", "x14ac"),
-                (
-                    "xmlns:x14ac",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac",
-                ),
+                ("xmlns:x14ac", SHEETML_AC_NS),
             ],
             false,
         );
@@ -483,10 +480,7 @@ impl Stylesheet {
             "ext",
             vec![
                 ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}"),
-                (
-                    "xmlns:x14",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main",
-                ),
+                ("xmlns:x14", SHEET_MS_MAIN_NS),
             ],
             false,
         );

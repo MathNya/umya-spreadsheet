@@ -9,6 +9,7 @@ pub(crate) const COREPROPS_NS: &str =
     "http://schemas.openxmlformats.org/package/2006/metadata/core-properties";
 pub(crate) const CUSTOMUI_NS: &str =
     "http://schemas.microsoft.com/office/2006/relationships/ui/extensibility";
+pub(crate) const DRAWING_MAIN_NS: &str = "http://schemas.microsoft.com/office/drawing/2010/main";
 pub(crate) const DRAWINGML_CHART_NS: &str =
     "http://schemas.openxmlformats.org/drawingml/2006/chart";
 pub(crate) const DRAWINGML_MAIN_NS: &str = "http://schemas.openxmlformats.org/drawingml/2006/main";
@@ -45,6 +46,10 @@ pub(crate) const SHARED_STRINGS_NS: &str =
 pub(crate) const SHEET_DRAWING_NS: &str =
     "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing";
 pub(crate) const SHEET_MAIN_NS: &str = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+pub(crate) const SHEET_MS_MAIN_NS: &str =
+    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main";
+pub(crate) const SHEETML_AC_NS: &str =
+    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac";
 pub(crate) const TABLE_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table";
 pub(crate) const THEME_NS: &str =
