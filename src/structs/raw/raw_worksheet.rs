@@ -90,7 +90,7 @@ impl RawWorksheet {
         writer_mng: &mut WriterManager<W>,
     ) -> Result<(), XlsxError> {
         // Add worksheet
-        let target = format!("xl/worksheets/sheet{}.xml", sheet_no);
+        let target = format!("{PKG_SHEET}{}.xml", sheet_no);
         writer_mng.add_bin(&target, self.get_worksheet_file().get_file_data())?;
 
         // Add worksheet rels

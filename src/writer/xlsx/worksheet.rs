@@ -302,6 +302,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "worksheet");
 
-    let target = format!("xl/worksheets/sheet{}.xml", sheet_no);
+    let target = format!("{PKG_SHEET}{}.xml", sheet_no);
     writer_mng.add_writer(&target, writer)
 }
