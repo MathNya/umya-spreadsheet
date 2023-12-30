@@ -161,7 +161,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("xl/worksheets/_rels/sheet{}.xml.rels", worksheet_no);
+        let file_path = format!("{PKG_SHEET_RELS}{}.xml.rels", worksheet_no);
         writer_mng.add_writer(&file_path, writer)?;
     }
     Ok(())

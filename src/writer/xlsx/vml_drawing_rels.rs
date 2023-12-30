@@ -47,7 +47,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("xl/drawings/_rels/vmlDrawing{}.vml.rels", vml_drawing_no);
+        let file_path = format!("{PKG_VML_DRAWING_RELS}{}.vml.rels", vml_drawing_no);
         return writer_mng.add_writer(&file_path, writer);
     }
     Ok(())

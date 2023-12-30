@@ -52,7 +52,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("xl/drawings/_rels/drawing{}.xml.rels", drawing_no);
+        let file_path = format!("{PKG_DRAWINGS_RELS}{}.xml.rels", drawing_no);
         return writer_mng.add_writer(&file_path, writer);
     }
     Ok(())
