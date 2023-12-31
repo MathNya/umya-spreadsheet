@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use helper::const_str::*;
 use helper::coordinate::*;
 use helper::range::*;
 use structs::drawing::spreadsheet::WorksheetDrawing;
@@ -1724,7 +1725,7 @@ impl Worksheet {
             Some(raw_data) => {
                 for relationships in raw_data.get_relationships_list() {
                     for row in relationships.get_relationship_list() {
-                        if row.get_type() == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition" {
+                        if row.get_type() == PIVOT_CACHE_DEF_NS {
                             result.push(row.get_raw_file().get_file_target());
                         }
                     }

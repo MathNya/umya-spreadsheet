@@ -5,6 +5,7 @@ use super::drawing::Theme;
 use super::CellValue;
 use super::SharedStringItem;
 use hashbrown::HashMap;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -107,10 +108,7 @@ impl SharedStringTable {
             writer,
             "sst",
             vec![
-                (
-                    "xmlns",
-                    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-                ),
+                ("xmlns", SHEET_MAIN_NS),
                 ("count", self.regist_count.to_string().as_str()),
                 (
                     "uniqueCount",

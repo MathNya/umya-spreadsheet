@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -24,16 +25,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "workbook",
-        vec![
-            (
-                "xmlns",
-                "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-            ),
-            (
-                "xmlns:r",
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-            ),
-        ],
+        vec![("xmlns", SHEET_MAIN_NS), ("xmlns:r", REL_OFC_NS)],
         false,
     );
 
@@ -151,6 +143,5 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "workbook");
 
-    let target = "xl/workbook.xml";
-    writer_mng.add_writer(target, writer)
+    writer_mng.add_writer(PKG_WORKBOOK, writer)
 }

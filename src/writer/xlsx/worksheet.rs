@@ -1,5 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -35,31 +36,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             "worksheet",
             vec![
-                (
-                    "xmlns",
-                    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-                ),
-                (
-                    "xmlns:r",
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-                ),
-                (
-                    "xmlns:xdr",
-                    "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
-                ),
-                (
-                    "xmlns:x14",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main",
-                ),
-                (
-                    "xmlns:mc",
-                    "http://schemas.openxmlformats.org/markup-compatibility/2006",
-                ),
+                ("xmlns", SHEET_MAIN_NS),
+                ("xmlns:r", REL_OFC_NS),
+                ("xmlns:xdr", SHEET_DRAWING_NS),
+                ("xmlns:x14", SHEET_MS_MAIN_NS),
+                ("xmlns:mc", MC_NS),
                 ("mc:Ignorable", "x14ac"),
-                (
-                    "xmlns:x14ac",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac",
-                ),
+                ("xmlns:x14ac", SHEETML_AC_NS),
             ],
             false,
         );
@@ -319,6 +302,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "worksheet");
 
-    let target = format!("xl/worksheets/sheet{}.xml", sheet_no);
+    let target = format!("{PKG_SHEET}{}.xml", sheet_no);
     writer_mng.add_writer(&target, writer)
 }

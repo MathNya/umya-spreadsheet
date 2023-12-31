@@ -1,10 +1,10 @@
+use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io;
 use std::io::Read;
-
 use structs::raw::RawRelationship;
 use structs::StringValue;
 use structs::WriterManager;
@@ -112,15 +112,7 @@ impl RawRelationships {
         write_new_line(&mut writer);
 
         // relationships
-        write_start_tag(
-            &mut writer,
-            "Relationships",
-            vec![(
-                "xmlns",
-                "http://schemas.openxmlformats.org/package/2006/relationships",
-            )],
-            false,
-        );
+        write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
         for relationship in self.get_relationship_list() {
             relationship.write_to(&mut writer);

@@ -1,10 +1,10 @@
+use helper::const_str::*;
 use quick_xml::Writer;
 use std::io;
 use std::io::Cursor;
 use structs::Spreadsheet;
 use writer::driver::*;
 use writer::xlsx::XlsxError;
-
 pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: zip::ZipWriter<W>,
@@ -88,7 +88,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/drawings/drawing{}.xml", index);
+            let file_path = format!("{}/drawing{}.xml", PKG_DRAWINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -104,7 +104,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/drawings/vmlDrawing{}.vml", index);
+            let file_path = format!("{}/vmlDrawing{}.vml", PKG_DRAWINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -136,7 +136,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/charts/chart{}.xml", index);
+            let file_path = format!("{}/chart{}.xml", PKG_CHARTS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_writer(&file_path, writer)?;
@@ -149,7 +149,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/embeddings/oleObject{}.bin", index);
+            let file_path = format!("{}/oleObject{}.bin", PKG_EMBEDDINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -162,7 +162,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/embeddings/Microsoft_Excel_Worksheet{}.xlsx", index);
+            let file_path = format!("{}/Microsoft_Excel_Worksheet{}.xlsx", PKG_EMBEDDINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -175,7 +175,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         let mut index = 0;
         loop {
             index += 1;
-            let file_path = format!("xl/printerSettings/printerSettings{}.bin", index);
+            let file_path = format!("{}/printerSettings{}.bin", PKG_PRNTR_SETTINGS, index);
             let is_match = self.check_file_exist(&file_path);
             if !is_match {
                 self.add_bin(&file_path, writer)?;
@@ -189,7 +189,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         writer: Writer<Cursor<Vec<u8>>>,
         table_no: i32,
     ) -> Result<i32, XlsxError> {
-        let file_path = format!("xl/tables/table{}.xml", table_no);
+        let file_path = format!("{}/table{}.xml", PKG_TABLES, table_no);
         self.add_writer(&file_path, writer)?;
         return Ok(table_no);
     }
@@ -209,84 +209,78 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         spreadsheet: &Spreadsheet,
     ) -> Vec<(String, String)> {
         self.file_list_sort();
+
         let mut list: Vec<(String, String)> = Vec::new();
         for file in &self.files {
             let file = format!("/{}", file);
             let mut content_type = "";
+
             // Override workbook
             if file.starts_with("/xl/workbook.xml") {
                 content_type = match spreadsheet.get_has_macros() {
-                    true => "application/vnd.ms-excel.sheet.macroEnabled.main+xml",
-                    false => {
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"
-                    }
+                    true => WORKBOOK_MACRO_TYPE,
+                    false => WORKBOOK_TYPE,
                 };
             }
 
             // Override sheet
             if file.starts_with("/xl/worksheets/sheet") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml";
+                content_type = SHEET_TYPE;
             }
 
             // Override table
             if file.starts_with("/xl/tables/table") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml";
+                content_type = TABLE_TYPE;
             }
 
             // Override comments
             if file.starts_with("/xl/comments") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml";
+                content_type = COMMENTS_TYPE;
             }
 
             // Override theme
             if file.starts_with("/xl/theme/theme") {
-                content_type = "application/vnd.openxmlformats-officedocument.theme+xml";
+                content_type = THEME_TYPE;
             }
 
             // Override styles
             if file.starts_with("/xl/styles.xml") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml";
+                content_type = STYLES_TYPE;
             }
 
             // Override sharedStrings
             if file.starts_with("/xl/sharedStrings.xml") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml";
+                content_type = SHARED_STRINGS_TYPE;
             }
 
             // Override drawing
             if file.starts_with("/xl/drawings/drawing") {
-                content_type = "application/vnd.openxmlformats-officedocument.drawing+xml";
+                content_type = DRAWING_TYPE;
             }
 
             // Override chart
             if file.starts_with("/xl/charts/chart") {
-                content_type = "application/vnd.openxmlformats-officedocument.drawingml.chart+xml";
+                content_type = CHART_TYPE;
             }
 
             // Override embeddings
             if file.starts_with("/xl/embeddings/oleObject") {
-                content_type = "application/vnd.openxmlformats-officedocument.oleObject";
+                content_type = OLE_OBJECT_TYPE;
             }
 
             // Override xl/vbaProject.bin
             if file.starts_with("/xl/vbaProject.bin") {
-                content_type = "application/vnd.ms-office.vbaProject";
+                content_type = VBA_TYPE;
             }
 
             // Override docProps/core
             if file.starts_with("/docProps/core.xml") {
-                content_type = "application/vnd.openxmlformats-package.core-properties+xml";
+                content_type = CORE_PROPS_TYPE;
             }
 
             // Override docProps/app
             if file.starts_with("/docProps/app.xml") {
-                content_type =
-                    "application/vnd.openxmlformats-officedocument.extended-properties+xml";
+                content_type = XPROPS_TYPE;
             }
 
             // Override Unsupported

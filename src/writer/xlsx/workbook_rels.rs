@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -24,10 +25,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // relationships
     let root_tag_name = "Relationships";
-    let attributes: Vec<(&str, &str)> = vec![(
-        "xmlns",
-        "http://schemas.openxmlformats.org/package/2006/relationships",
-    )];
+    let attributes: Vec<(&str, &str)> = vec![("xmlns", REL_NS)];
     write_start_tag(&mut writer, root_tag_name, attributes, false);
 
     let mut index = 1;
@@ -35,13 +33,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // relationships worksheet
     for _ in spreadsheet.get_sheet_collection_no_check() {
         let path_str = format!("worksheets/sheet{}.xml", index);
-        write_relationship(
-            &mut writer,
-            &index.to_string(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet",
-            &path_str,
-            "",
-        );
+        write_relationship(&mut writer, &index.to_string(), WORKSHEET_NS, &path_str, "");
         index += 1;
     }
 
@@ -50,7 +42,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_relationship(
             &mut writer,
             &index.to_string(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition",
+            PIVOT_CACHE_DEF_NS,
             pivot_cache_definition.as_str(),
             "",
         );
@@ -58,20 +50,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // relationship styles.xml
-    write_relationship(
-        &mut writer,
-        &index.to_string(),
-        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
-        "styles.xml",
-        "",
-    );
+    write_relationship(&mut writer, &index.to_string(), STYLES_NS, "styles.xml", "");
     index += 1;
 
     // relationship theme/theme1.xml
     write_relationship(
         &mut writer,
         &index.to_string(),
-        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme",
+        THEME_NS,
         "theme/theme1.xml",
         "",
     );
@@ -82,7 +68,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_relationship(
             &mut writer,
             &index.to_string(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings",
+            SHARED_STRINGS_NS,
             "sharedStrings.xml",
             "",
         );
@@ -94,7 +80,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_relationship(
             &mut writer,
             &index.to_string(),
-            "http://schemas.microsoft.com/office/2006/relationships/vbaProject",
+            VBA_PROJECT_NS,
             "vbaProject.bin",
             "",
         );
@@ -102,7 +88,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, root_tag_name);
     make_file_from_writer(
-        "xl/_rels/workbook.xml.rels",
+        PKG_WORKBOOK_RELS,
         writer_mng.get_arv_mut(),
         writer,
         None,

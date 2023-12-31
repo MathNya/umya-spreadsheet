@@ -5,6 +5,7 @@ use super::OneCellAnchor;
 use super::Picture;
 use super::Shape;
 use super::TwoCellAnchor;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -372,14 +373,8 @@ impl WorksheetDrawing {
             writer,
             "xdr:wsDr",
             vec![
-                (
-                    "xmlns:xdr",
-                    "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
-                ),
-                (
-                    "xmlns:a",
-                    "http://schemas.openxmlformats.org/drawingml/2006/main",
-                ),
+                ("xmlns:xdr", SHEET_DRAWING_NS),
+                ("xmlns:a", DRAWINGML_MAIN_NS),
             ],
             false,
         );

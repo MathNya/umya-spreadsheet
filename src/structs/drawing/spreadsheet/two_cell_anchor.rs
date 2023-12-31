@@ -6,6 +6,8 @@ use super::GraphicFrame;
 use super::MarkerType;
 use super::Picture;
 use super::Shape;
+use helper::const_str::MC_NS;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -241,10 +243,7 @@ impl TwoCellAnchor {
             write_start_tag(
                 writer,
                 "mc:AlternateContent",
-                vec![(
-                    "xmlns:mc",
-                    "http://schemas.openxmlformats.org/markup-compatibility/2006",
-                )],
+                vec![("xmlns:mc", MC_NS)],
                 false,
             );
 
@@ -252,13 +251,7 @@ impl TwoCellAnchor {
             write_start_tag(
                 writer,
                 "mc:Choice",
-                vec![
-                    (
-                        "xmlns:a14",
-                        "http://schemas.microsoft.com/office/drawing/2010/main",
-                    ),
-                    ("Requires", "a14"),
-                ],
+                vec![("xmlns:a14", DRAWING_MAIN_NS), ("Requires", "a14")],
                 false,
             );
         }

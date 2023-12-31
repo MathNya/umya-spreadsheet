@@ -8,6 +8,7 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use super::driver;
+use helper::const_str::*;
 use structs::drawing::Theme;
 use structs::raw::RawWorksheet;
 use structs::SharedStringTable;
@@ -97,9 +98,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
 
     book.set_theme(Theme::get_default_value());
     for (_, type_value, rel_target) in &workbook_rel {
-        if type_value.as_str()
-            == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
-        {
+        if type_value == THEME_NS {
             let theme = theme::read(&mut arv, rel_target).unwrap();
             book.set_theme(theme);
         }
@@ -183,7 +182,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         for relationship in v.get_relationship_list() {
             match relationship.get_type() {
                 // drawing, chart
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
+                DRAWINGS_NS => {
                     drawing::read(
                         worksheet,
                         relationship.get_raw_file(),
@@ -192,11 +191,11 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                     .unwrap();
                 }
                 // comment
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
+                COMMENTS_NS => {
                     comment::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
                 // table
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" => {
+                TABLE_NS => {
                     table::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
                 _ => {}
@@ -204,9 +203,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         }
         for relationship in v.get_relationship_list() {
             // vmlDrawing
-            if relationship.get_type()
-                == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
-            {
+            if relationship.get_type() == VML_DRAWING_NS {
                 vml_drawing::read(
                     worksheet,
                     relationship.get_raw_file(),

@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -21,15 +22,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(
-        &mut writer,
-        "Relationships",
-        vec![(
-            "xmlns",
-            "http://schemas.openxmlformats.org/package/2006/relationships",
-        )],
-        false,
-    );
+    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
     // relationship docProps/custom.xml
     //if spreadsheet.get_properties().get_custom_properties().len() > 0 {
@@ -43,38 +36,20 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     //}
 
     // relationship docProps/app.xml
-    write_relationship(
-        &mut writer,
-        "3",
-        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties",
-        "docProps/app.xml",
-        "",
-    );
+    write_relationship(&mut writer, "3", XPROPS_NS, ARC_APP, "");
 
     // relationship docProps/core.xml
-    write_relationship(
-        &mut writer,
-        "2",
-        "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties",
-        "docProps/core.xml",
-        "",
-    );
+    write_relationship(&mut writer, "2", COREPROPS_NS, ARC_CORE, "");
 
     // relationship docProps/core.xml
-    write_relationship(
-        &mut writer,
-        "1",
-        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
-        "xl/workbook.xml",
-        "",
-    );
+    write_relationship(&mut writer, "1", OFCDOC_NS, PKG_WORKBOOK, "");
 
     // a custom UI in workbook ?
     if spreadsheet.has_ribbon() {
         write_relationship(
             &mut writer,
             "5",
-            "http://schemas.microsoft.com/office/2006/relationships/ui/extensibility",
+            CUSTOMUI_NS,
             "xl/todo.xml", //TODO
             "",
         );
