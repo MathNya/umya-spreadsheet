@@ -15,40 +15,37 @@ impl Range {
         let org_value = value.into();
         let coordinate_collection: Vec<&str> = org_value.split(':').collect();
 
-        if coordinate_collection.is_empty() || coordinate_collection.len() > 2 {
-            panic!("Non-standard coordinate");
-        }
+        assert!(
+            matches!(coordinate_collection.len(), 1 | 2),
+            "Non-standard coordinate"
+        );
 
-        if coordinate_collection.len() == 1 || coordinate_collection.len() == 2 {
-            let coordinate_str = coordinate_collection[0].to_string();
-            let (
-                row,         //
-                col,         //
-                is_lock_col, //
-                is_lock_row,
-            ) = index_from_coordinate(coordinate_str);
-            if let Some(v) = row {
-                let mut coordinate_start_col = ColumnReference::default();
-                coordinate_start_col.set_num(v);
-                coordinate_start_col.set_is_lock(is_lock_col.unwrap());
-                self.coordinate_start_col = Some(coordinate_start_col);
-            };
-            if let Some(v) = col {
-                let mut coordinate_start_row = RowReference::default();
-                coordinate_start_row.set_num(v);
-                coordinate_start_row.set_is_lock(is_lock_row.unwrap());
-                self.coordinate_start_row = Some(coordinate_start_row);
-            }
+        let (
+            row,         //
+            col,         //
+            is_lock_col, //
+            is_lock_row,
+        ) = index_from_coordinate(coordinate_collection[0]);
+        if let Some(v) = row {
+            let mut coordinate_start_col = ColumnReference::default();
+            coordinate_start_col.set_num(v);
+            coordinate_start_col.set_is_lock(is_lock_col.unwrap());
+            self.coordinate_start_col = Some(coordinate_start_col);
+        };
+        if let Some(v) = col {
+            let mut coordinate_start_row = RowReference::default();
+            coordinate_start_row.set_num(v);
+            coordinate_start_row.set_is_lock(is_lock_row.unwrap());
+            self.coordinate_start_row = Some(coordinate_start_row);
         }
 
         if coordinate_collection.len() == 2 {
-            let coordinate_str = coordinate_collection[1].to_string();
             let (
                 row,         //
                 col,         //
                 is_lock_col, //
                 is_lock_row,
-            ) = index_from_coordinate(coordinate_str);
+            ) = index_from_coordinate(coordinate_collection[1]);
             if let Some(v) = row {
                 let mut coordinate_end_col = ColumnReference::default();
                 coordinate_end_col.set_num(v);

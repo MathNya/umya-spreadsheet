@@ -507,46 +507,19 @@ impl PlotArea {
     }
 
     pub(crate) fn is_support(&self) -> bool {
-        if self.line_chart.is_some() {
-            return true;
-        }
-        if self.line_3d_chart.is_some() {
-            return true;
-        }
-        if self.pie_chart.is_some() {
-            return true;
-        }
-        if self.pie_3d_chart.is_some() {
-            return true;
-        }
-        if self.doughnut_chart.is_some() {
-            return true;
-        }
-        if self.scatter_chart.is_some() {
-            return true;
-        }
-        if self.bar_chart.is_some() {
-            return true;
-        }
-        if self.bar_3d_chart.is_some() {
-            return true;
-        }
-        if self.radar_chart.is_some() {
-            return true;
-        }
-        if self.bubble_chart.is_some() {
-            return true;
-        }
-        if self.area_chart.is_some() {
-            return true;
-        }
-        if self.area_3d_chart.is_some() {
-            return true;
-        }
-        if self.of_pie_chart.is_some() {
-            return true;
-        }
-        false
+        self.line_chart.is_some()
+            || self.line_3d_chart.is_some()
+            || self.pie_chart.is_some()
+            || self.pie_3d_chart.is_some()
+            || self.doughnut_chart.is_some()
+            || self.scatter_chart.is_some()
+            || self.bar_chart.is_some()
+            || self.bar_3d_chart.is_some()
+            || self.radar_chart.is_some()
+            || self.bubble_chart.is_some()
+            || self.area_chart.is_some()
+            || self.area_3d_chart.is_some()
+            || self.of_pie_chart.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
