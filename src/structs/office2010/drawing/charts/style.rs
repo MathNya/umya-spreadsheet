@@ -40,13 +40,7 @@ impl Style {
         write_start_tag(
             writer,
             "mc:Choice",
-            vec![
-                ("Requires", "c14"),
-                (
-                    "xmlns:c14",
-                    "http://schemas.microsoft.com/office/drawing/2007/8/2/chart",
-                ),
-            ],
+            vec![("Requires", "c14"), ("xmlns:c14", DRAWING_CHART_NS)],
             false,
         );
 
