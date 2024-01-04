@@ -75,7 +75,7 @@ impl Formula {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // formula
         write_start_tag(writer, "formula", vec![], false);
-        write_text_node_no_escape(writer, self.get_address_str());
+        write_text_node(writer, self.get_address_str());
         write_end_tag(writer, "formula");
     }
 }
