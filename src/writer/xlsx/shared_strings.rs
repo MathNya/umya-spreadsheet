@@ -34,6 +34,5 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     shared_string_table.write().unwrap().write_to(&mut writer);
 
-    let target = PKG_SHARED_STRINGS;
-    writer_mng.add_writer(target, writer)
+    writer_mng.add_writer(PKG_SHARED_STRINGS, writer)
 }

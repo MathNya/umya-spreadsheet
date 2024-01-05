@@ -3,9 +3,7 @@ use std::iter::successors;
 use fancy_regex::Regex;
 
 fn index_to_alpha(index: u32) -> String {
-    if index < 1 {
-        panic!("Index cannot be less than one.")
-    }
+    assert!(index >= 1, "Index cannot be less than one.");
 
     const BASE_CHAR_CODE: u32 = 'A' as u32;
     // below code is based on the source code of `radix_fmt`
@@ -54,9 +52,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 }
 
 pub fn string_from_column_index(column_index: &u32) -> String {
-    if column_index < &1u32 {
-        panic!("Column number starts from 1.");
-    }
+    assert!(column_index >= &1u32, "Column number starts from 1.");
 
     index_to_alpha(*column_index)
 }

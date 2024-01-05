@@ -9,15 +9,17 @@ pub(crate) const COREPROPS_NS: &str =
     "http://schemas.openxmlformats.org/package/2006/metadata/core-properties";
 pub(crate) const CUSTOMUI_NS: &str =
     "http://schemas.microsoft.com/office/2006/relationships/ui/extensibility";
+pub(crate) const DCMITYPE_NS: &str = "http://purl.org/dc/dcmitype/";
+pub(crate) const DCORE_NS: &str = "http://purl.org/dc/elements/1.1/";
+pub(crate) const DCTERMS_NS: &str = "http://purl.org/dc/terms/";
+pub(crate) const DRAWING_CHART_NS: &str =
+    "http://schemas.microsoft.com/office/drawing/2007/8/2/chart";
 pub(crate) const DRAWING_MAIN_NS: &str = "http://schemas.microsoft.com/office/drawing/2010/main";
 pub(crate) const DRAWINGML_CHART_NS: &str =
     "http://schemas.openxmlformats.org/drawingml/2006/chart";
 pub(crate) const DRAWINGML_MAIN_NS: &str = "http://schemas.openxmlformats.org/drawingml/2006/main";
 pub(crate) const DRAWINGS_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing";
-pub(crate) const DCMITYPE_NS: &str = "http://purl.org/dc/dcmitype/";
-pub(crate) const DCORE_NS: &str = "http://purl.org/dc/elements/1.1/";
-pub(crate) const DCTERMS_NS: &str = "http://purl.org/dc/terms/";
 pub(crate) const ENCRYPTION_NS: &str = "http://schemas.microsoft.com/office/2006/encryption";
 pub(crate) const HYPERLINK_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink";

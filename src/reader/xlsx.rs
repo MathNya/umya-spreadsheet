@@ -89,23 +89,23 @@ pub fn read_reader<R: io::Read + io::Seek>(
 ) -> Result<Spreadsheet, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
-    let mut book = workbook::read(&mut arv).unwrap();
-    doc_props_app::read(&mut arv, &mut book).unwrap();
-    doc_props_core::read(&mut arv, &mut book).unwrap();
-    vba_project_bin::read(&mut arv, &mut book).unwrap();
-    content_types::read(&mut arv, &mut book).unwrap();
-    let workbook_rel = workbook_rels::read(&mut arv, &mut book).unwrap();
+    let mut book = workbook::read(&mut arv)?;
+    doc_props_app::read(&mut arv, &mut book)?;
+    doc_props_core::read(&mut arv, &mut book)?;
+    vba_project_bin::read(&mut arv, &mut book)?;
+    content_types::read(&mut arv, &mut book)?;
+    let workbook_rel = workbook_rels::read(&mut arv, &mut book)?;
 
     book.set_theme(Theme::get_default_value());
     for (_, type_value, rel_target) in &workbook_rel {
         if type_value == THEME_NS {
-            let theme = theme::read(&mut arv, rel_target).unwrap();
+            let theme = theme::read(&mut arv, rel_target)?;
             book.set_theme(theme);
         }
     }
 
-    shared_strings::read(&mut arv, &mut book).unwrap();
-    styles::read(&mut arv, &mut book).unwrap();
+    shared_strings::read(&mut arv, &mut book)?;
+    styles::read(&mut arv, &mut book)?;
 
     for sheet in book.get_sheet_collection_mut() {
         for (rel_id, _, rel_target) in &workbook_rel {
