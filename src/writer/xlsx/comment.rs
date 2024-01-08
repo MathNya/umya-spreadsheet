@@ -46,7 +46,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "commentList", vec![], false);
     for comment in worksheet.get_comments() {
         // comment
-        let coordinate = comment.get_coordinate().get_coordinate();
+        let coordinate = comment.get_coordinate().to_string();
         let author_id = get_author_id(&authors, comment.get_author());
         write_start_tag(
             &mut writer,

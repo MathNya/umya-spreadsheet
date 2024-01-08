@@ -79,7 +79,7 @@ impl Selection {
             Some(active_cell) => {
                 for range in self.sequence_of_references.get_range_collection() {
                     let range_str = range.get_range();
-                    if range_str.contains(active_cell.get_coordinate().as_str()) {
+                    if range_str.contains(active_cell.to_string().as_str()) {
                         break;
                     }
                     active_cell_id += 1;
@@ -93,7 +93,7 @@ impl Selection {
         }
 
         let active_cell_str = match &self.active_cell {
-            Some(active_cell) => active_cell.get_coordinate(),
+            Some(active_cell) => active_cell.to_string(),
             None => String::from(""),
         };
         if !active_cell_str.is_empty() {

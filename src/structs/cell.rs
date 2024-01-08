@@ -201,23 +201,20 @@ impl Cell {
     }
 
     pub(crate) fn get_width_point_cell(&self) -> f64 {
-        let mut max_point = 0f64;
         let value = self.get_formatted_value();
-        let value_list: Vec<&str> = value.split('\n').collect();
-        for value in value_list {
+
+        value.split('\n').fold(0f64, |mut acc, value| {
             let mut point = 0f64;
             for chr in value.chars() {
-                let mut clen = chr.len_utf8() as f64;
-                if clen > 1f64 {
-                    clen = 1.5;
-                }
+                let clen = if chr.len_utf8() > 1 { 1.5 } else { 1.0 };
+
                 point += clen;
             }
-            if point > max_point {
-                max_point = point;
+            if point > acc {
+                acc = point;
             }
-        }
-        max_point
+            acc
+        })
     }
 
     pub(crate) fn get_formatted_value(&self) -> String {
@@ -369,7 +366,7 @@ impl Cell {
 
         // c
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let coordinate = self.coordinate.get_coordinate();
+        let coordinate = self.coordinate.to_string();
         attributes.push(("r", &coordinate));
         if self.get_data_type_crate() == "s"
             || self.get_data_type_crate() == "b"
@@ -385,54 +382,55 @@ impl Cell {
             attributes.push(("s", &xf_index_str));
         }
 
-        if !empty_flag_value {
-            write_start_tag(writer, "c", attributes, false);
-            // f
-            match &self.cell_value.formula {
-                Some(v) => {
-                    write_start_tag(writer, "f", self.get_formula_attributes(), false);
-                    write_text_node(writer, v);
-                    write_end_tag(writer, "f");
-                }
-                None => {
-                    if !self.get_formula_attributes().is_empty() {
-                        write_start_tag(writer, "f", self.get_formula_attributes(), true);
-                    }
-                }
-            }
-
-            // v
-            if !self.cell_value.is_value_empty() {
-                write_start_tag(writer, "v", vec![], false);
-
-                //todo use typed value
-                match self.get_data_type_crate() {
-                    "s" => {
-                        let val_index = shared_string_table
-                            .write()
-                            .unwrap()
-                            .set_cell(self.get_cell_value());
-                        write_text_node(writer, val_index.to_string());
-                    }
-                    "b" => {
-                        let upper_value = self.get_value().to_uppercase();
-                        let prm = if upper_value == "TRUE" { "1" } else { "0" };
-                        write_text_node(writer, prm);
-                    }
-                    "e" => {
-                        let prm = "#VALUE!";
-                        write_text_node(writer, prm);
-                    }
-                    _ => write_text_node(writer, self.get_value()),
-                }
-                write_end_tag(writer, "v");
-            } else {
-                write_start_tag(writer, "v", vec![], true);
-            }
-
-            write_end_tag(writer, "c");
-        } else {
+        if empty_flag_value {
             write_start_tag(writer, "c", attributes, true);
+            return;
         }
+
+        write_start_tag(writer, "c", attributes, false);
+        // f
+        match &self.cell_value.formula {
+            Some(v) => {
+                write_start_tag(writer, "f", self.get_formula_attributes(), false);
+                write_text_node(writer, v);
+                write_end_tag(writer, "f");
+            }
+            None => {
+                if !self.get_formula_attributes().is_empty() {
+                    write_start_tag(writer, "f", self.get_formula_attributes(), true);
+                }
+            }
+        }
+
+        // v
+        if self.cell_value.is_value_empty() {
+            write_start_tag(writer, "v", vec![], true);
+        } else {
+            write_start_tag(writer, "v", vec![], false);
+
+            //todo use typed value
+            match self.get_data_type_crate() {
+                "s" => {
+                    let val_index = shared_string_table
+                        .write()
+                        .unwrap()
+                        .set_cell(self.get_cell_value());
+                    write_text_node(writer, val_index.to_string());
+                }
+                "b" => {
+                    let upper_value = self.get_value().to_uppercase();
+                    let prm = if upper_value == "TRUE" { "1" } else { "0" };
+                    write_text_node(writer, prm);
+                }
+                "e" => {
+                    let prm = "#VALUE!";
+                    write_text_node(writer, prm);
+                }
+                _ => write_text_node(writer, self.get_value()),
+            }
+            write_end_tag(writer, "v");
+        }
+
+        write_end_tag(writer, "c");
     }
 }

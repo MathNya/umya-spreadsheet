@@ -87,7 +87,7 @@ impl Pane {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pane
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let coordinate = self.top_left_cell.get_coordinate();
+        let coordinate = self.top_left_cell.to_string();
         let horizontal_split = self.horizontal_split.get_value_string();
         if self.horizontal_split.has_value() {
             attributes.push(("xSplit", &horizontal_split));

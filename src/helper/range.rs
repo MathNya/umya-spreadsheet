@@ -6,16 +6,11 @@ pub type BasicCellIndex = (u32, u32);
 /// # Returns
 /// `Vec<(col, row)>`
 pub fn get_coordinate_list(range_str: &str) -> Vec<BasicCellIndex> {
-    let mut result: Vec<(u32, u32)> = Vec::new();
-
     let (row_start, row_end, col_start, col_end) = get_start_and_end_point(range_str);
-    for row_num in row_start..=row_end {
-        for col_num in col_start..=col_end {
-            result.push((col_num, row_num));
-        }
-    }
 
-    result
+    (row_start..=row_end)
+        .flat_map(|row_num| (col_start..=col_end).map(move |col_num| (col_num, row_num)))
+        .collect()
 }
 
 pub fn get_start_and_end_point(range_str: &str) -> (u32, u32, u32, u32) {

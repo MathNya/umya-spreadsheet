@@ -67,7 +67,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
                 None => String::from(""),
             };
             // do trim.
-            if option.get_do_trim() == &true {
+            if *option.get_do_trim() {
                 value = value.trim().to_string();
             }
             // wrap_with_char.
@@ -168,16 +168,13 @@ pub fn write<P: AsRef<Path>>(
         Some(v) => v,
         None => &def_option,
     };
-    match write_writer(
+    if let Err(v) = write_writer(
         spreadsheet,
         &mut io::BufWriter::new(fs::File::create(path_tmp.as_ref() as &Path)?),
         option,
     ) {
-        Ok(_) => {}
-        Err(v) => {
-            fs::remove_file(path_tmp)?;
-            return Err(v);
-        }
+        fs::remove_file(path_tmp)?;
+        return Err(v);
     }
     fs::rename(path_tmp, path)?;
     Ok(())

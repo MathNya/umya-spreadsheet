@@ -28,8 +28,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let area_coords = table.get_area();
         let area = format!(
             "{}:{}",
-            area_coords.0.get_coordinate(),
-            area_coords.1.get_coordinate()
+            area_coords.0.to_string(),
+            area_coords.1.to_string()
         );
 
         // table start

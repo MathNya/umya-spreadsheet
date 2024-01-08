@@ -449,7 +449,7 @@ impl Worksheet {
     pub fn get_comments_to_hashmap(&self) -> HashMap<String, &Comment> {
         let mut result = HashMap::default();
         for comment in &self.comments {
-            let coordinate = comment.get_coordinate().get_coordinate();
+            let coordinate = comment.get_coordinate().to_string();
             result.insert(coordinate, comment);
         }
         result

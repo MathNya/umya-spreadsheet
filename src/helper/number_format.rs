@@ -644,8 +644,7 @@ fn _complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) 
     let sign = number < &0.0;
     let number = number.abs();
 
-    if split_on_point == &true && mask.find('.').is_some() && number.to_string().find('.').is_some()
-    {
+    if *split_on_point && mask.contains('.') && number.to_string().contains('.') {
         let number_str = number.to_string();
         let numbers_as: Vec<&str> = number_str.split('.').collect();
         let mut numbers: Vec<String> = Vec::new();
