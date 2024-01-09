@@ -212,7 +212,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 let r_id_str = format!("rId{}", &r_id);
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
                 attributes.push(("ref", &coordition));
-                if hyperlink.get_location() == &true {
+                if *hyperlink.get_location() {
                     attributes.push(("location", hyperlink.get_url()));
                 } else {
                     attributes.push(("r:id", r_id_str.as_str()));

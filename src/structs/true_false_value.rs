@@ -12,7 +12,7 @@ impl TrueFalseValue {
     }
 
     pub(crate) fn get_value_string(&self) -> &str {
-        if self.get_value() == &false {
+        if !*self.get_value() {
             "f"
         } else {
             "t"

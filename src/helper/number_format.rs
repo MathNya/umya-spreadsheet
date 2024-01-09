@@ -393,12 +393,9 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
         format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into()
     }
     if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
-        match &value.parse::<usize>() {
-            Ok(_) => {}
-            Err(_) => {
-                //println!("format as fraction {} {}", value, format);
-                value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
-            }
+        if let Err(_) = &value.parse::<usize>() {
+            //println!("format as fraction {} {}", value, format);
+            value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
         }
     } else {
         // Handle the number itself
@@ -525,7 +522,7 @@ fn format_straight_numeric_value(
     let right = matches.get(3).unwrap();
 
     // minimun width of formatted number (including dot)
-    if use_thousands == &true {
+    if *use_thousands {
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();

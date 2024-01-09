@@ -186,7 +186,7 @@ impl SheetView {
 
         // sheetView
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if self.tab_selected.get_value() == &true {
+        if *self.tab_selected.get_value() {
             attributes.push(("tabSelected", self.tab_selected.get_value_string()));
         }
         if self.view.has_value() {

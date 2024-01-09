@@ -10,7 +10,7 @@ impl TrueFalseBlankValue {
     pub(crate) fn _get_value_string(&self) -> &str {
         match self.get_value() {
             Some(v) => {
-                if v == &false {
+                if !*v {
                     "f"
                 } else {
                     "t"
@@ -23,7 +23,7 @@ impl TrueFalseBlankValue {
     pub(crate) fn get_value_string2(&self) -> &str {
         match self.get_value() {
             Some(v) => {
-                if v == &false {
+                if !*v {
                     "False"
                 } else {
                     "True"
