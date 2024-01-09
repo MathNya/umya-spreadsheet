@@ -75,17 +75,14 @@ impl Selection {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
 
         let mut active_cell_id = 0;
-        match &self.active_cell {
-            Some(active_cell) => {
-                for range in self.sequence_of_references.get_range_collection() {
-                    let range_str = range.get_range();
-                    if range_str.contains(active_cell.to_string().as_str()) {
-                        break;
-                    }
-                    active_cell_id += 1;
+        if let Some(active_cell) = &self.active_cell {
+            for range in self.sequence_of_references.get_range_collection() {
+                let range_str = range.get_range();
+                if range_str.contains(active_cell.to_string().as_str()) {
+                    break;
                 }
+                active_cell_id += 1;
             }
-            None => {}
         }
 
         if self.pane.has_value() {

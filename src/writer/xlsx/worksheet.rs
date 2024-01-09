@@ -49,15 +49,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // sheetPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match has_macros {
-            true => {
-                let code_name = match worksheet.has_code_name() {
-                    true => worksheet.get_code_name().as_ref().unwrap(),
-                    false => worksheet.get_name(),
-                };
-                attributes.push(("codeName", code_name));
-            }
-            false => {}
+        if has_macros {
+            let code_name = match worksheet.has_code_name() {
+                true => worksheet.get_code_name().as_ref().unwrap(),
+                false => worksheet.get_name(),
+            };
+            attributes.push(("codeName", code_name));
         }
 
         // tabColor

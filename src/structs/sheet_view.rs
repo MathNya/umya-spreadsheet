@@ -217,17 +217,17 @@ impl SheetView {
 
         write_start_tag(writer, "sheetView", attributes, empty_flag);
 
-        if !empty_flag {
-            // pane
-            match &self.pane {
-                Some(v) => v.write_to(writer),
-                None => {}
-            }
-            // selection
-            for obj in &self.selection {
-                obj.write_to(writer);
-            }
-            write_end_tag(writer, "sheetView");
+        if empty_flag {
+            return;
         }
+        // pane
+        if let Some(v) = &self.pane {
+            v.write_to(writer)
+        }
+        // selection
+        for obj in &self.selection {
+            obj.write_to(writer);
+        }
+        write_end_tag(writer, "sheetView");
     }
 }

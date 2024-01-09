@@ -36,16 +36,12 @@ impl Table {
         if self.name.is_empty() || self.display_name.is_empty() {
             return false;
         }
-        if self.area.0.get_col_num() == &0
+        !(self.area.0.get_col_num() == &0
             || self.area.0.get_row_num() == &0
             || self.area.1.get_col_num() == &0
             || self.area.1.get_row_num() == &0
             || self.area.0.get_col_num() > self.area.1.get_col_num()
-            || self.area.0.get_row_num() > self.area.1.get_row_num()
-        {
-            return false;
-        }
-        return true;
+            || self.area.0.get_row_num() > self.area.1.get_row_num())
     }
 
     pub fn get_name(&self) -> &String {

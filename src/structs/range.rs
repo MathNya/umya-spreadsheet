@@ -104,34 +104,22 @@ impl Range {
 
     pub(crate) fn get_coordinate_start(&self) -> String {
         let mut coordinate_str = "".into();
-        match &self.coordinate_start_col {
-            Some(v) => {
-                coordinate_str = v.get_coordinate();
-            }
-            None => {}
+        if let Some(v) = &self.coordinate_start_col {
+            coordinate_str = v.get_coordinate();
         };
-        match &self.coordinate_start_row {
-            Some(v) => {
-                coordinate_str = format!("{}{}", coordinate_str, v.get_coordinate());
-            }
-            None => {}
+        if let Some(v) = &self.coordinate_start_row {
+            coordinate_str = format!("{}{}", coordinate_str, v.get_coordinate());
         };
         coordinate_str
     }
 
     pub(crate) fn get_coordinate_end(&self) -> String {
         let mut coordinate_str = "".into();
-        match &self.coordinate_end_col {
-            Some(v) => {
-                coordinate_str = v.get_coordinate();
-            }
-            None => {}
+        if let Some(v) = &self.coordinate_end_col {
+            coordinate_str = v.get_coordinate();
         };
-        match &self.coordinate_end_row {
-            Some(v) => {
-                coordinate_str = format!("{}{}", coordinate_str, v.get_coordinate());
-            }
-            None => {}
+        if let Some(v) = &self.coordinate_end_row {
+            coordinate_str = format!("{}{}", coordinate_str, v.get_coordinate());
         };
         coordinate_str
     }
@@ -143,29 +131,17 @@ impl Range {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        match &mut self.coordinate_start_col {
-            Some(v) => {
-                v.adjustment_insert_coordinate(root_col_num, offset_col_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_start_col {
+            v.adjustment_insert_coordinate(root_col_num, offset_col_num);
         }
-        match &mut self.coordinate_start_row {
-            Some(v) => {
-                v.adjustment_insert_coordinate(root_row_num, offset_row_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_start_row {
+            v.adjustment_insert_coordinate(root_row_num, offset_row_num);
         }
-        match &mut self.coordinate_end_col {
-            Some(v) => {
-                v.adjustment_insert_coordinate(root_col_num, offset_col_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_end_col {
+            v.adjustment_insert_coordinate(root_col_num, offset_col_num);
         }
-        match &mut self.coordinate_end_row {
-            Some(v) => {
-                v.adjustment_insert_coordinate(root_row_num, offset_row_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_end_row {
+            v.adjustment_insert_coordinate(root_row_num, offset_row_num);
         }
     }
 
@@ -176,29 +152,17 @@ impl Range {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        match &mut self.coordinate_start_col {
-            Some(v) => {
-                v.adjustment_remove_coordinate(root_col_num, offset_col_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_start_col {
+            v.adjustment_remove_coordinate(root_col_num, offset_col_num);
         }
-        match &mut self.coordinate_start_row {
-            Some(v) => {
-                v.adjustment_remove_coordinate(root_row_num, offset_row_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_start_row {
+            v.adjustment_remove_coordinate(root_row_num, offset_row_num);
         }
-        match &mut self.coordinate_end_col {
-            Some(v) => {
-                v.adjustment_remove_coordinate(root_col_num, offset_col_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_end_col {
+            v.adjustment_remove_coordinate(root_col_num, offset_col_num);
         }
-        match &mut self.coordinate_end_row {
-            Some(v) => {
-                v.adjustment_remove_coordinate(root_row_num, offset_row_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.coordinate_end_row {
+            v.adjustment_remove_coordinate(root_row_num, offset_row_num);
         }
     }
 

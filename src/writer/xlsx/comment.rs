@@ -85,10 +85,8 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
 }
 
 fn get_author_id(authors: &[String], author: &str) -> String {
-    for (i, value) in authors.iter().enumerate() {
-        if author == value {
-            return i.to_string();
-        }
-    }
-    "".to_string()
+    authors
+        .iter()
+        .position(|value| author == value)
+        .map_or("".to_string(), |i| i.to_string())
 }
