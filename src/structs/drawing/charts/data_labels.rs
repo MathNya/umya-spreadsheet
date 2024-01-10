@@ -105,12 +105,12 @@ impl DataLabels {
         self
     }
 
-    pub fn get_show_leader_lines(&self) -> &Option<ShowLeaderLines> {
-        &self.show_leader_lines
+    pub fn get_show_leader_lines(&self) -> Option<&ShowLeaderLines> {
+        self.show_leader_lines.as_ref()
     }
 
-    pub fn get_show_leader_lines_mut(&mut self) -> &mut Option<ShowLeaderLines> {
-        &mut self.show_leader_lines
+    pub fn get_show_leader_lines_mut(&mut self) -> Option<&mut ShowLeaderLines> {
+        self.show_leader_lines.as_mut()
     }
 
     pub fn set_show_leader_lines(&mut self, value: ShowLeaderLines) -> &mut Self {
@@ -118,12 +118,12 @@ impl DataLabels {
         self
     }
 
-    pub fn get_text_properties(&self) -> &Option<TextProperties> {
-        &self.text_properties
+    pub fn get_text_properties(&self) -> Option<&TextProperties> {
+        self.text_properties.as_ref()
     }
 
-    pub fn get_text_properties_mut(&mut self) -> &mut Option<TextProperties> {
-        &mut self.text_properties
+    pub fn get_text_properties_mut(&mut self) -> Option<&mut TextProperties> {
+        self.text_properties.as_mut()
     }
 
     pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {

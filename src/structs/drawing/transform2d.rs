@@ -50,24 +50,24 @@ impl Transform2D {
         self.height = value;
     }
 
-    pub fn get_rot(&self) -> &Option<String> {
-        &self.rot
+    pub fn get_rot(&self) -> Option<&String> {
+        self.rot.as_ref()
     }
 
     pub fn set_rot<S: Into<String>>(&mut self, value: S) {
         self.rot = Some(value.into());
     }
 
-    pub fn get_flip_v(&self) -> &Option<String> {
-        &self.flip_v
+    pub fn get_flip_v(&self) -> Option<&String> {
+        self.flip_v.as_ref()
     }
 
     pub fn set_flip_v<S: Into<String>>(&mut self, value: S) {
         self.flip_v = Some(value.into());
     }
 
-    pub fn get_flip_h(&self) -> &Option<String> {
-        &self.flip_h
+    pub fn get_flip_h(&self) -> Option<&String> {
+        self.flip_h.as_ref()
     }
 
     pub fn set_flip_h<S: Into<String>>(&mut self, value: S) {

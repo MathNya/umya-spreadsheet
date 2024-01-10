@@ -69,8 +69,8 @@ impl TwoCellAnchor {
         self.graphic_frame.as_ref()
     }
 
-    pub fn get_graphic_frame_mut(&mut self) -> &mut Option<GraphicFrame> {
-        &mut self.graphic_frame
+    pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
+        self.graphic_frame.as_mut()
     }
 
     pub fn set_graphic_frame(&mut self, value: GraphicFrame) -> &mut Self {
@@ -82,8 +82,8 @@ impl TwoCellAnchor {
         self.shape.as_ref()
     }
 
-    pub fn get_shape_mut(&mut self) -> &mut Option<Shape> {
-        &mut self.shape
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape.as_mut()
     }
 
     pub fn set_shape(&mut self, value: Shape) -> &mut Self {
@@ -95,8 +95,8 @@ impl TwoCellAnchor {
         self.connection_shape.as_ref()
     }
 
-    pub fn get_connection_shape_mut(&mut self) -> &mut Option<ConnectionShape> {
-        &mut self.connection_shape
+    pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
+        self.connection_shape.as_mut()
     }
 
     pub fn set_connection_shape(&mut self, value: ConnectionShape) -> &mut Self {
@@ -108,8 +108,8 @@ impl TwoCellAnchor {
         self.picture.as_ref()
     }
 
-    pub fn get_picture_mut(&mut self) -> &mut Option<Picture> {
-        &mut self.picture
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture.as_mut()
     }
 
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {

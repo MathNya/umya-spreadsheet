@@ -15,8 +15,8 @@ pub struct Scene3DType {
 }
 
 impl Scene3DType {
-    pub fn get_camera(&self) -> &Option<Camera> {
-        &self.camera
+    pub fn get_camera(&self) -> Option<&Camera> {
+        self.camera.as_ref()
     }
 
     pub fn set_camera(&mut self, value: Camera) -> &mut Scene3DType {
@@ -24,8 +24,8 @@ impl Scene3DType {
         self
     }
 
-    pub fn get_light_rig(&self) -> &Option<LightRig> {
-        &self.light_rig
+    pub fn get_light_rig(&self) -> Option<&LightRig> {
+        self.light_rig.as_ref()
     }
 
     pub fn set_light_rig(&mut self, value: LightRig) -> &mut Scene3DType {

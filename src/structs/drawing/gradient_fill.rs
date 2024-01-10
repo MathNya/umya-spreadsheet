@@ -57,8 +57,8 @@ impl GradientFill {
         self.linear_gradient_fill.as_ref()
     }
 
-    pub fn get_linear_gradient_fill_mut(&mut self) -> &mut Option<LinearGradientFill> {
-        &mut self.linear_gradient_fill
+    pub fn get_linear_gradient_fill_mut(&mut self) -> Option<&mut LinearGradientFill> {
+        self.linear_gradient_fill.as_mut()
     }
 
     pub fn set_linear_gradient_fill(&mut self, value: LinearGradientFill) -> &mut GradientFill {
@@ -70,8 +70,8 @@ impl GradientFill {
         self.tile_rectangle.as_ref()
     }
 
-    pub fn get_tile_rectangle_mut(&mut self) -> &mut Option<TileRectangle> {
-        &mut self.tile_rectangle
+    pub fn get_tile_rectangle_mut(&mut self) -> Option<&mut TileRectangle> {
+        self.tile_rectangle.as_mut()
     }
 
     pub fn set_tile_rectangle(&mut self, value: TileRectangle) -> &mut GradientFill {

@@ -23,12 +23,12 @@ impl NonVisualPictureDrawingProperties {
         self.prefer_relative_resize.set_value(value);
     }
 
-    pub fn get_picture_locks(&self) -> &Option<PictureLocks> {
-        &self.picture_locks
+    pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
+        self.picture_locks.as_ref()
     }
 
-    pub fn get_picture_locks_mut(&mut self) -> &mut Option<PictureLocks> {
-        &mut self.picture_locks
+    pub fn get_picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
+        self.picture_locks.as_mut()
     }
 
     pub fn set_picture_locks(&mut self, value: PictureLocks) {

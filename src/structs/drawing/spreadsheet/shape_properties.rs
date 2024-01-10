@@ -40,8 +40,8 @@ impl ShapeProperties {
         self.transform2d.as_ref()
     }
 
-    pub fn get_transform2d_mut(&mut self) -> &mut Option<Transform2D> {
-        &mut self.transform2d
+    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+        self.transform2d.as_mut()
     }
 
     pub fn set_transform2d(&mut self, value: Transform2D) -> &mut ShapeProperties {
@@ -53,8 +53,8 @@ impl ShapeProperties {
         self.solid_fill.as_ref()
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
-        &mut self.solid_fill
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill.as_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut ShapeProperties {
@@ -66,8 +66,8 @@ impl ShapeProperties {
         self.outline.as_ref()
     }
 
-    pub fn get_outline_mut(&mut self) -> &mut Option<Outline> {
-        &mut self.outline
+    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+        self.outline.as_mut()
     }
 
     pub fn set_outline(&mut self, value: Outline) -> &mut ShapeProperties {
@@ -79,8 +79,8 @@ impl ShapeProperties {
         self.effect_list.as_ref()
     }
 
-    pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
-        &mut self.effect_list
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list.as_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut ShapeProperties {
@@ -92,8 +92,8 @@ impl ShapeProperties {
         self.no_fill.as_ref()
     }
 
-    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
-        &mut self.no_fill
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill.as_mut()
     }
 
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut ShapeProperties {

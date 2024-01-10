@@ -85,12 +85,12 @@ impl SeriesAxis {
         self
     }
 
-    pub fn get_major_gridlines(&self) -> &Option<MajorGridlines> {
-        &self.major_gridlines
+    pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
+        self.major_gridlines.as_ref()
     }
 
-    pub fn get_major_gridlines_mut(&mut self) -> &mut Option<MajorGridlines> {
-        &mut self.major_gridlines
+    pub fn get_major_gridlines_mut(&mut self) -> Option<&mut MajorGridlines> {
+        self.major_gridlines.as_mut()
     }
 
     pub fn set_major_gridlines(&mut self, value: MajorGridlines) -> &mut SeriesAxis {
@@ -98,12 +98,12 @@ impl SeriesAxis {
         self
     }
 
-    pub fn get_title(&self) -> &Option<Title> {
-        &self.title
+    pub fn get_title(&self) -> Option<&Title> {
+        self.title.as_ref()
     }
 
-    pub fn get_title_mut(&mut self) -> &mut Option<Title> {
-        &mut self.title
+    pub fn get_title_mut(&mut self) -> Option<&mut Title> {
+        self.title.as_mut()
     }
 
     pub fn set_title(&mut self, value: Title) -> &mut SeriesAxis {

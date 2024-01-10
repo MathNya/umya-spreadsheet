@@ -18,8 +18,8 @@ impl FillStyleList {
         self.solid_fill.as_ref()
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
-        &mut self.solid_fill
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill.as_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {

@@ -56,24 +56,24 @@ impl Shape {
         self.shape_properties = value;
     }
 
-    pub fn get_shape_style(&self) -> &Option<ShapeStyle> {
-        &self.shape_style
+    pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
+        self.shape_style.as_ref()
     }
 
-    pub fn get_shape_style_mut(&mut self) -> &mut Option<ShapeStyle> {
-        &mut self.shape_style
+    pub fn get_shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
+        self.shape_style.as_mut()
     }
 
     pub fn set_shape_style(&mut self, value: ShapeStyle) {
         self.shape_style = Some(value);
     }
 
-    pub fn get_text_body(&self) -> &Option<TextBody> {
-        &self.text_body
+    pub fn get_text_body(&self) -> Option<&TextBody> {
+        self.text_body.as_ref()
     }
 
-    pub fn get_text_body_mut(&mut self) -> &mut Option<TextBody> {
-        &mut self.text_body
+    pub fn get_text_body_mut(&mut self) -> Option<&mut TextBody> {
+        self.text_body.as_mut()
     }
 
     pub fn set_text_body(&mut self, value: TextBody) {

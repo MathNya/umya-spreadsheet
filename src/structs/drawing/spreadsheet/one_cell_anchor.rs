@@ -50,8 +50,8 @@ impl OneCellAnchor {
         self.shape.as_ref()
     }
 
-    pub fn get_shape_mut(&mut self) -> &mut Option<Shape> {
-        &mut self.shape
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape.as_mut()
     }
 
     pub fn set_shape(&mut self, value: Shape) -> &mut OneCellAnchor {
@@ -63,8 +63,8 @@ impl OneCellAnchor {
         self.picture.as_ref()
     }
 
-    pub fn get_picture_mut(&mut self) -> &mut Option<Picture> {
-        &mut self.picture
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture.as_mut()
     }
 
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {

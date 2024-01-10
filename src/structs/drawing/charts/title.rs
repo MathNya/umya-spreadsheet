@@ -17,12 +17,12 @@ pub struct Title {
 }
 
 impl Title {
-    pub fn get_chart_text(&self) -> &Option<ChartText> {
-        &self.chart_text
+    pub fn get_chart_text(&self) -> Option<&ChartText> {
+        self.chart_text.as_ref()
     }
 
-    pub fn get_chart_text_mut(&mut self) -> &mut Option<ChartText> {
-        &mut self.chart_text
+    pub fn get_chart_text_mut(&mut self) -> Option<&mut ChartText> {
+        self.chart_text.as_mut()
     }
 
     pub fn set_chart_text(&mut self, value: ChartText) -> &mut Title {
@@ -30,12 +30,12 @@ impl Title {
         self
     }
 
-    pub fn get_layout(&self) -> &Option<Layout> {
-        &self.layout
+    pub fn get_layout(&self) -> Option<&Layout> {
+        self.layout.as_ref()
     }
 
-    pub fn get_layout_mut(&mut self) -> &mut Option<Layout> {
-        &mut self.layout
+    pub fn get_layout_mut(&mut self) -> Option<&mut Layout> {
+        self.layout.as_mut()
     }
 
     pub fn set_layout(&mut self, value: Layout) -> &mut Title {

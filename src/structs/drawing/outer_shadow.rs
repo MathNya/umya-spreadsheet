@@ -91,8 +91,8 @@ impl OuterShadow {
         self.preset_color.as_ref()
     }
 
-    pub fn get_preset_color_mut(&mut self) -> &mut Option<PresetColor> {
-        &mut self.preset_color
+    pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
+        self.preset_color.as_mut()
     }
 
     pub fn set_preset_color(&mut self, value: PresetColor) -> &mut Self {
@@ -104,8 +104,8 @@ impl OuterShadow {
         self.scheme_color.as_ref()
     }
 
-    pub fn get_scheme_color_mut(&mut self) -> &mut Option<SchemeColor> {
-        &mut self.scheme_color
+    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+        self.scheme_color.as_mut()
     }
 
     pub fn set_scheme_color(&mut self, value: SchemeColor) -> &mut Self {
@@ -117,8 +117,8 @@ impl OuterShadow {
         self.rgb_color_model_hex.as_ref()
     }
 
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> &mut Option<RgbColorModelHex> {
-        &mut self.rgb_color_model_hex
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex.as_mut()
     }
 
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) -> &mut Self {

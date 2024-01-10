@@ -22,8 +22,8 @@ impl StyleMatrixReferenceType {
         self.index = value.into();
     }
 
-    pub fn get_scheme_color(&self) -> &Option<SchemeColor> {
-        &self.scheme_color
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color.as_ref()
     }
 
     pub fn set_scheme_color(&mut self, value: SchemeColor) {

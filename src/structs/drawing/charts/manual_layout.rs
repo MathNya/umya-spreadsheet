@@ -33,8 +33,8 @@ impl ManualLayout {
         self.height.as_ref()
     }
 
-    pub fn get_height_mut(&mut self) -> &mut Option<Height> {
-        &mut self.height
+    pub fn get_height_mut(&mut self) -> Option<&mut Height> {
+        self.height.as_mut()
     }
 
     pub fn set_height(&mut self, value: Height) -> &mut ManualLayout {
@@ -46,8 +46,8 @@ impl ManualLayout {
         self.height_mode.as_ref()
     }
 
-    pub fn get_height_mode_mut(&mut self) -> &mut Option<HeightMode> {
-        &mut self.height_mode
+    pub fn get_height_mode_mut(&mut self) -> Option<&mut HeightMode> {
+        self.height_mode.as_mut()
     }
 
     pub fn set_height_mode(&mut self, value: HeightMode) -> &mut ManualLayout {
@@ -59,8 +59,8 @@ impl ManualLayout {
         self.layout_target.as_ref()
     }
 
-    pub fn get_layout_target_mut(&mut self) -> &mut Option<LayoutTarget> {
-        &mut self.layout_target
+    pub fn get_layout_target_mut(&mut self) -> Option<&mut LayoutTarget> {
+        self.layout_target.as_mut()
     }
 
     pub fn set_layout_target(&mut self, value: LayoutTarget) -> &mut ManualLayout {
@@ -72,8 +72,8 @@ impl ManualLayout {
         self.left.as_ref()
     }
 
-    pub fn get_left_mut(&mut self) -> &mut Option<Left> {
-        &mut self.left
+    pub fn get_left_mut(&mut self) -> Option<&mut Left> {
+        self.left.as_mut()
     }
 
     pub fn set_left(&mut self, value: Left) -> &mut ManualLayout {
@@ -85,8 +85,8 @@ impl ManualLayout {
         self.left_mode.as_ref()
     }
 
-    pub fn get_left_mode_mut(&mut self) -> &mut Option<LeftMode> {
-        &mut self.left_mode
+    pub fn get_left_mode_mut(&mut self) -> Option<&mut LeftMode> {
+        self.left_mode.as_mut()
     }
 
     pub fn set_left_mode(&mut self, value: LeftMode) -> &mut ManualLayout {
@@ -98,8 +98,8 @@ impl ManualLayout {
         self.top.as_ref()
     }
 
-    pub fn get_top_mut(&mut self) -> &mut Option<Top> {
-        &mut self.top
+    pub fn get_top_mut(&mut self) -> Option<&mut Top> {
+        self.top.as_mut()
     }
 
     pub fn set_top(&mut self, value: Top) -> &mut ManualLayout {
@@ -111,8 +111,8 @@ impl ManualLayout {
         self.top_mode.as_ref()
     }
 
-    pub fn get_top_mode_mut(&mut self) -> &mut Option<TopMode> {
-        &mut self.top_mode
+    pub fn get_top_mode_mut(&mut self) -> Option<&mut TopMode> {
+        self.top_mode.as_mut()
     }
 
     pub fn set_top_mode(&mut self, value: TopMode) -> &mut ManualLayout {
@@ -124,8 +124,8 @@ impl ManualLayout {
         self.width.as_ref()
     }
 
-    pub fn get_width_mut(&mut self) -> &mut Option<Width> {
-        &mut self.width
+    pub fn get_width_mut(&mut self) -> Option<&mut Width> {
+        self.width.as_mut()
     }
 
     pub fn set_width(&mut self, value: Width) -> &mut ManualLayout {
@@ -137,8 +137,8 @@ impl ManualLayout {
         self.width_mode.as_ref()
     }
 
-    pub fn get_width_mode_mut(&mut self) -> &mut Option<WidthMode> {
-        &mut self.width_mode
+    pub fn get_width_mode_mut(&mut self) -> Option<&mut WidthMode> {
+        self.width_mode.as_mut()
     }
 
     pub fn set_width_mode(&mut self, value: WidthMode) -> &mut ManualLayout {

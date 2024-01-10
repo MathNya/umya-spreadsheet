@@ -17,8 +17,8 @@ impl LineSpacing {
         self.spacing_percent.as_ref()
     }
 
-    pub fn get_spacing_percent_mut(&mut self) -> &mut Option<SpacingPercent> {
-        &mut self.spacing_percent
+    pub fn get_spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
+        self.spacing_percent.as_mut()
     }
 
     pub fn set_spacing_percent(&mut self, value: SpacingPercent) -> &mut Self {

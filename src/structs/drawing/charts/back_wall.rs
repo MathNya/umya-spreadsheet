@@ -15,12 +15,12 @@ pub struct BackWall {
 }
 
 impl BackWall {
-    pub fn get_thickness(&self) -> &Option<Thickness> {
-        &self.thickness
+    pub fn get_thickness(&self) -> Option<&Thickness> {
+        self.thickness.as_ref()
     }
 
-    pub fn get_thickness_mut(&mut self) -> &mut Option<Thickness> {
-        &mut self.thickness
+    pub fn get_thickness_mut(&mut self) -> Option<&mut Thickness> {
+        self.thickness.as_mut()
     }
 
     pub fn set_thickness(&mut self, value: Thickness) -> &mut BackWall {
@@ -28,12 +28,12 @@ impl BackWall {
         self
     }
 
-    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
-        &self.shape_properties
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
-        &mut self.shape_properties
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {

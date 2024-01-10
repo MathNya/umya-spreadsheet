@@ -62,12 +62,12 @@ impl Area3DChart {
         self
     }
 
-    pub fn get_data_labels(&self) -> &Option<DataLabels> {
-        &self.data_labels
+    pub fn get_data_labels(&self) -> Option<&DataLabels> {
+        self.data_labels.as_ref()
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut Option<DataLabels> {
-        &mut self.data_labels
+    pub fn get_data_labels_mut(&mut self) -> Option<&mut DataLabels> {
+        self.data_labels.as_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Self {

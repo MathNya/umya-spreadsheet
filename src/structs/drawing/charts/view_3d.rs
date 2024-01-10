@@ -23,8 +23,8 @@ impl View3D {
         self.rotate_x.as_ref()
     }
 
-    pub fn get_rotate_x_mut(&mut self) -> &mut Option<RotateX> {
-        &mut self.rotate_x
+    pub fn get_rotate_x_mut(&mut self) -> Option<&mut RotateX> {
+        self.rotate_x.as_mut()
     }
 
     pub fn set_rotate_x(&mut self, value: RotateX) -> &mut View3D {
@@ -36,8 +36,8 @@ impl View3D {
         self.rotate_y.as_ref()
     }
 
-    pub fn get_rotate_y_mut(&mut self) -> &mut Option<RotateY> {
-        &mut self.rotate_y
+    pub fn get_rotate_y_mut(&mut self) -> Option<&mut RotateY> {
+        self.rotate_y.as_mut()
     }
 
     pub fn set_rotate_y(&mut self, value: RotateY) -> &mut View3D {
@@ -49,8 +49,8 @@ impl View3D {
         self.right_angle_axes.as_ref()
     }
 
-    pub fn get_right_angle_axes_mut(&mut self) -> &mut Option<RightAngleAxes> {
-        &mut self.right_angle_axes
+    pub fn get_right_angle_axes_mut(&mut self) -> Option<&mut RightAngleAxes> {
+        self.right_angle_axes.as_mut()
     }
 
     pub fn set_right_angle_axes(&mut self, value: RightAngleAxes) -> &mut View3D {
@@ -62,8 +62,8 @@ impl View3D {
         self.perspective.as_ref()
     }
 
-    pub fn get_perspective_mut(&mut self) -> &mut Option<Perspective> {
-        &mut self.perspective
+    pub fn get_perspective_mut(&mut self) -> Option<&mut Perspective> {
+        self.perspective.as_mut()
     }
 
     pub fn set_perspective(&mut self, value: Perspective) -> &mut View3D {

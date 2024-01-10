@@ -13,12 +13,12 @@ pub struct Stretch {
 }
 
 impl Stretch {
-    pub fn get_fill_rectangle(&self) -> &Option<FillRectangle> {
-        &self.fill_rectangle
+    pub fn get_fill_rectangle(&self) -> Option<&FillRectangle> {
+        self.fill_rectangle.as_ref()
     }
 
-    pub fn get_fill_rectangle_mut(&mut self) -> &mut Option<FillRectangle> {
-        &mut self.fill_rectangle
+    pub fn get_fill_rectangle_mut(&mut self) -> Option<&mut FillRectangle> {
+        self.fill_rectangle.as_mut()
     }
 
     pub fn set_fill_rectangle(&mut self, value: FillRectangle) {

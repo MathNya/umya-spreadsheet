@@ -83,10 +83,10 @@ impl DifferentialFormat {
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) {
-        self.font = style.get_font().clone();
-        self.fill = style.get_fill().clone();
-        self.borders = style.get_borders().clone();
-        self.alignment = style.get_alignment().clone();
+        self.font = style.get_font().cloned();
+        self.fill = style.get_fill().cloned();
+        self.borders = style.get_borders().cloned();
+        self.alignment = style.get_alignment().cloned();
     }
 
     pub(crate) fn get_hash_code(&self) -> String {

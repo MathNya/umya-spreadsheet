@@ -41,8 +41,8 @@ impl Chart {
         self.title.as_ref()
     }
 
-    pub fn get_title_mut(&mut self) -> &mut Option<Title> {
-        &mut self.title
+    pub fn get_title_mut(&mut self) -> Option<&mut Title> {
+        self.title.as_mut()
     }
 
     pub fn set_title(&mut self, value: Title) -> &mut Self {
@@ -67,8 +67,8 @@ impl Chart {
         self.view_3d.as_ref()
     }
 
-    pub fn get_view_3d_mut(&mut self) -> &mut Option<View3D> {
-        &mut self.view_3d
+    pub fn get_view_3d_mut(&mut self) -> Option<&mut View3D> {
+        self.view_3d.as_mut()
     }
 
     pub fn set_view_3d(&mut self, value: View3D) -> &mut Self {
@@ -80,8 +80,8 @@ impl Chart {
         self.floor.as_ref()
     }
 
-    pub fn get_floor_mut(&mut self) -> &mut Option<Floor> {
-        &mut self.floor
+    pub fn get_floor_mut(&mut self) -> Option<&mut Floor> {
+        self.floor.as_mut()
     }
 
     pub fn set_floor(&mut self, value: Floor) -> &mut Self {
@@ -93,8 +93,8 @@ impl Chart {
         self.side_wall.as_ref()
     }
 
-    pub fn get_side_wall_mut(&mut self) -> &mut Option<SideWall> {
-        &mut self.side_wall
+    pub fn get_side_wall_mut(&mut self) -> Option<&mut SideWall> {
+        self.side_wall.as_mut()
     }
 
     pub fn set_side_wall(&mut self, value: SideWall) -> &mut Self {
@@ -106,8 +106,8 @@ impl Chart {
         self.back_wall.as_ref()
     }
 
-    pub fn get_back_wall_mut(&mut self) -> &mut Option<BackWall> {
-        &mut self.back_wall
+    pub fn get_back_wall_mut(&mut self) -> Option<&mut BackWall> {
+        self.back_wall.as_mut()
     }
 
     pub fn set_back_wall(&mut self, value: BackWall) -> &mut Self {
