@@ -51,12 +51,12 @@ pub fn html_to_richtext_custom(
 fn read_node(node_list: &Vec<Node>, parent_element: &Vec<HfdElement>) -> Vec<HtmlFlatData> {
     let mut result: Vec<HtmlFlatData> = Vec::new();
 
-    if node_list.len() == 0 {
+    if node_list.is_empty() {
         return result;
     }
 
     let mut data = HtmlFlatData::default();
-    data.element.append(&mut parent_element.clone());
+    data.element.extend_from_slice(parent_element);
 
     for node in node_list {
         match node {
@@ -76,18 +76,18 @@ fn read_node(node_list: &Vec<Node>, parent_element: &Vec<HfdElement>) -> Vec<Htm
 
                 let mut elm: HfdElement = HfdElement::default();
                 elm.name = element.name.to_string();
-                let mut attributes: HashMap<String, String> = HashMap::new();
-                for (name, value) in &element.attributes {
-                    attributes.insert(
-                        name.clone(),
-                        if value.is_some() {
-                            value.as_ref().unwrap().to_string()
-                        } else {
-                            String::from("")
-                        },
-                    );
-                }
-                elm.attributes = attributes;
+
+                elm.attributes = element
+                    .attributes
+                    .iter()
+                    .map(|(name, value)| {
+                        (
+                            name.clone(),
+                            value.as_ref().map(|v| v.to_string()).unwrap_or_default(),
+                        )
+                    })
+                    .collect();
+
                 elm.classes = element.classes.clone();
                 data.element.push(elm);
 
@@ -95,7 +95,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &Vec<HfdElement>) -> Vec<Htm
                 result.append(&mut children);
 
                 data = HtmlFlatData::default();
-                data.element.append(&mut parent_element.clone());
+                data.element.extend_from_slice(parent_element);
             }
             _ => {}
         }
@@ -113,57 +113,51 @@ fn make_rich_text(html_flat_data_list: &Vec<HtmlFlatData>, method: &AnalysisMeth
         let mut font_name: Option<String> = method.font_name(html_flat_data);
         let mut size: Option<f64> = method.size(html_flat_data);
         let mut color: Option<String> = method.color(html_flat_data);
-        let mut bold: bool = method.bold(html_flat_data);
-        let mut italic: bool = method.italic(html_flat_data);
-        let mut underline: bool = method.underline(html_flat_data);
-        let mut superscript: bool = method.superscript(html_flat_data);
-        let mut subscript: bool = method.subscript(html_flat_data);
-        let mut strikethrough: bool = method.strikethrough(html_flat_data);
+        let mut is_bold: bool = method.is_bold(html_flat_data);
+        let mut is_italic: bool = method.is_italic(html_flat_data);
+        let mut is_underline: bool = method.is_underline(html_flat_data);
+        let mut is_superscript: bool = method.is_superscript(html_flat_data);
+        let mut is_subscript: bool = method.is_subscript(html_flat_data);
+        let mut is_strikethrough: bool = method.is_strikethrough(html_flat_data);
 
         let mut text_element = TextElement::default();
         let mut font = Font::default();
 
-        match font_name {
-            Some(v) => {
-                font.set_name(v);
-            }
-            None => {}
+        if let Some(v) = font_name {
+            font.set_name(v);
         }
-        match size {
-            Some(v) => {
-                font.set_size(v);
-            }
-            None => {}
+
+        if let Some(v) = size {
+            font.set_size(v);
         }
-        match color {
-            Some(v) => {
-                let argb = v;
-                let mut clr = Color::default();
-                clr.set_argb(argb);
-                font.set_color(clr);
-            }
-            None => {}
+
+        if let Some(v) = color {
+            let argb = v;
+            let mut clr = Color::default();
+            clr.set_argb(argb);
+            font.set_color(clr);
         }
-        if bold {
-            font.set_bold(bold);
+
+        if is_bold {
+            font.set_bold(is_bold);
         }
-        if italic {
-            font.set_italic(italic);
+        if is_italic {
+            font.set_italic(is_italic);
         }
-        if underline {
+        if is_underline {
             font.get_font_underline_mut()
                 .set_val(UnderlineValues::Single);
         }
-        if superscript {
+        if is_superscript {
             font.get_vertical_text_alignment_mut()
                 .set_val(VerticalAlignmentRunValues::Superscript);
         }
-        if subscript {
+        if is_subscript {
             font.get_vertical_text_alignment_mut()
                 .set_val(VerticalAlignmentRunValues::Subscript);
         }
-        if strikethrough {
-            font.set_strikethrough(strikethrough);
+        if is_strikethrough {
+            font.set_strikethrough(is_strikethrough);
         }
 
         text_element.set_text(&html_flat_data.text);
@@ -186,176 +180,98 @@ pub struct HfdElement {
     classes: Vec<String>,
 }
 impl HfdElement {
-    pub fn get_by_name(&self, name: &str) -> bool {
-        let mut result = false;
-        if self.name == name {
-            result = true;
-        }
-        result
+    pub fn has_name(&self, name: &str) -> bool {
+        self.name == name
     }
 
     pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<String> {
-        let mut result: Option<String> = None;
-        if self.name == name {
-            match self.attributes.get(attribute) {
-                Some(v) => {
-                    result = Some(v.to_string());
-                }
-                _ => {}
-            }
-        }
-        result
+        self.attributes
+            .get(attribute)
+            .and_then(|v| (self.name == name).then(|| v.to_string()))
     }
 
-    pub fn get_by_class(&self, class: &str) -> bool {
-        let mut result = false;
-        for cls in &self.classes {
-            if class == cls {
-                result = true;
-            }
-        }
-        result
+    pub fn contains_class(&self, class: &str) -> bool {
+        self.classes.contains(&class.to_string())
     }
 }
 
 pub trait AnalysisMethod {
+    fn is_tag(&self, html_flat_data: &HtmlFlatData, tag: &str) -> bool;
     fn font_name(&self, html_flat_data: &HtmlFlatData) -> Option<String>;
     fn size(&self, html_flat_data: &HtmlFlatData) -> Option<f64>;
     fn color(&self, html_flat_data: &HtmlFlatData) -> Option<String>;
-    fn bold(&self, html_flat_data: &HtmlFlatData) -> bool;
-    fn italic(&self, html_flat_data: &HtmlFlatData) -> bool;
-    fn underline(&self, html_flat_data: &HtmlFlatData) -> bool;
-    fn superscript(&self, html_flat_data: &HtmlFlatData) -> bool;
-    fn subscript(&self, html_flat_data: &HtmlFlatData) -> bool;
-    fn strikethrough(&self, html_flat_data: &HtmlFlatData) -> bool;
+    fn is_bold(&self, html_flat_data: &HtmlFlatData) -> bool;
+    fn is_italic(&self, html_flat_data: &HtmlFlatData) -> bool;
+    fn is_underline(&self, html_flat_data: &HtmlFlatData) -> bool;
+    fn is_superscript(&self, html_flat_data: &HtmlFlatData) -> bool;
+    fn is_subscript(&self, html_flat_data: &HtmlFlatData) -> bool;
+    fn is_strikethrough(&self, html_flat_data: &HtmlFlatData) -> bool;
 }
 
 #[derive(Clone, Default, Debug)]
 struct DataAnalysis {}
 impl AnalysisMethod for DataAnalysis {
     fn font_name(&self, html_flat_data: &HtmlFlatData) -> Option<String> {
-        let mut result: Option<String> = None;
-        for element in &html_flat_data.element {
-            match element.get_by_name_and_attribute("font", "face") {
-                Some(v) => {
-                    result = Some(v);
-                }
-                _ => {}
-            }
-        }
-        result
+        html_flat_data
+            .element
+            .iter()
+            .find_map(|element| element.get_by_name_and_attribute("font", "face"))
     }
 
     fn size(&self, html_flat_data: &HtmlFlatData) -> Option<f64> {
-        let mut result: Option<f64> = None;
-        for element in &html_flat_data.element {
-            match element.get_by_name_and_attribute("font", "size") {
-                Some(v) => match v.parse::<f64>() {
-                    Ok(i) => {
-                        result = Some(i);
-                    }
-                    _ => {}
-                },
-                _ => {}
-            }
-        }
-        result
+        html_flat_data.element.iter().find_map(|element| {
+            element
+                .get_by_name_and_attribute("font", "size")
+                .and_then(|v| v.parse::<f64>().ok())
+        })
     }
 
     fn color(&self, html_flat_data: &HtmlFlatData) -> Option<String> {
         let mut result: Option<String> = None;
-        for element in &html_flat_data.element {
-            match element.get_by_name_and_attribute("font", "color") {
-                Some(v) => {
-                    let mut is_match = false;
-                    for (key, value) in COLOR_MAP {
-                        if &v == key {
-                            let mut color = value.to_string();
-                            color = color.to_uppercase();
-                            result = Some(color);
-                            is_match = true;
-                        }
-                    }
-                    if is_match == false {
-                        let mut color = v.to_string();
-                        color.retain(|c| c != '#');
-                        color = color.to_uppercase();
-                        result = Some(color);
-                    }
-                }
-                _ => {}
-            }
-        }
-        result
+        html_flat_data
+            .element
+            .iter()
+            .flat_map(|element| element.get_by_name_and_attribute("font", "color"))
+            .find_map(|v| {
+                let color = v.trim_start_matches('#').to_uppercase();
+                COLOR_MAP
+                    .iter()
+                    .find_map(|(key, value)| {
+                        (*key.to_uppercase() == color).then(|| value.to_uppercase())
+                    })
+                    .or_else(|| Some(color))
+            })
     }
 
-    fn bold(&self, html_flat_data: &HtmlFlatData) -> bool {
-        let mut result = false;
-        for element in &html_flat_data.element {
-            if element.get_by_name("b") {
-                result = true;
-            }
-            if element.get_by_name("strong") {
-                result = true;
-            }
-        }
-        result
+    fn is_tag(&self, html_flat_data: &HtmlFlatData, tag: &str) -> bool {
+        html_flat_data
+            .element
+            .iter()
+            .any(|element| element.has_name(tag))
     }
 
-    fn italic(&self, html_flat_data: &HtmlFlatData) -> bool {
-        let mut result = false;
-        for element in &html_flat_data.element {
-            if element.get_by_name("i") {
-                result = true;
-            }
-            if element.get_by_name("em") {
-                result = true;
-            }
-        }
-        result
+    fn is_bold(&self, html_flat_data: &HtmlFlatData) -> bool {
+        self.is_tag(html_flat_data, "b") || self.is_tag(html_flat_data, "strong")
     }
 
-    fn underline(&self, html_flat_data: &HtmlFlatData) -> bool {
-        let mut result = false;
-        for element in &html_flat_data.element {
-            if element.get_by_name("u") {
-                result = true;
-            }
-            if element.get_by_name("ins") {
-                result = true;
-            }
-        }
-        result
+    fn is_italic(&self, html_flat_data: &HtmlFlatData) -> bool {
+        self.is_tag(html_flat_data, "i") || self.is_tag(html_flat_data, "em")
     }
 
-    fn superscript(&self, html_flat_data: &HtmlFlatData) -> bool {
-        let mut result = false;
-        for element in &html_flat_data.element {
-            if element.get_by_name("sup") {
-                result = true;
-            }
-        }
-        result
+    fn is_underline(&self, html_flat_data: &HtmlFlatData) -> bool {
+        self.is_tag(html_flat_data, "u") || self.is_tag(html_flat_data, "ins")
     }
 
-    fn subscript(&self, html_flat_data: &HtmlFlatData) -> bool {
-        let mut result = false;
-        for element in &html_flat_data.element {
-            if element.get_by_name("sub") {
-                result = true;
-            }
-        }
-        result
+    fn is_superscript(&self, html_flat_data: &HtmlFlatData) -> bool {
+        self.is_tag(html_flat_data, "sup")
     }
 
-    fn strikethrough(&self, html_flat_data: &HtmlFlatData) -> bool {
-        let mut result = false;
-        for element in &html_flat_data.element {
-            if element.get_by_name("del") {
-                result = true;
-            }
-        }
-        result
+    fn is_subscript(&self, html_flat_data: &HtmlFlatData) -> bool {
+        self.is_tag(html_flat_data, "sub")
+    }
+
+    fn is_strikethrough(&self, html_flat_data: &HtmlFlatData) -> bool {
+        self.is_tag(html_flat_data, "del")
     }
 }
 

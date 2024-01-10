@@ -180,10 +180,10 @@ impl Columns {
         attributes.push(("max", max_str.as_str()));
         let width = column.width.get_value_string();
         attributes.push(("width", &width));
-        if column.hidden.get_value() == &true {
+        if *column.hidden.get_value() {
             attributes.push(("hidden", column.hidden.get_value_string()));
         }
-        if column.best_fit.get_value() == &true {
+        if *column.best_fit.get_value() {
             attributes.push(("bestFit", column.best_fit.get_value_string()));
         }
         attributes.push(("customWidth", "1"));

@@ -192,16 +192,16 @@ impl Row {
         if self.height.get_value() != &0f64 {
             attributes.push(("ht", &height));
         }
-        if self.thick_bot.get_value() == &true {
+        if *self.thick_bot.get_value() {
             attributes.push(("thickBot", self.thick_bot.get_value_string()));
         }
-        if self.custom_height.get_value() == &true {
+        if *self.custom_height.get_value() {
             attributes.push(("customHeight", self.custom_height.get_value_string()));
         }
         if xf_index > 0 {
             attributes.push(("customFormat", "1"));
         }
-        if self.hidden.get_value() == &true {
+        if *self.hidden.get_value() {
             attributes.push(("hidden", self.hidden.get_value_string()));
         }
         let descent = self.descent.get_value_string();

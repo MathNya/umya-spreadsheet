@@ -96,7 +96,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 // definedName
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
                 attributes.push(("name", defined_name.get_name()));
-                if defined_name.get_is_local_only() == &true {
+                if *defined_name.get_is_local_only() {
                     attributes.push(("localSheetId", "0"));
                     attributes.push(("hidden", "1"));
                 }

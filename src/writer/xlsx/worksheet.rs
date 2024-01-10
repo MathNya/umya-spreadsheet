@@ -49,15 +49,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // sheetPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match has_macros {
-            true => {
-                let code_name = match worksheet.has_code_name() {
-                    true => worksheet.get_code_name().as_ref().unwrap(),
-                    false => worksheet.get_name(),
-                };
-                attributes.push(("codeName", code_name));
-            }
-            false => {}
+        if has_macros {
+            let code_name = match worksheet.has_code_name() {
+                true => worksheet.get_code_name().as_ref().unwrap(),
+                false => worksheet.get_name(),
+            };
+            attributes.push(("codeName", code_name));
         }
 
         // tabColor
@@ -215,7 +212,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 let r_id_str = format!("rId{}", &r_id);
                 let mut attributes: Vec<(&str, &str)> = Vec::new();
                 attributes.push(("ref", &coordition));
-                if hyperlink.get_location() == &true {
+                if *hyperlink.get_location() {
                     attributes.push(("location", hyperlink.get_url()));
                 } else {
                     attributes.push(("r:id", r_id_str.as_str()));

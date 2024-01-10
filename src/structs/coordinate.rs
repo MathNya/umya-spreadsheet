@@ -7,6 +7,18 @@ pub struct Coordinate {
     column: ColumnReference,
     row: RowReference,
 }
+
+impl ToString for Coordinate {
+    fn to_string(&self) -> String {
+        coordinate_from_index_with_lock(
+            self.column.get_num(),
+            self.row.get_num(),
+            self.column.get_is_lock(),
+            self.row.get_is_lock(),
+        )
+    }
+}
+
 impl Coordinate {
     pub fn get_col_num(&self) -> &u32 {
         self.column.get_num()

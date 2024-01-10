@@ -73,12 +73,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
 
     pub(crate) fn check_file_exist(&mut self, file_path: &str) -> bool {
         self.file_list_sort();
-        for file in &self.files {
-            if file == file_path {
-                return true;
-            }
-        }
-        false
+        self.files.iter().any(|file| file == file_path)
     }
 
     pub(crate) fn add_file_at_drawing(
@@ -196,12 +191,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
 
     pub(crate) fn has_extension(&self, extension: &str) -> bool {
         let extension = format!(".{}", extension);
-        for file in &self.files {
-            if file.ends_with(&extension) {
-                return true;
-            }
-        }
-        false
+        self.files.iter().any(|file| file.ends_with(&extension))
     }
 
     pub(crate) fn make_context_type_override(

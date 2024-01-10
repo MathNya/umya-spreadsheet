@@ -46,11 +46,12 @@ impl NumberingFormats {
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_numbering_format() {
             Some(v) => {
-                let number_format_id = v.get_number_format_id();
-                if v.get_is_build_in() == &true {
-                    return *number_format_id;
+                if *v.get_is_build_in() {
+                    return *v.get_number_format_id();
                 }
+
                 let hash_code = v.get_hash_code();
+
                 let mut id = 175;
                 for (index, numbering_format) in &self.numbering_format {
                     if numbering_format.get_hash_code() == hash_code {
@@ -94,29 +95,27 @@ impl NumberingFormats {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let mut has_format = false;
-        let mut cnt = 0;
-        for numbering_format in self.numbering_format.values() {
-            if numbering_format.get_is_build_in() == &false {
-                has_format = true;
-                cnt += 1;
-            }
+        let formats_to_write: Vec<_> = self
+            .numbering_format
+            .values()
+            .filter(|numbering_format| !*numbering_format.get_is_build_in())
+            .collect();
+        if formats_to_write.is_empty() {
+            return;
         }
 
-        if has_format {
-            // numFmts
-            let cnt_str = cnt.to_string();
-            write_start_tag(writer, "numFmts", vec![("count", &cnt_str)], false);
+        let cnt = formats_to_write.len();
+        let cnt_str = cnt.to_string();
+        write_start_tag(writer, "numFmts", vec![("count", &cnt_str)], false);
 
-            // numFmt
-            for (index, numbering_format) in &self.numbering_format {
-                if numbering_format.get_is_build_in() == &false {
-                    numbering_format.write_to(writer, index);
-                }
-            }
+        formats_to_write
+            .into_iter()
+            .enumerate()
+            .for_each(|(index, numbering_format)| {
+                numbering_format.write_to(writer, &(index as u32));
+            });
 
-            write_end_tag(writer, "numFmts");
-        }
+        write_end_tag(writer, "numFmts");
     }
 }
 

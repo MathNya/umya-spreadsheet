@@ -238,7 +238,7 @@ impl TwoCellAnchor {
         r_id: &mut i32,
         ole_id: &usize,
     ) {
-        if self.get_is_alternate_content() == &true {
+        if *self.get_is_alternate_content() {
             // mc:AlternateContent
             write_start_tag(
                 writer,
@@ -270,33 +270,25 @@ impl TwoCellAnchor {
         let _ = &self.to_marker.write_to_to(writer);
 
         // xdr:graphicFrame
-        match &self.graphic_frame {
-            Some(v) => {
-                v.write_to(writer, r_id);
-                *r_id += 1i32;
-            }
-            None => {}
+        if let Some(v) = &self.graphic_frame {
+            v.write_to(writer, r_id);
+            *r_id += 1i32;
         }
 
         // xdr:sp
-        match &self.shape {
-            Some(v) => v.write_to(writer, ole_id),
-            None => {}
+        if let Some(v) = &self.shape {
+            v.write_to(writer, ole_id)
         }
 
         // xdr:cxnSp
-        match &self.connection_shape {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.connection_shape {
+            v.write_to(writer)
         }
 
         // xdr:pic
-        match &self.picture {
-            Some(v) => {
-                v.write_to(writer, r_id);
-                *r_id += 1i32;
-            }
-            None => {}
+        if let Some(v) = &self.picture {
+            v.write_to(writer, r_id);
+            *r_id += 1i32;
         }
 
         // xdr:clientData
@@ -304,7 +296,7 @@ impl TwoCellAnchor {
 
         write_end_tag(writer, "xdr:twoCellAnchor");
 
-        if self.get_is_alternate_content() == &true {
+        if *self.get_is_alternate_content() {
             write_end_tag(writer, "mc:Choice");
 
             // mc:Fallback

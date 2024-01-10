@@ -27,10 +27,7 @@ impl RowBreaks {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if !self.break_list.is_empty() {
-            return true;
-        }
-        false
+        !self.break_list.is_empty()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -56,32 +53,34 @@ impl RowBreaks {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.has_param() {
-            // rowBreaks
-            let mut count = 0;
-            let mut manual_count = 0;
-            for obj in self.get_break_list() {
-                count += 1;
-                if obj.get_manual_page_break() == &true {
-                    manual_count += 1;
-                }
-            }
-            write_start_tag(
-                writer,
-                "rowBreaks",
-                vec![
-                    ("count", count.to_string().as_str()),
-                    ("manualBreakCount", manual_count.to_string().as_str()),
-                ],
-                false,
-            );
-
-            // brk
-            for obj in self.get_break_list() {
-                obj.write_to(writer);
-            }
-
-            write_end_tag(writer, "rowBreaks");
+        if !self.has_param() {
+            return;
         }
+
+        // rowBreaks
+        let mut count = 0;
+        let mut manual_count = 0;
+        for obj in self.get_break_list() {
+            count += 1;
+            if *obj.get_manual_page_break() {
+                manual_count += 1;
+            }
+        }
+        write_start_tag(
+            writer,
+            "rowBreaks",
+            vec![
+                ("count", count.to_string().as_str()),
+                ("manualBreakCount", manual_count.to_string().as_str()),
+            ],
+            false,
+        );
+
+        // brk
+        for obj in self.get_break_list() {
+            obj.write_to(writer);
+        }
+
+        write_end_tag(writer, "rowBreaks");
     }
 }

@@ -316,7 +316,7 @@ fn crypt_package(
     let output_chunks_as: Vec<&Vec<u8>> = output_chunks.iter().map(AsRef::as_ref).collect();
     let mut output = buffer_concat(output_chunks_as);
 
-    if encrypt == &true {
+    if *encrypt {
         // Put the length of the package in the first 8 bytes
         let input_len = input.len();
         output = buffer_concat(vec![
