@@ -52,11 +52,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 
     // workbookProtection
-    match spreadsheet.get_workbook_protection() {
-        Some(v) => {
-            v.write_to(&mut writer);
-        }
-        None => {}
+    if let Some(v) = spreadsheet.get_workbook_protection() {
+        v.write_to(&mut writer);
     }
 
     // bookViews

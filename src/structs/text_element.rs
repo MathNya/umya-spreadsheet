@@ -30,16 +30,15 @@ impl TextElement {
     }
 
     pub fn get_run_properties_mut(&mut self) -> &mut Font {
-        match &self.run_properties {
-            Some(_) => return self.run_properties.as_mut().unwrap(),
-            None => {}
+        if let Some(_) = &self.run_properties {
+            return self.run_properties.as_mut().unwrap();
         }
         self.set_run_properties(Font::get_default_value());
         self.run_properties.as_mut().unwrap()
     }
 
-    pub(crate) fn get_run_properties_crate(&mut self) -> &mut Option<Font> {
-        &mut self.run_properties
+    pub(crate) fn get_run_properties_crate(&mut self) -> Option<&mut Font> {
+        self.run_properties.as_mut()
     }
 
     pub fn set_run_properties(&mut self, value: Font) -> &mut Self {
