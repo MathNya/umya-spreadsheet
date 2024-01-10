@@ -85,9 +85,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 
     for sheet in spreadsheet.get_sheet_collection_mut() {
         for defined_name in &defined_names {
-            let def_sheet_name = defined_name.get_address_obj().get_sheet_name();
-            if sheet.get_name() == def_sheet_name {
-                sheet.add_defined_names(defined_name.clone());
+            for address in defined_name.get_address_obj() {
+                if sheet.get_name() == address.get_sheet_name() {
+                    sheet.add_defined_names(defined_name.clone());
+                }
             }
         }
     }

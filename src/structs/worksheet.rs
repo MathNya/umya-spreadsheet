@@ -940,15 +940,13 @@ impl Worksheet {
             // defined_names
             let title = self.title.clone();
             for defined_name in &mut self.defined_names {
-                defined_name
-                    .get_address_obj_mut()
-                    .adjustment_insert_coordinate(
-                        &title,
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
+                defined_name.adjustment_insert_coordinate(
+                    &title,
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
             }
 
             // cell
@@ -1063,26 +1061,28 @@ impl Worksheet {
         }
         if offset_col_num != &0 || offset_row_num != &0 {
             // defined_names
-            let title = self.title.clone();
-            self.defined_names.retain(|x| {
-                !(x.get_address_obj().is_remove(
-                    &title,
+            let sheet_name = self.title.clone();
+            let mut idx = 0 as usize;
+            while idx < self.defined_names.len() {
+                if self.defined_names[idx].is_remove(
+                    &sheet_name,
                     root_col_num,
                     offset_col_num,
                     root_row_num,
                     offset_row_num,
-                ))
-            });
+                ) {
+                    self.defined_names.remove(idx);
+                }
+                idx += 1;
+            }
             for defined_name in &mut self.defined_names {
-                defined_name
-                    .get_address_obj_mut()
-                    .adjustment_remove_coordinate(
-                        &title,
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
+                defined_name.adjustment_remove_coordinate(
+                    &sheet_name,
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
             }
 
             // cell
@@ -1353,7 +1353,7 @@ impl Worksheet {
         self.title = sheet_name.into();
         let title = self.get_name().to_string();
         for defined_name in self.get_defined_names_mut() {
-            defined_name.get_address_obj_mut().set_sheet_name(&title);
+            defined_name.set_sheet_name(&title);
         }
         self
     }
