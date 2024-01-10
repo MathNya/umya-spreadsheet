@@ -1691,46 +1691,41 @@ impl Worksheet {
     /// * `Vec<&MediaObject>` - Media Object List.
     pub(crate) fn get_media_object_collection(&self) -> Vec<&MediaObject> {
         let mut result: Vec<&MediaObject> = Vec::new();
-        for image in self.get_worksheet_drawing().get_image_collection() {
-            let media_object = image.get_media_object();
-            let mut is_new = true;
-            for v in &result {
-                if v.get_image_name() == media_object.get_image_name() {
-                    is_new = false;
-                }
-            }
-            if is_new {
+
+        let image_media_objects = self
+            .get_worksheet_drawing()
+            .get_image_collection()
+            .iter()
+            .map(|image| image.get_media_object());
+
+        let ole_obj_media_objects = self
+            .get_ole_objects()
+            .get_ole_object()
+            .iter()
+            .map(|ole_objects| ole_objects.get_embedded_object_properties().get_image());
+
+        for media_object in image_media_objects.chain(ole_obj_media_objects) {
+            if !result
+                .iter()
+                .any(|v| v.get_image_name() == media_object.get_image_name())
+            {
                 result.push(media_object);
             }
         }
-        for ole_objects in self.get_ole_objects().get_ole_object() {
-            let media_object = ole_objects.get_embedded_object_properties().get_image();
-            let mut is_new = true;
-            for v in &result {
-                if v.get_image_name() == media_object.get_image_name() {
-                    is_new = false;
-                }
-            }
-            if is_new {
-                result.push(media_object);
-            }
-        }
+
         result
     }
 
     pub(crate) fn get_pivot_cache_definition_collection(&self) -> Vec<&str> {
         let mut result: Vec<&str> = Vec::new();
-        match &self.raw_data_of_worksheet {
-            Some(raw_data) => {
-                for relationships in raw_data.get_relationships_list() {
-                    for row in relationships.get_relationship_list() {
-                        if row.get_type() == PIVOT_CACHE_DEF_NS {
-                            result.push(row.get_raw_file().get_file_target());
-                        }
+        if let Some(raw_data) = &self.raw_data_of_worksheet {
+            for relationships in raw_data.get_relationships_list() {
+                for row in relationships.get_relationship_list() {
+                    if row.get_type() == PIVOT_CACHE_DEF_NS {
+                        result.push(row.get_raw_file().get_file_target());
                     }
                 }
             }
-            None => {}
         }
         result
     }
