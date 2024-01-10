@@ -36,8 +36,8 @@ impl LightRig {
         self
     }
 
-    pub fn get_rotation(&self) -> &Option<Rotation> {
-        &self.rotation
+    pub fn get_rotation(&self) -> Option<&Rotation> {
+        self.rotation.as_ref()
     }
 
     pub fn get_rotation_mut(&mut self) -> &mut Option<Rotation> {

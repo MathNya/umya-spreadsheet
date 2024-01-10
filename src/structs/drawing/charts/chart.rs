@@ -37,8 +37,8 @@ impl Chart {
     pub const LANG_EN_GB: &'static str = "en_GB";
     pub const LANG_JA_JP: &'static str = "ja-JP";
 
-    pub fn get_title(&self) -> &Option<Title> {
-        &self.title
+    pub fn get_title(&self) -> Option<&Title> {
+        self.title.as_ref()
     }
 
     pub fn get_title_mut(&mut self) -> &mut Option<Title> {
@@ -63,8 +63,8 @@ impl Chart {
         self
     }
 
-    pub fn get_view_3d(&self) -> &Option<View3D> {
-        &self.view_3d
+    pub fn get_view_3d(&self) -> Option<&View3D> {
+        self.view_3d.as_ref()
     }
 
     pub fn get_view_3d_mut(&mut self) -> &mut Option<View3D> {
@@ -76,8 +76,8 @@ impl Chart {
         self
     }
 
-    pub fn get_floor(&self) -> &Option<Floor> {
-        &self.floor
+    pub fn get_floor(&self) -> Option<&Floor> {
+        self.floor.as_ref()
     }
 
     pub fn get_floor_mut(&mut self) -> &mut Option<Floor> {
@@ -89,8 +89,8 @@ impl Chart {
         self
     }
 
-    pub fn get_side_wall(&self) -> &Option<SideWall> {
-        &self.side_wall
+    pub fn get_side_wall(&self) -> Option<&SideWall> {
+        self.side_wall.as_ref()
     }
 
     pub fn get_side_wall_mut(&mut self) -> &mut Option<SideWall> {
@@ -102,8 +102,8 @@ impl Chart {
         self
     }
 
-    pub fn get_back_wall(&self) -> &Option<BackWall> {
-        &self.back_wall
+    pub fn get_back_wall(&self) -> Option<&BackWall> {
+        self.back_wall.as_ref()
     }
 
     pub fn get_back_wall_mut(&mut self) -> &mut Option<BackWall> {

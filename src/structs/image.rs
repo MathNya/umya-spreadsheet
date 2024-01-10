@@ -60,12 +60,12 @@ pub struct Image {
 /// .change_image("./images/sample1.png");
 /// ```
 impl Image {
-    pub fn get_two_cell_anchor(&self) -> &Option<TwoCellAnchor> {
-        &self.two_cell_anchor
+    pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
+        self.two_cell_anchor.as_ref()
     }
 
-    pub fn get_two_cell_anchor_mut(&mut self) -> &mut Option<TwoCellAnchor> {
-        &mut self.two_cell_anchor
+    pub fn get_two_cell_anchor_mut(&mut self) -> Option<&mut TwoCellAnchor> {
+        self.two_cell_anchor.as_mut()
     }
 
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
@@ -73,12 +73,12 @@ impl Image {
         self
     }
 
-    pub fn get_one_cell_anchor(&self) -> &Option<OneCellAnchor> {
-        &self.one_cell_anchor
+    pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
+        self.one_cell_anchor.as_ref()
     }
 
-    pub fn get_one_cell_anchor_mut(&mut self) -> &mut Option<OneCellAnchor> {
-        &mut self.one_cell_anchor
+    pub fn get_one_cell_anchor_mut(&mut self) -> Option<&mut OneCellAnchor> {
+        self.one_cell_anchor.as_mut()
     }
 
     pub fn set_one_cell_anchor(&mut self, value: OneCellAnchor) -> &mut Self {

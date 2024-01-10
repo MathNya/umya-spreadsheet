@@ -33,8 +33,8 @@ impl RgbColorModelHex {
         self
     }
 
-    pub fn get_luminance(&self) -> &Option<PercentageType> {
-        &self.luminance
+    pub fn get_luminance(&self) -> Option<&PercentageType> {
+        self.luminance.as_ref()
     }
 
     pub fn get_luminance_mut(&mut self) -> &mut Option<PercentageType> {
@@ -45,8 +45,8 @@ impl RgbColorModelHex {
         self.luminance = Some(value);
     }
 
-    pub fn get_luminance_modulation(&self) -> &Option<PercentageType> {
-        &self.luminance_modulation
+    pub fn get_luminance_modulation(&self) -> Option<&PercentageType> {
+        self.luminance_modulation.as_ref()
     }
 
     pub fn get_luminance_modulation_mut(&mut self) -> &mut Option<PercentageType> {
@@ -57,8 +57,8 @@ impl RgbColorModelHex {
         self.luminance_modulation = Some(value);
     }
 
-    pub fn get_luminance_offset(&self) -> &Option<PercentageType> {
-        &self.luminance_offset
+    pub fn get_luminance_offset(&self) -> Option<&PercentageType> {
+        self.luminance_offset.as_ref()
     }
 
     pub fn get_luminance_offset_mut(&mut self) -> &mut Option<PercentageType> {
@@ -69,8 +69,8 @@ impl RgbColorModelHex {
         self.luminance_offset = Some(value);
     }
 
-    pub fn get_saturation(&self) -> &Option<PercentageType> {
-        &self.saturation
+    pub fn get_saturation(&self) -> Option<&PercentageType> {
+        self.saturation.as_ref()
     }
 
     pub fn get_saturation_mut(&mut self) -> &mut Option<PercentageType> {
@@ -81,8 +81,8 @@ impl RgbColorModelHex {
         self.saturation = Some(value);
     }
 
-    pub fn get_saturation_modulation(&self) -> &Option<PercentageType> {
-        &self.saturation_modulation
+    pub fn get_saturation_modulation(&self) -> Option<&PercentageType> {
+        self.saturation_modulation.as_ref()
     }
 
     pub fn get_saturation_modulation_mut(&mut self) -> &mut Option<PercentageType> {
@@ -93,8 +93,8 @@ impl RgbColorModelHex {
         self.saturation_modulation = Some(value);
     }
 
-    pub fn get_shade(&self) -> &Option<PositiveFixedPercentageType> {
-        &self.shade
+    pub fn get_shade(&self) -> Option<&PositiveFixedPercentageType> {
+        self.shade.as_ref()
     }
 
     pub fn get_shade_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
@@ -105,8 +105,8 @@ impl RgbColorModelHex {
         self.shade = Some(value);
     }
 
-    pub fn get_alpha(&self) -> &Option<PositiveFixedPercentageType> {
-        &self.alpha
+    pub fn get_alpha(&self) -> Option<&PositiveFixedPercentageType> {
+        self.alpha.as_ref()
     }
 
     pub fn get_alpha_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
@@ -117,8 +117,8 @@ impl RgbColorModelHex {
         self.alpha = Some(value);
     }
 
-    pub fn get_tint(&self) -> &Option<PositiveFixedPercentageType> {
-        &self.tint
+    pub fn get_tint(&self) -> Option<&PositiveFixedPercentageType> {
+        self.tint.as_ref()
     }
 
     pub fn get_tint_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {

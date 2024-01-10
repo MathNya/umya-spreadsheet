@@ -93,8 +93,8 @@ impl ValueAxis {
         self
     }
 
-    pub fn get_major_gridlines(&self) -> &Option<MajorGridlines> {
-        &self.major_gridlines
+    pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
+        self.major_gridlines.as_ref()
     }
 
     pub fn get_major_gridlines_mut(&mut self) -> &mut Option<MajorGridlines> {
@@ -106,8 +106,8 @@ impl ValueAxis {
         self
     }
 
-    pub fn get_title(&self) -> &Option<Title> {
-        &self.title
+    pub fn get_title(&self) -> Option<&Title> {
+        self.title.as_ref()
     }
 
     pub fn get_title_mut(&mut self) -> &mut Option<Title> {
@@ -210,8 +210,8 @@ impl ValueAxis {
         self
     }
 
-    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
-        &self.shape_properties
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
     }
 
     pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
@@ -223,8 +223,8 @@ impl ValueAxis {
         self
     }
 
-    pub fn get_text_properties(&self) -> &Option<TextProperties> {
-        &self.text_properties
+    pub fn get_text_properties(&self) -> Option<&TextProperties> {
+        self.text_properties.as_ref()
     }
 
     pub fn get_text_properties_mut(&mut self) -> &mut Option<TextProperties> {

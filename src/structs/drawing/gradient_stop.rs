@@ -25,8 +25,8 @@ impl GradientStop {
         self
     }
 
-    pub fn get_scheme_color(&self) -> &Option<SchemeColor> {
-        &self.scheme_color
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color.as_ref()
     }
 
     pub fn get_scheme_color_mut(&mut self) -> &mut Option<SchemeColor> {
@@ -38,8 +38,8 @@ impl GradientStop {
         self
     }
 
-    pub fn get_rgb_color_model_hex(&self) -> &Option<RgbColorModelHex> {
-        &self.rgb_color_model_hex
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex.as_ref()
     }
 
     pub fn get_rgb_color_model_hex_mut(&mut self) -> &mut Option<RgbColorModelHex> {

@@ -17,8 +17,8 @@ pub struct EffectStyle {
 }
 
 impl EffectStyle {
-    pub fn get_effect_list(&self) -> &Option<EffectList> {
-        &self.effect_list
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list.as_ref()
     }
 
     pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
@@ -30,8 +30,8 @@ impl EffectStyle {
         self
     }
 
-    pub fn get_scene_3d_type(&self) -> &Option<Scene3DType> {
-        &self.scene_3d_type
+    pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
+        self.scene_3d_type.as_ref()
     }
 
     pub fn get_scene_3d_type_mut(&mut self) -> &mut Option<Scene3DType> {
@@ -43,8 +43,8 @@ impl EffectStyle {
         self
     }
 
-    pub fn get_shape_3d_type(&self) -> &Option<Shape3DType> {
-        &self.shape_3d_type
+    pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
+        self.shape_3d_type.as_ref()
     }
 
     pub fn get_shape_3d_type_mut(&mut self) -> &mut Option<Shape3DType> {

@@ -46,12 +46,12 @@ impl SheetView {
         self
     }
 
-    pub fn get_pane(&self) -> &Option<Pane> {
-        &self.pane
+    pub fn get_pane(&self) -> Option<&Pane> {
+        self.pane.as_ref()
     }
 
-    pub fn get_pane_mut(&mut self) -> &mut Option<Pane> {
-        &mut self.pane
+    pub fn get_pane_mut(&mut self) -> Option<&mut Pane> {
+        self.pane.as_mut()
     }
 
     pub fn set_pane(&mut self, value: Pane) -> &mut Self {

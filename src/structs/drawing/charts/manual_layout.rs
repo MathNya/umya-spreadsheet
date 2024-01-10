@@ -29,8 +29,8 @@ pub struct ManualLayout {
 }
 
 impl ManualLayout {
-    pub fn get_height(&self) -> &Option<Height> {
-        &self.height
+    pub fn get_height(&self) -> Option<&Height> {
+        self.height.as_ref()
     }
 
     pub fn get_height_mut(&mut self) -> &mut Option<Height> {
@@ -42,8 +42,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_height_mode(&self) -> &Option<HeightMode> {
-        &self.height_mode
+    pub fn get_height_mode(&self) -> Option<&HeightMode> {
+        self.height_mode.as_ref()
     }
 
     pub fn get_height_mode_mut(&mut self) -> &mut Option<HeightMode> {
@@ -55,8 +55,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_layout_target(&self) -> &Option<LayoutTarget> {
-        &self.layout_target
+    pub fn get_layout_target(&self) -> Option<&LayoutTarget> {
+        self.layout_target.as_ref()
     }
 
     pub fn get_layout_target_mut(&mut self) -> &mut Option<LayoutTarget> {
@@ -68,8 +68,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_left(&self) -> &Option<Left> {
-        &self.left
+    pub fn get_left(&self) -> Option<&Left> {
+        self.left.as_ref()
     }
 
     pub fn get_left_mut(&mut self) -> &mut Option<Left> {
@@ -81,8 +81,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_left_mode(&self) -> &Option<LeftMode> {
-        &self.left_mode
+    pub fn get_left_mode(&self) -> Option<&LeftMode> {
+        self.left_mode.as_ref()
     }
 
     pub fn get_left_mode_mut(&mut self) -> &mut Option<LeftMode> {
@@ -94,8 +94,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_top(&self) -> &Option<Top> {
-        &self.top
+    pub fn get_top(&self) -> Option<&Top> {
+        self.top.as_ref()
     }
 
     pub fn get_top_mut(&mut self) -> &mut Option<Top> {
@@ -107,8 +107,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_top_mode(&self) -> &Option<TopMode> {
-        &self.top_mode
+    pub fn get_top_mode(&self) -> Option<&TopMode> {
+        self.top_mode.as_ref()
     }
 
     pub fn get_top_mode_mut(&mut self) -> &mut Option<TopMode> {
@@ -120,8 +120,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_width(&self) -> &Option<Width> {
-        &self.width
+    pub fn get_width(&self) -> Option<&Width> {
+        self.width.as_ref()
     }
 
     pub fn get_width_mut(&mut self) -> &mut Option<Width> {
@@ -133,8 +133,8 @@ impl ManualLayout {
         self
     }
 
-    pub fn get_width_mode(&self) -> &Option<WidthMode> {
-        &self.width_mode
+    pub fn get_width_mode(&self) -> Option<&WidthMode> {
+        self.width_mode.as_ref()
     }
 
     pub fn get_width_mode_mut(&mut self) -> &mut Option<WidthMode> {
@@ -147,7 +147,7 @@ impl ManualLayout {
     }
 
     pub fn is_empty(&self) -> bool {
-        if self.height.is_none()
+        self.height.is_none()
             && self.height_mode.is_none()
             && self.layout_target.is_none()
             && self.left.is_none()
@@ -156,11 +156,6 @@ impl ManualLayout {
             && self.top_mode.is_none()
             && self.width.is_none()
             && self.width_mode.is_none()
-        {
-            return true;
-        }
-
-        false
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

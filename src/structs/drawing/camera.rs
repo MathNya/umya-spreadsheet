@@ -25,12 +25,12 @@ impl Camera {
         self
     }
 
-    pub fn get_rotation(&self) -> &Option<Rotation> {
-        &self.rotation
+    pub fn get_rotation(&self) -> Option<&Rotation> {
+        self.rotation.as_ref()
     }
 
-    pub fn get_rotation_mut(&mut self) -> &mut Option<Rotation> {
-        &mut self.rotation
+    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+        self.rotation.as_mut()
     }
 
     pub fn set_rotation(&mut self, value: Rotation) -> &mut Self {

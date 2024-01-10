@@ -70,36 +70,36 @@ impl Range {
         result
     }
 
-    pub fn get_coordinate_start_col(&self) -> &Option<ColumnReference> {
-        &self.coordinate_start_col
+    pub fn get_coordinate_start_col(&self) -> Option<&ColumnReference> {
+        self.coordinate_start_col.as_ref()
     }
 
-    pub fn get_coordinate_start_col_mut(&mut self) -> &mut Option<ColumnReference> {
-        &mut self.coordinate_start_col
+    pub fn get_coordinate_start_col_mut(&mut self) -> Option<&mut ColumnReference> {
+        self.coordinate_start_col.as_mut()
     }
 
-    pub fn get_coordinate_start_row(&self) -> &Option<RowReference> {
-        &self.coordinate_start_row
+    pub fn get_coordinate_start_row(&self) -> Option<&RowReference> {
+        self.coordinate_start_row.as_ref()
     }
 
-    pub fn get_coordinate_start_row_mut(&mut self) -> &mut Option<RowReference> {
-        &mut self.coordinate_start_row
+    pub fn get_coordinate_start_row_mut(&mut self) -> Option<&mut RowReference> {
+        self.coordinate_start_row.as_mut()
     }
 
-    pub fn get_coordinate_end_col(&self) -> &Option<ColumnReference> {
-        &self.coordinate_end_col
+    pub fn get_coordinate_end_col(&self) -> Option<&ColumnReference> {
+        self.coordinate_end_col.as_ref()
     }
 
-    pub fn get_coordinate_end_col_mut(&mut self) -> &mut Option<ColumnReference> {
-        &mut self.coordinate_end_col
+    pub fn get_coordinate_end_col_mut(&mut self) -> Option<&mut ColumnReference> {
+        self.coordinate_end_col.as_mut()
     }
 
-    pub fn get_coordinate_end_row(&self) -> &Option<RowReference> {
-        &self.coordinate_end_row
+    pub fn get_coordinate_end_row(&self) -> Option<&RowReference> {
+        self.coordinate_end_row.as_ref()
     }
 
-    pub fn get_coordinate_end_row_mut(&mut self) -> &mut Option<RowReference> {
-        &mut self.coordinate_end_row
+    pub fn get_coordinate_end_row_mut(&mut self) -> Option<&mut RowReference> {
+        self.coordinate_end_row.as_mut()
     }
 
     pub(crate) fn get_coordinate_start(&self) -> String {

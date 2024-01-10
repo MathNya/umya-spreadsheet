@@ -567,13 +567,13 @@ impl Worksheet {
     // Auto Filter
     // ************************
     // Get Auto Filter (Option).
-    pub fn get_auto_filter(&self) -> &Option<AutoFilter> {
-        &self.auto_filter
+    pub fn get_auto_filter(&self) -> Option<&AutoFilter> {
+        self.auto_filter.as_ref()
     }
 
     // Get Auto Filter (Option) in mutable.
-    pub fn get_auto_filter_mut(&mut self) -> &mut Option<AutoFilter> {
-        &mut self.auto_filter
+    pub fn get_auto_filter_mut(&mut self) -> Option<&mut AutoFilter> {
+        self.auto_filter.as_mut()
     }
 
     // Set Auto Filter.
@@ -1215,8 +1215,8 @@ impl Worksheet {
     }
 
     /// Get Code Name.
-    pub fn get_code_name(&self) -> &Option<String> {
-        &self.code_name
+    pub fn get_code_name(&self) -> Option<&String> {
+        self.code_name.as_ref()
     }
 
     /// Set Code Name.
@@ -1284,8 +1284,8 @@ impl Worksheet {
     }
 
     /// Get Tab Color.
-    pub fn get_tab_color(&self) -> &Option<Color> {
-        &self.tab_color
+    pub fn get_tab_color(&self) -> Option<&Color> {
+        self.tab_color.as_ref()
     }
 
     /// Get Tab Color in mutable.
@@ -1549,12 +1549,12 @@ impl Worksheet {
         &mut self.tables
     }
 
-    pub fn get_data_validations(&self) -> &Option<DataValidations> {
-        &self.data_validations
+    pub fn get_data_validations(&self) -> Option<&DataValidations> {
+        self.data_validations.as_ref()
     }
 
-    pub fn get_data_validations_mut(&mut self) -> &mut Option<DataValidations> {
-        &mut self.data_validations
+    pub fn get_data_validations_mut(&mut self) -> Option<&mut DataValidations> {
+        self.data_validations.as_mut()
     }
 
     pub fn set_data_validations(&mut self, value: DataValidations) -> &mut Self {
@@ -1756,8 +1756,8 @@ impl Worksheet {
         self
     }
 
-    pub fn get_sheet_protection(&self) -> &Option<SheetProtection> {
-        &self.sheet_protection
+    pub fn get_sheet_protection(&self) -> Option<&SheetProtection> {
+        self.sheet_protection.as_ref()
     }
 
     pub fn get_sheet_protection_mut(&mut self) -> &mut SheetProtection {

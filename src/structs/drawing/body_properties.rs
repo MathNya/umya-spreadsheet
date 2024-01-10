@@ -25,8 +25,8 @@ pub struct BodyProperties {
 }
 
 impl BodyProperties {
-    pub fn get_vert_overflow(&self) -> &Option<String> {
-        &self.vert_overflow
+    pub fn get_vert_overflow(&self) -> Option<&String> {
+        self.vert_overflow.as_ref()
     }
 
     pub fn set_vert_overflow<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
@@ -34,8 +34,8 @@ impl BodyProperties {
         self
     }
 
-    pub fn get_horz_overflow(&self) -> &Option<String> {
-        &self.horz_overflow
+    pub fn get_horz_overflow(&self) -> Option<&String> {
+        self.horz_overflow.as_ref()
     }
 
     pub fn set_horz_overflow<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
@@ -43,8 +43,8 @@ impl BodyProperties {
         self
     }
 
-    pub fn get_rtl_col(&self) -> &Option<String> {
-        &self.rtl_col
+    pub fn get_rtl_col(&self) -> Option<&String> {
+        self.rtl_col.as_ref()
     }
 
     pub fn set_rtl_col<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
@@ -52,8 +52,8 @@ impl BodyProperties {
         self
     }
 
-    pub fn get_anchor(&self) -> &Option<String> {
-        &self.anchor
+    pub fn get_anchor(&self) -> Option<&String> {
+        self.anchor.as_ref()
     }
 
     pub fn set_anchor<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
@@ -102,8 +102,8 @@ impl BodyProperties {
         self.bottom_inset.set_value(value);
     }
 
-    pub fn get_shape_auto_fit(&self) -> &Option<ShapeAutoFit> {
-        &self.shape_auto_fit
+    pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
+        self.shape_auto_fit.as_ref()
     }
 
     pub fn set_shape_auto_fit(&mut self, value: ShapeAutoFit) -> &mut BodyProperties {
@@ -217,7 +217,7 @@ impl BodyProperties {
 
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);
 
-        if empty_flag == &false {
+        if !*empty_flag {
             if let Some(v) = &self.shape_auto_fit {
                 v.write_to(writer);
             }

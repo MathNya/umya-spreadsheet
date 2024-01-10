@@ -150,8 +150,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_style(&self) -> &Option<Style> {
-        &self.style
+    pub fn get_style(&self) -> Option<&Style> {
+        self.style.as_ref()
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
@@ -164,8 +164,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_color_scale(&self) -> &Option<ColorScale> {
-        &self.color_scale
+    pub fn get_color_scale(&self) -> Option<&ColorScale> {
+        self.color_scale.as_ref()
     }
 
     pub fn set_color_scale(&mut self, value: ColorScale) -> &mut Self {
@@ -178,8 +178,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_data_bar(&self) -> &Option<DataBar> {
-        &self.data_bar
+    pub fn get_data_bar(&self) -> Option<&DataBar> {
+        self.data_bar.as_ref()
     }
 
     pub fn set_data_bar(&mut self, value: DataBar) -> &mut Self {
@@ -192,8 +192,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_icon_set(&self) -> &Option<IconSet> {
-        &self.icon_set
+    pub fn get_icon_set(&self) -> Option<&IconSet> {
+        self.icon_set.as_ref()
     }
 
     pub fn set_icon_set(&mut self, value: IconSet) -> &mut Self {
@@ -206,8 +206,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_formula(&self) -> &Option<Formula> {
-        &self.formula
+    pub fn get_formula(&self) -> Option<&Formula> {
+        self.formula.as_ref()
     }
 
     pub fn set_formula(&mut self, value: Formula) -> &mut Self {

@@ -36,8 +36,8 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_transform2d(&self) -> &Option<Transform2D> {
-        &self.transform2d
+    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+        self.transform2d.as_ref()
     }
 
     pub fn get_transform2d_mut(&mut self) -> &mut Option<Transform2D> {
@@ -49,8 +49,8 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_solid_fill(&self) -> &Option<SolidFill> {
-        &self.solid_fill
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill.as_ref()
     }
 
     pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
@@ -62,8 +62,8 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_outline(&self) -> &Option<Outline> {
-        &self.outline
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline.as_ref()
     }
 
     pub fn get_outline_mut(&mut self) -> &mut Option<Outline> {
@@ -75,8 +75,8 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_effect_list(&self) -> &Option<EffectList> {
-        &self.effect_list
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list.as_ref()
     }
 
     pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
@@ -88,8 +88,8 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_no_fill(&self) -> &Option<NoFill> {
-        &self.no_fill
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill.as_ref()
     }
 
     pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {

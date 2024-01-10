@@ -13,8 +13,8 @@ pub struct MajorGridlines {
 }
 
 impl MajorGridlines {
-    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
-        &self.shape_properties
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
     }
 
     pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
@@ -55,10 +55,7 @@ impl MajorGridlines {
     }
 
     fn with_include(&self) -> bool {
-        if self.shape_properties.is_some() {
-            return true;
-        }
-        false
+        self.shape_properties.is_some()
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

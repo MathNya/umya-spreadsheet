@@ -60,8 +60,8 @@ impl Cell {
         &mut self.coordinate
     }
 
-    pub fn get_hyperlink(&self) -> &Option<Hyperlink> {
-        &self.hyperlink
+    pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
+        self.hyperlink.as_ref()
     }
 
     pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
@@ -231,7 +231,7 @@ impl Cell {
     pub(crate) fn set_obj(&mut self, cell: Self) -> &mut Self {
         self.cell_value = cell.get_cell_value().clone();
         self.style = cell.get_style().clone();
-        self.hyperlink = cell.get_hyperlink().clone();
+        self.hyperlink = cell.get_hyperlink().cloned();
         self
     }
 

@@ -30,45 +30,27 @@ impl MergeCells {
     }
 
     pub(crate) fn _has_vertical(&self, row_num: &u32) -> bool {
-        for range in self.get_range_collection() {
-            let start_num = match range.get_coordinate_start_row() {
-                Some(v) => v.get_num(),
-                None => {
-                    return true;
-                }
-            };
-            let end_num = match range.get_coordinate_end_row() {
-                Some(v) => v.get_num(),
-                None => {
-                    return true;
-                }
-            };
-            if start_num <= row_num && row_num <= end_num && start_num != end_num {
-                return true;
-            }
-        }
-        false
+        self.get_range_collection().iter().any(|range| {
+            let start_num = range
+                .get_coordinate_start_row()
+                .map_or(true, |v| v.get_num() <= row_num);
+            let end_num = range
+                .get_coordinate_end_row()
+                .map_or(true, |v| v.get_num() >= row_num);
+            start_num && end_num && start_num != end_num
+        })
     }
 
     pub(crate) fn has_horizontal(&self, col_num: &u32) -> bool {
-        for range in self.get_range_collection() {
-            let start_num = match range.get_coordinate_start_col() {
-                Some(v) => v.get_num(),
-                None => {
-                    return true;
-                }
-            };
-            let end_num = match range.get_coordinate_end_col() {
-                Some(v) => v.get_num(),
-                None => {
-                    return true;
-                }
-            };
-            if start_num <= col_num && col_num <= end_num && start_num != end_num {
-                return true;
-            }
-        }
-        false
+        self.get_range_collection().iter().any(|range| {
+            let start_num = range
+                .get_coordinate_start_col()
+                .map_or(true, |v| v.get_num() <= col_num);
+            let end_num = range
+                .get_coordinate_end_col()
+                .map_or(true, |v| v.get_num() >= col_num);
+            start_num && end_num && start_num != end_num
+        })
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

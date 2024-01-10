@@ -19,8 +19,8 @@ pub struct ParagraphProperties {
 }
 
 impl ParagraphProperties {
-    pub fn get_right_to_left(&self) -> &Option<String> {
-        &self.right_to_left
+    pub fn get_right_to_left(&self) -> Option<&String> {
+        self.right_to_left.as_ref()
     }
 
     pub fn set_right_to_left<S: Into<String>>(&mut self, value: S) -> &mut ParagraphProperties {
@@ -37,12 +37,12 @@ impl ParagraphProperties {
         self
     }
 
-    pub fn get_default_run_properties(&self) -> &Option<RunProperties> {
-        &self.default_run_properties
+    pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
+        self.default_run_properties.as_ref()
     }
 
-    pub fn get_default_run_properties_mut(&mut self) -> &mut Option<RunProperties> {
-        &mut self.default_run_properties
+    pub fn get_default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+        self.default_run_properties.as_mut()
     }
 
     pub fn set_default_run_properties(&mut self, value: RunProperties) -> &mut ParagraphProperties {
@@ -50,12 +50,12 @@ impl ParagraphProperties {
         self
     }
 
-    pub fn get_line_spacing(&self) -> &Option<LineSpacing> {
-        &self.line_spacing
+    pub fn get_line_spacing(&self) -> Option<&LineSpacing> {
+        self.line_spacing.as_ref()
     }
 
-    pub fn get_line_spacing_mut(&mut self) -> &mut Option<LineSpacing> {
-        &mut self.line_spacing
+    pub fn get_line_spacing_mut(&mut self) -> Option<&mut LineSpacing> {
+        self.line_spacing.as_mut()
     }
 
     pub fn set_line_spacing(&mut self, value: LineSpacing) -> &mut Self {

@@ -19,8 +19,8 @@ pub struct View3D {
 }
 
 impl View3D {
-    pub fn get_rotate_x(&self) -> &Option<RotateX> {
-        &self.rotate_x
+    pub fn get_rotate_x(&self) -> Option<&RotateX> {
+        self.rotate_x.as_ref()
     }
 
     pub fn get_rotate_x_mut(&mut self) -> &mut Option<RotateX> {
@@ -32,8 +32,8 @@ impl View3D {
         self
     }
 
-    pub fn get_rotate_y(&self) -> &Option<RotateY> {
-        &self.rotate_y
+    pub fn get_rotate_y(&self) -> Option<&RotateY> {
+        self.rotate_y.as_ref()
     }
 
     pub fn get_rotate_y_mut(&mut self) -> &mut Option<RotateY> {
@@ -45,8 +45,8 @@ impl View3D {
         self
     }
 
-    pub fn get_right_angle_axes(&self) -> &Option<RightAngleAxes> {
-        &self.right_angle_axes
+    pub fn get_right_angle_axes(&self) -> Option<&RightAngleAxes> {
+        self.right_angle_axes.as_ref()
     }
 
     pub fn get_right_angle_axes_mut(&mut self) -> &mut Option<RightAngleAxes> {
@@ -58,8 +58,8 @@ impl View3D {
         self
     }
 
-    pub fn get_perspective(&self) -> &Option<Perspective> {
-        &self.perspective
+    pub fn get_perspective(&self) -> Option<&Perspective> {
+        self.perspective.as_ref()
     }
 
     pub fn get_perspective_mut(&mut self) -> &mut Option<Perspective> {

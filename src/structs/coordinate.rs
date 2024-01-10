@@ -119,12 +119,7 @@ impl Coordinate {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) -> bool {
-        if self.column.is_remove(root_col_num, offset_col_num) {
-            return true;
-        }
-        if self.row.is_remove(root_row_num, offset_row_num) {
-            return true;
-        }
-        false
+        self.column.is_remove(root_col_num, offset_col_num)
+            || self.row.is_remove(root_row_num, offset_row_num)
     }
 }

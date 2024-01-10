@@ -14,8 +14,8 @@ pub struct FillStyleList {
 }
 
 impl FillStyleList {
-    pub fn get_solid_fill(&self) -> &Option<SolidFill> {
-        &self.solid_fill
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill.as_ref()
     }
 
     pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {

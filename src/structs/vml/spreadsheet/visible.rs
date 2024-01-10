@@ -12,7 +12,7 @@ pub struct Visible {
 }
 
 impl Visible {
-    pub fn get_value(&self) -> &Option<bool> {
+    pub fn get_value(&self) -> Option<&bool> {
         self.value.get_value()
     }
 

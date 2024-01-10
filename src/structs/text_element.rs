@@ -25,8 +25,8 @@ impl TextElement {
         self
     }
 
-    pub fn get_run_properties(&self) -> &Option<Font> {
-        &self.run_properties
+    pub fn get_run_properties(&self) -> Option<&Font> {
+        self.run_properties.as_ref()
     }
 
     pub fn get_run_properties_mut(&mut self) -> &mut Font {
@@ -46,7 +46,7 @@ impl TextElement {
         self
     }
 
-    pub fn get_font(&self) -> &Option<Font> {
+    pub fn get_font(&self) -> Option<&Font> {
         self.get_run_properties()
     }
 

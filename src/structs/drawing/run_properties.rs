@@ -127,8 +127,8 @@ impl RunProperties {
         self
     }
 
-    pub fn get_solid_fill(&self) -> &Option<SolidFill> {
-        &self.solid_fill
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill.as_ref()
     }
 
     pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
@@ -140,8 +140,8 @@ impl RunProperties {
         self
     }
 
-    pub fn get_outline(&self) -> &Option<Outline> {
-        &self.outline
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline.as_ref()
     }
 
     pub fn get_outline_mut(&mut self) -> &mut Option<Outline> {
@@ -153,8 +153,8 @@ impl RunProperties {
         self
     }
 
-    pub fn get_latin_font(&self) -> &Option<TextFontType> {
-        &self.latin_font
+    pub fn get_latin_font(&self) -> Option<&TextFontType> {
+        self.latin_font.as_ref()
     }
 
     pub fn get_latin_font_mut(&mut self) -> &mut Option<TextFontType> {
@@ -166,8 +166,8 @@ impl RunProperties {
         self
     }
 
-    pub fn get_east_asian_font(&self) -> &Option<TextFontType> {
-        &self.east_asian_font
+    pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
+        self.east_asian_font.as_ref()
     }
 
     pub fn get_east_asian_font_mut(&mut self) -> &mut Option<TextFontType> {
@@ -179,8 +179,8 @@ impl RunProperties {
         self
     }
 
-    pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
-        &self.gradient_fill
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill.as_ref()
     }
 
     pub fn get_gradient_fill_mut(&mut self) -> &mut Option<GradientFill> {
@@ -192,8 +192,8 @@ impl RunProperties {
         self
     }
 
-    pub fn get_no_fill(&self) -> &Option<NoFill> {
-        &self.no_fill
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill.as_ref()
     }
 
     pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
@@ -205,8 +205,8 @@ impl RunProperties {
         self
     }
 
-    pub fn get_effect_list(&self) -> &Option<EffectList> {
-        &self.effect_list
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list.as_ref()
     }
 
     pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {

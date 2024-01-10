@@ -46,8 +46,8 @@ impl OneCellAnchor {
         self
     }
 
-    pub fn get_shape(&self) -> &Option<Shape> {
-        &self.shape
+    pub fn get_shape(&self) -> Option<&Shape> {
+        self.shape.as_ref()
     }
 
     pub fn get_shape_mut(&mut self) -> &mut Option<Shape> {
@@ -59,8 +59,8 @@ impl OneCellAnchor {
         self
     }
 
-    pub fn get_picture(&self) -> &Option<Picture> {
-        &self.picture
+    pub fn get_picture(&self) -> Option<&Picture> {
+        self.picture.as_ref()
     }
 
     pub fn get_picture_mut(&mut self) -> &mut Option<Picture> {
@@ -89,13 +89,7 @@ impl OneCellAnchor {
     }
 
     pub(crate) fn is_image(&self) -> bool {
-        match &self.picture {
-            Some(_) => {
-                return true;
-            }
-            None => {}
-        }
-        false
+        self.picture.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

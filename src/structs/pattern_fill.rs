@@ -38,8 +38,8 @@ impl PatternFill {
         self
     }
 
-    pub fn get_foreground_color(&self) -> &Option<Color> {
-        &self.foreground_color
+    pub fn get_foreground_color(&self) -> Option<&Color> {
+        self.foreground_color.as_ref()
     }
 
     pub fn get_foreground_color_mut(&mut self) -> &mut Color {
@@ -57,8 +57,8 @@ impl PatternFill {
         self
     }
 
-    pub fn get_background_color(&self) -> &Option<Color> {
-        &self.background_color
+    pub fn get_background_color(&self) -> Option<&Color> {
+        self.background_color.as_ref()
     }
 
     pub fn get_background_color_mut(&mut self) -> &mut Color {

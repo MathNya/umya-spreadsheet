@@ -112,8 +112,8 @@ impl Shape {
         self
     }
 
-    pub fn get_fill(&self) -> &Option<Fill> {
-        &self.fill
+    pub fn get_fill(&self) -> Option<&Fill> {
+        self.fill.as_ref()
     }
 
     pub fn get_fill_mut(&mut self) -> &mut Option<Fill> {
@@ -125,8 +125,8 @@ impl Shape {
         self
     }
 
-    pub fn get_image_data(&self) -> &Option<ImageData> {
-        &self.image_data
+    pub fn get_image_data(&self) -> Option<&ImageData> {
+        self.image_data.as_ref()
     }
 
     pub fn get_image_data_mut(&mut self) -> &mut Option<ImageData> {
@@ -138,8 +138,8 @@ impl Shape {
         self
     }
 
-    pub fn get_stroke(&self) -> &Option<Stroke> {
-        &self.stroke
+    pub fn get_stroke(&self) -> Option<&Stroke> {
+        self.stroke.as_ref()
     }
 
     pub fn get_stroke_mut(&mut self) -> &mut Option<Stroke> {
@@ -151,8 +151,8 @@ impl Shape {
         self
     }
 
-    pub fn get_shadow(&self) -> &Option<Shadow> {
-        &self.shadow
+    pub fn get_shadow(&self) -> Option<&Shadow> {
+        self.shadow.as_ref()
     }
 
     pub fn get_shadow_mut(&mut self) -> &mut Option<Shadow> {
@@ -164,8 +164,8 @@ impl Shape {
         self
     }
 
-    pub fn get_path(&self) -> &Option<Path> {
-        &self.path
+    pub fn get_path(&self) -> Option<&Path> {
+        self.path.as_ref()
     }
 
     pub fn get_path_mut(&mut self) -> &mut Option<Path> {
@@ -177,8 +177,8 @@ impl Shape {
         self
     }
 
-    pub fn get_text_box(&self) -> &Option<TextBox> {
-        &self.text_box
+    pub fn get_text_box(&self) -> Option<&TextBox> {
+        self.text_box.as_ref()
     }
 
     pub fn get_text_box_mut(&mut self) -> &mut Option<TextBox> {

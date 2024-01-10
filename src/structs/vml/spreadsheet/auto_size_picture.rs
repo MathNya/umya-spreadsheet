@@ -12,7 +12,7 @@ pub struct AutoSizePicture {
 }
 
 impl AutoSizePicture {
-    pub fn get_value(&self) -> &Option<bool> {
+    pub fn get_value(&self) -> Option<&bool> {
         self.value.get_value()
     }
 

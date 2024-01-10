@@ -24,8 +24,8 @@ pub struct OuterShadow {
 }
 
 impl OuterShadow {
-    pub fn get_blur_radius(&self) -> &Option<String> {
-        &self.blur_radius
+    pub fn get_blur_radius(&self) -> Option<&String> {
+        self.blur_radius.as_ref()
     }
 
     pub fn set_blur_radius<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -33,8 +33,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_horizontal_ratio(&self) -> &Option<String> {
-        &self.horizontal_ratio
+    pub fn get_horizontal_ratio(&self) -> Option<&String> {
+        self.horizontal_ratio.as_ref()
     }
 
     pub fn set_horizontal_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -42,8 +42,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_vertical_ratio(&self) -> &Option<String> {
-        &self.vertical_ratio
+    pub fn get_vertical_ratio(&self) -> Option<&String> {
+        self.vertical_ratio.as_ref()
     }
 
     pub fn set_vertical_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -51,8 +51,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_alignment(&self) -> &Option<String> {
-        &self.alignment
+    pub fn get_alignment(&self) -> Option<&String> {
+        self.alignment.as_ref()
     }
 
     pub fn set_alignment<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -60,8 +60,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_direction(&self) -> &Option<String> {
-        &self.direction
+    pub fn get_direction(&self) -> Option<&String> {
+        self.direction.as_ref()
     }
 
     pub fn set_direction<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -69,8 +69,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_distance(&self) -> &Option<String> {
-        &self.distance
+    pub fn get_distance(&self) -> Option<&String> {
+        self.distance.as_ref()
     }
 
     pub fn set_distance<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -78,8 +78,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_rotate_with_shape(&self) -> &Option<String> {
-        &self.rotate_with_shape
+    pub fn get_rotate_with_shape(&self) -> Option<&String> {
+        self.rotate_with_shape.as_ref()
     }
 
     pub fn set_rotate_with_shape<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -87,8 +87,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_preset_color(&self) -> &Option<PresetColor> {
-        &self.preset_color
+    pub fn get_preset_color(&self) -> Option<&PresetColor> {
+        self.preset_color.as_ref()
     }
 
     pub fn get_preset_color_mut(&mut self) -> &mut Option<PresetColor> {
@@ -100,8 +100,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_scheme_color(&self) -> &Option<SchemeColor> {
-        &self.scheme_color
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color.as_ref()
     }
 
     pub fn get_scheme_color_mut(&mut self) -> &mut Option<SchemeColor> {
@@ -113,8 +113,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_rgb_color_model_hex(&self) -> &Option<RgbColorModelHex> {
-        &self.rgb_color_model_hex
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex.as_ref()
     }
 
     pub fn get_rgb_color_model_hex_mut(&mut self) -> &mut Option<RgbColorModelHex> {

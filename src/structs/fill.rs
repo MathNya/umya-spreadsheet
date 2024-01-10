@@ -16,8 +16,8 @@ pub struct Fill {
 }
 
 impl Fill {
-    pub fn get_pattern_fill(&self) -> &Option<PatternFill> {
-        &self.pattern_fill
+    pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
+        self.pattern_fill.as_ref()
     }
 
     pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
@@ -35,8 +35,8 @@ impl Fill {
         self
     }
 
-    pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
-        &self.gradient_fill
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill.as_ref()
     }
 
     pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
