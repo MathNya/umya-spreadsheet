@@ -7,18 +7,17 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::{io, result};
 
+use helper::const_str::*;
 use structs::DefinedName;
 use structs::Spreadsheet;
 use structs::WorkbookProtection;
 use structs::WorkbookView;
 use structs::Worksheet;
 
-const FILE_PATH: &str = "xl/workbook.xml";
-
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
 ) -> result::Result<Spreadsheet, XlsxError> {
-    let r = io::BufReader::new(arv.by_name(FILE_PATH)?);
+    let r = io::BufReader::new(arv.by_name(PKG_WORKBOOK)?);
     let mut reader = Reader::from_reader(r);
     reader.trim_text(true);
     let mut spreadsheet = Spreadsheet::default();

@@ -11,6 +11,7 @@ use super::Fonts;
 use super::NumberingFormats;
 use super::Protection;
 use super::Style;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -246,17 +247,11 @@ impl Stylesheet {
             apply = *cell_format.get_apply_alignment();
         }
         if apply {
-            match def_cell_format.get_alignment() {
-                Some(v) => {
-                    style.set_alignment(v.clone());
-                }
-                None => {}
+            if let Some(v) = def_cell_format.get_alignment() {
+                style.set_alignment(v.clone());
             }
-            match cell_format.get_alignment() {
-                Some(v) => {
-                    style.set_alignment(v.clone());
-                }
-                None => {}
+            if let Some(v) = cell_format.get_alignment() {
+                style.set_alignment(v.clone());
             }
         }
 
@@ -268,19 +263,15 @@ impl Stylesheet {
         if cell_format.has_apply_protection() {
             apply = *cell_format.get_apply_protection();
         }
-        if apply {
-            match def_cell_format.get_protection() {
-                Some(v) => {
-                    style.set_protection(v.clone());
-                }
-                None => {}
-            }
-            match cell_format.get_protection() {
-                Some(v) => {
-                    style.set_protection(v.clone());
-                }
-                None => {}
-            }
+        if !apply {
+            return;
+        }
+
+        if let Some(v) = def_cell_format.get_protection() {
+            style.set_protection(v.clone());
+        }
+        if let Some(v) = cell_format.get_protection() {
+            style.set_protection(v.clone());
         }
     }
 
@@ -310,48 +301,30 @@ impl Stylesheet {
         cell_format.set_border_id(border_id);
         cell_format.set_format_id(format_id);
 
-        match style.get_numbering_format() {
-            Some(_) => {
-                cell_format.set_apply_number_format(true);
-            }
-            None => {}
+        if let Some(_) = style.get_numbering_format() {
+            cell_format.set_apply_number_format(true);
         }
 
-        match style.get_font() {
-            Some(_) => {
-                cell_format.set_apply_font(true);
-            }
-            None => {}
+        if let Some(_) = style.get_font() {
+            cell_format.set_apply_font(true);
         }
 
-        match style.get_fill() {
-            Some(_) => {
-                cell_format.set_apply_fill(true);
-            }
-            None => {}
+        if let Some(_) = style.get_fill() {
+            cell_format.set_apply_fill(true);
         }
 
-        match style.get_borders() {
-            Some(_) => {
-                cell_format.set_apply_border(true);
-            }
-            None => {}
+        if let Some(_) = style.get_borders() {
+            cell_format.set_apply_border(true);
         }
 
-        match style.get_alignment() {
-            Some(v) => {
-                cell_format.set_alignment(v.clone());
-                cell_format.set_apply_alignment(true);
-            }
-            None => {}
+        if let Some(v) = style.get_alignment() {
+            cell_format.set_alignment(v.clone());
+            cell_format.set_apply_alignment(true);
         }
 
-        match style.get_protection() {
-            Some(v) => {
-                cell_format.set_protection(v.clone());
-                cell_format.set_apply_protection(true);
-            }
-            None => {}
+        if let Some(v) = style.get_protection() {
+            cell_format.set_protection(v.clone());
+            cell_format.set_apply_protection(true);
         }
 
         self.maked_style_list.push(style.clone());
@@ -423,19 +396,10 @@ impl Stylesheet {
             writer,
             "styleSheet",
             vec![
-                (
-                    "xmlns",
-                    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-                ),
-                (
-                    "xmlns:mc",
-                    "http://schemas.openxmlformats.org/markup-compatibility/2006",
-                ),
+                ("xmlns", SHEET_MAIN_NS),
+                ("xmlns:mc", MC_NS),
                 ("mc:Ignorable", "x14ac"),
-                (
-                    "xmlns:x14ac",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac",
-                ),
+                ("xmlns:x14ac", SHEETML_AC_NS),
             ],
             false,
         );
@@ -488,10 +452,7 @@ impl Stylesheet {
             "ext",
             vec![
                 ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}"),
-                (
-                    "xmlns:x14",
-                    "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main",
-                ),
+                ("xmlns:x14", SHEET_MS_MAIN_NS),
             ],
             false,
         );

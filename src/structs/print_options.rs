@@ -32,13 +32,7 @@ impl PrintOptions {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if self.horizontal_centered.has_value() {
-            return true;
-        }
-        if self.vertical_centered.has_value() {
-            return true;
-        }
-        false
+        self.horizontal_centered.has_value() || self.vertical_centered.has_value()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

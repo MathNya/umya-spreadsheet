@@ -33,7 +33,7 @@ impl Italic {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // i
-        if self.val.get_value() == &true {
+        if *self.val.get_value() {
             write_start_tag(writer, "i", vec![], true);
         }
     }

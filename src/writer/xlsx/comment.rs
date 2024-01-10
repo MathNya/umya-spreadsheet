@@ -1,5 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
@@ -27,10 +28,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "comments",
-        vec![(
-            "xmlns",
-            "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-        )],
+        vec![("xmlns", SHEET_MAIN_NS)],
         false,
     );
 
@@ -48,7 +46,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "commentList", vec![], false);
     for comment in worksheet.get_comments() {
         // comment
-        let coordinate = comment.get_coordinate().get_coordinate();
+        let coordinate = comment.get_coordinate().to_string();
         let author_id = get_author_id(&authors, comment.get_author());
         write_start_tag(
             &mut writer,
@@ -87,10 +85,8 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
 }
 
 fn get_author_id(authors: &[String], author: &str) -> String {
-    for (i, value) in authors.iter().enumerate() {
-        if author == value {
-            return i.to_string();
-        }
-    }
-    "".to_string()
+    authors
+        .iter()
+        .position(|value| author == value)
+        .map_or("".to_string(), |i| i.to_string())
 }

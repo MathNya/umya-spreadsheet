@@ -15,9 +15,8 @@ pub(crate) fn write_start_tag<'a, S>(
     let tag_name = tag_name.into();
     let len = tag_name.len();
     let mut elem = BytesStart::from_content(tag_name, len);
-    for attribute in &attributes {
-        elem.push_attribute((attribute.0, attribute.1));
-    }
+    elem.extend_attributes(attributes);
+
     if empty_flag {
         let _ = writer.write_event(Event::Empty(elem));
     } else {

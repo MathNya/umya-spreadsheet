@@ -310,9 +310,7 @@ impl Spreadsheet {
     /// Get Work Sheet List.
     pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
         for worksheet in &self.work_sheet_collection {
-            if !worksheet.is_deserialized() {
-                panic!("This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
-            }
+            assert!(worksheet.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
         }
         &self.work_sheet_collection
     }
@@ -362,29 +360,27 @@ impl Spreadsheet {
         self
     }
 
-    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Result<usize, &'static str> {
+    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Option<usize> {
         for (result, sheet) in self.work_sheet_collection.iter().enumerate() {
             if sheet.get_name() == sheet_name {
-                return Ok(result);
+                return Some(result);
             }
         }
-        Err("not found.")
+        None
     }
 
     /// Get Work Sheet.
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
-    /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet(&self, index: &usize) -> Result<&Worksheet, &'static str> {
+    /// * `Option<&Worksheet>`.
+    pub fn get_sheet(&self, index: &usize) -> Option<&Worksheet> {
         match self.work_sheet_collection.get(*index) {
             Some(v) => {
-                if !v.is_deserialized() {
-                    panic!("This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
-                }
-                Ok(v)
+                assert!(v.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
+                Some(v)
             }
-            None => Err("Not found."),
+            None => None,
         }
     }
 
@@ -392,13 +388,13 @@ impl Spreadsheet {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Result<&Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
+    /// * `Option<&Worksheet>.
+    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
         match self.find_sheet_index_by_name(sheet_name) {
-            Ok(index) => {
+            Some(index) => {
                 return self.get_sheet(&index);
             }
-            Err(e) => Err(e),
+            None => None,
         }
     }
 
@@ -417,17 +413,17 @@ impl Spreadsheet {
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet_mut(&mut self, index: &usize) -> Result<&mut Worksheet, &'static str> {
+    /// * `Option<&mut Worksheet>`.
+    pub fn get_sheet_mut(&mut self, index: &usize) -> Option<&mut Worksheet> {
         let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         match self.work_sheet_collection.get_mut(*index) {
             Some(v) => {
                 raw_to_deserialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
-                Ok(v)
+                Some(v)
             }
-            None => Err("Not found."),
+            None => None,
         }
     }
 
@@ -435,16 +431,13 @@ impl Spreadsheet {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>` - OK:work sheet. Err:Error.
-    pub fn get_sheet_by_name_mut(
-        &mut self,
-        sheet_name: &str,
-    ) -> Result<&mut Worksheet, &'static str> {
+    /// * `Option<&mut Worksheet>`.
+    pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
         match self.find_sheet_index_by_name(sheet_name) {
-            Ok(index) => {
+            Some(index) => {
                 return self.get_sheet_mut(&index);
             }
-            Err(e) => Err(e),
+            None => None,
         }
     }
 

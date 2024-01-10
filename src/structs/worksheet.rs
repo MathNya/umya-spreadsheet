@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use helper::const_str::*;
 use helper::coordinate::*;
 use helper::range::*;
 use structs::drawing::spreadsheet::WorksheetDrawing;
@@ -170,9 +171,8 @@ impl Worksheet {
         shared_string_table: &SharedStringTable,
         stylesheet: &Stylesheet,
     ) -> Cells {
-        if self.is_deserialized() {
-            panic!("This Worksheet is Deserialized.");
-        }
+        assert!(!self.is_deserialized(), "This Worksheet is Deserialized.");
+
         read_lite(
             self.raw_data_of_worksheet.as_ref().unwrap(),
             shared_string_table,
@@ -449,7 +449,7 @@ impl Worksheet {
     pub fn get_comments_to_hashmap(&self) -> HashMap<String, &Comment> {
         let mut result = HashMap::default();
         for comment in &self.comments {
-            let coordinate = comment.get_coordinate().get_coordinate();
+            let coordinate = comment.get_coordinate().to_string();
             result.insert(coordinate, comment);
         }
         result
@@ -1724,7 +1724,7 @@ impl Worksheet {
             Some(raw_data) => {
                 for relationships in raw_data.get_relationships_list() {
                     for row in relationships.get_relationship_list() {
-                        if row.get_type() == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/pivotCacheDefinition" {
+                        if row.get_type() == PIVOT_CACHE_DEF_NS {
                             result.push(row.get_raw_file().get_file_target());
                         }
                     }
@@ -1738,10 +1738,7 @@ impl Worksheet {
     /// (This method is crate only.)
     /// Has Defined Names.
     pub(crate) fn has_defined_names(&self) -> bool {
-        if !self.get_defined_names().is_empty() {
-            return true;
-        }
-        false
+        !self.get_defined_names().is_empty()
     }
 
     pub(crate) fn is_deserialized(&self) -> bool {
@@ -1749,13 +1746,9 @@ impl Worksheet {
     }
 
     pub(crate) fn get_raw_data_of_worksheet(&self) -> &RawWorksheet {
-        match &self.raw_data_of_worksheet {
-            Some(v) => {
-                return v;
-            }
-            None => {}
-        }
-        panic!("Not found at raw data of worksheet.");
+        self.raw_data_of_worksheet
+            .as_ref()
+            .expect("Not found at raw data of worksheet.")
     }
 
     pub(crate) fn set_raw_data_of_worksheet(&mut self, value: RawWorksheet) -> &mut Self {
@@ -1823,11 +1816,12 @@ impl Worksheet {
         }
 
         // Iterate row by row, collecting cell information (do I copy)
-        let mut copy_cells: Vec<Cell> = Vec::new();
         let cells = self.cell_collection.get_cell_by_range(range);
-        for cell in cells.into_iter().flatten() {
-            copy_cells.push(cell.clone());
-        }
+        let mut copy_cells: Vec<Cell> = cells
+            .into_iter()
+            .flatten()
+            .map(|cell| cell.clone())
+            .collect();
 
         // Delete cell information as iterating through
         let coordinate_list = get_coordinate_list(&range_upper);

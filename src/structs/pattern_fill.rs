@@ -76,27 +76,20 @@ impl PatternFill {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
+        let pattern_type = self.pattern_type.get_value_string();
+        let foreground_color = self
+            .foreground_color
+            .as_ref()
+            .map_or("None".into(), |v| v.get_hash_code());
+        let background_color = self
+            .background_color
+            .as_ref()
+            .map_or("None".into(), |v| v.get_hash_code());
         format!(
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}",
-                &self.pattern_type.get_value_string(),
-                match &self.foreground_color {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-                match &self.background_color {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
+                pattern_type, foreground_color, background_color
             ))
         )
     }

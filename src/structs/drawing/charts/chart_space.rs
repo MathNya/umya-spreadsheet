@@ -7,6 +7,7 @@ use super::EditingLanguage;
 use super::PrintSettings;
 use super::RoundedCorners;
 use super::ShapeProperties;
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -173,18 +174,9 @@ impl ChartSpace {
             writer,
             "c:chartSpace",
             vec![
-                (
-                    "xmlns:c",
-                    "http://schemas.openxmlformats.org/drawingml/2006/chart",
-                ),
-                (
-                    "xmlns:a",
-                    "http://schemas.openxmlformats.org/drawingml/2006/main",
-                ),
-                (
-                    "xmlns:r",
-                    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-                ),
+                ("xmlns:c", DRAWINGML_CHART_NS),
+                ("xmlns:a", DRAWINGML_MAIN_NS),
+                ("xmlns:r", REL_OFC_NS),
             ],
             false,
         );

@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Worksheet;
 use structs::WriterManager;
 
@@ -25,22 +26,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(
-        &mut writer,
-        "Relationships",
-        vec![(
-            "xmlns",
-            "http://schemas.openxmlformats.org/package/2006/relationships",
-        )],
-        false,
-    );
+    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
     let mut r_id = 1;
     for chart_no in chart_no_list {
         is_write = write_relationship(
             &mut writer,
             &r_id,
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart",
+            CHART_NS,
             format!("../charts/chart{}.xml", chart_no).as_str(),
             "",
         );
@@ -50,7 +43,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         is_write = write_relationship(
             &mut writer,
             &r_id,
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+            IMAGE_NS,
             format!("../media/{}", image.get_image_name()).as_str(),
             "",
         );
@@ -59,7 +52,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("xl/drawings/_rels/drawing{}.xml.rels", drawing_no);
+        let file_path = format!("{PKG_DRAWINGS_RELS}{}.xml.rels", drawing_no);
         return writer_mng.add_writer(&file_path, writer);
     }
     Ok(())

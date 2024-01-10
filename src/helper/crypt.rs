@@ -1,3 +1,4 @@
+use super::const_str::*;
 use aes::cipher::{block_padding::NoPadding, BlockEncryptMut, KeyIvInit};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use byteorder::{ByteOrder, LittleEndian};
@@ -315,7 +316,7 @@ fn crypt_package(
     let output_chunks_as: Vec<&Vec<u8>> = output_chunks.iter().map(AsRef::as_ref).collect();
     let mut output = buffer_concat(output_chunks_as);
 
-    if encrypt == &true {
+    if *encrypt {
         // Put the length of the package in the first 8 bytes
         let input_len = input.len();
         output = buffer_concat(vec![
@@ -540,18 +541,9 @@ fn build_encryption_info(
         &mut writer,
         "encryption",
         vec![
-            (
-                "xmlns",
-                "http://schemas.microsoft.com/office/2006/encryption",
-            ),
-            (
-                "xmlns:p",
-                "http://schemas.microsoft.com/office/2006/keyEncryptor/password",
-            ),
-            (
-                "xmlns:c",
-                "http://schemas.microsoft.com/office/2006/keyEncryptor/certificate",
-            ),
+            ("xmlns", ENCRYPTION_NS),
+            ("xmlns:p", PASSWORD_NS),
+            ("xmlns:c", CERTIFICATE_NS),
         ],
         false,
     );
@@ -594,10 +586,7 @@ fn build_encryption_info(
     write_start_tag(
         &mut writer,
         "keyEncryptor",
-        vec![(
-            "uri",
-            "http://schemas.microsoft.com/office/2006/keyEncryptor/password",
-        )],
+        vec![("uri", PASSWORD_NS)],
         false,
     );
     let str_key_spin_count = key_spin_count.to_string();

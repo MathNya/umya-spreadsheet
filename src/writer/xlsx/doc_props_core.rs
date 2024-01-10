@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -25,14 +26,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         &mut writer,
         "cp:coreProperties",
         vec![
-            (
-                "xmlns:cp",
-                "http://schemas.openxmlformats.org/package/2006/metadata/core-properties",
-            ),
-            ("xmlns:dc", "http://purl.org/dc/elements/1.1/"),
-            ("xmlns:dcterms", "http://purl.org/dc/terms/"),
-            ("xmlns:dcmitype", "http://purl.org/dc/dcmitype/"),
-            ("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+            ("xmlns:cp", COREPROPS_NS),
+            ("xmlns:dc", DCORE_NS),
+            ("xmlns:dcterms", DCTERMS_NS),
+            ("xmlns:dcmitype", DCMITYPE_NS),
+            ("xmlns:xsi", XSI_NS),
         ],
         false,
     );
@@ -121,6 +119,5 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "cp:coreProperties");
 
-    let target = "docProps/core.xml";
-    writer_mng.add_writer(target, writer)
+    writer_mng.add_writer(ARC_CORE, writer)
 }

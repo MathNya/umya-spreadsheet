@@ -3,9 +3,7 @@ use std::iter::successors;
 use fancy_regex::Regex;
 
 fn index_to_alpha(index: u32) -> String {
-    if index < 1 {
-        panic!("Index cannot be less than one.")
-    }
+    assert!(index >= 1, "Index cannot be less than one.");
 
     const BASE_CHAR_CODE: u32 = 'A' as u32;
     // below code is based on the source code of `radix_fmt`
@@ -54,9 +52,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 }
 
 pub fn string_from_column_index(column_index: &u32) -> String {
-    if column_index < &1u32 {
-        panic!("Column number starts from 1.");
-    }
+    assert!(column_index >= &1u32, "Column number starts from 1.");
 
     index_to_alpha(*column_index)
 }
@@ -107,27 +103,27 @@ pub fn coordinate_from_index_with_lock(
 ) -> String {
     format!(
         "{}{}{}{}",
-        if is_lock_col == &true { "$" } else { "" },
+        if *is_lock_col { "$" } else { "" },
         string_from_column_index(col),
-        if is_lock_row == &true { "$" } else { "" },
+        if *is_lock_row { "$" } else { "" },
         row
     )
 }
 
 pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
-    let mut result = *num;
-    if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
-        result += offset_num;
+    if (num >= root_num && offset_num != &0) {
+        num + offset_num
+    } else {
+        *num
     }
-    result
 }
 
 pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
-    let mut result = *num;
-    if (num >= root_num && offset_num > &0) || (num < root_num && offset_num < &0) {
-        result -= offset_num;
+    if (num >= root_num && offset_num != &0) {
+        num - offset_num
+    } else {
+        *num
     }
-    result
 }
 
 pub type CellIndex = (Option<u32>, Option<u32>, Option<bool>, Option<bool>);
@@ -165,8 +161,7 @@ impl From<String> for CellCoordinates {
 
 impl From<&str> for CellCoordinates {
     fn from(value: &str) -> Self {
-        let coordinate_upper = value.to_uppercase();
-        let (col, row, ..) = index_from_coordinate(coordinate_upper);
+        let (col, row, ..) = index_from_coordinate(value.to_uppercase());
         CellCoordinates::new(col.unwrap(), row.unwrap())
     }
 }

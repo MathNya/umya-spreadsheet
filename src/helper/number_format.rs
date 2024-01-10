@@ -393,12 +393,9 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
         format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into()
     }
     if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
-        match &value.parse::<usize>() {
-            Ok(_) => {}
-            Err(_) => {
-                //println!("format as fraction {} {}", value, format);
-                value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
-            }
+        if let Err(_) = &value.parse::<usize>() {
+            //println!("format as fraction {} {}", value, format);
+            value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
         }
     } else {
         // Handle the number itself
@@ -525,7 +522,7 @@ fn format_straight_numeric_value(
     let right = matches.get(3).unwrap();
 
     // minimun width of formatted number (including dot)
-    if use_thousands == &true {
+    if *use_thousands {
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();
@@ -644,8 +641,7 @@ fn _complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) 
     let sign = number < &0.0;
     let number = number.abs();
 
-    if split_on_point == &true && mask.find('.').is_some() && number.to_string().find('.').is_some()
-    {
+    if *split_on_point && mask.contains('.') && number.to_string().contains('.') {
         let number_str = number.to_string();
         let numbers_as: Vec<&str> = number_str.split('.').collect();
         let mut numbers: Vec<String> = Vec::new();

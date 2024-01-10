@@ -266,25 +266,12 @@ impl Style {
     }
 
     pub(crate) fn is_empty(&self) -> bool {
-        if self.font.is_some() {
-            return false;
-        }
-        if self.fill.is_some() {
-            return false;
-        }
-        if self.borders.is_some() {
-            return false;
-        }
-        if self.alignment.is_some() {
-            return false;
-        }
-        if self.numbering_format.is_some() {
-            return false;
-        }
-        if self.protection.is_some() {
-            return false;
-        }
-        true
+        !(self.font.is_some()
+            || self.fill.is_some()
+            || self.borders.is_some()
+            || self.alignment.is_some()
+            || self.numbering_format.is_some()
+            || self.protection.is_some())
     }
 
     pub(crate) fn get_default_value() -> Self {

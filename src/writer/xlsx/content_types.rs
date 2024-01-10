@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -22,27 +23,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // Types
-    write_start_tag(
-        &mut writer,
-        "Types",
-        vec![(
-            "xmlns",
-            "http://schemas.openxmlformats.org/package/2006/content-types",
-        )],
-        false,
-    );
+    write_start_tag(&mut writer, "Types", vec![("xmlns", CONTYPES_NS)], false);
 
     // Default rels
     write_start_tag(
         &mut writer,
         "Default",
-        vec![
-            ("Extension", "rels"),
-            (
-                "ContentType",
-                "application/vnd.openxmlformats-package.relationships+xml",
-            ),
-        ],
+        vec![("Extension", "rels"), ("ContentType", REL_TYPE)],
         true,
     );
 
@@ -59,13 +46,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "bin"),
-                (
-                    "ContentType",
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.printerSettings",
-                ),
-            ],
+            vec![("Extension", "bin"), ("ContentType", PRNTR_SETTINGS_TYPE)],
             true,
         );
     }
@@ -75,13 +56,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "vml"),
-                (
-                    "ContentType",
-                    "application/vnd.openxmlformats-officedocument.vmlDrawing",
-                ),
-            ],
+            vec![("Extension", "vml"), ("ContentType", VML_DRAWING_TYPE)],
             true,
         );
     }
@@ -141,13 +116,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "xlsx"),
-                (
-                    "ContentType",
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                ),
-            ],
+            vec![("Extension", "xlsx"), ("ContentType", WORKBOOK)],
             true,
         );
     }

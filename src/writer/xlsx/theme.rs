@@ -4,7 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
-
+use helper::const_str::*;
 use structs::drawing::Theme;
 use structs::WriterManager;
 
@@ -24,6 +24,5 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // a:theme
     theme.write_to(&mut writer);
 
-    let target = "xl/theme/theme1.xml";
-    writer_mng.add_writer(target, writer)
+    writer_mng.add_writer(PKG_THEME, writer)
 }

@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Worksheet;
 use structs::WriterManager;
 
@@ -32,25 +33,17 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(
-        &mut writer,
-        "Relationships",
-        vec![(
-            "xmlns",
-            "http://schemas.openxmlformats.org/package/2006/relationships",
-        )],
-        false,
-    );
+    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
     let mut r_id: i32 = 1;
 
     // Write hyperlink relationships
     for (_, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
-        if hyperlink.get_location() == &false {
+        if !*hyperlink.get_location() {
             is_write = write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink",
+                HYPERLINK_NS,
                 hyperlink.get_url(),
                 "External",
             );
@@ -64,7 +57,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/printerSettings",
+            PRINTER_SETTINGS_NS,
             format!("../printerSettings/{}", object_name).as_str(),
             "",
         );
@@ -76,7 +69,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing",
+            DRAWINGS_NS,
             format!("../drawings/drawing{}.xml", drawing_no.to_string().as_str()).as_str(),
             "",
         );
@@ -88,7 +81,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing",
+            VML_DRAWING_NS,
             format!(
                 "../drawings/vmlDrawing{}.vml",
                 vml_drawing_no.to_string().as_str()
@@ -104,7 +97,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table",
+            TABLE_NS,
             format!("../tables/table{}.xml", table_no.to_string().as_str()).as_str(),
             "",
         );
@@ -121,7 +114,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/package",
+                PACKAGE_NS,
                 format!("../embeddings/{}", object_name).as_str(),
                 "",
             );
@@ -133,7 +126,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject",
+                OLE_OBJECT_NS,
                 format!("../embeddings/{}", object_name).as_str(),
                 "",
             );
@@ -147,7 +140,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+            IMAGE_NS,
             format!("../media/{}", image_name).as_str(),
             "",
         );
@@ -159,7 +152,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
-            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments",
+            COMMENTS_NS,
             format!("../comments{}.xml", comment_no.to_string().as_str()).as_str(),
             "",
         );
@@ -168,7 +161,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("xl/worksheets/_rels/sheet{}.xml.rels", worksheet_no);
+        let file_path = format!("{PKG_SHEET_RELS}{}.xml.rels", worksheet_no);
         writer_mng.add_writer(&file_path, writer)?;
     }
     Ok(())

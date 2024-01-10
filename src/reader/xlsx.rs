@@ -8,6 +8,7 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use super::driver;
+use helper::const_str::*;
 use structs::drawing::Theme;
 use structs::raw::RawWorksheet;
 use structs::SharedStringTable;
@@ -88,25 +89,23 @@ pub fn read_reader<R: io::Read + io::Seek>(
 ) -> Result<Spreadsheet, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
-    let mut book = workbook::read(&mut arv).unwrap();
-    doc_props_app::read(&mut arv, &mut book).unwrap();
-    doc_props_core::read(&mut arv, &mut book).unwrap();
-    vba_project_bin::read(&mut arv, &mut book).unwrap();
-    content_types::read(&mut arv, &mut book).unwrap();
-    let workbook_rel = workbook_rels::read(&mut arv, &mut book).unwrap();
+    let mut book = workbook::read(&mut arv)?;
+    doc_props_app::read(&mut arv, &mut book)?;
+    doc_props_core::read(&mut arv, &mut book)?;
+    vba_project_bin::read(&mut arv, &mut book)?;
+    content_types::read(&mut arv, &mut book)?;
+    let workbook_rel = workbook_rels::read(&mut arv, &mut book)?;
 
     book.set_theme(Theme::get_default_value());
     for (_, type_value, rel_target) in &workbook_rel {
-        if type_value.as_str()
-            == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
-        {
-            let theme = theme::read(&mut arv, rel_target).unwrap();
+        if type_value == THEME_NS {
+            let theme = theme::read(&mut arv, rel_target)?;
             book.set_theme(theme);
         }
     }
 
-    shared_strings::read(&mut arv, &mut book).unwrap();
-    styles::read(&mut arv, &mut book).unwrap();
+    shared_strings::read(&mut arv, &mut book)?;
+    styles::read(&mut arv, &mut book)?;
 
     for sheet in book.get_sheet_collection_mut() {
         for (rel_id, _, rel_target) in &workbook_rel {
@@ -183,7 +182,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         for relationship in v.get_relationship_list() {
             match relationship.get_type() {
                 // drawing, chart
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" => {
+                DRAWINGS_NS => {
                     drawing::read(
                         worksheet,
                         relationship.get_raw_file(),
@@ -192,11 +191,11 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                     .unwrap();
                 }
                 // comment
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments" => {
+                COMMENTS_NS => {
                     comment::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
                 // table
-                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" => {
+                TABLE_NS => {
                     table::read(worksheet, relationship.get_raw_file()).unwrap();
                 }
                 _ => {}
@@ -204,9 +203,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         }
         for relationship in v.get_relationship_list() {
             // vmlDrawing
-            if relationship.get_type()
-                == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing"
-            {
+            if relationship.get_type() == VML_DRAWING_NS {
                 vml_drawing::read(
                     worksheet,
                     relationship.get_raw_file(),

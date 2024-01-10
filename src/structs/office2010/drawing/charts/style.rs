@@ -1,4 +1,5 @@
 // c14:style
+use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -31,10 +32,7 @@ impl Style {
         write_start_tag(
             writer,
             "mc:AlternateContent",
-            vec![(
-                "xmlns:mc",
-                "http://schemas.openxmlformats.org/markup-compatibility/2006",
-            )],
+            vec![("xmlns:mc", MC_NS)],
             false,
         );
 
@@ -42,13 +40,7 @@ impl Style {
         write_start_tag(
             writer,
             "mc:Choice",
-            vec![
-                ("Requires", "c14"),
-                (
-                    "xmlns:c14",
-                    "http://schemas.microsoft.com/office/drawing/2007/8/2/chart",
-                ),
-            ],
+            vec![("Requires", "c14"), ("xmlns:c14", DRAWING_CHART_NS)],
             false,
         );
 

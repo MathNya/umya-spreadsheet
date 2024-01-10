@@ -83,10 +83,8 @@ impl NumberingFormat {
                 None
             }
         });
-        if format_code_result.is_none() {
-            panic!("Not Found NumberFormatId.");
-        }
-        self.format_code = format_code_result.unwrap();
+
+        self.format_code = format_code_result.expect("Not Found NumberFormatId.");
         self.number_format_id = value;
         self.is_build_in = true;
         self

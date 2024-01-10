@@ -1,12 +1,12 @@
 use std::io;
 
+use super::{driver::*, XlsxError};
+use helper::const_str::*;
 use quick_xml::{
     events::{BytesDecl, Event},
     Writer,
 };
 use structs::{Worksheet, WriterManager};
-
-use super::{driver::*, XlsxError};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
@@ -28,8 +28,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let area_coords = table.get_area();
         let area = format!(
             "{}:{}",
-            area_coords.0.get_coordinate(),
-            area_coords.1.get_coordinate()
+            area_coords.0.to_string(),
+            area_coords.1.to_string()
         );
 
         // table start
@@ -38,10 +38,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             "table",
             vec![
-                (
-                    "xmlns",
-                    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-                ),
+                ("xmlns", SHEET_MAIN_NS),
                 ("id", &table_no.to_string()),
                 ("name", table.get_name()),
                 ("displayName", table.get_display_name()),

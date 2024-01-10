@@ -109,7 +109,7 @@ impl Column {
     }
 
     pub(crate) fn calculation_auto_width(&mut self, cells: &Cells) -> &mut Self {
-        if self.get_auto_width() == &false {
+        if !*self.get_auto_width() {
             return self;
         }
 

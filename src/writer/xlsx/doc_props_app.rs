@@ -4,6 +4,7 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use structs::Spreadsheet;
 use structs::WriterManager;
 
@@ -24,16 +25,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "Properties",
-        vec![
-            (
-                "xmlns",
-                "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties",
-            ),
-            (
-                "xmlns:vt",
-                "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes",
-            ),
-        ],
+        vec![("xmlns", XPROPS_NS), ("xmlns:vt", VTYPES_NS)],
         false,
     );
 
@@ -147,6 +139,5 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "Properties");
 
-    let target = "docProps/app.xml";
-    writer_mng.add_writer(target, writer)
+    writer_mng.add_writer(ARC_APP, writer)
 }
