@@ -12,15 +12,15 @@ description = "umya-spreadsheet is a library written in pure Rust to read and wr
 
 [dependencies]
 aes = "0.8.3"
-ahash = "0.8.6"
-base64 = "0.21.5"
+ahash = "0.8.7"
+base64 = "0.21.6"
 byteorder = "1.5"
 cbc = "0.1.2"
 cfb = "0.9.0"
 chrono = { version = "0.4.31", default-features = false, features = ["clock"] }
 encoding_rs = "0.8.33"
 fancy-regex = "0.13.0"
-getrandom = "0.2.11"
+getrandom = "0.2.12"
 hashbrown = "0.14.3"
 hmac = "0.12.1"
 html_parser = "0.7.0"
