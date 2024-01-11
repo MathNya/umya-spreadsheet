@@ -127,11 +127,15 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // row loop
         for row in &row_dimensions {
-            let cells_in_row: Vec<&Cell> = cells_iter
-                .by_ref()
-                .take_while(|&cell| row.get_row_num() == cell.get_coordinate().get_row_num())
-                .map(|&x| x)
-                .collect();
+            let mut cells_in_row: Vec<&Cell> = Vec::new();
+
+            while let Some(cell) = cells_iter.peek() {
+                if row.get_row_num() != cell.get_coordinate().get_row_num() {
+                    break;
+                }
+
+                cells_in_row.push(cells_iter.next().unwrap());
+            }
 
             // row
             if cells_in_row.is_empty() {
