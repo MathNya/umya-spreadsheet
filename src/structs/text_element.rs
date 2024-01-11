@@ -30,7 +30,7 @@ impl TextElement {
     }
 
     pub fn get_run_properties_mut(&mut self) -> &mut Font {
-        if let Some(_) = &self.run_properties {
+        if self.run_properties.is_some() {
             return self.run_properties.as_mut().unwrap();
         }
         self.set_run_properties(Font::get_default_value());

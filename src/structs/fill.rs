@@ -21,7 +21,7 @@ impl Fill {
     }
 
     pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
-        if let Some(_) = &self.pattern_fill {
+        if self.pattern_fill.is_some() {
             return self.pattern_fill.as_mut().unwrap();
         }
         self.set_pattern_fill(PatternFill::default());
