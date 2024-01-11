@@ -176,35 +176,23 @@ impl DifferentialFormat {
         write_start_tag(writer, "dxf", vec![], false);
 
         // font
-        match &self.font {
-            Some(v) => {
-                v.write_to_font(writer);
-            }
-            None => {}
+        if let Some(v) = &self.font {
+            v.write_to_font(writer);
         }
 
         // fill
-        match &self.fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.fill {
+            v.write_to(writer);
         }
 
         // border
-        match &self.borders {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.borders {
+            v.write_to(writer);
         }
 
         // alignment
-        match &self.alignment {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.alignment {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "dxf");

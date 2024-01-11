@@ -178,64 +178,41 @@ impl Image {
     }
 
     pub fn get_from_marker_type(&self) -> &MarkerType {
-        match &self.two_cell_anchor {
-            Some(anchor) => {
-                return anchor.get_from_marker();
-            }
-            None => {}
+        if let Some(anchor) = &self.two_cell_anchor {
+            return anchor.get_from_marker();
         }
-        match &self.one_cell_anchor {
-            Some(anchor) => {
-                return anchor.get_from_marker();
-            }
-            None => {}
+        if let Some(anchor) = &self.one_cell_anchor {
+            return anchor.get_from_marker();
         }
         panic!("Not Found MediaObject");
     }
 
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
-        match &self.two_cell_anchor {
-            Some(anchor) => {
-                return Some(anchor.get_to_marker());
-            }
-            None => None,
-        }
+        self.two_cell_anchor
+            .as_ref()
+            .map(|anchor| anchor.get_to_marker())
     }
 
     pub(crate) fn get_media_object(&self) -> &MediaObject {
-        match &self.two_cell_anchor {
-            Some(anchor) => match anchor.get_picture() {
-                Some(v) => {
-                    return v.get_blip_fill().get_blip().get_image();
-                }
-                None => {}
-            },
-            None => {}
+        if let Some(anchor) = &self.two_cell_anchor {
+            if let Some(v) = anchor.get_picture() {
+                return v.get_blip_fill().get_blip().get_image();
+            }
         }
-        match &self.one_cell_anchor {
-            Some(anchor) => match anchor.get_picture() {
-                Some(v) => {
-                    return v.get_blip_fill().get_blip().get_image();
-                }
-                None => {}
-            },
-            None => {}
+        if let Some(anchor) = &self.one_cell_anchor {
+            if let Some(v) = anchor.get_picture() {
+                return v.get_blip_fill().get_blip().get_image();
+            }
         }
         panic!("Not Found MediaObject");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {
-        match &self.two_cell_anchor {
-            Some(anchor) => {
-                anchor.write_to(writer, r_id, &0);
-            }
-            None => {}
+        if let Some(anchor) = &self.two_cell_anchor {
+            anchor.write_to(writer, r_id, &0);
         }
-        match &self.one_cell_anchor {
-            Some(anchor) => {
-                anchor.write_to(writer, r_id);
-            }
-            None => {}
+        if let Some(anchor) = &self.one_cell_anchor {
+            anchor.write_to(writer, r_id);
         }
     }
 }

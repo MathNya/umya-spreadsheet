@@ -265,18 +265,12 @@ impl CellFormat {
 
         if !empty_flag {
             // alignment
-            match &self.alignment {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.alignment {
+                v.write_to(writer);
             }
             // protection
-            match &self.protection {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.protection {
+                v.write_to(writer);
             }
             write_end_tag(writer, "xf");
         }

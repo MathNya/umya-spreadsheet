@@ -103,27 +103,18 @@ impl EffectStyle {
         write_start_tag(writer, "a:effectStyle", vec![], false);
 
         // a:effectLst
-        match &self.effect_list {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.effect_list {
+            v.write_to(writer);
         }
 
         // a:scene3d
-        match &self.scene_3d_type {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.scene_3d_type {
+            v.write_to(writer);
         }
 
         // a:sp3d
-        match &self.shape_3d_type {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_3d_type {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:effectStyle");

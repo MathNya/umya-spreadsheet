@@ -74,21 +74,18 @@ impl SourceRectangle {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srcRect
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.t {
-            Some(v) => attributes.push(("t", v)),
-            None => {}
+
+        if let Some(v) = &self.t {
+            attributes.push(("t", v))
         }
-        match &self.l {
-            Some(v) => attributes.push(("l", v)),
-            None => {}
+        if let Some(v) = &self.l {
+            attributes.push(("l", v))
         }
-        match &self.r {
-            Some(v) => attributes.push(("r", v)),
-            None => {}
+        if let Some(v) = &self.r {
+            attributes.push(("r", v))
         }
-        match &self.b {
-            Some(v) => attributes.push(("b", v)),
-            None => {}
+        if let Some(v) = &self.b {
+            attributes.push(("b", v))
         }
         write_start_tag(writer, "a:srcRect", attributes, true);
     }

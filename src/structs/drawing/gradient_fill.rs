@@ -133,19 +133,13 @@ impl GradientFill {
         let _ = &self.gradient_stop_list.write_to(writer);
 
         // a:lin
-        match &self.linear_gradient_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.linear_gradient_fill {
+            v.write_to(writer);
         }
 
         // a:tileRect
-        match &self.tile_rectangle {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.tile_rectangle {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:gradFill");

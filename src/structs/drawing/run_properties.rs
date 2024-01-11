@@ -375,59 +375,38 @@ impl RunProperties {
             write_start_tag(writer, tag_name, attributes, false);
 
             // a:solidFill
-            match &self.solid_fill {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.solid_fill {
+                v.write_to(writer);
             }
 
             // a:ln
-            match &self.outline {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.outline {
+                v.write_to(writer);
             }
 
             // a:latin
-            match &self.latin_font {
-                Some(v) => {
-                    v.write_to_latin(writer);
-                }
-                None => {}
+            if let Some(v) = &self.latin_font {
+                v.write_to_latin(writer);
             }
 
             // a:ea
-            match &self.east_asian_font {
-                Some(v) => {
-                    v.write_to_ea(writer);
-                }
-                None => {}
+            if let Some(v) = &self.east_asian_font {
+                v.write_to_ea(writer);
             }
 
             // a:gradFill
-            match &self.gradient_fill {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.gradient_fill {
+                v.write_to(writer);
             }
 
             // a:noFill
-            match &self.no_fill {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.no_fill {
+                v.write_to(writer);
             }
 
             // a:effectLst
-            match &self.effect_list {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.effect_list {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, tag_name);

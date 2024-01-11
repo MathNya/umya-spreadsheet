@@ -64,9 +64,8 @@ impl PresetColor {
         write_start_tag(writer, "a:prstClr", vec![("val", &self.val)], false);
 
         // a:alpha
-        match &self.alpha {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.alpha {
+            v.write_to(writer)
         }
 
         write_end_tag(writer, "a:prstClr");

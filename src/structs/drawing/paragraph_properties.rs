@@ -112,32 +112,27 @@ impl ParagraphProperties {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let empty_flag = self.default_run_properties.is_none() && self.line_spacing.is_none();
-
         // a:pPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.right_to_left {
-            Some(v) => {
-                attributes.push(("rtl", v));
-            }
-            None => {}
+        if let Some(v) = &self.right_to_left {
+            attributes.push(("rtl", v));
         }
         if self.alignment.has_value() {
             attributes.push(("algn", self.alignment.get_value_string()));
         }
+
+        let empty_flag = self.default_run_properties.is_none() && self.line_spacing.is_none();
         write_start_tag(writer, "a:pPr", attributes, empty_flag);
 
         if !empty_flag {
             // a:defRPr
-            match &self.default_run_properties {
-                Some(v) => v.write_to_def_rpr(writer),
-                None => {}
+            if let Some(v) = &self.default_run_properties {
+                v.write_to_def_rpr(writer)
             }
 
             // a:lnSpc
-            match &self.line_spacing {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.line_spacing {
+                v.write_to(writer)
             }
 
             write_end_tag(writer, "a:pPr");

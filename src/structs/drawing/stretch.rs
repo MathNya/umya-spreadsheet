@@ -50,18 +50,15 @@ impl Stretch {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:stretch
-        if self.fill_rectangle.is_some() {
-            write_start_tag(writer, "a:stretch", vec![], false);
-
-            // a:fillRect
-            match &self.fill_rectangle {
-                Some(v) => v.write_to(writer),
-                None => {}
+        match &self.fill_rectangle {
+            Some(v) => {
+                write_start_tag(writer, "a:stretch", vec![], false);
+                v.write_to(writer);
+                write_end_tag(writer, "a:stretch");
             }
-
-            write_end_tag(writer, "a:stretch");
-        } else {
-            write_start_tag(writer, "a:stretch", vec![], true);
+            None => {
+                write_start_tag(writer, "a:stretch", vec![], true);
+            }
         }
     }
 }

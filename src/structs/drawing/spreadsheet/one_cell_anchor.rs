@@ -143,18 +143,14 @@ impl OneCellAnchor {
         let _ = &self.extent.write_to(writer);
 
         // xdr:sp
-        match &self.shape {
-            Some(v) => v.write_to(writer, &0),
-            None => {}
+        if let Some(v) = &self.shape {
+            v.write_to(writer, &0)
         }
 
         // xdr:pic
-        match &self.picture {
-            Some(v) => {
-                v.write_to(writer, r_id);
-                *r_id += 1i32;
-            }
-            None => {}
+        if let Some(v) = &self.picture {
+            v.write_to(writer, r_id);
+            *r_id += 1i32;
         }
 
         // xdr:clientData

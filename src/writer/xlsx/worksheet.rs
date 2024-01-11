@@ -162,24 +162,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         }
 
         // sheetProtection
-        match worksheet.get_sheet_protection() {
-            Some(v) => {
-                v.write_to(&mut writer);
-            }
-            None => {}
+        if let Some(v) = worksheet.get_sheet_protection() {
+            v.write_to(&mut writer);
         }
 
         // autoFilter
-        match worksheet.get_auto_filter() {
-            Some(v) => {
-                write_start_tag(
-                    &mut writer,
-                    "autoFilter",
-                    vec![("ref", &v.get_range().get_range())],
-                    true,
-                );
-            }
-            None => {}
+        if let Some(v) = worksheet.get_auto_filter() {
+            write_start_tag(
+                &mut writer,
+                "autoFilter",
+                vec![("ref", &v.get_range().get_range())],
+                true,
+            );
         }
 
         // mergeCells
@@ -194,11 +188,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         }
 
         // dataValidations
-        match worksheet.get_data_validations() {
-            Some(v) => {
-                v.write_to(&mut writer);
-            }
-            None => {}
+        if let Some(v) = worksheet.get_data_validations() {
+            v.write_to(&mut writer);
         }
 
         let mut r_id = 1;

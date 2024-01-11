@@ -118,17 +118,14 @@ impl Transform2D {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.rot {
-            Some(v) => attributes.push(("rot", v)),
-            None => {}
+        if let Some(v) = &self.rot {
+            attributes.push(("rot", v))
         }
-        match &self.flip_h {
-            Some(v) => attributes.push(("flipH", v)),
-            None => {}
+        if let Some(v) = &self.flip_h {
+            attributes.push(("flipH", v))
         }
-        match &self.flip_v {
-            Some(v) => attributes.push(("flipV", v)),
-            None => {}
+        if let Some(v) = &self.flip_v {
+            attributes.push(("flipV", v))
         }
         write_start_tag(writer, "a:xfrm", attributes, false);
 

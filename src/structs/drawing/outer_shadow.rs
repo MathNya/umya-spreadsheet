@@ -202,72 +202,42 @@ impl OuterShadow {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:outerShdw
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.blur_radius {
-            Some(v) => {
-                attributes.push(("blurRad", v));
-            }
-            None => {}
+        if let Some(v) = &self.blur_radius {
+            attributes.push(("blurRad", v));
         }
-        match &self.distance {
-            Some(v) => {
-                attributes.push(("dist", v));
-            }
-            None => {}
+        if let Some(v) = &self.distance {
+            attributes.push(("dist", v));
         }
-        match &self.direction {
-            Some(v) => {
-                attributes.push(("dir", v));
-            }
-            None => {}
+        if let Some(v) = &self.direction {
+            attributes.push(("dir", v));
         }
-        match &self.horizontal_ratio {
-            Some(v) => {
-                attributes.push(("sx", v));
-            }
-            None => {}
+        if let Some(v) = &self.horizontal_ratio {
+            attributes.push(("sx", v));
         }
-        match &self.vertical_ratio {
-            Some(v) => {
-                attributes.push(("sy", v));
-            }
-            None => {}
+        if let Some(v) = &self.vertical_ratio {
+            attributes.push(("sy", v));
         }
-        match &self.alignment {
-            Some(v) => {
-                attributes.push(("algn", v));
-            }
-            None => {}
+        if let Some(v) = &self.alignment {
+            attributes.push(("algn", v));
         }
-        match &self.rotate_with_shape {
-            Some(v) => {
-                attributes.push(("rotWithShape", v));
-            }
-            None => {}
+        if let Some(v) = &self.rotate_with_shape {
+            attributes.push(("rotWithShape", v));
         }
         write_start_tag(writer, "a:outerShdw", attributes, false);
 
         // a:prstClr
-        match &self.preset_color {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.preset_color {
+            v.write_to(writer);
         }
 
         // a:schemeClr
-        match &self.scheme_color {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.scheme_color {
+            v.write_to(writer);
         }
 
         // a:srgbClr
-        match &self.rgb_color_model_hex {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.rgb_color_model_hex {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:outerShdw");

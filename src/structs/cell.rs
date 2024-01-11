@@ -65,9 +65,8 @@ impl Cell {
     }
 
     pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
-        match &self.hyperlink {
-            Some(_) => return self.hyperlink.as_mut().unwrap(),
-            None => {}
+        if let Some(_) = &self.hyperlink {
+            return self.hyperlink.as_mut().unwrap();
         }
         let _ = self.set_hyperlink(Hyperlink::default());
         self.hyperlink.as_mut().unwrap()

@@ -59,19 +59,19 @@ impl MajorGridlines {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.with_include() {
-            // c:majorGridlines
-            write_start_tag(writer, "c:majorGridlines", vec![], false);
-
-            // c:spPr
-            if let Some(v) = &self.shape_properties {
-                v.write_to(writer);
-            }
-
-            write_end_tag(writer, "c:majorGridlines");
-        } else {
+        if !self.with_include() {
             // c:majorGridlines
             write_start_tag(writer, "c:majorGridlines", vec![], true);
+            return;
         }
+        // c:majorGridlines
+        write_start_tag(writer, "c:majorGridlines", vec![], false);
+
+        // c:spPr
+        if let Some(v) = &self.shape_properties {
+            v.write_to(writer);
+        }
+
+        write_end_tag(writer, "c:majorGridlines");
     }
 }
