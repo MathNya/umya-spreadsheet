@@ -24,7 +24,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     {
         // XML header
-        let _ = writer.write_event(Event::Decl(BytesDecl::new(
+        writer.write_event(Event::Decl(BytesDecl::new(
             "1.0",
             Some("UTF-8"),
             Some("yes"),
@@ -127,21 +127,21 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // row loop
         for row in &row_dimensions {
-            let mut cells_in_row: Vec<&Cell> = Vec::new();
-
-            while let Some(cell) = cells_iter.peek() {
-                if row.get_row_num() != cell.get_coordinate().get_row_num() {
-                    break;
-                }
-
-                cells_in_row.push(cells_iter.next().unwrap());
-            }
+            let cells_in_row: Vec<&Cell> = cells_iter
+                .by_ref()
+                .take_while(|&cell| row.get_row_num() == cell.get_coordinate().get_row_num())
+                .map(|&x| x)
+                .collect();
 
             // row
-            let include_cell = !cells_in_row.is_empty();
-            if include_cell {
-                let first_num = cells_in_row.first().unwrap().get_coordinate().get_col_num();
-                let last_num = cells_in_row.last().unwrap().get_coordinate().get_col_num();
+            if cells_in_row.is_empty() {
+                let spans = "0:0".to_string();
+                row.write_to(&mut writer, stylesheet, spans, true);
+            } else {
+                let (first_num, last_num) = (
+                    cells_in_row.first().unwrap().get_coordinate().get_col_num(),
+                    cells_in_row.last().unwrap().get_coordinate().get_col_num(),
+                );
                 let spans = format!("{first_num}:{last_num}");
 
                 row.write_to(&mut writer, stylesheet, spans, false);
@@ -151,9 +151,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 }
 
                 write_end_tag(&mut writer, "row");
-            } else {
-                let spans = "0:0".to_string();
-                row.write_to(&mut writer, stylesheet, spans, true);
             }
         }
 

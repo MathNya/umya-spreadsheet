@@ -65,10 +65,10 @@ impl Cell {
     }
 
     pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
-        if let Some(_) = &self.hyperlink {
+        if self.hyperlink.is_some() {
             return self.hyperlink.as_mut().unwrap();
         }
-        let _ = self.set_hyperlink(Hyperlink::default());
+        self.set_hyperlink(Hyperlink::default());
         self.hyperlink.as_mut().unwrap()
     }
 
@@ -325,11 +325,11 @@ impl Cell {
                             self.set_shared_string_item(shared_string_item.clone());
                         } else if type_value == "b" {
                             let prm = &string_value == "1";
-                            let _ = self.set_value_bool(prm);
+                            self.set_value_bool(prm);
                         } else if type_value == "e" {
-                            let _ = self.set_error();
+                            self.set_error();
                         } else if type_value.is_empty() || type_value == "n" {
-                            let _ = self.set_value_crate(string_value.clone());
+                            self.set_value_crate(string_value.clone());
                         };
                     }
                     b"is" => {

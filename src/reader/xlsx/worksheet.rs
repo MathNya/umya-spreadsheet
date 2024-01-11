@@ -181,7 +181,7 @@ pub(crate) fn read(
             }
             b"hyperlink" => {
                 let (coor, hyperlink) = get_hyperlink(e, raw_data_of_worksheet.get_worksheet_relationships());
-                let _ = worksheet.get_cell_mut(coor).set_hyperlink(hyperlink);
+                worksheet.get_cell_mut(coor).set_hyperlink(hyperlink);
             }
             b"printOptions" => {
                 worksheet
@@ -265,8 +265,8 @@ fn get_hyperlink(
 
     let coordition = get_attribute(e, b"ref").unwrap_or_default();
     if let Some(v) = get_attribute(e, b"location") {
-        let _ = hyperlink.set_url(v);
-        let _ = hyperlink.set_location(true);
+        hyperlink.set_url(v);
+        hyperlink.set_location(true);
     }
     if let Some(v) = get_attribute(e, b"r:id") {
         let relationship = raw_relationships.unwrap().get_relationship_by_rid(&v);

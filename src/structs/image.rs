@@ -96,7 +96,7 @@ impl Image {
 
         let mut file = File::open(path_str).unwrap();
         let mut buf = Vec::new();
-        let _ = file.read_to_end(&mut buf).unwrap();
+        file.read_to_end(&mut buf).unwrap();
 
         let mut picture = Picture::default();
         // filename and filedata.
