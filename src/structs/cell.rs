@@ -60,16 +60,15 @@ impl Cell {
         &mut self.coordinate
     }
 
-    pub fn get_hyperlink(&self) -> &Option<Hyperlink> {
-        &self.hyperlink
+    pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
+        self.hyperlink.as_ref()
     }
 
     pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
-        match &self.hyperlink {
-            Some(_) => return self.hyperlink.as_mut().unwrap(),
-            None => {}
+        if self.hyperlink.is_some() {
+            return self.hyperlink.as_mut().unwrap();
         }
-        let _ = self.set_hyperlink(Hyperlink::default());
+        self.set_hyperlink(Hyperlink::default());
         self.hyperlink.as_mut().unwrap()
     }
 
@@ -231,7 +230,7 @@ impl Cell {
     pub(crate) fn set_obj(&mut self, cell: Self) -> &mut Self {
         self.cell_value = cell.get_cell_value().clone();
         self.style = cell.get_style().clone();
-        self.hyperlink = cell.get_hyperlink().clone();
+        self.hyperlink = cell.get_hyperlink().cloned();
         self
     }
 
@@ -326,11 +325,11 @@ impl Cell {
                             self.set_shared_string_item(shared_string_item.clone());
                         } else if type_value == "b" {
                             let prm = &string_value == "1";
-                            let _ = self.set_value_bool(prm);
+                            self.set_value_bool(prm);
                         } else if type_value == "e" {
-                            let _ = self.set_error();
+                            self.set_error();
                         } else if type_value.is_empty() || type_value == "n" {
-                            let _ = self.set_value_crate(string_value.clone());
+                            self.set_value_crate(string_value.clone());
                         };
                     }
                     b"is" => {

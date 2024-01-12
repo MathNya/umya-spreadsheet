@@ -150,8 +150,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_style(&self) -> &Option<Style> {
-        &self.style
+    pub fn get_style(&self) -> Option<&Style> {
+        self.style.as_ref()
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
@@ -164,8 +164,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_color_scale(&self) -> &Option<ColorScale> {
-        &self.color_scale
+    pub fn get_color_scale(&self) -> Option<&ColorScale> {
+        self.color_scale.as_ref()
     }
 
     pub fn set_color_scale(&mut self, value: ColorScale) -> &mut Self {
@@ -178,8 +178,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_data_bar(&self) -> &Option<DataBar> {
-        &self.data_bar
+    pub fn get_data_bar(&self) -> Option<&DataBar> {
+        self.data_bar.as_ref()
     }
 
     pub fn set_data_bar(&mut self, value: DataBar) -> &mut Self {
@@ -192,8 +192,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_icon_set(&self) -> &Option<IconSet> {
-        &self.icon_set
+    pub fn get_icon_set(&self) -> Option<&IconSet> {
+        self.icon_set.as_ref()
     }
 
     pub fn set_icon_set(&mut self, value: IconSet) -> &mut Self {
@@ -206,8 +206,8 @@ impl ConditionalFormattingRule {
         self
     }
 
-    pub fn get_formula(&self) -> &Option<Formula> {
-        &self.formula
+    pub fn get_formula(&self) -> Option<&Formula> {
+        self.formula.as_ref()
     }
 
     pub fn set_formula(&mut self, value: Formula) -> &mut Self {
@@ -310,13 +310,10 @@ impl ConditionalFormattingRule {
         }
 
         let dxf_id_str: String;
-        match &self.style {
-            Some(v) => {
-                let dxf_id = differential_formats.set_style(v);
-                dxf_id_str = dxf_id.to_string();
-                attributes.push(("dxfId", &dxf_id_str));
-            }
-            None => {}
+        if let Some(v) = &self.style {
+            let dxf_id = differential_formats.set_style(v);
+            dxf_id_str = dxf_id.to_string();
+            attributes.push(("dxfId", &dxf_id_str));
         }
 
         let priority = self.priority.get_value_string();
@@ -368,27 +365,23 @@ impl ConditionalFormattingRule {
 
         if is_inner {
             // colorScale
-            match &self.color_scale {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.color_scale {
+                v.write_to(writer)
             }
 
             // dataBar
-            match &self.data_bar {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.data_bar {
+                v.write_to(writer)
             }
 
             // iconSet
-            match &self.icon_set {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.icon_set {
+                v.write_to(writer)
             }
 
             // formula
-            match &self.formula {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.formula {
+                v.write_to(writer)
             }
 
             write_end_tag(writer, "cfRule");

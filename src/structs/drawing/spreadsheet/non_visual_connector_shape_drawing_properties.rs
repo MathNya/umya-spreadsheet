@@ -15,8 +15,8 @@ pub struct NonVisualConnectorShapeDrawingProperties {
 }
 
 impl NonVisualConnectorShapeDrawingProperties {
-    pub fn get_start_connection(&self) -> &Option<StartConnection> {
-        &self.start_connection
+    pub fn get_start_connection(&self) -> Option<&StartConnection> {
+        self.start_connection.as_ref()
     }
 
     pub fn set_start_connection(&mut self, value: StartConnection) {
@@ -27,8 +27,8 @@ impl NonVisualConnectorShapeDrawingProperties {
         self.start_connection = None;
     }
 
-    pub fn get_end_connection(&self) -> &Option<EndConnection> {
-        &self.end_connection
+    pub fn get_end_connection(&self) -> Option<&EndConnection> {
+        self.end_connection.as_ref()
     }
 
     pub fn set_end_connection(&mut self, value: EndConnection) {

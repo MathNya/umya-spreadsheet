@@ -246,9 +246,9 @@ impl Spreadsheet {
 
     /// Get Macros Code.
     /// # Return value
-    /// * `&Option<Vec<u8>>` - Macros Code Raw Data.
-    pub fn get_macros_code(&self) -> &Option<Vec<u8>> {
-        &self.macros_code
+    /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
+    pub fn get_macros_code(&self) -> Option<&Vec<u8>> {
+        self.macros_code.as_ref()
     }
 
     /// Set Macros Code.
@@ -609,12 +609,9 @@ impl Spreadsheet {
     /// (This method is crate only.)
     /// Has Defined Names.
     pub(crate) fn has_defined_names(&self) -> bool {
-        for sheet in self.get_sheet_collection_no_check() {
-            if sheet.has_defined_names() {
-                return true;
-            }
-        }
-        false
+        self.get_sheet_collection_no_check()
+            .iter()
+            .any(|sheet| sheet.has_defined_names())
     }
 
     pub(crate) fn get_backup_context_types(&self) -> &Vec<(String, String)> {
@@ -667,8 +664,8 @@ impl Spreadsheet {
         self
     }
 
-    pub fn get_workbook_protection(&self) -> &Option<WorkbookProtection> {
-        &self.workbook_protection
+    pub fn get_workbook_protection(&self) -> Option<&WorkbookProtection> {
+        self.workbook_protection.as_ref()
     }
 
     pub fn get_workbook_protection_mut(&mut self) -> &mut WorkbookProtection {

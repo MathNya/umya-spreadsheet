@@ -480,19 +480,19 @@ fn hash(algorithm: &str, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
 
 fn gen_random_16() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 16];
-    let _ = getrandom::getrandom(buf);
+    getrandom::getrandom(buf);
     buf.to_vec()
 }
 
 fn gen_random_32() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 32];
-    let _ = getrandom::getrandom(buf);
+    getrandom::getrandom(buf);
     buf.to_vec()
 }
 
 fn gen_random_64() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 64];
-    let _ = getrandom::getrandom(buf);
+    getrandom::getrandom(buf);
     buf.to_vec()
 }
 
@@ -529,7 +529,7 @@ fn build_encryption_info(
 ) -> Vec<u8> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    let _ = writer.write_event(Event::Decl(BytesDecl::new(
+    writer.write_event(Event::Decl(BytesDecl::new(
         "1.0",
         Some("UTF-8"),
         Some("yes"),
@@ -649,7 +649,7 @@ fn buffer_concat(buffers: Vec<&Vec<u8>>) -> Vec<u8> {
 }
 fn buffer_copy(buffer1: &mut [u8], buffer2: &[u8]) {
     for (i, byte) in buffer2.iter().enumerate() {
-        let _ = std::mem::replace(&mut buffer1[i], *byte);
+        std::mem::replace(&mut buffer1[i], *byte);
     }
 }
 

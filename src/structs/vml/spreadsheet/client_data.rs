@@ -40,12 +40,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_move_with_cells(&self) -> &Option<MoveWithCells> {
-        &self.move_with_cells
+    pub fn get_move_with_cells(&self) -> Option<&MoveWithCells> {
+        self.move_with_cells.as_ref()
     }
 
-    pub fn get_move_with_cells_mut(&mut self) -> &mut Option<MoveWithCells> {
-        &mut self.move_with_cells
+    pub fn get_move_with_cells_mut(&mut self) -> Option<&mut MoveWithCells> {
+        self.move_with_cells.as_mut()
     }
 
     pub fn set_move_with_cells(&mut self, value: MoveWithCells) -> &mut Self {
@@ -53,12 +53,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_resize_with_cells(&self) -> &Option<ResizeWithCells> {
-        &self.resize_with_cells
+    pub fn get_resize_with_cells(&self) -> Option<&ResizeWithCells> {
+        self.resize_with_cells.as_ref()
     }
 
-    pub fn get_resize_with_cells_mut(&mut self) -> &mut Option<ResizeWithCells> {
-        &mut self.resize_with_cells
+    pub fn get_resize_with_cells_mut(&mut self) -> Option<&mut ResizeWithCells> {
+        self.resize_with_cells.as_mut()
     }
 
     pub fn set_resize_with_cells(&mut self, value: ResizeWithCells) -> &mut Self {
@@ -79,12 +79,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_auto_fill(&self) -> &Option<AutoFill> {
-        &self.auto_fill
+    pub fn get_auto_fill(&self) -> Option<&AutoFill> {
+        self.auto_fill.as_ref()
     }
 
-    pub fn get_auto_fill_mut(&mut self) -> &mut Option<AutoFill> {
-        &mut self.auto_fill
+    pub fn get_auto_fill_mut(&mut self) -> Option<&mut AutoFill> {
+        self.auto_fill.as_mut()
     }
 
     pub fn set_auto_fill(&mut self, value: AutoFill) -> &mut Self {
@@ -92,12 +92,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_comment_row_target(&self) -> &Option<CommentRowTarget> {
-        &self.comment_row_target
+    pub fn get_comment_row_target(&self) -> Option<&CommentRowTarget> {
+        self.comment_row_target.as_ref()
     }
 
-    pub fn get_comment_row_target_mut(&mut self) -> &mut Option<CommentRowTarget> {
-        &mut self.comment_row_target
+    pub fn get_comment_row_target_mut(&mut self) -> Option<&mut CommentRowTarget> {
+        self.comment_row_target.as_mut()
     }
 
     pub fn set_comment_row_target(&mut self, value: CommentRowTarget) -> &mut Self {
@@ -105,12 +105,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_comment_column_target(&self) -> &Option<CommentColumnTarget> {
-        &self.comment_column_target
+    pub fn get_comment_column_target(&self) -> Option<&CommentColumnTarget> {
+        self.comment_column_target.as_ref()
     }
 
-    pub fn get_comment_column_target_mut(&mut self) -> &mut Option<CommentColumnTarget> {
-        &mut self.comment_column_target
+    pub fn get_comment_column_target_mut(&mut self) -> Option<&mut CommentColumnTarget> {
+        self.comment_column_target.as_mut()
     }
 
     pub fn set_comment_column_target(&mut self, value: CommentColumnTarget) -> &mut Self {
@@ -118,12 +118,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_visible(&self) -> &Option<Visible> {
-        &self.visible
+    pub fn get_visible(&self) -> Option<&Visible> {
+        self.visible.as_ref()
     }
 
-    pub fn get_visible_mut(&mut self) -> &mut Option<Visible> {
-        &mut self.visible
+    pub fn get_visible_mut(&mut self) -> Option<&mut Visible> {
+        self.visible.as_mut()
     }
 
     pub fn set_visible(&mut self, value: Visible) -> &mut Self {
@@ -131,12 +131,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_clipboard_format(&self) -> &Option<ClipboardFormat> {
-        &self.clipboard_format
+    pub fn get_clipboard_format(&self) -> Option<&ClipboardFormat> {
+        self.clipboard_format.as_ref()
     }
 
-    pub fn get_clipboard_format_mut(&mut self) -> &mut Option<ClipboardFormat> {
-        &mut self.clipboard_format
+    pub fn get_clipboard_format_mut(&mut self) -> Option<&mut ClipboardFormat> {
+        self.clipboard_format.as_mut()
     }
 
     pub fn set_clipboard_format(&mut self, value: ClipboardFormat) -> &mut Self {
@@ -144,12 +144,12 @@ impl ClientData {
         self
     }
 
-    pub fn get_auto_size_picture(&self) -> &Option<AutoSizePicture> {
-        &self.auto_size_picture
+    pub fn get_auto_size_picture(&self) -> Option<&AutoSizePicture> {
+        self.auto_size_picture.as_ref()
     }
 
-    pub fn get_auto_size_picture_mut(&mut self) -> &mut Option<AutoSizePicture> {
-        &mut self.auto_size_picture
+    pub fn get_auto_size_picture_mut(&mut self) -> Option<&mut AutoSizePicture> {
+        self.auto_size_picture.as_mut()
     }
 
     pub fn set_auto_size_picture(&mut self, value: AutoSizePicture) -> &mut Self {

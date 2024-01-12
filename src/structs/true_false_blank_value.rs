@@ -3,8 +3,8 @@ pub struct TrueFalseBlankValue {
     value: Option<bool>,
 }
 impl TrueFalseBlankValue {
-    pub(crate) fn get_value(&self) -> &Option<bool> {
-        &self.value
+    pub(crate) fn get_value(&self) -> Option<&bool> {
+        self.value.as_ref()
     }
 
     pub(crate) fn _get_value_string(&self) -> &str {

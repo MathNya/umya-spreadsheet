@@ -29,12 +29,12 @@ pub struct ShapeProperties {
 }
 
 impl ShapeProperties {
-    pub fn get_pattern_fill(&self) -> &Option<PatternFill> {
-        &self.pattern_fill
+    pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
+        self.pattern_fill.as_ref()
     }
 
-    pub fn get_pattern_fill_mut(&mut self) -> &mut Option<PatternFill> {
-        &mut self.pattern_fill
+    pub fn get_pattern_fill_mut(&mut self) -> Option<&mut PatternFill> {
+        self.pattern_fill.as_mut()
     }
 
     pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut Self {
@@ -42,12 +42,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_transform2d(&self) -> &Option<Transform2D> {
-        &self.transform2d
+    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+        self.transform2d.as_ref()
     }
 
-    pub fn get_transform2d_mut(&mut self) -> &mut Option<Transform2D> {
-        &mut self.transform2d
+    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+        self.transform2d.as_mut()
     }
 
     pub fn set_transform2d(&mut self, value: Transform2D) -> &mut Self {
@@ -55,12 +55,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_geometry(&self) -> &Option<PresetGeometry> {
-        &self.preset_geometry
+    pub fn get_geometry(&self) -> Option<&PresetGeometry> {
+        self.preset_geometry.as_ref()
     }
 
-    pub fn get_geometry_mut(&mut self) -> &mut Option<PresetGeometry> {
-        &mut self.preset_geometry
+    pub fn get_geometry_mut(&mut self) -> Option<&mut PresetGeometry> {
+        self.preset_geometry.as_mut()
     }
 
     pub fn set_geometry(&mut self, value: PresetGeometry) -> &mut Self {
@@ -68,12 +68,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_solid_fill(&self) -> &Option<SolidFill> {
-        &self.solid_fill
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill.as_ref()
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
-        &mut self.solid_fill
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill.as_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
@@ -81,12 +81,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_no_fill(&self) -> &Option<NoFill> {
-        &self.no_fill
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill.as_ref()
     }
 
-    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
-        &mut self.no_fill
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill.as_mut()
     }
 
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
@@ -94,12 +94,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_outline(&self) -> &Option<Outline> {
-        &self.outline
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline.as_ref()
     }
 
-    pub fn get_outline_mut(&mut self) -> &mut Option<Outline> {
-        &mut self.outline
+    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+        self.outline.as_mut()
     }
 
     pub fn set_outline(&mut self, value: Outline) -> &mut Self {
@@ -107,12 +107,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_effect_list(&self) -> &Option<EffectList> {
-        &self.effect_list
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list.as_ref()
     }
 
-    pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
-        &mut self.effect_list
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list.as_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
@@ -120,12 +120,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_scene_3d_type(&self) -> &Option<Scene3DType> {
-        &self.scene_3d_type
+    pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
+        self.scene_3d_type.as_ref()
     }
 
-    pub fn get_scene_3d_type_mut(&mut self) -> &mut Option<Scene3DType> {
-        &mut self.scene_3d_type
+    pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
+        self.scene_3d_type.as_mut()
     }
 
     pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut Self {
@@ -133,12 +133,12 @@ impl ShapeProperties {
         self
     }
 
-    pub fn get_shape_3d_type(&self) -> &Option<Shape3DType> {
-        &self.shape_3d_type
+    pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
+        self.shape_3d_type.as_ref()
     }
 
-    pub fn get_shape_3d_type_mut(&mut self) -> &mut Option<Shape3DType> {
-        &mut self.shape_3d_type
+    pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
+        self.shape_3d_type.as_mut()
     }
 
     pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut Self {

@@ -152,12 +152,12 @@ impl CellFormat {
         self.apply_protection.has_value()
     }
 
-    pub(crate) fn get_alignment(&self) -> &Option<Alignment> {
-        &self.alignment
+    pub(crate) fn get_alignment(&self) -> Option<&Alignment> {
+        self.alignment.as_ref()
     }
 
-    pub(crate) fn _get_alignment_mut(&mut self) -> &mut Option<Alignment> {
-        &mut self.alignment
+    pub(crate) fn _get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+        self.alignment.as_mut()
     }
 
     pub(crate) fn set_alignment(&mut self, value: Alignment) -> &mut Self {
@@ -165,12 +165,12 @@ impl CellFormat {
         self
     }
 
-    pub(crate) fn get_protection(&self) -> &Option<Protection> {
-        &self.protection
+    pub(crate) fn get_protection(&self) -> Option<&Protection> {
+        self.protection.as_ref()
     }
 
-    pub(crate) fn _get_protection_mut(&mut self) -> &mut Option<Protection> {
-        &mut self.protection
+    pub(crate) fn _get_protection_mut(&mut self) -> Option<&mut Protection> {
+        self.protection.as_mut()
     }
 
     pub(crate) fn set_protection(&mut self, value: Protection) -> &mut Self {
@@ -265,18 +265,12 @@ impl CellFormat {
 
         if !empty_flag {
             // alignment
-            match &self.alignment {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.alignment {
+                v.write_to(writer);
             }
             // protection
-            match &self.protection {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.protection {
+                v.write_to(writer);
             }
             write_end_tag(writer, "xf");
         }

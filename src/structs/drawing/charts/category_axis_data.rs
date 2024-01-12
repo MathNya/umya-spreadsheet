@@ -16,12 +16,12 @@ pub struct CategoryAxisData {
 }
 
 impl CategoryAxisData {
-    pub fn get_string_reference(&self) -> &Option<StringReference> {
-        &self.string_reference
+    pub fn get_string_reference(&self) -> Option<&StringReference> {
+        self.string_reference.as_ref()
     }
 
-    pub fn get_string_reference_mut(&mut self) -> &mut Option<StringReference> {
-        &mut self.string_reference
+    pub fn get_string_reference_mut(&mut self) -> Option<&mut StringReference> {
+        self.string_reference.as_mut()
     }
 
     pub fn set_string_reference(&mut self, value: StringReference) -> &mut Self {
@@ -34,12 +34,12 @@ impl CategoryAxisData {
         self
     }
 
-    pub fn get_string_literal(&self) -> &Option<StringLiteral> {
-        &self.string_literal
+    pub fn get_string_literal(&self) -> Option<&StringLiteral> {
+        self.string_literal.as_ref()
     }
 
-    pub fn get_string_literal_mut(&mut self) -> &mut Option<StringLiteral> {
-        &mut self.string_literal
+    pub fn get_string_literal_mut(&mut self) -> Option<&mut StringLiteral> {
+        self.string_literal.as_mut()
     }
 
     pub fn set_string_literal(&mut self, value: StringLiteral) -> &mut Self {

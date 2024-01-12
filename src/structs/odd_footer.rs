@@ -28,10 +28,7 @@ impl OddFooter {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if self.value.has_value() {
-            return true;
-        }
-        false
+        self.value.has_value()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

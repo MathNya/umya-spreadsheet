@@ -22,12 +22,12 @@ impl PresetColor {
         self.val = value.into();
     }
 
-    pub fn get_alpha(&self) -> &Option<Alpha> {
-        &self.alpha
+    pub fn get_alpha(&self) -> Option<&Alpha> {
+        self.alpha.as_ref()
     }
 
-    pub fn get_alpha_mut(&mut self) -> &mut Option<Alpha> {
-        &mut self.alpha
+    pub fn get_alpha_mut(&mut self) -> Option<&mut Alpha> {
+        self.alpha.as_mut()
     }
 
     pub fn set_alpha(&mut self, value: Alpha) {
@@ -64,9 +64,8 @@ impl PresetColor {
         write_start_tag(writer, "a:prstClr", vec![("val", &self.val)], false);
 
         // a:alpha
-        match &self.alpha {
-            Some(v) => v.write_to(writer),
-            None => {}
+        if let Some(v) = &self.alpha {
+            v.write_to(writer)
         }
 
         write_end_tag(writer, "a:prstClr");

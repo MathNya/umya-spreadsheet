@@ -38,12 +38,12 @@ impl Paragraph {
         self.run.push(value);
     }
 
-    pub fn get_end_para_run_properties(&self) -> &Option<RunProperties> {
-        &self.end_para_run_properties
+    pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
+        self.end_para_run_properties.as_ref()
     }
 
-    pub fn get_end_para_run_properties_mut(&mut self) -> &mut Option<RunProperties> {
-        &mut self.end_para_run_properties
+    pub fn get_end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+        self.end_para_run_properties.as_mut()
     }
 
     pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Paragraph {

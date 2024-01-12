@@ -43,7 +43,7 @@ impl GraphicData {
                     let relationship = drawing_relationships
                         .unwrap()
                         .get_relationship_by_rid(&chart_id);
-                    let _ = chart::read(relationship.get_raw_file(), &mut self.chart_space);
+                    chart::read(relationship.get_raw_file(), &mut self.chart_space);
                 }
             },
             Event::End(ref e) => {

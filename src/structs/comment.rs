@@ -91,28 +91,22 @@ impl Comment {
         if &org_col_num != self.coordinate.get_col_num() {
             self.get_anchor_mut()
                 .adjustment_insert_column(offset_col_num);
-            match self
+            if let Some(v) = self
                 .get_shape_mut()
                 .get_client_data_mut()
                 .get_comment_column_target_mut()
             {
-                Some(v) => {
-                    v.adjustment_insert_column(offset_col_num);
-                }
-                None => {}
+                v.adjustment_insert_column(offset_col_num);
             }
         }
         if &org_row_num != self.coordinate.get_row_num() {
             self.get_anchor_mut().adjustment_insert_row(offset_row_num);
-            match self
+            if let Some(v) = self
                 .get_shape_mut()
                 .get_client_data_mut()
                 .get_comment_row_target_mut()
             {
-                Some(v) => {
-                    v.adjustment_insert_row(offset_row_num);
-                }
-                None => {}
+                v.adjustment_insert_row(offset_row_num);
             }
         }
     }
@@ -135,28 +129,22 @@ impl Comment {
         if &org_col_num != self.coordinate.get_col_num() {
             self.get_anchor_mut()
                 .adjustment_remove_column(offset_col_num);
-            match self
+            if let Some(v) = self
                 .get_shape_mut()
                 .get_client_data_mut()
                 .get_comment_column_target_mut()
             {
-                Some(v) => {
-                    v.adjustment_remove_column(offset_col_num);
-                }
-                None => {}
+                v.adjustment_remove_column(offset_col_num);
             }
         }
         if &org_row_num != self.coordinate.get_row_num() {
             self.get_anchor_mut().adjustment_remove_row(offset_row_num);
-            match self
+            if let Some(v) = self
                 .get_shape_mut()
                 .get_client_data_mut()
                 .get_comment_row_target_mut()
             {
-                Some(v) => {
-                    v.adjustment_remove_row(offset_row_num);
-                }
-                None => {}
+                v.adjustment_remove_row(offset_row_num);
             }
         }
     }

@@ -390,7 +390,7 @@ pub fn set_password<P: AsRef<Path>>(
 ) -> Result<(), XlsxError> {
     let mut file = File::open(from_path).unwrap();
     let mut buffer = Vec::new();
-    let _ = file.read_to_end(&mut buffer).unwrap();
+    file.read_to_end(&mut buffer).unwrap();
 
     // set password
     encrypt(&to_path, &buffer, password);

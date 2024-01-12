@@ -49,7 +49,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     worksheet.set_name(escape::unescape(&name_value).unwrap());
                     worksheet.set_sheet_id(sheet_id_value);
                     worksheet.set_r_id(r_id_value);
-                    let _ = spreadsheet.add_sheet(worksheet);
+                    spreadsheet.add_sheet(worksheet);
                 }
                 b"pivotCache" => {
                     let cache_id = get_attribute(e, b"cacheId").unwrap();

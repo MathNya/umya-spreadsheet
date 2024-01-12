@@ -53,12 +53,12 @@ impl GradientFill {
         self
     }
 
-    pub fn get_linear_gradient_fill(&self) -> &Option<LinearGradientFill> {
-        &self.linear_gradient_fill
+    pub fn get_linear_gradient_fill(&self) -> Option<&LinearGradientFill> {
+        self.linear_gradient_fill.as_ref()
     }
 
-    pub fn get_linear_gradient_fill_mut(&mut self) -> &mut Option<LinearGradientFill> {
-        &mut self.linear_gradient_fill
+    pub fn get_linear_gradient_fill_mut(&mut self) -> Option<&mut LinearGradientFill> {
+        self.linear_gradient_fill.as_mut()
     }
 
     pub fn set_linear_gradient_fill(&mut self, value: LinearGradientFill) -> &mut GradientFill {
@@ -66,12 +66,12 @@ impl GradientFill {
         self
     }
 
-    pub fn get_tile_rectangle(&self) -> &Option<TileRectangle> {
-        &self.tile_rectangle
+    pub fn get_tile_rectangle(&self) -> Option<&TileRectangle> {
+        self.tile_rectangle.as_ref()
     }
 
-    pub fn get_tile_rectangle_mut(&mut self) -> &mut Option<TileRectangle> {
-        &mut self.tile_rectangle
+    pub fn get_tile_rectangle_mut(&mut self) -> Option<&mut TileRectangle> {
+        self.tile_rectangle.as_mut()
     }
 
     pub fn set_tile_rectangle(&mut self, value: TileRectangle) -> &mut GradientFill {
@@ -133,19 +133,13 @@ impl GradientFill {
         let _ = &self.gradient_stop_list.write_to(writer);
 
         // a:lin
-        match &self.linear_gradient_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.linear_gradient_fill {
+            v.write_to(writer);
         }
 
         // a:tileRect
-        match &self.tile_rectangle {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.tile_rectangle {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:gradFill");

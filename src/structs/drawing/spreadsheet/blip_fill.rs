@@ -29,12 +29,12 @@ impl BlipFill {
         self
     }
 
-    pub fn get_source_rectangle(&self) -> &Option<SourceRectangle> {
-        &self.source_rectangle
+    pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
+        self.source_rectangle.as_ref()
     }
 
-    pub fn get_source_rectangle_mut(&mut self) -> &mut Option<SourceRectangle> {
-        &mut self.source_rectangle
+    pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
+        self.source_rectangle.as_mut()
     }
 
     pub fn set_source_rectangle(&mut self, value: SourceRectangle) -> &mut BlipFill {

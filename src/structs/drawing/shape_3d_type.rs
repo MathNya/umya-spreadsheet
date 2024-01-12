@@ -27,24 +27,24 @@ impl Shape3DType {
         self
     }
 
-    pub fn get_bevel_top(&self) -> &Option<BevelTop> {
-        &self.bevel_top
+    pub fn get_bevel_top(&self) -> Option<&BevelTop> {
+        self.bevel_top.as_ref()
     }
 
-    pub fn get_bevel_top_mut(&mut self) -> &mut Option<BevelTop> {
-        &mut self.bevel_top
+    pub fn get_bevel_top_mut(&mut self) -> Option<&mut BevelTop> {
+        self.bevel_top.as_mut()
     }
 
     pub fn set_bevel_top(&mut self, value: BevelTop) {
         self.bevel_top = Some(value);
     }
 
-    pub fn get_bevel_bottom(&self) -> &Option<BevelBottom> {
-        &self.bevel_bottom
+    pub fn get_bevel_bottom(&self) -> Option<&BevelBottom> {
+        self.bevel_bottom.as_ref()
     }
 
-    pub fn get_bevel_bottom_mut(&mut self) -> &mut Option<BevelBottom> {
-        &mut self.bevel_bottom
+    pub fn get_bevel_bottom_mut(&mut self) -> Option<&mut BevelBottom> {
+        self.bevel_bottom.as_mut()
     }
 
     pub fn set_bevel_bottom(&mut self, value: BevelBottom) {

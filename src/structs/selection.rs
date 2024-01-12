@@ -26,12 +26,12 @@ impl Selection {
         self
     }
 
-    pub fn get_active_cell(&self) -> &Option<Coordinate> {
-        &self.active_cell
+    pub fn get_active_cell(&self) -> Option<&Coordinate> {
+        self.active_cell.as_ref()
     }
 
-    pub fn get_active_cell_mut(&mut self) -> &mut Option<Coordinate> {
-        &mut self.active_cell
+    pub fn get_active_cell_mut(&mut self) -> Option<&mut Coordinate> {
+        self.active_cell.as_mut()
     }
 
     pub fn set_active_cell(&mut self, value: Coordinate) -> &mut Self {

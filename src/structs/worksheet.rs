@@ -504,15 +504,12 @@ impl Worksheet {
     pub(crate) fn get_hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
         let mut result: HashMap<String, &Hyperlink> = HashMap::new();
         for cell in self.cell_collection.get_collection() {
-            match cell.get_hyperlink() {
-                Some(hyperlink) => {
-                    let coordition = coordinate_from_index(
-                        cell.get_coordinate().get_col_num(),
-                        cell.get_coordinate().get_row_num(),
-                    );
-                    result.insert(coordition, hyperlink);
-                }
-                None => {}
+            if let Some(hyperlink) = cell.get_hyperlink() {
+                let coordition = coordinate_from_index(
+                    cell.get_coordinate().get_col_num(),
+                    cell.get_coordinate().get_row_num(),
+                );
+                result.insert(coordition, hyperlink);
             }
         }
         result
@@ -567,13 +564,13 @@ impl Worksheet {
     // Auto Filter
     // ************************
     // Get Auto Filter (Option).
-    pub fn get_auto_filter(&self) -> &Option<AutoFilter> {
-        &self.auto_filter
+    pub fn get_auto_filter(&self) -> Option<&AutoFilter> {
+        self.auto_filter.as_ref()
     }
 
     // Get Auto Filter (Option) in mutable.
-    pub fn get_auto_filter_mut(&mut self) -> &mut Option<AutoFilter> {
-        &mut self.auto_filter
+    pub fn get_auto_filter_mut(&mut self) -> Option<&mut AutoFilter> {
+        self.auto_filter.as_mut()
     }
 
     // Set Auto Filter.
@@ -996,16 +993,13 @@ impl Worksheet {
             }
 
             // auto filter
-            match self.get_auto_filter_mut() {
-                Some(v) => {
-                    v.get_range_mut().adjustment_insert_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
+            if let Some(v) = self.get_auto_filter_mut() {
+                v.get_range_mut().adjustment_insert_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
             };
         }
     }
@@ -1061,123 +1055,118 @@ impl Worksheet {
             self.get_row_dimensions_crate_mut()
                 .adjustment_remove_coordinate(root_row_num, offset_row_num);
         }
-        if offset_col_num != &0 || offset_row_num != &0 {
-            // defined_names
-            let title = self.title.clone();
-            self.defined_names.retain(|x| {
-                !(x.get_address_obj().is_remove(
+
+        if (offset_col_num == &0 && offset_row_num == &0) {
+            return;
+        }
+
+        // defined_names
+        let title = self.title.clone();
+        self.defined_names.retain(|x| {
+            !(x.get_address_obj().is_remove(
+                &title,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ))
+        });
+        for defined_name in &mut self.defined_names {
+            defined_name
+                .get_address_obj_mut()
+                .adjustment_remove_coordinate(
                     &title,
                     root_col_num,
                     offset_col_num,
                     root_row_num,
                     offset_row_num,
-                ))
-            });
-            for defined_name in &mut self.defined_names {
-                defined_name
-                    .get_address_obj_mut()
-                    .adjustment_remove_coordinate(
-                        &title,
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-            }
-
-            // cell
-            self.get_cell_collection_crate_mut()
-                .adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
                 );
+        }
 
-            // comments
-            self.comments.retain(|x| {
-                !(x.get_coordinate().is_remove(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                ))
-            });
-            for comment in &mut self.comments {
-                comment.adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
+        // cell
+        self.get_cell_collection_crate_mut()
+            .adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
 
-            // conditional styles
-            for conditional_styles in &mut self.conditional_formatting_collection {
-                conditional_styles
-                    .get_sequence_of_references_mut()
-                    .get_range_collection_mut()
-                    .retain(|x| {
-                        !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
-                    });
-            }
-            self.conditional_formatting_collection.retain(|x| {
-                !x.get_sequence_of_references()
-                    .get_range_collection()
-                    .is_empty()
-            });
-            for conditional_styles in &mut self.conditional_formatting_collection {
-                for range in conditional_styles
-                    .get_sequence_of_references_mut()
-                    .get_range_collection_mut()
-                {
-                    range.adjustment_remove_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-            }
+        // comments
+        self.comments.retain(|x| {
+            !(x.get_coordinate().is_remove(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ))
+        });
+        for comment in &mut self.comments {
+            comment.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
 
-            // merge cells
-            self.get_merge_cells_mut().retain(|x| {
-                !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
-            });
-            for merge_cell in self.get_merge_cells_mut() {
-                merge_cell.adjustment_remove_coordinate(
+        // conditional styles
+        for conditional_styles in &mut self.conditional_formatting_collection {
+            conditional_styles
+                .get_sequence_of_references_mut()
+                .get_range_collection_mut()
+                .retain(|x| {
+                    !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
+                });
+        }
+        self.conditional_formatting_collection.retain(|x| {
+            !x.get_sequence_of_references()
+                .get_range_collection()
+                .is_empty()
+        });
+        for conditional_styles in &mut self.conditional_formatting_collection {
+            for range in conditional_styles
+                .get_sequence_of_references_mut()
+                .get_range_collection_mut()
+            {
+                range.adjustment_remove_coordinate(
                     root_col_num,
                     offset_col_num,
                     root_row_num,
                     offset_row_num,
                 );
             }
+        }
 
-            // auto filter
-            let is_remove = match self.get_auto_filter() {
-                Some(v) => v.get_range().is_remove(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                ),
-                None => false,
-            };
-            if is_remove {
+        // merge cells
+        self.get_merge_cells_mut()
+            .retain(|x| !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)));
+        for merge_cell in self.get_merge_cells_mut() {
+            merge_cell.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+
+        // auto filter
+        if let Some(v) = self.get_auto_filter() {
+            if v.get_range()
+                .is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
+            {
                 self.remove_auto_filter();
             }
-            match self.get_auto_filter_mut() {
-                Some(v) => {
-                    v.get_range_mut().adjustment_remove_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
-            };
         }
+
+        if let Some(v) = self.get_auto_filter_mut() {
+            v.get_range_mut().adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        };
     }
 
     /// (This method is crate only.)
@@ -1215,8 +1204,8 @@ impl Worksheet {
     }
 
     /// Get Code Name.
-    pub fn get_code_name(&self) -> &Option<String> {
-        &self.code_name
+    pub fn get_code_name(&self) -> Option<&String> {
+        self.code_name.as_ref()
     }
 
     /// Set Code Name.
@@ -1284,18 +1273,13 @@ impl Worksheet {
     }
 
     /// Get Tab Color.
-    pub fn get_tab_color(&self) -> &Option<Color> {
-        &self.tab_color
+    pub fn get_tab_color(&self) -> Option<&Color> {
+        self.tab_color.as_ref()
     }
 
     /// Get Tab Color in mutable.
     pub fn get_tab_color_mut(&mut self) -> &mut Color {
-        match &self.tab_color {
-            Some(_) => return self.tab_color.as_mut().unwrap(),
-            None => {}
-        }
-        self.set_tab_color(Color::default());
-        self.tab_color.as_mut().unwrap()
+        self.tab_color.get_or_insert_with(|| Color::default())
     }
 
     /// Set Tab Color.
@@ -1549,12 +1533,12 @@ impl Worksheet {
         &mut self.tables
     }
 
-    pub fn get_data_validations(&self) -> &Option<DataValidations> {
-        &self.data_validations
+    pub fn get_data_validations(&self) -> Option<&DataValidations> {
+        self.data_validations.as_ref()
     }
 
-    pub fn get_data_validations_mut(&mut self) -> &mut Option<DataValidations> {
-        &mut self.data_validations
+    pub fn get_data_validations_mut(&mut self) -> Option<&mut DataValidations> {
+        self.data_validations.as_mut()
     }
 
     pub fn set_data_validations(&mut self, value: DataValidations) -> &mut Self {
@@ -1691,46 +1675,41 @@ impl Worksheet {
     /// * `Vec<&MediaObject>` - Media Object List.
     pub(crate) fn get_media_object_collection(&self) -> Vec<&MediaObject> {
         let mut result: Vec<&MediaObject> = Vec::new();
-        for image in self.get_worksheet_drawing().get_image_collection() {
-            let media_object = image.get_media_object();
-            let mut is_new = true;
-            for v in &result {
-                if v.get_image_name() == media_object.get_image_name() {
-                    is_new = false;
-                }
-            }
-            if is_new {
+
+        let image_media_objects = self
+            .get_worksheet_drawing()
+            .get_image_collection()
+            .iter()
+            .map(|image| image.get_media_object());
+
+        let ole_obj_media_objects = self
+            .get_ole_objects()
+            .get_ole_object()
+            .iter()
+            .map(|ole_objects| ole_objects.get_embedded_object_properties().get_image());
+
+        for media_object in image_media_objects.chain(ole_obj_media_objects) {
+            if !result
+                .iter()
+                .any(|v| v.get_image_name() == media_object.get_image_name())
+            {
                 result.push(media_object);
             }
         }
-        for ole_objects in self.get_ole_objects().get_ole_object() {
-            let media_object = ole_objects.get_embedded_object_properties().get_image();
-            let mut is_new = true;
-            for v in &result {
-                if v.get_image_name() == media_object.get_image_name() {
-                    is_new = false;
-                }
-            }
-            if is_new {
-                result.push(media_object);
-            }
-        }
+
         result
     }
 
     pub(crate) fn get_pivot_cache_definition_collection(&self) -> Vec<&str> {
         let mut result: Vec<&str> = Vec::new();
-        match &self.raw_data_of_worksheet {
-            Some(raw_data) => {
-                for relationships in raw_data.get_relationships_list() {
-                    for row in relationships.get_relationship_list() {
-                        if row.get_type() == PIVOT_CACHE_DEF_NS {
-                            result.push(row.get_raw_file().get_file_target());
-                        }
+        if let Some(raw_data) = &self.raw_data_of_worksheet {
+            for relationships in raw_data.get_relationships_list() {
+                for row in relationships.get_relationship_list() {
+                    if row.get_type() == PIVOT_CACHE_DEF_NS {
+                        result.push(row.get_raw_file().get_file_target());
                     }
                 }
             }
-            None => {}
         }
         result
     }
@@ -1761,8 +1740,8 @@ impl Worksheet {
         self
     }
 
-    pub fn get_sheet_protection(&self) -> &Option<SheetProtection> {
-        &self.sheet_protection
+    pub fn get_sheet_protection(&self) -> Option<&SheetProtection> {
+        self.sheet_protection.as_ref()
     }
 
     pub fn get_sheet_protection_mut(&mut self) -> &mut SheetProtection {

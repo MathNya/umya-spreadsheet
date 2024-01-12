@@ -49,12 +49,12 @@ impl OleObject {
         self.object_extension = value.into();
     }
 
-    pub fn get_object_data(&self) -> &Option<Vec<u8>> {
-        &self.object_data
+    pub fn get_object_data(&self) -> Option<&Vec<u8>> {
+        self.object_data.as_ref()
     }
 
-    pub fn get_object_data_mut(&mut self) -> &mut Option<Vec<u8>> {
-        &mut self.object_data
+    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+        self.object_data.as_mut()
     }
 
     pub fn set_object_data(&mut self, value: Vec<u8>) -> &mut Self {

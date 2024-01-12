@@ -64,12 +64,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_line_chart(&self) -> &Option<LineChart> {
-        &self.line_chart
+    pub fn get_line_chart(&self) -> Option<&LineChart> {
+        self.line_chart.as_ref()
     }
 
-    pub fn get_line_chart_mut(&mut self) -> &mut Option<LineChart> {
-        &mut self.line_chart
+    pub fn get_line_chart_mut(&mut self) -> Option<&mut LineChart> {
+        self.line_chart.as_mut()
     }
 
     pub fn set_line_chart(&mut self, value: LineChart) -> &mut Self {
@@ -77,12 +77,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_line_3d_chart(&self) -> &Option<Line3DChart> {
-        &self.line_3d_chart
+    pub fn get_line_3d_chart(&self) -> Option<&Line3DChart> {
+        self.line_3d_chart.as_ref()
     }
 
-    pub fn get_line_3d_chart_mut(&mut self) -> &mut Option<Line3DChart> {
-        &mut self.line_3d_chart
+    pub fn get_line_3d_chart_mut(&mut self) -> Option<&mut Line3DChart> {
+        self.line_3d_chart.as_mut()
     }
 
     pub fn set_line_3d_chart(&mut self, value: Line3DChart) -> &mut Self {
@@ -90,12 +90,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_pie_chart(&self) -> &Option<PieChart> {
-        &self.pie_chart
+    pub fn get_pie_chart(&self) -> Option<&PieChart> {
+        self.pie_chart.as_ref()
     }
 
-    pub fn get_pie_chart_mut(&mut self) -> &mut Option<PieChart> {
-        &mut self.pie_chart
+    pub fn get_pie_chart_mut(&mut self) -> Option<&mut PieChart> {
+        self.pie_chart.as_mut()
     }
 
     pub fn set_pie_chart(&mut self, value: PieChart) -> &mut Self {
@@ -103,12 +103,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_pie_3d_chart(&self) -> &Option<Pie3DChart> {
-        &self.pie_3d_chart
+    pub fn get_pie_3d_chart(&self) -> Option<&Pie3DChart> {
+        self.pie_3d_chart.as_ref()
     }
 
-    pub fn get_pie_3d_chart_mut(&mut self) -> &mut Option<Pie3DChart> {
-        &mut self.pie_3d_chart
+    pub fn get_pie_3d_chart_mut(&mut self) -> Option<&mut Pie3DChart> {
+        self.pie_3d_chart.as_mut()
     }
 
     pub fn set_pie_3d_chart(&mut self, value: Pie3DChart) -> &mut Self {
@@ -116,12 +116,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_doughnut_chart(&self) -> &Option<DoughnutChart> {
-        &self.doughnut_chart
+    pub fn get_doughnut_chart(&self) -> Option<&DoughnutChart> {
+        self.doughnut_chart.as_ref()
     }
 
-    pub fn get_doughnut_chart_mut(&mut self) -> &mut Option<DoughnutChart> {
-        &mut self.doughnut_chart
+    pub fn get_doughnut_chart_mut(&mut self) -> Option<&mut DoughnutChart> {
+        self.doughnut_chart.as_mut()
     }
 
     pub fn set_doughnut_chart(&mut self, value: DoughnutChart) -> &mut Self {
@@ -129,12 +129,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_scatter_chart(&self) -> &Option<ScatterChart> {
-        &self.scatter_chart
+    pub fn get_scatter_chart(&self) -> Option<&ScatterChart> {
+        self.scatter_chart.as_ref()
     }
 
-    pub fn get_scatter_chart_mut(&mut self) -> &mut Option<ScatterChart> {
-        &mut self.scatter_chart
+    pub fn get_scatter_chart_mut(&mut self) -> Option<&mut ScatterChart> {
+        self.scatter_chart.as_mut()
     }
 
     pub fn set_scatter_chart(&mut self, value: ScatterChart) -> &mut Self {
@@ -142,12 +142,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_bar_chart(&self) -> &Option<BarChart> {
-        &self.bar_chart
+    pub fn get_bar_chart(&self) -> Option<&BarChart> {
+        self.bar_chart.as_ref()
     }
 
-    pub fn get_bar_chart_mut(&mut self) -> &mut Option<BarChart> {
-        &mut self.bar_chart
+    pub fn get_bar_chart_mut(&mut self) -> Option<&mut BarChart> {
+        self.bar_chart.as_mut()
     }
 
     pub fn set_bar_chart(&mut self, value: BarChart) -> &mut Self {
@@ -155,12 +155,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_bar_3d_chart(&self) -> &Option<Bar3DChart> {
-        &self.bar_3d_chart
+    pub fn get_bar_3d_chart(&self) -> Option<&Bar3DChart> {
+        self.bar_3d_chart.as_ref()
     }
 
-    pub fn get_bar_3d_chart_mut(&mut self) -> &mut Option<Bar3DChart> {
-        &mut self.bar_3d_chart
+    pub fn get_bar_3d_chart_mut(&mut self) -> Option<&mut Bar3DChart> {
+        self.bar_3d_chart.as_mut()
     }
 
     pub fn set_bar_3d_chart(&mut self, value: Bar3DChart) -> &mut Self {
@@ -168,12 +168,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_radar_chart(&self) -> &Option<RadarChart> {
-        &self.radar_chart
+    pub fn get_radar_chart(&self) -> Option<&RadarChart> {
+        self.radar_chart.as_ref()
     }
 
-    pub fn get_radar_chart_mut(&mut self) -> &mut Option<RadarChart> {
-        &mut self.radar_chart
+    pub fn get_radar_chart_mut(&mut self) -> Option<&mut RadarChart> {
+        self.radar_chart.as_mut()
     }
 
     pub fn set_radar_chart(&mut self, value: RadarChart) -> &mut Self {
@@ -181,12 +181,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_bubble_chart(&self) -> &Option<BubbleChart> {
-        &self.bubble_chart
+    pub fn get_bubble_chart(&self) -> Option<&BubbleChart> {
+        self.bubble_chart.as_ref()
     }
 
-    pub fn get_bubble_chart_mut(&mut self) -> &mut Option<BubbleChart> {
-        &mut self.bubble_chart
+    pub fn get_bubble_chart_mut(&mut self) -> Option<&mut BubbleChart> {
+        self.bubble_chart.as_mut()
     }
 
     pub fn set_bubble_chart(&mut self, value: BubbleChart) -> &mut Self {
@@ -194,12 +194,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_area_chart(&self) -> &Option<AreaChart> {
-        &self.area_chart
+    pub fn get_area_chart(&self) -> Option<&AreaChart> {
+        self.area_chart.as_ref()
     }
 
-    pub fn get_area_chart_mut(&mut self) -> &mut Option<AreaChart> {
-        &mut self.area_chart
+    pub fn get_area_chart_mut(&mut self) -> Option<&mut AreaChart> {
+        self.area_chart.as_mut()
     }
 
     pub fn set_area_chart(&mut self, value: AreaChart) -> &mut Self {
@@ -207,12 +207,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_area_3d_chart(&self) -> &Option<Area3DChart> {
-        &self.area_3d_chart
+    pub fn get_area_3d_chart(&self) -> Option<&Area3DChart> {
+        self.area_3d_chart.as_ref()
     }
 
-    pub fn get_area_3d_chart_mut(&mut self) -> &mut Option<Area3DChart> {
-        &mut self.area_3d_chart
+    pub fn get_area_3d_chart_mut(&mut self) -> Option<&mut Area3DChart> {
+        self.area_3d_chart.as_mut()
     }
 
     pub fn set_area_3d_chart(&mut self, value: Area3DChart) -> &mut Self {
@@ -220,12 +220,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_of_pie_chart(&self) -> &Option<OfPieChart> {
-        &self.of_pie_chart
+    pub fn get_of_pie_chart(&self) -> Option<&OfPieChart> {
+        self.of_pie_chart.as_ref()
     }
 
-    pub fn get_of_pie_chart_mut(&mut self) -> &mut Option<OfPieChart> {
-        &mut self.of_pie_chart
+    pub fn get_of_pie_chart_mut(&mut self) -> Option<&mut OfPieChart> {
+        self.of_pie_chart.as_mut()
     }
 
     pub fn set_of_pie_chart(&mut self, value: OfPieChart) -> &mut Self {
@@ -287,12 +287,12 @@ impl PlotArea {
         self
     }
 
-    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
-        &self.shape_properties
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
-        &mut self.shape_properties
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {

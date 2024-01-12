@@ -18,24 +18,24 @@ impl Color2Type {
         self.rgb_color_model_hex = Some(value);
     }
 
-    pub fn get_rgb_color_model_hex(&self) -> &Option<RgbColorModelHex> {
-        &self.rgb_color_model_hex
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex.as_ref()
     }
 
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> &mut Option<RgbColorModelHex> {
-        &mut self.rgb_color_model_hex
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex.as_mut()
     }
 
     pub fn set_system_color(&mut self, value: SystemColor) {
         self.system_color = Some(value);
     }
 
-    pub fn get_system_color(&self) -> &Option<SystemColor> {
-        &self.system_color
+    pub fn get_system_color(&self) -> Option<&SystemColor> {
+        self.system_color.as_ref()
     }
 
-    pub fn get_system_color_mut(&mut self) -> &mut Option<SystemColor> {
-        &mut self.system_color
+    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color.as_mut()
     }
 
     pub fn get_val(&self) -> String {

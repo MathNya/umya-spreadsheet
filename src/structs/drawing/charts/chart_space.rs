@@ -93,12 +93,12 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
-        &self.shape_properties
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
-        &mut self.shape_properties
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -106,12 +106,12 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_print_settings(&self) -> &Option<PrintSettings> {
-        &self.print_settings
+    pub fn get_print_settings(&self) -> Option<&PrintSettings> {
+        self.print_settings.as_ref()
     }
 
-    pub fn get_print_settings_mut(&mut self) -> &mut Option<PrintSettings> {
-        &mut self.print_settings
+    pub fn get_print_settings_mut(&mut self) -> Option<&mut PrintSettings> {
+        self.print_settings.as_mut()
     }
 
     pub fn set_print_settings(&mut self, value: PrintSettings) -> &mut Self {
