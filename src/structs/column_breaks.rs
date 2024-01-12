@@ -27,10 +27,7 @@ impl ColumnBreaks {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if !self.break_list.is_empty() {
-            return true;
-        }
-        false
+        !self.break_list.is_empty()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

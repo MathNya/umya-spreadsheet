@@ -24,7 +24,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     {
         // XML header
-        let _ = writer.write_event(Event::Decl(BytesDecl::new(
+        writer.write_event(Event::Decl(BytesDecl::new(
             "1.0",
             Some("UTF-8"),
             Some("yes"),
@@ -138,10 +138,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             }
 
             // row
-            let include_cell = !cells_in_row.is_empty();
-            if include_cell {
-                let first_num = cells_in_row.first().unwrap().get_coordinate().get_col_num();
-                let last_num = cells_in_row.last().unwrap().get_coordinate().get_col_num();
+            if cells_in_row.is_empty() {
+                let spans = "0:0".to_string();
+                row.write_to(&mut writer, stylesheet, spans, true);
+            } else {
+                let (first_num, last_num) = (
+                    cells_in_row.first().unwrap().get_coordinate().get_col_num(),
+                    cells_in_row.last().unwrap().get_coordinate().get_col_num(),
+                );
                 let spans = format!("{first_num}:{last_num}");
 
                 row.write_to(&mut writer, stylesheet, spans, false);
@@ -151,9 +155,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 }
 
                 write_end_tag(&mut writer, "row");
-            } else {
-                let spans = "0:0".to_string();
-                row.write_to(&mut writer, stylesheet, spans, true);
             }
         }
 
@@ -162,24 +163,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         }
 
         // sheetProtection
-        match worksheet.get_sheet_protection() {
-            Some(v) => {
-                v.write_to(&mut writer);
-            }
-            None => {}
+        if let Some(v) = worksheet.get_sheet_protection() {
+            v.write_to(&mut writer);
         }
 
         // autoFilter
-        match worksheet.get_auto_filter() {
-            Some(v) => {
-                write_start_tag(
-                    &mut writer,
-                    "autoFilter",
-                    vec![("ref", &v.get_range().get_range())],
-                    true,
-                );
-            }
-            None => {}
+        if let Some(v) = worksheet.get_auto_filter() {
+            write_start_tag(
+                &mut writer,
+                "autoFilter",
+                vec![("ref", &v.get_range().get_range())],
+                true,
+            );
         }
 
         // mergeCells
@@ -194,11 +189,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         }
 
         // dataValidations
-        match worksheet.get_data_validations() {
-            Some(v) => {
-                v.write_to(&mut writer);
-            }
-            None => {}
+        if let Some(v) = worksheet.get_data_validations() {
+            v.write_to(&mut writer);
         }
 
         let mut r_id = 1;

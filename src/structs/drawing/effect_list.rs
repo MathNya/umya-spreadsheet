@@ -17,36 +17,36 @@ pub struct EffectList {
 }
 
 impl EffectList {
-    pub fn get_glow(&self) -> &Option<Glow> {
-        &self.glow
+    pub fn get_glow(&self) -> Option<&Glow> {
+        self.glow.as_ref()
     }
 
-    pub fn get_glow_mut(&mut self) -> &mut Option<Glow> {
-        &mut self.glow
+    pub fn get_glow_mut(&mut self) -> Option<&mut Glow> {
+        self.glow.as_mut()
     }
 
     pub fn set_glow(&mut self, value: Glow) {
         self.glow = Some(value);
     }
 
-    pub fn get_outer_shadow(&self) -> &Option<OuterShadow> {
-        &self.outer_shadow
+    pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
+        self.outer_shadow.as_ref()
     }
 
-    pub fn get_outer_shadow_mut(&mut self) -> &mut Option<OuterShadow> {
-        &mut self.outer_shadow
+    pub fn get_outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
+        self.outer_shadow.as_mut()
     }
 
     pub fn set_outer_shadow(&mut self, value: OuterShadow) {
         self.outer_shadow = Some(value);
     }
 
-    pub fn get_soft_edge(&self) -> &Option<SoftEdge> {
-        &self.soft_edge
+    pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
+        self.soft_edge.as_ref()
     }
 
-    pub fn get_soft_edge_mut(&mut self) -> &mut Option<SoftEdge> {
-        &mut self.soft_edge
+    pub fn get_soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
+        self.soft_edge.as_mut()
     }
 
     pub fn set_soft_edge(&mut self, value: SoftEdge) {

@@ -43,8 +43,8 @@ impl Outline {
         self
     }
 
-    pub fn get_cap_type(&self) -> &Option<String> {
-        &self.cap_type
+    pub fn get_cap_type(&self) -> Option<&String> {
+        self.cap_type.as_ref()
     }
 
     pub fn set_cap_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -52,8 +52,8 @@ impl Outline {
         self
     }
 
-    pub fn get_compound_line_type(&self) -> &Option<String> {
-        &self.compound_line_type
+    pub fn get_compound_line_type(&self) -> Option<&String> {
+        self.compound_line_type.as_ref()
     }
 
     pub fn set_compound_line_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -61,12 +61,12 @@ impl Outline {
         self
     }
 
-    pub fn get_solid_fill(&self) -> &Option<SolidFill> {
-        &self.solid_fill
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill.as_ref()
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
-        &mut self.solid_fill
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill.as_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
@@ -74,12 +74,12 @@ impl Outline {
         self
     }
 
-    pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
-        &self.gradient_fill
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill.as_ref()
     }
 
-    pub fn get_gradient_fill_mut(&mut self) -> &mut Option<GradientFill> {
-        &mut self.gradient_fill
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill.as_mut()
     }
 
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
@@ -87,12 +87,12 @@ impl Outline {
         self
     }
 
-    pub fn get_tail_end(&self) -> &Option<TailEnd> {
-        &self.tail_end
+    pub fn get_tail_end(&self) -> Option<&TailEnd> {
+        self.tail_end.as_ref()
     }
 
-    pub fn get_tail_end_mut(&mut self) -> &mut Option<TailEnd> {
-        &mut self.tail_end
+    pub fn get_tail_end_mut(&mut self) -> Option<&mut TailEnd> {
+        self.tail_end.as_mut()
     }
 
     pub fn set_tail_end(&mut self, value: TailEnd) -> &mut Self {
@@ -100,12 +100,12 @@ impl Outline {
         self
     }
 
-    pub fn get_no_fill(&self) -> &Option<NoFill> {
-        &self.no_fill
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill.as_ref()
     }
 
-    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
-        &mut self.no_fill
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill.as_mut()
     }
 
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
@@ -113,12 +113,12 @@ impl Outline {
         self
     }
 
-    pub fn get_bevel(&self) -> &Option<Bevel> {
-        &self.bevel
+    pub fn get_bevel(&self) -> Option<&Bevel> {
+        self.bevel.as_ref()
     }
 
-    pub fn get_bevel_mut(&mut self) -> &mut Option<Bevel> {
-        &mut self.bevel
+    pub fn get_bevel_mut(&mut self) -> Option<&mut Bevel> {
+        self.bevel.as_mut()
     }
 
     pub fn set_bevel(&mut self, value: Bevel) -> &mut Self {
@@ -126,12 +126,12 @@ impl Outline {
         self
     }
 
-    pub fn get_preset_dash(&self) -> &Option<PresetDash> {
-        &self.preset_dash
+    pub fn get_preset_dash(&self) -> Option<&PresetDash> {
+        self.preset_dash.as_ref()
     }
 
-    pub fn get_preset_dash_mut(&mut self) -> &mut Option<PresetDash> {
-        &mut self.preset_dash
+    pub fn get_preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
+        self.preset_dash.as_mut()
     }
 
     pub fn set_preset_dash(&mut self, value: PresetDash) -> &mut Self {
@@ -139,12 +139,12 @@ impl Outline {
         self
     }
 
-    pub fn get_miter(&self) -> &Option<Miter> {
-        &self.miter
+    pub fn get_miter(&self) -> Option<&Miter> {
+        self.miter.as_ref()
     }
 
-    pub fn get_miter_mut(&mut self) -> &mut Option<Miter> {
-        &mut self.miter
+    pub fn get_miter_mut(&mut self) -> Option<&mut Miter> {
+        self.miter.as_mut()
     }
 
     pub fn set_miter(&mut self, value: Miter) -> &mut Self {
@@ -152,12 +152,12 @@ impl Outline {
         self
     }
 
-    pub fn get_round(&self) -> &Option<Round> {
-        &self.round
+    pub fn get_round(&self) -> Option<&Round> {
+        self.round.as_ref()
     }
 
-    pub fn get_round_mut(&mut self) -> &mut Option<Round> {
-        &mut self.round
+    pub fn get_round_mut(&mut self) -> Option<&mut Round> {
+        self.round.as_mut()
     }
 
     pub fn set_round(&mut self, value: Round) -> &mut Self {

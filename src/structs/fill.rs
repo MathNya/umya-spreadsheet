@@ -16,14 +16,13 @@ pub struct Fill {
 }
 
 impl Fill {
-    pub fn get_pattern_fill(&self) -> &Option<PatternFill> {
-        &self.pattern_fill
+    pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
+        self.pattern_fill.as_ref()
     }
 
     pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
-        match &self.pattern_fill {
-            Some(_) => return self.pattern_fill.as_mut().unwrap(),
-            None => {}
+        if self.pattern_fill.is_some() {
+            return self.pattern_fill.as_mut().unwrap();
         }
         self.set_pattern_fill(PatternFill::default());
         self.pattern_fill.as_mut().unwrap()
@@ -35,14 +34,13 @@ impl Fill {
         self
     }
 
-    pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
-        &self.gradient_fill
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill.as_ref()
     }
 
     pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
-        match &self.gradient_fill {
-            Some(_) => return self.gradient_fill.as_mut().unwrap(),
-            None => {}
+        if let Some(_) = &self.gradient_fill {
+            return self.gradient_fill.as_mut().unwrap();
         }
         self.set_gradient_fill(GradientFill::default());
         self.gradient_fill.as_mut().unwrap()
@@ -138,19 +136,13 @@ impl Fill {
         write_start_tag(writer, "fill", vec![], false);
 
         // gradientFill
-        match &self.pattern_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.pattern_fill {
+            v.write_to(writer);
         }
 
         // patternFill
-        match &self.gradient_fill {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.gradient_fill {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "fill");

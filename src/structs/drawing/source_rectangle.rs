@@ -18,32 +18,32 @@ impl SourceRectangle {
         self.t = Some(value.into());
     }
 
-    pub fn get_t(&self) -> &Option<String> {
-        &self.t
+    pub fn get_t(&self) -> Option<&String> {
+        self.t.as_ref()
     }
 
     pub fn set_l<S: Into<String>>(&mut self, value: S) {
         self.l = Some(value.into());
     }
 
-    pub fn get_l(&self) -> &Option<String> {
-        &self.l
+    pub fn get_l(&self) -> Option<&String> {
+        self.l.as_ref()
     }
 
     pub fn set_r<S: Into<String>>(&mut self, value: S) {
         self.r = Some(value.into());
     }
 
-    pub fn get_r(&self) -> &Option<String> {
-        &self.r
+    pub fn get_r(&self) -> Option<&String> {
+        self.r.as_ref()
     }
 
     pub fn set_b<S: Into<String>>(&mut self, value: S) {
         self.b = Some(value.into());
     }
 
-    pub fn get_b(&self) -> &Option<String> {
-        &self.b
+    pub fn get_b(&self) -> Option<&String> {
+        self.b.as_ref()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -74,21 +74,18 @@ impl SourceRectangle {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srcRect
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.t {
-            Some(v) => attributes.push(("t", v)),
-            None => {}
+
+        if let Some(v) = &self.t {
+            attributes.push(("t", v))
         }
-        match &self.l {
-            Some(v) => attributes.push(("l", v)),
-            None => {}
+        if let Some(v) = &self.l {
+            attributes.push(("l", v))
         }
-        match &self.r {
-            Some(v) => attributes.push(("r", v)),
-            None => {}
+        if let Some(v) = &self.r {
+            attributes.push(("r", v))
         }
-        match &self.b {
-            Some(v) => attributes.push(("b", v)),
-            None => {}
+        if let Some(v) = &self.b {
+            attributes.push(("b", v))
         }
         write_start_tag(writer, "a:srcRect", attributes, true);
     }

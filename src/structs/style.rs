@@ -63,8 +63,8 @@ pub struct Style {
     protection: Option<Protection>,
 }
 impl Style {
-    pub fn get_font(&self) -> &Option<Font> {
-        &self.font
+    pub fn get_font(&self) -> Option<&Font> {
+        self.font.as_ref()
     }
 
     pub fn get_font_mut(&mut self) -> &mut Font {
@@ -86,8 +86,8 @@ impl Style {
         self
     }
 
-    pub fn get_fill(&self) -> &Option<Fill> {
-        &self.fill
+    pub fn get_fill(&self) -> Option<&Fill> {
+        self.fill.as_ref()
     }
 
     pub fn get_fill_mut(&mut self) -> &mut Fill {
@@ -99,14 +99,9 @@ impl Style {
         self
     }
 
-    pub fn get_background_color(&self) -> &Option<Color> {
-        match self.get_fill() {
-            Some(fill) => match fill.get_pattern_fill() {
-                Some(pattern_fill) => pattern_fill.get_foreground_color(),
-                _ => &None,
-            },
-            _ => &None,
-        }
+    pub fn get_background_color(&self) -> Option<&Color> {
+        self.get_fill()
+            .and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
     }
 
     pub fn set_background_color<S: Into<String>>(&mut self, color: S) -> &mut Self {
@@ -152,8 +147,8 @@ impl Style {
         self
     }
 
-    pub fn get_borders(&self) -> &Option<Borders> {
-        &self.borders
+    pub fn get_borders(&self) -> Option<&Borders> {
+        self.borders.as_ref()
     }
 
     pub fn get_borders_mut(&mut self) -> &mut Borders {
@@ -175,8 +170,8 @@ impl Style {
         self
     }
 
-    pub fn get_alignment(&self) -> &Option<Alignment> {
-        &self.alignment
+    pub fn get_alignment(&self) -> Option<&Alignment> {
+        self.alignment.as_ref()
     }
 
     pub fn get_alignment_mut(&mut self) -> &mut Alignment {
@@ -198,8 +193,8 @@ impl Style {
         self
     }
 
-    pub fn get_numbering_format(&self) -> &Option<NumberingFormat> {
-        &self.numbering_format
+    pub fn get_numbering_format(&self) -> Option<&NumberingFormat> {
+        self.numbering_format.as_ref()
     }
 
     pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
@@ -217,7 +212,7 @@ impl Style {
         self
     }
 
-    pub fn get_number_format(&self) -> &Option<NumberingFormat> {
+    pub fn get_number_format(&self) -> Option<&NumberingFormat> {
         self.get_numbering_format()
     }
 
@@ -242,8 +237,8 @@ impl Style {
         self
     }
 
-    pub fn get_protection(&self) -> &Option<Protection> {
-        &self.protection
+    pub fn get_protection(&self) -> Option<&Protection> {
+        self.protection.as_ref()
     }
 
     pub fn get_protection_mut(&mut self) -> &mut Protection {

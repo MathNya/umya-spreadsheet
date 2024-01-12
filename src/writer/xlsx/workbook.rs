@@ -14,7 +14,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    let _ = writer.write_event(Event::Decl(BytesDecl::new(
+    writer.write_event(Event::Decl(BytesDecl::new(
         "1.0",
         Some("UTF-8"),
         Some("yes"),
@@ -52,11 +52,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 
     // workbookProtection
-    match spreadsheet.get_workbook_protection() {
-        Some(v) => {
-            v.write_to(&mut writer);
-        }
-        None => {}
+    if let Some(v) = spreadsheet.get_workbook_protection() {
+        v.write_to(&mut writer);
     }
 
     // bookViews

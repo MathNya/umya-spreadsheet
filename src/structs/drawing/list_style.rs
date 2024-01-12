@@ -13,12 +13,12 @@ pub struct ListStyle {
 }
 
 impl ListStyle {
-    pub fn get_effect_list(&self) -> &Option<EffectList> {
-        &self.effect_list
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list.as_ref()
     }
 
-    pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
-        &mut self.effect_list
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list.as_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) {

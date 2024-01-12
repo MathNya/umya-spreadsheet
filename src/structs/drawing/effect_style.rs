@@ -17,12 +17,12 @@ pub struct EffectStyle {
 }
 
 impl EffectStyle {
-    pub fn get_effect_list(&self) -> &Option<EffectList> {
-        &self.effect_list
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list.as_ref()
     }
 
-    pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
-        &mut self.effect_list
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list.as_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
@@ -30,12 +30,12 @@ impl EffectStyle {
         self
     }
 
-    pub fn get_scene_3d_type(&self) -> &Option<Scene3DType> {
-        &self.scene_3d_type
+    pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
+        self.scene_3d_type.as_ref()
     }
 
-    pub fn get_scene_3d_type_mut(&mut self) -> &mut Option<Scene3DType> {
-        &mut self.scene_3d_type
+    pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
+        self.scene_3d_type.as_mut()
     }
 
     pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut Self {
@@ -43,12 +43,12 @@ impl EffectStyle {
         self
     }
 
-    pub fn get_shape_3d_type(&self) -> &Option<Shape3DType> {
-        &self.shape_3d_type
+    pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
+        self.shape_3d_type.as_ref()
     }
 
-    pub fn get_shape_3d_type_mut(&mut self) -> &mut Option<Shape3DType> {
-        &mut self.shape_3d_type
+    pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
+        self.shape_3d_type.as_mut()
     }
 
     pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut Self {
@@ -103,27 +103,18 @@ impl EffectStyle {
         write_start_tag(writer, "a:effectStyle", vec![], false);
 
         // a:effectLst
-        match &self.effect_list {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.effect_list {
+            v.write_to(writer);
         }
 
         // a:scene3d
-        match &self.scene_3d_type {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.scene_3d_type {
+            v.write_to(writer);
         }
 
         // a:sp3d
-        match &self.shape_3d_type {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.shape_3d_type {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:effectStyle");

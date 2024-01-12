@@ -132,17 +132,11 @@ impl CellValue {
     }
 
     pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
-        match value.get_text() {
-            Some(v) => {
-                self.set_value_string(v.get_value());
-            }
-            None => {}
+        if let Some(v) = value.get_text() {
+            self.set_value_string(v.get_value());
         }
-        match value.get_rich_text() {
-            Some(v) => {
-                self.set_rich_text(v.clone());
-            }
-            None => {}
+        if let Some(v) = value.get_rich_text() {
+            self.set_rich_text(v.clone());
         }
         self.remove_formula();
         self
@@ -153,13 +147,7 @@ impl CellValue {
     }
 
     pub fn get_formula(&self) -> &str {
-        match &self.formula {
-            Some(v) => {
-                return v;
-            }
-            None => {}
-        }
-        ""
+        self.formula.as_deref().unwrap_or("")
     }
 
     pub(crate) fn guess_typed_data(value: &str) -> CellRawValue {
@@ -214,20 +202,17 @@ impl CellValue {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        match &self.formula {
-            Some(v) => {
-                let formula = adjustment_insert_formula_coordinate(
-                    v,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                    sheet_name,
-                    self_sheet_name,
-                );
-                self.formula = Some(formula);
-            }
-            None => {}
+        if let Some(v) = &self.formula {
+            let formula = adjustment_insert_formula_coordinate(
+                v,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+                sheet_name,
+                self_sheet_name,
+            );
+            self.formula = Some(formula);
         }
     }
 
@@ -240,20 +225,17 @@ impl CellValue {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        match &self.formula {
-            Some(v) => {
-                let formula = adjustment_remove_formula_coordinate(
-                    v,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                    sheet_name,
-                    self_sheet_name,
-                );
-                self.formula = Some(formula);
-            }
-            None => {}
+        if let Some(v) = &self.formula {
+            let formula = adjustment_remove_formula_coordinate(
+                v,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+                sheet_name,
+                self_sheet_name,
+            );
+            self.formula = Some(formula);
         }
     }
 }

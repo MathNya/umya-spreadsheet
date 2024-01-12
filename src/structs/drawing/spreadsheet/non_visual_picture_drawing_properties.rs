@@ -23,12 +23,12 @@ impl NonVisualPictureDrawingProperties {
         self.prefer_relative_resize.set_value(value);
     }
 
-    pub fn get_picture_locks(&self) -> &Option<PictureLocks> {
-        &self.picture_locks
+    pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
+        self.picture_locks.as_ref()
     }
 
-    pub fn get_picture_locks_mut(&mut self) -> &mut Option<PictureLocks> {
-        &mut self.picture_locks
+    pub fn get_picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
+        self.picture_locks.as_mut()
     }
 
     pub fn set_picture_locks(&mut self, value: PictureLocks) {
@@ -66,8 +66,6 @@ impl NonVisualPictureDrawingProperties {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let is_empty = self.picture_locks.is_none();
-
         // xdr:cNvPicPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.prefer_relative_resize.has_value() {
@@ -76,18 +74,16 @@ impl NonVisualPictureDrawingProperties {
                 self.prefer_relative_resize.get_value_string(),
             ));
         }
-        write_start_tag(writer, "xdr:cNvPicPr", attributes, is_empty);
 
-        if !is_empty {
-            // a:picLocks
-            match &self.picture_locks {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+        match &self.picture_locks {
+            Some(v) => {
+                write_start_tag(writer, "xdr:cNvPicPr", attributes, false);
+                v.write_to(writer);
+                write_end_tag(writer, "xdr:cNvPicPr");
             }
-
-            write_end_tag(writer, "xdr:cNvPicPr");
+            None => {
+                write_start_tag(writer, "xdr:cNvPicPr", attributes, true);
+            }
         }
     }
 }

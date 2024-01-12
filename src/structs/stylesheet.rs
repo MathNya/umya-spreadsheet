@@ -301,19 +301,19 @@ impl Stylesheet {
         cell_format.set_border_id(border_id);
         cell_format.set_format_id(format_id);
 
-        if let Some(_) = style.get_numbering_format() {
+        if style.get_numbering_format().is_some() {
             cell_format.set_apply_number_format(true);
         }
 
-        if let Some(_) = style.get_font() {
+        if style.get_font().is_some() {
             cell_format.set_apply_font(true);
         }
 
-        if let Some(_) = style.get_fill() {
+        if style.get_fill().is_some() {
             cell_format.set_apply_fill(true);
         }
 
-        if let Some(_) = style.get_borders() {
+        if style.get_borders().is_some() {
             cell_format.set_apply_border(true);
         }
 

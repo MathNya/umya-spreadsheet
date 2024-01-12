@@ -12,7 +12,7 @@ pub struct AutoFill {
 }
 
 impl AutoFill {
-    pub fn get_value(&self) -> &Option<bool> {
+    pub fn get_value(&self) -> Option<&bool> {
         self.value.get_value()
     }
 

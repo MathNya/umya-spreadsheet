@@ -135,13 +135,13 @@ impl Border {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let empty_flag = !self.color.has_value();
-
         // left,right,top,bottom,diagonal,vertical,horizontal
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.style.has_value() {
             attributes.push(("style", self.style.get_value_string()));
         }
+
+        let empty_flag = !self.color.has_value();
         write_start_tag(writer, tag_name, attributes, empty_flag);
 
         if !empty_flag {

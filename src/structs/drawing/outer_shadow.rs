@@ -24,8 +24,8 @@ pub struct OuterShadow {
 }
 
 impl OuterShadow {
-    pub fn get_blur_radius(&self) -> &Option<String> {
-        &self.blur_radius
+    pub fn get_blur_radius(&self) -> Option<&String> {
+        self.blur_radius.as_ref()
     }
 
     pub fn set_blur_radius<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -33,8 +33,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_horizontal_ratio(&self) -> &Option<String> {
-        &self.horizontal_ratio
+    pub fn get_horizontal_ratio(&self) -> Option<&String> {
+        self.horizontal_ratio.as_ref()
     }
 
     pub fn set_horizontal_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -42,8 +42,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_vertical_ratio(&self) -> &Option<String> {
-        &self.vertical_ratio
+    pub fn get_vertical_ratio(&self) -> Option<&String> {
+        self.vertical_ratio.as_ref()
     }
 
     pub fn set_vertical_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -51,8 +51,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_alignment(&self) -> &Option<String> {
-        &self.alignment
+    pub fn get_alignment(&self) -> Option<&String> {
+        self.alignment.as_ref()
     }
 
     pub fn set_alignment<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -60,8 +60,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_direction(&self) -> &Option<String> {
-        &self.direction
+    pub fn get_direction(&self) -> Option<&String> {
+        self.direction.as_ref()
     }
 
     pub fn set_direction<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -69,8 +69,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_distance(&self) -> &Option<String> {
-        &self.distance
+    pub fn get_distance(&self) -> Option<&String> {
+        self.distance.as_ref()
     }
 
     pub fn set_distance<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -78,8 +78,8 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_rotate_with_shape(&self) -> &Option<String> {
-        &self.rotate_with_shape
+    pub fn get_rotate_with_shape(&self) -> Option<&String> {
+        self.rotate_with_shape.as_ref()
     }
 
     pub fn set_rotate_with_shape<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -87,12 +87,12 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_preset_color(&self) -> &Option<PresetColor> {
-        &self.preset_color
+    pub fn get_preset_color(&self) -> Option<&PresetColor> {
+        self.preset_color.as_ref()
     }
 
-    pub fn get_preset_color_mut(&mut self) -> &mut Option<PresetColor> {
-        &mut self.preset_color
+    pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
+        self.preset_color.as_mut()
     }
 
     pub fn set_preset_color(&mut self, value: PresetColor) -> &mut Self {
@@ -100,12 +100,12 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_scheme_color(&self) -> &Option<SchemeColor> {
-        &self.scheme_color
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color.as_ref()
     }
 
-    pub fn get_scheme_color_mut(&mut self) -> &mut Option<SchemeColor> {
-        &mut self.scheme_color
+    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+        self.scheme_color.as_mut()
     }
 
     pub fn set_scheme_color(&mut self, value: SchemeColor) -> &mut Self {
@@ -113,12 +113,12 @@ impl OuterShadow {
         self
     }
 
-    pub fn get_rgb_color_model_hex(&self) -> &Option<RgbColorModelHex> {
-        &self.rgb_color_model_hex
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex.as_ref()
     }
 
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> &mut Option<RgbColorModelHex> {
-        &mut self.rgb_color_model_hex
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex.as_mut()
     }
 
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) -> &mut Self {
@@ -202,72 +202,42 @@ impl OuterShadow {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:outerShdw
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        match &self.blur_radius {
-            Some(v) => {
-                attributes.push(("blurRad", v));
-            }
-            None => {}
+        if let Some(v) = &self.blur_radius {
+            attributes.push(("blurRad", v));
         }
-        match &self.distance {
-            Some(v) => {
-                attributes.push(("dist", v));
-            }
-            None => {}
+        if let Some(v) = &self.distance {
+            attributes.push(("dist", v));
         }
-        match &self.direction {
-            Some(v) => {
-                attributes.push(("dir", v));
-            }
-            None => {}
+        if let Some(v) = &self.direction {
+            attributes.push(("dir", v));
         }
-        match &self.horizontal_ratio {
-            Some(v) => {
-                attributes.push(("sx", v));
-            }
-            None => {}
+        if let Some(v) = &self.horizontal_ratio {
+            attributes.push(("sx", v));
         }
-        match &self.vertical_ratio {
-            Some(v) => {
-                attributes.push(("sy", v));
-            }
-            None => {}
+        if let Some(v) = &self.vertical_ratio {
+            attributes.push(("sy", v));
         }
-        match &self.alignment {
-            Some(v) => {
-                attributes.push(("algn", v));
-            }
-            None => {}
+        if let Some(v) = &self.alignment {
+            attributes.push(("algn", v));
         }
-        match &self.rotate_with_shape {
-            Some(v) => {
-                attributes.push(("rotWithShape", v));
-            }
-            None => {}
+        if let Some(v) = &self.rotate_with_shape {
+            attributes.push(("rotWithShape", v));
         }
         write_start_tag(writer, "a:outerShdw", attributes, false);
 
         // a:prstClr
-        match &self.preset_color {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.preset_color {
+            v.write_to(writer);
         }
 
         // a:schemeClr
-        match &self.scheme_color {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.scheme_color {
+            v.write_to(writer);
         }
 
         // a:srgbClr
-        match &self.rgb_color_model_hex {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.rgb_color_model_hex {
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:outerShdw");

@@ -46,12 +46,12 @@ impl OneCellAnchor {
         self
     }
 
-    pub fn get_shape(&self) -> &Option<Shape> {
-        &self.shape
+    pub fn get_shape(&self) -> Option<&Shape> {
+        self.shape.as_ref()
     }
 
-    pub fn get_shape_mut(&mut self) -> &mut Option<Shape> {
-        &mut self.shape
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape.as_mut()
     }
 
     pub fn set_shape(&mut self, value: Shape) -> &mut OneCellAnchor {
@@ -59,12 +59,12 @@ impl OneCellAnchor {
         self
     }
 
-    pub fn get_picture(&self) -> &Option<Picture> {
-        &self.picture
+    pub fn get_picture(&self) -> Option<&Picture> {
+        self.picture.as_ref()
     }
 
-    pub fn get_picture_mut(&mut self) -> &mut Option<Picture> {
-        &mut self.picture
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture.as_mut()
     }
 
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {
@@ -89,13 +89,7 @@ impl OneCellAnchor {
     }
 
     pub(crate) fn is_image(&self) -> bool {
-        match &self.picture {
-            Some(_) => {
-                return true;
-            }
-            None => {}
-        }
-        false
+        self.picture.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -149,18 +143,14 @@ impl OneCellAnchor {
         let _ = &self.extent.write_to(writer);
 
         // xdr:sp
-        match &self.shape {
-            Some(v) => v.write_to(writer, &0),
-            None => {}
+        if let Some(v) = &self.shape {
+            v.write_to(writer, &0)
         }
 
         // xdr:pic
-        match &self.picture {
-            Some(v) => {
-                v.write_to(writer, r_id);
-                *r_id += 1i32;
-            }
-            None => {}
+        if let Some(v) = &self.picture {
+            v.write_to(writer, r_id);
+            *r_id += 1i32;
         }
 
         // xdr:clientData

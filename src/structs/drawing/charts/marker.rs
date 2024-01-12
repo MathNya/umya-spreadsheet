@@ -13,12 +13,12 @@ pub struct Marker {
 }
 
 impl Marker {
-    pub fn get_symbol(&self) -> &Option<Symbol> {
-        &self.symbol
+    pub fn get_symbol(&self) -> Option<&Symbol> {
+        self.symbol.as_ref()
     }
 
-    pub fn get_symbol_mut(&mut self) -> &mut Option<Symbol> {
-        &mut self.symbol
+    pub fn get_symbol_mut(&mut self) -> Option<&mut Symbol> {
+        self.symbol.as_mut()
     }
 
     pub fn set_symbol(&mut self, value: Symbol) -> &mut Marker {

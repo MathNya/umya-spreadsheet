@@ -13,6 +13,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         true => {}
         false => return Ok(()),
     }
-    let writer = spreadsheet.get_macros_code().as_ref().unwrap();
+    let writer = spreadsheet.get_macros_code().unwrap();
     writer_mng.add_bin(PKG_VBA_PROJECT, writer)
 }

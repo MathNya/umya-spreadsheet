@@ -18,9 +18,9 @@ pub(crate) fn write_start_tag<'a, S>(
     elem.extend_attributes(attributes);
 
     if empty_flag {
-        let _ = writer.write_event(Event::Empty(elem));
+        writer.write_event(Event::Empty(elem));
     } else {
-        let _ = writer.write_event(Event::Start(elem));
+        writer.write_event(Event::Start(elem));
     }
 }
 
@@ -28,21 +28,21 @@ pub(crate) fn write_end_tag<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, tag_nam
 where
     S: Into<Cow<'a, str>>,
 {
-    let _ = writer.write_event(Event::End(BytesEnd::new(tag_name.into())));
+    writer.write_event(Event::End(BytesEnd::new(tag_name.into())));
 }
 
 pub(crate) fn write_text_node<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
 where
     S: Into<Cow<'a, str>>,
 {
-    let _ = writer.write_event(Event::Text(BytesText::new(&data.into())));
+    writer.write_event(Event::Text(BytesText::new(&data.into())));
 }
 
 pub(crate) fn write_text_node_no_escape<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
 where
     S: Into<Cow<'a, str>>,
 {
-    let _ = writer.get_mut().write(data.into().as_bytes());
+    writer.get_mut().write(data.into().as_bytes());
 }
 
 pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>) {

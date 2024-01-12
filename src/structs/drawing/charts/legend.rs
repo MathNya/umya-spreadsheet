@@ -34,12 +34,12 @@ impl Legend {
         self
     }
 
-    pub fn get_layout(&self) -> &Option<Layout> {
-        &self.layout
+    pub fn get_layout(&self) -> Option<&Layout> {
+        self.layout.as_ref()
     }
 
-    pub fn get_layout_mut(&mut self) -> &mut Option<Layout> {
-        &mut self.layout
+    pub fn get_layout_mut(&mut self) -> Option<&mut Layout> {
+        self.layout.as_mut()
     }
 
     pub fn set_layout(&mut self, value: Layout) -> &mut Self {
@@ -60,12 +60,12 @@ impl Legend {
         self
     }
 
-    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
-        &self.shape_properties
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
-        &mut self.shape_properties
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -73,12 +73,12 @@ impl Legend {
         self
     }
 
-    pub fn get_text_properties(&self) -> &Option<TextProperties> {
-        &self.text_properties
+    pub fn get_text_properties(&self) -> Option<&TextProperties> {
+        self.text_properties.as_ref()
     }
 
-    pub fn get_text_properties_mut(&mut self) -> &mut Option<TextProperties> {
-        &mut self.text_properties
+    pub fn get_text_properties_mut(&mut self) -> Option<&mut TextProperties> {
+        self.text_properties.as_mut()
     }
 
     pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {

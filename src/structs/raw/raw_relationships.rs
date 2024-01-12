@@ -104,7 +104,7 @@ impl RawRelationships {
 
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
         // XML header
-        let _ = writer.write_event(Event::Decl(BytesDecl::new(
+        writer.write_event(Event::Decl(BytesDecl::new(
             "1.0",
             Some("UTF-8"),
             Some("yes"),

@@ -13,12 +13,12 @@ pub struct Layout {
 }
 
 impl Layout {
-    pub fn get_manual_layout(&self) -> &Option<ManualLayout> {
-        &self.manual_layout
+    pub fn get_manual_layout(&self) -> Option<&ManualLayout> {
+        self.manual_layout.as_ref()
     }
 
-    pub fn get_manual_layout_mut(&mut self) -> &mut Option<ManualLayout> {
-        &mut self.manual_layout
+    pub fn get_manual_layout_mut(&mut self) -> Option<&mut ManualLayout> {
+        self.manual_layout.as_mut()
     }
 
     pub fn set_manual_layout(&mut self, value: ManualLayout) -> &mut Layout {

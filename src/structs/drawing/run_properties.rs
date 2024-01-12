@@ -127,12 +127,12 @@ impl RunProperties {
         self
     }
 
-    pub fn get_solid_fill(&self) -> &Option<SolidFill> {
-        &self.solid_fill
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill.as_ref()
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> &mut Option<SolidFill> {
-        &mut self.solid_fill
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill.as_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
@@ -140,12 +140,12 @@ impl RunProperties {
         self
     }
 
-    pub fn get_outline(&self) -> &Option<Outline> {
-        &self.outline
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline.as_ref()
     }
 
-    pub fn get_outline_mut(&mut self) -> &mut Option<Outline> {
-        &mut self.outline
+    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+        self.outline.as_mut()
     }
 
     pub fn set_outline(&mut self, value: Outline) -> &mut Self {
@@ -153,12 +153,12 @@ impl RunProperties {
         self
     }
 
-    pub fn get_latin_font(&self) -> &Option<TextFontType> {
-        &self.latin_font
+    pub fn get_latin_font(&self) -> Option<&TextFontType> {
+        self.latin_font.as_ref()
     }
 
-    pub fn get_latin_font_mut(&mut self) -> &mut Option<TextFontType> {
-        &mut self.latin_font
+    pub fn get_latin_font_mut(&mut self) -> Option<&mut TextFontType> {
+        self.latin_font.as_mut()
     }
 
     pub fn set_latin_font(&mut self, value: TextFontType) -> &mut Self {
@@ -166,12 +166,12 @@ impl RunProperties {
         self
     }
 
-    pub fn get_east_asian_font(&self) -> &Option<TextFontType> {
-        &self.east_asian_font
+    pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
+        self.east_asian_font.as_ref()
     }
 
-    pub fn get_east_asian_font_mut(&mut self) -> &mut Option<TextFontType> {
-        &mut self.east_asian_font
+    pub fn get_east_asian_font_mut(&mut self) -> Option<&mut TextFontType> {
+        self.east_asian_font.as_mut()
     }
 
     pub fn set_east_asian_font(&mut self, value: TextFontType) -> &mut Self {
@@ -179,12 +179,12 @@ impl RunProperties {
         self
     }
 
-    pub fn get_gradient_fill(&self) -> &Option<GradientFill> {
-        &self.gradient_fill
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill.as_ref()
     }
 
-    pub fn get_gradient_fill_mut(&mut self) -> &mut Option<GradientFill> {
-        &mut self.gradient_fill
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill.as_mut()
     }
 
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
@@ -192,12 +192,12 @@ impl RunProperties {
         self
     }
 
-    pub fn get_no_fill(&self) -> &Option<NoFill> {
-        &self.no_fill
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill.as_ref()
     }
 
-    pub fn get_no_fill_mut(&mut self) -> &mut Option<NoFill> {
-        &mut self.no_fill
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill.as_mut()
     }
 
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
@@ -205,12 +205,12 @@ impl RunProperties {
         self
     }
 
-    pub fn get_effect_list(&self) -> &Option<EffectList> {
-        &self.effect_list
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list.as_ref()
     }
 
-    pub fn get_effect_list_mut(&mut self) -> &mut Option<EffectList> {
-        &mut self.effect_list
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list.as_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
@@ -375,59 +375,38 @@ impl RunProperties {
             write_start_tag(writer, tag_name, attributes, false);
 
             // a:solidFill
-            match &self.solid_fill {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.solid_fill {
+                v.write_to(writer);
             }
 
             // a:ln
-            match &self.outline {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.outline {
+                v.write_to(writer);
             }
 
             // a:latin
-            match &self.latin_font {
-                Some(v) => {
-                    v.write_to_latin(writer);
-                }
-                None => {}
+            if let Some(v) = &self.latin_font {
+                v.write_to_latin(writer);
             }
 
             // a:ea
-            match &self.east_asian_font {
-                Some(v) => {
-                    v.write_to_ea(writer);
-                }
-                None => {}
+            if let Some(v) = &self.east_asian_font {
+                v.write_to_ea(writer);
             }
 
             // a:gradFill
-            match &self.gradient_fill {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.gradient_fill {
+                v.write_to(writer);
             }
 
             // a:noFill
-            match &self.no_fill {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.no_fill {
+                v.write_to(writer);
             }
 
             // a:effectLst
-            match &self.effect_list {
-                Some(v) => {
-                    v.write_to(writer);
-                }
-                None => {}
+            if let Some(v) = &self.effect_list {
+                v.write_to(writer);
             }
 
             write_end_tag(writer, tag_name);

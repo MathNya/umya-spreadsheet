@@ -69,12 +69,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_series_text(&self) -> &Option<SeriesText> {
-        &self.series_text
+    pub fn get_series_text(&self) -> Option<&SeriesText> {
+        self.series_text.as_ref()
     }
 
-    pub fn get_series_text_mut(&mut self) -> &mut Option<SeriesText> {
-        &mut self.series_text
+    pub fn get_series_text_mut(&mut self) -> Option<&mut SeriesText> {
+        self.series_text.as_mut()
     }
 
     pub fn set_series_text(&mut self, value: SeriesText) -> &mut Self {
@@ -82,12 +82,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_explosion(&self) -> &Option<Explosion> {
-        &self.explosion
+    pub fn get_explosion(&self) -> Option<&Explosion> {
+        self.explosion.as_ref()
     }
 
-    pub fn get_explosion_mut(&mut self) -> &mut Option<Explosion> {
-        &mut self.explosion
+    pub fn get_explosion_mut(&mut self) -> Option<&mut Explosion> {
+        self.explosion.as_mut()
     }
 
     pub fn set_explosion(&mut self, value: Explosion) -> &mut Self {
@@ -95,12 +95,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_invert_if_negative(&self) -> &Option<InvertIfNegative> {
-        &self.invert_if_negative
+    pub fn get_invert_if_negative(&self) -> Option<&InvertIfNegative> {
+        self.invert_if_negative.as_ref()
     }
 
-    pub fn get_invert_if_negative_mut(&mut self) -> &mut Option<InvertIfNegative> {
-        &mut self.invert_if_negative
+    pub fn get_invert_if_negative_mut(&mut self) -> Option<&mut InvertIfNegative> {
+        self.invert_if_negative.as_mut()
     }
 
     pub fn set_invert_if_negative(&mut self, value: InvertIfNegative) -> &mut Self {
@@ -108,12 +108,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_marker(&self) -> &Option<Marker> {
-        &self.marker
+    pub fn get_marker(&self) -> Option<&Marker> {
+        self.marker.as_ref()
     }
 
-    pub fn get_marker_mut(&mut self) -> &mut Option<Marker> {
-        &mut self.marker
+    pub fn get_marker_mut(&mut self) -> Option<&mut Marker> {
+        self.marker.as_mut()
     }
 
     pub fn set_marker(&mut self, value: Marker) -> &mut Self {
@@ -121,12 +121,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_shape_properties(&self) -> &Option<ShapeProperties> {
-        &self.shape_properties
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> &mut Option<ShapeProperties> {
-        &mut self.shape_properties
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -134,12 +134,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_category_axis_data(&self) -> &Option<CategoryAxisData> {
-        &self.category_axis_data
+    pub fn get_category_axis_data(&self) -> Option<&CategoryAxisData> {
+        self.category_axis_data.as_ref()
     }
 
-    pub fn get_category_axis_data_mut(&mut self) -> &mut Option<CategoryAxisData> {
-        &mut self.category_axis_data
+    pub fn get_category_axis_data_mut(&mut self) -> Option<&mut CategoryAxisData> {
+        self.category_axis_data.as_mut()
     }
 
     pub fn set_category_axis_data(&mut self, value: CategoryAxisData) -> &mut Self {
@@ -147,12 +147,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_values(&self) -> &Option<Values> {
-        &self.values
+    pub fn get_values(&self) -> Option<&Values> {
+        self.values.as_ref()
     }
 
-    pub fn get_values_mut(&mut self) -> &mut Option<Values> {
-        &mut self.values
+    pub fn get_values_mut(&mut self) -> Option<&mut Values> {
+        self.values.as_mut()
     }
 
     pub fn set_values(&mut self, value: Values) -> &mut Self {
@@ -160,12 +160,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_x_values(&self) -> &Option<XValues> {
-        &self.x_values
+    pub fn get_x_values(&self) -> Option<&XValues> {
+        self.x_values.as_ref()
     }
 
-    pub fn get_x_values_mut(&mut self) -> &mut Option<XValues> {
-        &mut self.x_values
+    pub fn get_x_values_mut(&mut self) -> Option<&mut XValues> {
+        self.x_values.as_mut()
     }
 
     pub fn set_x_values(&mut self, value: XValues) -> &mut Self {
@@ -173,12 +173,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_y_values(&self) -> &Option<YValues> {
-        &self.y_values
+    pub fn get_y_values(&self) -> Option<&YValues> {
+        self.y_values.as_ref()
     }
 
-    pub fn get_y_values_mut(&mut self) -> &mut Option<YValues> {
-        &mut self.y_values
+    pub fn get_y_values_mut(&mut self) -> Option<&mut YValues> {
+        self.y_values.as_mut()
     }
 
     pub fn set_y_values(&mut self, value: YValues) -> &mut Self {
@@ -186,12 +186,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_bubble_size(&self) -> &Option<BubbleSize> {
-        &self.bubble_size
+    pub fn get_bubble_size(&self) -> Option<&BubbleSize> {
+        self.bubble_size.as_ref()
     }
 
-    pub fn get_bubble_size_mut(&mut self) -> &mut Option<BubbleSize> {
-        &mut self.bubble_size
+    pub fn get_bubble_size_mut(&mut self) -> Option<&mut BubbleSize> {
+        self.bubble_size.as_mut()
     }
 
     pub fn set_bubble_size(&mut self, value: BubbleSize) -> &mut Self {
@@ -199,12 +199,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_bubble_3d(&self) -> &Option<Bubble3D> {
-        &self.bubble_3d
+    pub fn get_bubble_3d(&self) -> Option<&Bubble3D> {
+        self.bubble_3d.as_ref()
     }
 
-    pub fn get_bubble_3d_mut(&mut self) -> &mut Option<Bubble3D> {
-        &mut self.bubble_3d
+    pub fn get_bubble_3d_mut(&mut self) -> Option<&mut Bubble3D> {
+        self.bubble_3d.as_mut()
     }
 
     pub fn set_bubble_3d(&mut self, value: Bubble3D) -> &mut Self {
@@ -212,12 +212,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_smooth(&self) -> &Option<Smooth> {
-        &self.smooth
+    pub fn get_smooth(&self) -> Option<&Smooth> {
+        self.smooth.as_ref()
     }
 
-    pub fn get_smooth_mut(&mut self) -> &mut Option<Smooth> {
-        &mut self.smooth
+    pub fn get_smooth_mut(&mut self) -> Option<&mut Smooth> {
+        self.smooth.as_mut()
     }
 
     pub fn set_smooth(&mut self, value: Smooth) -> &mut Self {
@@ -225,12 +225,12 @@ impl AreaChartSeries {
         self
     }
 
-    pub fn get_data_labels(&self) -> &Option<DataLabels> {
-        &self.data_labels
+    pub fn get_data_labels(&self) -> Option<&DataLabels> {
+        self.data_labels.as_ref()
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut Option<DataLabels> {
-        &mut self.data_labels
+    pub fn get_data_labels_mut(&mut self) -> Option<&mut DataLabels> {
+        self.data_labels.as_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Self {

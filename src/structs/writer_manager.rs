@@ -45,8 +45,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         target: &str,
         writer: Writer<Cursor<Vec<u8>>>,
     ) -> Result<(), XlsxError> {
-        let is_match = self.check_file_exist(target);
-        if !is_match {
+        if !self.check_file_exist(target) {
             make_file_from_writer(target, &mut self.arv, writer, None, &self.is_light)?;
             self.files.push(target.to_string());
         }
@@ -54,8 +53,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
     }
 
     pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
-        let is_match = self.check_file_exist(target);
-        if !is_match {
+        if !self.check_file_exist(target) {
             make_file_from_bin(target, &mut self.arv, data, None, &self.is_light)?;
             self.files.push(target.to_string());
         }
@@ -84,8 +82,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         loop {
             index += 1;
             let file_path = format!("{}/drawing{}.xml", PKG_DRAWINGS, index);
-            let is_match = self.check_file_exist(&file_path);
-            if !is_match {
+            if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -100,8 +97,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         loop {
             index += 1;
             let file_path = format!("{}/vmlDrawing{}.vml", PKG_DRAWINGS, index);
-            let is_match = self.check_file_exist(&file_path);
-            if !is_match {
+            if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -116,8 +112,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         loop {
             index += 1;
             let file_path = format!("xl/comments{}.xml", index);
-            let is_match = self.check_file_exist(&file_path);
-            if !is_match {
+            if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -132,8 +127,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         loop {
             index += 1;
             let file_path = format!("{}/chart{}.xml", PKG_CHARTS, index);
-            let is_match = self.check_file_exist(&file_path);
-            if !is_match {
+            if !self.check_file_exist(&file_path) {
                 self.add_writer(&file_path, writer)?;
                 return Ok(index);
             }
@@ -145,8 +139,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         loop {
             index += 1;
             let file_path = format!("{}/oleObject{}.bin", PKG_EMBEDDINGS, index);
-            let is_match = self.check_file_exist(&file_path);
-            if !is_match {
+            if !self.check_file_exist(&file_path) {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
             }
@@ -158,8 +151,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         loop {
             index += 1;
             let file_path = format!("{}/Microsoft_Excel_Worksheet{}.xlsx", PKG_EMBEDDINGS, index);
-            let is_match = self.check_file_exist(&file_path);
-            if !is_match {
+            if !self.check_file_exist(&file_path) {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
             }
@@ -171,8 +163,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         loop {
             index += 1;
             let file_path = format!("{}/printerSettings{}.bin", PKG_PRNTR_SETTINGS, index);
-            let is_match = self.check_file_exist(&file_path);
-            if !is_match {
+            if !self.check_file_exist(&file_path) {
                 self.add_bin(&file_path, writer)?;
                 return Ok(index);
             }

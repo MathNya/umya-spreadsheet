@@ -21,12 +21,12 @@ pub(crate) struct SharedStringItem {
 }
 
 impl SharedStringItem {
-    pub(crate) fn get_text(&self) -> &Option<Text> {
-        &self.text
+    pub(crate) fn get_text(&self) -> Option<&Text> {
+        self.text.as_ref()
     }
 
-    pub(crate) fn _get_text_mut(&mut self) -> &mut Option<Text> {
-        &mut self.text
+    pub(crate) fn _get_text_mut(&mut self) -> Option<&mut Text> {
+        self.text.as_mut()
     }
 
     pub(crate) fn set_text(&mut self, value: Text) -> &mut Self {
@@ -39,12 +39,12 @@ impl SharedStringItem {
         self
     }
 
-    pub(crate) fn get_rich_text(&self) -> &Option<RichText> {
-        &self.rich_text
+    pub(crate) fn get_rich_text(&self) -> Option<&RichText> {
+        self.rich_text.as_ref()
     }
 
-    pub(crate) fn get_rich_text_mut(&mut self) -> &mut Option<RichText> {
-        &mut self.rich_text
+    pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+        self.rich_text.as_mut()
     }
 
     pub(crate) fn set_rich_text(&mut self, value: RichText) -> &mut Self {

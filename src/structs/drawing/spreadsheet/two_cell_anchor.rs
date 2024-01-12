@@ -65,12 +65,12 @@ impl TwoCellAnchor {
         self
     }
 
-    pub fn get_graphic_frame(&self) -> &Option<GraphicFrame> {
-        &self.graphic_frame
+    pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
+        self.graphic_frame.as_ref()
     }
 
-    pub fn get_graphic_frame_mut(&mut self) -> &mut Option<GraphicFrame> {
-        &mut self.graphic_frame
+    pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
+        self.graphic_frame.as_mut()
     }
 
     pub fn set_graphic_frame(&mut self, value: GraphicFrame) -> &mut Self {
@@ -78,12 +78,12 @@ impl TwoCellAnchor {
         self
     }
 
-    pub fn get_shape(&self) -> &Option<Shape> {
-        &self.shape
+    pub fn get_shape(&self) -> Option<&Shape> {
+        self.shape.as_ref()
     }
 
-    pub fn get_shape_mut(&mut self) -> &mut Option<Shape> {
-        &mut self.shape
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape.as_mut()
     }
 
     pub fn set_shape(&mut self, value: Shape) -> &mut Self {
@@ -91,12 +91,12 @@ impl TwoCellAnchor {
         self
     }
 
-    pub fn get_connection_shape(&self) -> &Option<ConnectionShape> {
-        &self.connection_shape
+    pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
+        self.connection_shape.as_ref()
     }
 
-    pub fn get_connection_shape_mut(&mut self) -> &mut Option<ConnectionShape> {
-        &mut self.connection_shape
+    pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
+        self.connection_shape.as_mut()
     }
 
     pub fn set_connection_shape(&mut self, value: ConnectionShape) -> &mut Self {
@@ -104,12 +104,12 @@ impl TwoCellAnchor {
         self
     }
 
-    pub fn get_picture(&self) -> &Option<Picture> {
-        &self.picture
+    pub fn get_picture(&self) -> Option<&Picture> {
+        self.picture.as_ref()
     }
 
-    pub fn get_picture_mut(&mut self) -> &mut Option<Picture> {
-        &mut self.picture
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture.as_mut()
     }
 
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {
@@ -147,39 +147,22 @@ impl TwoCellAnchor {
     }
 
     pub(crate) fn is_support(&self) -> bool {
-        match &self.graphic_frame {
-            Some(v) => {
-                return v
-                    .get_graphic()
-                    .get_graphic_data()
-                    .get_chart_space()
-                    .get_chart()
-                    .get_plot_area()
-                    .is_support();
-            }
-            None => {}
-        }
-        true
+        self.graphic_frame.as_ref().map_or(true, |v| {
+            v.get_graphic()
+                .get_graphic_data()
+                .get_chart_space()
+                .get_chart()
+                .get_plot_area()
+                .is_support()
+        })
     }
 
     pub(crate) fn is_chart(&self) -> bool {
-        match &self.graphic_frame {
-            Some(_) => {
-                return true;
-            }
-            None => {}
-        }
-        false
+        self.graphic_frame.is_some()
     }
 
     pub(crate) fn is_image(&self) -> bool {
-        match &self.picture {
-            Some(_) => {
-                return true;
-            }
-            None => {}
-        }
-        false
+        self.picture.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

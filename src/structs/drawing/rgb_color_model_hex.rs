@@ -33,96 +33,96 @@ impl RgbColorModelHex {
         self
     }
 
-    pub fn get_luminance(&self) -> &Option<PercentageType> {
-        &self.luminance
+    pub fn get_luminance(&self) -> Option<&PercentageType> {
+        self.luminance.as_ref()
     }
 
-    pub fn get_luminance_mut(&mut self) -> &mut Option<PercentageType> {
-        &mut self.luminance
+    pub fn get_luminance_mut(&mut self) -> Option<&mut PercentageType> {
+        self.luminance.as_mut()
     }
 
     pub fn set_luminance(&mut self, value: PercentageType) {
         self.luminance = Some(value);
     }
 
-    pub fn get_luminance_modulation(&self) -> &Option<PercentageType> {
-        &self.luminance_modulation
+    pub fn get_luminance_modulation(&self) -> Option<&PercentageType> {
+        self.luminance_modulation.as_ref()
     }
 
-    pub fn get_luminance_modulation_mut(&mut self) -> &mut Option<PercentageType> {
-        &mut self.luminance_modulation
+    pub fn get_luminance_modulation_mut(&mut self) -> Option<&mut PercentageType> {
+        self.luminance_modulation.as_mut()
     }
 
     pub fn set_luminance_modulation(&mut self, value: PercentageType) {
         self.luminance_modulation = Some(value);
     }
 
-    pub fn get_luminance_offset(&self) -> &Option<PercentageType> {
-        &self.luminance_offset
+    pub fn get_luminance_offset(&self) -> Option<&PercentageType> {
+        self.luminance_offset.as_ref()
     }
 
-    pub fn get_luminance_offset_mut(&mut self) -> &mut Option<PercentageType> {
-        &mut self.luminance_offset
+    pub fn get_luminance_offset_mut(&mut self) -> Option<&mut PercentageType> {
+        self.luminance_offset.as_mut()
     }
 
     pub fn set_luminance_offset(&mut self, value: PercentageType) {
         self.luminance_offset = Some(value);
     }
 
-    pub fn get_saturation(&self) -> &Option<PercentageType> {
-        &self.saturation
+    pub fn get_saturation(&self) -> Option<&PercentageType> {
+        self.saturation.as_ref()
     }
 
-    pub fn get_saturation_mut(&mut self) -> &mut Option<PercentageType> {
-        &mut self.saturation
+    pub fn get_saturation_mut(&mut self) -> Option<&mut PercentageType> {
+        self.saturation.as_mut()
     }
 
     pub fn set_saturation(&mut self, value: PercentageType) {
         self.saturation = Some(value);
     }
 
-    pub fn get_saturation_modulation(&self) -> &Option<PercentageType> {
-        &self.saturation_modulation
+    pub fn get_saturation_modulation(&self) -> Option<&PercentageType> {
+        self.saturation_modulation.as_ref()
     }
 
-    pub fn get_saturation_modulation_mut(&mut self) -> &mut Option<PercentageType> {
-        &mut self.saturation_modulation
+    pub fn get_saturation_modulation_mut(&mut self) -> Option<&mut PercentageType> {
+        self.saturation_modulation.as_mut()
     }
 
     pub fn set_saturation_modulation(&mut self, value: PercentageType) {
         self.saturation_modulation = Some(value);
     }
 
-    pub fn get_shade(&self) -> &Option<PositiveFixedPercentageType> {
-        &self.shade
+    pub fn get_shade(&self) -> Option<&PositiveFixedPercentageType> {
+        self.shade.as_ref()
     }
 
-    pub fn get_shade_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
-        &mut self.shade
+    pub fn get_shade_mut(&mut self) -> Option<&mut PositiveFixedPercentageType> {
+        self.shade.as_mut()
     }
 
     pub fn set_shade(&mut self, value: PositiveFixedPercentageType) {
         self.shade = Some(value);
     }
 
-    pub fn get_alpha(&self) -> &Option<PositiveFixedPercentageType> {
-        &self.alpha
+    pub fn get_alpha(&self) -> Option<&PositiveFixedPercentageType> {
+        self.alpha.as_ref()
     }
 
-    pub fn get_alpha_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
-        &mut self.alpha
+    pub fn get_alpha_mut(&mut self) -> Option<&mut PositiveFixedPercentageType> {
+        self.alpha.as_mut()
     }
 
     pub fn set_alpha(&mut self, value: PositiveFixedPercentageType) {
         self.alpha = Some(value);
     }
 
-    pub fn get_tint(&self) -> &Option<PositiveFixedPercentageType> {
-        &self.tint
+    pub fn get_tint(&self) -> Option<&PositiveFixedPercentageType> {
+        self.tint.as_ref()
     }
 
-    pub fn get_tint_mut(&mut self) -> &mut Option<PositiveFixedPercentageType> {
-        &mut self.tint
+    pub fn get_tint_mut(&mut self) -> Option<&mut PositiveFixedPercentageType> {
+        self.tint.as_mut()
     }
 
     pub fn set_tint(&mut self, value: PositiveFixedPercentageType) {

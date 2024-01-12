@@ -85,12 +85,12 @@ impl PageSetup {
         self
     }
 
-    pub fn get_object_data(&self) -> &Option<Vec<u8>> {
-        &self.object_data
+    pub fn get_object_data(&self) -> Option<&Vec<u8>> {
+        self.object_data.as_ref()
     }
 
-    pub fn get_object_data_mut(&mut self) -> &mut Option<Vec<u8>> {
-        &mut self.object_data
+    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+        self.object_data.as_mut()
     }
 
     pub fn set_object_data(&mut self, value: Vec<u8>) -> &mut Self {
@@ -99,31 +99,14 @@ impl PageSetup {
     }
 
     pub(crate) fn has_param(&self) -> bool {
-        if self.paper_size.has_value() {
-            return true;
-        }
-        if self.orientation.has_value() {
-            return true;
-        }
-        if self.scale.has_value() {
-            return true;
-        }
-        if self.fit_to_height.has_value() {
-            return true;
-        }
-        if self.fit_to_width.has_value() {
-            return true;
-        }
-        if self.horizontal_dpi.has_value() {
-            return true;
-        }
-        if self.vertical_dpi.has_value() {
-            return true;
-        }
-        if self.object_data.is_some() {
-            return true;
-        }
-        false
+        self.paper_size.has_value()
+            || self.orientation.has_value()
+            || self.scale.has_value()
+            || self.fit_to_height.has_value()
+            || self.fit_to_width.has_value()
+            || self.horizontal_dpi.has_value()
+            || self.vertical_dpi.has_value()
+            || self.object_data.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

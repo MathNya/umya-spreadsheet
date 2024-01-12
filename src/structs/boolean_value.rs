@@ -5,17 +5,13 @@ pub struct BooleanValue {
 
 impl BooleanValue {
     pub(crate) fn get_value(&self) -> &bool {
-        match &self.value {
-            Some(v) => v,
-            None => &false,
-        }
+        self.value.as_ref().unwrap_or(&false)
     }
 
     pub(crate) fn get_value_string(&self) -> &str {
-        if *self.get_value() {
-            "1"
-        } else {
-            "0"
+        match *self.get_value() {
+            true => "1",
+            false => "0",
         }
     }
 
