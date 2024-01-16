@@ -7,6 +7,7 @@ use structs::drawing::Theme;
 use structs::Address;
 use structs::CellValue;
 use structs::Cells;
+use structs::DefinedName;
 use structs::Properties;
 use structs::SharedStringTable;
 use structs::Stylesheet;
@@ -29,6 +30,7 @@ pub struct Spreadsheet {
     backup_context_types: Vec<(String, String)>,
     pivot_caches: Vec<(String, String, String)>,
     workbook_protection: Option<WorkbookProtection>,
+    defined_names: Vec<DefinedName>,
 }
 
 impl Spreadsheet {
@@ -609,6 +611,9 @@ impl Spreadsheet {
     /// (This method is crate only.)
     /// Has Defined Names.
     pub(crate) fn has_defined_names(&self) -> bool {
+        if !self.defined_names.is_empty() {
+            return true;
+        }
         self.get_sheet_collection_no_check()
             .iter()
             .any(|sheet| sheet.has_defined_names())
@@ -681,5 +686,29 @@ impl Spreadsheet {
     pub fn remove_workbook_protection(&mut self) -> &mut Self {
         self.workbook_protection = None;
         self
+    }
+
+    /// Get Defined Name (Vec).
+    pub fn get_defined_names(&self) -> &Vec<DefinedName> {
+        &self.defined_names
+    }
+
+    /// Get Defined Name (Vec) in mutable.
+    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+        &mut self.defined_names
+    }
+
+    /// Set Defined Name (Vec).
+    /// # Arguments
+    /// * `value` - Vec<DefinedName>.
+    pub fn set_defined_names(&mut self, value: Vec<DefinedName>) {
+        self.defined_names = value;
+    }
+
+    /// Add Defined Name.
+    /// # Arguments
+    /// * `value` - DefinedName.
+    pub fn add_defined_names(&mut self, value: DefinedName) {
+        self.defined_names.push(value);
     }
 }

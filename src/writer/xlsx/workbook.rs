@@ -88,18 +88,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if spreadsheet.has_defined_names() {
         write_start_tag(&mut writer, "definedNames", vec![], false);
 
+        for defined_name in spreadsheet.get_defined_names() {
+            defined_name.write_to(&mut writer);
+        }
         for sheet in spreadsheet.get_sheet_collection_no_check() {
             for defined_name in sheet.get_defined_names() {
-                // definedName
-                let mut attributes: Vec<(&str, &str)> = Vec::new();
-                attributes.push(("name", defined_name.get_name()));
-                if *defined_name.get_is_local_only() {
-                    attributes.push(("localSheetId", "0"));
-                    attributes.push(("hidden", "1"));
-                }
-                write_start_tag(&mut writer, "definedName", attributes, false);
-                write_text_node_no_escape(&mut writer, defined_name.get_address());
-                write_end_tag(&mut writer, "definedName");
+                defined_name.write_to(&mut writer);
             }
         }
 

@@ -1,21 +1,28 @@
 use super::Address;
 use super::StringValue;
+use super::UInt32Value;
 use helper::address::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use reader::driver::*;
+use std::io::Cursor;
+use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {
-    name: String,
+    name: StringValue,
     address: Vec<Address>,
     string_value: StringValue,
-    is_local_only: bool,
+    local_sheet_id: UInt32Value,
 }
 impl DefinedName {
     pub fn get_name(&self) -> &str {
-        &self.name
+        &self.name.get_value_string()
     }
 
     pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.name = value.into();
+        self.name.set_value(value);
         self
     }
 
@@ -25,7 +32,7 @@ impl DefinedName {
         }
         let mut result: Vec<String> = Vec::new();
         for row in &self.address {
-            result.push(row.get_address());
+            result.push(row.get_address_ptn2());
         }
         result.join(",")
     }
@@ -43,10 +50,23 @@ impl DefinedName {
     }
 
     pub fn add_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let mut value = value.into();
+        value = value.replace("''", "'");
         let mut obj = Address::default();
         obj.set_address(value);
         self.address.push(obj);
         self
+    }
+
+    pub(crate) fn get_sheet_name_crate(&self) -> String {
+        if self.string_value.has_value() {
+            return String::from("");
+        }
+        self.address
+            .first()
+            .unwrap_or(&Address::default())
+            .get_sheet_name()
+            .to_string()
     }
 
     pub(crate) fn get_address_obj(&self) -> &Vec<Address> {
@@ -63,12 +83,12 @@ impl DefinedName {
         self
     }
 
-    pub fn get_is_local_only(&self) -> &bool {
-        &self.is_local_only
+    pub fn get_local_sheet_id(&self) -> &u32 {
+        &self.local_sheet_id.get_value()
     }
 
-    pub fn set_is_local_only(&mut self, value: bool) {
-        self.is_local_only = value;
+    pub fn set_local_sheet_id(&mut self, value: u32) {
+        self.local_sheet_id.set_value(value);
     }
 
     fn split_str<S: Into<String>>(&self, value: S) -> Vec<String> {
@@ -80,10 +100,18 @@ impl DefinedName {
         let mut string = String::from("");
         for c in &char_list {
             match c {
-                '\'' => is_pass_s = !is_pass_s,
-                '"' => is_pass_d = !is_pass_d,
+                '\'' => {
+                    is_pass_s = !is_pass_s;
+                    string.push(*c);
+                }
+                '"' => {
+                    is_pass_d = !is_pass_d;
+                    if is_pass_s {
+                        string.push(*c);
+                    }
+                }
                 ',' => {
-                    if is_pass_s || is_pass_d {
+                    if !is_pass_s && !is_pass_d {
                         result.push(string);
                         string = String::from("");
                     } else {
@@ -169,5 +197,42 @@ impl DefinedName {
             address.set_sheet_name(value.clone());
         }
         self
+    }
+
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
+        &mut self,
+        reader: &mut Reader<R>,
+        e: &BytesStart,
+    ) {
+        set_string_from_xml!(self, e, name, "name");
+        set_string_from_xml!(self, e, local_sheet_id, "localSheetId");
+
+        let mut value: String = String::from("");
+        xml_read_loop!(
+            reader,
+                Event::Text(e) => {
+                    value = e.unescape().unwrap().to_string();
+                },
+                Event::End(ref e) => {
+                    if e.name().into_inner() == b"definedName" {
+                        self.set_address(value.clone());
+                        return
+                    }
+                },
+                Event::Eof => panic!("Error not find {} end element", "definedName")
+        );
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+        // definedName
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        attributes.push(("name", self.get_name()));
+        let local_sheet_id_str = self.local_sheet_id.get_value_string();
+        if self.local_sheet_id.has_value() {
+            attributes.push(("localSheetId", &local_sheet_id_str));
+        }
+        write_start_tag(writer, "definedName", attributes, false);
+        write_text_node_no_escape(writer, self.get_address());
+        write_end_tag(writer, "definedName");
     }
 }

@@ -1,4 +1,5 @@
 use super::Range;
+use helper::address::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {
@@ -31,34 +32,47 @@ impl Address {
 
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Address {
         let org_value = value.into();
-        let split_value: Vec<&str> = org_value.split('!').collect();
-
-        if split_value.len() == 1 {
-            self.range.set_range(split_value[0]);
-        } else if split_value.len() == 2 {
-            self.sheet_name = split_value[0].to_string();
-            self.range.set_range(split_value[1]);
-        } else {
-            panic!("Non-standard address");
+        let (sheet_name, range) = split_address(&org_value);
+        self.range.set_range(range);
+        if &sheet_name != "" {
+            self.sheet_name = sheet_name;
         }
         self
     }
 
     pub fn get_address(&self) -> String {
+        self.get_address_crate(false)
+    }
+
+    pub(crate) fn get_address_ptn2(&self) -> String {
+        self.get_address_crate(true)
+    }
+
+    pub(crate) fn get_address_crate(&self, is_ptn2: bool) -> String {
         let range = self.range.get_range();
         if self.sheet_name.is_empty() {
             return range;
         }
         let mut with_space_char = String::from("");
-        if self.get_sheet_name().contains(char::is_whitespace) {
+        let mut sheet_name = self.sheet_name.clone();
+        if sheet_name.contains(char::is_whitespace) {
             with_space_char = String::from("'");
+        }
+        if is_ptn2 {
+            if sheet_name.contains("!") {
+                with_space_char = String::from("'");
+            }
+            if sheet_name.contains("'") {
+                with_space_char = String::from("'");
+                sheet_name = sheet_name.replace("'", "''");
+            }
+            if sheet_name.contains(r#"""#) {
+                with_space_char = String::from("'");
+            }
         }
         format!(
             "{}{}{}!{}",
-            &with_space_char,
-            &self.sheet_name,
-            &with_space_char,
-            self.range.get_range()
+            &with_space_char, sheet_name, &with_space_char, range
         )
     }
 

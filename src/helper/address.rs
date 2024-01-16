@@ -27,6 +27,10 @@ fn split_address_test() {
         split_address("'she!et1'!A1:B2"),
         ("she!et1".to_string(), "A1:B2".to_string())
     );
+    assert_eq!(
+        split_address(r#"'she"et1'!A1:B2"#),
+        (r#"she"et1"#.to_string(), "A1:B2".to_string())
+    );
 }
 
 pub fn is_address<S: AsRef<str>>(input: S) -> bool {

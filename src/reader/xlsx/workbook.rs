@@ -22,9 +22,6 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     reader.trim_text(true);
     let mut spreadsheet = Spreadsheet::default();
 
-    let mut defined_name_value = String::from("");
-    let mut is_local_only = false;
-    let mut string_value = String::from("");
     let mut defined_names: Vec<DefinedName> = Vec::new();
 
     xml_read_loop!(
@@ -61,35 +58,27 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         },
         Event::Start(ref e) => {
             if e.name().into_inner() == b"definedName" {
-                defined_name_value = get_attribute(e, b"name").unwrap();
-                is_local_only = get_attribute(e, b"localSheetId").is_some();
-            }
-        },
-        Event::Text(e) => string_value = e.unescape().unwrap().to_string(),
-        Event::End(ref e) => {
-            if e.name().into_inner() == b"definedName" {
-                let mut defined_name = DefinedName::default();
-                defined_name.set_name(defined_name_value);
-                defined_name.set_address(string_value);
-                defined_name.set_is_local_only(is_local_only);
-                defined_names.push(defined_name);
-
-                defined_name_value = String::from("");
-                string_value = String::from("");
-                is_local_only = false;
+                let mut obj = DefinedName::default();
+                obj.set_attributes(&mut reader, e);
+                defined_names.push(obj);
             }
         },
         Event::Eof => break
     );
 
-    for sheet in spreadsheet.get_sheet_collection_mut() {
-        for defined_name in &defined_names {
-            for address in defined_name.get_address_obj() {
-                if sheet.get_name() == address.get_sheet_name() {
-                    sheet.add_defined_names(defined_name.clone());
-                }
+    for defined_name in &defined_names {
+        let mut is_match = false;
+        for sheet in spreadsheet.get_sheet_collection_mut() {
+            if sheet.get_name() == defined_name.get_sheet_name_crate() {
+                sheet.add_defined_names(defined_name.clone());
+                is_match = true;
+                break;
             }
         }
+        if !is_match {
+            spreadsheet.add_defined_names(defined_name.clone());
+        }
     }
+
     Ok(spreadsheet)
 }
