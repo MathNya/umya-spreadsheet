@@ -32,13 +32,10 @@ impl Columns {
     }
 
     pub(crate) fn get_column_mut(&mut self, value: &u32) -> &mut Column {
-        match self.get_column(value) {
-            Some(_) => {}
-            None => {
-                let mut obj = Column::default();
-                obj.set_col_num(*value);
-                self.set_column(obj);
-            }
+        if self.get_column(value).is_none() {
+            let mut obj = Column::default();
+            obj.set_col_num(*value);
+            self.set_column(obj);
         }
         for column in self.get_column_collection_mut() {
             if value == column.get_col_num() {
@@ -125,43 +122,47 @@ impl Columns {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         stylesheet: &mut Stylesheet,
     ) {
-        if !self.column.is_empty() {
-            // cols
-            write_start_tag(writer, "cols", vec![], false);
+        if self.column.is_empty() {
+            return;
+        }
 
-            // col
-            let mut column_copy = self.column.clone();
-            column_copy.sort_by(|a, b| a.get_col_num().cmp(b.get_col_num()));
-            let mut column_iter = column_copy.iter();
-            let mut column_raw = column_iter.next();
-            let mut obj = column_raw.unwrap();
-            let mut min = *obj.get_col_num();
-            let mut max = min;
-            loop {
-                column_raw = column_iter.next();
-                match column_raw {
-                    Some(column) => {
-                        if column.get_col_num() == &(max + 1)
-                            && column.get_hash_code() == obj.get_hash_code()
-                            && column.get_style() == obj.get_style()
-                        {
-                            max += 1;
-                        } else {
-                            self.write_to_column(writer, &min, &max, obj, stylesheet);
-                            obj = column;
-                            min = *obj.get_col_num();
-                            max = min;
-                        }
-                    }
-                    None => {
+        // cols
+        write_start_tag(writer, "cols", vec![], false);
+
+        // col
+
+        let mut column_copy = self.column.clone();
+        column_copy.sort_by(|a, b| a.get_col_num().cmp(b.get_col_num()));
+        let mut column_iter = column_copy.iter();
+        let mut column_raw = column_iter.next();
+        let mut obj = column_raw.unwrap();
+        let mut min = *obj.get_col_num();
+        let mut max = min;
+
+        loop {
+            column_raw = column_iter.next();
+            match column_raw {
+                Some(column) => {
+                    if column.get_col_num() == &(max + 1)
+                        && column.get_hash_code() == obj.get_hash_code()
+                        && column.get_style() == obj.get_style()
+                    {
+                        max += 1;
+                    } else {
                         self.write_to_column(writer, &min, &max, obj, stylesheet);
-                        break;
+                        obj = column;
+                        min = *obj.get_col_num();
+                        max = min;
                     }
                 }
+                None => {
+                    self.write_to_column(writer, &min, &max, obj, stylesheet);
+                    break;
+                }
             }
-
-            write_end_tag(writer, "cols");
         }
+
+        write_end_tag(writer, "cols");
     }
 
     pub(crate) fn write_to_column(

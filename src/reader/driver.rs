@@ -76,16 +76,14 @@ pub(crate) fn normalize_path_to_str(path: &str) -> String {
 }
 
 pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -> Option<String> {
-    for a in e.attributes().with_checks(false) {
-        match a {
+    e.attributes()
+        .with_checks(false)
+        .find_map(|attr| match attr {
             Ok(ref attr) if attr.key.into_inner() == key => {
-                return Some(get_attribute_value(attr).unwrap());
+                Some(get_attribute_value(attr).unwrap())
             }
-            Ok(_) => {}
-            Err(_) => {}
-        }
-    }
-    None
+            _ => None,
+        })
 }
 pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Error> {
     let value = attr.value.clone().into_owned();

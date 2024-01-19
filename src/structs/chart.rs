@@ -193,11 +193,7 @@ impl Chart {
     }
 
     pub fn set_series_title<S: Into<String>>(&mut self, value: Vec<S>) -> &mut Self {
-        let mut vec_value: Vec<String> = Vec::new();
-        for v in value {
-            vec_value.push(v.into());
-        }
-        let mut value_iter = vec_value.iter();
+        let mut value_iter = value.into_iter().map(Into::into);
         for series in self
             .get_area_chart_series_list_mut()
             .get_area_chart_series_mut()
@@ -205,7 +201,7 @@ impl Chart {
             let value_raw = value_iter.next();
             if let Some(v) = value_raw {
                 let mut series_text = SeriesText::default();
-                series_text.set_value(v.clone());
+                series_text.set_value(v);
                 series.set_series_text(series_text);
             }
         }

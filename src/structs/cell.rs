@@ -354,7 +354,7 @@ impl Cell {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        shared_string_table: Arc<RwLock<SharedStringTable>>,
+        shared_string_table: &Arc<RwLock<SharedStringTable>>,
         stylesheet: &mut Stylesheet,
     ) {
         let empty_flag_value = self.cell_value.is_empty();

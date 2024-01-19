@@ -471,9 +471,8 @@ impl Spreadsheet {
     /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet. Err:Error.
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
         let title = value.get_name();
-        match Spreadsheet::check_sheet_name(self, title) {
-            Ok(_) => {}
-            Err(e) => return Err(e),
+        if let Err(e) = Spreadsheet::check_sheet_name(self, title) {
+            return Err(e);
         }
         self.work_sheet_collection.push(value);
         Ok(self.work_sheet_collection.last_mut().unwrap())
@@ -518,9 +517,8 @@ impl Spreadsheet {
         sheet_title: S,
     ) -> Result<&mut Worksheet, &'static str> {
         let v = sheet_title.into();
-        match Spreadsheet::check_sheet_name(self, &v) {
-            Ok(_) => {}
-            Err(e) => return Err(e),
+        if let Err(e) = Spreadsheet::check_sheet_name(self, &v) {
+            return Err(e);
         }
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
         Ok(Spreadsheet::add_new_sheet_crate(self, sheet_id, v))
@@ -560,9 +558,8 @@ impl Spreadsheet {
         sheet_name: S,
     ) -> Result<(), &'static str> {
         let sheet_name_str = sheet_name.into();
-        match Spreadsheet::check_sheet_name(self, sheet_name_str.as_ref()) {
-            Ok(_) => {}
-            Err(e) => return Err(e),
+        if let Err(e) = Spreadsheet::check_sheet_name(self, sheet_name_str.as_ref()) {
+            return Err(e);
         }
         match self.work_sheet_collection.get_mut(index) {
             Some(sheet) => {
@@ -659,11 +656,11 @@ impl Spreadsheet {
     pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
         let mut result: Vec<(String, String, String)> = Vec::new();
         for (val1, val2, val3) in &self.pivot_caches {
-            let mut result_value = value.clone();
+            let mut result_value = &value;
             if val1 != &key {
-                result_value = val3.clone();
+                result_value = val3;
             }
-            result.push((val1.clone(), val2.clone(), result_value));
+            result.push((val1.to_string(), val2.to_string(), result_value.to_string()));
         }
         self.pivot_caches = result;
         self

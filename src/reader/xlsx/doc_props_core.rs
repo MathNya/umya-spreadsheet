@@ -29,59 +29,41 @@ pub(crate) fn read<R: io::Read + io::Seek>(
             Ok(Event::End(ref e)) => {
                 match e.name().into_inner() {
                     b"dc:title" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_title(string_value.clone());
+                        spreadsheet.get_properties_mut().set_title(&string_value);
                     }
                     b"dc:subject" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_subject(string_value.clone());
+                        spreadsheet.get_properties_mut().set_subject(&string_value);
                     }
                     b"dc:creator" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_creator(string_value.clone());
+                        spreadsheet.get_properties_mut().set_creator(&string_value);
                     }
                     b"cp:keywords" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_keywords(string_value.clone());
+                        spreadsheet.get_properties_mut().set_keywords(&string_value);
                     }
                     b"dc:description" => {
                         spreadsheet
                             .get_properties_mut()
-                            .set_description(string_value.clone());
+                            .set_description(&string_value);
                     }
                     b"cp:lastModifiedBy" => {
                         spreadsheet
                             .get_properties_mut()
-                            .set_last_modified_by(string_value.clone());
+                            .set_last_modified_by(&string_value);
                     }
                     b"cp:revision" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_revision(string_value.clone());
+                        spreadsheet.get_properties_mut().set_revision(&string_value);
                     }
                     b"dcterms:created" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_created(string_value.clone());
+                        spreadsheet.get_properties_mut().set_created(&string_value);
                     }
                     b"dcterms:modified" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_modified(string_value.clone());
+                        spreadsheet.get_properties_mut().set_modified(&string_value);
                     }
                     b"cp:category" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_category(string_value.clone());
+                        spreadsheet.get_properties_mut().set_category(&string_value);
                     }
                     b"cp:version" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_version(string_value.clone());
+                        spreadsheet.get_properties_mut().set_version(&string_value);
                     }
                     _ => (),
                 }

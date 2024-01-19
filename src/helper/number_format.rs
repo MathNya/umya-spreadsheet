@@ -234,7 +234,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         converted_sections.insert(idx, converted_section);
     });
 
-    let mut color = colors[0].clone();
+    let mut color = &colors[0];
     let mut format: &str = &converted_sections[0];
     let mut absval = *value;
     match cnt {
@@ -242,7 +242,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             absval = absval.abs();
             let condval_one = &condvals[0].parse::<f64>().unwrap();
             if !split_format_compare(value, &condops[0], condval_one, ">=", &0f64) {
-                color = colors[1].clone();
+                color = &colors[1];
                 format = &converted_sections[1];
             }
         }
@@ -252,17 +252,17 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             let condval_two = &condvals[1].parse::<f64>().unwrap();
             if !split_format_compare(value, &condops[0], condval_one, ">", &0f64) {
                 if split_format_compare(value, &condops[1], condval_two, "<", &0f64) {
-                    color = colors[1].clone();
+                    color = &colors[1];
                     format = &converted_sections[1];
                 } else {
-                    color = colors[2].clone();
+                    color = &colors[2];
                     format = &converted_sections[2];
                 }
             }
         }
         _ => {}
     }
-    (color, format.into(), absval.to_string())
+    (color.to_string(), format.into(), absval.to_string())
 }
 
 fn split_format_compare(value: &f64, cond: &str, val: &f64, dfcond: &str, dfval: &f64) -> bool {
@@ -393,7 +393,7 @@ fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str
         format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into()
     }
     if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
-        if let Err(_) = &value.parse::<usize>() {
+        if value.parse::<usize>().is_err() {
             //println!("format as fraction {} {}", value, format);
             value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
         }
@@ -453,60 +453,54 @@ fn format_as_fraction(value: &f64, format: &str) -> String {
         .parse::<f64>()
         .unwrap();
     let decimal_length = decimal_part.to_string().len();
-    let decimal_divisor = 10i32
-        .pow(decimal_length as u32)
-        .to_string()
-        .parse::<f64>()
-        .unwrap();
+    let decimal_divisor = 10f64.powi(decimal_length as i32);
 
     let gcd = gcd(&decimal_part, &decimal_divisor);
 
     let mut adjusted_decimal_part = decimal_part / gcd;
     let adjusted_decimal_divisor = decimal_divisor / gcd;
 
-    let result;
-    match format.find('0') {
-        Some(_) => {
+    let result: String;
+    if format.contains('0') {
+        return format!(
+            "{}{} {}/{}",
+            &sign, &integer_part, &adjusted_decimal_part, &adjusted_decimal_divisor
+        );
+    }
+
+    if format.contains('#') {
+        if integer_part == 0f64 {
+            result = format!(
+                "{}{}/{}",
+                &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
+            );
+        } else {
             result = format!(
                 "{}{} {}/{}",
                 &sign, &integer_part, &adjusted_decimal_part, &adjusted_decimal_divisor
             );
         }
-        None => match format.find('#') {
-            Some(_) => {
-                if integer_part == 0f64 {
-                    result = format!(
-                        "{}{}/{}",
-                        &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
-                    );
-                } else {
-                    result = format!(
-                        "{}{} {}/{}",
-                        &sign, &integer_part, &adjusted_decimal_part, &adjusted_decimal_divisor
-                    );
-                }
-            }
-            None => {
-                let check_format: String = format.chars().take(3).collect();
-                if check_format == "? ?" {
-                    let mut integer_part_str = integer_part.to_string();
-                    if integer_part == 0f64 {
-                        integer_part_str = String::from("");
-                    }
-                    result = format!(
-                        "{}{} {}/{}",
-                        &sign, &integer_part_str, &adjusted_decimal_part, &adjusted_decimal_divisor
-                    );
-                } else {
-                    adjusted_decimal_part += integer_part * adjusted_decimal_divisor;
-                    result = format!(
-                        "{}{}/{}",
-                        &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
-                    );
-                }
-            }
-        },
+        return result;
     }
+
+    let check_format: String = format.chars().take(3).collect();
+    if check_format == "? ?" {
+        let mut integer_part_str = integer_part.to_string();
+        if integer_part == 0f64 {
+            integer_part_str = String::from("");
+        }
+        result = format!(
+            "{}{} {}/{}",
+            &sign, &integer_part_str, &adjusted_decimal_part, &adjusted_decimal_divisor
+        );
+    } else {
+        adjusted_decimal_part += integer_part * adjusted_decimal_divisor;
+        result = format!(
+            "{}{}/{}",
+            &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
+        );
+    }
+
     result
 }
 

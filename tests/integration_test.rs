@@ -1002,9 +1002,8 @@ fn new_and_wite() {
 fn duplicate_sheet() {
     let mut book = umya_spreadsheet::new_file();
     let _ = book.new_sheet("Sheet2");
-    match book.new_sheet("Sheet2") {
-        Ok(_) => panic!("getting new sheet.."),
-        Err(_) => {}
+    if book.new_sheet("Sheet2").is_ok() {
+        panic!("getting new sheet..")
     }
 }
 
