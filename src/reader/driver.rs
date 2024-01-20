@@ -72,7 +72,7 @@ pub(crate) fn join_paths(base_path: &str, target: &str) -> String {
 
 pub(crate) fn normalize_path_to_str(path: &str) -> String {
     let ret = normalize_path(path);
-    ret.to_str().unwrap_or("").to_string().replace('\\', "/")
+    ret.to_str().unwrap_or("").replace('\\', "/")
 }
 
 pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -> Option<String> {
@@ -86,6 +86,5 @@ pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -
         })
 }
 pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Error> {
-    let value = attr.value.clone().into_owned();
-    String::from_utf8(value)
+    String::from_utf8(attr.value.to_vec())
 }
