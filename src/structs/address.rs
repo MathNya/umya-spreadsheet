@@ -120,14 +120,9 @@ impl Address {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) -> bool {
-        if self.sheet_name == sheet_name {
-            return self.range.is_remove(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-        false
+        self.sheet_name == sheet_name
+            && self
+                .range
+                .is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
     }
 }

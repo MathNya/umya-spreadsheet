@@ -1290,9 +1290,8 @@ impl Worksheet {
 
     /// Get Tab Color in mutable.
     pub fn get_tab_color_mut(&mut self) -> &mut Color {
-        match &self.tab_color {
-            Some(_) => return self.tab_color.as_mut().unwrap(),
-            None => {}
+        if self.tab_color.is_some() {
+            return self.tab_color.as_mut().unwrap();
         }
         self.set_tab_color(Color::default());
         self.tab_color.as_mut().unwrap()

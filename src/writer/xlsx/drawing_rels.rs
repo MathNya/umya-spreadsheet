@@ -65,7 +65,6 @@ fn write_relationship(
     p_target: &str,
     p_target_mode: &str,
 ) -> bool {
-    let tag_name = "Relationship";
     let r_id_str = format!("rId{}", r_id);
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     attributes.push(("Id", &r_id_str));
@@ -74,6 +73,6 @@ fn write_relationship(
     if !p_target_mode.is_empty() {
         attributes.push(("TargetMode", p_target_mode));
     }
-    write_start_tag(writer, tag_name, attributes, true);
+    write_start_tag(writer, "Relationship", attributes, true);
     true
 }

@@ -86,28 +86,12 @@ impl Anchor {
     }
 
     pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &u32) {
-        self.top_row = if &self.top_row > num_rows {
-            self.top_row - num_rows
-        } else {
-            1
-        };
-        self.bottom_row = if &self.bottom_row > num_rows {
-            self.bottom_row - num_rows
-        } else {
-            1
-        };
+        self.top_row = self.top_row.saturating_sub(*num_rows).max(1);
+        self.bottom_row = self.bottom_row.saturating_sub(*num_rows).max(1);
     }
 
     pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &u32) {
-        self.left_column = if &self.left_column > num_cols {
-            self.left_column - num_cols
-        } else {
-            1
-        };
-        self.right_column = if &self.right_column > num_cols {
-            self.right_column - num_cols
-        } else {
-            1
-        };
+        self.left_column = self.left_column.saturating_sub(*num_cols).max(1);
+        self.right_column = self.right_column.saturating_sub(*num_cols).max(1);
     }
 }

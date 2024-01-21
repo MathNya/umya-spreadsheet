@@ -101,12 +101,12 @@ impl DiagonalBorder {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let empty_flag = self.color.has_value() == false;
+        let empty_flag = !self.color.has_value();
 
         // diagonal
         write_start_tag(writer, "diagonal", vec![], empty_flag);
 
-        if empty_flag == false {
+        if !empty_flag {
             // color
             &self.color.write_to_color(writer);
 

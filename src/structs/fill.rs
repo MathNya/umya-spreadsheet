@@ -39,7 +39,7 @@ impl Fill {
     }
 
     pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
-        if let Some(_) = &self.gradient_fill {
+        if self.gradient_fill.is_some() {
             return self.gradient_fill.as_mut().unwrap();
         }
         self.set_gradient_fill(GradientFill::default());
