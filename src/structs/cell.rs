@@ -155,7 +155,7 @@ impl Cell {
         self
     }
 
-    pub fn get_data_type(&self) -> &CellRawValue {
+    pub fn get_data_type(&self) -> &str {
         self.cell_value.get_data_type()
     }
 

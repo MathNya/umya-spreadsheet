@@ -12,8 +12,8 @@ pub struct CellValue {
     pub(crate) formula_attributes: Vec<(String, String)>,
 }
 impl CellValue {
-    pub fn get_data_type(&self) -> &CellRawValue {
-        &self.raw_value
+    pub fn get_data_type(&self) -> &str {
+        &self.raw_value.get_data_type()
     }
 
     pub fn get_raw_value(&self) -> &CellRawValue {
