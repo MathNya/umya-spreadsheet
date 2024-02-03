@@ -95,10 +95,10 @@ impl NumberingFormats {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let formats_to_write: Vec<_> = self
+        let formats_to_write: HashMap<_,_> = self
             .numbering_format
-            .values()
-            .filter(|numbering_format| !*numbering_format.get_is_build_in())
+            .iter()
+            .filter(|(k, v)| !*v.get_is_build_in())
             .collect();
         if formats_to_write.is_empty() {
             return;
@@ -111,8 +111,8 @@ impl NumberingFormats {
         formats_to_write
             .into_iter()
             .enumerate()
-            .for_each(|(index, numbering_format)| {
-                numbering_format.write_to(writer, &(index as u32));
+            .for_each(|(_, (index, numbering_format))| {
+                numbering_format.write_to(writer, index);
             });
 
         write_end_tag(writer, "numFmts");
