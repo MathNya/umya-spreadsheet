@@ -1,5 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
+use helper::const_str::*;
 use quick_xml::Writer;
 use std::io;
 use structs::Worksheet;
@@ -19,9 +20,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         &mut writer,
         "xml",
         vec![
-            ("xmlns:v", "urn:schemas-microsoft-com:vml"),
-            ("xmlns:o", "urn:schemas-microsoft-com:office:office"),
-            ("xmlns:x", "urn:schemas-microsoft-com:office:excel"),
+            ("xmlns:v", VML_NS),
+            ("xmlns:o", OFFICE_NS),
+            ("xmlns:x", EXCEL_NS),
         ],
         false,
     );

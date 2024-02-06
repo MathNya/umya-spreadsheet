@@ -29,14 +29,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
             Ok(Event::End(ref e)) => {
                 match e.name().into_inner() {
                     b"Manager" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_manager(string_value.clone());
+                        spreadsheet.get_properties_mut().set_manager(&string_value);
                     }
                     b"Company" => {
-                        spreadsheet
-                            .get_properties_mut()
-                            .set_company(string_value.clone());
+                        spreadsheet.get_properties_mut().set_company(&string_value);
                     }
                     _ => (),
                 }

@@ -21,6 +21,7 @@ pub(crate) const DRAWINGML_MAIN_NS: &str = "http://schemas.openxmlformats.org/dr
 pub(crate) const DRAWINGS_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing";
 pub(crate) const ENCRYPTION_NS: &str = "http://schemas.microsoft.com/office/2006/encryption";
+pub(crate) const EXCEL_NS: &str = "urn:schemas-microsoft-com:office:excel";
 pub(crate) const HYPERLINK_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink";
 pub(crate) const IMAGE_NS: &str =
@@ -28,6 +29,7 @@ pub(crate) const IMAGE_NS: &str =
 pub(crate) const MC_NS: &str = "http://schemas.openxmlformats.org/markup-compatibility/2006";
 pub(crate) const OFCDOC_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument";
+pub(crate) const OFFICE_NS: &str = "urn:schemas-microsoft-com:office:office";
 pub(crate) const OLE_OBJECT_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject";
 pub(crate) const PASSWORD_NS: &str =
@@ -56,10 +58,11 @@ pub(crate) const TABLE_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/table";
 pub(crate) const THEME_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme";
-pub(crate) const VML_DRAWING_NS: &str =
-    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing";
 pub(crate) const VBA_PROJECT_NS: &str =
     "http://schemas.microsoft.com/office/2006/relationships/vbaProject";
+pub(crate) const VML_NS: &str = "urn:schemas-microsoft-com:vml";
+pub(crate) const VML_DRAWING_NS: &str =
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing";
 pub(crate) const VTYPES_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes";
 pub(crate) const WORKSHEET_NS: &str =

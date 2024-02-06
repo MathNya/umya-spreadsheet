@@ -504,15 +504,12 @@ impl Worksheet {
     pub(crate) fn get_hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
         let mut result: HashMap<String, &Hyperlink> = HashMap::new();
         for cell in self.cell_collection.get_collection() {
-            match cell.get_hyperlink() {
-                Some(hyperlink) => {
-                    let coordition = coordinate_from_index(
-                        cell.get_coordinate().get_col_num(),
-                        cell.get_coordinate().get_row_num(),
-                    );
-                    result.insert(coordition, hyperlink);
-                }
-                None => {}
+            if let Some(hyperlink) = cell.get_hyperlink() {
+                let coordition = coordinate_from_index(
+                    cell.get_coordinate().get_col_num(),
+                    cell.get_coordinate().get_row_num(),
+                );
+                result.insert(coordition, hyperlink);
             }
         }
         result
@@ -936,76 +933,75 @@ impl Worksheet {
             self.get_row_dimensions_crate_mut()
                 .adjustment_insert_coordinate(root_row_num, offset_row_num);
         }
-        if offset_col_num != &0 || offset_row_num != &0 {
-            // defined_names
-            let title = self.title.clone();
-            for defined_name in &mut self.defined_names {
-                defined_name.adjustment_insert_coordinate(
-                    &title,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-
-            // cell
-            self.get_cell_collection_crate_mut()
-                .adjustment_insert_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-
-            // comments
-            for comment in &mut self.comments {
-                comment.adjustment_insert_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-
-            // conditional styles
-            for conditional_styles in &mut self.conditional_formatting_collection {
-                for range in conditional_styles
-                    .get_sequence_of_references_mut()
-                    .get_range_collection_mut()
-                {
-                    range.adjustment_insert_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-            }
-
-            // merge cells
-            for merge_cell in self.get_merge_cells_mut() {
-                merge_cell.adjustment_insert_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-
-            // auto filter
-            match self.get_auto_filter_mut() {
-                Some(v) => {
-                    v.get_range_mut().adjustment_insert_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
-            };
+        if (offset_col_num == &0 && offset_row_num == &0) {
+            return;
         }
+
+        // defined_names
+        let title = &self.title;
+        for defined_name in &mut self.defined_names {
+            defined_name.adjustment_insert_coordinate(
+                title,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+
+        // cell
+        self.get_cell_collection_crate_mut()
+            .adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+
+        // comments
+        for comment in &mut self.comments {
+            comment.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+
+        // conditional styles
+        for conditional_styles in &mut self.conditional_formatting_collection {
+            for range in conditional_styles
+                .get_sequence_of_references_mut()
+                .get_range_collection_mut()
+            {
+                range.adjustment_insert_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+        }
+
+        // merge cells
+        for merge_cell in self.get_merge_cells_mut() {
+            merge_cell.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+
+        // auto filter
+        if let Some(v) = self.get_auto_filter_mut() {
+            v.get_range_mut().adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        };
     }
 
     pub(crate) fn adjustment_insert_coordinate_from_other_sheet(
@@ -1016,28 +1012,30 @@ impl Worksheet {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if offset_col_num != &0 || offset_row_num != &0 {
-            // cell formula coordinate
-            let title = self.title.clone();
-            self.get_cell_collection_crate_mut()
-                .adjustment_insert_formula_coordinate(
-                    &title,
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
+        if (offset_col_num == &0 && offset_row_num == &0) {
+            return;
+        }
 
-            // chart
-            self.worksheet_drawing.adjustment_insert_coordinate(
+        // cell formula coordinate
+        let title = self.title.clone();
+        self.get_cell_collection_crate_mut()
+            .adjustment_insert_formula_coordinate(
+                &title,
                 sheet_name,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
             );
-        }
+
+        // chart
+        self.worksheet_drawing.adjustment_insert_coordinate(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 
     /// (This method is crate only.)
@@ -1059,125 +1057,121 @@ impl Worksheet {
             self.get_row_dimensions_crate_mut()
                 .adjustment_remove_coordinate(root_row_num, offset_row_num);
         }
-        if offset_col_num != &0 || offset_row_num != &0 {
-            // defined_names
-            let sheet_name = self.title.clone();
-            let mut idx = 0 as usize;
-            while idx < self.defined_names.len() {
-                if self.defined_names[idx].is_remove(
-                    &sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                ) {
-                    self.defined_names.remove(idx);
-                }
-                idx += 1;
-            }
-            for defined_name in &mut self.defined_names {
-                defined_name.adjustment_remove_coordinate(
-                    &sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-
-            // cell
-            self.get_cell_collection_crate_mut()
-                .adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-
-            // comments
-            self.comments.retain(|x| {
-                !(x.get_coordinate().is_remove(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                ))
-            });
-            for comment in &mut self.comments {
-                comment.adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-
-            // conditional styles
-            for conditional_styles in &mut self.conditional_formatting_collection {
-                conditional_styles
-                    .get_sequence_of_references_mut()
-                    .get_range_collection_mut()
-                    .retain(|x| {
-                        !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
-                    });
-            }
-            self.conditional_formatting_collection.retain(|x| {
-                !x.get_sequence_of_references()
-                    .get_range_collection()
-                    .is_empty()
-            });
-            for conditional_styles in &mut self.conditional_formatting_collection {
-                for range in conditional_styles
-                    .get_sequence_of_references_mut()
-                    .get_range_collection_mut()
-                {
-                    range.adjustment_remove_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-            }
-
-            // merge cells
-            self.get_merge_cells_mut().retain(|x| {
-                !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
-            });
-            for merge_cell in self.get_merge_cells_mut() {
-                merge_cell.adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-
-            // auto filter
-            let is_remove = match self.get_auto_filter() {
-                Some(v) => v.get_range().is_remove(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                ),
-                None => false,
-            };
-            if is_remove {
-                self.remove_auto_filter();
-            }
-            match self.get_auto_filter_mut() {
-                Some(v) => {
-                    v.get_range_mut().adjustment_remove_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
-            };
+        if (offset_col_num == &0 && offset_row_num == &0) {
+            return;
         }
+
+        // defined_names
+        let sheet_name = self.title.clone();
+        let mut idx = 0 as usize;
+        while idx < self.defined_names.len() {
+            if self.defined_names[idx].is_remove(
+                &sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ) {
+                self.defined_names.remove(idx);
+            }
+            idx += 1;
+        }
+        for defined_name in &mut self.defined_names {
+            defined_name.adjustment_remove_coordinate(
+                &sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+
+        // cell
+        self.get_cell_collection_crate_mut()
+            .adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+
+        // comments
+        self.comments.retain(|x| {
+            !(x.get_coordinate().is_remove(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ))
+        });
+        for comment in &mut self.comments {
+            comment.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+
+        // conditional styles
+        for conditional_styles in &mut self.conditional_formatting_collection {
+            conditional_styles
+                .get_sequence_of_references_mut()
+                .get_range_collection_mut()
+                .retain(|x| {
+                    !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
+                });
+        }
+        self.conditional_formatting_collection.retain(|x| {
+            !x.get_sequence_of_references()
+                .get_range_collection()
+                .is_empty()
+        });
+        for conditional_styles in &mut self.conditional_formatting_collection {
+            for range in conditional_styles
+                .get_sequence_of_references_mut()
+                .get_range_collection_mut()
+            {
+                range.adjustment_remove_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+        }
+
+        // merge cells
+        self.get_merge_cells_mut()
+            .retain(|x| !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)));
+        for merge_cell in self.get_merge_cells_mut() {
+            merge_cell.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+
+        // auto filter
+        let is_remove = match self.get_auto_filter() {
+            Some(v) => {
+                v.get_range()
+                    .is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
+            }
+            None => false,
+        };
+        if is_remove {
+            self.remove_auto_filter();
+        }
+        if let Some(v) = self.get_auto_filter_mut() {
+            v.get_range_mut().adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        };
     }
 
     /// (This method is crate only.)
@@ -1190,28 +1184,30 @@ impl Worksheet {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if offset_col_num != &0 || offset_row_num != &0 {
-            // cell formula coordinate
-            let title = self.title.clone();
-            self.get_cell_collection_crate_mut()
-                .adjustment_remove_formula_coordinate(
-                    &title,
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
+        if (offset_col_num == &0 && offset_row_num == &0) {
+            return;
+        }
 
-            // chart
-            self.worksheet_drawing.adjustment_remove_coordinate(
+        // cell formula coordinate
+        let title = self.title.clone();
+        self.get_cell_collection_crate_mut()
+            .adjustment_remove_formula_coordinate(
+                &title,
                 sheet_name,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
             );
-        }
+
+        // chart
+        self.worksheet_drawing.adjustment_remove_coordinate(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 
     /// Get Code Name.
@@ -1719,17 +1715,14 @@ impl Worksheet {
 
     pub(crate) fn get_pivot_cache_definition_collection(&self) -> Vec<&str> {
         let mut result: Vec<&str> = Vec::new();
-        match &self.raw_data_of_worksheet {
-            Some(raw_data) => {
-                for relationships in raw_data.get_relationships_list() {
-                    for row in relationships.get_relationship_list() {
-                        if row.get_type() == PIVOT_CACHE_DEF_NS {
-                            result.push(row.get_raw_file().get_file_target());
-                        }
+        if let Some(raw_data) = &self.raw_data_of_worksheet {
+            for relationships in raw_data.get_relationships_list() {
+                for row in relationships.get_relationship_list() {
+                    if row.get_type() == PIVOT_CACHE_DEF_NS {
+                        result.push(row.get_raw_file().get_file_target());
                     }
                 }
             }
-            None => {}
         }
         result
     }
@@ -1823,14 +1816,15 @@ impl Worksheet {
             .collect();
 
         // Delete cell information as iterating through
-        let coordinate_list = get_coordinate_list(&range_upper);
-        for (col_num, row_num) in &coordinate_list {
-            self.cell_collection.remove(col_num, row_num);
-            self.cell_collection.remove(
-                &((*col_num as i32 + column) as u32),
-                &((*row_num as i32 + row) as u32),
-            );
-        }
+        get_coordinate_list(&range_upper)
+            .iter()
+            .for_each(|(col_num, row_num)| {
+                self.cell_collection.remove(col_num, row_num);
+                self.cell_collection.remove(
+                    &((*col_num as i32 + column) as u32),
+                    &((*row_num as i32 + row) as u32),
+                );
+            });
 
         // repaste by setting cell values
         for cell in &mut copy_cells {

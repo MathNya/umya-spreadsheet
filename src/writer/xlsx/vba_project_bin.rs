@@ -9,9 +9,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
-    match spreadsheet.get_has_macros() {
-        true => {}
-        false => return Ok(()),
+    if !spreadsheet.get_has_macros() {
+        return Ok(());
     }
     let writer = spreadsheet.get_macros_code().unwrap();
     writer_mng.add_bin(PKG_VBA_PROJECT, writer)

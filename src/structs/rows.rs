@@ -81,11 +81,10 @@ impl Rows {
     }
 
     pub(crate) fn rebuild_map(&mut self) {
-        let mut rebuild: HashMap<u32, Row> = HashMap::new();
-        for (_, row) in self.get_row_dimensions_to_hashmap_mut() {
-            let row_num = row.get_row_num();
-            rebuild.insert(row_num.to_owned(), row.clone());
-        }
-        self.rows = rebuild;
+        self.rows = self
+            .get_row_dimensions_to_hashmap_mut()
+            .iter_mut()
+            .map(|(_, row)| (*row.get_row_num(), std::mem::take(row)))
+            .collect();
     }
 }
