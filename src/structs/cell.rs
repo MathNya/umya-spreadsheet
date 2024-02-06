@@ -228,9 +228,9 @@ impl Cell {
     }
 
     pub(crate) fn set_obj(&mut self, cell: Self) -> &mut Self {
-        self.cell_value = cell.get_cell_value().clone();
-        self.style = cell.get_style().clone();
-        self.hyperlink = cell.get_hyperlink().cloned();
+        self.cell_value = cell.cell_value;
+        self.style = cell.style;
+        self.hyperlink = cell.hyperlink;
         self
     }
 
@@ -310,11 +310,11 @@ impl Cell {
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"f" => {
-                        self.set_formula(string_value.clone());
+                        self.set_formula(&string_value);
                     }
                     b"v" => {
                         if type_value == "str" {
-                            self.set_value_str(string_value.clone());
+                            self.set_value_str(&string_value);
                         }
                         if type_value == "s" {
                             let index = string_value.parse::<usize>().unwrap();
@@ -329,12 +329,12 @@ impl Cell {
                         } else if type_value == "e" {
                             self.set_error();
                         } else if type_value.is_empty() || type_value == "n" {
-                            self.set_value_crate(string_value.clone());
+                            self.set_value_crate(&string_value);
                         };
                     }
                     b"is" => {
                         if type_value == "inlineStr" {
-                            self.set_value_crate(string_value.clone());
+                            self.set_value_crate(&string_value);
                         }
                     }
                     b"c" => return,

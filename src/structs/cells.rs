@@ -276,13 +276,18 @@ impl Cells {
     }
 
     pub(crate) fn rebuild_map(&mut self) {
-        let mut rebuild: HashMap<(u32, u32), Cell> = HashMap::new();
-        for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
-            let col_num = cell.get_coordinate().get_col_num();
-            let row_num = cell.get_coordinate().get_row_num();
-            let k = (row_num.to_owned(), col_num.to_owned());
-            rebuild.insert(k, cell.clone());
-        }
-        self.map = rebuild;
+        self.map = self
+            .get_collection_to_hashmap_mut()
+            .iter_mut()
+            .map(|(_, cell)| {
+                (
+                    (
+                        *cell.get_coordinate().get_row_num(),
+                        *cell.get_coordinate().get_col_num(),
+                    ),
+                    std::mem::take(cell),
+                )
+            })
+            .collect()
     }
 }

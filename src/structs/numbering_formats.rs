@@ -95,7 +95,7 @@ impl NumberingFormats {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let formats_to_write: HashMap<_,_> = self
+        let formats_to_write: HashMap<_, _> = self
             .numbering_format
             .iter()
             .filter(|(k, v)| !*v.get_is_build_in())

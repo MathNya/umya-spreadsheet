@@ -53,21 +53,21 @@ impl Address {
         if self.sheet_name.is_empty() {
             return range;
         }
-        let mut with_space_char = String::from("");
+        let mut with_space_char = "";
         let mut sheet_name = self.sheet_name.clone();
         if sheet_name.contains(char::is_whitespace) {
-            with_space_char = String::from("'");
+            with_space_char = "'";
         }
         if is_ptn2 {
             if sheet_name.contains("!") {
-                with_space_char = String::from("'");
+                with_space_char = "'";
             }
             if sheet_name.contains("'") {
-                with_space_char = String::from("'");
+                with_space_char = "'";
                 sheet_name = sheet_name.replace("'", "''");
             }
             if sheet_name.contains(r#"""#) {
-                with_space_char = String::from("'");
+                with_space_char = "'";
             }
         }
         format!(

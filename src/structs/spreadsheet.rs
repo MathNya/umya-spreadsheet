@@ -363,12 +363,9 @@ impl Spreadsheet {
     }
 
     pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Option<usize> {
-        for (result, sheet) in self.work_sheet_collection.iter().enumerate() {
-            if sheet.get_name() == sheet_name {
-                return Some(result);
-            }
-        }
-        None
+        self.work_sheet_collection
+            .iter()
+            .position(|sheet| sheet.get_name() == sheet_name)
     }
 
     /// Get Work Sheet.
@@ -377,13 +374,12 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&Worksheet>`.
     pub fn get_sheet(&self, index: &usize) -> Option<&Worksheet> {
-        match self.work_sheet_collection.get(*index) {
-            Some(v) => {
+        self.work_sheet_collection
+            .get(*index)
+            .map(|v| {
                 assert!(v.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
-                Some(v)
-            }
-            None => None,
-        }
+                v
+            })
     }
 
     /// Get Work Sheet.
@@ -392,23 +388,21 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&Worksheet>.
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
-        match self.find_sheet_index_by_name(sheet_name) {
-            Some(index) => {
-                return self.get_sheet(&index);
-            }
-            None => None,
-        }
+        self.find_sheet_index_by_name(sheet_name)
+            .and_then(|index| self.get_sheet(&index))
     }
 
     pub fn get_lazy_read_sheet_cells(&self, index: &usize) -> Result<Cells, &'static str> {
         let shared_string_table = self.get_shared_string_table();
-        match self.work_sheet_collection.get(*index) {
-            Some(v) => Ok(v.get_cell_collection_stream(
-                &shared_string_table.read().unwrap(),
-                self.get_stylesheet(),
-            )),
-            None => Err("Not found."),
-        }
+        self.work_sheet_collection
+            .get(*index)
+            .map(|v| {
+                v.get_cell_collection_stream(
+                    &shared_string_table.read().unwrap(),
+                    self.get_stylesheet(),
+                )
+            })
+            .ok_or("Not found.")
     }
 
     /// Get Work Sheet in mutable.
@@ -420,13 +414,10 @@ impl Spreadsheet {
         let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
-        match self.work_sheet_collection.get_mut(*index) {
-            Some(v) => {
-                raw_to_deserialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
-                Some(v)
-            }
-            None => None,
-        }
+        self.work_sheet_collection.get_mut(*index).map(|v| {
+            raw_to_deserialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
+            v
+        })
     }
 
     /// Get Work Sheet in mutable.
@@ -435,12 +426,8 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&mut Worksheet>`.
     pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
-        match self.find_sheet_index_by_name(sheet_name) {
-            Some(index) => {
-                return self.get_sheet_mut(&index);
-            }
-            None => None,
-        }
+        self.find_sheet_index_by_name(sheet_name)
+            .and_then(move |index| self.get_sheet_mut(&index))
     }
 
     pub fn set_active_sheet(&mut self, index: u32) -> &mut Self {
@@ -471,9 +458,7 @@ impl Spreadsheet {
     /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet. Err:Error.
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
         let title = value.get_name();
-        if let Err(e) = Spreadsheet::check_sheet_name(self, title) {
-            return Err(e);
-        }
+        Spreadsheet::check_sheet_name(self, title)?;
         self.work_sheet_collection.push(value);
         Ok(self.work_sheet_collection.last_mut().unwrap())
     }
@@ -517,9 +502,7 @@ impl Spreadsheet {
         sheet_title: S,
     ) -> Result<&mut Worksheet, &'static str> {
         let v = sheet_title.into();
-        if let Err(e) = Spreadsheet::check_sheet_name(self, &v) {
-            return Err(e);
-        }
+        Spreadsheet::check_sheet_name(self, &v)?;
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
         Ok(Spreadsheet::add_new_sheet_crate(self, sheet_id, v))
     }
@@ -558,27 +541,26 @@ impl Spreadsheet {
         sheet_name: S,
     ) -> Result<(), &'static str> {
         let sheet_name_str = sheet_name.into();
-        if let Err(e) = Spreadsheet::check_sheet_name(self, sheet_name_str.as_ref()) {
-            return Err(e);
-        }
-        match self.work_sheet_collection.get_mut(index) {
-            Some(sheet) => {
+        Spreadsheet::check_sheet_name(self, sheet_name_str.as_ref())?;
+        self.work_sheet_collection
+            .get_mut(index)
+            .map(|sheet| {
                 sheet.set_name(sheet_name_str);
-                Ok(())
-            }
-            None => Err("sheet not found."),
-        }
+            })
+            .ok_or("sheet not found.")
     }
 
     /// (This method is crate only.)
     /// Check for duplicate sheet name.
     pub(crate) fn check_sheet_name(&self, value: &str) -> Result<(), &'static str> {
-        for work_sheet in &self.work_sheet_collection {
-            if value == work_sheet.get_name() {
-                return Err("name duplicate.");
-            }
+        match self
+            .work_sheet_collection
+            .iter()
+            .any(|work_sheet| value == work_sheet.get_name())
+        {
+            true => Err("name duplicate."),
+            false => Ok(()),
         }
-        Ok(())
     }
 
     /// (This method is crate only.)
@@ -654,15 +636,10 @@ impl Spreadsheet {
     }
 
     pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
-        let mut result: Vec<(String, String, String)> = Vec::new();
-        for (val1, val2, val3) in &self.pivot_caches {
-            let mut result_value = &value;
-            if val1 != &key {
-                result_value = val3;
-            }
-            result.push((val1.to_string(), val2.to_string(), result_value.to_string()));
-        }
-        self.pivot_caches = result;
+        self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
+            let result_value = if val1 == &key { &value } else { &val3 };
+            *val3 = result_value.to_string();
+        });
         self
     }
 
