@@ -1,16 +1,16 @@
 use super::XlsxError;
-use helper::const_str::*;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::{io, result};
 
+use helper::const_str::*;
 use structs::Spreadsheet;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     spreadsheet: &mut Spreadsheet,
 ) -> result::Result<(), XlsxError> {
-    let r = io::BufReader::new(match arv.by_name(ARC_APP) {
+    let r = io::BufReader::new(match arv.by_name(ARC_CUSTOM) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
             return Ok(());
@@ -28,7 +28,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 if e.name().into_inner() == b"Properties" {
                     spreadsheet
                         .get_properties_mut()
-                        .set_attributes(&mut reader, e);
+                        .set_attributes_custom(&mut reader, e);
                 }
             }
             Ok(Event::Eof) => break,

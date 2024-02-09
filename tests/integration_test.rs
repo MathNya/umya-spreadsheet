@@ -5,7 +5,7 @@ extern crate chrono;
 extern crate umya_spreadsheet;
 use std::time::Instant;
 
-use umya_spreadsheet::Style;
+use umya_spreadsheet::{NumberingFormat, Style};
 
 #[test]
 fn read_and_wite() {
@@ -1297,4 +1297,21 @@ fn issue_162() {
 
     let path = std::path::Path::new("./tests/result_files/issue_162.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_172() {
+    let value = umya_spreadsheet::helper::date::convert_date(2024, 2, 3, 10, 59, 00);
+    let mut numbering_format = NumberingFormat::default();
+    numbering_format.set_format_code("dd-mmm-yy");
+
+    let mut book = umya_spreadsheet::new_file();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    sheet.get_cell_mut("A1").set_value_number(value);
+    sheet
+        .get_style_mut("A1")
+        .set_numbering_format(numbering_format);
+
+    let result = sheet.get_formatted_value("A1");
+    assert_eq!("03-Feb-24", result);
 }

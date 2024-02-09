@@ -24,25 +24,25 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // relationships
     write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
-    // relationship docProps/custom.xml
-    //if spreadsheet.get_properties().get_custom_properties().len() > 0 {
-    //    write_relationship(
-    //        &mut writer,
-    //        "4",
-    //        "http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties",
-    //        "docProps/custom.xml",
-    //        ""
-    //    );
-    //}
-
     // relationship docProps/app.xml
-    write_relationship(&mut writer, "3", XPROPS_NS, ARC_APP, "");
+    write_relationship(&mut writer, "3", XPROPS_REL, ARC_APP, "");
 
     // relationship docProps/core.xml
-    write_relationship(&mut writer, "2", COREPROPS_NS, ARC_CORE, "");
+    write_relationship(&mut writer, "2", COREPROPS_REL, ARC_CORE, "");
 
     // relationship docProps/core.xml
     write_relationship(&mut writer, "1", OFCDOC_NS, PKG_WORKBOOK, "");
+
+    // relationship docProps/custom.xml
+    if spreadsheet
+        .get_properties()
+        .get_custom_properties()
+        .get_custom_document_property_list()
+        .len()
+        > 0
+    {
+        write_relationship(&mut writer, "4", CUSTOM_PROPS_REL, ARC_CUSTOM, "");
+    }
 
     // a custom UI in workbook ?
     if spreadsheet.has_ribbon() {

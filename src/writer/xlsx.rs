@@ -16,6 +16,7 @@ mod comment;
 mod content_types;
 mod doc_props_app;
 mod doc_props_core;
+mod doc_props_custom;
 mod drawing;
 mod drawing_rels;
 mod embeddings;
@@ -90,6 +91,9 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
 
     // Add docProps Core
     doc_props_core::write(spreadsheet, &mut writer_manager)?;
+
+    // Add docProps Custom
+    doc_props_custom::write(spreadsheet, &mut writer_manager)?;
 
     // Add vbaProject.bin
     vba_project_bin::write(spreadsheet, &mut writer_manager)?;

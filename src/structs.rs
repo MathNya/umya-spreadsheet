@@ -1,5 +1,6 @@
 //! store structs.
 
+pub mod custom_properties;
 pub mod drawing;
 pub mod raw;
 pub mod vml;

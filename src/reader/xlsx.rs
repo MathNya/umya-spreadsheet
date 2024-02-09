@@ -21,6 +21,7 @@ pub(crate) mod comment;
 mod content_types;
 mod doc_props_app;
 mod doc_props_core;
+mod doc_props_custom;
 pub(crate) mod drawing;
 mod rels;
 mod shared_strings;
@@ -92,6 +93,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
     let mut book = workbook::read(&mut arv)?;
     doc_props_app::read(&mut arv, &mut book)?;
     doc_props_core::read(&mut arv, &mut book)?;
+    doc_props_custom::read(&mut arv, &mut book)?;
     vba_project_bin::read(&mut arv, &mut book)?;
     content_types::read(&mut arv, &mut book)?;
     let workbook_rel = workbook_rels::read(&mut arv, &mut book)?;

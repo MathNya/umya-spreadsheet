@@ -12,6 +12,15 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
+    if spreadsheet
+        .get_properties()
+        .get_custom_properties()
+        .get_custom_document_property_list()
+        .is_empty()
+    {
+        return Ok(());
+    }
+
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
     writer.write_event(Event::Decl(BytesDecl::new(
@@ -21,8 +30,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     )));
     write_new_line(&mut writer);
 
-    // cp:coreProperties
-    spreadsheet.get_properties().write_to_core(&mut writer);
+    // Properties
+    spreadsheet.get_properties().write_to_custom(&mut writer);
 
-    writer_mng.add_writer(ARC_CORE, writer)
+    writer_mng.add_writer(ARC_CUSTOM, writer)
 }

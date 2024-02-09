@@ -70,6 +70,15 @@ pub(crate) const WORKSHEET_NS: &str =
 pub(crate) const XPROPS_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/extended-properties";
 pub(crate) const XSI_NS: &str = "http://www.w3.org/2001/XMLSchema-instance";
+pub(crate) const CUSTOM_PROPS_NS: &str =
+    "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties";
+
+pub(crate) const XPROPS_REL: &str =
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties";
+pub(crate) const CUSTOM_PROPS_REL: &str =
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/custom-properties";
+pub(crate) const COREPROPS_REL: &str =
+    "http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties";
 
 pub(crate) const CHART_TYPE: &str =
     "application/vnd.openxmlformats-officedocument.drawingml.chart+xml";
@@ -101,6 +110,8 @@ pub(crate) const WORKBOOK_TYPE: &str =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml";
 pub(crate) const XPROPS_TYPE: &str =
     "application/vnd.openxmlformats-officedocument.extended-properties+xml";
+pub(crate) const CUSTOM_PROPS_TYPE: &str =
+    "application/vnd.openxmlformats-officedocument.custom-properties+xml";
 
 pub(crate) const PKG_CHARTS: &str = "xl/charts";
 pub(crate) const PKG_DRAWINGS: &str = "xl/drawings";
@@ -121,5 +132,6 @@ pub(crate) const PKG_VML_DRAWING_RELS: &str = "xl/drawings/_rels/vmlDrawing";
 
 pub(crate) const ARC_APP: &str = "docProps/app.xml";
 pub(crate) const ARC_CORE: &str = "docProps/core.xml";
+pub(crate) const ARC_CUSTOM: &str = "docProps/custom.xml";
 
 pub(crate) const CONTENT_TYPES: &str = "[Content_Types].xml";

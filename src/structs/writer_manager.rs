@@ -264,6 +264,11 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
                 content_type = XPROPS_TYPE;
             }
 
+            // Override docProps/custom
+            if file.starts_with("/docProps/custom.xml") {
+                content_type = CUSTOM_PROPS_TYPE;
+            }
+
             // Override Unsupported
             if content_type.is_empty() {
                 for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
