@@ -14,38 +14,30 @@
 Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
 
 ## New features
-### ver 1.1.0
-#### **Table support made available.** (Thank you, [vonkruel](https://github.com/vonkruel).)
-#### **Sheet Protection support made available.**
-```rust
-sheet
-    .get_sheet_protection_mut()
-    .set_password("password")
-    .set_sheet(true);
-```
+### ver 1.2.0
+#### **Changing Reference of Option to Optional Reference.** (Thank you, [agentjill ](https://github.com/agentjill).)
+- **This version contains breaking change.**
+[**here**](https://github.com/MathNya/umya-spreadsheet/pull/170)
 
-#### **Workbook Protection support made available.**
+#### **A helper is provided to enter the date into the cell.**
 ```rust
-book.get_workbook_protection_mut()
-    .set_workbook_password("password");
-```
+let value = umya_spreadsheet::helper::date::convert_date(2024, 2, 3, 10, 59, 00);
+let mut numbering_format = NumberingFormat::default();
+numbering_format.set_format_code("dd-mmm-yy");
 
-#### **HTML to Richtext support made available.**
-```rust
-let html = r##"<font color="red">test</font><br><font class="test" color="#48D1CC">TE<b>S</b>T<br/>TEST</font>"##;
-let richtext = umya_spreadsheet::helper::html::html_to_richtext(html).unwrap();
-sheet.get_cell_mut("G16").set_rich_text(richtext);
-// Enable line breaks.
-sheet.get_cell_mut("G16").get_style_mut().get_alignment_mut().set_wrap_text(true);
+sheet.get_cell_mut("A1").set_value_number(value);
+
+let result = sheet.get_formatted_value("A1");
+assert_eq!("03-Feb-24", result);
 ```
-![Result Image](./images/sample4.png)
+#### **Other Bug Fixes.**
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.1.1"
+umya-spreadsheet = "1.2.0"
 ```
 Add the following code to main.rs
 ```rust
