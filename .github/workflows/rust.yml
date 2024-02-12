@@ -19,14 +19,8 @@ jobs:
     - name: Install Rust
       run: rustup component add rustfmt clippy
 
-    - name: Build
-      run: cargo build
-
-    - name: Lint (clippy)
-      run: cargo clippy -- -D warnings
-
-    - name: Lint (rustfmt)
-      run: cargo fmt --all -- --check
-
-    - name: Tests
-      run: cargo test
+    - name: Run Lint & Tests
+      run: |
+        cargo clippy -- -D warnings
+        cargo fmt --all -- --check
+        cargo test
