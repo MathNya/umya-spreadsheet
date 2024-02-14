@@ -18,7 +18,7 @@ pub struct DefinedName {
 }
 impl DefinedName {
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_string()
+        &self.name.get_value_str()
     }
 
     pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -28,7 +28,7 @@ impl DefinedName {
 
     pub fn get_address(&self) -> String {
         if self.string_value.has_value() {
-            return self.string_value.get_value_string().to_string();
+            return self.string_value.get_value_str().to_string();
         }
         let mut result: Vec<String> = Vec::new();
         for row in &self.address {

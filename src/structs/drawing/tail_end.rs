@@ -61,13 +61,13 @@ impl TailEnd {
         // a:tailEnd
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.t_type.has_value() {
-            attributes.push(("type", (self.t_type.get_value_string())));
+            attributes.push(("type", (self.t_type.get_value_str())));
         }
         if self.width.has_value() {
-            attributes.push(("w", (self.width.get_value_string())));
+            attributes.push(("w", (self.width.get_value_str())));
         }
         if self.length.has_value() {
-            attributes.push(("len", (self.length.get_value_string())));
+            attributes.push(("len", (self.length.get_value_str())));
         }
         write_start_tag(writer, "a:tailEnd", attributes, true);
     }

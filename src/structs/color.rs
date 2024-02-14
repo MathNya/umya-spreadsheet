@@ -260,7 +260,7 @@ impl Color {
         } else if self.indexed.has_value() {
             attributes.push(("indexed", &indexed));
         } else if self.argb.has_value() {
-            attributes.push(("rgb", self.argb.get_value_string()));
+            attributes.push(("rgb", self.argb.get_value_str()));
         }
         let tint = self.tint.get_value_string();
         if self.tint.has_value() {

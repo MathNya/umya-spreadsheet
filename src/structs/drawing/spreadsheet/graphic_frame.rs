@@ -114,7 +114,7 @@ impl GraphicFrame {
         write_start_tag(
             writer,
             "xdr:graphicFrame",
-            vec![("macro", self.r#macro.get_value_string())],
+            vec![("macro", self.r#macro.get_value_str())],
             false,
         );
 

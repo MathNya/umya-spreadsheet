@@ -5,18 +5,11 @@ pub struct TrueFalseValue {
 }
 impl TrueFalseValue {
     pub(crate) fn get_value(&self) -> &bool {
-        match &self.value {
-            Some(v) => v,
-            None => &self.value_default,
-        }
+        self.value.as_ref().unwrap_or(&self.value_default)
     }
 
     pub(crate) fn get_value_string(&self) -> &str {
-        if !*self.get_value() {
-            "f"
-        } else {
-            "t"
-        }
+        self.value.as_ref().map_or("f", |b| "t")
     }
 
     pub(crate) fn set_value(&mut self, value: bool) -> &mut Self {

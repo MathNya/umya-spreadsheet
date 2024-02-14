@@ -56,7 +56,7 @@ impl CellStyle {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cellStyle
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", self.name.get_value_string()));
+        attributes.push(("name", self.name.get_value_str()));
         let format_id = self.format_id.get_value_string();
         attributes.push(("xfId", &format_id));
         let builtin_id = self.builtin_id.get_value_string();

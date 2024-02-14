@@ -610,19 +610,13 @@ impl Spreadsheet {
     pub(crate) fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
         let mut result: Vec<(String, String, String)> = Vec::new();
         for (val1, val2, val3) in &self.pivot_caches {
+            let val3_up = format!("xl/{}", &val3);
             for worksheet in self.get_sheet_collection_no_check() {
                 for pivot_cache_definition in worksheet.get_pivot_cache_definition_collection() {
-                    let val3_up = format!("xl/{}", val3);
-                    if val3_up.as_str() == pivot_cache_definition {
-                        let mut is_new = true;
-                        for (_, _, r_val3) in &result {
-                            if r_val3 == val3 {
-                                is_new = false;
-                            }
-                        }
-                        if is_new {
-                            result.push((val1.clone(), val2.clone(), val3.clone()));
-                        }
+                    if val3_up.as_str() == pivot_cache_definition
+                        && !result.iter().any(|(_, _, r_val3)| r_val3 == val3)
+                    {
+                        result.push((val1.clone(), val2.clone(), val3.clone()));
                     }
                 }
             }

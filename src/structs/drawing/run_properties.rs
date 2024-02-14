@@ -47,7 +47,7 @@ impl RunProperties {
     }
 
     pub fn get_kumimoji(&self) -> &str {
-        self.kumimoji.get_value_string()
+        self.kumimoji.get_value_str()
     }
 
     pub fn set_kumimoji<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -56,7 +56,7 @@ impl RunProperties {
     }
 
     pub fn get_language(&self) -> &str {
-        self.language.get_value_string()
+        self.language.get_value_str()
     }
 
     pub fn set_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -65,7 +65,7 @@ impl RunProperties {
     }
 
     pub fn get_alternative_language(&self) -> &str {
-        self.alternative_language.get_value_string()
+        self.alternative_language.get_value_str()
     }
 
     pub fn set_alternative_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -74,7 +74,7 @@ impl RunProperties {
     }
 
     pub fn get_bold(&self) -> &str {
-        self.bold.get_value_string()
+        self.bold.get_value_str()
     }
 
     pub fn set_bold<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -83,7 +83,7 @@ impl RunProperties {
     }
 
     pub fn get_sz(&self) -> &str {
-        self.sz.get_value_string()
+        self.sz.get_value_str()
     }
 
     pub fn set_sz<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -92,7 +92,7 @@ impl RunProperties {
     }
 
     pub fn get_italic(&self) -> &str {
-        self.italic.get_value_string()
+        self.italic.get_value_str()
     }
 
     pub fn set_italic<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -119,7 +119,7 @@ impl RunProperties {
     }
 
     pub fn get_strike(&self) -> &str {
-        self.strike.get_value_string()
+        self.strike.get_value_str()
     }
 
     pub fn set_strike<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -338,22 +338,22 @@ impl RunProperties {
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.kumimoji.has_value() {
-            attributes.push(("kumimoji", self.kumimoji.get_value_string()))
+            attributes.push(("kumimoji", self.kumimoji.get_value_str()))
         }
         if self.language.has_value() {
-            attributes.push(("lang", self.language.get_value_string()))
+            attributes.push(("lang", self.language.get_value_str()))
         }
         if self.alternative_language.has_value() {
-            attributes.push(("altLang", self.alternative_language.get_value_string()))
+            attributes.push(("altLang", self.alternative_language.get_value_str()))
         }
         if self.sz.has_value() {
-            attributes.push(("sz", self.sz.get_value_string()))
+            attributes.push(("sz", self.sz.get_value_str()))
         }
         if self.bold.has_value() {
-            attributes.push(("b", self.bold.get_value_string()))
+            attributes.push(("b", self.bold.get_value_str()))
         }
         if self.italic.has_value() {
-            attributes.push(("i", self.italic.get_value_string()))
+            attributes.push(("i", self.italic.get_value_str()))
         }
         if self.capital.has_value() {
             attributes.push(("cap", self.capital.get_value_string()));
@@ -363,7 +363,7 @@ impl RunProperties {
             attributes.push(("spc", &spc));
         }
         if self.strike.has_value() {
-            attributes.push(("strike", self.strike.get_value_string()));
+            attributes.push(("strike", self.strike.get_value_str()));
         }
         if self.solid_fill.is_some()
             || self.outline.is_some()

@@ -128,11 +128,11 @@ impl CustomDocumentProperty {
         attributes.push(("pid", &pid_str));
 
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_string()));
+            attributes.push(("name", self.name.get_value_str()));
         }
 
         if self.link_target.has_value() {
-            attributes.push(("linkTarget", self.link_target.get_value_string()));
+            attributes.push(("linkTarget", self.link_target.get_value_str()));
         }
 
         write_start_tag(writer, "property", attributes, !is_inner);

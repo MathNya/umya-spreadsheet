@@ -76,7 +76,7 @@ impl NonVisualDrawingProperties {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let id = self.id.get_value_string();
         attributes.push(("id", &id));
-        attributes.push(("name", self.name.get_value_string()));
+        attributes.push(("name", self.name.get_value_str()));
         if self.hidden.has_value() {
             attributes.push(("hidden", self.hidden.get_value_string()));
         }

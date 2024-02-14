@@ -300,25 +300,25 @@ impl Shape {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("id", &id_str));
         if self.r_type.has_value() {
-            attributes.push(("type", self.r_type.get_value_string()));
+            attributes.push(("type", self.r_type.get_value_str()));
         }
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_string()));
+            attributes.push(("style", self.style.get_value_str()));
         }
         if self.filled.has_value() {
             attributes.push(("filled", self.filled.get_value_string()));
         }
         if self.fill_color.has_value() {
-            attributes.push(("fillcolor", self.fill_color.get_value_string()));
+            attributes.push(("fillcolor", self.fill_color.get_value_str()));
         }
         if self.stroked.has_value() {
             attributes.push(("stroked", self.stroked.get_value_string()));
         }
         if self.stroke_color.has_value() {
-            attributes.push(("strokecolor", self.stroke_color.get_value_string()));
+            attributes.push(("strokecolor", self.stroke_color.get_value_str()));
         }
         if self.stroke_weight.has_value() {
-            attributes.push(("strokeweight", self.stroke_weight.get_value_string()));
+            attributes.push(("strokeweight", self.stroke_weight.get_value_str()));
         }
         if self.inset_mode.has_value() {
             attributes.push(("o:insetmode", self.inset_mode.get_value_string()));
@@ -328,7 +328,7 @@ impl Shape {
             attributes.push(("o:spt", &optional_number_str));
         }
         if self.coordinate_size.has_value() {
-            attributes.push(("coordsize", self.coordinate_size.get_value_string()));
+            attributes.push(("coordsize", self.coordinate_size.get_value_str()));
         }
         write_start_tag(writer, "v:shape", attributes, false);
 

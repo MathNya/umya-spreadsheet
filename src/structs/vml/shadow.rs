@@ -58,7 +58,7 @@ impl Shadow {
             attributes.push(("on", self.on.get_value_string()));
         }
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_string()));
+            attributes.push(("color", self.color.get_value_str()));
         }
         if self.obscured.has_value() {
             attributes.push(("obscured", self.obscured.get_value_string()));

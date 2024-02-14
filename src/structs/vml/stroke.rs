@@ -55,13 +55,13 @@ impl Stroke {
         // v:stroke
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_string()));
+            attributes.push(("color", self.color.get_value_str()));
         }
         if self.color_2.has_value() {
-            attributes.push(("color2", self.color_2.get_value_string()));
+            attributes.push(("color2", self.color_2.get_value_str()));
         }
         if self.dash_style.has_value() {
-            attributes.push(("dashstyle", self.dash_style.get_value_string()));
+            attributes.push(("dashstyle", self.dash_style.get_value_str()));
         }
         write_start_tag(writer, "v:stroke", attributes, true);
     }

@@ -4,13 +4,10 @@ pub struct StringValue {
 }
 impl StringValue {
     pub(crate) fn get_value(&self) -> &str {
-        match &self.value {
-            Some(v) => v,
-            None => "",
-        }
+        self.value.as_deref().unwrap_or("")
     }
 
-    pub(crate) fn get_value_string(&self) -> &str {
+    pub(crate) fn get_value_str(&self) -> &str {
         self.get_value()
     }
 
@@ -34,7 +31,7 @@ impl StringValue {
 
     pub(crate) fn get_hash_string(&self) -> &str {
         if self.has_value() {
-            return self.get_value_string();
+            return self.get_value_str();
         }
         "empty!!"
     }

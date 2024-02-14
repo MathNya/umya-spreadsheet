@@ -127,7 +127,7 @@ impl FormatScheme {
         // a:fmtScheme
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_string()));
+            attributes.push(("name", self.name.get_value_str()));
         }
         write_start_tag(writer, "a:fmtScheme", attributes, false);
 

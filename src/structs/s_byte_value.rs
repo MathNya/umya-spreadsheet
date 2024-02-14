@@ -4,10 +4,7 @@ pub struct SByteValue {
 }
 impl SByteValue {
     pub(crate) fn get_value(&self) -> &i8 {
-        match &self.value {
-            Some(v) => v,
-            None => &0,
-        }
+        self.value.as_ref().unwrap_or(&0)
     }
 
     pub(crate) fn get_value_string(&self) -> String {
