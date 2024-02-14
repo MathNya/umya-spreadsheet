@@ -22,6 +22,7 @@ pub struct Spreadsheet {
     properties: Properties,
     work_sheet_collection: Vec<Worksheet>,
     macros_code: Option<Vec<u8>>,
+    code_name: Option<String>,
     ribbon_xml_data: Option<String>,
     theme: Theme,
     stylesheet: Stylesheet,
@@ -270,6 +271,27 @@ impl Spreadsheet {
     /// Has Macros Code
     pub fn get_has_macros(&self) -> bool {
         self.macros_code.is_some()
+    }
+
+    /// Set codeName property of workbook
+    /// 
+    /// May be useful when importing VBA/macros code from another workbook
+    /// and only used when writing book with macros code 
+    /// 
+    /// Default one is `ThisWorkbook`. 
+    /// 
+    /// Excel often uses `Workbook________` (8 underscores).
+    pub fn set_code_name<S: ToString>(&mut self, codename: S) -> &mut Self {
+        self.code_name = Some(codename.to_string());
+        self
+    }
+
+    /// Get codeName property of workbook
+    /// 
+    /// Must to be the same in workbook with VBA/macros code from this workbook
+    /// for that code in Workbook object to work out of the box without adjustments
+    pub fn get_code_name(&self) -> Option<&str> {
+        self.code_name.as_deref()
     }
 
     /// (This method is crate only.)
