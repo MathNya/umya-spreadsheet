@@ -223,11 +223,11 @@ impl DataValidation {
         }
 
         if self.prompt_title.has_value() {
-            attributes.push(("promptTitle", self.prompt_title.get_value_string()));
+            attributes.push(("promptTitle", self.prompt_title.get_value_str()));
         }
 
         if self.prompt.has_value() {
-            attributes.push(("prompt", self.prompt.get_value_string()));
+            attributes.push(("prompt", self.prompt.get_value_str()));
         }
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
@@ -239,12 +239,12 @@ impl DataValidation {
         if is_inner {
             if self.formula1.has_value() {
                 write_start_tag(writer, "formula1", vec![], false);
-                write_text_node(writer, self.formula1.get_value_string());
+                write_text_node(writer, self.formula1.get_value_str());
                 write_end_tag(writer, "formula1");
             }
             if self.formula2.has_value() {
                 write_start_tag(writer, "formula2", vec![], false);
-                write_text_node(writer, self.formula2.get_value_string());
+                write_text_node(writer, self.formula2.get_value_str());
                 write_end_tag(writer, "formula2");
             }
             write_end_tag(writer, "dataValidation");

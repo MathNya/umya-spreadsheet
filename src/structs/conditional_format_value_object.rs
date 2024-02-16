@@ -64,7 +64,7 @@ impl ConditionalFormatValueObject {
         if self.r#type.has_value() {
             attributes.push(("type", ctype));
         }
-        let val = self.val.get_value_string();
+        let val = self.val.get_value_str();
         if self.val.has_value() {
             attributes.push(("val", val));
         }

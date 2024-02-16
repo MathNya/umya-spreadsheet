@@ -36,7 +36,7 @@ impl FontName {
             write_start_tag(
                 writer,
                 tag_name,
-                vec![("val", self.val.get_value_string())],
+                vec![("val", self.val.get_value_str())],
                 true,
             );
         }

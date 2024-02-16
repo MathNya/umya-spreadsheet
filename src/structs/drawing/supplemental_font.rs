@@ -47,8 +47,8 @@ impl SupplementalFont {
             writer,
             "a:font",
             vec![
-                ("script", self.script.get_value_string()),
-                ("typeface", self.typeface.get_value_string()),
+                ("script", self.script.get_value_str()),
+                ("typeface", self.typeface.get_value_str()),
             ],
             true,
         );

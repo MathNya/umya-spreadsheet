@@ -553,7 +553,7 @@ impl Theme {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("xmlns:a", DRAWINGML_MAIN_NS));
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_string()));
+            attributes.push(("name", self.name.get_value_str()));
         }
         write_start_tag(writer, "a:theme", attributes, false);
 

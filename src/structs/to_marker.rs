@@ -58,19 +58,11 @@ impl ToMarker {
     }
 
     pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
-        self.row = if &self.row > num_rows {
-            self.row - num_rows
-        } else {
-            1
-        };
+        self.row = self.row.saturating_sub(*num_rows).max(1);
     }
 
     pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &usize) {
-        self.col = if &self.col > num_cols {
-            self.col - num_cols
-        } else {
-            1
-        };
+        self.col = self.col.saturating_sub(*num_cols).max(1);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

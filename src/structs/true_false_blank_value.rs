@@ -7,30 +7,13 @@ impl TrueFalseBlankValue {
         self.value.as_ref()
     }
 
-    pub(crate) fn _get_value_string(&self) -> &str {
-        match self.get_value() {
-            Some(v) => {
-                if !*v {
-                    "f"
-                } else {
-                    "t"
-                }
-            }
-            None => "",
-        }
+    pub(crate) fn _get_value_str(&self) -> &str {
+        self.get_value().map_or("", |v| if *v { "t" } else { "f" })
     }
 
     pub(crate) fn get_value_string2(&self) -> &str {
-        match self.get_value() {
-            Some(v) => {
-                if !*v {
-                    "False"
-                } else {
-                    "True"
-                }
-            }
-            None => "",
-        }
+        self.get_value()
+            .map_or("", |v| if *v { "True" } else { "False" })
     }
 
     pub(crate) fn set_value(&mut self, value: bool) -> &mut Self {
@@ -49,7 +32,7 @@ impl TrueFalseBlankValue {
 
     pub(crate) fn _get_hash_string(&self) -> &str {
         if self.has_value() {
-            return self._get_value_string();
+            return self._get_value_str();
         }
         "empty!!"
     }

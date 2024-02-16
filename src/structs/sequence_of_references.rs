@@ -23,23 +23,18 @@ impl SequenceOfReferences {
     }
 
     pub fn set_sqref<S: Into<String>>(&mut self, value: S) {
-        let org_value = value.into();
-        let range_collection: Vec<&str> = org_value.split(' ').collect();
-        for range_value in range_collection {
+        value.into().split(' ').for_each(|range_value| {
             let mut range = Range::default();
             range.set_range(range_value);
             self.range_collection.push(range);
-        }
+        });
     }
 
     pub fn get_sqref(&self) -> String {
-        let mut result = String::from("");
-        for range in &self.range_collection {
-            if !result.is_empty() {
-                result = format!("{} ", result);
-            }
-            result = format!("{}{}", result, range.get_range());
-        }
-        result
+        self.range_collection
+            .iter()
+            .map(|range| range.get_range())
+            .collect::<Vec<String>>()
+            .join(" ")
     }
 }

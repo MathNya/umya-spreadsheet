@@ -61,22 +61,12 @@ impl SharedStringItem {
         let mut h = AHasher::default();
         let content = format!(
             "{}{}",
-            match &self.text {
-                Some(v) => {
-                    v.get_hash_code()
-                }
-                None => {
-                    String::from("NONE")
-                }
-            },
-            match &self.rich_text {
-                Some(v) => {
-                    v.get_hash_code()
-                }
-                None => {
-                    String::from("NONE")
-                }
-            }
+            self.text
+                .as_ref()
+                .map_or(String::from("NONE"), |v| v.get_hash_code()),
+            self.rich_text
+                .as_ref()
+                .map_or(String::from("NONE"), |v| v.get_hash_code())
         );
         h.write(content.as_bytes());
         h.finish()

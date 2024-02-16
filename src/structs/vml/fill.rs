@@ -67,16 +67,16 @@ impl Fill {
         // v:fill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_string()));
+            attributes.push(("color", self.color.get_value_str()));
         }
         if self.color_2.has_value() {
-            attributes.push(("color2", self.color_2.get_value_string()));
+            attributes.push(("color2", self.color_2.get_value_str()));
         }
         if self.on.has_value() {
             attributes.push(("on", self.on.get_value_string()));
         }
         if self.focus_size.has_value() {
-            attributes.push(("focussize", self.focus_size.get_value_string()));
+            attributes.push(("focussize", self.focus_size.get_value_str()));
         }
         write_start_tag(writer, "v:fill", attributes, true);
     }

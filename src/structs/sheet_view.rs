@@ -208,7 +208,7 @@ impl SheetView {
         if self.zoom_scale_sheet_layout_view.has_value() {
             attributes.push(("zoomScaleSheetLayoutView", &zoom_scale_sheet_layout_view));
         }
-        let top_left_cell = self.top_left_cell.get_value_string();
+        let top_left_cell = self.top_left_cell.get_value_str();
         if self.top_left_cell.has_value() {
             attributes.push(("topLeftCell", &top_left_cell));
         }

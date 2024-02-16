@@ -49,7 +49,7 @@ impl SystemColor {
         if self.val.has_value() {
             attributes.push(("val", val));
         }
-        let last_color = self.last_color.get_value_string();
+        let last_color = self.last_color.get_value_str();
         if self.last_color.has_value() {
             attributes.push(("lastClr", last_color));
         }

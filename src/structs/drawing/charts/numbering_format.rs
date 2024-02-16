@@ -49,7 +49,7 @@ impl NumberingFormat {
             writer,
             "c:numFmt",
             vec![
-                ("formatCode", self.format_code.get_value_string()),
+                ("formatCode", self.format_code.get_value_str()),
                 ("sourceLinked", self.source_linked.get_value_string()),
             ],
             true,

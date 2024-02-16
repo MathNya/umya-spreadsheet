@@ -54,7 +54,7 @@ impl OddFooter {
         if self.has_param() {
             // oddFooter
             write_start_tag(writer, "oddFooter", vec![], false);
-            write_text_node(writer, self.value.get_value_string());
+            write_text_node(writer, self.value.get_value_str());
             write_end_tag(writer, "oddFooter");
         }
     }
