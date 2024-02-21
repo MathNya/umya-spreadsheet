@@ -47,7 +47,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     attributes.push(("filterPrivacy", "1"));
     //attributes.push(("defaultThemeVersion", "124226"));
     if spreadsheet.get_has_macros() {
-        attributes.push(("codeName", &spreadsheet.get_code_name().unwrap_or("ThisWorkbook")));
+        attributes.push((
+            "codeName",
+            &spreadsheet.get_code_name().unwrap_or("ThisWorkbook"),
+        ));
     }
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 

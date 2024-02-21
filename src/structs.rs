@@ -2,6 +2,8 @@
 
 pub mod custom_properties;
 pub mod drawing;
+pub mod office;
+pub mod office2010;
 pub mod raw;
 pub mod vml;
 
@@ -97,9 +99,6 @@ pub use self::address::*;
 
 mod anchor;
 pub use self::anchor::*;
-
-mod office2010;
-pub use self::office2010::*;
 
 mod boolean_value;
 pub use self::boolean_value::*;

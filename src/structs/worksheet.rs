@@ -3,6 +3,7 @@ use helper::const_str::*;
 use helper::coordinate::*;
 use helper::range::*;
 use structs::drawing::spreadsheet::WorksheetDrawing;
+use structs::office2010::excel::DataValidations as DataValidations2010;
 use structs::raw::RawWorksheet;
 use structs::AutoFilter;
 use structs::Cell;
@@ -70,6 +71,7 @@ pub struct Worksheet {
     row_breaks: RowBreaks,
     tables: Vec<Table>,
     data_validations: Option<DataValidations>,
+    data_validations_2010: Option<DataValidations2010>,
     sheet_format_properties: SheetFormatProperties,
     sheet_protection: Option<SheetProtection>,
 }
@@ -1559,6 +1561,24 @@ impl Worksheet {
 
     pub fn remove_data_validations(&mut self) -> &mut Self {
         self.data_validations = None;
+        self
+    }
+
+    pub fn get_data_validations_2010(&self) -> Option<&DataValidations2010> {
+        self.data_validations_2010.as_ref()
+    }
+
+    pub fn get_data_validations_2010_mut(&mut self) -> Option<&mut DataValidations2010> {
+        self.data_validations_2010.as_mut()
+    }
+
+    pub fn set_data_validations_2010(&mut self, value: DataValidations2010) -> &mut Self {
+        self.data_validations_2010 = Some(value);
+        self
+    }
+
+    pub fn remove_data_validations_2010(&mut self) -> &mut Self {
+        self.data_validations_2010 = None;
         self
     }
 

@@ -274,12 +274,12 @@ impl Spreadsheet {
     }
 
     /// Set codeName property of workbook
-    /// 
+    ///
     /// May be useful when importing VBA/macros code from another workbook
-    /// and only used when writing book with macros code 
-    /// 
-    /// Default one is `ThisWorkbook`. 
-    /// 
+    /// and only used when writing book with macros code
+    ///
+    /// Default one is `ThisWorkbook`.
+    ///
     /// Excel often uses `Workbook________` (8 underscores).
     pub fn set_code_name<S: ToString>(&mut self, codename: S) -> &mut Self {
         self.code_name = Some(codename.to_string());
@@ -287,7 +287,7 @@ impl Spreadsheet {
     }
 
     /// Get codeName property of workbook
-    /// 
+    ///
     /// Must to be the same in workbook with VBA/macros code from this workbook
     /// for that code in Workbook object to work out of the box without adjustments
     pub fn get_code_name(&self) -> Option<&str> {

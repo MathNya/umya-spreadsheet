@@ -28,7 +28,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 if e.name().into_inner() == b"Properties" {
                     spreadsheet
                         .get_properties_mut()
-                        .set_attributes(&mut reader, e);
+                        .set_attributes_app(&mut reader, e);
                 }
             }
             Ok(Event::Eof) => break,

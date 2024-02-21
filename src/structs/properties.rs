@@ -183,7 +183,7 @@ impl Properties {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
+    pub(crate) fn set_attributes_core<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
@@ -195,7 +195,6 @@ impl Properties {
                 value = e.unescape().unwrap().to_string();
             },
             Event::End(ref e) => {
-                // core
                 if e.name().into_inner() == b"dc:title" {
                     self.set_title(value);
                     value = String::from("");
@@ -241,6 +240,39 @@ impl Properties {
                     value = String::from("");
                 }
                 // app
+                if e.name().into_inner() == b"Manager" {
+                    self.set_manager(value);
+                    value = String::from("");
+                }
+                if e.name().into_inner() == b"Company" {
+                    self.set_company(value);
+                    value = String::from("");
+                }
+            },
+            Event::Eof => return,
+        );
+    }
+
+    pub(crate) fn set_attributes_app<R: std::io::BufRead>(
+        &mut self,
+        reader: &mut Reader<R>,
+        _e: &BytesStart,
+    ) {
+        let mut value: String = String::from("");
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"Manager" {
+                    value = String::from("");
+                }
+                if e.name().into_inner() == b"Company" {
+                    value = String::from("");
+                }
+            },
+            Event::Text(e) => {
+                value = e.unescape().unwrap().to_string();
+            },
+            Event::End(ref e) => {
                 if e.name().into_inner() == b"Manager" {
                     self.set_manager(value);
                     value = String::from("");

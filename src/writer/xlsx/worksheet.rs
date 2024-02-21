@@ -287,6 +287,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         .get_ole_objects()
         .write_to(&mut writer, &r_id, &ole_id);
 
+    // extLst
+    if worksheet.get_data_validations_2010().is_some() {
+        write_start_tag(&mut writer, "extLst", vec![], false);
+        match worksheet.get_data_validations_2010() {
+            Some(v) => {
+                v.write_to(&mut writer);
+            }
+            None => {}
+        }
+        write_end_tag(&mut writer, "extLst");
+    }
+
     write_end_tag(&mut writer, "worksheet");
 
     let target = format!("{PKG_SHEET}{}.xml", sheet_no);

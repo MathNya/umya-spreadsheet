@@ -4,6 +4,7 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 
 use structs::drawing::Theme;
+use structs::office2010::excel::DataValidations as DataValidations2010;
 use structs::raw::RawRelationships;
 use structs::raw::RawWorksheet;
 use structs::Cells;
@@ -98,6 +99,11 @@ pub(crate) fn read(
                 let mut obj = DataValidations::default();
                 obj.set_attributes(&mut reader, e);
                 worksheet.set_data_validations(obj);
+            }
+            b"x14:dataValidations" => {
+                let mut obj = DataValidations2010::default();
+                obj.set_attributes(&mut reader, e);
+                worksheet.set_data_validations_2010(obj);
             }
             b"oleObjects" => {
                 let mut obj = OleObjects::default();
