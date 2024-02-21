@@ -129,6 +129,7 @@ pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num
 pub type CellIndex = (Option<u32>, Option<u32>, Option<bool>, Option<bool>);
 
 /// Struct for representing cell coordinates with row and column numbers
+#[derive(Clone, Debug)]
 pub struct CellCoordinates {
     pub row: u32,
     pub col: u32,

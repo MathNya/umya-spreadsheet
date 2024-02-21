@@ -1317,6 +1317,14 @@ fn issue_172() {
 }
 
 #[test]
+fn issue_177() {
+    let test = umya_spreadsheet::helper::coordinate::CellCoordinates::from("A1");
+    let test2 = test.clone();
+    assert_eq!(test.row, test2.row);
+    assert_eq!(test.col, test2.col);
+}
+
+#[test]
 fn issue_178() {
     let path = std::path::Path::new("./tests/test_files/issue_178.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
