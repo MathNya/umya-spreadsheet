@@ -1332,3 +1332,18 @@ fn issue_178() {
     let path = std::path::Path::new("./tests/result_files/issue_178.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_181() {
+    let path = std::path::Path::new("./tests/test_files/issue_181.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let mut sheet = book.get_sheet_by_name_mut("LOV").unwrap();
+    sheet.remove_row(&2, &1);
+    for (key, row) in sheet.get_row_dimensions_to_hashmap() {
+        assert_eq!(key, &1);
+        assert_eq!(row.get_row_num(), &1);
+        assert_eq!(row.get_height(), &35.0);
+    }
+    let path = std::path::Path::new("./tests/result_files/issue_181.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

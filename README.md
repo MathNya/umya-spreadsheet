@@ -37,7 +37,7 @@ assert_eq!("03-Feb-24", result);
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.2.0"
+umya-spreadsheet = "1.2.1"
 ```
 Add the following code to main.rs
 ```rust

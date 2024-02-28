@@ -71,8 +71,9 @@ impl Rows {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        self.get_row_dimensions_mut().retain(|k| {
-            !(k.get_row_num() > root_row_num && k.get_row_num() < &(root_row_num + offset_row_num))
+        self.get_row_dimensions_to_hashmap_mut().retain(|_, k| {
+            !(k.get_row_num() >= root_row_num
+                && k.get_row_num() <= &(root_row_num + offset_row_num))
         });
         for row_dimension in self.get_row_dimensions_mut() {
             row_dimension.adjustment_remove_coordinate(root_row_num, offset_row_num);
