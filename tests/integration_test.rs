@@ -1347,3 +1347,22 @@ fn issue_181() {
     let path = std::path::Path::new("./tests/result_files/issue_181.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_181_2() {
+    let path = std::path::Path::new("./tests/test_files/issue_181_2.xlsx");
+
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let shee1: &mut umya_spreadsheet::structs::Worksheet = book.get_sheet_mut(&0).unwrap();
+    let new_row_index = 4;
+    shee1.insert_new_row(&new_row_index, &5);
+    shee1.get_cell_mut((1, new_row_index)).set_value("123");
+
+    let template_row_index = 3;
+    shee1.remove_row(&template_row_index, &1);
+
+    shee1.remove_column("B", &1);
+
+    let path = std::path::Path::new("./tests/result_files/issue_181_2.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

@@ -82,7 +82,7 @@ impl Columns {
     ) {
         self.get_column_collection_mut().retain(|x| {
             !(x.get_col_num() >= root_col_num
-                && x.get_col_num() <= &(root_col_num + offset_col_num))
+                && x.get_col_num() <= &(root_col_num + offset_col_num - 1))
         });
         for column_dimension in self.get_column_collection_mut() {
             column_dimension.adjustment_remove_coordinate(root_col_num, offset_col_num);

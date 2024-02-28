@@ -73,7 +73,7 @@ impl Rows {
     ) {
         self.get_row_dimensions_to_hashmap_mut().retain(|_, k| {
             !(k.get_row_num() >= root_row_num
-                && k.get_row_num() <= &(root_row_num + offset_row_num))
+                && k.get_row_num() <= &(root_row_num + offset_row_num - 1))
         });
         for row_dimension in self.get_row_dimensions_mut() {
             row_dimension.adjustment_remove_coordinate(root_row_num, offset_row_num);
