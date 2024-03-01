@@ -96,22 +96,31 @@ impl DefinedName {
         let char_list: Vec<char> = value.chars().collect::<Vec<char>>();
         let mut is_pass_s = false;
         let mut is_pass_d = false;
+        let mut is_pass_b = 0;
         let mut result: Vec<String> = Vec::new();
         let mut string = String::from("");
         for c in &char_list {
             match c {
+                '(' => {
+                    is_pass_b += 1;
+                    string.push(*c);
+                }
+                ')' => {
+                    is_pass_b -= 1;
+                    string.push(*c);
+                }
                 '\'' => {
                     is_pass_s = !is_pass_s;
                     string.push(*c);
                 }
                 '"' => {
                     is_pass_d = !is_pass_d;
-                    if is_pass_s {
+                    if is_pass_s || is_pass_b != 0 {
                         string.push(*c);
                     }
                 }
                 ',' => {
-                    if !is_pass_s && !is_pass_d {
+                    if !is_pass_s && !is_pass_d && is_pass_b == 0 {
                         result.push(string);
                         string = String::from("");
                     } else {
@@ -232,7 +241,7 @@ impl DefinedName {
             attributes.push(("localSheetId", &local_sheet_id_str));
         }
         write_start_tag(writer, "definedName", attributes, false);
-        write_text_node_no_escape(writer, self.get_address());
+        write_text_node(writer, self.get_address());
         write_end_tag(writer, "definedName");
     }
 }
