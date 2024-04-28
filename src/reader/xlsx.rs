@@ -161,7 +161,6 @@ pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
 
 pub(crate) fn raw_to_deserialize_by_worksheet(
     worksheet: &mut Worksheet,
-    theme: &Theme,
     shared_string_table: Arc<RwLock<SharedStringTable>>,
     stylesheet: &Stylesheet,
 ) {
@@ -174,7 +173,6 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
     worksheet::read(
         worksheet,
         &raw_data_of_worksheet,
-        theme,
         shared_string_table,
         stylesheet,
     )

@@ -3,7 +3,6 @@ use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 
-use structs::drawing::Theme;
 use structs::office2010::excel::DataValidations as DataValidations2010;
 use structs::raw::RawRelationships;
 use structs::raw::RawWorksheet;
@@ -22,7 +21,6 @@ use structs::Worksheet;
 pub(crate) fn read(
     worksheet: &mut Worksheet,
     raw_data_of_worksheet: &RawWorksheet,
-    theme: &Theme,
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
 ) -> Result<(), XlsxError> {
@@ -147,7 +145,6 @@ pub(crate) fn read(
                 worksheet
                     .get_tab_color_mut()
                     .set_attributes(&mut reader, e, true);
-                worksheet.get_tab_color_mut().set_argb_by_theme(theme);
             }
             b"sheetFormatPr" => {
                 worksheet

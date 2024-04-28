@@ -24,14 +24,12 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut reader = Reader::from_reader(r);
     reader.trim_text(false);
 
-    let theme = spreadsheet.get_theme().clone();
-
     xml_read_loop!(
         reader,
         Event::Start(ref e) => {
             if e.name().into_inner() == b"sst" {
                 let mut obj = SharedStringTable::default();
-                obj.set_attributes(&mut reader, e, &theme);
+                obj.set_attributes(&mut reader, e);
                 spreadsheet.set_shared_string_table(obj);
             }
         },

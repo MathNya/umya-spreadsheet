@@ -47,7 +47,6 @@ impl CellValue {
         if let CellRawValue::Lazy(v) = &self.raw_value {
             self.raw_value = Self::guess_typed_data(v);
         }
-        self.remove_formula();
         self.raw_value.to_string().into()
     }
 
@@ -69,7 +68,6 @@ impl CellValue {
     /// - `String` - if the string does not fulfill any of the other conditions
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
-        self.remove_formula();
         self
     }
 
@@ -85,7 +83,6 @@ impl CellValue {
 
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into());
-        self.remove_formula();
         self
     }
 
@@ -96,7 +93,6 @@ impl CellValue {
 
     pub fn set_value_bool(&mut self, value: bool) -> &mut Self {
         self.raw_value = CellRawValue::Bool(value);
-        self.remove_formula();
         self
     }
 
@@ -105,13 +101,11 @@ impl CellValue {
         T: Into<f64>,
     {
         self.raw_value = CellRawValue::Numeric(value.into());
-        self.remove_formula();
         self
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.raw_value = CellRawValue::RichText(value);
-        self.remove_formula();
         self
     }
 
@@ -138,7 +132,6 @@ impl CellValue {
         if let Some(v) = value.get_rich_text() {
             self.set_rich_text(v.clone());
         }
-        self.remove_formula();
         self
     }
 

@@ -1376,3 +1376,17 @@ fn issue_178_2() {
     let path = std::path::Path::new("./tests/result_files/issue_178_2.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_185() {
+    let path = std::path::Path::new("./tests/test_files/issue_185.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("A1")
+            .unwrap()
+            .is_formula(),
+        true
+    );
+}

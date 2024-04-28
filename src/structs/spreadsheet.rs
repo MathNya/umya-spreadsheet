@@ -360,27 +360,20 @@ impl Spreadsheet {
 
     /// deserialize by all worksheet.
     pub fn read_sheet_collection(&mut self) -> &mut Self {
-        let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_deserialize_by_worksheet(
-                worksheet,
-                &theme,
-                shared_string_table.clone(),
-                &stylesheet,
-            );
+            raw_to_deserialize_by_worksheet(worksheet, shared_string_table.clone(), &stylesheet);
         }
         self
     }
 
     /// deserialize a worksheet.
     pub fn read_sheet(&mut self, index: usize) -> &mut Self {
-        let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_deserialize_by_worksheet(worksheet, &theme, shared_string_table, &stylesheet);
+        raw_to_deserialize_by_worksheet(worksheet, shared_string_table, &stylesheet);
         self
     }
 
@@ -433,11 +426,10 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&mut Worksheet>`.
     pub fn get_sheet_mut(&mut self, index: &usize) -> Option<&mut Worksheet> {
-        let theme = self.get_theme().clone();
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         self.work_sheet_collection.get_mut(*index).map(|v| {
-            raw_to_deserialize_by_worksheet(v, &theme, shared_string_table, &stylesheet);
+            raw_to_deserialize_by_worksheet(v, shared_string_table, &stylesheet);
             v
         })
     }

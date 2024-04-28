@@ -7,6 +7,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
+use std::borrow::Cow;
 use std::io::Cursor;
 use structs::drawing::Theme;
 use writer::driver::*;
@@ -94,14 +95,58 @@ impl Color {
     pub const COLOR_YELLOW: &'static str = "FFFFFF00";
     pub const COLOR_DARKYELLOW: &'static str = "FF808000";
 
+    /// Get Argb.
+    /// If the color is based on the theme, it cannot be obtained with this function.
+    /// In that case, use get_argb_with_theme(&self, theme: &Theme).
     pub fn get_argb(&self) -> &str {
+        if self.indexed.has_value() {
+            match INDEXED_COLORS.get(self.indexed.get_value().clone() as usize - 1) {
+                Some(v) => return v,
+                None => {}
+            }
+        }
         self.argb.get_value()
     }
 
+    /// Get Argb.
+    /// Color information based on the theme can also be obtained.
+    /// # Examples
+    /// ```
+    /// let mut book = umya_spreadsheet::new_file();
+    /// let theme = book.get_theme();
+    /// ```
+    pub fn get_argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {
+        if self.indexed.has_value() {
+            self.get_argb();
+        }
+        if self.theme_index.has_value() {
+            match theme
+                .get_theme_elements()
+                .get_color_scheme()
+                .get_color_map()
+                .get(*self.theme_index.get_value() as usize)
+            {
+                Some(v) => return v.to_string().into(),
+                None => {}
+            }
+        }
+        self.argb.get_value().to_string().into()
+    }
+
     pub fn set_argb<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.indexed.remove_value();
+        let argb = value.into();
+        let indexed = INDEXED_COLORS.iter().position(|&r| r == argb);
+        match indexed {
+            Some(v) => {
+                self.indexed.set_value((v + 1) as u32);
+                self.argb.remove_value();
+            }
+            None => {
+                self.indexed.remove_value();
+                self.argb.set_value(argb);
+            }
+        }
         self.theme_index.remove_value();
-        self.argb.set_value(value);
         self
     }
 
@@ -112,11 +157,7 @@ impl Color {
     pub fn set_indexed(&mut self, index: u32) -> &mut Self {
         self.indexed.set_value(index);
         self.theme_index.remove_value();
-        self.argb
-            .set_value(match INDEXED_COLORS.get(index as usize - 1) {
-                Some(v) => v.to_string(),
-                None => String::from(""),
-            });
+        self.argb.remove_value();
         self
     }
 
@@ -128,23 +169,6 @@ impl Color {
         self.indexed.remove_value();
         self.theme_index.set_value(index);
         self.argb.remove_value();
-        self
-    }
-
-    pub(crate) fn set_argb_by_theme(&mut self, theme: &Theme) -> &mut Self {
-        if self.theme_index.has_value() {
-            self.argb.set_value(
-                match theme
-                    .get_theme_elements()
-                    .get_color_scheme()
-                    .get_color_map()
-                    .get(*self.theme_index.get_value() as usize)
-                {
-                    Some(v) => v.to_string(),
-                    None => String::from(""),
-                },
-            );
-        }
         self
     }
 
@@ -270,5 +294,27 @@ impl Color {
         if !attributes.is_empty() {
             write_start_tag(writer, tag_name, attributes, true);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn set_value() {
+        let mut obj = Color::default();
+        obj.set_argb("F34F8080");
+        assert_eq!(obj.get_argb(), "F34F8080");
+
+        let mut obj = Color::default();
+        obj.set_argb("FFFF8080");
+        assert_eq!(obj.get_indexed(), &22);
+        assert_eq!(obj.get_argb(), "FFFF8080");
+
+        let mut obj = Color::default();
+        let theme = Theme::get_default_value();
+        obj.set_theme_index(1);
+        assert_eq!(obj.get_argb_with_theme(&theme), "FFFFFF");
     }
 }

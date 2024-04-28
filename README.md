@@ -4,14 +4,20 @@
 [![Crates.io](https://img.shields.io/crates/v/umya-spreadsheet)](https://crates.io/crates/umya-spreadsheet)
 ![Github CI](https://github.com/MathNya/umya-spreadsheet/actions/workflows/rust.yml/badge.svg)
 [![Crates.io](https://img.shields.io/crates/l/umya-spreadsheet)](https://github.com/MathNya/umya-spreadsheet#license)
-[![Join the chat at https://gitter.im/MathNya/umya-spreadsheet](https://badges.gitter.im/MathNya/umya-spreadsheet.svg)](https://gitter.im/MathNya/umya-spreadsheet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![GitHub Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=ff69b4)](https://github.com/sponsors/MathNya)
 
 ## Description
 **umya-spreadsheet** is a library written in pure Rust to read and write xlsx file.
 
 ## Chatting
-Please use [Gitter](https://gitter.im/MathNya/umya-spreadsheet) for brief chats.
+### The chat will be closed.
+(Maybe I didn't set it up right, but it's because I no longer get notifications when new messages come in and I don't notice them anymore.)
+
+Please mention in issues if you have any questions.
+
+## WebAssembly support
+### Some modifications to cargo.toml are needed.
+### Please check the relevant file for details.
 
 ## New features
 ### ver 1.2.0

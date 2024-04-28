@@ -65,7 +65,6 @@ impl SharedStringTable {
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
-        theme: &Theme,
     ) {
         let mut n: usize = 0;
         xml_read_loop!(
@@ -80,7 +79,6 @@ impl SharedStringTable {
                         for element in v.get_rich_text_elements_mut() {
                             if let Some(r) = element.get_run_properties_crate() {
                                 let color = r.get_color_mut();
-                                color.set_argb_by_theme(&theme);
                             }
                         }
                     }
