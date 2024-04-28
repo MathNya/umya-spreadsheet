@@ -127,6 +127,11 @@ impl Cell {
         self
     }
 
+    pub(crate) fn set_value_bool_crate(&mut self, value: bool) -> &mut Self {
+        self.cell_value.set_value_bool_crate(value);
+        self
+    }
+
     pub fn set_value_number<T>(&mut self, value: T) -> &mut Self
     where
         T: Into<f64>,
@@ -325,7 +330,7 @@ impl Cell {
                             self.set_shared_string_item(shared_string_item.clone());
                         } else if type_value == "b" {
                             let prm = &string_value == "1";
-                            self.set_value_bool(prm);
+                            self.set_value_bool_crate(prm);
                         } else if type_value == "e" {
                             self.set_error();
                         } else if type_value.is_empty() || type_value == "n" {
