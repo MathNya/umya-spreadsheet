@@ -15,36 +15,22 @@
 
 Please mention in issues if you have any questions.
 
-## WebAssembly support
-### Some modifications to cargo.toml are needed.
-### Please check the relevant file for details.
-
 ## New features
-### ver 1.2.0
-#### **Changing Reference of Option to Optional Reference.** (Thank you, [agentjill ](https://github.com/agentjill).)
-- **This version contains breaking change.**
-[**here**](https://github.com/MathNya/umya-spreadsheet/pull/170)
-
-#### **A helper is provided to enter the date into the cell.**
-```rust
-let value = umya_spreadsheet::helper::date::convert_date(2024, 2, 3, 10, 59, 00);
-let mut numbering_format = NumberingFormat::default();
-numbering_format.set_format_code("dd-mmm-yy");
-
-sheet.get_cell_mut("A1").set_value_number(value);
-
-let result = sheet.get_formatted_value("A1");
-assert_eq!("03-Feb-24", result);
-```
-#### **Other Bug Fixes.**
+### ver 1.2.6
+#### WebAssembly support has been modified. (Thank you, [fabianboesiger](https://github.com/fabianboesiger).)
+For more information on the new WebAssembly support, see the [Usage](#installation) section.
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.2.3"
+umya-spreadsheet = "1.2.6"
+
+# WebAssembly support
+umya-spreadsheet = { version = "1.2.6", features = ["js"] }
 ```
+
 Add the following code to main.rs
 ```rust
 extern crate umya_spreadsheet;
