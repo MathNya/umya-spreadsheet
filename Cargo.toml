@@ -21,9 +21,6 @@ chrono = { version = "0.4.31", default-features = false, features = ["clock"] }
 encoding_rs = "0.8.33"
 fancy-regex = "0.13.0"
 getrandom = { version = "0.2.14" }
-# WebAssembly support
-# getrandom = { version = "0.2.14", features = ["js"] }
-# https://docs.rs/getrandom/latest/getrandom/#webassembly-support
 hashbrown = "0.14.3"
 hmac = "0.12.1"
 html_parser = "0.7.0"
@@ -38,3 +35,6 @@ zip = { version = "0.6.6", default-features = false, features = ["deflate"] }
 
 [lib]
 doctest = false
+
+[features]
+js = ["getrandom/js"]
