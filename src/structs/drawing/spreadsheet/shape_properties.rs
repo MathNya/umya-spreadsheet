@@ -5,6 +5,7 @@ use super::super::Outline;
 use super::super::PresetGeometry;
 use super::super::SolidFill;
 use super::super::Transform2D;
+use super::super::ExtensionList;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -20,8 +21,8 @@ pub struct ShapeProperties {
     outline: Option<Outline>,
     effect_list: Option<EffectList>,
     no_fill: Option<NoFill>,
+    extension_list: Option<ExtensionList>,
 }
-
 impl ShapeProperties {
     pub fn get_geometry(&self) -> &PresetGeometry {
         &self.preset_geometry
@@ -101,6 +102,19 @@ impl ShapeProperties {
         self
     }
 
+    pub fn get_extension_list(&self) -> Option<&ExtensionList> {
+        self.extension_list.as_ref()
+    }
+
+    pub fn get_extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
+        self.extension_list.as_mut()
+    }
+
+    pub fn set_extension_list(&mut self, value: ExtensionList) -> &mut Self {
+        self.extension_list = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -132,6 +146,11 @@ impl ShapeProperties {
                         let mut effect_list = EffectList::default();
                         effect_list.set_attributes(reader, e, false);
                         self.set_effect_list(effect_list);
+                    }
+                    b"a:extLst" => {
+                        let mut obj = ExtensionList::default();
+                        obj.set_attributes(reader, e);
+                        self.set_extension_list(obj);
                     }
                     _ => (),
                 }
