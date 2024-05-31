@@ -1400,3 +1400,15 @@ fn issue_188() {
     let path = std::path::Path::new("./tests/result_files/issue_188.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn expect_red_indexed_color() {
+    let path = std::path::Path::new("./tests/test_files/red_indexed_color.xlsx");
+    let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let cell = book.get_sheet(&0).unwrap().get_cell("A1").unwrap();
+
+    let color = cell.get_style().get_font().unwrap().get_color().get_argb();
+
+    assert_eq!("FFFF0000", color);
+}
