@@ -117,7 +117,7 @@ impl Color {
     /// ```
     pub fn get_argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {
         if self.indexed.has_value() {
-            self.get_argb();
+            return self.get_argb().to_owned().into();
         }
         if self.theme_index.has_value() {
             match theme
