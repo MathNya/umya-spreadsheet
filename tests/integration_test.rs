@@ -1394,9 +1394,26 @@ fn issue_185() {
 #[test]
 fn issue_188() {
     let path = std::path::Path::new("./tests/test_files/issue_188.xlsx");
-
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     let path = std::path::Path::new("./tests/result_files/issue_188.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_188_2() {
+    let path = std::path::Path::new("./tests/test_files/issue_188_2.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/issue_188_2.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_189() {
+    let path = std::path::Path::new("./tests/test_files/issue_189.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/issue_189.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
