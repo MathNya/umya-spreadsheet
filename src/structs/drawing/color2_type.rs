@@ -71,10 +71,18 @@ impl Color2Type {
                 }
             },
             Event::Start(ref e) => {
-                if e.name().into_inner() == b"a:srgbClr" {
+                match e.name().into_inner() {
+                b"a:srgbClr" => {
                     let mut obj = RgbColorModelHex::default();
                     obj.set_attributes(reader, e, false);
                     self.rgb_color_model_hex = Some(obj);
+                }
+                b"a:sysClr" => {
+                    let mut obj = SystemColor::default();
+                    obj.set_attributes(reader, e);
+                    self.system_color = Some(obj);
+                }
+                _ => (),
                 }
             },
             Event::End(ref e) => {

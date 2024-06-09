@@ -100,7 +100,7 @@ impl Color {
     /// In that case, use get_argb_with_theme(&self, theme: &Theme).
     pub fn get_argb(&self) -> &str {
         if self.indexed.has_value() {
-            match INDEXED_COLORS.get(self.indexed.get_value().clone() as usize - 1) {
+            match INDEXED_COLORS.get(self.indexed.get_value().clone() as usize) {
                 Some(v) => return v,
                 None => {}
             }
@@ -117,7 +117,7 @@ impl Color {
     /// ```
     pub fn get_argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {
         if self.indexed.has_value() {
-            self.get_argb();
+            return self.get_argb().to_owned().into();
         }
         if self.theme_index.has_value() {
             match theme
@@ -138,7 +138,7 @@ impl Color {
         let indexed = INDEXED_COLORS.iter().position(|&r| r == argb);
         match indexed {
             Some(v) => {
-                self.indexed.set_value((v + 1) as u32);
+                self.indexed.set_value(v as u32);
                 self.argb.remove_value();
             }
             None => {
@@ -309,7 +309,7 @@ mod tests {
 
         let mut obj = Color::default();
         obj.set_argb("FFFF8080");
-        assert_eq!(obj.get_indexed(), &22);
+        assert_eq!(obj.get_indexed(), &21);
         assert_eq!(obj.get_argb(), "FFFF8080");
 
         let mut obj = Color::default();
