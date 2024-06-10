@@ -207,12 +207,16 @@ impl Image {
         panic!("Not Found MediaObject");
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         if let Some(anchor) = &self.two_cell_anchor {
-            anchor.write_to(writer, r_id, &0);
+            anchor.write_to(writer, rel_list, &0);
         }
         if let Some(anchor) = &self.one_cell_anchor {
-            anchor.write_to(writer, r_id);
+            anchor.write_to(writer, rel_list);
         }
     }
 }

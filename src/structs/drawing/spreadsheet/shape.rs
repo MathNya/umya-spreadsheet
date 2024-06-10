@@ -8,6 +8,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -84,6 +85,7 @@ impl Shape {
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         xml_read_loop!(
             reader,
@@ -93,7 +95,7 @@ impl Shape {
                             self.non_visual_shape_properties.set_attributes(reader, e);
                         }
                         b"xdr:spPr" => {
-                            self.shape_properties.set_attributes(reader, e);
+                            self.shape_properties.set_attributes(reader, e, drawing_relationships);
                         }
                         b"xdr:style" => {
                             let mut obj = ShapeStyle::default();
@@ -117,7 +119,12 @@ impl Shape {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+        ole_id: &usize,
+    ) {
         // xdr:sp
         write_start_tag(
             writer,
@@ -130,7 +137,7 @@ impl Shape {
         let _ = &self.non_visual_shape_properties.write_to(writer, ole_id);
 
         // xdr:spPr
-        let _ = &self.shape_properties.write_to(writer);
+        let _ = &self.shape_properties.write_to(writer, rel_list);
 
         // xdr:style
         if let Some(v) = &self.shape_style {

@@ -50,12 +50,16 @@ impl Graphic {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // a:graphic
         write_start_tag(writer, "a:graphic", vec![], false);
 
         // a:graphicData
-        let _ = &self.graphic_data.write_to(writer, r_id);
+        let _ = &self.graphic_data.write_to(writer, rel_list);
 
         write_end_tag(writer, "a:graphic");
     }

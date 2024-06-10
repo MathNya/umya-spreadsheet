@@ -107,7 +107,7 @@ impl OneCellAnchor {
                     }
                     b"xdr:sp" => {
                         let mut obj = Shape::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, drawing_relationships);
                         self.set_shape(obj);
                     }
                     b"xdr:pic" => {
@@ -132,7 +132,11 @@ impl OneCellAnchor {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut i32) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // xdr:oneCellAnchor
         write_start_tag(writer, "xdr:oneCellAnchor", vec![], false);
 
@@ -144,13 +148,12 @@ impl OneCellAnchor {
 
         // xdr:sp
         if let Some(v) = &self.shape {
-            v.write_to(writer, &0)
+            v.write_to(writer, rel_list, &0);
         }
 
         // xdr:pic
         if let Some(v) = &self.picture {
-            v.write_to(writer, r_id);
-            *r_id += 1i32;
+            v.write_to(writer, rel_list);
         }
 
         // xdr:clientData

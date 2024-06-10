@@ -109,7 +109,11 @@ impl GraphicFrame {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // xdr:graphicFrame
         write_start_tag(
             writer,
@@ -125,7 +129,7 @@ impl GraphicFrame {
         let _ = &self.transform.write_to(writer);
 
         // a:graphic
-        let _ = &self.graphic.write_to(writer, r_id);
+        let _ = &self.graphic.write_to(writer, rel_list);
 
         write_end_tag(writer, "xdr:graphicFrame");
     }

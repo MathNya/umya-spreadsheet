@@ -12,6 +12,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     drawing_no: &str,
     chart_no_list: &Vec<String>,
+    rel_list: &Vec<(String, String)>,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut is_write = false;
@@ -39,14 +40,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
         r_id += 1;
     }
-    for image in worksheet.get_media_object_collection() {
-        is_write = write_relationship(
-            &mut writer,
-            &r_id,
-            IMAGE_NS,
-            format!("../media/{}", image.get_image_name()).as_str(),
-            "",
-        );
+
+    let mut r_id = 1;
+    for (key, value) in rel_list {
+        if key == "IMAGE" {
+            is_write = write_relationship(
+                &mut writer,
+                &r_id,
+                IMAGE_NS,
+                format!("../media/{}", value).as_str(),
+                "",
+            );
+        }
         r_id += 1;
     }
     write_end_tag(&mut writer, "Relationships");

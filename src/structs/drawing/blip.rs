@@ -1,6 +1,6 @@
 // a:blip
 use helper::const_str::*;
-use quick_xml::events::BytesStart;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
@@ -40,9 +40,10 @@ impl Blip {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
         drawing_relationships: &RawRelationships,
+        empty_flag: bool,
     ) {
         if let Some(v) = get_attribute(e, b"cstate") {
             self.set_cstate(v);
@@ -54,10 +55,29 @@ impl Blip {
             .set_image_name(relationship.get_raw_file().get_file_name());
         self.get_image_mut()
             .set_image_data(relationship.get_raw_file().get_file_data().clone());
+
+        if empty_flag {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:blip" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "a:blip")
+        );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // a:blip
+        let r_id = self.image.get_rid(rel_list);
         let r_id_str = format!("rId{}", r_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("xmlns:r", REL_OFC_NS));

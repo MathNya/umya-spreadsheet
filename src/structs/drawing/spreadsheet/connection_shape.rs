@@ -8,6 +8,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::raw::RawRelationships;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -78,6 +79,7 @@ impl ConnectionShape {
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
+        drawing_relationships: Option<&RawRelationships>,
     ) {
         xml_read_loop!(
             reader,
@@ -88,7 +90,7 @@ impl ConnectionShape {
                             .set_attributes(reader, e);
                         }
                     b"xdr:spPr" => {
-                        self.shape_properties.set_attributes(reader, e);
+                        self.shape_properties.set_attributes(reader, e, drawing_relationships);
                     }
                     b"xdr:style" => {
                         self.shape_style.set_attributes(reader, e);
@@ -105,7 +107,11 @@ impl ConnectionShape {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // xdr:cxnSp
         write_start_tag(writer, "xdr:cxnSp", vec![("macro", "")], false);
 
@@ -113,7 +119,7 @@ impl ConnectionShape {
         let _ = &self.non_visual_connection_shape_properties.write_to(writer);
 
         // xdr:spPr
-        let _ = &self.shape_properties.write_to(writer);
+        let _ = &self.shape_properties.write_to(writer, rel_list);
 
         // xdr:style
         let _ = &self.shape_style.write_to(writer);

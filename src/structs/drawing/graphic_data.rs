@@ -55,7 +55,11 @@ impl GraphicData {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // a:graphicData
         write_start_tag(
             writer,
@@ -65,13 +69,14 @@ impl GraphicData {
         );
 
         // c:chart
+        rel_list.push((String::from("CHART"), String::from("")));
         write_start_tag(
             writer,
             "c:chart",
             vec![
                 ("xmlns:c", DRAWINGML_CHART_NS),
                 ("xmlns:r", REL_OFC_NS),
-                ("r:id", format!("rId{}", r_id).as_str()),
+                ("r:id", format!("rId{}", rel_list.len()).as_str()),
             ],
             true,
         );

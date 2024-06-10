@@ -146,10 +146,16 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
         }
 
         // Add drawing
-        let drawing_no = drawing::write(worksheet, &mut writer_manager)?;
+        let (drawing_no, rel_list) = drawing::write(worksheet, &mut writer_manager)?;
 
         // Add drawing rels
-        drawing_rels::write(worksheet, &drawing_no, &chart_no_list, &mut writer_manager)?;
+        drawing_rels::write(
+            worksheet,
+            &drawing_no,
+            &chart_no_list,
+            &rel_list,
+            &mut writer_manager,
+        )?;
 
         // Add vml drawing
         let vml_drawing_no = vml_drawing::write(worksheet, &mut writer_manager)?;

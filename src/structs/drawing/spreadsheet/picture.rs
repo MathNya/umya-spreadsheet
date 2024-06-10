@@ -72,7 +72,7 @@ impl Picture {
                             .set_attributes(reader, e, drawing_relationships);
                         }
                     b"xdr:spPr" => {
-                        self.shape_properties.set_attributes(reader, e);
+                        self.shape_properties.set_attributes(reader, e, drawing_relationships);
                     }
                     _ => (),
                 }
@@ -86,7 +86,11 @@ impl Picture {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &i32) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // xdr:pic
         write_start_tag(writer, "xdr:pic", vec![], false);
 
@@ -94,10 +98,10 @@ impl Picture {
         let _ = &self.non_visual_picture_properties.write_to(writer);
 
         // xdr:blipFill
-        let _ = &self.blip_fill.write_to(writer, r_id);
+        let _ = &self.blip_fill.write_to(writer, rel_list);
 
         // xdr:spPr
-        let _ = &self.shape_properties.write_to(writer);
+        let _ = &self.shape_properties.write_to(writer, rel_list);
 
         write_end_tag(writer, "xdr:pic");
     }

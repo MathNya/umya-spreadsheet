@@ -367,7 +367,12 @@ impl WorksheetDrawing {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_objects: &OleObjects) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        ole_objects: &OleObjects,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // xdr:wsDr
         write_start_tag(
             writer,
@@ -380,29 +385,27 @@ impl WorksheetDrawing {
         );
 
         // xdr:twoCellAnchor
-        let mut r_id = 1;
         for chart in &self.chart_collection {
-            chart.get_two_cell_anchor().write_to(writer, &mut r_id, &0);
+            chart.get_two_cell_anchor().write_to(writer, rel_list, &0);
         }
         for image in &self.image_collection {
-            image.write_to(writer, &mut r_id);
+            image.write_to(writer, rel_list);
         }
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            two_cell_anchor.write_to(writer, &mut r_id, &0);
+            two_cell_anchor.write_to(writer, rel_list, &0);
         }
 
         // xdr:oneCellAnchor
         for one_cell_anchor in &self.one_cell_anchor_collection {
-            one_cell_anchor.write_to(writer, &mut r_id);
+            one_cell_anchor.write_to(writer, rel_list);
         }
 
         // mc:AlternateContent
-        let mut r_id = 1;
         let mut ole_id = 1000 + 25;
         for ole_object in ole_objects.get_ole_object() {
             ole_object
                 .get_two_cell_anchor()
-                .write_to(writer, &mut r_id, &ole_id);
+                .write_to(writer, rel_list, &0);
             ole_id += 1;
         }
 

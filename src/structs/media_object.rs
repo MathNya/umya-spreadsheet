@@ -21,4 +21,17 @@ impl MediaObject {
         self.image_data = value;
         self
     }
+
+    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
+        let find = rel_list
+            .iter()
+            .position(|(k, v)| k == "IMAGE" && v == &self.image_name);
+        match find {
+            Some(v) => return (v + 1) as i32,
+            None => {
+                rel_list.push((String::from("IMAGE"), self.image_name.clone()));
+                return rel_list.len() as i32;
+            }
+        }
+    }
 }

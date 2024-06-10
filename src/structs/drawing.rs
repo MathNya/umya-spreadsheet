@@ -263,3 +263,6 @@ pub use self::rotation::*;
 
 mod extension_list;
 pub use self::extension_list::*;
+
+mod blip_fill;
+pub use self::blip_fill::*;

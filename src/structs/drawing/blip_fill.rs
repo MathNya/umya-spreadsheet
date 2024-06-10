@@ -1,8 +1,8 @@
-// xdr:blipFill
+// a:blipFill
 use super::super::super::BooleanValue;
-use super::super::Blip;
-use super::super::SourceRectangle;
-use super::super::Stretch;
+use super::Blip;
+use super::SourceRectangle;
+use super::Stretch;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -105,11 +105,11 @@ impl BlipFill {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"xdr:blipFill" {
+                if e.name().into_inner() == b"a:blipFill" {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "xdr:blipFill")
+            Event::Eof => panic!("Error not find {} end element", "a:blipFill")
         );
     }
 
@@ -118,12 +118,12 @@ impl BlipFill {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {
-        // xdr:blipFill
+        // a:blipFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.rotate_with_shape.has_value() {
             attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()))
         }
-        write_start_tag(writer, "xdr:blipFill", attributes, false);
+        write_start_tag(writer, "a:blipFill", attributes, false);
 
         // a:blip
         let _ = &self.blip.write_to(writer, rel_list);
@@ -136,6 +136,6 @@ impl BlipFill {
         // a:stretch
         let _ = &self.stretch.write_to(writer);
 
-        write_end_tag(writer, "xdr:blipFill");
+        write_end_tag(writer, "a:blipFill");
     }
 }
