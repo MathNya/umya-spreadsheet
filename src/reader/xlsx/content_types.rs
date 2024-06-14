@@ -12,7 +12,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 ) -> result::Result<(), XlsxError> {
     let r = io::BufReader::new(arv.by_name(CONTENT_TYPES)?);
     let mut reader = Reader::from_reader(r);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
     let mut list: Vec<(String, String)> = Vec::new();
 
     xml_read_loop!(

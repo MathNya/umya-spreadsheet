@@ -12,7 +12,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 ) -> result::Result<Vec<(String, String, String)>, XlsxError> {
     let r = io::BufReader::new(arv.by_name(PKG_WORKBOOK_RELS)?);
     let mut reader = Reader::from_reader(r);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     let mut result: Vec<(String, String, String)> = Vec::new();
 

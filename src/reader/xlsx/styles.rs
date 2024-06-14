@@ -14,7 +14,7 @@ pub fn read<R: io::Read + io::Seek>(
 ) -> result::Result<(), XlsxError> {
     let r = io::BufReader::new(arv.by_name(PKG_STYLES)?);
     let mut reader = Reader::from_reader(r);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     let theme = spreadsheet.get_theme().clone();
 

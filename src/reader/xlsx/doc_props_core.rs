@@ -20,7 +20,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         }
     });
     let mut reader = Reader::from_reader(r);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
     let mut buf = Vec::new();
     loop {
         match reader.read_event_into(&mut buf) {

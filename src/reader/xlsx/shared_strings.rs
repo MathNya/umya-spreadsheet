@@ -22,7 +22,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         }
     });
     let mut reader = Reader::from_reader(r);
-    reader.trim_text(false);
+    reader.config_mut().trim_text(false);
 
     xml_read_loop!(
         reader,
