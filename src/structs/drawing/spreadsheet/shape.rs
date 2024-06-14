@@ -1,3 +1,4 @@
+// xdr:sp
 use super::super::super::Anchor;
 use super::NonVisualShapeProperties;
 use super::ShapeProperties;

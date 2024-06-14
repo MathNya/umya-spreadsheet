@@ -3,6 +3,7 @@ use super::super::super::EnumValue;
 use super::ConnectionShape;
 use super::EditAsValues;
 use super::GraphicFrame;
+use super::GroupShape;
 use super::MarkerType;
 use super::Picture;
 use super::Shape;
@@ -22,6 +23,7 @@ pub struct TwoCellAnchor {
     edit_as: EnumValue<EditAsValues>,
     from_marker: MarkerType,
     to_marker: MarkerType,
+    group_shape: Option<GroupShape>,
     graphic_frame: Option<GraphicFrame>,
     shape: Option<Shape>,
     connection_shape: Option<ConnectionShape>,
@@ -62,6 +64,19 @@ impl TwoCellAnchor {
 
     pub fn set_to_marker(&mut self, value: MarkerType) -> &mut Self {
         self.to_marker = value;
+        self
+    }
+
+    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+        self.group_shape.as_ref()
+    }
+
+    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+        self.group_shape.as_mut()
+    }
+
+    pub fn set_group_shape(&mut self, value: GroupShape) -> &mut Self {
+        self.group_shape = Some(value);
         self
     }
 
@@ -162,7 +177,7 @@ impl TwoCellAnchor {
     }
 
     pub(crate) fn is_image(&self) -> bool {
-        self.picture.is_some()
+        self.picture.is_some() || self.group_shape.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -182,6 +197,11 @@ impl TwoCellAnchor {
                 }
                 b"xdr:to" => {
                     self.to_marker.set_attributes(reader, e);
+                }
+                b"xdr:grpSp" => {
+                    let mut obj = GroupShape::default();
+                    obj.set_attributes(reader, e, drawing_relationships);
+                    self.set_group_shape(obj);
                 }
                 b"xdr:graphicFrame" => {
                     let mut obj = GraphicFrame::default();
@@ -251,6 +271,11 @@ impl TwoCellAnchor {
 
         // xdr:to
         let _ = &self.to_marker.write_to_to(writer);
+
+        // xdr:grpSp
+        if let Some(v) = &self.group_shape {
+            v.write_to(writer, rel_list);
+        }
 
         // xdr:graphicFrame
         if let Some(v) = &self.graphic_frame {

@@ -66,3 +66,15 @@ pub use self::extent::*;
 
 mod marker_type;
 pub use self::marker_type::*;
+
+mod group_shape;
+pub use self::group_shape::*;
+
+mod non_visual_group_shape_properties;
+pub use self::non_visual_group_shape_properties::*;
+
+mod group_shape_properties;
+pub use self::group_shape_properties::*;
+
+mod non_visual_group_shape_drawing_properties;
+pub use self::non_visual_group_shape_drawing_properties::*;

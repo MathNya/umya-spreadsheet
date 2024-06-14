@@ -16,8 +16,8 @@ use structs::MediaObject;
 
 #[derive(Clone, Default, Debug)]
 pub struct Image {
-    two_cell_anchor: Option<TwoCellAnchor>,
-    one_cell_anchor: Option<OneCellAnchor>,
+    two_cell_anchor: Box<Option<TwoCellAnchor>>,
+    one_cell_anchor: Box<Option<OneCellAnchor>>,
 }
 /// ## Example
 /// ```rust
@@ -61,28 +61,38 @@ pub struct Image {
 /// ```
 impl Image {
     pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
-        self.two_cell_anchor.as_ref()
+        self.two_cell_anchor.as_ref().as_ref()
     }
 
     pub fn get_two_cell_anchor_mut(&mut self) -> Option<&mut TwoCellAnchor> {
-        self.two_cell_anchor.as_mut()
+        self.two_cell_anchor.as_mut().as_mut()
     }
 
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
-        self.two_cell_anchor = Some(value);
+        self.two_cell_anchor = Box::new(Some(value));
+        self
+    }
+
+    pub fn remove_two_cell_anchor(&mut self) -> &mut Self {
+        self.two_cell_anchor = Box::new(None);
         self
     }
 
     pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
-        self.one_cell_anchor.as_ref()
+        self.one_cell_anchor.as_ref().as_ref()
     }
 
     pub fn get_one_cell_anchor_mut(&mut self) -> Option<&mut OneCellAnchor> {
-        self.one_cell_anchor.as_mut()
+        self.one_cell_anchor.as_mut().as_mut()
     }
 
     pub fn set_one_cell_anchor(&mut self, value: OneCellAnchor) -> &mut Self {
-        self.one_cell_anchor = Some(value);
+        self.one_cell_anchor = Box::new(Some(value));
+        self
+    }
+
+    pub fn remove_one_cell_anchor(&mut self) -> &mut Self {
+        self.one_cell_anchor = Box::new(None);
         self
     }
 
@@ -139,26 +149,30 @@ impl Image {
             .set_cy(height as i64 * 9525);
         one_cell_anchor.get_extent_mut().set_cx(width as i64 * 9525);
         one_cell_anchor.set_picture(picture);
-        self.one_cell_anchor = Some(one_cell_anchor);
+        self.set_one_cell_anchor(one_cell_anchor);
     }
 
     pub fn change_image(&mut self, path: &str) {
         let marker = self.get_from_marker_type().clone();
-        self.two_cell_anchor = None;
-        self.one_cell_anchor = None;
+        self.remove_two_cell_anchor();
+        self.remove_one_cell_anchor();
         self.new_image(path, marker);
     }
 
     pub fn download_image(&self, path: &str) {
-        fs::write(path, self.get_media_object().get_image_data()).unwrap();
+        fs::write(
+            path,
+            self.get_media_object().first().unwrap().get_image_data(),
+        )
+        .unwrap();
     }
 
     pub fn get_image_name(&self) -> &str {
-        self.get_media_object().get_image_name()
+        self.get_media_object().first().unwrap().get_image_name()
     }
 
     pub fn get_image_data(&self) -> &Vec<u8> {
-        self.get_media_object().get_image_data()
+        self.get_media_object().first().unwrap().get_image_data()
     }
 
     pub fn get_image_data_base64(&self) -> String {
@@ -178,33 +192,69 @@ impl Image {
     }
 
     pub fn get_from_marker_type(&self) -> &MarkerType {
-        if let Some(anchor) = &self.two_cell_anchor {
+        if let Some(anchor) = self.get_two_cell_anchor() {
             return anchor.get_from_marker();
         }
-        if let Some(anchor) = &self.one_cell_anchor {
+        if let Some(anchor) = self.get_one_cell_anchor() {
             return anchor.get_from_marker();
         }
         panic!("Not Found MediaObject");
     }
 
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
-        self.two_cell_anchor
+        self.get_two_cell_anchor()
             .as_ref()
             .map(|anchor| anchor.get_to_marker())
     }
 
-    pub(crate) fn get_media_object(&self) -> &MediaObject {
-        if let Some(anchor) = &self.two_cell_anchor {
+    pub(crate) fn get_media_object(&self) -> Vec<&MediaObject> {
+        let mut result: Vec<&MediaObject> = Vec::new();
+        if let Some(anchor) = self.get_two_cell_anchor() {
             if let Some(v) = anchor.get_picture() {
-                return v.get_blip_fill().get_blip().get_image();
+                result.push(v.get_blip_fill().get_blip().get_image());
+            }
+            if let Some(v) = anchor.get_shape() {
+                if let Some(bf) = v.get_shape_properties().get_blip_fill() {
+                    result.push(bf.get_blip().get_image());
+                }
+            }
+            if let Some(v) = anchor.get_connection_shape() {
+                if let Some(bf) = v.get_shape_properties().get_blip_fill() {
+                    result.push(bf.get_blip().get_image());
+                }
+            }
+            if let Some(v) = anchor.get_group_shape() {
+                for pic in v.get_picture_collection() {
+                    result.push(pic.get_blip_fill().get_blip().get_image());
+                }
+                for shp in v.get_shape_collection() {
+                    if let Some(bf) = shp.get_shape_properties().get_blip_fill() {
+                        result.push(bf.get_blip().get_image());
+                    }
+                }
             }
         }
-        if let Some(anchor) = &self.one_cell_anchor {
+        if let Some(anchor) = self.get_one_cell_anchor() {
             if let Some(v) = anchor.get_picture() {
-                return v.get_blip_fill().get_blip().get_image();
+                result.push(v.get_blip_fill().get_blip().get_image());
+            }
+            if let Some(v) = anchor.get_shape() {
+                if let Some(bf) = v.get_shape_properties().get_blip_fill() {
+                    result.push(bf.get_blip().get_image());
+                }
+            }
+            if let Some(v) = anchor.get_group_shape() {
+                for pic in v.get_picture_collection() {
+                    result.push(pic.get_blip_fill().get_blip().get_image());
+                }
+                for shp in v.get_shape_collection() {
+                    if let Some(bf) = shp.get_shape_properties().get_blip_fill() {
+                        result.push(bf.get_blip().get_image());
+                    }
+                }
             }
         }
-        panic!("Not Found MediaObject");
+        result
     }
 
     pub(crate) fn write_to(
@@ -212,10 +262,10 @@ impl Image {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {
-        if let Some(anchor) = &self.two_cell_anchor {
+        if let Some(anchor) = self.get_two_cell_anchor() {
             anchor.write_to(writer, rel_list, &0);
         }
-        if let Some(anchor) = &self.one_cell_anchor {
+        if let Some(anchor) = self.get_one_cell_anchor() {
             anchor.write_to(writer, rel_list);
         }
     }

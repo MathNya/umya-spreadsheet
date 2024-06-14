@@ -130,14 +130,14 @@ use structs::ChartType;
 /// ```
 #[derive(Clone, Debug)]
 pub struct Chart {
-    two_cell_anchor: TwoCellAnchor,
+    two_cell_anchor: Box<TwoCellAnchor>,
     default_language: String,
 }
 
 impl Default for Chart {
     fn default() -> Self {
         Self {
-            two_cell_anchor: TwoCellAnchor::default(),
+            two_cell_anchor: Box::new(TwoCellAnchor::default()),
             default_language: "en-GB".into(),
         }
     }
@@ -255,7 +255,7 @@ impl Chart {
     }
 
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
-        self.two_cell_anchor = value;
+        self.two_cell_anchor = Box::new(value);
         self
     }
 

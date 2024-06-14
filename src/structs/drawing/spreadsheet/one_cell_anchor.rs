@@ -1,5 +1,6 @@
 // xdr:oneCellAnchor
 use super::Extent;
+use super::GroupShape;
 use super::MarkerType;
 use super::Picture;
 use super::Shape;
@@ -15,6 +16,7 @@ use writer::driver::*;
 pub struct OneCellAnchor {
     from_marker: MarkerType,
     extent: Extent,
+    group_shape: Option<GroupShape>,
     shape: Option<Shape>,
     picture: Option<Picture>,
 }
@@ -43,6 +45,19 @@ impl OneCellAnchor {
 
     pub fn set_extent(&mut self, value: Extent) -> &mut OneCellAnchor {
         self.extent = value;
+        self
+    }
+
+    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+        self.group_shape.as_ref()
+    }
+
+    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+        self.group_shape.as_mut()
+    }
+
+    pub fn set_group_shape(&mut self, value: GroupShape) -> &mut Self {
+        self.group_shape = Some(value);
         self
     }
 
@@ -89,7 +104,7 @@ impl OneCellAnchor {
     }
 
     pub(crate) fn is_image(&self) -> bool {
-        self.picture.is_some()
+        self.picture.is_some() || self.group_shape.is_some()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -104,6 +119,11 @@ impl OneCellAnchor {
                 match e.name().into_inner() {
                     b"xdr:from" => {
                         self.from_marker.set_attributes(reader, e);
+                    }
+                    b"xdr:grpSp" => {
+                        let mut obj = GroupShape::default();
+                        obj.set_attributes(reader, e, drawing_relationships);
+                        self.set_group_shape(obj);
                     }
                     b"xdr:sp" => {
                         let mut obj = Shape::default();
@@ -145,6 +165,11 @@ impl OneCellAnchor {
 
         // xdr:ext
         let _ = &self.extent.write_to(writer);
+
+        // xdr:grpSp
+        if let Some(v) = &self.group_shape {
+            v.write_to(writer, rel_list);
+        }
 
         // xdr:sp
         if let Some(v) = &self.shape {

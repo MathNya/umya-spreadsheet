@@ -71,6 +71,11 @@ impl TextBody {
                         body_properties.set_attributes(reader, e, false);
                         self.set_body_properties(body_properties);
                     }
+                    b"a:lstStyle" => {
+                        let mut obj = ListStyle::default();
+                        obj.set_attributes(reader, e);
+                        self.set_list_style(obj);
+                    }
                     _ => (),
                 }
             },
@@ -98,7 +103,7 @@ impl TextBody {
         let _ = &self.body_properties.write_to(writer);
 
         // a:lstStyle
-        write_start_tag(writer, "a:lstStyle", vec![], true);
+        let _ = &self.list_style.write_to(writer);
 
         for content in &self.paragraph {
             content.write_to(writer);

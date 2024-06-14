@@ -266,3 +266,18 @@ pub use self::extension_list::*;
 
 mod blip_fill;
 pub use self::blip_fill::*;
+
+mod group_shape_locks;
+pub use self::group_shape_locks::*;
+
+mod text_paragraph_properties_type;
+pub use self::text_paragraph_properties_type::*;
+
+mod text_font_alignment_values;
+pub use self::text_font_alignment_values::*;
+
+mod space_before;
+pub use self::space_before::*;
+
+mod space_after;
+pub use self::space_after::*;

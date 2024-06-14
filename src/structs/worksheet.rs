@@ -1707,15 +1707,17 @@ impl Worksheet {
     pub(crate) fn get_media_object_collection(&self) -> Vec<&MediaObject> {
         let mut result: Vec<&MediaObject> = Vec::new();
         for image in self.get_worksheet_drawing().get_image_collection() {
-            let media_object = image.get_media_object();
-            let mut is_new = true;
-            for v in &result {
-                if v.get_image_name() == media_object.get_image_name() {
-                    is_new = false;
+            let media_object_list = image.get_media_object();
+            for media_object in media_object_list {
+                let mut is_new = true;
+                for v in &result {
+                    if v.get_image_name() == media_object.get_image_name() {
+                        is_new = false;
+                    }
                 }
-            }
-            if is_new {
-                result.push(media_object);
+                if is_new {
+                    result.push(media_object);
+                }
             }
         }
         for ole_objects in self.get_ole_objects().get_ole_object() {
