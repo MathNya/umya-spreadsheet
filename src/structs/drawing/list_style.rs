@@ -235,47 +235,47 @@ impl ListStyle {
                         obj.set_attributes(reader, e);
                         self.set_default_paragraph_properties(obj);
                     }
-                    b"a:lvl1pPralgn" => {
+                    b"a:lvl1pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level1_paragraph_properties(obj);
                     }
-                    b"a:lvl2pPralgn" => {
+                    b"a:lvl2pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level2_paragraph_properties(obj);
                     }
-                    b"a:lvl3pPralgn" => {
+                    b"a:lvl3pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level3_paragraph_properties(obj);
                     }
-                    b"a:lvl4pPralgn" => {
+                    b"a:lvl4pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level4_paragraph_properties(obj);
                     }
-                    b"a:lvl5pPralgn" => {
+                    b"a:lvl5pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level5_paragraph_properties(obj);
                     }
-                    b"a:lvl6pPralgn" => {
+                    b"a:lvl6pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level6_paragraph_properties(obj);
                     }
-                    b"a:lvl7pPralgn" => {
+                    b"a:lvl7pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level7_paragraph_properties(obj);
                     }
-                    b"a:lvl8pPralgn" => {
+                    b"a:lvl8pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level8_paragraph_properties(obj);
                     }
-                    b"a:lvl9pPralgn" => {
+                    b"a:lvl9pPr" => {
                         let mut obj = TextParagraphPropertiesType::default();
                         obj.set_attributes(reader, e);
                         self.set_level9_paragraph_properties(obj);
@@ -292,9 +292,24 @@ impl ListStyle {
         );
     }
 
+    fn is_empty(&self) -> bool {
+        self.effect_list.is_none()
+            && self.default_paragraph_properties.is_none()
+            && self.level1_paragraph_properties.is_none()
+            && self.level2_paragraph_properties.is_none()
+            && self.level3_paragraph_properties.is_none()
+            && self.level4_paragraph_properties.is_none()
+            && self.level5_paragraph_properties.is_none()
+            && self.level6_paragraph_properties.is_none()
+            && self.level7_paragraph_properties.is_none()
+            && self.level8_paragraph_properties.is_none()
+            && self.level9_paragraph_properties.is_none()
+    }
+
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lstStyle
-        write_start_tag(writer, "a:lstStyle", vec![], true);
+        let is_empty = self.is_empty();
+        write_start_tag(writer, "a:lstStyle", vec![], is_empty);
 
         // a:defPPr
         match &self.default_paragraph_properties {
@@ -313,7 +328,7 @@ impl ListStyle {
         }
 
         // a:lvl2pPr
-        match &self.level1_paragraph_properties {
+        match &self.level2_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl2(writer);
             }
@@ -321,7 +336,7 @@ impl ListStyle {
         }
 
         // a:lvl3pPr
-        match &self.level1_paragraph_properties {
+        match &self.level3_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl3(writer);
             }
@@ -329,7 +344,7 @@ impl ListStyle {
         }
 
         // a:lvl4pPr
-        match &self.level1_paragraph_properties {
+        match &self.level4_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl4(writer);
             }
@@ -337,7 +352,7 @@ impl ListStyle {
         }
 
         // a:lvl5pPr
-        match &self.level1_paragraph_properties {
+        match &self.level5_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl5(writer);
             }
@@ -345,7 +360,7 @@ impl ListStyle {
         }
 
         // a:lvl6pPr
-        match &self.level1_paragraph_properties {
+        match &self.level6_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl6(writer);
             }
@@ -353,7 +368,7 @@ impl ListStyle {
         }
 
         // a:lvl7pPr
-        match &self.level1_paragraph_properties {
+        match &self.level7_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl7(writer);
             }
@@ -361,7 +376,7 @@ impl ListStyle {
         }
 
         // a:lvl8pPr
-        match &self.level1_paragraph_properties {
+        match &self.level8_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl8(writer);
             }
@@ -369,11 +384,15 @@ impl ListStyle {
         }
 
         // a:lvl9pPr
-        match &self.level1_paragraph_properties {
+        match &self.level9_paragraph_properties {
             Some(v) => {
                 v.write_to_lvl9(writer);
             }
             None => {}
+        }
+
+        if !is_empty {
+            write_end_tag(writer, "a:lstStyle");
         }
     }
 }

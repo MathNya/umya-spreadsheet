@@ -45,23 +45,23 @@ impl SpaceAfter {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"a:spcBef" {
+                if e.name().into_inner() == b"a:spcAft" {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:spcBef")
+            Event::Eof => panic!("Error not find {} end element", "a:spcAft")
         );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // a:spcBef
-        write_start_tag(writer, "a:spcBef", vec![], false);
+        // a:spcAft
+        write_start_tag(writer, "a:spcAft", vec![], false);
 
         // a:spcPct
         if let Some(v) = &self.spacing_percent {
             v.write_to(writer);
         }
 
-        write_end_tag(writer, "a:spcBef");
+        write_end_tag(writer, "a:spcAft");
     }
 }

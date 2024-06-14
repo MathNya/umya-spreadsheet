@@ -4,50 +4,68 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::drawing::Point2DType;
+use structs::drawing::PositiveSize2DType;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform2D {
-    x: usize,
-    y: usize,
-    width: usize,
-    height: usize,
+    offset: Point2DType,
+    extents: PositiveSize2DType,
+    child_offset: Option<Point2DType>,
+    child_extents: Option<PositiveSize2DType>,
     rot: Option<String>,
     flip_v: Option<String>,
     flip_h: Option<String>,
 }
 
 impl Transform2D {
-    pub fn get_x(&self) -> &usize {
-        &self.x
+    pub fn get_offset(&self) -> &Point2DType {
+        &self.offset
     }
 
-    pub fn set_x(&mut self, value: usize) {
-        self.x = value;
+    pub fn get_offset_mut(&mut self) -> &mut Point2DType {
+        &mut self.offset
     }
 
-    pub fn get_y(&self) -> &usize {
-        &self.y
+    pub fn set_offset(&mut self, value: Point2DType) {
+        self.offset = value;
     }
 
-    pub fn set_y(&mut self, value: usize) {
-        self.y = value;
+    pub fn get_extents(&self) -> &PositiveSize2DType {
+        &self.extents
     }
 
-    pub fn get_width(&self) -> &usize {
-        &self.width
+    pub fn get_extents_mut(&mut self) -> &mut PositiveSize2DType {
+        &mut self.extents
     }
 
-    pub fn set_width(&mut self, value: usize) {
-        self.width = value;
+    pub fn set_extents(&mut self, value: PositiveSize2DType) {
+        self.extents = value;
     }
 
-    pub fn get_height(&self) -> &usize {
-        &self.height
+    pub fn get_child_offset(&self) -> Option<&Point2DType> {
+        self.child_offset.as_ref()
     }
 
-    pub fn set_height(&mut self, value: usize) {
-        self.height = value;
+    pub fn get_child_offset_mut(&mut self) -> Option<&mut Point2DType> {
+        self.child_offset.as_mut()
+    }
+
+    pub fn set_child_offset(&mut self, value: Point2DType) {
+        self.child_offset = Some(value);
+    }
+
+    pub fn get_child_extents(&self) -> Option<&PositiveSize2DType> {
+        self.child_extents.as_ref()
+    }
+
+    pub fn get_child_extents_mut(&mut self) -> Option<&mut PositiveSize2DType> {
+        self.child_extents.as_mut()
+    }
+
+    pub fn set_child_extents(&mut self, value: PositiveSize2DType) {
+        self.child_extents = Some(value);
     }
 
     pub fn get_rot(&self) -> Option<&String> {
@@ -96,12 +114,20 @@ impl Transform2D {
             Event::Empty(ref e) => {
                 match e.name().into_inner() {
                     b"a:off" => {
-                        self.set_x(get_attribute(e, b"x").unwrap().parse::<usize>().unwrap());
-                        self.set_y(get_attribute(e, b"y").unwrap().parse::<usize>().unwrap());
+                        self.offset.set_attributes(reader, e);
                     }
                     b"a:ext" => {
-                        self.set_width(get_attribute(e, b"cx").unwrap().parse::<usize>().unwrap());
-                        self.set_height(get_attribute(e, b"cy").unwrap().parse::<usize>().unwrap());
+                        self.extents.set_attributes(reader, e);
+                    }
+                    b"a:chOff" => {
+                        let mut obj = Point2DType::default();
+                        obj.set_attributes(reader, e);
+                        self.set_child_offset(obj);
+                    }
+                    b"a:chExt" => {
+                        let mut obj = PositiveSize2DType::default();
+                        obj.set_attributes(reader, e);
+                        self.set_child_extents(obj);
                     }
                     _ => (),
                 }
@@ -130,23 +156,26 @@ impl Transform2D {
         write_start_tag(writer, "a:xfrm", attributes, false);
 
         // a:off
-        write_start_tag(
-            writer,
-            "a:off",
-            vec![("x", &self.x.to_string()), ("y", &self.y.to_string())],
-            true,
-        );
+        self.offset.write_to_off(writer);
 
         // a:ext
-        write_start_tag(
-            writer,
-            "a:ext",
-            vec![
-                ("cx", &self.width.to_string()),
-                ("cy", &self.height.to_string()),
-            ],
-            true,
-        );
+        self.extents.write_to_ext(writer);
+
+        // a:chOff
+        match &self.child_offset {
+            Some(v) => {
+                v.write_to_ch_off(writer);
+            }
+            None => {}
+        }
+
+        // a:chExt
+        match &self.child_extents {
+            Some(v) => {
+                v.write_to_ch_ext(writer);
+            }
+            None => {}
+        }
 
         write_end_tag(writer, "a:xfrm");
     }

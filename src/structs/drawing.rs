@@ -281,3 +281,9 @@ pub use self::space_before::*;
 
 mod space_after;
 pub use self::space_after::*;
+
+mod positive_size_2d_type;
+pub use self::positive_size_2d_type::*;
+
+mod point_2d_type;
+pub use self::point_2d_type::*;
