@@ -1255,8 +1255,8 @@ impl Worksheet {
     }
 
     /// Get R Id.
-    pub(crate) fn get_r_id(&self) -> &String {
-        &self.r_id
+    pub(crate) fn get_r_id(&self) -> &str {
+        self.r_id.as_str()
     }
 
     /// (This method is crate only.)
@@ -1266,8 +1266,8 @@ impl Worksheet {
     }
 
     /// Get Sheet Id.
-    pub fn get_sheet_id(&self) -> &String {
-        &self.sheet_id
+    pub fn get_sheet_id(&self) -> &str {
+        self.sheet_id.as_str()
     }
 
     /// (This method is crate only.)

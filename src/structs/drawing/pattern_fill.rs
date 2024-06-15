@@ -26,8 +26,8 @@ impl Default for PatternFill {
 }
 
 impl PatternFill {
-    pub fn get_preset(&self) -> &String {
-        &self.preset
+    pub fn get_preset(&self) -> &str {
+        self.preset.as_str()
     }
 
     pub fn set_preset(&mut self, value: String) -> &mut PatternFill {
