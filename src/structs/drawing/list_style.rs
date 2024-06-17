@@ -1,6 +1,7 @@
 // a:lstStyle
 use super::EffectList;
 use super::TextParagraphPropertiesType;
+use hashbrown::HashMap;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -11,16 +12,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct ListStyle {
     effect_list: Option<EffectList>,
-    default_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level1_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level2_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level3_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level4_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level5_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level6_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level7_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level8_paragraph_properties: Option<TextParagraphPropertiesType>,
-    level9_paragraph_properties: Option<TextParagraphPropertiesType>,
+    text_paragraph_properties_type: HashMap<String, TextParagraphPropertiesType>,
 }
 
 impl ListStyle {
@@ -38,182 +30,192 @@ impl ListStyle {
     }
 
     pub fn get_default_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.default_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("def")
     }
 
     pub fn get_default_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.default_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("def")
     }
 
     pub fn set_default_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.default_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("def"), value);
         self
     }
 
     pub fn get_level1_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level1_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv1")
     }
 
     pub fn get_level1_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level1_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv1")
     }
 
     pub fn set_level1_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level1_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv1"), value);
         self
     }
 
     pub fn get_level2_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level2_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv2")
     }
 
     pub fn get_level2_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level2_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv2")
     }
 
     pub fn set_level2_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level2_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv2"), value);
         self
     }
 
     pub fn get_level3_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level3_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv3")
     }
 
     pub fn get_level3_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level3_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv3")
     }
 
     pub fn set_level3_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level3_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv3"), value);
         self
     }
 
     pub fn get_level4_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level4_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv4")
     }
 
     pub fn get_level4_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level4_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv4")
     }
 
     pub fn set_level4_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level4_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv4"), value);
         self
     }
 
     pub fn get_level5_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level5_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv5")
     }
 
     pub fn get_level5_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level5_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv5")
     }
 
     pub fn set_level5_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level5_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv5"), value);
         self
     }
 
     pub fn get_level6_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level6_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv6")
     }
 
     pub fn get_level6_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level6_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv6")
     }
 
     pub fn set_level6_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level6_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv6"), value);
         self
     }
 
     pub fn get_level7_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level7_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv7")
     }
 
     pub fn get_level7_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level7_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv7")
     }
 
     pub fn set_level7_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level7_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv7"), value);
         self
     }
 
     pub fn get_level8_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level8_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv8")
     }
 
     pub fn get_level8_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level8_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv8")
     }
 
     pub fn set_level8_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level8_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv8"), value);
         self
     }
 
     pub fn get_level9_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
-        self.level9_paragraph_properties.as_ref()
+        self.text_paragraph_properties_type.get("lv9")
     }
 
     pub fn get_level9_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
-        self.level9_paragraph_properties.as_mut()
+        self.text_paragraph_properties_type.get_mut("lv9")
     }
 
     pub fn set_level9_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
     ) -> &mut Self {
-        self.level9_paragraph_properties = Some(value);
+        self.text_paragraph_properties_type
+            .insert(String::from("lv9"), value);
         self
     }
 
@@ -293,17 +295,7 @@ impl ListStyle {
     }
 
     fn is_empty(&self) -> bool {
-        self.effect_list.is_none()
-            && self.default_paragraph_properties.is_none()
-            && self.level1_paragraph_properties.is_none()
-            && self.level2_paragraph_properties.is_none()
-            && self.level3_paragraph_properties.is_none()
-            && self.level4_paragraph_properties.is_none()
-            && self.level5_paragraph_properties.is_none()
-            && self.level6_paragraph_properties.is_none()
-            && self.level7_paragraph_properties.is_none()
-            && self.level8_paragraph_properties.is_none()
-            && self.level9_paragraph_properties.is_none()
+        self.effect_list.is_none() && self.text_paragraph_properties_type.is_empty()
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
@@ -312,7 +304,7 @@ impl ListStyle {
         write_start_tag(writer, "a:lstStyle", vec![], is_empty);
 
         // a:defPPr
-        match &self.default_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("def") {
             Some(v) => {
                 v.write_to_default(writer);
             }
@@ -320,7 +312,7 @@ impl ListStyle {
         }
 
         // a:lvl1pPr
-        match &self.level1_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv1") {
             Some(v) => {
                 v.write_to_lvl1(writer);
             }
@@ -328,7 +320,7 @@ impl ListStyle {
         }
 
         // a:lvl2pPr
-        match &self.level2_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv2") {
             Some(v) => {
                 v.write_to_lvl2(writer);
             }
@@ -336,7 +328,7 @@ impl ListStyle {
         }
 
         // a:lvl3pPr
-        match &self.level3_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv3") {
             Some(v) => {
                 v.write_to_lvl3(writer);
             }
@@ -344,7 +336,7 @@ impl ListStyle {
         }
 
         // a:lvl4pPr
-        match &self.level4_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv4") {
             Some(v) => {
                 v.write_to_lvl4(writer);
             }
@@ -352,7 +344,7 @@ impl ListStyle {
         }
 
         // a:lvl5pPr
-        match &self.level5_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv5") {
             Some(v) => {
                 v.write_to_lvl5(writer);
             }
@@ -360,7 +352,7 @@ impl ListStyle {
         }
 
         // a:lvl6pPr
-        match &self.level6_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv6") {
             Some(v) => {
                 v.write_to_lvl6(writer);
             }
@@ -368,7 +360,7 @@ impl ListStyle {
         }
 
         // a:lvl7pPr
-        match &self.level7_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv7") {
             Some(v) => {
                 v.write_to_lvl7(writer);
             }
@@ -376,7 +368,7 @@ impl ListStyle {
         }
 
         // a:lvl8pPr
-        match &self.level8_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv8") {
             Some(v) => {
                 v.write_to_lvl8(writer);
             }
@@ -384,7 +376,7 @@ impl ListStyle {
         }
 
         // a:lvl9pPr
-        match &self.level9_paragraph_properties {
+        match &self.text_paragraph_properties_type.get("lv9") {
             Some(v) => {
                 v.write_to_lvl9(writer);
             }
