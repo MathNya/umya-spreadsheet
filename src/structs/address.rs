@@ -34,8 +34,8 @@ impl Address {
         let org_value = value.into();
         let (sheet_name, range) = split_address(&org_value);
         self.range.set_range(range);
-        if &sheet_name != "" {
-            self.sheet_name = sheet_name;
+        if sheet_name != "" {
+            self.sheet_name = sheet_name.to_string();
         }
         self
     }

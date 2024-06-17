@@ -5,8 +5,8 @@ pub struct Hyperlink {
     location: bool,
 }
 impl Hyperlink {
-    pub fn get_url(&self) -> &String {
-        &self.url
+    pub fn get_url(&self) -> &str {
+        self.url.as_str()
     }
 
     pub fn set_url<S: Into<String>>(&mut self, value: S) -> &mut Hyperlink {
@@ -14,8 +14,8 @@ impl Hyperlink {
         self
     }
 
-    pub fn get_tooltip(&self) -> &String {
-        &self.tooltip
+    pub fn get_tooltip(&self) -> &str {
+        self.tooltip.as_str()
     }
 
     pub fn set_tooltip<S: Into<String>>(&mut self, value: S) -> &mut Hyperlink {

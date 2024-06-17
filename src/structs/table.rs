@@ -43,8 +43,8 @@ impl Table {
             || self.area.0.get_row_num() > self.area.1.get_row_num())
     }
 
-    pub fn get_name(&self) -> &String {
-        &self.name
+    pub fn get_name(&self) -> &str {
+        self.name.as_str()
     }
 
     pub fn set_name(&mut self, name: &str) {
@@ -54,8 +54,8 @@ impl Table {
         }
     }
 
-    pub fn get_display_name(&self) -> &String {
-        &self.display_name
+    pub fn get_display_name(&self) -> &str {
+        self.display_name.as_str()
     }
 
     pub fn set_display_name(&mut self, display_name: &str) {
@@ -118,8 +118,8 @@ impl TableColumn {
         }
     }
 
-    pub fn get_name(&self) -> &String {
-        &self.name
+    pub fn get_name(&self) -> &str {
+        self.name.as_str()
     }
 
     pub fn set_name(&mut self, name: String) {
@@ -152,8 +152,8 @@ impl TableStyleInfo {
         }
     }
 
-    pub fn get_name(&self) -> &String {
-        &self.name
+    pub fn get_name(&self) -> &str {
+        self.name.as_str()
     }
 
     pub fn is_show_first_col(&self) -> bool {

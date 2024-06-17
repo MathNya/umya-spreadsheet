@@ -291,7 +291,7 @@ impl Cell {
                             if attribute.key.into_inner() == b"xml:space"
                                 && attribute.value.as_ref() == b"preserve"
                             {
-                                reader.trim_text(false);
+                                reader.config_mut().trim_text(false);
                             }
                         }
                     }
@@ -344,7 +344,7 @@ impl Cell {
                     }
                     b"c" => return,
                     b"t" => {
-                        reader.trim_text(true);
+                        reader.config_mut().trim_text(true);
                     }
                     _ => (),
                 },

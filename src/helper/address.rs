@@ -1,36 +1,19 @@
 use fancy_regex::Regex;
 
-pub fn split_address(address: &str) -> (String, String) {
+pub fn split_address(address: &str) -> (&str, &str) {
     address
         .rsplit_once('!')
-        .map(|(sheet_name, range)| {
-            (
-                sheet_name.trim_matches(&['\'', '"'][..]).to_string(),
-                range.to_string(),
-            )
-        })
-        .unwrap_or(("".to_string(), address.to_string()))
+        .map(|(sheet_name, range)| (sheet_name.trim_matches(&['\'', '"'][..]), range))
+        .unwrap_or(("", address))
 }
 
 #[test]
 fn split_address_test() {
-    assert_eq!(split_address("A1"), ("".to_string(), "A1".to_string()));
-    assert_eq!(
-        split_address("A1:B2"),
-        ("".to_string(), "A1:B2".to_string())
-    );
-    assert_eq!(
-        split_address("sheet1!A1:B2"),
-        ("sheet1".to_string(), "A1:B2".to_string())
-    );
-    assert_eq!(
-        split_address("'she!et1'!A1:B2"),
-        ("she!et1".to_string(), "A1:B2".to_string())
-    );
-    assert_eq!(
-        split_address(r#"'she"et1'!A1:B2"#),
-        (r#"she"et1"#.to_string(), "A1:B2".to_string())
-    );
+    assert_eq!(split_address("A1"), ("", "A1"));
+    assert_eq!(split_address("A1:B2"), ("", "A1:B2"));
+    assert_eq!(split_address("sheet1!A1:B2"), ("sheet1", "A1:B2"));
+    assert_eq!(split_address("'she!et1'!A1:B2"), ("she!et1", "A1:B2"));
+    assert_eq!(split_address(r#"'she"et1'!A1:B2"#), (r#"she"et1"#, "A1:B2"));
 }
 
 pub fn is_address<S: AsRef<str>>(input: S) -> bool {

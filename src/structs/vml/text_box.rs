@@ -50,7 +50,7 @@ impl TextBox {
 
         let mut buf = Vec::new();
         let mut inner_text = String::from("");
-        reader.check_end_names(false);
+        reader.config_mut().check_end_names = false;
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Empty(ref e)) => {

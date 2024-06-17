@@ -26,7 +26,7 @@ pub(crate) fn read(
 ) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
     let mut reader = Reader::from_reader(data);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     xml_read_loop!(
         reader,
@@ -221,7 +221,7 @@ pub(crate) fn read_lite(
 ) -> Result<Cells, XlsxError> {
     let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
     let mut reader = Reader::from_reader(data);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     let mut cells = Cells::default();
 

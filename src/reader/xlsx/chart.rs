@@ -13,7 +13,7 @@ pub(crate) fn read(
     let data = std::io::Cursor::new(raw_file.get_file_data());
     let mut reader = Reader::from_reader(data);
 
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     xml_read_loop!(
         reader,

@@ -67,17 +67,17 @@ pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
     is_light: &bool,
 ) -> Result<(), io::Error> {
     let zip_opt = if *is_light {
-        zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Stored)
+        zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Stored)
     } else {
-        zip::write::FileOptions::default().compression_method(zip::CompressionMethod::DEFLATE)
+        zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::DEFLATE)
     };
-    arv.start_file(&to_path(path, dir), zip_opt)?;
+    arv.start_file(to_path(path, dir), zip_opt)?;
     arv.write_all(writer)
 }
 
-pub(crate) fn to_path(path: &str, dir: Option<&str>) -> String {
+pub(crate) fn to_path<'a>(path: &'a str, dir: Option<&'a str>) -> Cow<'a, str> {
     match dir {
-        Some(dir) => format!("{}/{}", dir, path),
-        None => path.to_owned(),
+        Some(dir) => Cow::Owned(format!("{}/{}", dir, path)),
+        None => Cow::Borrowed(path),
     }
 }

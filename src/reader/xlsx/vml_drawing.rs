@@ -15,7 +15,7 @@ pub(crate) fn read(
 ) -> result::Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     let mut ole_index = 0;
     let mut comment_index = 0;

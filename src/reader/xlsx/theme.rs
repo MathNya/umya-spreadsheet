@@ -11,7 +11,7 @@ pub fn read<R: io::Read + io::Seek>(
 ) -> result::Result<Theme, XlsxError> {
     let r = io::BufReader::new(arv.by_name(&format!("xl/{}", target))?);
     let mut reader = Reader::from_reader(r);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
 
     let mut theme: Theme = Theme::default();
 

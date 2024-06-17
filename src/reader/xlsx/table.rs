@@ -14,7 +14,7 @@ pub(crate) fn read(
 ) -> result::Result<(), XlsxError> {
     let data = std::io::Cursor::new(table_file.get_file_data());
     let mut reader = Reader::from_reader(data);
-    reader.trim_text(false);
+    reader.config_mut().trim_text(false);
     let mut buf = Vec::new();
     let mut table = Table::default();
     loop {

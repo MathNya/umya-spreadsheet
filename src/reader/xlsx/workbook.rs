@@ -19,7 +19,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 ) -> result::Result<Spreadsheet, XlsxError> {
     let r = io::BufReader::new(arv.by_name(PKG_WORKBOOK)?);
     let mut reader = Reader::from_reader(r);
-    reader.trim_text(true);
+    reader.config_mut().trim_text(true);
     let mut spreadsheet = Spreadsheet::default();
 
     let mut defined_names: Vec<DefinedName> = Vec::new();

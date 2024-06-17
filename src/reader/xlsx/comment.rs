@@ -13,7 +13,7 @@ pub(crate) fn read(
 ) -> result::Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);
-    reader.trim_text(false);
+    reader.config_mut().trim_text(false);
 
     let mut authors: Vec<String> = Vec::new();
     let mut value: String = String::from("");
