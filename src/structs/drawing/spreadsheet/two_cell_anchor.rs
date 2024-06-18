@@ -141,24 +141,46 @@ impl TwoCellAnchor {
         self
     }
 
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &u32) {
-        self.from_marker._adjustment_insert_row(num_rows);
-        self.to_marker._adjustment_insert_row(num_rows);
+    pub(crate) fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.from_marker.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+        self.to_marker.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &u32) {
-        self.from_marker._adjustment_insert_column(num_cols);
-        self.to_marker._adjustment_insert_column(num_cols);
-    }
-
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &u32) {
-        self.from_marker._adjustment_remove_row(num_rows);
-        self.to_marker._adjustment_remove_row(num_rows);
-    }
-
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &u32) {
-        self.from_marker._adjustment_remove_column(num_cols);
-        self.to_marker._adjustment_remove_column(num_cols);
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.from_marker.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+        self.to_marker.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 
     pub(crate) fn is_support(&self) -> bool {

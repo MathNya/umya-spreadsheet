@@ -1030,14 +1030,15 @@ impl Worksheet {
                 offset_row_num,
             );
 
-        // chart
-        self.worksheet_drawing.adjustment_insert_coordinate(
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        // worksheet_drawing
+        self.worksheet_drawing
+            .adjustment_insert_coordinate_from_other_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
     }
 
     /// (This method is crate only.)
@@ -1202,14 +1203,15 @@ impl Worksheet {
                 offset_row_num,
             );
 
-        // chart
-        self.worksheet_drawing.adjustment_remove_coordinate(
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        // worksheet_drawing
+        self.worksheet_drawing
+            .adjustment_remove_coordinate_from_other_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
     }
 
     /// Get Code Name.

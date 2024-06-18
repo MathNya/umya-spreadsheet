@@ -228,9 +228,140 @@ impl WorksheetDrawing {
         }
         result
     }
+
     /// (This method is crate only.)
     /// Adjustment Insert Coordinate
     pub(crate) fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // one_cell_anchor
+        for anchor in self.get_one_cell_anchor_collection_mut() {
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_one_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_insert_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+
+        // two_cell_anchor
+        for anchor in self.get_two_cell_anchor_collection_mut() {
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for chart in self.get_chart_collection_mut() {
+            let mut anchor = chart.get_two_cell_anchor_mut();
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_two_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_insert_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+    }
+
+    /// (This method is crate only.)
+    /// Adjustment Insert Coordinate
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // one_cell_anchor
+        for anchor in self.get_one_cell_anchor_collection_mut() {
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_one_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_remove_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+
+        // two_cell_anchor
+        for anchor in self.get_two_cell_anchor_collection_mut() {
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for chart in self.get_chart_collection_mut() {
+            let mut anchor = chart.get_two_cell_anchor_mut();
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_two_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_remove_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+    }
+
+    /// (This method is crate only.)
+    /// Adjustment Insert Coordinate
+    pub(crate) fn adjustment_insert_coordinate_from_other_sheet(
         &mut self,
         sheet_name: &str,
         root_col_num: &u32,
@@ -260,7 +391,7 @@ impl WorksheetDrawing {
 
     /// (This method is crate only.)
     /// Adjustment Remove Coordinate
-    pub(crate) fn adjustment_remove_coordinate(
+    pub(crate) fn adjustment_remove_coordinate_from_other_sheet(
         &mut self,
         sheet_name: &str,
         root_col_num: &u32,

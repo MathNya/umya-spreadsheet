@@ -70,28 +70,26 @@ impl MarkerType {
         self.row = row.unwrap() - 1;
     }
 
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &u32) {
-        self.row += num_rows;
+    pub(crate) fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.col = adjustment_insert_coordinate(&self.col, root_row_num, offset_row_num);
+        self.row = adjustment_insert_coordinate(&self.row, root_row_num, offset_row_num);
     }
 
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &u32) {
-        self.col += num_cols;
-    }
-
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &u32) {
-        self.row = if &self.row > num_rows {
-            self.row - num_rows
-        } else {
-            1
-        };
-    }
-
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &u32) {
-        self.col = if &self.col > num_cols {
-            self.col - num_cols
-        } else {
-            1
-        };
+    pub(crate) fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.col = adjustment_remove_coordinate(&self.col, root_row_num, offset_row_num);
+        self.row = adjustment_remove_coordinate(&self.row, root_row_num, offset_row_num);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

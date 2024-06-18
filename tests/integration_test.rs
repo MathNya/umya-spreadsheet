@@ -1429,3 +1429,20 @@ fn expect_red_indexed_color() {
 
     assert_eq!("FFFF0000", color);
 }
+
+#[test]
+fn issue_190() {
+    let path = std::path::Path::new("./tests/test_files/issue_190.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // remove
+    book.get_sheet_mut(&0).unwrap().remove_column("E", &1);
+    book.get_sheet_mut(&0).unwrap().remove_row(&4, &1);
+
+    // insert
+    book.get_sheet_mut(&1).unwrap().insert_new_column("E", &1);
+    book.get_sheet_mut(&1).unwrap().insert_new_row(&4, &1);
+
+    let path = std::path::Path::new("./tests/result_files/issue_190.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
