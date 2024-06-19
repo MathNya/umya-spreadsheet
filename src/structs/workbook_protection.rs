@@ -29,7 +29,7 @@ pub struct WorkbookProtection {
 }
 impl WorkbookProtection {
     pub fn get_workbook_algorithm_name(&self) -> &str {
-        self.workbook_algorithm_name.get_value()
+        self.workbook_algorithm_name.get_value_str()
     }
 
     pub fn set_workbook_algorithm_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -38,7 +38,7 @@ impl WorkbookProtection {
     }
 
     pub fn get_workbook_hash_value(&self) -> &str {
-        self.workbook_hash_value.get_value()
+        self.workbook_hash_value.get_value_str()
     }
 
     pub fn set_workbook_hash_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -47,7 +47,7 @@ impl WorkbookProtection {
     }
 
     pub fn get_workbook_salt_value(&self) -> &str {
-        self.workbook_salt_value.get_value()
+        self.workbook_salt_value.get_value_str()
     }
 
     pub fn set_workbook_salt_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -65,7 +65,7 @@ impl WorkbookProtection {
     }
 
     pub fn get_workbook_password_raw(&self) -> &str {
-        self.workbook_password.get_value()
+        self.workbook_password.get_value_str()
     }
 
     pub fn set_workbook_password_raw<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -79,7 +79,7 @@ impl WorkbookProtection {
     }
 
     pub fn get_revisions_algorithm_name(&self) -> &str {
-        self.revisions_algorithm_name.get_value()
+        self.revisions_algorithm_name.get_value_str()
     }
 
     pub fn set_revisions_algorithm_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -88,7 +88,7 @@ impl WorkbookProtection {
     }
 
     pub fn get_revisions_hash_value(&self) -> &str {
-        self.revisions_hash_value.get_value()
+        self.revisions_hash_value.get_value_str()
     }
 
     pub fn set_revisions_hash_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -97,7 +97,7 @@ impl WorkbookProtection {
     }
 
     pub fn get_revisions_salt_value(&self) -> &str {
-        self.revisions_salt_value.get_value()
+        self.revisions_salt_value.get_value_str()
     }
 
     pub fn set_revisions_salt_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -115,7 +115,7 @@ impl WorkbookProtection {
     }
 
     pub fn get_revisions_password_raw(&self) -> &str {
-        self.revisions_password.get_value()
+        self.revisions_password.get_value_str()
     }
 
     pub fn set_revisions_password_raw<S: Into<String>>(&mut self, value: S) -> &mut Self {

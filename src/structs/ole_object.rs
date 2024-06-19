@@ -24,7 +24,7 @@ pub struct OleObject {
 
 impl OleObject {
     pub fn get_requires(&self) -> &str {
-        self.requires.get_value()
+        self.requires.get_value_str()
     }
 
     pub fn set_requires<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -33,7 +33,7 @@ impl OleObject {
     }
 
     pub fn get_prog_id(&self) -> &str {
-        self.prog_id.get_value()
+        self.prog_id.get_value_str()
     }
 
     pub fn set_prog_id<S: Into<String>>(&mut self, value: S) -> &mut Self {

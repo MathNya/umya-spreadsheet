@@ -26,7 +26,7 @@ impl SystemColor {
     }
 
     pub fn get_last_color(&self) -> &str {
-        self.last_color.get_value()
+        self.last_color.get_value_str()
     }
 
     pub fn set_last_color<S: Into<String>>(&mut self, value: S) {

@@ -27,7 +27,7 @@ pub struct ColorScheme {
 
 impl ColorScheme {
     pub fn get_name(&self) -> &str {
-        self.name.get_value()
+        self.name.get_value_str()
     }
 
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {

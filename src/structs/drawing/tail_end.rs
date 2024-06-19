@@ -16,7 +16,7 @@ pub struct TailEnd {
 
 impl TailEnd {
     pub fn get_type(&self) -> &str {
-        self.t_type.get_value()
+        self.t_type.get_value_str()
     }
 
     pub fn set_type<S: Into<String>>(&mut self, value: S) {
@@ -24,7 +24,7 @@ impl TailEnd {
     }
 
     pub fn get_width(&self) -> &str {
-        self.width.get_value()
+        self.width.get_value_str()
     }
 
     pub fn set_width<S: Into<String>>(&mut self, value: S) {
@@ -32,7 +32,7 @@ impl TailEnd {
     }
 
     pub fn get_length(&self) -> &str {
-        self.length.get_value()
+        self.length.get_value_str()
     }
 
     pub fn set_length<S: Into<String>>(&mut self, value: S) {

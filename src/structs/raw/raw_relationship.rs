@@ -21,7 +21,7 @@ pub(crate) struct RawRelationship {
 
 impl RawRelationship {
     pub(crate) fn get_id(&self) -> &str {
-        self.id.get_value()
+        self.id.get_value_str()
     }
 
     pub(crate) fn set_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -30,7 +30,7 @@ impl RawRelationship {
     }
 
     pub(crate) fn get_target(&self) -> &str {
-        self.target.get_value()
+        self.target.get_value_str()
     }
 
     pub(crate) fn set_target<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -39,7 +39,7 @@ impl RawRelationship {
     }
 
     pub(crate) fn get_type(&self) -> &str {
-        self.r_type.get_value()
+        self.r_type.get_value_str()
     }
 
     pub(crate) fn set_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -61,7 +61,7 @@ impl RawRelationship {
     }
 
     pub(crate) fn get_target_mode(&self) -> &str {
-        self.target_mode.get_value()
+        self.target_mode.get_value_str()
     }
 
     pub(crate) fn set_target_mode<S: Into<String>>(&mut self, value: S) -> &mut Self {

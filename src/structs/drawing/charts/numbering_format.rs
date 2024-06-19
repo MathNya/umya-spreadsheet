@@ -15,7 +15,7 @@ pub struct NumberingFormat {
 }
 impl NumberingFormat {
     pub fn get_format_code(&self) -> &str {
-        self.format_code.get_value()
+        self.format_code.get_value_str()
     }
 
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut NumberingFormat {

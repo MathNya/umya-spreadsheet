@@ -105,7 +105,7 @@ impl Color {
                 None => {}
             }
         }
-        self.argb.get_value()
+        self.argb.get_value_str()
     }
 
     /// Get Argb.
@@ -130,7 +130,7 @@ impl Color {
                 None => {}
             }
         }
-        self.argb.get_value().to_string().into()
+        self.argb.get_value_str().to_string().into()
     }
 
     pub fn set_argb<S: Into<String>>(&mut self, value: S) -> &mut Self {

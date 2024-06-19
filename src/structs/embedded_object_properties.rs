@@ -23,7 +23,7 @@ pub struct EmbeddedObjectProperties {
 
 impl EmbeddedObjectProperties {
     pub fn get_prog_id(&self) -> &str {
-        self.prog_id.get_value()
+        self.prog_id.get_value_str()
     }
 
     pub fn set_prog_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
