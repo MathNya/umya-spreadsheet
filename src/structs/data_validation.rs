@@ -163,7 +163,7 @@ impl DataValidation {
             return;
         }
 
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
@@ -172,19 +172,17 @@ impl DataValidation {
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"formula1" => {
-                        self.formula1.set_value_string(value);
-                        value = String::from("");
+                        self.formula1.set_value_string(std::mem::take(&mut value));
                     }
                     b"formula2" => {
-                        self.formula2.set_value_string(value);
-                        value = String::from("");
+                        self.formula2.set_value_string(std::mem::take(&mut value));
                     }
                     b"dataValidation" => return,
-                    _ => (),
+                    _ => {}
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "dataValidation"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
+                _ => {}
             }
             buf.clear();
         }

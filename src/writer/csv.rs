@@ -83,56 +83,20 @@ pub fn write_writer<W: io::Seek + io::Write>(
     // encoding.
     let res_into: Vec<u8>;
     let data_bytes = match *option.get_csv_encode_value() {
-        CsvEncodeValues::ShiftJis => {
-            let (res, _, _) = encoding_rs::SHIFT_JIS.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::Koi8u => {
-            let (res, _, _) = encoding_rs::KOI8_U.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::Koi8r => {
-            let (res, _, _) = encoding_rs::KOI8_R.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::Iso88598i => {
-            let (res, _, _) = encoding_rs::ISO_8859_8_I.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::Gbk => {
-            let (res, _, _) = encoding_rs::GBK.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::EucKr => {
-            let (res, _, _) = encoding_rs::EUC_KR.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::Big5 => {
-            let (res, _, _) = encoding_rs::BIG5.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::Utf16Le => {
-            let (res, _, _) = encoding_rs::UTF_16LE.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        CsvEncodeValues::Utf16Be => {
-            let (res, _, _) = encoding_rs::UTF_16BE.encode(&data);
-            res_into = res.into_owned();
-            &res_into[..]
-        }
-        _ => data.as_bytes(),
+        CsvEncodeValues::ShiftJis => encoding_rs::SHIFT_JIS.encode(&data).0.into_owned(),
+        CsvEncodeValues::Koi8u => encoding_rs::KOI8_U.encode(&data).0.into_owned(),
+        CsvEncodeValues::Koi8r => encoding_rs::KOI8_R.encode(&data).0.into_owned(),
+        CsvEncodeValues::Iso88598i => encoding_rs::ISO_8859_8_I.encode(&data).0.into_owned(),
+        CsvEncodeValues::Gbk => encoding_rs::GBK.encode(&data).0.into_owned(),
+        CsvEncodeValues::EucKr => encoding_rs::EUC_KR.encode(&data).0.into_owned(),
+        CsvEncodeValues::Big5 => encoding_rs::BIG5.encode(&data).0.into_owned(),
+        CsvEncodeValues::Utf16Le => encoding_rs::UTF_16LE.encode(&data).0.into_owned(),
+        CsvEncodeValues::Utf16Be => encoding_rs::UTF_16BE.encode(&data).0.into_owned(),
+        _ => data.into_bytes(),
     };
 
     // output.
-    writer.write_all(data_bytes).unwrap();
+    writer.write_all(&data_bytes).unwrap();
     Ok(())
 }
 

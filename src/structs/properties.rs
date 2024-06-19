@@ -37,8 +37,8 @@ impl Default for Properties {
         Self {
             creator: StringValue::default(),
             last_modified_by: StringValue::default(),
-            created: created,
-            modified: modified,
+            created,
+            modified,
             title: StringValue::default(),
             description: StringValue::default(),
             subject: StringValue::default(),
@@ -194,60 +194,21 @@ impl Properties {
             Event::Text(e) => {
                 value = e.unescape().unwrap().to_string();
             },
-            Event::End(ref e) => {
-                if e.name().into_inner() == b"dc:title" {
-                    self.set_title(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"dc:subject" {
-                    self.set_subject(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"dc:creator" {
-                    self.set_creator(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"cp:keywords" {
-                    self.set_keywords(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"dc:description" {
-                    self.set_description(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"cp:lastModifiedBy" {
-                    self.set_last_modified_by(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"cp:revision" {
-                    self.set_revision(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"dcterms:created" {
-                    self.set_created(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"dcterms:modified" {
-                    self.set_modified(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"cp:category" {
-                    self.set_category(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"cp:version" {
-                    self.set_version(value);
-                    value = String::from("");
-                }
-                // app
-                if e.name().into_inner() == b"Manager" {
-                    self.set_manager(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"Company" {
-                    self.set_company(value);
-                    value = String::from("");
-                }
+            Event::End(ref e) => match e.name().into_inner() {
+                b"dc:title" => {self.set_title(std::mem::take(&mut value));},
+                b"dc:subject" => {self.set_subject(std::mem::take(&mut value));},
+                b"dc:creator" => {self.set_creator(std::mem::take(&mut value));},
+                b"cp:keywords" => {self.set_keywords(std::mem::take(&mut value));},
+                b"dc:description" => {self.set_description(std::mem::take(&mut value));},
+                b"cp:lastModifiedBy" => {self.set_last_modified_by(std::mem::take(&mut value));},
+                b"cp:revision" => {self.set_revision(std::mem::take(&mut value));},
+                b"dcterms:created" => {self.set_created(std::mem::take(&mut value));},
+                b"dcterms:modified" => {self.set_modified(std::mem::take(&mut value));},
+                b"cp:category" => {self.set_category(std::mem::take(&mut value));},
+                b"cp:version" => {self.set_version(std::mem::take(&mut value));},
+                b"Manager" => {self.set_manager(std::mem::take(&mut value));},
+                b"Company" => {self.set_company(std::mem::take(&mut value));},
+                _ => {}
             },
             Event::Eof => return,
         );
@@ -272,15 +233,10 @@ impl Properties {
             Event::Text(e) => {
                 value = e.unescape().unwrap().to_string();
             },
-            Event::End(ref e) => {
-                if e.name().into_inner() == b"Manager" {
-                    self.set_manager(value);
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"Company" {
-                    self.set_company(value);
-                    value = String::from("");
-                }
+            Event::End(ref e) => match e.name().into_inner() {
+                b"Manager" => {self.set_manager(std::mem::take(&mut value));}
+                b"Company" => {self.set_company(std::mem::take(&mut value));}
+                _ =>{}
             },
             Event::Eof => return,
         );

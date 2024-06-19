@@ -115,21 +115,22 @@ impl OleObject {
         _e: &BytesStart,
         relationships: &RawRelationships,
     ) {
-        let mut alternate_content = String::from("");
+        let mut alternate_content: &str = "";
 
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner() {
                     b"mc:Choice" => {
-                        alternate_content = String::from("Choice");
+                        alternate_content = "Choice";
                         set_string_from_xml!(self, e, requires, "Requires");
                     }
                     b"mc:Fallback" => {
-                        alternate_content = String::from("Fallback");
+                        alternate_content = "Fallback";
                     }
                     b"oleObject" => {
-                        if alternate_content.as_str() == "Choice" {
+                        if alternate_content == "Choice" {
+                        // if alternate_content.as_str() == "Choice" {
                             self.prog_id
                                 .set_value_string(get_attribute(e, b"progId").unwrap());
 

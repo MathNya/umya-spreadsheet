@@ -121,8 +121,7 @@ impl DefinedName {
                 }
                 ',' => {
                     if !is_pass_s && !is_pass_d && is_pass_b == 0 {
-                        result.push(string);
-                        string = String::from("");
+                        result.push(std::mem::take(&mut string));
                     } else {
                         string.push(*c);
                     }
