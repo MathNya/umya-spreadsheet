@@ -16,6 +16,8 @@ use structs::SharedStringItem;
 use structs::SharedStringTable;
 use structs::Style;
 use structs::Stylesheet;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWith2Sheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
@@ -436,5 +438,75 @@ impl Cell {
         }
 
         write_end_tag(writer, "c");
+    }
+}
+impl AdjustmentCoordinate for Cell {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.coordinate.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.coordinate.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+}
+impl AdjustmentCoordinateWith2Sheet for Cell {
+    fn adjustment_insert_coordinate_with_2sheet(
+        &mut self,
+        self_sheet_name: &str,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.cell_value.adjustment_insert_coordinate_with_2sheet(
+            self_sheet_name,
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate_with_2sheet(
+        &mut self,
+        self_sheet_name: &str,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.cell_value.adjustment_remove_coordinate_with_2sheet(
+            self_sheet_name,
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 }

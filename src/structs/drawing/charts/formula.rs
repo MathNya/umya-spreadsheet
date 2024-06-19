@@ -8,6 +8,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
+use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -78,5 +79,40 @@ impl Formula {
         write_start_tag(writer, "c:f", vec![], false);
         write_text_node_no_escape(writer, self.get_address_str());
         write_end_tag(writer, "c:f");
+    }
+}
+impl AdjustmentCoordinateWithSheet for Formula {
+    fn adjustment_insert_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.address.adjustment_insert_coordinate_with_sheet(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.address.adjustment_remove_coordinate_with_sheet(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 }

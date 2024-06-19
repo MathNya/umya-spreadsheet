@@ -14,6 +14,8 @@ use structs::Stylesheet;
 use structs::WorkbookProtection;
 use structs::WorkbookView;
 use structs::Worksheet;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWithSheet;
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.
@@ -49,7 +51,7 @@ impl Spreadsheet {
     /// book.insert_new_row("Sheet1", &2, &3);
     /// ```
     pub fn insert_new_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
-        self.adjustment_insert_coordinate(sheet_name, &0, &0, row_index, num_rows);
+        self.adjustment_insert_coordinate_with_sheet(sheet_name, &0, &0, row_index, num_rows);
     }
 
     /// Insert new columns.
@@ -84,7 +86,7 @@ impl Spreadsheet {
         column_index: &u32,
         num_columns: &u32,
     ) {
-        self.adjustment_insert_coordinate(sheet_name, column_index, num_columns, &0, &0);
+        self.adjustment_insert_coordinate_with_sheet(sheet_name, column_index, num_columns, &0, &0);
     }
 
     /// Remove rows.
@@ -98,7 +100,7 @@ impl Spreadsheet {
     /// book.remove_row("Sheet1", &2, &3);
     /// ```
     pub fn remove_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
-        self.adjustment_remove_coordinate(sheet_name, &0, &0, row_index, num_rows);
+        self.adjustment_remove_coordinate_with_sheet(sheet_name, &0, &0, row_index, num_rows);
     }
 
     /// Remove columns.
@@ -133,53 +135,7 @@ impl Spreadsheet {
         column_index: &u32,
         num_columns: &u32,
     ) {
-        self.adjustment_remove_coordinate(sheet_name, column_index, num_columns, &0, &0);
-    }
-
-    /// (This method is crate only.)
-    /// Adjustment Insert Coordinate.
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        sheet_name: &str,
-        column_index: &u32,
-        num_columns: &u32,
-        row_index: &u32,
-        num_rows: &u32,
-    ) {
-        self.read_sheet_collection();
-        for worksheet in &mut self.work_sheet_collection {
-            worksheet.adjustment_insert_coordinate(column_index, num_columns, row_index, num_rows);
-            worksheet.adjustment_insert_coordinate_from_other_sheet(
-                sheet_name,
-                column_index,
-                num_columns,
-                row_index,
-                num_rows,
-            );
-        }
-    }
-
-    /// (This method is crate only.)
-    /// Adjustment Remove Coordinate.
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        sheet_name: &str,
-        column_index: &u32,
-        num_columns: &u32,
-        row_index: &u32,
-        num_rows: &u32,
-    ) {
-        self.read_sheet_collection();
-        for worksheet in &mut self.work_sheet_collection {
-            worksheet.adjustment_remove_coordinate(column_index, num_columns, row_index, num_rows);
-            worksheet.adjustment_remove_coordinate_from_other_sheet(
-                sheet_name,
-                column_index,
-                num_columns,
-                row_index,
-                num_rows,
-            );
-        }
+        self.adjustment_remove_coordinate_with_sheet(sheet_name, column_index, num_columns, &0, &0);
     }
 
     /// Gets the cell value by specifying an address.
@@ -692,5 +648,58 @@ impl Spreadsheet {
     /// * `value` - DefinedName.
     pub fn add_defined_names(&mut self, value: DefinedName) {
         self.defined_names.push(value);
+    }
+}
+impl AdjustmentCoordinateWithSheet for Spreadsheet {
+    fn adjustment_insert_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.read_sheet_collection();
+        for worksheet in &mut self.work_sheet_collection {
+            worksheet.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+            worksheet.adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+    }
+
+    fn adjustment_remove_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.read_sheet_collection();
+        for worksheet in &mut self.work_sheet_collection {
+            worksheet.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+            worksheet.adjustment_remove_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
     }
 }

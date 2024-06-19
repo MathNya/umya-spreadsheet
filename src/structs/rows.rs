@@ -1,5 +1,6 @@
 use hashbrown::HashMap;
 use structs::Row;
+use traits::AdjustmentValue;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Rows {
@@ -51,41 +52,29 @@ impl Rows {
         self
     }
 
-    /// (This method is crate only.)
-    /// Adjustment Insert Coordinate
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        for row_dimension in self.get_row_dimensions_mut() {
-            row_dimension.adjustment_insert_coordinate(root_row_num, offset_row_num);
-        }
-        self.rebuild_map();
-    }
-
-    /// (This method is crate only.)
-    /// Adjustment Remove Coordinate
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        self.get_row_dimensions_to_hashmap_mut().retain(|_, k| {
-            !(k.get_row_num() >= root_row_num
-                && k.get_row_num() <= &(root_row_num + offset_row_num - 1))
-        });
-        for row_dimension in self.get_row_dimensions_mut() {
-            row_dimension.adjustment_remove_coordinate(root_row_num, offset_row_num);
-        }
-        self.rebuild_map();
-    }
-
     pub(crate) fn rebuild_map(&mut self) {
         self.rows = self
             .get_row_dimensions_to_hashmap_mut()
             .iter_mut()
             .map(|(_, row)| (*row.get_row_num(), std::mem::take(row)))
             .collect();
+    }
+}
+impl AdjustmentValue for Rows {
+    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+        for row_dimension in self.get_row_dimensions_mut() {
+            row_dimension.adjustment_insert_coordinate(root_num, offset_num);
+        }
+        self.rebuild_map();
+    }
+
+    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.get_row_dimensions_to_hashmap_mut().retain(|_, k| {
+            !(k.get_row_num() >= root_num && k.get_row_num() <= &(root_num + offset_num - 1))
+        });
+        for row_dimension in self.get_row_dimensions_mut() {
+            row_dimension.adjustment_remove_coordinate(root_num, offset_num);
+        }
+        self.rebuild_map();
     }
 }

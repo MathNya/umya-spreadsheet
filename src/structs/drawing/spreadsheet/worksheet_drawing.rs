@@ -15,6 +15,8 @@ use structs::raw::RawRelationships;
 use structs::Chart;
 use structs::Image;
 use structs::OleObjects;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -229,196 +231,6 @@ impl WorksheetDrawing {
         result
     }
 
-    /// (This method is crate only.)
-    /// Adjustment Insert Coordinate
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        // one_cell_anchor
-        for anchor in self.get_one_cell_anchor_collection_mut() {
-            anchor.adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-        for image in self.get_image_collection_mut() {
-            match image.get_one_cell_anchor_mut() {
-                Some(anchor) => {
-                    anchor.adjustment_insert_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
-            }
-        }
-
-        // two_cell_anchor
-        for anchor in self.get_two_cell_anchor_collection_mut() {
-            anchor.adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-        for chart in self.get_chart_collection_mut() {
-            let mut anchor = chart.get_two_cell_anchor_mut();
-            anchor.adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-        for image in self.get_image_collection_mut() {
-            match image.get_two_cell_anchor_mut() {
-                Some(anchor) => {
-                    anchor.adjustment_insert_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
-            }
-        }
-    }
-
-    /// (This method is crate only.)
-    /// Adjustment Insert Coordinate
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        // one_cell_anchor
-        for anchor in self.get_one_cell_anchor_collection_mut() {
-            anchor.adjustment_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-        for image in self.get_image_collection_mut() {
-            match image.get_one_cell_anchor_mut() {
-                Some(anchor) => {
-                    anchor.adjustment_remove_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
-            }
-        }
-
-        // two_cell_anchor
-        for anchor in self.get_two_cell_anchor_collection_mut() {
-            anchor.adjustment_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-        for chart in self.get_chart_collection_mut() {
-            let mut anchor = chart.get_two_cell_anchor_mut();
-            anchor.adjustment_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-        for image in self.get_image_collection_mut() {
-            match image.get_two_cell_anchor_mut() {
-                Some(anchor) => {
-                    anchor.adjustment_remove_coordinate(
-                        root_col_num,
-                        offset_col_num,
-                        root_row_num,
-                        offset_row_num,
-                    );
-                }
-                None => {}
-            }
-        }
-    }
-
-    /// (This method is crate only.)
-    /// Adjustment Insert Coordinate
-    pub(crate) fn adjustment_insert_coordinate_from_other_sheet(
-        &mut self,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        // chart
-        for graphic_frame in self.get_graphic_frame_collection_mut() {
-            for formula in graphic_frame
-                .get_graphic_mut()
-                .get_graphic_data_mut()
-                .get_chart_space_mut()
-                .get_chart_mut()
-                .get_formula_mut()
-            {
-                formula.get_address_mut().adjustment_insert_coordinate(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-        }
-    }
-
-    /// (This method is crate only.)
-    /// Adjustment Remove Coordinate
-    pub(crate) fn adjustment_remove_coordinate_from_other_sheet(
-        &mut self,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        // chart
-        for graphic_frame in self.get_graphic_frame_collection_mut() {
-            for formula in graphic_frame
-                .get_graphic_mut()
-                .get_graphic_data_mut()
-                .get_chart_space_mut()
-                .get_chart_mut()
-                .get_formula_mut()
-            {
-                formula.get_address_mut().adjustment_remove_coordinate(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-        }
-    }
-
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -541,5 +353,173 @@ impl WorksheetDrawing {
         }
 
         write_end_tag(writer, "xdr:wsDr");
+    }
+}
+impl AdjustmentCoordinate for WorksheetDrawing {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // one_cell_anchor
+        for anchor in self.get_one_cell_anchor_collection_mut() {
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_one_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_insert_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+
+        // two_cell_anchor
+        for anchor in self.get_two_cell_anchor_collection_mut() {
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for chart in self.get_chart_collection_mut() {
+            let mut anchor = chart.get_two_cell_anchor_mut();
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_two_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_insert_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // one_cell_anchor
+        for anchor in self.get_one_cell_anchor_collection_mut() {
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_one_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_remove_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+
+        // two_cell_anchor
+        for anchor in self.get_two_cell_anchor_collection_mut() {
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for chart in self.get_chart_collection_mut() {
+            let mut anchor = chart.get_two_cell_anchor_mut();
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+        for image in self.get_image_collection_mut() {
+            match image.get_two_cell_anchor_mut() {
+                Some(anchor) => {
+                    anchor.adjustment_remove_coordinate(
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
+                    );
+                }
+                None => {}
+            }
+        }
+    }
+}
+impl AdjustmentCoordinateWithSheet for WorksheetDrawing {
+    fn adjustment_insert_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // chart
+        for graphic_frame in self.get_graphic_frame_collection_mut() {
+            graphic_frame.adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+    }
+
+    fn adjustment_remove_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // chart
+        for graphic_frame in self.get_graphic_frame_collection_mut() {
+            graphic_frame.adjustment_remove_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
     }
 }

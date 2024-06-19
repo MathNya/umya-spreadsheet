@@ -16,6 +16,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
 use structs::Spreadsheet;
+use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -300,5 +301,40 @@ impl Chart {
         self.show_data_labels_over_maximum.write_to(writer);
 
         write_end_tag(writer, "c:chart");
+    }
+}
+impl AdjustmentCoordinateWithSheet for Chart {
+    fn adjustment_insert_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.plot_area.adjustment_insert_coordinate_with_sheet(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.plot_area.adjustment_remove_coordinate_with_sheet(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 }

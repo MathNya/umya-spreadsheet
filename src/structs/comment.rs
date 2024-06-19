@@ -7,6 +7,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use reader::driver::*;
 use structs::vml::Shape;
+use traits::AdjustmentCoordinate;
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
@@ -73,7 +74,40 @@ impl Comment {
         self
     }
 
-    pub(crate) fn adjustment_insert_coordinate(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
+        &mut self,
+        reader: &mut Reader<R>,
+        e: &BytesStart,
+        authors: &[String],
+    ) {
+        let coordinate = get_attribute(e, b"ref").unwrap();
+        self.get_coordinate_mut().set_coordinate(coordinate);
+
+        let author_id = get_attribute(e, b"authorId")
+            .unwrap()
+            .parse::<usize>()
+            .unwrap();
+        let author = authors.get(author_id).unwrap();
+        self.set_author(author);
+
+        xml_read_loop!(
+            reader,
+            Event::Start(ref e) => {
+                if e.name().into_inner() == b"text" {
+                    self.get_text_mut().set_attributes_text(reader, e);
+                }
+            },
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"comment" {
+                    return
+                }
+            },
+            Event::Eof => panic!("Error not find {} end element", "comment")
+        );
+    }
+}
+impl AdjustmentCoordinate for Comment {
+    fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
         offset_col_num: &u32,
@@ -111,7 +145,7 @@ impl Comment {
         }
     }
 
-    pub(crate) fn adjustment_remove_coordinate(
+    fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
         offset_col_num: &u32,
@@ -147,37 +181,5 @@ impl Comment {
                 v.adjustment_remove_row(offset_row_num);
             }
         }
-    }
-
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
-        &mut self,
-        reader: &mut Reader<R>,
-        e: &BytesStart,
-        authors: &[String],
-    ) {
-        let coordinate = get_attribute(e, b"ref").unwrap();
-        self.get_coordinate_mut().set_coordinate(coordinate);
-
-        let author_id = get_attribute(e, b"authorId")
-            .unwrap()
-            .parse::<usize>()
-            .unwrap();
-        let author = authors.get(author_id).unwrap();
-        self.set_author(author);
-
-        xml_read_loop!(
-            reader,
-            Event::Start(ref e) => {
-                if e.name().into_inner() == b"text" {
-                    self.get_text_mut().set_attributes_text(reader, e);
-                }
-            },
-            Event::End(ref e) => {
-                if e.name().into_inner() == b"comment" {
-                    return
-                }
-            },
-            Event::Eof => panic!("Error not find {} end element", "comment")
-        );
     }
 }

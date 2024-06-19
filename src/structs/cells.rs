@@ -4,6 +4,9 @@ use super::Style;
 use hashbrown::HashMap;
 use helper::coordinate::*;
 use helper::range::*;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWith2Sheet;
+use traits::AdjustmentCoordinateWithSheet;
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
@@ -174,12 +177,24 @@ impl Cells {
         }
     }
 
-    // ************************
-    // update Coordinate
-    // ************************
-    /// (This method is crate only.)
-    /// Adjustment Insert Coordinate
-    pub(crate) fn adjustment_insert_coordinate(
+    pub(crate) fn rebuild_map(&mut self) {
+        self.map = self
+            .get_collection_to_hashmap_mut()
+            .iter_mut()
+            .map(|(_, cell)| {
+                (
+                    (
+                        *cell.get_coordinate().get_row_num(),
+                        *cell.get_coordinate().get_col_num(),
+                    ),
+                    std::mem::take(cell),
+                )
+            })
+            .collect()
+    }
+}
+impl AdjustmentCoordinate for Cells {
+    fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
         offset_col_num: &u32,
@@ -188,7 +203,7 @@ impl Cells {
     ) {
         // update cell
         for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
-            cell.get_coordinate_mut().adjustment_insert_coordinate(
+            cell.adjustment_insert_coordinate(
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -198,33 +213,7 @@ impl Cells {
         self.rebuild_map();
     }
 
-    /// (This method is crate only.)
-    /// Adjustment Remove Coordinate
-    pub(crate) fn adjustment_insert_formula_coordinate(
-        &mut self,
-        self_sheet_name: &str,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
-            cell.get_cell_value_mut()
-                .adjustment_insert_formula_coordinate(
-                    self_sheet_name,
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-        }
-    }
-
-    /// (This method is crate only.)
-    /// Adjustment Remove Coordinate
-    pub(crate) fn adjustment_remove_coordinate(
+    fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
         offset_col_num: &u32,
@@ -241,7 +230,7 @@ impl Cells {
             ))
         });
         for cell in self.get_collection_mut() {
-            cell.get_coordinate_mut().adjustment_remove_coordinate(
+            cell.adjustment_remove_coordinate(
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -250,10 +239,9 @@ impl Cells {
         }
         self.rebuild_map();
     }
-
-    /// (This method is crate only.)
-    /// Adjustment Remove Coordinate
-    pub(crate) fn adjustment_remove_formula_coordinate(
+}
+impl AdjustmentCoordinateWith2Sheet for Cells {
+    fn adjustment_insert_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
@@ -263,31 +251,35 @@ impl Cells {
         offset_row_num: &u32,
     ) {
         for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
-            cell.get_cell_value_mut()
-                .adjustment_remove_formula_coordinate(
-                    self_sheet_name,
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
+            cell.adjustment_insert_coordinate_with_2sheet(
+                self_sheet_name,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 
-    pub(crate) fn rebuild_map(&mut self) {
-        self.map = self
-            .get_collection_to_hashmap_mut()
-            .iter_mut()
-            .map(|(_, cell)| {
-                (
-                    (
-                        *cell.get_coordinate().get_row_num(),
-                        *cell.get_coordinate().get_col_num(),
-                    ),
-                    std::mem::take(cell),
-                )
-            })
-            .collect()
+    fn adjustment_remove_coordinate_with_2sheet(
+        &mut self,
+        self_sheet_name: &str,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        for ((_, _), cell) in self.get_collection_to_hashmap_mut() {
+            cell.adjustment_remove_coordinate_with_2sheet(
+                self_sheet_name,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
     }
 }

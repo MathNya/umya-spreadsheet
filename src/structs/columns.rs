@@ -1,14 +1,14 @@
 // fills
-use structs::Cells;
-use structs::Column;
-use structs::MergeCells;
-use structs::Stylesheet;
-
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::Cells;
+use structs::Column;
+use structs::MergeCells;
+use structs::Stylesheet;
+use traits::AdjustmentValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -63,30 +63,6 @@ impl Columns {
             column.calculation_auto_width(cells);
         }
         self
-    }
-
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-    ) {
-        for column_dimension in self.get_column_collection_mut() {
-            column_dimension.adjustment_insert_coordinate(root_col_num, offset_col_num);
-        }
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-    ) {
-        self.get_column_collection_mut().retain(|x| {
-            !(x.get_col_num() >= root_col_num
-                && x.get_col_num() <= &(root_col_num + offset_col_num - 1))
-        });
-        for column_dimension in self.get_column_collection_mut() {
-            column_dimension.adjustment_remove_coordinate(root_col_num, offset_col_num);
-        }
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -196,5 +172,21 @@ impl Columns {
             attributes.push(("style", &xf_index_str));
         }
         write_start_tag(writer, "col", attributes, true);
+    }
+}
+impl AdjustmentValue for Columns {
+    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+        for column_dimension in self.get_column_collection_mut() {
+            column_dimension.adjustment_insert_coordinate(root_num, offset_num);
+        }
+    }
+
+    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.get_column_collection_mut().retain(|x| {
+            !(x.get_col_num() >= root_num && x.get_col_num() <= &(root_num + offset_num - 1))
+        });
+        for column_dimension in self.get_column_collection_mut() {
+            column_dimension.adjustment_remove_coordinate(root_num, offset_num);
+        }
     }
 }

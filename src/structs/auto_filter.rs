@@ -1,4 +1,5 @@
 use super::Range;
+use traits::AdjustmentCoordinate;
 
 #[derive(Clone, Default, Debug)]
 pub struct AutoFilter {
@@ -18,5 +19,36 @@ impl AutoFilter {
         let mut range = Range::default();
         range.set_range(value.into());
         self.range = range;
+    }
+}
+impl AdjustmentCoordinate for AutoFilter {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.range.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.range.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 }

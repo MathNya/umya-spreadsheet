@@ -1,5 +1,7 @@
 use super::Range;
 use helper::address::*;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWithSheet;
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {
@@ -12,7 +14,7 @@ impl Address {
         &self.sheet_name
     }
 
-    pub fn set_sheet_name<S: Into<String>>(&mut self, value: S) -> &mut Address {
+    pub fn set_sheet_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.sheet_name = value.into();
         self
     }
@@ -25,12 +27,12 @@ impl Address {
         &mut self.range
     }
 
-    pub fn set_range(&mut self, value: Range) -> &mut Address {
+    pub fn set_range(&mut self, value: Range) -> &mut Self {
         self.range = value;
         self
     }
 
-    pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Address {
+    pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let org_value = value.into();
         let (sheet_name, range) = split_address(&org_value);
         self.range.set_range(range);
@@ -76,7 +78,22 @@ impl Address {
         )
     }
 
-    pub(crate) fn adjustment_insert_coordinate(
+    pub(crate) fn is_remove(
+        &self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        self.sheet_name == sheet_name
+            && self
+                .range
+                .is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
+    }
+}
+impl AdjustmentCoordinateWithSheet for Address {
+    fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
         root_col_num: &u32,
@@ -94,7 +111,7 @@ impl Address {
         }
     }
 
-    pub(crate) fn adjustment_remove_coordinate(
+    fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
         root_col_num: &u32,
@@ -110,19 +127,5 @@ impl Address {
                 offset_row_num,
             );
         }
-    }
-
-    pub(crate) fn is_remove(
-        &self,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) -> bool {
-        self.sheet_name == sheet_name
-            && self
-                .range
-                .is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
     }
 }

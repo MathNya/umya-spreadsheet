@@ -1,4 +1,5 @@
 use helper::coordinate::*;
+use traits::AdjustmentValue;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct RowReference {
@@ -63,26 +64,19 @@ impl RowReference {
         format!("{}{}", if self.is_lock { "$" } else { "" }, self.num)
     }
 
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        self.num = adjustment_insert_coordinate(&self.num, root_row_num, offset_row_num);
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        self.num = adjustment_remove_coordinate(&self.num, root_row_num, offset_row_num);
-    }
-
     pub(crate) fn is_remove(&self, root_row_num: &u32, offset_row_num: &u32) -> bool {
         if root_row_num > &0 {
             return &self.num >= root_row_num && self.num < (root_row_num + offset_row_num);
         }
         false
+    }
+}
+impl AdjustmentValue for RowReference {
+    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.num = adjustment_insert_coordinate(&self.num, root_num, offset_num);
+    }
+
+    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.num = adjustment_remove_coordinate(&self.num, root_num, offset_num);
     }
 }

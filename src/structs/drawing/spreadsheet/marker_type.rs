@@ -4,6 +4,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
+use traits::AdjustmentCoordinate;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -68,28 +69,6 @@ impl MarkerType {
         let (col, row, ..) = index_from_coordinate(value.into());
         self.col = col.unwrap() - 1;
         self.row = row.unwrap() - 1;
-    }
-
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        self.col = adjustment_insert_coordinate(&self.col, root_row_num, offset_row_num);
-        self.row = adjustment_insert_coordinate(&self.row, root_row_num, offset_row_num);
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        self.col = adjustment_remove_coordinate(&self.col, root_row_num, offset_row_num);
-        self.row = adjustment_remove_coordinate(&self.row, root_row_num, offset_row_num);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -159,5 +138,28 @@ impl MarkerType {
         write_end_tag(writer, "xdr:rowOff");
 
         write_end_tag(writer, tag_name);
+    }
+}
+impl AdjustmentCoordinate for MarkerType {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.col = adjustment_insert_coordinate(&self.col, root_row_num, offset_row_num);
+        self.row = adjustment_insert_coordinate(&self.row, root_row_num, offset_row_num);
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.col = adjustment_remove_coordinate(&self.col, root_row_num, offset_row_num);
+        self.row = adjustment_remove_coordinate(&self.row, root_row_num, offset_row_num);
     }
 }

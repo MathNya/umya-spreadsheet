@@ -7,6 +7,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use traits::AdjustmentCoordinate;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -138,42 +139,6 @@ impl DefinedName {
         result
     }
 
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        for address in &mut self.address {
-            address.get_range_mut().adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        for address in &mut self.address {
-            address.get_range_mut().adjustment_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
-        }
-    }
-
     pub(crate) fn is_remove(
         &mut self,
         sheet_name: &str,
@@ -243,5 +208,40 @@ impl DefinedName {
         write_start_tag(writer, "definedName", attributes, false);
         write_text_node(writer, self.get_address());
         write_end_tag(writer, "definedName");
+    }
+}
+impl AdjustmentCoordinate for DefinedName {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        for address in &mut self.address {
+            address.get_range_mut().adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        for address in &mut self.address {
+            address.get_range_mut().adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
     }
 }

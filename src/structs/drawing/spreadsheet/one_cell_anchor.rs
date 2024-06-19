@@ -10,6 +10,7 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
+use traits::AdjustmentCoordinate;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -85,36 +86,6 @@ impl OneCellAnchor {
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {
         self.picture = Some(value);
         self
-    }
-
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        self.from_marker.adjustment_insert_coordinate(
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        self.from_marker.adjustment_remove_coordinate(
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
     }
 
     pub(crate) fn is_image(&self) -> bool {
@@ -199,5 +170,36 @@ impl OneCellAnchor {
         write_start_tag(writer, "xdr:clientData", vec![], true);
 
         write_end_tag(writer, "xdr:oneCellAnchor");
+    }
+}
+impl AdjustmentCoordinate for OneCellAnchor {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.from_marker.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.from_marker.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 }

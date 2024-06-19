@@ -6,6 +6,7 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
+use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -22,7 +23,7 @@ impl Graphic {
         &mut self.graphic_data
     }
 
-    pub fn set_graphic_data(&mut self, value: GraphicData) -> &mut Graphic {
+    pub fn set_graphic_data(&mut self, value: GraphicData) -> &mut Self {
         self.graphic_data = value;
         self
     }
@@ -62,5 +63,40 @@ impl Graphic {
         let _ = &self.graphic_data.write_to(writer, rel_list);
 
         write_end_tag(writer, "a:graphic");
+    }
+}
+impl AdjustmentCoordinateWithSheet for Graphic {
+    fn adjustment_insert_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.graphic_data.adjustment_insert_coordinate_with_sheet(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.graphic_data.adjustment_remove_coordinate_with_sheet(
+            sheet_name,
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 }

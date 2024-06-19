@@ -1,6 +1,8 @@
 use super::ColumnReference;
 use super::RowReference;
 use helper::coordinate::*;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentValue;
 
 #[derive(Clone, Default, Debug)]
 pub struct Range {
@@ -124,48 +126,6 @@ impl Range {
         coordinate_str
     }
 
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        if let Some(v) = &mut self.coordinate_start_col {
-            v.adjustment_insert_coordinate(root_col_num, offset_col_num);
-        }
-        if let Some(v) = &mut self.coordinate_start_row {
-            v.adjustment_insert_coordinate(root_row_num, offset_row_num);
-        }
-        if let Some(v) = &mut self.coordinate_end_col {
-            v.adjustment_insert_coordinate(root_col_num, offset_col_num);
-        }
-        if let Some(v) = &mut self.coordinate_end_row {
-            v.adjustment_insert_coordinate(root_row_num, offset_row_num);
-        }
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        if let Some(v) = &mut self.coordinate_start_col {
-            v.adjustment_remove_coordinate(root_col_num, offset_col_num);
-        }
-        if let Some(v) = &mut self.coordinate_start_row {
-            v.adjustment_remove_coordinate(root_row_num, offset_row_num);
-        }
-        if let Some(v) = &mut self.coordinate_end_col {
-            v.adjustment_remove_coordinate(root_col_num, offset_col_num);
-        }
-        if let Some(v) = &mut self.coordinate_end_row {
-            v.adjustment_remove_coordinate(root_row_num, offset_row_num);
-        }
-    }
-
     pub(crate) fn is_remove(
         &self,
         root_col_num: &u32,
@@ -190,5 +150,48 @@ impl Range {
             None => false,
         };
         start_col_result && start_row_result && end_col_result && end_row_result
+    }
+}
+impl AdjustmentCoordinate for Range {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        if let Some(v) = &mut self.coordinate_start_col {
+            v.adjustment_insert_value(root_col_num, offset_col_num);
+        }
+        if let Some(v) = &mut self.coordinate_start_row {
+            v.adjustment_insert_value(root_row_num, offset_row_num);
+        }
+        if let Some(v) = &mut self.coordinate_end_col {
+            v.adjustment_insert_value(root_col_num, offset_col_num);
+        }
+        if let Some(v) = &mut self.coordinate_end_row {
+            v.adjustment_insert_value(root_row_num, offset_row_num);
+        }
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        if let Some(v) = &mut self.coordinate_start_col {
+            v.adjustment_remove_value(root_col_num, offset_col_num);
+        }
+        if let Some(v) = &mut self.coordinate_start_row {
+            v.adjustment_remove_value(root_row_num, offset_row_num);
+        }
+        if let Some(v) = &mut self.coordinate_end_col {
+            v.adjustment_remove_value(root_col_num, offset_col_num);
+        }
+        if let Some(v) = &mut self.coordinate_end_row {
+            v.adjustment_remove_value(root_row_num, offset_row_num);
+        }
     }
 }

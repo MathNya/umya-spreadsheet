@@ -144,9 +144,11 @@ extern crate lazy_static;
 pub mod helper;
 pub mod reader;
 pub mod structs;
+pub mod traits;
 pub mod writer;
 
 pub use self::structs::*;
+pub use self::traits::*;
 
 /// create new spreadsheet file.
 /// # Arguments

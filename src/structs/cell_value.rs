@@ -4,6 +4,7 @@ use super::Text;
 use helper::formula::*;
 use std::borrow::Cow;
 use structs::CellRawValue;
+use traits::AdjustmentCoordinateWith2Sheet;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
@@ -196,8 +197,9 @@ impl CellValue {
     pub(crate) fn is_formula_attributes_empty(&self) -> bool {
         self.get_formula_attributes().is_empty()
     }
-
-    pub(crate) fn adjustment_insert_formula_coordinate(
+}
+impl AdjustmentCoordinateWith2Sheet for CellValue {
+    fn adjustment_insert_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
@@ -220,7 +222,7 @@ impl CellValue {
         }
     }
 
-    pub(crate) fn adjustment_remove_formula_coordinate(
+    fn adjustment_remove_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
