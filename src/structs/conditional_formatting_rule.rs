@@ -61,7 +61,7 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_text(&self) -> &str {
-        self.text.get_value()
+        self.text.get_value_str()
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {

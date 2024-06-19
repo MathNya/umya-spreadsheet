@@ -22,7 +22,7 @@ pub struct GraphicFrame {
 
 impl GraphicFrame {
     pub fn get_macro(&self) -> &str {
-        self.r#macro.get_value()
+        self.r#macro.get_value_str()
     }
 
     pub fn set_macro<S: Into<String>>(&mut self, value: S) -> &mut GraphicFrame {

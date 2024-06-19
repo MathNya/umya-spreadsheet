@@ -17,7 +17,7 @@ pub struct Fill {
 
 impl Fill {
     pub fn get_color(&self) -> &str {
-        self.color.get_value()
+        self.color.get_value_str()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -26,7 +26,7 @@ impl Fill {
     }
 
     pub fn get_color_2(&self) -> &str {
-        self.color_2.get_value()
+        self.color_2.get_value_str()
     }
 
     pub fn set_color_2<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -44,7 +44,7 @@ impl Fill {
     }
 
     pub fn get_focus_size(&self) -> &str {
-        self.focus_size.get_value()
+        self.focus_size.get_value_str()
     }
 
     pub fn set_focus_size<S: Into<String>>(&mut self, value: S) -> &mut Self {

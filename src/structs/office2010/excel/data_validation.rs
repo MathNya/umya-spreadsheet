@@ -75,7 +75,7 @@ impl DataValidation {
     }
 
     pub fn get_prompt_title(&self) -> &str {
-        self.prompt_title.get_value()
+        self.prompt_title.get_value_str()
     }
 
     pub fn set_prompt_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -84,7 +84,7 @@ impl DataValidation {
     }
 
     pub fn get_prompt(&self) -> &str {
-        self.prompt.get_value()
+        self.prompt.get_value_str()
     }
 
     pub fn set_prompt<S: Into<String>>(&mut self, value: S) -> &mut Self {

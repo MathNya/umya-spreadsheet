@@ -25,7 +25,7 @@ impl ConditionalFormatValueObject {
     }
 
     pub fn get_val(&self) -> &str {
-        self.val.get_value()
+        self.val.get_value_str()
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {

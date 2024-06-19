@@ -24,7 +24,7 @@ impl Default for TextBox {
 
 impl TextBox {
     pub fn get_style(&self) -> &str {
-        self.style.get_value()
+        self.style.get_value_str()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -33,7 +33,7 @@ impl TextBox {
     }
 
     pub fn get_innder(&self) -> &str {
-        self.innder.get_value()
+        self.innder.get_value_str()
     }
 
     pub fn set_innder<S: Into<String>>(&mut self, value: S) -> &mut Self {

@@ -105,7 +105,7 @@ impl SheetView {
     }
 
     pub fn get_top_left_cell(&self) -> &str {
-        self.top_left_cell.get_value()
+        self.top_left_cell.get_value_str()
     }
 
     pub fn set_top_left_cell<S: Into<String>>(&mut self, value: S) -> &mut Self {

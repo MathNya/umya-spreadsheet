@@ -15,7 +15,7 @@ pub struct OddFooter {
 
 impl OddFooter {
     pub fn get_value(&self) -> &str {
-        self.value.get_value()
+        self.value.get_value_str()
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {

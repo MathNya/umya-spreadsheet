@@ -24,7 +24,7 @@ impl Shadow {
     }
 
     pub fn get_color(&self) -> &str {
-        self.color.get_value()
+        self.color.get_value_str()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {

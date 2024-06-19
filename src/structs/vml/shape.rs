@@ -41,7 +41,7 @@ pub struct Shape {
 
 impl Shape {
     pub fn get_style(&self) -> &str {
-        self.style.get_value()
+        self.style.get_value_str()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -50,7 +50,7 @@ impl Shape {
     }
 
     pub fn get_type(&self) -> &str {
-        self.r_type.get_value()
+        self.r_type.get_value_str()
     }
 
     pub fn set_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -68,7 +68,7 @@ impl Shape {
     }
 
     pub fn get_fill_color(&self) -> &str {
-        self.fill_color.get_value()
+        self.fill_color.get_value_str()
     }
 
     pub fn set_fill_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -86,7 +86,7 @@ impl Shape {
     }
 
     pub fn get_stroke_color(&self) -> &str {
-        self.stroke_color.get_value()
+        self.stroke_color.get_value_str()
     }
 
     pub fn set_stroke_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -95,7 +95,7 @@ impl Shape {
     }
 
     pub fn get_stroke_weight(&self) -> &str {
-        self.stroke_weight.get_value()
+        self.stroke_weight.get_value_str()
     }
 
     pub fn set_stroke_weight<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -213,7 +213,7 @@ impl Shape {
     }
 
     pub fn get_coordinate_size(&self) -> &str {
-        self.coordinate_size.get_value()
+        self.coordinate_size.get_value_str()
     }
 
     pub fn set_coordinate_size<S: Into<String>>(&mut self, value: S) -> &mut Self {

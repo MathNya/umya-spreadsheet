@@ -73,7 +73,7 @@ impl DataValidation {
     }
 
     pub fn get_prompt_title(&self) -> &str {
-        self.prompt_title.get_value()
+        self.prompt_title.get_value_str()
     }
 
     pub fn set_prompt_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -82,7 +82,7 @@ impl DataValidation {
     }
 
     pub fn get_prompt(&self) -> &str {
-        self.prompt.get_value()
+        self.prompt.get_value_str()
     }
 
     pub fn set_prompt<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -104,7 +104,7 @@ impl DataValidation {
     }
 
     pub fn get_formula1(&self) -> &str {
-        self.formula1.get_value()
+        self.formula1.get_value_str()
     }
 
     pub fn set_formula1<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -113,7 +113,7 @@ impl DataValidation {
     }
 
     pub fn get_formula2(&self) -> &str {
-        self.formula2.get_value()
+        self.formula2.get_value_str()
     }
 
     pub fn set_formula2<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -163,7 +163,7 @@ impl DataValidation {
             return;
         }
 
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
@@ -172,19 +172,17 @@ impl DataValidation {
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"formula1" => {
-                        self.formula1.set_value_string(value);
-                        value = String::from("");
+                        self.formula1.set_value_string(std::mem::take(&mut value));
                     }
                     b"formula2" => {
-                        self.formula2.set_value_string(value);
-                        value = String::from("");
+                        self.formula2.set_value_string(std::mem::take(&mut value));
                     }
                     b"dataValidation" => return,
-                    _ => (),
+                    _ => {}
                 },
                 Ok(Event::Eof) => panic!("Error not find {} end element", "dataValidation"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
-                _ => (),
+                _ => {}
             }
             buf.clear();
         }

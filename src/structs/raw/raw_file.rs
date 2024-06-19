@@ -36,7 +36,7 @@ impl RawFile {
     }
 
     pub(crate) fn get_file_target(&self) -> &str {
-        self.file_target.get_value()
+        self.file_target.get_value_str()
     }
 
     pub(crate) fn set_file_target<S: Into<String>>(&mut self, value: S) -> &mut Self {

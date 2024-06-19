@@ -37,7 +37,7 @@ pub struct SheetProtection {
 }
 impl SheetProtection {
     pub fn get_algorithm_name(&self) -> &str {
-        self.algorithm_name.get_value()
+        self.algorithm_name.get_value_str()
     }
 
     pub fn set_algorithm_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -46,7 +46,7 @@ impl SheetProtection {
     }
 
     pub fn get_hash_value(&self) -> &str {
-        self.hash_value.get_value()
+        self.hash_value.get_value_str()
     }
 
     pub fn set_hash_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -55,7 +55,7 @@ impl SheetProtection {
     }
 
     pub fn get_salt_value(&self) -> &str {
-        self.salt_value.get_value()
+        self.salt_value.get_value_str()
     }
 
     pub fn set_salt_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -73,7 +73,7 @@ impl SheetProtection {
     }
 
     pub fn get_password_raw(&self) -> &str {
-        self.password.get_value()
+        self.password.get_value_str()
     }
 
     pub fn set_password_raw<S: Into<String>>(&mut self, value: S) -> &mut Self {

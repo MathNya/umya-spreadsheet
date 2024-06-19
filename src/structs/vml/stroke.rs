@@ -15,7 +15,7 @@ pub struct Stroke {
 
 impl Stroke {
     pub fn get_color(&self) -> &str {
-        self.color.get_value()
+        self.color.get_value_str()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -24,7 +24,7 @@ impl Stroke {
     }
 
     pub fn get_color_2(&self) -> &str {
-        self.color_2.get_value()
+        self.color_2.get_value_str()
     }
 
     pub fn set_color_2<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -33,7 +33,7 @@ impl Stroke {
     }
 
     pub fn get_dash_style(&self) -> &str {
-        self.dash_style.get_value()
+        self.dash_style.get_value_str()
     }
 
     pub fn set_dash_style<S: Into<String>>(&mut self, value: S) -> &mut Self {

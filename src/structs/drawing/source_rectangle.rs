@@ -52,21 +52,14 @@ impl SourceRectangle {
         e: &BytesStart,
     ) {
         for a in e.attributes().with_checks(false) {
-            match a {
-                Ok(ref attr) if attr.key.0 == b"t" => {
-                    self.set_t(get_attribute_value(attr).unwrap());
+            if let Ok(attr) = a {
+                match attr.key.0 {
+                    b"t" => self.set_t(get_attribute_value(&attr).unwrap()),
+                    b"l" => self.set_l(get_attribute_value(&attr).unwrap()),
+                    b"r" => self.set_r(get_attribute_value(&attr).unwrap()),
+                    b"b" => self.set_b(get_attribute_value(&attr).unwrap()),
+                    _ => {}
                 }
-                Ok(ref attr) if attr.key.0 == b"l" => {
-                    self.set_l(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.0 == b"r" => {
-                    self.set_r(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.0 == b"b" => {
-                    self.set_b(get_attribute_value(attr).unwrap());
-                }
-                Ok(_) => {}
-                Err(_) => {}
             }
         }
     }

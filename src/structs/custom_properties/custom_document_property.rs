@@ -18,7 +18,7 @@ pub struct CustomDocumentProperty {
 
 impl CustomDocumentProperty {
     pub fn get_name(&self) -> &str {
-        self.name.get_value()
+        self.name.get_value_str()
     }
 
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -27,7 +27,7 @@ impl CustomDocumentProperty {
     }
 
     pub fn get_link_target(&self) -> &str {
-        self.link_target.get_value()
+        self.link_target.get_value_str()
     }
 
     pub fn set_link_target<S: Into<String>>(&mut self, value: S) -> &mut Self {

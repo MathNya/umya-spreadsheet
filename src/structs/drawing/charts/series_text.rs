@@ -14,7 +14,7 @@ pub struct SeriesText {
 
 impl SeriesText {
     pub fn get_value(&self) -> &str {
-        self.value.get_value()
+        self.value.get_value_str()
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -47,7 +47,7 @@ impl SeriesText {
 
         // c:v
         write_start_tag(writer, "c:v", vec![], false);
-        write_text_node(writer, self.value.get_value());
+        write_text_node(writer, self.value.get_value_str());
         write_end_tag(writer, "c:v");
 
         write_end_tag(writer, "c:tx");

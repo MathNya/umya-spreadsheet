@@ -15,7 +15,7 @@ pub struct SupplementalFont {
 
 impl SupplementalFont {
     pub fn get_script(&self) -> &str {
-        self.script.get_value()
+        self.script.get_value_str()
     }
 
     pub fn set_script<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -24,7 +24,7 @@ impl SupplementalFont {
     }
 
     pub fn get_typeface(&self) -> &str {
-        self.typeface.get_value()
+        self.typeface.get_value_str()
     }
 
     pub fn set_typeface<S: Into<String>>(&mut self, value: S) -> &mut Self {

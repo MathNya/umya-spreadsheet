@@ -3,12 +3,12 @@ pub struct StringValue {
     value: Option<String>,
 }
 impl StringValue {
-    pub(crate) fn get_value(&self) -> &str {
+    pub(crate) fn get_value_str(&self) -> &str {
         self.value.as_deref().unwrap_or("")
     }
 
-    pub(crate) fn get_value_str(&self) -> &str {
-        self.get_value()
+    pub(crate) fn get_value(&self) -> Option<&str> {
+        self.value.as_ref().map(|s| s.as_str())
     }
 
     pub(crate) fn set_value<S: Into<String>>(&mut self, value: S) -> &mut StringValue {
@@ -16,6 +16,7 @@ impl StringValue {
         self
     }
 
+    ///works same as `set_value()` as the value in the struct is already a string
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut StringValue {
         self.set_value(value.into())
     }

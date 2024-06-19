@@ -15,7 +15,7 @@ pub struct ImageData {
 
 impl ImageData {
     pub fn get_image_name(&self) -> &str {
-        self.image_name.get_value()
+        self.image_name.get_value_str()
     }
 
     pub fn set_image_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -24,7 +24,7 @@ impl ImageData {
     }
 
     pub fn get_title(&self) -> &str {
-        self.title.get_value()
+        self.title.get_value_str()
     }
 
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -57,7 +57,7 @@ impl ImageData {
             attributes.push(("o:relid", &r_id_str));
         }
         if self.title.has_value() {
-            attributes.push(("o:title", self.title.get_value()));
+            attributes.push(("o:title", self.title.get_value_str()));
         }
 
         write_start_tag(writer, "v:imagedata", attributes, true);
