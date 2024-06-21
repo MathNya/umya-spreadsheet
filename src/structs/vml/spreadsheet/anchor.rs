@@ -182,11 +182,14 @@ impl AdjustmentCoordinate for Anchor {
         offset_row_num: &u32,
     ) {
         self.left_column =
-            adjustment_insert_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num) - 1;
+            adjustment_insert_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num)
+                - 1;
         self.right_column =
-            adjustment_insert_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num) - 1;
+            adjustment_insert_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num)
+                - 1;
 
-        self.top_row = adjustment_insert_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
+        self.top_row =
+            adjustment_insert_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
         self.bottom_row =
             adjustment_insert_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
     }
@@ -199,13 +202,16 @@ impl AdjustmentCoordinate for Anchor {
         offset_row_num: &u32,
     ) {
         self.left_column =
-        adjustment_remove_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num) - 1;
+            adjustment_remove_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num)
+                - 1;
         self.right_column =
-        adjustment_remove_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num) - 1;
+            adjustment_remove_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num)
+                - 1;
 
-        self.top_row = adjustment_remove_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
+        self.top_row =
+            adjustment_remove_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
         self.bottom_row =
-        adjustment_remove_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
+            adjustment_remove_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
     }
 
     fn is_remove_coordinate(
