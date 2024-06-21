@@ -114,35 +114,18 @@ impl AdjustmentCoordinate for Comment {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        let org_col_num = *self.coordinate.get_col_num();
-        let org_row_num = *self.coordinate.get_row_num();
         self.coordinate.adjustment_insert_coordinate(
             root_col_num,
             offset_col_num,
             root_row_num,
             offset_row_num,
         );
-        if &org_col_num != self.coordinate.get_col_num() {
-            self.get_anchor_mut()
-                .adjustment_insert_column(offset_col_num);
-            if let Some(v) = self
-                .get_shape_mut()
-                .get_client_data_mut()
-                .get_comment_column_target_mut()
-            {
-                v.adjustment_insert_column(offset_col_num);
-            }
-        }
-        if &org_row_num != self.coordinate.get_row_num() {
-            self.get_anchor_mut().adjustment_insert_row(offset_row_num);
-            if let Some(v) = self
-                .get_shape_mut()
-                .get_client_data_mut()
-                .get_comment_row_target_mut()
-            {
-                v.adjustment_insert_row(offset_row_num);
-            }
-        }
+        self.shape.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 
     fn adjustment_remove_coordinate(
@@ -152,34 +135,17 @@ impl AdjustmentCoordinate for Comment {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        let org_col_num = *self.coordinate.get_col_num();
-        let org_row_num = *self.coordinate.get_row_num();
         self.coordinate.adjustment_remove_coordinate(
             root_col_num,
             offset_col_num,
             root_row_num,
             offset_row_num,
         );
-        if &org_col_num != self.coordinate.get_col_num() {
-            self.get_anchor_mut()
-                .adjustment_remove_column(offset_col_num);
-            if let Some(v) = self
-                .get_shape_mut()
-                .get_client_data_mut()
-                .get_comment_column_target_mut()
-            {
-                v.adjustment_remove_column(offset_col_num);
-            }
-        }
-        if &org_row_num != self.coordinate.get_row_num() {
-            self.get_anchor_mut().adjustment_remove_row(offset_row_num);
-            if let Some(v) = self
-                .get_shape_mut()
-                .get_client_data_mut()
-                .get_comment_row_target_mut()
-            {
-                v.adjustment_remove_row(offset_row_num);
-            }
-        }
+        self.shape.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
     }
 }

@@ -16,4 +16,15 @@ pub(crate) trait AdjustmentCoordinateWithSheet {
         root_row_num: &u32,
         offset_row_num: &u32,
     );
+
+    fn is_remove_coordinate_with_sheet(
+        &self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        false
+    }
 }

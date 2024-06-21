@@ -87,17 +87,6 @@ impl Coordinate {
             self.row.get_is_lock(),
         )
     }
-
-    pub(crate) fn is_remove(
-        &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) -> bool {
-        self.column.is_remove(root_col_num, offset_col_num)
-            || self.row.is_remove(root_row_num, offset_row_num)
-    }
 }
 impl AdjustmentCoordinate for Coordinate {
     fn adjustment_insert_coordinate(
@@ -124,5 +113,16 @@ impl AdjustmentCoordinate for Coordinate {
             .adjustment_remove_value(root_col_num, offset_col_num);
         self.row
             .adjustment_remove_value(root_row_num, offset_row_num);
+    }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        self.column.is_remove_value(root_col_num, offset_col_num)
+            || self.row.is_remove_value(root_row_num, offset_row_num)
     }
 }

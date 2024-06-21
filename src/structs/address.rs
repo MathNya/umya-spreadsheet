@@ -77,20 +77,6 @@ impl Address {
             &with_space_char, sheet_name, &with_space_char, range
         )
     }
-
-    pub(crate) fn is_remove(
-        &self,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) -> bool {
-        self.sheet_name == sheet_name
-            && self
-                .range
-                .is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
-    }
 }
 impl AdjustmentCoordinateWithSheet for Address {
     fn adjustment_insert_coordinate_with_sheet(
@@ -127,5 +113,22 @@ impl AdjustmentCoordinateWithSheet for Address {
                 offset_row_num,
             );
         }
+    }
+
+    fn is_remove_coordinate_with_sheet(
+        &self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        self.sheet_name == sheet_name
+            && self.range.is_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            )
     }
 }

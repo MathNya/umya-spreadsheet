@@ -17,6 +17,7 @@ use std::io::Cursor;
 use structs::raw::RawRelationships;
 use structs::BooleanValue;
 use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -334,5 +335,70 @@ impl AdjustmentCoordinate for TwoCellAnchor {
             root_row_num,
             offset_row_num,
         );
+    }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        self.from_marker.is_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        ) || self.to_marker.is_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        )
+    }
+}
+impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
+    fn adjustment_insert_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        match &mut self.graphic_frame {
+            Some(v) => {
+                v.adjustment_insert_coordinate_with_sheet(
+                    sheet_name,
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
+    }
+
+    fn adjustment_remove_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        match &mut self.graphic_frame {
+            Some(v) => {
+                v.adjustment_remove_coordinate_with_sheet(
+                    sheet_name,
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
     }
 }

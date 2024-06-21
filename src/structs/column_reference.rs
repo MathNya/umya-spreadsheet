@@ -67,13 +67,6 @@ impl ColumnReference {
             string_from_column_index(&self.num),
         )
     }
-
-    pub(crate) fn is_remove(&self, root_col_num: &u32, offset_col_num: &u32) -> bool {
-        if root_col_num > &0 {
-            return &self.num >= root_col_num && self.num < (root_col_num + offset_col_num);
-        }
-        false
-    }
 }
 impl AdjustmentValue for ColumnReference {
     fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
@@ -82,5 +75,9 @@ impl AdjustmentValue for ColumnReference {
 
     fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
         self.num = adjustment_remove_coordinate(&self.num, root_num, offset_num);
+    }
+
+    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
+        is_remove_coordinate(&self.num, root_num, offset_num)
     }
 }

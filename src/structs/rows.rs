@@ -63,17 +63,16 @@ impl Rows {
 impl AdjustmentValue for Rows {
     fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
         for row_dimension in self.get_row_dimensions_mut() {
-            row_dimension.adjustment_insert_coordinate(root_num, offset_num);
+            row_dimension.adjustment_insert_value(root_num, offset_num);
         }
         self.rebuild_map();
     }
 
     fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
-        self.get_row_dimensions_to_hashmap_mut().retain(|_, k| {
-            !(k.get_row_num() >= root_num && k.get_row_num() <= &(root_num + offset_num - 1))
-        });
+        self.get_row_dimensions_to_hashmap_mut()
+            .retain(|_, k| !(k.is_remove_value(root_num, offset_num)));
         for row_dimension in self.get_row_dimensions_mut() {
-            row_dimension.adjustment_remove_coordinate(root_num, offset_num);
+            row_dimension.adjustment_remove_value(root_num, offset_num);
         }
         self.rebuild_map();
     }

@@ -1578,9 +1578,9 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // defined_names
-        let title = &self.title;
         for defined_name in &mut self.defined_names {
-            defined_name.adjustment_insert_coordinate(
+            defined_name.adjustment_insert_coordinate_with_sheet(
+                &self.title,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -1590,6 +1590,15 @@ impl AdjustmentCoordinate for Worksheet {
 
         // cell
         self.get_cell_collection_crate_mut()
+            .adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+
+        // worksheet_drawing
+        self.get_worksheet_drawing_mut()
             .adjustment_insert_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -1609,17 +1618,12 @@ impl AdjustmentCoordinate for Worksheet {
 
         // conditional styles
         for conditional_styles in &mut self.conditional_formatting_collection {
-            for range in conditional_styles
-                .get_sequence_of_references_mut()
-                .get_range_collection_mut()
-            {
-                range.adjustment_insert_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
+            conditional_styles.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
 
         // merge cells
@@ -1665,11 +1669,10 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // defined_names
-        let sheet_name = self.title.clone();
         let mut idx = 0 as usize;
         while idx < self.defined_names.len() {
-            if self.defined_names[idx].is_remove(
-                &sheet_name,
+            if self.defined_names[idx].is_remove_coordinate_with_sheet(
+                &self.title,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -1680,7 +1683,8 @@ impl AdjustmentCoordinate for Worksheet {
             idx += 1;
         }
         for defined_name in &mut self.defined_names {
-            defined_name.adjustment_remove_coordinate(
+            defined_name.adjustment_remove_coordinate_with_sheet(
+                &self.title,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -1697,9 +1701,18 @@ impl AdjustmentCoordinate for Worksheet {
                 offset_row_num,
             );
 
+        // worksheet_drawing
+        self.get_worksheet_drawing_mut()
+            .adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+
         // comments
         self.comments.retain(|x| {
-            !(x.get_coordinate().is_remove(
+            !(x.get_coordinate().is_remove_coordinate(
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -1716,36 +1729,22 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // conditional styles
-        for conditional_styles in &mut self.conditional_formatting_collection {
-            conditional_styles
-                .get_sequence_of_references_mut()
-                .get_range_collection_mut()
-                .retain(|x| {
-                    !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num))
-                });
-        }
         self.conditional_formatting_collection.retain(|x| {
-            !x.get_sequence_of_references()
-                .get_range_collection()
-                .is_empty()
+            !x.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num)
         });
         for conditional_styles in &mut self.conditional_formatting_collection {
-            for range in conditional_styles
-                .get_sequence_of_references_mut()
-                .get_range_collection_mut()
-            {
-                range.adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
+            conditional_styles.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
 
         // merge cells
-        self.get_merge_cells_mut()
-            .retain(|x| !(x.is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)));
+        self.get_merge_cells_mut().retain(|x| {
+            !(x.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
+        });
         for merge_cell in self.get_merge_cells_mut() {
             merge_cell.adjustment_remove_coordinate(
                 root_col_num,
@@ -1757,10 +1756,12 @@ impl AdjustmentCoordinate for Worksheet {
 
         // auto filter
         let is_remove = match self.get_auto_filter() {
-            Some(v) => {
-                v.get_range()
-                    .is_remove(root_col_num, offset_col_num, root_row_num, offset_row_num)
-            }
+            Some(v) => v.get_range().is_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ),
             None => false,
         };
         if is_remove {

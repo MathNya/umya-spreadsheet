@@ -176,17 +176,16 @@ impl Columns {
 }
 impl AdjustmentValue for Columns {
     fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
-        for column_dimension in self.get_column_collection_mut() {
-            column_dimension.adjustment_insert_coordinate(root_num, offset_num);
+        for column_dimension in &mut self.column {
+            column_dimension.adjustment_insert_value(root_num, offset_num);
         }
     }
 
     fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
-        self.get_column_collection_mut().retain(|x| {
-            !(x.get_col_num() >= root_num && x.get_col_num() <= &(root_num + offset_num - 1))
-        });
-        for column_dimension in self.get_column_collection_mut() {
-            column_dimension.adjustment_remove_coordinate(root_num, offset_num);
+        self.get_column_collection_mut()
+            .retain(|x| !(x.is_remove_value(root_num, offset_num)));
+        for column_dimension in &mut self.column {
+            column_dimension.adjustment_remove_value(root_num, offset_num);
         }
     }
 }

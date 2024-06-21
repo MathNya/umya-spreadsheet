@@ -14,6 +14,8 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::EnumValue;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -308,5 +310,48 @@ impl ClientData {
         }
 
         write_end_tag(writer, "x:ClientData");
+    }
+}
+impl AdjustmentCoordinate for ClientData {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.anchor.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+        match &mut self.comment_column_target {
+            Some(v) => {
+                v.adjustment_insert_value(root_col_num, offset_col_num);
+            }
+            None => {}
+        }
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.anchor.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+        match &mut self.comment_column_target {
+            Some(v) => {
+                v.adjustment_remove_value(root_col_num, offset_col_num);
+            }
+            None => {}
+        }
     }
 }

@@ -7,7 +7,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
-use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -138,32 +138,6 @@ impl DefinedName {
         result
     }
 
-    pub(crate) fn is_remove(
-        &mut self,
-        sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) -> bool {
-        self.address.retain(|x| {
-            !(x.is_remove(
-                sheet_name,
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            ))
-        });
-        if self.string_value.has_value() {
-            return false;
-        }
-        if self.address.is_empty() {
-            return true;
-        }
-        false
-    }
-
     pub(crate) fn set_sheet_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let value = value.into();
         for address in &mut self.address {
@@ -209,16 +183,18 @@ impl DefinedName {
         write_end_tag(writer, "definedName");
     }
 }
-impl AdjustmentCoordinate for DefinedName {
-    fn adjustment_insert_coordinate(
+impl AdjustmentCoordinateWithSheet for DefinedName {
+    fn adjustment_insert_coordinate_with_sheet(
         &mut self,
+        sheet_name: &str,
         root_col_num: &u32,
         offset_col_num: &u32,
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
         for address in &mut self.address {
-            address.get_range_mut().adjustment_insert_coordinate(
+            address.adjustment_insert_coordinate_with_sheet(
+                sheet_name,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -227,20 +203,48 @@ impl AdjustmentCoordinate for DefinedName {
         }
     }
 
-    fn adjustment_remove_coordinate(
+    fn adjustment_remove_coordinate_with_sheet(
         &mut self,
+        sheet_name: &str,
         root_col_num: &u32,
         offset_col_num: &u32,
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
+        self.address.retain(|x| {
+            !(x.is_remove_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ))
+        });
         for address in &mut self.address {
-            address.get_range_mut().adjustment_remove_coordinate(
+            address.adjustment_remove_coordinate_with_sheet(
+                sheet_name,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
             );
         }
+    }
+
+    fn is_remove_coordinate_with_sheet(
+        &self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        if self.string_value.has_value() {
+            return false;
+        }
+        if self.address.is_empty() {
+            return true;
+        }
+        false
     }
 }

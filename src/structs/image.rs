@@ -13,6 +13,7 @@ use structs::drawing::FillRectangle;
 use structs::drawing::PresetGeometry;
 use structs::drawing::Stretch;
 use structs::MediaObject;
+use traits::AdjustmentCoordinate;
 
 #[derive(Clone, Default, Debug)]
 pub struct Image {
@@ -268,5 +269,106 @@ impl Image {
         if let Some(anchor) = self.get_one_cell_anchor() {
             anchor.write_to(writer, rel_list);
         }
+    }
+}
+impl AdjustmentCoordinate for Image {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // one_cell_anchor
+        match self.one_cell_anchor.as_mut() {
+            Some(anchor) => {
+                anchor.adjustment_insert_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
+
+        // two_cell_anchor
+        match self.two_cell_anchor.as_mut() {
+            Some(anchor) => {
+                anchor.adjustment_insert_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        // one_cell_anchor
+        match self.one_cell_anchor.as_mut() {
+            Some(anchor) => {
+                anchor.adjustment_remove_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
+
+        // two_cell_anchor
+        match self.two_cell_anchor.as_mut() {
+            Some(anchor) => {
+                anchor.adjustment_remove_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
+    }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        match self.one_cell_anchor.as_ref() {
+            Some(anchor) => {
+                return anchor.is_remove_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
+        match self.two_cell_anchor.as_ref() {
+            Some(anchor) => {
+                return anchor.is_remove_coordinate(
+                    root_col_num,
+                    offset_col_num,
+                    root_row_num,
+                    offset_row_num,
+                );
+            }
+            None => {}
+        }
+        false
     }
 }

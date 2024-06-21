@@ -59,6 +59,8 @@ use structs::drawing::Paragraph;
 use structs::drawing::Run;
 use structs::drawing::RunProperties;
 use structs::ChartType;
+use traits::AdjustmentCoordinate;
+use traits::AdjustmentCoordinateWithSheet;
 
 /// ## Supported chart types
 /// * AreaChart
@@ -2187,5 +2189,90 @@ impl Chart {
         title.set_chart_text(chart_text);
 
         title
+    }
+}
+impl AdjustmentCoordinate for Chart {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.two_cell_anchor.as_mut().adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.two_cell_anchor.as_mut().adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
+    }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        self.two_cell_anchor.as_ref().is_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        )
+    }
+}
+impl AdjustmentCoordinateWithSheet for Chart {
+    fn adjustment_insert_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.two_cell_anchor
+            .as_mut()
+            .adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+    }
+
+    fn adjustment_remove_coordinate_with_sheet(
+        &mut self,
+        sheet_name: &str,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.two_cell_anchor
+            .as_mut()
+            .adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
     }
 }

@@ -1,8 +1,10 @@
+use helper::coordinate::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use traits::AdjustmentCoordinate;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -169,5 +171,53 @@ impl Anchor {
         write_start_tag(writer, "x:Anchor", vec![], false);
         write_text_node(writer, &anchor);
         write_end_tag(writer, "x:Anchor");
+    }
+}
+impl AdjustmentCoordinate for Anchor {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.left_column =
+            adjustment_insert_coordinate(&self.left_column, root_col_num, offset_col_num);
+        self.right_column =
+            adjustment_insert_coordinate(&self.right_column, root_col_num, offset_col_num);
+
+        self.top_row = adjustment_insert_coordinate(&self.top_row, root_row_num, offset_row_num);
+        self.bottom_row =
+            adjustment_insert_coordinate(&self.bottom_row, root_row_num, offset_row_num);
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        self.left_column =
+            adjustment_remove_coordinate(&self.left_column, root_col_num, offset_col_num);
+        self.right_column =
+            adjustment_remove_coordinate(&self.right_column, root_col_num, offset_col_num);
+
+        self.top_row = adjustment_remove_coordinate(&self.top_row, root_row_num, offset_row_num);
+        self.bottom_row =
+            adjustment_remove_coordinate(&self.bottom_row, root_row_num, offset_row_num);
+    }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        is_remove_coordinate(&self.left_column, root_col_num, offset_col_num)
+            || is_remove_coordinate(&self.right_column, root_col_num, offset_col_num)
+            || is_remove_coordinate(&self.top_row, root_row_num, offset_row_num)
+            || is_remove_coordinate(&self.bottom_row, root_row_num, offset_row_num)
     }
 }

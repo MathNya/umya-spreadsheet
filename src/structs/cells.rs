@@ -222,7 +222,7 @@ impl AdjustmentCoordinate for Cells {
     ) {
         // update cell
         self.map.retain(|k, x| {
-            !(x.get_coordinate().is_remove(
+            !(x.get_coordinate().is_remove_coordinate(
                 root_col_num,
                 offset_col_num,
                 root_row_num,

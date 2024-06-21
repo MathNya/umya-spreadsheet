@@ -162,4 +162,15 @@ impl AdjustmentCoordinate for MarkerType {
         self.col = adjustment_remove_coordinate(&self.col, root_row_num, offset_row_num);
         self.row = adjustment_remove_coordinate(&self.row, root_row_num, offset_row_num);
     }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        is_remove_coordinate(&self.col, root_col_num, offset_col_num)
+            || is_remove_coordinate(&self.row, root_row_num, offset_row_num)
+    }
 }

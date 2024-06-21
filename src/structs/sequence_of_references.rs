@@ -1,4 +1,5 @@
 use super::Range;
+use traits::AdjustmentCoordinate;
 
 #[derive(Default, Debug, Clone)]
 pub struct SequenceOfReferences {
@@ -36,5 +37,60 @@ impl SequenceOfReferences {
             .map(|range| range.get_range())
             .collect::<Vec<String>>()
             .join(" ")
+    }
+}
+impl AdjustmentCoordinate for SequenceOfReferences {
+    fn adjustment_insert_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        for range in &mut self.range_collection {
+            range.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+    }
+
+    fn adjustment_remove_coordinate(
+        &mut self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) {
+        for range in &mut self.range_collection {
+            range.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
+        }
+    }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        for range in &self.range_collection {
+            if range.is_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            ) {
+                return true;
+            }
+        }
+        false
     }
 }

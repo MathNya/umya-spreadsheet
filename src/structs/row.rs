@@ -11,6 +11,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use traits::AdjustmentValue;
 
 use writer::driver::*;
 
@@ -92,28 +93,6 @@ impl Row {
     pub fn set_style(&mut self, value: Style) -> &mut Self {
         self.style = value;
         self
-    }
-
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        if self.row_num.get_value() >= root_row_num {
-            self.row_num
-                .set_value(self.row_num.get_value() + offset_row_num);
-        }
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_row_num: &u32,
-        offset_row_num: &u32,
-    ) {
-        if self.row_num.get_value() >= root_row_num {
-            self.row_num
-                .set_value(self.row_num.get_value() - offset_row_num);
-        }
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -215,5 +194,25 @@ impl Row {
         }
 
         write_start_tag(writer, "row", attributes, empty_flag);
+    }
+}
+impl AdjustmentValue for Row {
+    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+        if self.row_num.get_value() >= root_num {
+            self.row_num
+                .set_value(self.row_num.get_value() + offset_num);
+        }
+    }
+
+    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+        if self.row_num.get_value() >= root_num {
+            self.row_num
+                .set_value(self.row_num.get_value() - offset_num);
+        }
+    }
+
+    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
+        self.row_num.get_value() >= root_num
+            && self.row_num.get_value() <= &(root_num + offset_num - 1)
     }
 }

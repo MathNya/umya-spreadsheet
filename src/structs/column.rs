@@ -8,6 +8,7 @@ use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use reader::driver::*;
 use structs::Cells;
+use traits::AdjustmentValue;
 
 /// # Examples
 /// ## set auto width
@@ -144,28 +145,6 @@ impl Column {
         self
     }
 
-    pub(crate) fn adjustment_insert_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-    ) {
-        if self.col_num.get_value() >= root_col_num {
-            self.col_num
-                .set_value(self.col_num.get_value() + offset_col_num);
-        }
-    }
-
-    pub(crate) fn adjustment_remove_coordinate(
-        &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-    ) {
-        if self.col_num.get_value() >= root_col_num {
-            self.col_num
-                .set_value(self.col_num.get_value() - offset_col_num);
-        }
-    }
-
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
@@ -192,5 +171,25 @@ impl Column {
             let style = stylesheet.get_style(v.parse::<usize>().unwrap());
             self.set_style(style);
         }
+    }
+}
+impl AdjustmentValue for Column {
+    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+        if self.col_num.get_value() >= root_num {
+            self.col_num
+                .set_value(self.col_num.get_value() + offset_num);
+        }
+    }
+
+    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+        if self.col_num.get_value() >= root_num {
+            self.col_num
+                .set_value(self.col_num.get_value() - offset_num);
+        }
+    }
+
+    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
+        self.col_num.get_value() >= root_num
+            && self.col_num.get_value() <= &(root_num + offset_num - 1)
     }
 }

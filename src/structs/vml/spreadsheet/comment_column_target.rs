@@ -1,9 +1,11 @@
+use helper::coordinate::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::UInt32Value;
+use traits::AdjustmentValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -19,20 +21,6 @@ impl CommentColumnTarget {
     pub fn set_value(&mut self, value: u32) -> &mut Self {
         self.value.set_value(value);
         self
-    }
-
-    pub(crate) fn adjustment_insert_column(&mut self, num_cols: &u32) {
-        let value = self.value.get_value() + num_cols;
-        self.value.set_value(value);
-    }
-
-    pub(crate) fn adjustment_remove_column(&mut self, num_cols: &u32) {
-        if self.value.get_value() > num_cols {
-            let value = self.value.get_value() - num_cols;
-            self.value.set_value(value);
-        } else {
-            self.value.set_value(1);
-        }
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -59,5 +47,26 @@ impl CommentColumnTarget {
         write_start_tag(writer, "x:Column", vec![], false);
         write_text_node(writer, self.value.get_value_string());
         write_end_tag(writer, "x:Column");
+    }
+}
+impl AdjustmentValue for CommentColumnTarget {
+    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.value.set_value(adjustment_insert_coordinate(
+            &self.value.get_value(),
+            root_num,
+            offset_num,
+        ));
+    }
+
+    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.value.set_value(adjustment_remove_coordinate(
+            &self.value.get_value(),
+            root_num,
+            offset_num,
+        ));
+    }
+
+    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
+        is_remove_coordinate(self.value.get_value(), root_num, offset_num)
     }
 }

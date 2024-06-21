@@ -202,4 +202,19 @@ impl AdjustmentCoordinate for OneCellAnchor {
             offset_row_num,
         );
     }
+
+    fn is_remove_coordinate(
+        &self,
+        root_col_num: &u32,
+        offset_col_num: &u32,
+        root_row_num: &u32,
+        offset_row_num: &u32,
+    ) -> bool {
+        self.from_marker.is_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        )
+    }
 }
