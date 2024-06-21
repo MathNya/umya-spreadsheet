@@ -1,6 +1,7 @@
 use super::RichText;
 use super::SharedStringItem;
 use super::Text;
+use crate::StringValue;
 use helper::formula::*;
 use std::borrow::Cow;
 use structs::CellRawValue;
@@ -9,7 +10,7 @@ use traits::AdjustmentCoordinateWith2Sheet;
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
     pub(crate) raw_value: CellRawValue,
-    pub(crate) formula: Option<String>,
+    pub(crate) formula: StringValue,
     pub(crate) formula_attributes: Vec<(String, String)>,
 }
 impl CellValue {
@@ -122,12 +123,12 @@ impl CellValue {
     }
 
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.formula = Some(value.into());
+        self.formula.set_value(value);
         self
     }
 
     pub fn remove_formula(&mut self) -> &mut Self {
-        self.formula = None;
+        self.formula.remove_value();
         self.formula_attributes.clear();
         self
     }
@@ -148,11 +149,11 @@ impl CellValue {
     }
 
     pub fn is_formula(&self) -> bool {
-        self.formula.is_some()
+        self.formula.has_value()
     }
 
     pub fn get_formula(&self) -> &str {
-        self.formula.as_deref().unwrap_or("")
+        self.formula.get_value_str()
     }
 
     pub(crate) fn guess_typed_data(value: &str) -> CellRawValue {
@@ -208,7 +209,7 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if let Some(v) = &self.formula {
+        if let Some(v) = self.formula.get_value() {
             let formula = adjustment_insert_formula_coordinate(
                 v,
                 root_col_num,
@@ -218,7 +219,7 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
                 sheet_name,
                 self_sheet_name,
             );
-            self.formula = Some(formula);
+            self.formula.set_value(formula);
         }
     }
 
@@ -231,7 +232,7 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if let Some(v) = &self.formula {
+        if let Some(v) = self.formula.get_value() {
             let formula = adjustment_remove_formula_coordinate(
                 v,
                 root_col_num,
@@ -241,7 +242,7 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
                 sheet_name,
                 self_sheet_name,
             );
-            self.formula = Some(formula);
+            self.formula.set_value(formula);
         }
     }
 }

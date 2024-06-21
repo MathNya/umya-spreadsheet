@@ -2,6 +2,7 @@
 use super::PresetColor;
 use super::RgbColorModelHex;
 use super::SchemeColor;
+use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -11,79 +12,79 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct OuterShadow {
-    blur_radius: Option<String>,
-    alignment: Option<String>,
-    horizontal_ratio: Option<String>,
-    vertical_ratio: Option<String>,
-    direction: Option<String>,
-    distance: Option<String>,
-    rotate_with_shape: Option<String>,
+    blur_radius: StringValue,
+    alignment: StringValue,
+    horizontal_ratio: StringValue,
+    vertical_ratio: StringValue,
+    direction: StringValue,
+    distance: StringValue,
+    rotate_with_shape: StringValue,
     preset_color: Option<PresetColor>,
     scheme_color: Option<SchemeColor>,
     rgb_color_model_hex: Option<RgbColorModelHex>,
 }
 
 impl OuterShadow {
-    pub fn get_blur_radius(&self) -> Option<&String> {
-        self.blur_radius.as_ref()
+    pub fn get_blur_radius(&self) -> Option<&str> {
+        self.blur_radius.get_value()
     }
 
     pub fn set_blur_radius<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.blur_radius = Some(value.into());
+        self.blur_radius.set_value(value);
         self
     }
 
-    pub fn get_horizontal_ratio(&self) -> Option<&String> {
-        self.horizontal_ratio.as_ref()
+    pub fn get_horizontal_ratio(&self) -> Option<&str> {
+        self.horizontal_ratio.get_value()
     }
 
     pub fn set_horizontal_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.horizontal_ratio = Some(value.into());
+        self.horizontal_ratio.set_value(value);
         self
     }
 
-    pub fn get_vertical_ratio(&self) -> Option<&String> {
-        self.vertical_ratio.as_ref()
+    pub fn get_vertical_ratio(&self) -> Option<&str> {
+        self.vertical_ratio.get_value()
     }
 
     pub fn set_vertical_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.vertical_ratio = Some(value.into());
+        self.vertical_ratio.set_value(value);
         self
     }
 
-    pub fn get_alignment(&self) -> Option<&String> {
-        self.alignment.as_ref()
+    pub fn get_alignment(&self) -> Option<&str> {
+        self.alignment.get_value()
     }
 
     pub fn set_alignment<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.alignment = Some(value.into());
+        self.alignment.set_value(value);
         self
     }
 
-    pub fn get_direction(&self) -> Option<&String> {
-        self.direction.as_ref()
+    pub fn get_direction(&self) -> Option<&str> {
+        self.direction.get_value()
     }
 
     pub fn set_direction<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.direction = Some(value.into());
+        self.direction.set_value(value);
         self
     }
 
-    pub fn get_distance(&self) -> Option<&String> {
-        self.distance.as_ref()
+    pub fn get_distance(&self) -> Option<&str> {
+        self.distance.get_value()
     }
 
     pub fn set_distance<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.distance = Some(value.into());
+        self.distance.set_value(value);
         self
     }
 
-    pub fn get_rotate_with_shape(&self) -> Option<&String> {
-        self.rotate_with_shape.as_ref()
+    pub fn get_rotate_with_shape(&self) -> Option<&str> {
+        self.rotate_with_shape.get_value()
     }
 
     pub fn set_rotate_with_shape<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.rotate_with_shape = Some(value.into());
+        self.rotate_with_shape.set_value(value);
         self
     }
 
@@ -202,25 +203,25 @@ impl OuterShadow {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:outerShdw
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if let Some(v) = &self.blur_radius {
+        if let Some(v) = self.blur_radius.get_value() {
             attributes.push(("blurRad", v));
         }
-        if let Some(v) = &self.distance {
+        if let Some(v) = self.distance.get_value() {
             attributes.push(("dist", v));
         }
-        if let Some(v) = &self.direction {
+        if let Some(v) = self.direction.get_value() {
             attributes.push(("dir", v));
         }
-        if let Some(v) = &self.horizontal_ratio {
+        if let Some(v) = self.horizontal_ratio.get_value() {
             attributes.push(("sx", v));
         }
-        if let Some(v) = &self.vertical_ratio {
+        if let Some(v) = self.vertical_ratio.get_value() {
             attributes.push(("sy", v));
         }
-        if let Some(v) = &self.alignment {
+        if let Some(v) = self.alignment.get_value() {
             attributes.push(("algn", v));
         }
-        if let Some(v) = &self.rotate_with_shape {
+        if let Some(v) = self.rotate_with_shape.get_value() {
             attributes.push(("rotWithShape", v));
         }
         write_start_tag(writer, "a:outerShdw", attributes, false);

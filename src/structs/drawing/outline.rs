@@ -8,6 +8,7 @@ use super::PresetDash;
 use super::Round;
 use super::SolidFill;
 use super::TailEnd;
+use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -20,8 +21,8 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Outline {
     width: UInt32Value,
-    cap_type: Option<String>,
-    compound_line_type: Option<String>,
+    cap_type: StringValue,
+    compound_line_type: StringValue,
     solid_fill: Option<SolidFill>,
     gradient_fill: Option<GradientFill>,
     tail_end: Option<TailEnd>,
@@ -43,21 +44,21 @@ impl Outline {
         self
     }
 
-    pub fn get_cap_type(&self) -> Option<&String> {
-        self.cap_type.as_ref()
+    pub fn get_cap_type(&self) -> Option<&str> {
+        self.cap_type.get_value()
     }
 
     pub fn set_cap_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.cap_type = Some(value.into());
+        self.cap_type.set_value(value);
         self
     }
 
-    pub fn get_compound_line_type(&self) -> Option<&String> {
-        self.compound_line_type.as_ref()
+    pub fn get_compound_line_type(&self) -> Option<&str> {
+        self.compound_line_type.get_value()
     }
 
     pub fn set_compound_line_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.compound_line_type = Some(value.into());
+        self.compound_line_type.set_value(value);
         self
     }
 
@@ -260,10 +261,10 @@ impl Outline {
         if self.width.has_value() {
             attributes.push(("w", &width));
         }
-        if let Some(v) = &self.cap_type {
+        if let Some(v) = self.cap_type.get_value() {
             attributes.push(("cap", v));
         }
-        if let Some(v) = &self.compound_line_type {
+        if let Some(v) = self.compound_line_type.get_value() {
             attributes.push(("cmpd", v));
         }
         if self.alignment.has_value() {

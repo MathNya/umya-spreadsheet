@@ -1,4 +1,5 @@
 // a:srcRect
+use crate::StringValue;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -8,42 +9,42 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SourceRectangle {
-    t: Option<String>,
-    l: Option<String>,
-    r: Option<String>,
-    b: Option<String>,
+    t: StringValue,
+    l: StringValue,
+    r: StringValue,
+    b: StringValue,
 }
 impl SourceRectangle {
     pub fn set_t<S: Into<String>>(&mut self, value: S) {
-        self.t = Some(value.into());
+        self.t.set_value(value);
     }
 
-    pub fn get_t(&self) -> Option<&String> {
-        self.t.as_ref()
+    pub fn get_t(&self) -> Option<&str> {
+        self.t.get_value()
     }
 
     pub fn set_l<S: Into<String>>(&mut self, value: S) {
-        self.l = Some(value.into());
+        self.l.set_value(value);
     }
 
-    pub fn get_l(&self) -> Option<&String> {
-        self.l.as_ref()
+    pub fn get_l(&self) -> Option<&str> {
+        self.l.get_value()
     }
 
     pub fn set_r<S: Into<String>>(&mut self, value: S) {
-        self.r = Some(value.into());
+        self.r.set_value(value);
     }
 
-    pub fn get_r(&self) -> Option<&String> {
-        self.r.as_ref()
+    pub fn get_r(&self) -> Option<&str> {
+        self.r.get_value()
     }
 
     pub fn set_b<S: Into<String>>(&mut self, value: S) {
-        self.b = Some(value.into());
+        self.b.set_value(value);
     }
 
-    pub fn get_b(&self) -> Option<&String> {
-        self.b.as_ref()
+    pub fn get_b(&self) -> Option<&str> {
+        self.b.get_value()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -68,16 +69,16 @@ impl SourceRectangle {
         // a:srcRect
         let mut attributes: Vec<(&str, &str)> = Vec::new();
 
-        if let Some(v) = &self.t {
+        if let Some(v) = self.t.get_value() {
             attributes.push(("t", v))
         }
-        if let Some(v) = &self.l {
+        if let Some(v) = self.l.get_value() {
             attributes.push(("l", v))
         }
-        if let Some(v) = &self.r {
+        if let Some(v) = self.r.get_value() {
             attributes.push(("r", v))
         }
-        if let Some(v) = &self.b {
+        if let Some(v) = self.b.get_value() {
             attributes.push(("b", v))
         }
         write_start_tag(writer, "a:srcRect", attributes, true);

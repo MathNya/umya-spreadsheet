@@ -1,3 +1,5 @@
+use crate::traits;
+use crate::StringValue;
 use hashbrown::HashMap;
 use helper::const_str::*;
 use helper::coordinate::*;
@@ -44,8 +46,6 @@ use traits::AdjustmentCoordinateWith2Sheet;
 use traits::AdjustmentCoordinateWithSheet;
 use traits::AdjustmentValue;
 
-use crate::traits;
-
 /// A Worksheet Object.
 #[derive(Clone, Debug, Default)]
 pub struct Worksheet {
@@ -68,7 +68,7 @@ pub struct Worksheet {
     comments: Vec<Comment>,
     active_cell: String,
     tab_color: Option<Color>,
-    code_name: Option<String>,
+    code_name: StringValue,
     ole_objects: OleObjects,
     defined_names: Vec<DefinedName>,
     print_options: PrintOptions,
@@ -910,15 +910,15 @@ impl Worksheet {
     }
 
     /// Get Code Name.
-    pub fn get_code_name(&self) -> Option<&String> {
-        self.code_name.as_ref()
+    pub fn get_code_name(&self) -> Option<&str> {
+        self.code_name.get_value()
     }
 
     /// Set Code Name.
     /// # Arguments
     /// * `value` - Code Name
     pub fn set_code_name<S: Into<String>>(&mut self, value: S) {
-        self.code_name = Some(value.into());
+        self.code_name.set_value(value);
     }
 
     /// Get Header Footer.
@@ -975,7 +975,7 @@ impl Worksheet {
 
     /// Has Code Name.
     pub fn has_code_name(&self) -> bool {
-        self.code_name.is_some()
+        self.code_name.has_value()
     }
 
     /// Get Tab Color.
