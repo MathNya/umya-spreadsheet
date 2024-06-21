@@ -148,7 +148,7 @@ impl AdjustmentCoordinate for MarkerType {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        self.col = adjustment_insert_coordinate(&(&self.col + 1), root_row_num, offset_row_num) - 1;
+        self.col = adjustment_insert_coordinate(&(&self.col + 1), root_col_num, offset_col_num) - 1;
         self.row = adjustment_insert_coordinate(&(&self.row + 1), root_row_num, offset_row_num) - 1;
     }
 
@@ -159,7 +159,7 @@ impl AdjustmentCoordinate for MarkerType {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        self.col = adjustment_remove_coordinate(&(&self.col + 1), root_row_num, offset_row_num) - 1;
+        self.col = adjustment_remove_coordinate(&(&self.col + 1), root_col_num, offset_col_num) - 1;
         self.row = adjustment_remove_coordinate(&(&self.row + 1), root_row_num, offset_row_num) - 1;
     }
 
