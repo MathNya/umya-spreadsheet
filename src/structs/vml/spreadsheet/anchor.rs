@@ -182,13 +182,13 @@ impl AdjustmentCoordinate for Anchor {
         offset_row_num: &u32,
     ) {
         self.left_column =
-            adjustment_insert_coordinate(&self.left_column, root_col_num, offset_col_num);
+            adjustment_insert_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num) - 1;
         self.right_column =
-            adjustment_insert_coordinate(&self.right_column, root_col_num, offset_col_num);
+            adjustment_insert_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num) - 1;
 
-        self.top_row = adjustment_insert_coordinate(&self.top_row, root_row_num, offset_row_num);
+        self.top_row = adjustment_insert_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
         self.bottom_row =
-            adjustment_insert_coordinate(&self.bottom_row, root_row_num, offset_row_num);
+            adjustment_insert_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
     }
 
     fn adjustment_remove_coordinate(
@@ -199,13 +199,13 @@ impl AdjustmentCoordinate for Anchor {
         offset_row_num: &u32,
     ) {
         self.left_column =
-            adjustment_remove_coordinate(&self.left_column, root_col_num, offset_col_num);
+        adjustment_remove_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num) - 1;
         self.right_column =
-            adjustment_remove_coordinate(&self.right_column, root_col_num, offset_col_num);
+        adjustment_remove_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num) - 1;
 
-        self.top_row = adjustment_remove_coordinate(&self.top_row, root_row_num, offset_row_num);
+        self.top_row = adjustment_remove_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
         self.bottom_row =
-            adjustment_remove_coordinate(&self.bottom_row, root_row_num, offset_row_num);
+        adjustment_remove_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
     }
 
     fn is_remove_coordinate(
@@ -215,9 +215,9 @@ impl AdjustmentCoordinate for Anchor {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) -> bool {
-        is_remove_coordinate(&self.left_column, root_col_num, offset_col_num)
-            || is_remove_coordinate(&self.right_column, root_col_num, offset_col_num)
-            || is_remove_coordinate(&self.top_row, root_row_num, offset_row_num)
-            || is_remove_coordinate(&self.bottom_row, root_row_num, offset_row_num)
+        is_remove_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num)
+            || is_remove_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num)
+            || is_remove_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num)
+            || is_remove_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num)
     }
 }

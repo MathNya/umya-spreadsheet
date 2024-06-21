@@ -1,9 +1,11 @@
+use helper::coordinate::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::UInt32Value;
+use traits::AdjustmentValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -59,5 +61,26 @@ impl CommentRowTarget {
         write_start_tag(writer, "x:Row", vec![], false);
         write_text_node(writer, self.value.get_value_string());
         write_end_tag(writer, "x:Row");
+    }
+}
+impl AdjustmentValue for CommentRowTarget {
+    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.value.set_value(adjustment_insert_coordinate(
+            &self.value.get_value(),
+            root_num,
+            offset_num,
+        ));
+    }
+
+    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+        self.value.set_value(adjustment_remove_coordinate(
+            &self.value.get_value(),
+            root_num,
+            offset_num,
+        ));
+    }
+
+    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
+        is_remove_coordinate(self.value.get_value(), root_num, offset_num)
     }
 }

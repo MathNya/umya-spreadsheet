@@ -127,7 +127,7 @@ pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num
 }
 
 pub(crate) fn is_remove_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> bool {
-    if root_num > &0 {
+    if root_num != &0 && offset_num != &0 {
         return num >= root_num && num < &(root_num + offset_num);
     }
     false

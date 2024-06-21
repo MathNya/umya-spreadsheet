@@ -332,6 +332,12 @@ impl AdjustmentCoordinate for ClientData {
             }
             None => {}
         }
+        match &mut self.comment_row_target {
+            Some(v) => {
+                v.adjustment_insert_value(root_row_num, offset_row_num);
+            }
+            None => {}
+        }
     }
 
     fn adjustment_remove_coordinate(
@@ -350,6 +356,12 @@ impl AdjustmentCoordinate for ClientData {
         match &mut self.comment_column_target {
             Some(v) => {
                 v.adjustment_remove_value(root_col_num, offset_col_num);
+            }
+            None => {}
+        }
+        match &mut self.comment_row_target {
+            Some(v) => {
+                v.adjustment_remove_value(root_row_num, offset_row_num);
             }
             None => {}
         }

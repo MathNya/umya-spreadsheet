@@ -1712,12 +1712,7 @@ impl AdjustmentCoordinate for Worksheet {
 
         // comments
         self.comments.retain(|x| {
-            !(x.get_coordinate().is_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            ))
+            !(x.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for comment in &mut self.comments {
             comment.adjustment_remove_coordinate(

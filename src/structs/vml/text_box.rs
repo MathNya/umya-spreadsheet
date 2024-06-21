@@ -89,7 +89,7 @@ impl TextBox {
                         }
                     });
                     for (key, value) in &attrs {
-                        tag = format!("{} {}={}", tag, key, value);
+                        tag = format!("{} {}='{}'", tag, key, value);
                     }
                     inner_text = format!("{}<{}>", inner_text, tag);
                 }
