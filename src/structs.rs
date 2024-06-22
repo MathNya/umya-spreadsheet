@@ -417,3 +417,9 @@ pub use self::sheet_protection::*;
 
 mod workbook_protection;
 pub use self::workbook_protection::*;
+
+mod cell_formula;
+pub use self::cell_formula::*;
+
+mod cell_formula_values;
+pub use self::cell_formula_values::*;

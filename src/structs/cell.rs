@@ -1,3 +1,4 @@
+use hashbrown::HashMap;
 use helper::number_format::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -6,6 +7,7 @@ use reader::driver::*;
 use std::borrow::Cow;
 use std::io::Cursor;
 use std::sync::{Arc, RwLock};
+use structs::CellFormula;
 use structs::CellRawValue;
 use structs::CellValue;
 use structs::Coordinate;
@@ -182,14 +184,6 @@ impl Cell {
         self.cell_value.get_formula()
     }
 
-    pub(crate) fn get_formula_attributes(&self) -> Vec<(&str, &str)> {
-        self.cell_value.get_formula_attributes()
-    }
-
-    pub(crate) fn set_formula_attributes(&mut self, attributes: Vec<(String, String)>) {
-        self.cell_value.set_formula_attributes(attributes);
-    }
-
     pub(crate) fn get_width_point(&self, column_font_size: &f64) -> f64 {
         // get cell value len.
         let char_cnt = self.get_width_point_cell();
@@ -248,11 +242,14 @@ impl Cell {
         shared_string_table: &SharedStringTable,
         stylesheet: &Stylesheet,
         empty_flag: bool,
+        formula_shared_list: &mut HashMap<u32, (String, String)>,
     ) {
         let mut type_value: String = String::from("");
+        let mut cell_reference: String = String::from("");
 
         if let Some(v) = get_attribute(e, b"r") {
-            self.coordinate.set_coordinate(v);
+            cell_reference = v;
+            self.coordinate.set_coordinate(&cell_reference);
         }
 
         if let Some(v) = get_attribute(e, b"s") {
@@ -273,23 +270,14 @@ impl Cell {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
-                Ok(Event::Start(ref s)) => match s.name().into_inner() {
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
                     b"f" => {
-                        let mut attrs = vec![];
-                        s.attributes().for_each(|a| {
-                            if let Ok(attribute) = a {
-                                if let (Ok(key), Ok(value)) = (
-                                    std::str::from_utf8(attribute.key.into_inner()),
-                                    std::str::from_utf8(attribute.value.as_ref()),
-                                ) {
-                                    attrs.push((key.to_owned(), value.to_owned()));
-                                }
-                            }
-                        });
-                        self.set_formula_attributes(attrs);
+                        let mut obj = CellFormula::default();
+                        obj.set_attributes(reader, e, false, &cell_reference, formula_shared_list);
+                        self.cell_value.set_formula_obj(obj);
                     }
                     b"t" => {
-                        if let Some(Ok(attribute)) = s.attributes().next() {
+                        if let Some(Ok(attribute)) = e.attributes().next() {
                             if attribute.key.into_inner() == b"xml:space"
                                 && attribute.value.as_ref() == b"preserve"
                             {
@@ -299,26 +287,14 @@ impl Cell {
                     }
                     _ => (),
                 },
-                Ok(Event::Empty(ref s)) => {
-                    if s.name().into_inner() == b"f" {
-                        let mut attrs = vec![];
-                        s.attributes().for_each(|a| {
-                            if let Ok(attribute) = a {
-                                if let (Ok(key), Ok(value)) = (
-                                    std::str::from_utf8(attribute.key.into_inner()),
-                                    std::str::from_utf8(attribute.value.as_ref()),
-                                ) {
-                                    attrs.push((key.to_owned(), value.to_owned()));
-                                }
-                            }
-                        });
-                        self.set_formula_attributes(attrs);
+                Ok(Event::Empty(ref e)) => {
+                    if e.name().into_inner() == b"f" {
+                        let mut obj = CellFormula::default();
+                        obj.set_attributes(reader, e, true, &cell_reference, formula_shared_list);
+                        self.cell_value.set_formula_obj(obj);
                     }
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"f" => {
-                        self.set_formula(&string_value);
-                    }
                     b"v" => {
                         if type_value == "str" {
                             self.set_value_str(&string_value);
@@ -397,15 +373,9 @@ impl Cell {
         // f
         match &self.cell_value.formula {
             Some(v) => {
-                write_start_tag(writer, "f", self.get_formula_attributes(), false);
-                write_text_node(writer, v);
-                write_end_tag(writer, "f");
+                v.write_to(writer);
             }
-            None => {
-                if !self.get_formula_attributes().is_empty() {
-                    write_start_tag(writer, "f", self.get_formula_attributes(), true);
-                }
-            }
+            None => {}
         }
 
         // v

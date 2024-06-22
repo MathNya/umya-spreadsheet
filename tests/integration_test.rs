@@ -1430,3 +1430,33 @@ fn issue_190() {
     let path = std::path::Path::new("./tests/result_files/issue_190.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_194() {
+    let path = std::path::Path::new("./tests/test_files/issue_194.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    dbg!(book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("B2")
+        .unwrap()
+        .get_formula());
+    dbg!(book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("C2")
+        .unwrap()
+        .get_formula());
+    dbg!(book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("D2")
+        .unwrap()
+        .get_formula());
+    dbg!(book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("E2")
+        .unwrap()
+        .get_formula());
+}

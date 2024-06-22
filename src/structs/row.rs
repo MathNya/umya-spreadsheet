@@ -6,13 +6,13 @@ use super::SharedStringTable;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
+use hashbrown::HashMap;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use traits::AdjustmentValue;
-
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
@@ -125,19 +125,20 @@ impl Row {
             return;
         }
 
+        let mut formula_shared_list: HashMap<u32, (String, String)> = HashMap::new();
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"c" {
                     let mut obj = Cell::default();
-                    obj.set_attributes(reader, e, shared_string_table, stylesheet, true);
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, true, &mut formula_shared_list);
                     cells.set_fast(obj);
                 }
             },
             Event::Start(ref e) => {
                 if e.name().into_inner() == b"c" {
                     let mut obj = Cell::default();
-                    obj.set_attributes(reader, e, shared_string_table, stylesheet, false);
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, false, &mut formula_shared_list);
                     cells.set_fast(obj);
                 }
             },

@@ -1,6 +1,6 @@
 use chrono::format;
+use hashbrown::HashMap;
 use html_parser::{Dom, Element, Node};
-use std::collections::HashMap;
 use structs::Color;
 use structs::Font;
 use structs::RichText;

@@ -3,14 +3,14 @@ use super::SharedStringItem;
 use super::Text;
 use helper::formula::*;
 use std::borrow::Cow;
+use structs::CellFormula;
 use structs::CellRawValue;
 use traits::AdjustmentCoordinateWith2Sheet;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
     pub(crate) raw_value: CellRawValue,
-    pub(crate) formula: Option<String>,
-    pub(crate) formula_attributes: Vec<(String, String)>,
+    pub(crate) formula: Option<CellFormula>,
 }
 impl CellValue {
     pub fn get_data_type(&self) -> &str {
@@ -23,17 +23,6 @@ impl CellValue {
 
     pub(crate) fn get_data_type_crate(&self) -> &str {
         self.raw_value.get_data_type()
-    }
-
-    pub fn set_formula_attributes(&mut self, formula_attributes: Vec<(String, String)>) {
-        self.formula_attributes = formula_attributes;
-    }
-
-    pub fn get_formula_attributes(&self) -> Vec<(&str, &str)> {
-        self.formula_attributes
-            .iter()
-            .map(|(a, b)| (a.as_str(), b.as_str()))
-            .collect()
     }
 
     pub fn get_value(&self) -> Cow<'static, str> {
@@ -121,14 +110,31 @@ impl CellValue {
         self
     }
 
+    pub fn is_formula(&self) -> bool {
+        self.formula.is_some()
+    }
+
+    pub fn get_formula(&self) -> &str {
+        match &self.formula {
+            Some(v) => v.get_text(),
+            None => "",
+        }
+    }
+
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.formula = Some(value.into());
+        let mut obj = CellFormula::default();
+        obj.set_text(value.into());
+        self.formula = Some(obj);
+        self
+    }
+
+    pub fn set_formula_obj(&mut self, value: CellFormula) -> &mut Self {
+        self.formula = Some(value);
         self
     }
 
     pub fn remove_formula(&mut self) -> &mut Self {
         self.formula = None;
-        self.formula_attributes.clear();
         self
     }
 
@@ -145,14 +151,6 @@ impl CellValue {
             self.set_rich_text(v.clone());
         }
         self
-    }
-
-    pub fn is_formula(&self) -> bool {
-        self.formula.is_some()
-    }
-
-    pub fn get_formula(&self) -> &str {
-        self.formula.as_deref().unwrap_or("")
     }
 
     pub(crate) fn guess_typed_data(value: &str) -> CellRawValue {
@@ -183,7 +181,7 @@ impl CellValue {
     }
 
     pub(crate) fn is_empty(&self) -> bool {
-        self.is_value_empty() && self.is_formula_empty() && self.is_formula_attributes_empty()
+        self.is_value_empty() && self.is_formula_empty()
     }
 
     pub(crate) fn is_value_empty(&self) -> bool {
@@ -192,10 +190,6 @@ impl CellValue {
 
     pub(crate) fn is_formula_empty(&self) -> bool {
         !self.is_formula()
-    }
-
-    pub(crate) fn is_formula_attributes_empty(&self) -> bool {
-        self.get_formula_attributes().is_empty()
     }
 }
 impl AdjustmentCoordinateWith2Sheet for CellValue {
@@ -208,17 +202,15 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if let Some(v) = &self.formula {
-            let formula = adjustment_insert_formula_coordinate(
-                v,
+        if let Some(v) = &mut self.formula {
+            v.adjustment_insert_coordinate_with_2sheet(
+                self_sheet_name,
+                sheet_name,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
-                sheet_name,
-                self_sheet_name,
             );
-            self.formula = Some(formula);
         }
     }
 
@@ -231,17 +223,15 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if let Some(v) = &self.formula {
-            let formula = adjustment_remove_formula_coordinate(
-                v,
+        if let Some(v) = &mut self.formula {
+            v.adjustment_remove_coordinate_with_2sheet(
+                self_sheet_name,
+                sheet_name,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
-                sheet_name,
-                self_sheet_name,
             );
-            self.formula = Some(formula);
         }
     }
 }
