@@ -249,10 +249,10 @@ impl TwoCellAnchor {
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 
         // xdr:from
-        let _ = &self.from_marker.write_to_from(writer);
+        self.from_marker.write_to_from(writer);
 
         // xdr:to
-        let _ = &self.to_marker.write_to_to(writer);
+        self.to_marker.write_to_to(writer);
 
         // xdr:grpSp
         if let Some(v) = &self.group_shape {

@@ -32,12 +32,11 @@ pub fn excel_to_date_time_object(
     let part_day = part_day * 60f64 - minutes;
     let seconds = (part_day * 60f64).round();
 
-    base_date += Duration::days(days as i64);
-    base_date += Duration::hours(hours as i64);
-    base_date += Duration::minutes(minutes as i64);
-    base_date += Duration::seconds(seconds as i64);
-
     base_date
+        + Duration::days(days as i64)
+        + Duration::hours(hours as i64)
+        + Duration::minutes(minutes as i64)
+        + Duration::seconds(seconds as i64)
 }
 
 fn get_default_timezone() -> String {

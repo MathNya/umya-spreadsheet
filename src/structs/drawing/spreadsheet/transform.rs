@@ -115,10 +115,10 @@ impl Transform {
         write_start_tag(writer, "xdr:xfrm", attributes, false);
 
         // a:off
-        let _ = &self.offset.write_to(writer);
+        self.offset.write_to(writer);
 
         // a:ext
-        let _ = &self.extents.write_to(writer);
+        self.extents.write_to(writer);
 
         write_end_tag(writer, "xdr:xfrm");
     }

@@ -88,13 +88,13 @@ impl ThemeElements {
         write_start_tag(writer, "a:themeElements", vec![], false);
 
         // a:clrScheme
-        let _ = &self.color_scheme.write_to(writer);
+        self.color_scheme.write_to(writer);
 
         // a:fontScheme
-        let _ = &self.font_scheme.write_to(writer);
+        self.font_scheme.write_to(writer);
 
         // a:fmtScheme
-        let _ = &self.format_scheme.write_to(writer);
+        self.format_scheme.write_to(writer);
 
         write_end_tag(writer, "a:themeElements");
     }

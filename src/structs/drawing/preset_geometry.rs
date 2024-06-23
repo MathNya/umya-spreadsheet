@@ -251,7 +251,7 @@ impl PresetGeometry {
         write_start_tag(writer, "a:prstGeom", vec![("prst", &self.geometry)], false);
 
         // a:avLst
-        let _ = &self.adjust_value_list.write_to(writer);
+        self.adjust_value_list.write_to(writer);
 
         write_end_tag(writer, "a:prstGeom");
     }

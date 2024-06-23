@@ -116,13 +116,13 @@ impl ConnectionShape {
         write_start_tag(writer, "xdr:cxnSp", vec![("macro", "")], false);
 
         // xdr:nvCxnSpPr
-        let _ = &self.non_visual_connection_shape_properties.write_to(writer);
+        self.non_visual_connection_shape_properties.write_to(writer);
 
         // xdr:spPr
-        let _ = &self.shape_properties.write_to(writer, rel_list);
+        self.shape_properties.write_to(writer, rel_list);
 
         // xdr:style
-        let _ = &self.shape_style.write_to(writer);
+        self.shape_style.write_to(writer);
 
         write_end_tag(writer, "xdr:cxnSp");
     }

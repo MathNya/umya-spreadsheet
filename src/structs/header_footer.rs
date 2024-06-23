@@ -78,10 +78,10 @@ impl HeaderFooter {
             write_start_tag(writer, "headerFooter", vec![], false);
 
             // oddHeader
-            let _ = &self.get_odd_header().write_to(writer);
+            self.get_odd_header().write_to(writer);
 
             // oddFooter
-            let _ = &self.get_odd_footer().write_to(writer);
+            self.get_odd_footer().write_to(writer);
 
             write_end_tag(writer, "headerFooter");
         }

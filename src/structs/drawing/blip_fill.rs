@@ -126,7 +126,7 @@ impl BlipFill {
         write_start_tag(writer, "a:blipFill", attributes, false);
 
         // a:blip
-        let _ = &self.blip.write_to(writer, rel_list);
+        self.blip.write_to(writer, rel_list);
 
         // a:srcRect
         if let Some(v) = &self.source_rectangle {
@@ -134,7 +134,7 @@ impl BlipFill {
         }
 
         // a:stretch
-        let _ = &self.stretch.write_to(writer);
+        self.stretch.write_to(writer);
 
         write_end_tag(writer, "a:blipFill");
     }

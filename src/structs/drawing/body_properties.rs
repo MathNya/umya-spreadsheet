@@ -3,6 +3,7 @@ use super::super::EnumValue;
 use super::super::Int32Value;
 use super::ShapeAutoFit;
 use super::TextWrappingValues;
+use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,10 +13,10 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct BodyProperties {
-    vert_overflow: Option<String>,
-    horz_overflow: Option<String>,
-    rtl_col: Option<String>,
-    anchor: Option<String>,
+    vert_overflow: StringValue,
+    horz_overflow: StringValue,
+    rtl_col: StringValue,
+    anchor: StringValue,
     wrap: EnumValue<TextWrappingValues>,
     left_inset: Int32Value,
     top_inset: Int32Value,
@@ -25,39 +26,39 @@ pub struct BodyProperties {
 }
 
 impl BodyProperties {
-    pub fn get_vert_overflow(&self) -> Option<&String> {
-        self.vert_overflow.as_ref()
+    pub fn get_vert_overflow(&self) -> Option<&str> {
+        self.vert_overflow.get_value()
     }
 
     pub fn set_vert_overflow<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
-        self.vert_overflow = Some(value.into());
+        self.vert_overflow.set_value(value);
         self
     }
 
-    pub fn get_horz_overflow(&self) -> Option<&String> {
-        self.horz_overflow.as_ref()
+    pub fn get_horz_overflow(&self) -> Option<&str> {
+        self.horz_overflow.get_value()
     }
 
     pub fn set_horz_overflow<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
-        self.horz_overflow = Some(value.into());
+        self.horz_overflow.set_value(value);
         self
     }
 
-    pub fn get_rtl_col(&self) -> Option<&String> {
-        self.rtl_col.as_ref()
+    pub fn get_rtl_col(&self) -> Option<&str> {
+        self.rtl_col.get_value()
     }
 
     pub fn set_rtl_col<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
-        self.rtl_col = Some(value.into());
+        self.rtl_col.set_value(value);
         self
     }
 
-    pub fn get_anchor(&self) -> Option<&String> {
-        self.anchor.as_ref()
+    pub fn get_anchor(&self) -> Option<&str> {
+        self.anchor.get_value()
     }
 
     pub fn set_anchor<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
-        self.anchor = Some(value.into());
+        self.anchor.set_value(value);
         self
     }
 
@@ -181,16 +182,16 @@ impl BodyProperties {
 
         // a:bodyPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if let Some(v) = &self.vert_overflow {
+        if let Some(v) = self.vert_overflow.get_value() {
             attributes.push(("vertOverflow", v));
         }
-        if let Some(v) = &self.horz_overflow {
+        if let Some(v) = self.horz_overflow.get_value() {
             attributes.push(("horzOverflow", v));
         }
-        if let Some(v) = &self.rtl_col {
+        if let Some(v) = self.rtl_col.get_value() {
             attributes.push(("rtlCol", v));
         }
-        if let Some(v) = &self.anchor {
+        if let Some(v) = self.anchor.get_value() {
             attributes.push(("anchor", v));
         }
         if self.wrap.has_value() {

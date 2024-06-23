@@ -91,10 +91,10 @@ impl FontScheme {
         write_start_tag(writer, "a:fontScheme", attributes, false);
 
         // a:majorFont
-        let _ = &self.major_font.write_to_major_font(writer);
+        self.major_font.write_to_major_font(writer);
 
         // a:minorFont
-        let _ = &self.minor_font.write_to_minor_font(writer);
+        self.minor_font.write_to_minor_font(writer);
 
         write_end_tag(writer, "a:fontScheme");
     }

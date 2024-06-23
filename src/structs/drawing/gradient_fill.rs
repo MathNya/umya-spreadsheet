@@ -130,7 +130,7 @@ impl GradientFill {
         write_start_tag(writer, "a:gradFill", attributes, false);
 
         // a:gsLst
-        let _ = &self.gradient_stop_list.write_to(writer);
+        self.gradient_stop_list.write_to(writer);
 
         // a:lin
         if let Some(v) = &self.linear_gradient_fill {

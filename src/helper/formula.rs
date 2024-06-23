@@ -15,17 +15,17 @@ pub fn adjustment_insert_formula_coordinate(
         let caps_string = caps.get(0).unwrap().as_str().to_string();
         let split_str: Vec<&str> = caps_string.split('!').collect();
         let with_wksheet: bool;
-        let wksheet: String;
-        let range: String;
+        let wksheet: &str;
+        let range: &str;
 
         if split_str.len() == 2 {
             with_wksheet = true;
-            wksheet = split_str.first().unwrap().to_string();
-            range = split_str.get(1).unwrap().to_string();
+            wksheet = split_str.first().unwrap();
+            range = split_str.get(1).unwrap();
         } else {
             with_wksheet = false;
-            wksheet = self_worksheet_name.to_string();
-            range = split_str.first().unwrap().to_string();
+            wksheet = self_worksheet_name;
+            range = split_str.first().unwrap();
         }
 
         if wksheet != worksheet_name {

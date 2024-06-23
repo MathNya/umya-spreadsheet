@@ -1,4 +1,5 @@
 // a:xfrm
+use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,9 +15,9 @@ pub struct Transform2D {
     extents: PositiveSize2DType,
     child_offset: Option<Point2DType>,
     child_extents: Option<PositiveSize2DType>,
-    rot: Option<String>,
-    flip_v: Option<String>,
-    flip_h: Option<String>,
+    rot: StringValue,
+    flip_v: StringValue,
+    flip_h: StringValue,
 }
 
 impl Transform2D {
@@ -68,28 +69,28 @@ impl Transform2D {
         self.child_extents = Some(value);
     }
 
-    pub fn get_rot(&self) -> Option<&String> {
-        self.rot.as_ref()
+    pub fn get_rot(&self) -> Option<&str> {
+        self.rot.get_value()
     }
 
     pub fn set_rot<S: Into<String>>(&mut self, value: S) {
-        self.rot = Some(value.into());
+        self.rot.set_value(value);
     }
 
-    pub fn get_flip_v(&self) -> Option<&String> {
-        self.flip_v.as_ref()
+    pub fn get_flip_v(&self) -> Option<&str> {
+        self.flip_v.get_value()
     }
 
     pub fn set_flip_v<S: Into<String>>(&mut self, value: S) {
-        self.flip_v = Some(value.into());
+        self.flip_v.set_value(value);
     }
 
-    pub fn get_flip_h(&self) -> Option<&String> {
-        self.flip_h.as_ref()
+    pub fn get_flip_h(&self) -> Option<&str> {
+        self.flip_h.get_value()
     }
 
     pub fn set_flip_h<S: Into<String>>(&mut self, value: S) {
-        self.flip_h = Some(value.into());
+        self.flip_h.set_value(value);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -144,13 +145,13 @@ impl Transform2D {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if let Some(v) = &self.rot {
+        if let Some(v) = self.rot.get_value() {
             attributes.push(("rot", v))
         }
-        if let Some(v) = &self.flip_h {
+        if let Some(v) = self.flip_h.get_value() {
             attributes.push(("flipH", v))
         }
-        if let Some(v) = &self.flip_v {
+        if let Some(v) = self.flip_v.get_value() {
             attributes.push(("flipV", v))
         }
         write_start_tag(writer, "a:xfrm", attributes, false);

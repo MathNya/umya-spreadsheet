@@ -107,7 +107,7 @@ impl Paragraph {
         write_start_tag(writer, "a:p", vec![], false);
 
         // a:pPr
-        let _ = &self.paragraph_properties.write_to(writer);
+        self.paragraph_properties.write_to(writer);
 
         // a:r
         for run in &self.run {

@@ -97,10 +97,10 @@ impl PatternFill {
         write_start_tag(writer, "a:pattFill", vec![("prst", &self.preset)], false);
 
         // a:fgClr
-        let _ = &self.foreground_color.write_to(writer);
+        self.foreground_color.write_to(writer);
 
         // a:bgClr
-        let _ = &self.background_color.write_to(writer);
+        self.background_color.write_to(writer);
 
         write_end_tag(writer, "a:pattFill");
     }

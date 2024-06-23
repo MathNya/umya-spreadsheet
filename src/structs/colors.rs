@@ -55,7 +55,7 @@ impl Colors {
         write_start_tag(writer, "colors", vec![], false);
 
         // mruColors
-        let _ = &self.mru_colors.write_to(writer);
+        self.mru_colors.write_to(writer);
 
         write_end_tag(writer, "colors");
     }
