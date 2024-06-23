@@ -132,16 +132,16 @@ impl FormatScheme {
         write_start_tag(writer, "a:fmtScheme", attributes, false);
 
         // a:fillStyleLst
-        let _ = &self.fill_style_list.write_to(writer);
+        self.fill_style_list.write_to(writer);
 
         // a:lnStyleLst
-        let _ = &self.line_style_list.write_to(writer);
+        self.line_style_list.write_to(writer);
 
         // a:effectStyleLst
-        let _ = &self.effect_style_list.write_to(writer);
+        self.effect_style_list.write_to(writer);
 
         // a:bgFillStyleLst
-        let _ = &self.background_fill_style_list.write_to(writer);
+        self.background_fill_style_list.write_to(writer);
 
         write_end_tag(writer, "a:fmtScheme");
     }

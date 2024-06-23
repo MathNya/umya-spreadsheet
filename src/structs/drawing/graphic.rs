@@ -60,7 +60,7 @@ impl Graphic {
         write_start_tag(writer, "a:graphic", vec![], false);
 
         // a:graphicData
-        let _ = &self.graphic_data.write_to(writer, rel_list);
+        self.graphic_data.write_to(writer, rel_list);
 
         write_end_tag(writer, "a:graphic");
     }

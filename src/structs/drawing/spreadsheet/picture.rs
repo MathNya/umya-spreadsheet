@@ -95,13 +95,13 @@ impl Picture {
         write_start_tag(writer, "xdr:pic", vec![], false);
 
         // xdr:nvPicPr
-        let _ = &self.non_visual_picture_properties.write_to(writer);
+        self.non_visual_picture_properties.write_to(writer);
 
         // xdr:blipFill
-        let _ = &self.blip_fill.write_to(writer, rel_list);
+        self.blip_fill.write_to(writer, rel_list);
 
         // xdr:spPr
-        let _ = &self.shape_properties.write_to(writer, rel_list);
+        self.shape_properties.write_to(writer, rel_list);
 
         write_end_tag(writer, "xdr:pic");
     }

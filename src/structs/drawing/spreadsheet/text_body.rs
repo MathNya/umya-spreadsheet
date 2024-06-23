@@ -100,10 +100,10 @@ impl TextBody {
         write_start_tag(writer, "xdr:txBody", vec![], false);
 
         // a:bodyPr
-        let _ = &self.body_properties.write_to(writer);
+        self.body_properties.write_to(writer);
 
         // a:lstStyle
-        let _ = &self.list_style.write_to(writer);
+        self.list_style.write_to(writer);
 
         for content in &self.paragraph {
             content.write_to(writer);

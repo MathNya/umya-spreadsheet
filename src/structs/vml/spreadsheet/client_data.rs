@@ -277,7 +277,7 @@ impl ClientData {
         }
 
         // x:Anchor
-        let _ = &self.anchor.write_to(writer);
+        self.anchor.write_to(writer);
 
         // x:AutoFill
         if let Some(v) = &self.auto_fill {

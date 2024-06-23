@@ -264,40 +264,40 @@ impl ColorScheme {
         write_start_tag(writer, "a:clrScheme", attributes, false);
 
         // a:dk1
-        let _ = &self.dk1.write_to_dk1(writer);
+        self.dk1.write_to_dk1(writer);
 
         // a:lt1
-        let _ = &self.lt1.write_to_lt1(writer);
+        self.lt1.write_to_lt1(writer);
 
         // a:dk2
-        let _ = &self.dk2.write_to_dk2(writer);
+        self.dk2.write_to_dk2(writer);
 
         // a:lt2
-        let _ = &self.lt2.write_to_lt2(writer);
+        self.lt2.write_to_lt2(writer);
 
         // a:accent1
-        let _ = &self.accent1.write_to_accent1(writer);
+        self.accent1.write_to_accent1(writer);
 
         // a:accent2
-        let _ = &self.accent2.write_to_accent2(writer);
+        self.accent2.write_to_accent2(writer);
 
         // a:accent3
-        let _ = &self.accent3.write_to_accent3(writer);
+        self.accent3.write_to_accent3(writer);
 
         // a:accent4
-        let _ = &self.accent4.write_to_accent4(writer);
+        self.accent4.write_to_accent4(writer);
 
         // a:accent5
-        let _ = &self.accent5.write_to_accent5(writer);
+        self.accent5.write_to_accent5(writer);
 
         // a:accent6
-        let _ = &self.accent6.write_to_accent6(writer);
+        self.accent6.write_to_accent6(writer);
 
         // a:hlink
-        let _ = &self.hlink.write_to_hlink(writer);
+        self.hlink.write_to_hlink(writer);
 
         // a:folHlink
-        let _ = &self.fol_hlink.write_to_fol_hlink(writer);
+        self.fol_hlink.write_to_fol_hlink(writer);
 
         write_end_tag(writer, "a:clrScheme");
     }

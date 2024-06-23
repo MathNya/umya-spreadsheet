@@ -57,7 +57,7 @@ impl ForegroundColor {
         write_start_tag(writer, "a:fgClr", vec![], false);
 
         // a:schemeClr
-        let _ = &self.scheme_color.write_to(writer);
+        self.scheme_color.write_to(writer);
 
         write_end_tag(writer, "a:fgClr");
     }

@@ -84,7 +84,7 @@ impl GradientStop {
         );
 
         // color
-        let _ = &self.color.write_to_color(writer);
+        self.color.write_to_color(writer);
 
         write_end_tag(writer, "stop");
     }

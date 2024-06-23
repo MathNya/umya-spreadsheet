@@ -135,10 +135,10 @@ impl Shape {
         );
 
         // xdr:nvSpPr
-        let _ = &self.non_visual_shape_properties.write_to(writer, ole_id);
+        self.non_visual_shape_properties.write_to(writer, ole_id);
 
         // xdr:spPr
-        let _ = &self.shape_properties.write_to(writer, rel_list);
+        self.shape_properties.write_to(writer, rel_list);
 
         // xdr:style
         if let Some(v) = &self.shape_style {

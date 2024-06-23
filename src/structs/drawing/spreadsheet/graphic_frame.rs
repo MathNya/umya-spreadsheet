@@ -123,13 +123,13 @@ impl GraphicFrame {
         );
 
         // xdr:nvGraphicFramePr
-        let _ = &self.non_visual_graphic_frame_properties.write_to(writer);
+        self.non_visual_graphic_frame_properties.write_to(writer);
 
         // xdr:xfrm
-        let _ = &self.transform.write_to(writer);
+        self.transform.write_to(writer);
 
         // a:graphic
-        let _ = &self.graphic.write_to(writer, rel_list);
+        self.graphic.write_to(writer, rel_list);
 
         write_end_tag(writer, "xdr:graphicFrame");
     }

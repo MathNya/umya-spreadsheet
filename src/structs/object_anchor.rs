@@ -115,10 +115,10 @@ impl ObjectAnchor {
         write_start_tag(writer, "anchor", attributes, false);
 
         // xdr:from
-        let _ = &self.from_marker.write_to(writer);
+        self.from_marker.write_to(writer);
 
         // xdr:to
-        let _ = &self.to_marker.write_to(writer);
+        self.to_marker.write_to(writer);
 
         write_end_tag(writer, "anchor");
     }
