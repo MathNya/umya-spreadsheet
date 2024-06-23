@@ -395,7 +395,7 @@ impl Cell {
 
         write_start_tag(writer, "c", attributes, false);
         // f
-        match self.cell_value.formula.get_value() {
+        match &self.cell_value.formula {
             Some(v) => {
                 write_start_tag(writer, "f", self.get_formula_attributes(), false);
                 write_text_node(writer, v);
