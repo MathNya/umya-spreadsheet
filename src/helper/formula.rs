@@ -2,6 +2,7 @@ use fancy_regex::{Captures, Regex};
 use helper::coordinate::*;
 use structs::StringValue;
 
+#[derive(Clone, Debug, PartialEq)]
 pub enum FormulaTokenTypes {
     Noop,
     Operand,
@@ -14,6 +15,8 @@ pub enum FormulaTokenTypes {
     Whitespace,
     Unknown,
 }
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum FormulaTokenSubTypes {
     Nothing,
     Start,
@@ -29,8 +32,8 @@ pub enum FormulaTokenSubTypes {
     Union,
 }
 
-pub struct FormulaToken
-{
+#[derive(Clone, Debug)]
+pub struct FormulaToken {
     value: StringValue,
     token_type: FormulaTokenTypes,
     token_sub_type: FormulaTokenSubTypes,
@@ -73,44 +76,51 @@ impl FormulaToken {
     }
 }
 
-const QUOTE_DOUBLE: &str = "\"";
-const QUOTE_SINGLE: &str = "'";
-const BRACKET_CLOSE: &str = "]";
-const BRACKET_OPEN: &str = "[";
-const BRACE_OPEN: &str = "{";
-const BRACE_CLOSE: &str = "}";
-const PAREN_OPEN: &str = "(";
-const PAREN_CLOSE: &str = ")";
-const SEMICOLON: &str = ";";
-const WHITESPACE: &str = " ";
-const COMMA: &str = ",";
-const ERROR_START: &str = "#";
+const QUOTE_DOUBLE: char = '"';
+const QUOTE_SINGLE: char = '\'';
+const BRACKET_CLOSE: char = ']';
+const BRACKET_OPEN: char = '[';
+const BRACE_OPEN: char = '{';
+const BRACE_CLOSE: char = '}';
+const PAREN_OPEN: char = '(';
+const PAREN_CLOSE: char = ')';
+const SEMICOLON: char = ';';
+const WHITESPACE: char = ' ';
+const COMMA: char = ',';
+const ERROR_START: char = '#';
 
 const OPERATORS_SN: &str = "+-";
 const OPERATORS_INFIX: &str = "+-*/^&=><";
 const OPERATORS_POSTFIX: &str = "%";
 
-const ERRORS: &[String] = ["#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?", "#NUM!", "#N/A"];
-const COMPARATORS_MULTI: &[String] = [">=", "<=", "<>"];
+pub const ERRORS: &'static [&'static str] = &[
+    "#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?", "#NUM!", "#N/A",
+];
+const COMPARATORS_MULTI: &'static [&'static str] = &[">=", "<=", "<>"];
 
-pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S)-> Vec<FormulaToken>
-{
+lazy_static! {
+    pub static ref SCIENTIFIC_REGEX: Regex = Regex::new(r#"/^[1-9]{1}(\\.\\d+)?E{1}$/"#).unwrap();
+}
+
+pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> {
+    let mut tokens: Vec<FormulaToken> = Vec::new();
+
     let formula = formula.into();
     let formula_length = formula.len();
-    if formula_length < 2 || formula.chars().next().unwrap() != "=" {
-        return;
+    if formula_length < 2 || formula.chars().next().unwrap() != '=' {
+        return tokens;
     }
 
     // Helper variables
     let mut tokens1: Vec<FormulaToken> = Vec::new();
-    let mut tokens2: Vec<Vec<FormulaToken>> = Vec::new();
+    let mut tokens2: Vec<FormulaToken> = Vec::new();
     let mut stack: Vec<FormulaToken> = Vec::new();
-    
+
     let mut in_string = false;
     let mut in_path = false;
     let mut in_range = false;
     let mut in_error = false;
-    let mut next_token:Option<FormulaToken> = None;
+    let mut next_token: Option<FormulaToken> = None;
 
     let mut index = 1;
     let mut value = String::from("");
@@ -120,21 +130,23 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S)-> Vec<FormulaToken>
         // embeds are doubled
         // end marks token
         if in_string {
-            if formula[index] == self::QUOTE_DOUBLE {
-                if ((index + 2) <= formula_length) && (formula[index + 1] == self::QUOTE_DOUBLE) {
-                    value += self::QUOTE_DOUBLE;
+            if formula.chars().nth(index).unwrap() == self::QUOTE_DOUBLE {
+                if ((index + 2) <= formula_length)
+                    && (formula.chars().nth(index + 1).unwrap() == self::QUOTE_DOUBLE)
+                {
+                    value = format!("{}{}", value, self::QUOTE_DOUBLE);
                     index += 1;
                 } else {
                     in_string = false;
                     let mut obj = FormulaToken::default();
                     obj.set_value(value);
-                    obj.set_token_type(FormulaToken::Operand);
+                    obj.set_token_type(FormulaTokenTypes::Operand);
                     obj.set_token_sub_type(FormulaTokenSubTypes::Text);
                     tokens1.push(obj);
                     value = String::from("");
                 }
             } else {
-                value += formula[index];
+                value = format!("{}{}", value, formula.chars().nth(index).unwrap());
             }
             index += 1;
 
@@ -145,15 +157,17 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S)-> Vec<FormulaToken>
         // embeds are double
         // end does not mark a token
         if in_path {
-            if formula[index] == self::QUOTE_SINGLE {
-                if ((index + 2) <= formula_length) && (formula[index + 1] == self::QUOTE_SINGLE) {
-                    value += self::QUOTE_SINGLE;
+            if formula.chars().nth(index).unwrap() == self::QUOTE_SINGLE {
+                if ((index + 2) <= formula_length)
+                    && (formula.chars().nth(index + 1).unwrap() == self::QUOTE_SINGLE)
+                {
+                    value = format!("{}{}", value, self::QUOTE_SINGLE);
                     index += 1;
                 } else {
                     in_path = false;
                 }
             } else {
-                value += formula[index];
+                value = format!("{}{}", value, formula.chars().nth(index).unwrap());
             }
             index += 1;
 
@@ -164,10 +178,10 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S)-> Vec<FormulaToken>
         // no embeds (changed to "()" by Excel)
         // end does not mark a token
         if in_range {
-            if formula[index] == self::BRACKET_CLOSE {
+            if formula.chars().nth(index).unwrap() == self::BRACKET_CLOSE {
                 in_range = false;
             }
-            value += formula[index];
+            value = format!("{}{}", value, formula.chars().nth(index).unwrap());
             index;
 
             continue;
@@ -176,13 +190,13 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S)-> Vec<FormulaToken>
         // error values
         // end marks a token, determined from absolute list of values
         if in_error {
-            value += formula[index];
+            value = format!("{}{}", value, formula.chars().nth(index).unwrap());
             index += 1;
-            if in_array(value, self::ERRORS) {
+            if self::ERRORS.iter().any(|&x| x == value.as_str()) {
                 in_error = false;
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
-                obj.set_token_type(FormulaToken::Operand);
+                obj.set_token_type(FormulaTokenTypes::Operand);
                 obj.set_token_sub_type(FormulaTokenSubTypes::Error);
                 tokens1.push(obj);
                 value = String::from("");
@@ -192,11 +206,14 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S)-> Vec<FormulaToken>
         }
 
         // scientific notation check
-        if (str_contains(self::OPERATORS_SN, $this->formula[$index])) {
-            if (strlen($value) > 1) {
-                if (preg_match('/^[1-9]{1}(\\.\\d+)?E{1}$/', $this->formula[$index]) != 0) {
-                    $value .= $this->formula[$index];
-                    ++$index;
+        if self::OPERATORS_SN.contains(formula.chars().nth(index).unwrap()) {
+            if value.len() > 1 {
+                if !SCIENTIFIC_REGEX
+                    .is_match(&formula.chars().nth(index).unwrap().to_string())
+                    .unwrap_or(false)
+                {
+                    value = format!("{}{}", value, formula.chars().nth(index).unwrap());
+                    index += 1;
 
                     continue;
                 }
@@ -206,407 +223,500 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S)-> Vec<FormulaToken>
         // independent character evaluation (order not important)
 
         // establish state-dependent character evaluations
-        if ($this->formula[$index] == self::QUOTE_DOUBLE) {
-            if ($value !== '') {
+        if formula.chars().nth(index).unwrap() == self::QUOTE_DOUBLE {
+            if value != "" {
                 // unexpected
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_UNKNOWN);
-                $value = '';
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Unknown);
+                tokens1.push(obj);
+                value = String::from("");
             }
-            $inString = true;
-            ++$index;
+            in_string = true;
+            index += 1;
 
             continue;
         }
 
-        if ($this->formula[$index] == self::QUOTE_SINGLE) {
-            if ($value !== '') {
+        if formula.chars().nth(index).unwrap() == self::QUOTE_SINGLE {
+            if value != "" {
                 // unexpected
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_UNKNOWN);
-                $value = '';
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Unknown);
+                tokens1.push(obj);
+                value = String::from("");
             }
-            $inPath = true;
-            ++$index;
+            in_string = true;
+            index += 1;
 
             continue;
         }
 
-        if ($this->formula[$index] == self::BRACKET_OPEN) {
-            $inRange = true;
-            $value .= self::BRACKET_OPEN;
-            ++$index;
+        if formula.chars().nth(index).unwrap() == self::BRACKET_OPEN {
+            in_range = true;
+            value = format!("{}{}", value, self::BRACKET_OPEN);
+            index += 1;
 
             continue;
         }
 
-        if ($this->formula[$index] == self::ERROR_START) {
-            if ($value !== '') {
+        if formula.chars().nth(index).unwrap() == self::ERROR_START {
+            if value != "" {
                 // unexpected
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_UNKNOWN);
-                $value = '';
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Unknown);
+                tokens1.push(obj);
+                value = String::from("");
             }
-            $inError = true;
-            $value .= self::ERROR_START;
-            ++$index;
+            in_error = true;
+            value = format!("{}{}", value, self::ERROR_START);
+            index += 1;
 
             continue;
         }
 
         // mark start and end of arrays and array rows
-        if ($this->formula[$index] == self::BRACE_OPEN) {
-            if ($value !== '') {
+        if formula.chars().nth(index).unwrap() == self::BRACE_OPEN {
+            if value != "" {
                 // unexpected
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_UNKNOWN);
-                $value = '';
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Unknown);
+                tokens1.push(obj);
+                value = String::from("");
             }
 
-            $tmp = new FormulaToken('ARRAY', FormulaToken::TOKEN_TYPE_FUNCTION, FormulaToken::TOKEN_SUBTYPE_START);
-            $tokens1[] = $tmp;
-            $stack[] = clone $tmp;
+            let mut obj = FormulaToken::default();
+            obj.set_value("ARRAY");
+            obj.set_token_type(FormulaTokenTypes::Function);
+            obj.set_token_sub_type(FormulaTokenSubTypes::Start);
+            tokens1.push(obj.clone());
+            stack.push(obj);
 
-            $tmp = new FormulaToken('ARRAYROW', FormulaToken::TOKEN_TYPE_FUNCTION, FormulaToken::TOKEN_SUBTYPE_START);
-            $tokens1[] = $tmp;
-            $stack[] = clone $tmp;
+            let mut obj = FormulaToken::default();
+            obj.set_value("ARRAYROW");
+            obj.set_token_type(FormulaTokenTypes::Function);
+            obj.set_token_sub_type(FormulaTokenSubTypes::Start);
+            tokens1.push(obj.clone());
+            stack.push(obj);
 
-            ++$index;
+            index += 1;
 
             continue;
         }
 
-        if ($this->formula[$index] == self::SEMICOLON) {
-            if ($value !== '') {
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                $value = '';
+        if formula.chars().nth(index).unwrap() == self::SEMICOLON {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value = String::from("");
             }
 
-            /** @var FormulaToken $tmp */
-            $tmp = array_pop($stack);
-            $tmp->setValue('');
-            $tmp->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_STOP);
-            $tokens1[] = $tmp;
+            let mut obj = stack.pop().unwrap();
+            obj.set_value("");
+            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+            tokens1.push(obj);
 
-            $tmp = new FormulaToken(',', FormulaToken::TOKEN_TYPE_ARGUMENT);
-            $tokens1[] = $tmp;
+            let mut obj = FormulaToken::default();
+            obj.set_value(",");
+            obj.set_token_type(FormulaTokenTypes::Argument);
+            tokens1.push(obj);
 
-            $tmp = new FormulaToken('ARRAYROW', FormulaToken::TOKEN_TYPE_FUNCTION, FormulaToken::TOKEN_SUBTYPE_START);
-            $tokens1[] = $tmp;
-            $stack[] = clone $tmp;
+            let mut obj = FormulaToken::default();
+            obj.set_value("ARRAYROW");
+            obj.set_token_type(FormulaTokenTypes::Function);
+            obj.set_token_sub_type(FormulaTokenSubTypes::Start);
+            tokens1.push(obj.clone());
+            stack.push(obj);
 
-            ++$index;
+            index += 1;
 
             continue;
         }
 
-        if ($this->formula[$index] == self::BRACE_CLOSE) {
-            if ($value !== '') {
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                $value = '';
+        if formula.chars().nth(index).unwrap() == self::BRACE_CLOSE {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value = String::from("");
             }
 
-            /** @var FormulaToken $tmp */
-            $tmp = array_pop($stack);
-            $tmp->setValue('');
-            $tmp->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_STOP);
-            $tokens1[] = $tmp;
+            let mut obj = stack.pop().unwrap().clone();
+            obj.set_value("");
+            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+            tokens1.push(obj);
 
-            /** @var FormulaToken $tmp */
-            $tmp = array_pop($stack);
-            $tmp->setValue('');
-            $tmp->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_STOP);
-            $tokens1[] = $tmp;
+            let mut obj = stack.pop().unwrap().clone();
+            obj.set_value("");
+            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+            tokens1.push(obj);
 
-            ++$index;
+            index += 1;
 
             continue;
         }
 
         // trim white-space
-        if ($this->formula[$index] == self::WHITESPACE) {
-            if ($value !== '') {
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                $value = '';
+        if formula.chars().nth(index).unwrap() == self::WHITESPACE {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value = String::from("");
             }
-            $tokens1[] = new FormulaToken('', FormulaToken::TOKEN_TYPE_WHITESPACE);
-            ++$index;
-            while (($this->formula[$index] == self::WHITESPACE) && ($index < $formulaLength)) {
-                ++$index;
+            let mut obj = FormulaToken::default();
+            obj.set_value("");
+            obj.set_token_type(FormulaTokenTypes::Whitespace);
+            tokens1.push(obj);
+            index += 1;
+            while ((formula.chars().nth(index).unwrap() == self::WHITESPACE)
+                && (index < formula_length))
+            {
+                index += 1;
             }
 
             continue;
         }
 
         // multi-character comparators
-        if (($index + 2) <= $formulaLength) {
-            if (in_array(substr($this->formula, $index, 2), $COMPARATORS_MULTI)) {
-                if ($value !== '') {
-                    $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                    $value = '';
+        if (index + 2) <= formula_length {
+            if COMPARATORS_MULTI
+                .iter()
+                .any(|&x| x == formula.chars().skip(index).take(2).collect::<String>())
+            {
+                if value != "" {
+                    let mut obj = FormulaToken::default();
+                    obj.set_value(value);
+                    obj.set_token_type(FormulaTokenTypes::Operand);
+                    tokens1.push(obj);
+                    value = String::from("");
                 }
-                $tokens1[] = new FormulaToken(substr($this->formula, $index, 2), FormulaToken::TOKEN_TYPE_OPERATORINFIX, FormulaToken::TOKEN_SUBTYPE_LOGICAL);
-                $index += 2;
+                let mut obj = FormulaToken::default();
+                obj.set_value(formula.chars().skip(index).take(2).collect::<String>());
+                obj.set_token_type(FormulaTokenTypes::OperatorInfix);
+                obj.set_token_sub_type(FormulaTokenSubTypes::Logical);
+                tokens1.push(obj);
+                index += 2;
 
                 continue;
             }
         }
 
         // standard infix operators
-        if (str_contains(self::OPERATORS_INFIX, $this->formula[$index])) {
-            if ($value !== '') {
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                $value = '';
+        if self::OPERATORS_INFIX.contains(formula.chars().nth(index).unwrap()) {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value = String::from("");
             }
-            $tokens1[] = new FormulaToken($this->formula[$index], FormulaToken::TOKEN_TYPE_OPERATORINFIX);
-            ++$index;
+            let mut obj = FormulaToken::default();
+            obj.set_value(formula.chars().nth(index).unwrap());
+            obj.set_token_type(FormulaTokenTypes::OperatorInfix);
+            tokens1.push(obj);
+            index += 1;
 
             continue;
         }
 
         // standard postfix operators (only one)
-        if (str_contains(self::OPERATORS_POSTFIX, $this->formula[$index])) {
-            if ($value !== '') {
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                $value = '';
+        if self::OPERATORS_POSTFIX.contains(formula.chars().nth(index).unwrap()) {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value = String::from("");
             }
-            $tokens1[] = new FormulaToken($this->formula[$index], FormulaToken::TOKEN_TYPE_OPERATORPOSTFIX);
-            ++$index;
+            let mut obj = FormulaToken::default();
+            obj.set_value(formula.chars().nth(index).unwrap());
+            obj.set_token_type(FormulaTokenTypes::OperatorPostfix);
+            tokens1.push(obj);
+            index += 1;
 
             continue;
         }
 
         // start subexpression or function
-        if ($this->formula[$index] == self::PAREN_OPEN) {
-            if ($value !== '') {
-                $tmp = new FormulaToken($value, FormulaToken::TOKEN_TYPE_FUNCTION, FormulaToken::TOKEN_SUBTYPE_START);
-                $tokens1[] = $tmp;
-                $stack[] = clone $tmp;
-                $value = '';
+        if formula.chars().nth(index).unwrap() == self::PAREN_OPEN {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Function);
+                obj.set_token_sub_type(FormulaTokenSubTypes::Start);
+                tokens1.push(obj.clone());
+                stack.push(obj);
+                value = String::from("");
             } else {
-                $tmp = new FormulaToken('', FormulaToken::TOKEN_TYPE_SUBEXPRESSION, FormulaToken::TOKEN_SUBTYPE_START);
-                $tokens1[] = $tmp;
-                $stack[] = clone $tmp;
+                let mut obj = FormulaToken::default();
+                obj.set_value("");
+                obj.set_token_type(FormulaTokenTypes::Subexpression);
+                obj.set_token_sub_type(FormulaTokenSubTypes::Start);
+                tokens1.push(obj.clone());
+                stack.push(obj);
             }
-            ++$index;
+            index += 1;
 
             continue;
         }
 
         // function, subexpression, or array parameters, or operand unions
-        if ($this->formula[$index] == self::COMMA) {
-            if ($value !== '') {
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                $value = '';
+        if formula.chars().nth(index).unwrap() == self::COMMA {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value = String::from("");
             }
 
-            /** @var FormulaToken $tmp */
-            $tmp = array_pop($stack);
-            $tmp->setValue('');
-            $tmp->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_STOP);
-            $stack[] = $tmp;
+            let mut obj = stack.pop().unwrap();
+            obj.set_value("");
+            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+            stack.push(obj.clone());
 
-            if ($tmp->getTokenType() == FormulaToken::TOKEN_TYPE_FUNCTION) {
-                $tokens1[] = new FormulaToken(',', FormulaToken::TOKEN_TYPE_OPERATORINFIX, FormulaToken::TOKEN_SUBTYPE_UNION);
+            if obj.get_token_type() == &FormulaTokenTypes::Function {
+                let mut obj = FormulaToken::default();
+                obj.set_value(",");
+                obj.set_token_type(FormulaTokenTypes::OperatorInfix);
+                obj.set_token_sub_type(FormulaTokenSubTypes::Union);
+                tokens1.push(obj);
             } else {
-                $tokens1[] = new FormulaToken(',', FormulaToken::TOKEN_TYPE_ARGUMENT);
+                let mut obj = FormulaToken::default();
+                obj.set_value(",");
+                obj.set_token_type(FormulaTokenTypes::Argument);
+                tokens1.push(obj);
             }
-            ++$index;
+            index += 1;
 
             continue;
         }
 
         // stop subexpression
-        if ($this->formula[$index] == self::PAREN_CLOSE) {
-            if ($value !== '') {
-                $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
-                $value = '';
+        if formula.chars().nth(index).unwrap() == self::PAREN_CLOSE {
+            if value != "" {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value);
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value = String::from("");
             }
 
-            /** @var FormulaToken $tmp */
-            $tmp = array_pop($stack);
-            $tmp->setValue('');
-            $tmp->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_STOP);
-            $tokens1[] = $tmp;
+            let mut obj = stack.pop().unwrap();
+            obj.set_value("");
+            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+            tokens1.push(obj);
 
-            ++$index;
+            index += 1;
 
             continue;
         }
 
         // token accumulation
-        $value .= $this->formula[$index];
-        ++$index;
+        value = format!("{}{}", value, formula.chars().nth(index).unwrap());
+        index += 1;
     }
 
     // dump remaining accumulation
-    if ($value !== '') {
-        $tokens1[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERAND);
+    if value != "" {
+        let mut obj = FormulaToken::default();
+        obj.set_value(value.clone());
+        obj.set_token_type(FormulaTokenTypes::Operand);
+        tokens1.push(obj);
     }
 
     // move tokenList to new set, excluding unnecessary white-space tokens and converting necessary ones to intersections
-    $tokenCount = count($tokens1);
-    for ($i = 0; $i < $tokenCount; ++$i) {
-        $token = $tokens1[$i];
-        if (isset($tokens1[$i - 1])) {
-            $previousToken = $tokens1[$i - 1];
-        } else {
-            $previousToken = null;
-        }
-        if (isset($tokens1[$i + 1])) {
-            $nextToken = $tokens1[$i + 1];
-        } else {
-            $nextToken = null;
+    let token_count = tokens1.len();
+    let mut previous_token = None;
+    let mut next_token = None;
+    for i in 0..token_count {
+        let token = tokens1.get(i).unwrap();
+        match tokens1.get((i - 1)) {
+            Some(v) => {
+                previous_token = Some(v.clone());
+            }
+            None => {
+                previous_token = None;
+            }
         }
 
-        if ($token->getTokenType() != FormulaToken::TOKEN_TYPE_WHITESPACE) {
-            $tokens2[] = $token;
+        match tokens1.get((i + 1)) {
+            Some(v) => {
+                next_token = Some(tokens1.get((i + 1)).unwrap());
+            }
+            None => {
+                next_token = None;
+            }
+        }
+
+        if token.get_token_type() != &FormulaTokenTypes::Whitespace {
+            tokens2.push(token.clone());
 
             continue;
         }
 
-        if ($previousToken === null) {
+        if previous_token.is_none() {
             continue;
         }
 
-        if (
-            !(
-                (($previousToken->getTokenType() == FormulaToken::TOKEN_TYPE_FUNCTION) && ($previousToken->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_STOP))
-            || (($previousToken->getTokenType() == FormulaToken::TOKEN_TYPE_SUBEXPRESSION) && ($previousToken->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_STOP))
-            || ($previousToken->getTokenType() == FormulaToken::TOKEN_TYPE_OPERAND)
-            )
-        ) {
+        if !(((previous_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Function)
+            && (previous_token.as_ref().unwrap().get_token_sub_type()
+                == &FormulaTokenSubTypes::Stop))
+            || ((previous_token.as_ref().unwrap().get_token_type()
+                == &FormulaTokenTypes::Subexpression)
+                && (previous_token.as_ref().unwrap().get_token_sub_type()
+                    == &FormulaTokenSubTypes::Stop))
+            || (previous_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Operand))
+        {
             continue;
         }
 
-        if ($nextToken === null) {
+        if next_token.is_none() {
             continue;
         }
 
-        if (
-            !(
-                (($nextToken->getTokenType() == FormulaToken::TOKEN_TYPE_FUNCTION) && ($nextToken->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_START))
-            || (($nextToken->getTokenType() == FormulaToken::TOKEN_TYPE_SUBEXPRESSION) && ($nextToken->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_START))
-            || ($nextToken->getTokenType() == FormulaToken::TOKEN_TYPE_OPERAND)
-            )
-        ) {
+        if !(((next_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Function)
+            && (next_token.as_ref().unwrap().get_token_sub_type() == &FormulaTokenSubTypes::Start))
+            || ((next_token.as_ref().unwrap().get_token_type()
+                == &FormulaTokenTypes::Subexpression)
+                && (next_token.as_ref().unwrap().get_token_sub_type()
+                    == &FormulaTokenSubTypes::Start))
+            || (next_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Operand))
+        {
             continue;
         }
 
-        $tokens2[] = new FormulaToken($value, FormulaToken::TOKEN_TYPE_OPERATORINFIX, FormulaToken::TOKEN_SUBTYPE_INTERSECTION);
+        let mut obj = FormulaToken::default();
+        obj.set_value(value);
+        obj.set_token_type(FormulaTokenTypes::OperatorInfix);
+        obj.set_token_sub_type(FormulaTokenSubTypes::Intersection);
+        tokens2.push(obj);
+        value = String::from("");
     }
 
     // move tokens to final list, switching infix "-" operators to prefix when appropriate, switching infix "+" operators
     // to noop when appropriate, identifying operand and infix-operator subtypes, and pulling "@" from function names
-    $this->tokens = [];
-
-    $tokenCount = count($tokens2);
-    for ($i = 0; $i < $tokenCount; ++$i) {
-        $token = $tokens2[$i];
-        if (isset($tokens2[$i - 1])) {
-            $previousToken = $tokens2[$i - 1];
-        } else {
-            $previousToken = null;
+    let token_count = tokens2.len();
+    let mut previous_token = None;
+    for i in 0..token_count {
+        let mut token = tokens2.get(i).unwrap().clone();
+        match tokens2.get(i - 1) {
+            Some(v) => {
+                previous_token = Some(v.clone());
+            }
+            None => {
+                previous_token = None;
+            }
         }
 
-        if ($token->getTokenType() == FormulaToken::TOKEN_TYPE_OPERATORINFIX && $token->getValue() == '-') {
-            if ($i == 0) {
-                $token->setTokenType(FormulaToken::TOKEN_TYPE_OPERATORPREFIX);
-            } elseif (
-                (($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_FUNCTION)
-                    && ($previousToken?->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_STOP))
-                || (($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_SUBEXPRESSION)
-                    && ($previousToken?->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_STOP))
-                || ($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_OPERATORPOSTFIX)
-                || ($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_OPERAND)
-            ) {
-                $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_MATH);
+        if token.get_token_type() == &FormulaTokenTypes::OperatorInfix && token.get_value() == "-" {
+            if i == 0 {
+                token.set_token_type(FormulaTokenTypes::OperatorPrefix);
+            } else if ((previous_token.as_ref().unwrap().get_token_type()
+                == &FormulaTokenTypes::Function)
+                && (previous_token.as_ref().unwrap().get_token_sub_type()
+                    == &FormulaTokenSubTypes::Stop))
+                || ((previous_token.as_ref().unwrap().get_token_type()
+                    == &FormulaTokenTypes::Subexpression)
+                    && (previous_token.as_ref().unwrap().get_token_sub_type()
+                        == &FormulaTokenSubTypes::Stop))
+                || (previous_token.as_ref().unwrap().get_token_type()
+                    == &FormulaTokenTypes::OperatorPostfix)
+                || (previous_token.as_ref().unwrap().get_token_type()
+                    == &FormulaTokenTypes::Operand)
+            {
+                token.set_token_sub_type(FormulaTokenSubTypes::Math);
             } else {
-                $token->setTokenType(FormulaToken::TOKEN_TYPE_OPERATORPREFIX);
+                token.set_token_type(FormulaTokenTypes::OperatorPrefix);
             }
 
-            $this->tokens[] = $token;
+            tokens.push(token.clone());
 
             continue;
         }
 
-        if ($token->getTokenType() == FormulaToken::TOKEN_TYPE_OPERATORINFIX && $token->getValue() == '+') {
-            if ($i == 0) {
+        if token.get_token_type() == &FormulaTokenTypes::OperatorInfix && token.get_value() == "+" {
+            if i == 0 {
                 continue;
-            } elseif (
-                (($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_FUNCTION)
-                    && ($previousToken?->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_STOP))
-                || (($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_SUBEXPRESSION)
-                    && ($previousToken?->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_STOP))
-                || ($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_OPERATORPOSTFIX)
-                || ($previousToken?->getTokenType() == FormulaToken::TOKEN_TYPE_OPERAND)
-            ) {
-                $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_MATH);
+            } else if ((previous_token.as_ref().unwrap().get_token_type()
+                == &FormulaTokenTypes::Function)
+                && (previous_token.as_ref().unwrap().get_token_sub_type()
+                    == &FormulaTokenSubTypes::Stop))
+                || ((previous_token.as_ref().unwrap().get_token_type()
+                    == &FormulaTokenTypes::Subexpression)
+                    && (previous_token.as_ref().unwrap().get_token_sub_type()
+                        == &FormulaTokenSubTypes::Stop))
+                || (previous_token.as_ref().unwrap().get_token_type()
+                    == &FormulaTokenTypes::OperatorPostfix)
+                || (previous_token.as_ref().unwrap().get_token_type()
+                    == &FormulaTokenTypes::Operand)
+            {
+                token.set_token_sub_type(FormulaTokenSubTypes::Math);
             } else {
                 continue;
             }
 
-            $this->tokens[] = $token;
+            tokens.push(token.clone());
 
             continue;
         }
 
-        if (
-            $token->getTokenType() == FormulaToken::TOKEN_TYPE_OPERATORINFIX
-            && $token->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_NOTHING
-        ) {
-            if (str_contains('<>=', substr($token->getValue(), 0, 1))) {
-                $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_LOGICAL);
-            } elseif ($token->getValue() == '&') {
-                $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_CONCATENATION);
+        if token.get_token_type() == &FormulaTokenTypes::OperatorInfix
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Nothing
+        {
+            if "<>=".contains(token.get_value().chars().nth(0).unwrap()) {
+                token.set_token_sub_type(FormulaTokenSubTypes::Logical);
+            } else if token.get_value() == "&" {
+                token.set_token_sub_type(FormulaTokenSubTypes::Concatenation);
             } else {
-                $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_MATH);
+                token.set_token_sub_type(FormulaTokenSubTypes::Math);
             }
 
-            $this->tokens[] = $token;
+            tokens.push(token.clone());
 
             continue;
         }
 
-        if (
-            $token->getTokenType() == FormulaToken::TOKEN_TYPE_OPERAND
-            && $token->getTokenSubType() == FormulaToken::TOKEN_SUBTYPE_NOTHING
-        ) {
-            if (!is_numeric($token->getValue())) {
-                if (strtoupper($token->getValue()) == 'TRUE' || strtoupper($token->getValue()) == 'FALSE') {
-                    $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_LOGICAL);
+        if token.get_token_type() == &FormulaTokenTypes::Operand
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Nothing
+        {
+            if !token.get_value().parse::<f64>().is_ok() {
+                if token.get_value().to_uppercase() == "TRUE"
+                    || token.get_value().to_uppercase() == "FALSE"
+                {
+                    token.set_token_sub_type(FormulaTokenSubTypes::Logical);
                 } else {
-                    $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_RANGE);
+                    token.set_token_sub_type(FormulaTokenSubTypes::Range);
                 }
             } else {
-                $token->setTokenSubType(FormulaToken::TOKEN_SUBTYPE_NUMBER);
+                token.set_token_sub_type(FormulaTokenSubTypes::Number);
             }
 
-            $this->tokens[] = $token;
+            tokens.push(token.clone());
 
             continue;
         }
 
-        if ($token->getTokenType() == FormulaToken::TOKEN_TYPE_FUNCTION) {
-            if ($token->getValue() !== '') {
-                if (str_starts_with($token->getValue(), '@')) {
-                    $token->setValue(substr($token->getValue(), 1));
+        if token.get_token_type() == &FormulaTokenTypes::Function {
+            if token.get_value() != "" {
+                if token.get_value().chars().nth(0).unwrap() == '@' {
+                    token.set_value(token.get_value().chars().skip(1).collect::<String>());
                 }
             }
         }
 
-        $this->tokens[] = $token;
+        tokens.push(token.clone());
     }
+    tokens
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 pub fn adjustment_insert_formula_coordinate(
     formula: &str,
