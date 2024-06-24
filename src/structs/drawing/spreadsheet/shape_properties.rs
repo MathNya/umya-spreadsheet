@@ -207,7 +207,7 @@ impl ShapeProperties {
         }
 
         // a:prstGeom
-        let _ = &self.preset_geometry.write_to(writer);
+        self.preset_geometry.write_to(writer);
 
         // a:blipFill
         if let Some(v) = &self.blip_fill {

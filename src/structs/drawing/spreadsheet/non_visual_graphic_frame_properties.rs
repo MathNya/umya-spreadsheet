@@ -91,11 +91,10 @@ impl NonVisualGraphicFrameProperties {
         write_start_tag(writer, "xdr:nvGraphicFramePr", vec![], false);
 
         // xdr:cNvPr
-        let _ = &self.non_visual_drawing_properties.write_to(writer, &0);
+        self.non_visual_drawing_properties.write_to(writer, &0);
 
         // xdr:cNvGraphicFramePr
-        let _ = &self
-            .non_visual_graphic_frame_drawing_properties
+        self.non_visual_graphic_frame_drawing_properties
             .write_to(writer);
 
         write_end_tag(writer, "xdr:nvGraphicFramePr");

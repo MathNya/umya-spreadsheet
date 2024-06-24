@@ -3,6 +3,7 @@ use super::super::EnumValue;
 use super::LineSpacing;
 use super::RunProperties;
 use super::TextAlignmentTypeValues;
+use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,19 +13,19 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ParagraphProperties {
-    right_to_left: Option<String>,
+    right_to_left: StringValue,
     alignment: EnumValue<TextAlignmentTypeValues>,
     default_run_properties: Option<RunProperties>,
     line_spacing: Option<LineSpacing>,
 }
 
 impl ParagraphProperties {
-    pub fn get_right_to_left(&self) -> Option<&String> {
-        self.right_to_left.as_ref()
+    pub fn get_right_to_left(&self) -> Option<&str> {
+        self.right_to_left.get_value()
     }
 
     pub fn set_right_to_left<S: Into<String>>(&mut self, value: S) -> &mut ParagraphProperties {
-        self.right_to_left = Some(value.into());
+        self.right_to_left.set_value(value);
         self
     }
 
@@ -114,7 +115,7 @@ impl ParagraphProperties {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:pPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if let Some(v) = &self.right_to_left {
+        if let Some(v) = self.right_to_left.get_value() {
             attributes.push(("rtl", v));
         }
         if self.alignment.has_value() {

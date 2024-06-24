@@ -110,7 +110,7 @@ fn make_rich_text(html_flat_data_list: &Vec<HtmlFlatData>, method: &AnalysisMeth
     let mut result = RichText::default();
 
     for html_flat_data in html_flat_data_list {
-        let mut font_name: Option<String> = method.font_name(html_flat_data);
+        let mut font_name: Option<&str> = method.font_name(html_flat_data);
         let mut size: Option<f64> = method.size(html_flat_data);
         let mut color: Option<String> = method.color(html_flat_data);
         let mut is_bold: bool = method.is_bold(html_flat_data);
@@ -184,10 +184,11 @@ impl HfdElement {
         self.name == name
     }
 
-    pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<String> {
+    pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<&str> {
         self.attributes
             .get(attribute)
-            .and_then(|v| (self.name == name).then(|| v.to_string()))
+            .and_then(|v| (self.name == name).then(|| v))
+            .map(|x| x.as_str())
     }
 
     pub fn contains_class(&self, class: &str) -> bool {
@@ -197,7 +198,7 @@ impl HfdElement {
 
 pub trait AnalysisMethod {
     fn is_tag(&self, html_flat_data: &HtmlFlatData, tag: &str) -> bool;
-    fn font_name(&self, html_flat_data: &HtmlFlatData) -> Option<String>;
+    fn font_name<'a>(&'a self, html_flat_data: &'a HtmlFlatData) -> Option<&'a str>;
     fn size(&self, html_flat_data: &HtmlFlatData) -> Option<f64>;
     fn color(&self, html_flat_data: &HtmlFlatData) -> Option<String>;
     fn is_bold(&self, html_flat_data: &HtmlFlatData) -> bool;
@@ -211,7 +212,7 @@ pub trait AnalysisMethod {
 #[derive(Clone, Default, Debug)]
 struct DataAnalysis {}
 impl AnalysisMethod for DataAnalysis {
-    fn font_name(&self, html_flat_data: &HtmlFlatData) -> Option<String> {
+    fn font_name<'a>(&'a self, html_flat_data: &'a HtmlFlatData) -> Option<&str> {
         html_flat_data
             .element
             .iter()

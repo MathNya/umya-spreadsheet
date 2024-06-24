@@ -558,7 +558,7 @@ impl Theme {
         write_start_tag(writer, "a:theme", attributes, false);
 
         // a:themeElements
-        let _ = &self.theme_elements.write_to(writer);
+        self.theme_elements.write_to(writer);
 
         // a:objectDefaults
         write_start_tag(writer, "a:objectDefaults", vec![], true);

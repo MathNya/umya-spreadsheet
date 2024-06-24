@@ -191,8 +191,7 @@ impl OleObject {
         write_start_tag(writer, "oleObject", attributes, false);
 
         // objectPr
-        let _ = &self
-            .embedded_object_properties
+        self.embedded_object_properties
             .write_to(writer, &(r_id + 1));
 
         write_end_tag(writer, "oleObject");

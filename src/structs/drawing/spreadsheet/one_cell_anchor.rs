@@ -146,10 +146,10 @@ impl OneCellAnchor {
         write_start_tag(writer, "xdr:oneCellAnchor", vec![], false);
 
         // xdr:from
-        let _ = &self.from_marker.write_to_from(writer);
+        self.from_marker.write_to_from(writer);
 
         // xdr:ext
-        let _ = &self.extent.write_to(writer);
+        self.extent.write_to(writer);
 
         // xdr:grpSp
         if let Some(v) = &self.group_shape {

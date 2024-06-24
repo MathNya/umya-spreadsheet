@@ -405,31 +405,31 @@ impl Stylesheet {
         );
 
         // numFmts
-        let _ = &self.numbering_formats.write_to(writer);
+        self.numbering_formats.write_to(writer);
 
         // fonts
-        let _ = &self.fonts.write_to(writer);
+        self.fonts.write_to(writer);
 
         // fills
-        let _ = &self.fills.write_to(writer);
+        self.fills.write_to(writer);
 
         // borders
-        let _ = &self.borders.write_to(writer);
+        self.borders.write_to(writer);
 
         // cellStyleXfs
-        let _ = &self.cell_style_formats.write_to(writer);
+        self.cell_style_formats.write_to(writer);
 
         // cellXfs
-        let _ = &self.cell_formats.write_to(writer);
+        self.cell_formats.write_to(writer);
 
         // cellStyles
-        let _ = &self.cell_styles.write_to(writer);
+        self.cell_styles.write_to(writer);
 
         // dxfs
-        let _ = &self.differential_formats.write_to(writer);
+        self.differential_formats.write_to(writer);
 
         // colors
-        let _ = &self.colors.write_to(writer);
+        self.colors.write_to(writer);
 
         // tableStyles
         write_start_tag(

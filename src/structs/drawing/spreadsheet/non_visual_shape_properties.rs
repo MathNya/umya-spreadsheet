@@ -58,7 +58,7 @@ impl NonVisualShapeProperties {
         write_start_tag(writer, "xdr:nvSpPr", vec![], false);
 
         // xdr:cNvPr
-        let _ = &self.non_visual_drawing_properties.write_to(writer, ole_id);
+        self.non_visual_drawing_properties.write_to(writer, ole_id);
 
         // xdr:cNvSpPr
         write_start_tag(writer, "xdr:cNvSpPr", vec![], true);
