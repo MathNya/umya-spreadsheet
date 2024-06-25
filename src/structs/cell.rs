@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use helper::formula::*;
 use helper::number_format::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -242,7 +243,7 @@ impl Cell {
         shared_string_table: &SharedStringTable,
         stylesheet: &Stylesheet,
         empty_flag: bool,
-        formula_shared_list: &mut HashMap<u32, (String, String)>,
+        formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
     ) {
         let mut type_value: String = String::from("");
         let mut cell_reference: String = String::from("");

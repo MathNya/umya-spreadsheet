@@ -7,6 +7,7 @@ use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
 use hashbrown::HashMap;
+use helper::formula::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -125,7 +126,7 @@ impl Row {
             return;
         }
 
-        let mut formula_shared_list: HashMap<u32, (String, String)> = HashMap::new();
+        let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {

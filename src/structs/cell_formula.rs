@@ -141,7 +141,7 @@ impl CellFormula {
         e: &BytesStart,
         is_empty: bool,
         cell_reference_str: &str,
-        formula_shared_list: &mut HashMap<u32, (String, String)>,
+        formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
     ) {
         set_string_from_xml!(self, e, bx, "bx");
         set_string_from_xml!(self, e, data_table_2d, "dt2D");
@@ -172,7 +172,8 @@ impl CellFormula {
         // Shared
         if self.formula_type.get_value() == &CellFormulaValues::Shared {
             match formula_shared_list.get(self.shared_index.get_value()) {
-                Some((key, value)) => {
+                Some((key, token)) => {
+                    let value = render(token);
                     self.text_view.set_value(value);
                 }
                 None => {
@@ -180,7 +181,7 @@ impl CellFormula {
                         self.shared_index.get_value().clone(),
                         (
                             cell_reference_str.to_string(),
-                            self.text.get_value_str().to_string(),
+                            parse_to_tokens(format!("={}", self.text.get_value_str())),
                         ),
                     );
                 }

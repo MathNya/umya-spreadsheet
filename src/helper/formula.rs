@@ -2,6 +2,11 @@ use fancy_regex::{Captures, Regex};
 use helper::coordinate::*;
 use structs::StringValue;
 
+/** PARTLY BASED ON: */
+/** Copyright (c) 2007 E. W. Bachtal, Inc. */
+/** https://ewbi.blogs.com/develops/2007/03/excel_formula_p.html */
+/** https://ewbi.blogs.com/develops/2004/12/excel_formula_p.html */
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum FormulaTokenTypes {
     Noop,
@@ -539,13 +544,17 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     let mut next_token = None;
     for i in 0..token_count {
         let token = tokens1.get(i).unwrap();
-        match tokens1.get((i - 1)) {
-            Some(v) => {
-                previous_token = Some(v.clone());
+        if i > 0 {
+            match tokens1.get((i - 1)) {
+                Some(v) => {
+                    previous_token = Some(v.clone());
+                }
+                None => {
+                    previous_token = None;
+                }
             }
-            None => {
-                previous_token = None;
-            }
+        } else {
+            previous_token = None;
         }
 
         match tokens1.get((i + 1)) {
@@ -608,13 +617,17 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     let mut previous_token = None;
     for i in 0..token_count {
         let mut token = tokens2.get(i).unwrap().clone();
-        match tokens2.get(i - 1) {
-            Some(v) => {
-                previous_token = Some(v.clone());
+        if i > 0 {
+            match tokens2.get(i - 1) {
+                Some(v) => {
+                    previous_token = Some(v.clone());
+                }
+                None => {
+                    previous_token = None;
+                }
             }
-            None => {
-                previous_token = None;
-            }
+        } else {
+            previous_token = None;
         }
 
         if token.get_token_type() == &FormulaTokenTypes::OperatorInfix && token.get_value() == "-" {
@@ -716,6 +729,43 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         tokens.push(token.clone());
     }
     tokens
+}
+
+pub(crate) fn render(formula_token_list: &Vec<FormulaToken>) -> String {
+    let mut result = String::from("");
+    for token in formula_token_list {
+        if token.get_token_type() == &FormulaTokenTypes::Function
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Start
+        {
+            result = format!("{}{}", result, token.get_value());
+            result = format!("{}{}", result, self::PAREN_OPEN);
+        } else if token.get_token_type() == &FormulaTokenTypes::Function
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Stop
+        {
+            result = format!("{}{}", result, self::PAREN_CLOSE);
+        } else if token.get_token_type() == &FormulaTokenTypes::Subexpression
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Start
+        {
+            result = format!("{}{}", result, self::PAREN_OPEN);
+        } else if token.get_token_type() == &FormulaTokenTypes::Subexpression
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Stop
+        {
+            result = format!("{}{}", result, self::PAREN_CLOSE);
+        } else if token.get_token_type() == &FormulaTokenTypes::Operand
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Text
+        {
+            result = format!("{}{}", result, self::QUOTE_DOUBLE);
+            result = format!("{}{}", result, token.get_value());
+            result = format!("{}{}", result, self::QUOTE_DOUBLE);
+        } else if token.get_token_type() == &FormulaTokenTypes::OperatorInfix
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Intersection
+        {
+            result = format!("{}{}", result, self::WHITESPACE);
+        } else {
+            result = format!("{}{}", result, token.get_value());
+        }
+    }
+    result
 }
 
 pub fn adjustment_insert_formula_coordinate(
