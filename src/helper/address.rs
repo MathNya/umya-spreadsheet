@@ -7,6 +7,13 @@ pub fn split_address(address: &str) -> (&str, &str) {
         .unwrap_or(("", address))
 }
 
+pub fn join_address(sheet_name: &str, address: &str) -> String {
+    if sheet_name == "" {
+        return address.to_string();
+    }
+    format!("{}!{}", sheet_name, address)
+}
+
 #[test]
 fn split_address_test() {
     assert_eq!(split_address("A1"), ("", "A1"));

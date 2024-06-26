@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use helper::coordinate::*;
 use helper::formula::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -172,8 +173,30 @@ impl CellFormula {
         // Shared
         if self.formula_type.get_value() == &CellFormulaValues::Shared {
             match formula_shared_list.get(self.shared_index.get_value()) {
-                Some((key, token)) => {
-                    let value = render(token);
+                Some((parent_cell_reference_str, token)) => {
+                    let parent_cell = index_from_coordinate(parent_cell_reference_str);
+                    let self_cell = index_from_coordinate(cell_reference_str);
+                    let parent_col_num = parent_cell.0.unwrap();
+                    let parent_row_num = parent_cell.1.unwrap();
+                    let self_col_num = self_cell.0.unwrap();
+                    let self_row_num = self_cell.1.unwrap();
+
+                    let root_col_num = parent_col_num;
+                    let root_row_num = parent_row_num;
+                    let offset_col_num = self_col_num - root_col_num;
+                    let offset_row_num = self_row_num - parent_row_num;
+
+                    let mut token_new = token.clone();
+                    let value = adjustment_insert_formula_coordinate(
+                        &mut token_new,
+                        &root_col_num,
+                        &offset_col_num,
+                        &root_row_num,
+                        &offset_row_num,
+                        "",
+                        "",
+                        true,
+                    );
                     self.text_view.set_value(value);
                 }
                 None => {
@@ -254,17 +277,18 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if let Some(v) = &self.text.get_value() {
+        if let Some(v) = self.text.get_value() {
             let formula = adjustment_insert_formula_coordinate(
-                v,
+                &mut parse_to_tokens(v),
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
                 sheet_name,
                 self_sheet_name,
+                false,
             );
-            self.text.set_value(formula);
+            self.text.set_value(format!("={}", formula));
         }
     }
 
@@ -277,17 +301,18 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if let Some(v) = &self.text.get_value() {
+        if let Some(v) = self.text.get_value() {
             let formula = adjustment_remove_formula_coordinate(
-                v,
+                &mut parse_to_tokens(v),
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
                 sheet_name,
                 self_sheet_name,
+                false,
             );
-            self.text.set_value(formula);
+            self.text.set_value(format!("={}", formula));
         }
     }
 }

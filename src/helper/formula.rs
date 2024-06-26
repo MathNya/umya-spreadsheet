@@ -1,5 +1,8 @@
 use fancy_regex::{Captures, Regex};
+use helper::address::*;
 use helper::coordinate::*;
+use helper::coordinate::*;
+use helper::range::*;
 use structs::StringValue;
 
 /** PARTLY BASED ON: */
@@ -769,136 +772,112 @@ pub(crate) fn render(formula_token_list: &Vec<FormulaToken>) -> String {
 }
 
 pub fn adjustment_insert_formula_coordinate(
-    formula: &str,
+    token_list: &mut Vec<FormulaToken>,
     root_col_num: &u32,
     offset_col_num: &u32,
     root_row_num: &u32,
     offset_row_num: &u32,
     worksheet_name: &str,
     self_worksheet_name: &str,
+    ignore_worksheet: bool,
 ) -> String {
-    let re = Regex::new(r"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+").unwrap();
-    let result = re.replace_all(formula, |caps: &Captures| {
-        let caps_string = caps.get(0).unwrap().as_str().to_string();
-        let split_str: Vec<&str> = caps_string.split('!').collect();
-        let with_wksheet: bool;
-        let wksheet: &str;
-        let range: &str;
-
-        if split_str.len() == 2 {
-            with_wksheet = true;
-            wksheet = split_str.first().unwrap();
-            range = split_str.get(1).unwrap();
-        } else {
-            with_wksheet = false;
-            wksheet = self_worksheet_name;
-            range = split_str.first().unwrap();
-        }
-
-        if wksheet != worksheet_name {
-            return caps_string;
-        }
-
-        let split_range: Vec<&str> = range.split(':').collect();
-        let mut result = String::from("");
-
-        for coordinate in split_range {
-            let index_coordinate = index_from_coordinate(coordinate);
-            let is_lock_col = index_coordinate.2.unwrap();
-            let is_lock_row = index_coordinate.3.unwrap();
-            let col_num = adjustment_insert_coordinate(
-                &index_coordinate.0.unwrap(),
-                root_col_num,
-                offset_col_num,
-            );
-            let row_num = adjustment_insert_coordinate(
-                &index_coordinate.1.unwrap(),
-                root_row_num,
-                offset_row_num,
-            );
-            let new_corrdinate =
-                coordinate_from_index_with_lock(&col_num, &row_num, &is_lock_col, &is_lock_row);
-
-            if !&result.is_empty() {
-                result = format!("{}:", result);
+    for token in token_list.into_iter() {
+        if token.get_token_type() == &FormulaTokenTypes::Operand
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Range
+        {
+            let (sheet_name, range) = split_address(token.get_value());
+            if ignore_worksheet
+                || (sheet_name == "" && worksheet_name == self_worksheet_name)
+                || (sheet_name == worksheet_name)
+            {
+                let mut coordinate_list_new: Vec<String> = Vec::new();
+                let coordinate_list = get_split_range(range);
+                for coordinate in &coordinate_list {
+                    let cell = index_from_coordinate(coordinate);
+                    let mut col_num = cell.0.unwrap();
+                    let mut row_num = cell.1.unwrap();
+                    let is_lock_col = cell.2.unwrap();
+                    let is_lock_row = cell.3.unwrap();
+                    if !is_lock_col {
+                        col_num =
+                            adjustment_insert_coordinate(&col_num, root_col_num, offset_col_num);
+                    }
+                    if !is_lock_row {
+                        row_num =
+                            adjustment_insert_coordinate(&row_num, root_row_num, offset_row_num);
+                    }
+                    let new_corrdinate = coordinate_from_index_with_lock(
+                        &col_num,
+                        &row_num,
+                        &is_lock_col,
+                        &is_lock_row,
+                    );
+                    coordinate_list_new.push(new_corrdinate);
+                }
+                let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
+                token.set_value(new_value);
             }
-            result = format!("{}{}", result, new_corrdinate);
         }
-
-        if with_wksheet {
-            result = format!("{}!{}", wksheet, result);
-        }
-
-        result
-    });
-
-    result.into()
+    }
+    render(token_list.as_ref())
 }
 
 pub fn adjustment_remove_formula_coordinate(
-    formula: &str,
+    token_list: &mut Vec<FormulaToken>,
     root_col_num: &u32,
     offset_col_num: &u32,
     root_row_num: &u32,
     offset_row_num: &u32,
     worksheet_name: &str,
     self_worksheet_name: &str,
+    ignore_worksheet: bool,
 ) -> String {
-    let re = Regex::new(r"[^\(]*!*[A-Z]+[0-9]+\:[A-Z]+[0-9]+").unwrap();
-    let result = re.replace_all(formula, |caps: &Captures| {
-        let caps_string = caps.get(0).unwrap().as_str().to_string();
-        let split_str: Vec<&str> = caps_string.split('!').collect();
-        let with_wksheet: bool;
-        let wksheet: String;
-        let range: String;
-
-        if split_str.len() == 2 {
-            with_wksheet = true;
-            wksheet = split_str.first().unwrap().to_string();
-            range = split_str.get(1).unwrap().to_string();
-        } else {
-            with_wksheet = false;
-            wksheet = self_worksheet_name.to_string();
-            range = split_str.first().unwrap().to_string();
-        }
-
-        if wksheet != worksheet_name {
-            return caps_string;
-        }
-
-        let split_range: Vec<&str> = range.split(':').collect();
-        let mut result = String::from("");
-
-        for coordinate in split_range {
-            let index_coordinate = index_from_coordinate(coordinate);
-            let is_lock_col = index_coordinate.2.unwrap();
-            let is_lock_row = index_coordinate.3.unwrap();
-            let col_num = adjustment_remove_coordinate(
-                &index_coordinate.0.unwrap(),
-                root_col_num,
-                offset_col_num,
-            );
-            let row_num = adjustment_remove_coordinate(
-                &index_coordinate.1.unwrap(),
-                root_row_num,
-                offset_row_num,
-            );
-            let new_corrdinate =
-                coordinate_from_index_with_lock(&col_num, &row_num, &is_lock_col, &is_lock_row);
-
-            if !&result.is_empty() {
-                result = format!("{}:", result);
+    for token in token_list.into_iter() {
+        if token.get_token_type() == &FormulaTokenTypes::Operand
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Range
+        {
+            let (sheet_name, range) = split_address(token.get_value());
+            if ignore_worksheet
+                || (sheet_name == "" && worksheet_name == self_worksheet_name)
+                || (sheet_name == worksheet_name)
+            {
+                let mut coordinate_list_new: Vec<String> = Vec::new();
+                let coordinate_list = get_split_range(range);
+                for coordinate in &coordinate_list {
+                    let cell = index_from_coordinate(coordinate);
+                    let mut col_num = cell.0.unwrap();
+                    let mut row_num = cell.1.unwrap();
+                    let is_lock_col = cell.2.unwrap();
+                    let is_lock_row = cell.3.unwrap();
+                    if !is_lock_col {
+                        col_num =
+                            adjustment_remove_coordinate(&col_num, root_col_num, offset_col_num);
+                    }
+                    if !is_lock_row {
+                        row_num =
+                            adjustment_remove_coordinate(&row_num, root_row_num, offset_row_num);
+                    }
+                    let new_corrdinate = coordinate_from_index_with_lock(
+                        &col_num,
+                        &row_num,
+                        &is_lock_col,
+                        &is_lock_row,
+                    );
+                    coordinate_list_new.push(new_corrdinate);
+                }
+                let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
+                token.set_value(new_value);
             }
-
-            result = format!("{}{}", result, new_corrdinate);
         }
+    }
+    render(token_list.as_ref())
+}
 
-        if with_wksheet {
-            result = format!("{}!{}", wksheet, result);
-        }
-
-        result
-    });
-
-    result.into()
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test() {
+        let token = parse_to_tokens("=SUM(Sheet2!E7:I7)");
+    }
 }
