@@ -157,7 +157,7 @@ impl CellValue {
         let uppercase_value = value.to_uppercase();
 
         // Match the value against a few data types
-        if uppercase_value == "NULL" {
+        if uppercase_value == "" {
             return CellRawValue::Empty;
         }
 
