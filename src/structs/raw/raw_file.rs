@@ -28,11 +28,10 @@ impl RawFile {
     }
 
     pub(crate) fn get_extension(&self) -> String {
-        let file_name = self.get_file_name();
-        let v: Vec<&str> = file_name.split('.').collect();
-        let extension = v.last().unwrap();
-
-        extension.to_lowercase()
+        self.get_file_name()
+            .rsplit_once('.')
+            .map(|(_, ext)| ext.to_lowercase())
+            .unwrap()
     }
 
     pub(crate) fn get_file_target(&self) -> &str {

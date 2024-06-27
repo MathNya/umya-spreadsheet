@@ -52,7 +52,7 @@ impl CellValue {
     /// Set the raw value after trying to convert `value` into one of the supported data types.
     /// <br />
     /// Types that `value` may be converted to:
-    /// - `Null` - if the string was `"NULL"`
+    /// - `Empty` - if the string was `"NULL"`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
     /// - `Error` - if the string was `"#VALUE!"`
@@ -158,7 +158,7 @@ impl CellValue {
 
         // Match the value against a few data types
         if uppercase_value == "NULL" {
-            return CellRawValue::Null;
+            return CellRawValue::Empty;
         }
 
         if let Ok(f) = value.parse::<f64>() {
