@@ -2,8 +2,6 @@ use super::RichText;
 use super::Text;
 use std::fmt;
 
-/// An enum to represent all different data types that can appear as
-/// a value in a worksheet cell
 #[derive(Clone, Debug, PartialEq, PartialOrd, Default)]
 pub enum CellRawValue {
     String(String),
