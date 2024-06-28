@@ -106,7 +106,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &Vec<HfdElement>) -> Vec<Htm
     result
 }
 
-fn make_rich_text(html_flat_data_list: &Vec<HtmlFlatData>, method: &AnalysisMethod) -> RichText {
+fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &AnalysisMethod) -> RichText {
     let mut result = RichText::default();
 
     for html_flat_data in html_flat_data_list {

@@ -734,7 +734,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     tokens
 }
 
-pub(crate) fn render(formula_token_list: &Vec<FormulaToken>) -> String {
+pub(crate) fn render(formula_token_list: &[FormulaToken]) -> String {
     let mut result = String::from("");
     for token in formula_token_list {
         if token.get_token_type() == &FormulaTokenTypes::Function
@@ -772,7 +772,7 @@ pub(crate) fn render(formula_token_list: &Vec<FormulaToken>) -> String {
 }
 
 pub fn adjustment_insert_formula_coordinate(
-    token_list: &mut Vec<FormulaToken>,
+    token_list: &mut [FormulaToken],
     root_col_num: &u32,
     offset_col_num: &u32,
     root_row_num: &u32,
@@ -823,7 +823,7 @@ pub fn adjustment_insert_formula_coordinate(
 }
 
 pub fn adjustment_remove_formula_coordinate(
-    token_list: &mut Vec<FormulaToken>,
+    token_list: &mut [FormulaToken],
     root_col_num: &u32,
     offset_col_num: &u32,
     root_row_num: &u32,

@@ -70,6 +70,6 @@ pub fn get_split_range(range: &str) -> Vec<&str> {
     range.split(':').collect()
 }
 
-pub fn get_join_range(coordinate_list: &Vec<String>) -> String {
+pub fn get_join_range(coordinate_list: &[String]) -> String {
     coordinate_list.join(":")
 }

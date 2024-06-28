@@ -89,7 +89,7 @@ impl Picture {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut [(String, String)],
     ) {
         // xdr:pic
         write_start_tag(writer, "xdr:pic", vec![], false);

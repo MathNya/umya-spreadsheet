@@ -350,7 +350,7 @@ impl WorksheetDrawing {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         ole_objects: &OleObjects,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut [(String, String)],
     ) {
         // xdr:wsDr
         write_start_tag(
