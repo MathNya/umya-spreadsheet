@@ -51,8 +51,8 @@ impl RawFile {
         &mut self.file_data
     }
 
-    pub(crate) fn set_file_data(&mut self, value: Vec<u8>) -> &mut Self {
-        self.file_data = value;
+    pub(crate) fn set_file_data(&mut self, value: &[u8]) -> &mut Self {
+        self.file_data = value.into();
         self
     }
 
@@ -68,7 +68,7 @@ impl RawFile {
         r.read_to_end(&mut buf).unwrap();
 
         self.set_file_target(path_str);
-        self.set_file_data(buf);
+        self.set_file_data(&buf);
     }
 
     pub(crate) fn write_to<W: io::Seek + io::Write>(

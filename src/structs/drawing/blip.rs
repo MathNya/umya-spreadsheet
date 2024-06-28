@@ -74,10 +74,10 @@ impl Blip {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut [(String, String)],
     ) {
         // a:blip
-        let r_id = self.image.get_rid(rel_list);
+        let r_id = self.image.get_rid(rel_list.to_vec());
         let r_id_str = format!("rId{}", r_id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("xmlns:r", REL_OFC_NS));

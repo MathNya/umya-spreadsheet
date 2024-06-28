@@ -11,8 +11,8 @@ use structs::WriterManager;
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     drawing_no: &str,
-    chart_no_list: &Vec<String>,
-    rel_list: &Vec<(String, String)>,
+    chart_no_list: &[String],
+    rel_list: &[(String, String)],
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut is_write = false;
