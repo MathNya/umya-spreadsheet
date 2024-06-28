@@ -1437,24 +1437,30 @@ fn issue_194() {
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
     book.get_sheet_mut(&0).unwrap().insert_new_column("D", &1);
 
-    dbg!(book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("B2")
-        .unwrap()
-        .get_formula());
-    dbg!(book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C2")
-        .unwrap()
-        .get_formula());
-    dbg!(book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("E2")
-        .unwrap()
-        .get_formula());
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("B2")
+            .unwrap()
+            .get_formula(),
+        "SUM(B1)"
+    );
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("C2")
+            .unwrap()
+            .get_formula(),
+        "SUM(C1)"
+    );
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("E2")
+            .unwrap()
+            .get_formula(),
+        "SUM(D1)"
+    );
 
     let path = std::path::Path::new("./tests/result_files/issue_194.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
