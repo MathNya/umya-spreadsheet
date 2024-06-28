@@ -121,6 +121,10 @@ impl CellValue {
         }
     }
 
+    pub fn get_formula_obj(&self) -> Option<&CellFormula> {
+        self.formula.as_ref()
+    }
+
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let mut obj = CellFormula::default();
         obj.set_text(value.into());

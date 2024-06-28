@@ -1435,6 +1435,8 @@ fn issue_190() {
 fn issue_194() {
     let path = std::path::Path::new("./tests/test_files/issue_194.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    book.get_sheet_mut(&0).unwrap().insert_new_column("D", &1);
+
     dbg!(book
         .get_sheet(&0)
         .unwrap()
@@ -1450,13 +1452,10 @@ fn issue_194() {
     dbg!(book
         .get_sheet(&0)
         .unwrap()
-        .get_cell("D2")
-        .unwrap()
-        .get_formula());
-    dbg!(book
-        .get_sheet(&0)
-        .unwrap()
         .get_cell("E2")
         .unwrap()
         .get_formula());
+
+    let path = std::path::Path::new("./tests/result_files/issue_194.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

@@ -9,6 +9,7 @@ use std::borrow::Cow;
 use std::io::Cursor;
 use std::sync::{Arc, RwLock};
 use structs::CellFormula;
+use structs::CellFormulaValues;
 use structs::CellRawValue;
 use structs::CellValue;
 use structs::Coordinate;
@@ -185,6 +186,19 @@ impl Cell {
         self.cell_value.get_formula()
     }
 
+    pub fn get_formula_obj(&self) -> Option<&CellFormula> {
+        self.cell_value.get_formula_obj()
+    }
+
+    pub fn get_formula_shared_index(&self) -> Option<&u32> {
+        if let Some(v) = self.get_formula_obj() {
+            if v.get_formula_type() == &CellFormulaValues::Shared {
+                return Some(v.get_shared_index());
+            }
+        }
+        None
+    }
+
     pub(crate) fn get_width_point(&self, column_font_size: &f64) -> f64 {
         // get cell value len.
         let char_cnt = self.get_width_point_cell();
@@ -340,6 +354,7 @@ impl Cell {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         shared_string_table: &Arc<RwLock<SharedStringTable>>,
         stylesheet: &mut Stylesheet,
+        formula_shared_list: &HashMap<&u32, (String, Option<String>)>,
     ) {
         let empty_flag_value = self.cell_value.is_empty();
         let empty_flag_style = self.style.is_empty();
@@ -374,7 +389,7 @@ impl Cell {
         // f
         match &self.cell_value.formula {
             Some(v) => {
-                v.write_to(writer);
+                v.write_to(writer, &coordinate, formula_shared_list);
             }
             None => {}
         }

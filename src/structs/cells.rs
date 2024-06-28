@@ -19,6 +19,21 @@ impl Cells {
         self.map.values().collect()
     }
 
+    pub fn get_collection_sorted(&self) -> Vec<&Cell> {
+        let mut cells = self.get_collection();
+        cells.sort_by(|a, b| {
+            (
+                a.get_coordinate().get_row_num(),
+                a.get_coordinate().get_col_num(),
+            )
+                .cmp(&(
+                    b.get_coordinate().get_row_num(),
+                    b.get_coordinate().get_col_num(),
+                ))
+        });
+        cells
+    }
+
     pub(crate) fn get_collection_mut(&mut self) -> Vec<&mut Cell> {
         self.map.values_mut().collect()
     }

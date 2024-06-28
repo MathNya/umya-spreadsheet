@@ -212,7 +212,12 @@ impl CellFormula {
         }
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        coordinate: &str,
+        formula_shared_list: &HashMap<&u32, (String, Option<String>)>,
+    ) {
         // f
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let bx_str = self.bx.get_value_string();
@@ -253,8 +258,22 @@ impl CellFormula {
             attributes.push(("r2", self.r2.get_value_str()));
         }
 
-        if self.reference.has_value() {
-            attributes.push(("ref", self.reference.get_value_str()));
+        let mut reference_str = String::from("");
+        match formula_shared_list.get(self.shared_index.get_value()) {
+            Some((start_col, end_col)) => {
+                if coordinate == start_col {
+                    reference_str = match end_col {
+                        Some(v) => {
+                            format!("{}:{}", start_col, v)
+                        }
+                        None => {
+                            format!("{}", start_col)
+                        }
+                    };
+                    attributes.push(("ref", &reference_str));
+                }
+            }
+            None => {}
         }
 
         let shared_index_str = self.shared_index.get_value_string();

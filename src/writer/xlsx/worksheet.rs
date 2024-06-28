@@ -1,5 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
+use hashbrown::HashMap;
 use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
@@ -110,17 +111,28 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // it's faster than get cell collection by row.
     // cells sort.
-    let mut cells = worksheet.get_cell_collection();
-    cells.sort_by(|a, b| {
-        (
-            a.get_coordinate().get_row_num(),
-            a.get_coordinate().get_col_num(),
-        )
-            .cmp(&(
-                b.get_coordinate().get_row_num(),
-                b.get_coordinate().get_col_num(),
-            ))
-    });
+    let mut cells = worksheet.get_cell_collection_sorted();
+
+    // make formula shared list
+    let mut formula_shared_list: HashMap<&u32, (String, Option<String>)> = HashMap::new();
+    for cell in &cells {
+        if let Some(si) = cell.get_formula_shared_index() {
+            match formula_shared_list.get(si) {
+                Some((start_cell, _)) => {
+                    formula_shared_list.insert(
+                        si,
+                        (
+                            start_cell.clone(),
+                            Some(cell.get_coordinate().get_coordinate()),
+                        ),
+                    );
+                }
+                None => {
+                    formula_shared_list.insert(si, (cell.get_coordinate().get_coordinate(), None));
+                }
+            }
+        }
+    }
 
     let mut cells_iter = cells.iter().peekable();
 
@@ -150,7 +162,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             row.write_to(&mut writer, stylesheet, spans, false);
             // c
             for cell in cells_in_row {
-                cell.write_to(&mut writer, &shared_string_table, stylesheet);
+                cell.write_to(
+                    &mut writer,
+                    &shared_string_table,
+                    stylesheet,
+                    &formula_shared_list,
+                );
             }
 
             write_end_tag(&mut writer, "row");

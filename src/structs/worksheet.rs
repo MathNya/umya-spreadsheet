@@ -160,6 +160,10 @@ impl Worksheet {
         self.cell_collection.get_collection()
     }
 
+    pub fn get_cell_collection_sorted(&self) -> Vec<&Cell> {
+        self.cell_collection.get_collection_sorted()
+    }
+
     /// Get Cell List in mutable.
     pub fn get_cell_collection_mut(&mut self) -> Vec<&mut Cell> {
         self.cell_collection.get_collection_mut()
