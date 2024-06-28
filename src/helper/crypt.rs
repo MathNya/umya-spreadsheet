@@ -93,7 +93,7 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
     workbook_protection.remove_revisions_password_raw();
 }
 
-pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &Vec<u8>, password: &str) {
+pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     // package params
     let package_key = gen_random_32();
     let package_cipher_algorithm = "AES";
@@ -264,9 +264,9 @@ fn crypt_package(
     cipher_chaining: &str,
     hash_algorithm: &str,
     block_size: &usize,
-    salt_value: &Vec<u8>,
-    key: &Vec<u8>,
-    input: &Vec<u8>,
+    salt_value: &[u8],
+    key: &[u8],
+    input: &[u8],
 ) -> Vec<u8> {
     // The first 8 bytes is supposed to be the length, but it seems like it is really the length - 4..
     let mut output_chunks: Vec<Vec<u8>> = Vec::new();
@@ -313,7 +313,7 @@ fn crypt_package(
     }
 
     // Concat all of the output chunks.
-    let output_chunks_as: Vec<&Vec<u8>> = output_chunks.iter().map(AsRef::as_ref).collect();
+    let output_chunks_as: Vec<_> = output_chunks.iter().map(AsRef::as_ref).collect();
     let mut output = buffer_concat(output_chunks_as);
 
     if *encrypt {
@@ -335,9 +335,9 @@ fn crypt_package(
 // Create an initialization vector (IV)
 fn create_iv(
     hash_algorithm: &str,
-    salt_value: &Vec<u8>,
+    salt_value: &[u8],
     block_size: &usize,
-    block_key: &Vec<u8>,
+    block_key: &[u8],
 ) -> Vec<u8> {
     // Create the initialization vector by hashing the salt with the block key.
     // Truncate or pad as needed to meet the block size.
@@ -361,9 +361,9 @@ fn crypt(
     _encrypt: &bool,
     _cipher_algorithm: &str,
     _cipher_chaining: &str,
-    key: &Vec<u8>,
+    key: &[u8],
     iv: &[u8],
-    input: &Vec<u8>,
+    input: &[u8],
 ) -> Result<Vec<u8>, String> {
     let mut buf = [0u8; 4096];
     let pt_len = input.len();
@@ -380,7 +380,7 @@ fn crypt(
     Ok(ct.to_vec())
 }
 
-fn hmac(algorithm: &str, key: &[u8], buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
+fn hmac(algorithm: &str, key: &[u8], buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
     let mut mac = match algorithm {
         "SHA512" => {
             type HmacSha512 = Hmac<Sha512>;
@@ -399,10 +399,10 @@ fn hmac(algorithm: &str, key: &[u8], buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, 
 fn convert_password_to_key(
     password: &str,
     hash_algorithm: &str,
-    salt_value: &Vec<u8>,
+    salt_value: &[u8],
     spin_count: &usize,
     key_bits: &usize,
-    block_key: &Vec<u8>,
+    block_key: &[u8],
 ) -> Vec<u8> {
     // Password must be in unicode buffer
     let mut password_buffer: Vec<u8> = Vec::new();
@@ -441,7 +441,7 @@ fn convert_password_to_key(
 fn convert_password_to_hash(
     password: &str,
     hash_algorithm: &str,
-    salt_value: &Vec<u8>,
+    salt_value: &[u8],
     spin_count: &usize,
 ) -> Vec<u8> {
     // Password must be in unicode buffer
@@ -466,10 +466,9 @@ fn convert_password_to_hash(
 }
 
 // Calculate a hash of the concatenated buffers with the given algorithm.
-fn hash(algorithm: &str, buffers: Vec<&Vec<u8>>) -> Result<Vec<u8>, String> {
+fn hash(algorithm: &str, buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
     let mut digest = match algorithm {
-        "SHA512" => Sha512::new(),
-        "SHA-512" => Sha512::new(),
+        "SHA512" | "SHA-512" => Sha512::new(),
         _ => {
             return Err(format!("algorithm {} not supported!", algorithm));
         }
@@ -506,26 +505,26 @@ fn create_uint32_le_buffer(value: &u32, buffer_size: Option<&usize>) -> Vec<u8> 
 
 #[allow(clippy::too_many_arguments)]
 fn build_encryption_info(
-    package_salt_value: &Vec<u8>,
+    package_salt_value: &[u8],
     package_block_size: &usize,
     package_key_bits: &usize,
     package_hash_size: &usize,
     package_cipher_algorithm: &str,
     package_cipher_chaining: &str,
     package_hash_algorithm: &str,
-    data_integrity_encrypted_hmac_key: &Vec<u8>,
-    data_integrity_encrypted_hmac_value: &Vec<u8>,
+    data_integrity_encrypted_hmac_key: &[u8],
+    data_integrity_encrypted_hmac_value: &[u8],
     key_spin_count: &usize,
-    key_salt_value: &Vec<u8>,
+    key_salt_value: &[u8],
     key_block_size: &usize,
     key_key_bits: &usize,
     key_hash_size: &usize,
     key_cipher_algorithm: &str,
     key_cipher_chaining: &str,
     key_hash_algorithm: &str,
-    key_encrypted_verifier_hash_input: &Vec<u8>,
-    key_encrypted_verifier_hash_value: &Vec<u8>,
-    key_encrypted_key_value: &Vec<u8>,
+    key_encrypted_verifier_hash_input: &[u8],
+    key_encrypted_verifier_hash_value: &[u8],
+    key_encrypted_key_value: &[u8],
 ) -> Vec<u8> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
@@ -640,7 +639,7 @@ fn buffer_alloc(alloc_char: u8, size: usize) -> Vec<u8> {
     vec![alloc_char; size]
 }
 
-fn buffer_concat(buffers: Vec<&Vec<u8>>) -> Vec<u8> {
+fn buffer_concat(buffers: Vec<&[u8]>) -> Vec<u8> {
     let mut result: Vec<u8> = Vec::new();
     for buffer in buffers {
         result.extend(buffer);

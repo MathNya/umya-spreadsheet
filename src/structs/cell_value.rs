@@ -52,7 +52,7 @@ impl CellValue {
     /// Set the raw value after trying to convert `value` into one of the supported data types.
     /// <br />
     /// Types that `value` may be converted to:
-    /// - `Null` - if the string was `"NULL"`
+    /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
     /// - `Error` - if the string was `"#VALUE!"`
@@ -156,28 +156,19 @@ impl CellValue {
     pub(crate) fn guess_typed_data(value: &str) -> CellRawValue {
         let uppercase_value = value.to_uppercase();
 
-        // Match the value against a few data types
-        if uppercase_value == "NULL" {
-            return CellRawValue::Null;
+        match uppercase_value.as_str() {
+            "" => CellRawValue::Empty,
+            "TRUE" => CellRawValue::Bool(true),
+            "FALSE" => CellRawValue::Bool(false),
+            "#VALUE!" => CellRawValue::Error,
+            _ => {
+                if let Ok(f) = value.parse::<f64>() {
+                    CellRawValue::Numeric(f)
+                } else {
+                    CellRawValue::String(value.into())
+                }
+            }
         }
-
-        if let Ok(f) = value.parse::<f64>() {
-            return CellRawValue::Numeric(f);
-        }
-
-        if uppercase_value == "TRUE" {
-            return CellRawValue::Bool(true);
-        }
-
-        if uppercase_value == "FALSE" {
-            return CellRawValue::Bool(false);
-        }
-
-        if uppercase_value == "#VALUE!" {
-            return CellRawValue::Error;
-        }
-
-        CellRawValue::String(value.into())
     }
 
     pub(crate) fn is_empty(&self) -> bool {

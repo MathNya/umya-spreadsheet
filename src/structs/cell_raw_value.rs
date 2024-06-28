@@ -2,7 +2,7 @@ use super::RichText;
 use super::Text;
 use std::fmt;
 
-#[derive(Clone, Debug, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Default)]
 pub enum CellRawValue {
     String(String),
     Str(String),
@@ -12,7 +12,8 @@ pub enum CellRawValue {
     Bool(bool),
     Inline,
     Error,
-    Null,
+    #[default]
+    Empty,
 }
 impl fmt::Display for CellRawValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -26,11 +27,7 @@ impl fmt::Display for CellRawValue {
         }
     }
 }
-impl Default for CellRawValue {
-    fn default() -> Self {
-        Self::Null
-    }
-}
+
 impl CellRawValue {
     pub fn get_data_type(&self) -> &str {
         match self {

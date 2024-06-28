@@ -18,7 +18,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     ole_object_no_list: &[String],
     excel_no_list: &[String],
     printer_settings_no: &str,
-    table_no_list: &Vec<String>,
+    table_no_list: &[String],
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut is_write = false;

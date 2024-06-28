@@ -97,7 +97,7 @@ impl Cell {
     /// Set the cell's value after trying to convert `value` into one of the supported data types.
     /// <br />
     /// Types that `value` may be converted to:
-    /// - `Null` - if the string was `"NULL"`
+    /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
     /// - `Error` - if the string was `"#VALUE!"`

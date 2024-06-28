@@ -116,7 +116,7 @@ impl BlipFill {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut Vec<(String, String)>,
+        rel_list: &mut [(String, String)],
     ) {
         // a:blipFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
