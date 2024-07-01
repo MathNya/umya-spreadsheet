@@ -196,7 +196,7 @@ impl ShapeProperties {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut [(String, String)],
+        rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:spPr
         write_start_tag(writer, "xdr:spPr", vec![], false);

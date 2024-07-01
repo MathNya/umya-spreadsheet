@@ -878,6 +878,22 @@ mod tests {
     use super::*;
     #[test]
     fn test() {
-        let token = parse_to_tokens("=SUM(Sheet2!E7:I7)");
+        let formula = "=SUM(E7:I7)";
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
+
+        let formula = "=SUM(Sheet2!E7:I7)";
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
+
+        let formula = "=\"TEST\"";
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
     }
 }

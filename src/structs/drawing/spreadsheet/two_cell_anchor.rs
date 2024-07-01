@@ -220,7 +220,7 @@ impl TwoCellAnchor {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut [(String, String)],
+        rel_list: &mut Vec<(String, String)>,
         ole_id: &usize,
     ) {
         if *self.get_is_alternate_content() {

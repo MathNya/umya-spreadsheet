@@ -140,7 +140,7 @@ impl OneCellAnchor {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut [(String, String)],
+        rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:oneCellAnchor
         write_start_tag(writer, "xdr:oneCellAnchor", vec![], false);

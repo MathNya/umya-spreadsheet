@@ -110,7 +110,7 @@ impl ConnectionShape {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut [(String, String)],
+        rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:cxnSp
         write_start_tag(writer, "xdr:cxnSp", vec![("macro", "")], false);

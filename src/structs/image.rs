@@ -261,7 +261,7 @@ impl Image {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut [(String, String)],
+        rel_list: &mut Vec<(String, String)>,
     ) {
         if let Some(anchor) = self.get_two_cell_anchor() {
             anchor.write_to(writer, rel_list, &0);

@@ -111,7 +111,7 @@ impl GroupShape {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        rel_list: &mut [(String, String)],
+        rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:grpSp
         write_start_tag(writer, "xdr:grpSp", vec![], false);
