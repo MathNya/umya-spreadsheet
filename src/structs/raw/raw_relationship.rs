@@ -7,8 +7,8 @@ use std::io::Cursor;
 use structs::raw::RawFile;
 use structs::StringValue;
 use structs::WriterManager;
+use structs::XlsxError;
 use writer::driver::*;
-use writer::xlsx::XlsxError;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationship {

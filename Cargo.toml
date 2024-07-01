@@ -24,13 +24,13 @@ getrandom = { version = "0.2.14" }
 hashbrown = "0.14.3"
 hmac = "0.12.1"
 html_parser = "0.7.0"
-image = "0.24.7"
+image = "0.25.0"
 lazy_static = "1.4.0"
 md-5 = "0.10.6"
 regex = "1.10.2"
 sha2 = "0.10.8"
 thousands = "0.2.0"
-quick-xml = { version = "0.32.0", features = ["serialize"] }
+quick-xml = { version = "0.35.0", features = ["serialize"] }
 zip = { version = "1.1.4", default-features = false, features = ["deflate"] }
 
 [lib]

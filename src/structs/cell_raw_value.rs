@@ -1,28 +1,27 @@
 use super::RichText;
 use super::Text;
+use crate::CellErrorType;
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Default)]
 pub enum CellRawValue {
     String(String),
-    Str(String),
     RichText(RichText),
     Lazy(String),
     Numeric(f64),
     Bool(bool),
-    Inline,
-    Error,
+    Error(CellErrorType),
     #[default]
     Empty,
 }
 impl fmt::Display for CellRawValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::String(v) => write!(f, "{}", v),
-            Self::Str(v) => write!(f, "{}", v),
+            Self::String(v) => write!(f, "{v}"),
             Self::RichText(v) => write!(f, "{}", v.get_text()),
             Self::Numeric(v) => write!(f, "{}", &v),
             Self::Bool(v) => write!(f, "{}", if *v { "TRUE" } else { "FALSE" }),
+            Self::Error(e) => write!(f, "{e}"),
             _ => write!(f, ""),
         }
     }
@@ -32,11 +31,10 @@ impl CellRawValue {
     pub fn get_data_type(&self) -> &str {
         match self {
             Self::String(_) => "s",
-            Self::Str(_) => "str",
             Self::RichText(_) => "s",
             Self::Numeric(_) => "n",
             Self::Bool(_) => "b",
-            Self::Error => "e",
+            Self::Error(_) => "e",
             _ => "",
         }
     }
@@ -44,7 +42,6 @@ impl CellRawValue {
     pub(crate) fn get_text(&self) -> Option<Text> {
         match self {
             Self::String(_) | // _
-            Self::Str(_) | // _
             Self::Numeric(_) | // _
             Self::Bool(_) => {
                 let mut text = Text::default();
@@ -67,5 +64,9 @@ impl CellRawValue {
             Self::RichText(v) => Some(v.clone()),
             _ => None,
         }
+    }
+
+    pub fn is_error(&self) -> bool {
+        matches!(*self, CellRawValue::Error(_))
     }
 }
