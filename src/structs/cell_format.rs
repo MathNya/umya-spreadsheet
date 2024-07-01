@@ -202,15 +202,18 @@ impl CellFormat {
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {
-                if e.name().into_inner() == b"alignment" {
-                    let mut obj = Alignment::default();
-                    obj.set_attributes(reader, e);
-                    self.set_alignment(obj);
-                }
-                if e.name().into_inner() == b"protection" {
-                    let mut obj = Protection::default();
-                    obj.set_attributes(reader, e);
-                    self.set_protection(obj);
+                match e.name().into_inner(){
+                    b"alignment" =>{
+                        let mut obj = Alignment::default();
+                        obj.set_attributes(reader, e);
+                        self.set_alignment(obj);
+                    },
+                    b"protection" =>{
+                        let mut obj = Protection::default();
+                        obj.set_attributes(reader, e);
+                        self.set_protection(obj);
+                    },
+                    _ =>{}
                 }
             },
             Event::End(ref e) => {

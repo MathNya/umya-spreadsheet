@@ -130,7 +130,6 @@ impl OleObject {
                     }
                     b"oleObject" => {
                         if alternate_content == "Choice" {
-                        // if alternate_content.as_str() == "Choice" {
                             self.prog_id
                                 .set_value_string(get_attribute(e, b"progId").unwrap());
 

@@ -96,20 +96,13 @@ impl CustomDocumentProperty {
                 value = e.unescape().unwrap().to_string();
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"vt:lpwstr" {
-                    self.set_value_string(&value);
-                }
-                if e.name().into_inner() == b"vt:filetime" {
-                    self.set_value_date_manual(&value);
-                }
-                if e.name().into_inner() == b"vt:i4" {
-                    self.set_value_number(value.parse::<i32>().unwrap());
-                }
-                if e.name().into_inner() == b"vt:bool" {
-                    self.set_value_bool(matches!(value.as_str(), "true" | "1"));
-                }
-                if e.name().into_inner() == b"property" {
-                    return
+                match e.name().into_inner(){
+                    b"vt:lpwstr" =>{self.set_value_string(&value);}
+                    b"vt:filetime" =>{self.set_value_date_manual(&value);}
+                    b"vt:i4"=> {self.set_value_number(value.parse::<i32>().unwrap());}
+                    b"vt:bool"=> {self.set_value_bool(matches!(value.as_str(), "true" | "1"));}
+                    b"property"=> {return}
+                    _=>{}
                 }
             },
             Event::Eof => panic!("Error not find {} end element", "property")

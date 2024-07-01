@@ -43,6 +43,7 @@ impl CellRawValue {
         match self {
             Self::String(_) | // _
             Self::Numeric(_) | // _
+            Self::RichText(_) | // _
             Self::Bool(_) => {
                 let mut text = Text::default();
                 text.set_value(self.to_string());
