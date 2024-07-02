@@ -7,6 +7,9 @@ pub mod office2010;
 pub mod raw;
 pub mod vml;
 
+mod error;
+pub use self::error::*;
+
 mod spreadsheet;
 pub use self::spreadsheet::*;
 

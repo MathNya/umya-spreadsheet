@@ -3,8 +3,8 @@ use quick_xml::Writer;
 use std::io;
 use std::io::Cursor;
 use structs::Spreadsheet;
+use structs::XlsxError;
 use writer::driver::*;
-use writer::xlsx::XlsxError;
 pub struct WriterManager<W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: zip::ZipWriter<W>,

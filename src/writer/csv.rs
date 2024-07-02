@@ -7,38 +7,7 @@ use std::fmt::Write;
 use structs::CsvEncodeValues;
 use structs::CsvWriterOption;
 use structs::Spreadsheet;
-
-#[derive(Debug)]
-pub enum XlsxError {
-    Io(io::Error),
-    Xml(quick_xml::Error),
-    Zip(zip::result::ZipError),
-    Uft8(FromUtf8Error),
-}
-
-impl From<io::Error> for XlsxError {
-    fn from(err: io::Error) -> XlsxError {
-        XlsxError::Io(err)
-    }
-}
-
-impl From<quick_xml::Error> for XlsxError {
-    fn from(err: quick_xml::Error) -> XlsxError {
-        XlsxError::Xml(err)
-    }
-}
-
-impl From<zip::result::ZipError> for XlsxError {
-    fn from(err: zip::result::ZipError) -> XlsxError {
-        XlsxError::Zip(err)
-    }
-}
-
-impl From<FromUtf8Error> for XlsxError {
-    fn from(err: FromUtf8Error) -> XlsxError {
-        XlsxError::Uft8(err)
-    }
-}
+use structs::XlsxError;
 
 /// write spreadsheet file to arbitrary writer.
 /// # Arguments

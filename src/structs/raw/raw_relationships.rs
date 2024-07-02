@@ -8,8 +8,8 @@ use std::io::Read;
 use structs::raw::RawRelationship;
 use structs::StringValue;
 use structs::WriterManager;
+use structs::XlsxError;
 use writer::driver::*;
-use writer::xlsx::XlsxError;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {

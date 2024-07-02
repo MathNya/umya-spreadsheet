@@ -3,7 +3,7 @@ use std::io;
 use structs::raw::RawFile;
 use structs::raw::RawRelationships;
 use structs::WriterManager;
-use writer::xlsx::XlsxError;
+use structs::XlsxError;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {

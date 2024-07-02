@@ -3,7 +3,7 @@ use std::io;
 use std::io::Read;
 use structs::StringValue;
 use structs::WriterManager;
-use writer::xlsx::XlsxError;
+use XlsxError;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {

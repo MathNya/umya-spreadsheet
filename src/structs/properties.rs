@@ -223,11 +223,10 @@ impl Properties {
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
-                if e.name().into_inner() == b"Manager" {
-                    value = String::from("");
-                }
-                if e.name().into_inner() == b"Company" {
-                    value = String::from("");
+                match e.name().into_inner(){
+                    b"Manager" => {value = String::from("");},
+                    b"Company" => {value = String::from("");},
+                    _ => {}
                 }
             },
             Event::Text(e) => {

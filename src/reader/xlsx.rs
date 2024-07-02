@@ -1,4 +1,3 @@
-use std::error::Error;
 use std::fmt;
 use std::fs::File;
 use std::io;
@@ -15,6 +14,7 @@ use structs::SharedStringTable;
 use structs::Spreadsheet;
 use structs::Stylesheet;
 use structs::Worksheet;
+use XlsxError;
 
 pub(crate) mod chart;
 pub(crate) mod comment;
@@ -33,51 +33,6 @@ pub(crate) mod vml_drawing;
 mod workbook;
 mod workbook_rels;
 pub(crate) mod worksheet;
-
-#[derive(Debug)]
-pub enum XlsxError {
-    Io(io::Error),
-    Xml(quick_xml::Error),
-    Zip(zip::result::ZipError),
-    Uft8(FromUtf8Error),
-}
-
-impl From<io::Error> for XlsxError {
-    fn from(err: io::Error) -> XlsxError {
-        XlsxError::Io(err)
-    }
-}
-
-impl From<quick_xml::Error> for XlsxError {
-    fn from(err: quick_xml::Error) -> XlsxError {
-        XlsxError::Xml(err)
-    }
-}
-
-impl From<zip::result::ZipError> for XlsxError {
-    fn from(err: zip::result::ZipError) -> XlsxError {
-        XlsxError::Zip(err)
-    }
-}
-
-impl From<FromUtf8Error> for XlsxError {
-    fn from(err: FromUtf8Error) -> XlsxError {
-        XlsxError::Uft8(err)
-    }
-}
-impl fmt::Display for XlsxError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use self::XlsxError::*;
-        match self {
-            Io(i) => write!(f, "IoError: {}", i),
-            Xml(s) => write!(f, "XmlError: {}", s),
-            Zip(s) => write!(f, "ZipError: {}", s),
-            Uft8(s) => write!(f, "Uft8Error: {}", s),
-        }
-    }
-}
-
-impl Error for XlsxError {}
 
 /// read spreadsheet from arbitrary reader.
 /// # Arguments

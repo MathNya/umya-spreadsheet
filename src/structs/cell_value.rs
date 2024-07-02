@@ -1,8 +1,10 @@
 use super::RichText;
 use super::SharedStringItem;
 use super::Text;
+use crate::CellErrorType;
 use helper::formula::*;
 use std::borrow::Cow;
+use std::str::FromStr;
 use structs::CellFormula;
 use structs::CellRawValue;
 use traits::AdjustmentCoordinateWith2Sheet;
@@ -55,7 +57,7 @@ impl CellValue {
     /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
-    /// - `Error` - if the string was `"#VALUE!"`
+    /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
@@ -76,11 +78,6 @@ impl CellValue {
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into());
         self.remove_formula();
-        self
-    }
-
-    pub(crate) fn set_value_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.raw_value = CellRawValue::Str(value.into());
         self
     }
 
@@ -147,6 +144,10 @@ impl CellValue {
         self
     }
 
+    pub fn is_error(&self) -> bool {
+        self.raw_value.is_error()
+    }
+
     pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
         if let Some(v) = value.get_text() {
             self.set_value_string(v.get_value());
@@ -164,9 +165,10 @@ impl CellValue {
             "" => CellRawValue::Empty,
             "TRUE" => CellRawValue::Bool(true),
             "FALSE" => CellRawValue::Bool(false),
-            "#VALUE!" => CellRawValue::Error,
             _ => {
-                if let Ok(f) = value.parse::<f64>() {
+                if let Ok(error_type) = CellErrorType::from_str(&uppercase_value) {
+                    CellRawValue::Error(error_type)
+                } else if let Ok(f) = value.parse::<f64>() {
                     CellRawValue::Numeric(f)
                 } else {
                     CellRawValue::String(value.into())

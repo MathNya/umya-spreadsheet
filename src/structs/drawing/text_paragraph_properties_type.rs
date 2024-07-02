@@ -131,35 +131,18 @@ impl TextParagraphPropertiesType {
                 }
             },
             Event::End(ref e) => {
-                if  e.name().into_inner() == b"a:defPPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl1pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl2pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl3pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl4pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl5pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl6pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl7pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl8pPr" {
-                    return
-                }
-                if  e.name().into_inner() == b"a:lvl9pPr" {
-                    return
+                match e.name().into_inner() {
+                    b"a:defPPr"  => return,
+                    b"a:lvl1pPr" => return,
+                    b"a:lvl2pPr" => return,
+                    b"a:lvl3pPr" => return,
+                    b"a:lvl4pPr" => return,
+                    b"a:lvl5pPr" => return,
+                    b"a:lvl6pPr" => return,
+                    b"a:lvl7pPr" => return,
+                    b"a:lvl8pPr" => return,
+                    b"a:lvl9pPr" => return,
+                    _ =>()
                 }
             },
             Event::Eof => panic!("Error not find {} end element", "a:lvl1pPr-lvl9pPr")

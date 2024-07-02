@@ -59,23 +59,29 @@ impl NonVisualGroupShapeProperties {
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
-                if e.name().into_inner() == b"xdr:cNvPr" {
-                    self.non_visual_drawing_properties
-                        .set_attributes(reader, e, false);
-                }
-                if e.name().into_inner() == b"a:cNvGrpSpPr" {
-                    self.non_visual_group_shape_drawing_properties
-                        .set_attributes(reader, e, false);
+                match e.name().into_inner(){
+                    b"xdr:cNvPr" =>{
+                        self.non_visual_drawing_properties
+                            .set_attributes(reader, e, false);
+                    }
+                    b"a:cNvGrpSpPr"=> {
+                        self.non_visual_group_shape_drawing_properties
+                            .set_attributes(reader, e, false);
+                    }
+                    _=>()
                 }
             },
             Event::Empty(ref e) => {
-                if e.name().into_inner() == b"xdr:cNvPr" {
-                    self.non_visual_drawing_properties
+                match e.name().into_inner() {
+                    b"xdr:cNvPr" =>{
+                        self.non_visual_drawing_properties
                         .set_attributes(reader, e, true);
-                }
-                if e.name().into_inner() == b"a:cNvGrpSpPr" {
-                    self.non_visual_group_shape_drawing_properties
+                    }
+                    b"a:cNvGrpSpPr" =>{
+                        self.non_visual_group_shape_drawing_properties
                         .set_attributes(reader, e, true);
+                    }
+                    _ => ()
                 }
             },
             Event::End(ref e) => {

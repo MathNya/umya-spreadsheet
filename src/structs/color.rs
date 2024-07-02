@@ -209,23 +209,25 @@ impl Color {
     ) {
         for a in e.attributes().with_checks(false) {
             match a {
-                Ok(ref attr) if attr.key.0 == b"indexed" => {
-                    self.indexed
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.0 == b"theme" => {
-                    self.theme_index
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.0 == b"rgb" => {
-                    self.argb
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(ref attr) if attr.key.0 == b"tint" => {
-                    self.tint
-                        .set_value_string(get_attribute_value(attr).unwrap());
-                }
-                Ok(_) => {}
+                Ok(ref attr) => match attr.key.0 {
+                    b"indexed" => {
+                        self.indexed
+                            .set_value_string(get_attribute_value(attr).unwrap());
+                    }
+                    b"theme" => {
+                        self.theme_index
+                            .set_value_string(get_attribute_value(attr).unwrap());
+                    }
+                    b"rgb" => {
+                        self.argb
+                            .set_value_string(get_attribute_value(attr).unwrap());
+                    }
+                    b"tint" => {
+                        self.tint
+                            .set_value_string(get_attribute_value(attr).unwrap());
+                    }
+                    _ => {}
+                },
                 Err(_) => {}
             }
         }
