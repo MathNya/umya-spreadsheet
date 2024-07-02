@@ -146,8 +146,8 @@ impl Cell {
         self
     }
 
-    pub fn set_error(&mut self) -> &mut Self {
-        self.cell_value.set_error();
+    pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_error(value);
         self
     }
 
@@ -322,7 +322,7 @@ impl Cell {
                             self.set_value_bool_crate(prm);
                         }
                         "e" => {
-                            self.set_error();
+                            self.set_error(&string_value);
                         }
                         "" | "n" => {
                             self.set_value_crate(&string_value);

@@ -139,8 +139,8 @@ impl CellValue {
         self
     }
 
-    pub fn set_error(&mut self) -> &mut Self {
-        self.set_value_crate("#VALUE!");
+    pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.set_value_crate(value.into());
         self
     }
 
@@ -253,5 +253,40 @@ mod tests {
 
         obj.set_value_number(1);
         assert_eq!(obj.get_value(), "1");
+    }
+
+    #[test]
+    fn error_checking() {
+        let path = std::path::Path::new("./tests/test_files/pr_204.xlsx");
+        let book = crate::reader::xlsx::read(path).unwrap();
+        let sheet = book.get_sheet(&0).unwrap();
+
+        let cell = sheet.get_cell_value("A1");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Div0));
+
+        let cell = sheet.get_cell_value("A2");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Name));
+
+        let cell = sheet.get_cell_value("A3");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Ref));
+
+        let cell = sheet.get_cell_value("A4");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Value));
+
+        let cell = sheet.get_cell_value("A5");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::NA));
+
+        let cell = sheet.get_cell_value("A6");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Num));
+
+        let cell = sheet.get_cell_value("A7");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Null));
     }
 }
