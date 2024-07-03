@@ -156,6 +156,11 @@ impl Cell {
         self
     }
 
+    pub fn set_blank(&mut self) -> &mut Self {
+        self.cell_value.set_blank();
+        self
+    }
+
     pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
         self.cell_value.set_shared_string_item(value);
         self

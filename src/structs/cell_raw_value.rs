@@ -70,4 +70,8 @@ impl CellRawValue {
     pub fn is_error(&self) -> bool {
         matches!(*self, CellRawValue::Error(_))
     }
+
+    pub fn is_empty(&self) -> bool {
+        matches!(*self, CellRawValue::Empty)
+    }
 }

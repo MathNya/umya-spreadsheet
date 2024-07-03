@@ -107,6 +107,12 @@ impl CellValue {
         self
     }
 
+    pub fn set_blank(&mut self) -> &mut Self {
+        self.raw_value = CellRawValue::Empty;
+        self.remove_formula();
+        self
+    }
+
     pub fn is_formula(&self) -> bool {
         self.formula.is_some()
     }
@@ -140,7 +146,7 @@ impl CellValue {
     }
 
     pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value_crate(value.into());
+        self.set_value_crate(value);
         self
     }
 
@@ -177,12 +183,12 @@ impl CellValue {
         }
     }
 
-    pub(crate) fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.is_value_empty() && self.is_formula_empty()
     }
 
     pub(crate) fn is_value_empty(&self) -> bool {
-        self.get_value() == ""
+        self.raw_value.is_empty()
     }
 
     pub(crate) fn is_formula_empty(&self) -> bool {
@@ -253,6 +259,12 @@ mod tests {
 
         obj.set_value_number(1);
         assert_eq!(obj.get_value(), "1");
+
+        obj.set_blank();
+        assert_eq!(obj.get_value(), "");
+
+        obj.set_error("#NUM!");
+        assert_eq!(obj.get_value(), "#NUM!");
     }
 
     #[test]
