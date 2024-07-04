@@ -8,7 +8,7 @@ impl StringValue {
     }
 
     pub(crate) fn get_value(&self) -> Option<&str> {
-        self.value.as_ref().map(|s| s.as_str())
+        self.value.as_deref()
     }
 
     pub(crate) fn set_value<S: Into<String>>(&mut self, value: S) -> &mut StringValue {
