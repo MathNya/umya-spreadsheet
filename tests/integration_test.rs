@@ -1465,3 +1465,12 @@ fn issue_194() {
     let path = std::path::Path::new("./tests/result_files/issue_194.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_200() {
+    let input_buffer = std::fs::read("./tests/test_files/issue_200.xlsx").unwrap();
+    let cursor = std::io::Cursor::new(input_buffer);
+    let workbook = umya_spreadsheet::reader::xlsx::read_reader(cursor, true).unwrap();
+    let output_file = std::fs::File::create("./tests/result_files/issue_200.xlsx").unwrap();
+    umya_spreadsheet::writer::xlsx::write_writer(&workbook, output_file).unwrap();
+}

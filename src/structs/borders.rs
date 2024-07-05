@@ -243,28 +243,54 @@ impl Borders {
 
         xml_read_loop!(
             reader,
+            Event::Empty(ref e) => {
+                match e.name().into_inner() {
+                    b"left" => {
+                        self.left_border.set_attributes(reader, e, true);
+                    }
+                    b"right" => {
+                        self.right_border.set_attributes(reader, e, true);
+                    }
+                    b"top" => {
+                        self.top_border.set_attributes(reader, e, true);
+                    }
+                    b"bottom" => {
+                        self.bottom_border.set_attributes(reader, e, true);
+                    }
+                    b"diagonal" => {
+                        self.diagonal_border.set_attributes(reader, e, true);
+                    }
+                    b"vertical" => {
+                        self.vertical_border.set_attributes(reader, e, true);
+                    }
+                    b"horizontal" => {
+                        self.horizontal_border.set_attributes(reader, e, true);
+                    }
+                    _ => (),
+                }
+            },
             Event::Start(ref e) => {
                 match e.name().into_inner() {
                     b"left" => {
-                        self.left_border.set_attributes(reader, e);
+                        self.left_border.set_attributes(reader, e, false);
                     }
                     b"right" => {
-                        self.right_border.set_attributes(reader, e);
+                        self.right_border.set_attributes(reader, e, false);
                     }
                     b"top" => {
-                        self.top_border.set_attributes(reader, e);
+                        self.top_border.set_attributes(reader, e, false);
                     }
                     b"bottom" => {
-                        self.bottom_border.set_attributes(reader, e);
+                        self.bottom_border.set_attributes(reader, e, false);
                     }
                     b"diagonal" => {
-                        self.diagonal_border.set_attributes(reader, e);
+                        self.diagonal_border.set_attributes(reader, e, false);
                     }
                     b"vertical" => {
-                        self.vertical_border.set_attributes(reader, e);
+                        self.vertical_border.set_attributes(reader, e, false);
                     }
                     b"horizontal" => {
-                        self.horizontal_border.set_attributes(reader, e);
+                        self.horizontal_border.set_attributes(reader, e, false);
                     }
                     _ => (),
                 }

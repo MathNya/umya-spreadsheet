@@ -77,8 +77,13 @@ impl Border {
         &mut self,
         reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flg: bool,
     ) {
         set_string_from_xml!(self, e, style, "style");
+
+        if empty_flg {
+            return;
+        }
 
         xml_read_loop!(
             reader,

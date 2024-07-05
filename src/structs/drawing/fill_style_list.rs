@@ -9,21 +9,26 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct FillStyleList {
-    solid_fill: Option<SolidFill>,
+    solid_fill: Vec<SolidFill>,
     gradient_fill_collection: Vec<GradientFill>,
 }
 
 impl FillStyleList {
-    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
-        self.solid_fill.as_ref()
+    pub fn get_solid_fill(&self) -> &Vec<SolidFill> {
+        &self.solid_fill
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
-        self.solid_fill.as_mut()
+    pub fn get_solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
+        &mut self.solid_fill
     }
 
-    pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
-        self.solid_fill = Some(value);
+    pub fn set_solid_fill(&mut self, value: Vec<SolidFill>) -> &mut Self {
+        self.solid_fill = value;
+        self
+    }
+
+    pub fn add_solid_fill(&mut self, value: SolidFill) -> &mut Self {
+        self.solid_fill.push(value);
         self
     }
 
@@ -57,7 +62,7 @@ impl FillStyleList {
                     b"a:solidFill" => {
                         let mut obj = SolidFill::default();
                         obj.set_attributes(reader, e);
-                        self.solid_fill = Some(obj);
+                        self.solid_fill.push(obj);
                     }
                     b"a:gradFill" => {
                         let mut obj = GradientFill::default();
@@ -81,7 +86,7 @@ impl FillStyleList {
         write_start_tag(writer, "a:fillStyleLst", vec![], false);
 
         // a:solidFill
-        if let Some(v) = &self.solid_fill {
+        for v in &self.solid_fill {
             v.write_to(writer);
         }
 

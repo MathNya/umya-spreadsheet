@@ -178,7 +178,7 @@ impl Theme {
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
             .get_fill_style_list_mut()
-            .set_solid_fill(solid_fill);
+            .add_solid_fill(solid_fill);
 
         let mut gradient_fill = GradientFill::default();
         gradient_fill.set_rotate_with_shape(true);
