@@ -1,8 +1,10 @@
 use super::RichText;
 use super::SharedStringItem;
 use super::Text;
+use crate::CellErrorType;
 use helper::formula::*;
 use std::borrow::Cow;
+use std::str::FromStr;
 use structs::CellFormula;
 use structs::CellRawValue;
 use traits::AdjustmentCoordinateWith2Sheet;
@@ -55,7 +57,7 @@ impl CellValue {
     /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
-    /// - `Error` - if the string was `"#VALUE!"`
+    /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
@@ -76,11 +78,6 @@ impl CellValue {
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into());
         self.remove_formula();
-        self
-    }
-
-    pub(crate) fn set_value_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.raw_value = CellRawValue::Str(value.into());
         self
     }
 
@@ -106,6 +103,12 @@ impl CellValue {
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.raw_value = CellRawValue::RichText(value);
+        self.remove_formula();
+        self
+    }
+
+    pub fn set_blank(&mut self) -> &mut Self {
+        self.raw_value = CellRawValue::Empty;
         self.remove_formula();
         self
     }
@@ -142,9 +145,13 @@ impl CellValue {
         self
     }
 
-    pub fn set_error(&mut self) -> &mut Self {
-        self.set_value_crate("#VALUE!");
+    pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.set_value_crate(value);
         self
+    }
+
+    pub fn is_error(&self) -> bool {
+        self.raw_value.is_error()
     }
 
     pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
@@ -164,9 +171,10 @@ impl CellValue {
             "" => CellRawValue::Empty,
             "TRUE" => CellRawValue::Bool(true),
             "FALSE" => CellRawValue::Bool(false),
-            "#VALUE!" => CellRawValue::Error,
             _ => {
-                if let Ok(f) = value.parse::<f64>() {
+                if let Ok(error_type) = CellErrorType::from_str(&uppercase_value) {
+                    CellRawValue::Error(error_type)
+                } else if let Ok(f) = value.parse::<f64>() {
                     CellRawValue::Numeric(f)
                 } else {
                     CellRawValue::String(value.into())
@@ -175,12 +183,12 @@ impl CellValue {
         }
     }
 
-    pub(crate) fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.is_value_empty() && self.is_formula_empty()
     }
 
     pub(crate) fn is_value_empty(&self) -> bool {
-        self.get_value() == ""
+        self.raw_value.is_empty()
     }
 
     pub(crate) fn is_formula_empty(&self) -> bool {
@@ -251,5 +259,46 @@ mod tests {
 
         obj.set_value_number(1);
         assert_eq!(obj.get_value(), "1");
+
+        obj.set_blank();
+        assert_eq!(obj.get_value(), "");
+
+        obj.set_error("#NUM!");
+        assert_eq!(obj.get_value(), "#NUM!");
+    }
+
+    #[test]
+    fn error_checking() {
+        let path = std::path::Path::new("./tests/test_files/pr_204.xlsx");
+        let book = crate::reader::xlsx::read(path).unwrap();
+        let sheet = book.get_sheet(&0).unwrap();
+
+        let cell = sheet.get_cell_value("A1");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Div0));
+
+        let cell = sheet.get_cell_value("A2");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Name));
+
+        let cell = sheet.get_cell_value("A3");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Ref));
+
+        let cell = sheet.get_cell_value("A4");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Value));
+
+        let cell = sheet.get_cell_value("A5");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::NA));
+
+        let cell = sheet.get_cell_value("A6");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Num));
+
+        let cell = sheet.get_cell_value("A7");
+        assert!(cell.raw_value.is_error());
+        assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Null));
     }
 }

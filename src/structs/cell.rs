@@ -101,7 +101,7 @@ impl Cell {
     /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
-    /// - `Error` - if the string was `"#VALUE!"`
+    /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value(value);
@@ -120,11 +120,6 @@ impl Cell {
 
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value_string(value);
-        self
-    }
-
-    pub(crate) fn set_value_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.cell_value.set_value_str(value);
         self
     }
 
@@ -151,13 +146,18 @@ impl Cell {
         self
     }
 
-    pub fn set_error(&mut self) -> &mut Self {
-        self.cell_value.set_error();
+    pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_error(value);
         self
     }
 
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_formula(value);
+        self
+    }
+
+    pub fn set_blank(&mut self) -> &mut Self {
+        self.cell_value.set_blank();
         self
     }
 
@@ -310,26 +310,30 @@ impl Cell {
                     }
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"v" => {
-                        if type_value == "str" {
-                            self.set_value_str(&string_value);
+                    b"v" => match type_value.as_str() {
+                        "str" => {
+                            self.set_value_string(&string_value);
                         }
-                        if type_value == "s" {
+                        "s" => {
                             let index = string_value.parse::<usize>().unwrap();
                             let shared_string_item = shared_string_table
                                 .get_shared_string_item()
                                 .get(index)
                                 .unwrap();
                             self.set_shared_string_item(shared_string_item.clone());
-                        } else if type_value == "b" {
-                            let prm = &string_value == "1";
+                        }
+                        "b" => {
+                            let prm = string_value == "1";
                             self.set_value_bool_crate(prm);
-                        } else if type_value == "e" {
-                            self.set_error();
-                        } else if type_value.is_empty() || type_value == "n" {
+                        }
+                        "e" => {
+                            self.set_error(&string_value);
+                        }
+                        "" | "n" => {
                             self.set_value_crate(&string_value);
-                        };
-                    }
+                        }
+                        _ => {}
+                    },
                     b"is" => {
                         if type_value == "inlineStr" {
                             self.set_value_crate(&string_value);
