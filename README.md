@@ -15,20 +15,22 @@
 
 Please mention in issues if you have any questions.
 
-## New features
-### ver 1.2.6
-#### WebAssembly support has been modified. (Thank you, [fabianboesiger](https://github.com/fabianboesiger).)
-For more information on the new WebAssembly support, see the [Usage](#installation) section.
+## Update details
+### ver 1.3.0
+* Formula positions are now recalculated when columns or rows are added or deleted.
+* Stronger Error Types implementation. (Thank you, [agentjill](https://github.com/agentjill).)
+* Fixed problems with reading and writing sheets containing images.
+* Other minor bug fix.
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.2.6"
+umya-spreadsheet = "1.3.0"
 
 # WebAssembly support
-umya-spreadsheet = { version = "1.2.6", features = ["js"] }
+umya-spreadsheet = { version = "1.3.0", features = ["js"] }
 ```
 
 Add the following code to main.rs
