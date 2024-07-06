@@ -1474,3 +1474,14 @@ fn issue_200() {
     let output_file = std::fs::File::create("./tests/result_files/issue_200.xlsx").unwrap();
     umya_spreadsheet::writer::xlsx::write_writer(&workbook, output_file).unwrap();
 }
+
+#[test]
+fn issue_201() {
+    let path = std::path::Path::new("./tests/test_files/issue_201.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let mut cell = book.get_sheet_mut(&0).unwrap().get_cell_mut("B1");
+    cell.set_formula_result_default("");
+
+    let path = std::path::Path::new("./tests/result_files/issue_201.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

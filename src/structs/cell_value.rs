@@ -145,6 +145,11 @@ impl CellValue {
         self
     }
 
+    pub fn set_formula_result_default<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.set_value_crate(value);
+        self
+    }
+
     pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.set_value_crate(value);
         self

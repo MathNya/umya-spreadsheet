@@ -156,6 +156,11 @@ impl Cell {
         self
     }
 
+    pub fn set_formula_result_default<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_formula_result_default(value);
+        self
+    }
+
     pub fn set_blank(&mut self) -> &mut Self {
         self.cell_value.set_blank();
         self
