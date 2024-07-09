@@ -16,7 +16,11 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 1.3.0
+### ver 2.0.0
+* Revised version 1.3.0 to version 2.0.0.
+* **[Breaking changes]** The multiple error structures are now combined in structs/error.rs.
+* **[Breaking changes]** Flexible error settings in cell_value.rs.
+* **[Breaking changes]** For details on other modifications, please click [here](https://github.com/MathNya/umya-spreadsheet/blob/master/CHANGELOG.md#Change-Detail-v127--v200).
 * Formula positions are now recalculated when columns or rows are added or deleted.
 * Stronger Error Types implementation. (Thank you, [agentjill](https://github.com/agentjill).)
 * Fixed problems with reading and writing sheets containing images.
