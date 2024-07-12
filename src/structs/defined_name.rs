@@ -1,4 +1,5 @@
 use super::Address;
+use super::BooleanValue;
 use super::StringValue;
 use super::UInt32Value;
 use helper::address::*;
@@ -16,6 +17,7 @@ pub struct DefinedName {
     address: Vec<Address>,
     string_value: StringValue,
     local_sheet_id: UInt32Value,
+    hidden: BooleanValue,
 }
 impl DefinedName {
     pub fn get_name(&self) -> &str {
@@ -92,6 +94,14 @@ impl DefinedName {
         self.local_sheet_id.set_value(value);
     }
 
+    pub fn get_hidden(&self) -> &bool {
+        &self.hidden.get_value()
+    }
+
+    pub fn set_hidden(&mut self, value: bool) {
+        self.hidden.set_value(value);
+    }
+
     fn split_str<S: Into<String>>(&self, value: S) -> Vec<String> {
         let value = value.into();
         let char_list: Vec<char> = value.chars().collect::<Vec<char>>();
@@ -153,6 +163,7 @@ impl DefinedName {
     ) {
         set_string_from_xml!(self, e, name, "name");
         set_string_from_xml!(self, e, local_sheet_id, "localSheetId");
+        set_string_from_xml!(self, e, hidden, "hidden");
 
         let mut value: String = String::from("");
         xml_read_loop!(
@@ -177,6 +188,10 @@ impl DefinedName {
         let local_sheet_id_str = self.local_sheet_id.get_value_string();
         if self.local_sheet_id.has_value() {
             attributes.push(("localSheetId", &local_sheet_id_str));
+        }
+        let hidden_str = self.hidden.get_value_string();
+        if self.hidden.has_value() {
+            attributes.push(("hidden", &hidden_str));
         }
         write_start_tag(writer, "definedName", attributes, false);
         write_text_node(writer, self.get_address());

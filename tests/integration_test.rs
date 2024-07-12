@@ -1485,3 +1485,32 @@ fn issue_201() {
     let path = std::path::Path::new("./tests/result_files/issue_201.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_206() {
+    let path = std::path::Path::new("./tests/test_files/issue_206.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/issue_206.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_194_2() {
+    let path = std::path::Path::new("./tests/test_files/issue_194_2.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/issue_194_2.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_188_3() {
+    let path = std::path::Path::new("./tests/test_files/issue_188_3.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/issue_188_3.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+// issue_184

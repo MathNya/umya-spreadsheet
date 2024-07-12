@@ -237,7 +237,10 @@ impl CellFormula {
 
         let formula_type_str = self.formula_type.get_value_string();
         if self.formula_type.has_value() {
-            attributes.push(("t", &formula_type_str));
+            // Not SUPPORT Array
+            if self.formula_type.get_value() != &CellFormulaValues::Array {
+                attributes.push(("t", &formula_type_str));
+            }
         }
 
         let input_1deleted_str = self.input_1deleted.get_value_string();

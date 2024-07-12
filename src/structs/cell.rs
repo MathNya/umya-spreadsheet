@@ -20,6 +20,7 @@ use structs::SharedStringItem;
 use structs::SharedStringTable;
 use structs::Style;
 use structs::Stylesheet;
+use structs::UInt32Value;
 use traits::AdjustmentCoordinate;
 use traits::AdjustmentCoordinateWith2Sheet;
 use writer::driver::*;
@@ -30,6 +31,7 @@ pub struct Cell {
     pub(crate) cell_value: CellValue,
     style: Style,
     hyperlink: Option<Hyperlink>,
+    cell_meta_index: UInt32Value,
 }
 impl Cell {
     pub fn get_cell_value(&self) -> &CellValue {
@@ -80,6 +82,15 @@ impl Cell {
 
     pub fn set_hyperlink(&mut self, value: Hyperlink) -> &mut Self {
         self.hyperlink = Some(value);
+        self
+    }
+
+    pub fn get_cell_meta_index(&self) -> &u32 {
+        self.cell_meta_index.get_value()
+    }
+
+    pub fn set_cell_meta_index(&mut self, value: u32) -> &mut Self {
+        self.cell_meta_index.set_value(value);
         self
     }
 
@@ -281,6 +292,8 @@ impl Cell {
             type_value = v;
         }
 
+        set_string_from_xml!(self, e, cell_meta_index, "cm");
+
         if empty_flag {
             return;
         }
@@ -387,6 +400,12 @@ impl Cell {
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
             attributes.push(("s", &xf_index_str));
+        }
+
+        let cell_meta_index_str = self.cell_meta_index.get_value_string();
+        if self.cell_meta_index.has_value() {
+            // NOT SUPPORT
+            //attributes.push(("cm", &cell_meta_index_str));
         }
 
         if empty_flag_value {
