@@ -1500,6 +1500,17 @@ fn issue_194_2() {
     let path = std::path::Path::new("./tests/test_files/issue_194_2.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
+    dbg!(book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("P16")
+        .map_or("", |c| c.get_formula()));
+    dbg!(book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("P17")
+        .map_or("", |c| c.get_formula()));
+
     let path = std::path::Path::new("./tests/result_files/issue_194_2.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

@@ -1,8 +1,10 @@
 use super::driver::*;
 use super::XlsxError;
+use hashbrown::HashMap;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 
+use helper::formula::*;
 use structs::office2010::excel::DataValidations as DataValidations2010;
 use structs::raw::RawRelationships;
 use structs::raw::RawWorksheet;
@@ -27,7 +29,7 @@ pub(crate) fn read(
     let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
-
+    let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
     xml_read_loop!(
         reader,
         Event::Start(ref e) => match e.name().into_inner() {
@@ -71,6 +73,7 @@ pub(crate) fn read(
                     worksheet.get_cell_collection_crate_mut(),
                     shared_string_table,
                     stylesheet,
+                    &mut formula_shared_list,
                     false,
                 );
                 worksheet.set_row_dimension(obj);
@@ -170,6 +173,7 @@ pub(crate) fn read(
                     worksheet.get_cell_collection_crate_mut(),
                     shared_string_table,
                     stylesheet,
+                    &mut formula_shared_list,
                     true,
                 );
                 worksheet.set_row_dimension(obj);
@@ -224,7 +228,7 @@ pub(crate) fn read_lite(
     reader.config_mut().trim_text(true);
 
     let mut cells = Cells::default();
-
+    let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
     xml_read_loop!(
         reader,
         Event::Start(ref e) => {
@@ -236,6 +240,7 @@ pub(crate) fn read_lite(
                     &mut cells,
                     shared_string_table,
                     stylesheet,
+                    &mut formula_shared_list,
                     false,
                 );
             }
@@ -249,6 +254,7 @@ pub(crate) fn read_lite(
                     &mut cells,
                     shared_string_table,
                     stylesheet,
+                    &mut formula_shared_list,
                     true,
                 );
             }

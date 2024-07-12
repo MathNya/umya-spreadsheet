@@ -103,6 +103,7 @@ impl Row {
         cells: &mut Cells,
         shared_string_table: &SharedStringTable,
         stylesheet: &Stylesheet,
+        formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
         empty_flag: bool,
     ) {
         set_string_from_xml!(self, e, row_num, "r");
@@ -126,20 +127,19 @@ impl Row {
             return;
         }
 
-        let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"c" {
                     let mut obj = Cell::default();
-                    obj.set_attributes(reader, e, shared_string_table, stylesheet, true, &mut formula_shared_list);
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, true, formula_shared_list);
                     cells.set_fast(obj);
                 }
             },
             Event::Start(ref e) => {
                 if e.name().into_inner() == b"c" {
                     let mut obj = Cell::default();
-                    obj.set_attributes(reader, e, shared_string_table, stylesheet, false, &mut formula_shared_list);
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, false, formula_shared_list);
                     cells.set_fast(obj);
                 }
             },
