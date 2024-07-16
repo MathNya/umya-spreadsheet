@@ -67,15 +67,13 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     );
 
     for defined_name in &defined_names {
-        let mut is_match = false;
-        for sheet in spreadsheet.get_sheet_collection_mut() {
-            if sheet.get_name() == defined_name.get_sheet_name_crate() {
-                sheet.add_defined_names(defined_name.clone());
-                is_match = true;
-                break;
-            }
-        }
-        if !is_match {
+        if defined_name.has_local_sheet_id() {
+            let local_sheet_id = defined_name.get_local_sheet_id().clone() as usize;
+            spreadsheet
+                .get_sheet_mut(&local_sheet_id)
+                .unwrap()
+                .add_defined_names(defined_name.clone());
+        } else {
             spreadsheet.add_defined_names(defined_name.clone());
         }
     }

@@ -86,6 +86,10 @@ impl DefinedName {
         self
     }
 
+    pub fn has_local_sheet_id(&self) -> bool {
+        self.local_sheet_id.has_value()
+    }
+
     pub fn get_local_sheet_id(&self) -> &u32 {
         &self.local_sheet_id.get_value()
     }
@@ -194,7 +198,7 @@ impl DefinedName {
             attributes.push(("hidden", &hidden_str));
         }
         write_start_tag(writer, "definedName", attributes, false);
-        write_text_node(writer, self.get_address());
+        write_text_node_no_escape(writer, self.get_address());
         write_end_tag(writer, "definedName");
     }
 }

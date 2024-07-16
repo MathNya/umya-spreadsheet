@@ -302,13 +302,13 @@ impl Outline {
             v.write_to(writer);
         }
 
-        // a:miter
-        if let Some(v) = &self.miter {
+        // a:prstDash
+        if let Some(v) = &self.preset_dash {
             v.write_to(writer);
         }
 
-        // a:prstDash
-        if let Some(v) = &self.preset_dash {
+        // a:miter
+        if let Some(v) = &self.miter {
             v.write_to(writer);
         }
 

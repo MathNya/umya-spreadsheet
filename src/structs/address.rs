@@ -1,5 +1,7 @@
 use super::Range;
+use fancy_regex::Regex;
 use helper::address::*;
+use helper::coordinate::*;
 use traits::AdjustmentCoordinate;
 use traits::AdjustmentCoordinateWithSheet;
 
@@ -70,6 +72,19 @@ impl Address {
             }
             if sheet_name.contains(r#"""#) {
                 with_space_char = "'";
+            }
+            if with_space_char == "" {
+                lazy_static! {
+                    static ref RE: Regex = Regex::new(r"[^0-9a-zA-Z]").unwrap();
+                }
+                if RE.is_match(&sheet_name).unwrap_or(false) {
+                    with_space_char = "'";
+                }
+            }
+            if with_space_char == "" {
+                if (None, None, None, None) != index_from_coordinate(&sheet_name) {
+                    with_space_char = "'";
+                }
             }
         }
         format!(
