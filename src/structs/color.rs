@@ -2,6 +2,7 @@
 use super::DoubleValue;
 use super::StringValue;
 use super::UInt32Value;
+use helper::color::*;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -120,13 +121,19 @@ impl Color {
             return self.get_argb().to_owned().into();
         }
         if self.theme_index.has_value() {
+            let key = self.theme_index.get_value() - 1;
             match theme
                 .get_theme_elements()
                 .get_color_scheme()
                 .get_color_map()
-                .get(*self.theme_index.get_value() as usize)
+                .get(key as usize)
             {
-                Some(v) => return v.to_string().into(),
+                Some(v) => {
+                    if self.tint.has_value() {
+                        return calc_tint(v, self.tint.get_value()).into();
+                    }
+                    return v.to_string().into();
+                }
                 None => {}
             }
         }

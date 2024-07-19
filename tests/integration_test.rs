@@ -1524,4 +1524,20 @@ fn issue_188_3() {
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
 
-// issue_184
+#[test]
+fn issue_184() {
+    let path = std::path::Path::new("./tests/test_files/issue_184.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let theme = book.get_theme();
+    let color = book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("A1")
+        .unwrap()
+        .get_style()
+        .get_font()
+        .unwrap()
+        .get_color()
+        .get_argb_with_theme(theme);
+    assert_eq!(color, "A78470");
+}
