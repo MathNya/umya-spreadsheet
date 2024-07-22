@@ -49,7 +49,7 @@ impl ColumnBreaks {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "colBreaks")
+            Event::Eof => panic!("Error: Could not find {} end element", "colBreaks")
         );
     }
 

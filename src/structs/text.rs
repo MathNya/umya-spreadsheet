@@ -41,7 +41,7 @@ impl Text {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "t")
+            Event::Eof => panic!("Error: Could not find {} end element", "t")
         );
     }
 

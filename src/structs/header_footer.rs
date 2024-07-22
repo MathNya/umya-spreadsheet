@@ -68,7 +68,7 @@ impl HeaderFooter {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "headerFooter")
+            Event::Eof => panic!("Error: Could not find {} end element", "headerFooter")
         );
     }
 

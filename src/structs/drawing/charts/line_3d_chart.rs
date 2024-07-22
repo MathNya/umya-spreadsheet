@@ -135,7 +135,7 @@ impl Line3DChart {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:line3DChart")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:line3DChart")
         );
     }
 

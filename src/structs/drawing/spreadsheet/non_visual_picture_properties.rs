@@ -82,7 +82,7 @@ impl NonVisualPictureProperties {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "xdr:nvPicPr")
+            Event::Eof => panic!("Error: Could not find {} end element", "xdr:nvPicPr")
         );
     }
 

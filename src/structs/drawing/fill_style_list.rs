@@ -77,7 +77,7 @@ impl FillStyleList {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "fillStyleLst")
+            Event::Eof => panic!("Error: Could not find {} end element", "fillStyleLst")
         );
     }
 

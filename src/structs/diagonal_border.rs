@@ -92,7 +92,7 @@ impl DiagonalBorder {
                     b"diagonal" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "diagonal"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "diagonal"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

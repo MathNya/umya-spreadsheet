@@ -47,7 +47,7 @@ impl OleObjects {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "oleObjects")
+            Event::Eof => panic!("Error: Could not find {} end element", "oleObjects")
         );
     }
 

@@ -95,7 +95,7 @@ impl EffectStyle {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:effectStyle")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:effectStyle")
         );
     }
 

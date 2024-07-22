@@ -105,7 +105,7 @@ impl CustomDocumentProperty {
                     _=>{}
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "property")
+            Event::Eof => panic!("Error: Could not find {} end element", "property")
         );
     }
 

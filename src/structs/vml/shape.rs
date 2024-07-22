@@ -291,7 +291,7 @@ impl Shape {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "v:shape")
+            Event::Eof => panic!("Error: Could not find {} end element", "v:shape")
         );
     }
 

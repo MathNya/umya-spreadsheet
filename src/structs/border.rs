@@ -105,7 +105,7 @@ impl Border {
                 }
             },
             Event::Eof => panic!(
-                "Error not find {} end element",
+                "Error: Could not find {} end element",
                 "left,right,top,bottom,diagonal,vertical,horizontal"
             )
         );

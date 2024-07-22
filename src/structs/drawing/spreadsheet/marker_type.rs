@@ -98,7 +98,7 @@ impl MarkerType {
                     b"xdr:to" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:from,xdr:to"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xdr:from,xdr:to"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

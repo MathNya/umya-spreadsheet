@@ -90,7 +90,7 @@ impl TextProperties {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:txPr")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:txPr")
         );
     }
 

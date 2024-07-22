@@ -626,7 +626,7 @@ impl PlotArea {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:plotArea"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:plotArea"),
         );
     }
 

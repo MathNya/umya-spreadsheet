@@ -135,7 +135,7 @@ impl AreaChart {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:areaChart")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:areaChart")
         );
     }
 

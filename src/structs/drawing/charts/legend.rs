@@ -130,7 +130,7 @@ impl Legend {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:legend"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:legend"),
         );
     }
 

@@ -54,7 +54,7 @@ impl Layout {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:layout"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:layout"),
         );
     }
 

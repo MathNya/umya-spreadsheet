@@ -383,7 +383,7 @@ impl RunProperties {
                     b"rPr" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "rPr"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "rPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

@@ -45,7 +45,7 @@ impl Values {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:val"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:val"),
         );
     }
 

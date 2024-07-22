@@ -41,7 +41,7 @@ impl ResizeWithCells {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "x:SizeWithCells")
+            Event::Eof => panic!("Error: Could not find {} end element", "x:SizeWithCells")
         );
     }
 

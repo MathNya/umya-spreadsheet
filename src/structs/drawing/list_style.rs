@@ -290,7 +290,7 @@ impl ListStyle {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:lstStyle")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:lstStyle")
         );
     }
 

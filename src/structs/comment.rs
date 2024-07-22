@@ -102,7 +102,7 @@ impl Comment {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "comment")
+            Event::Eof => panic!("Error: Could not find {} end element", "comment")
         );
     }
 }

@@ -37,7 +37,7 @@ impl FormatCode {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:formatCode"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:formatCode"),
         );
     }
 

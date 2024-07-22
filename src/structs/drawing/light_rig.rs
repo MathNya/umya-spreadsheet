@@ -76,7 +76,7 @@ impl LightRig {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:lightRig")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:lightRig")
         );
     }
 
