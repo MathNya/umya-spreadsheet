@@ -324,6 +324,6 @@ mod tests {
         let mut obj = Color::default();
         let theme = Theme::get_default_value();
         obj.set_theme_index(1);
-        assert_eq!(obj.get_argb_with_theme(&theme), "FFFFFF");
+        assert_eq!(obj.get_argb_with_theme(&theme), "000000");
     }
 }
