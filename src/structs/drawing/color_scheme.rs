@@ -251,7 +251,7 @@ impl ColorScheme {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:clrScheme")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:clrScheme")
         );
     }
 

@@ -49,7 +49,7 @@ impl LineSpacing {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:lnSpc")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:lnSpc")
         );
     }
 

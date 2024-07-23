@@ -102,7 +102,7 @@ impl Color2Type {
                 _ => (),
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "Color2Type")
+            Event::Eof => panic!("Error: Could not find {} end element", "Color2Type")
         );
     }
 

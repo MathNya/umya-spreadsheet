@@ -110,7 +110,7 @@ impl SharedStringItem {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "si")
+            Event::Eof => panic!("Error: Could not find {} end element", "si")
         );
     }
 

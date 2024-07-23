@@ -137,7 +137,7 @@ impl Area3DChart {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:area3DChart")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:area3DChart")
         );
     }
 

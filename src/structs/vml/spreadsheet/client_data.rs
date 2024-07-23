@@ -253,7 +253,7 @@ impl ClientData {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "x:ClientData")
+            Event::Eof => panic!("Error: Could not find {} end element", "x:ClientData")
         );
     }
 

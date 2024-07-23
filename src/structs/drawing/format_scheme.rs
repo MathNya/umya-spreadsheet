@@ -119,7 +119,7 @@ impl FormatScheme {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:fmtScheme")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:fmtScheme")
         );
     }
 

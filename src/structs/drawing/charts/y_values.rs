@@ -44,7 +44,7 @@ impl YValues {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:yVal")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:yVal")
         );
     }
 

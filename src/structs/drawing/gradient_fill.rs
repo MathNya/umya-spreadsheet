@@ -114,7 +114,7 @@ impl GradientFill {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:gradFill")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:gradFill")
         );
     }
 

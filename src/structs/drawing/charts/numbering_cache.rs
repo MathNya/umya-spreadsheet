@@ -45,7 +45,7 @@ impl NumberingCache {
                    return;
                }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:numCache"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:numCache"),
         );
     }
 

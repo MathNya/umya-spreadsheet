@@ -75,7 +75,7 @@ impl StyleMatrixReferenceType {
                     _ => (),
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:lnRef")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:lnRef")
         );
     }
 

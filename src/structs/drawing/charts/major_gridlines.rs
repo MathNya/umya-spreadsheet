@@ -50,7 +50,7 @@ impl MajorGridlines {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:majorGridlines")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:majorGridlines")
         );
     }
 

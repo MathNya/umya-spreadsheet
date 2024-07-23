@@ -41,7 +41,7 @@ impl AutoSizePicture {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "x:AutoPict")
+            Event::Eof => panic!("Error: Could not find {} end element", "x:AutoPict")
         );
     }
 

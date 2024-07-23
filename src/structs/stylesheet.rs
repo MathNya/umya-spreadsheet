@@ -386,7 +386,7 @@ impl Stylesheet {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "styleSheet")
+            Event::Eof => panic!("Error: Could not find {} end element", "styleSheet")
         );
     }
 

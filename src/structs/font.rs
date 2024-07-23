@@ -377,7 +377,7 @@ impl Font {
                     b"rPr" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "font, rPr"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "font, rPr"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

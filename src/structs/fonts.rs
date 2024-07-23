@@ -70,7 +70,7 @@ impl Fonts {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "fonts")
+            Event::Eof => panic!("Error: Could not find {} end element", "fonts")
         );
     }
 

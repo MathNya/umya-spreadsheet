@@ -95,7 +95,7 @@ impl Transform {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "xdr:xfrm")
+            Event::Eof => panic!("Error: Could not find {} end element", "xdr:xfrm")
         );
     }
 

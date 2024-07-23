@@ -98,7 +98,7 @@ impl Paragraph {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:p")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:p")
         );
     }
 

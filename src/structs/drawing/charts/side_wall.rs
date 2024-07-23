@@ -67,7 +67,7 @@ impl SideWall {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:sideWall")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:sideWall")
         );
     }
 

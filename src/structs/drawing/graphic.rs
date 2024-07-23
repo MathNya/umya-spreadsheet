@@ -47,7 +47,7 @@ impl Graphic {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:graphic")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:graphic")
         );
     }
 

@@ -75,7 +75,7 @@ impl Scene3DType {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:scene3d")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:scene3d")
         );
     }
 

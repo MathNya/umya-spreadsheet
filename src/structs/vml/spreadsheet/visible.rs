@@ -41,7 +41,7 @@ impl Visible {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "x:Visible")
+            Event::Eof => panic!("Error: Could not find {} end element", "x:Visible")
         );
     }
 

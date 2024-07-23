@@ -93,7 +93,7 @@ impl FromMarker {
                         _ => (),
                     }
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "xdr:from"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xdr:from"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
@@ -114,7 +114,7 @@ impl FromMarker {
         write_start_tag(writer, "xdr:colOff", vec![], false);
         write_text_node(writer, &self.col_off.to_string());
         write_end_tag(writer, "xdr:colOff");
-        
+
         // xdr:row
         write_start_tag(writer, "xdr:row", vec![], false);
         write_text_node(writer, &self.row.to_string());

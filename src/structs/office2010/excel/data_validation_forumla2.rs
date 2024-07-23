@@ -48,7 +48,7 @@ impl DataValidationForumla2 {
                     b"x14:formula2" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "x14:formula2"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "x14:formula2"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

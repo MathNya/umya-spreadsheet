@@ -67,7 +67,7 @@ impl BackWall {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:backWall")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:backWall")
         );
     }
 
