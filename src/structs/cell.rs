@@ -248,7 +248,7 @@ impl Cell {
         })
     }
 
-    pub(crate) fn get_formatted_value(&self) -> String {
+    pub fn get_formatted_value(&self) -> String {
         let value = self.get_value();
 
         // convert value
