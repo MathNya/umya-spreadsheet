@@ -50,7 +50,7 @@ impl Marker {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:marker")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:marker")
         );
     }
 

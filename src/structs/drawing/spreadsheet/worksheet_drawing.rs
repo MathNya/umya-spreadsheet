@@ -342,7 +342,7 @@ impl WorksheetDrawing {
                 }
             },
 
-            Event::Eof => panic!("Error not find {} end element", "xdr:wsDr")
+            Event::Eof => panic!("Error: Could not find {} end element", "xdr:wsDr")
         );
     }
 

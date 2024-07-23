@@ -108,7 +108,7 @@ impl View3D {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:view3D")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:view3D")
         );
     }
 

@@ -148,7 +148,7 @@ impl Row {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "row")
+            Event::Eof => panic!("Error: Could not find {} end element", "row")
         );
     }
 

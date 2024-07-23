@@ -135,7 +135,7 @@ impl RadarChart {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:radarChart")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:radarChart")
         );
     }
 

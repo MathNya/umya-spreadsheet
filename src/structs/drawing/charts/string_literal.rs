@@ -45,7 +45,7 @@ impl StringLiteral {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:strLit")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:strLit")
         );
     }
 

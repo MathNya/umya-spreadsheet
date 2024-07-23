@@ -45,7 +45,7 @@ impl CellStyles {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "cellStyles")
+            Event::Eof => panic!("Error: Could not find {} end element", "cellStyles")
         );
     }
 

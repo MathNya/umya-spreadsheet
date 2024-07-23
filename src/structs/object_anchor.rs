@@ -102,7 +102,7 @@ impl ObjectAnchor {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "anchor")
+            Event::Eof => panic!("Error: Could not find {} end element", "anchor")
         );
     }
 

@@ -103,7 +103,7 @@ impl ConnectionShape {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "xdr:cxnSp")
+            Event::Eof => panic!("Error: Could not find {} end element", "xdr:cxnSp")
         );
     }
 

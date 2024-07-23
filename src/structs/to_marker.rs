@@ -91,7 +91,7 @@ impl ToMarker {
                     b"to" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "to"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "to"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

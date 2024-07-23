@@ -49,7 +49,7 @@ impl NonVisualShapeProperties {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "xdr:nvSpPr")
+            Event::Eof => panic!("Error: Could not find {} end element", "xdr:nvSpPr")
         );
     }
 

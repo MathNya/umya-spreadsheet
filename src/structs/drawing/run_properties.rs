@@ -317,7 +317,7 @@ impl RunProperties {
                 }
             },
             Event::Eof => panic!(
-                "Error not find {} end element",
+                "Error: Could not find {} end element",
                 "a:rPr, a:endParaRPr, a:defRPr"
             )
         );

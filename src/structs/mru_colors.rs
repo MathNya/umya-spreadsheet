@@ -45,7 +45,7 @@ impl MruColors {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "mruColors")
+            Event::Eof => panic!("Error: Could not find {} end element", "mruColors")
         );
     }
 

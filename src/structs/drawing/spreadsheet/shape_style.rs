@@ -110,7 +110,7 @@ impl ShapeStyle {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "xdr:style")
+            Event::Eof => panic!("Error: Could not find {} end element", "xdr:style")
         );
     }
 

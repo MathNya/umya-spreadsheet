@@ -64,7 +64,7 @@ impl NumberReference {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:numRef"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:numRef"),
         );
     }
 

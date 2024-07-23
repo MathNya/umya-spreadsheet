@@ -58,7 +58,7 @@ impl DataValidations {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "x14:dataValidations")
+            Event::Eof => panic!("Error: Could not find {} end element", "x14:dataValidations")
         );
     }
 

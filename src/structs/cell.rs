@@ -363,7 +363,7 @@ impl Cell {
                     }
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error not find {} end element", "c"),
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "c"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

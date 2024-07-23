@@ -167,7 +167,7 @@ impl CellFormula {
                         break;
                     }
                 },
-                Event::Eof => panic!("Error not find {} end element", "f")
+                Event::Eof => panic!("Error: Could not find {} end element", "f")
             );
         }
 

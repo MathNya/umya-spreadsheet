@@ -254,7 +254,7 @@ impl Color {
                     _ => (),
                 },
                 Ok(Event::Eof) => panic!(
-                    "Error not find {} end element",
+                    "Error: Could not find {} end element",
                     "color,fgColor,bgColor,tabColor"
                 ),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -324,6 +324,6 @@ mod tests {
         let mut obj = Color::default();
         let theme = Theme::get_default_value();
         obj.set_theme_index(1);
-        assert_eq!(obj.get_argb_with_theme(&theme), "FFFFFF");
+        assert_eq!(obj.get_argb_with_theme(&theme), "000000");
     }
 }

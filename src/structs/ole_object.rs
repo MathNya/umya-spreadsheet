@@ -153,7 +153,7 @@ impl OleObject {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "mc:AlternateContent")
+            Event::Eof => panic!("Error: Could not find {} end element", "mc:AlternateContent")
         );
     }
 

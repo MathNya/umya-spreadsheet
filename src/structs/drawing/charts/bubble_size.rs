@@ -44,7 +44,7 @@ impl BubbleSize {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:bubbleSize")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:bubbleSize")
         );
     }
 

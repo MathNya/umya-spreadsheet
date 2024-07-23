@@ -222,7 +222,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "").to_string();
         }
-        if cond_regex.contains(section) {
+        if cond_re.find(section).ok().flatten().is_some() {
             let mut item: Vec<String> = Vec::new();
             for ite in cond_re.captures(section).ok().flatten().unwrap().iter() {
                 item.push(ite.unwrap().as_str().to_string());
@@ -862,4 +862,5 @@ fn test_to_formatted_string_date() {
         r#"2021/06/02"#,
         to_formatted_string(&value, NumberingFormat::FORMAT_DATE_YYYYMMDDSLASH)
     );
+    assert_eq!(r#"2"#, to_formatted_string(&value, "d"))
 }

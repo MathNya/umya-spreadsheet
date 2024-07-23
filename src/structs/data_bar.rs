@@ -70,7 +70,7 @@ impl DataBar {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "dataBar")
+            Event::Eof => panic!("Error: Could not find {} end element", "dataBar")
         );
     }
 

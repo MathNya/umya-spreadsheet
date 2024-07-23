@@ -54,7 +54,7 @@ impl Glow {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:glow")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:glow")
         );
     }
 

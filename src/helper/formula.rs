@@ -114,7 +114,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     let mut tokens: Vec<FormulaToken> = Vec::new();
 
     let formula = formula.into();
-    let formula_length = formula.len();
+    let formula_length = formula.chars().count();
     if formula_length < 2 || formula.chars().next().unwrap() != '=' {
         return tokens;
     }

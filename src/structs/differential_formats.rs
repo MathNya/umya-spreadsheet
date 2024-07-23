@@ -68,7 +68,7 @@ impl DifferentialFormats {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "dxfs")
+            Event::Eof => panic!("Error: Could not find {} end element", "dxfs")
         );
     }
 

@@ -91,7 +91,7 @@ impl TextBody {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "xdr:txBody")
+            Event::Eof => panic!("Error: Could not find {} end element", "xdr:txBody")
         );
     }
 

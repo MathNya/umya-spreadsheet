@@ -44,7 +44,7 @@ impl StringPoint {
                     return;
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "c:pt"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:pt"),
         );
     }
 

@@ -95,7 +95,7 @@ impl SharedStringTable {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "sst")
+            Event::Eof => panic!("Error: Could not find {} end element", "sst")
         );
     }
 

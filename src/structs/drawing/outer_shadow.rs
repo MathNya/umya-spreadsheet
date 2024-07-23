@@ -196,7 +196,7 @@ impl OuterShadow {
                     return
                 }
             },
-            Event::Eof => panic!("Error not find {} end element", "a:outerShdw")
+            Event::Eof => panic!("Error: Could not find {} end element", "a:outerShdw")
         );
     }
 

@@ -100,7 +100,7 @@ impl FromMarker {
                 b"from" => return,
                 _ => (),
             },
-            Event::Eof => panic!("Error not find {} end element", "from")
+            Event::Eof => panic!("Error: Could not find {} end element", "from")
         );
     }
 
