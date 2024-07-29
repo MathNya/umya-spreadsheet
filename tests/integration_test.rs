@@ -1541,3 +1541,16 @@ fn issue_184() {
         .get_argb_with_theme(theme);
     assert_eq!(color, "A78470");
 }
+
+#[test]
+fn issue_188_4() {
+    let path = std::path::Path::new("./tests/test_files/issue_188_4.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // remove
+    book.get_sheet_mut(&0).unwrap().remove_column("E", &1);
+    dbg!(book.get_sheet(&0).unwrap().get_defined_names());
+
+    let path = std::path::Path::new("./tests/result_files/issue_188_4.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

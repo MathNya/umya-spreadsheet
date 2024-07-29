@@ -74,6 +74,16 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 .unwrap()
                 .add_defined_names(defined_name.clone());
         } else {
+            match defined_name.get_address_obj().get(0) {
+                Some(v) => match spreadsheet.get_sheet_by_name_mut(v.get_sheet_name()) {
+                    Some(s) => {
+                        s.add_defined_names(defined_name.clone());
+                        continue;
+                    }
+                    None => {}
+                },
+                None => {}
+            }
             spreadsheet.add_defined_names(defined_name.clone());
         }
     }
