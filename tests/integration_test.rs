@@ -1459,7 +1459,7 @@ fn issue_194() {
             .get_cell("E2")
             .unwrap()
             .get_formula(),
-        "SUM(D1)"
+        "SUM(E1)"
     );
 
     let path = std::path::Path::new("./tests/result_files/issue_194.xlsx");
@@ -1500,17 +1500,6 @@ fn issue_194_2() {
     let path = std::path::Path::new("./tests/test_files/issue_194_2.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    dbg!(book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("P16")
-        .map_or("", |c| c.get_formula()));
-    dbg!(book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("P17")
-        .map_or("", |c| c.get_formula()));
-
     let path = std::path::Path::new("./tests/result_files/issue_194_2.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
@@ -1547,9 +1536,42 @@ fn issue_188_4() {
     let path = std::path::Path::new("./tests/test_files/issue_188_4.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("H4")
+            .unwrap()
+            .get_formula(),
+        "SUM(B4:G4)"
+    );
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("H5")
+            .unwrap()
+            .get_formula(),
+        "SUM(B5:G5)"
+    );
+
     // remove
     book.get_sheet_mut(&0).unwrap().remove_column("E", &1);
-    dbg!(book.get_sheet(&0).unwrap().get_defined_names());
+
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("G4")
+            .unwrap()
+            .get_formula(),
+        "SUM(B4:F4)"
+    );
+    assert_eq!(
+        book.get_sheet(&0)
+            .unwrap()
+            .get_cell("G5")
+            .unwrap()
+            .get_formula(),
+        "SUM(B5:F5)"
+    );
 
     let path = std::path::Path::new("./tests/result_files/issue_188_4.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);

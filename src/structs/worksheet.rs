@@ -771,7 +771,9 @@ impl Worksheet {
     /// worksheet.insert_new_row(&2, &3);
     /// ```
     pub fn insert_new_row(&mut self, row_index: &u32, num_rows: &u32) {
+        let title = self.title.clone();
         self.adjustment_insert_coordinate(&0, &0, row_index, num_rows);
+        self.adjustment_insert_coordinate_with_sheet(title.as_str(), &0, &0, row_index, num_rows);
     }
 
     /// Adjust for references to other sheets.
@@ -781,6 +783,7 @@ impl Worksheet {
         row_index: &u32,
         num_rows: &u32,
     ) {
+        self.adjustment_insert_coordinate(&0, &0, row_index, num_rows);
         self.adjustment_insert_coordinate_with_sheet(sheet_name, &0, &0, row_index, num_rows);
     }
 
@@ -823,7 +826,15 @@ impl Worksheet {
     /// worksheet.insert_new_column_by_index(&2, &3);
     /// ```
     pub fn insert_new_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
+        let title = self.title.clone();
         self.adjustment_insert_coordinate(column_index, num_columns, &0, &0);
+        self.adjustment_insert_coordinate_with_sheet(
+            title.as_str(),
+            column_index,
+            num_columns,
+            &0,
+            &0,
+        );
     }
 
     /// Adjust for references to other sheets.
@@ -833,6 +844,7 @@ impl Worksheet {
         column_index: &u32,
         num_columns: &u32,
     ) {
+        self.adjustment_insert_coordinate(column_index, num_columns, &0, &0);
         self.adjustment_insert_coordinate_with_sheet(sheet_name, column_index, num_columns, &0, &0);
     }
 
@@ -847,7 +859,9 @@ impl Worksheet {
     /// worksheet.remove_row(&2, &3);
     /// ```
     pub fn remove_row(&mut self, row_index: &u32, num_rows: &u32) {
+        let title = self.title.clone();
         self.adjustment_remove_coordinate(&0, &0, row_index, num_rows);
+        self.adjustment_remove_coordinate_with_sheet(title.as_str(), &0, &0, row_index, num_rows);
     }
 
     /// Adjust for references to other sheets.
@@ -857,6 +871,7 @@ impl Worksheet {
         row_index: &u32,
         num_rows: &u32,
     ) {
+        self.adjustment_remove_coordinate(&0, &0, row_index, num_rows);
         self.adjustment_remove_coordinate_with_sheet(sheet_name, &0, &0, row_index, num_rows);
     }
 
@@ -900,7 +915,15 @@ impl Worksheet {
     /// worksheet.remove_column_by_index(&2, &3);
     /// ```
     pub fn remove_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
+        let title = self.title.clone();
         self.adjustment_remove_coordinate(column_index, num_columns, &0, &0);
+        self.adjustment_remove_coordinate_with_sheet(
+            title.as_str(),
+            column_index,
+            num_columns,
+            &0,
+            &0,
+        );
     }
 
     /// Adjust for references to other sheets.
@@ -910,6 +933,7 @@ impl Worksheet {
         column_index: &u32,
         num_columns: &u32,
     ) {
+        self.adjustment_remove_coordinate(column_index, num_columns, &0, &0);
         self.adjustment_remove_coordinate_with_sheet(sheet_name, column_index, num_columns, &0, &0);
     }
 

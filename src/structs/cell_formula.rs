@@ -302,7 +302,7 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
     ) {
         if let Some(v) = self.text.get_value() {
             let formula = adjustment_insert_formula_coordinate(
-                &mut parse_to_tokens(v),
+                &mut parse_to_tokens(format!("={}", v)),
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -311,7 +311,20 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
                 self_sheet_name,
                 false,
             );
-            self.text.set_value(format!("={}", formula));
+            self.text.set_value(formula);
+        }
+        if let Some(v) = self.text_view.get_value() {
+            let formula = adjustment_insert_formula_coordinate(
+                &mut parse_to_tokens(format!("={}", v)),
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+                sheet_name,
+                self_sheet_name,
+                false,
+            );
+            self.text_view.set_value(formula);
         }
     }
 
@@ -326,7 +339,7 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
     ) {
         if let Some(v) = self.text.get_value() {
             let formula = adjustment_remove_formula_coordinate(
-                &mut parse_to_tokens(v),
+                &mut parse_to_tokens(format!("={}", v)),
                 root_col_num,
                 offset_col_num,
                 root_row_num,
@@ -335,7 +348,20 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
                 self_sheet_name,
                 false,
             );
-            self.text.set_value(format!("={}", formula));
+            self.text.set_value(formula);
+        }
+        if let Some(v) = self.text_view.get_value() {
+            let formula = adjustment_remove_formula_coordinate(
+                &mut parse_to_tokens(format!("={}", v)),
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+                sheet_name,
+                self_sheet_name,
+                false,
+            );
+            self.text_view.set_value(formula);
         }
     }
 }
