@@ -10,7 +10,7 @@ pub enum VerticalAlignmentValues {
 }
 impl Default for VerticalAlignmentValues {
     fn default() -> Self {
-        Self::Top
+        Self::Bottom
     }
 }
 impl EnumTrait for VerticalAlignmentValues {

@@ -5,7 +5,7 @@ extern crate chrono;
 extern crate umya_spreadsheet;
 use std::time::Instant;
 
-use umya_spreadsheet::{NumberingFormat, Style};
+use umya_spreadsheet::{EnumTrait, NumberingFormat, Style};
 
 #[test]
 fn read_and_wite() {
@@ -1575,4 +1575,26 @@ fn issue_188_4() {
 
     let path = std::path::Path::new("./tests/result_files/issue_188_4.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_210() {
+    let path = std::path::Path::new("./tests/test_files/issue_210.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let sheet = book.get_sheet(&0).unwrap();
+    for cell in sheet.get_cell_collection() {
+        if let Some(varA) = cell.get_style().get_alignment() {
+            let horizontal = varA.get_horizontal().get_value_string();
+            let vertical = varA.get_vertical().get_value_string();
+            let rot = varA.get_text_rotation();
+            let wrap = varA.get_wrap_text();
+            dbg!(vec![
+                cell.get_coordinate().to_string(),
+                horizontal.to_string(),
+                vertical.to_string(),
+                rot.to_string(),
+                wrap.to_string()
+            ]);
+        }
+    }
 }
