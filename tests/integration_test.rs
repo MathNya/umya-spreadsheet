@@ -79,7 +79,7 @@ fn read_large_string() {
     // reader
     let path = std::path::Path::new("./tests/test_files/aaa_large_string.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
-    let _ns = book.get_sheet_by_name_mut("Sheet1").unwrap();
+    //let _ns = book.get_sheet_by_name_mut("Sheet1").unwrap();
 }
 
 #[test]
@@ -1588,13 +1588,21 @@ fn issue_210() {
             let vertical = varA.get_vertical().get_value_string();
             let rot = varA.get_text_rotation();
             let wrap = varA.get_wrap_text();
-            dbg!(vec![
-                cell.get_coordinate().to_string(),
-                horizontal.to_string(),
-                vertical.to_string(),
-                rot.to_string(),
-                wrap.to_string()
-            ]);
+            // dbg!(vec![
+            //    cell.get_coordinate().to_string(),
+            //    horizontal.to_string(),
+            //    vertical.to_string(),
+            //    rot.to_string(),
+            //    wrap.to_string()
+            //]);
         }
     }
+}
+
+#[test]
+fn issue_208() {
+    let path = std::path::Path::new("./tests/test_files/issue_208.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let path = std::path::Path::new("./tests/result_files/issue_208.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

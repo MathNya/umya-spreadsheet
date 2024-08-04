@@ -16,25 +16,18 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.0.0
-* Revised version 1.3.0 to version 2.0.0.
-* **[Breaking changes]** The multiple error structures are now combined in structs/error.rs.
-* **[Breaking changes]** Flexible error settings in cell_value.rs.
-* **[Breaking changes]** For details on other modifications, please click [here](https://github.com/MathNya/umya-spreadsheet/blob/master/CHANGELOG.md#Change-Detail-v127--v200).
-* Formula positions are now recalculated when columns or rows are added or deleted.
-* Stronger Error Types implementation. (Thank you, [agentjill](https://github.com/agentjill).)
-* Fixed problems with reading and writing sheets containing images.
-* Other minor bug fix.
+### ver 2.0.1
+* Minor bug fixes
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "1.3.0"
+umya-spreadsheet = "2.0.1"
 
 # WebAssembly support
-umya-spreadsheet = { version = "1.3.0", features = ["js"] }
+umya-spreadsheet = { version = "2.0.1", features = ["js"] }
 ```
 
 Add the following code to main.rs

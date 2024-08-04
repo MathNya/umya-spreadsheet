@@ -41,6 +41,7 @@ impl SharedStringTable {
         self.regist_count += 1;
 
         let mut shared_string_item = SharedStringItem::default();
+
         if let Some(v) = value.get_text() {
             shared_string_item.set_text(v);
         }
@@ -73,15 +74,6 @@ impl SharedStringTable {
                 if e.name().into_inner() == b"si" {
                     let mut shared_string_item = SharedStringItem::default();
                     shared_string_item.set_attributes(reader, e);
-
-                    // set ThemeColor
-                    if let Some(v) = shared_string_item.get_rich_text_mut() {
-                        for element in v.get_rich_text_elements_mut() {
-                            if let Some(r) = element.get_run_properties_crate() {
-                                let color = r.get_color_mut();
-                            }
-                        }
-                    }
 
                     let hash_code = shared_string_item.get_hash_u64();
                     self.map.insert(hash_code, n);
