@@ -121,7 +121,7 @@ impl Color {
             return self.get_argb().to_owned().into();
         }
         if self.theme_index.has_value() {
-            let key = self.theme_index.get_value() - 1;
+            let key = self.theme_index.get_value().clone();
             match theme
                 .get_theme_elements()
                 .get_color_scheme()

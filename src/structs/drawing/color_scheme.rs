@@ -181,6 +181,7 @@ impl ColorScheme {
 
     pub fn get_color_map(&self) -> Vec<String> {
         vec![
+            String::from("FFFFFF"),
             self.dk1.get_val(),
             self.lt1.get_val(),
             self.dk2.get_val(),
