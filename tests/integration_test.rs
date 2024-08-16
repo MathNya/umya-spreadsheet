@@ -1613,6 +1613,18 @@ fn issue_184_2() {
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     return;
+
+    let color = book
+        .get_sheet(&0)
+        .unwrap()
+        .get_cell("C1")
+        .unwrap()
+        .get_style()
+        .get_background_color()
+        .unwrap()
+        .get_argb_with_theme(book.get_theme());
+    assert_eq!(color, "E8E8E8");
+
     let color = book
         .get_sheet(&0)
         .unwrap()
