@@ -1617,13 +1617,13 @@ fn issue_184_2() {
     let color = book
         .get_sheet(&0)
         .unwrap()
-        .get_cell("C1")
+        .get_cell("C3")
         .unwrap()
         .get_style()
         .get_background_color()
         .unwrap()
         .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "E8E8E8");
+    assert_eq!(color, "ADADAD");
 
     let color = book
         .get_sheet(&0)
