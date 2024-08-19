@@ -1612,199 +1612,44 @@ fn issue_184_2() {
     let path = std::path::Path::new("./tests/test_files/issue_184_2.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    return;
 
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C3")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "ADADAD");
+    let data = vec![
+        ("A1", "FFFFFF"),
+        ("A2", "F2F2F2"),
+        ("A3", "D9D9D9"),
+        ("A4", "BFBFBF"),
+        ("A5", "A6A6A6"),
+        ("A6", "808080"),
+        ("B1", "000000"),
+        ("B2", "7F7F7F"),
+        ("B3", "595959"),
+        ("B4", "404040"),
+        ("B5", "262626"),
+        ("B6", "0D0D0D"),
+        ("C1", "E8E8E8"),
+        ("C2", "D1D1D1"),
+        ("C3", "AEAEAE"),
+        ("C4", "747474"),
+        ("C5", "3A3A3A"),
+        ("C6", "171717"),
+        ("D1", "0E2841"),
+        ("D2", "DCEAF7"),
+        ("D3", "A6CAEC"),
+        ("D4", "4E95D9"),
+        ("D5", "215F9A"),
+        ("D6", "163E64"),
+    ];
 
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("A1")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "FFFFFF");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("A2")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "F2F2F2");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("A3")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "D9D9D9");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("A4")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "BFBFBF");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("A5")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "A6A6A6");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("A6")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "808080");
-
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("B1")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "000000");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("B2")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "808080");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("B3")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "595959");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("B4")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "404040");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("B5")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "262626");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("B6")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "0D0D0D");
-
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C1")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "E8E8E8");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C2")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "D0D0D0");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C3")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "ADADAD");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C4")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "747474");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C5")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "393939");
-    let color = book
-        .get_sheet(&0)
-        .unwrap()
-        .get_cell("C6")
-        .unwrap()
-        .get_style()
-        .get_background_color()
-        .unwrap()
-        .get_argb_with_theme(book.get_theme());
-    assert_eq!(color, "161616");
+    for (coordinate, result) in data {
+        let color = book
+            .get_sheet(&0)
+            .unwrap()
+            .get_cell(coordinate)
+            .unwrap()
+            .get_style()
+            .get_background_color()
+            .unwrap()
+            .get_argb_with_theme(book.get_theme());
+        assert_eq!(color, result);
+    }
 }

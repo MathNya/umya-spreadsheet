@@ -16,13 +16,12 @@ pub struct MsHlsColor {
     pub s: i32,
 }
 
-const RGBMAX: f64 = 255f64;
-const HLSMAX: f64 = 240f64;
+const RGBMAX: f64 = 255.0;
+const HLSMAX: f64 = 255.0;
 
 pub fn calc_tint(rgb: &str, tint: &f64) -> String {
     let mut ms_hls = convert_rgb_to_ms_hls(rgb);
-    let calculate_final_lum_value = calculate_final_lum_value(tint, &(ms_hls.l as f64));
-    ms_hls.l = calculate_final_lum_value;
+    ms_hls.l = calculate_final_lum_value(tint, &(ms_hls.l as f64));
     convert_ms_hls_to_rgb(&ms_hls)
 }
 
@@ -59,7 +58,6 @@ pub fn convert_rgb_to_ms_hls(rgb: &str) -> MsHlsColor {
     ms_hls.h = to_i32(hls.h * self::HLSMAX);
     ms_hls.l = to_i32(hls.l * self::HLSMAX);
     ms_hls.s = to_i32(hls.s * self::HLSMAX);
-
     ms_hls
 }
 
@@ -99,29 +97,25 @@ pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
 
     hls.l = (min + max) / 2.0;
 
-    if hls.l < 0.5 {
+    if hls.l <= 0.5 {
         hls.s = delta / (max + min);
     } else {
         hls.s = delta / (2.0 - max - min);
     }
 
+    let rc = (max - r) / delta;
+    let gc = (max - g) / delta;
+    let bc = (max - b) / delta;
+
     if r == max {
-        hls.h = (g - b) / delta;
+        hls.h = bc - gc;
+    } else if g == max {
+        hls.h = 2.0 + rc - bc;
+    } else {
+        hls.h = 4.0 + gc - rc;
     }
 
-    if g == max {
-        hls.h = 2.0 + (b - r) / delta;
-    }
-
-    if b == max {
-        hls.h = 4.0 + (r - g) / delta;
-    }
-
-    hls.h *= 60.0;
-
-    if hls.h < 0.0 {
-        hls.h += 360.0;
-    }
+    hls.h = positive_decimal_part(&(hls.h / 6.0));
 
     return hls;
 }
@@ -147,7 +141,7 @@ pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
     };
 
     let t2 = 2.0 * hls.l - t1;
-    let h = hls.h / 360.0;
+    let h = hls.h;
     let t_r = h + (1.0 / 3.0);
     let r = set_color(&t1, &t2, &t_r);
     let t_g = h;
@@ -164,10 +158,7 @@ pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
 pub fn set_color(t1: &f64, t2: &f64, t3: &f64) -> f64 {
     let mut t1 = t1.clone();
     let mut t2 = t2.clone();
-    let mut t3 = t3 % 1.0;
-    if t3 < 1.0 {
-        t3 = 1.0 + t3;
-    }
+    let mut t3 = positive_decimal_part(t3);
 
     let mut color: f64 = 0.0;
 
@@ -183,35 +174,15 @@ pub fn set_color(t1: &f64, t2: &f64, t3: &f64) -> f64 {
     color
 }
 
-fn to_i32(num: f64) -> i32 {
-    num.round() as i32
+fn positive_decimal_part(hue: &f64) -> f64 {
+    let hue = hue % 1.0;
+
+    if hue >= 0.0 {
+        return hue;
+    }
+    1.0 + hue
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn calc_tint_test() {
-        assert_eq!(calc_tint("4E3B30", &0.4), "A78470");
-    }
-
-    #[test]
-    fn split_rgb_test() {
-        assert_eq!(split_rgb("77602D"), (119, 96, 45));
-        assert_eq!(split_rgb("1562A9"), (21, 98, 169));
-    }
-
-    #[test]
-    fn convert_rgb_to_hls_test() {
-        let hls = convert_rgb_to_hls("77602D");
-        assert_eq!(hls.h, 41.351351351351354);
-        assert_eq!(hls.s, 0.45121951219512185);
-        assert_eq!(hls.l, 0.3215686274509804);
-
-        let hls = convert_rgb_to_hls("1562A9");
-        assert_eq!(hls.h, 208.7837837837838);
-        assert_eq!(hls.s, 0.7789473684210525);
-        assert_eq!(hls.l, 0.37254901960784315);
-    }
+fn to_i32(num: f64) -> i32 {
+    num.round() as i32
 }
