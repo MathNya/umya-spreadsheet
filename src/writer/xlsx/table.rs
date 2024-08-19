@@ -34,19 +34,21 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // table start
         let table_no = writer_mng.next_table_no();
-        write_start_tag(
-            &mut writer,
-            "table",
-            vec![
-                ("xmlns", SHEET_MAIN_NS),
-                ("id", &table_no.to_string()),
-                ("name", table.get_name()),
-                ("displayName", table.get_display_name()),
-                ("ref", &area),
-                ("totalsRowShown", "0"),
-            ],
-            false,
-        );
+        let table_no_str = table_no.to_string();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        attributes.push(("xmlns", SHEET_MAIN_NS));
+        attributes.push(("id", &table_no_str));
+        attributes.push(("name", table.get_name()));
+        attributes.push(("displayName", table.get_display_name()));
+        attributes.push(("ref", &area));
+        if table.has_totals_row_shown() {
+            attributes.push(("totalsRowShown", &table.get_totals_row_shown_str()));
+        }
+        let totals_row_count_str = table.get_totals_row_count_str();
+        if table.has_totals_row_count() {
+            attributes.push(("totalsRowCount", &totals_row_count_str));
+        }
+        write_start_tag(&mut writer, "table", attributes, false);
 
         // autoFilter
         write_start_tag(&mut writer, "autoFilter", vec![("ref", &area)], true);
@@ -61,12 +63,25 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
         let mut col_id = 1;
         for col in cols.iter() {
-            write_start_tag(
-                &mut writer,
-                "tableColumn",
-                vec![("id", &col_id.to_string()), ("name", col.get_name())],
-                true,
-            );
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let col_id_str = col_id.to_string();
+            attributes.push(("id", &col_id_str));
+            attributes.push(("name", col.get_name()));
+            attributes.push(("totalsRowLabel", col.get_totals_row_label_str()));
+            attributes.push(("totalsRowFunction", col.get_totals_row_function_str()));
+            match col.get_calculated_column_formula() {
+                Some(v) => {
+                    write_start_tag(&mut writer, "tableColumn", attributes, false);
+                    write_start_tag(&mut writer, "calculatedColumnFormula", vec![], false);
+                    write_text_node(&mut writer, v);
+                    write_end_tag(&mut writer, "calculatedColumnFormula");
+                    write_end_tag(&mut writer, "tableColumn");
+                }
+                None => {
+                    write_start_tag(&mut writer, "tableColumn", attributes, true);
+                }
+            }
+
             col_id += 1;
         }
         write_end_tag(&mut writer, "tableColumns");

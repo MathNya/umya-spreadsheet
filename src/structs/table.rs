@@ -1,9 +1,13 @@
+use std::default;
+
 use quick_xml::{
     events::{BytesStart, Event},
     Reader,
 };
 
-use super::coordinate::*;
+use super::{
+    coordinate::*, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
+};
 use crate::helper::coordinate::*;
 //use reader::driver::*;
 
@@ -14,6 +18,8 @@ pub struct Table {
     display_name: String,
     columns: Vec<TableColumn>,
     style_info: Option<TableStyleInfo>,
+    totals_row_shown: BooleanValue,
+    totals_row_count: UInt32Value,
 }
 impl Table {
     pub fn new<T>(name: &str, area: (T, T)) -> Self
@@ -29,6 +35,8 @@ impl Table {
             display_name: name,
             columns: Vec::<TableColumn>::default(),
             style_info: None,
+            totals_row_shown: BooleanValue::default(),
+            totals_row_count: UInt32Value::default(),
         }
     }
 
@@ -95,6 +103,46 @@ impl Table {
         self.style_info = style_info;
     }
 
+    pub fn has_totals_row_shown(&self) -> bool {
+        self.totals_row_shown.has_value()
+    }
+
+    pub fn get_totals_row_shown(&self) -> &bool {
+        self.totals_row_shown.get_value()
+    }
+
+    pub fn get_totals_row_shown_str(&self) -> &str {
+        self.totals_row_shown.get_value_string()
+    }
+
+    pub fn set_totals_row_shown(&mut self, value: bool) {
+        self.totals_row_shown.set_value(value);
+    }
+
+    pub fn set_totals_row_shown_str(&mut self, value: &str) {
+        self.totals_row_shown.set_value_string(value);
+    }
+
+    pub fn has_totals_row_count(&self) -> bool {
+        self.totals_row_count.has_value()
+    }
+
+    pub fn get_totals_row_count(&self) -> &u32 {
+        self.totals_row_count.get_value()
+    }
+
+    pub fn get_totals_row_count_str(&self) -> String {
+        self.totals_row_count.get_value_string()
+    }
+
+    pub fn set_totals_row_count(&mut self, value: u32) {
+        self.totals_row_count.set_value(value);
+    }
+
+    pub fn set_totals_row_count_str(&mut self, value: &str) {
+        self.totals_row_count.set_value_string(value);
+    }
+
     fn cell_coord_to_coord<T>(cc: T) -> Coordinate
     where
         T: Into<CellCoordinates>,
@@ -110,11 +158,17 @@ impl Table {
 #[derive(Clone, Default, Debug)]
 pub struct TableColumn {
     name: String,
+    totals_row_label: StringValue,
+    totals_row_function: EnumValue<TotalsRowFunctionValues>,
+    calculated_column_formula: Option<String>,
 }
 impl TableColumn {
     pub fn new(name: &str) -> Self {
         Self {
             name: name.to_string(),
+            totals_row_label: StringValue::default(),
+            totals_row_function: EnumValue::default(),
+            calculated_column_formula: None,
         }
     }
 
@@ -124,6 +178,54 @@ impl TableColumn {
 
     pub fn set_name(&mut self, name: String) {
         self.name = name;
+    }
+
+    pub fn has_totals_row_label(&self) -> bool {
+        self.totals_row_label.has_value()
+    }
+
+    pub fn get_totals_row_label(&self) -> Option<&str> {
+        self.totals_row_label.get_value()
+    }
+
+    pub fn get_totals_row_label_str(&self) -> &str {
+        self.totals_row_label.get_value_str()
+    }
+
+    pub fn set_totals_row_label(&mut self, value: &str) {
+        self.totals_row_label.set_value(value);
+    }
+
+    pub fn set_totals_row_label_str(&mut self, value: &str) {
+        self.totals_row_label.set_value_string(value);
+    }
+
+    pub fn has_totals_row_function(&self) -> bool {
+        self.totals_row_function.has_value()
+    }
+
+    pub fn get_totals_row_function(&self) -> &TotalsRowFunctionValues {
+        self.totals_row_function.get_value()
+    }
+
+    pub fn get_totals_row_function_str(&self) -> &str {
+        self.totals_row_function.get_value_string()
+    }
+
+    pub fn set_totals_row_function(&mut self, value: TotalsRowFunctionValues) {
+        self.totals_row_function.set_value(value);
+    }
+
+    pub fn set_totals_row_function_str(&mut self, value: &str) {
+        self.totals_row_function.set_value_string(value);
+    }
+
+    pub fn get_calculated_column_formula(&self) -> Option<&String> {
+        self.calculated_column_formula.as_ref()
+    }
+
+    pub fn set_calculated_column_formula(&mut self, value: String) {
+        self.calculated_column_formula = Some(value);
     }
 }
 

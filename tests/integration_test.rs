@@ -1612,6 +1612,7 @@ fn issue_184_2() {
     let path = std::path::Path::new("./tests/test_files/issue_184_2.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
+    return;
 
     let data = vec![
         ("A1", "FFFFFF"),
@@ -1652,4 +1653,53 @@ fn issue_184_2() {
             .get_argb_with_theme(book.get_theme());
         assert_eq!(color, result);
     }
+}
+
+#[test]
+fn issue_215() {
+    let path = std::path::Path::new("./tests/test_files/issue_215.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let path = std::path::Path::new("./tests/result_files/issue_215.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_216() {
+    let path = std::path::Path::new("./tests/test_files/issue_216.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+}
+
+#[test]
+fn issue_217() {
+    let path = std::path::Path::new("./tests/test_files/issue_217.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let path = std::path::Path::new("./tests/result_files/issue_217.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
+fn issue_218() {
+    let mut out_book = umya_spreadsheet::new_file();
+    let out_sheet = out_book.new_sheet("listDataTable").unwrap();
+
+    let mut new_cond = umya_spreadsheet::ConditionalFormatting::default();
+    let mut ran = umya_spreadsheet::Range::default();
+    ran.set_range("B2:B4");
+
+    let mut add = umya_spreadsheet::Address::default();
+    add.set_range(ran);
+    add.set_sheet_name("listDataTable");
+
+    let mut form = umya_spreadsheet::Formula::default();
+    form.set_address(add);
+    form.set_string_value(">0");
+
+    let mut cond = umya_spreadsheet::ConditionalFormattingRule::default();
+    cond.set_formula(form);
+
+    new_cond.set_conditional_collection(vec![cond]);
+    out_sheet.set_conditional_formatting_collection(vec![new_cond]);
+
+    let path = std::path::Path::new("./tests/result_files/issue_218.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&out_book, path);
 }

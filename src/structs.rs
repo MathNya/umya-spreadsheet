@@ -426,3 +426,6 @@ pub use self::cell_formula::*;
 
 mod cell_formula_values;
 pub use self::cell_formula_values::*;
+
+mod totals_row_function_values;
+pub use self::totals_row_function_values::*;
