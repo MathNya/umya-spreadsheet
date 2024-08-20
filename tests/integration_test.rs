@@ -1612,8 +1612,6 @@ fn issue_184_2() {
     let path = std::path::Path::new("./tests/test_files/issue_184_2.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    return;
-
     let data = vec![
         ("A1", "FFFFFF"),
         ("A2", "F2F2F2"),
@@ -1634,11 +1632,15 @@ fn issue_184_2() {
         ("C5", "3A3A3A"),
         ("C6", "171717"),
         ("D1", "0E2841"),
-        ("D2", "DCEAF7"),
+        ("D2", "DBEAF7"),
         ("D3", "A6CAEC"),
-        ("D4", "4E95D9"),
-        ("D5", "215F9A"),
+        ("D4", "4D95D9"),
+        ("D5", "21609B"),
         ("D6", "163E64"),
+        ("A8", "FFC00000"),
+        ("B8", "FFFF0000"),
+        ("C8", "FFFFC000"),
+        ("D8", "FFFFFF00"),
     ];
 
     for (coordinate, result) in data {

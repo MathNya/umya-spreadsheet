@@ -91,7 +91,7 @@ impl Table {
         &self.columns
     }
 
-    pub fn has_style_info(&self) -> bool {
+    pub(crate) fn has_style_info(&self) -> bool {
         self.style_info.is_some()
     }
 
@@ -103,7 +103,7 @@ impl Table {
         self.style_info = style_info;
     }
 
-    pub fn has_totals_row_shown(&self) -> bool {
+    pub(crate) fn has_totals_row_shown(&self) -> bool {
         self.totals_row_shown.has_value()
     }
 
@@ -111,7 +111,7 @@ impl Table {
         self.totals_row_shown.get_value()
     }
 
-    pub fn get_totals_row_shown_str(&self) -> &str {
+    pub(crate) fn get_totals_row_shown_str(&self) -> &str {
         self.totals_row_shown.get_value_string()
     }
 
@@ -119,11 +119,11 @@ impl Table {
         self.totals_row_shown.set_value(value);
     }
 
-    pub fn set_totals_row_shown_str(&mut self, value: &str) {
+    pub(crate) fn set_totals_row_shown_str(&mut self, value: &str) {
         self.totals_row_shown.set_value_string(value);
     }
 
-    pub fn has_totals_row_count(&self) -> bool {
+    pub(crate) fn has_totals_row_count(&self) -> bool {
         self.totals_row_count.has_value()
     }
 
@@ -131,7 +131,7 @@ impl Table {
         self.totals_row_count.get_value()
     }
 
-    pub fn get_totals_row_count_str(&self) -> String {
+    pub(crate) fn get_totals_row_count_str(&self) -> String {
         self.totals_row_count.get_value_string()
     }
 
@@ -139,7 +139,7 @@ impl Table {
         self.totals_row_count.set_value(value);
     }
 
-    pub fn set_totals_row_count_str(&mut self, value: &str) {
+    pub(crate) fn set_totals_row_count_str(&mut self, value: &str) {
         self.totals_row_count.set_value_string(value);
     }
 
@@ -180,7 +180,7 @@ impl TableColumn {
         self.name = name;
     }
 
-    pub fn has_totals_row_label(&self) -> bool {
+    pub(crate) fn has_totals_row_label(&self) -> bool {
         self.totals_row_label.has_value()
     }
 
@@ -188,7 +188,7 @@ impl TableColumn {
         self.totals_row_label.get_value()
     }
 
-    pub fn get_totals_row_label_str(&self) -> &str {
+    pub(crate) fn get_totals_row_label_str(&self) -> &str {
         self.totals_row_label.get_value_str()
     }
 
@@ -196,11 +196,11 @@ impl TableColumn {
         self.totals_row_label.set_value(value);
     }
 
-    pub fn set_totals_row_label_str(&mut self, value: &str) {
+    pub(crate) fn set_totals_row_label_str(&mut self, value: &str) {
         self.totals_row_label.set_value_string(value);
     }
 
-    pub fn has_totals_row_function(&self) -> bool {
+    pub(crate) fn has_totals_row_function(&self) -> bool {
         self.totals_row_function.has_value()
     }
 
@@ -208,7 +208,7 @@ impl TableColumn {
         self.totals_row_function.get_value()
     }
 
-    pub fn get_totals_row_function_str(&self) -> &str {
+    pub(crate) fn get_totals_row_function_str(&self) -> &str {
         self.totals_row_function.get_value_string()
     }
 
@@ -216,7 +216,7 @@ impl TableColumn {
         self.totals_row_function.set_value(value);
     }
 
-    pub fn set_totals_row_function_str(&mut self, value: &str) {
+    pub(crate) fn set_totals_row_function_str(&mut self, value: &str) {
         self.totals_row_function.set_value_string(value);
     }
 
@@ -224,7 +224,7 @@ impl TableColumn {
         self.calculated_column_formula.as_ref()
     }
 
-    pub fn set_calculated_column_formula(&mut self, value: String) {
+    pub(crate) fn set_calculated_column_formula(&mut self, value: String) {
         self.calculated_column_formula = Some(value);
     }
 }

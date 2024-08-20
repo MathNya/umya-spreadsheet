@@ -216,7 +216,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         // scientific notation check
         if self::OPERATORS_SN.contains(formula.chars().nth(index).unwrap()) {
             if value.len() > 1 {
-                if !SCIENTIFIC_REGEX
+                if SCIENTIFIC_REGEX
                     .is_match(&formula.chars().nth(index).unwrap().to_string())
                     .unwrap_or(false)
                 {
@@ -878,6 +878,12 @@ mod tests {
     use super::*;
     #[test]
     fn test() {
+        let formula = "=10+9";
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
+
         let formula = "=SUM(E7:I7)";
         assert_eq!(
             format!("={}", render(parse_to_tokens(formula).as_ref())),
