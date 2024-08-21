@@ -794,25 +794,35 @@ pub fn adjustment_insert_formula_coordinate(
                 let coordinate_list = get_split_range(range);
                 for coordinate in &coordinate_list {
                     let cell = index_from_coordinate(coordinate);
-                    let mut col_num = cell.0.unwrap();
-                    let mut row_num = cell.1.unwrap();
-                    let is_lock_col = cell.2.unwrap();
-                    let is_lock_row = cell.3.unwrap();
-                    if !is_lock_col {
-                        col_num =
-                            adjustment_insert_coordinate(&col_num, root_col_num, offset_col_num);
+                    if cell.0.is_some() {
+                        let mut col_num = cell.0.unwrap();
+                        let mut row_num = cell.1.unwrap();
+                        let is_lock_col = cell.2.unwrap();
+                        let is_lock_row = cell.3.unwrap();
+                        if !is_lock_col {
+                            col_num = adjustment_insert_coordinate(
+                                &col_num,
+                                root_col_num,
+                                offset_col_num,
+                            );
+                        }
+                        if !is_lock_row {
+                            row_num = adjustment_insert_coordinate(
+                                &row_num,
+                                root_row_num,
+                                offset_row_num,
+                            );
+                        }
+                        let new_corrdinate = coordinate_from_index_with_lock(
+                            &col_num,
+                            &row_num,
+                            &is_lock_col,
+                            &is_lock_row,
+                        );
+                        coordinate_list_new.push(new_corrdinate);
+                    } else {
+                        coordinate_list_new.push(coordinate.to_string());
                     }
-                    if !is_lock_row {
-                        row_num =
-                            adjustment_insert_coordinate(&row_num, root_row_num, offset_row_num);
-                    }
-                    let new_corrdinate = coordinate_from_index_with_lock(
-                        &col_num,
-                        &row_num,
-                        &is_lock_col,
-                        &is_lock_row,
-                    );
-                    coordinate_list_new.push(new_corrdinate);
                 }
                 let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
                 token.set_value(new_value);
@@ -845,25 +855,35 @@ pub fn adjustment_remove_formula_coordinate(
                 let coordinate_list = get_split_range(range);
                 for coordinate in &coordinate_list {
                     let cell = index_from_coordinate(coordinate);
-                    let mut col_num = cell.0.unwrap();
-                    let mut row_num = cell.1.unwrap();
-                    let is_lock_col = cell.2.unwrap();
-                    let is_lock_row = cell.3.unwrap();
-                    if !is_lock_col {
-                        col_num =
-                            adjustment_remove_coordinate(&col_num, root_col_num, offset_col_num);
+                    if cell.0.is_some() {
+                        let mut col_num = cell.0.unwrap();
+                        let mut row_num = cell.1.unwrap();
+                        let is_lock_col = cell.2.unwrap();
+                        let is_lock_row = cell.3.unwrap();
+                        if !is_lock_col {
+                            col_num = adjustment_remove_coordinate(
+                                &col_num,
+                                root_col_num,
+                                offset_col_num,
+                            );
+                        }
+                        if !is_lock_row {
+                            row_num = adjustment_remove_coordinate(
+                                &row_num,
+                                root_row_num,
+                                offset_row_num,
+                            );
+                        }
+                        let new_corrdinate = coordinate_from_index_with_lock(
+                            &col_num,
+                            &row_num,
+                            &is_lock_col,
+                            &is_lock_row,
+                        );
+                        coordinate_list_new.push(new_corrdinate);
+                    } else {
+                        coordinate_list_new.push(coordinate.to_string());
                     }
-                    if !is_lock_row {
-                        row_num =
-                            adjustment_remove_coordinate(&row_num, root_row_num, offset_row_num);
-                    }
-                    let new_corrdinate = coordinate_from_index_with_lock(
-                        &col_num,
-                        &row_num,
-                        &is_lock_col,
-                        &is_lock_row,
-                    );
-                    coordinate_list_new.push(new_corrdinate);
                 }
                 let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
                 token.set_value(new_value);
