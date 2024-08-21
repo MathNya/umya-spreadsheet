@@ -1675,6 +1675,9 @@ fn issue_216() {
 fn issue_217() {
     let path = std::path::Path::new("./tests/test_files/issue_217.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    book.get_sheet_mut(&2)
+        .unwrap()
+        .set_state(umya_spreadsheet::SheetStateValues::Hidden);
     let path = std::path::Path::new("./tests/result_files/issue_217.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

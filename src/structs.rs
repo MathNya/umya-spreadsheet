@@ -429,3 +429,6 @@ pub use self::cell_formula_values::*;
 
 mod totals_row_function_values;
 pub use self::totals_row_function_values::*;
+
+mod sheet_state_values;
+pub use self::sheet_state_values::*;

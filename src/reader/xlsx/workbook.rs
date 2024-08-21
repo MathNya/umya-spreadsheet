@@ -42,10 +42,14 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     let name_value = get_attribute(e, b"name").unwrap();
                     let sheet_id_value = get_attribute(e, b"sheetId").unwrap();
                     let r_id_value = get_attribute(e, b"r:id").unwrap();
+                    let state = get_attribute(e, b"state");
                     let mut worksheet = Worksheet::default();
                     worksheet.set_name(escape::unescape(&name_value).unwrap());
                     worksheet.set_sheet_id(sheet_id_value);
                     worksheet.set_r_id(r_id_value);
+                    if let Some(v) = state {
+                        worksheet.set_state_str(&v);
+                    }
                     spreadsheet.add_sheet(worksheet);
                 }
                 b"pivotCache" => {

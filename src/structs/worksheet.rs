@@ -21,6 +21,7 @@ use structs::Comment;
 use structs::ConditionalFormatting;
 use structs::DataValidations;
 use structs::DefinedName;
+use structs::EnumValue;
 use structs::HeaderFooter;
 use structs::Hyperlink;
 use structs::Image;
@@ -37,6 +38,7 @@ use structs::Rows;
 use structs::SharedStringTable;
 use structs::SheetFormatProperties;
 use structs::SheetProtection;
+use structs::SheetStateValues;
 use structs::SheetViews;
 use structs::Style;
 use structs::Stylesheet;
@@ -46,6 +48,8 @@ use traits::AdjustmentCoordinateWith2Sheet;
 use traits::AdjustmentCoordinateWithSheet;
 use traits::AdjustmentValue;
 
+use super::EnumTrait;
+
 /// A Worksheet Object.
 #[derive(Clone, Debug, Default)]
 pub struct Worksheet {
@@ -53,6 +57,7 @@ pub struct Worksheet {
     r_id: String,
     sheet_id: String,
     title: String,
+    state: EnumValue<SheetStateValues>,
     cell_collection: Cells,
     row_dimensions: Rows,
     column_dimensions: Columns,
@@ -1077,6 +1082,28 @@ impl Worksheet {
         for defined_name in self.get_defined_names_mut() {
             defined_name.set_sheet_name(&title);
         }
+        self
+    }
+
+    pub(crate) fn has_state(&self) -> bool {
+        self.state.has_value()
+    }
+
+    pub fn get_state(&self) -> &SheetStateValues {
+        self.state.get_value()
+    }
+
+    pub(crate) fn get_state_str(&self) -> &str {
+        self.state.get_value_string()
+    }
+
+    pub fn set_state(&mut self, value: SheetStateValues) -> &mut Self {
+        self.state.set_value(value);
+        self
+    }
+
+    pub(crate) fn set_state_str(&mut self, value: &str) -> &mut Self {
+        self.state.set_value_string(value);
         self
     }
 
