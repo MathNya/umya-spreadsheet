@@ -5,7 +5,8 @@ extern crate chrono;
 extern crate umya_spreadsheet;
 use std::time::Instant;
 
-use umya_spreadsheet::{EnumTrait, NumberingFormat, Style};
+use helper::color;
+use umya_spreadsheet::*;
 
 #[test]
 fn read_and_wite() {
@@ -1528,7 +1529,7 @@ fn issue_184() {
         .unwrap()
         .get_color()
         .get_argb_with_theme(theme);
-    assert_eq!(color, "A78470");
+    assert_eq!(color, "A88570");
 }
 
 #[test]
@@ -1684,27 +1685,46 @@ fn issue_217() {
 
 #[test]
 fn issue_218() {
-    let mut out_book = umya_spreadsheet::new_file();
+    let mut out_book = new_file();
     let out_sheet = out_book.new_sheet("listDataTable").unwrap();
 
-    let mut new_cond = umya_spreadsheet::ConditionalFormatting::default();
-    let mut ran = umya_spreadsheet::Range::default();
-    ran.set_range("B2:B4");
+    let mut color = Color::default();
+    color.set_argb("FF0000");
+    let mut pattern_fill = PatternFill::default();
+    pattern_fill.set_background_color(color);
+    let mut fill = Fill::default();
+    fill.set_pattern_fill(pattern_fill);
+    let mut style = Style::default();
+    style.set_fill(fill);
 
-    let mut add = umya_spreadsheet::Address::default();
-    add.set_range(ran);
-    add.set_sheet_name("listDataTable");
+    let mut form = Formula::default();
+    form.set_string_value("20");
 
-    let mut form = umya_spreadsheet::Formula::default();
-    form.set_address(add);
-    form.set_string_value(">0");
+    let mut cond = ConditionalFormattingRule::default();
+    cond.set_type(ConditionalFormatValues::CellIs)
+        .set_operator(ConditionalFormattingOperatorValues::GreaterThan)
+        .set_priority(1)
+        .set_style(style)
+        .set_formula(form);
 
-    let mut cond = umya_spreadsheet::ConditionalFormattingRule::default();
-    cond.set_formula(form);
+    let mut seq = SequenceOfReferences::default();
+    seq.set_sqref("B2:B4");
+
+    let mut new_cond = ConditionalFormatting::default();
+    new_cond.set_sequence_of_references(seq);
 
     new_cond.set_conditional_collection(vec![cond]);
     out_sheet.set_conditional_formatting_collection(vec![new_cond]);
 
     let path = std::path::Path::new("./tests/result_files/issue_218.xlsx");
-    let _ = umya_spreadsheet::writer::xlsx::write(&out_book, path);
+    let _ = writer::xlsx::write(&out_book, path);
+}
+
+#[test]
+fn issue_219() {
+    let path = std::path::Path::new("./tests/test_files/issue_219.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/issue_219.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }

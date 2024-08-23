@@ -45,6 +45,18 @@ where
     writer.get_mut().write(data.into().as_bytes());
 }
 
+pub(crate) fn write_text_node_conversion<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
+where
+    S: Into<Cow<'a, str>>,
+{
+    let mut data: String = data.into().to_string();
+    data = data.replace("&", "&amp;");
+    data = data.replace("<", "&lt;");
+    data = data.replace(">", "&gt;");
+
+    write_text_node_no_escape(writer, data);
+}
+
 pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>) {
     write_text_node(writer, "\r\n");
 }

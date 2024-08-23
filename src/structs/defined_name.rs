@@ -198,7 +198,7 @@ impl DefinedName {
             attributes.push(("hidden", &hidden_str));
         }
         write_start_tag(writer, "definedName", attributes, false);
-        write_text_node_no_escape(writer, self.get_address());
+        write_text_node_conversion(writer, self.get_address());
         write_end_tag(writer, "definedName");
     }
 }

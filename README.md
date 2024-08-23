@@ -16,7 +16,7 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.0.1
+### ver 2.0.2
 * Minor bug fixes
 
 ## Usage
@@ -24,10 +24,10 @@ Please mention in issues if you have any questions.
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.0.1"
+umya-spreadsheet = "2.0.2"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.0.1", features = ["js"] }
+umya-spreadsheet = { version = "2.0.2", features = ["js"] }
 ```
 
 Add the following code to main.rs

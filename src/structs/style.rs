@@ -269,7 +269,7 @@ impl Style {
             || self.protection.is_some())
     }
 
-    pub(crate) fn get_default_value() -> Self {
+    pub fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());
         def.set_borders(Borders::get_default_value());
