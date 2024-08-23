@@ -10,9 +10,9 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {
     col: u32,
-    col_off: usize,
+    col_off: i32,
     row: u32,
-    row_off: usize,
+    row_off: i32,
 }
 impl MarkerType {
     pub fn get_col(&self) -> &u32 {
@@ -24,16 +24,16 @@ impl MarkerType {
         self
     }
 
-    pub fn get_col_off(&self) -> &usize {
+    pub fn get_col_off(&self) -> &i32 {
         &self.col_off
     }
 
-    pub fn set_col_off(&mut self, value: usize) -> &mut Self {
+    pub fn set_col_off(&mut self, value: i32) -> &mut Self {
         self.col_off = value;
         self
     }
 
-    pub fn add_col_off(&mut self, value: usize) -> &mut Self {
+    pub fn add_col_off(&mut self, value: i32) -> &mut Self {
         self.col_off += value;
         self
     }
@@ -47,16 +47,16 @@ impl MarkerType {
         self
     }
 
-    pub fn get_row_off(&self) -> &usize {
+    pub fn get_row_off(&self) -> &i32 {
         &self.row_off
     }
 
-    pub fn set_row_off(&mut self, value: usize) -> &mut Self {
+    pub fn set_row_off(&mut self, value: i32) -> &mut Self {
         self.row_off = value;
         self
     }
 
-    pub fn add_row_off(&mut self, value: usize) -> &mut Self {
+    pub fn add_row_off(&mut self, value: i32) -> &mut Self {
         self.row_off += value;
         self
     }
@@ -86,13 +86,13 @@ impl MarkerType {
                         self.col = string_value.parse::<u32>().unwrap();
                     }
                     b"xdr:colOff" => {
-                        self.col_off = string_value.parse::<usize>().unwrap();
+                        self.col_off = string_value.parse::<i32>().unwrap();
                     }
                     b"xdr:row" => {
                         self.row = string_value.parse::<u32>().unwrap();
                     }
                     b"xdr:rowOff" => {
-                        self.row_off = string_value.parse::<usize>().unwrap();
+                        self.row_off = string_value.parse::<i32>().unwrap();
                     }
                     b"xdr:from" => return,
                     b"xdr:to" => return,
