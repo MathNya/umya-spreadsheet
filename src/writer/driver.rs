@@ -1,3 +1,4 @@
+use quick_xml::escape::*;
 use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
 use quick_xml::Writer;
 use std::borrow::Cow;
@@ -49,11 +50,8 @@ pub(crate) fn write_text_node_conversion<'a, S>(writer: &mut Writer<Cursor<Vec<u
 where
     S: Into<Cow<'a, str>>,
 {
-    let mut data: String = data.into().to_string();
-    data = data.replace("&", "&amp;");
-    data = data.replace("<", "&lt;");
-    data = data.replace(">", "&gt;");
-
+    let data = data.into().to_string();
+    let data = partial_escape(&data);
     write_text_node_no_escape(writer, data);
 }
 
