@@ -145,6 +145,10 @@ impl Column {
         self
     }
 
+    pub(crate) fn has_style(&self) -> bool {
+        &self.style != &Style::default()
+    }
+
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",

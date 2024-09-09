@@ -248,7 +248,10 @@ impl Worksheet {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut((col, row))
+        let row_dimenshon = self.get_row_dimension_mut(&row).clone();
+        let col_dimenshon = self.get_column_dimension_by_number_mut(&col).clone();
+        self.cell_collection
+            .get_mut((col, row), &row_dimenshon, &col_dimenshon)
     }
 
     pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
@@ -273,8 +276,14 @@ impl Worksheet {
     /// # Arguments
     /// * `cell` - Cell
     pub fn set_cell(&mut self, cell: Cell) -> &mut Self {
-        self.get_row_dimension_mut(cell.get_coordinate().get_row_num());
-        self.cell_collection.set(cell);
+        let row_dimenshon = self
+            .get_row_dimension_mut(cell.get_coordinate().get_row_num())
+            .clone();
+        let col_dimenshon = self
+            .get_column_dimension_by_number_mut(cell.get_coordinate().get_col_num())
+            .clone();
+        self.cell_collection
+            .set(cell, &row_dimenshon, &col_dimenshon);
         self
     }
 
@@ -332,11 +341,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.get_row_dimension_mut(&row);
-        self.cell_collection
-            .get_mut((col, row))
-            .get_cell_value_mut()
+        self.get_cell_mut(coordinate).get_cell_value_mut()
     }
 
     /// Gets the cell value by specifying an range.
@@ -391,18 +396,14 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut((col, row)).get_style_mut()
+        self.get_cell_mut(coordinate).get_style_mut()
     }
 
     pub fn set_style<T>(&mut self, coordinate: T, style: Style) -> &mut Self
     where
         T: Into<CellCoordinates>,
     {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.get_row_dimension_mut(&row);
-        self.cell_collection.get_mut((&col, &row)).set_style(style);
+        self.get_cell_mut(coordinate).set_style(style);
         self
     }
 

@@ -4,6 +4,8 @@ use super::Style;
 use hashbrown::HashMap;
 use helper::coordinate::*;
 use helper::range::*;
+use structs::Column;
+use structs::Row;
 use traits::AdjustmentCoordinate;
 use traits::AdjustmentCoordinateWith2Sheet;
 use traits::AdjustmentCoordinateWithSheet;
@@ -103,7 +105,12 @@ impl Cells {
         self.map.get(&(row.to_owned(), col.to_owned()))
     }
 
-    pub(crate) fn get_mut<T>(&mut self, coordinate: T) -> &mut Cell
+    pub(crate) fn get_mut<T>(
+        &mut self,
+        coordinate: T,
+        row_dimenshon: &Row,
+        col_dimenshon: &Column,
+    ) -> &mut Cell
     where
         T: Into<CellCoordinates>,
     {
@@ -114,6 +121,12 @@ impl Cells {
                 let mut c = Cell::default();
                 c.get_coordinate_mut().set_col_num(col);
                 c.get_coordinate_mut().set_row_num(row);
+                if col_dimenshon.has_style() {
+                    c.set_style(col_dimenshon.get_style().clone());
+                }
+                if row_dimenshon.has_style() {
+                    c.set_style(row_dimenshon.get_style().clone());
+                }
                 c
             })
     }
@@ -140,10 +153,15 @@ impl Cells {
             .unwrap_or(&self.default_style)
     }
 
-    pub(crate) fn set(&mut self, cell: Cell) -> &mut Self {
+    pub(crate) fn set(
+        &mut self,
+        cell: Cell,
+        row_dimenshon: &Row,
+        col_dimenshon: &Column,
+    ) -> &mut Self {
         let col_num = cell.get_coordinate().get_col_num();
         let row_num = cell.get_coordinate().get_row_num();
-        let target_cell = self.get_mut((col_num, row_num));
+        let target_cell = self.get_mut((col_num, row_num), row_dimenshon, col_dimenshon);
         target_cell.set_obj(cell);
         self
     }

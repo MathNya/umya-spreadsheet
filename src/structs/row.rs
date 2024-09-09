@@ -16,7 +16,7 @@ use std::io::Cursor;
 use traits::AdjustmentValue;
 use writer::driver::*;
 
-#[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct Row {
     row_num: UInt32Value,
     height: DoubleValue,
@@ -26,7 +26,19 @@ pub struct Row {
     hidden: BooleanValue,
     style: Style,
 }
-
+impl Default for Row {
+    fn default() -> Self {
+        Self {
+            row_num: UInt32Value::default(),
+            height: DoubleValue::default(),
+            descent: DoubleValue::default(),
+            thick_bot: BooleanValue::default(),
+            custom_height: BooleanValue::default(),
+            hidden: BooleanValue::default(),
+            style: Style::default(),
+        }
+    }
+}
 impl Row {
     pub fn get_row_num(&self) -> &u32 {
         self.row_num.get_value()
@@ -94,6 +106,10 @@ impl Row {
     pub fn set_style(&mut self, value: Style) -> &mut Self {
         self.style = value;
         self
+    }
+
+    pub(crate) fn has_style(&self) -> bool {
+        &self.style != &Style::default()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

@@ -1728,3 +1728,32 @@ fn issue_219() {
     let path = std::path::Path::new("./tests/result_files/issue_219.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_220() {
+    let path = std::path::Path::new("./tests/test_files/issue_220.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    book.get_sheet_mut(&0)
+        .unwrap()
+        .get_cell_mut("A1")
+        .set_value("TEST1");
+
+    book.get_sheet_mut(&0)
+        .unwrap()
+        .get_cell_mut("B1")
+        .set_value("TEST1");
+
+    book.get_sheet_mut(&0)
+        .unwrap()
+        .get_cell_mut("B2")
+        .set_value("TEST1");
+
+    book.get_sheet_mut(&0)
+        .unwrap()
+        .get_cell_mut("A2")
+        .set_value("TEST1");
+
+    let path = std::path::Path::new("./tests/result_files/issue_220.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
