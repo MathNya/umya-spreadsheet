@@ -1,5 +1,4 @@
 use base64::{engine::general_purpose::STANDARD, Engine as _};
-use image::GenericImageView;
 use quick_xml::Writer;
 use std::fs;
 use std::fs::File;
@@ -102,8 +101,7 @@ impl Image {
         let path_obj = std::path::Path::new(path_str);
         let image_name = path_obj.file_name().unwrap().to_str().unwrap();
 
-        let img = image::open(path_obj).unwrap();
-        let (width, height) = img.dimensions();
+        let (width, height) = image::image_dimensions(path_obj).unwrap();
 
         let mut file = File::open(path_str).unwrap();
         let mut buf = Vec::new();
