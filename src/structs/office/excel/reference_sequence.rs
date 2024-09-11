@@ -6,24 +6,52 @@ use reader::driver::*;
 use std::io::Cursor;
 use std::vec;
 use structs::Coordinate;
+use structs::Range;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct ReferenceSequence {
-    value: Coordinate,
+    value: Vec<Range>,
 }
 impl ReferenceSequence {
-    pub fn get_value(&self) -> &Coordinate {
+    pub fn get_value(&self) -> &Vec<Range> {
         &self.value
     }
 
-    pub fn get_value_mut(&mut self) -> &mut Coordinate {
+    pub fn get_value_mut(&mut self) -> &mut Vec<Range> {
         &mut self.value
     }
 
-    pub fn set_value(&mut self, value: Coordinate) -> &mut Self {
+    pub fn set_value(&mut self, value: Vec<Range>) -> &mut Self {
         self.value = value;
         self
+    }
+
+    pub fn add_value(&mut self, value: Range) -> &mut Self {
+        self.value.push(value);
+        self
+    }
+
+    pub fn remove_value(&mut self) -> &mut Self {
+        self.value.clear();
+        self
+    }
+
+    pub fn set_sqref<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        value.into().split(' ').for_each(|range_value| {
+            let mut range = Range::default();
+            range.set_range(range_value);
+            self.value.push(range);
+        });
+        self
+    }
+
+    pub fn get_sqref(&self) -> String {
+        self.value
+            .iter()
+            .map(|range| range.get_range())
+            .collect::<Vec<String>>()
+            .join(" ")
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -40,9 +68,7 @@ impl ReferenceSequence {
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xm:sqref" => {
-                        let mut obj = Coordinate::default();
-                        obj.set_coordinate(value);
-                        self.value = obj;
+                        self.set_sqref(value);
                         value = String::from("");
                         return;
                     }
@@ -58,7 +84,7 @@ impl ReferenceSequence {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:sqref", vec![], false);
-        write_text_node(writer, &self.value.get_coordinate());
+        write_text_node(writer, &self.get_sqref());
         write_end_tag(writer, "xm:sqref");
     }
 }

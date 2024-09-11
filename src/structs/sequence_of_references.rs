@@ -15,20 +15,28 @@ impl SequenceOfReferences {
         &mut self.range_collection
     }
 
-    pub fn set_range_collection(&mut self, value: Vec<Range>) {
+    pub fn set_range_collection(&mut self, value: Vec<Range>) -> &mut Self {
         self.range_collection = value;
+        self
     }
 
-    pub fn add_range_collection(&mut self, value: Range) {
+    pub fn add_range_collection(&mut self, value: Range) -> &mut Self {
         self.range_collection.push(value);
+        self
     }
 
-    pub fn set_sqref<S: Into<String>>(&mut self, value: S) {
+    pub fn remove_range_collection(&mut self) -> &mut Self {
+        self.range_collection.clear();
+        self
+    }
+
+    pub fn set_sqref<S: Into<String>>(&mut self, value: S) -> &mut Self {
         value.into().split(' ').for_each(|range_value| {
             let mut range = Range::default();
             range.set_range(range_value);
             self.range_collection.push(range);
         });
+        self
     }
 
     pub fn get_sqref(&self) -> String {
