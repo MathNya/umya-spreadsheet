@@ -4,6 +4,7 @@ use std::fs;
 use std::fs::File;
 use std::io::Cursor;
 use std::io::Read;
+use std::io::BufReader;
 use structs::drawing::spreadsheet::MarkerType;
 use structs::drawing::spreadsheet::OneCellAnchor;
 use structs::drawing::spreadsheet::Picture;
@@ -96,17 +97,21 @@ impl Image {
         self
     }
 
+    #[cfg(feature = "image")]
     pub fn new_image(&mut self, path: &str, marker: MarkerType) {
-        let path_str = path;
-        let path_obj = std::path::Path::new(path_str);
-        let image_name = path_obj.file_name().unwrap().to_str().unwrap();
+        let path = std::path::Path::new(path);
 
-        let (width, height) = image::image_dimensions(path_obj).unwrap();
-
-        let mut file = File::open(path_str).unwrap();
+        let (width, height) = image::image_dimensions(path).unwrap();
+        let image_name = path.file_name().unwrap().to_str().unwrap();
         let mut buf = Vec::new();
-        file.read_to_end(&mut buf).unwrap();
 
+        let file = File::open(path).unwrap();
+        BufReader::new(file).read_to_end(&mut buf).unwrap();
+
+        self.new_image_with_dimensions(height, width, image_name, buf, marker)
+    }
+
+    pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(&mut self, height: u32, width: u32, image_name: &str, bytes: B, marker: MarkerType) {
         let mut picture = Picture::default();
         // filename and filedata.
         picture
@@ -115,7 +120,7 @@ impl Image {
             .set_cstate("print")
             .get_image_mut()
             .set_image_name(image_name)
-            .set_image_data(buf);
+            .set_image_data(bytes.into());
 
         // name
         picture
