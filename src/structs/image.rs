@@ -2,9 +2,9 @@ use base64::{engine::general_purpose::STANDARD, Engine as _};
 use quick_xml::Writer;
 use std::fs;
 use std::fs::File;
+use std::io::BufReader;
 use std::io::Cursor;
 use std::io::Read;
-use std::io::BufReader;
 use structs::drawing::spreadsheet::MarkerType;
 use structs::drawing::spreadsheet::OneCellAnchor;
 use structs::drawing::spreadsheet::Picture;
@@ -111,7 +111,14 @@ impl Image {
         self.new_image_with_dimensions(height, width, image_name, buf, marker)
     }
 
-    pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(&mut self, height: u32, width: u32, image_name: &str, bytes: B, marker: MarkerType) {
+    pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(
+        &mut self,
+        height: u32,
+        width: u32,
+        image_name: &str,
+        bytes: B,
+        marker: MarkerType,
+    ) {
         let mut picture = Picture::default();
         // filename and filedata.
         picture
