@@ -1,6 +1,6 @@
 [package]
 name = "umya-spreadsheet"
-version = "2.0.2"
+version = "2.0.3"
 authors = ["MathNya <umya.net.info@gmail.com>"]
 repository = "https://github.com/MathNya/umya-spreadsheet"
 keywords = ["excel", "spreadsheet", "xlsx", "reader", "writer"]
@@ -24,7 +24,7 @@ getrandom = { version = "0.2.14" }
 hashbrown = "0.14.3"
 hmac = "0.12.1"
 html_parser = "0.7.0"
-image = "0.25.0"
+image = { version = "0.25.0", optional = true }
 lazy_static = "1.4.0"
 md-5 = "0.10.6"
 regex = "1.10.2"
@@ -38,3 +38,4 @@ doctest = false
 
 [features]
 js = ["getrandom/js"]
+default = ["image"]
