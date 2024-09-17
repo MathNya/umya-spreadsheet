@@ -329,6 +329,9 @@ impl Cell {
                 }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"v" => match type_value.as_str() {
+                        _ => if self.cell_value.is_formula() {
+                            self.set_formula_result_default(&string_value);
+                        }
                         "str" => {
                             self.set_value_string(&string_value);
                         }
