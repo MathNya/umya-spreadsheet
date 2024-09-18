@@ -16,7 +16,7 @@ pub struct CellValue {
 }
 impl CellValue {
     pub fn get_data_type(&self) -> &str {
-        &self.raw_value.get_data_type()
+        self.raw_value.get_data_type()
     }
 
     pub fn get_raw_value(&self) -> &CellRawValue {
@@ -24,7 +24,10 @@ impl CellValue {
     }
 
     pub(crate) fn get_data_type_crate(&self) -> &str {
-        self.raw_value.get_data_type()
+        match &self.formula {
+            Some(_) => "str",
+            None => self.raw_value.get_data_type(),
+        }
     }
 
     pub fn get_value(&self) -> Cow<'static, str> {
@@ -78,6 +81,11 @@ impl CellValue {
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into());
         self.remove_formula();
+        self
+    }
+
+    pub(crate) fn set_value_string_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.raw_value = CellRawValue::String(value.into());
         self
     }
 

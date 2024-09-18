@@ -286,7 +286,7 @@ impl CellFormula {
         }
 
         write_start_tag(writer, "f", attributes, false);
-        write_text_node(writer, self.text.get_value_str());
+        write_text_node_conversion(writer, self.text.get_value_str());
         write_end_tag(writer, "f");
     }
 }

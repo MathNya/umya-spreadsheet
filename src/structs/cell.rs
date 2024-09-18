@@ -134,6 +134,11 @@ impl Cell {
         self
     }
 
+    pub(crate) fn set_value_string_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.cell_value.set_value_string_crate(value);
+        self
+    }
+
     pub fn set_value_bool(&mut self, value: bool) -> &mut Self {
         self.cell_value.set_value_bool(value);
         self
@@ -330,7 +335,7 @@ impl Cell {
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"v" => match type_value.as_str() {
                         "str" => {
-                            self.set_value_string(&string_value);
+                            self.set_value_string_crate(&string_value);
                         }
                         "s" => {
                             let index = string_value.parse::<usize>().unwrap();
@@ -437,6 +442,9 @@ impl Cell {
                         .set_cell(self.get_cell_value());
                     write_text_node(writer, val_index.to_string());
                 }
+                "str" => {
+                    write_text_node_conversion(writer, self.get_value());
+                }
                 "b" => {
                     let upper_value = self.get_value().to_uppercase();
                     let prm = if upper_value == "TRUE" { "1" } else { "0" };
@@ -446,7 +454,7 @@ impl Cell {
                     let prm = "#VALUE!";
                     write_text_node(writer, prm);
                 }
-                _ => write_text_node(writer, self.get_value()),
+                _ => write_text_node_conversion(writer, self.get_value()),
             }
             write_end_tag(writer, "v");
         }
