@@ -1768,6 +1768,20 @@ fn issue_222() {
 }
 
 #[test]
+fn issue_224() {
+    let mut book = umya_spreadsheet::new_file();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    let mut num = NumberingFormat::default();
+    num.set_format_code("[<1]0;0");
+    sheet
+        .get_cell_mut("A1")
+        .get_style_mut()
+        .set_numbering_format(num);
+    sheet.get_cell_mut("A1").set_value_number(1.3);
+    assert_eq!("1", sheet.get_formatted_value("A1"));
+}
+
+#[test]
 fn issue_225() {
     let path = std::path::Path::new("./tests/test_files/issue_225.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();

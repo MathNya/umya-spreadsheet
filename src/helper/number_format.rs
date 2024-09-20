@@ -225,10 +225,23 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         if cond_re.find(section).ok().flatten().is_some() {
             let mut item: Vec<String> = Vec::new();
             for ite in cond_re.captures(section).ok().flatten().unwrap().iter() {
-                item.push(ite.unwrap().as_str().to_string());
+                match ite {
+                    Some(v) => item.push(v.as_str().to_string()),
+                    None => {}
+                }
             }
-            std::mem::replace(&mut condops[idx], item.get(1).unwrap().to_string());
-            std::mem::replace(&mut condvals[idx], item.get(2).unwrap().to_string());
+            match item.get(1) {
+                Some(v) => {
+                    std::mem::replace(&mut condops[idx], v.to_string());
+                }
+                None => {}
+            }
+            match item.get(2) {
+                Some(v) => {
+                    std::mem::replace(&mut condvals[idx], v.to_string());
+                }
+                None => {}
+            }
             converted_section = cond_re.replace_all(section, "").to_string();
         }
         converted_sections.insert(idx, converted_section);
