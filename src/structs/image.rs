@@ -163,6 +163,7 @@ impl Image {
         self.set_one_cell_anchor(one_cell_anchor);
     }
 
+    #[cfg(feature = "image")]
     pub fn change_image(&mut self, path: &str) {
         let marker = self.get_from_marker_type().clone();
         self.remove_two_cell_anchor();
