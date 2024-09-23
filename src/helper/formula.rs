@@ -771,6 +771,66 @@ pub(crate) fn render(formula_token_list: &[FormulaToken]) -> String {
     result
 }
 
+pub fn adjustment_formula_coordinate(
+    token_list: &mut [FormulaToken],
+    offset_col_num: &i32,
+    offset_row_num: &i32,
+) {
+    for token in token_list.into_iter() {
+        if token.get_token_type() == &FormulaTokenTypes::Operand
+            && token.get_token_sub_type() == &FormulaTokenSubTypes::Range
+        {
+            let (sheet_name, range) = split_address(token.get_value());
+            let mut coordinate_list_new: Vec<String> = Vec::new();
+            let coordinate_list = get_split_range(range);
+            let mut has_error = false;
+            for coordinate in &coordinate_list {
+                let cell = index_from_coordinate(coordinate);
+                if cell.0.is_some() {
+                    let mut col_num = cell.0.unwrap();
+                    let mut row_num = cell.1.unwrap();
+                    let is_lock_col = cell.2.unwrap();
+                    let is_lock_row = cell.3.unwrap();
+                    if !is_lock_col {
+                        let calc_col_num = col_num as i32 + offset_col_num;
+                        if calc_col_num < 1 {
+                            has_error = true;
+                            break;
+                        } else {
+                            col_num = calc_col_num as u32;
+                        }
+                    }
+                    if !is_lock_row {
+                        let calc_row_num = row_num as i32 + offset_row_num;
+                        if calc_row_num < 1 {
+                            has_error = true;
+                            break;
+                        } else {
+                            row_num = calc_row_num as u32;
+                        }
+                    }
+                    let new_corrdinate = coordinate_from_index_with_lock(
+                        &col_num,
+                        &row_num,
+                        &is_lock_col,
+                        &is_lock_row,
+                    );
+                    coordinate_list_new.push(new_corrdinate);
+                } else {
+                    coordinate_list_new.push(coordinate.to_string());
+                }
+            }
+            if has_error {
+                token.set_value("#REF!");
+                token.set_token_sub_type(FormulaTokenSubTypes::Error);
+            } else {
+                let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
+                token.set_value(new_value);
+            }
+        }
+    }
+}
+
 pub fn adjustment_insert_formula_coordinate(
     token_list: &mut [FormulaToken],
     root_col_num: &u32,

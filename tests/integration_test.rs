@@ -1377,6 +1377,28 @@ fn issue_185() {
 }
 
 #[test]
+fn issue_187() {
+    let path = std::path::Path::new("./tests/test_files/issue_187.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+
+    let mut cell = sheet.get_cell("C4").unwrap().clone();
+    cell.set_coordinate("B5");
+    sheet.set_cell(cell);
+
+    let mut cell = sheet.get_cell("C4").unwrap().clone();
+    cell.set_coordinate("D6");
+    sheet.set_cell(cell);
+
+    let mut cell = sheet.get_cell("C4").unwrap().clone();
+    cell.set_coordinate("C7");
+    sheet.set_cell(cell);
+
+    let path = std::path::Path::new("./tests/result_files/issue_187.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn issue_188() {
     let path = std::path::Path::new("./tests/test_files/issue_188.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();

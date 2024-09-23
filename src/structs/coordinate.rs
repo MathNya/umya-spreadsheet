@@ -68,6 +68,8 @@ impl Coordinate {
         self
     }
 
+    /// Change coordinates
+    /// Formula is not updated.
     pub fn set_coordinate<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
         let (c, r, cl, rl) = index_from_coordinate(value.as_ref());
 

@@ -1,4 +1,5 @@
 use hashbrown::HashMap;
+use helper::coordinate::*;
 use helper::formula::*;
 use helper::number_format::*;
 use quick_xml::events::{BytesStart, Event};
@@ -66,6 +67,30 @@ impl Cell {
 
     pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
         &mut self.coordinate
+    }
+
+    /// Change the coordinate.
+    /// Change the formula address as well.
+    pub fn set_coordinate<T>(&mut self, coordinate: T) -> &mut Self
+    where
+        T: Into<CellCoordinates>,
+    {
+        let CellCoordinates { col, row } = coordinate.into();
+
+        let formula = self.cell_value.get_formula();
+        if formula != "" {
+            let org_col_num = self.coordinate.get_col_num();
+            let org_row_num = self.coordinate.get_row_num();
+            let offset_col_num = col as i32 - *org_col_num as i32;
+            let offset_row_num = row as i32 - *org_row_num as i32;
+            let mut tokens = parse_to_tokens(format!("={}", formula));
+            adjustment_formula_coordinate(&mut tokens, &offset_col_num, &offset_row_num);
+            let result_formula = render(tokens.as_ref());
+            self.cell_value.set_formula(result_formula);
+        }
+        self.coordinate.set_col_num(col);
+        self.coordinate.set_row_num(row);
+        self
     }
 
     pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
