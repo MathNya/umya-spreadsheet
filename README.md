@@ -16,7 +16,8 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.0.2
+### ver 2.1.0
+* For image processing functions, you can select what you need.(Thank you. [xamgore](https://github.com/xamgore))
 * Minor bug fixes
 
 ## Usage
@@ -24,10 +25,13 @@ Please mention in issues if you have any questions.
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.0.2"
+umya-spreadsheet = "2.1.0"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.0.2", features = ["js"] }
+umya-spreadsheet = { version = "2.1.0", features = ["js"] }
+
+# Use only png for image processing
+umya-spreadsheet = { version = "2.1.0", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
