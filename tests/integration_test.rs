@@ -1811,3 +1811,12 @@ fn issue_225() {
     let path = std::path::Path::new("./tests/result_files/issue_225.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_227() {
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+    book.read_sheet_by_name("Sheet2");
+    let sheet = book.get_sheet_by_name("Sheet2").unwrap();
+    assert_eq!("3", sheet.get_cell("B6").unwrap().get_value());
+}

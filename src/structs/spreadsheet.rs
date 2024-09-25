@@ -334,6 +334,12 @@ impl Spreadsheet {
         self
     }
 
+    /// deserialize a worksheet.
+    pub fn read_sheet_by_name(&mut self, sheet_name: &str) -> &mut Self {
+        let index = self.find_sheet_index_by_name(sheet_name).unwrap();
+        self.read_sheet(index)
+    }
+
     pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Option<usize> {
         self.work_sheet_collection
             .iter()
