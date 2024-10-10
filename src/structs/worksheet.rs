@@ -1565,6 +1565,20 @@ impl Worksheet {
     /// 'row' - The number of rows to move by (negative numbers mean move 'left')
     /// 'column' - the number of columns to move by (negative numbers mean move 'up')
     pub fn move_range(&mut self, range: &str, row: &i32, column: &i32) -> &mut Self {
+        self.move_or_copy_range(&range, &row, &column, true)
+    }
+
+    /// Copying a section of the sheet
+    /// # Arguments
+    /// 'range' - Specify like "A1:G8"
+    /// 'row' - The number of rows to move by (negative numbers mean move 'left')
+    /// 'column' - the number of columns to move by (negative numbers mean move 'up')
+    pub fn copy_range(&mut self, range: &str, row: &i32, column: &i32) -> &mut Self {
+        self.move_or_copy_range(&range, &row, &column, false)
+    }
+
+    // Moving or copying a section of the sheet
+    fn move_or_copy_range(&mut self, range: &str, row: &i32, column: &i32, is_move: bool) -> &mut Self {
         // Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
         // impossible)
         let range_upper = range.to_uppercase();
@@ -1590,16 +1604,18 @@ impl Worksheet {
             .map(|cell| cell.clone())
             .collect();
 
-        // Delete cell information as iterating through
-        get_coordinate_list(&range_upper)
-            .iter()
-            .for_each(|(col_num, row_num)| {
-                self.cell_collection.remove(col_num, row_num);
-                self.cell_collection.remove(
-                    &((*col_num as i32 + column) as u32),
-                    &((*row_num as i32 + row) as u32),
-                );
-            });
+        // Delete cell information as iterating through in move mode
+        if is_move {
+            get_coordinate_list(&range_upper)
+                .iter()
+                .for_each(|(col_num, row_num)| {
+                    self.cell_collection.remove(col_num, row_num);
+                    self.cell_collection.remove(
+                        &((*col_num as i32 + column) as u32),
+                        &((*row_num as i32 + row) as u32),
+                    );
+                });
+        }
 
         // repaste by setting cell values
         for cell in &mut copy_cells {
