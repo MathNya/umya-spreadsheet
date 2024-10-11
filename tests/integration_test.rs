@@ -1820,3 +1820,15 @@ fn issue_227() {
     let sheet = book.get_sheet_by_name("Sheet2").unwrap();
     assert_eq!("3", sheet.get_cell("B6").unwrap().get_value());
 }
+
+#[test]
+fn issue_230() {
+    let mut wb = new_file();
+    let sheet = wb.get_sheet_mut(&0).unwrap();
+    sheet.get_cell_mut("A1").set_value("12");
+    sheet
+        .get_style_mut("A1")
+        .get_number_format_mut()
+        .set_format_code("#\\ #");
+    //assert_eq!("1 2", sheet.get_formatted_value("A1"));
+}
