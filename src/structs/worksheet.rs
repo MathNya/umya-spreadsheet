@@ -1578,7 +1578,13 @@ impl Worksheet {
     }
 
     // Moving or copying a section of the sheet
-    fn move_or_copy_range(&mut self, range: &str, row: &i32, column: &i32, is_move: bool) -> &mut Self {
+    fn move_or_copy_range(
+        &mut self,
+        range: &str,
+        row: &i32,
+        column: &i32,
+        is_move: bool,
+    ) -> &mut Self {
         // Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
         // impossible)
         let range_upper = range.to_uppercase();
