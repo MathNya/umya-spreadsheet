@@ -208,6 +208,11 @@ impl Color {
         )
     }
 
+    // When opened in software such as Excel, it is visually blank.
+    pub(crate) fn is_visually_empty(&self) -> bool {
+        !self.has_value()
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

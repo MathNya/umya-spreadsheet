@@ -207,6 +207,11 @@ impl CellValue {
     pub(crate) fn is_formula_empty(&self) -> bool {
         !self.is_formula()
     }
+
+    // When opened in software such as Excel, it is visually blank.
+    pub(crate) fn is_visually_empty(&self) -> bool {
+        self.get_value() == "" && self.is_formula_empty()
+    }
 }
 impl AdjustmentCoordinateWith2Sheet for CellValue {
     fn adjustment_insert_coordinate_with_2sheet(

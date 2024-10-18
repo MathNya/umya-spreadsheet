@@ -93,6 +93,15 @@ impl Fill {
         )
     }
 
+    // When opened in software such as Excel, it is visually blank.
+    pub(crate) fn is_visually_empty(&self) -> bool {
+        !(self
+            .pattern_fill
+            .as_ref()
+            .is_some_and(|x| !x.is_visually_empty())
+            || self.gradient_fill.as_ref().is_some())
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

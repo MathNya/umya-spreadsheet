@@ -269,6 +269,15 @@ impl Style {
             || self.protection.is_some())
     }
 
+    // When opened in software such as Excel, it is visually blank.
+    pub(crate) fn is_visually_empty(&self) -> bool {
+        !(self.fill.as_ref().is_some_and(|x| !x.is_visually_empty())
+            || self
+                .borders
+                .as_ref()
+                .is_some_and(|x| !x.is_visually_empty()))
+    }
+
     pub fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());

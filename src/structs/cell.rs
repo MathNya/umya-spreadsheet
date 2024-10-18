@@ -289,6 +289,13 @@ impl Cell {
         result
     }
 
+    // When opened in software such as Excel, it is visually blank.
+    pub(crate) fn is_visually_empty(&self) -> bool {
+        self.cell_value.is_visually_empty()
+            && self.style.is_visually_empty()
+            && self.hyperlink.is_none()
+    }
+
     pub(crate) fn set_obj(&mut self, cell: Self) -> &mut Self {
         self.cell_value = cell.cell_value;
         self.style = cell.style;

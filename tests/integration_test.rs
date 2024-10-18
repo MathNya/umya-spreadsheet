@@ -1841,3 +1841,14 @@ fn issue_232() {
     let path = std::path::Path::new("./tests/result_files/issue_232.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_233() {
+    let path = std::path::Path::new("./tests/test_files/issue_233.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    // book.get_sheet_mut(&0).unwrap().cleanup();
+
+    let path = std::path::Path::new("./tests/result_files/issue_233.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

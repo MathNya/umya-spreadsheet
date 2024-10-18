@@ -1632,6 +1632,37 @@ impl Worksheet {
 
         self
     }
+
+    /// Remove invisible garbage data.
+    /// Doing so may reduce file size.
+    /// Processing may take some time.
+    pub fn cleanup(&mut self) {
+        let (_, max_row) = self.get_highest_column_and_row();
+        for row in (1..(max_row + 1)).rev() {
+            if self.row_dimensions.get_row_dimension(&row).is_some() {
+                let mut indexes: Vec<(u32, u32)> = Vec::new();
+                {
+                    let cells: Vec<&Cell> = self.cell_collection.get_collection_by_row(&row);
+                    for cell in cells {
+                        if !cell.is_visually_empty() {
+                            return;
+                        }
+                        indexes.push((
+                            cell.get_coordinate().get_row_num().clone(),
+                            cell.get_coordinate().get_col_num().clone(),
+                        ));
+                    }
+                }
+
+                self.row_dimensions
+                    .get_row_dimensions_to_hashmap_mut()
+                    .remove(&row);
+                for (i_row, i_col) in indexes {
+                    self.cell_collection.remove(&i_col, &i_row);
+                }
+            }
+        }
+    }
 }
 impl AdjustmentCoordinate for Worksheet {
     fn adjustment_insert_coordinate(

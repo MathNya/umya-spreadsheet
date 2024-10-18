@@ -94,6 +94,19 @@ impl PatternFill {
         )
     }
 
+    // When opened in software such as Excel, it is visually blank.
+    pub(crate) fn is_visually_empty(&self) -> bool {
+        !(self.pattern_type.get_value() != &PatternValues::None
+            || self
+                .foreground_color
+                .as_ref()
+                .is_some_and(|x| !x.is_visually_empty())
+            || self
+                .background_color
+                .as_ref()
+                .is_some_and(|x| x.is_visually_empty()))
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

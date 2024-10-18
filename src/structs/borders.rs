@@ -233,6 +233,17 @@ impl Borders {
         )
     }
 
+    // When opened in software such as Excel, it is visually blank.
+    pub(crate) fn is_visually_empty(&self) -> bool {
+        self.left_border.is_visually_empty()
+            || self.right_border.is_visually_empty()
+            || self.top_border.is_visually_empty()
+            || self.bottom_border.is_visually_empty()
+            || self.diagonal_border.is_visually_empty()
+            || self.vertical_border.is_visually_empty()
+            || self.horizontal_border.is_visually_empty()
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
