@@ -1832,3 +1832,12 @@ fn issue_230() {
         .set_format_code("#\\ #");
     //assert_eq!("1 2", sheet.get_formatted_value("A1"));
 }
+
+#[test]
+fn issue_232() {
+    let path = std::path::Path::new("./tests/test_files/issue_232.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/issue_232.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

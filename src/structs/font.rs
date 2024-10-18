@@ -340,6 +340,9 @@ impl Font {
                     b"name" => {
                         self.font_name.set_attributes(reader, e);
                     }
+                    b"rFont" => {
+                        self.font_name.set_attributes(reader, e);
+                    }
                     b"sz" => {
                         self.font_size.set_attributes(reader, e);
                     }
