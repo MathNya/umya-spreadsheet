@@ -16,10 +16,17 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.1.1
-* Minor bug fixes
-### ver 2.1.0
-* For image processing functions, you can select what you need.(Thank you. [xamgore](https://github.com/xamgore))
+### ver 2.1.2
+* cleanup() is now available.
+Remove invisible garbage data.
+Doing so may reduce file size.
+Processing may take some time.
+```rust
+let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+book.get_sheet_mut(&0).unwrap().cleanup();
+```
+
 * Minor bug fixes
 
 ## Usage
@@ -27,13 +34,13 @@ Please mention in issues if you have any questions.
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.1.1"
+umya-spreadsheet = "2.1.2"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.1.1", features = ["js"] }
+umya-spreadsheet = { version = "2.1.2", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "2.1.1", features = ["image/png"] }
+umya-spreadsheet = { version = "2.1.2", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
