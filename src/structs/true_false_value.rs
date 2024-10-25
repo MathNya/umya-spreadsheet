@@ -9,7 +9,10 @@ impl TrueFalseValue {
     }
 
     pub(crate) fn get_value_string(&self) -> &str {
-        self.value.as_ref().map_or("f", |b| "t")
+        match self.get_value() {
+            true => "t",
+            false => "f",
+        }
     }
 
     pub(crate) fn set_value(&mut self, value: bool) -> &mut Self {
@@ -18,7 +21,8 @@ impl TrueFalseValue {
     }
 
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.set_value(value.into() != "f")
+        let value: String = value.into();
+        self.set_value(!(value.eq_ignore_ascii_case("f") || value.eq_ignore_ascii_case("false")))
     }
 
     pub(crate) fn has_value(&self) -> bool {
