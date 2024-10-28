@@ -15,6 +15,10 @@ use structs::drawing::Stretch;
 use structs::MediaObject;
 use traits::AdjustmentCoordinate;
 
+lazy_static! {
+    static ref EMPTY_VEC: Vec<u8> = Vec::new();
+}
+
 #[derive(Clone, Default, Debug)]
 pub struct Image {
     two_cell_anchor: Box<Option<TwoCellAnchor>>,
@@ -172,19 +176,25 @@ impl Image {
     }
 
     pub fn download_image(&self, path: &str) {
-        fs::write(
-            path,
-            self.get_media_object().first().unwrap().get_image_data(),
-        )
-        .unwrap();
+        fs::write(path, self.get_image_data()).unwrap();
+    }
+
+    pub fn has_image(&self) -> bool {
+        !self.get_media_object().is_empty()
     }
 
     pub fn get_image_name(&self) -> &str {
-        self.get_media_object().first().unwrap().get_image_name()
+        match self.get_media_object().first() {
+            Some(v) => v.get_image_name(),
+            None => "",
+        }
     }
 
     pub fn get_image_data(&self) -> &Vec<u8> {
-        self.get_media_object().first().unwrap().get_image_data()
+        match self.get_media_object().first() {
+            Some(v) => v.get_image_data(),
+            None => &EMPTY_VEC,
+        }
     }
 
     pub fn get_image_data_base64(&self) -> String {
