@@ -1778,19 +1778,17 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // defined_names
-        let mut idx = 0 as usize;
-        while idx < self.defined_names.len() {
-            if self.defined_names[idx].is_remove_coordinate_with_sheet(
-                &self.title,
+        let title = &self.title;
+        self.defined_names.retain(|defined_name| {
+            !defined_name.is_remove_coordinate_with_sheet(
+                &title,
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
-            ) {
-                self.defined_names.remove(idx);
-            }
-            idx += 1;
-        }
+            )
+        });
+
         for defined_name in &mut self.defined_names {
             defined_name.adjustment_remove_coordinate_with_sheet(
                 &self.title,
