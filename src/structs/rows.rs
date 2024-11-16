@@ -4,7 +4,7 @@ use traits::AdjustmentValue;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Rows {
-    rows: HashMap<u32, Row>,
+    rows: HashMap<u32, Box<Row>>,
 }
 impl Rows {
     pub(crate) fn has_sheet_data(&self) -> bool {
@@ -13,26 +13,26 @@ impl Rows {
 
     /// Get Row Dimension List.
     pub(crate) fn get_row_dimensions(&self) -> Vec<&Row> {
-        self.rows.values().collect()
+        self.rows.values().map(Box::as_ref).collect()
     }
 
     /// Get Row Dimension List in mutable.
     pub(crate) fn get_row_dimensions_mut(&mut self) -> Vec<&mut Row> {
-        self.rows.values_mut().collect()
+        self.rows.values_mut().map(Box::as_mut).collect()
     }
 
     /// Get Row Dimension convert Hashmap.
-    pub(crate) fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Row> {
+    pub(crate) fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Box<Row>> {
         &self.rows
     }
 
-    pub(crate) fn get_row_dimensions_to_hashmap_mut(&mut self) -> &mut HashMap<u32, Row> {
+    pub(crate) fn get_row_dimensions_to_hashmap_mut(&mut self) -> &mut HashMap<u32, Box<Row>> {
         &mut self.rows
     }
 
     /// Get Row Dimension.
     pub(crate) fn get_row_dimension(&self, row: &u32) -> Option<&Row> {
-        self.rows.get(row)
+        self.rows.get(row).map(Box::as_ref)
     }
 
     /// Get Row Dimension in mutable.
@@ -40,7 +40,7 @@ impl Rows {
         self.rows.entry(row.to_owned()).or_insert_with(|| {
             let mut obj = Row::default();
             obj.set_row_num(*row);
-            obj
+            Box::new(obj)
         })
     }
 
@@ -48,7 +48,7 @@ impl Rows {
     /// Set Row Dimension.
     pub(crate) fn set_row_dimension(&mut self, value: Row) -> &mut Self {
         let row = value.get_row_num();
-        self.rows.insert(row.to_owned(), value);
+        self.rows.insert(row.to_owned(), Box::new(value));
         self
     }
 

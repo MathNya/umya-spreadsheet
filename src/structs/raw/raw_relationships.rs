@@ -9,12 +9,13 @@ use structs::raw::RawRelationship;
 use structs::StringValue;
 use structs::WriterManager;
 use structs::XlsxError;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
     file_target: StringValue,
-    relationship_list: Vec<RawRelationship>,
+    relationship_list: ThinVec<RawRelationship>,
 }
 
 impl RawRelationships {
@@ -33,11 +34,11 @@ impl RawRelationships {
         self
     }
 
-    pub(crate) fn get_relationship_list(&self) -> &Vec<RawRelationship> {
+    pub(crate) fn get_relationship_list(&self) -> &[RawRelationship] {
         &self.relationship_list
     }
 
-    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
+    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut ThinVec<RawRelationship> {
         &mut self.relationship_list
     }
 

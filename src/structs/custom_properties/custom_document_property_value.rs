@@ -2,8 +2,8 @@ use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub enum CustomDocumentPropertyValue {
-    String(String),
-    Date(String),
+    String(Box<str>),
+    Date(Box<str>),
     Numeric(i32),
     Bool(bool),
     Null,

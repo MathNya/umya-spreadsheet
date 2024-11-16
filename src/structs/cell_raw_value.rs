@@ -5,9 +5,9 @@ use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Default)]
 pub enum CellRawValue {
-    String(String),
+    String(Box<str>),
     RichText(RichText),
-    Lazy(String),
+    Lazy(Box<str>),
     Numeric(f64),
     Bool(bool),
     Error(CellErrorType),

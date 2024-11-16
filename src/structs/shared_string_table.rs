@@ -10,21 +10,22 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringTable {
-    shared_string_item: Vec<SharedStringItem>,
+    shared_string_item: ThinVec<SharedStringItem>,
     map: HashMap<u64, usize>,
     regist_count: usize,
 }
 
 impl SharedStringTable {
-    pub(crate) fn get_shared_string_item(&self) -> &Vec<SharedStringItem> {
+    pub(crate) fn get_shared_string_item(&self) -> &[SharedStringItem] {
         &self.shared_string_item
     }
 
-    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
+    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut ThinVec<SharedStringItem> {
         &mut self.shared_string_item
     }
 

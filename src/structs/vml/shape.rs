@@ -29,12 +29,12 @@ pub struct Shape {
     stroke_color: StringValue,
     stroke_weight: StringValue,
     inset_mode: EnumValue<InsetMarginValues>,
-    fill: Option<Fill>,
-    image_data: Option<ImageData>,
-    stroke: Option<Stroke>,
-    shadow: Option<Shadow>,
-    path: Option<Path>,
-    text_box: Option<TextBox>,
+    fill: Option<Box<Fill>>,
+    image_data: Option<Box<ImageData>>,
+    stroke: Option<Box<Stroke>>,
+    shadow: Option<Box<Shadow>>,
+    path: Option<Box<Path>>,
+    text_box: Option<Box<TextBox>>,
     client_data: ClientData,
     optional_number: Int32Value,
     coordinate_size: StringValue,
@@ -114,80 +114,80 @@ impl Shape {
     }
 
     pub fn get_fill(&self) -> Option<&Fill> {
-        self.fill.as_ref()
+        self.fill.as_deref()
     }
 
     pub fn get_fill_mut(&mut self) -> Option<&mut Fill> {
-        self.fill.as_mut()
+        self.fill.as_deref_mut()
     }
 
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
-        self.fill = Some(value);
+        self.fill = Some(Box::new(value));
         self
     }
 
     pub fn get_image_data(&self) -> Option<&ImageData> {
-        self.image_data.as_ref()
+        self.image_data.as_deref()
     }
 
     pub fn get_image_data_mut(&mut self) -> Option<&mut ImageData> {
-        self.image_data.as_mut()
+        self.image_data.as_deref_mut()
     }
 
     pub fn set_image_data(&mut self, value: ImageData) -> &mut Self {
-        self.image_data = Some(value);
+        self.image_data = Some(Box::new(value));
         self
     }
 
     pub fn get_stroke(&self) -> Option<&Stroke> {
-        self.stroke.as_ref()
+        self.stroke.as_deref()
     }
 
     pub fn get_stroke_mut(&mut self) -> Option<&mut Stroke> {
-        self.stroke.as_mut()
+        self.stroke.as_deref_mut()
     }
 
     pub fn set_stroke(&mut self, value: Stroke) -> &mut Self {
-        self.stroke = Some(value);
+        self.stroke = Some(Box::new(value));
         self
     }
 
     pub fn get_shadow(&self) -> Option<&Shadow> {
-        self.shadow.as_ref()
+        self.shadow.as_deref()
     }
 
     pub fn get_shadow_mut(&mut self) -> Option<&mut Shadow> {
-        self.shadow.as_mut()
+        self.shadow.as_deref_mut()
     }
 
     pub fn set_shadow(&mut self, value: Shadow) -> &mut Self {
-        self.shadow = Some(value);
+        self.shadow = Some(Box::new(value));
         self
     }
 
     pub fn get_path(&self) -> Option<&Path> {
-        self.path.as_ref()
+        self.path.as_deref()
     }
 
     pub fn get_path_mut(&mut self) -> Option<&mut Path> {
-        self.path.as_mut()
+        self.path.as_deref_mut()
     }
 
     pub fn set_path(&mut self, value: Path) -> &mut Self {
-        self.path = Some(value);
+        self.path = Some(Box::new(value));
         self
     }
 
     pub fn get_text_box(&self) -> Option<&TextBox> {
-        self.text_box.as_ref()
+        self.text_box.as_deref()
     }
 
     pub fn get_text_box_mut(&mut self) -> Option<&mut TextBox> {
-        self.text_box.as_mut()
+        self.text_box.as_deref_mut()
     }
 
     pub fn set_text_box(&mut self, value: TextBox) -> &mut Self {
-        self.text_box = Some(value);
+        self.text_box = Some(Box::new(value));
         self
     }
 

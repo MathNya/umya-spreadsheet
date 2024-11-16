@@ -8,20 +8,21 @@ use structs::Cells;
 use structs::Column;
 use structs::MergeCells;
 use structs::Stylesheet;
+use thin_vec::ThinVec;
 use traits::AdjustmentValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Columns {
-    column: Vec<Column>,
+    column: ThinVec<Column>,
 }
 
 impl Columns {
-    pub(crate) fn get_column_collection(&self) -> &Vec<Column> {
+    pub(crate) fn get_column_collection(&self) -> &[Column] {
         &self.column
     }
 
-    pub(crate) fn get_column_collection_mut(&mut self) -> &mut Vec<Column> {
+    pub(crate) fn get_column_collection_mut(&mut self) -> &mut ThinVec<Column> {
         &mut self.column
     }
 

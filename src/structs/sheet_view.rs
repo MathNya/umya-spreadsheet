@@ -11,6 +11,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -24,7 +25,7 @@ pub struct SheetView {
     zoom_scale_page_layout_view: UInt32Value,
     zoom_scale_sheet_layout_view: UInt32Value,
     top_left_cell: StringValue,
-    selection: Vec<Selection>,
+    selection: ThinVec<Selection>,
 }
 
 impl SheetView {
@@ -113,11 +114,11 @@ impl SheetView {
         self
     }
 
-    pub fn get_selection(&self) -> &Vec<Selection> {
+    pub fn get_selection(&self) -> &[Selection] {
         &self.selection
     }
 
-    pub fn get_selection_mut(&mut self) -> &mut Vec<Selection> {
+    pub fn get_selection_mut(&mut self) -> &mut ThinVec<Selection> {
         &mut self.selection
     }
 

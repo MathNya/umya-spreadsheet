@@ -5,24 +5,28 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidations {
-    data_validation_list: Vec<DataValidation>,
+    data_validation_list: ThinVec<DataValidation>,
 }
 
 impl DataValidations {
-    pub fn get_data_validation_list(&self) -> &Vec<DataValidation> {
+    pub fn get_data_validation_list(&self) -> &[DataValidation] {
         &self.data_validation_list
     }
 
-    pub fn get_data_validation_list_mut(&mut self) -> &mut Vec<DataValidation> {
+    pub fn get_data_validation_list_mut(&mut self) -> &mut ThinVec<DataValidation> {
         &mut self.data_validation_list
     }
 
-    pub fn set_data_validation_list(&mut self, value: Vec<DataValidation>) -> &mut Self {
-        self.data_validation_list = value;
+    pub fn set_data_validation_list(
+        &mut self,
+        value: impl Into<ThinVec<DataValidation>>,
+    ) -> &mut Self {
+        self.data_validation_list = value.into();
         self
     }
 

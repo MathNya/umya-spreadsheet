@@ -10,7 +10,7 @@ use writer::driver::*;
 
 #[derive(Clone, Debug)]
 pub struct PatternFill {
-    preset: String,
+    preset: Box<str>,
     foreground_color: ForegroundColor,
     background_color: BackgroundColor,
 }
@@ -27,11 +27,11 @@ impl Default for PatternFill {
 
 impl PatternFill {
     pub fn get_preset(&self) -> &str {
-        self.preset.as_str()
+        &self.preset
     }
 
     pub fn set_preset(&mut self, value: String) -> &mut PatternFill {
-        self.preset = value;
+        self.preset = value.into_boxed_str();
         self
     }
 

@@ -12,7 +12,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Blip {
     image: MediaObject,
-    cstate: String,
+    cstate: Box<str>,
 }
 
 impl Blip {
@@ -34,7 +34,7 @@ impl Blip {
     }
 
     pub fn set_cstate<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.cstate = value.into();
+        self.cstate = value.into().into_boxed_str();
         self
     }
 

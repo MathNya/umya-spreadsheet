@@ -17,7 +17,7 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct RunProperties {
-    text: String,
+    text: Box<str>,
     kumimoji: StringValue,
     language: StringValue,
     alternative_language: StringValue,
@@ -27,13 +27,13 @@ pub struct RunProperties {
     capital: EnumValue<TextCapsValues>,
     spacing: Int32Value,
     strike: StringValue,
-    outline: Option<Outline>,
-    solid_fill: Option<SolidFill>,
-    latin_font: Option<TextFontType>,
-    east_asian_font: Option<TextFontType>,
-    gradient_fill: Option<GradientFill>,
+    outline: Option<Box<Outline>>,
+    solid_fill: Option<Box<SolidFill>>,
+    latin_font: Option<Box<TextFontType>>,
+    east_asian_font: Option<Box<TextFontType>>,
+    gradient_fill: Option<Box<GradientFill>>,
     no_fill: Option<NoFill>,
-    effect_list: Option<EffectList>,
+    effect_list: Option<Box<EffectList>>,
 }
 
 impl RunProperties {
@@ -42,7 +42,7 @@ impl RunProperties {
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.text = value.into();
+        self.text = value.into().into_boxed_str();
         self
     }
 
@@ -128,67 +128,67 @@ impl RunProperties {
     }
 
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
-        self.solid_fill.as_ref()
+        self.solid_fill.as_deref()
     }
 
     pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
-        self.solid_fill.as_mut()
+        self.solid_fill.as_deref_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
-        self.solid_fill = Some(value);
+        self.solid_fill = Some(Box::new(value));
         self
     }
 
     pub fn get_outline(&self) -> Option<&Outline> {
-        self.outline.as_ref()
+        self.outline.as_deref()
     }
 
     pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
-        self.outline.as_mut()
+        self.outline.as_deref_mut()
     }
 
     pub fn set_outline(&mut self, value: Outline) -> &mut Self {
-        self.outline = Some(value);
+        self.outline = Some(Box::new(value));
         self
     }
 
     pub fn get_latin_font(&self) -> Option<&TextFontType> {
-        self.latin_font.as_ref()
+        self.latin_font.as_deref()
     }
 
     pub fn get_latin_font_mut(&mut self) -> Option<&mut TextFontType> {
-        self.latin_font.as_mut()
+        self.latin_font.as_deref_mut()
     }
 
     pub fn set_latin_font(&mut self, value: TextFontType) -> &mut Self {
-        self.latin_font = Some(value);
+        self.latin_font = Some(Box::new(value));
         self
     }
 
     pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
-        self.east_asian_font.as_ref()
+        self.east_asian_font.as_deref()
     }
 
     pub fn get_east_asian_font_mut(&mut self) -> Option<&mut TextFontType> {
-        self.east_asian_font.as_mut()
+        self.east_asian_font.as_deref_mut()
     }
 
     pub fn set_east_asian_font(&mut self, value: TextFontType) -> &mut Self {
-        self.east_asian_font = Some(value);
+        self.east_asian_font = Some(Box::new(value));
         self
     }
 
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
-        self.gradient_fill.as_ref()
+        self.gradient_fill.as_deref()
     }
 
     pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
-        self.gradient_fill.as_mut()
+        self.gradient_fill.as_deref_mut()
     }
 
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
-        self.gradient_fill = Some(value);
+        self.gradient_fill = Some(Box::new(value));
         self
     }
 
@@ -206,15 +206,15 @@ impl RunProperties {
     }
 
     pub fn get_effect_list(&self) -> Option<&EffectList> {
-        self.effect_list.as_ref()
+        self.effect_list.as_deref()
     }
 
     pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
-        self.effect_list.as_mut()
+        self.effect_list.as_deref_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
-        self.effect_list = Some(value);
+        self.effect_list = Some(Box::new(value));
         self
     }
 

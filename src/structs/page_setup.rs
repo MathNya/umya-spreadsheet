@@ -7,6 +7,7 @@ use structs::raw::RawRelationships;
 use structs::EnumValue;
 use structs::OrientationValues;
 use structs::UInt32Value;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -18,7 +19,7 @@ pub struct PageSetup {
     fit_to_width: UInt32Value,
     horizontal_dpi: UInt32Value,
     vertical_dpi: UInt32Value,
-    object_data: Option<Vec<u8>>,
+    object_data: Option<ThinVec<u8>>,
 }
 
 impl PageSetup {
@@ -85,16 +86,16 @@ impl PageSetup {
         self
     }
 
-    pub fn get_object_data(&self) -> Option<&Vec<u8>> {
-        self.object_data.as_ref()
+    pub fn get_object_data(&self) -> Option<&[u8]> {
+        self.object_data.as_deref()
     }
 
-    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+    pub fn get_object_data_mut(&mut self) -> Option<&mut ThinVec<u8>> {
         self.object_data.as_mut()
     }
 
-    pub fn set_object_data(&mut self, value: Vec<u8>) -> &mut Self {
-        self.object_data = Some(value);
+    pub fn set_object_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+        self.object_data = Some(value.into());
         self
     }
 

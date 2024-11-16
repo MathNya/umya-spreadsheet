@@ -19,9 +19,9 @@ pub struct OuterShadow {
     direction: StringValue,
     distance: StringValue,
     rotate_with_shape: StringValue,
-    preset_color: Option<PresetColor>,
-    scheme_color: Option<SchemeColor>,
-    rgb_color_model_hex: Option<RgbColorModelHex>,
+    preset_color: Option<Box<PresetColor>>,
+    scheme_color: Option<Box<SchemeColor>>,
+    rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 
 impl OuterShadow {
@@ -89,41 +89,41 @@ impl OuterShadow {
     }
 
     pub fn get_preset_color(&self) -> Option<&PresetColor> {
-        self.preset_color.as_ref()
+        self.preset_color.as_deref()
     }
 
     pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
-        self.preset_color.as_mut()
+        self.preset_color.as_deref_mut()
     }
 
     pub fn set_preset_color(&mut self, value: PresetColor) -> &mut Self {
-        self.preset_color = Some(value);
+        self.preset_color = Some(Box::new(value));
         self
     }
 
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
-        self.scheme_color.as_ref()
+        self.scheme_color.as_deref()
     }
 
     pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
-        self.scheme_color.as_mut()
+        self.scheme_color.as_deref_mut()
     }
 
     pub fn set_scheme_color(&mut self, value: SchemeColor) -> &mut Self {
-        self.scheme_color = Some(value);
+        self.scheme_color = Some(Box::new(value));
         self
     }
 
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
-        self.rgb_color_model_hex.as_ref()
+        self.rgb_color_model_hex.as_deref()
     }
 
     pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
-        self.rgb_color_model_hex.as_mut()
+        self.rgb_color_model_hex.as_deref_mut()
     }
 
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) -> &mut Self {
-        self.rgb_color_model_hex = Some(value);
+        self.rgb_color_model_hex = Some(Box::new(value));
         self
     }
 

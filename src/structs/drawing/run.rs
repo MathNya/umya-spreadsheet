@@ -8,7 +8,7 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Run {
-    text: String,
+    text: Box<str>,
     run_properties: RunProperties,
 }
 
@@ -18,7 +18,7 @@ impl Run {
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) {
-        self.text = value.into();
+        self.text = value.into().into_boxed_str();
     }
 
     pub fn get_run_properties(&self) -> &RunProperties {
@@ -71,7 +71,7 @@ impl Run {
 
         // a:t
         write_start_tag(writer, "a:t", vec![], false);
-        write_text_node(writer, &self.text);
+        write_text_node(writer, &*self.text);
         write_end_tag(writer, "a:t");
 
         write_end_tag(writer, "a:r");

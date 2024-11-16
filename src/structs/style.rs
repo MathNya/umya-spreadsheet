@@ -54,25 +54,25 @@ use crate::BooleanValue;
 /// ```
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Style {
-    font: Option<Font>,
-    fill: Option<Fill>,
-    borders: Option<Borders>,
+    font: Option<Box<Font>>,
+    fill: Option<Box<Fill>>,
+    borders: Option<Box<Borders>>,
     alignment: Option<Alignment>,
-    numbering_format: Option<NumberingFormat>,
+    numbering_format: Option<Box<NumberingFormat>>,
     format_id: UInt32Value,
     protection: Option<Protection>,
 }
 impl Style {
     pub fn get_font(&self) -> Option<&Font> {
-        self.font.as_ref()
+        self.font.as_deref()
     }
 
     pub fn get_font_mut(&mut self) -> &mut Font {
-        self.font.get_or_insert(Font::get_default_value())
+        self.font.get_or_insert(Box::new(Font::get_default_value()))
     }
 
     pub fn set_font(&mut self, value: Font) -> &mut Self {
-        self.font = Some(value);
+        self.font = Some(Box::new(value));
         self
     }
 
@@ -82,20 +82,20 @@ impl Style {
     }
 
     pub(crate) fn set_font_crate(&mut self, value: Option<Font>) -> &mut Self {
-        self.font = value;
+        self.font = value.map(Box::new);
         self
     }
 
     pub fn get_fill(&self) -> Option<&Fill> {
-        self.fill.as_ref()
+        self.fill.as_deref()
     }
 
     pub fn get_fill_mut(&mut self) -> &mut Fill {
-        self.fill.get_or_insert(Fill::get_default_value())
+        self.fill.get_or_insert(Box::new(Fill::get_default_value()))
     }
 
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
-        self.fill = Some(value);
+        self.fill = Some(Box::new(value));
         self
     }
 
@@ -143,20 +143,21 @@ impl Style {
     }
 
     pub(crate) fn set_fill_crate(&mut self, value: Option<Fill>) -> &mut Self {
-        self.fill = value;
+        self.fill = value.map(Box::new);
         self
     }
 
     pub fn get_borders(&self) -> Option<&Borders> {
-        self.borders.as_ref()
+        self.borders.as_deref()
     }
 
     pub fn get_borders_mut(&mut self) -> &mut Borders {
-        self.borders.get_or_insert(Borders::get_default_value())
+        self.borders
+            .get_or_insert(Box::new(Borders::get_default_value()))
     }
 
     pub fn set_borders(&mut self, value: Borders) -> &mut Self {
-        self.borders = Some(value);
+        self.borders = Some(Box::new(value));
         self
     }
 
@@ -166,7 +167,7 @@ impl Style {
     }
 
     pub(crate) fn set_borders_crate(&mut self, value: Option<Borders>) -> &mut Self {
-        self.borders = value;
+        self.borders = value.map(Box::new);
         self
     }
 
@@ -194,16 +195,16 @@ impl Style {
     }
 
     pub fn get_numbering_format(&self) -> Option<&NumberingFormat> {
-        self.numbering_format.as_ref()
+        self.numbering_format.as_deref()
     }
 
     pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
         self.numbering_format
-            .get_or_insert(NumberingFormat::default())
+            .get_or_insert(Box::new(NumberingFormat::default()))
     }
 
     pub fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
-        self.numbering_format = Some(value);
+        self.numbering_format = Some(Box::new(value));
         self
     }
 

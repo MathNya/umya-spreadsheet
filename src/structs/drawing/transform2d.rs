@@ -13,8 +13,8 @@ use writer::driver::*;
 pub struct Transform2D {
     offset: Point2DType,
     extents: PositiveSize2DType,
-    child_offset: Option<Point2DType>,
-    child_extents: Option<PositiveSize2DType>,
+    child_offset: Option<Box<Point2DType>>,
+    child_extents: Option<Box<PositiveSize2DType>>,
     rot: StringValue,
     flip_v: StringValue,
     flip_h: StringValue,
@@ -46,27 +46,27 @@ impl Transform2D {
     }
 
     pub fn get_child_offset(&self) -> Option<&Point2DType> {
-        self.child_offset.as_ref()
+        self.child_offset.as_deref()
     }
 
     pub fn get_child_offset_mut(&mut self) -> Option<&mut Point2DType> {
-        self.child_offset.as_mut()
+        self.child_offset.as_deref_mut()
     }
 
     pub fn set_child_offset(&mut self, value: Point2DType) {
-        self.child_offset = Some(value);
+        self.child_offset = Some(Box::new(value));
     }
 
     pub fn get_child_extents(&self) -> Option<&PositiveSize2DType> {
-        self.child_extents.as_ref()
+        self.child_extents.as_deref()
     }
 
     pub fn get_child_extents_mut(&mut self) -> Option<&mut PositiveSize2DType> {
-        self.child_extents.as_mut()
+        self.child_extents.as_deref_mut()
     }
 
     pub fn set_child_extents(&mut self, value: PositiveSize2DType) {
-        self.child_extents = Some(value);
+        self.child_extents = Some(Box::new(value));
     }
 
     pub fn get_rot(&self) -> Option<&str> {

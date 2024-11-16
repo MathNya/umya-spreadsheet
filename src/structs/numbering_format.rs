@@ -11,7 +11,7 @@ use writer::driver::*;
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {
     number_format_id: u32,
-    format_code: String,
+    format_code: Box<str>,
     is_build_in: bool,
 }
 
@@ -19,7 +19,7 @@ impl Default for NumberingFormat {
     fn default() -> Self {
         Self {
             number_format_id: 0,
-            format_code: NumberingFormat::FORMAT_GENERAL.to_string(),
+            format_code: NumberingFormat::FORMAT_GENERAL.into(),
             is_build_in: true,
         }
     }
@@ -84,7 +84,9 @@ impl NumberingFormat {
             }
         });
 
-        self.format_code = format_code_result.expect("Not Found NumberFormatId.");
+        self.format_code = format_code_result
+            .expect("Not Found NumberFormatId.")
+            .into_boxed_str();
         self.number_format_id = value;
         self.is_build_in = true;
         self
@@ -107,9 +109,9 @@ impl NumberingFormat {
     /// .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
     /// ```
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.format_code = value.into();
+        self.format_code = value.into().into_boxed_str();
         for (index, format) in FILL_BUILT_IN_FORMAT_CODES.iter() {
-            if &self.format_code == format {
+            if &*self.format_code == format {
                 self.number_format_id = *index;
                 self.is_build_in = true;
                 return self;
@@ -121,7 +123,7 @@ impl NumberingFormat {
     }
 
     pub(crate) fn set_format_code_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.format_code = value.into();
+        self.format_code = value.into().into_boxed_str();
         self
     }
 
@@ -134,7 +136,7 @@ impl NumberingFormat {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(&self.format_code))
+        format!("{:x}", md5::Md5::digest(&*self.format_code))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -148,7 +150,8 @@ impl NumberingFormat {
             .unwrap();
         self.format_code = escape::unescape(get_attribute(e, b"formatCode").unwrap().as_str())
             .unwrap()
-            .to_string();
+            .to_string()
+            .into_boxed_str();
         self.is_build_in = false;
     }
 

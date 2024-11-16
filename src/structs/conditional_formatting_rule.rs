@@ -34,11 +34,11 @@ pub struct ConditionalFormattingRule {
     above_average: BooleanValue,
     equal_average: BooleanValue,
     time_period: EnumValue<TimePeriodValues>,
-    style: Option<Style>,
+    style: Option<Box<Style>>,
     color_scale: Option<ColorScale>,
     data_bar: Option<DataBar>,
     icon_set: Option<IconSet>,
-    formula: Option<Formula>,
+    formula: Option<Box<Formula>>,
 }
 
 impl ConditionalFormattingRule {
@@ -151,11 +151,11 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_style(&self) -> Option<&Style> {
-        self.style.as_ref()
+        self.style.as_deref()
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = Some(value);
+        self.style = Some(Box::new(value));
         self
     }
 
@@ -207,11 +207,11 @@ impl ConditionalFormattingRule {
     }
 
     pub fn get_formula(&self) -> Option<&Formula> {
-        self.formula.as_ref()
+        self.formula.as_deref()
     }
 
     pub fn set_formula(&mut self, value: Formula) -> &mut Self {
-        self.formula = Some(value);
+        self.formula = Some(Box::new(value));
         self
     }
 
@@ -272,7 +272,7 @@ impl ConditionalFormattingRule {
                     b"formula" => {
                         let mut obj = Formula::default();
                         obj.set_attributes(reader, e);
-                        self.formula = Some(obj);
+                        self.formula = Some(Box::new(obj));
                     }
                     _ => (),
                 }

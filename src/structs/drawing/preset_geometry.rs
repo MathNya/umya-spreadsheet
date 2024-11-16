@@ -9,7 +9,7 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetGeometry {
-    geometry: String,
+    geometry: Box<str>,
     adjust_value_list: AdjustValueList,
 }
 
@@ -208,7 +208,7 @@ impl PresetGeometry {
     }
 
     pub fn set_geometry<S: Into<String>>(&mut self, value: S) {
-        self.geometry = value.into();
+        self.geometry = value.into().into_boxed_str();
     }
 
     pub fn get_adjust_value_list(&self) -> &AdjustValueList {

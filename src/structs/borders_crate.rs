@@ -6,19 +6,20 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct BordersCrate {
-    borders: Vec<Borders>,
+    borders: ThinVec<Borders>,
 }
 
 impl BordersCrate {
-    pub(crate) fn get_borders(&self) -> &Vec<Borders> {
+    pub(crate) fn get_borders(&self) -> &[Borders] {
         &self.borders
     }
 
-    pub(crate) fn get_borders_mut(&mut self) -> &mut Vec<Borders> {
+    pub(crate) fn get_borders_mut(&mut self) -> &mut ThinVec<Borders> {
         &mut self.borders
     }
 

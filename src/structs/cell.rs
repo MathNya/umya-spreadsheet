@@ -30,8 +30,8 @@ use writer::driver::*;
 pub struct Cell {
     coordinate: Coordinate,
     pub(crate) cell_value: CellValue,
-    style: Style,
-    hyperlink: Option<Hyperlink>,
+    style: Box<Style>,
+    hyperlink: Option<Box<Hyperlink>>,
     cell_meta_index: UInt32Value,
 }
 impl Cell {
@@ -57,7 +57,7 @@ impl Cell {
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = value;
+        self.style = Box::new(value);
         self
     }
 
@@ -94,7 +94,7 @@ impl Cell {
     }
 
     pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
-        self.hyperlink.as_ref()
+        self.hyperlink.as_deref()
     }
 
     pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
@@ -106,7 +106,7 @@ impl Cell {
     }
 
     pub fn set_hyperlink(&mut self, value: Hyperlink) -> &mut Self {
-        self.hyperlink = Some(value);
+        self.hyperlink = Some(Box::new(value));
         self
     }
 

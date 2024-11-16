@@ -11,6 +11,7 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::Spreadsheet;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -18,8 +19,8 @@ pub struct Area3DChart {
     grouping: Grouping,
     vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: Option<DataLabels>,
-    axis_id: Vec<AxisId>,
+    data_labels: Option<Box<DataLabels>>,
+    axis_id: ThinVec<AxisId>,
 }
 
 impl Area3DChart {
@@ -63,28 +64,28 @@ impl Area3DChart {
     }
 
     pub fn get_data_labels(&self) -> Option<&DataLabels> {
-        self.data_labels.as_ref()
+        self.data_labels.as_deref()
     }
 
     pub fn get_data_labels_mut(&mut self) -> Option<&mut DataLabels> {
-        self.data_labels.as_mut()
+        self.data_labels.as_deref_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Self {
-        self.data_labels = Some(value);
+        self.data_labels = Some(Box::new(value));
         self
     }
 
-    pub fn get_axis_id(&self) -> &Vec<AxisId> {
+    pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: Vec<AxisId>) -> &mut Self {
-        self.axis_id = value;
+    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut Self {
+        self.axis_id = value.into();
         self
     }
 

@@ -5,19 +5,20 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::Break;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct RowBreaks {
-    break_list: Vec<Break>,
+    break_list: ThinVec<Break>,
 }
 
 impl RowBreaks {
-    pub fn get_break_list(&self) -> &Vec<Break> {
+    pub fn get_break_list(&self) -> &[Break] {
         &self.break_list
     }
 
-    pub fn get_break_list_mut(&mut self) -> &mut Vec<Break> {
+    pub fn get_break_list_mut(&mut self) -> &mut ThinVec<Break> {
         &mut self.break_list
     }
 

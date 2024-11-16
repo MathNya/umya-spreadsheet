@@ -126,6 +126,7 @@ extern crate hashbrown;
 extern crate image;
 extern crate md5;
 extern crate quick_xml;
+extern crate thin_vec;
 extern crate thousands;
 extern crate zip;
 

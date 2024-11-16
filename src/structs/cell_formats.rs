@@ -5,19 +5,20 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormats {
-    cell_format: Vec<CellFormat>,
+    cell_format: ThinVec<CellFormat>,
 }
 
 impl CellFormats {
-    pub(crate) fn get_cell_format(&self) -> &Vec<CellFormat> {
+    pub(crate) fn get_cell_format(&self) -> &[CellFormat] {
         &self.cell_format
     }
 
-    pub(crate) fn _get_cell_format_mut(&mut self) -> &mut Vec<CellFormat> {
+    pub(crate) fn _get_cell_format_mut(&mut self) -> &mut ThinVec<CellFormat> {
         &mut self.cell_format
     }
 

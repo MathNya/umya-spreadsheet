@@ -12,7 +12,7 @@ use traits::AdjustmentCoordinateWith2Sheet;
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
     pub(crate) raw_value: CellRawValue,
-    pub(crate) formula: Option<CellFormula>,
+    pub(crate) formula: Option<Box<CellFormula>>,
 }
 impl CellValue {
     pub fn get_data_type(&self) -> &str {
@@ -74,18 +74,18 @@ impl CellValue {
     }
 
     pub fn set_value_lazy<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.raw_value = CellRawValue::Lazy(value.into());
+        self.raw_value = CellRawValue::Lazy(value.into().into_boxed_str());
         self
     }
 
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.raw_value = CellRawValue::String(value.into());
+        self.raw_value = CellRawValue::String(value.into().into_boxed_str());
         self.remove_formula();
         self
     }
 
     pub(crate) fn set_value_string_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.raw_value = CellRawValue::String(value.into());
+        self.raw_value = CellRawValue::String(value.into().into_boxed_str());
         self
     }
 
@@ -133,18 +133,18 @@ impl CellValue {
     }
 
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
-        self.formula.as_ref()
+        self.formula.as_deref()
     }
 
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let mut obj = CellFormula::default();
         obj.set_text(value.into());
-        self.formula = Some(obj);
+        self.formula = Some(Box::new(obj));
         self
     }
 
     pub fn set_formula_obj(&mut self, value: CellFormula) -> &mut Self {
-        self.formula = Some(value);
+        self.formula = Some(Box::new(value));
         self
     }
 

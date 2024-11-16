@@ -7,23 +7,24 @@ use std::io::Cursor;
 use std::vec;
 use structs::Coordinate;
 use structs::Range;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct ReferenceSequence {
-    value: Vec<Range>,
+    value: ThinVec<Range>,
 }
 impl ReferenceSequence {
-    pub fn get_value(&self) -> &Vec<Range> {
+    pub fn get_value(&self) -> &[Range] {
         &self.value
     }
 
-    pub fn get_value_mut(&mut self) -> &mut Vec<Range> {
+    pub fn get_value_mut(&mut self) -> &mut ThinVec<Range> {
         &mut self.value
     }
 
-    pub fn set_value(&mut self, value: Vec<Range>) -> &mut Self {
-        self.value = value;
+    pub fn set_value(&mut self, value: impl Into<ThinVec<Range>>) -> &mut Self {
+        self.value = value.into();
         self
     }
 

@@ -14,23 +14,23 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormat {
-    font: Option<Font>,
+    font: Option<Box<Font>>,
     fill: Option<Fill>,
-    borders: Option<Borders>,
+    borders: Option<Box<Borders>>,
     alignment: Option<Alignment>,
 }
 
 impl DifferentialFormat {
     pub(crate) fn _get_font(&self) -> Option<&Font> {
-        self.font.as_ref()
+        self.font.as_deref()
     }
 
     pub(crate) fn _get_font_mut(&mut self) -> Option<&mut Font> {
-        self.font.as_mut()
+        self.font.as_deref_mut()
     }
 
     pub(crate) fn set_font(&mut self, value: Font) -> &mut Self {
-        self.font = Some(value);
+        self.font = Some(Box::new(value));
         self
     }
 
@@ -48,15 +48,15 @@ impl DifferentialFormat {
     }
 
     pub(crate) fn _get_borders(&self) -> Option<&Borders> {
-        self.borders.as_ref()
+        self.borders.as_deref()
     }
 
     pub(crate) fn _get_borders_mut(&mut self) -> Option<&mut Borders> {
-        self.borders.as_mut()
+        self.borders.as_deref_mut()
     }
 
     pub(crate) fn set_borders(&mut self, value: Borders) -> &mut Self {
-        self.borders = Some(value);
+        self.borders = Some(Box::new(value));
         self
     }
 
@@ -75,17 +75,17 @@ impl DifferentialFormat {
 
     pub(crate) fn get_style(&self) -> Style {
         let mut style = Style::default();
-        style.set_font_crate(self.font.clone());
+        style.set_font_crate(self.font.as_deref().cloned());
         style.set_fill_crate(self.fill.clone());
-        style.set_borders_crate(self.borders.clone());
+        style.set_borders_crate(self.borders.as_deref().cloned());
         style.set_alignment_crate(self.alignment.clone());
         style
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) {
-        self.font = style.get_font().cloned();
+        self.font = style.get_font().cloned().map(Box::new);
         self.fill = style.get_fill().cloned();
-        self.borders = style.get_borders().cloned();
+        self.borders = style.get_borders().cloned().map(Box::new);
         self.alignment = style.get_alignment().cloned();
     }
 

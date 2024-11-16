@@ -9,14 +9,15 @@ use super::{
     coordinate::*, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
 };
 use crate::helper::coordinate::*;
+use thin_vec::ThinVec;
 //use reader::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Table {
-    name: String,
+    name: Box<str>,
     area: (Coordinate, Coordinate),
-    display_name: String,
-    columns: Vec<TableColumn>,
+    display_name: Box<str>,
+    columns: ThinVec<TableColumn>,
     style_info: Option<TableStyleInfo>,
     totals_row_shown: BooleanValue,
     totals_row_count: UInt32Value,
@@ -28,12 +29,12 @@ impl Table {
     {
         let coord_beg = Self::cell_coord_to_coord(area.0);
         let coord_end = Self::cell_coord_to_coord(area.1);
-        let name = name.to_string();
+        let name: Box<str> = name.into();
         Self {
             area: (coord_beg, coord_end),
             name: name.clone(),
             display_name: name,
-            columns: Vec::<TableColumn>::default(),
+            columns: ThinVec::<TableColumn>::default(),
             style_info: None,
             totals_row_shown: BooleanValue::default(),
             totals_row_count: UInt32Value::default(),
@@ -52,22 +53,22 @@ impl Table {
     }
 
     pub fn get_name(&self) -> &str {
-        self.name.as_str()
+        &self.name
     }
 
     pub fn set_name(&mut self, name: &str) {
-        self.name = name.to_string();
+        self.name = name.into();
         if self.display_name.is_empty() {
-            self.display_name = name.to_string();
+            self.display_name = name.into();
         }
     }
 
     pub fn get_display_name(&self) -> &str {
-        self.display_name.as_str()
+        &self.display_name
     }
 
     pub fn set_display_name(&mut self, display_name: &str) {
-        self.display_name = display_name.to_string();
+        self.display_name = display_name.into();
     }
 
     pub fn get_area(&self) -> &(Coordinate, Coordinate) {
@@ -87,7 +88,7 @@ impl Table {
         self.columns.push(col);
     }
 
-    pub fn get_columns(&self) -> &Vec<TableColumn> {
+    pub fn get_columns(&self) -> &[TableColumn] {
         &self.columns
     }
 

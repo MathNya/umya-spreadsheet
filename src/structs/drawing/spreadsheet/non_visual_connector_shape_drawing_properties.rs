@@ -10,17 +10,17 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualConnectorShapeDrawingProperties {
-    start_connection: Option<StartConnection>,
-    end_connection: Option<EndConnection>,
+    start_connection: Option<Box<StartConnection>>,
+    end_connection: Option<Box<EndConnection>>,
 }
 
 impl NonVisualConnectorShapeDrawingProperties {
     pub fn get_start_connection(&self) -> Option<&StartConnection> {
-        self.start_connection.as_ref()
+        self.start_connection.as_deref()
     }
 
     pub fn set_start_connection(&mut self, value: StartConnection) {
-        self.start_connection = Some(value);
+        self.start_connection = Some(Box::new(value));
     }
 
     pub fn remove_start_connection(&mut self) {
@@ -28,11 +28,11 @@ impl NonVisualConnectorShapeDrawingProperties {
     }
 
     pub fn get_end_connection(&self) -> Option<&EndConnection> {
-        self.end_connection.as_ref()
+        self.end_connection.as_deref()
     }
 
     pub fn set_end_connection(&mut self, value: EndConnection) {
-        self.end_connection = Some(value);
+        self.end_connection = Some(Box::new(value));
     }
 
     pub fn remove_end_connection(&mut self) {

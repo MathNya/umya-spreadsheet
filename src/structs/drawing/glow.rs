@@ -11,7 +11,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Glow {
     radius: Int64Value,
-    scheme_color: Option<SchemeColor>,
+    scheme_color: Option<Box<SchemeColor>>,
 }
 
 impl Glow {
@@ -25,11 +25,11 @@ impl Glow {
     }
 
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
-        self.scheme_color.as_ref()
+        self.scheme_color.as_deref()
     }
 
     pub fn set_scheme_color(&mut self, value: SchemeColor) {
-        self.scheme_color = Some(value);
+        self.scheme_color = Some(Box::new(value));
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

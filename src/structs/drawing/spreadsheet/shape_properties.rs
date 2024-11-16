@@ -17,26 +17,26 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    transform2d: Option<Transform2D>,
+    transform2d: Option<Box<Transform2D>>,
     preset_geometry: PresetGeometry,
-    blip_fill: Option<BlipFill>,
-    solid_fill: Option<SolidFill>,
-    outline: Option<Outline>,
-    effect_list: Option<EffectList>,
+    blip_fill: Option<Box<BlipFill>>,
+    solid_fill: Option<Box<SolidFill>>,
+    outline: Option<Box<Outline>>,
+    effect_list: Option<Box<EffectList>>,
     no_fill: Option<NoFill>,
     extension_list: Option<ExtensionList>,
 }
 impl ShapeProperties {
     pub fn get_transform2d(&self) -> Option<&Transform2D> {
-        self.transform2d.as_ref()
+        self.transform2d.as_deref()
     }
 
     pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
-        self.transform2d.as_mut()
+        self.transform2d.as_deref_mut()
     }
 
     pub fn set_transform2d(&mut self, value: Transform2D) -> &mut Self {
-        self.transform2d = Some(value);
+        self.transform2d = Some(Box::new(value));
         self
     }
 
@@ -54,54 +54,54 @@ impl ShapeProperties {
     }
 
     pub fn get_blip_fill(&self) -> Option<&BlipFill> {
-        self.blip_fill.as_ref()
+        self.blip_fill.as_deref()
     }
 
     pub fn get_blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
-        self.blip_fill.as_mut()
+        self.blip_fill.as_deref_mut()
     }
 
     pub fn set_blip_fill(&mut self, value: BlipFill) -> &mut Self {
-        self.blip_fill = Some(value);
+        self.blip_fill = Some(Box::new(value));
         self
     }
 
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
-        self.solid_fill.as_ref()
+        self.solid_fill.as_deref()
     }
 
     pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
-        self.solid_fill.as_mut()
+        self.solid_fill.as_deref_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
-        self.solid_fill = Some(value);
+        self.solid_fill = Some(Box::new(value));
         self
     }
 
     pub fn get_outline(&self) -> Option<&Outline> {
-        self.outline.as_ref()
+        self.outline.as_deref()
     }
 
     pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
-        self.outline.as_mut()
+        self.outline.as_deref_mut()
     }
 
     pub fn set_outline(&mut self, value: Outline) -> &mut Self {
-        self.outline = Some(value);
+        self.outline = Some(Box::new(value));
         self
     }
 
     pub fn get_effect_list(&self) -> Option<&EffectList> {
-        self.effect_list.as_ref()
+        self.effect_list.as_deref()
     }
 
     pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
-        self.effect_list.as_mut()
+        self.effect_list.as_deref_mut()
     }
 
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
-        self.effect_list = Some(value);
+        self.effect_list = Some(Box::new(value));
         self
     }
 

@@ -4,24 +4,25 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct LineStyleList {
-    outline_collection: Vec<Outline>,
+    outline_collection: ThinVec<Outline>,
 }
 
 impl LineStyleList {
-    pub fn get_outline_collection(&self) -> &Vec<Outline> {
+    pub fn get_outline_collection(&self) -> &[Outline] {
         &self.outline_collection
     }
 
-    pub fn get_outline_collection_mut(&mut self) -> &mut Vec<Outline> {
+    pub fn get_outline_collection_mut(&mut self) -> &mut ThinVec<Outline> {
         &mut self.outline_collection
     }
 
-    pub fn set_outline_collection(&mut self, value: Vec<Outline>) -> &mut Self {
-        self.outline_collection = value;
+    pub fn set_outline_collection(&mut self, value: impl Into<ThinVec<Outline>>) -> &mut Self {
+        self.outline_collection = value.into();
         self
     }
 

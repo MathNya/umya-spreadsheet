@@ -31,7 +31,7 @@ pub struct Column {
     pub(crate) width: DoubleValue,
     pub(crate) hidden: BooleanValue,
     pub(crate) best_fit: BooleanValue,
-    style: Style,
+    style: Box<Style>,
     auto_width: BooleanValue,
 }
 
@@ -44,7 +44,7 @@ impl Default for Column {
             width,
             hidden: BooleanValue::default(),
             best_fit: BooleanValue::default(),
-            style: Style::default(),
+            style: Box::new(Style::default()),
             auto_width: BooleanValue::default(),
         }
     }
@@ -96,7 +96,7 @@ impl Column {
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = value;
+        self.style = Box::new(value);
         self
     }
 
@@ -146,7 +146,7 @@ impl Column {
     }
 
     pub(crate) fn has_style(&self) -> bool {
-        &self.style != &Style::default()
+        &*self.style != &Style::default()
     }
 
     pub(crate) fn get_hash_code(&self) -> String {

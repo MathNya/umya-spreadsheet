@@ -6,19 +6,20 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct MergeCells {
-    range: Vec<Range>,
+    range: ThinVec<Range>,
 }
 
 impl MergeCells {
-    pub(crate) fn get_range_collection(&self) -> &Vec<Range> {
+    pub(crate) fn get_range_collection(&self) -> &[Range] {
         &self.range
     }
 
-    pub(crate) fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
+    pub(crate) fn get_range_collection_mut(&mut self) -> &mut ThinVec<Range> {
         &mut self.range
     }
 

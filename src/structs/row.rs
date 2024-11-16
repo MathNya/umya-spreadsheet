@@ -24,7 +24,7 @@ pub struct Row {
     thick_bot: BooleanValue,
     custom_height: BooleanValue,
     hidden: BooleanValue,
-    style: Style,
+    style: Box<Style>,
 }
 impl Default for Row {
     fn default() -> Self {
@@ -35,7 +35,7 @@ impl Default for Row {
             thick_bot: BooleanValue::default(),
             custom_height: BooleanValue::default(),
             hidden: BooleanValue::default(),
-            style: Style::default(),
+            style: Box::new(Style::default()),
         }
     }
 }
@@ -104,12 +104,12 @@ impl Row {
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = value;
+        self.style = Box::new(value);
         self
     }
 
     pub(crate) fn has_style(&self) -> bool {
-        &self.style != &Style::default()
+        &*self.style != &Style::default()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

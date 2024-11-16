@@ -20,7 +20,7 @@ pub struct TextParagraphPropertiesType {
     font_alignment: EnumValue<TextFontAlignmentValues>,
     space_before: Option<SpaceBefore>,
     space_after: Option<SpaceAfter>,
-    default_run_properties: Option<RunProperties>,
+    default_run_properties: Option<Box<RunProperties>>,
 }
 impl TextParagraphPropertiesType {
     pub fn get_right_to_left(&self) -> &bool {
@@ -77,15 +77,15 @@ impl TextParagraphPropertiesType {
     }
 
     pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
-        self.default_run_properties.as_ref()
+        self.default_run_properties.as_deref()
     }
 
     pub fn get_default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
-        self.default_run_properties.as_mut()
+        self.default_run_properties.as_deref_mut()
     }
 
     pub fn set_default_run_properties(&mut self, value: RunProperties) -> &mut Self {
-        self.default_run_properties = Some(value);
+        self.default_run_properties = Some(Box::new(value));
         self
     }
 
