@@ -7,13 +7,14 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct TextProperties {
     body_properties: BodyProperties,
     list_style: ListStyle,
-    paragraph: Vec<Paragraph>,
+    paragraph: ThinVec<Paragraph>,
 }
 
 impl TextProperties {
@@ -43,11 +44,11 @@ impl TextProperties {
         self
     }
 
-    pub fn get_paragraph(&self) -> &Vec<Paragraph> {
+    pub fn get_paragraph(&self) -> &[Paragraph] {
         &self.paragraph
     }
 
-    pub fn get_paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
+    pub fn get_paragraph_mut(&mut self) -> &mut ThinVec<Paragraph> {
         &mut self.paragraph
     }
 

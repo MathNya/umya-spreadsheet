@@ -35,7 +35,7 @@ pub struct Spreadsheet {
     backup_context_types: ThinVec<(Box<str>, Box<str>)>,
     pivot_caches: ThinVec<(Box<str>, Box<str>, Box<str>)>,
     workbook_protection: Option<Box<WorkbookProtection>>,
-    defined_names: Vec<DefinedName>,
+    defined_names: ThinVec<DefinedName>,
 }
 
 impl Spreadsheet {
@@ -647,20 +647,20 @@ impl Spreadsheet {
     }
 
     /// Get Defined Name (Vec).
-    pub fn get_defined_names(&self) -> &Vec<DefinedName> {
+    pub fn get_defined_names(&self) -> &[DefinedName] {
         &self.defined_names
     }
 
     /// Get Defined Name (Vec) in mutable.
-    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+    pub fn get_defined_names_mut(&mut self) -> &mut ThinVec<DefinedName> {
         &mut self.defined_names
     }
 
     /// Set Defined Name (Vec).
     /// # Arguments
     /// * `value` - Vec<DefinedName>.
-    pub fn set_defined_names(&mut self, value: Vec<DefinedName>) {
-        self.defined_names = value;
+    pub fn set_defined_names(&mut self, value: impl Into<ThinVec<DefinedName>>) {
+        self.defined_names = value.into();
     }
 
     /// Add Defined Name.

@@ -5,19 +5,20 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct StringLiteral {
-    string_point_list: Vec<StringPoint>,
+    string_point_list: ThinVec<StringPoint>,
 }
 
 impl StringLiteral {
-    pub fn get_string_point_list(&self) -> &Vec<StringPoint> {
+    pub fn get_string_point_list(&self) -> &[StringPoint] {
         &self.string_point_list
     }
 
-    pub fn get_string_point_list_mut(&mut self) -> &mut Vec<StringPoint> {
+    pub fn get_string_point_list_mut(&mut self) -> &mut ThinVec<StringPoint> {
         &mut self.string_point_list
     }
 

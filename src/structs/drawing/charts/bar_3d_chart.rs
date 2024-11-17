@@ -14,6 +14,7 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::Spreadsheet;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -25,7 +26,7 @@ pub struct Bar3DChart {
     data_labels: DataLabels,
     gap_width: GapWidth,
     shape: Shape,
-    axis_id: Vec<AxisId>,
+    axis_id: ThinVec<AxisId>,
 }
 
 impl Bar3DChart {
@@ -120,16 +121,16 @@ impl Bar3DChart {
         self
     }
 
-    pub fn get_axis_id(&self) -> &Vec<AxisId> {
+    pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: Vec<AxisId>) -> &mut Bar3DChart {
-        self.axis_id = value;
+    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut Bar3DChart {
+        self.axis_id = value.into();
         self
     }
 

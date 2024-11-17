@@ -8,7 +8,7 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct NumericValue {
-    text: String,
+    text: Box<str>,
 }
 
 impl NumericValue {
@@ -17,7 +17,7 @@ impl NumericValue {
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut NumericValue {
-        self.text = value.into();
+        self.text = value.into().into_boxed_str();
         self
     }
 
@@ -43,7 +43,7 @@ impl NumericValue {
     pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:v
         write_start_tag(writer, "c:v", vec![], false);
-        write_text_node(writer, &self.text);
+        write_text_node(writer, &*self.text);
         write_end_tag(writer, "c:v");
     }
 }
