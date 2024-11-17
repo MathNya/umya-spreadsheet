@@ -29,7 +29,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {
     coordinate: Coordinate,
-    pub(crate) cell_value: CellValue,
+    pub(crate) cell_value: Box<CellValue>,
     style: Box<Style>,
     hyperlink: Option<Box<Hyperlink>>,
     cell_meta_index: UInt32Value,
@@ -44,7 +44,7 @@ impl Cell {
     }
 
     pub fn set_cell_value(&mut self, value: CellValue) -> &mut Self {
-        self.cell_value = value;
+        self.cell_value = Box::new(value);
         self
     }
 

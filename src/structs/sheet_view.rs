@@ -18,7 +18,7 @@ use writer::driver::*;
 pub struct SheetView {
     tab_selected: BooleanValue,
     workbook_view_id: UInt32Value,
-    pane: Option<Pane>,
+    pane: Option<Box<Pane>>,
     view: EnumValue<SheetViewValues>,
     zoom_scale: UInt32Value,
     zoom_scale_normal: UInt32Value,
@@ -48,15 +48,15 @@ impl SheetView {
     }
 
     pub fn get_pane(&self) -> Option<&Pane> {
-        self.pane.as_ref()
+        self.pane.as_deref()
     }
 
     pub fn get_pane_mut(&mut self) -> Option<&mut Pane> {
-        self.pane.as_mut()
+        self.pane.as_deref_mut()
     }
 
     pub fn set_pane(&mut self, value: Pane) -> &mut Self {
-        self.pane = Some(value);
+        self.pane = Some(Box::new(value));
         self
     }
 

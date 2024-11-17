@@ -18,7 +18,7 @@ pub struct Table {
     area: (Coordinate, Coordinate),
     display_name: Box<str>,
     columns: ThinVec<TableColumn>,
-    style_info: Option<TableStyleInfo>,
+    style_info: Option<Box<TableStyleInfo>>,
     totals_row_shown: BooleanValue,
     totals_row_count: UInt32Value,
 }
@@ -97,11 +97,11 @@ impl Table {
     }
 
     pub fn get_style_info(&self) -> Option<&TableStyleInfo> {
-        self.style_info.as_ref()
+        self.style_info.as_deref()
     }
 
     pub fn set_style_info(&mut self, style_info: Option<TableStyleInfo>) {
-        self.style_info = style_info;
+        self.style_info = style_info.map(Box::new);
     }
 
     pub(crate) fn has_totals_row_shown(&self) -> bool {
