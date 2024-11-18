@@ -15,6 +15,7 @@ use structs::Stylesheet;
 use structs::WorkbookProtection;
 use structs::WorkbookView;
 use structs::Worksheet;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinate;
 use traits::AdjustmentCoordinateWithSheet;
 
@@ -23,18 +24,18 @@ use traits::AdjustmentCoordinateWithSheet;
 #[derive(Clone, Default, Debug)]
 pub struct Spreadsheet {
     properties: Properties,
-    work_sheet_collection: Vec<Worksheet>,
-    macros_code: Option<Vec<u8>>,
+    work_sheet_collection: ThinVec<Worksheet>,
+    macros_code: Option<ThinVec<u8>>,
     code_name: StringValue,
     ribbon_xml_data: StringValue,
     theme: Theme,
     stylesheet: Stylesheet,
     shared_string_table: Arc<RwLock<SharedStringTable>>,
     workbook_view: WorkbookView,
-    backup_context_types: Vec<(String, String)>,
-    pivot_caches: Vec<(String, String, String)>,
-    workbook_protection: Option<WorkbookProtection>,
-    defined_names: Vec<DefinedName>,
+    backup_context_types: ThinVec<(Box<str>, Box<str>)>,
+    pivot_caches: ThinVec<(Box<str>, Box<str>, Box<str>)>,
+    workbook_protection: Option<Box<WorkbookProtection>>,
+    defined_names: ThinVec<DefinedName>,
 }
 
 impl Spreadsheet {
@@ -207,15 +208,15 @@ impl Spreadsheet {
     /// Get Macros Code.
     /// # Return value
     /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
-    pub fn get_macros_code(&self) -> Option<&Vec<u8>> {
-        self.macros_code.as_ref()
+    pub fn get_macros_code(&self) -> Option<&[u8]> {
+        self.macros_code.as_deref()
     }
 
     /// Set Macros Code.
     /// # Arguments
     /// * `value` - Macros Code Raw Data.
-    pub fn set_macros_code(&mut self, value: Vec<u8>) -> &mut Self {
-        self.macros_code = Some(value);
+    pub fn set_macros_code(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+        self.macros_code = Some(value.into());
         self
     }
 
@@ -289,7 +290,7 @@ impl Spreadsheet {
     }
 
     /// Get Work Sheet List.
-    pub fn get_sheet_collection(&self) -> &Vec<Worksheet> {
+    pub fn get_sheet_collection(&self) -> &[Worksheet] {
         for worksheet in &self.work_sheet_collection {
             assert!(worksheet.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
         }
@@ -298,12 +299,12 @@ impl Spreadsheet {
 
     /// Get Work Sheet List.
     /// No check deserialized.
-    pub fn get_sheet_collection_no_check(&self) -> &Vec<Worksheet> {
+    pub fn get_sheet_collection_no_check(&self) -> &[Worksheet] {
         &self.work_sheet_collection
     }
 
     /// Get Work Sheet List in mutable.
-    pub fn get_sheet_collection_mut(&mut self) -> &mut Vec<Worksheet> {
+    pub fn get_sheet_collection_mut(&mut self) -> &mut ThinVec<Worksheet> {
         self.read_sheet_collection();
         &mut self.work_sheet_collection
     }
@@ -575,12 +576,19 @@ impl Spreadsheet {
             .any(|sheet| sheet.has_defined_names())
     }
 
-    pub(crate) fn get_backup_context_types(&self) -> &Vec<(String, String)> {
+    pub(crate) fn get_backup_context_types(&self) -> &[(Box<str>, Box<str>)] {
         &self.backup_context_types
     }
 
-    pub(crate) fn set_backup_context_types(&mut self, value: Vec<(String, String)>) -> &mut Self {
-        self.backup_context_types = value;
+    pub(crate) fn set_backup_context_types(
+        &mut self,
+        value: impl Into<ThinVec<(String, String)>>,
+    ) -> &mut Self {
+        self.backup_context_types = value
+            .into()
+            .into_iter()
+            .map(|(a, b)| (a.into_boxed_str(), b.into_boxed_str()))
+            .collect();
         self
     }
 
@@ -591,9 +599,9 @@ impl Spreadsheet {
             for worksheet in self.get_sheet_collection_no_check() {
                 for pivot_cache_definition in worksheet.get_pivot_cache_definition_collection() {
                     if val3_up.as_str() == pivot_cache_definition
-                        && !result.iter().any(|(_, _, r_val3)| r_val3 == val3)
+                        && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3)
                     {
-                        result.push((val1.clone(), val2.clone(), val3.clone()));
+                        result.push((val1.to_string(), val2.to_string(), val3.to_string()));
                     }
                 }
             }
@@ -602,29 +610,34 @@ impl Spreadsheet {
     }
 
     pub(crate) fn add_pivot_caches(&mut self, value: (String, String, String)) -> &mut Self {
-        self.pivot_caches.push(value);
+        self.pivot_caches.push((
+            value.0.into_boxed_str(),
+            value.1.into_boxed_str(),
+            value.2.into_boxed_str(),
+        ));
         self
     }
 
     pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
-            let result_value = if val1 == &key { &value } else { &val3 };
-            *val3 = result_value.to_string();
+            if &**val1 == &key {
+                *val3 = value.clone().into_boxed_str()
+            };
         });
         self
     }
 
     pub fn get_workbook_protection(&self) -> Option<&WorkbookProtection> {
-        self.workbook_protection.as_ref()
+        self.workbook_protection.as_deref()
     }
 
     pub fn get_workbook_protection_mut(&mut self) -> &mut WorkbookProtection {
         self.workbook_protection
-            .get_or_insert(WorkbookProtection::default())
+            .get_or_insert(Box::new(WorkbookProtection::default()))
     }
 
     pub fn set_workbook_protection(&mut self, value: WorkbookProtection) -> &mut Self {
-        self.workbook_protection = Some(value);
+        self.workbook_protection = Some(Box::new(value));
         self
     }
 
@@ -634,20 +647,20 @@ impl Spreadsheet {
     }
 
     /// Get Defined Name (Vec).
-    pub fn get_defined_names(&self) -> &Vec<DefinedName> {
+    pub fn get_defined_names(&self) -> &[DefinedName] {
         &self.defined_names
     }
 
     /// Get Defined Name (Vec) in mutable.
-    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+    pub fn get_defined_names_mut(&mut self) -> &mut ThinVec<DefinedName> {
         &mut self.defined_names
     }
 
     /// Set Defined Name (Vec).
     /// # Arguments
     /// * `value` - Vec<DefinedName>.
-    pub fn set_defined_names(&mut self, value: Vec<DefinedName>) {
-        self.defined_names = value;
+    pub fn set_defined_names(&mut self, value: impl Into<ThinVec<DefinedName>>) {
+        self.defined_names = value.into();
     }
 
     /// Add Defined Name.

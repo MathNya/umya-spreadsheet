@@ -12,7 +12,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct TextElement {
     text: Text,
-    run_properties: Option<Font>,
+    run_properties: Option<Box<Font>>,
 }
 
 impl TextElement {
@@ -26,7 +26,7 @@ impl TextElement {
     }
 
     pub fn get_run_properties(&self) -> Option<&Font> {
-        self.run_properties.as_ref()
+        self.run_properties.as_deref()
     }
 
     pub fn get_run_properties_mut(&mut self) -> &mut Font {
@@ -38,11 +38,11 @@ impl TextElement {
     }
 
     pub(crate) fn get_run_properties_crate(&mut self) -> Option<&mut Font> {
-        self.run_properties.as_mut()
+        self.run_properties.as_deref_mut()
     }
 
     pub fn set_run_properties(&mut self, value: Font) -> &mut Self {
-        self.run_properties = Some(value);
+        self.run_properties = Some(Box::new(value));
         self
     }
 

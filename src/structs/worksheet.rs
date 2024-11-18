@@ -43,6 +43,7 @@ use structs::SheetViews;
 use structs::Style;
 use structs::Stylesheet;
 use structs::Table;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinate;
 use traits::AdjustmentCoordinateWith2Sheet;
 use traits::AdjustmentCoordinateWithSheet;
@@ -54,32 +55,32 @@ use super::EnumTrait;
 #[derive(Clone, Debug, Default)]
 pub struct Worksheet {
     raw_data_of_worksheet: Option<RawWorksheet>,
-    r_id: String,
-    sheet_id: String,
-    title: String,
+    r_id: Box<str>,
+    sheet_id: Box<str>,
+    title: Box<str>,
     state: EnumValue<SheetStateValues>,
     cell_collection: Cells,
     row_dimensions: Rows,
     column_dimensions: Columns,
-    worksheet_drawing: Box<WorksheetDrawing>,
-    sheet_state: String,
+    worksheet_drawing: WorksheetDrawing,
+    sheet_state: Box<str>,
     page_setup: PageSetup,
     page_margins: PageMargins,
     header_footer: HeaderFooter,
     sheet_views: SheetViews,
-    conditional_formatting_collection: Vec<ConditionalFormatting>,
+    conditional_formatting_collection: ThinVec<ConditionalFormatting>,
     merge_cells: MergeCells,
     auto_filter: Option<AutoFilter>,
-    comments: Vec<Comment>,
-    active_cell: String,
+    comments: ThinVec<Comment>,
+    active_cell: Box<str>,
     tab_color: Option<Color>,
     code_name: StringValue,
     ole_objects: OleObjects,
-    defined_names: Vec<DefinedName>,
+    defined_names: ThinVec<DefinedName>,
     print_options: PrintOptions,
     column_breaks: ColumnBreaks,
     row_breaks: RowBreaks,
-    tables: Vec<Table>,
+    tables: ThinVec<Table>,
     data_validations: Option<DataValidations>,
     data_validations_2010: Option<DataValidations2010>,
     sheet_format_properties: SheetFormatProperties,
@@ -174,11 +175,11 @@ impl Worksheet {
         self.cell_collection.get_collection_mut()
     }
 
-    pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Cell> {
+    pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
         self.cell_collection.get_collection_to_hashmap()
     }
 
-    pub fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Cell> {
+    pub fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Box<Cell>> {
         self.cell_collection.get_collection_to_hashmap_mut()
     }
 
@@ -453,12 +454,12 @@ impl Worksheet {
     // Comment
     // ************************
     /// Get Comments
-    pub fn get_comments(&self) -> &Vec<Comment> {
+    pub fn get_comments(&self) -> &[Comment] {
         &self.comments
     }
 
     /// Get Comments in mutable.
-    pub fn get_comments_mut(&mut self) -> &mut Vec<Comment> {
+    pub fn get_comments_mut(&mut self) -> &mut ThinVec<Comment> {
         &mut self.comments
     }
 
@@ -475,8 +476,8 @@ impl Worksheet {
     /// Set Comments.
     /// # Arguments
     /// * `value` - Comment List (Vec)
-    pub fn set_comments(&mut self, value: Vec<Comment>) {
-        self.comments = value;
+    pub fn set_comments(&mut self, value: impl Into<ThinVec<Comment>>) {
+        self.comments = value.into();
     }
 
     /// Add Comments.
@@ -495,15 +496,18 @@ impl Worksheet {
     // Conditional
     // ************************
     /// Get ConditionalFormatting list.
-    pub fn get_conditional_formatting_collection(&self) -> &Vec<ConditionalFormatting> {
+    pub fn get_conditional_formatting_collection(&self) -> &[ConditionalFormatting] {
         &self.conditional_formatting_collection
     }
 
     /// Set ConditionalFormatting.
     /// # Arguments
     /// * `value` - ConditionalSet List (Vec)
-    pub fn set_conditional_formatting_collection(&mut self, value: Vec<ConditionalFormatting>) {
-        self.conditional_formatting_collection = value;
+    pub fn set_conditional_formatting_collection(
+        &mut self,
+        value: impl Into<ThinVec<ConditionalFormatting>>,
+    ) {
+        self.conditional_formatting_collection = value.into();
     }
 
     /// Add ConditionalFormatting.
@@ -542,12 +546,12 @@ impl Worksheet {
     // Merge Cells
     // ************************
     // Get Merge Cells
-    pub fn get_merge_cells(&self) -> &Vec<Range> {
+    pub fn get_merge_cells(&self) -> &[Range] {
         self.merge_cells.get_range_collection()
     }
 
     // Get Merge Cells in mutable.
-    pub fn get_merge_cells_mut(&mut self) -> &mut Vec<Range> {
+    pub fn get_merge_cells_mut(&mut self) -> &mut ThinVec<Range> {
         self.merge_cells.get_range_collection_mut()
     }
 
@@ -614,12 +618,12 @@ impl Worksheet {
     // Column Dimensions
     // ************************
     /// Get Column Dimension List.
-    pub fn get_column_dimensions(&self) -> &Vec<Column> {
+    pub fn get_column_dimensions(&self) -> &[Column] {
         self.column_dimensions.get_column_collection()
     }
 
     /// Get Column Dimension List in mutable.
-    pub fn get_column_dimensions_mut(&mut self) -> &mut Vec<Column> {
+    pub fn get_column_dimensions_mut(&mut self) -> &mut ThinVec<Column> {
         self.column_dimensions.get_column_collection_mut()
     }
 
@@ -701,11 +705,11 @@ impl Worksheet {
     }
 
     /// Get Row Dimension convert Hashmap.
-    pub fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Row> {
+    pub fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Box<Row>> {
         self.row_dimensions.get_row_dimensions_to_hashmap()
     }
 
-    pub fn get_row_dimensions_to_hashmap_mut(&mut self) -> &mut HashMap<u32, Row> {
+    pub fn get_row_dimensions_to_hashmap_mut(&mut self) -> &mut HashMap<u32, Box<Row>> {
         self.row_dimensions.get_row_dimensions_to_hashmap_mut()
     }
 
@@ -755,7 +759,7 @@ impl Worksheet {
     /// # Arguments
     /// * `value` - WorksheetDrawing
     pub fn set_worksheet_drawing(&mut self, value: WorksheetDrawing) {
-        self.worksheet_drawing = Box::new(value);
+        self.worksheet_drawing = value;
     }
 
     /// Has WorksheetDrawing.
@@ -777,9 +781,9 @@ impl Worksheet {
     /// worksheet.insert_new_row(&2, &3);
     /// ```
     pub fn insert_new_row(&mut self, row_index: &u32, num_rows: &u32) {
-        let title = self.title.clone();
+        let title = &*self.title.clone();
         self.adjustment_insert_coordinate(&0, &0, row_index, num_rows);
-        self.adjustment_insert_coordinate_with_sheet(title.as_str(), &0, &0, row_index, num_rows);
+        self.adjustment_insert_coordinate_with_sheet(title, &0, &0, row_index, num_rows);
     }
 
     /// Adjust for references to other sheets.
@@ -832,15 +836,9 @@ impl Worksheet {
     /// worksheet.insert_new_column_by_index(&2, &3);
     /// ```
     pub fn insert_new_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
-        let title = self.title.clone();
+        let title = &*self.title.clone();
         self.adjustment_insert_coordinate(column_index, num_columns, &0, &0);
-        self.adjustment_insert_coordinate_with_sheet(
-            title.as_str(),
-            column_index,
-            num_columns,
-            &0,
-            &0,
-        );
+        self.adjustment_insert_coordinate_with_sheet(title, column_index, num_columns, &0, &0);
     }
 
     /// Adjust for references to other sheets.
@@ -865,9 +863,9 @@ impl Worksheet {
     /// worksheet.remove_row(&2, &3);
     /// ```
     pub fn remove_row(&mut self, row_index: &u32, num_rows: &u32) {
-        let title = self.title.clone();
+        let title = &*self.title.clone();
         self.adjustment_remove_coordinate(&0, &0, row_index, num_rows);
-        self.adjustment_remove_coordinate_with_sheet(title.as_str(), &0, &0, row_index, num_rows);
+        self.adjustment_remove_coordinate_with_sheet(title, &0, &0, row_index, num_rows);
     }
 
     /// Adjust for references to other sheets.
@@ -921,15 +919,9 @@ impl Worksheet {
     /// worksheet.remove_column_by_index(&2, &3);
     /// ```
     pub fn remove_column_by_index(&mut self, column_index: &u32, num_columns: &u32) {
-        let title = self.title.clone();
+        let title = &*self.title.clone();
         self.adjustment_remove_coordinate(column_index, num_columns, &0, &0);
-        self.adjustment_remove_coordinate_with_sheet(
-            title.as_str(),
-            column_index,
-            num_columns,
-            &0,
-            &0,
-        );
+        self.adjustment_remove_coordinate_with_sheet(title, column_index, num_columns, &0, &0);
     }
 
     /// Adjust for references to other sheets.
@@ -982,29 +974,29 @@ impl Worksheet {
     /// # Arguments
     /// * `cell` - Cell ex) "A1"
     pub fn set_active_cell<S: Into<String>>(&mut self, cell: S) {
-        self.active_cell = cell.into();
+        self.active_cell = cell.into().into_boxed_str();
     }
 
     /// Get R Id.
     pub(crate) fn get_r_id(&self) -> &str {
-        self.r_id.as_str()
+        &self.r_id
     }
 
     /// (This method is crate only.)
     /// Set r Id.
     pub(crate) fn set_r_id<S: Into<String>>(&mut self, value: S) {
-        self.r_id = value.into();
+        self.r_id = value.into().into_boxed_str();
     }
 
     /// Get Sheet Id.
     pub fn get_sheet_id(&self) -> &str {
-        self.sheet_id.as_str()
+        &self.sheet_id
     }
 
     /// (This method is crate only.)
     /// Set Sheet Id.
     pub(crate) fn set_sheet_id<S: Into<String>>(&mut self, value: S) {
-        self.sheet_id = value.into();
+        self.sheet_id = value.into().into_boxed_str();
     }
 
     /// Has Code Name.
@@ -1078,7 +1070,7 @@ impl Worksheet {
     /// # Arguments
     /// * `sheet_name` - Sheet Name. [Caution] no duplicate other worksheet.
     pub fn set_name<S: Into<String>>(&mut self, sheet_name: S) -> &mut Self {
-        self.title = sheet_name.into();
+        self.title = sheet_name.into().into_boxed_str();
         let title = self.get_name().to_string();
         for defined_name in self.get_defined_names_mut() {
             defined_name.set_sheet_name(&title);
@@ -1117,7 +1109,7 @@ impl Worksheet {
     /// # Arguments
     /// * `value` - Sheet State.
     pub fn set_sheet_state(&mut self, value: String) -> &mut Self {
-        self.sheet_state = value;
+        self.sheet_state = value.into_boxed_str();
         self
     }
 
@@ -1194,20 +1186,20 @@ impl Worksheet {
     }
 
     /// Get Defined Name (Vec).
-    pub fn get_defined_names(&self) -> &Vec<DefinedName> {
+    pub fn get_defined_names(&self) -> &[DefinedName] {
         &self.defined_names
     }
 
     /// Get Defined Name (Vec) in mutable.
-    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+    pub fn get_defined_names_mut(&mut self) -> &mut ThinVec<DefinedName> {
         &mut self.defined_names
     }
 
     /// Set Defined Name (Vec).
     /// # Arguments
     /// * `value` - Vec<DefinedName>.
-    pub fn set_defined_names(&mut self, value: Vec<DefinedName>) {
-        self.defined_names = value;
+    pub fn set_defined_names(&mut self, value: impl Into<ThinVec<DefinedName>>) {
+        self.defined_names = value.into();
     }
 
     /// Add Defined Name.
@@ -1291,11 +1283,11 @@ impl Worksheet {
         self.tables.push(table);
     }
 
-    pub fn get_tables(&self) -> &Vec<Table> {
+    pub fn get_tables(&self) -> &[Table] {
         &self.tables
     }
 
-    pub fn get_tables_mut(&mut self) -> &mut Vec<Table> {
+    pub fn get_tables_mut(&mut self) -> &mut ThinVec<Table> {
         &mut self.tables
     }
 
@@ -1351,14 +1343,14 @@ impl Worksheet {
     /// Outputs all images contained in the worksheet.
     /// # Return value
     /// * `&Vec<Image>` - Image Object List.
-    pub fn get_image_collection(&self) -> &Vec<Image> {
+    pub fn get_image_collection(&self) -> &[Image] {
         self.get_worksheet_drawing().get_image_collection()
     }
 
     /// Outputs all images contained in the worksheet.
     /// # Return value
     /// * `&mut Vec<Image>` - Image Object List.
-    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+    pub fn get_image_collection_mut(&mut self) -> &mut ThinVec<Image> {
         self.get_worksheet_drawing_mut().get_image_collection_mut()
     }
 
@@ -1406,14 +1398,14 @@ impl Worksheet {
     /// Outputs all Charts contained in the worksheet.
     /// # Return value
     /// * `&Vec<Chart>` - Chart Object List.
-    pub fn get_chart_collection(&self) -> &Vec<Chart> {
+    pub fn get_chart_collection(&self) -> &[Chart] {
         self.get_worksheet_drawing().get_chart_collection()
     }
 
     /// Outputs all Charts contained in the worksheet.
     /// # Return value
     /// * `&mut Vec<Chart>` - Chart Object List.
-    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+    pub fn get_chart_collection_mut(&mut self) -> &mut ThinVec<Chart> {
         self.get_worksheet_drawing_mut().get_chart_collection_mut()
     }
 

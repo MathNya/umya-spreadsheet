@@ -11,46 +11,46 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectList {
-    glow: Option<Glow>,
-    outer_shadow: Option<OuterShadow>,
-    soft_edge: Option<SoftEdge>,
+    glow: Option<Box<Glow>>,
+    outer_shadow: Option<Box<OuterShadow>>,
+    soft_edge: Option<Box<SoftEdge>>,
 }
 
 impl EffectList {
     pub fn get_glow(&self) -> Option<&Glow> {
-        self.glow.as_ref()
+        self.glow.as_deref()
     }
 
     pub fn get_glow_mut(&mut self) -> Option<&mut Glow> {
-        self.glow.as_mut()
+        self.glow.as_deref_mut()
     }
 
     pub fn set_glow(&mut self, value: Glow) {
-        self.glow = Some(value);
+        self.glow = Some(Box::new(value));
     }
 
     pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
-        self.outer_shadow.as_ref()
+        self.outer_shadow.as_deref()
     }
 
     pub fn get_outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
-        self.outer_shadow.as_mut()
+        self.outer_shadow.as_deref_mut()
     }
 
     pub fn set_outer_shadow(&mut self, value: OuterShadow) {
-        self.outer_shadow = Some(value);
+        self.outer_shadow = Some(Box::new(value));
     }
 
     pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
-        self.soft_edge.as_ref()
+        self.soft_edge.as_deref()
     }
 
     pub fn get_soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
-        self.soft_edge.as_mut()
+        self.soft_edge.as_deref_mut()
     }
 
     pub fn set_soft_edge(&mut self, value: SoftEdge) {
-        self.soft_edge = Some(value);
+        self.soft_edge = Some(Box::new(value));
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

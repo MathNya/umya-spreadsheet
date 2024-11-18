@@ -9,7 +9,7 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetColor {
-    val: String,
+    val: Box<str>,
     alpha: Option<Alpha>,
 }
 
@@ -19,7 +19,7 @@ impl PresetColor {
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) {
-        self.val = value.into();
+        self.val = value.into().into_boxed_str();
     }
 
     pub fn get_alpha(&self) -> Option<&Alpha> {

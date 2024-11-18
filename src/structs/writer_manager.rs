@@ -272,7 +272,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
             // Override Unsupported
             if content_type.is_empty() {
                 for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
-                    if old_part_name == &file {
+                    if &**old_part_name == &file {
                         content_type = old_content_type;
                     }
                 }

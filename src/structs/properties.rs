@@ -359,7 +359,7 @@ impl Properties {
     pub(crate) fn write_to_app(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        work_sheet_collection: &Vec<Worksheet>,
+        work_sheet_collection: &[Worksheet],
     ) {
         let sheet_count_str = work_sheet_collection.len().to_string();
 

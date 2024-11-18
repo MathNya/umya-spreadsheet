@@ -7,11 +7,12 @@ use reader::driver::*;
 use std::borrow::Cow;
 use std::fmt::Write;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {
-    rich_text_elements: Vec<TextElement>,
+    rich_text_elements: ThinVec<TextElement>,
 }
 
 impl RichText {
@@ -31,16 +32,16 @@ impl RichText {
         self
     }
 
-    pub fn get_rich_text_elements(&self) -> &Vec<TextElement> {
+    pub fn get_rich_text_elements(&self) -> &[TextElement] {
         &self.rich_text_elements
     }
 
-    pub fn get_rich_text_elements_mut(&mut self) -> &mut Vec<TextElement> {
+    pub fn get_rich_text_elements_mut(&mut self) -> &mut ThinVec<TextElement> {
         &mut self.rich_text_elements
     }
 
-    pub fn set_rich_text_elements(&mut self, value: Vec<TextElement>) -> &mut Self {
-        self.rich_text_elements = value;
+    pub fn set_rich_text_elements(&mut self, value: impl Into<ThinVec<TextElement>>) -> &mut Self {
+        self.rich_text_elements = value.into();
         self
     }
 

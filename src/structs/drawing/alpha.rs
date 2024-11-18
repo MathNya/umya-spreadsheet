@@ -8,7 +8,7 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Alpha {
-    val: String,
+    val: Box<str>,
 }
 impl Alpha {
     pub fn get_val(&self) -> &str {
@@ -16,7 +16,7 @@ impl Alpha {
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) {
-        self.val = value.into();
+        self.val = value.into().into_boxed_str();
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

@@ -48,7 +48,8 @@ impl CustomDocumentProperty {
     }
 
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.custom_document_property_value = CustomDocumentPropertyValue::String(value.into());
+        self.custom_document_property_value =
+            CustomDocumentPropertyValue::String(value.into().into_boxed_str());
         self
     }
 
@@ -62,12 +63,14 @@ impl CustomDocumentProperty {
 
     pub fn set_value_date(&mut self, year: i32, month: i32, day: i32) -> &mut Self {
         let value = format!("{:>04}-{:>02}-{:>02}T10:00:00Z", year, month, day);
-        self.custom_document_property_value = CustomDocumentPropertyValue::Date(value);
+        self.custom_document_property_value =
+            CustomDocumentPropertyValue::Date(value.into_boxed_str());
         self
     }
 
     pub fn set_value_date_manual<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.custom_document_property_value = CustomDocumentPropertyValue::Date(value.into());
+        self.custom_document_property_value =
+            CustomDocumentPropertyValue::Date(value.into().into_boxed_str());
         self
     }
 

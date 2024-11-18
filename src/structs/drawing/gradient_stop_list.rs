@@ -5,24 +5,28 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientStopList {
-    gradient_stop: Vec<GradientStop>,
+    gradient_stop: ThinVec<GradientStop>,
 }
 
 impl GradientStopList {
-    pub fn get_gradient_stop(&self) -> &Vec<GradientStop> {
+    pub fn get_gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
 
-    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+    pub fn get_gradient_stop_mut(&mut self) -> &mut ThinVec<GradientStop> {
         &mut self.gradient_stop
     }
 
-    pub fn set_gradient_stop(&mut self, value: Vec<GradientStop>) -> &mut GradientStopList {
-        self.gradient_stop = value;
+    pub fn set_gradient_stop(
+        &mut self,
+        value: impl Into<ThinVec<GradientStop>>,
+    ) -> &mut GradientStopList {
+        self.gradient_stop = value.into();
         self
     }
 

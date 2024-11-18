@@ -5,19 +5,20 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct MruColors {
-    color: Vec<Color>,
+    color: ThinVec<Color>,
 }
 
 impl MruColors {
-    pub(crate) fn get_color(&self) -> &Vec<Color> {
+    pub(crate) fn get_color(&self) -> &[Color] {
         &self.color
     }
 
-    pub(crate) fn _get_color_mut(&mut self) -> &mut Vec<Color> {
+    pub(crate) fn _get_color_mut(&mut self) -> &mut ThinVec<Color> {
         &mut self.color
     }
 

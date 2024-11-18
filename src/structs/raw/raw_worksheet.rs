@@ -4,11 +4,12 @@ use structs::raw::RawFile;
 use structs::raw::RawRelationships;
 use structs::WriterManager;
 use structs::XlsxError;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {
     worksheet_file: RawFile,
-    relationships_list: Vec<RawRelationships>,
+    relationships_list: ThinVec<RawRelationships>,
 }
 impl RawWorksheet {
     pub(crate) fn get_worksheet_file(&self) -> &RawFile {
@@ -19,11 +20,11 @@ impl RawWorksheet {
         &mut self.worksheet_file
     }
 
-    pub(crate) fn get_relationships_list(&self) -> &Vec<RawRelationships> {
+    pub(crate) fn get_relationships_list(&self) -> &[RawRelationships] {
         &self.relationships_list
     }
 
-    pub(crate) fn _get_relationships_list_mut(&mut self) -> &mut Vec<RawRelationships> {
+    pub(crate) fn _get_relationships_list_mut(&mut self) -> &mut ThinVec<RawRelationships> {
         &mut self.relationships_list
     }
 

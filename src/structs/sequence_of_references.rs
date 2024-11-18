@@ -1,22 +1,23 @@
 use super::Range;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinate;
 
 #[derive(Default, Debug, Clone)]
 pub struct SequenceOfReferences {
-    range_collection: Vec<Range>,
+    range_collection: ThinVec<Range>,
 }
 
 impl SequenceOfReferences {
-    pub fn get_range_collection(&self) -> &Vec<Range> {
+    pub fn get_range_collection(&self) -> &[Range] {
         &self.range_collection
     }
 
-    pub fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
+    pub fn get_range_collection_mut(&mut self) -> &mut ThinVec<Range> {
         &mut self.range_collection
     }
 
-    pub fn set_range_collection(&mut self, value: Vec<Range>) -> &mut Self {
-        self.range_collection = value;
+    pub fn set_range_collection(&mut self, value: impl Into<ThinVec<Range>>) -> &mut Self {
+        self.range_collection = value.into();
         self
     }
 

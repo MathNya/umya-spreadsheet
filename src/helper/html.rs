@@ -7,6 +7,7 @@ use structs::RichText;
 use structs::TextElement;
 use structs::UnderlineValues;
 use structs::VerticalAlignmentRunValues;
+use thin_vec::ThinVec;
 
 /// Generate rich text from html.
 /// # Arguments
@@ -48,8 +49,8 @@ pub fn html_to_richtext_custom(
     Ok(result)
 }
 
-fn read_node(node_list: &Vec<Node>, parent_element: &Vec<HfdElement>) -> Vec<HtmlFlatData> {
-    let mut result: Vec<HtmlFlatData> = Vec::new();
+fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<HtmlFlatData> {
+    let mut result: ThinVec<HtmlFlatData> = ThinVec::new();
 
     if node_list.is_empty() {
         return result;
@@ -71,7 +72,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &Vec<HfdElement>) -> Vec<Htm
                 if &data.text != "" {
                     result.push(data);
                     data = HtmlFlatData::default();
-                    data.element.append(&mut parent_element.clone());
+                    data.element.extend_from_slice(parent_element);
                 }
 
                 let mut elm: HfdElement = HfdElement::default();
@@ -88,7 +89,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &Vec<HfdElement>) -> Vec<Htm
                     })
                     .collect();
 
-                elm.classes = element.classes.clone();
+                elm.classes = element.classes.clone().into();
                 data.element.push(elm);
 
                 let mut children = read_node(&element.children, &data.element);
@@ -170,14 +171,14 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &AnalysisMethod)
 #[derive(Clone, Default, Debug)]
 pub struct HtmlFlatData {
     text: String,
-    element: Vec<HfdElement>,
+    element: ThinVec<HfdElement>,
 }
 
 #[derive(Clone, Default, Debug)]
 pub struct HfdElement {
     name: String,
     attributes: HashMap<String, String>,
-    classes: Vec<String>,
+    classes: ThinVec<String>,
 }
 impl HfdElement {
     pub fn has_name(&self, name: &str) -> bool {

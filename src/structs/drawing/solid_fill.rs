@@ -10,33 +10,33 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SolidFill {
-    scheme_color: Option<SchemeColor>,
-    rgb_color_model_hex: Option<RgbColorModelHex>,
+    scheme_color: Option<Box<SchemeColor>>,
+    rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 
 impl SolidFill {
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
-        self.scheme_color.as_ref()
+        self.scheme_color.as_deref()
     }
 
     pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
-        self.scheme_color.as_mut()
+        self.scheme_color.as_deref_mut()
     }
 
     pub fn set_scheme_color(&mut self, value: SchemeColor) {
-        self.scheme_color = Some(value);
+        self.scheme_color = Some(Box::new(value));
     }
 
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
-        self.rgb_color_model_hex.as_ref()
+        self.rgb_color_model_hex.as_deref()
     }
 
     pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
-        self.rgb_color_model_hex.as_mut()
+        self.rgb_color_model_hex.as_deref_mut()
     }
 
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) {
-        self.rgb_color_model_hex = Some(value);
+        self.rgb_color_model_hex = Some(Box::new(value));
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

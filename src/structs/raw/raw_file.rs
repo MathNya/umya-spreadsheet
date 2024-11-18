@@ -3,12 +3,13 @@ use std::io;
 use std::io::Read;
 use structs::StringValue;
 use structs::WriterManager;
+use thin_vec::ThinVec;
 use XlsxError;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {
     file_target: StringValue,
-    file_data: Vec<u8>,
+    file_data: ThinVec<u8>,
 }
 impl RawFile {
     pub(crate) fn get_file_name(&self) -> String {
@@ -43,11 +44,11 @@ impl RawFile {
         self
     }
 
-    pub(crate) fn get_file_data(&self) -> &Vec<u8> {
+    pub(crate) fn get_file_data(&self) -> &[u8] {
         &self.file_data
     }
 
-    pub(crate) fn _get_file_data_mut(&mut self) -> &mut Vec<u8> {
+    pub(crate) fn _get_file_data_mut(&mut self) -> &mut ThinVec<u8> {
         &mut self.file_data
     }
 

@@ -12,7 +12,7 @@ use traits::AdjustmentCoordinate;
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
     coordinate: Coordinate,
-    author: String,
+    author: Box<str>,
     text: RichText,
     shape: Shape,
 }
@@ -31,7 +31,7 @@ impl Comment {
     }
 
     pub fn set_author<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.author = value.into();
+        self.author = value.into().into_boxed_str();
         self
     }
 

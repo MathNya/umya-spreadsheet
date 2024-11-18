@@ -25,8 +25,8 @@ pub struct DataValidation {
     prompt_title: StringValue,
     prompt: StringValue,
     reference_sequence: ReferenceSequence,
-    formula1: Option<DataValidationForumla1>,
-    formula2: Option<DataValidationForumla2>,
+    formula1: Option<Box<DataValidationForumla1>>,
+    formula2: Option<Box<DataValidationForumla2>>,
 }
 impl DataValidation {
     pub fn get_type(&self) -> &DataValidationValues {
@@ -106,15 +106,15 @@ impl DataValidation {
     }
 
     pub fn get_formula1(&self) -> Option<&DataValidationForumla1> {
-        self.formula1.as_ref()
+        self.formula1.as_deref()
     }
 
     pub fn get_formula1_mut(&mut self) -> Option<&mut DataValidationForumla1> {
-        self.formula1.as_mut()
+        self.formula1.as_deref_mut()
     }
 
     pub fn set_formula1(&mut self, value: DataValidationForumla1) -> &mut Self {
-        self.formula1 = Some(value);
+        self.formula1 = Some(Box::new(value));
         self
     }
 
@@ -124,15 +124,15 @@ impl DataValidation {
     }
 
     pub fn get_formula2(&self) -> Option<&DataValidationForumla2> {
-        self.formula2.as_ref()
+        self.formula2.as_deref()
     }
 
     pub fn get_formula2_mut(&mut self) -> Option<&mut DataValidationForumla2> {
-        self.formula2.as_mut()
+        self.formula2.as_deref_mut()
     }
 
     pub fn set_formula2(&mut self, value: DataValidationForumla2) -> &mut Self {
-        self.formula2 = Some(value);
+        self.formula2 = Some(Box::new(value));
         self
     }
 
@@ -186,12 +186,12 @@ impl DataValidation {
                     b"x14:formula1" => {
                         let mut obj = DataValidationForumla1::default();
                         obj.set_attributes(reader, e);
-                        self.formula1 = Some(obj);
+                        self.formula1 = Some(Box::new(obj));
                     }
                     b"x14:formula2" => {
                         let mut obj = DataValidationForumla2::default();
                         obj.set_attributes(reader, e);
-                        self.formula2 = Some(obj);
+                        self.formula2 = Some(Box::new(obj));
                     }
                     b"xm:sqref" => {
                         let mut obj = ReferenceSequence::default();

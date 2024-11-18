@@ -23,11 +23,11 @@ pub struct Outline {
     width: UInt32Value,
     cap_type: StringValue,
     compound_line_type: StringValue,
-    solid_fill: Option<SolidFill>,
-    gradient_fill: Option<GradientFill>,
-    tail_end: Option<TailEnd>,
+    solid_fill: Option<Box<SolidFill>>,
+    gradient_fill: Option<Box<GradientFill>>,
+    tail_end: Option<Box<TailEnd>>,
     no_fill: Option<NoFill>,
-    bevel: Option<Bevel>,
+    bevel: Option<Box<Bevel>>,
     preset_dash: Option<PresetDash>,
     miter: Option<Miter>,
     round: Option<Round>,
@@ -63,41 +63,41 @@ impl Outline {
     }
 
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
-        self.solid_fill.as_ref()
+        self.solid_fill.as_deref()
     }
 
     pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
-        self.solid_fill.as_mut()
+        self.solid_fill.as_deref_mut()
     }
 
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
-        self.solid_fill = Some(value);
+        self.solid_fill = Some(Box::new(value));
         self
     }
 
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
-        self.gradient_fill.as_ref()
+        self.gradient_fill.as_deref()
     }
 
     pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
-        self.gradient_fill.as_mut()
+        self.gradient_fill.as_deref_mut()
     }
 
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
-        self.gradient_fill = Some(value);
+        self.gradient_fill = Some(Box::new(value));
         self
     }
 
     pub fn get_tail_end(&self) -> Option<&TailEnd> {
-        self.tail_end.as_ref()
+        self.tail_end.as_deref()
     }
 
     pub fn get_tail_end_mut(&mut self) -> Option<&mut TailEnd> {
-        self.tail_end.as_mut()
+        self.tail_end.as_deref_mut()
     }
 
     pub fn set_tail_end(&mut self, value: TailEnd) -> &mut Self {
-        self.tail_end = Some(value);
+        self.tail_end = Some(Box::new(value));
         self
     }
 
@@ -115,15 +115,15 @@ impl Outline {
     }
 
     pub fn get_bevel(&self) -> Option<&Bevel> {
-        self.bevel.as_ref()
+        self.bevel.as_deref()
     }
 
     pub fn get_bevel_mut(&mut self) -> Option<&mut Bevel> {
-        self.bevel.as_mut()
+        self.bevel.as_deref_mut()
     }
 
     pub fn set_bevel(&mut self, value: Bevel) -> &mut Self {
-        self.bevel = Some(value);
+        self.bevel = Some(Box::new(value));
         self
     }
 

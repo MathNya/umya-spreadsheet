@@ -12,13 +12,13 @@ use traits::AdjustmentCoordinateWithSheet;
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
-    map: HashMap<(u32, u32), Cell>,
+    map: HashMap<(u32, u32), Box<Cell>>,
     default_cell_value: CellValue,
     default_style: Style,
 }
 impl Cells {
     pub fn get_collection(&self) -> Vec<&Cell> {
-        self.map.values().collect()
+        self.map.values().map(Box::as_ref).collect()
     }
 
     pub fn get_collection_sorted(&self) -> Vec<&Cell> {
@@ -37,10 +37,10 @@ impl Cells {
     }
 
     pub(crate) fn get_collection_mut(&mut self) -> Vec<&mut Cell> {
-        self.map.values_mut().collect()
+        self.map.values_mut().map(Box::as_mut).collect()
     }
 
-    pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Cell> {
+    pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
         &self.map
     }
 
@@ -48,6 +48,7 @@ impl Cells {
         self.map
             .values()
             .filter(|k| k.get_coordinate().get_col_num() == column_num)
+            .map(Box::as_ref)
             .collect()
     }
 
@@ -55,6 +56,7 @@ impl Cells {
         self.map
             .values()
             .filter(|k| k.get_coordinate().get_row_num() == row_num)
+            .map(Box::as_ref)
             .collect()
     }
 
@@ -62,7 +64,7 @@ impl Cells {
         self.map
             .iter()
             .filter(|(k, _v)| &k.1 == column_num)
-            .map(|(k, v)| (k.0, v))
+            .map(|(k, v)| (k.0, v.as_ref()))
             .collect()
     }
 
@@ -70,11 +72,11 @@ impl Cells {
         self.map
             .iter()
             .filter(|(k, _v)| &k.0 == row_num)
-            .map(|(k, v)| (k.1, v))
+            .map(|(k, v)| (k.1, v.as_ref()))
             .collect()
     }
 
-    pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Cell> {
+    pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Box<Cell>> {
         &mut self.map
     }
 
@@ -102,7 +104,9 @@ impl Cells {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.map.get(&(row.to_owned(), col.to_owned()))
+        self.map
+            .get(&(row.to_owned(), col.to_owned()))
+            .map(Box::as_ref)
     }
 
     pub(crate) fn get_mut<T>(
@@ -127,7 +131,7 @@ impl Cells {
                 if row_dimenshon.has_style() {
                     c.set_style(row_dimenshon.get_style().clone());
                 }
-                c
+                Box::new(c)
             })
     }
 
@@ -175,7 +179,7 @@ impl Cells {
         let col_num = cell.get_coordinate().get_col_num();
         let row_num = cell.get_coordinate().get_row_num();
         let k = (row_num.to_owned(), col_num.to_owned());
-        self.map.insert_unique_unchecked(k, cell);
+        self.map.insert_unique_unchecked(k, Box::new(cell));
     }
 
     pub(crate) fn remove(&mut self, col_num: &u32, row_num: &u32) -> bool {

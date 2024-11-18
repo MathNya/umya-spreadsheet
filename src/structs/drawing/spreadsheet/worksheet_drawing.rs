@@ -15,24 +15,25 @@ use structs::raw::RawRelationships;
 use structs::Chart;
 use structs::Image;
 use structs::OleObjects;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinate;
 use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
-    image_collection: Vec<Image>,
-    chart_collection: Vec<Chart>,
-    one_cell_anchor_collection: Vec<OneCellAnchor>,
-    two_cell_anchor_collection: Vec<TwoCellAnchor>,
+    image_collection: ThinVec<Image>,
+    chart_collection: ThinVec<Chart>,
+    one_cell_anchor_collection: ThinVec<OneCellAnchor>,
+    two_cell_anchor_collection: ThinVec<TwoCellAnchor>,
 }
 
 impl WorksheetDrawing {
-    pub fn get_image_collection(&self) -> &Vec<Image> {
+    pub fn get_image_collection(&self) -> &[Image] {
         &self.image_collection
     }
 
-    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+    pub fn get_image_collection_mut(&mut self) -> &mut ThinVec<Image> {
         &mut self.image_collection
     }
 
@@ -73,11 +74,11 @@ impl WorksheetDrawing {
         result
     }
 
-    pub fn get_chart_collection(&self) -> &Vec<Chart> {
+    pub fn get_chart_collection(&self) -> &[Chart] {
         &self.chart_collection
     }
 
-    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+    pub fn get_chart_collection_mut(&mut self) -> &mut ThinVec<Chart> {
         &mut self.chart_collection
     }
 
@@ -118,11 +119,11 @@ impl WorksheetDrawing {
         result
     }
 
-    pub fn get_one_cell_anchor_collection(&self) -> &Vec<OneCellAnchor> {
+    pub fn get_one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
         &self.one_cell_anchor_collection
     }
 
-    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
+    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<OneCellAnchor> {
         &mut self.one_cell_anchor_collection
     }
 
@@ -131,11 +132,11 @@ impl WorksheetDrawing {
         self
     }
 
-    pub fn get_two_cell_anchor_collection(&self) -> &Vec<TwoCellAnchor> {
+    pub fn get_two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
         &self.two_cell_anchor_collection
     }
 
-    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
+    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<TwoCellAnchor> {
         &mut self.two_cell_anchor_collection
     }
 

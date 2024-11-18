@@ -25,11 +25,11 @@ pub struct TwoCellAnchor {
     edit_as: EnumValue<EditAsValues>,
     from_marker: MarkerType,
     to_marker: MarkerType,
-    group_shape: Option<GroupShape>,
-    graphic_frame: Option<GraphicFrame>,
-    shape: Option<Shape>,
-    connection_shape: Option<ConnectionShape>,
-    picture: Option<Picture>,
+    group_shape: Option<Box<GroupShape>>,
+    graphic_frame: Option<Box<GraphicFrame>>,
+    shape: Option<Box<Shape>>,
+    connection_shape: Option<Box<ConnectionShape>>,
+    picture: Option<Box<Picture>>,
     is_alternate_content: BooleanValue,
 }
 
@@ -70,67 +70,67 @@ impl TwoCellAnchor {
     }
 
     pub fn get_group_shape(&self) -> Option<&GroupShape> {
-        self.group_shape.as_ref()
+        self.group_shape.as_deref()
     }
 
     pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
-        self.group_shape.as_mut()
+        self.group_shape.as_deref_mut()
     }
 
     pub fn set_group_shape(&mut self, value: GroupShape) -> &mut Self {
-        self.group_shape = Some(value);
+        self.group_shape = Some(Box::new(value));
         self
     }
 
     pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
-        self.graphic_frame.as_ref()
+        self.graphic_frame.as_deref()
     }
 
     pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
-        self.graphic_frame.as_mut()
+        self.graphic_frame.as_deref_mut()
     }
 
     pub fn set_graphic_frame(&mut self, value: GraphicFrame) -> &mut Self {
-        self.graphic_frame = Some(value);
+        self.graphic_frame = Some(Box::new(value));
         self
     }
 
     pub fn get_shape(&self) -> Option<&Shape> {
-        self.shape.as_ref()
+        self.shape.as_deref()
     }
 
     pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
-        self.shape.as_mut()
+        self.shape.as_deref_mut()
     }
 
     pub fn set_shape(&mut self, value: Shape) -> &mut Self {
-        self.shape = Some(value);
+        self.shape = Some(Box::new(value));
         self
     }
 
     pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
-        self.connection_shape.as_ref()
+        self.connection_shape.as_deref()
     }
 
     pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
-        self.connection_shape.as_mut()
+        self.connection_shape.as_deref_mut()
     }
 
     pub fn set_connection_shape(&mut self, value: ConnectionShape) -> &mut Self {
-        self.connection_shape = Some(value);
+        self.connection_shape = Some(Box::new(value));
         self
     }
 
     pub fn get_picture(&self) -> Option<&Picture> {
-        self.picture.as_ref()
+        self.picture.as_deref()
     }
 
     pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
-        self.picture.as_mut()
+        self.picture.as_deref_mut()
     }
 
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {
-        self.picture = Some(value);
+        self.picture = Some(Box::new(value));
         self
     }
 

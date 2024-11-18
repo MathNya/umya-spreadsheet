@@ -13,8 +13,8 @@ use writer::driver::*;
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct PatternFill {
     pub(crate) pattern_type: EnumValue<PatternValues>,
-    foreground_color: Option<Color>,
-    background_color: Option<Color>,
+    foreground_color: Option<Box<Color>>,
+    background_color: Option<Box<Color>>,
 }
 
 impl PatternFill {
@@ -39,15 +39,16 @@ impl PatternFill {
     }
 
     pub fn get_foreground_color(&self) -> Option<&Color> {
-        self.foreground_color.as_ref()
+        self.foreground_color.as_deref()
     }
 
     pub fn get_foreground_color_mut(&mut self) -> &mut Color {
-        self.foreground_color.get_or_insert(Color::default())
+        self.foreground_color
+            .get_or_insert(Box::new(Color::default()))
     }
 
     pub fn set_foreground_color(&mut self, value: Color) -> &mut Self {
-        self.foreground_color = Some(value);
+        self.foreground_color = Some(Box::new(value));
         self.auto_set_pattern_type();
         self
     }
@@ -58,15 +59,16 @@ impl PatternFill {
     }
 
     pub fn get_background_color(&self) -> Option<&Color> {
-        self.background_color.as_ref()
+        self.background_color.as_deref()
     }
 
     pub fn get_background_color_mut(&mut self) -> &mut Color {
-        self.background_color.get_or_insert(Color::default())
+        self.background_color
+            .get_or_insert(Box::new(Color::default()))
     }
 
     pub fn set_background_color(&mut self, value: Color) -> &mut Self {
-        self.background_color = Some(value);
+        self.background_color = Some(Box::new(value));
         self
     }
 

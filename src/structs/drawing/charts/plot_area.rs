@@ -26,6 +26,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
 use structs::Spreadsheet;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
@@ -45,9 +46,9 @@ pub struct PlotArea {
     area_chart: Option<AreaChart>,
     area_3d_chart: Option<Area3DChart>,
     of_pie_chart: Option<OfPieChart>,
-    category_axis: Vec<CategoryAxis>,
-    value_axis: Vec<ValueAxis>,
-    series_axis: Vec<SeriesAxis>,
+    category_axis: ThinVec<CategoryAxis>,
+    value_axis: ThinVec<ValueAxis>,
+    series_axis: ThinVec<SeriesAxis>,
     shape_properties: Option<ShapeProperties>,
 }
 
@@ -234,16 +235,16 @@ impl PlotArea {
         self
     }
 
-    pub fn get_category_axis(&self) -> &Vec<CategoryAxis> {
+    pub fn get_category_axis(&self) -> &[CategoryAxis] {
         &self.category_axis
     }
 
-    pub fn get_category_axis_mut(&mut self) -> &mut Vec<CategoryAxis> {
+    pub fn get_category_axis_mut(&mut self) -> &mut ThinVec<CategoryAxis> {
         &mut self.category_axis
     }
 
-    pub fn set_category_axis(&mut self, value: Vec<CategoryAxis>) -> &mut Self {
-        self.category_axis = value;
+    pub fn set_category_axis(&mut self, value: impl Into<ThinVec<CategoryAxis>>) -> &mut Self {
+        self.category_axis = value.into();
         self
     }
 
@@ -252,16 +253,16 @@ impl PlotArea {
         self
     }
 
-    pub fn get_value_axis(&self) -> &Vec<ValueAxis> {
+    pub fn get_value_axis(&self) -> &[ValueAxis] {
         &self.value_axis
     }
 
-    pub fn get_value_axis_mut(&mut self) -> &mut Vec<ValueAxis> {
+    pub fn get_value_axis_mut(&mut self) -> &mut ThinVec<ValueAxis> {
         &mut self.value_axis
     }
 
-    pub fn set_value_axis(&mut self, value: Vec<ValueAxis>) -> &mut Self {
-        self.value_axis = value;
+    pub fn set_value_axis(&mut self, value: impl Into<ThinVec<ValueAxis>>) -> &mut Self {
+        self.value_axis = value.into();
         self
     }
 
@@ -270,16 +271,16 @@ impl PlotArea {
         self
     }
 
-    pub fn get_series_axis(&self) -> &Vec<SeriesAxis> {
+    pub fn get_series_axis(&self) -> &[SeriesAxis] {
         &self.series_axis
     }
 
-    pub fn get_series_axis_mut(&mut self) -> &mut Vec<SeriesAxis> {
+    pub fn get_series_axis_mut(&mut self) -> &mut ThinVec<SeriesAxis> {
         &mut self.series_axis
     }
 
-    pub fn set_series_axis(&mut self, value: Vec<SeriesAxis>) -> &mut Self {
-        self.series_axis = value;
+    pub fn set_series_axis(&mut self, value: impl Into<ThinVec<SeriesAxis>>) -> &mut Self {
+        self.series_axis = value.into();
         self
     }
 

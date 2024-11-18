@@ -11,20 +11,21 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetView {
     tab_selected: BooleanValue,
     workbook_view_id: UInt32Value,
-    pane: Option<Pane>,
+    pane: Option<Box<Pane>>,
     view: EnumValue<SheetViewValues>,
     zoom_scale: UInt32Value,
     zoom_scale_normal: UInt32Value,
     zoom_scale_page_layout_view: UInt32Value,
     zoom_scale_sheet_layout_view: UInt32Value,
     top_left_cell: StringValue,
-    selection: Vec<Selection>,
+    selection: ThinVec<Selection>,
 }
 
 impl SheetView {
@@ -47,15 +48,15 @@ impl SheetView {
     }
 
     pub fn get_pane(&self) -> Option<&Pane> {
-        self.pane.as_ref()
+        self.pane.as_deref()
     }
 
     pub fn get_pane_mut(&mut self) -> Option<&mut Pane> {
-        self.pane.as_mut()
+        self.pane.as_deref_mut()
     }
 
     pub fn set_pane(&mut self, value: Pane) -> &mut Self {
-        self.pane = Some(value);
+        self.pane = Some(Box::new(value));
         self
     }
 
@@ -113,11 +114,11 @@ impl SheetView {
         self
     }
 
-    pub fn get_selection(&self) -> &Vec<Selection> {
+    pub fn get_selection(&self) -> &[Selection] {
         &self.selection
     }
 
-    pub fn get_selection_mut(&mut self) -> &mut Vec<Selection> {
+    pub fn get_selection_mut(&mut self) -> &mut ThinVec<Selection> {
         &mut self.selection
     }
 

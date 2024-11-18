@@ -9,7 +9,7 @@ use crate::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct FormatCode {
-    text: String,
+    text: Box<str>,
 }
 
 impl FormatCode {
@@ -18,7 +18,7 @@ impl FormatCode {
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut FormatCode {
-        self.text = value.into();
+        self.text = value.into().into_boxed_str();
         self
     }
 
@@ -44,7 +44,7 @@ impl FormatCode {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:formatCode
         write_start_tag(writer, "c:formatCode", vec![], false);
-        write_text_node(writer, &self.text);
+        write_text_node(writer, &*self.text);
         write_end_tag(writer, "c:formatCode");
     }
 }

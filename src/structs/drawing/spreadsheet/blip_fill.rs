@@ -15,7 +15,7 @@ use writer::driver::*;
 pub struct BlipFill {
     rotate_with_shape: BooleanValue,
     blip: Blip,
-    source_rectangle: Option<SourceRectangle>,
+    source_rectangle: Option<Box<SourceRectangle>>,
     stretch: Stretch,
 }
 
@@ -30,15 +30,15 @@ impl BlipFill {
     }
 
     pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
-        self.source_rectangle.as_ref()
+        self.source_rectangle.as_deref()
     }
 
     pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
-        self.source_rectangle.as_mut()
+        self.source_rectangle.as_deref_mut()
     }
 
     pub fn set_source_rectangle(&mut self, value: SourceRectangle) -> &mut BlipFill {
-        self.source_rectangle = Some(value);
+        self.source_rectangle = Some(Box::new(value));
         self
     }
 

@@ -7,13 +7,14 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinate;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalFormatting {
     sequence_of_references: SequenceOfReferences,
-    conditional_collection: Vec<ConditionalFormattingRule>,
+    conditional_collection: ThinVec<ConditionalFormattingRule>,
 }
 
 impl ConditionalFormatting {
@@ -30,19 +31,19 @@ impl ConditionalFormatting {
         self
     }
 
-    pub fn get_conditional_collection(&self) -> &Vec<ConditionalFormattingRule> {
+    pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
         &self.conditional_collection
     }
 
-    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
+    pub fn get_conditional_collection_mut(&mut self) -> &mut ThinVec<ConditionalFormattingRule> {
         &mut self.conditional_collection
     }
 
     pub fn set_conditional_collection(
         &mut self,
-        value: Vec<ConditionalFormattingRule>,
+        value: impl Into<ThinVec<ConditionalFormattingRule>>,
     ) -> &mut Self {
-        self.conditional_collection = value;
+        self.conditional_collection = value.into();
         self
     }
 

@@ -4,24 +4,28 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectStyleList {
-    effect_style_collection: Vec<EffectStyle>,
+    effect_style_collection: ThinVec<EffectStyle>,
 }
 
 impl EffectStyleList {
-    pub fn get_effect_style_collection(&self) -> &Vec<EffectStyle> {
+    pub fn get_effect_style_collection(&self) -> &[EffectStyle] {
         &self.effect_style_collection
     }
 
-    pub fn get_effect_style_collection_mut(&mut self) -> &mut Vec<EffectStyle> {
+    pub fn get_effect_style_collection_mut(&mut self) -> &mut ThinVec<EffectStyle> {
         &mut self.effect_style_collection
     }
 
-    pub fn set_effect_style_collection(&mut self, value: Vec<EffectStyle>) -> &mut Self {
-        self.effect_style_collection = value;
+    pub fn set_effect_style_collection(
+        &mut self,
+        value: impl Into<ThinVec<EffectStyle>>,
+    ) -> &mut Self {
+        self.effect_style_collection = value.into();
         self
     }
 

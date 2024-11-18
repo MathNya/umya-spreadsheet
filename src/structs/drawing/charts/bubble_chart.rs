@@ -12,6 +12,7 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::Spreadsheet;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -21,7 +22,7 @@ pub struct BubbleChart {
     data_labels: DataLabels,
     bubble_scale: BubbleScale,
     show_negative_bubbles: ShowNegativeBubbles,
-    axis_id: Vec<AxisId>,
+    axis_id: ThinVec<AxisId>,
 }
 
 impl BubbleChart {
@@ -90,16 +91,16 @@ impl BubbleChart {
         self
     }
 
-    pub fn get_axis_id(&self) -> &Vec<AxisId> {
+    pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: Vec<AxisId>) -> &mut BubbleChart {
-        self.axis_id = value;
+    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut BubbleChart {
+        self.axis_id = value.into();
         self
     }
 

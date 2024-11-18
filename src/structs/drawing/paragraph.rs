@@ -7,13 +7,14 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
     paragraph_properties: ParagraphProperties,
-    run: Vec<Run>,
-    end_para_run_properties: Option<RunProperties>,
+    run: ThinVec<Run>,
+    end_para_run_properties: Option<Box<RunProperties>>,
 }
 
 impl Paragraph {
@@ -30,7 +31,7 @@ impl Paragraph {
         self
     }
 
-    pub fn get_run(&self) -> &Vec<Run> {
+    pub fn get_run(&self) -> &[Run] {
         &self.run
     }
 
@@ -39,15 +40,15 @@ impl Paragraph {
     }
 
     pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
-        self.end_para_run_properties.as_ref()
+        self.end_para_run_properties.as_deref()
     }
 
     pub fn get_end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
-        self.end_para_run_properties.as_mut()
+        self.end_para_run_properties.as_deref_mut()
     }
 
     pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Paragraph {
-        self.end_para_run_properties = Some(value);
+        self.end_para_run_properties = Some(Box::new(value));
         self
     }
 

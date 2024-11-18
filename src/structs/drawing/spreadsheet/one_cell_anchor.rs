@@ -17,9 +17,9 @@ use writer::driver::*;
 pub struct OneCellAnchor {
     from_marker: MarkerType,
     extent: Extent,
-    group_shape: Option<GroupShape>,
-    shape: Option<Shape>,
-    picture: Option<Picture>,
+    group_shape: Option<Box<GroupShape>>,
+    shape: Option<Box<Shape>>,
+    picture: Option<Box<Picture>>,
 }
 
 impl OneCellAnchor {
@@ -50,41 +50,41 @@ impl OneCellAnchor {
     }
 
     pub fn get_group_shape(&self) -> Option<&GroupShape> {
-        self.group_shape.as_ref()
+        self.group_shape.as_deref()
     }
 
     pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
-        self.group_shape.as_mut()
+        self.group_shape.as_deref_mut()
     }
 
     pub fn set_group_shape(&mut self, value: GroupShape) -> &mut Self {
-        self.group_shape = Some(value);
+        self.group_shape = Some(Box::new(value));
         self
     }
 
     pub fn get_shape(&self) -> Option<&Shape> {
-        self.shape.as_ref()
+        self.shape.as_deref()
     }
 
     pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
-        self.shape.as_mut()
+        self.shape.as_deref_mut()
     }
 
     pub fn set_shape(&mut self, value: Shape) -> &mut OneCellAnchor {
-        self.shape = Some(value);
+        self.shape = Some(Box::new(value));
         self
     }
 
     pub fn get_picture(&self) -> Option<&Picture> {
-        self.picture.as_ref()
+        self.picture.as_deref()
     }
 
     pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
-        self.picture.as_mut()
+        self.picture.as_deref_mut()
     }
 
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {
-        self.picture = Some(value);
+        self.picture = Some(Box::new(value));
         self
     }
 

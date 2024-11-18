@@ -21,8 +21,8 @@ lazy_static! {
 
 #[derive(Clone, Default, Debug)]
 pub struct Image {
-    two_cell_anchor: Box<Option<TwoCellAnchor>>,
-    one_cell_anchor: Box<Option<OneCellAnchor>>,
+    two_cell_anchor: Option<Box<TwoCellAnchor>>,
+    one_cell_anchor: Option<Box<OneCellAnchor>>,
 }
 /// ## Example
 /// ```rust
@@ -66,38 +66,38 @@ pub struct Image {
 /// ```
 impl Image {
     pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
-        self.two_cell_anchor.as_ref().as_ref()
+        self.two_cell_anchor.as_deref()
     }
 
     pub fn get_two_cell_anchor_mut(&mut self) -> Option<&mut TwoCellAnchor> {
-        self.two_cell_anchor.as_mut().as_mut()
+        self.two_cell_anchor.as_deref_mut()
     }
 
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
-        self.two_cell_anchor = Box::new(Some(value));
+        self.two_cell_anchor = Some(Box::new(value));
         self
     }
 
     pub fn remove_two_cell_anchor(&mut self) -> &mut Self {
-        self.two_cell_anchor = Box::new(None);
+        self.two_cell_anchor = None;
         self
     }
 
     pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
-        self.one_cell_anchor.as_ref().as_ref()
+        self.one_cell_anchor.as_deref()
     }
 
     pub fn get_one_cell_anchor_mut(&mut self) -> Option<&mut OneCellAnchor> {
-        self.one_cell_anchor.as_mut().as_mut()
+        self.one_cell_anchor.as_deref_mut()
     }
 
     pub fn set_one_cell_anchor(&mut self, value: OneCellAnchor) -> &mut Self {
-        self.one_cell_anchor = Box::new(Some(value));
+        self.one_cell_anchor = Some(Box::new(value));
         self
     }
 
     pub fn remove_one_cell_anchor(&mut self) -> &mut Self {
-        self.one_cell_anchor = Box::new(None);
+        self.one_cell_anchor = None;
         self
     }
 
@@ -190,7 +190,7 @@ impl Image {
         }
     }
 
-    pub fn get_image_data(&self) -> &Vec<u8> {
+    pub fn get_image_data(&self) -> &[u8] {
         match self.get_media_object().first() {
             Some(v) => v.get_image_data(),
             None => &EMPTY_VEC,

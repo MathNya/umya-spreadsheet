@@ -8,13 +8,14 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinateWithSheet;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {
     name: StringValue,
-    address: Vec<Address>,
+    address: ThinVec<Address>,
     string_value: StringValue,
     local_sheet_id: UInt32Value,
     hidden: BooleanValue,
@@ -72,11 +73,11 @@ impl DefinedName {
             .to_string()
     }
 
-    pub(crate) fn get_address_obj(&self) -> &Vec<Address> {
+    pub(crate) fn get_address_obj(&self) -> &[Address] {
         &self.address
     }
 
-    pub(crate) fn get_address_obj_mut(&mut self) -> &mut Vec<Address> {
+    pub(crate) fn get_address_obj_mut(&mut self) -> &mut ThinVec<Address> {
         &mut self.address
     }
 

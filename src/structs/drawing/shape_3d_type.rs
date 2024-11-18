@@ -13,8 +13,8 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Shape3DType {
     preset_material: EnumValue<PresetMaterialTypeValues>,
-    bevel_top: Option<BevelTop>,
-    bevel_bottom: Option<BevelBottom>,
+    bevel_top: Option<Box<BevelTop>>,
+    bevel_bottom: Option<Box<BevelBottom>>,
 }
 
 impl Shape3DType {
@@ -28,27 +28,27 @@ impl Shape3DType {
     }
 
     pub fn get_bevel_top(&self) -> Option<&BevelTop> {
-        self.bevel_top.as_ref()
+        self.bevel_top.as_deref()
     }
 
     pub fn get_bevel_top_mut(&mut self) -> Option<&mut BevelTop> {
-        self.bevel_top.as_mut()
+        self.bevel_top.as_deref_mut()
     }
 
     pub fn set_bevel_top(&mut self, value: BevelTop) {
-        self.bevel_top = Some(value);
+        self.bevel_top = Some(Box::new(value));
     }
 
     pub fn get_bevel_bottom(&self) -> Option<&BevelBottom> {
-        self.bevel_bottom.as_ref()
+        self.bevel_bottom.as_deref()
     }
 
     pub fn get_bevel_bottom_mut(&mut self) -> Option<&mut BevelBottom> {
-        self.bevel_bottom.as_mut()
+        self.bevel_bottom.as_deref_mut()
     }
 
     pub fn set_bevel_bottom(&mut self, value: BevelBottom) {
-        self.bevel_bottom = Some(value);
+        self.bevel_bottom = Some(Box::new(value));
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

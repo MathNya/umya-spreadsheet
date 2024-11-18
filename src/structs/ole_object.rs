@@ -9,14 +9,15 @@ use std::io::Cursor;
 use structs::drawing::spreadsheet::TwoCellAnchor;
 use structs::raw::RawRelationships;
 use structs::vml::Shape;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObject {
     requires: StringValue,
     prog_id: StringValue,
-    object_extension: String,
-    object_data: Option<Vec<u8>>,
+    object_extension: Box<str>,
+    object_data: Option<ThinVec<u8>>,
     embedded_object_properties: EmbeddedObjectProperties,
     two_cell_anchor: TwoCellAnchor,
     shape: Shape,
@@ -46,19 +47,19 @@ impl OleObject {
     }
 
     pub fn set_object_extension<S: Into<String>>(&mut self, value: S) {
-        self.object_extension = value.into();
+        self.object_extension = value.into().into_boxed_str();
     }
 
-    pub fn get_object_data(&self) -> Option<&Vec<u8>> {
-        self.object_data.as_ref()
+    pub fn get_object_data(&self) -> Option<&[u8]> {
+        self.object_data.as_deref()
     }
 
-    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+    pub fn get_object_data_mut(&mut self) -> Option<&mut ThinVec<u8>> {
         self.object_data.as_mut()
     }
 
-    pub fn set_object_data(&mut self, value: Vec<u8>) -> &mut Self {
-        self.object_data = Some(value);
+    pub fn set_object_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+        self.object_data = Some(value.into());
         self
     }
 
@@ -102,11 +103,11 @@ impl OleObject {
     }
 
     pub(crate) fn is_bin(&self) -> bool {
-        &self.object_extension == "bin"
+        &*self.object_extension == "bin"
     }
 
     pub(crate) fn is_xlsx(&self) -> bool {
-        &self.object_extension == "xlsx"
+        &*self.object_extension == "xlsx"
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

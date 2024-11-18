@@ -5,19 +5,20 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct CellStyles {
-    cell_style: Vec<CellStyle>,
+    cell_style: ThinVec<CellStyle>,
 }
 
 impl CellStyles {
-    pub fn _get_cell_style(&self) -> &Vec<CellStyle> {
+    pub fn _get_cell_style(&self) -> &[CellStyle] {
         &self.cell_style
     }
 
-    pub fn _get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
+    pub fn _get_cell_style_mut(&mut self) -> &mut ThinVec<CellStyle> {
         &mut self.cell_style
     }
 

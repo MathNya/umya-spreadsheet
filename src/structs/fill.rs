@@ -11,13 +11,13 @@ use writer::driver::*;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Fill {
-    pattern_fill: Option<PatternFill>,
-    gradient_fill: Option<GradientFill>,
+    pattern_fill: Option<Box<PatternFill>>,
+    gradient_fill: Option<Box<GradientFill>>,
 }
 
 impl Fill {
     pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
-        self.pattern_fill.as_ref()
+        self.pattern_fill.as_deref()
     }
 
     pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
@@ -29,13 +29,13 @@ impl Fill {
     }
 
     pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut Self {
-        self.pattern_fill = Some(value);
+        self.pattern_fill = Some(Box::new(value));
         self.gradient_fill = None;
         self
     }
 
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
-        self.gradient_fill.as_ref()
+        self.gradient_fill.as_deref()
     }
 
     pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
@@ -48,7 +48,7 @@ impl Fill {
 
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
         self.pattern_fill = None;
-        self.gradient_fill = Some(value);
+        self.gradient_fill = Some(Box::new(value));
         self
     }
 

@@ -9,33 +9,33 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Color2Type {
-    rgb_color_model_hex: Option<RgbColorModelHex>,
-    system_color: Option<SystemColor>,
+    rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
+    system_color: Option<Box<SystemColor>>,
 }
 
 impl Color2Type {
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) {
-        self.rgb_color_model_hex = Some(value);
+        self.rgb_color_model_hex = Some(Box::new(value));
     }
 
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
-        self.rgb_color_model_hex.as_ref()
+        self.rgb_color_model_hex.as_deref()
     }
 
     pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
-        self.rgb_color_model_hex.as_mut()
+        self.rgb_color_model_hex.as_deref_mut()
     }
 
     pub fn set_system_color(&mut self, value: SystemColor) {
-        self.system_color = Some(value);
+        self.system_color = Some(Box::new(value));
     }
 
     pub fn get_system_color(&self) -> Option<&SystemColor> {
-        self.system_color.as_ref()
+        self.system_color.as_deref()
     }
 
     pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
-        self.system_color.as_mut()
+        self.system_color.as_deref_mut()
     }
 
     pub fn get_val(&self) -> String {
@@ -60,12 +60,12 @@ impl Color2Type {
                 b"a:srgbClr" => {
                     let mut obj = RgbColorModelHex::default();
                     obj.set_attributes(reader, e, true);
-                    self.rgb_color_model_hex = Some(obj);
+                    self.rgb_color_model_hex = Some(Box::new(obj));
                 }
                 b"a:sysClr" => {
                     let mut obj = SystemColor::default();
                     obj.set_attributes(reader, e);
-                    self.system_color = Some(obj);
+                    self.system_color = Some(Box::new(obj));
                 }
                 _ => (),
                 }
@@ -75,12 +75,12 @@ impl Color2Type {
                 b"a:srgbClr" => {
                     let mut obj = RgbColorModelHex::default();
                     obj.set_attributes(reader, e, false);
-                    self.rgb_color_model_hex = Some(obj);
+                    self.rgb_color_model_hex = Some(Box::new(obj));
                 }
                 b"a:sysClr" => {
                     let mut obj = SystemColor::default();
                     obj.set_attributes(reader, e);
-                    self.system_color = Some(obj);
+                    self.system_color = Some(Box::new(obj));
                 }
                 _ => (),
                 }

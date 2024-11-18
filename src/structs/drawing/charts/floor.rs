@@ -11,7 +11,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Floor {
     thickness: Option<Thickness>,
-    shape_properties: Option<ShapeProperties>,
+    shape_properties: Option<Box<ShapeProperties>>,
 }
 
 impl Floor {
@@ -29,15 +29,15 @@ impl Floor {
     }
 
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
-        self.shape_properties.as_ref()
+        self.shape_properties.as_deref()
     }
 
     pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
-        self.shape_properties.as_mut()
+        self.shape_properties.as_deref_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
-        self.shape_properties = Some(value);
+        self.shape_properties = Some(Box::new(value));
         self
     }
 

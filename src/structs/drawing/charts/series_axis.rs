@@ -23,7 +23,7 @@ pub struct SeriesAxis {
     scaling: Scaling,
     delete: Delete,
     axis_position: AxisPosition,
-    major_gridlines: Option<MajorGridlines>,
+    major_gridlines: Option<Box<MajorGridlines>>,
     title: Option<Title>,
     major_tick_mark: MajorTickMark,
     minor_tick_mark: MinorTickMark,
@@ -86,15 +86,15 @@ impl SeriesAxis {
     }
 
     pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
-        self.major_gridlines.as_ref()
+        self.major_gridlines.as_deref()
     }
 
     pub fn get_major_gridlines_mut(&mut self) -> Option<&mut MajorGridlines> {
-        self.major_gridlines.as_mut()
+        self.major_gridlines.as_deref_mut()
     }
 
     pub fn set_major_gridlines(&mut self, value: MajorGridlines) -> &mut SeriesAxis {
-        self.major_gridlines = Some(value);
+        self.major_gridlines = Some(Box::new(value));
         self
     }
 

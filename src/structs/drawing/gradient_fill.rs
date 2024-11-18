@@ -17,8 +17,8 @@ pub struct GradientFill {
     flip: EnumValue<TileFlipValues>,
     rotate_with_shape: BooleanValue,
     gradient_stop_list: GradientStopList,
-    linear_gradient_fill: Option<LinearGradientFill>,
-    tile_rectangle: Option<TileRectangle>,
+    linear_gradient_fill: Option<Box<LinearGradientFill>>,
+    tile_rectangle: Option<Box<TileRectangle>>,
 }
 
 impl GradientFill {
@@ -54,28 +54,28 @@ impl GradientFill {
     }
 
     pub fn get_linear_gradient_fill(&self) -> Option<&LinearGradientFill> {
-        self.linear_gradient_fill.as_ref()
+        self.linear_gradient_fill.as_deref()
     }
 
     pub fn get_linear_gradient_fill_mut(&mut self) -> Option<&mut LinearGradientFill> {
-        self.linear_gradient_fill.as_mut()
+        self.linear_gradient_fill.as_deref_mut()
     }
 
     pub fn set_linear_gradient_fill(&mut self, value: LinearGradientFill) -> &mut GradientFill {
-        self.linear_gradient_fill = Some(value);
+        self.linear_gradient_fill = Some(Box::new(value));
         self
     }
 
     pub fn get_tile_rectangle(&self) -> Option<&TileRectangle> {
-        self.tile_rectangle.as_ref()
+        self.tile_rectangle.as_deref()
     }
 
     pub fn get_tile_rectangle_mut(&mut self) -> Option<&mut TileRectangle> {
-        self.tile_rectangle.as_mut()
+        self.tile_rectangle.as_deref_mut()
     }
 
     pub fn set_tile_rectangle(&mut self, value: TileRectangle) -> &mut GradientFill {
-        self.tile_rectangle = Some(value);
+        self.tile_rectangle = Some(Box::new(value));
         self
     }
 
