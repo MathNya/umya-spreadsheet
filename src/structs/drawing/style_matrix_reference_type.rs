@@ -14,18 +14,22 @@ pub struct StyleMatrixReferenceType {
 }
 
 impl StyleMatrixReferenceType {
+    #[inline]
     pub fn get_index(&self) -> &str {
         &self.index
     }
 
+    #[inline]
     pub fn set_index<S: Into<String>>(&mut self, value: S) {
         self.index = value.into().into_boxed_str();
     }
 
+    #[inline]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
+    #[inline]
     pub fn set_scheme_color(&mut self, value: SchemeColor) {
         self.scheme_color = Some(Box::new(value));
     }

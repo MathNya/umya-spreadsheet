@@ -29,25 +29,30 @@ pub struct WorksheetDrawing {
 }
 
 impl WorksheetDrawing {
+    #[inline]
     pub fn get_image_collection(&self) -> &[Image] {
         &self.image_collection
     }
 
+    #[inline]
     pub fn get_image_collection_mut(&mut self) -> &mut ThinVec<Image> {
         &mut self.image_collection
     }
 
+    #[inline]
     pub fn add_image(&mut self, value: Image) -> &mut Self {
         self.image_collection.push(value);
         self
     }
 
+    #[inline]
     pub fn get_image(&self, col: &u32, row: &u32) -> Option<&Image> {
         self.image_collection
             .iter()
             .find(|&image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
     }
 
+    #[inline]
     pub fn get_image_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
         self.image_collection
             .iter_mut()
@@ -74,25 +79,30 @@ impl WorksheetDrawing {
         result
     }
 
+    #[inline]
     pub fn get_chart_collection(&self) -> &[Chart] {
         &self.chart_collection
     }
 
+    #[inline]
     pub fn get_chart_collection_mut(&mut self) -> &mut ThinVec<Chart> {
         &mut self.chart_collection
     }
 
+    #[inline]
     pub fn add_chart_collection(&mut self, value: Chart) -> &mut Self {
         self.chart_collection.push(value);
         self
     }
 
+    #[inline]
     pub fn get_chart(&self, col: &u32, row: &u32) -> Option<&Chart> {
         self.chart_collection
             .iter()
             .find(|&chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
     }
 
+    #[inline]
     pub fn get_chart_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
         self.chart_collection
             .iter_mut()
@@ -119,32 +129,39 @@ impl WorksheetDrawing {
         result
     }
 
+    #[inline]
     pub fn get_one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
         &self.one_cell_anchor_collection
     }
 
+    #[inline]
     pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<OneCellAnchor> {
         &mut self.one_cell_anchor_collection
     }
 
+    #[inline]
     pub fn add_one_cell_anchor_collection(&mut self, value: OneCellAnchor) -> &mut Self {
         self.one_cell_anchor_collection.push(value);
         self
     }
 
+    #[inline]
     pub fn get_two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
         &self.two_cell_anchor_collection
     }
 
+    #[inline]
     pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<TwoCellAnchor> {
         &mut self.two_cell_anchor_collection
     }
 
+    #[inline]
     pub fn add_two_cell_anchor_collection(&mut self, value: TwoCellAnchor) -> &mut Self {
         self.two_cell_anchor_collection.push(value);
         self
     }
 
+    #[inline]
     pub fn has_drawing_object(&self) -> bool {
         !self.chart_collection.is_empty()
             || !self.image_collection.is_empty()

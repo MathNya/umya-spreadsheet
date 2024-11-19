@@ -39,10 +39,12 @@ pub fn excel_to_date_time_object(
         + Duration::seconds(seconds as i64)
 }
 
+#[inline]
 fn get_default_timezone() -> String {
     String::from("UTC")
 }
 
+#[inline]
 pub fn convert_date(
     year: i32,
     month: i32,
@@ -54,6 +56,7 @@ pub fn convert_date(
     convert_date_windows_1900(year, month, day, hours, minutes, seconds)
 }
 
+#[inline]
 pub fn convert_date_windows_1900(
     year: i32,
     month: i32,
@@ -65,6 +68,7 @@ pub fn convert_date_windows_1900(
     convert_date_crate(year, month, day, hours, minutes, seconds, true)
 }
 
+#[inline]
 pub fn convert_date_mac_1904(
     year: i32,
     month: i32,

@@ -15,14 +15,17 @@ pub(crate) struct BordersCrate {
 }
 
 impl BordersCrate {
+    #[inline]
     pub(crate) fn get_borders(&self) -> &[Borders] {
         &self.borders
     }
 
+    #[inline]
     pub(crate) fn get_borders_mut(&mut self) -> &mut ThinVec<Borders> {
         &mut self.borders
     }
 
+    #[inline]
     pub(crate) fn set_borders(&mut self, value: Borders) -> &mut Self {
         self.borders.push(value);
         self

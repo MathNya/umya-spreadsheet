@@ -21,34 +21,42 @@ pub struct Alignment {
 }
 
 impl Alignment {
+    #[inline]
     pub fn get_horizontal(&self) -> &HorizontalAlignmentValues {
         self.horizontal.get_value()
     }
 
+    #[inline]
     pub fn set_horizontal(&mut self, value: HorizontalAlignmentValues) {
         self.horizontal.set_value(value);
     }
 
+    #[inline]
     pub fn get_vertical(&self) -> &VerticalAlignmentValues {
         self.vertical.get_value()
     }
 
+    #[inline]
     pub fn set_vertical(&mut self, value: VerticalAlignmentValues) {
         self.vertical.set_value(value);
     }
 
+    #[inline]
     pub fn get_wrap_text(&self) -> &bool {
         self.wrap_text.get_value()
     }
 
+    #[inline]
     pub fn set_wrap_text(&mut self, value: bool) {
         self.wrap_text.set_value(value);
     }
 
+    #[inline]
     pub fn get_text_rotation(&self) -> &u32 {
         self.text_rotation.get_value()
     }
 
+    #[inline]
     pub fn set_text_rotation(&mut self, value: u32) {
         self.text_rotation.set_value(value);
     }
@@ -66,6 +74,7 @@ impl Alignment {
         )
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

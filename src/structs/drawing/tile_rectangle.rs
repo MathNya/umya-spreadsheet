@@ -8,6 +8,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct TileRectangle {}
 impl TileRectangle {
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -15,6 +16,7 @@ impl TileRectangle {
     ) {
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:tileRect
         write_start_tag(writer, "a:tileRect", vec![], true);

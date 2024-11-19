@@ -23,71 +23,87 @@ pub struct OneCellAnchor {
 }
 
 impl OneCellAnchor {
+    #[inline]
     pub fn get_from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
 
+    #[inline]
     pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.from_marker
     }
 
+    #[inline]
     pub fn set_from_marker(&mut self, value: MarkerType) -> &mut OneCellAnchor {
         self.from_marker = value;
         self
     }
 
+    #[inline]
     pub fn get_extent(&self) -> &Extent {
         &self.extent
     }
 
+    #[inline]
     pub fn get_extent_mut(&mut self) -> &mut Extent {
         &mut self.extent
     }
 
+    #[inline]
     pub fn set_extent(&mut self, value: Extent) -> &mut OneCellAnchor {
         self.extent = value;
         self
     }
 
+    #[inline]
     pub fn get_group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
 
+    #[inline]
     pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
         self.group_shape.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_group_shape(&mut self, value: GroupShape) -> &mut Self {
         self.group_shape = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
 
+    #[inline]
     pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
         self.shape.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_shape(&mut self, value: Shape) -> &mut OneCellAnchor {
         self.shape = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
 
+    #[inline]
     pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
         self.picture.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {
         self.picture = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub(crate) fn is_image(&self) -> bool {
         self.picture.is_some() || self.group_shape.is_some()
     }
@@ -173,6 +189,7 @@ impl OneCellAnchor {
     }
 }
 impl AdjustmentCoordinate for OneCellAnchor {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -188,6 +205,7 @@ impl AdjustmentCoordinate for OneCellAnchor {
         );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -203,6 +221,7 @@ impl AdjustmentCoordinate for OneCellAnchor {
         );
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,

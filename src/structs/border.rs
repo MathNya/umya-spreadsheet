@@ -17,23 +17,28 @@ pub struct Border {
 }
 
 impl Border {
+    #[inline]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
 
+    #[inline]
     pub fn get_color_mut(&mut self) -> &mut Color {
         &mut self.color
     }
 
+    #[inline]
     pub fn set_color(&mut self, value: Color) -> &mut Self {
         self.color = value;
         self
     }
 
+    #[inline]
     pub fn get_style(&self) -> &BorderStyleValues {
         self.style.get_value()
     }
 
+    #[inline]
     pub fn set_style(&mut self, value: BorderStyleValues) -> &mut Self {
         self.style.set_value(value);
         self
@@ -55,9 +60,11 @@ impl Border {
     pub const BORDER_THICK: &'static str = "thick";
     pub const BORDER_THIN: &'static str = "thin";
 
+    #[inline]
     pub fn get_border_style(&self) -> &str {
         self.style.get_value_string()
     }
+    #[inline]
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
     }
@@ -74,6 +81,7 @@ impl Border {
     }
 
     // When opened in software such as Excel, it is visually blank.
+    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         self.style.get_value() == &BorderStyleValues::None
     }
@@ -116,30 +124,37 @@ impl Border {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to_left(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "left");
     }
 
+    #[inline]
     pub(crate) fn write_to_right(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "right");
     }
 
+    #[inline]
     pub(crate) fn write_to_top(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "top");
     }
 
+    #[inline]
     pub(crate) fn write_to_bottom(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "bottom");
     }
 
+    #[inline]
     pub(crate) fn write_to_diagonal(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "diagonal");
     }
 
+    #[inline]
     pub(crate) fn write_to_vertical(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "vertical");
     }
 
+    #[inline]
     pub(crate) fn write_to_horizontal(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "horizontal");
     }

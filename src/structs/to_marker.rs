@@ -13,54 +13,66 @@ pub struct ToMarker {
     row_off: usize,
 }
 impl ToMarker {
+    #[inline]
     pub fn get_col(&self) -> &usize {
         &self.col
     }
 
+    #[inline]
     pub fn set_col(&mut self, value: usize) -> &mut ToMarker {
         self.col = value;
         self
     }
 
+    #[inline]
     pub fn get_col_off(&self) -> &usize {
         &self.col_off
     }
 
+    #[inline]
     pub fn set_col_off(&mut self, value: usize) -> &mut ToMarker {
         self.col_off = value;
         self
     }
 
+    #[inline]
     pub fn get_row(&self) -> &usize {
         &self.row
     }
 
+    #[inline]
     pub fn set_row(&mut self, value: usize) -> &mut ToMarker {
         self.row = value;
         self
     }
 
+    #[inline]
     pub fn get_row_off(&self) -> &usize {
         &self.row_off
     }
 
+    #[inline]
     pub fn set_row_off(&mut self, value: usize) -> &mut ToMarker {
         self.row_off = value;
         self
     }
 
+    #[inline]
     pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
         self.row += num_rows;
     }
 
+    #[inline]
     pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &usize) {
         self.col += num_cols;
     }
 
+    #[inline]
     pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
         self.row = self.row.saturating_sub(*num_rows).max(1);
     }
 
+    #[inline]
     pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &usize) {
         self.col = self.col.saturating_sub(*num_cols).max(1);
     }

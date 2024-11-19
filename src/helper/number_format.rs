@@ -18,6 +18,7 @@ pub struct Split<'r, 't> {
     last: usize,
 }
 
+#[inline]
 pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     Split {
         finder: regex.find_iter(text),

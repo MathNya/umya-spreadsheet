@@ -16,11 +16,13 @@ pub enum BevelPresetValues {
     SoftRound,
 }
 impl Default for BevelPresetValues {
+    #[inline]
     fn default() -> Self {
         Self::RelaxedInset
     }
 }
 impl EnumTrait for BevelPresetValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Angle => "angle",
@@ -40,6 +42,8 @@ impl EnumTrait for BevelPresetValues {
 }
 impl FromStr for BevelPresetValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "angle" => Ok(Self::Angle),

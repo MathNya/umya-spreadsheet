@@ -25,6 +25,7 @@ pub(crate) fn write_start_tag<'a, S>(
     }
 }
 
+#[inline]
 pub(crate) fn write_end_tag<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: S)
 where
     S: Into<Cow<'a, str>>,
@@ -32,6 +33,7 @@ where
     writer.write_event(Event::End(BytesEnd::new(tag_name.into())));
 }
 
+#[inline]
 pub(crate) fn write_text_node<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
 where
     S: Into<Cow<'a, str>>,
@@ -39,6 +41,7 @@ where
     writer.write_event(Event::Text(BytesText::new(&data.into())));
 }
 
+#[inline]
 pub(crate) fn write_text_node_no_escape<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
 where
     S: Into<Cow<'a, str>>,
@@ -46,6 +49,7 @@ where
     writer.get_mut().write(data.into().as_bytes());
 }
 
+#[inline]
 pub(crate) fn write_text_node_conversion<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data: S)
 where
     S: Into<Cow<'a, str>>,
@@ -55,10 +59,12 @@ where
     write_text_node_no_escape(writer, data);
 }
 
+#[inline]
 pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>) {
     write_text_node(writer, "\r\n");
 }
 
+#[inline]
 pub(crate) fn make_file_from_writer<W: io::Seek + io::Write>(
     path: &str,
     arv: &mut zip::ZipWriter<W>,
@@ -69,6 +75,7 @@ pub(crate) fn make_file_from_writer<W: io::Seek + io::Write>(
     make_file_from_bin(path, arv, &writer.into_inner().into_inner(), dir, is_light)
 }
 
+#[inline]
 pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
     path: &str,
     arv: &mut zip::ZipWriter<W>,
@@ -85,6 +92,7 @@ pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
     arv.write_all(writer)
 }
 
+#[inline]
 pub(crate) fn to_path<'a>(path: &'a str, dir: Option<&'a str>) -> Cow<'a, str> {
     match dir {
         Some(dir) => Cow::Owned(format!("{}/{}", dir, path)),

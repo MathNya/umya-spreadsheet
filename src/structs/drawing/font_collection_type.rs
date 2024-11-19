@@ -17,53 +17,65 @@ pub struct FontCollectionType {
     supplemental_font_list: ThinVec<SupplementalFont>,
 }
 impl FontCollectionType {
+    #[inline]
     pub fn get_latin_font(&self) -> &TextFontType {
         &self.latin_font
     }
 
+    #[inline]
     pub fn get_latin_font_mut(&mut self) -> &mut TextFontType {
         &mut self.latin_font
     }
 
+    #[inline]
     pub fn set_latin_font(&mut self, value: TextFontType) -> &mut Self {
         self.latin_font = value;
         self
     }
 
+    #[inline]
     pub fn get_east_asian_font(&self) -> &TextFontType {
         &self.east_asian_font
     }
 
+    #[inline]
     pub fn get_east_asian_font_mut(&mut self) -> &mut TextFontType {
         &mut self.east_asian_font
     }
 
+    #[inline]
     pub fn set_east_asian_font(&mut self, value: TextFontType) -> &mut Self {
         self.east_asian_font = value;
         self
     }
 
+    #[inline]
     pub fn get_complex_script_font(&self) -> &TextFontType {
         &self.complex_script_font
     }
 
+    #[inline]
     pub fn get_complex_script_font_mut(&mut self) -> &mut TextFontType {
         &mut self.complex_script_font
     }
 
+    #[inline]
     pub fn set_complex_script_font(&mut self, value: TextFontType) -> &mut Self {
         self.complex_script_font = value;
         self
     }
 
+    #[inline]
     pub fn get_supplemental_font_list(&self) -> &[SupplementalFont] {
         &self.supplemental_font_list
     }
 
+    #[inline]
     pub fn get_supplemental_font_list_mut(&mut self) -> &mut ThinVec<SupplementalFont> {
         &mut self.supplemental_font_list
     }
 
+    #[inline]
     pub fn set_supplemental_font_list(
         &mut self,
         value: impl Into<ThinVec<SupplementalFont>>,
@@ -72,6 +84,7 @@ impl FontCollectionType {
         self
     }
 
+    #[inline]
     pub fn add_supplemental_font_list(&mut self, value: SupplementalFont) -> &mut Self {
         self.supplemental_font_list.push(value);
         self
@@ -150,11 +163,13 @@ impl FontCollectionType {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to_major_font(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:majorFont
         self.write_to(writer, "a:majorFont");
     }
 
+    #[inline]
     pub(crate) fn write_to_minor_font(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:minorFont
         self.write_to(writer, "a:minorFont");

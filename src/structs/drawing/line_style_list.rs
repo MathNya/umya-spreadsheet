@@ -13,19 +13,23 @@ pub struct LineStyleList {
 }
 
 impl LineStyleList {
+    #[inline]
     pub fn get_outline_collection(&self) -> &[Outline] {
         &self.outline_collection
     }
 
+    #[inline]
     pub fn get_outline_collection_mut(&mut self) -> &mut ThinVec<Outline> {
         &mut self.outline_collection
     }
 
+    #[inline]
     pub fn set_outline_collection(&mut self, value: impl Into<ThinVec<Outline>>) -> &mut Self {
         self.outline_collection = value.into();
         self
     }
 
+    #[inline]
     pub fn add_outline_collection(&mut self, value: Outline) -> &mut Self {
         self.outline_collection.push(value);
         self

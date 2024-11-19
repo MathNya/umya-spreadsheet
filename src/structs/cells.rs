@@ -17,6 +17,7 @@ pub struct Cells {
     default_style: Style,
 }
 impl Cells {
+    #[inline]
     pub fn get_collection(&self) -> Vec<&Cell> {
         self.map.values().map(Box::as_ref).collect()
     }
@@ -36,14 +37,17 @@ impl Cells {
         cells
     }
 
+    #[inline]
     pub(crate) fn get_collection_mut(&mut self) -> Vec<&mut Cell> {
         self.map.values_mut().map(Box::as_mut).collect()
     }
 
+    #[inline]
     pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
         &self.map
     }
 
+    #[inline]
     pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
         self.map
             .values()
@@ -52,6 +56,7 @@ impl Cells {
             .collect()
     }
 
+    #[inline]
     pub fn get_collection_by_row(&self, row_num: &u32) -> Vec<&Cell> {
         self.map
             .values()
@@ -60,6 +65,7 @@ impl Cells {
             .collect()
     }
 
+    #[inline]
     pub fn get_collection_by_column_to_hashmap(&self, column_num: &u32) -> HashMap<u32, &Cell> {
         self.map
             .iter()
@@ -68,6 +74,7 @@ impl Cells {
             .collect()
     }
 
+    #[inline]
     pub fn get_collection_by_row_to_hashmap(&self, row_num: &u32) -> HashMap<u32, &Cell> {
         self.map
             .iter()
@@ -76,6 +83,7 @@ impl Cells {
             .collect()
     }
 
+    #[inline]
     pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Box<Cell>> {
         &mut self.map
     }
@@ -95,10 +103,12 @@ impl Cells {
     }
 
     /// Has Hyperlink
+    #[inline]
     pub fn has_hyperlink(&self) -> bool {
         self.map.values().any(|c| c.get_hyperlink().is_some())
     }
 
+    #[inline]
     pub fn get<T>(&self, coordinate: T) -> Option<&Cell>
     where
         T: Into<CellCoordinates>,
@@ -135,6 +145,7 @@ impl Cells {
             })
     }
 
+    #[inline]
     pub fn get_cell_value<T>(&self, coordinate: T) -> &CellValue
     where
         T: Into<CellCoordinates>,
@@ -146,6 +157,7 @@ impl Cells {
             .unwrap_or(&self.default_cell_value)
     }
 
+    #[inline]
     pub fn get_style<T>(&self, coordinate: T) -> &Style
     where
         T: Into<CellCoordinates>,
@@ -157,6 +169,7 @@ impl Cells {
             .unwrap_or(&self.default_style)
     }
 
+    #[inline]
     pub(crate) fn set(
         &mut self,
         cell: Cell,
@@ -170,11 +183,13 @@ impl Cells {
         self
     }
 
+    #[inline]
     pub(crate) fn set_fast(&mut self, cell: Cell) -> &mut Self {
         self.add(cell);
         self
     }
 
+    #[inline]
     pub(crate) fn add(&mut self, cell: Cell) {
         let col_num = cell.get_coordinate().get_col_num();
         let row_num = cell.get_coordinate().get_row_num();
@@ -182,6 +197,7 @@ impl Cells {
         self.map.insert_unique_unchecked(k, Box::new(cell));
     }
 
+    #[inline]
     pub(crate) fn remove(&mut self, col_num: &u32, row_num: &u32) -> bool {
         let k = (*row_num, *col_num);
         self.map.remove(&k).is_some()
@@ -207,6 +223,7 @@ impl Cells {
         result
     }
 
+    #[inline]
     pub fn get_formatted_value_by_column_and_row(&self, col_num: &u32, row_num: &u32) -> String {
         match self.get((col_num, row_num)) {
             Some(v) => v.get_formatted_value(),
@@ -231,6 +248,7 @@ impl Cells {
     }
 }
 impl AdjustmentCoordinate for Cells {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -250,6 +268,7 @@ impl AdjustmentCoordinate for Cells {
         self.rebuild_map();
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -278,6 +297,7 @@ impl AdjustmentCoordinate for Cells {
     }
 }
 impl AdjustmentCoordinateWith2Sheet for Cells {
+    #[inline]
     fn adjustment_insert_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,
@@ -299,6 +319,7 @@ impl AdjustmentCoordinateWith2Sheet for Cells {
         }
     }
 
+    #[inline]
     fn adjustment_remove_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,

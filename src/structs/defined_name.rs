@@ -21,10 +21,12 @@ pub struct DefinedName {
     hidden: BooleanValue,
 }
 impl DefinedName {
+    #[inline]
     pub fn get_name(&self) -> &str {
         &self.name.get_value_str()
     }
 
+    #[inline]
     pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
@@ -73,36 +75,44 @@ impl DefinedName {
             .to_string()
     }
 
+    #[inline]
     pub(crate) fn get_address_obj(&self) -> &[Address] {
         &self.address
     }
 
+    #[inline]
     pub(crate) fn get_address_obj_mut(&mut self) -> &mut ThinVec<Address> {
         &mut self.address
     }
 
+    #[inline]
     pub(crate) fn set_string_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.address.clear();
         self.string_value.set_value(value);
         self
     }
 
+    #[inline]
     pub fn has_local_sheet_id(&self) -> bool {
         self.local_sheet_id.has_value()
     }
 
+    #[inline]
     pub fn get_local_sheet_id(&self) -> &u32 {
         &self.local_sheet_id.get_value()
     }
 
+    #[inline]
     pub fn set_local_sheet_id(&mut self, value: u32) {
         self.local_sheet_id.set_value(value);
     }
 
+    #[inline]
     pub fn get_hidden(&self) -> &bool {
         &self.hidden.get_value()
     }
 
+    #[inline]
     pub fn set_hidden(&mut self, value: bool) {
         self.hidden.set_value(value);
     }
@@ -251,6 +261,7 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
         }
     }
 
+    #[inline]
     fn is_remove_coordinate_with_sheet(
         &self,
         sheet_name: &str,

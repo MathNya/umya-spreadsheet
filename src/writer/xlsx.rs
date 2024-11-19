@@ -180,6 +180,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
 /// * `writer` - writer to write to.
 /// # Return value
 /// * `Result` - OK is void. Err is error message.
+#[inline]
 pub fn write_writer<W: io::Write>(
     spreadsheet: &Spreadsheet,
     mut writer: W,
@@ -195,6 +196,7 @@ pub fn write_writer<W: io::Write>(
 /// * `writer` - writer to write to.
 /// # Return value
 /// * `Result` - OK is void. Err is error message.
+#[inline]
 pub fn write_writer_light<W: io::Write>(
     spreadsheet: &Spreadsheet,
     mut writer: W,

@@ -17,38 +17,47 @@ pub struct TextBody {
 }
 
 impl TextBody {
+    #[inline]
     pub fn get_body_properties(&self) -> &BodyProperties {
         &self.body_properties
     }
 
+    #[inline]
     pub fn get_body_properties_mut(&mut self) -> &mut BodyProperties {
         &mut self.body_properties
     }
 
+    #[inline]
     pub fn set_body_properties(&mut self, value: BodyProperties) {
         self.body_properties = value;
     }
 
+    #[inline]
     pub fn get_list_style(&self) -> &ListStyle {
         &self.list_style
     }
 
+    #[inline]
     pub fn get_list_style_mut(&mut self) -> &mut ListStyle {
         &mut self.list_style
     }
 
+    #[inline]
     pub fn set_list_style(&mut self, value: ListStyle) {
         self.list_style = value;
     }
 
+    #[inline]
     pub fn get_paragraph(&self) -> &[Paragraph] {
         &self.paragraph
     }
 
+    #[inline]
     pub fn get_paragraph_mut(&mut self) -> &mut ThinVec<Paragraph> {
         &mut self.paragraph
     }
 
+    #[inline]
     pub fn add_paragraph(&mut self, value: Paragraph) {
         self.paragraph.push(value);
     }

@@ -15,56 +15,68 @@ pub struct MarkerType {
     row_off: i32,
 }
 impl MarkerType {
+    #[inline]
     pub fn get_col(&self) -> &u32 {
         &self.col
     }
 
+    #[inline]
     pub fn set_col(&mut self, value: u32) -> &mut Self {
         self.col = value;
         self
     }
 
+    #[inline]
     pub fn get_col_off(&self) -> &i32 {
         &self.col_off
     }
 
+    #[inline]
     pub fn set_col_off(&mut self, value: i32) -> &mut Self {
         self.col_off = value;
         self
     }
 
+    #[inline]
     pub fn add_col_off(&mut self, value: i32) -> &mut Self {
         self.col_off += value;
         self
     }
 
+    #[inline]
     pub fn get_row(&self) -> &u32 {
         &self.row
     }
 
+    #[inline]
     pub fn set_row(&mut self, value: u32) -> &mut Self {
         self.row = value;
         self
     }
 
+    #[inline]
     pub fn get_row_off(&self) -> &i32 {
         &self.row_off
     }
 
+    #[inline]
     pub fn set_row_off(&mut self, value: i32) -> &mut Self {
         self.row_off = value;
         self
     }
 
+    #[inline]
     pub fn add_row_off(&mut self, value: i32) -> &mut Self {
         self.row_off += value;
         self
     }
 
+    #[inline]
     pub fn get_coordinate(&self) -> String {
         coordinate_from_index(&(&self.col + 1), &(&self.row + 1))
     }
 
+    #[inline]
     pub fn set_coordinate<S: Into<String>>(&mut self, value: S) {
         let (col, row, ..) = index_from_coordinate(value.into());
         self.col = col.unwrap() - 1;
@@ -105,10 +117,12 @@ impl MarkerType {
             buf.clear();
         }
     }
+    #[inline]
     pub(crate) fn write_to_from(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "xdr:from");
     }
 
+    #[inline]
     pub(crate) fn write_to_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "xdr:to");
     }
@@ -141,6 +155,7 @@ impl MarkerType {
     }
 }
 impl AdjustmentCoordinate for MarkerType {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -152,6 +167,7 @@ impl AdjustmentCoordinate for MarkerType {
         self.row = adjustment_insert_coordinate(&(&self.row + 1), root_row_num, offset_row_num) - 1;
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -163,6 +179,7 @@ impl AdjustmentCoordinate for MarkerType {
         self.row = adjustment_remove_coordinate(&(&self.row + 1), root_row_num, offset_row_num) - 1;
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,

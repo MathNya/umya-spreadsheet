@@ -15,19 +15,23 @@ pub struct Glow {
 }
 
 impl Glow {
+    #[inline]
     pub fn get_radius(&self) -> &i64 {
         self.radius.get_value()
     }
 
+    #[inline]
     pub fn set_radius(&mut self, value: i64) -> &mut Glow {
         self.radius.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
+    #[inline]
     pub fn set_scheme_color(&mut self, value: SchemeColor) {
         self.scheme_color = Some(Box::new(value));
     }

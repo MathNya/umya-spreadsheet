@@ -14,23 +14,28 @@ pub struct DiagonalBorder {
     style: EnumValue<BorderStyleValues>,
 }
 impl DiagonalBorder {
+    #[inline]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
 
+    #[inline]
     pub fn get_color_mut(&mut self) -> &mut Color {
         &mut self.color
     }
 
+    #[inline]
     pub fn set_color(&mut self, value: Color) -> &mut Self {
         self.color = value;
         self
     }
 
+    #[inline]
     pub fn get_style(&self) -> &BorderStyleValues {
         self.style.get_value()
     }
 
+    #[inline]
     pub fn set_style(&mut self, value: BorderStyleValues) -> &mut Self {
         self.style.set_value(value);
         self
@@ -52,13 +57,16 @@ impl DiagonalBorder {
     pub const BORDER_THICK: &'static str = "thick";
     pub const BORDER_THIN: &'static str = "thin";
 
+    #[inline]
     pub fn get_border_style(&self) -> &str {
         &self.style.get_value_string()
     }
+    #[inline]
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
     }
 
+    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
@@ -100,6 +108,7 @@ impl DiagonalBorder {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         let empty_flag = !self.color.has_value();
 

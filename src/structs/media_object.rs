@@ -6,19 +6,23 @@ pub struct MediaObject {
     image_data: ThinVec<u8>,
 }
 impl MediaObject {
+    #[inline]
     pub fn get_image_name(&self) -> &str {
         &self.image_name
     }
 
+    #[inline]
     pub fn set_image_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.image_name = value.into().into_boxed_str();
         self
     }
 
+    #[inline]
     pub fn get_image_data(&self) -> &[u8] {
         &self.image_data
     }
 
+    #[inline]
     pub fn set_image_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
         self.image_data = value.into();
         self

@@ -18,27 +18,33 @@ pub struct ConditionalFormatting {
 }
 
 impl ConditionalFormatting {
+    #[inline]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
+    #[inline]
     pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
     }
 
+    #[inline]
     pub fn set_sequence_of_references(&mut self, value: SequenceOfReferences) -> &mut Self {
         self.sequence_of_references = value;
         self
     }
 
+    #[inline]
     pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
         &self.conditional_collection
     }
 
+    #[inline]
     pub fn get_conditional_collection_mut(&mut self) -> &mut ThinVec<ConditionalFormattingRule> {
         &mut self.conditional_collection
     }
 
+    #[inline]
     pub fn set_conditional_collection(
         &mut self,
         value: impl Into<ThinVec<ConditionalFormattingRule>>,
@@ -47,6 +53,7 @@ impl ConditionalFormatting {
         self
     }
 
+    #[inline]
     pub fn add_conditional_collection(&mut self, value: ConditionalFormattingRule) -> &mut Self {
         self.conditional_collection.push(value);
         self
@@ -113,6 +120,7 @@ impl ConditionalFormatting {
     }
 }
 impl AdjustmentCoordinate for ConditionalFormatting {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -128,6 +136,7 @@ impl AdjustmentCoordinate for ConditionalFormatting {
         );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -143,6 +152,7 @@ impl AdjustmentCoordinate for ConditionalFormatting {
         );
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,

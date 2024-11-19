@@ -16,23 +16,28 @@ pub struct Blip {
 }
 
 impl Blip {
+    #[inline]
     pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
 
+    #[inline]
     pub fn get_image_mut(&mut self) -> &mut MediaObject {
         &mut self.image
     }
 
+    #[inline]
     pub fn set_image(&mut self, value: MediaObject) -> &mut Self {
         self.image = value;
         self
     }
 
+    #[inline]
     pub fn get_cstate(&self) -> &str {
         &self.cstate
     }
 
+    #[inline]
     pub fn set_cstate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cstate = value.into().into_boxed_str();
         self

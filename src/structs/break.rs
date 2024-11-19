@@ -17,33 +17,40 @@ pub struct Break {
 }
 
 impl Break {
+    #[inline]
     pub fn get_id(&self) -> &u32 {
         self.id.get_value()
     }
 
+    #[inline]
     pub fn set_id(&mut self, value: u32) -> &mut Self {
         self.id.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_max(&self) -> &u32 {
         self.max.get_value()
     }
 
+    #[inline]
     pub fn set_max(&mut self, value: u32) -> &mut Self {
         self.max.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_manual_page_break(&self) -> &bool {
         self.manual_page_break.get_value()
     }
 
+    #[inline]
     pub fn set_manual_page_break(&mut self, value: bool) -> &mut Self {
         self.manual_page_break.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

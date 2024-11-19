@@ -14,22 +14,27 @@ pub struct PresetColor {
 }
 
 impl PresetColor {
+    #[inline]
     pub fn get_val(&self) -> &str {
         &self.val
     }
 
+    #[inline]
     pub fn set_val<S: Into<String>>(&mut self, value: S) {
         self.val = value.into().into_boxed_str();
     }
 
+    #[inline]
     pub fn get_alpha(&self) -> Option<&Alpha> {
         self.alpha.as_ref()
     }
 
+    #[inline]
     pub fn get_alpha_mut(&mut self) -> Option<&mut Alpha> {
         self.alpha.as_mut()
     }
 
+    #[inline]
     pub fn set_alpha(&mut self, value: Alpha) {
         self.alpha = Some(value);
     }

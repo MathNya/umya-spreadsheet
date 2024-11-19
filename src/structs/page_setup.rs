@@ -23,82 +23,100 @@ pub struct PageSetup {
 }
 
 impl PageSetup {
+    #[inline]
     pub fn get_paper_size(&self) -> &u32 {
         self.paper_size.get_value()
     }
 
+    #[inline]
     pub fn set_paper_size(&mut self, value: u32) -> &mut Self {
         self.paper_size.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_orientation(&self) -> &OrientationValues {
         self.orientation.get_value()
     }
 
+    #[inline]
     pub fn set_orientation(&mut self, value: OrientationValues) -> &mut Self {
         self.orientation.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_scale(&self) -> &u32 {
         self.scale.get_value()
     }
 
+    #[inline]
     pub fn set_scale(&mut self, value: u32) -> &mut Self {
         self.scale.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_fit_to_height(&self) -> &u32 {
         self.fit_to_height.get_value()
     }
 
+    #[inline]
     pub fn set_fit_to_height(&mut self, value: u32) -> &mut Self {
         self.fit_to_height.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_fit_to_width(&self) -> &u32 {
         self.fit_to_width.get_value()
     }
 
+    #[inline]
     pub fn set_fit_to_width(&mut self, value: u32) -> &mut Self {
         self.fit_to_width.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_horizontal_dpi(&self) -> &u32 {
         self.horizontal_dpi.get_value()
     }
 
+    #[inline]
     pub fn set_horizontal_dpi(&mut self, value: u32) -> &mut Self {
         self.horizontal_dpi.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_vertical_dpi(&self) -> &u32 {
         self.vertical_dpi.get_value()
     }
 
+    #[inline]
     pub fn set_vertical_dpi(&mut self, value: u32) -> &mut Self {
         self.vertical_dpi.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_object_data(&self) -> Option<&[u8]> {
         self.object_data.as_deref()
     }
 
+    #[inline]
     pub fn get_object_data_mut(&mut self) -> Option<&mut ThinVec<u8>> {
         self.object_data.as_mut()
     }
 
+    #[inline]
     pub fn set_object_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
         self.object_data = Some(value.into());
         self
     }
 
+    #[inline]
     pub(crate) fn has_param(&self) -> bool {
         self.paper_size.has_value()
             || self.orientation.has_value()

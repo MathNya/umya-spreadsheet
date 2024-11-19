@@ -477,18 +477,21 @@ fn hash(algorithm: &str, buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
     Ok(digest.finalize().to_vec())
 }
 
+#[inline]
 fn gen_random_16() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 16];
     getrandom::getrandom(buf);
     buf.to_vec()
 }
 
+#[inline]
 fn gen_random_32() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 32];
     getrandom::getrandom(buf);
     buf.to_vec()
 }
 
+#[inline]
 fn gen_random_64() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 64];
     getrandom::getrandom(buf);
@@ -496,6 +499,7 @@ fn gen_random_64() -> Vec<u8> {
 }
 
 // Create a buffer of an integer encoded as a uint32le
+#[inline]
 fn create_uint32_le_buffer(value: &u32, buffer_size: Option<&usize>) -> Vec<u8> {
     let bs_prm = buffer_size.unwrap_or(&4);
     let mut buffer = buffer_alloc(0, *bs_prm);
@@ -631,10 +635,12 @@ fn build_encryption_info(
     buffer_concat(vec![&ENCRYPTION_INFO_PREFIX.to_vec(), &result])
 }
 
+#[inline]
 fn buffer_slice(buffer: &[u8], start: usize, end: usize) -> Vec<u8> {
     buffer[start..end].to_vec()
 }
 
+#[inline]
 fn buffer_alloc(alloc_char: u8, size: usize) -> Vec<u8> {
     vec![alloc_char; size]
 }
@@ -652,10 +658,12 @@ fn buffer_copy(buffer1: &mut [u8], buffer2: &[u8]) {
     }
 }
 
+#[inline]
 fn buffer_read_u_int32_le(buffer: &[u8], _cnt: &usize) -> u32 {
     LittleEndian::read_u32(buffer)
 }
 
+#[inline]
 fn buffer_write_u_int32_le(buffer: &mut [u8], value: &u32, _cnt: &usize) {
     LittleEndian::write_u32(buffer, *value);
 }

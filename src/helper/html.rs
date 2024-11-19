@@ -29,6 +29,7 @@ use thin_vec::ThinVec;
 ///     .get_alignment_mut()
 ///     .set_wrap_text(true);
 /// ```
+#[inline]
 pub fn html_to_richtext(html: &str) -> Result<RichText, html_parser::Error> {
     html_to_richtext_custom(html, &DataAnalysis::default())
 }
@@ -39,6 +40,7 @@ pub fn html_to_richtext(html: &str) -> Result<RichText, html_parser::Error> {
 /// * `method` - struct for analysis.
 /// # Return value
 /// * `Result<RichText, html_parser::Error>`
+#[inline]
 pub fn html_to_richtext_custom(
     html: &str,
     method: &AnalysisMethod,
@@ -181,10 +183,12 @@ pub struct HfdElement {
     classes: ThinVec<String>,
 }
 impl HfdElement {
+    #[inline]
     pub fn has_name(&self, name: &str) -> bool {
         self.name == name
     }
 
+    #[inline]
     pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<&str> {
         self.attributes
             .get(attribute)
@@ -192,6 +196,7 @@ impl HfdElement {
             .map(|x| x.as_str())
     }
 
+    #[inline]
     pub fn contains_class(&self, class: &str) -> bool {
         self.classes.contains(&class.to_string())
     }
@@ -213,6 +218,7 @@ pub trait AnalysisMethod {
 #[derive(Clone, Default, Debug)]
 struct DataAnalysis {}
 impl AnalysisMethod for DataAnalysis {
+    #[inline]
     fn font_name<'a>(&'a self, html_flat_data: &'a HtmlFlatData) -> Option<&str> {
         html_flat_data
             .element
@@ -220,6 +226,7 @@ impl AnalysisMethod for DataAnalysis {
             .find_map(|element| element.get_by_name_and_attribute("font", "face"))
     }
 
+    #[inline]
     fn size(&self, html_flat_data: &HtmlFlatData) -> Option<f64> {
         html_flat_data.element.iter().find_map(|element| {
             element
@@ -245,6 +252,7 @@ impl AnalysisMethod for DataAnalysis {
             })
     }
 
+    #[inline]
     fn is_tag(&self, html_flat_data: &HtmlFlatData, tag: &str) -> bool {
         html_flat_data
             .element
@@ -252,26 +260,32 @@ impl AnalysisMethod for DataAnalysis {
             .any(|element| element.has_name(tag))
     }
 
+    #[inline]
     fn is_bold(&self, html_flat_data: &HtmlFlatData) -> bool {
         self.is_tag(html_flat_data, "b") || self.is_tag(html_flat_data, "strong")
     }
 
+    #[inline]
     fn is_italic(&self, html_flat_data: &HtmlFlatData) -> bool {
         self.is_tag(html_flat_data, "i") || self.is_tag(html_flat_data, "em")
     }
 
+    #[inline]
     fn is_underline(&self, html_flat_data: &HtmlFlatData) -> bool {
         self.is_tag(html_flat_data, "u") || self.is_tag(html_flat_data, "ins")
     }
 
+    #[inline]
     fn is_superscript(&self, html_flat_data: &HtmlFlatData) -> bool {
         self.is_tag(html_flat_data, "sup")
     }
 
+    #[inline]
     fn is_subscript(&self, html_flat_data: &HtmlFlatData) -> bool {
         self.is_tag(html_flat_data, "sub")
     }
 
+    #[inline]
     fn is_strikethrough(&self, html_flat_data: &HtmlFlatData) -> bool {
         self.is_tag(html_flat_data, "del")
     }

@@ -6,11 +6,13 @@ pub enum TextWrappingValues {
     Square,
 }
 impl Default for TextWrappingValues {
+    #[inline]
     fn default() -> Self {
         Self::None
     }
 }
 impl EnumTrait for TextWrappingValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::None => "none",
@@ -20,6 +22,8 @@ impl EnumTrait for TextWrappingValues {
 }
 impl FromStr for TextWrappingValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "none" => Ok(Self::None),

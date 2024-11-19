@@ -18,35 +18,43 @@ pub struct Shape3DType {
 }
 
 impl Shape3DType {
+    #[inline]
     pub fn get_preset_material(&self) -> &PresetMaterialTypeValues {
         self.preset_material.get_value()
     }
 
+    #[inline]
     pub fn set_preset_material(&mut self, value: PresetMaterialTypeValues) -> &mut Shape3DType {
         self.preset_material.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_bevel_top(&self) -> Option<&BevelTop> {
         self.bevel_top.as_deref()
     }
 
+    #[inline]
     pub fn get_bevel_top_mut(&mut self) -> Option<&mut BevelTop> {
         self.bevel_top.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_bevel_top(&mut self, value: BevelTop) {
         self.bevel_top = Some(Box::new(value));
     }
 
+    #[inline]
     pub fn get_bevel_bottom(&self) -> Option<&BevelBottom> {
         self.bevel_bottom.as_deref()
     }
 
+    #[inline]
     pub fn get_bevel_bottom_mut(&mut self) -> Option<&mut BevelBottom> {
         self.bevel_bottom.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_bevel_bottom(&mut self, value: BevelBottom) {
         self.bevel_bottom = Some(Box::new(value));
     }

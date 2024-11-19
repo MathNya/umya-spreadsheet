@@ -63,47 +63,57 @@ pub struct Style {
     protection: Option<Protection>,
 }
 impl Style {
+    #[inline]
     pub fn get_font(&self) -> Option<&Font> {
         self.font.as_deref()
     }
 
+    #[inline]
     pub fn get_font_mut(&mut self) -> &mut Font {
         self.font.get_or_insert(Box::new(Font::get_default_value()))
     }
 
+    #[inline]
     pub fn set_font(&mut self, value: Font) -> &mut Self {
         self.font = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_font(&mut self) -> &mut Self {
         self.font = None;
         self
     }
 
+    #[inline]
     pub(crate) fn set_font_crate(&mut self, value: Option<Font>) -> &mut Self {
         self.font = value.map(Box::new);
         self
     }
 
+    #[inline]
     pub fn get_fill(&self) -> Option<&Fill> {
         self.fill.as_deref()
     }
 
+    #[inline]
     pub fn get_fill_mut(&mut self) -> &mut Fill {
         self.fill.get_or_insert(Box::new(Fill::get_default_value()))
     }
 
+    #[inline]
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.get_fill()
             .and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
     }
 
+    #[inline]
     pub fn set_background_color<S: Into<String>>(&mut self, color: S) -> &mut Self {
         self.set_background_color_solid(color);
         self
@@ -137,130 +147,158 @@ impl Style {
         self
     }
 
+    #[inline]
     pub fn remove_fill(&mut self) -> &mut Self {
         self.fill = None;
         self
     }
 
+    #[inline]
     pub(crate) fn set_fill_crate(&mut self, value: Option<Fill>) -> &mut Self {
         self.fill = value.map(Box::new);
         self
     }
 
+    #[inline]
     pub fn get_borders(&self) -> Option<&Borders> {
         self.borders.as_deref()
     }
 
+    #[inline]
     pub fn get_borders_mut(&mut self) -> &mut Borders {
         self.borders
             .get_or_insert(Box::new(Borders::get_default_value()))
     }
 
+    #[inline]
     pub fn set_borders(&mut self, value: Borders) -> &mut Self {
         self.borders = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_borders(&mut self) -> &mut Self {
         self.borders = None;
         self
     }
 
+    #[inline]
     pub(crate) fn set_borders_crate(&mut self, value: Option<Borders>) -> &mut Self {
         self.borders = value.map(Box::new);
         self
     }
 
+    #[inline]
     pub fn get_alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
 
+    #[inline]
     pub fn get_alignment_mut(&mut self) -> &mut Alignment {
         self.alignment.get_or_insert(Alignment::default())
     }
 
+    #[inline]
     pub fn set_alignment(&mut self, value: Alignment) -> &mut Self {
         self.alignment = Some(value);
         self
     }
 
+    #[inline]
     pub fn remove_alignment(&mut self) -> &mut Self {
         self.alignment = None;
         self
     }
 
+    #[inline]
     pub(crate) fn set_alignment_crate(&mut self, value: Option<Alignment>) -> &mut Self {
         self.alignment = value;
         self
     }
 
+    #[inline]
     pub fn get_numbering_format(&self) -> Option<&NumberingFormat> {
         self.numbering_format.as_deref()
     }
 
+    #[inline]
     pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
         self.numbering_format
             .get_or_insert(Box::new(NumberingFormat::default()))
     }
 
+    #[inline]
     pub fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
         self.numbering_format = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_numbering_format(&mut self) -> &mut Self {
         self.numbering_format = None;
         self
     }
 
+    #[inline]
     pub fn get_number_format(&self) -> Option<&NumberingFormat> {
         self.get_numbering_format()
     }
 
+    #[inline]
     pub fn get_number_format_mut(&mut self) -> &mut NumberingFormat {
         self.get_numbering_format_mut()
     }
 
+    #[inline]
     pub fn set_number_format(&mut self, value: NumberingFormat) -> &mut Self {
         self.set_numbering_format(value)
     }
 
+    #[inline]
     pub fn remove_number_format(&mut self) -> &mut Self {
         self.remove_numbering_format()
     }
 
+    #[inline]
     pub fn get_format_id(&self) -> &u32 {
         self.format_id.get_value()
     }
 
+    #[inline]
     pub fn set_format_id(&mut self, value: u32) -> &mut Self {
         self.format_id.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_protection(&self) -> Option<&Protection> {
         self.protection.as_ref()
     }
 
+    #[inline]
     pub fn get_protection_mut(&mut self) -> &mut Protection {
         self.protection.get_or_insert(Protection::default())
     }
 
+    #[inline]
     pub fn set_protection(&mut self, value: Protection) -> &mut Self {
         self.protection = Some(value);
         self
     }
 
+    #[inline]
     pub fn remove_protection(&mut self) -> &mut Self {
         self.protection = None;
         self
     }
 
+    #[inline]
     pub(crate) fn set_protection_crate(&mut self, value: Option<Protection>) -> &mut Self {
         self.protection = value;
         self
     }
 
+    #[inline]
     pub(crate) fn is_empty(&self) -> bool {
         !(self.font.is_some()
             || self.fill.is_some()
@@ -271,6 +309,7 @@ impl Style {
     }
 
     // When opened in software such as Excel, it is visually blank.
+    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         !(self.fill.as_ref().is_some_and(|x| !x.is_visually_empty())
             || self
@@ -279,6 +318,7 @@ impl Style {
                 .is_some_and(|x| !x.is_visually_empty()))
     }
 
+    #[inline]
     pub fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());
@@ -287,6 +327,7 @@ impl Style {
         def
     }
 
+    #[inline]
     pub(crate) fn get_default_value_2() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());

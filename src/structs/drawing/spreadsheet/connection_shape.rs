@@ -20,30 +20,36 @@ pub struct ConnectionShape {
 }
 
 impl ConnectionShape {
+    #[inline]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
 
+    #[inline]
     pub fn get_anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
     }
 
+    #[inline]
     pub fn set_anchor(&mut self, value: Anchor) {
         self.anchor = value;
     }
 
+    #[inline]
     pub fn get_non_visual_connection_shape_properties(
         &self,
     ) -> &NonVisualConnectionShapeProperties {
         &self.non_visual_connection_shape_properties
     }
 
+    #[inline]
     pub fn get_non_visual_connection_shape_properties_mut(
         &mut self,
     ) -> &mut NonVisualConnectionShapeProperties {
         &mut self.non_visual_connection_shape_properties
     }
 
+    #[inline]
     pub fn set_non_visual_connection_shape_properties(
         &mut self,
         value: NonVisualConnectionShapeProperties,
@@ -51,26 +57,32 @@ impl ConnectionShape {
         self.non_visual_connection_shape_properties = value;
     }
 
+    #[inline]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
+    #[inline]
     pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
     }
 
+    #[inline]
     pub fn set_shape_properties(&mut self, value: ShapeProperties) {
         self.shape_properties = value;
     }
 
+    #[inline]
     pub fn get_shape_style(&self) -> &ShapeStyle {
         &self.shape_style
     }
 
+    #[inline]
     pub fn get_shape_style_mut(&mut self) -> &mut ShapeStyle {
         &mut self.shape_style
     }
 
+    #[inline]
     pub fn set_shape_style(&mut self, value: ShapeStyle) {
         self.shape_style = value;
     }

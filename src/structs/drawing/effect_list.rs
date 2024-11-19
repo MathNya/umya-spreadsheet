@@ -17,38 +17,47 @@ pub struct EffectList {
 }
 
 impl EffectList {
+    #[inline]
     pub fn get_glow(&self) -> Option<&Glow> {
         self.glow.as_deref()
     }
 
+    #[inline]
     pub fn get_glow_mut(&mut self) -> Option<&mut Glow> {
         self.glow.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_glow(&mut self, value: Glow) {
         self.glow = Some(Box::new(value));
     }
 
+    #[inline]
     pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
         self.outer_shadow.as_deref()
     }
 
+    #[inline]
     pub fn get_outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
         self.outer_shadow.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_outer_shadow(&mut self, value: OuterShadow) {
         self.outer_shadow = Some(Box::new(value));
     }
 
+    #[inline]
     pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
         self.soft_edge.as_deref()
     }
 
+    #[inline]
     pub fn get_soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
         self.soft_edge.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_soft_edge(&mut self, value: SoftEdge) {
         self.soft_edge = Some(Box::new(value));
     }

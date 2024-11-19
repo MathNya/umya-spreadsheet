@@ -47,6 +47,7 @@ pub struct FormulaToken {
     token_sub_type: FormulaTokenSubTypes,
 }
 impl Default for FormulaToken {
+    #[inline]
     fn default() -> Self {
         Self {
             value: StringValue::default(),
@@ -56,28 +57,34 @@ impl Default for FormulaToken {
     }
 }
 impl FormulaToken {
+    #[inline]
     pub fn get_value(&self) -> &str {
         self.value.get_value_str()
     }
 
+    #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.value.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_token_type(&self) -> &FormulaTokenTypes {
         &self.token_type
     }
 
+    #[inline]
     pub fn set_token_type(&mut self, value: FormulaTokenTypes) -> &mut Self {
         self.token_type = value;
         self
     }
 
+    #[inline]
     pub fn get_token_sub_type(&self) -> &FormulaTokenSubTypes {
         &self.token_sub_type
     }
 
+    #[inline]
     pub fn set_token_sub_type(&mut self, value: FormulaTokenSubTypes) -> &mut Self {
         self.token_sub_type = value;
         self
