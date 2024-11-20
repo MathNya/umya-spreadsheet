@@ -15,22 +15,27 @@ pub struct PositiveSize2DType {
 }
 
 impl PositiveSize2DType {
+    #[inline]
     pub fn get_cx(&self) -> &i64 {
         &self.cx.get_value()
     }
 
+    #[inline]
     pub fn set_cx(&mut self, value: i64) {
         self.cx.set_value(value);
     }
 
+    #[inline]
     pub fn get_cy(&self) -> &i64 {
         &self.cy.get_value()
     }
 
+    #[inline]
     pub fn set_cy(&mut self, value: i64) {
         self.cy.set_value(value);
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -40,10 +45,12 @@ impl PositiveSize2DType {
         set_string_from_xml!(self, e, cy, "cy");
     }
 
+    #[inline]
     pub(crate) fn write_to_ext(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:ext");
     }
 
+    #[inline]
     pub(crate) fn write_to_ch_ext(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:chExt");
     }

@@ -15,14 +15,17 @@ pub struct DataValidations {
 }
 
 impl DataValidations {
+    #[inline]
     pub fn get_data_validation_list(&self) -> &[DataValidation] {
         &self.data_validation_list
     }
 
+    #[inline]
     pub fn get_data_validation_list_mut(&mut self) -> &mut ThinVec<DataValidation> {
         &mut self.data_validation_list
     }
 
+    #[inline]
     pub fn set_data_validation_list(
         &mut self,
         value: impl Into<ThinVec<DataValidation>>,
@@ -31,6 +34,7 @@ impl DataValidations {
         self
     }
 
+    #[inline]
     pub fn add_data_validation_list(&mut self, value: DataValidation) -> &mut Self {
         self.data_validation_list.push(value);
         self

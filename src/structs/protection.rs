@@ -15,22 +15,27 @@ pub struct Protection {
 }
 
 impl Protection {
+    #[inline]
     pub fn get_locked(&self) -> &bool {
         self.locked.get_value()
     }
 
+    #[inline]
     pub fn set_locked(&mut self, value: bool) {
         self.locked.set_value(value);
     }
 
+    #[inline]
     pub fn get_hidden(&mut self) -> &bool {
         self.hidden.get_value()
     }
 
+    #[inline]
     pub fn set_hidden(&mut self, value: bool) {
         self.hidden.set_value(value);
     }
 
+    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
@@ -42,6 +47,7 @@ impl Protection {
         )
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

@@ -14,14 +14,17 @@ pub(crate) struct MruColors {
 }
 
 impl MruColors {
+    #[inline]
     pub(crate) fn get_color(&self) -> &[Color] {
         &self.color
     }
 
+    #[inline]
     pub(crate) fn _get_color_mut(&mut self) -> &mut ThinVec<Color> {
         &mut self.color
     }
 
+    #[inline]
     pub(crate) fn set_color(&mut self, value: Color) -> &mut Self {
         self.color.push(value);
         self

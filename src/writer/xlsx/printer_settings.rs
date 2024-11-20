@@ -4,6 +4,7 @@ use super::XlsxError;
 use structs::Worksheet;
 use structs::WriterManager;
 
+#[inline]
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,

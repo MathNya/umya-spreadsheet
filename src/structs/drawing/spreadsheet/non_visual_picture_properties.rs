@@ -15,28 +15,34 @@ pub struct NonVisualPictureProperties {
 }
 
 impl NonVisualPictureProperties {
+    #[inline]
     pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
 
+    #[inline]
     pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
         &mut self.non_visual_drawing_properties
     }
 
+    #[inline]
     pub fn set_non_visual_drawing_properties(&mut self, value: NonVisualDrawingProperties) {
         self.non_visual_drawing_properties = value;
     }
 
+    #[inline]
     pub fn get_non_visual_picture_drawing_properties(&self) -> &NonVisualPictureDrawingProperties {
         &self.non_visual_picture_drawing_properties
     }
 
+    #[inline]
     pub fn get_non_visual_picture_drawing_properties_mut(
         &mut self,
     ) -> &mut NonVisualPictureDrawingProperties {
         &mut self.non_visual_picture_drawing_properties
     }
 
+    #[inline]
     pub fn set_non_visual_picture_drawing_properties(
         &mut self,
         value: NonVisualPictureDrawingProperties,

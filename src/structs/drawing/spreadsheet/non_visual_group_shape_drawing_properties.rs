@@ -14,14 +14,17 @@ pub struct NonVisualGroupShapeDrawingProperties {
 }
 
 impl NonVisualGroupShapeDrawingProperties {
+    #[inline]
     pub fn get_group_shape_locks(&self) -> Option<&GroupShapeLocks> {
         self.group_shape_locks.as_ref()
     }
 
+    #[inline]
     pub fn get_group_shape_locks_mut(&mut self) -> Option<&mut GroupShapeLocks> {
         self.group_shape_locks.as_mut()
     }
 
+    #[inline]
     pub fn set_group_shape_locks(&mut self, value: GroupShapeLocks) -> &mut Self {
         self.group_shape_locks = Some(value);
         self

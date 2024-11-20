@@ -13,14 +13,17 @@ pub struct EffectStyleList {
 }
 
 impl EffectStyleList {
+    #[inline]
     pub fn get_effect_style_collection(&self) -> &[EffectStyle] {
         &self.effect_style_collection
     }
 
+    #[inline]
     pub fn get_effect_style_collection_mut(&mut self) -> &mut ThinVec<EffectStyle> {
         &mut self.effect_style_collection
     }
 
+    #[inline]
     pub fn set_effect_style_collection(
         &mut self,
         value: impl Into<ThinVec<EffectStyle>>,
@@ -29,6 +32,7 @@ impl EffectStyleList {
         self
     }
 
+    #[inline]
     pub fn add_effect_style_collection(&mut self, value: EffectStyle) -> &mut Self {
         self.effect_style_collection.push(value);
         self

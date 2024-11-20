@@ -15,24 +15,29 @@ pub struct ReferenceSequence {
     value: ThinVec<Range>,
 }
 impl ReferenceSequence {
+    #[inline]
     pub fn get_value(&self) -> &[Range] {
         &self.value
     }
 
+    #[inline]
     pub fn get_value_mut(&mut self) -> &mut ThinVec<Range> {
         &mut self.value
     }
 
+    #[inline]
     pub fn set_value(&mut self, value: impl Into<ThinVec<Range>>) -> &mut Self {
         self.value = value.into();
         self
     }
 
+    #[inline]
     pub fn add_value(&mut self, value: Range) -> &mut Self {
         self.value.push(value);
         self
     }
 
+    #[inline]
     pub fn remove_value(&mut self) -> &mut Self {
         self.value.clear();
         self
@@ -47,6 +52,7 @@ impl ReferenceSequence {
         self
     }
 
+    #[inline]
     pub fn get_sqref(&self) -> String {
         self.value
             .iter()
@@ -83,6 +89,7 @@ impl ReferenceSequence {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:sqref", vec![], false);
         write_text_node(writer, &self.get_sqref());

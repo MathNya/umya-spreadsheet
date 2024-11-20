@@ -29,6 +29,7 @@ pub struct Properties {
     custom_properties: CustomProperties,
 }
 impl Default for Properties {
+    #[inline]
     fn default() -> Self {
         let mut created = StringValue::default();
         let mut modified = StringValue::default();
@@ -53,131 +54,160 @@ impl Default for Properties {
     }
 }
 impl Properties {
+    #[inline]
     pub fn get_creator(&self) -> &str {
         &self.creator.get_value_str()
     }
 
+    #[inline]
     pub fn set_creator<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.creator.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_last_modified_by(&self) -> &str {
         &self.last_modified_by.get_value_str()
     }
 
+    #[inline]
     pub fn set_last_modified_by<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.last_modified_by.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_created(&self) -> &str {
         &self.created.get_value_str()
     }
 
+    #[inline]
     pub fn set_created<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.created.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_modified(&self) -> &str {
         &self.modified.get_value_str()
     }
 
+    #[inline]
     pub fn set_modified<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.modified.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_title(&self) -> &str {
         &self.title.get_value_str()
     }
 
+    #[inline]
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.title.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_description(&self) -> &str {
         &self.description.get_value_str()
     }
 
+    #[inline]
     pub fn set_description<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.description.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_subject(&self) -> &str {
         &self.subject.get_value_str()
     }
 
+    #[inline]
     pub fn set_subject<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.subject.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_keywords(&self) -> &str {
         &self.keywords.get_value_str()
     }
 
+    #[inline]
     pub fn set_keywords<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.keywords.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_revision(&self) -> &str {
         &self.revision.get_value_str()
     }
 
+    #[inline]
     pub fn set_revision<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.revision.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_category(&self) -> &str {
         &self.category.get_value_str()
     }
 
+    #[inline]
     pub fn set_category<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.category.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_version(&self) -> &str {
         &self.version.get_value_str()
     }
 
+    #[inline]
     pub fn set_version<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.version.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_manager(&self) -> &str {
         &self.manager.get_value_str()
     }
 
+    #[inline]
     pub fn set_manager<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.manager.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_company(&self) -> &str {
         &self.company.get_value_str()
     }
 
+    #[inline]
     pub fn set_company<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.company.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_custom_properties(&self) -> &CustomProperties {
         &self.custom_properties
     }
 
+    #[inline]
     pub fn get_custom_properties_mut(&mut self) -> &mut CustomProperties {
         &mut self.custom_properties
     }
 
+    #[inline]
     pub fn set_custom_properties(&mut self, value: CustomProperties) -> &mut Self {
         self.custom_properties = value;
         self
@@ -241,6 +271,7 @@ impl Properties {
         );
     }
 
+    #[inline]
     pub(crate) fn set_attributes_custom<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -476,6 +507,7 @@ impl Properties {
         write_end_tag(writer, "Properties");
     }
 
+    #[inline]
     pub(crate) fn write_to_custom(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.custom_properties.write_to(writer);
     }

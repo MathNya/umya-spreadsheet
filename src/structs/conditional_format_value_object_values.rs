@@ -10,11 +10,13 @@ pub enum ConditionalFormatValueObjectValues {
     Percentile,
 }
 impl Default for ConditionalFormatValueObjectValues {
+    #[inline]
     fn default() -> Self {
         Self::Number
     }
 }
 impl EnumTrait for ConditionalFormatValueObjectValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Formula => "formula",
@@ -28,6 +30,8 @@ impl EnumTrait for ConditionalFormatValueObjectValues {
 }
 impl FromStr for ConditionalFormatValueObjectValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "formula" => Ok(Self::Formula),

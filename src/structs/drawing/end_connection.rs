@@ -13,22 +13,27 @@ pub struct EndConnection {
     index: UInt32Value,
 }
 impl EndConnection {
+    #[inline]
     pub fn get_id(&self) -> &u32 {
         self.id.get_value()
     }
 
+    #[inline]
     pub fn set_id(&mut self, value: u32) {
         self.id.set_value(value);
     }
 
+    #[inline]
     pub fn get_index(&self) -> &u32 {
         self.index.get_value()
     }
 
+    #[inline]
     pub fn set_index(&mut self, value: u32) {
         self.index.set_value(value);
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -39,6 +44,7 @@ impl EndConnection {
             .set_value_string(get_attribute(e, b"idx").unwrap());
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(
             writer,

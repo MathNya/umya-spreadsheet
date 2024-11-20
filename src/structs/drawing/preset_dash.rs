@@ -13,15 +13,18 @@ pub struct PresetDash {
     val: EnumValue<PresetLineDashValues>,
 }
 impl PresetDash {
+    #[inline]
     pub fn get_val(&self) -> &PresetLineDashValues {
         self.val.get_value()
     }
 
+    #[inline]
     pub fn set_val(&mut self, value: PresetLineDashValues) -> &mut PresetDash {
         self.val.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

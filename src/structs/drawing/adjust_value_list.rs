@@ -14,18 +14,22 @@ pub struct AdjustValueList {
 }
 
 impl AdjustValueList {
+    #[inline]
     pub fn get_shape_guide_collection(&self) -> &[ShapeGuide] {
         &self.shape_guide_collection
     }
 
+    #[inline]
     pub fn get_shape_guide_collection_mut(&mut self) -> &mut ThinVec<ShapeGuide> {
         &mut self.shape_guide_collection
     }
 
+    #[inline]
     pub fn set_shape_guide_collection(&mut self, value: impl Into<ThinVec<ShapeGuide>>) {
         self.shape_guide_collection = value.into();
     }
 
+    #[inline]
     pub fn add_shape_guide_collection(&mut self, value: ShapeGuide) {
         self.shape_guide_collection.push(value);
     }

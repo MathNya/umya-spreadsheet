@@ -26,87 +26,107 @@ pub struct BodyProperties {
 }
 
 impl BodyProperties {
+    #[inline]
     pub fn get_vert_overflow(&self) -> Option<&str> {
         self.vert_overflow.get_value()
     }
 
+    #[inline]
     pub fn set_vert_overflow<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
         self.vert_overflow.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_horz_overflow(&self) -> Option<&str> {
         self.horz_overflow.get_value()
     }
 
+    #[inline]
     pub fn set_horz_overflow<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
         self.horz_overflow.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_rtl_col(&self) -> Option<&str> {
         self.rtl_col.get_value()
     }
 
+    #[inline]
     pub fn set_rtl_col<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
         self.rtl_col.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_anchor(&self) -> Option<&str> {
         self.anchor.get_value()
     }
 
+    #[inline]
     pub fn set_anchor<S: Into<String>>(&mut self, value: S) -> &mut BodyProperties {
         self.anchor.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_wrap(&self) -> &TextWrappingValues {
         self.wrap.get_value()
     }
 
+    #[inline]
     pub fn set_wrap(&mut self, value: TextWrappingValues) -> &mut BodyProperties {
         self.wrap.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_left_inset(&self) -> &i32 {
         self.left_inset.get_value()
     }
 
+    #[inline]
     pub fn set_left_inset(&mut self, value: i32) {
         self.left_inset.set_value(value);
     }
 
+    #[inline]
     pub fn get_top_inset(&self) -> &i32 {
         self.top_inset.get_value()
     }
 
+    #[inline]
     pub fn set_top_inset(&mut self, value: i32) {
         self.top_inset.set_value(value);
     }
 
+    #[inline]
     pub fn get_right_inset(&self) -> &i32 {
         self.right_inset.get_value()
     }
 
+    #[inline]
     pub fn set_right_inset(&mut self, value: i32) {
         self.right_inset.set_value(value);
     }
 
+    #[inline]
     pub fn get_bottom_inset(&self) -> &i32 {
         self.bottom_inset.get_value()
     }
 
+    #[inline]
     pub fn set_bottom_inset(&mut self, value: i32) {
         self.bottom_inset.set_value(value);
     }
 
+    #[inline]
     pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
         self.shape_auto_fit.as_ref()
     }
 
+    #[inline]
     pub fn set_shape_auto_fit(&mut self, value: ShapeAutoFit) -> &mut BodyProperties {
         self.shape_auto_fit = Some(value);
         self

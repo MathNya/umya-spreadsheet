@@ -47,6 +47,7 @@ pub fn split_rgb(rgb: &str) -> (i32, i32, i32) {
     (r, g, b)
 }
 
+#[inline]
 pub fn join_rgb(r: &i32, g: &i32, b: &i32) -> String {
     format!("{:02X}{:02X}{:02X}", r, g, b)
 }
@@ -174,6 +175,7 @@ pub fn set_color(t1: &f64, t2: &f64, t3: &f64) -> f64 {
     color
 }
 
+#[inline]
 fn positive_decimal_part(hue: &f64) -> f64 {
     let hue = hue % 1.0;
 
@@ -183,6 +185,7 @@ fn positive_decimal_part(hue: &f64) -> f64 {
     1.0 + hue
 }
 
+#[inline]
 fn to_i32(num: f64) -> i32 {
     num.round() as i32
 }

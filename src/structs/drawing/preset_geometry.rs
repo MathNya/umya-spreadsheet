@@ -203,22 +203,27 @@ impl PresetGeometry {
     pub const GEOMETRY_WEDGERECTCALLOUT: &'static str = "wedgeRectCallout";
     pub const GEOMETRY_WEDGEROUNDRECTCALLOUT: &'static str = "wedgeRoundRectCallout";
 
+    #[inline]
     pub fn get_geometry(&self) -> &str {
         &self.geometry
     }
 
+    #[inline]
     pub fn set_geometry<S: Into<String>>(&mut self, value: S) {
         self.geometry = value.into().into_boxed_str();
     }
 
+    #[inline]
     pub fn get_adjust_value_list(&self) -> &AdjustValueList {
         &self.adjust_value_list
     }
 
+    #[inline]
     pub fn get_adjust_value_list_mut(&mut self) -> &mut AdjustValueList {
         &mut self.adjust_value_list
     }
 
+    #[inline]
     pub fn set_adjust_value_list(&mut self, value: AdjustValueList) {
         self.adjust_value_list = value;
     }

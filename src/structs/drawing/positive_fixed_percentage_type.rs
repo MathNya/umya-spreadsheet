@@ -12,15 +12,18 @@ pub struct PositiveFixedPercentageType {
 }
 
 impl PositiveFixedPercentageType {
+    #[inline]
     pub fn get_val(&self) -> &i32 {
         self.val.get_value()
     }
 
+    #[inline]
     pub fn set_val(&mut self, value: i32) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -29,14 +32,17 @@ impl PositiveFixedPercentageType {
         set_string_from_xml!(self, e, val, "val");
     }
 
+    #[inline]
     pub(crate) fn write_to_shade(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:shade")
     }
 
+    #[inline]
     pub(crate) fn write_to_alpha(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:alpha")
     }
 
+    #[inline]
     pub(crate) fn write_to_tint(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:tint")
     }

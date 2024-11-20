@@ -8,6 +8,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct NoFill {}
 impl NoFill {
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -15,6 +16,7 @@ impl NoFill {
     ) {
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:noFill
         write_start_tag(writer, "a:noFill", vec![], true);

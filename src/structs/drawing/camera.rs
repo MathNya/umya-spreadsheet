@@ -16,23 +16,28 @@ pub struct Camera {
 }
 
 impl Camera {
+    #[inline]
     pub fn get_preset(&self) -> &PresetCameraValues {
         self.preset.get_value()
     }
 
+    #[inline]
     pub fn set_preset(&mut self, value: PresetCameraValues) -> &mut Self {
         self.preset.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_rotation(&self) -> Option<&Rotation> {
         self.rotation.as_deref()
     }
 
+    #[inline]
     pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
         self.rotation.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_rotation(&mut self, value: Rotation) -> &mut Self {
         self.rotation = Some(Box::new(value));
         self
