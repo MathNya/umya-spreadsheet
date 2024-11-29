@@ -23,11 +23,11 @@ pub struct Outline {
     width: UInt32Value,
     cap_type: StringValue,
     compound_line_type: StringValue,
-    solid_fill: Option<SolidFill>,
-    gradient_fill: Option<GradientFill>,
-    tail_end: Option<TailEnd>,
+    solid_fill: Option<Box<SolidFill>>,
+    gradient_fill: Option<Box<GradientFill>>,
+    tail_end: Option<Box<TailEnd>>,
     no_fill: Option<NoFill>,
-    bevel: Option<Bevel>,
+    bevel: Option<Box<Bevel>>,
     preset_dash: Option<PresetDash>,
     miter: Option<Miter>,
     round: Option<Round>,
@@ -35,141 +35,173 @@ pub struct Outline {
 }
 
 impl Outline {
+    #[inline]
     pub fn get_width(&self) -> &u32 {
         self.width.get_value()
     }
 
+    #[inline]
     pub fn set_width(&mut self, value: u32) -> &mut Self {
         self.width.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_cap_type(&self) -> Option<&str> {
         self.cap_type.get_value()
     }
 
+    #[inline]
     pub fn set_cap_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cap_type.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_compound_line_type(&self) -> Option<&str> {
         self.compound_line_type.get_value()
     }
 
+    #[inline]
     pub fn set_compound_line_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.compound_line_type.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
-        self.solid_fill.as_ref()
+        self.solid_fill.as_deref()
     }
 
+    #[inline]
     pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
-        self.solid_fill.as_mut()
+        self.solid_fill.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
-        self.solid_fill = Some(value);
+        self.solid_fill = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
-        self.gradient_fill.as_ref()
+        self.gradient_fill.as_deref()
     }
 
+    #[inline]
     pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
-        self.gradient_fill.as_mut()
+        self.gradient_fill.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
-        self.gradient_fill = Some(value);
+        self.gradient_fill = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_tail_end(&self) -> Option<&TailEnd> {
-        self.tail_end.as_ref()
+        self.tail_end.as_deref()
     }
 
+    #[inline]
     pub fn get_tail_end_mut(&mut self) -> Option<&mut TailEnd> {
-        self.tail_end.as_mut()
+        self.tail_end.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_tail_end(&mut self, value: TailEnd) -> &mut Self {
-        self.tail_end = Some(value);
+        self.tail_end = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
+    #[inline]
     pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
     }
 
+    #[inline]
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
         self.no_fill = Some(value);
         self
     }
 
+    #[inline]
     pub fn get_bevel(&self) -> Option<&Bevel> {
-        self.bevel.as_ref()
+        self.bevel.as_deref()
     }
 
+    #[inline]
     pub fn get_bevel_mut(&mut self) -> Option<&mut Bevel> {
-        self.bevel.as_mut()
+        self.bevel.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_bevel(&mut self, value: Bevel) -> &mut Self {
-        self.bevel = Some(value);
+        self.bevel = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_preset_dash(&self) -> Option<&PresetDash> {
         self.preset_dash.as_ref()
     }
 
+    #[inline]
     pub fn get_preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
         self.preset_dash.as_mut()
     }
 
+    #[inline]
     pub fn set_preset_dash(&mut self, value: PresetDash) -> &mut Self {
         self.preset_dash = Some(value);
         self
     }
 
+    #[inline]
     pub fn get_miter(&self) -> Option<&Miter> {
         self.miter.as_ref()
     }
 
+    #[inline]
     pub fn get_miter_mut(&mut self) -> Option<&mut Miter> {
         self.miter.as_mut()
     }
 
+    #[inline]
     pub fn set_miter(&mut self, value: Miter) -> &mut Self {
         self.miter = Some(value);
         self
     }
 
+    #[inline]
     pub fn get_round(&self) -> Option<&Round> {
         self.round.as_ref()
     }
 
+    #[inline]
     pub fn get_round_mut(&mut self) -> Option<&mut Round> {
         self.round.as_mut()
     }
 
+    #[inline]
     pub fn set_round(&mut self, value: Round) -> &mut Self {
         self.round = Some(value);
         self
     }
 
+    #[inline]
     pub fn get_alignment(&self) -> &PenAlignmentValues {
         self.alignment.get_value()
     }
 
+    #[inline]
     pub fn set_alignment(&mut self, value: PenAlignmentValues) {
         self.alignment.set_value(value);
     }

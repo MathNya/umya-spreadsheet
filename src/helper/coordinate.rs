@@ -42,6 +42,7 @@ where
         .sum::<u32>()
 }
 
+#[inline]
 pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
     let column_c = column.as_ref();
     if column_c == "0" {
@@ -51,6 +52,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
     alpha_to_index(column_c)
 }
 
+#[inline]
 pub fn string_from_column_index(column_index: &u32) -> String {
     assert!(column_index >= &1u32, "Column number starts from 1.");
 
@@ -91,6 +93,7 @@ where
     .unwrap_or_default()
 }
 
+#[inline]
 pub fn coordinate_from_index(col: &u32, row: &u32) -> String {
     format!("{}{}", string_from_column_index(col), row)
 }
@@ -110,6 +113,7 @@ pub fn coordinate_from_index_with_lock(
     )
 }
 
+#[inline]
 pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
     if (num >= root_num && offset_num != &0) {
         num + offset_num
@@ -118,6 +122,7 @@ pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num
     }
 }
 
+#[inline]
 pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
     if (num >= root_num && offset_num != &0) {
         num - offset_num
@@ -126,6 +131,7 @@ pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num
     }
 }
 
+#[inline]
 pub(crate) fn is_remove_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> bool {
     if root_num != &0 && offset_num != &0 {
         return num >= root_num && num < &(root_num + offset_num);
@@ -143,24 +149,28 @@ pub struct CellCoordinates {
 }
 
 impl CellCoordinates {
+    #[inline]
     fn new(col: u32, row: u32) -> Self {
         CellCoordinates { row, col }
     }
 }
 
 impl From<(u32, u32)> for CellCoordinates {
+    #[inline]
     fn from(value: (u32, u32)) -> Self {
         CellCoordinates::new(value.0, value.1)
     }
 }
 
 impl From<(&u32, &u32)> for CellCoordinates {
+    #[inline]
     fn from(value: (&u32, &u32)) -> Self {
         CellCoordinates::new(*value.0, *value.1)
     }
 }
 
 impl From<String> for CellCoordinates {
+    #[inline]
     fn from(value: String) -> Self {
         let str_ref: &str = value.as_ref();
         str_ref.into()
@@ -168,6 +178,7 @@ impl From<String> for CellCoordinates {
 }
 
 impl From<&str> for CellCoordinates {
+    #[inline]
     fn from(value: &str) -> Self {
         let (col, row, ..) = index_from_coordinate(value.to_uppercase());
         CellCoordinates::new(col.unwrap(), row.unwrap())

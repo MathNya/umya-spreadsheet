@@ -7,50 +7,60 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
     paragraph_properties: ParagraphProperties,
-    run: Vec<Run>,
-    end_para_run_properties: Option<RunProperties>,
+    run: ThinVec<Run>,
+    end_para_run_properties: Option<Box<RunProperties>>,
 }
 
 impl Paragraph {
+    #[inline]
     pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
         &self.paragraph_properties
     }
 
+    #[inline]
     pub fn get_paragraph_properties_mut(&mut self) -> &mut ParagraphProperties {
         &mut self.paragraph_properties
     }
 
+    #[inline]
     pub fn set_paragraph_properties(&mut self, value: ParagraphProperties) -> &mut Paragraph {
         self.paragraph_properties = value;
         self
     }
 
-    pub fn get_run(&self) -> &Vec<Run> {
+    #[inline]
+    pub fn get_run(&self) -> &[Run] {
         &self.run
     }
 
+    #[inline]
     pub fn add_run(&mut self, value: Run) {
         self.run.push(value);
     }
 
+    #[inline]
     pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
-        self.end_para_run_properties.as_ref()
+        self.end_para_run_properties.as_deref()
     }
 
+    #[inline]
     pub fn get_end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
-        self.end_para_run_properties.as_mut()
+        self.end_para_run_properties.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Paragraph {
-        self.end_para_run_properties = Some(value);
+        self.end_para_run_properties = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_end_para_run_properties(&mut self) {
         self.end_para_run_properties = None;
     }

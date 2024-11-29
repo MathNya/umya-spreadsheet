@@ -5,22 +5,26 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetViews {
-    sheet_view_list: Vec<SheetView>,
+    sheet_view_list: ThinVec<SheetView>,
 }
 
 impl SheetViews {
-    pub fn get_sheet_view_list(&self) -> &Vec<SheetView> {
+    #[inline]
+    pub fn get_sheet_view_list(&self) -> &[SheetView] {
         &self.sheet_view_list
     }
 
-    pub fn get_sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
+    #[inline]
+    pub fn get_sheet_view_list_mut(&mut self) -> &mut ThinVec<SheetView> {
         &mut self.sheet_view_list
     }
 
+    #[inline]
     pub fn add_sheet_view_list_mut(&mut self, value: SheetView) -> &mut Self {
         self.sheet_view_list.push(value);
         self

@@ -5,9 +5,9 @@ use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Default)]
 pub enum CellRawValue {
-    String(String),
+    String(Box<str>),
     RichText(RichText),
-    Lazy(String),
+    Lazy(Box<str>),
     Numeric(f64),
     Bool(bool),
     Error(CellErrorType),
@@ -15,6 +15,7 @@ pub enum CellRawValue {
     Empty,
 }
 impl fmt::Display for CellRawValue {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::String(v) => write!(f, "{v}"),
@@ -28,6 +29,7 @@ impl fmt::Display for CellRawValue {
 }
 
 impl CellRawValue {
+    #[inline]
     pub fn get_data_type(&self) -> &str {
         match self {
             Self::String(_) => "s",
@@ -39,6 +41,7 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     pub(crate) fn get_text(&self) -> Option<Text> {
         match self {
             Self::String(_) | // _
@@ -52,6 +55,7 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     pub(crate) fn get_number(&self) -> Option<f64> {
         match self {
             Self::Numeric(number) => Some(*number),
@@ -59,6 +63,7 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     pub fn get_rich_text(&self) -> Option<RichText> {
         match self {
             Self::RichText(v) => Some(v.clone()),
@@ -66,10 +71,12 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     pub fn is_error(&self) -> bool {
         matches!(*self, CellRawValue::Error(_))
     }
 
+    #[inline]
     pub fn is_empty(&self) -> bool {
         matches!(*self, CellRawValue::Empty)
     }

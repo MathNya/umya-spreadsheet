@@ -11,43 +11,51 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct GradientStop {
     position: i32,
-    scheme_color: Option<SchemeColor>,
-    rgb_color_model_hex: Option<RgbColorModelHex>,
+    scheme_color: Option<Box<SchemeColor>>,
+    rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 
 impl GradientStop {
+    #[inline]
     pub fn get_position(&self) -> &i32 {
         &self.position
     }
 
+    #[inline]
     pub fn set_position(&mut self, value: i32) -> &mut GradientStop {
         self.position = value;
         self
     }
 
+    #[inline]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
-        self.scheme_color.as_ref()
+        self.scheme_color.as_deref()
     }
 
+    #[inline]
     pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
-        self.scheme_color.as_mut()
+        self.scheme_color.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_scheme_color(&mut self, value: SchemeColor) -> &mut GradientStop {
-        self.scheme_color = Some(value);
+        self.scheme_color = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
-        self.rgb_color_model_hex.as_ref()
+        self.rgb_color_model_hex.as_deref()
     }
 
+    #[inline]
     pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
-        self.rgb_color_model_hex.as_mut()
+        self.rgb_color_model_hex.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) -> &mut GradientStop {
-        self.rgb_color_model_hex = Some(value);
+        self.rgb_color_model_hex = Some(Box::new(value));
         self
     }
 

@@ -8,27 +8,32 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Run {
-    text: String,
+    text: Box<str>,
     run_properties: RunProperties,
 }
 
 impl Run {
+    #[inline]
     pub fn get_text(&self) -> &str {
         &self.text
     }
 
+    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) {
-        self.text = value.into();
+        self.text = value.into().into_boxed_str();
     }
 
+    #[inline]
     pub fn get_run_properties(&self) -> &RunProperties {
         &self.run_properties
     }
 
+    #[inline]
     pub fn get_run_properties_mut(&mut self) -> &mut RunProperties {
         &mut self.run_properties
     }
 
+    #[inline]
     pub fn set_run_properties(&mut self, value: RunProperties) {
         self.run_properties = value;
     }
@@ -71,7 +76,7 @@ impl Run {
 
         // a:t
         write_start_tag(writer, "a:t", vec![], false);
-        write_text_node(writer, &self.text);
+        write_text_node(writer, &*self.text);
         write_end_tag(writer, "a:t");
 
         write_end_tag(writer, "a:r");

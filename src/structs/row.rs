@@ -24,9 +24,10 @@ pub struct Row {
     thick_bot: BooleanValue,
     custom_height: BooleanValue,
     hidden: BooleanValue,
-    style: Style,
+    style: Box<Style>,
 }
 impl Default for Row {
+    #[inline]
     fn default() -> Self {
         Self {
             row_num: UInt32Value::default(),
@@ -35,81 +36,97 @@ impl Default for Row {
             thick_bot: BooleanValue::default(),
             custom_height: BooleanValue::default(),
             hidden: BooleanValue::default(),
-            style: Style::default(),
+            style: Box::new(Style::default()),
         }
     }
 }
 impl Row {
+    #[inline]
     pub fn get_row_num(&self) -> &u32 {
         self.row_num.get_value()
     }
 
+    #[inline]
     pub(crate) fn set_row_num(&mut self, value: u32) -> &mut Self {
         self.row_num.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_height(&self) -> &f64 {
         self.height.get_value()
     }
 
+    #[inline]
     pub fn set_height(&mut self, value: f64) -> &mut Self {
         self.height.set_value(value);
         self.custom_height.set_value(true);
         self
     }
 
+    #[inline]
     pub fn get_descent(&self) -> &f64 {
         self.descent.get_value()
     }
 
+    #[inline]
     pub fn set_descent(&mut self, value: f64) -> &mut Self {
         self.descent.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_thick_bot(&self) -> &bool {
         self.thick_bot.get_value()
     }
 
+    #[inline]
     pub fn set_thick_bot(&mut self, value: bool) -> &mut Self {
         self.thick_bot.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_custom_height(&self) -> &bool {
         self.custom_height.get_value()
     }
 
+    #[inline]
     pub fn set_custom_height(&mut self, value: bool) -> &mut Self {
         self.custom_height.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_hidden(&self) -> &bool {
         self.hidden.get_value()
     }
 
+    #[inline]
     pub fn set_hidden(&mut self, value: bool) -> &mut Self {
         self.hidden.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
 
+    #[inline]
     pub fn get_style_mut(&mut self) -> &mut Style {
         &mut self.style
     }
 
+    #[inline]
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = value;
+        self.style = Box::new(value);
         self
     }
 
+    #[inline]
     pub(crate) fn has_style(&self) -> bool {
-        &self.style != &Style::default()
+        &*self.style != &Style::default()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -215,6 +232,7 @@ impl Row {
     }
 }
 impl AdjustmentValue for Row {
+    #[inline]
     fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
         if self.row_num.get_value() >= root_num {
             self.row_num
@@ -222,6 +240,7 @@ impl AdjustmentValue for Row {
         }
     }
 
+    #[inline]
     fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
         if self.row_num.get_value() >= root_num {
             self.row_num
@@ -229,6 +248,7 @@ impl AdjustmentValue for Row {
         }
     }
 
+    #[inline]
     fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
         self.row_num.get_value() >= root_num
             && self.row_num.get_value() <= &(root_num + offset_num - 1)

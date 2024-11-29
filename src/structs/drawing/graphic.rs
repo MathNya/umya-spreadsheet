@@ -15,14 +15,17 @@ pub struct Graphic {
 }
 
 impl Graphic {
+    #[inline]
     pub fn get_graphic_data(&self) -> &GraphicData {
         &self.graphic_data
     }
 
+    #[inline]
     pub fn get_graphic_data_mut(&mut self) -> &mut GraphicData {
         &mut self.graphic_data
     }
 
+    #[inline]
     pub fn set_graphic_data(&mut self, value: GraphicData) -> &mut Self {
         self.graphic_data = value;
         self
@@ -66,6 +69,7 @@ impl Graphic {
     }
 }
 impl AdjustmentCoordinateWithSheet for Graphic {
+    #[inline]
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
@@ -83,6 +87,7 @@ impl AdjustmentCoordinateWithSheet for Graphic {
         );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,

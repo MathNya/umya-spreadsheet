@@ -5,26 +5,31 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct AdjustValueList {
-    shape_guide_collection: Vec<ShapeGuide>,
+    shape_guide_collection: ThinVec<ShapeGuide>,
 }
 
 impl AdjustValueList {
-    pub fn get_shape_guide_collection(&self) -> &Vec<ShapeGuide> {
+    #[inline]
+    pub fn get_shape_guide_collection(&self) -> &[ShapeGuide] {
         &self.shape_guide_collection
     }
 
-    pub fn get_shape_guide_collection_mut(&mut self) -> &mut Vec<ShapeGuide> {
+    #[inline]
+    pub fn get_shape_guide_collection_mut(&mut self) -> &mut ThinVec<ShapeGuide> {
         &mut self.shape_guide_collection
     }
 
-    pub fn set_shape_guide_collection(&mut self, value: Vec<ShapeGuide>) {
-        self.shape_guide_collection = value;
+    #[inline]
+    pub fn set_shape_guide_collection(&mut self, value: impl Into<ThinVec<ShapeGuide>>) {
+        self.shape_guide_collection = value.into();
     }
 
+    #[inline]
     pub fn add_shape_guide_collection(&mut self, value: ShapeGuide) {
         self.shape_guide_collection.push(value);
     }

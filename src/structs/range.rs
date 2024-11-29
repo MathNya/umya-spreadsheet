@@ -64,6 +64,7 @@ impl Range {
         self
     }
 
+    #[inline]
     pub fn get_range(&self) -> String {
         let mut result = self.get_coordinate_start();
         if self.end_col.is_some() || self.end_row.is_some() {
@@ -72,34 +73,42 @@ impl Range {
         result
     }
 
+    #[inline]
     pub fn get_coordinate_start_col(&self) -> Option<&ColumnReference> {
         self.start_col.as_ref()
     }
 
+    #[inline]
     pub fn get_coordinate_start_col_mut(&mut self) -> Option<&mut ColumnReference> {
         self.start_col.as_mut()
     }
 
+    #[inline]
     pub fn get_coordinate_start_row(&self) -> Option<&RowReference> {
         self.start_row.as_ref()
     }
 
+    #[inline]
     pub fn get_coordinate_start_row_mut(&mut self) -> Option<&mut RowReference> {
         self.start_row.as_mut()
     }
 
+    #[inline]
     pub fn get_coordinate_end_col(&self) -> Option<&ColumnReference> {
         self.end_col.as_ref()
     }
 
+    #[inline]
     pub fn get_coordinate_end_col_mut(&mut self) -> Option<&mut ColumnReference> {
         self.end_col.as_mut()
     }
 
+    #[inline]
     pub fn get_coordinate_end_row(&self) -> Option<&RowReference> {
         self.end_row.as_ref()
     }
 
+    #[inline]
     pub fn get_coordinate_end_row_mut(&mut self) -> Option<&mut RowReference> {
         self.end_row.as_mut()
     }
@@ -127,6 +136,7 @@ impl Range {
     }
 }
 impl AdjustmentCoordinate for Range {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -148,6 +158,7 @@ impl AdjustmentCoordinate for Range {
         }
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -169,6 +180,7 @@ impl AdjustmentCoordinate for Range {
         }
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,

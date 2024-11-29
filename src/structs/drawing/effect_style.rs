@@ -11,48 +11,57 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectStyle {
-    effect_list: Option<EffectList>,
-    scene_3d_type: Option<Scene3DType>,
-    shape_3d_type: Option<Shape3DType>,
+    effect_list: Option<Box<EffectList>>,
+    scene_3d_type: Option<Box<Scene3DType>>,
+    shape_3d_type: Option<Box<Shape3DType>>,
 }
 
 impl EffectStyle {
+    #[inline]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
-        self.effect_list.as_ref()
+        self.effect_list.as_deref()
     }
 
+    #[inline]
     pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
-        self.effect_list.as_mut()
+        self.effect_list.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
-        self.effect_list = Some(value);
+        self.effect_list = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
-        self.scene_3d_type.as_ref()
+        self.scene_3d_type.as_deref()
     }
 
+    #[inline]
     pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
-        self.scene_3d_type.as_mut()
+        self.scene_3d_type.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut Self {
-        self.scene_3d_type = Some(value);
+        self.scene_3d_type = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
-        self.shape_3d_type.as_ref()
+        self.shape_3d_type.as_deref()
     }
 
+    #[inline]
     pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
-        self.shape_3d_type.as_mut()
+        self.shape_3d_type.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut Self {
-        self.shape_3d_type = Some(value);
+        self.shape_3d_type = Some(Box::new(value));
         self
     }
 
@@ -68,17 +77,17 @@ impl EffectStyle {
                 b"a:effectLst" => {
                     let mut obj = EffectList::default();
                     obj.set_attributes(reader, e, false);
-                    self.effect_list = Some(obj);
+                    self.effect_list = Some(Box::new(obj));
                 }
                 b"a:scene3d" => {
                     let mut obj = Scene3DType::default();
                     obj.set_attributes(reader, e);
-                    self.scene_3d_type = Some(obj);
+                    self.scene_3d_type = Some(Box::new(obj));
                 }
                 b"a:sp3d" => {
                     let mut obj = Shape3DType::default();
                     obj.set_attributes(reader, e);
-                    self.shape_3d_type = Some(obj);
+                    self.shape_3d_type = Some(Box::new(obj));
                 }
                 _ => (),
                 }

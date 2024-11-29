@@ -20,50 +20,61 @@ pub(crate) struct RawRelationship {
 }
 
 impl RawRelationship {
+    #[inline]
     pub(crate) fn get_id(&self) -> &str {
         self.id.get_value_str()
     }
 
+    #[inline]
     pub(crate) fn set_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.id.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_target(&self) -> &str {
         self.target.get_value_str()
     }
 
+    #[inline]
     pub(crate) fn set_target<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.target.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_type(&self) -> &str {
         self.r_type.get_value_str()
     }
 
+    #[inline]
     pub(crate) fn set_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.r_type.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_raw_file(&self) -> &RawFile {
         &self.raw_file
     }
 
+    #[inline]
     pub(crate) fn get_raw_file_mut(&mut self) -> &mut RawFile {
         &mut self.raw_file
     }
 
+    #[inline]
     pub(crate) fn _set_raw_file(&mut self, value: RawFile) -> &mut Self {
         self.raw_file = value;
         self
     }
 
+    #[inline]
     pub(crate) fn get_target_mode(&self) -> &str {
         self.target_mode.get_value_str()
     }
 
+    #[inline]
     pub(crate) fn set_target_mode<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.target_mode.set_value(value);
         self
@@ -100,6 +111,7 @@ impl RawRelationship {
         write_start_tag(writer, "Relationship", attributes, true);
     }
 
+    #[inline]
     pub(crate) fn write_to_bin<W: io::Seek + io::Write>(
         &self,
         writer_mng: &mut WriterManager<W>,

@@ -10,6 +10,7 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct ExtensionList {}
 impl ExtensionList {
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -26,5 +27,6 @@ impl ExtensionList {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {}
 }

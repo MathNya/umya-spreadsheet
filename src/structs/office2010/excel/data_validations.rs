@@ -6,27 +6,35 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::office2010::excel::DataValidation;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidations {
-    data_validation_list: Vec<DataValidation>,
+    data_validation_list: ThinVec<DataValidation>,
 }
 
 impl DataValidations {
-    pub fn get_data_validation_list(&self) -> &Vec<DataValidation> {
+    #[inline]
+    pub fn get_data_validation_list(&self) -> &[DataValidation] {
         &self.data_validation_list
     }
 
-    pub fn get_data_validation_list_mut(&mut self) -> &mut Vec<DataValidation> {
+    #[inline]
+    pub fn get_data_validation_list_mut(&mut self) -> &mut ThinVec<DataValidation> {
         &mut self.data_validation_list
     }
 
-    pub fn set_data_validation_list(&mut self, value: Vec<DataValidation>) -> &mut Self {
-        self.data_validation_list = value;
+    #[inline]
+    pub fn set_data_validation_list(
+        &mut self,
+        value: impl Into<ThinVec<DataValidation>>,
+    ) -> &mut Self {
+        self.data_validation_list = value.into();
         self
     }
 
+    #[inline]
     pub fn add_data_validation_list(&mut self, value: DataValidation) -> &mut Self {
         self.data_validation_list.push(value);
         self

@@ -15,24 +15,29 @@ pub struct LinearGradientFill {
 }
 
 impl LinearGradientFill {
+    #[inline]
     pub fn get_angle(&self) -> &i32 {
         self.angle.get_value()
     }
 
+    #[inline]
     pub fn set_angle(&mut self, value: i32) -> &mut LinearGradientFill {
         self.angle.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_scaled(&self) -> &bool {
         self.scaled.get_value()
     }
 
+    #[inline]
     pub fn set_scaled(&mut self, value: bool) -> &mut LinearGradientFill {
         self.scaled.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

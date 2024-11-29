@@ -8,32 +8,38 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::fmt::Write;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientFill {
     degree: DoubleValue,
-    gradient_stop: Vec<GradientStop>,
+    gradient_stop: ThinVec<GradientStop>,
 }
 
 impl GradientFill {
+    #[inline]
     pub fn get_degree(&self) -> &f64 {
         self.degree.get_value()
     }
 
+    #[inline]
     pub fn set_degree(&mut self, value: f64) -> &mut Self {
         self.degree.set_value(value);
         self
     }
 
-    pub fn get_gradient_stop(&self) -> &Vec<GradientStop> {
+    #[inline]
+    pub fn get_gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
 
-    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+    #[inline]
+    pub fn get_gradient_stop_mut(&mut self) -> &mut ThinVec<GradientStop> {
         &mut self.gradient_stop
     }
 
+    #[inline]
     pub fn set_gradient_stop(&mut self, value: GradientStop) -> &mut Self {
         self.gradient_stop.push(value);
         self

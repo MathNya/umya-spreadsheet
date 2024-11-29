@@ -14,38 +14,45 @@ use writer::driver::*;
 pub struct LightRig {
     rig: EnumValue<LightRigValues>,
     definition: EnumValue<LightRigDirectionValues>,
-    rotation: Option<Rotation>,
+    rotation: Option<Box<Rotation>>,
 }
 
 impl LightRig {
+    #[inline]
     pub fn get_rig(&self) -> &LightRigValues {
         self.rig.get_value()
     }
 
+    #[inline]
     pub fn set_rig(&mut self, value: LightRigValues) -> &mut LightRig {
         self.rig.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_definition(&self) -> &LightRigDirectionValues {
         self.definition.get_value()
     }
 
+    #[inline]
     pub fn set_definition(&mut self, value: LightRigDirectionValues) -> &mut LightRig {
         self.definition.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_rotation(&self) -> Option<&Rotation> {
-        self.rotation.as_ref()
+        self.rotation.as_deref()
     }
 
+    #[inline]
     pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
-        self.rotation.as_mut()
+        self.rotation.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_rotation(&mut self, value: Rotation) -> &mut Self {
-        self.rotation = Some(value);
+        self.rotation = Some(Box::new(value));
         self
     }
 
@@ -68,7 +75,7 @@ impl LightRig {
                 if e.name().into_inner() == b"a:rot" {
                     let mut obj = Rotation::default();
                     obj.set_attributes(reader, e);
-                    self.rotation = Some(obj);
+                    self.rotation = Some(Box::new(obj));
                 }
             },
             Event::End(ref e) => {

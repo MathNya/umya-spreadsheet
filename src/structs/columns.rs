@@ -8,23 +8,27 @@ use structs::Cells;
 use structs::Column;
 use structs::MergeCells;
 use structs::Stylesheet;
+use thin_vec::ThinVec;
 use traits::AdjustmentValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Columns {
-    column: Vec<Column>,
+    column: ThinVec<Column>,
 }
 
 impl Columns {
-    pub(crate) fn get_column_collection(&self) -> &Vec<Column> {
+    #[inline]
+    pub(crate) fn get_column_collection(&self) -> &[Column] {
         &self.column
     }
 
-    pub(crate) fn get_column_collection_mut(&mut self) -> &mut Vec<Column> {
+    #[inline]
+    pub(crate) fn get_column_collection_mut(&mut self) -> &mut ThinVec<Column> {
         &mut self.column
     }
 
+    #[inline]
     pub(crate) fn get_column(&self, value: &u32) -> Option<&Column> {
         self.column
             .iter()
@@ -45,6 +49,7 @@ impl Columns {
         panic!("Column not found.");
     }
 
+    #[inline]
     pub(crate) fn set_column(&mut self, value: Column) -> &mut Self {
         self.column.push(value);
         self

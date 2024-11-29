@@ -29,42 +29,50 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {
     coordinate: Coordinate,
-    pub(crate) cell_value: CellValue,
-    style: Style,
-    hyperlink: Option<Hyperlink>,
+    pub(crate) cell_value: Box<CellValue>,
+    style: Box<Style>,
+    hyperlink: Option<Box<Hyperlink>>,
     cell_meta_index: UInt32Value,
 }
 impl Cell {
+    #[inline]
     pub fn get_cell_value(&self) -> &CellValue {
         &self.cell_value
     }
 
+    #[inline]
     pub fn get_cell_value_mut(&mut self) -> &mut CellValue {
         &mut self.cell_value
     }
 
+    #[inline]
     pub fn set_cell_value(&mut self, value: CellValue) -> &mut Self {
-        self.cell_value = value;
+        self.cell_value = Box::new(value);
         self
     }
 
+    #[inline]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
 
+    #[inline]
     pub fn get_style_mut(&mut self) -> &mut Style {
         &mut self.style
     }
 
+    #[inline]
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = value;
+        self.style = Box::new(value);
         self
     }
 
+    #[inline]
     pub fn get_coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
 
+    #[inline]
     pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
         &mut self.coordinate
     }
@@ -93,10 +101,12 @@ impl Cell {
         self
     }
 
+    #[inline]
     pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
-        self.hyperlink.as_ref()
+        self.hyperlink.as_deref()
     }
 
+    #[inline]
     pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
         if self.hyperlink.is_some() {
             return self.hyperlink.as_mut().unwrap();
@@ -105,28 +115,34 @@ impl Cell {
         self.hyperlink.as_mut().unwrap()
     }
 
+    #[inline]
     pub fn set_hyperlink(&mut self, value: Hyperlink) -> &mut Self {
-        self.hyperlink = Some(value);
+        self.hyperlink = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_cell_meta_index(&self) -> &u32 {
         self.cell_meta_index.get_value()
     }
 
+    #[inline]
     pub fn set_cell_meta_index(&mut self, value: u32) -> &mut Self {
         self.cell_meta_index.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.cell_value.get_value()
     }
 
+    #[inline]
     pub fn get_value_number(&self) -> Option<f64> {
         self.cell_value.get_value_number()
     }
 
+    #[inline]
     pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
         self.cell_value.get_value_lazy()
     }
@@ -139,41 +155,49 @@ impl Cell {
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
     /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
+    #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value_crate(value);
         self
     }
 
+    #[inline]
     pub fn set_value_lazy<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value_lazy(value);
         self
     }
 
+    #[inline]
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value_string(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_value_string_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_value_string_crate(value);
         self
     }
 
+    #[inline]
     pub fn set_value_bool(&mut self, value: bool) -> &mut Self {
         self.cell_value.set_value_bool(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_value_bool_crate(&mut self, value: bool) -> &mut Self {
         self.cell_value.set_value_bool_crate(value);
         self
     }
 
+    #[inline]
     pub fn set_value_number<T>(&mut self, value: T) -> &mut Self
     where
         T: Into<f64>,
@@ -182,60 +206,73 @@ impl Cell {
         self
     }
 
+    #[inline]
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.cell_value.set_rich_text(value);
         self
     }
 
+    #[inline]
     pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_error(value);
         self
     }
 
+    #[inline]
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_formula(value);
         self
     }
 
+    #[inline]
     pub fn set_formula_result_default<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.cell_value.set_formula_result_default(value);
         self
     }
 
+    #[inline]
     pub fn set_blank(&mut self) -> &mut Self {
         self.cell_value.set_blank();
         self
     }
 
+    #[inline]
     pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
         self.cell_value.set_shared_string_item(value);
         self
     }
 
+    #[inline]
     pub fn get_data_type(&self) -> &str {
         self.cell_value.get_data_type()
     }
 
+    #[inline]
     pub fn get_raw_value(&self) -> &CellRawValue {
         self.cell_value.get_raw_value()
     }
 
+    #[inline]
     pub(crate) fn get_data_type_crate(&self) -> &str {
         self.cell_value.get_data_type_crate()
     }
 
+    #[inline]
     pub fn is_formula(&self) -> bool {
         self.cell_value.is_formula()
     }
 
+    #[inline]
     pub fn get_formula(&self) -> &str {
         self.cell_value.get_formula()
     }
 
+    #[inline]
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
         self.cell_value.get_formula_obj()
     }
 
+    #[inline]
     pub fn get_formula_shared_index(&self) -> Option<&u32> {
         if let Some(v) = self.get_formula_obj() {
             if v.get_formula_type() == &CellFormulaValues::Shared {
@@ -290,12 +327,14 @@ impl Cell {
     }
 
     // When opened in software such as Excel, it is visually blank.
+    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         self.cell_value.is_visually_empty()
             && self.style.is_visually_empty()
             && self.hyperlink.is_none()
     }
 
+    #[inline]
     pub(crate) fn set_obj(&mut self, cell: Self) -> &mut Self {
         self.cell_value = cell.cell_value;
         self.style = cell.style;
@@ -495,6 +534,7 @@ impl Cell {
     }
 }
 impl AdjustmentCoordinate for Cell {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -510,6 +550,7 @@ impl AdjustmentCoordinate for Cell {
         );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -526,6 +567,7 @@ impl AdjustmentCoordinate for Cell {
     }
 }
 impl AdjustmentCoordinateWith2Sheet for Cell {
+    #[inline]
     fn adjustment_insert_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,
@@ -545,6 +587,7 @@ impl AdjustmentCoordinateWith2Sheet for Cell {
         );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,

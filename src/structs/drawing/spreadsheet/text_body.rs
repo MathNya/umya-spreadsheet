@@ -6,48 +6,58 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct TextBody {
     body_properties: BodyProperties,
     list_style: ListStyle,
-    paragraph: Vec<Paragraph>,
+    paragraph: ThinVec<Paragraph>,
 }
 
 impl TextBody {
+    #[inline]
     pub fn get_body_properties(&self) -> &BodyProperties {
         &self.body_properties
     }
 
+    #[inline]
     pub fn get_body_properties_mut(&mut self) -> &mut BodyProperties {
         &mut self.body_properties
     }
 
+    #[inline]
     pub fn set_body_properties(&mut self, value: BodyProperties) {
         self.body_properties = value;
     }
 
+    #[inline]
     pub fn get_list_style(&self) -> &ListStyle {
         &self.list_style
     }
 
+    #[inline]
     pub fn get_list_style_mut(&mut self) -> &mut ListStyle {
         &mut self.list_style
     }
 
+    #[inline]
     pub fn set_list_style(&mut self, value: ListStyle) {
         self.list_style = value;
     }
 
-    pub fn get_paragraph(&self) -> &Vec<Paragraph> {
+    #[inline]
+    pub fn get_paragraph(&self) -> &[Paragraph] {
         &self.paragraph
     }
 
-    pub fn get_paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
+    #[inline]
+    pub fn get_paragraph_mut(&mut self) -> &mut ThinVec<Paragraph> {
         &mut self.paragraph
     }
 
+    #[inline]
     pub fn add_paragraph(&mut self, value: Paragraph) {
         self.paragraph.push(value);
     }

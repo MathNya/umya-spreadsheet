@@ -6,27 +6,32 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormats {
-    differential_format: Vec<DifferentialFormat>,
+    differential_format: ThinVec<DifferentialFormat>,
 }
 
 impl DifferentialFormats {
-    pub(crate) fn _get_differential_format(&self) -> &Vec<DifferentialFormat> {
+    #[inline]
+    pub(crate) fn _get_differential_format(&self) -> &[DifferentialFormat] {
         &self.differential_format
     }
 
-    pub(crate) fn _get_differential_format_mut(&mut self) -> &mut Vec<DifferentialFormat> {
+    #[inline]
+    pub(crate) fn _get_differential_format_mut(&mut self) -> &mut ThinVec<DifferentialFormat> {
         &mut self.differential_format
     }
 
+    #[inline]
     pub(crate) fn set_differential_format(&mut self, value: DifferentialFormat) -> &mut Self {
         self.differential_format.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_style(&self, id: usize) -> Style {
         let differential_format = self.differential_format.get(id).unwrap().clone();
         differential_format.get_style()

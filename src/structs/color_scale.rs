@@ -6,38 +6,48 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ColorScale {
-    cfvo_collection: Vec<ConditionalFormatValueObject>,
-    color_collection: Vec<Color>,
+    cfvo_collection: ThinVec<ConditionalFormatValueObject>,
+    color_collection: ThinVec<Color>,
 }
 
 impl ColorScale {
-    pub fn get_cfvo_collection(&self) -> &Vec<ConditionalFormatValueObject> {
+    #[inline]
+    pub fn get_cfvo_collection(&self) -> &[ConditionalFormatValueObject] {
         &self.cfvo_collection
     }
 
-    pub fn set_cfvo_collection(&mut self, value: Vec<ConditionalFormatValueObject>) -> &mut Self {
+    #[inline]
+    pub fn set_cfvo_collection(
+        &mut self,
+        value: ThinVec<ConditionalFormatValueObject>,
+    ) -> &mut Self {
         self.cfvo_collection = value;
         self
     }
 
+    #[inline]
     pub fn add_cfvo_collection(&mut self, value: ConditionalFormatValueObject) -> &mut Self {
         self.cfvo_collection.push(value);
         self
     }
 
-    pub fn get_color_collection(&self) -> &Vec<Color> {
+    #[inline]
+    pub fn get_color_collection(&self) -> &[Color] {
         &self.color_collection
     }
 
-    pub fn set_color_collection(&mut self, value: Vec<Color>) -> &mut Self {
-        self.color_collection = value;
+    #[inline]
+    pub fn set_color_collection(&mut self, value: impl Into<ThinVec<Color>>) -> &mut Self {
+        self.color_collection = value.into();
         self
     }
 
+    #[inline]
     pub fn add_color_collection(&mut self, value: Color) -> &mut Self {
         self.color_collection.push(value);
         self

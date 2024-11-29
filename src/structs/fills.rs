@@ -6,22 +6,26 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fills {
-    fill: Vec<Fill>,
+    fill: ThinVec<Fill>,
 }
 
 impl Fills {
-    pub(crate) fn get_fill(&self) -> &Vec<Fill> {
+    #[inline]
+    pub(crate) fn get_fill(&self) -> &[Fill] {
         &self.fill
     }
 
-    pub(crate) fn get_fill_mut(&mut self) -> &mut Vec<Fill> {
+    #[inline]
+    pub(crate) fn get_fill_mut(&mut self) -> &mut ThinVec<Fill> {
         &mut self.fill
     }
 
+    #[inline]
     pub(crate) fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill.push(value);
         self

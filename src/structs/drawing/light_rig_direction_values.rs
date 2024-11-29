@@ -12,11 +12,13 @@ pub enum LightRigDirectionValues {
     TopRight,
 }
 impl Default for LightRigDirectionValues {
+    #[inline]
     fn default() -> Self {
         Self::TopLeft
     }
 }
 impl EnumTrait for LightRigDirectionValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Bottom => "b",
@@ -32,6 +34,8 @@ impl EnumTrait for LightRigDirectionValues {
 }
 impl FromStr for LightRigDirectionValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "b" => Ok(Self::Bottom),

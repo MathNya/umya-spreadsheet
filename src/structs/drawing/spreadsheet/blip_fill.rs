@@ -15,54 +15,65 @@ use writer::driver::*;
 pub struct BlipFill {
     rotate_with_shape: BooleanValue,
     blip: Blip,
-    source_rectangle: Option<SourceRectangle>,
+    source_rectangle: Option<Box<SourceRectangle>>,
     stretch: Stretch,
 }
 
 impl BlipFill {
+    #[inline]
     pub fn get_rotate_with_shape(&self) -> &bool {
         self.rotate_with_shape.get_value()
     }
 
+    #[inline]
     pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut BlipFill {
         self.rotate_with_shape.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
-        self.source_rectangle.as_ref()
+        self.source_rectangle.as_deref()
     }
 
+    #[inline]
     pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
-        self.source_rectangle.as_mut()
+        self.source_rectangle.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_source_rectangle(&mut self, value: SourceRectangle) -> &mut BlipFill {
-        self.source_rectangle = Some(value);
+        self.source_rectangle = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_blip(&self) -> &Blip {
         &self.blip
     }
 
+    #[inline]
     pub fn get_blip_mut(&mut self) -> &mut Blip {
         &mut self.blip
     }
 
+    #[inline]
     pub fn set_blip(&mut self, value: Blip) -> &mut BlipFill {
         self.blip = value;
         self
     }
 
+    #[inline]
     pub fn get_stretch(&self) -> &Stretch {
         &self.stretch
     }
 
+    #[inline]
     pub fn get_stretch_mut(&mut self) -> &mut Stretch {
         &mut self.stretch
     }
 
+    #[inline]
     pub fn set_stretch(&mut self, value: Stretch) -> &mut BlipFill {
         self.stretch = value;
         self

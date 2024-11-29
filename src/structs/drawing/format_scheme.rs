@@ -21,59 +21,73 @@ pub struct FormatScheme {
 }
 
 impl FormatScheme {
+    #[inline]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
 
+    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_fill_style_list(&self) -> &FillStyleList {
         &self.fill_style_list
     }
 
+    #[inline]
     pub fn get_fill_style_list_mut(&mut self) -> &mut FillStyleList {
         &mut self.fill_style_list
     }
 
+    #[inline]
     pub fn set_fill_style_list(&mut self, value: FillStyleList) {
         self.fill_style_list = value;
     }
 
+    #[inline]
     pub fn get_line_style_list(&self) -> &LineStyleList {
         &self.line_style_list
     }
 
+    #[inline]
     pub fn get_line_style_list_mut(&mut self) -> &mut LineStyleList {
         &mut self.line_style_list
     }
 
+    #[inline]
     pub fn set_line_style_list(&mut self, value: LineStyleList) {
         self.line_style_list = value;
     }
 
+    #[inline]
     pub fn get_effect_style_list(&self) -> &EffectStyleList {
         &self.effect_style_list
     }
 
+    #[inline]
     pub fn get_effect_style_list_mut(&mut self) -> &mut EffectStyleList {
         &mut self.effect_style_list
     }
 
+    #[inline]
     pub fn set_effect_style_list(&mut self, value: EffectStyleList) {
         self.effect_style_list = value;
     }
 
+    #[inline]
     pub fn get_background_fill_style_list(&self) -> &BackgroundFillStyleList {
         &self.background_fill_style_list
     }
 
+    #[inline]
     pub fn get_background_fill_style_list_mut(&mut self) -> &mut BackgroundFillStyleList {
         &mut self.background_fill_style_list
     }
 
+    #[inline]
     pub fn set_background_fill_style_list_list(&mut self, value: BackgroundFillStyleList) {
         self.background_fill_style_list = value;
     }

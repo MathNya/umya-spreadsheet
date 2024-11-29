@@ -4,34 +4,41 @@ use structs::raw::RawFile;
 use structs::raw::RawRelationships;
 use structs::WriterManager;
 use structs::XlsxError;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {
     worksheet_file: RawFile,
-    relationships_list: Vec<RawRelationships>,
+    relationships_list: ThinVec<RawRelationships>,
 }
 impl RawWorksheet {
+    #[inline]
     pub(crate) fn get_worksheet_file(&self) -> &RawFile {
         &self.worksheet_file
     }
 
+    #[inline]
     pub(crate) fn get_worksheet_file_mut(&mut self) -> &mut RawFile {
         &mut self.worksheet_file
     }
 
-    pub(crate) fn get_relationships_list(&self) -> &Vec<RawRelationships> {
+    #[inline]
+    pub(crate) fn get_relationships_list(&self) -> &[RawRelationships] {
         &self.relationships_list
     }
 
-    pub(crate) fn _get_relationships_list_mut(&mut self) -> &mut Vec<RawRelationships> {
+    #[inline]
+    pub(crate) fn _get_relationships_list_mut(&mut self) -> &mut ThinVec<RawRelationships> {
         &mut self.relationships_list
     }
 
+    #[inline]
     pub(crate) fn set_relationships(&mut self, value: RawRelationships) -> &mut Self {
         self.relationships_list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_worksheet_relationships(&self) -> Option<&RawRelationships> {
         self.get_relationships_list()
             .iter()

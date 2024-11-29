@@ -7,11 +7,13 @@ pub enum PaneStateValues {
     Split,
 }
 impl Default for PaneStateValues {
+    #[inline]
     fn default() -> Self {
         Self::Split
     }
 }
 impl EnumTrait for PaneStateValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Frozen => "frozen",
@@ -22,6 +24,8 @@ impl EnumTrait for PaneStateValues {
 }
 impl FromStr for PaneStateValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "frozen" => Ok(Self::Frozen),

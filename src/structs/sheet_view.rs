@@ -11,116 +11,139 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetView {
     tab_selected: BooleanValue,
     workbook_view_id: UInt32Value,
-    pane: Option<Pane>,
+    pane: Option<Box<Pane>>,
     view: EnumValue<SheetViewValues>,
     zoom_scale: UInt32Value,
     zoom_scale_normal: UInt32Value,
     zoom_scale_page_layout_view: UInt32Value,
     zoom_scale_sheet_layout_view: UInt32Value,
     top_left_cell: StringValue,
-    selection: Vec<Selection>,
+    selection: ThinVec<Selection>,
 }
 
 impl SheetView {
+    #[inline]
     pub fn get_tab_selected(&self) -> &bool {
         self.tab_selected.get_value()
     }
 
+    #[inline]
     pub fn set_tab_selected(&mut self, value: bool) -> &mut Self {
         self.tab_selected.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_workbook_view_id(&self) -> &u32 {
         self.workbook_view_id.get_value()
     }
 
+    #[inline]
     pub fn set_workbook_view_id(&mut self, value: u32) -> &mut Self {
         self.workbook_view_id.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_pane(&self) -> Option<&Pane> {
-        self.pane.as_ref()
+        self.pane.as_deref()
     }
 
+    #[inline]
     pub fn get_pane_mut(&mut self) -> Option<&mut Pane> {
-        self.pane.as_mut()
+        self.pane.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_pane(&mut self, value: Pane) -> &mut Self {
-        self.pane = Some(value);
+        self.pane = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn get_view(&self) -> &SheetViewValues {
         self.view.get_value()
     }
 
+    #[inline]
     pub fn set_view(&mut self, value: SheetViewValues) -> &mut Self {
         self.view.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_zoom_scale(&self) -> &u32 {
         self.zoom_scale.get_value()
     }
 
+    #[inline]
     pub fn set_zoom_scale(&mut self, value: u32) -> &mut Self {
         self.zoom_scale.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_zoom_scale_normal(&self) -> &u32 {
         self.zoom_scale_normal.get_value()
     }
 
+    #[inline]
     pub fn set_zoom_scale_normal(&mut self, value: u32) -> &mut Self {
         self.zoom_scale_normal.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_zoom_scale_page_layout_view(&self) -> &u32 {
         self.zoom_scale_page_layout_view.get_value()
     }
 
+    #[inline]
     pub fn set_zoom_scale_page_layout_view(&mut self, value: u32) -> &mut Self {
         self.zoom_scale_page_layout_view.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_zoom_scale_sheet_layout_view(&self) -> &u32 {
         self.zoom_scale_sheet_layout_view.get_value()
     }
 
+    #[inline]
     pub fn set_zoom_scale_sheet_layout_view(&mut self, value: u32) -> &mut Self {
         self.zoom_scale_sheet_layout_view.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_top_left_cell(&self) -> &str {
         self.top_left_cell.get_value_str()
     }
 
+    #[inline]
     pub fn set_top_left_cell<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.top_left_cell.set_value(value);
         self
     }
 
-    pub fn get_selection(&self) -> &Vec<Selection> {
+    #[inline]
+    pub fn get_selection(&self) -> &[Selection] {
         &self.selection
     }
 
-    pub fn get_selection_mut(&mut self) -> &mut Vec<Selection> {
+    #[inline]
+    pub fn get_selection_mut(&mut self) -> &mut ThinVec<Selection> {
         &mut self.selection
     }
 
+    #[inline]
     pub fn set_selection(&mut self, value: Selection) -> &mut Self {
         self.selection.push(value);
         self

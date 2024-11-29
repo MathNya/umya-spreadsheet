@@ -16,28 +16,34 @@ pub struct GradientStop {
 }
 
 impl GradientStop {
+    #[inline]
     pub fn get_position(&self) -> &f64 {
         self.position.get_value()
     }
 
+    #[inline]
     pub fn set_position(&mut self, value: f64) -> &mut Self {
         self.position.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
 
+    #[inline]
     pub fn get_color_mut(&mut self) -> &mut Color {
         &mut self.color
     }
 
+    #[inline]
     pub fn set_color(&mut self, value: Color) -> &mut Self {
         self.color = value;
         self
     }
 
+    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",

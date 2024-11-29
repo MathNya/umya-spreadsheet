@@ -7,11 +7,13 @@ pub enum TextCapsValues {
     Small,
 }
 impl Default for TextCapsValues {
+    #[inline]
     fn default() -> Self {
         Self::None
     }
 }
 impl EnumTrait for TextCapsValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::All => "all",
@@ -22,6 +24,8 @@ impl EnumTrait for TextCapsValues {
 }
 impl FromStr for TextCapsValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "all" => Ok(Self::All),

@@ -9,11 +9,13 @@ pub enum TextFontAlignmentValues {
     Top,
 }
 impl Default for TextFontAlignmentValues {
+    #[inline]
     fn default() -> Self {
         Self::Automatic
     }
 }
 impl EnumTrait for TextFontAlignmentValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Automatic => "auto",
@@ -26,6 +28,8 @@ impl EnumTrait for TextFontAlignmentValues {
 }
 impl FromStr for TextFontAlignmentValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "auto" => Ok(Self::Automatic),

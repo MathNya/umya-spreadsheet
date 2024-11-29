@@ -7,14 +7,16 @@ use reader::driver::*;
 use std::borrow::Cow;
 use std::fmt::Write;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {
-    rich_text_elements: Vec<TextElement>,
+    rich_text_elements: ThinVec<TextElement>,
 }
 
 impl RichText {
+    #[inline]
     pub fn get_text(&self) -> Cow<'static, str> {
         let mut text = String::from("");
         for rich_text_elements in &self.rich_text_elements {
@@ -23,6 +25,7 @@ impl RichText {
         text.into()
     }
 
+    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.rich_text_elements.clear();
         let mut text_element = TextElement::default();
@@ -31,19 +34,23 @@ impl RichText {
         self
     }
 
-    pub fn get_rich_text_elements(&self) -> &Vec<TextElement> {
+    #[inline]
+    pub fn get_rich_text_elements(&self) -> &[TextElement] {
         &self.rich_text_elements
     }
 
-    pub fn get_rich_text_elements_mut(&mut self) -> &mut Vec<TextElement> {
+    #[inline]
+    pub fn get_rich_text_elements_mut(&mut self) -> &mut ThinVec<TextElement> {
         &mut self.rich_text_elements
     }
 
-    pub fn set_rich_text_elements(&mut self, value: Vec<TextElement>) -> &mut Self {
-        self.rich_text_elements = value;
+    #[inline]
+    pub fn set_rich_text_elements(&mut self, value: impl Into<ThinVec<TextElement>>) -> &mut Self {
+        self.rich_text_elements = value.into();
         self
     }
 
+    #[inline]
     pub fn add_rich_text_elements(&mut self, value: TextElement) -> &mut Self {
         self.rich_text_elements.push(value);
         self
@@ -80,11 +87,13 @@ impl RichText {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to_none(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // none
         self.write_to(writer, "");
     }
 
+    #[inline]
     pub(crate) fn write_to_text(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // text
         self.write_to(writer, "text");

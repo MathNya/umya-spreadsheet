@@ -7,11 +7,13 @@ pub enum SheetViewValues {
     PageLayout,
 }
 impl Default for SheetViewValues {
+    #[inline]
     fn default() -> Self {
         Self::Normal
     }
 }
 impl EnumTrait for SheetViewValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Normal => "normal",
@@ -22,6 +24,8 @@ impl EnumTrait for SheetViewValues {
 }
 impl FromStr for SheetViewValues {
     type Err = ();
+
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "normal" => Ok(Self::Normal),

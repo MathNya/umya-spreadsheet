@@ -34,187 +34,226 @@ pub struct ConditionalFormattingRule {
     above_average: BooleanValue,
     equal_average: BooleanValue,
     time_period: EnumValue<TimePeriodValues>,
-    style: Option<Style>,
+    style: Option<Box<Style>>,
     color_scale: Option<ColorScale>,
     data_bar: Option<DataBar>,
     icon_set: Option<IconSet>,
-    formula: Option<Formula>,
+    formula: Option<Box<Formula>>,
 }
 
 impl ConditionalFormattingRule {
+    #[inline]
     pub fn get_type(&self) -> &ConditionalFormatValues {
         self.r#type.get_value()
     }
 
+    #[inline]
     pub fn set_type(&mut self, value: ConditionalFormatValues) -> &mut Self {
         self.r#type.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_operator(&self) -> &ConditionalFormattingOperatorValues {
         self.operator.get_value()
     }
 
+    #[inline]
     pub fn set_operator(&mut self, value: ConditionalFormattingOperatorValues) -> &mut Self {
         self.operator.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_text(&self) -> &str {
         self.text.get_value_str()
     }
 
+    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.text.set_value(value.into());
         self
     }
 
+    #[inline]
     pub fn get_priority(&self) -> &i32 {
         self.priority.get_value()
     }
 
+    #[inline]
     pub fn set_priority(&mut self, value: i32) -> &mut Self {
         self.priority.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_percent(&self) -> &bool {
         self.percent.get_value()
     }
 
+    #[inline]
     pub fn set_percent(&mut self, value: bool) -> &mut Self {
         self.percent.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_bottom(&self) -> &bool {
         self.bottom.get_value()
     }
 
+    #[inline]
     pub fn set_bottom(&mut self, value: bool) -> &mut Self {
         self.bottom.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_rank(&self) -> &u32 {
         self.rank.get_value()
     }
 
+    #[inline]
     pub fn set_rank(&mut self, value: u32) -> &mut Self {
         self.rank.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_stop_if_true(&self) -> &bool {
         self.stop_if_true.get_value()
     }
 
+    #[inline]
     pub fn set_stop_if_true(&mut self, value: bool) -> &mut Self {
         self.stop_if_true.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_std_dev(&self) -> &i32 {
         self.std_dev.get_value()
     }
 
+    #[inline]
     pub fn set_std_dev(&mut self, value: i32) -> &mut Self {
         self.std_dev.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_above_average(&self) -> &bool {
         self.above_average.get_value()
     }
 
+    #[inline]
     pub fn set_above_average(&mut self, value: bool) -> &mut Self {
         self.above_average.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_equal_average(&self) -> &bool {
         self.equal_average.get_value()
     }
 
+    #[inline]
     pub fn set_equal_average(&mut self, value: bool) -> &mut Self {
         self.equal_average.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_time_period(&self) -> &TimePeriodValues {
         self.time_period.get_value()
     }
 
+    #[inline]
     pub fn set_time_period(&mut self, value: TimePeriodValues) -> &mut Self {
         self.time_period.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_style(&self) -> Option<&Style> {
-        self.style.as_ref()
+        self.style.as_deref()
     }
 
+    #[inline]
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = Some(value);
+        self.style = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_style(&mut self) -> &mut Self {
         self.style = None;
         self
     }
 
+    #[inline]
     pub fn get_color_scale(&self) -> Option<&ColorScale> {
         self.color_scale.as_ref()
     }
 
+    #[inline]
     pub fn set_color_scale(&mut self, value: ColorScale) -> &mut Self {
         self.color_scale = Some(value);
         self
     }
 
+    #[inline]
     pub fn remove_color_scale(&mut self) -> &mut Self {
         self.color_scale = None;
         self
     }
 
+    #[inline]
     pub fn get_data_bar(&self) -> Option<&DataBar> {
         self.data_bar.as_ref()
     }
 
+    #[inline]
     pub fn set_data_bar(&mut self, value: DataBar) -> &mut Self {
         self.data_bar = Some(value);
         self
     }
 
+    #[inline]
     pub fn remove_data_bar(&mut self) -> &mut Self {
         self.data_bar = None;
         self
     }
 
+    #[inline]
     pub fn get_icon_set(&self) -> Option<&IconSet> {
         self.icon_set.as_ref()
     }
 
+    #[inline]
     pub fn set_icon_set(&mut self, value: IconSet) -> &mut Self {
         self.icon_set = Some(value);
         self
     }
 
+    #[inline]
     pub fn remove_icon_set(&mut self) -> &mut Self {
         self.icon_set = None;
         self
     }
 
+    #[inline]
     pub fn get_formula(&self) -> Option<&Formula> {
-        self.formula.as_ref()
+        self.formula.as_deref()
     }
 
+    #[inline]
     pub fn set_formula(&mut self, value: Formula) -> &mut Self {
-        self.formula = Some(value);
+        self.formula = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_formula(&mut self) -> &mut Self {
         self.formula = None;
         self
@@ -272,7 +311,7 @@ impl ConditionalFormattingRule {
                     b"formula" => {
                         let mut obj = Formula::default();
                         obj.set_attributes(reader, e);
-                        self.formula = Some(obj);
+                        self.formula = Some(Box::new(obj));
                     }
                     _ => (),
                 }

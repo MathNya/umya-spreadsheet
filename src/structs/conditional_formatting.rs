@@ -7,45 +7,53 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use traits::AdjustmentCoordinate;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalFormatting {
     sequence_of_references: SequenceOfReferences,
-    conditional_collection: Vec<ConditionalFormattingRule>,
+    conditional_collection: ThinVec<ConditionalFormattingRule>,
 }
 
 impl ConditionalFormatting {
+    #[inline]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
+    #[inline]
     pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
     }
 
+    #[inline]
     pub fn set_sequence_of_references(&mut self, value: SequenceOfReferences) -> &mut Self {
         self.sequence_of_references = value;
         self
     }
 
-    pub fn get_conditional_collection(&self) -> &Vec<ConditionalFormattingRule> {
+    #[inline]
+    pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
         &self.conditional_collection
     }
 
-    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
+    #[inline]
+    pub fn get_conditional_collection_mut(&mut self) -> &mut ThinVec<ConditionalFormattingRule> {
         &mut self.conditional_collection
     }
 
+    #[inline]
     pub fn set_conditional_collection(
         &mut self,
-        value: Vec<ConditionalFormattingRule>,
+        value: impl Into<ThinVec<ConditionalFormattingRule>>,
     ) -> &mut Self {
-        self.conditional_collection = value;
+        self.conditional_collection = value.into();
         self
     }
 
+    #[inline]
     pub fn add_conditional_collection(&mut self, value: ConditionalFormattingRule) -> &mut Self {
         self.conditional_collection.push(value);
         self
@@ -112,6 +120,7 @@ impl ConditionalFormatting {
     }
 }
 impl AdjustmentCoordinate for ConditionalFormatting {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -127,6 +136,7 @@ impl AdjustmentCoordinate for ConditionalFormatting {
         );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -142,6 +152,7 @@ impl AdjustmentCoordinate for ConditionalFormatting {
         );
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,

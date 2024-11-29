@@ -5,46 +5,58 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct FillStyleList {
-    solid_fill: Vec<SolidFill>,
-    gradient_fill_collection: Vec<GradientFill>,
+    solid_fill: ThinVec<SolidFill>,
+    gradient_fill_collection: ThinVec<GradientFill>,
 }
 
 impl FillStyleList {
-    pub fn get_solid_fill(&self) -> &Vec<SolidFill> {
+    #[inline]
+    pub fn get_solid_fill(&self) -> &[SolidFill] {
         &self.solid_fill
     }
 
-    pub fn get_solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
+    #[inline]
+    pub fn get_solid_fill_mut(&mut self) -> &mut ThinVec<SolidFill> {
         &mut self.solid_fill
     }
 
-    pub fn set_solid_fill(&mut self, value: Vec<SolidFill>) -> &mut Self {
-        self.solid_fill = value;
+    #[inline]
+    pub fn set_solid_fill(&mut self, value: impl Into<ThinVec<SolidFill>>) -> &mut Self {
+        self.solid_fill = value.into();
         self
     }
 
+    #[inline]
     pub fn add_solid_fill(&mut self, value: SolidFill) -> &mut Self {
         self.solid_fill.push(value);
         self
     }
 
-    pub fn get_gradient_fill_collection(&self) -> &Vec<GradientFill> {
+    #[inline]
+    pub fn get_gradient_fill_collection(&self) -> &[GradientFill] {
         &self.gradient_fill_collection
     }
 
-    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut Vec<GradientFill> {
+    #[inline]
+    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut ThinVec<GradientFill> {
         &mut self.gradient_fill_collection
     }
 
-    pub fn set_gradient_fill_collection(&mut self, value: Vec<GradientFill>) -> &mut Self {
-        self.gradient_fill_collection = value;
+    #[inline]
+    pub fn set_gradient_fill_collection(
+        &mut self,
+        value: impl Into<ThinVec<GradientFill>>,
+    ) -> &mut Self {
+        self.gradient_fill_collection = value.into();
         self
     }
 
+    #[inline]
     pub fn add_gradient_fill_collection(&mut self, value: GradientFill) -> &mut Self {
         self.gradient_fill_collection.push(value);
         self

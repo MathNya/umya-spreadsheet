@@ -17,33 +17,40 @@ pub struct BevelTop {
 }
 
 impl BevelTop {
+    #[inline]
     pub fn get_width(&self) -> &i64 {
         self.width.get_value()
     }
 
+    #[inline]
     pub fn set_width(&mut self, value: i64) -> &mut BevelTop {
         self.width.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_height(&self) -> &i64 {
         self.height.get_value()
     }
 
+    #[inline]
     pub fn set_height(&mut self, value: i64) -> &mut BevelTop {
         self.height.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_preset(&self) -> &BevelPresetValues {
         self.preset.get_value()
     }
 
+    #[inline]
     pub fn set_preset(&mut self, value: BevelPresetValues) -> &mut BevelTop {
         self.preset.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

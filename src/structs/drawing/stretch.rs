@@ -9,20 +9,23 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Stretch {
-    fill_rectangle: Option<FillRectangle>,
+    fill_rectangle: Option<Box<FillRectangle>>,
 }
 
 impl Stretch {
+    #[inline]
     pub fn get_fill_rectangle(&self) -> Option<&FillRectangle> {
-        self.fill_rectangle.as_ref()
+        self.fill_rectangle.as_deref()
     }
 
+    #[inline]
     pub fn get_fill_rectangle_mut(&mut self) -> Option<&mut FillRectangle> {
-        self.fill_rectangle.as_mut()
+        self.fill_rectangle.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_fill_rectangle(&mut self, value: FillRectangle) {
-        self.fill_rectangle = Some(value);
+        self.fill_rectangle = Some(Box::new(value));
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

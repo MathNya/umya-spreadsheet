@@ -6,22 +6,26 @@ use reader::driver::*;
 use std::io::Cursor;
 use structs::Font;
 use structs::Style;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fonts {
-    font: Vec<Font>,
+    font: ThinVec<Font>,
 }
 
 impl Fonts {
-    pub(crate) fn get_font(&self) -> &Vec<Font> {
+    #[inline]
+    pub(crate) fn get_font(&self) -> &[Font] {
         &self.font
     }
 
-    pub(crate) fn get_font_mut(&mut self) -> &mut Vec<Font> {
+    #[inline]
+    pub(crate) fn get_font_mut(&mut self) -> &mut ThinVec<Font> {
         &mut self.font
     }
 
+    #[inline]
     pub(crate) fn set_font(&mut self, value: Font) -> &mut Self {
         self.font.push(value);
         self

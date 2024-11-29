@@ -6,22 +6,26 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObjects {
-    ole_object: Vec<OleObject>,
+    ole_object: ThinVec<OleObject>,
 }
 
 impl OleObjects {
-    pub fn get_ole_object(&self) -> &Vec<OleObject> {
+    #[inline]
+    pub fn get_ole_object(&self) -> &[OleObject] {
         &self.ole_object
     }
 
-    pub fn get_ole_object_mut(&mut self) -> &mut Vec<OleObject> {
+    #[inline]
+    pub fn get_ole_object_mut(&mut self) -> &mut ThinVec<OleObject> {
         &mut self.ole_object
     }
 
+    #[inline]
     pub fn set_ole_object(&mut self, value: OleObject) -> &mut Self {
         self.ole_object.push(value);
         self

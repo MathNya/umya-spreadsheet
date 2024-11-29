@@ -7,28 +7,33 @@ use traits::AdjustmentCoordinateWithSheet;
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {
-    sheet_name: String,
+    sheet_name: Box<str>,
     range: Range,
 }
 
 impl Address {
+    #[inline]
     pub fn get_sheet_name(&self) -> &str {
         &self.sheet_name
     }
 
+    #[inline]
     pub fn set_sheet_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.sheet_name = value.into();
+        self.sheet_name = value.into().into_boxed_str();
         self
     }
 
+    #[inline]
     pub fn get_range(&self) -> &Range {
         &self.range
     }
 
+    #[inline]
     pub fn get_range_mut(&mut self) -> &mut Range {
         &mut self.range
     }
 
+    #[inline]
     pub fn set_range(&mut self, value: Range) -> &mut Self {
         self.range = value;
         self
@@ -39,15 +44,17 @@ impl Address {
         let (sheet_name, range) = split_address(&org_value);
         self.range.set_range(range);
         if sheet_name != "" {
-            self.sheet_name = sheet_name.to_string();
+            self.sheet_name = sheet_name.into();
         }
         self
     }
 
+    #[inline]
     pub fn get_address(&self) -> String {
         self.get_address_crate(false)
     }
 
+    #[inline]
     pub(crate) fn get_address_ptn2(&self) -> String {
         self.get_address_crate(true)
     }
@@ -68,7 +75,7 @@ impl Address {
             }
             if sheet_name.contains("'") {
                 with_space_char = "'";
-                sheet_name = sheet_name.replace("'", "''");
+                sheet_name = sheet_name.replace("'", "''").into_boxed_str();
             }
             if sheet_name.contains(r#"""#) {
                 with_space_char = "'";
@@ -94,6 +101,7 @@ impl Address {
     }
 }
 impl AdjustmentCoordinateWithSheet for Address {
+    #[inline]
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
@@ -102,7 +110,7 @@ impl AdjustmentCoordinateWithSheet for Address {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if self.sheet_name == sheet_name {
+        if &*self.sheet_name == sheet_name {
             self.range.adjustment_insert_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -112,6 +120,7 @@ impl AdjustmentCoordinateWithSheet for Address {
         }
     }
 
+    #[inline]
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
@@ -120,7 +129,7 @@ impl AdjustmentCoordinateWithSheet for Address {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if self.sheet_name == sheet_name {
+        if &*self.sheet_name == sheet_name {
             self.range.adjustment_remove_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -130,6 +139,7 @@ impl AdjustmentCoordinateWithSheet for Address {
         }
     }
 
+    #[inline]
     fn is_remove_coordinate_with_sheet(
         &self,
         sheet_name: &str,
@@ -138,7 +148,7 @@ impl AdjustmentCoordinateWithSheet for Address {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) -> bool {
-        self.sheet_name == sheet_name
+        &*self.sheet_name == sheet_name
             && self.range.is_remove_coordinate(
                 root_col_num,
                 offset_col_num,

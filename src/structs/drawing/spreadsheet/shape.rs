@@ -17,23 +17,27 @@ pub struct Shape {
     anchor: Anchor,
     non_visual_shape_properties: NonVisualShapeProperties,
     shape_properties: ShapeProperties,
-    shape_style: Option<ShapeStyle>,
-    text_body: Option<TextBody>,
+    shape_style: Option<Box<ShapeStyle>>,
+    text_body: Option<Box<TextBody>>,
 }
 
 impl Shape {
+    #[inline]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
 
+    #[inline]
     pub fn get_anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
     }
 
+    #[inline]
     pub fn set_anchor(&mut self, value: Anchor) {
         self.anchor = value;
     }
 
+    #[inline]
     pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
         &self.non_visual_shape_properties
     }
@@ -42,44 +46,53 @@ impl Shape {
         &mut self.non_visual_shape_properties
     }
 
+    #[inline]
     pub fn set_non_visual_shape_properties(&mut self, value: NonVisualShapeProperties) {
         self.non_visual_shape_properties = value;
     }
 
+    #[inline]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
+    #[inline]
     pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
     }
 
+    #[inline]
     pub fn set_shape_properties(&mut self, value: ShapeProperties) {
         self.shape_properties = value;
     }
 
     pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
-        self.shape_style.as_ref()
+        self.shape_style.as_deref()
     }
 
+    #[inline]
     pub fn get_shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
-        self.shape_style.as_mut()
+        self.shape_style.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_shape_style(&mut self, value: ShapeStyle) {
-        self.shape_style = Some(value);
+        self.shape_style = Some(Box::new(value));
     }
 
+    #[inline]
     pub fn get_text_body(&self) -> Option<&TextBody> {
-        self.text_body.as_ref()
+        self.text_body.as_deref()
     }
 
+    #[inline]
     pub fn get_text_body_mut(&mut self) -> Option<&mut TextBody> {
-        self.text_body.as_mut()
+        self.text_body.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_text_body(&mut self, value: TextBody) {
-        self.text_body = Some(value);
+        self.text_body = Some(Box::new(value));
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

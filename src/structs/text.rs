@@ -9,21 +9,24 @@ use writer::driver::*;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub(crate) struct Text {
-    value: String,
+    value: Box<str>,
 }
 
 impl Text {
+    #[inline]
     pub(crate) fn get_value(&self) -> &str {
         &self.value
     }
 
+    #[inline]
     pub(crate) fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.value = value.into();
+        self.value = value.into().into_boxed_str();
         self
     }
 
+    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(&self.value))
+        format!("{:x}", md5::Md5::digest(&*self.value))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -54,7 +57,7 @@ impl Text {
             attributes.push(("xml:space", "preserve"));
         }
         write_start_tag(writer, "t", attributes, false);
-        write_text_node(writer, &self.value);
+        write_text_node(writer, &*self.value);
         write_end_tag(writer, "t");
     }
 }

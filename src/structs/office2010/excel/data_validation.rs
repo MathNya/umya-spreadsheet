@@ -25,117 +25,142 @@ pub struct DataValidation {
     prompt_title: StringValue,
     prompt: StringValue,
     reference_sequence: ReferenceSequence,
-    formula1: Option<DataValidationForumla1>,
-    formula2: Option<DataValidationForumla2>,
+    formula1: Option<Box<DataValidationForumla1>>,
+    formula2: Option<Box<DataValidationForumla2>>,
 }
 impl DataValidation {
+    #[inline]
     pub fn get_type(&self) -> &DataValidationValues {
         self.r#type.get_value()
     }
 
+    #[inline]
     pub fn set_type(&mut self, value: DataValidationValues) -> &mut Self {
         self.r#type.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
         self.operator.get_value()
     }
 
+    #[inline]
     pub fn set_operator(&mut self, value: DataValidationOperatorValues) -> &mut Self {
         self.operator.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_allow_blank(&self) -> &bool {
         self.allow_blank.get_value()
     }
 
+    #[inline]
     pub fn set_allow_blank(&mut self, value: bool) -> &mut Self {
         self.allow_blank.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_show_input_message(&self) -> &bool {
         self.show_input_message.get_value()
     }
 
+    #[inline]
     pub fn set_show_input_message(&mut self, value: bool) -> &mut Self {
         self.show_input_message.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_show_error_message(&self) -> &bool {
         self.show_error_message.get_value()
     }
 
+    #[inline]
     pub fn set_show_error_message(&mut self, value: bool) -> &mut Self {
         self.show_error_message.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_prompt_title(&self) -> &str {
         self.prompt_title.get_value_str()
     }
 
+    #[inline]
     pub fn set_prompt_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prompt_title.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_prompt(&self) -> &str {
         self.prompt.get_value_str()
     }
 
+    #[inline]
     pub fn set_prompt<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prompt.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_reference_sequence(&self) -> &ReferenceSequence {
         &self.reference_sequence
     }
 
+    #[inline]
     pub fn get_reference_sequence_mut(&mut self) -> &mut ReferenceSequence {
         &mut self.reference_sequence
     }
 
+    #[inline]
     pub fn set_reference_sequence(&mut self, value: ReferenceSequence) -> &mut Self {
         self.reference_sequence = value;
         self
     }
 
+    #[inline]
     pub fn get_formula1(&self) -> Option<&DataValidationForumla1> {
-        self.formula1.as_ref()
+        self.formula1.as_deref()
     }
 
+    #[inline]
     pub fn get_formula1_mut(&mut self) -> Option<&mut DataValidationForumla1> {
-        self.formula1.as_mut()
+        self.formula1.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_formula1(&mut self, value: DataValidationForumla1) -> &mut Self {
-        self.formula1 = Some(value);
+        self.formula1 = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_formula1(&mut self) -> &mut Self {
         self.formula1 = None;
         self
     }
 
+    #[inline]
     pub fn get_formula2(&self) -> Option<&DataValidationForumla2> {
-        self.formula2.as_ref()
+        self.formula2.as_deref()
     }
 
+    #[inline]
     pub fn get_formula2_mut(&mut self) -> Option<&mut DataValidationForumla2> {
-        self.formula2.as_mut()
+        self.formula2.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_formula2(&mut self, value: DataValidationForumla2) -> &mut Self {
-        self.formula2 = Some(value);
+        self.formula2 = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_formula2(&mut self) -> &mut Self {
         self.formula2 = None;
         self
@@ -186,12 +211,12 @@ impl DataValidation {
                     b"x14:formula1" => {
                         let mut obj = DataValidationForumla1::default();
                         obj.set_attributes(reader, e);
-                        self.formula1 = Some(obj);
+                        self.formula1 = Some(Box::new(obj));
                     }
                     b"x14:formula2" => {
                         let mut obj = DataValidationForumla2::default();
                         obj.set_attributes(reader, e);
-                        self.formula2 = Some(obj);
+                        self.formula2 = Some(Box::new(obj));
                     }
                     b"xm:sqref" => {
                         let mut obj = ReferenceSequence::default();

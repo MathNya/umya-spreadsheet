@@ -7,30 +7,37 @@ use reader::driver::*;
 use std::borrow::Cow;
 use std::io::Cursor;
 use structs::custom_properties::CustomDocumentProperty;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct Properties {
-    custom_document_property_list: Vec<CustomDocumentProperty>,
+    custom_document_property_list: ThinVec<CustomDocumentProperty>,
 }
 
 impl Properties {
-    pub fn get_custom_document_property_list(&self) -> &Vec<CustomDocumentProperty> {
+    #[inline]
+    pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
         &self.custom_document_property_list
     }
 
-    pub fn get_custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
+    #[inline]
+    pub fn get_custom_document_property_list_mut(
+        &mut self,
+    ) -> &mut ThinVec<CustomDocumentProperty> {
         &mut self.custom_document_property_list
     }
 
+    #[inline]
     pub fn set_custom_document_property_list(
         &mut self,
-        value: Vec<CustomDocumentProperty>,
+        value: impl Into<ThinVec<CustomDocumentProperty>>,
     ) -> &mut Self {
-        self.custom_document_property_list = value;
+        self.custom_document_property_list = value.into();
         self
     }
 
+    #[inline]
     pub fn add_custom_document_property_list(
         &mut self,
         value: CustomDocumentProperty,
@@ -39,6 +46,7 @@ impl Properties {
         self
     }
 
+    #[inline]
     pub fn remove_custom_document_property_list(
         &mut self,
         value: CustomDocumentProperty,

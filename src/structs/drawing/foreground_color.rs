@@ -13,14 +13,17 @@ pub struct ForegroundColor {
 }
 
 impl ForegroundColor {
+    #[inline]
     pub fn get_scheme_color(&self) -> &SchemeColor {
         &self.scheme_color
     }
 
+    #[inline]
     pub fn get_scheme_color_mut(&mut self) -> &mut SchemeColor {
         &mut self.scheme_color
     }
 
+    #[inline]
     pub fn set_scheme_color(&mut self, value: SchemeColor) -> &mut ForegroundColor {
         self.scheme_color = value;
         self

@@ -137,6 +137,7 @@ pub struct Chart {
 }
 
 impl Default for Chart {
+    #[inline]
     fn default() -> Self {
         Self {
             two_cell_anchor: Box::new(TwoCellAnchor::default()),
@@ -145,12 +146,14 @@ impl Default for Chart {
     }
 }
 impl Chart {
+    #[inline]
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
         self.get_chart_space_mut().get_chart_mut().set_title(title);
         self
     }
 
+    #[inline]
     pub fn set_grouping(&mut self, value: GroupingValues) -> &mut Self {
         self.get_plot_area_mut().set_grouping(value);
         self
@@ -235,12 +238,15 @@ impl Chart {
         }
         self
     }
+
+    #[inline]
     pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
         self.get_chart_space_mut()
             .get_chart_mut()
             .get_plot_area_mut()
     }
 
+    #[inline]
     pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         self.get_chart_space_mut()
             .get_chart_mut()
@@ -248,19 +254,23 @@ impl Chart {
             .get_area_chart_series_list_mut()
     }
 
+    #[inline]
     pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
 
+    #[inline]
     pub fn get_two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
         &mut self.two_cell_anchor
     }
 
+    #[inline]
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
         self.two_cell_anchor = Box::new(value);
         self
     }
 
+    #[inline]
     pub fn set_default_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.default_language = value.into();
         self
@@ -346,14 +356,17 @@ impl Chart {
         self
     }
 
+    #[inline]
     pub fn get_coordinate(&self) -> String {
         self.two_cell_anchor.get_from_marker().get_coordinate()
     }
 
+    #[inline]
     pub(crate) fn get_col(&self) -> &u32 {
         self.two_cell_anchor.get_from_marker().get_col()
     }
 
+    #[inline]
     pub(crate) fn get_row(&self) -> &u32 {
         self.two_cell_anchor.get_from_marker().get_row()
     }
@@ -2153,6 +2166,7 @@ impl Chart {
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
+    #[inline]
     pub(crate) fn make_print_settings(&self) -> PrintSettings {
         let mut obj = PrintSettings::default();
         obj.get_page_margins_mut()
@@ -2192,6 +2206,7 @@ impl Chart {
     }
 }
 impl AdjustmentCoordinate for Chart {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -2207,6 +2222,7 @@ impl AdjustmentCoordinate for Chart {
         );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -2222,6 +2238,7 @@ impl AdjustmentCoordinate for Chart {
         );
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,
@@ -2238,6 +2255,7 @@ impl AdjustmentCoordinate for Chart {
     }
 }
 impl AdjustmentCoordinateWithSheet for Chart {
+    #[inline]
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
@@ -2257,6 +2275,7 @@ impl AdjustmentCoordinateWithSheet for Chart {
             );
     }
 
+    #[inline]
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,

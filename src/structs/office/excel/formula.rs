@@ -13,14 +13,17 @@ pub struct Formula {
     value: Address,
 }
 impl Formula {
+    #[inline]
     pub fn get_value(&self) -> &Address {
         &self.value
     }
 
+    #[inline]
     pub fn get_value_mut(&mut self) -> &mut Address {
         &mut self.value
     }
 
+    #[inline]
     pub fn set_value(&mut self, value: Address) -> &mut Self {
         self.value = value;
         self
@@ -56,6 +59,7 @@ impl Formula {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:f", vec![], false);
         write_text_node(writer, &self.value.get_address());

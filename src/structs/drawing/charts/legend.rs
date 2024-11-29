@@ -14,10 +14,10 @@ use writer::driver::*;
 #[derive(Clone, Default, Debug)]
 pub struct Legend {
     legend_position: LegendPosition,
-    layout: Option<Layout>,
+    layout: Option<Box<Layout>>,
     overlay: Overlay,
-    shape_properties: Option<ShapeProperties>,
-    text_properties: Option<TextProperties>,
+    shape_properties: Option<Box<ShapeProperties>>,
+    text_properties: Option<Box<TextProperties>>,
 }
 
 impl Legend {
@@ -35,15 +35,15 @@ impl Legend {
     }
 
     pub fn get_layout(&self) -> Option<&Layout> {
-        self.layout.as_ref()
+        self.layout.as_deref()
     }
 
     pub fn get_layout_mut(&mut self) -> Option<&mut Layout> {
-        self.layout.as_mut()
+        self.layout.as_deref_mut()
     }
 
     pub fn set_layout(&mut self, value: Layout) -> &mut Self {
-        self.layout = Some(value);
+        self.layout = Some(Box::new(value));
         self
     }
 
@@ -61,28 +61,28 @@ impl Legend {
     }
 
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
-        self.shape_properties.as_ref()
+        self.shape_properties.as_deref()
     }
 
     pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
-        self.shape_properties.as_mut()
+        self.shape_properties.as_deref_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
-        self.shape_properties = Some(value);
+        self.shape_properties = Some(Box::new(value));
         self
     }
 
     pub fn get_text_properties(&self) -> Option<&TextProperties> {
-        self.text_properties.as_ref()
+        self.text_properties.as_deref()
     }
 
     pub fn get_text_properties_mut(&mut self) -> Option<&mut TextProperties> {
-        self.text_properties.as_mut()
+        self.text_properties.as_deref_mut()
     }
 
     pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {
-        self.text_properties = Some(value);
+        self.text_properties = Some(Box::new(value));
         self
     }
 

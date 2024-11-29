@@ -5,27 +5,32 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::Break;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ColumnBreaks {
-    break_list: Vec<Break>,
+    break_list: ThinVec<Break>,
 }
 
 impl ColumnBreaks {
-    pub fn get_break_list(&self) -> &Vec<Break> {
+    #[inline]
+    pub fn get_break_list(&self) -> &[Break] {
         &self.break_list
     }
 
-    pub fn get_break_list_mut(&mut self) -> &mut Vec<Break> {
+    #[inline]
+    pub fn get_break_list_mut(&mut self) -> &mut ThinVec<Break> {
         &mut self.break_list
     }
 
+    #[inline]
     pub fn add_break_list(&mut self, value: Break) -> &mut Self {
         self.break_list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn has_param(&self) -> bool {
         !self.break_list.is_empty()
     }

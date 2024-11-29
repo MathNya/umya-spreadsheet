@@ -39,182 +39,224 @@ impl Borders {
     pub const BORDER_THICK: &'static str = "thick";
     pub const BORDER_THIN: &'static str = "thin";
 
+    #[inline]
     pub fn get_left_border(&self) -> &Border {
         &self.left_border
     }
 
+    #[inline]
     pub fn get_left_border_mut(&mut self) -> &mut Border {
         &mut self.left_border
     }
 
+    #[inline]
     pub fn set_left_border(&mut self, value: Border) -> &mut Self {
         self.left_border = value;
         self
     }
 
+    #[inline]
     pub fn get_left(&self) -> &Border {
         &self.left_border
     }
 
+    #[inline]
     pub fn get_left_mut(&mut self) -> &mut Border {
         &mut self.left_border
     }
 
+    #[inline]
     pub fn set_left(&mut self, value: Border) -> &mut Self {
         self.left_border = value;
         self
     }
 
+    #[inline]
     pub fn get_right_border(&self) -> &Border {
         &self.right_border
     }
 
+    #[inline]
     pub fn get_right_border_mut(&mut self) -> &mut Border {
         &mut self.right_border
     }
 
+    #[inline]
     pub fn set_right_border(&mut self, value: Border) -> &mut Self {
         self.right_border = value;
         self
     }
 
+    #[inline]
     pub fn get_right(&self) -> &Border {
         &self.right_border
     }
 
+    #[inline]
     pub fn get_right_mut(&mut self) -> &mut Border {
         &mut self.right_border
     }
 
+    #[inline]
     pub fn set_right(&mut self, value: Border) -> &mut Self {
         self.right_border = value;
         self
     }
 
+    #[inline]
     pub fn get_top_border(&self) -> &Border {
         &self.top_border
     }
 
+    #[inline]
     pub fn get_top_border_mut(&mut self) -> &mut Border {
         &mut self.top_border
     }
 
+    #[inline]
     pub fn set_top_border(&mut self, value: Border) -> &mut Self {
         self.top_border = value;
         self
     }
 
+    #[inline]
     pub fn get_top(&self) -> &Border {
         &self.top_border
     }
 
+    #[inline]
     pub fn get_top_mut(&mut self) -> &mut Border {
         &mut self.top_border
     }
 
+    #[inline]
     pub fn set_top(&mut self, value: Border) -> &mut Self {
         self.top_border = value;
         self
     }
 
+    #[inline]
     pub fn get_bottom_border(&self) -> &Border {
         &self.bottom_border
     }
 
+    #[inline]
     pub fn get_bottom_border_mut(&mut self) -> &mut Border {
         &mut self.bottom_border
     }
 
+    #[inline]
     pub fn set_bottom_border(&mut self, value: Border) -> &mut Self {
         self.bottom_border = value;
         self
     }
 
+    #[inline]
     pub fn get_bottom(&self) -> &Border {
         &self.bottom_border
     }
 
+    #[inline]
     pub fn get_bottom_mut(&mut self) -> &mut Border {
         &mut self.bottom_border
     }
 
+    #[inline]
     pub fn set_bottom(&mut self, value: Border) -> &mut Self {
         self.bottom_border = value;
         self
     }
 
+    #[inline]
     pub fn get_diagonal_border(&self) -> &Border {
         &self.diagonal_border
     }
 
+    #[inline]
     pub fn get_diagonal_border_mut(&mut self) -> &mut Border {
         &mut self.diagonal_border
     }
 
+    #[inline]
     pub fn set_diagonal_border(&mut self, value: Border) -> &mut Self {
         self.diagonal_border = value;
         self
     }
 
+    #[inline]
     pub fn get_diagonal(&self) -> &Border {
         &self.diagonal_border
     }
 
+    #[inline]
     pub fn get_diagonal_mut(&mut self) -> &mut Border {
         &mut self.diagonal_border
     }
 
+    #[inline]
     pub fn set_diagonal(&mut self, value: Border) -> &mut Self {
         self.diagonal_border = value;
         self
     }
 
+    #[inline]
     pub fn get_vertical_border(&self) -> &Border {
         &self.vertical_border
     }
 
+    #[inline]
     pub fn get_vertical_border_mut(&mut self) -> &mut Border {
         &mut self.vertical_border
     }
 
+    #[inline]
     pub fn set_vertical_border(&mut self, value: Border) -> &mut Self {
         self.vertical_border = value;
         self
     }
 
+    #[inline]
     pub fn get_horizontal_border(&self) -> &Border {
         &self.horizontal_border
     }
 
+    #[inline]
     pub fn get_horizontal_border_mut(&mut self) -> &mut Border {
         &mut self.horizontal_border
     }
 
+    #[inline]
     pub fn set_horizontal_border(&mut self, value: Border) -> &mut Self {
         self.horizontal_border = value;
         self
     }
 
+    #[inline]
     pub fn get_diagonal_down(&self) -> &bool {
         self.diagonal_down.get_value()
     }
 
+    #[inline]
     pub fn set_diagonal_down(&mut self, value: bool) {
         self.diagonal_down.set_value(value);
     }
 
+    #[inline]
     pub fn get_diagonal_up(&self) -> &bool {
         self.diagonal_up.get_value()
     }
 
+    #[inline]
     pub fn set_diagonal_up(&mut self, value: bool) {
         self.diagonal_up.set_value(value);
     }
 
+    #[inline]
     pub(crate) fn get_default_value() -> Self {
         Self::default()
     }
 
+    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
@@ -234,6 +276,7 @@ impl Borders {
     }
 
     // When opened in software such as Excel, it is visually blank.
+    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         self.left_border.is_visually_empty()
             || self.right_border.is_visually_empty()

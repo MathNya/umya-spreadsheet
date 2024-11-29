@@ -9,35 +9,41 @@ use structs::raw::RawRelationship;
 use structs::StringValue;
 use structs::WriterManager;
 use structs::XlsxError;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
     file_target: StringValue,
-    relationship_list: Vec<RawRelationship>,
+    relationship_list: ThinVec<RawRelationship>,
 }
 
 impl RawRelationships {
+    #[inline]
     pub(crate) fn _get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
         object_name.to_string()
     }
 
+    #[inline]
     pub(crate) fn get_file_target(&self) -> &str {
         self.file_target.get_value_str()
     }
 
+    #[inline]
     pub(crate) fn set_file_target<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.file_target.set_value(value);
         self
     }
 
-    pub(crate) fn get_relationship_list(&self) -> &Vec<RawRelationship> {
+    #[inline]
+    pub(crate) fn get_relationship_list(&self) -> &[RawRelationship] {
         &self.relationship_list
     }
 
-    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
+    #[inline]
+    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut ThinVec<RawRelationship> {
         &mut self.relationship_list
     }
 
@@ -50,6 +56,7 @@ impl RawRelationships {
         panic!("not found relationship as {}.", r_id);
     }
 
+    #[inline]
     pub(crate) fn add_relationship_list(&mut self, value: RawRelationship) -> &mut Self {
         self.relationship_list.push(value);
         self
