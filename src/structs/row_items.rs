@@ -1,34 +1,39 @@
 // rowItems
-use structs::BooleanValue;
-use structs::StringValue;
-use structs::UInt32Value;
-use structs::ByteValue;
-use structs::RowItem;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::BooleanValue;
+use structs::ByteValue;
+use structs::RowItem;
+use structs::StringValue;
+use structs::UInt32Value;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct RowItems {
-    list: Vec<RowItem>,
+    list: ThinVec<RowItem>,
 }
 impl RowItems {
-    pub fn get_list(&self) -> &Vec<RowItem> {
+    #[inline]
+    pub fn get_list(&self) -> &[RowItem] {
         &self.list
     }
 
-    pub fn get_list_mut(&mut self) -> &mut Vec<RowItem> {
+    #[inline]
+    pub fn get_list_mut(&mut self) -> &mut ThinVec<RowItem> {
         &mut self.list
     }
 
+    #[inline]
     pub fn add_list_mut(&mut self, value: RowItem) -> &mut Self {
         self.list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -59,11 +64,15 @@ impl RowItems {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // rowItems
-        write_start_tag(writer, "rowItems", vec![
-            ("count", self.list.len().to_string().as_str())
-        ], false);
+        write_start_tag(
+            writer,
+            "rowItems",
+            vec![("count", self.list.len().to_string().as_str())],
+            false,
+        );
 
         // i
         for i in &self.list {

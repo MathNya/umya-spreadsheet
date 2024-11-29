@@ -1,30 +1,35 @@
 // colItems
-use structs::RowItem;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::RowItem;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ColumnItems {
-    list: Vec<RowItem>,
+    list: ThinVec<RowItem>,
 }
 impl ColumnItems {
-    pub fn get_list(&self) -> &Vec<RowItem> {
+    #[inline]
+    pub fn get_list(&self) -> &[RowItem] {
         &self.list
     }
 
-    pub fn get_list_mut(&mut self) -> &mut Vec<RowItem> {
+    #[inline]
+    pub fn get_list_mut(&mut self) -> &mut ThinVec<RowItem> {
         &mut self.list
     }
 
+    #[inline]
     pub fn add_list_mut(&mut self, value: RowItem) -> &mut Self {
         self.list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -55,11 +60,15 @@ impl ColumnItems {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // colItems
-        write_start_tag(writer, "colItems", vec![
-            ("count", self.list.len().to_string().as_str())
-        ], false);
+        write_start_tag(
+            writer,
+            "colItems",
+            vec![("count", self.list.len().to_string().as_str())],
+            false,
+        );
 
         // i
         for i in &self.list {

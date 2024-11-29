@@ -1,21 +1,21 @@
 // pivotTableDefinition
-use structs::BooleanValue;
-use structs::StringValue;
-use structs::UInt32Value;
-use structs::ByteValue;
-use structs::Location;
-use structs::PivotFields;
-use structs::RowItems;
-use structs::ColumnFields;
-use structs::ColumnItems;
-use structs::DataFields;
-use structs::PivotTableStyle;
 use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::BooleanValue;
+use structs::ByteValue;
+use structs::ColumnFields;
+use structs::ColumnItems;
+use structs::DataFields;
+use structs::Location;
+use structs::PivotFields;
+use structs::PivotTableStyle;
+use structs::RowItems;
+use structs::StringValue;
+use structs::UInt32Value;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -48,268 +48,328 @@ pub struct PivotTableDefinition {
     pivot_table_style: PivotTableStyle,
 }
 impl PivotTableDefinition {
+    #[inline]
     pub fn get_apply_number_formats(&self) -> &bool {
         self.apply_number_formats.get_value()
     }
 
+    #[inline]
     pub fn set_apply_number_formats(&mut self, value: bool) -> &mut Self {
         self.apply_number_formats.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_apply_border_formats(&self) -> &bool {
         self.apply_border_formats.get_value()
     }
 
+    #[inline]
     pub fn set_apply_border_formats(&mut self, value: bool) -> &mut Self {
         self.apply_border_formats.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_apply_font_formats(&self) -> &bool {
         self.apply_font_formats.get_value()
     }
 
+    #[inline]
     pub fn set_apply_font_formats(&mut self, value: bool) -> &mut Self {
         self.apply_font_formats.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_apply_pattern_formats(&self) -> &bool {
         self.apply_pattern_formats.get_value()
     }
 
+    #[inline]
     pub fn set_apply_pattern_formats(&mut self, value: bool) -> &mut Self {
         self.apply_pattern_formats.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_apply_alignment_formats(&self) -> &bool {
         self.apply_alignment_formats.get_value()
     }
 
+    #[inline]
     pub fn set_apply_alignment_formats(&mut self, value: bool) -> &mut Self {
         self.apply_alignment_formats.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_apply_width_height_formats(&self) -> &bool {
         self.apply_width_height_formats.get_value()
     }
 
+    #[inline]
     pub fn set_apply_width_height_formats(&mut self, value: bool) -> &mut Self {
         self.apply_width_height_formats.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_use_auto_formatting(&self) -> &bool {
         self.use_auto_formatting.get_value()
     }
 
+    #[inline]
     pub fn set_use_auto_formatting(&mut self, value: bool) -> &mut Self {
         self.use_auto_formatting.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_item_print_titles(&self) -> &bool {
         self.item_print_titles.get_value()
     }
 
+    #[inline]
     pub fn set_item_print_titles(&mut self, value: bool) -> &mut Self {
         self.item_print_titles.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_outline(&self) -> &bool {
         self.outline.get_value()
     }
 
+    #[inline]
     pub fn set_outline(&mut self, value: bool) -> &mut Self {
         self.outline.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_outline_data(&self) -> &bool {
         self.outline_data.get_value()
     }
 
+    #[inline]
     pub fn set_outline_data(&mut self, value: bool) -> &mut Self {
         self.outline_data.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_multiple_field_filters(&self) -> &bool {
         self.multiple_field_filters.get_value()
     }
 
+    #[inline]
     pub fn set_multiple_field_filters(&mut self, value: bool) -> &mut Self {
         self.multiple_field_filters.set_value(value);
         self
     }
-    
+
+    #[inline]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
 
+    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_cache_id(&self) -> &u32 {
         self.cache_id.get_value()
     }
 
+    #[inline]
     pub fn set_cache_id(&mut self, value: u32) -> &mut Self {
         self.cache_id.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_indent(&self) -> &u32 {
         self.indent.get_value()
     }
 
+    #[inline]
     pub fn set_indent(&mut self, value: u32) -> &mut Self {
         self.indent.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_local_name(&self) -> &str {
         self.local_name.get_value_str()
     }
 
+    #[inline]
     pub fn set_local_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.local_name.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_data_caption(&self) -> &str {
         self.data_caption.get_value_str()
     }
 
+    #[inline]
     pub fn set_data_caption<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.data_caption.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_updated_version(&self) -> &u8 {
         self.updated_version.get_value()
     }
 
+    #[inline]
     pub fn set_updated_version(&mut self, value: u8) -> &mut Self {
         self.updated_version.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_min_refreshable_version(&self) -> &u8 {
         self.min_refreshable_version.get_value()
     }
 
+    #[inline]
     pub fn set_min_refreshable_version(&mut self, value: u8) -> &mut Self {
         self.min_refreshable_version.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_created_version(&self) -> &u8 {
         self.created_version.get_value()
     }
 
+    #[inline]
     pub fn set_created_version(&mut self, value: u8) -> &mut Self {
         self.created_version.set_value(value);
         self
     }
 
+    #[inline]
     pub fn get_location(&self) -> &Location {
         &self.location
     }
 
+    #[inline]
     pub fn get_location_mut(&mut self) -> &mut Location {
         &mut self.location
     }
 
+    #[inline]
     pub fn set_location(&mut self, value: Location) -> &mut Self {
         self.location = value;
         self
     }
 
+    #[inline]
     pub fn get_pivot_fields(&self) -> &PivotFields {
         &self.pivot_fields
     }
 
+    #[inline]
     pub fn get_pivot_fields_mut(&mut self) -> &mut PivotFields {
         &mut self.pivot_fields
     }
 
+    #[inline]
     pub fn set_pivot_fields(&mut self, value: PivotFields) -> &mut Self {
         self.pivot_fields = value;
         self
     }
 
+    #[inline]
     pub fn get_row_items(&self) -> &RowItems {
         &self.row_items
     }
 
+    #[inline]
     pub fn get_row_items_mut(&mut self) -> &mut RowItems {
         &mut self.row_items
     }
 
+    #[inline]
     pub fn set_row_items(&mut self, value: RowItems) -> &mut Self {
         self.row_items = value;
         self
     }
 
+    #[inline]
     pub fn get_column_fields(&self) -> &ColumnFields {
         &self.column_fields
     }
 
+    #[inline]
     pub fn get_column_fields_mut(&mut self) -> &mut ColumnFields {
         &mut self.column_fields
     }
 
+    #[inline]
     pub fn set_column_fields(&mut self, value: ColumnFields) -> &mut Self {
         self.column_fields = value;
         self
     }
 
+    #[inline]
     pub fn get_column_items(&self) -> &ColumnItems {
         &self.column_items
     }
 
+    #[inline]
     pub fn get_column_items_mut(&mut self) -> &mut ColumnItems {
         &mut self.column_items
     }
 
+    #[inline]
     pub fn set_column_items(&mut self, value: ColumnItems) -> &mut Self {
         self.column_items = value;
         self
     }
 
+    #[inline]
     pub fn get_data_fields(&self) -> &DataFields {
         &self.data_fields
     }
 
+    #[inline]
     pub fn get_data_fields_mut(&mut self) -> &mut DataFields {
         &mut self.data_fields
     }
 
+    #[inline]
     pub fn set_data_fields(&mut self, value: DataFields) -> &mut Self {
         self.data_fields = value;
         self
     }
 
+    #[inline]
     pub fn get_pivot_table_style(&self) -> &PivotTableStyle {
         &self.pivot_table_style
     }
 
+    #[inline]
     pub fn get_pivot_table_style_mut(&mut self) -> &mut PivotTableStyle {
         &mut self.pivot_table_style
     }
 
+    #[inline]
     pub fn set_pivot_table_style(&mut self, value: PivotTableStyle) -> &mut Self {
         self.pivot_table_style = value;
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -322,7 +382,12 @@ impl PivotTableDefinition {
         set_string_from_xml!(self, e, apply_font_formats, "applyFontFormats");
         set_string_from_xml!(self, e, apply_pattern_formats, "applyPatternFormats");
         set_string_from_xml!(self, e, apply_alignment_formats, "applyAlignmentFormats");
-        set_string_from_xml!(self, e, apply_width_height_formats, "applyWidthHeightFormats");
+        set_string_from_xml!(
+            self,
+            e,
+            apply_width_height_formats,
+            "applyWidthHeightFormats"
+        );
         set_string_from_xml!(self, e, data_caption, "dataCaption");
         set_string_from_xml!(self, e, updated_version, "updatedVersion");
         set_string_from_xml!(self, e, min_refreshable_version, "minRefreshableVersion");
@@ -384,6 +449,7 @@ impl PivotTableDefinition {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -399,22 +465,40 @@ impl PivotTableDefinition {
             attributes.push(("cacheId", cache_id_str.as_str()));
         }
         if self.apply_number_formats.has_value() {
-            attributes.push(("applyNumberFormats", self.apply_number_formats.get_value_string()));
+            attributes.push((
+                "applyNumberFormats",
+                self.apply_number_formats.get_value_string(),
+            ));
         }
         if self.apply_border_formats.has_value() {
-            attributes.push(("applyBorderFormats", self.apply_border_formats.get_value_string()));
+            attributes.push((
+                "applyBorderFormats",
+                self.apply_border_formats.get_value_string(),
+            ));
         }
         if self.apply_font_formats.has_value() {
-            attributes.push(("applyFontFormats", self.apply_font_formats.get_value_string()));
+            attributes.push((
+                "applyFontFormats",
+                self.apply_font_formats.get_value_string(),
+            ));
         }
         if self.apply_pattern_formats.has_value() {
-            attributes.push(("applyPatternFormats", self.apply_pattern_formats.get_value_string()));
+            attributes.push((
+                "applyPatternFormats",
+                self.apply_pattern_formats.get_value_string(),
+            ));
         }
         if self.apply_alignment_formats.has_value() {
-            attributes.push(("applyAlignmentFormats", self.apply_alignment_formats.get_value_string()));
+            attributes.push((
+                "applyAlignmentFormats",
+                self.apply_alignment_formats.get_value_string(),
+            ));
         }
         if self.apply_width_height_formats.has_value() {
-            attributes.push(("applyWidthHeightFormats", self.apply_width_height_formats.get_value_string()));
+            attributes.push((
+                "applyWidthHeightFormats",
+                self.apply_width_height_formats.get_value_string(),
+            ));
         }
         if self.data_caption.has_value() {
             attributes.push(("dataCaption", self.data_caption.get_value_str()));
@@ -425,10 +509,16 @@ impl PivotTableDefinition {
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push(("minRefreshableVersion", min_refreshable_version_str.as_str()));
+            attributes.push((
+                "minRefreshableVersion",
+                min_refreshable_version_str.as_str(),
+            ));
         }
         if self.use_auto_formatting.has_value() {
-            attributes.push(("useAutoFormatting", self.use_auto_formatting.get_value_string()));
+            attributes.push((
+                "useAutoFormatting",
+                self.use_auto_formatting.get_value_string(),
+            ));
         }
         if self.item_print_titles.has_value() {
             attributes.push(("itemPrintTitles", self.item_print_titles.get_value_string()));
@@ -448,7 +538,10 @@ impl PivotTableDefinition {
             attributes.push(("outlineData", self.outline_data.get_value_string()));
         }
         if self.multiple_field_filters.has_value() {
-            attributes.push(("multipleFieldFilters", self.multiple_field_filters.get_value_string()));
+            attributes.push((
+                "multipleFieldFilters",
+                self.multiple_field_filters.get_value_string(),
+            ));
         }
         write_start_tag(writer, "pivotTableDefinition", attributes, false);
 
@@ -472,7 +565,7 @@ impl PivotTableDefinition {
 
         // pivotTableStyleInfo
         self.pivot_table_style.write_to(writer);
-        
+
         write_end_tag(writer, "pivotTableDefinition");
     }
 }

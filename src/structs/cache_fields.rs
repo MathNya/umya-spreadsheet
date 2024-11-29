@@ -1,14 +1,14 @@
 // cacheFields
-use structs::BooleanValue;
-use structs::StringValue;
-use structs::UInt32Value;
-use structs::ByteValue;
-use structs::CacheField;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::BooleanValue;
+use structs::ByteValue;
+use structs::CacheField;
+use structs::StringValue;
+use structs::UInt32Value;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -54,9 +54,12 @@ impl CacheFields {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheFields
-        write_start_tag(writer, "cacheFields", vec![
-            ("count", self.list.len().to_string().as_str())
-        ], false);
+        write_start_tag(
+            writer,
+            "cacheFields",
+            vec![("count", self.list.len().to_string().as_str())],
+            false,
+        );
 
         // cacheField
         for sheet_view in &self.list {

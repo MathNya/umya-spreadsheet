@@ -1,12 +1,12 @@
 // cacheField
-use structs::SharedItems;
-use structs::StringValue;
-use structs::UInt32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::SharedItems;
+use structs::StringValue;
+use structs::UInt32Value;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -75,10 +75,18 @@ impl CacheField {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotField
-        write_start_tag(writer, "pivotField", vec![
-            ("name", self.name.get_value_str()),
-            ("numFmtId", self.number_format_id.get_value_string().as_str()),
-        ], false);
+        write_start_tag(
+            writer,
+            "pivotField",
+            vec![
+                ("name", self.name.get_value_str()),
+                (
+                    "numFmtId",
+                    self.number_format_id.get_value_string().as_str(),
+                ),
+            ],
+            false,
+        );
 
         // sharedItems
         self.shared_items.write_to(writer);

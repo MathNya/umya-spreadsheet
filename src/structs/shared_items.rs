@@ -1,11 +1,11 @@
 // sharedItems
-use structs::BooleanValue;
-use structs::DoubleValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::BooleanValue;
+use structs::DoubleValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -87,13 +87,21 @@ impl SharedItems {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sharedItems
-        write_start_tag(writer, "sharedItems", vec![
-            ("containsSemiMixedTypes", self.contains_semi_mixed_types.get_value_string()),
-            ("containsString", self.contains_string.get_value_string()),
-            ("containsNumber", self.contains_number.get_value_string()),
-            ("containsInteger", self.contains_integer.get_value_string()),
-            ("minValue", self.min_value.get_value_string().as_str()),
-            ("maxValue", self.max_value.get_value_string().as_str()),
-        ], true);
+        write_start_tag(
+            writer,
+            "sharedItems",
+            vec![
+                (
+                    "containsSemiMixedTypes",
+                    self.contains_semi_mixed_types.get_value_string(),
+                ),
+                ("containsString", self.contains_string.get_value_string()),
+                ("containsNumber", self.contains_number.get_value_string()),
+                ("containsInteger", self.contains_integer.get_value_string()),
+                ("minValue", self.min_value.get_value_string().as_str()),
+                ("maxValue", self.max_value.get_value_string().as_str()),
+            ],
+            true,
+        );
     }
 }

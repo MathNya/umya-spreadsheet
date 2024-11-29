@@ -4,8 +4,8 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::result;
 use structs::raw::RawFile;
-use structs::PivotTableDefinition;
 use structs::PivotTable;
+use structs::PivotTableDefinition;
 use structs::Worksheet;
 
 pub(crate) fn read(

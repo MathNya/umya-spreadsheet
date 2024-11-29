@@ -1,30 +1,35 @@
 // dataFields
-use structs::DataField;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::DataField;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct DataFields {
-    list: Vec<DataField>,
+    list: ThinVec<DataField>,
 }
 impl DataFields {
-    pub fn get_list(&self) -> &Vec<DataField> {
+    #[inline]
+    pub fn get_list(&self) -> &[DataField] {
         &self.list
     }
 
-    pub fn get_list_mut(&mut self) -> &mut Vec<DataField> {
+    #[inline]
+    pub fn get_list_mut(&mut self) -> &mut ThinVec<DataField> {
         &mut self.list
     }
 
+    #[inline]
     pub fn add_list_mut(&mut self, value: DataField) -> &mut Self {
         self.list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -48,11 +53,15 @@ impl DataFields {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // dataFields
-        write_start_tag(writer, "dataFields", vec![
-            ("count", self.list.len().to_string().as_str())
-        ], false);
+        write_start_tag(
+            writer,
+            "dataFields",
+            vec![("count", self.list.len().to_string().as_str())],
+            false,
+        );
 
         // dataField
         for sheet_view in &self.list {

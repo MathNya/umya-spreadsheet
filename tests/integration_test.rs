@@ -1864,15 +1864,18 @@ fn issue_244() {
     let comment_pos: &mut Coordinate = comment.get_coordinate_mut();
     comment_pos.set_col_num(2);
     comment_pos.set_row_num(2);
-    
+
     let mut image = Image::default();
-    image.new_image("./images/sample1.png", drawing::spreadsheet::MarkerType::default());
+    image.new_image(
+        "./images/sample1.png",
+        drawing::spreadsheet::MarkerType::default(),
+    );
     let image_name = image.get_image_name().to_string();
 
     let mut image_data = vml::ImageData::default();
     image_data.set_image_name(image_name.clone());
     image_data.set_title(image_name);
-    
+
     let shape = comment.get_shape_mut();
     shape.set_image_data(image_data);
 
@@ -1881,4 +1884,3 @@ fn issue_244() {
     let path = std::path::Path::new("./tests/result_files/issue_244.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
-

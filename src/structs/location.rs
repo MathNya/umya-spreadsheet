@@ -64,11 +64,25 @@ impl Location {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // location
-        write_start_tag(writer, "location", vec![
-            ("ref", self.reference.get_value_str()),
-            ("firstHeaderRow", self.first_header_row.get_value_string().as_str()),
-            ("firstDataRow", self.first_data_row.get_value_string().as_str()),
-            ("firstDataCol", self.first_data_col.get_value_string().as_str()),
-        ], true);
+        write_start_tag(
+            writer,
+            "location",
+            vec![
+                ("ref", self.reference.get_value_str()),
+                (
+                    "firstHeaderRow",
+                    self.first_header_row.get_value_string().as_str(),
+                ),
+                (
+                    "firstDataRow",
+                    self.first_data_row.get_value_string().as_str(),
+                ),
+                (
+                    "firstDataCol",
+                    self.first_data_col.get_value_string().as_str(),
+                ),
+            ],
+            true,
+        );
     }
 }

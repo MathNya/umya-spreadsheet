@@ -1,34 +1,39 @@
 // pivotFields
-use structs::BooleanValue;
-use structs::StringValue;
-use structs::UInt32Value;
-use structs::ByteValue;
-use structs::PivotField;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::BooleanValue;
+use structs::ByteValue;
+use structs::PivotField;
+use structs::StringValue;
+use structs::UInt32Value;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotFields {
-    list: Vec<PivotField>,
+    list: ThinVec<PivotField>,
 }
 impl PivotFields {
-    pub fn get_list(&self) -> &Vec<PivotField> {
+    #[inline]
+    pub fn get_list(&self) -> &[PivotField] {
         &self.list
     }
 
-    pub fn get_list_mut(&mut self) -> &mut Vec<PivotField> {
+    #[inline]
+    pub fn get_list_mut(&mut self) -> &mut ThinVec<PivotField> {
         &mut self.list
     }
 
+    #[inline]
     pub fn add_list_mut(&mut self, value: PivotField) -> &mut Self {
         self.list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -52,11 +57,15 @@ impl PivotFields {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotFields
-        write_start_tag(writer, "pivotFields", vec![
-            ("count", self.list.len().to_string().as_str())
-        ], false);
+        write_start_tag(
+            writer,
+            "pivotFields",
+            vec![("count", self.list.len().to_string().as_str())],
+            false,
+        );
 
         // pivotField
         for sheet_view in &self.list {

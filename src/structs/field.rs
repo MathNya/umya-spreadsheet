@@ -1,10 +1,10 @@
 // field
-use structs::Int32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::Int32Value;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -31,8 +31,11 @@ impl Field {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotField
-        write_start_tag(writer, "field", vec![
-            ("x", self.x.get_value_string().as_str()),
-        ], true);
+        write_start_tag(
+            writer,
+            "field",
+            vec![("x", self.x.get_value_string().as_str())],
+            true,
+        );
     }
 }

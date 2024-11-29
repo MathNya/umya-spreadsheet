@@ -1,13 +1,12 @@
 // worksheetSource
-use structs::Address;
 use helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::Address;
 use writer::driver::*;
-
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetSource {

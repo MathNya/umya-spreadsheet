@@ -1,30 +1,35 @@
 // colFields
-use structs::Field;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
+use structs::Field;
+use thin_vec::ThinVec;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ColumnFields {
-    list: Vec<Field>,
+    list: ThinVec<Field>,
 }
 impl ColumnFields {
-    pub fn get_list(&self) -> &Vec<Field> {
+    #[inline]
+    pub fn get_list(&self) -> &[Field] {
         &self.list
     }
 
-    pub fn get_list_mut(&mut self) -> &mut Vec<Field> {
+    #[inline]
+    pub fn get_list_mut(&mut self) -> &mut ThinVec<Field> {
         &mut self.list
     }
 
+    #[inline]
     pub fn add_list_mut(&mut self, value: Field) -> &mut Self {
         self.list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -48,11 +53,15 @@ impl ColumnFields {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // colFields
-        write_start_tag(writer, "colFields", vec![
-            ("count", self.list.len().to_string().as_str())
-        ], false);
+        write_start_tag(
+            writer,
+            "colFields",
+            vec![("count", self.list.len().to_string().as_str())],
+            false,
+        );
 
         // i
         for i in &self.list {

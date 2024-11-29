@@ -11,7 +11,6 @@ use reader::driver::*;
 use std::io::Cursor;
 use writer::driver::*;
 
-
 #[derive(Clone, Default, Debug)]
 pub struct CacheSource {
     r#type: EnumValue<SourceValues>,
