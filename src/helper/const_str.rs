@@ -53,6 +53,8 @@ pub(crate) const SHEET_DRAWING_NS: &str =
 pub(crate) const SHEET_MAIN_NS: &str = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 pub(crate) const SHEET_MS_MAIN_NS: &str =
     "http://schemas.microsoft.com/office/spreadsheetml/2009/9/main";
+pub(crate) const SHEET_MS_REVISION_NS: &str =
+    "http://schemas.microsoft.com/office/spreadsheetml/2014/revision";
 pub(crate) const SHEETML_AC_NS: &str =
     "http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac";
 pub(crate) const TABLE_NS: &str =

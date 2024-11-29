@@ -432,3 +432,69 @@ pub use self::totals_row_function_values::*;
 
 mod sheet_state_values;
 pub use self::sheet_state_values::*;
+
+mod pivot_table_definition;
+pub use self::pivot_table_definition::*;
+
+mod pivot_table;
+pub use self::pivot_table::*;
+
+mod pivot_cache_definition;
+pub use self::pivot_cache_definition::*;
+
+mod location;
+pub use self::location::*;
+
+mod pivot_fields;
+pub use self::pivot_fields::*;
+
+mod pivot_field;
+pub use self::pivot_field::*;
+
+mod row_items;
+pub use self::row_items::*;
+
+mod row_item;
+pub use self::row_item::*;
+
+mod column_fields;
+pub use self::column_fields::*;
+
+mod field;
+pub use self::field::*;
+
+mod column_items;
+pub use self::column_items::*;
+
+mod item_values;
+pub use self::item_values::*;
+
+mod member_property_index;
+pub use self::member_property_index::*;
+
+mod data_fields;
+pub use self::data_fields::*;
+
+mod data_field;
+pub use self::data_field::*;
+
+mod pivot_table_style;
+pub use self::pivot_table_style::*;
+
+mod cache_source;
+pub use self::cache_source::*;
+
+mod source_values;
+pub use self::source_values::*;
+
+mod worksheet_source;
+pub use self::worksheet_source::*;
+
+mod cache_fields;
+pub use self::cache_fields::*;
+
+mod cache_field;
+pub use self::cache_field::*;
+
+mod shared_items;
+pub use self::shared_items::*;

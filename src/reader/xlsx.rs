@@ -26,6 +26,7 @@ pub(crate) mod drawing;
 mod rels;
 mod shared_strings;
 mod styles;
+mod pivot_table;
 pub(crate) mod table;
 mod theme;
 mod vba_project_bin;

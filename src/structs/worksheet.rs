@@ -43,6 +43,7 @@ use structs::SheetViews;
 use structs::Style;
 use structs::Stylesheet;
 use structs::Table;
+use structs::PivotTable;
 use traits::AdjustmentCoordinate;
 use traits::AdjustmentCoordinateWith2Sheet;
 use traits::AdjustmentCoordinateWithSheet;
@@ -80,6 +81,7 @@ pub struct Worksheet {
     column_breaks: ColumnBreaks,
     row_breaks: RowBreaks,
     tables: Vec<Table>,
+    pivot_tables: Vec<PivotTable>,
     data_validations: Option<DataValidations>,
     data_validations_2010: Option<DataValidations2010>,
     sheet_format_properties: SheetFormatProperties,
@@ -1297,6 +1299,22 @@ impl Worksheet {
 
     pub fn get_tables_mut(&mut self) -> &mut Vec<Table> {
         &mut self.tables
+    }
+
+    pub fn has_pivot_table(&self) -> bool {
+        !self.pivot_tables.is_empty()
+    }
+
+    pub fn add_pivot_table(&mut self, pivot_table: PivotTable) {
+        self.pivot_tables.push(pivot_table);
+    }
+
+    pub fn get_pivot_tables(&self) -> &Vec<PivotTable> {
+        &self.pivot_tables
+    }
+
+    pub fn get_pivot_tables_mut(&mut self) -> &mut Vec<PivotTable> {
+        &mut self.pivot_tables
     }
 
     pub fn get_data_validations(&self) -> Option<&DataValidations> {
