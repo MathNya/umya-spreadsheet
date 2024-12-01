@@ -11,21 +11,21 @@ description = "umya-spreadsheet is a library written in pure Rust to read and wr
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-aes = "0.8.3"
-ahash = "0.8.7"
+aes = "0.8.4"
+ahash = "0.8.11"
 base64 = "0.22.1"
 byteorder = "1.5"
 cbc = "0.1.2"
 cfb = "0.10.0"
-chrono = { version = "0.4.31", default-features = false, features = ["clock"] }
-encoding_rs = "0.8.33"
+chrono = { version = "0.4.38", default-features = false, features = ["clock"] }
+encoding_rs = "0.8.35"
 fancy-regex = "0.14.0"
-getrandom = { version = "0.2.14" }
+getrandom = { version = "0.2.15" }
 hashbrown = "0.14.5"
 hmac = "0.12.1"
 html_parser = "0.7.0"
-image = { version = "0.25.0", optional = true }
-lazy_static = "1.4.0"
+image = { version = "0.25.5", optional = true }
+lazy_static = "1.5.0"
 md-5 = "0.10.6"
 regex = "1.11.1"
 sha2 = "0.10.8"
