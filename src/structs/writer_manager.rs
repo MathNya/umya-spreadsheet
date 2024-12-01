@@ -5,16 +5,16 @@ use std::io::Cursor;
 use structs::Spreadsheet;
 use structs::XlsxError;
 use writer::driver::*;
-pub struct WriterManager<W: io::Seek + io::Write> {
+pub struct WriterManager<'a, W: io::Seek + io::Write> {
     files: Vec<String>,
-    arv: zip::ZipWriter<W>,
+    arv: &'a mut zip::ZipWriter<W>,
     is_light: bool,
     table_no: i32,
 }
 
-impl<W: io::Seek + io::Write> WriterManager<W> {
+impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     #[inline]
-    pub fn new(arv: zip::ZipWriter<W>) -> Self {
+    pub fn new(arv: &'a mut zip::ZipWriter<W>) -> Self {
         WriterManager {
             files: Vec::new(),
             arv,
@@ -52,7 +52,7 @@ impl<W: io::Seek + io::Write> WriterManager<W> {
         writer: Writer<Cursor<Vec<u8>>>,
     ) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_writer(target, &mut self.arv, writer, None, &self.is_light)?;
+            make_file_from_writer(target, self.arv, writer, None, &self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
