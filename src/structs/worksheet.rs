@@ -1,10 +1,10 @@
 use crate::traits;
 use crate::StringValue;
-use hashbrown::HashMap;
 use helper::const_str::*;
 use helper::coordinate::*;
 use helper::range::*;
 use reader::xlsx::worksheet::*;
+use std::collections::HashMap;
 use structs::drawing::spreadsheet::WorksheetDrawing;
 use structs::office2010::excel::DataValidations as DataValidations2010;
 use structs::raw::RawWorksheet;

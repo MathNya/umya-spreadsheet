@@ -1,9 +1,9 @@
 use super::Cell;
 use super::CellValue;
 use super::Style;
-use hashbrown::HashMap;
 use helper::coordinate::*;
 use helper::range::*;
+use std::collections::HashMap;
 use structs::Column;
 use structs::Row;
 use traits::AdjustmentCoordinate;

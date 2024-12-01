@@ -21,7 +21,6 @@ chrono = { version = "0.4.38", default-features = false, features = ["clock"] }
 encoding_rs = "0.8.35"
 fancy-regex = "0.14.0"
 getrandom = { version = "0.2.15" }
-hashbrown = "0.15.2"
 hmac = "0.12.1"
 html_parser = "0.7.0"
 image = { version = "0.25.5", optional = true }

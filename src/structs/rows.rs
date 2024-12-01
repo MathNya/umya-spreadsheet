@@ -1,4 +1,4 @@
-use hashbrown::HashMap;
+use std::collections::HashMap;
 use structs::Row;
 use traits::AdjustmentValue;
 

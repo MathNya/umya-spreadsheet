@@ -1,8 +1,8 @@
 use super::driver::*;
 use super::XlsxError;
-use hashbrown::HashMap;
 use quick_xml::events::Event;
 use quick_xml::Reader;
+use std::collections::HashMap;
 
 use helper::formula::*;
 use structs::office2010::excel::DataValidations as DataValidations2010;

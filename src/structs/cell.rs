@@ -1,4 +1,3 @@
-use hashbrown::HashMap;
 use helper::coordinate::*;
 use helper::formula::*;
 use helper::number_format::*;
@@ -7,6 +6,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
 use std::borrow::Cow;
+use std::collections::HashMap;
 use std::io::Cursor;
 use std::sync::{Arc, RwLock};
 use structs::CellFormula;
