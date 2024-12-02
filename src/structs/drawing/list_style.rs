@@ -1,11 +1,11 @@
 // a:lstStyle
 use super::EffectList;
 use super::TextParagraphPropertiesType;
-use hashbrown::HashMap;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
+use std::collections::HashMap;
 use std::io::Cursor;
 use writer::driver::*;
 
