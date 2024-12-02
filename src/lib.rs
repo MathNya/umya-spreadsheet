@@ -121,7 +121,6 @@
 
 extern crate chrono;
 extern crate fancy_regex;
-extern crate hashbrown;
 #[cfg(feature = "image")]
 extern crate image;
 extern crate md5;

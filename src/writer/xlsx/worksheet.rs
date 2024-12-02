@@ -1,9 +1,9 @@
 use super::driver::*;
 use super::XlsxError;
-use hashbrown::HashMap;
 use helper::const_str::*;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
+use std::collections::HashMap;
 use std::io;
 use std::sync::Arc;
 use std::sync::RwLock;

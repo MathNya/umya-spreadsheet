@@ -6,6 +6,7 @@ use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::Read;
+use std::io::Write;
 use std::path::Path;
 use std::string::FromUtf8Error;
 use structs::Spreadsheet;
@@ -36,8 +37,8 @@ mod worksheet;
 mod worksheet_rels;
 
 fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Vec<u8>, XlsxError> {
-    let arv = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
-    let mut writer_manager = WriterManager::new(arv);
+    let mut arv = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
+    let mut writer_manager = WriterManager::new(&mut arv);
     writer_manager.set_is_light(is_light);
 
     // Add docProps App
@@ -170,8 +171,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
     // Add Content_Types
     content_types::write(spreadsheet, &mut writer_manager)?;
 
-    let result = writer_manager.get_arv_mut().finish()?;
-    Ok(result.into_inner())
+    Ok(arv.finish()?.into_inner())
 }
 
 /// write spreadsheet file to arbitrary writer.

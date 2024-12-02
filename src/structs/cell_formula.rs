@@ -1,4 +1,3 @@
-use hashbrown::HashMap;
 use helper::coordinate::*;
 use helper::formula::*;
 use quick_xml::de;
@@ -6,6 +5,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use reader::driver::*;
+use std::collections::HashMap;
 use std::io::Cursor;
 use structs::BooleanValue;
 use structs::CellFormulaValues;
