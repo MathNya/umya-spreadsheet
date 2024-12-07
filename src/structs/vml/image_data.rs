@@ -4,22 +4,30 @@ use quick_xml::Writer;
 use reader::driver::*;
 use std::io::Cursor;
 use structs::raw::RawRelationships;
+use structs::MediaObject;
 use structs::StringValue;
 use writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ImageData {
-    image_name: StringValue,
+    image: MediaObject,
     title: StringValue,
 }
 
 impl ImageData {
-    pub fn get_image_name(&self) -> &str {
-        self.image_name.get_value_str()
+    #[inline]
+    pub fn get_image(&self) -> &MediaObject {
+        &self.image
     }
 
-    pub fn set_image_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.image_name.set_value(value);
+    #[inline]
+    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+        &mut self.image
+    }
+
+    #[inline]
+    pub fn set_image(&mut self, value: MediaObject) -> &mut Self {
+        self.image = value;
         self
     }
 
@@ -41,21 +49,27 @@ impl ImageData {
         if let Some(relid) = get_attribute(e, b"o:relid") {
             if let Some(rel) = drawing_relationships {
                 let relationship = rel.get_relationship_by_rid(&relid);
-                self.image_name
-                    .set_value_string(relationship.get_raw_file().get_file_name());
+                self.get_image_mut()
+                    .set_image_name(relationship.get_raw_file().get_file_name());
+                self.get_image_mut()
+                    .set_image_data(relationship.get_raw_file().get_file_data().clone());
             }
         }
 
         set_string_from_xml!(self, e, title, "o:title");
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // v:imagedata
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let r_id_str = format!("rId{}", r_id);
-        if self.image_name.has_value() {
-            attributes.push(("o:relid", &r_id_str));
-        }
+        let mut r_id_str = String::from("");
+        let r_id = &self.image.get_rid(rel_list);
+        r_id_str = format!("rId{}", r_id);
+        attributes.push(("o:relid", r_id_str.as_str()));
         if self.title.has_value() {
             attributes.push(("o:title", self.title.get_value_str()));
         }

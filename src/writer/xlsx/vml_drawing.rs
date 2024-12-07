@@ -9,9 +9,10 @@ use structs::WriterManager;
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
-) -> Result<String, XlsxError> {
+) -> Result<(String, Vec<(String, String)>), XlsxError> {
+    let mut rel_list: Vec<(String, String)> = Vec::new();
     if !worksheet.has_legacy_drawing() {
-        return Ok(String::from(""));
+        return Ok((String::from(""), rel_list));
     }
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -129,7 +130,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let mut r_id = 1;
         for ole_object in worksheet.get_ole_objects().get_ole_object() {
             // v:shape
-            ole_object.get_shape().write_to(&mut writer, &id, &r_id);
+            ole_object
+                .get_shape()
+                .write_to(&mut writer, &id, &mut rel_list);
             r_id += 1;
             id += 1;
         }
@@ -165,7 +168,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         for comment in worksheet.get_comments() {
             // v:shape
-            comment.get_shape().write_to(&mut writer, &id, &0);
+            comment
+                .get_shape()
+                .write_to(&mut writer, &id, &mut rel_list);
             id += 1;
         }
     }
@@ -173,5 +178,5 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "xml");
 
     let file_no = writer_mng.add_file_at_vml_drawing(writer)?;
-    Ok(file_no.to_string())
+    Ok((file_no.to_string(), rel_list))
 }

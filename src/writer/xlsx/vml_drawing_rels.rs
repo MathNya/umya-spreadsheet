@@ -11,6 +11,7 @@ use structs::WriterManager;
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     vml_drawing_no: &str,
+    rel_list: &[(String, String)],
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut is_write = false;
@@ -28,17 +29,17 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
     let mut r_id = 1;
-    for ole_object in worksheet.get_ole_objects().get_ole_object() {
-        if let Some(v) = ole_object.get_shape().get_image_data() {
+    for (key, value) in rel_list {
+        if key == "IMAGE" {
             is_write = write_relationship(
                 &mut writer,
                 &r_id,
                 IMAGE_NS,
-                format!("../media/{}", v.get_image_name()).as_str(),
+                format!("../media/{}", value).as_str(),
                 "",
             );
-            r_id += 1;
         }
+        r_id += 1;
     }
 
     write_end_tag(&mut writer, "Relationships");

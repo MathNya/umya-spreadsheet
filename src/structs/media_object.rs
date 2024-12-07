@@ -2,10 +2,22 @@ use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct MediaObject {
+    image_title: Box<str>,
     image_name: Box<str>,
     image_data: ThinVec<u8>,
 }
 impl MediaObject {
+    #[inline]
+    pub fn get_image_title(&self) -> &str {
+        &self.image_title
+    }
+
+    #[inline]
+    pub fn set_image_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.image_title = value.into().into_boxed_str();
+        self
+    }
+
     #[inline]
     pub fn get_image_name(&self) -> &str {
         &self.image_name

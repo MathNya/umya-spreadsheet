@@ -1,8 +1,19 @@
 use crate::xml_read_loop;
 
+use super::vml::office::InsetMarginValues;
 use super::vml::spreadsheet::Anchor;
+use super::vml::spreadsheet::CommentColumnTarget;
+use super::vml::spreadsheet::CommentRowTarget;
+use super::vml::spreadsheet::MoveWithCells;
+use super::vml::spreadsheet::ResizeWithCells;
+use super::vml::Fill as VmlFill;
+use super::vml::Path;
+use super::vml::Shadow;
+use super::vml::TextBox;
 use super::Coordinate;
+use super::Fill;
 use super::RichText;
+use helper::coordinate::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use reader::driver::*;
@@ -56,6 +67,12 @@ impl Comment {
     }
 
     #[inline]
+    pub fn set_text_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.text.set_text(value);
+        self
+    }
+
+    #[inline]
     pub fn get_anchor(&self) -> &Anchor {
         self.shape.get_client_data().get_anchor()
     }
@@ -87,6 +104,73 @@ impl Comment {
         self
     }
 
+    #[inline]
+    pub fn new_comment<T>(&mut self, coordinate: T) -> &mut Self
+    where
+        T: Into<CellCoordinates>,
+    {
+        let CellCoordinates { col, row } = coordinate.into();
+        self.get_coordinate_mut().set_col_num(col).set_row_num(row);
+
+        self.get_shape_mut()
+            .set_type("#_x0000_t202")
+            .set_style("position:absolute;margin-left:275.25pt;margin-top:61.5pt;width:207.75pt;height:145.5pt;z-index:1;visibility:hidden;mso-wrap-style:tight")
+            .set_fill_color("infoBackground [80]")
+            .set_inset_mode(InsetMarginValues::Auto);
+
+        let mut fill = VmlFill::default();
+        fill.set_color_2("infoBackground [80]");
+        self.get_shape_mut().set_fill(fill);
+
+        let mut shadow = Shadow::default();
+        shadow.set_color("none [81]").set_obscured(true);
+        self.get_shape_mut().set_shadow(shadow);
+
+        let mut path = Path::default();
+        path.set_connection_point_type(super::vml::office::ConnectValues::None);
+        self.get_shape_mut().set_path(path);
+
+        let mut textbox = TextBox::default();
+        textbox
+            .set_style("mso-direction-alt:auto")
+            .set_innder("<div style='text-align:left'></div>");
+        self.get_shape_mut().set_text_box(textbox);
+
+        let movewithcells = MoveWithCells::default();
+        self.get_shape_mut()
+            .get_client_data_mut()
+            .set_move_with_cells(movewithcells);
+
+        let resizewithcells = ResizeWithCells::default();
+        self.get_shape_mut()
+            .get_client_data_mut()
+            .set_resize_with_cells(resizewithcells);
+
+        self.get_shape_mut()
+            .get_client_data_mut()
+            .get_anchor_mut()
+            .set_left_column(col)
+            .set_left_offset(15)
+            .set_top_row(if row > 1 { row - 1 } else { 1 })
+            .set_top_offset(8)
+            .set_right_column(col + 1)
+            .set_right_offset(71)
+            .set_bottom_row(row + 3)
+            .set_bottom_offset(15);
+
+        let mut comment_col = CommentColumnTarget::default();
+        comment_col.set_value(col - 1);
+        let mut comment_row = CommentRowTarget::default();
+        comment_row.set_value(row - 1);
+        self.get_shape_mut()
+            .get_client_data_mut()
+            .set_comment_column_target(comment_col)
+            .set_comment_row_target(comment_row);
+
+        self
+    }
+
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

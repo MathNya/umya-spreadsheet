@@ -245,7 +245,7 @@ impl Shape {
                 match e.name().into_inner() {
                 b"v:fill" => {
                     let mut obj = Fill::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, drawing_relationships);
                     self.set_fill(obj);
                 }
                 b"v:shadow" => {
@@ -295,7 +295,12 @@ impl Shape {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, id: &usize, r_id: &usize) {
+    pub(crate) fn write_to(
+        &self,
+        writer: &mut Writer<Cursor<Vec<u8>>>,
+        id: &usize,
+        rel_list: &mut Vec<(String, String)>,
+    ) {
         // v:shape
         let id_str = format!("_x0000_s{}", id);
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -335,7 +340,7 @@ impl Shape {
 
         // v:fill
         if let Some(v) = &self.fill {
-            v.write_to(writer);
+            v.write_to(writer, rel_list);
         }
 
         // v:shadow
@@ -360,7 +365,7 @@ impl Shape {
 
         // v:imagedata
         if let Some(v) = &self.image_data {
-            v.write_to(writer, r_id);
+            v.write_to(writer, rel_list);
         }
 
         // x:ClientData

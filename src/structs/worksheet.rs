@@ -1631,34 +1631,52 @@ impl Worksheet {
     /// # Return value
     /// * `Vec<&MediaObject>` - Media Object List.
     pub(crate) fn get_media_object_collection(&self) -> Vec<&MediaObject> {
-        let mut result: Vec<&MediaObject> = Vec::new();
+        let mut list: Vec<&MediaObject> = Vec::new();
         for image in self.get_worksheet_drawing().get_image_collection() {
-            let media_object_list = image.get_media_object();
-            for media_object in media_object_list {
-                let mut is_new = true;
-                for v in &result {
-                    if v.get_image_name() == media_object.get_image_name() {
-                        is_new = false;
-                    }
-                }
+            for media_object in image.get_media_object() {
+                let is_new = !list
+                    .iter()
+                    .any(|v| v.get_image_name() == media_object.get_image_name());
                 if is_new {
-                    result.push(media_object);
+                    list.push(media_object);
                 }
             }
         }
         for ole_objects in self.get_ole_objects().get_ole_object() {
             let media_object = ole_objects.get_embedded_object_properties().get_image();
-            let mut is_new = true;
-            for v in &result {
-                if v.get_image_name() == media_object.get_image_name() {
-                    is_new = false;
-                }
-            }
+            let is_new = !list
+                .iter()
+                .any(|v| v.get_image_name() == media_object.get_image_name());
             if is_new {
-                result.push(media_object);
+                list.push(media_object);
             }
         }
-        result
+        for ole_objects in self.get_ole_objects().get_ole_object() {
+            if let Some(fill) = ole_objects.get_shape().get_fill() {
+                if let Some(media_object) = fill.get_image() {
+                    let is_new = !list
+                        .iter()
+                        .any(|v| v.get_image_name() == media_object.get_image_name());
+                    if is_new {
+                        list.push(media_object);
+                    }
+                }
+            }
+        }
+        for comment in self.get_comments() {
+            if let Some(fill) = comment.get_shape().get_fill() {
+                if let Some(media_object) = fill.get_image() {
+                    let is_new = !list
+                        .iter()
+                        .any(|v| v.get_image_name() == media_object.get_image_name());
+                    if is_new {
+                        list.push(media_object);
+                    }
+                }
+            }
+        }
+
+        list
     }
 
     pub(crate) fn get_pivot_cache_definition_collection(&self) -> Vec<&str> {

@@ -1,4 +1,5 @@
 pub mod address;
+pub mod binary;
 pub mod color;
 pub mod const_str;
 pub mod coordinate;

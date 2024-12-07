@@ -20,80 +20,107 @@ pub struct Anchor {
 }
 
 impl Anchor {
+    #[inline]
     pub fn get_left_column(&self) -> &u32 {
         &self.left_column
     }
 
-    pub fn set_left_column(&mut self, value: u32) {
+    #[inline]
+    pub fn set_left_column(&mut self, value: u32) -> &mut Self {
         self.left_column = value;
+        self
     }
 
+    #[inline]
     pub fn get_left_offset(&self) -> &u32 {
         &self.left_offset
     }
 
-    pub fn set_left_offset(&mut self, value: u32) {
+    #[inline]
+    pub fn set_left_offset(&mut self, value: u32) -> &mut Self {
         self.left_offset = value;
+        self
     }
 
+    #[inline]
     pub fn get_top_row(&self) -> &u32 {
         &self.top_row
     }
 
-    pub fn set_top_row(&mut self, value: u32) {
+    #[inline]
+    pub fn set_top_row(&mut self, value: u32) -> &mut Self {
         self.top_row = value;
+        self
     }
 
+    #[inline]
     pub fn get_top_offset(&self) -> &u32 {
         &self.top_offset
     }
 
-    pub fn set_top_offset(&mut self, value: u32) {
+    #[inline]
+    pub fn set_top_offset(&mut self, value: u32) -> &mut Self {
         self.top_offset = value;
+        self
     }
 
+    #[inline]
     pub fn get_right_column(&self) -> &u32 {
         &self.right_column
     }
 
-    pub fn set_right_column(&mut self, value: u32) {
+    #[inline]
+    pub fn set_right_column(&mut self, value: u32) -> &mut Self {
         self.right_column = value;
+        self
     }
 
+    #[inline]
     pub fn get_right_offset(&self) -> &u32 {
         &self.right_offset
     }
 
-    pub fn set_right_offset(&mut self, value: u32) {
+    #[inline]
+    pub fn set_right_offset(&mut self, value: u32) -> &mut Self {
         self.right_offset = value;
+        self
     }
 
+    #[inline]
     pub fn get_bottom_row(&self) -> &u32 {
         &self.bottom_row
     }
 
-    pub fn set_bottom_row(&mut self, value: u32) {
+    #[inline]
+    pub fn set_bottom_row(&mut self, value: u32) -> &mut Self {
         self.bottom_row = value;
+        self
     }
 
+    #[inline]
     pub fn get_bottom_offset(&self) -> &u32 {
         &self.bottom_offset
     }
 
-    pub fn set_bottom_offset(&mut self, value: u32) {
+    #[inline]
+    pub fn set_bottom_offset(&mut self, value: u32) -> &mut Self {
         self.bottom_offset = value;
+        self
     }
 
+    #[inline]
     pub(crate) fn adjustment_insert_row(&mut self, num_rows: &u32) {
         self.top_row += num_rows;
         self.bottom_row += num_rows;
     }
 
+    #[inline]
     pub(crate) fn adjustment_insert_column(&mut self, num_cols: &u32) {
         self.left_column += num_cols;
         self.right_column += num_cols;
     }
 
+    #[inline]
     pub(crate) fn adjustment_remove_row(&mut self, num_rows: &u32) {
         self.top_row = if &self.top_row > num_rows {
             self.top_row - num_rows
@@ -107,6 +134,7 @@ impl Anchor {
         };
     }
 
+    #[inline]
     pub(crate) fn adjustment_remove_column(&mut self, num_cols: &u32) {
         self.left_column = if &self.left_column > num_cols {
             self.left_column - num_cols
@@ -120,6 +148,7 @@ impl Anchor {
         };
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -148,6 +177,7 @@ impl Anchor {
         );
     }
 
+    #[inline]
     fn get_number(value: Option<&&str>) -> u32 {
         match value {
             Some(v) => v.to_string().trim().parse::<u32>().unwrap_or(0),
@@ -155,6 +185,7 @@ impl Anchor {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x:Anchor
         let anchor = format!(
@@ -174,6 +205,7 @@ impl Anchor {
     }
 }
 impl AdjustmentCoordinate for Anchor {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -194,6 +226,7 @@ impl AdjustmentCoordinate for Anchor {
             adjustment_insert_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: &u32,
@@ -214,6 +247,7 @@ impl AdjustmentCoordinate for Anchor {
             adjustment_remove_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,

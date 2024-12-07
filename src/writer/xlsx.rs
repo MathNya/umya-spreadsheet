@@ -113,10 +113,10 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
         )?;
 
         // Add vml drawing
-        let vml_drawing_no = vml_drawing::write(worksheet, &mut writer_manager)?;
+        let (vml_drawing_no, rel_list) = vml_drawing::write(worksheet, &mut writer_manager)?;
 
         // Add vml drawing rels
-        vml_drawing_rels::write(worksheet, &vml_drawing_no, &mut writer_manager)?;
+        vml_drawing_rels::write(worksheet, &vml_drawing_no, &rel_list, &mut writer_manager)?;
 
         // Add comment
         let comment_no = comment::write(worksheet, &mut writer_manager)?;
