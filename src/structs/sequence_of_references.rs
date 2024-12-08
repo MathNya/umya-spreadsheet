@@ -1,6 +1,6 @@
 use super::Range;
 use thin_vec::ThinVec;
-use traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinate;
 
 #[derive(Default, Debug, Clone)]
 pub struct SequenceOfReferences {

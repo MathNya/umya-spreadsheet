@@ -2,14 +2,14 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::BooleanValue;
-use structs::Int32Value;
-use structs::Location;
-use structs::StringValue;
-use structs::UInt32Value;
-use writer::driver::*;
+use crate::structs::BooleanValue;
+use crate::structs::Int32Value;
+use crate::structs::Location;
+use crate::structs::StringValue;
+use crate::structs::UInt32Value;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct DataField {

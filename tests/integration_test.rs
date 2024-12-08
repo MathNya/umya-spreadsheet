@@ -5,7 +5,7 @@ extern crate chrono;
 extern crate umya_spreadsheet;
 use std::time::Instant;
 
-use helper::color;
+use crate::helper::color;
 use umya_spreadsheet::*;
 
 #[test]

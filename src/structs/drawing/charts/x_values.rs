@@ -3,10 +3,10 @@ use super::NumberReference;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::Spreadsheet;
-use writer::driver::*;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct XValues {

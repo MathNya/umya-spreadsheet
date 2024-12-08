@@ -5,11 +5,11 @@ use super::UInt32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::raw::RawRelationships;
-use structs::MediaObject;
-use writer::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::structs::MediaObject;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {

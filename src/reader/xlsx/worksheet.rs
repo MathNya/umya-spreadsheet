@@ -4,21 +4,21 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::collections::HashMap;
 
-use helper::formula::*;
-use structs::office2010::excel::DataValidations as DataValidations2010;
-use structs::raw::RawRelationships;
-use structs::raw::RawWorksheet;
-use structs::Cells;
-use structs::Columns;
-use structs::ConditionalFormatting;
-use structs::DataValidations;
-use structs::Hyperlink;
-use structs::OleObjects;
-use structs::Row;
-use structs::SharedStringTable;
-use structs::SheetProtection;
-use structs::Stylesheet;
-use structs::Worksheet;
+use crate::helper::formula::*;
+use crate::structs::office2010::excel::DataValidations as DataValidations2010;
+use crate::structs::raw::RawRelationships;
+use crate::structs::raw::RawWorksheet;
+use crate::structs::Cells;
+use crate::structs::Columns;
+use crate::structs::ConditionalFormatting;
+use crate::structs::DataValidations;
+use crate::structs::Hyperlink;
+use crate::structs::OleObjects;
+use crate::structs::Row;
+use crate::structs::SharedStringTable;
+use crate::structs::SheetProtection;
+use crate::structs::Stylesheet;
+use crate::structs::Worksheet;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

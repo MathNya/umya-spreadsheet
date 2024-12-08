@@ -9,15 +9,15 @@ use super::TextBox;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::raw::RawRelationships;
-use structs::EnumValue;
-use structs::Int32Value;
-use structs::StringValue;
-use structs::TrueFalseValue;
-use traits::AdjustmentCoordinate;
-use writer::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::structs::EnumValue;
+use crate::structs::Int32Value;
+use crate::structs::StringValue;
+use crate::structs::TrueFalseValue;
+use crate::traits::AdjustmentCoordinate;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {

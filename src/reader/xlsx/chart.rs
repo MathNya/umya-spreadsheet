@@ -3,8 +3,8 @@ use crate::xml_read_loop;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::result;
-use structs::drawing::charts::ChartSpace;
-use structs::raw::RawFile;
+use crate::structs::drawing::charts::ChartSpace;
+use crate::structs::raw::RawFile;
 
 pub(crate) fn read(
     raw_file: &RawFile,

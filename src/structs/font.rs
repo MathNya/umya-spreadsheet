@@ -18,7 +18,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
 use std::str::FromStr;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Font {

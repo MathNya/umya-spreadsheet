@@ -1,17 +1,17 @@
 // pivotCacheDefinition
-use helper::const_str::*;
+use crate::helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::ByteValue;
-use structs::CacheFields;
-use structs::CacheSource;
-use structs::DoubleValue;
-use structs::StringValue;
-use structs::UInt32Value;
-use writer::driver::*;
+use crate::structs::ByteValue;
+use crate::structs::CacheFields;
+use crate::structs::CacheSource;
+use crate::structs::DoubleValue;
+use crate::structs::StringValue;
+use crate::structs::UInt32Value;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotCacheDefinition {

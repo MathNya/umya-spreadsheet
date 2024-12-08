@@ -1,9 +1,9 @@
 use std::io;
 
 use super::XlsxError;
-use helper::const_str::*;
-use structs::Worksheet;
-use structs::WriterManager;
+use crate::helper::const_str::*;
+use crate::structs::Worksheet;
+use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,

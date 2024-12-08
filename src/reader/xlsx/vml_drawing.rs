@@ -3,10 +3,10 @@ use crate::xml_read_loop;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::result;
-use structs::raw::RawFile;
-use structs::raw::RawRelationships;
-use structs::vml::Shape;
-use structs::Worksheet;
+use crate::structs::raw::RawFile;
+use crate::structs::raw::RawRelationships;
+use crate::structs::vml::Shape;
+use crate::structs::Worksheet;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

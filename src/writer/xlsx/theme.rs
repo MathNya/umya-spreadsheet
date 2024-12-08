@@ -4,9 +4,9 @@ use std::io;
 
 use super::driver::*;
 use super::XlsxError;
-use helper::const_str::*;
-use structs::drawing::Theme;
-use structs::WriterManager;
+use crate::helper::const_str::*;
+use crate::structs::drawing::Theme;
+use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     theme: &Theme,

@@ -3,9 +3,9 @@ use super::XlsxError;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
-use structs::drawing::charts::ChartSpace;
-use structs::Spreadsheet;
-use structs::WriterManager;
+use crate::structs::drawing::charts::ChartSpace;
+use crate::structs::Spreadsheet;
+use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     chart_space: &ChartSpace,

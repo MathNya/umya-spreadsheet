@@ -1,15 +1,15 @@
-use helper::const_str::*;
+use crate::helper::const_str::*;
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::borrow::Cow;
 use std::io::Cursor;
-use structs::custom_properties::Properties as CustomProperties;
-use structs::StringValue;
-use structs::Worksheet;
-use writer::driver::*;
+use crate::structs::custom_properties::Properties as CustomProperties;
+use crate::structs::StringValue;
+use crate::structs::Worksheet;
+use crate::writer::driver::*;
 
 #[derive(Clone, Debug)]
 pub struct Properties {

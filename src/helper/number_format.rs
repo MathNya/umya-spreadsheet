@@ -8,9 +8,9 @@ use std::borrow::Cow;
 use fancy_regex::Captures;
 use fancy_regex::Matches;
 use fancy_regex::Regex;
-use helper::date::*;
-use structs::Color;
-use structs::NumberingFormat;
+use crate::helper::date::*;
+use crate::structs::Color;
+use crate::structs::NumberingFormat;
 use thousands::Separable;
 
 pub struct Split<'r, 't> {

@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::Cursor;
 use std::io::Read;
-use structs::MediaObject;
+use crate::structs::MediaObject;
 
 #[inline]
 pub fn get_binary_data(path: &str) -> Vec<u8> {

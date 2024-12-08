@@ -1,8 +1,8 @@
 use super::ColumnReference;
 use super::RowReference;
-use helper::coordinate::*;
-use traits::AdjustmentCoordinate;
-use traits::AdjustmentValue;
+use crate::helper::coordinate::*;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentValue;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Coordinate {

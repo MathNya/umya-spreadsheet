@@ -1,8 +1,8 @@
 use std::io;
 
 use super::XlsxError;
-use structs::Worksheet;
-use structs::WriterManager;
+use crate::structs::Worksheet;
+use crate::structs::WriterManager;
 
 #[inline]
 pub(crate) fn write<W: io::Seek + io::Write>(

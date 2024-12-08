@@ -8,10 +8,10 @@ use super::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
 use std::vec;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {

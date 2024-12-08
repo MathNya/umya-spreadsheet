@@ -1,13 +1,13 @@
 // x14:dataValidations
-use helper::const_str::*;
+use crate::helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::office2010::excel::DataValidation;
+use crate::structs::office2010::excel::DataValidation;
 use thin_vec::ThinVec;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidations {

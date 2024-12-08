@@ -1,5 +1,5 @@
 use super::Range;
-use traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinate;
 
 #[derive(Clone, Default, Debug)]
 pub struct AutoFilter {

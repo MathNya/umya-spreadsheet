@@ -5,15 +5,15 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::Cursor;
 use std::io::Read;
-use structs::drawing::spreadsheet::MarkerType;
-use structs::drawing::spreadsheet::OneCellAnchor;
-use structs::drawing::spreadsheet::Picture;
-use structs::drawing::spreadsheet::TwoCellAnchor;
-use structs::drawing::FillRectangle;
-use structs::drawing::PresetGeometry;
-use structs::drawing::Stretch;
-use structs::MediaObject;
-use traits::AdjustmentCoordinate;
+use crate::structs::drawing::spreadsheet::MarkerType;
+use crate::structs::drawing::spreadsheet::OneCellAnchor;
+use crate::structs::drawing::spreadsheet::Picture;
+use crate::structs::drawing::spreadsheet::TwoCellAnchor;
+use crate::structs::drawing::FillRectangle;
+use crate::structs::drawing::PresetGeometry;
+use crate::structs::drawing::Stretch;
+use crate::structs::MediaObject;
+use crate::traits::AdjustmentCoordinate;
 
 lazy_static! {
     static ref EMPTY_VEC: Vec<u8> = Vec::new();

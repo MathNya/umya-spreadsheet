@@ -22,7 +22,7 @@ macro_rules! xml_read_loop {
     };
 }
 
-pub(crate) use xml_read_loop;
+pub(crate) use crate::xml_read_loop;
 
 #[macro_export]
 macro_rules! set_string_from_xml {
@@ -33,7 +33,7 @@ macro_rules! set_string_from_xml {
     }};
 }
 
-pub(crate) use set_string_from_xml;
+pub(crate) use crate::set_string_from_xml;
 
 pub(crate) fn normalize_path(path: &str) -> PathBuf {
     let path = Path::new(path);

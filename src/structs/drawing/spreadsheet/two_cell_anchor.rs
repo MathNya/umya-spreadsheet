@@ -7,18 +7,18 @@ use super::GroupShape;
 use super::MarkerType;
 use super::Picture;
 use super::Shape;
-use helper::const_str::MC_NS;
-use helper::const_str::*;
+use crate::helper::const_str::MC_NS;
+use crate::helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::raw::RawRelationships;
-use structs::BooleanValue;
-use traits::AdjustmentCoordinate;
-use traits::AdjustmentCoordinateWithSheet;
-use writer::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::structs::BooleanValue;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {

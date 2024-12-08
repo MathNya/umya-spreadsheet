@@ -1,5 +1,5 @@
-use helper::coordinate::*;
-use traits::AdjustmentValue;
+use crate::helper::coordinate::*;
+use crate::traits::AdjustmentValue;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct ColumnReference {

@@ -2,11 +2,11 @@ use super::SheetView;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::PivotCacheDefinition;
-use structs::PivotTableDefinition;
-use writer::driver::*;
+use crate::structs::PivotCacheDefinition;
+use crate::structs::PivotTableDefinition;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotTable {

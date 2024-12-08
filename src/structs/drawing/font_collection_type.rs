@@ -7,7 +7,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
 use thin_vec::ThinVec;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct FontCollectionType {
