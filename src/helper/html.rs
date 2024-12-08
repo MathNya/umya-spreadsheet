@@ -43,7 +43,7 @@ pub fn html_to_richtext(html: &str) -> Result<RichText, html_parser::Error> {
 #[inline]
 pub fn html_to_richtext_custom(
     html: &str,
-    method: &AnalysisMethod,
+    method: &dyn AnalysisMethod,
 ) -> Result<RichText, html_parser::Error> {
     let dom = Dom::parse(html)?;
     let data = read_node(&dom.children, &Vec::new());
@@ -109,7 +109,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
     result
 }
 
-fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &AnalysisMethod) -> RichText {
+fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMethod) -> RichText {
     let mut result = RichText::default();
 
     for html_flat_data in html_flat_data_list {
