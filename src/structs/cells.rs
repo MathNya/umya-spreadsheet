@@ -1,14 +1,14 @@
 use super::Cell;
 use super::CellValue;
 use super::Style;
-use helper::coordinate::*;
-use helper::range::*;
+use crate::helper::coordinate::*;
+use crate::helper::range::*;
 use std::collections::HashMap;
-use structs::Column;
-use structs::Row;
-use traits::AdjustmentCoordinate;
-use traits::AdjustmentCoordinateWith2Sheet;
-use traits::AdjustmentCoordinateWithSheet;
+use crate::structs::Column;
+use crate::structs::Row;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinateWith2Sheet;
+use crate::traits::AdjustmentCoordinateWithSheet;
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {

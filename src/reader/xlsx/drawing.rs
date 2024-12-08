@@ -1,12 +1,12 @@
 use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use reader::driver::xml_read_loop;
+use crate::reader::driver::xml_read_loop;
 use std::result;
-use structs::drawing::spreadsheet::WorksheetDrawing;
-use structs::raw::RawFile;
-use structs::raw::RawRelationships;
-use structs::Worksheet;
+use crate::structs::drawing::spreadsheet::WorksheetDrawing;
+use crate::structs::raw::RawFile;
+use crate::structs::raw::RawRelationships;
+use crate::structs::Worksheet;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

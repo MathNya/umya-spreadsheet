@@ -9,10 +9,10 @@ use super::UInt32Value;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
 use thin_vec::ThinVec;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetView {

@@ -1,10 +1,10 @@
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io;
 use std::io::Read;
-use structs::StringValue;
-use structs::WriterManager;
+use crate::structs::StringValue;
+use crate::structs::WriterManager;
 use thin_vec::ThinVec;
-use XlsxError;
+use crate::XlsxError;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {

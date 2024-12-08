@@ -1,15 +1,15 @@
 // *:graphicData
 use super::charts::ChartSpace;
-use helper::const_str::*;
+use crate::helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
-use reader::xlsx::chart;
+use crate::reader::driver::*;
+use crate::reader::xlsx::chart;
 use std::io::Cursor;
-use structs::raw::RawRelationships;
-use traits::AdjustmentCoordinateWithSheet;
-use writer::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicData {

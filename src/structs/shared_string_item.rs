@@ -7,10 +7,10 @@ use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::hash::Hasher;
 use std::io::Cursor;
-use writer::driver::*;
+use crate::writer::driver::*;
 extern crate ahash;
 use self::ahash::AHasher;
 

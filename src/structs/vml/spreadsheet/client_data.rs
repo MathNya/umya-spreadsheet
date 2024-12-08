@@ -11,12 +11,12 @@ use super::Visible;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::EnumValue;
-use traits::AdjustmentCoordinate;
-use traits::AdjustmentValue;
-use writer::driver::*;
+use crate::structs::EnumValue;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentValue;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ClientData {

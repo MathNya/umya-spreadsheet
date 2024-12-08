@@ -2,12 +2,12 @@ use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::borrow::Cow;
 use std::io::Cursor;
-use structs::custom_properties::CustomDocumentPropertyValue;
-use structs::StringValue;
-use writer::driver::*;
+use crate::structs::custom_properties::CustomDocumentPropertyValue;
+use crate::structs::StringValue;
+use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct CustomDocumentProperty {

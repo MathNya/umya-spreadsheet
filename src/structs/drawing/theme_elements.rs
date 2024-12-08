@@ -5,9 +5,9 @@ use super::FormatScheme;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ThemeElements {

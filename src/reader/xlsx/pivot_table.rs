@@ -3,10 +3,10 @@ use super::XlsxError;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::result;
-use structs::raw::RawFile;
-use structs::PivotTable;
-use structs::PivotTableDefinition;
-use structs::Worksheet;
+use crate::structs::raw::RawFile;
+use crate::structs::PivotTable;
+use crate::structs::PivotTableDefinition;
+use crate::structs::Worksheet;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

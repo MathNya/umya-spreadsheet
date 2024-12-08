@@ -6,15 +6,15 @@ use super::SharedStringTable;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use helper::formula::*;
+use crate::helper::formula::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::collections::HashMap;
 use std::io::Cursor;
-use traits::AdjustmentValue;
-use writer::driver::*;
+use crate::traits::AdjustmentValue;
+use crate::writer::driver::*;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct Row {

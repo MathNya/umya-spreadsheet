@@ -2,8 +2,8 @@ use super::XlsxError;
 use std::io::Read;
 use std::{io, result};
 
-use helper::const_str::*;
-use structs::Spreadsheet;
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

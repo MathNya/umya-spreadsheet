@@ -1,7 +1,7 @@
 // a:gd
 use quick_xml::Writer;
 use std::io::Cursor;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeGuide {

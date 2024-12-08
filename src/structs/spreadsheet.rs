@@ -1,23 +1,23 @@
 use crate::StringValue;
-use helper::address::*;
-use helper::coordinate::*;
-use reader::xlsx::*;
+use crate::helper::address::*;
+use crate::helper::coordinate::*;
+use crate::reader::xlsx::*;
 use std::sync::Arc;
 use std::sync::RwLock;
-use structs::drawing::Theme;
-use structs::Address;
-use structs::CellValue;
-use structs::Cells;
-use structs::DefinedName;
-use structs::Properties;
-use structs::SharedStringTable;
-use structs::Stylesheet;
-use structs::WorkbookProtection;
-use structs::WorkbookView;
-use structs::Worksheet;
+use crate::structs::drawing::Theme;
+use crate::structs::Address;
+use crate::structs::CellValue;
+use crate::structs::Cells;
+use crate::structs::DefinedName;
+use crate::structs::Properties;
+use crate::structs::SharedStringTable;
+use crate::structs::Stylesheet;
+use crate::structs::WorkbookProtection;
+use crate::structs::WorkbookView;
+use crate::structs::Worksheet;
 use thin_vec::ThinVec;
-use traits::AdjustmentCoordinate;
-use traits::AdjustmentCoordinateWithSheet;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinateWithSheet;
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.

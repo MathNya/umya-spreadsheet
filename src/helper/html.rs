@@ -1,12 +1,12 @@
 use chrono::format;
 use html_parser::{Dom, Element, Node};
 use std::collections::HashMap;
-use structs::Color;
-use structs::Font;
-use structs::RichText;
-use structs::TextElement;
-use structs::UnderlineValues;
-use structs::VerticalAlignmentRunValues;
+use crate::structs::Color;
+use crate::structs::Font;
+use crate::structs::RichText;
+use crate::structs::TextElement;
+use crate::structs::UnderlineValues;
+use crate::structs::VerticalAlignmentRunValues;
 use thin_vec::ThinVec;
 
 /// Generate rich text from html.

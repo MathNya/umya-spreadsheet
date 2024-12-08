@@ -6,9 +6,9 @@ use super::UInt32Value;
 use md5::Digest;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
-use reader::driver::*;
-use structs::Cells;
-use traits::AdjustmentValue;
+use crate::reader::driver::*;
+use crate::structs::Cells;
+use crate::traits::AdjustmentValue;
 
 /// # Examples
 /// ## set auto width

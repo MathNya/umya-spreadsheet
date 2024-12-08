@@ -3,10 +3,10 @@ use quick_xml::escape;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::collections::HashMap;
 use std::io::Cursor;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {

@@ -13,12 +13,12 @@ use super::vml::TextBox;
 use super::Coordinate;
 use super::Fill;
 use super::RichText;
-use helper::coordinate::*;
+use crate::helper::coordinate::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
-use reader::driver::*;
-use structs::vml::Shape;
-use traits::AdjustmentCoordinate;
+use crate::reader::driver::*;
+use crate::structs::vml::Shape;
+use crate::traits::AdjustmentCoordinate;
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {

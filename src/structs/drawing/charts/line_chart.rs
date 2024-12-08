@@ -13,9 +13,9 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use structs::Spreadsheet;
+use crate::structs::Spreadsheet;
 use thin_vec::ThinVec;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct LineChart {

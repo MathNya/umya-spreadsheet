@@ -2,16 +2,16 @@
 use super::drawing::Theme;
 use super::CellValue;
 use super::SharedStringItem;
-use drawing::charts::View3D;
-use helper::const_str::*;
+use crate::drawing::charts::View3D;
+use crate::helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::collections::HashMap;
 use std::io::Cursor;
 use thin_vec::ThinVec;
-use writer::driver::*;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringTable {

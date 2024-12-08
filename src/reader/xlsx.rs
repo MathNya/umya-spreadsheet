@@ -7,14 +7,14 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use super::driver;
-use helper::const_str::*;
-use structs::drawing::Theme;
-use structs::raw::RawWorksheet;
-use structs::SharedStringTable;
-use structs::Spreadsheet;
-use structs::Stylesheet;
-use structs::Worksheet;
-use XlsxError;
+use crate::helper::const_str::*;
+use crate::structs::drawing::Theme;
+use crate::structs::raw::RawWorksheet;
+use crate::structs::SharedStringTable;
+use crate::structs::Spreadsheet;
+use crate::structs::Stylesheet;
+use crate::structs::Worksheet;
+use crate::XlsxError;
 
 pub(crate) mod chart;
 pub(crate) mod comment;
