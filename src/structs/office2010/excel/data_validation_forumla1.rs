@@ -2,12 +2,12 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
 use std::vec;
-use structs::office::excel::Formula;
-use structs::Coordinate;
-use writer::driver::*;
+use crate::structs::office::excel::Formula;
+use crate::structs::Coordinate;
+use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidationForumla1 {

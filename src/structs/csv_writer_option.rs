@@ -1,5 +1,5 @@
 use super::EnumValue;
-use structs::CsvEncodeValues;
+use crate::structs::CsvEncodeValues;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct CsvWriterOption {

@@ -1,6 +1,6 @@
 use super::driver;
 use crate::XlsxError;
-use helper::crypt::*;
+use crate::helper::crypt::*;
 use std::fmt;
 use std::fs;
 use std::fs::File;
@@ -9,8 +9,8 @@ use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 use std::string::FromUtf8Error;
-use structs::Spreadsheet;
-use structs::WriterManager;
+use crate::structs::Spreadsheet;
+use crate::structs::WriterManager;
 
 mod chart;
 mod comment;

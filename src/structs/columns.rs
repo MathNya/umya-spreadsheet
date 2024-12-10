@@ -2,15 +2,15 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::Cells;
-use structs::Column;
-use structs::MergeCells;
-use structs::Stylesheet;
+use crate::structs::Cells;
+use crate::structs::Column;
+use crate::structs::MergeCells;
+use crate::structs::Stylesheet;
 use thin_vec::ThinVec;
-use traits::AdjustmentValue;
-use writer::driver::*;
+use crate::traits::AdjustmentValue;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Columns {

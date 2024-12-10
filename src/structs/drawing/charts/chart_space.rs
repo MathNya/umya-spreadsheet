@@ -7,15 +7,15 @@ use super::EditingLanguage;
 use super::PrintSettings;
 use super::RoundedCorners;
 use super::ShapeProperties;
-use helper::const_str::*;
+use crate::helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use structs::office2010::drawing::charts::Style;
-use structs::Spreadsheet;
-use traits::AdjustmentCoordinateWithSheet;
-use writer::driver::*;
+use crate::structs::office2010::drawing::charts::Style;
+use crate::structs::Spreadsheet;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartSpace {

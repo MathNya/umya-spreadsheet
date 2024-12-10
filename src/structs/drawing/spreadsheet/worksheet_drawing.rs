@@ -5,20 +5,20 @@ use super::OneCellAnchor;
 use super::Picture;
 use super::Shape;
 use super::TwoCellAnchor;
-use helper::const_str::*;
+use crate::helper::const_str::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::raw::RawRelationships;
-use structs::Chart;
-use structs::Image;
-use structs::OleObjects;
+use crate::structs::raw::RawRelationships;
+use crate::structs::Chart;
+use crate::structs::Image;
+use crate::structs::OleObjects;
 use thin_vec::ThinVec;
-use traits::AdjustmentCoordinate;
-use traits::AdjustmentCoordinateWithSheet;
-use writer::driver::*;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {

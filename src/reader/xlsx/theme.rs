@@ -3,7 +3,7 @@ use crate::xml_read_loop;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::{io, result};
-use structs::drawing::Theme;
+use crate::structs::drawing::Theme;
 
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

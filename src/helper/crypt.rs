@@ -11,9 +11,9 @@ use std::cmp::Ordering;
 use std::io;
 use std::io::Write;
 use std::path::Path;
-use structs::SheetProtection;
-use structs::WorkbookProtection;
-use writer::driver::*;
+use crate::structs::SheetProtection;
+use crate::structs::WorkbookProtection;
+use crate::writer::driver::*;
 
 type Aes256CbcEnc = cbc::Encryptor<aes::Aes256>;
 

@@ -2,13 +2,13 @@
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use reader::driver::*;
+use crate::reader::driver::*;
 use std::io::Cursor;
-use structs::EnumValue;
-use structs::ItemValues;
-use structs::MemberPropertyIndex;
-use structs::UInt32Value;
-use writer::driver::*;
+use crate::structs::EnumValue;
+use crate::structs::ItemValues;
+use crate::structs::MemberPropertyIndex;
+use crate::structs::UInt32Value;
+use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct RowItem {
