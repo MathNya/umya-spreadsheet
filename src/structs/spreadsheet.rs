@@ -1,9 +1,6 @@
-use crate::StringValue;
 use crate::helper::address::*;
 use crate::helper::coordinate::*;
 use crate::reader::xlsx::*;
-use std::sync::Arc;
-use std::sync::RwLock;
 use crate::structs::drawing::Theme;
 use crate::structs::Address;
 use crate::structs::CellValue;
@@ -15,9 +12,12 @@ use crate::structs::Stylesheet;
 use crate::structs::WorkbookProtection;
 use crate::structs::WorkbookView;
 use crate::structs::Worksheet;
-use thin_vec::ThinVec;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::StringValue;
+use std::sync::Arc;
+use std::sync::RwLock;
+use thin_vec::ThinVec;
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.

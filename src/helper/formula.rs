@@ -1,9 +1,9 @@
-use fancy_regex::{Captures, Regex};
 use crate::helper::address::*;
 use crate::helper::coordinate::*;
 use crate::helper::coordinate::*;
 use crate::helper::range::*;
 use crate::structs::StringValue;
+use fancy_regex::{Captures, Regex};
 
 /** PARTLY BASED ON: */
 /** Copyright (c) 2007 E. W. Bachtal, Inc. */

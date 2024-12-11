@@ -2,12 +2,12 @@
 use super::super::super::EnumValue;
 use super::super::super::StringValue;
 use super::SystemColorValues;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct SystemColor {

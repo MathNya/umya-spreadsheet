@@ -1,11 +1,11 @@
 // c:style
 use super::super::super::ByteValue;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Default, Debug)]
 pub struct Style {

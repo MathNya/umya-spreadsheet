@@ -1,15 +1,15 @@
 use super::ConditionalFormattingRule;
 use super::DifferentialFormats;
 use super::SequenceOfReferences;
+use crate::reader::driver::*;
+use crate::traits::AdjustmentCoordinate;
+use crate::writer::driver::*;
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
 use thin_vec::ThinVec;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalFormatting {

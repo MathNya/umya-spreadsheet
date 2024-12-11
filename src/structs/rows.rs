@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 use crate::structs::Row;
 use crate::traits::AdjustmentValue;
+use std::collections::HashMap;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Rows {

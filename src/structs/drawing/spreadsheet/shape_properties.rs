@@ -7,13 +7,13 @@ use super::super::Outline;
 use super::super::PresetGeometry;
 use super::super::SolidFill;
 use super::super::Transform2D;
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {

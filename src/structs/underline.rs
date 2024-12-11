@@ -2,12 +2,12 @@
 use super::EnumTrait;
 use super::EnumValue;
 use super::UnderlineValues;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Underline {

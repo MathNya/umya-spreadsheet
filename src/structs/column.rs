@@ -3,12 +3,12 @@ use super::DoubleValue;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use md5::Digest;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
 use crate::reader::driver::*;
 use crate::structs::Cells;
 use crate::traits::AdjustmentValue;
+use md5::Digest;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
 
 /// # Examples
 /// ## set auto width

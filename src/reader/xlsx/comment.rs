@@ -1,11 +1,11 @@
 use super::XlsxError;
+use crate::structs::raw::RawFile;
+use crate::structs::Comment;
+use crate::structs::Worksheet;
 use crate::xml_read_loop;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::result;
-use crate::structs::raw::RawFile;
-use crate::structs::Comment;
-use crate::structs::Worksheet;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

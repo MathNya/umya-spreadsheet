@@ -3,15 +3,15 @@ use super::DoubleValue;
 use super::StringValue;
 use super::UInt32Value;
 use crate::helper::color::*;
+use crate::reader::driver::*;
+use crate::structs::drawing::Theme;
+use crate::writer::driver::*;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::borrow::Cow;
 use std::io::Cursor;
-use crate::structs::drawing::Theme;
-use crate::writer::driver::*;
 
 const INDEXED_COLORS: &[&str] = &[
     "FF000000", //  System Colour #1 - Black

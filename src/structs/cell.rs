@@ -1,14 +1,7 @@
 use crate::helper::coordinate::*;
 use crate::helper::formula::*;
 use crate::helper::number_format::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::borrow::Cow;
-use std::collections::HashMap;
-use std::io::Cursor;
-use std::sync::{Arc, RwLock};
 use crate::structs::CellFormula;
 use crate::structs::CellFormulaValues;
 use crate::structs::CellRawValue;
@@ -25,6 +18,13 @@ use crate::structs::UInt32Value;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::borrow::Cow;
+use std::collections::HashMap;
+use std::io::Cursor;
+use std::sync::{Arc, RwLock};
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {

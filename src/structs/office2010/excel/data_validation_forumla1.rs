@@ -1,13 +1,13 @@
 // x14:formula1
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io::Cursor;
-use std::vec;
 use crate::structs::office::excel::Formula;
 use crate::structs::Coordinate;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use std::vec;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidationForumla1 {

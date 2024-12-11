@@ -1,11 +1,11 @@
 use std::borrow::Cow;
 
-use fancy_regex::Captures;
-use fancy_regex::Matches;
-use fancy_regex::Regex;
 use crate::helper::date::*;
 use crate::structs::Color;
 use crate::structs::NumberingFormat;
+use fancy_regex::Captures;
+use fancy_regex::Matches;
+use fancy_regex::Regex;
 use thousands::Separable;
 
 const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[

@@ -1,14 +1,14 @@
 use crate::helper::const_str::*;
+use crate::reader::driver::*;
+use crate::structs::custom_properties::CustomDocumentProperty;
+use crate::writer::driver::*;
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::borrow::Cow;
 use std::io::Cursor;
-use crate::structs::custom_properties::CustomDocumentProperty;
 use thin_vec::ThinVec;
-use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct Properties {

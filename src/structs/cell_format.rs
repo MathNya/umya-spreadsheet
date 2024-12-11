@@ -3,13 +3,13 @@ use super::Alignment;
 use super::BooleanValue;
 use super::Protection;
 use super::UInt32Value;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormat {

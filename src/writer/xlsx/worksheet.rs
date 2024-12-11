@@ -1,17 +1,17 @@
 use super::driver::*;
 use super::XlsxError;
 use crate::helper::const_str::*;
+use crate::structs::Cell;
+use crate::structs::SharedStringTable;
+use crate::structs::Stylesheet;
+use crate::structs::Worksheet;
+use crate::structs::WriterManager;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::collections::HashMap;
 use std::io;
 use std::sync::Arc;
 use std::sync::RwLock;
-use crate::structs::Cell;
-use crate::structs::SharedStringTable;
-use crate::structs::Stylesheet;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     sheet_no: &i32,

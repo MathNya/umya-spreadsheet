@@ -1,10 +1,10 @@
 use crate::helper::const_str::*;
-use quick_xml::Writer;
-use std::io;
-use std::io::Cursor;
 use crate::structs::Spreadsheet;
 use crate::structs::XlsxError;
 use crate::writer::driver::*;
+use quick_xml::Writer;
+use std::io;
+use std::io::Cursor;
 pub struct WriterManager<'a, W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: &'a mut zip::ZipWriter<W>,

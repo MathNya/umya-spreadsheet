@@ -1,12 +1,12 @@
 // dataValidations
 use super::DataValidation;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
 use thin_vec::ThinVec;
-use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidations {

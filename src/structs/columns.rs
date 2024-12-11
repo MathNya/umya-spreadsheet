@@ -1,16 +1,16 @@
 // fills
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io::Cursor;
 use crate::structs::Cells;
 use crate::structs::Column;
 use crate::structs::MergeCells;
 use crate::structs::Stylesheet;
-use thin_vec::ThinVec;
 use crate::traits::AdjustmentValue;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Columns {

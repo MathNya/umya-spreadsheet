@@ -2,12 +2,12 @@ use crate::xml_read_loop;
 
 // c:val
 use super::NumberReference;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Values {

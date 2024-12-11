@@ -1,14 +1,14 @@
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io::Cursor;
 use crate::structs::raw::RawRelationships;
 use crate::structs::EnumValue;
 use crate::structs::OrientationValues;
 use crate::structs::UInt32Value;
-use thin_vec::ThinVec;
 use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct PageSetup {

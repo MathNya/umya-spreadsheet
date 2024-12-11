@@ -5,12 +5,12 @@ mod percentage_formater;
 
 use std::borrow::Cow;
 
-use fancy_regex::Captures;
-use fancy_regex::Matches;
-use fancy_regex::Regex;
 use crate::helper::date::*;
 use crate::structs::Color;
 use crate::structs::NumberingFormat;
+use fancy_regex::Captures;
+use fancy_regex::Matches;
+use fancy_regex::Regex;
 use thousands::Separable;
 
 pub struct Split<'r, 't> {

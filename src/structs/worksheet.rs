@@ -1,10 +1,7 @@
-use crate::traits;
-use crate::StringValue;
 use crate::helper::const_str::*;
 use crate::helper::coordinate::*;
 use crate::helper::range::*;
 use crate::reader::xlsx::worksheet::*;
-use std::collections::HashMap;
 use crate::structs::drawing::spreadsheet::WorksheetDrawing;
 use crate::structs::office2010::excel::DataValidations as DataValidations2010;
 use crate::structs::raw::RawWorksheet;
@@ -44,11 +41,14 @@ use crate::structs::SheetViews;
 use crate::structs::Style;
 use crate::structs::Stylesheet;
 use crate::structs::Table;
-use thin_vec::ThinVec;
+use crate::traits;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::traits::AdjustmentValue;
+use crate::StringValue;
+use std::collections::HashMap;
+use thin_vec::ThinVec;
 
 use super::EnumTrait;
 
@@ -223,6 +223,8 @@ impl Worksheet {
     }
 
     /// Get cell.
+    /// # Note
+    /// Cells with unset Value and Style will return None.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(&1, &1)`
     /// # Return value
@@ -1782,6 +1784,7 @@ impl Worksheet {
     }
 
     // Moving or copying a section of the sheet
+    #[inline]
     fn move_or_copy_range(
         &mut self,
         range: &str,
@@ -1840,6 +1843,7 @@ impl Worksheet {
     /// Remove invisible garbage data.
     /// Doing so may reduce file size.
     /// Processing may take some time.
+    #[inline]
     pub fn cleanup(&mut self) {
         let (_, max_row) = self.get_highest_column_and_row();
         for row in (1..(max_row + 1)).rev() {
@@ -1865,6 +1869,57 @@ impl Worksheet {
                     self.cell_collection.remove(&i_col, &i_row);
                 }
             }
+        }
+    }
+
+    #[inline]
+    pub fn copy_cell_styling<T>(&mut self, source: T, target: T)
+    where
+        T: Into<CellCoordinates>,
+    {
+        let style = self.cell_collection.get_style(source).clone();
+        self.get_cell_mut(target).set_style(style);
+    }
+
+    /// Copy the style of a given Row to the target.
+    /// # Arguments
+    /// * `source_row_no` - Source Row Number.
+    /// * `target_row_no` - Target Row Number.
+    /// * `start_col` - Start Column Number. If None, minimum value
+    /// * `end_col` - End Column Number. If None, maximum value
+    #[inline]
+    pub fn copy_row_styling(
+        &mut self,
+        source_row_no: &u32,
+        target_row_no: &u32,
+        start_col: Option<&u32>,
+        end_col: Option<&u32>,
+    ) {
+        let mut start_no = start_col.unwrap_or(&1).clone();
+        let mut end_no = end_col.unwrap_or(&self.get_highest_column()).clone();
+        for col_no in start_no..=end_no {
+            self.copy_cell_styling((&col_no, source_row_no), (&col_no, target_row_no));
+        }
+    }
+
+    /// Copy the style of a given Column to the target.
+    /// # Arguments
+    /// * `source_col_no` - Source Column Number.
+    /// * `target_col_no` - Target Column Number.
+    /// * `start_row` - Start Row Number. If None, minimum value
+    /// * `end_row` - End Row Number. If None, maximum value
+    #[inline]
+    pub fn copy_col_styling(
+        &mut self,
+        source_col_no: &u32,
+        target_col_no: &u32,
+        start_row: Option<&u32>,
+        end_row: Option<&u32>,
+    ) {
+        let mut start_no = start_row.unwrap_or(&1).clone();
+        let mut end_no = end_row.unwrap_or(&self.get_highest_row()).clone();
+        for row_no in start_no..=end_no {
+            self.copy_cell_styling((source_col_no, &row_no), (target_col_no, &row_no));
         }
     }
 }

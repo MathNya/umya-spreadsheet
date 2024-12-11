@@ -1,9 +1,9 @@
 use crate::helper::const_str::*;
-use std::io;
 use crate::structs::raw::RawFile;
 use crate::structs::raw::RawRelationships;
 use crate::structs::WriterManager;
 use crate::structs::XlsxError;
+use std::io;
 use thin_vec::ThinVec;
 
 #[derive(Clone, Debug, Default)]

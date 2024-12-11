@@ -3,13 +3,13 @@ use super::super::EnumValue;
 use super::LineSpacing;
 use super::RunProperties;
 use super::TextAlignmentTypeValues;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ParagraphProperties {

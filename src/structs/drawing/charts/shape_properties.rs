@@ -8,12 +8,12 @@ use super::super::Scene3DType;
 use super::super::Shape3DType;
 use super::super::SolidFill;
 use super::super::Transform2D;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {

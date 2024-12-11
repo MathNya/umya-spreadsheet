@@ -1,10 +1,3 @@
-use base64::{engine::general_purpose::STANDARD, Engine as _};
-use quick_xml::Writer;
-use std::fs;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Cursor;
-use std::io::Read;
 use crate::structs::drawing::spreadsheet::MarkerType;
 use crate::structs::drawing::spreadsheet::OneCellAnchor;
 use crate::structs::drawing::spreadsheet::Picture;
@@ -14,6 +7,13 @@ use crate::structs::drawing::PresetGeometry;
 use crate::structs::drawing::Stretch;
 use crate::structs::MediaObject;
 use crate::traits::AdjustmentCoordinate;
+use base64::{engine::general_purpose::STANDARD, Engine as _};
+use quick_xml::Writer;
+use std::fs;
+use std::fs::File;
+use std::io::BufReader;
+use std::io::Cursor;
+use std::io::Read;
 
 lazy_static! {
     static ref EMPTY_VEC: Vec<u8> = Vec::new();

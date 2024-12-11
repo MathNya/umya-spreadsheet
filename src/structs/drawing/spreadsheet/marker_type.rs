@@ -1,11 +1,11 @@
 // xdr:from,xdr:to
 use crate::helper::coordinate::*;
+use crate::traits::AdjustmentCoordinate;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {

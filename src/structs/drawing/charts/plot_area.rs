@@ -20,15 +20,15 @@ use super::ScatterChart;
 use super::SeriesAxis;
 use super::ShapeProperties;
 use super::ValueAxis;
+use crate::structs::Spreadsheet;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use crate::structs::Spreadsheet;
 use thin_vec::ThinVec;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct PlotArea {

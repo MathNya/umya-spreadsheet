@@ -3,11 +3,11 @@ use std::io;
 use std::path::Path;
 use std::string::FromUtf8Error;
 
-use std::fmt::Write;
 use crate::structs::CsvEncodeValues;
 use crate::structs::CsvWriterOption;
 use crate::structs::Spreadsheet;
 use crate::structs::XlsxError;
+use std::fmt::Write;
 
 /// write spreadsheet file to arbitrary writer.
 /// # Arguments

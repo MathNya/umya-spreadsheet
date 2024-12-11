@@ -1,4 +1,7 @@
 use super::const_str::*;
+use crate::structs::SheetProtection;
+use crate::structs::WorkbookProtection;
+use crate::writer::driver::*;
 use aes::cipher::{block_padding::NoPadding, BlockEncryptMut, KeyIvInit};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use byteorder::{ByteOrder, LittleEndian};
@@ -11,9 +14,6 @@ use std::cmp::Ordering;
 use std::io;
 use std::io::Write;
 use std::path::Path;
-use crate::structs::SheetProtection;
-use crate::structs::WorkbookProtection;
-use crate::writer::driver::*;
 
 type Aes256CbcEnc = cbc::Encryptor<aes::Aes256>;
 

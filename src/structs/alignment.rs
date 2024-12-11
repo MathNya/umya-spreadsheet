@@ -4,13 +4,13 @@ use super::EnumValue;
 use super::HorizontalAlignmentValues;
 use super::UInt32Value;
 use super::VerticalAlignmentValues;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use md5::Digest;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Default, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Alignment {

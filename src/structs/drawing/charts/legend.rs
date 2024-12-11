@@ -5,11 +5,11 @@ use super::LegendPosition;
 use super::Overlay;
 use super::ShapeProperties;
 use super::TextProperties;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Legend {

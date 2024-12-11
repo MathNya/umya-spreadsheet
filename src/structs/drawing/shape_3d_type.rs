@@ -3,12 +3,12 @@ use super::super::EnumValue;
 use super::BevelBottom;
 use super::BevelTop;
 use super::PresetMaterialTypeValues;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape3DType {

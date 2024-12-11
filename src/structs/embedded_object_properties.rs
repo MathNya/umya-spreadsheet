@@ -2,14 +2,14 @@ use super::BooleanValue;
 use super::ObjectAnchor;
 use super::StringValue;
 use super::UInt32Value;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io::Cursor;
 use crate::structs::raw::RawRelationships;
 use crate::structs::MediaObject;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {

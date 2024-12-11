@@ -1,14 +1,14 @@
 use super::TextElement;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::borrow::Cow;
 use std::fmt::Write;
 use std::io::Cursor;
 use thin_vec::ThinVec;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {

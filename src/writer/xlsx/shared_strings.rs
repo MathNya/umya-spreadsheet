@@ -1,14 +1,14 @@
 use super::driver::*;
 use super::XlsxError;
 use crate::helper::const_str::*;
+use crate::structs::SharedStringTable;
+use crate::structs::WriterManager;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 use std::result;
 use std::sync::Arc;
 use std::sync::RwLock;
-use crate::structs::SharedStringTable;
-use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     shared_string_table: Arc<RwLock<SharedStringTable>>,

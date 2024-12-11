@@ -1,9 +1,9 @@
 use super::Range;
-use fancy_regex::Regex;
 use crate::helper::address::*;
 use crate::helper::coordinate::*;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
+use fancy_regex::Regex;
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {

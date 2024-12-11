@@ -1,16 +1,16 @@
 use super::EmbeddedObjectProperties;
 use super::StringValue;
 use crate::helper::const_str::MC_NS;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io::Cursor;
 use crate::structs::drawing::spreadsheet::TwoCellAnchor;
 use crate::structs::raw::RawRelationships;
 use crate::structs::vml::Shape;
-use thin_vec::ThinVec;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObject {

@@ -12,13 +12,13 @@ use super::Strike;
 use super::Underline;
 use super::UnderlineValues;
 use super::VerticalTextAlignment;
+use crate::writer::driver::*;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
 use std::str::FromStr;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Font {

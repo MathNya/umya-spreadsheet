@@ -14,11 +14,11 @@ use super::Coordinate;
 use super::Fill;
 use super::RichText;
 use crate::helper::coordinate::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
 use crate::reader::driver::*;
 use crate::structs::vml::Shape;
 use crate::traits::AdjustmentCoordinate;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {

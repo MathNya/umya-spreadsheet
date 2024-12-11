@@ -3,14 +3,14 @@ use super::PhoneticRun;
 use super::RichText;
 use super::Text;
 use super::TextElement;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::hash::Hasher;
 use std::io::Cursor;
-use crate::writer::driver::*;
 extern crate ahash;
 use self::ahash::AHasher;
 

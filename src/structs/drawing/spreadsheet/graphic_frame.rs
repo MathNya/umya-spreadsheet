@@ -3,14 +3,14 @@ use super::super::super::StringValue;
 use super::super::Graphic;
 use super::NonVisualGraphicFrameProperties;
 use super::Transform;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io::Cursor;
 use crate::structs::raw::RawRelationships;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicFrame {

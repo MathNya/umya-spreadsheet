@@ -2,11 +2,11 @@ use crate::xml_read_loop;
 
 use super::XlsxError;
 use crate::helper::const_str::*;
+use crate::structs::SharedStringTable;
+use crate::structs::Spreadsheet;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::{io, result};
-use crate::structs::SharedStringTable;
-use crate::structs::Spreadsheet;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

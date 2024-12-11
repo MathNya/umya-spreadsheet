@@ -9,16 +9,16 @@ use super::Picture;
 use super::Shape;
 use crate::helper::const_str::MC_NS;
 use crate::helper::const_str::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io::Cursor;
 use crate::structs::raw::RawRelationships;
 use crate::structs::BooleanValue;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {

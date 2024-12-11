@@ -1,11 +1,11 @@
 use super::ClipboardFormatValues;
+use crate::reader::driver::*;
+use crate::structs::EnumValue;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::structs::EnumValue;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ClipboardFormat {

@@ -1,16 +1,16 @@
 use crate::helper::const_str::*;
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io;
-use std::io::Read;
 use crate::structs::raw::RawRelationship;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
 use crate::structs::XlsxError;
-use thin_vec::ThinVec;
 use crate::writer::driver::*;
+use quick_xml::events::{BytesDecl, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io;
+use std::io::Read;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {

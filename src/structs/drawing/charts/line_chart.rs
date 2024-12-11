@@ -9,13 +9,13 @@ use super::Grouping;
 use super::ShowMarker;
 use super::Smooth;
 use super::VaryColors;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use crate::structs::Spreadsheet;
 use thin_vec::ThinVec;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct LineChart {

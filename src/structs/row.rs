@@ -7,14 +7,14 @@ use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
 use crate::helper::formula::*;
+use crate::reader::driver::*;
+use crate::traits::AdjustmentValue;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::collections::HashMap;
 use std::io::Cursor;
-use crate::traits::AdjustmentValue;
-use crate::writer::driver::*;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct Row {

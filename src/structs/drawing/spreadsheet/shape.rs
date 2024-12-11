@@ -4,13 +4,13 @@ use super::NonVisualShapeProperties;
 use super::ShapeProperties;
 use super::ShapeStyle;
 use super::TextBody;
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {

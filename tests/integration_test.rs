@@ -1875,3 +1875,19 @@ fn issue_244() {
     let path = std::path::Path::new("./tests/result_files/issue_244.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_246() {
+    let path = std::path::Path::new("./tests/test_files/issue_246.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let sheet = book.get_sheet_mut(&0).unwrap();
+
+    sheet.copy_row_styling(&3, &5, None, None);
+    sheet.copy_row_styling(&3, &6, Some(&4), Some(&6));
+
+    sheet.copy_col_styling(&10, &12, None, None);
+    sheet.copy_col_styling(&10, &13, Some(&11), Some(&15));
+
+    let path = std::path::Path::new("./tests/result_files/issue_246.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

@@ -1,11 +1,11 @@
 // c:tx
 use super::RichText;
+use crate::writer::driver::*;
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use crate::writer::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartText {

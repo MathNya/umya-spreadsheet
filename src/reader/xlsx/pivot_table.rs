@@ -1,12 +1,12 @@
 use super::driver::*;
 use super::XlsxError;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use std::result;
 use crate::structs::raw::RawFile;
 use crate::structs::PivotTable;
 use crate::structs::PivotTableDefinition;
 use crate::structs::Worksheet;
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use std::result;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

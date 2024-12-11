@@ -1,10 +1,10 @@
 use super::driver::*;
 use super::XlsxError;
 use crate::helper::const_str::*;
-use quick_xml::Writer;
-use std::io;
 use crate::structs::Worksheet;
 use crate::structs::WriterManager;
+use quick_xml::Writer;
+use std::io;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,

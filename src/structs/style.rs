@@ -1,4 +1,3 @@
-use md5::Digest;
 use crate::structs::Alignment;
 use crate::structs::Borders;
 use crate::structs::Color;
@@ -8,6 +7,7 @@ use crate::structs::NumberingFormat;
 use crate::structs::PatternValues;
 use crate::structs::Protection;
 use crate::structs::UInt32Value;
+use md5::Digest;
 
 use crate::BooleanValue;
 

@@ -1,14 +1,14 @@
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use crate::reader::driver::*;
-use std::io;
-use std::io::Cursor;
 use crate::structs::raw::RawFile;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
 use crate::structs::XlsxError;
 use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io;
+use std::io::Cursor;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationship {

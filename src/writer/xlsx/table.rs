@@ -2,11 +2,11 @@ use std::io;
 
 use super::{driver::*, XlsxError};
 use crate::helper::const_str::*;
+use crate::structs::{Worksheet, WriterManager};
 use quick_xml::{
     events::{BytesDecl, Event},
     Writer,
 };
-use crate::structs::{Worksheet, WriterManager};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,

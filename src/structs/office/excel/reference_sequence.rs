@@ -1,14 +1,14 @@
 // xm:sqref
+use crate::reader::driver::*;
+use crate::structs::Coordinate;
+use crate::structs::Range;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use crate::reader::driver::*;
 use std::io::Cursor;
 use std::vec;
-use crate::structs::Coordinate;
-use crate::structs::Range;
 use thin_vec::ThinVec;
-use crate::writer::driver::*;
 
 #[derive(Default, Debug, Clone)]
 pub struct ReferenceSequence {
