@@ -16,6 +16,7 @@ use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetView {
+    show_grid_lines: BooleanValue,
     tab_selected: BooleanValue,
     workbook_view_id: UInt32Value,
     pane: Option<Box<Pane>>,
@@ -29,6 +30,17 @@ pub struct SheetView {
 }
 
 impl SheetView {
+    #[inline]
+    pub fn get_show_grid_lines(&self) -> &bool {
+        self.show_grid_lines.get_value()
+    }
+
+    #[inline]
+    pub fn set_show_grid_lines(&mut self, value: bool) -> &mut Self {
+        self.show_grid_lines.set_value(value);
+        self
+    }
+
     #[inline]
     pub fn get_tab_selected(&self) -> &bool {
         self.tab_selected.get_value()
@@ -155,6 +167,7 @@ impl SheetView {
         e: &BytesStart,
         empty_flag: bool,
     ) {
+        set_string_from_xml!(self, e, show_grid_lines, "showGridLines");
         set_string_from_xml!(self, e, tab_selected, "tabSelected");
         set_string_from_xml!(self, e, workbook_view_id, "workbookViewId");
         set_string_from_xml!(self, e, view, "view");
@@ -209,6 +222,9 @@ impl SheetView {
 
         // sheetView
         let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if self.show_grid_lines.has_value() {
+            attributes.push(("showGridLines", self.show_grid_lines.get_value_string()));
+        }
         if *self.tab_selected.get_value() {
             attributes.push(("tabSelected", self.tab_selected.get_value_string()));
         }

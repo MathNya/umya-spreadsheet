@@ -165,6 +165,11 @@ pub fn new_file() -> structs::Spreadsheet {
     spreadsheet.set_stylesheet_defalut_value();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
+    let mut sheet_view = SheetView::default();
+    sheet_view.set_workbook_view_id(0);
+    let mut sheet_views = SheetViews::default();
+    sheet_views.add_sheet_view_list_mut(sheet_view);
+    worksheet.set_sheets_views(sheet_views);
     spreadsheet.set_active_sheet(0);
     spreadsheet
 }

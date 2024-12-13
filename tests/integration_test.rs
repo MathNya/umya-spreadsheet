@@ -1891,3 +1891,18 @@ fn issue_246() {
     let path = std::path::Path::new("./tests/result_files/issue_246.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_248() {
+    let mut book = new_file();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    sheet
+        .get_sheet_views_mut()
+        .get_sheet_view_list_mut()
+        .get_mut(0)
+        .unwrap()
+        .set_show_grid_lines(false);
+
+    let path = std::path::Path::new("./tests/result_files/issue_248.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
