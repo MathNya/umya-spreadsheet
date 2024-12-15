@@ -38,12 +38,9 @@ pub fn calculate_final_lum_value(tint: &f64, lum: &f64) -> i32 {
 }
 
 pub fn split_rgb(rgb: &str) -> (i32, i32, i32) {
-    let r_str = rgb.chars().skip(0).take(2).collect::<String>();
-    let g_str = rgb.chars().skip(2).take(2).collect::<String>();
-    let b_str = rgb.chars().skip(4).take(2).collect::<String>();
-    let r = i32::from_str_radix(&r_str, 16).unwrap();
-    let g = i32::from_str_radix(&g_str, 16).unwrap();
-    let b = i32::from_str_radix(&b_str, 16).unwrap();
+    let r = i32::from_str_radix(&rgb[0..2], 16).unwrap();
+    let g = i32::from_str_radix(&rgb[2..4], 16).unwrap();
+    let b = i32::from_str_radix(&rgb[4..6], 16).unwrap();
     (r, g, b)
 }
 
