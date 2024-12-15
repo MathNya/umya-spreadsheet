@@ -18,7 +18,7 @@ base64 = "0.22.1"
 byteorder = "1.5"
 cbc = "0.1.2"
 cfb = "0.10.0"
-chrono = { version = "0.4.38", default-features = false, features = ["clock"] }
+chrono = { version = "0.4.39", default-features = false, features = ["clock"] }
 encoding_rs = "0.8.35"
 fancy-regex = "0.14.0"
 getrandom = { version = "0.2.15" }
