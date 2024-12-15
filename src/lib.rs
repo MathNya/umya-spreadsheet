@@ -116,8 +116,13 @@
 //! let _ = writer::xlsx::write(&book, path);
 //! ```
 
-#![allow(warnings)]
-#![allow(clippy::all)]
+#![deny(clippy::correctness)]
+#![warn(
+    clippy::style,
+    clippy::complexity,
+    clippy::perf,
+    clippy::cargo
+)]
 
 extern crate chrono;
 extern crate fancy_regex;
