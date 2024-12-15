@@ -278,9 +278,7 @@ impl Chart {
 
     pub fn get_chart_space(&self) -> &ChartSpace {
         match self.two_cell_anchor.get_graphic_frame() {
-            Some(v) => {
-                v.get_graphic().get_graphic_data().get_chart_space()
-            }
+            Some(v) => v.get_graphic().get_graphic_data().get_chart_space(),
             None => {
                 panic!("Non-ChartSpace.");
             }
@@ -289,12 +287,10 @@ impl Chart {
 
     pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
         match self.two_cell_anchor.get_graphic_frame_mut() {
-            Some(v) => {
-                v
-                    .get_graphic_mut()
-                    .get_graphic_data_mut()
-                    .get_chart_space_mut()
-            }
+            Some(v) => v
+                .get_graphic_mut()
+                .get_graphic_data_mut()
+                .get_chart_space_mut(),
             None => {
                 panic!("Non-ChartSpace.");
             }

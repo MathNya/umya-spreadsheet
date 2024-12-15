@@ -30,7 +30,9 @@ pub(crate) fn write_end_tag<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, tag_nam
 where
     S: Into<Cow<'a, str>>,
 {
-    writer.write_event(Event::End(BytesEnd::new(tag_name.into()))).unwrap();
+    writer
+        .write_event(Event::End(BytesEnd::new(tag_name.into())))
+        .unwrap();
 }
 
 #[inline]
@@ -38,7 +40,9 @@ pub(crate) fn write_text_node<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data:
 where
     S: Into<Cow<'a, str>>,
 {
-    writer.write_event(Event::Text(BytesText::new(&data.into()))).unwrap();
+    writer
+        .write_event(Event::Text(BytesText::new(&data.into())))
+        .unwrap();
 }
 
 #[inline]

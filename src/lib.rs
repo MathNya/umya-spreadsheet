@@ -117,11 +117,7 @@
 //! ```
 
 #![deny(clippy::correctness)]
-#![warn(
-    clippy::style,
-    clippy::complexity,
-    clippy::perf,
-)]
+#![warn(clippy::style, clippy::complexity, clippy::perf)]
 
 extern crate chrono;
 extern crate fancy_regex;

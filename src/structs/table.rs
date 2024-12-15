@@ -1,5 +1,3 @@
-
-
 use super::{
     coordinate::*, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
 };

@@ -80,7 +80,9 @@ impl CacheSource {
 
         if !empty_flg {
             // worksheetSource
-            if let Some(v) = &self.worksheet_source { v.write_to(writer) }
+            if let Some(v) = &self.worksheet_source {
+                v.write_to(writer)
+            }
             write_end_tag(writer, "cacheSource");
         }
     }

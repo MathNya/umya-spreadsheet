@@ -224,7 +224,11 @@ impl DataValidation {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => if e.name().into_inner() == b"x14:dataValidation" { return },
+                Ok(Event::End(ref e)) => {
+                    if e.name().into_inner() == b"x14:dataValidation" {
+                        return;
+                    }
+                }
                 Ok(Event::Eof) => {
                     panic!("Error: Could not find {} end element", "x14:dataValidation")
                 }
@@ -274,8 +278,12 @@ impl DataValidation {
         }
 
         write_start_tag(writer, "x14:dataValidation", attributes, false);
-        if let Some(v) = &self.formula1 { v.write_to(writer) }
-        if let Some(v) = &self.formula2 { v.write_to(writer) }
+        if let Some(v) = &self.formula1 {
+            v.write_to(writer)
+        }
+        if let Some(v) = &self.formula2 {
+            v.write_to(writer)
+        }
         self.reference_sequence.write_to(writer);
         write_end_tag(writer, "x14:dataValidation");
     }

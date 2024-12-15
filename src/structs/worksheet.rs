@@ -1808,11 +1808,7 @@ impl Worksheet {
 
         // Iterate row by row, collecting cell information (do I copy)
         let cells = self.cell_collection.get_cell_by_range(range);
-        let mut copy_cells: Vec<Cell> = cells
-            .into_iter()
-            .flatten()
-            .cloned()
-            .collect();
+        let mut copy_cells: Vec<Cell> = cells.into_iter().flatten().cloned().collect();
 
         // Delete cell information as iterating through in move mode
         if is_move {

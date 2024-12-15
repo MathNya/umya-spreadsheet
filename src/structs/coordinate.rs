@@ -28,7 +28,6 @@ impl fmt::Display for Coordinate {
     }
 }
 
-
 impl Coordinate {
     #[inline]
     pub fn get_col_num(&self) -> &u32 {

@@ -14,11 +14,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new(
-        "1.0",
-        Some("UTF-8"),
-        Some("yes"),
-    ))).unwrap();
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // relationships
@@ -37,7 +39,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if !spreadsheet
         .get_properties()
         .get_custom_properties()
-        .get_custom_document_property_list().is_empty()
+        .get_custom_document_property_list()
+        .is_empty()
     {
         write_relationship(&mut writer, "4", CUSTOM_PROPS_REL, ARC_CUSTOM, "");
     }

@@ -76,7 +76,7 @@ impl DataValidations {
             ("uri", "{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}"),
             ("xmlns:x14", SHEET_MS_MAIN_NS),
         ];
-        
+
         write_start_tag(writer, "ext", attributes, false);
 
         // dataValidations

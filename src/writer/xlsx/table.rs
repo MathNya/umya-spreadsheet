@@ -17,20 +17,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
         // XML header
-        writer.write_event(Event::Decl(BytesDecl::new(
-            "1.0",
-            Some("UTF-8"),
-            Some("yes"),
-        ))).unwrap();
+        writer
+            .write_event(Event::Decl(BytesDecl::new(
+                "1.0",
+                Some("UTF-8"),
+                Some("yes"),
+            )))
+            .unwrap();
         write_new_line(&mut writer);
 
         // table area coordinates
         let area_coords = table.get_area();
-        let area = format!(
-            "{}:{}",
-            area_coords.0,
-            area_coords.1
-        );
+        let area = format!("{}:{}", area_coords.0, area_coords.1);
 
         // table start
         let table_no = writer_mng.next_table_no();
@@ -42,7 +40,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             ("displayName", table.get_display_name()),
             ("ref", &area),
         ];
-        
+
         if table.has_totals_row_shown() {
             attributes.push(("totalsRowShown", table.get_totals_row_shown_str()));
         }

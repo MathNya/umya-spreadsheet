@@ -8,7 +8,6 @@ use crate::structs::PatternValues;
 use crate::structs::Protection;
 use crate::structs::UInt32Value;
 
-
 /// # Examples
 /// ## add border
 /// ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/style/style_border.png)

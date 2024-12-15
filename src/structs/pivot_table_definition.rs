@@ -459,7 +459,7 @@ impl PivotTableDefinition {
             ("mc:Ignorable", "xr"),
             ("xmlns:xr", SHEET_MS_REVISION_NS),
         ];
-        
+
         if self.name.has_value() {
             attributes.push(("name", self.name.get_value_str()));
         }

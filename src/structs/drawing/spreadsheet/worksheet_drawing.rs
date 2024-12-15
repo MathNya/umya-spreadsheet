@@ -392,12 +392,12 @@ impl WorksheetDrawing {
         }
 
         // mc:AlternateContent
-//        let mut ole_id = 1000 + 25;
+        //        let mut ole_id = 1000 + 25;
         for ole_object in ole_objects.get_ole_object() {
             ole_object
                 .get_two_cell_anchor()
                 .write_to(writer, rel_list, &0);
-//            ole_id += 1;
+            //            ole_id += 1;
         }
 
         write_end_tag(writer, "xdr:wsDr");
