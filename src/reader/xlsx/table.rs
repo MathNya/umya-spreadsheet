@@ -1,7 +1,6 @@
 use super::driver::*;
 use super::XlsxError;
 use crate::structs::raw::RawFile;
-use crate::structs::Comment;
 use crate::structs::Worksheet;
 use crate::structs::{Table, TableColumn, TableStyleInfo};
 use quick_xml::events::Event;

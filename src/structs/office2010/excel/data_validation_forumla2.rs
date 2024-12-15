@@ -1,7 +1,5 @@
 // x14:formula2
-use crate::reader::driver::*;
 use crate::structs::office::excel::Formula;
-use crate::structs::Coordinate;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -62,7 +60,7 @@ impl DataValidationForumla2 {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "x14:formula2", vec![], false);
-        &self.value.write_to(writer);
+        self.value.write_to(writer);
         write_end_tag(writer, "x14:formula2");
     }
 }

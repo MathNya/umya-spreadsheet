@@ -9,7 +9,7 @@ use crate::structs::Worksheet;
 use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    worksheet: &Worksheet,
+    _worksheet: &Worksheet,
     vml_drawing_no: &str,
     rel_list: &[(String, String)],
     writer_mng: &mut WriterManager<W>,
@@ -22,7 +22,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         "1.0",
         Some("UTF-8"),
         Some("yes"),
-    )));
+    ))).unwrap();
     write_new_line(&mut writer);
 
     // relationships

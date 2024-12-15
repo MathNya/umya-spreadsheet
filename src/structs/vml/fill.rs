@@ -97,7 +97,7 @@ impl Fill {
                 let mut obj = MediaObject::default();
                 obj.set_image_title(get_attribute(e, b"o:title").unwrap());
                 obj.set_image_name(relationship.get_raw_file().get_file_name());
-                obj.set_image_data(relationship.get_raw_file().get_file_data().clone());
+                obj.set_image_data(relationship.get_raw_file().get_file_data());
                 self.set_image(obj);
             }
         }
@@ -123,12 +123,12 @@ impl Fill {
         if self.focus_size.has_value() {
             attributes.push(("focussize", self.focus_size.get_value_str()));
         }
-        let mut r_id_str = String::from("");
+        let mut _r_id_str = String::from("");
         if let Some(image) = &self.image {
             let r_id = image.get_rid(rel_list);
-            r_id_str = format!("rId{}", r_id);
+            _r_id_str = format!("rId{}", r_id);
             attributes.push(("o:title", image.get_image_title()));
-            attributes.push(("o:relid", r_id_str.as_str()));
+            attributes.push(("o:relid", _r_id_str.as_str()));
             attributes.push(("recolor", "t"));
             attributes.push(("rotate", "t"));
             attributes.push(("type", "frame"));

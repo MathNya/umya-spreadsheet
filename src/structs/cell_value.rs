@@ -1,7 +1,6 @@
 use super::RichText;
 use super::SharedStringItem;
 use super::Text;
-use crate::helper::formula::*;
 use crate::structs::CellFormula;
 use crate::structs::CellRawValue;
 use crate::traits::AdjustmentCoordinateWith2Sheet;

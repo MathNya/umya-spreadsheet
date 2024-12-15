@@ -1,4 +1,3 @@
-use super::driver::*;
 use super::XlsxError;
 use crate::structs::raw::RawFile;
 use crate::structs::PivotTable;
@@ -8,6 +7,7 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use std::result;
 
+#[allow(dead_code)]
 pub(crate) fn read(
     worksheet: &mut Worksheet,
     pivot_table_file: &RawFile,

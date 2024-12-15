@@ -21,6 +21,7 @@ impl BordersCrate {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_borders_mut(&mut self) -> &mut ThinVec<Borders> {
         &mut self.borders
     }

@@ -109,18 +109,21 @@ impl Anchor {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn adjustment_insert_row(&mut self, num_rows: &u32) {
         self.top_row += num_rows;
         self.bottom_row += num_rows;
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn adjustment_insert_column(&mut self, num_cols: &u32) {
         self.left_column += num_cols;
         self.right_column += num_cols;
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn adjustment_remove_row(&mut self, num_rows: &u32) {
         self.top_row = if &self.top_row > num_rows {
             self.top_row - num_rows
@@ -135,6 +138,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn adjustment_remove_column(&mut self, num_cols: &u32) {
         self.left_column = if &self.left_column > num_cols {
             self.left_column - num_cols

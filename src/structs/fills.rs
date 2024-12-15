@@ -21,6 +21,7 @@ impl Fills {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_fill_mut(&mut self) -> &mut ThinVec<Fill> {
         &mut self.fill
     }

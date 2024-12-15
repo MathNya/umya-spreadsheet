@@ -5,13 +5,10 @@ mod percentage_formater;
 
 use std::borrow::Cow;
 
-use crate::helper::date::*;
 use crate::structs::Color;
 use crate::structs::NumberingFormat;
-use fancy_regex::Captures;
 use fancy_regex::Matches;
 use fancy_regex::Regex;
-use thousands::Separable;
 
 pub struct Split<'r, 't> {
     finder: Matches<'r, 't>,
@@ -158,7 +155,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             for ite in color_re.captures(section).ok().flatten().unwrap().iter() {
                 item.push(ite.unwrap().as_str().to_string());
             }
-            std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
+            let _ = std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "").to_string();
         }
         if cond_re.find(section).ok().flatten().is_some() {
@@ -171,13 +168,13 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             }
             match item.get(1) {
                 Some(v) => {
-                    std::mem::replace(&mut condops[idx], v.to_string());
+                    let _ = std::mem::replace(&mut condops[idx], v.to_string());
                 }
                 None => {}
             }
             match item.get(2) {
                 Some(v) => {
-                    std::mem::replace(&mut condvals[idx], v.to_string());
+                    let _ = std::mem::replace(&mut condvals[idx], v.to_string());
                 }
                 None => {}
             }

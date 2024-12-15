@@ -9,7 +9,6 @@ use super::DifferentialFormats;
 use super::Fills;
 use super::Fonts;
 use super::NumberingFormats;
-use super::Protection;
 use super::Style;
 use crate::helper::const_str::*;
 use crate::reader::driver::*;
@@ -57,6 +56,7 @@ impl Stylesheet {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_fonts_mut(&mut self) -> &mut Fonts {
         &mut self.fonts
     }
@@ -73,6 +73,7 @@ impl Stylesheet {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_fills_mut(&mut self) -> &mut Fills {
         &mut self.fills
     }
@@ -89,6 +90,7 @@ impl Stylesheet {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_borders_mut(&mut self) -> &mut BordersCrate {
         &mut self.borders
     }

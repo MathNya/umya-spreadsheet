@@ -3,7 +3,6 @@ use crate::structs::EnumValue;
 use crate::structs::SourceValues;
 use crate::structs::WorksheetSource;
 
-use crate::helper::const_str::*;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
@@ -40,6 +39,7 @@ impl CacheSource {
         self
     }
 
+    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -70,6 +70,7 @@ impl CacheSource {
         );
     }
 
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheSource
         let empty_flg = self.worksheet_source.is_none();

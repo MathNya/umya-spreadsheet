@@ -168,6 +168,7 @@ fn format_straight_numeric_value(
     //    value
 }
 
+#[allow(dead_code)]
 fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Vec<String> {
     let mut decimal_count = numbers[1].len();
     let mut post_decimal_masks: Vec<String> = Vec::new();
@@ -184,6 +185,7 @@ fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Ve
     vec![masks.join("."), post_decimal_masks.join(".")]
 }
 
+#[allow(dead_code)]
 fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     let mut result = number.to_string();
     let mut mask = mask.to_string();
@@ -228,6 +230,7 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     result
 }
 
+#[allow(dead_code)]
 fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -> String {
     let sign = number < &0.0;
     let number = number.abs();

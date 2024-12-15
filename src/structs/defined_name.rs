@@ -64,6 +64,7 @@ impl DefinedName {
         self
     }
 
+    #[allow(dead_code)]
     pub(crate) fn get_sheet_name_crate(&self) -> String {
         if self.string_value.has_value() {
             return String::from("");
@@ -81,6 +82,7 @@ impl DefinedName {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_address_obj_mut(&mut self) -> &mut ThinVec<Address> {
         &mut self.address
     }
@@ -262,6 +264,7 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     fn is_remove_coordinate_with_sheet(
         &self,
         sheet_name: &str,

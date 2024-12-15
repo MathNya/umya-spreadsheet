@@ -13,7 +13,6 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use std::vec;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {

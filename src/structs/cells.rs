@@ -7,7 +7,6 @@ use crate::structs::Column;
 use crate::structs::Row;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
-use crate::traits::AdjustmentCoordinateWithSheet;
 use std::collections::HashMap;
 
 #[derive(Clone, Default, Debug)]
@@ -277,7 +276,7 @@ impl AdjustmentCoordinate for Cells {
         offset_row_num: &u32,
     ) {
         // update cell
-        self.map.retain(|k, x| {
+        self.map.retain(|_, x| {
             !(x.get_coordinate().is_remove_coordinate(
                 root_col_num,
                 offset_col_num,

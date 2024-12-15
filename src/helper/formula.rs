@@ -1,9 +1,8 @@
 use crate::helper::address::*;
 use crate::helper::coordinate::*;
-use crate::helper::coordinate::*;
 use crate::helper::range::*;
 use crate::structs::StringValue;
-use fancy_regex::{Captures, Regex};
+use fancy_regex::Regex;
 
 /** PARTLY BASED ON: */
 /** Copyright (c) 2007 E. W. Bachtal, Inc. */
@@ -135,7 +134,6 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     let mut in_path = false;
     let mut in_range = false;
     let mut in_error = false;
-    let mut next_token: Option<FormulaToken> = None;
 
     let mut index = 1;
     let mut value = String::from("");
@@ -197,7 +195,6 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 in_range = false;
             }
             value = format!("{}{}", value, formula.chars().nth(index).unwrap());
-            index;
 
             continue;
         }
@@ -391,8 +388,8 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
             obj.set_token_type(FormulaTokenTypes::Whitespace);
             tokens1.push(obj);
             index += 1;
-            while ((formula.chars().nth(index).unwrap() == self::WHITESPACE)
-                && (index < formula_length))
+            while (formula.chars().nth(index).unwrap() == self::WHITESPACE)
+                && (index < formula_length)
             {
                 index += 1;
             }
@@ -550,12 +547,14 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
 
     // move tokenList to new set, excluding unnecessary white-space tokens and converting necessary ones to intersections
     let token_count = tokens1.len();
+    #[allow(unused_assignments)]
     let mut previous_token = None;
+    #[allow(unused_assignments)]
     let mut next_token = None;
     for i in 0..token_count {
         let token = tokens1.get(i).unwrap();
         if i > 0 {
-            match tokens1.get((i - 1)) {
+            match tokens1.get(i - 1) {
                 Some(v) => {
                     previous_token = Some(v.clone());
                 }
@@ -567,9 +566,9 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
             previous_token = None;
         }
 
-        match tokens1.get((i + 1)) {
-            Some(v) => {
-                next_token = Some(tokens1.get((i + 1)).unwrap());
+        match tokens1.get(i + 1) {
+            Some(_) => {
+                next_token = Some(tokens1.get(i + 1).unwrap());
             }
             None => {
                 next_token = None;
@@ -624,6 +623,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     // move tokens to final list, switching infix "-" operators to prefix when appropriate, switching infix "+" operators
     // to noop when appropriate, identifying operand and infix-operator subtypes, and pulling "@" from function names
     let token_count = tokens2.len();
+    #[allow(unused_assignments)]
     let mut previous_token = None;
     for i in 0..token_count {
         let mut token = tokens2.get(i).unwrap().clone();

@@ -1,10 +1,6 @@
 // rowItems
 use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::structs::ByteValue;
 use crate::structs::RowItem;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -34,6 +30,7 @@ impl RowItems {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

@@ -15,6 +15,7 @@ pub(crate) trait AdjustmentCoordinate {
         offset_row_num: &u32,
     );
 
+    #[allow(unused_variables)]
     fn is_remove_coordinate(
         &self,
         root_col_num: &u32,

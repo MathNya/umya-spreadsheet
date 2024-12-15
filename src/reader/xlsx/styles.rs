@@ -16,8 +16,6 @@ pub fn read<R: io::Read + io::Seek>(
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
 
-    let theme = spreadsheet.get_theme().clone();
-
     xml_read_loop!(
         reader,
         Event::Start(ref e) => {

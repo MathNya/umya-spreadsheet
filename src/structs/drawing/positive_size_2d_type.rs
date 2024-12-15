@@ -3,7 +3,7 @@
 use crate::reader::driver::*;
 use crate::structs::Int64Value;
 use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;

@@ -1,5 +1,4 @@
 // xm:f
-use crate::reader::driver::*;
 use crate::structs::Address;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
@@ -46,7 +45,6 @@ impl Formula {
                         let mut obj = Address::default();
                         obj.set_address(value);
                         self.value = obj;
-                        value = String::from("");
                         return;
                     }
                     _ => (),

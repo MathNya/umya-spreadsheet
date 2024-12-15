@@ -52,7 +52,7 @@ impl ImageData {
                 self.get_image_mut()
                     .set_image_name(relationship.get_raw_file().get_file_name());
                 self.get_image_mut()
-                    .set_image_data(relationship.get_raw_file().get_file_data().clone());
+                    .set_image_data(relationship.get_raw_file().get_file_data());
             }
         }
 
@@ -66,10 +66,10 @@ impl ImageData {
     ) {
         // v:imagedata
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let mut r_id_str = String::from("");
+        let mut _r_id_str = String::from("");
         let r_id = &self.image.get_rid(rel_list);
-        r_id_str = format!("rId{}", r_id);
-        attributes.push(("o:relid", r_id_str.as_str()));
+        _r_id_str = format!("rId{}", r_id);
+        attributes.push(("o:relid", _r_id_str.as_str()));
         if self.title.has_value() {
             attributes.push(("o:title", self.title.get_value_str()));
         }

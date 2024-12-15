@@ -109,7 +109,7 @@ impl EmbeddedObjectProperties {
         self.get_image_mut()
             .set_image_name(attached_file.get_file_name());
         self.get_image_mut()
-            .set_image_data(attached_file.get_file_data().clone());
+            .set_image_data(attached_file.get_file_data());
 
         set_string_from_xml!(self, e, default_size, "defaultSize");
         set_string_from_xml!(self, e, auto_pict, "autoPict");

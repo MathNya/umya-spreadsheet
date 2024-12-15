@@ -130,10 +130,10 @@ impl GroupShape {
         write_start_tag(writer, "xdr:grpSp", vec![], false);
 
         // xdr:nvGrpSpPr
-        &self.non_visual_group_shape_properties.write_to(writer);
+        self.non_visual_group_shape_properties.write_to(writer);
 
         // xdr:grpSpPr
-        &self.group_shape_properties.write_to(writer);
+        self.group_shape_properties.write_to(writer);
 
         // xdr:pic
         for obj in &self.picture_collection {

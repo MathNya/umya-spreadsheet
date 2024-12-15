@@ -8,7 +8,6 @@ use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::borrow::Cow;
 use std::io::Cursor;
 
 #[derive(Clone, Debug)]

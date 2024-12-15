@@ -1,6 +1,5 @@
 // a:extLst
 use crate::reader::driver::*;
-use crate::writer::driver::*;
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
@@ -27,6 +26,7 @@ impl ExtensionList {
         );
     }
 
+    #[allow(dead_code)]
     #[inline]
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {}
+    pub(crate) fn write_to(&self, _writer: &mut Writer<Cursor<Vec<u8>>>) {}
 }

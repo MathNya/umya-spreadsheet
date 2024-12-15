@@ -3,14 +3,11 @@ use crate::helper::crypt::*;
 use crate::structs::Spreadsheet;
 use crate::structs::WriterManager;
 use crate::XlsxError;
-use std::fmt;
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::Read;
-use std::io::Write;
 use std::path::Path;
-use std::string::FromUtf8Error;
 
 mod chart;
 mod comment;

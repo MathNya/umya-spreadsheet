@@ -26,15 +26,13 @@ pub fn calc_tint(rgb: &str, tint: &f64) -> String {
 }
 
 pub fn calculate_final_lum_value(tint: &f64, lum: &f64) -> i32 {
-    let mut lum1 = 0.0;
-
-    if tint < &0.0 {
-        lum1 = lum * (1.0 + tint);
+    let lum1 = if *tint < 0.0 {
+        lum * (1.0 + tint)
     } else {
-        lum1 = lum * (1.0 - tint) + (HLSMAX - HLSMAX * (1.0 - tint));
-    }
+        lum * (1.0 - tint) + (HLSMAX - HLSMAX * (1.0 - tint))
+    };
 
-    return to_i32(lum1);
+    to_i32(lum1)
 }
 
 pub fn split_rgb(rgb: &str) -> (i32, i32, i32) {
@@ -141,11 +139,11 @@ pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
     let t2 = 2.0 * hls.l - t1;
     let h = hls.h;
     let t_r = h + (1.0 / 3.0);
-    let r = set_color(&t1, &t2, &t_r);
+    let r = set_color(t1, t2, t_r);
     let t_g = h;
-    let g = set_color(&t1, &t2, &t_g);
+    let g = set_color(t1, t2, t_g);
     let t_b = h - (1.0 / 3.0);
-    let b = set_color(&t1, &t2, &t_b);
+    let b = set_color(t1, t2, t_b);
 
     let rtn_r = to_i32(r * RGBMAX);
     let rtn_g = to_i32(g * RGBMAX);
@@ -153,24 +151,20 @@ pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
     join_rgb(&rtn_r, &rtn_g, &rtn_b)
 }
 
-pub fn set_color(t1: &f64, t2: &f64, t3: &f64) -> f64 {
-    let mut t1 = t1.clone();
-    let mut t2 = t2.clone();
-    let mut t3 = positive_decimal_part(t3);
-
-    let mut color: f64 = 0.0;
+pub fn set_color(t1: f64, t2: f64, t3: f64) -> f64 {
+    let t3 = positive_decimal_part(&t3);
 
     if 6.0 * t3 < 1.0 {
-        color = t2 + (t1 - t2) * 6.0 * t3;
+        t2 + (t1 - t2) * 6.0 * t3
     } else if 2.0 * t3 < 1.0 {
-        color = t1;
+        t1
     } else if 3.0 * t3 < 2.0 {
-        color = t2 + (t1 - t2) * ((2.0 / 3.0) - t3) * 6.0;
+        t2 + (t1 - t2) * ((2.0 / 3.0) - t3) * 6.0
     } else {
-        color = t2;
+        t2
     }
-    color
 }
+
 
 #[inline]
 fn positive_decimal_part(hue: &f64) -> f64 {

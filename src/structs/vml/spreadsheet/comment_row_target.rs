@@ -26,12 +26,14 @@ impl CommentRowTarget {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn adjustment_insert_row(&mut self, num_rows: &u32) {
         let value = self.value.get_value() + num_rows;
         self.value.set_value(value);
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn adjustment_remove_row(&mut self, num_row: &u32) {
         if self.value.get_value() > num_row {
             let value = self.value.get_value() - num_row;

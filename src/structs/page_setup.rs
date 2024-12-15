@@ -147,7 +147,7 @@ impl PageSetup {
                 .unwrap()
                 .get_relationship_by_rid(&r_id)
                 .get_raw_file();
-            self.set_object_data(attached_file.get_file_data().clone());
+            self.set_object_data(attached_file.get_file_data());
         }
     }
 

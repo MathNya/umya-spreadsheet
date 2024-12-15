@@ -137,6 +137,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -181,6 +182,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
         let mut attributes: Vec<(&str, &str)> = Vec::new();

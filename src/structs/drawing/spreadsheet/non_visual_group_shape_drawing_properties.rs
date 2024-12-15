@@ -1,6 +1,5 @@
 // xdr:cNvGrpSpPr
 use super::super::GroupShapeLocks;
-use super::NonVisualDrawingProperties;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};

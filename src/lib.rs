@@ -154,7 +154,6 @@ pub mod traits;
 pub mod writer;
 
 pub use self::structs::*;
-pub use self::traits::*;
 
 /// create new spreadsheet file.
 /// # Arguments

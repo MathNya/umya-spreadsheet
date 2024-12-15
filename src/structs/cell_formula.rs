@@ -8,7 +8,6 @@ use crate::structs::StringValue;
 use crate::structs::UInt32Value;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
 use crate::writer::driver::*;
-use quick_xml::de;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -285,6 +284,7 @@ impl CellFormula {
             attributes.push(("r2", self.r2.get_value_str()));
         }
 
+        #[allow(unused_assignments)]
         let mut reference_str = String::from("");
         match formula_shared_list.get(self.shared_index.get_value()) {
             Some((start_col, end_col)) => {

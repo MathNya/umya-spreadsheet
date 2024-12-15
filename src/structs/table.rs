@@ -1,9 +1,4 @@
-use std::default;
 
-use quick_xml::{
-    events::{BytesStart, Event},
-    Reader,
-};
 
 use super::{
     coordinate::*, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
@@ -209,6 +204,7 @@ impl TableColumn {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn has_totals_row_label(&self) -> bool {
         self.totals_row_label.has_value()
     }
@@ -234,6 +230,7 @@ impl TableColumn {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn has_totals_row_function(&self) -> bool {
         self.totals_row_function.has_value()
     }

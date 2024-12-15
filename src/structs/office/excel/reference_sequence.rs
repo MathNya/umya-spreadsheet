@@ -1,6 +1,4 @@
 // xm:sqref
-use crate::reader::driver::*;
-use crate::structs::Coordinate;
 use crate::structs::Range;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
@@ -76,7 +74,6 @@ impl ReferenceSequence {
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xm:sqref" => {
                         self.set_sqref(value);
-                        value = String::from("");
                         return;
                     }
                     _ => (),

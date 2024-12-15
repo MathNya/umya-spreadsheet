@@ -17,7 +17,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         "1.0",
         Some("UTF-8"),
         Some("yes"),
-    )));
+    ))).unwrap();
     write_new_line(&mut writer);
 
     stylesheet.write_to(&mut writer);

@@ -115,7 +115,7 @@ impl RawRelationships {
             "1.0",
             Some("UTF-8"),
             Some("yes"),
-        )));
+        ))).unwrap();
         write_new_line(&mut writer);
 
         // relationships

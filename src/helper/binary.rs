@@ -1,9 +1,6 @@
 use crate::structs::MediaObject;
-use base64::{engine::general_purpose::STANDARD, Engine as _};
-use std::fs;
 use std::fs::File;
 use std::io::BufReader;
-use std::io::Cursor;
 use std::io::Read;
 
 #[inline]

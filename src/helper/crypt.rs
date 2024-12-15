@@ -480,21 +480,21 @@ fn hash(algorithm: &str, buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
 #[inline]
 fn gen_random_16() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 16];
-    getrandom::getrandom(buf);
+    getrandom::getrandom(buf).unwrap();
     buf.to_vec()
 }
 
 #[inline]
 fn gen_random_32() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 32];
-    getrandom::getrandom(buf);
+    getrandom::getrandom(buf).unwrap();
     buf.to_vec()
 }
 
 #[inline]
 fn gen_random_64() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 64];
-    getrandom::getrandom(buf);
+    getrandom::getrandom(buf).unwrap();
     buf.to_vec()
 }
 
@@ -536,7 +536,7 @@ fn build_encryption_info(
         "1.0",
         Some("UTF-8"),
         Some("yes"),
-    )));
+    ))).unwrap();
     write_new_line(&mut writer);
 
     // Map the object into the appropriate XML structure. Buffers are encoded in base 64.
@@ -654,7 +654,7 @@ fn buffer_concat(buffers: Vec<&[u8]>) -> Vec<u8> {
 }
 fn buffer_copy(buffer1: &mut [u8], buffer2: &[u8]) {
     for (i, byte) in buffer2.iter().enumerate() {
-        std::mem::replace(&mut buffer1[i], *byte);
+        let _ = std::mem::replace(&mut buffer1[i], *byte);
     }
 }
 

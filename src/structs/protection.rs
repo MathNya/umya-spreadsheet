@@ -36,6 +36,7 @@ impl Protection {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",

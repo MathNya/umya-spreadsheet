@@ -102,7 +102,7 @@ impl NumberingFormats {
         let formats_to_write: HashMap<_, _> = self
             .numbering_format
             .iter()
-            .filter(|(k, v)| !*v.get_is_build_in())
+            .filter(|(_, v)| !*v.get_is_build_in())
             .collect();
         if formats_to_write.is_empty() {
             return;

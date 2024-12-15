@@ -478,11 +478,11 @@ impl Cell {
             attributes.push(("s", &xf_index_str));
         }
 
-        let cell_meta_index_str = self.cell_meta_index.get_value_string();
-        if self.cell_meta_index.has_value() {
-            // NOT SUPPORT
-            //attributes.push(("cm", &cell_meta_index_str));
-        }
+        // NOT SUPPORTED
+        // let cell_meta_index_str = self.cell_meta_index.get_value_string();
+        // if self.cell_meta_index.has_value() {
+        //     attributes.push(("cm", &cell_meta_index_str));
+        // }
 
         if empty_flag_value {
             write_start_tag(writer, "c", attributes, true);

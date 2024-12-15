@@ -41,7 +41,6 @@ use crate::structs::SheetViews;
 use crate::structs::Style;
 use crate::structs::Stylesheet;
 use crate::structs::Table;
-use crate::traits;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
 use crate::traits::AdjustmentCoordinateWithSheet;
@@ -49,8 +48,6 @@ use crate::traits::AdjustmentValue;
 use crate::StringValue;
 use std::collections::HashMap;
 use thin_vec::ThinVec;
-
-use super::EnumTrait;
 
 /// A Worksheet Object.
 #[derive(Clone, Debug, Default)]
@@ -1895,8 +1892,8 @@ impl Worksheet {
         start_col: Option<&u32>,
         end_col: Option<&u32>,
     ) {
-        let mut start_no = start_col.unwrap_or(&1).clone();
-        let mut end_no = end_col.unwrap_or(&self.get_highest_column()).clone();
+        let start_no = start_col.unwrap_or(&1).clone();
+        let end_no = end_col.unwrap_or(&self.get_highest_column()).clone();
         for col_no in start_no..=end_no {
             self.copy_cell_styling((&col_no, source_row_no), (&col_no, target_row_no));
         }
@@ -1916,8 +1913,8 @@ impl Worksheet {
         start_row: Option<&u32>,
         end_row: Option<&u32>,
     ) {
-        let mut start_no = start_row.unwrap_or(&1).clone();
-        let mut end_no = end_row.unwrap_or(&self.get_highest_row()).clone();
+        let start_no = start_row.unwrap_or(&1).clone();
+        let end_no = end_row.unwrap_or(&self.get_highest_row()).clone();
         for row_no in start_no..=end_no {
             self.copy_cell_styling((source_col_no, &row_no), (target_col_no, &row_no));
         }
@@ -1941,7 +1938,7 @@ impl AdjustmentCoordinate for Worksheet {
             self.get_row_dimensions_crate_mut()
                 .adjustment_insert_value(root_row_num, offset_row_num);
         }
-        if (offset_col_num == &0 && offset_row_num == &0) {
+        if offset_col_num == &0 && offset_row_num == &0 {
             return;
         }
 
@@ -2032,7 +2029,7 @@ impl AdjustmentCoordinate for Worksheet {
             self.get_row_dimensions_crate_mut()
                 .adjustment_remove_value(root_row_num, offset_row_num);
         }
-        if (offset_col_num == &0 && offset_row_num == &0) {
+        if offset_col_num == &0 && offset_row_num == &0 {
             return;
         }
 
@@ -2147,7 +2144,7 @@ impl AdjustmentCoordinateWithSheet for Worksheet {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if (offset_col_num == &0 && offset_row_num == &0) {
+        if offset_col_num == &0 && offset_row_num == &0 {
             return;
         }
 
@@ -2182,7 +2179,7 @@ impl AdjustmentCoordinateWithSheet for Worksheet {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        if (offset_col_num == &0 && offset_row_num == &0) {
+        if offset_col_num == &0 && offset_row_num == &0 {
             return;
         }
 

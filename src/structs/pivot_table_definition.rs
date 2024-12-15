@@ -450,6 +450,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
         let mut attributes: Vec<(&str, &str)> = Vec::new();

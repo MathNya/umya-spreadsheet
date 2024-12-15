@@ -11,7 +11,6 @@ use super::vml::Path;
 use super::vml::Shadow;
 use super::vml::TextBox;
 use super::Coordinate;
-use super::Fill;
 use super::RichText;
 use crate::helper::coordinate::*;
 use crate::reader::driver::*;

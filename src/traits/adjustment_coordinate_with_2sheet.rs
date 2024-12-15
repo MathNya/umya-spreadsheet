@@ -19,6 +19,8 @@ pub(crate) trait AdjustmentCoordinateWith2Sheet {
         offset_row_num: &u32,
     );
 
+    #[allow(dead_code)]
+    #[allow(unused_variables)]
     fn is_remove_coordinate_with_2sheet(
         &self,
         sheet_name: &str,

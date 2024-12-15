@@ -127,13 +127,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         write_end_tag(&mut writer, "v:shapetype");
 
-        let mut r_id = 1;
         for ole_object in worksheet.get_ole_objects().get_ole_object() {
             // v:shape
             ole_object
                 .get_shape()
                 .write_to(&mut writer, &id, &mut rel_list);
-            r_id += 1;
             id += 1;
         }
     }

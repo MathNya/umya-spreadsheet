@@ -1,12 +1,8 @@
 // pivotField
 use crate::reader::driver::*;
 use crate::structs::BooleanValue;
-use crate::structs::ByteValue;
-use crate::structs::Location;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
 use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -50,6 +46,7 @@ impl PivotField {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotField
         write_start_tag(

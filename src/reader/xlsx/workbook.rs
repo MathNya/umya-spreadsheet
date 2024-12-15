@@ -50,7 +50,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                     if let Some(v) = state {
                         worksheet.set_state_str(&v);
                     }
-                    spreadsheet.add_sheet(worksheet);
+                    spreadsheet.add_sheet(worksheet).unwrap();
                 }
                 b"pivotCache" => {
                     let cache_id = get_attribute(e, b"cacheId").unwrap();

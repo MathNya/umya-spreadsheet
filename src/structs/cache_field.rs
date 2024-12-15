@@ -20,6 +20,7 @@ impl CacheField {
         self.name.get_value_str()
     }
 
+    #[allow(dead_code)]
     pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
@@ -47,6 +48,7 @@ impl CacheField {
         self
     }
 
+    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -73,6 +75,7 @@ impl CacheField {
         );
     }
 
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotField
         write_start_tag(

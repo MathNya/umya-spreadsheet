@@ -62,6 +62,7 @@ impl Location {
         set_string_from_xml!(self, e, first_data_col, "firstDataCol");
     }
 
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // location
         write_start_tag(

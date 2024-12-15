@@ -261,7 +261,7 @@ impl WorksheetDrawing {
             result.push(anchor);
         }
         for chart in &mut self.chart_collection {
-            let mut anchor = chart.get_two_cell_anchor_mut();
+            let anchor = chart.get_two_cell_anchor_mut();
             result.push(anchor);
         }
         for image in &mut self.image_collection {
@@ -398,12 +398,12 @@ impl WorksheetDrawing {
         }
 
         // mc:AlternateContent
-        let mut ole_id = 1000 + 25;
+//        let mut ole_id = 1000 + 25;
         for ole_object in ole_objects.get_ole_object() {
             ole_object
                 .get_two_cell_anchor()
                 .write_to(writer, rel_list, &0);
-            ole_id += 1;
+//            ole_id += 1;
         }
 
         write_end_tag(writer, "xdr:wsDr");
@@ -458,7 +458,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        &mut self.one_cell_anchor_collection.retain(|k| {
+        self.one_cell_anchor_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for anchor in &mut self.one_cell_anchor_collection {
@@ -469,7 +469,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.two_cell_anchor_collection.retain(|k| {
+        self.two_cell_anchor_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for anchor in &mut self.two_cell_anchor_collection {
@@ -480,7 +480,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.chart_collection.retain(|k| {
+        self.chart_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for chart in &mut self.chart_collection {
@@ -491,7 +491,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.image_collection.retain(|k| {
+        self.image_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for image in &mut self.image_collection {

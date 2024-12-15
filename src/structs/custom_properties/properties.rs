@@ -6,7 +6,6 @@ use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::borrow::Cow;
 use std::io::Cursor;
 use thin_vec::ThinVec;
 
@@ -49,7 +48,7 @@ impl Properties {
     #[inline]
     pub fn remove_custom_document_property_list(
         &mut self,
-        value: CustomDocumentProperty,
+        _value: CustomDocumentProperty,
     ) -> &mut Self {
         self.custom_document_property_list.clear();
         self
@@ -60,7 +59,6 @@ impl Properties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {

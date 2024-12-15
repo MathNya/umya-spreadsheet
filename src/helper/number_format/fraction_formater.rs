@@ -1,13 +1,3 @@
-use std::borrow::Cow;
-
-use crate::helper::date::*;
-use crate::structs::Color;
-use crate::structs::NumberingFormat;
-use fancy_regex::Captures;
-use fancy_regex::Matches;
-use fancy_regex::Regex;
-use thousands::Separable;
-
 pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
     let sign = if value < &0f64 { "-" } else { "" };
 

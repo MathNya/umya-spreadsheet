@@ -28,7 +28,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         "1.0",
         Some("UTF-8"),
         Some("yes"),
-    )));
+    ))).unwrap();
     write_new_line(&mut writer);
 
     // worksheet
@@ -111,7 +111,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // it's faster than get cell collection by row.
     // cells sort.
-    let mut cells = worksheet.get_cell_collection_sorted();
+    let cells = worksheet.get_cell_collection_sorted();
 
     // make formula shared list
     let mut formula_shared_list: HashMap<&u32, (String, Option<String>)> = HashMap::new();
@@ -285,7 +285,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             vec![("count", &tables.len().to_string())],
             false,
         );
-        for table in worksheet.get_tables().iter() {
+        for _table in worksheet.get_tables().iter() {
             let r_id_str = format!("rId{}", &r_id);
             write_start_tag(
                 &mut writer,
