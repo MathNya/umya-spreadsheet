@@ -46,7 +46,7 @@ pub(crate) fn write_text_node_no_escape<'a, S>(writer: &mut Writer<Cursor<Vec<u8
 where
     S: Into<Cow<'a, str>>,
 {
-    writer.get_mut().write(data.into().as_bytes());
+    writer.get_mut().write_all(data.into().as_bytes());
 }
 
 #[inline]
