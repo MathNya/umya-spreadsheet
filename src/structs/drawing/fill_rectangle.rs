@@ -14,8 +14,8 @@ pub struct FillRectangle {
 }
 impl FillRectangle {
     #[inline]
-    pub fn get_bottom(&self) -> &usize {
-        &self.bottom
+    pub fn get_bottom(&self) -> usize {
+        self.bottom
     }
 
     #[inline]
@@ -24,8 +24,8 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub fn get_left(&self) -> &usize {
-        &self.left
+    pub fn get_left(&self) -> usize {
+        self.left
     }
 
     #[inline]
@@ -34,8 +34,8 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub fn get_right(&self) -> &usize {
-        &self.right
+    pub fn get_right(&self) -> usize {
+        self.right
     }
 
     #[inline]
@@ -44,8 +44,8 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub fn get_top(&self) -> &usize {
-        &self.top
+    pub fn get_top(&self) -> usize {
+        self.top
     }
 
     #[inline]

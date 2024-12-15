@@ -14,7 +14,7 @@ pub struct PrintOptions {
 
 impl PrintOptions {
     #[inline]
-    pub fn get_horizontal_centered(&self) -> &bool {
+    pub fn get_horizontal_centered(&self) -> bool {
         self.horizontal_centered.get_value()
     }
 
@@ -25,7 +25,7 @@ impl PrintOptions {
     }
 
     #[inline]
-    pub fn get_vertical_centered(&self) -> &bool {
+    pub fn get_vertical_centered(&self) -> bool {
         self.vertical_centered.get_value()
     }
 

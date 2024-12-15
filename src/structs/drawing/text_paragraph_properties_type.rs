@@ -24,7 +24,7 @@ pub struct TextParagraphPropertiesType {
 }
 impl TextParagraphPropertiesType {
     #[inline]
-    pub fn get_right_to_left(&self) -> &bool {
+    pub fn get_right_to_left(&self) -> bool {
         self.right_to_left.get_value()
     }
 

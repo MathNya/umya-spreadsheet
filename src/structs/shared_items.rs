@@ -18,7 +18,7 @@ pub struct SharedItems {
     max_value: DoubleValue,
 }
 impl SharedItems {
-    pub fn get_contains_semi_mixed_types(&self) -> &bool {
+    pub fn get_contains_semi_mixed_types(&self) -> bool {
         self.contains_semi_mixed_types.get_value()
     }
 
@@ -27,7 +27,7 @@ impl SharedItems {
         self
     }
 
-    pub fn get_contains_string(&self) -> &bool {
+    pub fn get_contains_string(&self) -> bool {
         self.contains_string.get_value()
     }
 
@@ -36,7 +36,7 @@ impl SharedItems {
         self
     }
 
-    pub fn get_contains_number(&self) -> &bool {
+    pub fn get_contains_number(&self) -> bool {
         self.contains_number.get_value()
     }
 
@@ -45,7 +45,7 @@ impl SharedItems {
         self
     }
 
-    pub fn get_contains_integer(&self) -> &bool {
+    pub fn get_contains_integer(&self) -> bool {
         self.contains_integer.get_value()
     }
 
@@ -54,7 +54,7 @@ impl SharedItems {
         self
     }
 
-    pub fn get_min_value(&self) -> &f64 {
+    pub fn get_min_value(&self) -> f64 {
         self.min_value.get_value()
     }
 
@@ -63,7 +63,7 @@ impl SharedItems {
         self
     }
 
-    pub fn get_max_value(&self) -> &f64 {
+    pub fn get_max_value(&self) -> f64 {
         self.max_value.get_value()
     }
 

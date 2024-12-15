@@ -12,7 +12,7 @@ pub struct Order {
     val: UInt32Value,
 }
 impl Order {
-    pub fn get_val(&self) -> &u32 {
+    pub fn get_val(&self) -> u32 {
         self.val.get_value()
     }
 

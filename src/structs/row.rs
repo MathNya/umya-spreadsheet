@@ -42,7 +42,7 @@ impl Default for Row {
 }
 impl Row {
     #[inline]
-    pub fn get_row_num(&self) -> &u32 {
+    pub fn get_row_num(&self) -> u32 {
         self.row_num.get_value()
     }
 
@@ -53,7 +53,7 @@ impl Row {
     }
 
     #[inline]
-    pub fn get_height(&self) -> &f64 {
+    pub fn get_height(&self) -> f64 {
         self.height.get_value()
     }
 
@@ -65,7 +65,7 @@ impl Row {
     }
 
     #[inline]
-    pub fn get_descent(&self) -> &f64 {
+    pub fn get_descent(&self) -> f64 {
         self.descent.get_value()
     }
 
@@ -76,7 +76,7 @@ impl Row {
     }
 
     #[inline]
-    pub fn get_thick_bot(&self) -> &bool {
+    pub fn get_thick_bot(&self) -> bool {
         self.thick_bot.get_value()
     }
 
@@ -87,7 +87,7 @@ impl Row {
     }
 
     #[inline]
-    pub fn get_custom_height(&self) -> &bool {
+    pub fn get_custom_height(&self) -> bool {
         self.custom_height.get_value()
     }
 
@@ -98,7 +98,7 @@ impl Row {
     }
 
     #[inline]
-    pub fn get_hidden(&self) -> &bool {
+    pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
 
@@ -204,19 +204,19 @@ impl Row {
             attributes.push(("spans", &spans));
         }
         let height = self.height.get_value_string();
-        if self.height.get_value() != &0f64 {
+        if self.height.get_value() != 0f64 {
             attributes.push(("ht", &height));
         }
-        if *self.thick_bot.get_value() {
+        if self.thick_bot.get_value() {
             attributes.push(("thickBot", self.thick_bot.get_value_string()));
         }
-        if *self.custom_height.get_value() {
+        if self.custom_height.get_value() {
             attributes.push(("customHeight", self.custom_height.get_value_string()));
         }
         if xf_index > 0 {
             attributes.push(("customFormat", "1"));
         }
-        if *self.hidden.get_value() {
+        if self.hidden.get_value() {
             attributes.push(("hidden", self.hidden.get_value_string()));
         }
         let descent = self.descent.get_value_string();
@@ -234,7 +234,7 @@ impl Row {
 }
 impl AdjustmentValue for Row {
     #[inline]
-    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         if self.row_num.get_value() >= root_num {
             self.row_num
                 .set_value(self.row_num.get_value() + offset_num);
@@ -242,7 +242,7 @@ impl AdjustmentValue for Row {
     }
 
     #[inline]
-    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         if self.row_num.get_value() >= root_num {
             self.row_num
                 .set_value(self.row_num.get_value() - offset_num);
@@ -250,8 +250,7 @@ impl AdjustmentValue for Row {
     }
 
     #[inline]
-    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
-        self.row_num.get_value() >= root_num
-            && self.row_num.get_value() <= &(root_num + offset_num - 1)
+    fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
+        self.row_num.get_value() >= root_num && self.row_num.get_value() < root_num + offset_num
     }
 }

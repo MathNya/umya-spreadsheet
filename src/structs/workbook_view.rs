@@ -13,7 +13,7 @@ pub struct WorkbookView {
 
 impl WorkbookView {
     #[inline]
-    pub fn get_active_tab(&self) -> &u32 {
+    pub fn get_active_tab(&self) -> u32 {
         self.active_tab.get_value()
     }
 

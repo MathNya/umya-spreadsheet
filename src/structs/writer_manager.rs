@@ -30,8 +30,8 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     }
 
     #[inline]
-    pub fn get_is_light(&self) -> &bool {
-        &self.is_light
+    pub fn get_is_light(&self) -> bool {
+        self.is_light
     }
 
     #[inline]
@@ -52,7 +52,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         writer: Writer<Cursor<Vec<u8>>>,
     ) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_writer(target, self.arv, writer, None, &self.is_light)?;
+            make_file_from_writer(target, self.arv, writer, None, self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
@@ -61,7 +61,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     #[inline]
     pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_bin(target, self.arv, data, None, &self.is_light)?;
+            make_file_from_bin(target, self.arv, data, None, self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())

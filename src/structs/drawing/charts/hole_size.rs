@@ -12,7 +12,7 @@ pub struct HoleSize {
     val: ByteValue,
 }
 impl HoleSize {
-    pub fn get_val(&self) -> &u8 {
+    pub fn get_val(&self) -> u8 {
         self.val.get_value()
     }
 

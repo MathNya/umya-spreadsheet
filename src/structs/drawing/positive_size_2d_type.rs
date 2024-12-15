@@ -16,7 +16,7 @@ pub struct PositiveSize2DType {
 
 impl PositiveSize2DType {
     #[inline]
-    pub fn get_cx(&self) -> &i64 {
+    pub fn get_cx(&self) -> i64 {
         self.cx.get_value()
     }
 
@@ -26,7 +26,7 @@ impl PositiveSize2DType {
     }
 
     #[inline]
-    pub fn get_cy(&self) -> &i64 {
+    pub fn get_cy(&self) -> i64 {
         self.cy.get_value()
     }
 

@@ -16,7 +16,7 @@ pub struct Protection {
 
 impl Protection {
     #[inline]
-    pub fn get_locked(&self) -> &bool {
+    pub fn get_locked(&self) -> bool {
         self.locked.get_value()
     }
 
@@ -26,7 +26,7 @@ impl Protection {
     }
 
     #[inline]
-    pub fn get_hidden(&mut self) -> &bool {
+    pub fn get_hidden(&mut self) -> bool {
         self.hidden.get_value()
     }
 

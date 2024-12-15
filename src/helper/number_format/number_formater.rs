@@ -3,7 +3,7 @@ use fancy_regex::Regex;
 use std::borrow::Cow;
 use thousands::Separable;
 
-pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
+pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
     lazy_static! {
         static ref THOUSANDS_SEP_REGEX: Regex = Regex::new(r#"(#,#|0,0)"#).unwrap();
         static ref SCALE_REGEX: Regex = Regex::new(r#"(#|0)(,+)"#).unwrap();
@@ -53,7 +53,7 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
     if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
         if value.parse::<usize>().is_err() {
             //println!("format as fraction {} {}", value, format);
-            value = format_as_fraction(&value.parse::<f64>().unwrap(), &format);
+            value = format_as_fraction(value.parse::<f64>().unwrap(), &format);
         }
     } else {
         // Handle the number itself
@@ -80,7 +80,7 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
                 &value,
                 &format,
                 &item,
-                &use_thousands,
+                use_thousands,
                 r"(0+)(\.?)(0*)",
             );
         }
@@ -105,7 +105,7 @@ fn format_straight_numeric_value(
     value: &str,
     _format: &str,
     matches: &[String],
-    use_thousands: &bool,
+    use_thousands: bool,
     _number_regex: &str,
 ) -> String {
     let mut value = value.to_string();
@@ -113,7 +113,7 @@ fn format_straight_numeric_value(
     let right = matches.get(3).unwrap();
 
     // minimun width of formatted number (including dot)
-    if *use_thousands {
+    if use_thousands {
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();
@@ -144,7 +144,7 @@ fn format_straight_numeric_value(
     value = format!("{}.{}", left_value, right_value);
     value
 
-    //    if use_thousands == &true {
+    //    if use_thousands == true {
     //        value = value.parse::<f64>().unwrap().separate_with_commas();
     //        dbg!(&value);
     //        value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
@@ -159,7 +159,7 @@ fn format_straight_numeric_value(
     //                let pow = 10i32.pow(format_collect.get(1).unwrap().len() as u32);
     //                value = format!("{}", value.parse::<i32>().unwrap() * pow);
     //            }
-    //            value = complex_number_format_mask(&value.parse::<f64>().unwrap(), &format, &true);
+    //            value = complex_number_format_mask(&value.parse::<f64>().unwrap(), &format, true);
     //        } else {
     //            value = format!("{:0width$.len$}", value, width = min_width, len = right.len());
     //            value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
@@ -186,7 +186,7 @@ fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Ve
 }
 
 #[allow(dead_code)]
-fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
+fn process_complex_number_format_mask(number: f64, mask: &str) -> String {
     let mut result = number.to_string();
     let mut mask = mask.to_string();
     let re = Regex::new(r#"0+"#).unwrap();
@@ -208,7 +208,7 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     }
 
     if masking_blocks.len() > 1 {
-        let mut number = *number;
+        let mut number = number;
         let mut offset: usize = 0;
         for (block, pos) in masking_blocks.iter().rev() {
             let divisor = format!("{}{}", 1, block).parse::<f64>().unwrap();
@@ -231,11 +231,11 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
 }
 
 #[allow(dead_code)]
-fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -> String {
-    let sign = number < &0.0;
+fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> String {
+    let sign = number < 0.0;
     let number = number.abs();
 
-    if *split_on_point && mask.contains('.') && number.to_string().contains('.') {
+    if split_on_point && mask.contains('.') && number.to_string().contains('.') {
         let number_str = number.to_string();
         let numbers_as: Vec<&str> = number_str.split('.').collect();
         let mut numbers: Vec<String> = Vec::new();
@@ -251,16 +251,16 @@ fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -
             masks = merge_complex_number_format_masks(&numbers, &masks);
         }
         let result1 =
-            complex_number_format_mask(&numbers[0].parse::<f64>().unwrap(), &masks[0], &false);
+            complex_number_format_mask(numbers[0].parse::<f64>().unwrap(), &masks[0], false);
         let result2 = complex_number_format_mask(
-            &numbers[1]
+            numbers[1]
                 .chars()
                 .rev()
                 .collect::<String>()
                 .parse::<f64>()
                 .unwrap(),
             &masks[1].chars().rev().collect::<String>(),
-            &false,
+            false,
         )
         .chars()
         .rev()
@@ -269,6 +269,6 @@ fn complex_number_format_mask(number: &f64, mask: &str, split_on_point: &bool) -
         return format!("{}{}.{}", if sign { "-" } else { "" }, result1, result2);
     }
 
-    let result = process_complex_number_format_mask(&number, mask);
+    let result = process_complex_number_format_mask(number, mask);
     format!("{}{}", if sign { "-" } else { "" }, result)
 }

@@ -37,16 +37,16 @@ impl Rows {
 
     /// Get Row Dimension.
     #[inline]
-    pub(crate) fn get_row_dimension(&self, row: &u32) -> Option<&Row> {
-        self.rows.get(row).map(Box::as_ref)
+    pub(crate) fn get_row_dimension(&self, row: u32) -> Option<&Row> {
+        self.rows.get(&row).map(Box::as_ref)
     }
 
     /// Get Row Dimension in mutable.
     #[inline]
-    pub(crate) fn get_row_dimension_mut(&mut self, row: &u32) -> &mut Row {
+    pub(crate) fn get_row_dimension_mut(&mut self, row: u32) -> &mut Row {
         self.rows.entry(row.to_owned()).or_insert_with(|| {
             let mut obj = Row::default();
-            obj.set_row_num(*row);
+            obj.set_row_num(row);
             Box::new(obj)
         })
     }
@@ -65,19 +65,19 @@ impl Rows {
         self.rows = self
             .get_row_dimensions_to_hashmap_mut()
             .iter_mut()
-            .map(|(_, row)| (*row.get_row_num(), std::mem::take(row)))
+            .map(|(_, row)| (row.get_row_num(), std::mem::take(row)))
             .collect();
     }
 }
 impl AdjustmentValue for Rows {
-    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         for row_dimension in self.get_row_dimensions_mut() {
             row_dimension.adjustment_insert_value(root_num, offset_num);
         }
         self.rebuild_map();
     }
 
-    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         self.get_row_dimensions_to_hashmap_mut()
             .retain(|_, k| !(k.is_remove_value(root_num, offset_num)));
         for row_dimension in self.get_row_dimensions_mut() {

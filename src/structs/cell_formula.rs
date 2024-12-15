@@ -31,7 +31,7 @@ pub struct CellFormula {
 }
 impl CellFormula {
     #[inline]
-    pub fn get_bx(&self) -> &bool {
+    pub fn get_bx(&self) -> bool {
         self.bx.get_value()
     }
 
@@ -42,7 +42,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_data_table_2d(&self) -> &bool {
+    pub fn get_data_table_2d(&self) -> bool {
         self.data_table_2d.get_value()
     }
 
@@ -53,7 +53,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_data_table_row(&self) -> &bool {
+    pub fn get_data_table_row(&self) -> bool {
         self.data_table_row.get_value()
     }
 
@@ -74,7 +74,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_input_1deleted(&self) -> &bool {
+    pub fn get_input_1deleted(&self) -> bool {
         self.input_1deleted.get_value()
     }
 
@@ -85,7 +85,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_input_2deleted(&self) -> &bool {
+    pub fn get_input_2deleted(&self) -> bool {
         self.input_2deleted.get_value()
     }
 
@@ -129,7 +129,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_shared_index(&self) -> &u32 {
+    pub fn get_shared_index(&self) -> u32 {
         self.shared_index.get_value()
     }
 
@@ -195,7 +195,7 @@ impl CellFormula {
 
         // Shared
         if self.formula_type.get_value() == &CellFormulaValues::Shared {
-            match formula_shared_list.get(self.shared_index.get_value()) {
+            match formula_shared_list.get(&self.shared_index.get_value()) {
                 Some((parent_cell_reference_str, token)) => {
                     let parent_cell = index_from_coordinate(parent_cell_reference_str);
                     let self_cell = index_from_coordinate(cell_reference_str);
@@ -212,10 +212,10 @@ impl CellFormula {
                     let mut token_new = token.clone();
                     let value = adjustment_insert_formula_coordinate(
                         &mut token_new,
-                        &root_col_num,
-                        &offset_col_num,
-                        &root_row_num,
-                        &offset_row_num,
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
                         "",
                         "",
                         true,
@@ -224,7 +224,7 @@ impl CellFormula {
                 }
                 None => {
                     formula_shared_list.insert(
-                        *self.shared_index.get_value(),
+                        self.shared_index.get_value(),
                         (
                             cell_reference_str.to_string(),
                             parse_to_tokens(format!("={}", self.text.get_value_str())),
@@ -239,7 +239,7 @@ impl CellFormula {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         coordinate: &str,
-        formula_shared_list: &HashMap<&u32, (String, Option<String>)>,
+        formula_shared_list: &HashMap<u32, (String, Option<String>)>,
     ) {
         // f
         let mut attributes: Vec<(&str, &str)> = Vec::new();
@@ -286,7 +286,8 @@ impl CellFormula {
 
         #[allow(unused_assignments)]
         let mut reference_str = String::from("");
-        if let Some((start_col, end_col)) = formula_shared_list.get(self.shared_index.get_value()) {
+        if let Some((start_col, end_col)) = formula_shared_list.get(&self.shared_index.get_value())
+        {
             if coordinate == start_col {
                 reference_str = match end_col {
                     Some(v) => {
@@ -313,10 +314,10 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = self.text.get_value() {
             let formula = adjustment_insert_formula_coordinate(
@@ -350,10 +351,10 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = self.text.get_value() {
             let formula = adjustment_remove_formula_coordinate(

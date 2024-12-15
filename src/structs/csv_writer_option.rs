@@ -31,8 +31,8 @@ impl CsvWriterOption {
     }
 
     #[inline]
-    pub fn get_do_trim(&self) -> &bool {
-        &self.do_trim
+    pub fn get_do_trim(&self) -> bool {
+        self.do_trim
     }
 
     #[inline]

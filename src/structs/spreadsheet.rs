@@ -53,8 +53,8 @@ impl Spreadsheet {
     /// book.insert_new_row("Sheet1", &2, &3);
     /// ```
     #[inline]
-    pub fn insert_new_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
-        self.adjustment_insert_coordinate_with_sheet(sheet_name, &0, &0, row_index, num_rows);
+    pub fn insert_new_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
+        self.adjustment_insert_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
     }
 
     /// Insert new columns.
@@ -68,10 +68,10 @@ impl Spreadsheet {
     /// book.insert_new_column("Sheet1", "B", &3);
     /// ```
     #[inline]
-    pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: &u32) {
+    pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
         let column_upper = column.to_uppercase();
         let column_index = column_index_from_string(column_upper);
-        self.insert_new_column_by_index(sheet_name, &column_index, num_columns);
+        self.insert_new_column_by_index(sheet_name, column_index, num_columns);
     }
 
     /// Insert new columns.
@@ -88,16 +88,16 @@ impl Spreadsheet {
     pub fn insert_new_column_by_index(
         &mut self,
         sheet_name: &str,
-        column_index: &u32,
-        num_columns: &u32,
+        column_index: u32,
+        num_columns: u32,
     ) {
-        self.adjustment_insert_coordinate_with_sheet(sheet_name, column_index, num_columns, &0, &0);
+        self.adjustment_insert_coordinate_with_sheet(sheet_name, column_index, num_columns, 0, 0);
     }
 
     /// Remove rows.
     /// # Arguments
     /// * `sheet_name` - Specify the sheet name. ex) "Sheet1"
-    /// * `row_index` - Specify point of remove. ex) &1
+    /// * `row_index` - Specify point of remove. ex) 1
     /// * `num_rows` - Specify number to remove. ex) &2
     /// # Examples
     /// ```
@@ -105,8 +105,8 @@ impl Spreadsheet {
     /// book.remove_row("Sheet1", &2, &3);
     /// ```
     #[inline]
-    pub fn remove_row(&mut self, sheet_name: &str, row_index: &u32, num_rows: &u32) {
-        self.adjustment_remove_coordinate_with_sheet(sheet_name, &0, &0, row_index, num_rows);
+    pub fn remove_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
+        self.adjustment_remove_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
     }
 
     /// Remove columns.
@@ -120,10 +120,10 @@ impl Spreadsheet {
     /// book.remove_column("Sheet1", "B", &3);
     /// ```
     #[inline]
-    pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: &u32) {
+    pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
         let column_upper = column.to_uppercase();
         let column_index = column_index_from_string(column_upper);
-        self.remove_column_by_index(sheet_name, &column_index, num_columns);
+        self.remove_column_by_index(sheet_name, column_index, num_columns);
     }
 
     /// Remove columns.
@@ -140,10 +140,10 @@ impl Spreadsheet {
     pub fn remove_column_by_index(
         &mut self,
         sheet_name: &str,
-        column_index: &u32,
-        num_columns: &u32,
+        column_index: u32,
+        num_columns: u32,
     ) {
-        self.adjustment_remove_coordinate_with_sheet(sheet_name, column_index, num_columns, &0, &0);
+        self.adjustment_remove_coordinate_with_sheet(sheet_name, column_index, num_columns, 0, 0);
     }
 
     /// Gets the cell value by specifying an address.
@@ -385,9 +385,9 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&Worksheet>`.
     #[inline]
-    pub fn get_sheet(&self, index: &usize) -> Option<&Worksheet> {
+    pub fn get_sheet(&self, index: usize) -> Option<&Worksheet> {
         self.work_sheet_collection
-            .get(*index)
+            .get(index)
             .inspect(|v| {
                 assert!(v.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
             })
@@ -401,13 +401,13 @@ impl Spreadsheet {
     #[inline]
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
-            .and_then(|index| self.get_sheet(&index))
+            .and_then(|index| self.get_sheet(index))
     }
 
-    pub fn get_lazy_read_sheet_cells(&self, index: &usize) -> Result<Cells, &'static str> {
+    pub fn get_lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, &'static str> {
         let shared_string_table = self.get_shared_string_table();
         self.work_sheet_collection
-            .get(*index)
+            .get(index)
             .map(|v| {
                 v.get_cell_collection_stream(
                     &shared_string_table.read().unwrap(),
@@ -423,10 +423,10 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&mut Worksheet>`.
     #[allow(clippy::manual_inspect)]
-    pub fn get_sheet_mut(&mut self, index: &usize) -> Option<&mut Worksheet> {
+    pub fn get_sheet_mut(&mut self, index: usize) -> Option<&mut Worksheet> {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
-        self.work_sheet_collection.get_mut(*index).map(|v| {
+        self.work_sheet_collection.get_mut(index).map(|v| {
             raw_to_deserialize_by_worksheet(v, shared_string_table, &stylesheet);
             v
         })
@@ -440,7 +440,7 @@ impl Spreadsheet {
     #[inline]
     pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
-            .and_then(move |index| self.get_sheet_mut(&index))
+            .and_then(move |index| self.get_sheet_mut(index))
     }
 
     #[inline]
@@ -454,8 +454,8 @@ impl Spreadsheet {
     /// * `&Worksheet` - Work sheet.
     #[inline]
     pub fn get_active_sheet(&self) -> &Worksheet {
-        let index = *self.get_workbook_view().get_active_tab();
-        self.get_sheet(&(index as usize)).unwrap()
+        let index = self.get_workbook_view().get_active_tab();
+        self.get_sheet(index as usize).unwrap()
     }
 
     /// Get Active Work Sheet in mutable.
@@ -463,8 +463,8 @@ impl Spreadsheet {
     /// * `&mut Worksheet` - Work sheet.
     #[inline]
     pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
-        let index = *self.get_workbook_view().get_active_tab();
-        self.get_sheet_mut(&(index as usize)).unwrap()
+        let index = self.get_workbook_view().get_active_tab();
+        self.get_sheet_mut(index as usize).unwrap()
     }
 
     /// Add Work Sheet.
@@ -732,10 +732,10 @@ impl AdjustmentCoordinateWithSheet for Spreadsheet {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {
@@ -758,10 +758,10 @@ impl AdjustmentCoordinateWithSheet for Spreadsheet {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.read_sheet_collection();
         for worksheet in &mut self.work_sheet_collection {

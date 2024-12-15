@@ -142,7 +142,7 @@ impl GroupShape {
 
         // xdr:sp
         for obj in &self.shape_collection {
-            obj.write_to(writer, rel_list, &0);
+            obj.write_to(writer, rel_list, 0);
         }
 
         write_end_tag(writer, "xdr:grpSp");

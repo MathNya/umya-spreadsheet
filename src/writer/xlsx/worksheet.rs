@@ -14,7 +14,7 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    sheet_no: &i32,
+    sheet_no: i32,
     worksheet: &Worksheet,
     shared_string_table: Arc<RwLock<SharedStringTable>>,
     stylesheet: &mut Stylesheet,
@@ -109,17 +109,17 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // row dimensions sort.
     let mut row_dimensions = worksheet.get_row_dimensions();
-    row_dimensions.sort_by(|a, b| a.get_row_num().cmp(b.get_row_num()));
+    row_dimensions.sort_by_key(|a| a.get_row_num());
 
     // it's faster than get cell collection by row.
     // cells sort.
     let cells = worksheet.get_cell_collection_sorted();
 
     // make formula shared list
-    let mut formula_shared_list: HashMap<&u32, (String, Option<String>)> = HashMap::new();
+    let mut formula_shared_list: HashMap<u32, (String, Option<String>)> = HashMap::new();
     for cell in &cells {
         if let Some(si) = cell.get_formula_shared_index() {
-            match formula_shared_list.get(si) {
+            match formula_shared_list.get(&si) {
                 Some((start_cell, _)) => {
                     formula_shared_list.insert(
                         si,
@@ -222,7 +222,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             let r_id_str = format!("rId{}", &r_id);
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             attributes.push(("ref", &coordition));
-            if *hyperlink.get_location() {
+            if hyperlink.get_location() {
                 attributes.push(("location", hyperlink.get_url()));
             } else {
                 attributes.push(("r:id", r_id_str.as_str()));
@@ -304,7 +304,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let ole_id = 1000 + 25;
     worksheet
         .get_ole_objects()
-        .write_to(&mut writer, &r_id, &ole_id);
+        .write_to(&mut writer, r_id, ole_id);
 
     // extLst
     if worksheet.get_data_validations_2010().is_some() {

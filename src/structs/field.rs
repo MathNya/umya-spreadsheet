@@ -12,7 +12,7 @@ pub struct Field {
     x: Int32Value,
 }
 impl Field {
-    pub fn get_data_field(&self) -> &i32 {
+    pub fn get_data_field(&self) -> i32 {
         self.x.get_value()
     }
 

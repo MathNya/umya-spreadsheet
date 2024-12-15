@@ -14,7 +14,7 @@ pub struct Miter {
 
 impl Miter {
     #[inline]
-    pub fn get_limit(&self) -> &i32 {
+    pub fn get_limit(&self) -> i32 {
         self.limit.get_value()
     }
 

@@ -19,7 +19,7 @@ pub struct RowItem {
 }
 impl RowItem {
     #[inline]
-    pub fn get_index(&self) -> &u32 {
+    pub fn get_index(&self) -> u32 {
         self.index.get_value()
     }
 
@@ -41,7 +41,7 @@ impl RowItem {
     }
 
     #[inline]
-    pub fn get_repeated_item_count(&self) -> &u32 {
+    pub fn get_repeated_item_count(&self) -> u32 {
         self.repeated_item_count.get_value()
     }
 

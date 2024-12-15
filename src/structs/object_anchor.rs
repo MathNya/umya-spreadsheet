@@ -17,7 +17,7 @@ pub struct ObjectAnchor {
 
 impl ObjectAnchor {
     #[inline]
-    pub fn get_move_with_cells(&self) -> &bool {
+    pub fn get_move_with_cells(&self) -> bool {
         self.move_with_cells.get_value()
     }
 
@@ -60,25 +60,25 @@ impl ObjectAnchor {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: usize) {
         self.from_marker._adjustment_insert_row(num_rows);
         self.to_marker._adjustment_insert_row(num_rows);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: usize) {
         self.from_marker._adjustment_insert_column(num_cols);
         self.to_marker._adjustment_insert_column(num_cols);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: usize) {
         self.from_marker._adjustment_remove_row(num_rows);
         self.to_marker._adjustment_remove_row(num_rows);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: usize) {
         self.from_marker._adjustment_remove_column(num_cols);
         self.to_marker._adjustment_remove_column(num_cols);
     }

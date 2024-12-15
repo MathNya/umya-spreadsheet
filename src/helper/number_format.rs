@@ -83,7 +83,7 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     let sections: Vec<&str> = split(&SECTION_REGEX, &format).collect();
 
-    let (_, split_format, split_value) = split_format(sections, &value.parse::<f64>().unwrap());
+    let (_, split_format, split_value) = split_format(sections, value.parse::<f64>().unwrap());
     format = Cow::Owned(split_format);
     value = Cow::Owned(split_value);
 
@@ -98,20 +98,20 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     if DATE_TIME_REGEX.is_match(&format).unwrap_or(false) {
         // datetime format
-        value = date_formater::format_as_date(&value.parse::<f64>().unwrap(), &format);
+        value = date_formater::format_as_date(value.parse::<f64>().unwrap(), &format);
     } else if format.starts_with('"') && format.ends_with('"') {
         let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
         value = Cow::Owned(conv_format.to_string());
     } else if PERCENT_DOLLAR_REGEX.is_match(&format).unwrap_or(false) {
         // % number format
-        value = percentage_formater::format_as_percentage(&value.parse::<f64>().unwrap(), &format);
+        value = percentage_formater::format_as_percentage(value.parse::<f64>().unwrap(), &format);
     } else {
-        value = number_formater::format_as_number(&value.parse::<f64>().unwrap(), &format);
+        value = number_formater::format_as_number(value.parse::<f64>().unwrap(), &format);
     }
     value.trim().to_string()
 }
 
-fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
+fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     let mut converted_sections: Vec<String> = Vec::new();
 
     // Extract the relevant section depending on whether number is positive, negative, or zero?
@@ -187,22 +187,22 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
 
     let mut color = &colors[0];
     let mut format: &str = &converted_sections[0];
-    let mut absval = *value;
+    let mut absval = value;
     match cnt {
         2 => {
             absval = absval.abs();
-            let condval_one = &condvals[0].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">=", &0f64) {
+            let condval_one = condvals[0].parse::<f64>().unwrap();
+            if !split_format_compare(value, &condops[0], condval_one, ">=", 0f64) {
                 color = &colors[1];
                 format = &converted_sections[1];
             }
         }
         3 | 4 => {
             absval = absval.abs();
-            let condval_one = &condvals[0].parse::<f64>().unwrap();
-            let condval_two = &condvals[1].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">", &0f64) {
-                if split_format_compare(value, &condops[1], condval_two, "<", &0f64) {
+            let condval_one = condvals[0].parse::<f64>().unwrap();
+            let condval_two = condvals[1].parse::<f64>().unwrap();
+            if !split_format_compare(value, &condops[0], condval_one, ">", 0f64) {
+                if split_format_compare(value, &condops[1], condval_two, "<", 0f64) {
                     color = &colors[1];
                     format = &converted_sections[1];
                 } else {
@@ -216,7 +216,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     (color.to_string(), format.into(), absval.to_string())
 }
 
-fn split_format_compare(value: &f64, cond: &str, val: &f64, dfcond: &str, dfval: &f64) -> bool {
+fn split_format_compare(value: f64, cond: &str, val: f64, dfcond: &str, dfval: f64) -> bool {
     let mut check_cond = cond;
     let mut check_val = val;
     if cond.is_empty() {

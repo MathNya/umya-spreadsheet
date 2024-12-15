@@ -117,8 +117,8 @@ fn lazy_read_and_wite_no_edit() {
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 
-    let cells = book.get_lazy_read_sheet_cells(&0).unwrap();
-    assert_eq!("英語", cells.get_cell_value((&5, &12)).get_value());
+    let cells = book.get_lazy_read_sheet_cells(0).unwrap();
+    assert_eq!("英語", cells.get_cell_value((5, 12)).get_value());
     assert_eq!("英語", cells.get_cell_value("E12").get_value());
 
     // writer
@@ -128,86 +128,77 @@ fn lazy_read_and_wite_no_edit() {
 
 fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
     let _ = book
-        .get_sheet_mut(&0)
+        .get_sheet_mut(0)
         .unwrap()
         .get_cell_mut("A1")
         .set_value("TEST1");
-    let a1_value = book.get_sheet(&0).unwrap().get_value("A1");
+    let a1_value = book.get_sheet(0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
-    let _ = book.get_sheet_mut(&0).unwrap().remove_cell((&1, &1));
-    let a1 = book.get_sheet(&0).unwrap().get_cell("A1");
+    let _ = book.get_sheet_mut(0).unwrap().remove_cell((1, 1));
+    let a1 = book.get_sheet(0).unwrap().get_cell("A1");
     assert_eq!(a1, None);
-    let _ = book.get_sheet_mut(&0).unwrap().remove_cell((&1, &2));
-    let a2_value = book.get_sheet(&0).unwrap().get_value("A2");
+    let _ = book.get_sheet_mut(0).unwrap().remove_cell((1, 2));
+    let a2_value = book.get_sheet(0).unwrap().get_value("A2");
     assert_eq!(a2_value, "");
-    let b5_value = book.get_sheet(&0).unwrap().get_value("B5");
+    let b5_value = book.get_sheet(0).unwrap().get_value("B5");
     assert_eq!(" ", b5_value);
 
     assert_eq!(
         "1.0000",
-        book.get_sheet(&0).unwrap().get_formatted_value((&2, &20))
+        book.get_sheet(0).unwrap().get_formatted_value((2, 20))
     );
     assert_eq!(
         "$3,333.0000",
-        book.get_sheet(&0).unwrap().get_formatted_value("B21")
+        book.get_sheet(0).unwrap().get_formatted_value("B21")
     );
     assert_eq!(
         "$ 333.00",
-        book.get_sheet(&0).unwrap().get_formatted_value("B22")
+        book.get_sheet(0).unwrap().get_formatted_value("B22")
     );
     assert_eq!(
         "2020年3月",
-        book.get_sheet(&0).unwrap().get_formatted_value("B23")
+        book.get_sheet(0).unwrap().get_formatted_value("B23")
     );
     assert_eq!(
         "2:33 pm",
-        book.get_sheet(&0).unwrap().get_formatted_value("B24")
+        book.get_sheet(0).unwrap().get_formatted_value("B24")
     );
     assert_eq!(
         "5.00%",
-        book.get_sheet(&0).unwrap().get_formatted_value("B25")
+        book.get_sheet(0).unwrap().get_formatted_value("B25")
     );
-    assert_eq!(
-        "1/2",
-        book.get_sheet(&0).unwrap().get_formatted_value("B26")
-    );
+    assert_eq!("1/2", book.get_sheet(0).unwrap().get_formatted_value("B26"));
     assert_eq!(
         "12/15/2020 14:01",
-        book.get_sheet(&0).unwrap().get_formatted_value("B27")
+        book.get_sheet(0).unwrap().get_formatted_value("B27")
     );
-    assert_eq!(
-        "444",
-        book.get_sheet(&0).unwrap().get_formatted_value("B28")
-    );
+    assert_eq!("444", book.get_sheet(0).unwrap().get_formatted_value("B28"));
     assert_eq!(
         "14-Dec-20",
-        book.get_sheet(&0).unwrap().get_formatted_value("B29")
+        book.get_sheet(0).unwrap().get_formatted_value("B29")
     );
     assert_eq!(
         "2020年10月1日",
-        book.get_sheet(&0).unwrap().get_formatted_value("B30")
+        book.get_sheet(0).unwrap().get_formatted_value("B30")
     );
     assert_eq!(
         "1.2345",
-        book.get_sheet(&0).unwrap().get_formatted_value("B31")
+        book.get_sheet(0).unwrap().get_formatted_value("B31")
     );
-    assert_eq!(
-        "1.2",
-        book.get_sheet(&0).unwrap().get_formatted_value("B32")
-    );
+    assert_eq!("1.2", book.get_sheet(0).unwrap().get_formatted_value("B32"));
     assert_eq!(
         "12,345,675,544.00",
-        book.get_sheet(&0).unwrap().get_formatted_value("B33")
+        book.get_sheet(0).unwrap().get_formatted_value("B33")
     );
     assert_eq!(
         "1.235",
-        book.get_sheet(&0).unwrap().get_formatted_value("B34")
+        book.get_sheet(0).unwrap().get_formatted_value("B34")
     );
-    assert_eq!("1", book.get_sheet(&0).unwrap().get_formatted_value("B35"));
-    assert_eq!("", book.get_sheet(&0).unwrap().get_formatted_value("B36"));
+    assert_eq!("1", book.get_sheet(0).unwrap().get_formatted_value("B35"));
+    assert_eq!("", book.get_sheet(0).unwrap().get_formatted_value("B36"));
     assert_eq!(
         "123456789012345678",
-        book.get_sheet(&0).unwrap().get_formatted_value("B37")
+        book.get_sheet(0).unwrap().get_formatted_value("B37")
     );
 
     let _ = book
@@ -237,7 +228,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .to_owned();
     book.get_sheet_by_name_mut("Sheet5")
         .unwrap()
-        .get_row_dimension_mut(&5u32)
+        .get_row_dimension_mut(5u32)
         .get_style_mut()
         .get_fill_mut()
         .set_pattern_fill(fill);
@@ -246,7 +237,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
         .to_owned();
     book.get_sheet_by_name_mut("Sheet5")
         .unwrap()
-        .get_row_dimension_mut(&5u32)
+        .get_row_dimension_mut(5u32)
         .get_style_mut()
         .get_font_mut()
         .set_color(font_color);
@@ -261,7 +252,7 @@ fn read_and_wite_method(book: &mut umya_spreadsheet::Spreadsheet) {
 
     book.get_sheet_by_name_mut("Sheet1")
         .unwrap()
-        .get_row_dimension_mut(&3)
+        .get_row_dimension_mut(3)
         .set_height(46.0);
 }
 
@@ -339,25 +330,25 @@ fn lazy_read_and_wite_xlsm_no_edit() {
 
 fn read_and_wite_xlsm_method(book: &mut umya_spreadsheet::Spreadsheet) {
     let _ = book
-        .get_sheet_mut(&0)
+        .get_sheet_mut(0)
         .unwrap()
         .get_cell_mut((1, 1))
         .set_value("TEST1");
     let a1_value = book
-        .get_sheet(&0)
+        .get_sheet(0)
         .unwrap()
-        .get_cell((&1, &1))
+        .get_cell((1, 1))
         .unwrap()
         .get_value();
     assert_eq!("TEST1", a1_value);
 
     // copy sheet
-    let mut clone_sheet = book.get_sheet(&0).unwrap().clone();
+    let mut clone_sheet = book.get_sheet(0).unwrap().clone();
     clone_sheet.set_name("New Sheet");
     let _ = book.add_sheet(clone_sheet);
 
     // remove sheet
-    let mut clone_sheet = book.get_sheet(&0).unwrap().clone();
+    let mut clone_sheet = book.get_sheet(0).unwrap().clone();
     clone_sheet.set_name("DeletedSheet");
     let _ = book.add_sheet(clone_sheet);
     book.get_sheet_by_name("DeletedSheet").unwrap();
@@ -727,12 +718,12 @@ fn insert_and_remove_cells() {
     let path = std::path::Path::new("./tests/test_files/aaa_insertCell.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    book.insert_new_row("Sheet1", &2, &3);
-    book.insert_new_column("Sheet1", "B", &3);
-    book.insert_new_column_by_index("Sheet1", &2, &3);
+    book.insert_new_row("Sheet1", 2, 3);
+    book.insert_new_column("Sheet1", "B", 3);
+    book.insert_new_column_by_index("Sheet1", 2, 3);
 
-    book.remove_row("Sheet1", &6, &2);
-    book.remove_column_by_index("Sheet1", &6, &2);
+    book.remove_row("Sheet1", 6, 2);
+    book.remove_column_by_index("Sheet1", 6, 2);
 
     // writer
     let path = std::path::Path::new("./tests/result_files/bbb_insertCell.xlsx");
@@ -825,7 +816,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell((&2, &2))
+        .get_cell((2, 2))
         .unwrap()
         .get_value();
     assert_eq!("1", a1_value);
@@ -837,7 +828,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell((&2, &2))
+        .get_cell((2, 2))
         .unwrap()
         .get_value();
     assert_eq!("1", a1_value);
@@ -849,7 +840,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell((&3, &3))
+        .get_cell((3, 3))
         .unwrap()
         .get_value();
     assert_eq!("TRUE", a1_value);
@@ -861,7 +852,7 @@ fn new_file_and_edit() {
     let a1_value = book
         .get_sheet_by_name("Sheet2")
         .unwrap()
-        .get_cell((&3, &3))
+        .get_cell((3, 3))
         .unwrap()
         .get_value();
     assert_eq!("TRUE", a1_value);
@@ -875,7 +866,7 @@ fn new_file_and_edit() {
         .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
-        .get_style_mut((&3, &2))
+        .get_style_mut((3, 2))
         .get_borders_mut()
         .get_left_mut()
         .set_border_style(umya_spreadsheet::Border::BORDER_THIN);
@@ -1141,16 +1132,16 @@ fn move_range_test() {
     let column = 4;
     book.get_sheet_by_name_mut(sheet_name)
         .unwrap()
-        .move_range(range, &row, &column);
+        .move_range(range, row, column);
 
     // Checking to ensure cells that move into another cell overwrites it
     let range_2 = "A14:A14";
     book.get_sheet_by_name_mut(sheet_name)
         .unwrap()
-        .move_range(range, &row, &column);
+        .move_range(range, row, column);
     book.get_sheet_by_name_mut(sheet_name)
         .unwrap()
-        .move_range(range_2, &0, &1);
+        .move_range(range_2, 0, 1);
 
     let path = std::path::Path::new("./tests/result_files/bbb_move_range.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
@@ -1180,8 +1171,8 @@ fn issue_129() {
     //dbg!(img.get_two_cell_anchor().is_some());
     assert_eq!(img.get_image_name(), "image1.png");
     assert_eq!(img.get_coordinate(), "M17");
-    assert_eq!(img.get_col(), &12);
-    assert_eq!(img.get_row(), &16);
+    assert_eq!(img.get_col(), 12);
+    assert_eq!(img.get_row(), 16);
 
     let path = std::path::Path::new("./tests/result_files/issue_129.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -1217,7 +1208,7 @@ fn sheetlock_test() {
     let path = std::path::Path::new("./tests/test_files/sheet_lock.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    let mut sheet = book.get_sheet_mut(&2).unwrap();
+    let mut sheet = book.get_sheet_mut(2).unwrap();
     sheet
         .get_sheet_protection_mut()
         .set_password("password")
@@ -1244,11 +1235,11 @@ fn issue_147() {
     let path = std::path::Path::new("./tests/test_files/issue_147.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    let from_sheet = book.get_sheet(&0).unwrap();
+    let from_sheet = book.get_sheet(0).unwrap();
     let source_cell = from_sheet.get_cell((2, 3)).unwrap();
     let mut target_cell = source_cell.clone();
 
-    let mut to_sheet = book.get_sheet_mut(&1).unwrap();
+    let mut to_sheet = book.get_sheet_mut(1).unwrap();
     to_sheet.set_cell(target_cell);
 
     let path = std::path::Path::new("./tests/result_files/issue_147.xlsx");
@@ -1291,7 +1282,7 @@ fn issue_172() {
     numbering_format.set_format_code("dd-mmm-yy");
 
     let mut book = umya_spreadsheet::new_file();
-    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    let mut sheet = book.get_sheet_mut(0).unwrap();
     sheet.get_cell_mut("A1").set_value_number(value);
     sheet
         .get_style_mut("A1")
@@ -1323,11 +1314,11 @@ fn issue_181() {
     let path = std::path::Path::new("./tests/test_files/issue_181.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
     let mut sheet = book.get_sheet_by_name_mut("LOV").unwrap();
-    sheet.remove_row(&2, &1);
+    sheet.remove_row(2, 1);
     for (key, row) in sheet.get_row_dimensions_to_hashmap() {
         assert_eq!(key, &1);
-        assert_eq!(row.get_row_num(), &1);
-        assert_eq!(row.get_height(), &35.0);
+        assert_eq!(row.get_row_num(), 1);
+        assert_eq!(row.get_height(), 35.0);
     }
     let path = std::path::Path::new("./tests/result_files/issue_181.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -1338,15 +1329,15 @@ fn issue_181_2() {
     let path = std::path::Path::new("./tests/test_files/issue_181_2.xlsx");
 
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let shee1: &mut umya_spreadsheet::structs::Worksheet = book.get_sheet_mut(&0).unwrap();
+    let shee1: &mut umya_spreadsheet::structs::Worksheet = book.get_sheet_mut(0).unwrap();
     let new_row_index = 4;
-    shee1.insert_new_row(&new_row_index, &5);
+    shee1.insert_new_row(new_row_index, 5);
     shee1.get_cell_mut((1, new_row_index)).set_value("123");
 
     let template_row_index = 3;
-    shee1.remove_row(&template_row_index, &1);
+    shee1.remove_row(template_row_index, 1);
 
-    shee1.remove_column("B", &1);
+    shee1.remove_column("B", 1);
 
     let path = std::path::Path::new("./tests/result_files/issue_181_2.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -1367,7 +1358,7 @@ fn issue_185() {
     let path = std::path::Path::new("./tests/test_files/issue_185.xlsx");
     let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("A1")
             .unwrap()
@@ -1380,7 +1371,7 @@ fn issue_185() {
 fn issue_187() {
     let path = std::path::Path::new("./tests/test_files/issue_187.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    let mut sheet = book.get_sheet_mut(0).unwrap();
 
     let mut cell = sheet.get_cell("C4").unwrap().clone();
     cell.set_coordinate("B5");
@@ -1430,7 +1421,7 @@ fn expect_red_indexed_color() {
     let path = std::path::Path::new("./tests/test_files/red_indexed_color.xlsx");
     let book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    let cell = book.get_sheet(&0).unwrap().get_cell("A1").unwrap();
+    let cell = book.get_sheet(0).unwrap().get_cell("A1").unwrap();
 
     let color = cell.get_style().get_font().unwrap().get_color().get_argb();
 
@@ -1443,12 +1434,12 @@ fn issue_190() {
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     // remove
-    book.get_sheet_mut(&0).unwrap().remove_column("E", &1);
-    book.get_sheet_mut(&0).unwrap().remove_row(&4, &1);
+    book.get_sheet_mut(0).unwrap().remove_column("E", 1);
+    book.get_sheet_mut(0).unwrap().remove_row(4, 1);
 
     // insert
-    book.get_sheet_mut(&1).unwrap().insert_new_column("E", &1);
-    book.get_sheet_mut(&1).unwrap().insert_new_row(&4, &1);
+    book.get_sheet_mut(1).unwrap().insert_new_column("E", 1);
+    book.get_sheet_mut(1).unwrap().insert_new_row(4, 1);
 
     let path = std::path::Path::new("./tests/result_files/issue_190.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -1458,10 +1449,10 @@ fn issue_190() {
 fn issue_194() {
     let path = std::path::Path::new("./tests/test_files/issue_194.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    book.get_sheet_mut(&0).unwrap().insert_new_column("D", &1);
+    book.get_sheet_mut(0).unwrap().insert_new_column("D", 1);
 
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("B2")
             .unwrap()
@@ -1469,7 +1460,7 @@ fn issue_194() {
         "SUM(B1)"
     );
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("C2")
             .unwrap()
@@ -1477,7 +1468,7 @@ fn issue_194() {
         "SUM(C1)"
     );
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("E2")
             .unwrap()
@@ -1502,7 +1493,7 @@ fn issue_200() {
 fn issue_201() {
     let path = std::path::Path::new("./tests/test_files/issue_201.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let mut cell = book.get_sheet_mut(&0).unwrap().get_cell_mut("B1");
+    let mut cell = book.get_sheet_mut(0).unwrap().get_cell_mut("B1");
     cell.set_formula_result_default("");
 
     let path = std::path::Path::new("./tests/result_files/issue_201.xlsx");
@@ -1542,7 +1533,7 @@ fn issue_184() {
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
     let theme = book.get_theme();
     let color = book
-        .get_sheet(&0)
+        .get_sheet(0)
         .unwrap()
         .get_cell("A1")
         .unwrap()
@@ -1560,7 +1551,7 @@ fn issue_188_4() {
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("H4")
             .unwrap()
@@ -1568,7 +1559,7 @@ fn issue_188_4() {
         "SUM(B4:G4)"
     );
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("H5")
             .unwrap()
@@ -1577,10 +1568,10 @@ fn issue_188_4() {
     );
 
     // remove
-    book.get_sheet_mut(&0).unwrap().remove_column("E", &1);
+    book.get_sheet_mut(0).unwrap().remove_column("E", 1);
 
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("G4")
             .unwrap()
@@ -1588,7 +1579,7 @@ fn issue_188_4() {
         "SUM(B4:F4)"
     );
     assert_eq!(
-        book.get_sheet(&0)
+        book.get_sheet(0)
             .unwrap()
             .get_cell("G5")
             .unwrap()
@@ -1604,7 +1595,7 @@ fn issue_188_4() {
 fn issue_210() {
     let path = std::path::Path::new("./tests/test_files/issue_210.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let sheet = book.get_sheet(&0).unwrap();
+    let sheet = book.get_sheet(0).unwrap();
     for cell in sheet.get_cell_collection() {
         if let Some(varA) = cell.get_style().get_alignment() {
             let horizontal = varA.get_horizontal().get_value_string();
@@ -1668,7 +1659,7 @@ fn issue_184_2() {
 
     for (coordinate, result) in data {
         let color = book
-            .get_sheet(&0)
+            .get_sheet(0)
             .unwrap()
             .get_cell(coordinate)
             .unwrap()
@@ -1698,7 +1689,7 @@ fn issue_216() {
 fn issue_217() {
     let path = std::path::Path::new("./tests/test_files/issue_217.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    book.get_sheet_mut(&2)
+    book.get_sheet_mut(2)
         .unwrap()
         .set_state(umya_spreadsheet::SheetStateValues::Hidden);
     let path = std::path::Path::new("./tests/result_files/issue_217.xlsx");
@@ -1756,22 +1747,22 @@ fn issue_220() {
     let path = std::path::Path::new("./tests/test_files/issue_220.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    book.get_sheet_mut(&0)
+    book.get_sheet_mut(0)
         .unwrap()
         .get_cell_mut("A1")
         .set_value("TEST1");
 
-    book.get_sheet_mut(&0)
+    book.get_sheet_mut(0)
         .unwrap()
         .get_cell_mut("B1")
         .set_value("TEST1");
 
-    book.get_sheet_mut(&0)
+    book.get_sheet_mut(0)
         .unwrap()
         .get_cell_mut("B2")
         .set_value("TEST1");
 
-    book.get_sheet_mut(&0)
+    book.get_sheet_mut(0)
         .unwrap()
         .get_cell_mut("A2")
         .set_value("TEST1");
@@ -1792,7 +1783,7 @@ fn issue_222() {
 #[test]
 fn issue_224() {
     let mut book = umya_spreadsheet::new_file();
-    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    let mut sheet = book.get_sheet_mut(0).unwrap();
     let mut num = NumberingFormat::default();
     num.set_format_code("[<1]0;0");
     sheet
@@ -1824,7 +1815,7 @@ fn issue_227() {
 #[test]
 fn issue_230() {
     let mut wb = new_file();
-    let sheet = wb.get_sheet_mut(&0).unwrap();
+    let sheet = wb.get_sheet_mut(0).unwrap();
     sheet.get_cell_mut("A1").set_value("12");
     sheet
         .get_style_mut("A1")
@@ -1847,7 +1838,7 @@ fn issue_233() {
     let path = std::path::Path::new("./tests/test_files/issue_233.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 
-    // book.get_sheet_mut(&0).unwrap().cleanup();
+    // book.get_sheet_mut(0).unwrap().cleanup();
 
     let path = std::path::Path::new("./tests/result_files/issue_233.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -1857,7 +1848,7 @@ fn issue_233() {
 fn issue_244() {
     let path = std::path::Path::new("./tests/test_files/issue_244.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let sheet = book.get_sheet_mut(&0).unwrap();
+    let sheet = book.get_sheet_mut(0).unwrap();
 
     let mut comment = Comment::default();
     comment.new_comment("B2");
@@ -1880,13 +1871,13 @@ fn issue_244() {
 fn issue_246() {
     let path = std::path::Path::new("./tests/test_files/issue_246.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-    let sheet = book.get_sheet_mut(&0).unwrap();
+    let sheet = book.get_sheet_mut(0).unwrap();
 
-    sheet.copy_row_styling(&3, &5, None, None);
-    sheet.copy_row_styling(&3, &6, Some(&4), Some(&6));
+    sheet.copy_row_styling(3, 5, None, None);
+    sheet.copy_row_styling(3, 6, Some(4), Some(6));
 
-    sheet.copy_col_styling(&10, &12, None, None);
-    sheet.copy_col_styling(&10, &13, Some(&11), Some(&15));
+    sheet.copy_col_styling(10, 12, None, None);
+    sheet.copy_col_styling(10, 13, Some(11), Some(15));
 
     let path = std::path::Path::new("./tests/result_files/issue_246.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
@@ -1895,7 +1886,7 @@ fn issue_246() {
 #[test]
 fn issue_248() {
     let mut book = new_file();
-    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    let mut sheet = book.get_sheet_mut(0).unwrap();
     sheet
         .get_sheet_views_mut()
         .get_sheet_view_list_mut()

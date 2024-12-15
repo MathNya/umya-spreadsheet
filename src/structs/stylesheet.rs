@@ -191,7 +191,7 @@ impl Stylesheet {
             let def_cell_format = self
                 .cell_style_formats
                 .get_cell_format()
-                .get(*cell_format.get_format_id() as usize)
+                .get(cell_format.get_format_id() as usize)
                 .cloned()
                 .unwrap_or_default();
 
@@ -212,14 +212,14 @@ impl Stylesheet {
         // number_format
         let mut apply = true;
         if def_cell_format.has_apply_number_format() {
-            apply = *def_cell_format.get_apply_number_format();
+            apply = def_cell_format.get_apply_number_format();
         }
         if cell_format.has_apply_number_format() {
-            apply = *cell_format.get_apply_number_format();
+            apply = cell_format.get_apply_number_format();
         }
         if apply {
             let id = cell_format.get_number_format_id();
-            if let Some(obj) = self.numbering_formats.get_numbering_format().get(id) {
+            if let Some(obj) = self.numbering_formats.get_numbering_format().get(&id) {
                 style.set_numbering_format(obj.clone());
             }
         }
@@ -227,13 +227,13 @@ impl Stylesheet {
         // font
         let mut apply = true;
         if def_cell_format.has_apply_font() {
-            apply = *def_cell_format.get_apply_font();
+            apply = def_cell_format.get_apply_font();
         }
         if cell_format.has_apply_font() {
-            apply = *cell_format.get_apply_font();
+            apply = cell_format.get_apply_font();
         }
         if apply {
-            let id = *cell_format.get_font_id() as usize;
+            let id = cell_format.get_font_id() as usize;
             let obj = self.fonts.get_font().get(id).unwrap();
             style.set_font(obj.clone());
         }
@@ -241,13 +241,13 @@ impl Stylesheet {
         // fill
         let mut apply = true;
         if def_cell_format.has_apply_fill() {
-            apply = *def_cell_format.get_apply_fill();
+            apply = def_cell_format.get_apply_fill();
         }
         if cell_format.has_apply_fill() {
-            apply = *cell_format.get_apply_fill();
+            apply = cell_format.get_apply_fill();
         }
         if apply {
-            let id = *cell_format.get_fill_id() as usize;
+            let id = cell_format.get_fill_id() as usize;
             let obj = self.fills.get_fill().get(id).unwrap();
             style.set_fill(obj.clone());
         }
@@ -255,27 +255,27 @@ impl Stylesheet {
         // borders
         let mut apply = true;
         if def_cell_format.has_apply_border() {
-            apply = *def_cell_format.get_apply_border();
+            apply = def_cell_format.get_apply_border();
         }
         if cell_format.has_apply_border() {
-            apply = *cell_format.get_apply_border();
+            apply = cell_format.get_apply_border();
         }
         if apply {
-            let id = *cell_format.get_border_id() as usize;
+            let id = cell_format.get_border_id() as usize;
             let obj = self.borders.get_borders().get(id).unwrap();
             style.set_borders(obj.clone());
         }
 
         // format_id
-        style.set_format_id(*cell_format.get_format_id());
+        style.set_format_id(cell_format.get_format_id());
 
         // alignment
         let mut apply = true;
         if def_cell_format.has_apply_alignment() {
-            apply = *def_cell_format.get_apply_alignment();
+            apply = def_cell_format.get_apply_alignment();
         }
         if cell_format.has_apply_alignment() {
-            apply = *cell_format.get_apply_alignment();
+            apply = cell_format.get_apply_alignment();
         }
         if apply {
             if let Some(v) = def_cell_format.get_alignment() {
@@ -289,10 +289,10 @@ impl Stylesheet {
         // protection
         let mut apply = true;
         if def_cell_format.has_apply_protection() {
-            apply = *def_cell_format.get_apply_protection();
+            apply = def_cell_format.get_apply_protection();
         }
         if cell_format.has_apply_protection() {
-            apply = *cell_format.get_apply_protection();
+            apply = cell_format.get_apply_protection();
         }
         if !apply {
             return;

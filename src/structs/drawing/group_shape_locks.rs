@@ -20,7 +20,7 @@ pub struct GroupShapeLocks {
 
 impl GroupShapeLocks {
     #[inline]
-    pub fn get_no_change_aspect(&self) -> &bool {
+    pub fn get_no_change_aspect(&self) -> bool {
         self.no_change_aspect.get_value()
     }
 

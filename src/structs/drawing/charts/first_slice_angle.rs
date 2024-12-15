@@ -12,7 +12,7 @@ pub struct FirstSliceAngle {
     val: UInt16Value,
 }
 impl FirstSliceAngle {
-    pub fn get_val(&self) -> &u16 {
+    pub fn get_val(&self) -> u16 {
         self.val.get_value()
     }
 

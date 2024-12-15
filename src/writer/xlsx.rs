@@ -64,7 +64,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
         if worksheet.is_deserialized() {
             // from deserialized.
             worksheet::write(
-                &worksheet_no,
+                worksheet_no,
                 worksheet,
                 shared_string_table.clone(),
                 &mut stylesheet,
@@ -75,7 +75,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
             // from no deserialized.
             worksheet
                 .get_raw_data_of_worksheet()
-                .write(&worksheet_no, &mut writer_manager)?;
+                .write(worksheet_no, &mut writer_manager)?;
         }
         worksheet_no += 1;
     }

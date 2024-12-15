@@ -56,7 +56,7 @@ impl NonVisualShapeProperties {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: usize) {
         // xdr:nvSpPr
         write_start_tag(writer, "xdr:nvSpPr", vec![], false);
 

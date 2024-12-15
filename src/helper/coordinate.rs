@@ -53,10 +53,10 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 }
 
 #[inline]
-pub fn string_from_column_index(column_index: &u32) -> String {
-    assert!(column_index >= &1u32, "Column number starts from 1.");
+pub fn string_from_column_index(column_index: u32) -> String {
+    assert!(column_index >= 1u32, "Column number starts from 1.");
 
-    index_to_alpha(*column_index)
+    index_to_alpha(column_index)
 }
 
 ///
@@ -94,47 +94,47 @@ where
 }
 
 #[inline]
-pub fn coordinate_from_index(col: &u32, row: &u32) -> String {
+pub fn coordinate_from_index(col: u32, row: u32) -> String {
     format!("{}{}", string_from_column_index(col), row)
 }
 
 pub fn coordinate_from_index_with_lock(
-    col: &u32,
-    row: &u32,
-    is_lock_col: &bool,
-    is_lock_row: &bool,
+    col: u32,
+    row: u32,
+    is_lock_col: bool,
+    is_lock_row: bool,
 ) -> String {
     format!(
         "{}{}{}{}",
-        if *is_lock_col { "$" } else { "" },
+        if is_lock_col { "$" } else { "" },
         string_from_column_index(col),
-        if *is_lock_row { "$" } else { "" },
+        if is_lock_row { "$" } else { "" },
         row
     )
 }
 
 #[inline]
-pub(crate) fn adjustment_insert_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
-    if num >= root_num && offset_num != &0 {
+pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
+    if num >= root_num && offset_num != 0 {
         num + offset_num
     } else {
-        *num
+        num
     }
 }
 
 #[inline]
-pub(crate) fn adjustment_remove_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> u32 {
-    if num >= root_num && offset_num != &0 {
+pub(crate) fn adjustment_remove_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
+    if num >= root_num && offset_num != 0 {
         num - offset_num
     } else {
-        *num
+        num
     }
 }
 
 #[inline]
-pub(crate) fn is_remove_coordinate(num: &u32, root_num: &u32, offset_num: &u32) -> bool {
-    if root_num != &0 && offset_num != &0 {
-        return num >= root_num && num < &(root_num + offset_num);
+pub(crate) fn is_remove_coordinate(num: u32, root_num: u32, offset_num: u32) -> bool {
+    if root_num != 0 && offset_num != 0 {
+        return num >= root_num && num < (root_num + offset_num);
     }
     false
 }
@@ -159,13 +159,6 @@ impl From<(u32, u32)> for CellCoordinates {
     #[inline]
     fn from(value: (u32, u32)) -> Self {
         CellCoordinates::new(value.0, value.1)
-    }
-}
-
-impl From<(&u32, &u32)> for CellCoordinates {
-    #[inline]
-    fn from(value: (&u32, &u32)) -> Self {
-        CellCoordinates::new(*value.0, *value.1)
     }
 }
 
@@ -205,15 +198,15 @@ mod tests {
 
     #[test]
     fn string_from_column_index_1() {
-        assert_eq!(string_from_column_index(&1), String::from("A"));
-        assert_eq!(string_from_column_index(&26), String::from("Z"));
-        assert_eq!(string_from_column_index(&27), String::from("AA"));
-        assert_eq!(string_from_column_index(&28), String::from("AB"));
-        assert_eq!(string_from_column_index(&53), String::from("BA"));
-        assert_eq!(string_from_column_index(&702), String::from("ZZ"));
-        assert_eq!(string_from_column_index(&703), String::from("AAA"));
-        assert_eq!(string_from_column_index(&8160), String::from("LAV"));
-        assert_eq!(string_from_column_index(&16384), String::from("XFD"));
+        assert_eq!(string_from_column_index(1), String::from("A"));
+        assert_eq!(string_from_column_index(26), String::from("Z"));
+        assert_eq!(string_from_column_index(27), String::from("AA"));
+        assert_eq!(string_from_column_index(28), String::from("AB"));
+        assert_eq!(string_from_column_index(53), String::from("BA"));
+        assert_eq!(string_from_column_index(702), String::from("ZZ"));
+        assert_eq!(string_from_column_index(703), String::from("AAA"));
+        assert_eq!(string_from_column_index(8160), String::from("LAV"));
+        assert_eq!(string_from_column_index(16384), String::from("XFD"));
     }
 
     #[test]

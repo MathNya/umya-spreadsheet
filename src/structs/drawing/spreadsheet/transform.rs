@@ -51,7 +51,7 @@ impl Transform {
     }
 
     #[inline]
-    pub fn get_rotation(&self) -> &i32 {
+    pub fn get_rotation(&self) -> i32 {
         self.rotation.get_value()
     }
 
@@ -61,7 +61,7 @@ impl Transform {
     }
 
     #[inline]
-    pub fn get_vertical_flip(&self) -> &bool {
+    pub fn get_vertical_flip(&self) -> bool {
         self.vertical_flip.get_value()
     }
 
@@ -71,7 +71,7 @@ impl Transform {
     }
 
     #[inline]
-    pub fn get_horizontal_flip(&self) -> &bool {
+    pub fn get_horizontal_flip(&self) -> bool {
         self.horizontal_flip.get_value()
     }
 

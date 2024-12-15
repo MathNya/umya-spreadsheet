@@ -5,8 +5,8 @@ pub struct TrueFalseValue {
 }
 impl TrueFalseValue {
     #[inline]
-    pub(crate) fn get_value(&self) -> &bool {
-        self.value.as_ref().unwrap_or(&self.value_default)
+    pub(crate) fn get_value(&self) -> bool {
+        self.value.unwrap_or(self.value_default)
     }
 
     #[inline]

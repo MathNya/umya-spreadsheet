@@ -97,7 +97,7 @@ impl NonVisualPictureProperties {
         write_start_tag(writer, "xdr:nvPicPr", vec![], false);
 
         // xdr:cNvPr
-        self.non_visual_drawing_properties.write_to(writer, &0);
+        self.non_visual_drawing_properties.write_to(writer, 0);
 
         // xdr:cNvPicPr
         self.non_visual_picture_drawing_properties.write_to(writer);

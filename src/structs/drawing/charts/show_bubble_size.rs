@@ -12,7 +12,7 @@ pub struct ShowBubbleSize {
     val: BooleanValue,
 }
 impl ShowBubbleSize {
-    pub fn get_val(&self) -> &bool {
+    pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 

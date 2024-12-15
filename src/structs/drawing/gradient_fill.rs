@@ -34,7 +34,7 @@ impl GradientFill {
     }
 
     #[inline]
-    pub fn get_rotate_with_shape(&self) -> &bool {
+    pub fn get_rotate_with_shape(&self) -> bool {
         self.rotate_with_shape.get_value()
     }
 

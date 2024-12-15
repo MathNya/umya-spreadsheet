@@ -30,7 +30,7 @@ impl fmt::Display for Coordinate {
 
 impl Coordinate {
     #[inline]
-    pub fn get_col_num(&self) -> &u32 {
+    pub fn get_col_num(&self) -> u32 {
         self.column.get_num()
     }
 
@@ -47,7 +47,7 @@ impl Coordinate {
     }
 
     #[inline]
-    pub fn get_row_num(&self) -> &u32 {
+    pub fn get_row_num(&self) -> u32 {
         self.row.get_num()
     }
 
@@ -64,7 +64,7 @@ impl Coordinate {
     }
 
     #[inline]
-    pub fn get_is_lock_col(&self) -> &bool {
+    pub fn get_is_lock_col(&self) -> bool {
         self.column.get_is_lock()
     }
 
@@ -75,7 +75,7 @@ impl Coordinate {
     }
 
     #[inline]
-    pub fn get_is_lock_row(&self) -> &bool {
+    pub fn get_is_lock_row(&self) -> bool {
         self.row.get_is_lock()
     }
 
@@ -113,10 +113,10 @@ impl AdjustmentCoordinate for Coordinate {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.column
             .adjustment_insert_value(root_col_num, offset_col_num);
@@ -127,10 +127,10 @@ impl AdjustmentCoordinate for Coordinate {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.column
             .adjustment_remove_value(root_col_num, offset_col_num);
@@ -141,10 +141,10 @@ impl AdjustmentCoordinate for Coordinate {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.column.is_remove_value(root_col_num, offset_col_num)
             || self.row.is_remove_value(root_row_num, offset_row_num)

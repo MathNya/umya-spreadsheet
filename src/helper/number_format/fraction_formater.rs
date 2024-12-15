@@ -1,5 +1,5 @@
-pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
-    let sign = if value < &0f64 { "-" } else { "" };
+pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
+    let sign = if value < 0f64 { "-" } else { "" };
 
     let integer_part = value.abs().floor();
     let decimal_part = (value.abs() % 1f64)
@@ -10,7 +10,7 @@ pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
     let decimal_length = decimal_part.to_string().len();
     let decimal_divisor = 10f64.powi(decimal_length as i32);
 
-    let gcd = gcd(&decimal_part, &decimal_divisor);
+    let gcd = gcd(decimal_part, decimal_divisor);
 
     let mut adjusted_decimal_part = decimal_part / gcd;
     let adjusted_decimal_divisor = decimal_divisor / gcd;
@@ -60,10 +60,10 @@ pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
 }
 
 #[inline]
-fn gcd(a: &f64, b: &f64) -> f64 {
-    if b == &0f64 {
-        *a
+fn gcd(a: f64, b: f64) -> f64 {
+    if b == 0f64 {
+        a
     } else {
-        gcd(b, &(a % b))
+        gcd(b, a % b)
     }
 }

@@ -181,8 +181,8 @@ impl OleObject {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        r_id: &usize,
-        ole_id: &usize,
+        r_id: usize,
+        ole_id: usize,
     ) {
         // mc:AlternateContent
         write_start_tag(
@@ -211,8 +211,7 @@ impl OleObject {
         write_start_tag(writer, "oleObject", attributes, false);
 
         // objectPr
-        self.embedded_object_properties
-            .write_to(writer, &(r_id + 1));
+        self.embedded_object_properties.write_to(writer, r_id + 1);
 
         write_end_tag(writer, "oleObject");
 

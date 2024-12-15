@@ -24,7 +24,7 @@ pub struct PageSetup {
 
 impl PageSetup {
     #[inline]
-    pub fn get_paper_size(&self) -> &u32 {
+    pub fn get_paper_size(&self) -> u32 {
         self.paper_size.get_value()
     }
 
@@ -46,7 +46,7 @@ impl PageSetup {
     }
 
     #[inline]
-    pub fn get_scale(&self) -> &u32 {
+    pub fn get_scale(&self) -> u32 {
         self.scale.get_value()
     }
 
@@ -57,7 +57,7 @@ impl PageSetup {
     }
 
     #[inline]
-    pub fn get_fit_to_height(&self) -> &u32 {
+    pub fn get_fit_to_height(&self) -> u32 {
         self.fit_to_height.get_value()
     }
 
@@ -68,7 +68,7 @@ impl PageSetup {
     }
 
     #[inline]
-    pub fn get_fit_to_width(&self) -> &u32 {
+    pub fn get_fit_to_width(&self) -> u32 {
         self.fit_to_width.get_value()
     }
 
@@ -79,7 +79,7 @@ impl PageSetup {
     }
 
     #[inline]
-    pub fn get_horizontal_dpi(&self) -> &u32 {
+    pub fn get_horizontal_dpi(&self) -> u32 {
         self.horizontal_dpi.get_value()
     }
 
@@ -90,7 +90,7 @@ impl PageSetup {
     }
 
     #[inline]
-    pub fn get_vertical_dpi(&self) -> &u32 {
+    pub fn get_vertical_dpi(&self) -> u32 {
         self.vertical_dpi.get_value()
     }
 

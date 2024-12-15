@@ -35,7 +35,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     for chart_no in chart_no_list {
         is_write = write_relationship(
             &mut writer,
-            &r_id,
+            r_id,
             CHART_NS,
             format!("../charts/chart{}.xml", chart_no).as_str(),
             "",
@@ -48,7 +48,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         if key == "IMAGE" {
             is_write = write_relationship(
                 &mut writer,
-                &r_id,
+                r_id,
                 IMAGE_NS,
                 format!("../media/{}", value).as_str(),
                 "",
@@ -67,7 +67,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
 fn write_relationship(
     writer: &mut Writer<io::Cursor<Vec<u8>>>,
-    r_id: &i32,
+    r_id: i32,
     p_type: &str,
     p_target: &str,
     p_target_mode: &str,

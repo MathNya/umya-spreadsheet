@@ -42,7 +42,7 @@ impl Fill {
     }
 
     #[inline]
-    pub fn get_on(&self) -> &bool {
+    pub fn get_on(&self) -> bool {
         self.on.get_value()
     }
 

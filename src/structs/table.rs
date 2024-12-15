@@ -39,10 +39,10 @@ impl Table {
     pub fn is_ok(&self) -> bool {
         !(self.name.is_empty()
             || self.display_name.is_empty()
-            || self.area.0.get_col_num() == &0
-            || self.area.0.get_row_num() == &0
-            || self.area.1.get_col_num() == &0
-            || self.area.1.get_row_num() == &0
+            || self.area.0.get_col_num() == 0
+            || self.area.0.get_row_num() == 0
+            || self.area.1.get_col_num() == 0
+            || self.area.1.get_row_num() == 0
             || self.area.0.get_col_num() > self.area.1.get_col_num()
             || self.area.0.get_row_num() > self.area.1.get_row_num())
     }
@@ -116,7 +116,7 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_totals_row_shown(&self) -> &bool {
+    pub fn get_totals_row_shown(&self) -> bool {
         self.totals_row_shown.get_value()
     }
 
@@ -141,7 +141,7 @@ impl Table {
     }
 
     #[inline]
-    pub fn get_totals_row_count(&self) -> &u32 {
+    pub fn get_totals_row_count(&self) -> u32 {
         self.totals_row_count.get_value()
     }
 

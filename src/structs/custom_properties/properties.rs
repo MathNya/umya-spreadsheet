@@ -93,7 +93,7 @@ impl Properties {
         );
         let mut pid = 2;
         for v in &self.custom_document_property_list {
-            v.write_to(writer, &pid);
+            v.write_to(writer, pid);
             pid += 1;
         }
         write_end_tag(writer, "Properties");

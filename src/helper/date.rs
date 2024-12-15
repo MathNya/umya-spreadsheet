@@ -3,21 +3,18 @@ use chrono::{Duration, NaiveDateTime};
 pub const CALENDAR_WINDOWS_1900: &str = "1900";
 pub const CALENDAR_MAC_1904: &str = "1904";
 
-pub fn excel_to_date_time_object(
-    excel_timestamp: &f64,
-    time_zone: Option<String>,
-) -> NaiveDateTime {
+pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>) -> NaiveDateTime {
     let _time_zone = match time_zone {
         Some(v) => v,
         None => get_default_timezone(),
     };
 
-    let base_date = if excel_timestamp < &1f64 {
+    let base_date = if excel_timestamp < 1f64 {
         // Unix timestamp base date
         NaiveDateTime::parse_from_str("1970-01-01 00:00:00", "%Y-%m-%d %T").unwrap()
     } else {
         // Allow adjustment for 1900 Leap Year in MS Excel
-        if excel_timestamp < &60f64 {
+        if excel_timestamp < 60f64 {
             NaiveDateTime::parse_from_str("1899-12-31 00:00:00", "%Y-%m-%d %T").unwrap()
         } else {
             NaiveDateTime::parse_from_str("1899-12-30 00:00:00", "%Y-%m-%d %T").unwrap()

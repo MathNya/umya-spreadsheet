@@ -123,10 +123,10 @@ impl AdjustmentCoordinate for ConditionalFormatting {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.sequence_of_references.adjustment_insert_coordinate(
             root_col_num,
@@ -139,10 +139,10 @@ impl AdjustmentCoordinate for ConditionalFormatting {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.sequence_of_references.adjustment_remove_coordinate(
             root_col_num,
@@ -155,10 +155,10 @@ impl AdjustmentCoordinate for ConditionalFormatting {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.sequence_of_references.is_remove_coordinate(
             root_col_num,

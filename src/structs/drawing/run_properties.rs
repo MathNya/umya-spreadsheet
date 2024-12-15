@@ -126,7 +126,7 @@ impl RunProperties {
     }
 
     #[inline]
-    pub fn get_spacing(&self) -> &i32 {
+    pub fn get_spacing(&self) -> i32 {
         self.spacing.get_value()
     }
 

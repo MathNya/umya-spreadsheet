@@ -33,7 +33,7 @@ impl MergeCells {
         self
     }
 
-    pub(crate) fn _has_vertical(&self, row_num: &u32) -> bool {
+    pub(crate) fn _has_vertical(&self, row_num: u32) -> bool {
         self.get_range_collection().iter().any(|range| {
             let start_num = range
                 .get_coordinate_start_row()
@@ -45,7 +45,7 @@ impl MergeCells {
         })
     }
 
-    pub(crate) fn has_horizontal(&self, col_num: &u32) -> bool {
+    pub(crate) fn has_horizontal(&self, col_num: u32) -> bool {
         self.get_range_collection().iter().any(|range| {
             let start_num = range
                 .get_coordinate_start_col()

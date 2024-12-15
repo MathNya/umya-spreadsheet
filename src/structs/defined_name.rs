@@ -100,7 +100,7 @@ impl DefinedName {
     }
 
     #[inline]
-    pub fn get_local_sheet_id(&self) -> &u32 {
+    pub fn get_local_sheet_id(&self) -> u32 {
         self.local_sheet_id.get_value()
     }
 
@@ -110,7 +110,7 @@ impl DefinedName {
     }
 
     #[inline]
-    pub fn get_hidden(&self) -> &bool {
+    pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
 
@@ -219,10 +219,10 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for address in &mut self.address {
             address.adjustment_insert_coordinate_with_sheet(
@@ -238,10 +238,10 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.address.retain(|x| {
             !(x.is_remove_coordinate_with_sheet(
@@ -268,10 +268,10 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     fn is_remove_coordinate_with_sheet(
         &self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         if self.string_value.has_value() {
             return false;

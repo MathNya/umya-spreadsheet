@@ -12,7 +12,7 @@ pub struct Bubble3D {
     val: BooleanValue,
 }
 impl Bubble3D {
-    pub fn get_val(&self) -> &bool {
+    pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 

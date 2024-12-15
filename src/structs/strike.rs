@@ -14,7 +14,7 @@ pub struct Strike {
 
 impl Strike {
     #[inline]
-    pub fn get_val(&self) -> &bool {
+    pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 
@@ -41,7 +41,7 @@ impl Strike {
         }
 
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        if !*self.val.get_value() {
+        if !self.val.get_value() {
             attributes.push(("val", self.val.get_value_string()));
         }
         write_start_tag(writer, "strike", attributes, true);

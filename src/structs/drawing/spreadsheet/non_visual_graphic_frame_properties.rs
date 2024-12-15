@@ -97,7 +97,7 @@ impl NonVisualGraphicFrameProperties {
         write_start_tag(writer, "xdr:nvGraphicFramePr", vec![], false);
 
         // xdr:cNvPr
-        self.non_visual_drawing_properties.write_to(writer, &0);
+        self.non_visual_drawing_properties.write_to(writer, 0);
 
         // xdr:cNvGraphicFramePr
         self.non_visual_graphic_frame_drawing_properties

@@ -50,7 +50,7 @@ impl DataValidation {
     }
 
     #[inline]
-    pub fn get_allow_blank(&self) -> &bool {
+    pub fn get_allow_blank(&self) -> bool {
         self.allow_blank.get_value()
     }
 
@@ -61,7 +61,7 @@ impl DataValidation {
     }
 
     #[inline]
-    pub fn get_show_input_message(&self) -> &bool {
+    pub fn get_show_input_message(&self) -> bool {
         self.show_input_message.get_value()
     }
 
@@ -72,7 +72,7 @@ impl DataValidation {
     }
 
     #[inline]
-    pub fn get_show_error_message(&self) -> &bool {
+    pub fn get_show_error_message(&self) -> bool {
         self.show_error_message.get_value()
     }
 

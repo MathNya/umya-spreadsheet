@@ -13,7 +13,7 @@ pub struct MoveWithCells {
 
 impl MoveWithCells {
     #[inline]
-    pub fn get_value(&self) -> Option<&bool> {
+    pub fn get_value(&self) -> Option<bool> {
         self.value.get_value()
     }
 

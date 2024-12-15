@@ -307,10 +307,10 @@ impl AdjustmentCoordinateWithSheet for Chart {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.plot_area.adjustment_insert_coordinate_with_sheet(
             sheet_name,
@@ -324,10 +324,10 @@ impl AdjustmentCoordinateWithSheet for Chart {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.plot_area.adjustment_remove_coordinate_with_sheet(
             sheet_name,

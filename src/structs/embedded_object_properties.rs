@@ -34,7 +34,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    pub fn get_shape_id(&self) -> &u32 {
+    pub fn get_shape_id(&self) -> u32 {
         self.shape_id.get_value()
     }
 
@@ -60,7 +60,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    pub fn get_default_size(&self) -> &bool {
+    pub fn get_default_size(&self) -> bool {
         self.default_size.get_value()
     }
 
@@ -71,7 +71,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    pub fn get_auto_pict(&self) -> &bool {
+    pub fn get_auto_pict(&self) -> bool {
         self.auto_pict.get_value()
     }
 
@@ -130,7 +130,7 @@ impl EmbeddedObjectProperties {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &usize) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: usize) {
         // objectPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.default_size.has_value() {

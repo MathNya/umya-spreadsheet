@@ -26,7 +26,7 @@ impl CacheField {
         self
     }
 
-    pub fn get_number_format_id(&self) -> &u32 {
+    pub fn get_number_format_id(&self) -> u32 {
         self.number_format_id.get_value()
     }
 

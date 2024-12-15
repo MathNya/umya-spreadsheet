@@ -50,7 +50,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_refreshed_date(&self) -> &f64 {
+    pub fn get_refreshed_date(&self) -> f64 {
         self.refreshed_date.get_value()
     }
 
@@ -61,7 +61,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_created_version(&self) -> &u8 {
+    pub fn get_created_version(&self) -> u8 {
         self.created_version.get_value()
     }
 
@@ -72,7 +72,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_refreshed_version(&self) -> &u8 {
+    pub fn get_refreshed_version(&self) -> u8 {
         self.refreshed_version.get_value()
     }
 
@@ -83,7 +83,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_min_refreshable_version(&self) -> &u8 {
+    pub fn get_min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.get_value()
     }
 
@@ -94,7 +94,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_record_count(&self) -> &u32 {
+    pub fn get_record_count(&self) -> u32 {
         self.record_count.get_value()
     }
 

@@ -12,7 +12,7 @@ pub struct CrossingAxis {
     val: UInt32Value,
 }
 impl CrossingAxis {
-    pub fn get_val(&self) -> &u32 {
+    pub fn get_val(&self) -> u32 {
         self.val.get_value()
     }
 

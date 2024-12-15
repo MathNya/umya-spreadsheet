@@ -19,14 +19,14 @@ pub struct MsHlsColor {
 const RGBMAX: f64 = 255.0;
 const HLSMAX: f64 = 255.0;
 
-pub fn calc_tint(rgb: &str, tint: &f64) -> String {
+pub fn calc_tint(rgb: &str, tint: f64) -> String {
     let mut ms_hls = convert_rgb_to_ms_hls(rgb);
-    ms_hls.l = calculate_final_lum_value(tint, &(ms_hls.l as f64));
+    ms_hls.l = calculate_final_lum_value(tint, ms_hls.l as f64);
     convert_ms_hls_to_rgb(&ms_hls)
 }
 
-pub fn calculate_final_lum_value(tint: &f64, lum: &f64) -> i32 {
-    let lum1 = if *tint < 0.0 {
+pub fn calculate_final_lum_value(tint: f64, lum: f64) -> i32 {
+    let lum1 = if tint < 0.0 {
         lum * (1.0 + tint)
     } else {
         lum * (1.0 - tint) + (HLSMAX - HLSMAX * (1.0 - tint))
@@ -43,7 +43,7 @@ pub fn split_rgb(rgb: &str) -> (i32, i32, i32) {
 }
 
 #[inline]
-pub fn join_rgb(r: &i32, g: &i32, b: &i32) -> String {
+pub fn join_rgb(r: i32, g: i32, b: i32) -> String {
     format!("{:02X}{:02X}{:02X}", r, g, b)
 }
 
@@ -110,7 +110,7 @@ pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
         hls.h = 4.0 + gc - rc;
     }
 
-    hls.h = positive_decimal_part(&(hls.h / 6.0));
+    hls.h = positive_decimal_part(hls.h / 6.0);
 
     hls
 }
@@ -127,7 +127,7 @@ pub fn convert_ms_hls_to_rgb(ms_hls: &MsHlsColor) -> String {
 pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
     if hls.s == 0.0 {
         let rtn_l = to_i32(hls.l * RGBMAX);
-        return join_rgb(&rtn_l, &rtn_l, &rtn_l);
+        return join_rgb(rtn_l, rtn_l, rtn_l);
     }
 
     let t1 = if hls.l < 0.5 {
@@ -148,11 +148,11 @@ pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
     let rtn_r = to_i32(r * RGBMAX);
     let rtn_g = to_i32(g * RGBMAX);
     let rtn_b = to_i32(b * RGBMAX);
-    join_rgb(&rtn_r, &rtn_g, &rtn_b)
+    join_rgb(rtn_r, rtn_g, rtn_b)
 }
 
 pub fn set_color(t1: f64, t2: f64, t3: f64) -> f64 {
-    let t3 = positive_decimal_part(&t3);
+    let t3 = positive_decimal_part(t3);
 
     if 6.0 * t3 < 1.0 {
         t2 + (t1 - t2) * 6.0 * t3
@@ -166,7 +166,7 @@ pub fn set_color(t1: f64, t2: f64, t3: f64) -> f64 {
 }
 
 #[inline]
-fn positive_decimal_part(hue: &f64) -> f64 {
+fn positive_decimal_part(hue: f64) -> f64 {
     let hue = hue % 1.0;
 
     if hue >= 0.0 {

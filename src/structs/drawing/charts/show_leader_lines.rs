@@ -12,7 +12,7 @@ pub struct ShowLeaderLines {
     val: BooleanValue,
 }
 impl ShowLeaderLines {
-    pub fn get_val(&self) -> &bool {
+    pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 

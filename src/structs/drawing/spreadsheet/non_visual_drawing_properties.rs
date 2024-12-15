@@ -18,7 +18,7 @@ pub struct NonVisualDrawingProperties {
 
 impl NonVisualDrawingProperties {
     #[inline]
-    pub fn get_id(&self) -> &u32 {
+    pub fn get_id(&self) -> u32 {
         self.id.get_value()
     }
 
@@ -40,7 +40,7 @@ impl NonVisualDrawingProperties {
     }
 
     #[inline]
-    pub fn get_hidden(&self) -> &bool {
+    pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
 
@@ -76,8 +76,8 @@ impl NonVisualDrawingProperties {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: &usize) {
-        let with_inner = ole_id > &0;
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: usize) {
+        let with_inner = ole_id > 0;
         // xdr:cNvPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let id = self.id.get_value_string();

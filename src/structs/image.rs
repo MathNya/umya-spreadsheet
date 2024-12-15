@@ -40,15 +40,15 @@ pub struct Image {
 /// // Get Image by Worksheet.
 /// let worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
 /// let image = worksheet.get_image("B3");
-/// let image = worksheet.get_image_by_column_and_row(&2, &1);
+/// let image = worksheet.get_image_by_column_and_row(&2, 1);
 /// let image = worksheet.get_image_mut("B3");
-/// let image = worksheet.get_image_by_column_and_row_mut(&2, &1);
+/// let image = worksheet.get_image_by_column_and_row_mut(&2, 1);
 ///
 /// // Use this if there are multiple Images in a given cell.
 /// let images = worksheet.get_images("B3");
-/// let images = worksheet.get_images_by_column_and_row(&2, &1);
+/// let images = worksheet.get_images_by_column_and_row(&2, 1);
 /// let images = worksheet.get_images_mut("B3");
-/// let images = worksheet.get_images_by_column_and_row_mut(&2, &1);
+/// let images = worksheet.get_images_by_column_and_row_mut(&2, 1);
 ///
 /// // Download Image
 /// book.get_sheet_by_name("Sheet1").unwrap()
@@ -221,12 +221,12 @@ impl Image {
     }
 
     #[inline]
-    pub fn get_col(&self) -> &u32 {
+    pub fn get_col(&self) -> u32 {
         self.get_from_marker_type().get_col()
     }
 
     #[inline]
-    pub fn get_row(&self) -> &u32 {
+    pub fn get_row(&self) -> u32 {
         self.get_from_marker_type().get_row()
     }
 
@@ -305,7 +305,7 @@ impl Image {
         rel_list: &mut Vec<(String, String)>,
     ) {
         if let Some(anchor) = self.get_two_cell_anchor() {
-            anchor.write_to(writer, rel_list, &0);
+            anchor.write_to(writer, rel_list, 0);
         }
         if let Some(anchor) = self.get_one_cell_anchor() {
             anchor.write_to(writer, rel_list);
@@ -316,10 +316,10 @@ impl AdjustmentCoordinate for Image {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         // one_cell_anchor
         if let Some(anchor) = self.one_cell_anchor.as_mut() {
@@ -345,10 +345,10 @@ impl AdjustmentCoordinate for Image {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         // one_cell_anchor
         if let Some(anchor) = self.one_cell_anchor.as_mut() {
@@ -374,10 +374,10 @@ impl AdjustmentCoordinate for Image {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         if let Some(anchor) = self.one_cell_anchor.as_ref() {
             return anchor.is_remove_coordinate(

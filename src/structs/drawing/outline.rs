@@ -36,7 +36,7 @@ pub struct Outline {
 
 impl Outline {
     #[inline]
-    pub fn get_width(&self) -> &u32 {
+    pub fn get_width(&self) -> u32 {
         self.width.get_value()
     }
 

@@ -41,7 +41,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // Write hyperlink relationships
     for (_, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
-        if !*hyperlink.get_location() {
+        if !hyperlink.get_location() {
             is_write = write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),

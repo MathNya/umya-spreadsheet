@@ -5,11 +5,8 @@ pub struct Int16Value {
 }
 impl Int16Value {
     #[inline]
-    pub(crate) fn _get_value(&self) -> &i16 {
-        match &self.value {
-            Some(v) => v,
-            None => &0,
-        }
+    pub(crate) fn _get_value(&self) -> i16 {
+        self.value.unwrap_or(0)
     }
 
     #[inline]

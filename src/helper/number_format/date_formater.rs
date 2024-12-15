@@ -53,7 +53,7 @@ const DATE_FORMAT_REPLACEMENTS_24: &[(&str, &str)] = &[("hh", "%H"), ("h", "%-H"
 
 const DATE_FORMAT_REPLACEMENTS_12: &[(&str, &str)] = &[("hh", "%I"), ("h", "%-I")];
 
-pub(crate) fn format_as_date<'input>(value: &f64, format: &'input str) -> Cow<'input, str> {
+pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
     let format = Cow::Borrowed(format);
 
     // strip off first part containing e.g. [$-F800] or [$USD-409]

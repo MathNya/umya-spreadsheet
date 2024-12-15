@@ -31,7 +31,7 @@ pub struct SheetView {
 
 impl SheetView {
     #[inline]
-    pub fn get_show_grid_lines(&self) -> &bool {
+    pub fn get_show_grid_lines(&self) -> bool {
         self.show_grid_lines.get_value()
     }
 
@@ -42,7 +42,7 @@ impl SheetView {
     }
 
     #[inline]
-    pub fn get_tab_selected(&self) -> &bool {
+    pub fn get_tab_selected(&self) -> bool {
         self.tab_selected.get_value()
     }
 
@@ -53,7 +53,7 @@ impl SheetView {
     }
 
     #[inline]
-    pub fn get_workbook_view_id(&self) -> &u32 {
+    pub fn get_workbook_view_id(&self) -> u32 {
         self.workbook_view_id.get_value()
     }
 
@@ -91,7 +91,7 @@ impl SheetView {
     }
 
     #[inline]
-    pub fn get_zoom_scale(&self) -> &u32 {
+    pub fn get_zoom_scale(&self) -> u32 {
         self.zoom_scale.get_value()
     }
 
@@ -102,7 +102,7 @@ impl SheetView {
     }
 
     #[inline]
-    pub fn get_zoom_scale_normal(&self) -> &u32 {
+    pub fn get_zoom_scale_normal(&self) -> u32 {
         self.zoom_scale_normal.get_value()
     }
 
@@ -113,7 +113,7 @@ impl SheetView {
     }
 
     #[inline]
-    pub fn get_zoom_scale_page_layout_view(&self) -> &u32 {
+    pub fn get_zoom_scale_page_layout_view(&self) -> u32 {
         self.zoom_scale_page_layout_view.get_value()
     }
 
@@ -124,7 +124,7 @@ impl SheetView {
     }
 
     #[inline]
-    pub fn get_zoom_scale_sheet_layout_view(&self) -> &u32 {
+    pub fn get_zoom_scale_sheet_layout_view(&self) -> u32 {
         self.zoom_scale_sheet_layout_view.get_value()
     }
 
@@ -225,7 +225,7 @@ impl SheetView {
         if self.show_grid_lines.has_value() {
             attributes.push(("showGridLines", self.show_grid_lines.get_value_string()));
         }
-        if *self.tab_selected.get_value() {
+        if self.tab_selected.get_value() {
             attributes.push(("tabSelected", self.tab_selected.get_value_string()));
         }
         if self.view.has_value() {

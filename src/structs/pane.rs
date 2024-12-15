@@ -21,7 +21,7 @@ pub struct Pane {
 
 impl Pane {
     #[inline]
-    pub fn get_horizontal_split(&self) -> &f64 {
+    pub fn get_horizontal_split(&self) -> f64 {
         self.horizontal_split.get_value()
     }
 
@@ -32,7 +32,7 @@ impl Pane {
     }
 
     #[inline]
-    pub fn get_vertical_split(&self) -> &f64 {
+    pub fn get_vertical_split(&self) -> f64 {
         self.vertical_split.get_value()
     }
 

@@ -101,7 +101,7 @@ impl Color {
     /// In that case, use get_argb_with_theme(&self, theme: &Theme).
     pub fn get_argb(&self) -> &str {
         if self.indexed.has_value() {
-            if let Some(v) = INDEXED_COLORS.get(*self.indexed.get_value() as usize) {
+            if let Some(v) = INDEXED_COLORS.get(self.indexed.get_value() as usize) {
                 return v;
             }
         }
@@ -120,7 +120,7 @@ impl Color {
             return self.get_argb().to_owned().into();
         }
         if self.theme_index.has_value() {
-            let key = *self.theme_index.get_value();
+            let key = self.theme_index.get_value();
             if let Some(v) = theme
                 .get_theme_elements()
                 .get_color_scheme()
@@ -154,7 +154,7 @@ impl Color {
     }
 
     #[inline]
-    pub fn get_indexed(&self) -> &u32 {
+    pub fn get_indexed(&self) -> u32 {
         self.indexed.get_value()
     }
 
@@ -167,7 +167,7 @@ impl Color {
     }
 
     #[inline]
-    pub fn get_theme_index(&self) -> &u32 {
+    pub fn get_theme_index(&self) -> u32 {
         self.theme_index.get_value()
     }
 
@@ -180,7 +180,7 @@ impl Color {
     }
 
     #[inline]
-    pub fn get_tint(&self) -> &f64 {
+    pub fn get_tint(&self) -> f64 {
         self.tint.get_value()
     }
 
@@ -329,7 +329,7 @@ mod tests {
 
         let mut obj = Color::default();
         obj.set_argb("FFFF8080");
-        assert_eq!(obj.get_indexed(), &21);
+        assert_eq!(obj.get_indexed(), 21);
         assert_eq!(obj.get_argb(), "FFFF8080");
 
         let mut obj = Color::default();

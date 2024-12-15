@@ -82,7 +82,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_left_inset(&self) -> &i32 {
+    pub fn get_left_inset(&self) -> i32 {
         self.left_inset.get_value()
     }
 
@@ -92,7 +92,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_top_inset(&self) -> &i32 {
+    pub fn get_top_inset(&self) -> i32 {
         self.top_inset.get_value()
     }
 
@@ -102,7 +102,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_right_inset(&self) -> &i32 {
+    pub fn get_right_inset(&self) -> i32 {
         self.right_inset.get_value()
     }
 
@@ -112,7 +112,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_bottom_inset(&self) -> &i32 {
+    pub fn get_bottom_inset(&self) -> i32 {
         self.bottom_inset.get_value()
     }
 

@@ -14,7 +14,7 @@ pub struct PivotField {
 }
 impl PivotField {
     #[inline]
-    pub fn get_data_field(&self) -> &bool {
+    pub fn get_data_field(&self) -> bool {
         self.data_field.get_value()
     }
 
@@ -25,7 +25,7 @@ impl PivotField {
     }
 
     #[inline]
-    pub fn get_show_all(&self) -> &bool {
+    pub fn get_show_all(&self) -> bool {
         self.show_all.get_value()
     }
 

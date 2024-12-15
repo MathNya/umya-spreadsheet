@@ -35,7 +35,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
                 None => String::from(""),
             };
             // do trim.
-            if *option.get_do_trim() {
+            if option.get_do_trim() {
                 value = value.trim().to_string();
             }
             // wrap_with_char.

@@ -4,11 +4,8 @@ pub struct ByteValue {
 }
 impl ByteValue {
     #[inline]
-    pub(crate) fn get_value(&self) -> &u8 {
-        match &self.value {
-            Some(v) => v,
-            None => &0,
-        }
+    pub(crate) fn get_value(&self) -> u8 {
+        self.value.unwrap_or(0)
     }
 
     #[inline]

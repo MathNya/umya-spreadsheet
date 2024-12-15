@@ -124,7 +124,7 @@ impl CustomDocumentProperty {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, pid: &i32) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, pid: i32) {
         let is_inner = self.custom_document_property_value.get_tag().is_some();
 
         // property

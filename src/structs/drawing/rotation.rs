@@ -16,7 +16,7 @@ pub struct Rotation {
 
 impl Rotation {
     #[inline]
-    pub fn get_latitude(&self) -> &i32 {
+    pub fn get_latitude(&self) -> i32 {
         self.latitude.get_value()
     }
 
@@ -27,7 +27,7 @@ impl Rotation {
     }
 
     #[inline]
-    pub fn get_longitude(&self) -> &i32 {
+    pub fn get_longitude(&self) -> i32 {
         self.longitude.get_value()
     }
 
@@ -38,7 +38,7 @@ impl Rotation {
     }
 
     #[inline]
-    pub fn get_revolution(&self) -> &i32 {
+    pub fn get_revolution(&self) -> i32 {
         self.revolution.get_value()
     }
 

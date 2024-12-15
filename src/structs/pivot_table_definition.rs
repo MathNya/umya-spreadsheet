@@ -49,7 +49,7 @@ pub struct PivotTableDefinition {
 }
 impl PivotTableDefinition {
     #[inline]
-    pub fn get_apply_number_formats(&self) -> &bool {
+    pub fn get_apply_number_formats(&self) -> bool {
         self.apply_number_formats.get_value()
     }
 
@@ -60,7 +60,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_apply_border_formats(&self) -> &bool {
+    pub fn get_apply_border_formats(&self) -> bool {
         self.apply_border_formats.get_value()
     }
 
@@ -71,7 +71,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_apply_font_formats(&self) -> &bool {
+    pub fn get_apply_font_formats(&self) -> bool {
         self.apply_font_formats.get_value()
     }
 
@@ -82,7 +82,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_apply_pattern_formats(&self) -> &bool {
+    pub fn get_apply_pattern_formats(&self) -> bool {
         self.apply_pattern_formats.get_value()
     }
 
@@ -93,7 +93,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_apply_alignment_formats(&self) -> &bool {
+    pub fn get_apply_alignment_formats(&self) -> bool {
         self.apply_alignment_formats.get_value()
     }
 
@@ -104,7 +104,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_apply_width_height_formats(&self) -> &bool {
+    pub fn get_apply_width_height_formats(&self) -> bool {
         self.apply_width_height_formats.get_value()
     }
 
@@ -115,7 +115,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_use_auto_formatting(&self) -> &bool {
+    pub fn get_use_auto_formatting(&self) -> bool {
         self.use_auto_formatting.get_value()
     }
 
@@ -126,7 +126,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_item_print_titles(&self) -> &bool {
+    pub fn get_item_print_titles(&self) -> bool {
         self.item_print_titles.get_value()
     }
 
@@ -137,7 +137,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_outline(&self) -> &bool {
+    pub fn get_outline(&self) -> bool {
         self.outline.get_value()
     }
 
@@ -148,7 +148,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_outline_data(&self) -> &bool {
+    pub fn get_outline_data(&self) -> bool {
         self.outline_data.get_value()
     }
 
@@ -159,7 +159,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_multiple_field_filters(&self) -> &bool {
+    pub fn get_multiple_field_filters(&self) -> bool {
         self.multiple_field_filters.get_value()
     }
 
@@ -181,7 +181,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_cache_id(&self) -> &u32 {
+    pub fn get_cache_id(&self) -> u32 {
         self.cache_id.get_value()
     }
 
@@ -192,7 +192,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_indent(&self) -> &u32 {
+    pub fn get_indent(&self) -> u32 {
         self.indent.get_value()
     }
 
@@ -225,7 +225,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_updated_version(&self) -> &u8 {
+    pub fn get_updated_version(&self) -> u8 {
         self.updated_version.get_value()
     }
 
@@ -236,7 +236,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_min_refreshable_version(&self) -> &u8 {
+    pub fn get_min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.get_value()
     }
 
@@ -247,7 +247,7 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    pub fn get_created_version(&self) -> &u8 {
+    pub fn get_created_version(&self) -> u8 {
         self.created_version.get_value()
     }
 

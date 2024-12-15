@@ -31,7 +31,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_row_headers(&self) -> &bool {
+    pub fn get_show_row_headers(&self) -> bool {
         self.show_row_headers.get_value()
     }
 
@@ -42,7 +42,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_column_headers(&self) -> &bool {
+    pub fn get_show_column_headers(&self) -> bool {
         self.show_column_headers.get_value()
     }
 
@@ -53,7 +53,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_row_stripes(&self) -> &bool {
+    pub fn get_show_row_stripes(&self) -> bool {
         self.show_row_stripes.get_value()
     }
 
@@ -64,7 +64,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_column_stripes(&self) -> &bool {
+    pub fn get_show_column_stripes(&self) -> bool {
         self.show_column_stripes.get_value()
     }
 
@@ -75,7 +75,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_last_column(&self) -> &bool {
+    pub fn get_show_last_column(&self) -> bool {
         self.show_last_column.get_value()
     }
 

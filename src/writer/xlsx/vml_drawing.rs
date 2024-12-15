@@ -131,7 +131,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             // v:shape
             ole_object
                 .get_shape()
-                .write_to(&mut writer, &id, &mut rel_list);
+                .write_to(&mut writer, id, &mut rel_list);
             id += 1;
         }
     }
@@ -166,9 +166,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         for comment in worksheet.get_comments() {
             // v:shape
-            comment
-                .get_shape()
-                .write_to(&mut writer, &id, &mut rel_list);
+            comment.get_shape().write_to(&mut writer, id, &mut rel_list);
             id += 1;
         }
     }

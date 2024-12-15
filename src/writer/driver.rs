@@ -74,7 +74,7 @@ pub(crate) fn make_file_from_writer<W: io::Seek + io::Write>(
     arv: &mut zip::ZipWriter<W>,
     writer: Writer<Cursor<Vec<u8>>>,
     dir: Option<&str>,
-    is_light: &bool,
+    is_light: bool,
 ) -> Result<(), io::Error> {
     make_file_from_bin(path, arv, &writer.into_inner().into_inner(), dir, is_light)
 }
@@ -85,9 +85,9 @@ pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
     arv: &mut zip::ZipWriter<W>,
     writer: &[u8],
     dir: Option<&str>,
-    is_light: &bool,
+    is_light: bool,
 ) -> Result<(), io::Error> {
-    let zip_opt = if *is_light {
+    let zip_opt = if is_light {
         zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Stored)
     } else {
         zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::DEFLATE)

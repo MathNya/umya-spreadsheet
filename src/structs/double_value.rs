@@ -4,11 +4,8 @@ pub struct DoubleValue {
 }
 impl DoubleValue {
     #[inline]
-    pub(crate) fn get_value(&self) -> &f64 {
-        match &self.value {
-            Some(v) => v,
-            None => &0f64,
-        }
+    pub(crate) fn get_value(&self) -> f64 {
+        self.value.unwrap_or(0f64)
     }
 
     #[inline]

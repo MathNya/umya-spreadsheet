@@ -14,7 +14,7 @@ pub struct Offset {
 }
 impl Offset {
     #[inline]
-    pub fn get_x(&self) -> &i64 {
+    pub fn get_x(&self) -> i64 {
         self.x.get_value()
     }
 
@@ -24,7 +24,7 @@ impl Offset {
     }
 
     #[inline]
-    pub fn get_y(&self) -> &i64 {
+    pub fn get_y(&self) -> i64 {
         self.y.get_value()
     }
 

@@ -12,7 +12,7 @@ pub struct RotateX {
     val: SByteValue,
 }
 impl RotateX {
-    pub fn get_val(&self) -> &i8 {
+    pub fn get_val(&self) -> i8 {
         self.val.get_value()
     }
 

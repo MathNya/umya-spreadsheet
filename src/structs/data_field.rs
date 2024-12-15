@@ -30,7 +30,7 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_fie_id(&self) -> &u32 {
+    pub fn get_fie_id(&self) -> u32 {
         self.fie_id.get_value()
     }
 
@@ -41,7 +41,7 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_base_fie_id(&self) -> &i32 {
+    pub fn get_base_fie_id(&self) -> i32 {
         self.base_fie_id.get_value()
     }
 
@@ -52,7 +52,7 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_base_item(&self) -> &u32 {
+    pub fn get_base_item(&self) -> u32 {
         self.base_item.get_value()
     }
 

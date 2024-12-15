@@ -59,7 +59,7 @@ impl Shape {
         self
     }
 
-    pub fn get_filled(&self) -> &bool {
+    pub fn get_filled(&self) -> bool {
         self.filled.get_value()
     }
 
@@ -77,7 +77,7 @@ impl Shape {
         self
     }
 
-    pub fn get_stroked(&self) -> &bool {
+    pub fn get_stroked(&self) -> bool {
         self.stroked.get_value()
     }
 
@@ -204,7 +204,7 @@ impl Shape {
         self
     }
 
-    pub fn get_optional_number(&self) -> &i32 {
+    pub fn get_optional_number(&self) -> i32 {
         self.optional_number.get_value()
     }
 
@@ -298,7 +298,7 @@ impl Shape {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        id: &usize,
+        id: usize,
         rel_list: &mut Vec<(String, String)>,
     ) {
         // v:shape
@@ -377,10 +377,10 @@ impl Shape {
 impl AdjustmentCoordinate for Shape {
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.client_data.adjustment_insert_coordinate(
             root_col_num,
@@ -392,10 +392,10 @@ impl AdjustmentCoordinate for Shape {
 
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.client_data.adjustment_remove_coordinate(
             root_col_num,

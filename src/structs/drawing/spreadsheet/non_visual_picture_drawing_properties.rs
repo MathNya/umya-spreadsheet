@@ -16,7 +16,7 @@ pub struct NonVisualPictureDrawingProperties {
 
 impl NonVisualPictureDrawingProperties {
     #[inline]
-    pub fn get_prefer_relative_resize(&self) -> &bool {
+    pub fn get_prefer_relative_resize(&self) -> bool {
         self.prefer_relative_resize.get_value()
     }
 

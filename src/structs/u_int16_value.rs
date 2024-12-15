@@ -4,8 +4,8 @@ pub struct UInt16Value {
 }
 impl UInt16Value {
     #[inline]
-    pub(crate) fn get_value(&self) -> &u16 {
-        self.value.as_ref().unwrap_or(&0)
+    pub(crate) fn get_value(&self) -> u16 {
+        self.value.unwrap_or(0)
     }
 
     #[inline]

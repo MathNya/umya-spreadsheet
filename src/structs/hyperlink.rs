@@ -28,8 +28,8 @@ impl Hyperlink {
     }
 
     #[inline]
-    pub fn get_location(&self) -> &bool {
-        &self.location
+    pub fn get_location(&self) -> bool {
+        self.location
     }
 
     #[inline]

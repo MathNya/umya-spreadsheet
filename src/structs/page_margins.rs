@@ -18,7 +18,7 @@ pub struct PageMargins {
 }
 impl PageMargins {
     #[inline]
-    pub fn get_left(&self) -> &f64 {
+    pub fn get_left(&self) -> f64 {
         self.left.get_value()
     }
 
@@ -29,7 +29,7 @@ impl PageMargins {
     }
 
     #[inline]
-    pub fn get_right(&self) -> &f64 {
+    pub fn get_right(&self) -> f64 {
         self.right.get_value()
     }
 
@@ -40,7 +40,7 @@ impl PageMargins {
     }
 
     #[inline]
-    pub fn get_top(&self) -> &f64 {
+    pub fn get_top(&self) -> f64 {
         self.top.get_value()
     }
 
@@ -51,7 +51,7 @@ impl PageMargins {
     }
 
     #[inline]
-    pub fn get_bottom(&self) -> &f64 {
+    pub fn get_bottom(&self) -> f64 {
         self.bottom.get_value()
     }
 
@@ -62,7 +62,7 @@ impl PageMargins {
     }
 
     #[inline]
-    pub fn get_header(&self) -> &f64 {
+    pub fn get_header(&self) -> f64 {
         self.header.get_value()
     }
 
@@ -73,7 +73,7 @@ impl PageMargins {
     }
 
     #[inline]
-    pub fn get_footer(&self) -> &f64 {
+    pub fn get_footer(&self) -> f64 {
         self.footer.get_value()
     }
 

@@ -24,7 +24,7 @@ impl Location {
         self
     }
 
-    pub fn get_first_header_row(&self) -> &u32 {
+    pub fn get_first_header_row(&self) -> u32 {
         self.first_header_row.get_value()
     }
 
@@ -33,7 +33,7 @@ impl Location {
         self
     }
 
-    pub fn get_first_data_row(&self) -> &u32 {
+    pub fn get_first_data_row(&self) -> u32 {
         self.first_data_row.get_value()
     }
 
@@ -42,7 +42,7 @@ impl Location {
         self
     }
 
-    pub fn get_first_data_col(&self) -> &u32 {
+    pub fn get_first_data_col(&self) -> u32 {
         self.first_data_col.get_value()
     }
 

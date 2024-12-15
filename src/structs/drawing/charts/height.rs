@@ -12,7 +12,7 @@ pub struct Height {
     val: DoubleValue,
 }
 impl Height {
-    pub fn get_val(&self) -> &f64 {
+    pub fn get_val(&self) -> f64 {
         self.val.get_value()
     }
 

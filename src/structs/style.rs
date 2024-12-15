@@ -257,7 +257,7 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_format_id(&self) -> &u32 {
+    pub fn get_format_id(&self) -> u32 {
         self.format_id.get_value()
     }
 

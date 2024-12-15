@@ -4,8 +4,8 @@ pub struct UInt32Value {
 }
 impl UInt32Value {
     #[inline]
-    pub(crate) fn get_value(&self) -> &u32 {
-        self.value.as_ref().unwrap_or(&0)
+    pub(crate) fn get_value(&self) -> u32 {
+        self.value.unwrap_or(0)
     }
 
     #[inline]

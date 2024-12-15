@@ -72,9 +72,9 @@ pub(crate) fn read<R: io::Read + io::Seek>(
 
     for defined_name in &defined_names {
         if defined_name.has_local_sheet_id() {
-            let local_sheet_id = *defined_name.get_local_sheet_id() as usize;
+            let local_sheet_id = defined_name.get_local_sheet_id() as usize;
             spreadsheet
-                .get_sheet_mut(&local_sheet_id)
+                .get_sheet_mut(local_sheet_id)
                 .unwrap()
                 .add_defined_names(defined_name.clone());
         } else {

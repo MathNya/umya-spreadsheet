@@ -14,7 +14,7 @@ pub struct Bold {
 
 impl Bold {
     #[inline]
-    pub fn get_val(&self) -> &bool {
+    pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 
@@ -37,7 +37,7 @@ impl Bold {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // b
-        if *self.val.get_value() {
+        if self.val.get_value() {
             write_start_tag(writer, "b", vec![], true);
         }
     }

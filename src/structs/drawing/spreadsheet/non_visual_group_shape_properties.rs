@@ -104,7 +104,7 @@ impl NonVisualGroupShapeProperties {
         write_start_tag(writer, "xdr:nvGrpSpPr", vec![], false);
 
         // xdr:cNvPr
-        self.non_visual_drawing_properties.write_to(writer, &0);
+        self.non_visual_drawing_properties.write_to(writer, 0);
 
         // xdr:cNvGrpSpPr
         self.non_visual_group_shape_drawing_properties

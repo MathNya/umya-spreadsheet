@@ -42,7 +42,7 @@ impl Alignment {
     }
 
     #[inline]
-    pub fn get_wrap_text(&self) -> &bool {
+    pub fn get_wrap_text(&self) -> bool {
         self.wrap_text.get_value()
     }
 
@@ -52,7 +52,7 @@ impl Alignment {
     }
 
     #[inline]
-    pub fn get_text_rotation(&self) -> &u32 {
+    pub fn get_text_rotation(&self) -> u32 {
         self.text_rotation.get_value()
     }
 

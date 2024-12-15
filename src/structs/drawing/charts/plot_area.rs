@@ -730,10 +730,10 @@ impl AdjustmentCoordinateWithSheet for PlotArea {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for formula in self.get_formula_mut() {
             formula.adjustment_insert_coordinate_with_sheet(
@@ -749,10 +749,10 @@ impl AdjustmentCoordinateWithSheet for PlotArea {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for formula in self.get_formula_mut() {
             formula.adjustment_remove_coordinate_with_sheet(

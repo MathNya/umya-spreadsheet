@@ -232,7 +232,7 @@ impl Borders {
     }
 
     #[inline]
-    pub fn get_diagonal_down(&self) -> &bool {
+    pub fn get_diagonal_down(&self) -> bool {
         self.diagonal_down.get_value()
     }
 
@@ -242,7 +242,7 @@ impl Borders {
     }
 
     #[inline]
-    pub fn get_diagonal_up(&self) -> &bool {
+    pub fn get_diagonal_up(&self) -> bool {
         self.diagonal_up.get_value()
     }
 

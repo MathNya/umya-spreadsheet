@@ -17,7 +17,7 @@ pub struct GradientStop {
 
 impl GradientStop {
     #[inline]
-    pub fn get_position(&self) -> &f64 {
+    pub fn get_position(&self) -> f64 {
         self.position.get_value()
     }
 

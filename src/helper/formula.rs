@@ -775,8 +775,8 @@ pub(crate) fn render(formula_token_list: &[FormulaToken]) -> String {
 
 pub fn adjustment_formula_coordinate(
     token_list: &mut [FormulaToken],
-    offset_col_num: &i32,
-    offset_row_num: &i32,
+    offset_col_num: i32,
+    offset_row_num: i32,
 ) {
     for token in token_list.iter_mut() {
         if token.get_token_type() == &FormulaTokenTypes::Operand
@@ -811,12 +811,8 @@ pub fn adjustment_formula_coordinate(
                             row_num = calc_row_num as u32;
                         }
                     }
-                    let new_corrdinate = coordinate_from_index_with_lock(
-                        &col_num,
-                        &row_num,
-                        &is_lock_col,
-                        &is_lock_row,
-                    );
+                    let new_corrdinate =
+                        coordinate_from_index_with_lock(col_num, row_num, is_lock_col, is_lock_row);
                     coordinate_list_new.push(new_corrdinate);
                 } else {
                     coordinate_list_new.push(coordinate.to_string());
@@ -836,10 +832,10 @@ pub fn adjustment_formula_coordinate(
 #[allow(clippy::too_many_arguments)]
 pub fn adjustment_insert_formula_coordinate(
     token_list: &mut [FormulaToken],
-    root_col_num: &u32,
-    offset_col_num: &u32,
-    root_row_num: &u32,
-    offset_row_num: &u32,
+    root_col_num: u32,
+    offset_col_num: u32,
+    root_row_num: u32,
+    offset_row_num: u32,
     worksheet_name: &str,
     self_worksheet_name: &str,
     ignore_worksheet: bool,
@@ -863,24 +859,18 @@ pub fn adjustment_insert_formula_coordinate(
                         let is_lock_col = cell.2.unwrap();
                         let is_lock_row = cell.3.unwrap();
                         if !is_lock_col {
-                            col_num = adjustment_insert_coordinate(
-                                &col_num,
-                                root_col_num,
-                                offset_col_num,
-                            );
+                            col_num =
+                                adjustment_insert_coordinate(col_num, root_col_num, offset_col_num);
                         }
                         if !is_lock_row {
-                            row_num = adjustment_insert_coordinate(
-                                &row_num,
-                                root_row_num,
-                                offset_row_num,
-                            );
+                            row_num =
+                                adjustment_insert_coordinate(row_num, root_row_num, offset_row_num);
                         }
                         let new_corrdinate = coordinate_from_index_with_lock(
-                            &col_num,
-                            &row_num,
-                            &is_lock_col,
-                            &is_lock_row,
+                            col_num,
+                            row_num,
+                            is_lock_col,
+                            is_lock_row,
                         );
                         coordinate_list_new.push(new_corrdinate);
                     } else {
@@ -898,10 +888,10 @@ pub fn adjustment_insert_formula_coordinate(
 #[allow(clippy::too_many_arguments)]
 pub fn adjustment_remove_formula_coordinate(
     token_list: &mut [FormulaToken],
-    root_col_num: &u32,
-    offset_col_num: &u32,
-    root_row_num: &u32,
-    offset_row_num: &u32,
+    root_col_num: u32,
+    offset_col_num: u32,
+    root_row_num: u32,
+    offset_row_num: u32,
     worksheet_name: &str,
     self_worksheet_name: &str,
     ignore_worksheet: bool,
@@ -925,24 +915,18 @@ pub fn adjustment_remove_formula_coordinate(
                         let is_lock_col = cell.2.unwrap();
                         let is_lock_row = cell.3.unwrap();
                         if !is_lock_col {
-                            col_num = adjustment_remove_coordinate(
-                                &col_num,
-                                root_col_num,
-                                offset_col_num,
-                            );
+                            col_num =
+                                adjustment_remove_coordinate(col_num, root_col_num, offset_col_num);
                         }
                         if !is_lock_row {
-                            row_num = adjustment_remove_coordinate(
-                                &row_num,
-                                root_row_num,
-                                offset_row_num,
-                            );
+                            row_num =
+                                adjustment_remove_coordinate(row_num, root_row_num, offset_row_num);
                         }
                         let new_corrdinate = coordinate_from_index_with_lock(
-                            &col_num,
-                            &row_num,
-                            &is_lock_col,
-                            &is_lock_row,
+                            col_num,
+                            row_num,
+                            is_lock_col,
+                            is_lock_row,
                         );
                         coordinate_list_new.push(new_corrdinate);
                     } else {

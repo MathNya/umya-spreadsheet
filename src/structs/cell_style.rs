@@ -28,7 +28,7 @@ impl CellStyle {
     }
 
     #[inline]
-    pub fn get_builtin_id(&self) -> &u32 {
+    pub fn get_builtin_id(&self) -> u32 {
         self.builtin_id.get_value()
     }
 
@@ -39,7 +39,7 @@ impl CellStyle {
     }
 
     #[inline]
-    pub fn get_format_id(&self) -> &u32 {
+    pub fn get_format_id(&self) -> u32 {
         self.format_id.get_value()
     }
 
