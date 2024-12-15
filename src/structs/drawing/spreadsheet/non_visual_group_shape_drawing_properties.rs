@@ -63,11 +63,8 @@ impl NonVisualGroupShapeDrawingProperties {
         write_start_tag(writer, "xdr:cNvGrpSpPr", vec![], is_empty);
 
         // a:grpSpLocks
-        match &self.group_shape_locks {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.group_shape_locks {
+            v.write_to(writer);
         }
 
         if !is_empty {

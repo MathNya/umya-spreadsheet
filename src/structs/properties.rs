@@ -55,7 +55,7 @@ impl Default for Properties {
 impl Properties {
     #[inline]
     pub fn get_creator(&self) -> &str {
-        &self.creator.get_value_str()
+        self.creator.get_value_str()
     }
 
     #[inline]
@@ -66,7 +66,7 @@ impl Properties {
 
     #[inline]
     pub fn get_last_modified_by(&self) -> &str {
-        &self.last_modified_by.get_value_str()
+        self.last_modified_by.get_value_str()
     }
 
     #[inline]
@@ -77,7 +77,7 @@ impl Properties {
 
     #[inline]
     pub fn get_created(&self) -> &str {
-        &self.created.get_value_str()
+        self.created.get_value_str()
     }
 
     #[inline]
@@ -88,7 +88,7 @@ impl Properties {
 
     #[inline]
     pub fn get_modified(&self) -> &str {
-        &self.modified.get_value_str()
+        self.modified.get_value_str()
     }
 
     #[inline]
@@ -99,7 +99,7 @@ impl Properties {
 
     #[inline]
     pub fn get_title(&self) -> &str {
-        &self.title.get_value_str()
+        self.title.get_value_str()
     }
 
     #[inline]
@@ -110,7 +110,7 @@ impl Properties {
 
     #[inline]
     pub fn get_description(&self) -> &str {
-        &self.description.get_value_str()
+        self.description.get_value_str()
     }
 
     #[inline]
@@ -121,7 +121,7 @@ impl Properties {
 
     #[inline]
     pub fn get_subject(&self) -> &str {
-        &self.subject.get_value_str()
+        self.subject.get_value_str()
     }
 
     #[inline]
@@ -132,7 +132,7 @@ impl Properties {
 
     #[inline]
     pub fn get_keywords(&self) -> &str {
-        &self.keywords.get_value_str()
+        self.keywords.get_value_str()
     }
 
     #[inline]
@@ -143,7 +143,7 @@ impl Properties {
 
     #[inline]
     pub fn get_revision(&self) -> &str {
-        &self.revision.get_value_str()
+        self.revision.get_value_str()
     }
 
     #[inline]
@@ -154,7 +154,7 @@ impl Properties {
 
     #[inline]
     pub fn get_category(&self) -> &str {
-        &self.category.get_value_str()
+        self.category.get_value_str()
     }
 
     #[inline]
@@ -165,7 +165,7 @@ impl Properties {
 
     #[inline]
     pub fn get_version(&self) -> &str {
-        &self.version.get_value_str()
+        self.version.get_value_str()
     }
 
     #[inline]
@@ -176,7 +176,7 @@ impl Properties {
 
     #[inline]
     pub fn get_manager(&self) -> &str {
-        &self.manager.get_value_str()
+        self.manager.get_value_str()
     }
 
     #[inline]
@@ -187,7 +187,7 @@ impl Properties {
 
     #[inline]
     pub fn get_company(&self) -> &str {
-        &self.company.get_value_str()
+        self.company.get_value_str()
     }
 
     #[inline]

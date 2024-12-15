@@ -23,7 +23,7 @@ pub struct DefinedName {
 impl DefinedName {
     #[inline]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name.get_value_str()
     }
 
     #[inline]
@@ -46,7 +46,7 @@ impl DefinedName {
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let list = self.split_str(value);
         for v in &list {
-            if is_address(&v) {
+            if is_address(v) {
                 self.add_address(v);
             } else {
                 self.set_string_value(v);
@@ -101,7 +101,7 @@ impl DefinedName {
 
     #[inline]
     pub fn get_local_sheet_id(&self) -> &u32 {
-        &self.local_sheet_id.get_value()
+        self.local_sheet_id.get_value()
     }
 
     #[inline]
@@ -111,7 +111,7 @@ impl DefinedName {
 
     #[inline]
     pub fn get_hidden(&self) -> &bool {
-        &self.hidden.get_value()
+        self.hidden.get_value()
     }
 
     #[inline]
@@ -208,7 +208,7 @@ impl DefinedName {
         }
         let hidden_str = self.hidden.get_value_string();
         if self.hidden.has_value() {
-            attributes.push(("hidden", &hidden_str));
+            attributes.push(("hidden", hidden_str));
         }
         write_start_tag(writer, "definedName", attributes, false);
         write_text_node_conversion(writer, self.get_address());

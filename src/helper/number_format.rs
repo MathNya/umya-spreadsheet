@@ -23,7 +23,7 @@ pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     }
 }
 
-impl<'r, 't> Iterator for Split<'r, 't> {
+impl<'t> Iterator for Split<'_, 't> {
     type Item = &'t str;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -150,39 +150,39 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     ];
     sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
-        if color_re.find(section).ok().flatten().is_some() {
-            let mut item: Vec<String> = Vec::new();
-            for ite in color_re.captures(section).ok().flatten().unwrap().iter() {
-                item.push(ite.unwrap().as_str().to_string());
+    
+        // Process color matching
+        if let Some(captures) = color_re.captures(section).ok().flatten() {
+            let items: Vec<String> = captures.iter()
+                .filter_map(|cap| cap.map(|c| c.as_str().to_string()))
+                .collect();
+            
+            if let Some(first_item) = items.first() {
+                colors[idx] = first_item.clone();
             }
-            let _ = std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
+            
             converted_section = color_re.replace_all(section, "").to_string();
         }
-        if cond_re.find(section).ok().flatten().is_some() {
-            let mut item: Vec<String> = Vec::new();
-            for ite in cond_re.captures(section).ok().flatten().unwrap().iter() {
-                match ite {
-                    Some(v) => item.push(v.as_str().to_string()),
-                    None => {}
-                }
+    
+        // Process conditional matching
+        if let Some(captures) = cond_re.captures(section).ok().flatten() {
+            let items: Vec<String> = captures.iter()
+                .filter_map(|cap| cap.map(|c| c.as_str().to_string()))
+                .collect();
+    
+            if let Some(v) = items.get(1) {
+                condops[idx] = v.clone();
             }
-            match item.get(1) {
-                Some(v) => {
-                    let _ = std::mem::replace(&mut condops[idx], v.to_string());
-                }
-                None => {}
+            if let Some(v) = items.get(2) {
+                condvals[idx] = v.clone();
             }
-            match item.get(2) {
-                Some(v) => {
-                    let _ = std::mem::replace(&mut condvals[idx], v.to_string());
-                }
-                None => {}
-            }
+    
             converted_section = cond_re.replace_all(section, "").to_string();
         }
+    
         converted_sections.insert(idx, converted_section);
     });
-
+    
     let mut color = &colors[0];
     let mut format: &str = &converted_sections[0];
     let mut absval = *value;

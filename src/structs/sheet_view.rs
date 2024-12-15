@@ -249,7 +249,7 @@ impl SheetView {
         }
         let top_left_cell = self.top_left_cell.get_value_str();
         if self.top_left_cell.has_value() {
-            attributes.push(("topLeftCell", &top_left_cell));
+            attributes.push(("topLeftCell", top_left_cell));
         }
         let workbook_view_id = self.workbook_view_id.get_value_string();
         attributes.push(("workbookViewId", &workbook_view_id));

@@ -92,7 +92,7 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
         for ite in re.captures(&format).ok().flatten().unwrap().iter() {
             item.push(ite.unwrap().as_str().to_string());
         }
-        value = format!("{}{}", item.get(0).unwrap(), value);
+        value = format!("{}{}", item.first().unwrap(), value);
         //    //  Currency or Accounting
         //    let currency_code = item.get(1).unwrap().to_string();
         //    value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value, currency_code.as_str()).to_string();

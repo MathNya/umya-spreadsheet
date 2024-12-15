@@ -57,14 +57,14 @@ impl AdjustmentValue for CommentColumnTarget {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
         self.value.set_value(
-            adjustment_insert_coordinate(&(self.value.get_value() + &1), root_num, offset_num) - 1,
+            adjustment_insert_coordinate(&(self.value.get_value() + 1), root_num, offset_num) - 1,
         );
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
         self.value.set_value(
-            adjustment_remove_coordinate(&(self.value.get_value() + &1), root_num, offset_num) - 1,
+            adjustment_remove_coordinate(&(self.value.get_value() + 1), root_num, offset_num) - 1,
         );
     }
 

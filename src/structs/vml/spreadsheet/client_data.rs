@@ -358,17 +358,11 @@ impl AdjustmentCoordinate for ClientData {
             root_row_num,
             offset_row_num,
         );
-        match &mut self.comment_column_target {
-            Some(v) => {
-                v.adjustment_insert_value(root_col_num, offset_col_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.comment_column_target {
+            v.adjustment_insert_value(root_col_num, offset_col_num);
         }
-        match &mut self.comment_row_target {
-            Some(v) => {
-                v.adjustment_insert_value(root_row_num, offset_row_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.comment_row_target {
+            v.adjustment_insert_value(root_row_num, offset_row_num);
         }
     }
 
@@ -386,17 +380,11 @@ impl AdjustmentCoordinate for ClientData {
             root_row_num,
             offset_row_num,
         );
-        match &mut self.comment_column_target {
-            Some(v) => {
-                v.adjustment_remove_value(root_col_num, offset_col_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.comment_column_target {
+            v.adjustment_remove_value(root_col_num, offset_col_num);
         }
-        match &mut self.comment_row_target {
-            Some(v) => {
-                v.adjustment_remove_value(root_row_num, offset_row_num);
-            }
-            None => {}
+        if let Some(v) = &mut self.comment_row_target {
+            v.adjustment_remove_value(root_row_num, offset_row_num);
         }
     }
 }

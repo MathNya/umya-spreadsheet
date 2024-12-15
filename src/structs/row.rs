@@ -126,9 +126,10 @@ impl Row {
 
     #[inline]
     pub(crate) fn has_style(&self) -> bool {
-        &*self.style != &Style::default()
+        *self.style != Style::default()
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

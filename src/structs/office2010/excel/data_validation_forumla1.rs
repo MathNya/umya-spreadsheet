@@ -36,19 +36,19 @@ impl DataValidationForumla1 {
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                    b"xm:f" => {
+                Ok(Event::Start(ref e)) => {
+                    if e.name().into_inner() == b"xm:f" {
                         let mut obj = Formula::default();
                         obj.set_attributes(reader, e);
                         self.value = obj;
                         return;
                     }
-                    _ => (),
-                },
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"x14:formula1" => return,
-                    _ => (),
-                },
+                }
+                Ok(Event::End(ref e)) => {
+                    if e.name().into_inner() == b"x14:formula1" {
+                        return;
+                    }
+                }
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "x14:formula1"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),

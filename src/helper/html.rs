@@ -50,6 +50,7 @@ pub fn html_to_richtext_custom(
     Ok(result)
 }
 
+#[allow(clippy::field_reassign_with_default)]
 fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<HtmlFlatData> {
     let mut result: ThinVec<HtmlFlatData> = ThinVec::new();
 
@@ -70,7 +71,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
                     data.text = format!("{}{}", data.text, "\n");
                     continue;
                 }
-                if &data.text != "" {
+                if !data.text.is_empty() {
                     result.push(data);
                     data = HtmlFlatData::default();
                     data.element.extend_from_slice(parent_element);
@@ -102,7 +103,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
             _ => {}
         }
     }
-    if &data.text != "" {
+    if !data.text.is_empty() {
         result.push(data);
     }
     result
@@ -191,7 +192,7 @@ impl HfdElement {
     pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<&str> {
         self.attributes
             .get(attribute)
-            .and_then(|v| (self.name == name).then(|| v))
+            .and_then(|v| (self.name == name).then_some(v))
             .map(|x| x.as_str())
     }
 
@@ -246,7 +247,7 @@ impl AnalysisMethod for DataAnalysis {
                     .find_map(|(key, value)| {
                         (*key.to_uppercase() == color).then(|| value.to_uppercase())
                     })
-                    .or_else(|| Some(color))
+                    .or(Some(color))
             })
     }
 

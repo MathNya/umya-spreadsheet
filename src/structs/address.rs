@@ -43,7 +43,7 @@ impl Address {
         let org_value = value.into();
         let (sheet_name, range) = split_address(&org_value);
         self.range.set_range(range);
-        if sheet_name != "" {
+        if !sheet_name.is_empty() {
             self.sheet_name = sheet_name.into();
         }
         self
@@ -80,7 +80,7 @@ impl Address {
             if sheet_name.contains(r#"""#) {
                 with_space_char = "'";
             }
-            if with_space_char == "" {
+            if with_space_char.is_empty() {
                 lazy_static! {
                     static ref RE: Regex = Regex::new(r"[^0-9a-zA-Z]").unwrap();
                 }
@@ -88,10 +88,10 @@ impl Address {
                     with_space_char = "'";
                 }
             }
-            if with_space_char == "" {
-                if (None, None, None, None) != index_from_coordinate(&sheet_name) {
-                    with_space_char = "'";
-                }
+            if with_space_char.is_empty()
+                && (None, None, None, None) != index_from_coordinate(&sheet_name)
+            {
+                with_space_char = "'";
             }
         }
         format!(

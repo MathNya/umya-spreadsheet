@@ -1,3 +1,5 @@
+use std::fmt;
+
 use super::ColumnReference;
 use super::RowReference;
 use crate::helper::coordinate::*;
@@ -10,17 +12,22 @@ pub struct Coordinate {
     row: RowReference,
 }
 
-impl ToString for Coordinate {
+impl fmt::Display for Coordinate {
     #[inline]
-    fn to_string(&self) -> String {
-        coordinate_from_index_with_lock(
-            self.column.get_num(),
-            self.row.get_num(),
-            self.column.get_is_lock(),
-            self.row.get_is_lock(),
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            coordinate_from_index_with_lock(
+                self.column.get_num(),
+                self.row.get_num(),
+                self.column.get_is_lock(),
+                self.row.get_is_lock(),
+            )
         )
     }
 }
+
 
 impl Coordinate {
     #[inline]

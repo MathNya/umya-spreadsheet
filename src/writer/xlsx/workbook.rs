@@ -49,7 +49,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if spreadsheet.get_has_macros() {
         attributes.push((
             "codeName",
-            &spreadsheet.get_code_name().unwrap_or("ThisWorkbook"),
+            spreadsheet.get_code_name().unwrap_or("ThisWorkbook"),
         ));
     }
     write_start_tag(&mut writer, "workbookPr", attributes, true);

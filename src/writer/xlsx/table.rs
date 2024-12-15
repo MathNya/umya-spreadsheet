@@ -28,21 +28,23 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let area_coords = table.get_area();
         let area = format!(
             "{}:{}",
-            area_coords.0.to_string(),
-            area_coords.1.to_string()
+            area_coords.0,
+            area_coords.1
         );
 
         // table start
         let table_no = writer_mng.next_table_no();
         let table_no_str = table_no.to_string();
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("xmlns", SHEET_MAIN_NS));
-        attributes.push(("id", &table_no_str));
-        attributes.push(("name", table.get_name()));
-        attributes.push(("displayName", table.get_display_name()));
-        attributes.push(("ref", &area));
+        let mut attributes = vec![
+            ("xmlns", SHEET_MAIN_NS),
+            ("id", &table_no_str),
+            ("name", table.get_name()),
+            ("displayName", table.get_display_name()),
+            ("ref", &area),
+        ];
+        
         if table.has_totals_row_shown() {
-            attributes.push(("totalsRowShown", &table.get_totals_row_shown_str()));
+            attributes.push(("totalsRowShown", table.get_totals_row_shown_str()));
         }
         let totals_row_count_str = table.get_totals_row_count_str();
         if table.has_totals_row_count() {

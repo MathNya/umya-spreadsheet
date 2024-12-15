@@ -49,37 +49,37 @@ impl GroupShapeLocks {
 
         let no_change_aspect_str = self.no_change_aspect.get_value_string();
         if self.no_change_aspect.has_value() {
-            attributes.push(("noChangeAspect", &no_change_aspect_str));
+            attributes.push(("noChangeAspect", no_change_aspect_str));
         }
 
         let no_grouping_str = self.no_grouping.get_value_string();
         if self.no_grouping.has_value() {
-            attributes.push(("noGrp", &no_grouping_str));
+            attributes.push(("noGrp", no_grouping_str));
         }
 
         let no_move_str = self.no_move.get_value_string();
         if self.no_move.has_value() {
-            attributes.push(("noMove", &no_move_str));
+            attributes.push(("noMove", no_move_str));
         }
 
         let no_resize_str = self.no_resize.get_value_string();
         if self.no_resize.has_value() {
-            attributes.push(("noResize", &no_resize_str));
+            attributes.push(("noResize", no_resize_str));
         }
 
         let no_rotation_str = self.no_rotation.get_value_string();
         if self.no_rotation.has_value() {
-            attributes.push(("noRot", &no_rotation_str));
+            attributes.push(("noRot", no_rotation_str));
         }
 
         let no_selection_str = self.no_selection.get_value_string();
         if self.no_selection.has_value() {
-            attributes.push(("noSelect", &no_selection_str));
+            attributes.push(("noSelect", no_selection_str));
         }
 
         let no_ungrouping_str = self.no_ungrouping.get_value_string();
         if self.no_ungrouping.has_value() {
-            attributes.push(("noUngrp", &no_ungrouping_str));
+            attributes.push(("noUngrp", no_ungrouping_str));
         }
 
         write_start_tag(writer, "a:grpSpLocks", attributes, true);

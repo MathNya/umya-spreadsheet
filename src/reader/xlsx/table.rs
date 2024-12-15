@@ -23,23 +23,20 @@ pub(crate) fn read(
             Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                 b"tableColumn" => {
                     table_column = TableColumn::default();
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) => match attr.key.0 {
-                                b"name" => {
-                                    let attr_val = get_attribute_value(attr)?;
-                                    table_column.set_name(attr_val);
-                                }
-                                b"totalsRowLabel" => {
-                                    let attr_val = get_attribute_value(attr)?;
-                                    table_column.set_totals_row_label_str(&attr_val);
-                                }
-                                b"totalsRowFunction" => {
-                                    let attr_val = get_attribute_value(attr)?;
-                                    table_column.set_totals_row_function_str(&attr_val);
-                                }
-                                _ => {}
-                            },
+                    for attr in e.attributes().with_checks(false).flatten() {
+                        match attr.key.0 {
+                            b"name" => {
+                                let attr_val = get_attribute_value(&attr)?;
+                                table_column.set_name(attr_val);
+                            }
+                            b"totalsRowLabel" => {
+                                let attr_val = get_attribute_value(&attr)?;
+                                table_column.set_totals_row_label_str(&attr_val);
+                            }
+                            b"totalsRowFunction" => {
+                                let attr_val = get_attribute_value(&attr)?;
+                                table_column.set_totals_row_function_str(&attr_val);
+                            }
                             _ => {}
                         }
                     }
@@ -55,28 +52,23 @@ pub(crate) fn read(
                     let mut show_last_col = false;
                     let mut show_row_stripes = false;
                     let mut show_col_stripes = false;
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) => {
-                                let attr_val = get_attribute_value(attr)?;
-                                match attr.key.0 {
-                                    b"name" => {
-                                        name = attr_val;
-                                    }
-                                    b"showFirstColumn" => {
-                                        show_first_col = attr_val == "1";
-                                    }
-                                    b"showLastColumn" => {
-                                        show_last_col = attr_val == "1";
-                                    }
-                                    b"showRowStripes" => {
-                                        show_row_stripes = attr_val == "1";
-                                    }
-                                    b"showColumnStripes" => {
-                                        show_col_stripes = attr_val == "1";
-                                    }
-                                    _ => {}
-                                }
+                    for attr in e.attributes().with_checks(false).flatten() {
+                        let attr_val = get_attribute_value(&attr)?;
+                        match attr.key.0 {
+                            b"name" => {
+                                name = attr_val;
+                            }
+                            b"showFirstColumn" => {
+                                show_first_col = attr_val == "1";
+                            }
+                            b"showLastColumn" => {
+                                show_last_col = attr_val == "1";
+                            }
+                            b"showRowStripes" => {
+                                show_row_stripes = attr_val == "1";
+                            }
+                            b"showColumnStripes" => {
+                                show_col_stripes = attr_val == "1";
                             }
                             _ => {}
                         }
@@ -96,31 +88,26 @@ pub(crate) fn read(
             Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
             Ok(Event::Start(ref e)) => match e.name().into_inner() {
                 b"table" => {
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) => {
-                                let attr_val = get_attribute_value(attr)?;
-                                match attr.key.0 {
-                                    b"displayName" => {
-                                        table.set_display_name(&attr_val);
-                                    }
-                                    b"name" => {
-                                        table.set_name(&attr_val);
-                                    }
-                                    b"ref" => {
-                                        let area_coords: Vec<&str> = attr_val.split(':').collect();
-                                        if area_coords.len() == 2 {
-                                            table.set_area((area_coords[0], area_coords[1]));
-                                        }
-                                    }
-                                    b"totalsRowShown" => {
-                                        table.set_totals_row_shown_str(&attr_val);
-                                    }
-                                    b"totalsRowCount" => {
-                                        table.set_totals_row_count_str(&attr_val);
-                                    }
-                                    _ => {}
+                    for attr in e.attributes().with_checks(false).flatten() {
+                        let attr_val = get_attribute_value(&attr)?;
+                        match attr.key.0 {
+                            b"displayName" => {
+                                table.set_display_name(&attr_val);
+                            }
+                            b"name" => {
+                                table.set_name(&attr_val);
+                            }
+                            b"ref" => {
+                                let area_coords: Vec<&str> = attr_val.split(':').collect();
+                                if area_coords.len() == 2 {
+                                    table.set_area((area_coords[0], area_coords[1]));
                                 }
+                            }
+                            b"totalsRowShown" => {
+                                table.set_totals_row_shown_str(&attr_val);
+                            }
+                            b"totalsRowCount" => {
+                                table.set_totals_row_count_str(&attr_val);
                             }
                             _ => {}
                         }
@@ -128,23 +115,20 @@ pub(crate) fn read(
                 }
                 b"tableColumn" => {
                     table_column = TableColumn::default();
-                    for a in e.attributes().with_checks(false) {
-                        match a {
-                            Ok(ref attr) => match attr.key.0 {
-                                b"name" => {
-                                    let attr_val = get_attribute_value(attr)?;
-                                    table_column.set_name(attr_val);
-                                }
-                                b"totalsRowLabel" => {
-                                    let attr_val = get_attribute_value(attr)?;
-                                    table_column.set_totals_row_label_str(&attr_val);
-                                }
-                                b"totalsRowFunction" => {
-                                    let attr_val = get_attribute_value(attr)?;
-                                    table_column.set_totals_row_function_str(&attr_val);
-                                }
-                                _ => {}
-                            },
+                    for attr in e.attributes().with_checks(false).flatten() {
+                        match attr.key.0 {
+                            b"name" => {
+                                let attr_val = get_attribute_value(&attr)?;
+                                table_column.set_name(attr_val);
+                            }
+                            b"totalsRowLabel" => {
+                                let attr_val = get_attribute_value(&attr)?;
+                                table_column.set_totals_row_label_str(&attr_val);
+                            }
+                            b"totalsRowFunction" => {
+                                let attr_val = get_attribute_value(&attr)?;
+                                table_column.set_totals_row_function_str(&attr_val);
+                            }
                             _ => {}
                         }
                     }

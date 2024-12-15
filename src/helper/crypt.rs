@@ -132,7 +132,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         package_hash_algorithm,
         &package_salt_value,
         &package_block_size,
-        &BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY.to_vec(),
+        BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
     );
     let encrypted_hmac_key = crypt(
         &true,
@@ -150,7 +150,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         package_hash_algorithm,
         &package_salt_value,
         &package_block_size,
-        &BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE.to_vec(),
+        BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE
     );
     let encrypted_hmac_value = crypt(
         &true,
@@ -169,7 +169,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         &key_salt_value,
         &key_spin_count,
         &key_key_bits,
-        &BLOCK_KEYS_KEY.to_vec(),
+        BLOCK_KEYS_KEY,
     );
     let encrypted_key_value = crypt(
         &true,
@@ -189,7 +189,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         &key_salt_value,
         &key_spin_count,
         &key_key_bits,
-        &BLOCK_VERIFIER_HASH_INPUT.to_vec(),
+        BLOCK_VERIFIER_HASH_INPUT,
     );
     let encrypted_verifier_hash_input = crypt(
         &true,
@@ -209,7 +209,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         &key_salt_value,
         &key_spin_count,
         &key_key_bits,
-        &BLOCK_VERIFIER_HASH_VALUE.to_vec(),
+        BLOCK_VERIFIER_HASH_VALUE,
     );
     let encrypted_verifier_hash_value = crypt(
         &true,
@@ -632,7 +632,7 @@ fn build_encryption_info(
     write_end_tag(&mut writer, "encryption");
 
     let result = writer.into_inner().into_inner().to_vec();
-    buffer_concat(vec![&ENCRYPTION_INFO_PREFIX.to_vec(), &result])
+    buffer_concat(vec![ENCRYPTION_INFO_PREFIX, &result])
 }
 
 #[inline]
@@ -737,7 +737,7 @@ mod tests {
             package_hash_algorithm,
             &package_salt_value,
             &package_block_size,
-            &BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY.to_vec(),
+            BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
         );
         let converted = encode_hex(&hmac_key_iv);
         assert_eq!(&converted, "ba1bf00eed82b07ee65e574eb1f46043");
@@ -763,7 +763,7 @@ mod tests {
             package_hash_algorithm,
             &package_salt_value,
             &package_block_size,
-            &BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE.to_vec(),
+            BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
         );
         let converted = encode_hex(&hmac_value_iv);
         assert_eq!(&converted, "088385b871292e7ed8414f173c5b6622");
@@ -787,7 +787,7 @@ mod tests {
             &key_salt_value,
             &key_spin_count,
             &key_key_bits,
-            &BLOCK_KEYS_KEY.to_vec(),
+            BLOCK_KEYS_KEY,
         );
         let converted = encode_hex(&key);
         assert_eq!(
@@ -818,7 +818,7 @@ mod tests {
             &key_salt_value,
             &key_spin_count,
             &key_key_bits,
-            &BLOCK_VERIFIER_HASH_INPUT.to_vec(),
+            BLOCK_VERIFIER_HASH_INPUT,
         );
         let converted = encode_hex(&verifier_hash_input_key);
         assert_eq!(
@@ -849,7 +849,7 @@ mod tests {
             &key_salt_value,
             &key_spin_count,
             &key_key_bits,
-            &BLOCK_VERIFIER_HASH_VALUE.to_vec(),
+            BLOCK_VERIFIER_HASH_VALUE,
         );
         //let converted = encode_hex(&verifier_hash_value_key);
         //assert_eq!(&converted, "d5515a6062e3e99551b80b92db1fe646483884cdb63e1e7595a9f2cca7532884");
@@ -898,7 +898,7 @@ mod tests {
             "SHA512",
             vec![
                 &package_salt_value,
-                &BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY.to_vec(),
+                BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
             ],
         )
         .unwrap();
@@ -925,7 +925,7 @@ mod tests {
             &key_salt_value,
             &100000,
             &256,
-            &BLOCK_KEYS_KEY.to_vec(),
+            BLOCK_KEYS_KEY,
         );
         let converted = encode_hex(&result);
         assert_eq!(

@@ -19,7 +19,7 @@ pub struct DataField {
 impl DataField {
     #[inline]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name.get_value_str()
     }
 
     #[inline]

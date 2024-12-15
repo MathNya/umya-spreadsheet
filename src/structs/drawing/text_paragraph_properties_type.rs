@@ -116,13 +116,10 @@ impl TextParagraphPropertiesType {
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {
-                match e.name().into_inner() {
-                    b"a:defRPr" => {
-                        let mut obj = RunProperties::default();
-                        obj.set_attributes(reader, e, true);
-                        self.set_default_run_properties(obj);
-                    }
-                    _ => (),
+                if e.name().into_inner() == b"a:defRPr" {
+                    let mut obj = RunProperties::default();
+                    obj.set_attributes(reader, e, true);
+                    self.set_default_run_properties(obj);
                 }
             },
             Event::Start(ref e) => {
@@ -229,27 +226,18 @@ impl TextParagraphPropertiesType {
         write_start_tag(writer, tag_name, attributes, false);
 
         // a:spcBef
-        match &self.space_before {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.space_before {
+            v.write_to(writer);
         }
 
         // a:spcAft
-        match &self.space_after {
-            Some(v) => {
-                v.write_to(writer);
-            }
-            None => {}
+        if let Some(v) = &self.space_after {
+            v.write_to(writer);
         }
 
         // a:defRPr
-        match &self.default_run_properties {
-            Some(v) => {
-                v.write_to_def_rpr(writer);
-            }
-            None => {}
+        if let Some(v) = &self.default_run_properties {
+            v.write_to_def_rpr(writer);
         }
 
         write_end_tag(writer, tag_name);

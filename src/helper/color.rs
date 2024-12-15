@@ -49,12 +49,11 @@ pub fn join_rgb(r: &i32, g: &i32, b: &i32) -> String {
 
 pub fn convert_rgb_to_ms_hls(rgb: &str) -> MsHlsColor {
     let hls = convert_rgb_to_hls(rgb);
-
-    let mut ms_hls = MsHlsColor::default();
-    ms_hls.h = to_i32(hls.h * self::HLSMAX);
-    ms_hls.l = to_i32(hls.l * self::HLSMAX);
-    ms_hls.s = to_i32(hls.s * self::HLSMAX);
-    ms_hls
+    MsHlsColor {
+        h: to_i32(hls.h * self::HLSMAX),
+        l: to_i32(hls.l * self::HLSMAX),
+        s: to_i32(hls.s * self::HLSMAX),
+    }
 }
 
 pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
@@ -113,14 +112,15 @@ pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
 
     hls.h = positive_decimal_part(&(hls.h / 6.0));
 
-    return hls;
+    hls
 }
 
 pub fn convert_ms_hls_to_rgb(ms_hls: &MsHlsColor) -> String {
-    let mut hls = HlsColor::default();
-    hls.h = ms_hls.h as f64 / self::HLSMAX;
-    hls.l = ms_hls.l as f64 / self::HLSMAX;
-    hls.s = ms_hls.s as f64 / self::HLSMAX;
+    let hls = HlsColor {
+        h: (ms_hls.h as f64 / self::HLSMAX),
+        l: (ms_hls.l as f64 / self::HLSMAX),
+        s: (ms_hls.s as f64 / self::HLSMAX),
+    };
     convert_hls_to_rgb(&hls)
 }
 
@@ -164,7 +164,6 @@ pub fn set_color(t1: f64, t2: f64, t3: f64) -> f64 {
         t2
     }
 }
-
 
 #[inline]
 fn positive_decimal_part(hue: &f64) -> f64 {

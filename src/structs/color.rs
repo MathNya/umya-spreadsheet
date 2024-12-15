@@ -101,9 +101,8 @@ impl Color {
     /// In that case, use get_argb_with_theme(&self, theme: &Theme).
     pub fn get_argb(&self) -> &str {
         if self.indexed.has_value() {
-            match INDEXED_COLORS.get(self.indexed.get_value().clone() as usize) {
-                Some(v) => return v,
-                None => {}
+            if let Some(v) = INDEXED_COLORS.get(*self.indexed.get_value() as usize) {
+                return v;
             }
         }
         self.argb.get_value_str()
@@ -121,20 +120,17 @@ impl Color {
             return self.get_argb().to_owned().into();
         }
         if self.theme_index.has_value() {
-            let key = self.theme_index.get_value().clone();
-            match theme
+            let key = *self.theme_index.get_value();
+            if let Some(v) = theme
                 .get_theme_elements()
                 .get_color_scheme()
                 .get_color_map()
                 .get(key as usize)
             {
-                Some(v) => {
-                    if self.tint.has_value() {
-                        return calc_tint(v, self.tint.get_value()).into();
-                    }
-                    return v.to_string().into();
+                if self.tint.has_value() {
+                    return calc_tint(v, self.tint.get_value()).into();
                 }
-                None => {}
+                return v.to_string().into();
             }
         }
         self.argb.get_value_str().to_string().into()
@@ -228,28 +224,25 @@ impl Color {
         e: &BytesStart,
         empty_flg: bool,
     ) {
-        for a in e.attributes().with_checks(false) {
-            match a {
-                Ok(ref attr) => match attr.key.0 {
-                    b"indexed" => {
-                        self.indexed
-                            .set_value_string(get_attribute_value(attr).unwrap());
-                    }
-                    b"theme" => {
-                        self.theme_index
-                            .set_value_string(get_attribute_value(attr).unwrap());
-                    }
-                    b"rgb" => {
-                        self.argb
-                            .set_value_string(get_attribute_value(attr).unwrap());
-                    }
-                    b"tint" => {
-                        self.tint
-                            .set_value_string(get_attribute_value(attr).unwrap());
-                    }
-                    _ => {}
-                },
-                Err(_) => {}
+        for attr in e.attributes().with_checks(false).flatten() {
+            match attr.key.0 {
+                b"indexed" => {
+                    self.indexed
+                        .set_value_string(get_attribute_value(&attr).unwrap());
+                }
+                b"theme" => {
+                    self.theme_index
+                        .set_value_string(get_attribute_value(&attr).unwrap());
+                }
+                b"rgb" => {
+                    self.argb
+                        .set_value_string(get_attribute_value(&attr).unwrap());
+                }
+                b"tint" => {
+                    self.tint
+                        .set_value_string(get_attribute_value(&attr).unwrap());
+                }
+                _ => {}
             }
         }
 

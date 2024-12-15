@@ -159,9 +159,9 @@ impl Spreadsheet {
     #[inline]
     pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
-        self.get_sheet_by_name(&sheet_name)
+        self.get_sheet_by_name(sheet_name)
             .unwrap()
-            .get_cell_value_by_range(&range)
+            .get_cell_value_by_range(range)
     }
 
     /// (This method is crate only.)
@@ -388,9 +388,8 @@ impl Spreadsheet {
     pub fn get_sheet(&self, index: &usize) -> Option<&Worksheet> {
         self.work_sheet_collection
             .get(*index)
-            .map(|v| {
+            .inspect(|v| {
                 assert!(v.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
-                v
             })
     }
 
@@ -423,6 +422,7 @@ impl Spreadsheet {
     /// * `index` - sheet index
     /// # Return value
     /// * `Option<&mut Worksheet>`.
+    #[allow(clippy::manual_inspect)]
     pub fn get_sheet_mut(&mut self, index: &usize) -> Option<&mut Worksheet> {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
@@ -670,7 +670,7 @@ impl Spreadsheet {
     #[inline]
     pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
-            if &**val1 == &key {
+            if **val1 == key {
                 *val3 = value.clone().into_boxed_str()
             };
         });

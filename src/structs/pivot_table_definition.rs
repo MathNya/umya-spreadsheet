@@ -453,11 +453,13 @@ impl PivotTableDefinition {
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("xmlns", SHEET_MAIN_NS));
-        attributes.push(("xmlns:mc", MC_NS));
-        attributes.push(("mc:Ignorable", "xr"));
-        attributes.push(("xmlns:xr", SHEET_MS_REVISION_NS));
+        let mut attributes = vec![
+            ("xmlns", SHEET_MAIN_NS),
+            ("xmlns:mc", MC_NS),
+            ("mc:Ignorable", "xr"),
+            ("xmlns:xr", SHEET_MS_REVISION_NS),
+        ];
+        
         if self.name.has_value() {
             attributes.push(("name", self.name.get_value_str()));
         }

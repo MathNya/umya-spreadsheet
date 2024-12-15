@@ -10,7 +10,7 @@ pub fn get_binary_data(path: &str) -> Vec<u8> {
 
     let file = File::open(path).unwrap();
     BufReader::new(file).read_to_end(&mut buf).unwrap();
-    return buf;
+    buf
 }
 
 #[inline]

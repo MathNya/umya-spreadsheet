@@ -20,7 +20,7 @@ pub struct PivotTableStyle {
 impl PivotTableStyle {
     #[inline]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name.get_value_str()
     }
 
     #[inline]

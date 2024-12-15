@@ -19,20 +19,18 @@ pub(crate) fn read(
     let mut pivot_table = PivotTable::default();
     loop {
         match reader.read_event_into(&mut buf) {
-            Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                b"pivotTableDefinition" => {
+            Ok(Event::Start(ref e)) => {
+                if e.name().into_inner() == b"pivotTableDefinition" {
                     let mut obj = PivotTableDefinition::default();
                     obj.set_attributes(&mut reader, e);
                     pivot_table.set_pivot_table_definition(obj);
                 }
-                _ => (),
-            },
-            Ok(Event::End(ref e)) => match e.name().into_inner() {
-                b"pivotTableDefinition" => {
+            }
+            Ok(Event::End(ref e)) => {
+                if e.name().into_inner() == b"pivotTableDefinition" {
                     break;
                 }
-                _ => (),
-            },
+            }
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),

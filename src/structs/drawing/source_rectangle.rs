@@ -60,15 +60,13 @@ impl SourceRectangle {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        for a in e.attributes().with_checks(false) {
-            if let Ok(attr) = a {
-                match attr.key.0 {
-                    b"t" => self.set_t(get_attribute_value(&attr).unwrap()),
-                    b"l" => self.set_l(get_attribute_value(&attr).unwrap()),
-                    b"r" => self.set_r(get_attribute_value(&attr).unwrap()),
-                    b"b" => self.set_b(get_attribute_value(&attr).unwrap()),
-                    _ => {}
-                }
+        for attr in e.attributes().with_checks(false).flatten() {
+            match attr.key.0 {
+                b"t" => self.set_t(get_attribute_value(&attr).unwrap()),
+                b"l" => self.set_l(get_attribute_value(&attr).unwrap()),
+                b"r" => self.set_r(get_attribute_value(&attr).unwrap()),
+                b"b" => self.set_b(get_attribute_value(&attr).unwrap()),
+                _ => {}
             }
         }
     }

@@ -34,12 +34,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_relationship(&mut writer, "1", OFCDOC_NS, PKG_WORKBOOK, "");
 
     // relationship docProps/custom.xml
-    if spreadsheet
+    if !spreadsheet
         .get_properties()
         .get_custom_properties()
-        .get_custom_document_property_list()
-        .len()
-        > 0
+        .get_custom_document_property_list().is_empty()
     {
         write_relationship(&mut writer, "4", CUSTOM_PROPS_REL, ARC_CUSTOM, "");
     }

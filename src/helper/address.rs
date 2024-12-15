@@ -8,7 +8,7 @@ pub fn split_address(address: &str) -> (&str, &str) {
 }
 
 pub fn join_address(sheet_name: &str, address: &str) -> String {
-    if sheet_name == "" {
+    if sheet_name.is_empty() {
         return address.to_string();
     }
     format!("{}!{}", sheet_name, address)

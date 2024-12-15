@@ -181,19 +181,13 @@ impl Transform2D {
         self.extents.write_to_ext(writer);
 
         // a:chOff
-        match &self.child_offset {
-            Some(v) => {
-                v.write_to_ch_off(writer);
-            }
-            None => {}
+        if let Some(v) = &self.child_offset {
+            v.write_to_ch_off(writer);
         }
 
         // a:chExt
-        match &self.child_extents {
-            Some(v) => {
-                v.write_to_ch_ext(writer);
-            }
-            None => {}
+        if let Some(v) = &self.child_extents {
+            v.write_to_ch_ext(writer);
         }
 
         write_end_tag(writer, "a:xfrm");

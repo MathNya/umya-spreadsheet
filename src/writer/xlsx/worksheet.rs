@@ -307,11 +307,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // extLst
     if worksheet.get_data_validations_2010().is_some() {
         write_start_tag(&mut writer, "extLst", vec![], false);
-        match worksheet.get_data_validations_2010() {
-            Some(v) => {
-                v.write_to(&mut writer);
-            }
-            None => {}
+        if let Some(v) = worksheet.get_data_validations_2010() {
+            v.write_to(&mut writer);
         }
         write_end_tag(&mut writer, "extLst");
     }

@@ -322,29 +322,23 @@ impl AdjustmentCoordinate for Image {
         offset_row_num: &u32,
     ) {
         // one_cell_anchor
-        match self.one_cell_anchor.as_mut() {
-            Some(anchor) => {
-                anchor.adjustment_insert_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(anchor) = self.one_cell_anchor.as_mut() {
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
 
         // two_cell_anchor
-        match self.two_cell_anchor.as_mut() {
-            Some(anchor) => {
-                anchor.adjustment_insert_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(anchor) = self.two_cell_anchor.as_mut() {
+            anchor.adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 
@@ -357,29 +351,23 @@ impl AdjustmentCoordinate for Image {
         offset_row_num: &u32,
     ) {
         // one_cell_anchor
-        match self.one_cell_anchor.as_mut() {
-            Some(anchor) => {
-                anchor.adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(anchor) = self.one_cell_anchor.as_mut() {
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
 
         // two_cell_anchor
-        match self.two_cell_anchor.as_mut() {
-            Some(anchor) => {
-                anchor.adjustment_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(anchor) = self.two_cell_anchor.as_mut() {
+            anchor.adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 
@@ -391,27 +379,21 @@ impl AdjustmentCoordinate for Image {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) -> bool {
-        match self.one_cell_anchor.as_ref() {
-            Some(anchor) => {
-                return anchor.is_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(anchor) = self.one_cell_anchor.as_ref() {
+            return anchor.is_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
-        match self.two_cell_anchor.as_ref() {
-            Some(anchor) => {
-                return anchor.is_remove_coordinate(
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(anchor) = self.two_cell_anchor.as_ref() {
+            return anchor.is_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
         false
     }

@@ -71,12 +71,9 @@ impl ReferenceSequence {
                 Ok(Event::Text(e)) => {
                     value = e.unescape().unwrap().to_string();
                 }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xm:sqref" => {
-                        self.set_sqref(value);
-                        return;
-                    }
-                    _ => (),
+                Ok(Event::End(ref e)) => if e.name().into_inner() == b"xm:sqref" {
+                    self.set_sqref(value);
+                    return;
                 },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:sqref"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
@@ -89,7 +86,7 @@ impl ReferenceSequence {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:sqref", vec![], false);
-        write_text_node(writer, &self.get_sqref());
+        write_text_node(writer, self.get_sqref());
         write_end_tag(writer, "xm:sqref");
     }
 }

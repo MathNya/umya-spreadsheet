@@ -1767,7 +1767,7 @@ impl Worksheet {
     /// 'column' - the number of columns to move by (negative numbers mean move 'up')
     #[inline]
     pub fn move_range(&mut self, range: &str, row: &i32, column: &i32) -> &mut Self {
-        self.move_or_copy_range(&range, &row, &column, true)
+        self.move_or_copy_range(range, row, column, true)
     }
 
     /// Copying a section of the sheet
@@ -1777,7 +1777,7 @@ impl Worksheet {
     /// 'column' - the number of columns to move by (negative numbers mean move 'up')
     #[inline]
     pub fn copy_range(&mut self, range: &str, row: &i32, column: &i32) -> &mut Self {
-        self.move_or_copy_range(&range, &row, &column, false)
+        self.move_or_copy_range(range, row, column, false)
     }
 
     // Moving or copying a section of the sheet
@@ -1811,7 +1811,7 @@ impl Worksheet {
         let mut copy_cells: Vec<Cell> = cells
             .into_iter()
             .flatten()
-            .map(|cell| cell.clone())
+            .cloned()
             .collect();
 
         // Delete cell information as iterating through in move mode
@@ -1853,8 +1853,8 @@ impl Worksheet {
                             return;
                         }
                         indexes.push((
-                            cell.get_coordinate().get_row_num().clone(),
-                            cell.get_coordinate().get_col_num().clone(),
+                            *cell.get_coordinate().get_row_num(),
+                            *cell.get_coordinate().get_col_num(),
                         ));
                     }
                 }
@@ -1892,8 +1892,8 @@ impl Worksheet {
         start_col: Option<&u32>,
         end_col: Option<&u32>,
     ) {
-        let start_no = start_col.unwrap_or(&1).clone();
-        let end_no = end_col.unwrap_or(&self.get_highest_column()).clone();
+        let start_no = *start_col.unwrap_or(&1);
+        let end_no = *end_col.unwrap_or(&self.get_highest_column());
         for col_no in start_no..=end_no {
             self.copy_cell_styling((&col_no, source_row_no), (&col_no, target_row_no));
         }
@@ -1913,8 +1913,8 @@ impl Worksheet {
         start_row: Option<&u32>,
         end_row: Option<&u32>,
     ) {
-        let start_no = start_row.unwrap_or(&1).clone();
-        let end_no = end_row.unwrap_or(&self.get_highest_row()).clone();
+        let start_no = *start_row.unwrap_or(&1);
+        let end_no = *end_row.unwrap_or(&self.get_highest_row());
         for row_no in start_no..=end_no {
             self.copy_cell_styling((source_col_no, &row_no), (target_col_no, &row_no));
         }
@@ -2037,7 +2037,7 @@ impl AdjustmentCoordinate for Worksheet {
         let title = &self.title;
         self.defined_names.retain(|defined_name| {
             !defined_name.is_remove_coordinate_with_sheet(
-                &title,
+                title,
                 root_col_num,
                 offset_col_num,
                 root_row_num,

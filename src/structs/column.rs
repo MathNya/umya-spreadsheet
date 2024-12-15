@@ -161,7 +161,7 @@ impl Column {
 
     #[inline]
     pub(crate) fn has_style(&self) -> bool {
-        &*self.style != &Style::default()
+        *self.style != Style::default()
     }
 
     #[inline]

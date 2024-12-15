@@ -398,17 +398,14 @@ impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        match &mut self.graphic_frame {
-            Some(v) => {
-                v.adjustment_insert_coordinate_with_sheet(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(v) = &mut self.graphic_frame {
+            v.adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 
@@ -421,17 +418,14 @@ impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
         root_row_num: &u32,
         offset_row_num: &u32,
     ) {
-        match &mut self.graphic_frame {
-            Some(v) => {
-                v.adjustment_remove_coordinate_with_sheet(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(v) = &mut self.graphic_frame {
+            v.adjustment_remove_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 }

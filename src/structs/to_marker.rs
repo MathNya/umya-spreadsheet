@@ -117,22 +117,22 @@ impl ToMarker {
 
         // xdr:col
         write_start_tag(writer, "xdr:col", vec![], false);
-        write_text_node(writer, &self.col.to_string());
+        write_text_node(writer, self.col.to_string());
         write_end_tag(writer, "xdr:col");
 
         // xdr:colOff
         write_start_tag(writer, "xdr:colOff", vec![], false);
-        write_text_node(writer, &self.col_off.to_string());
+        write_text_node(writer, self.col_off.to_string());
         write_end_tag(writer, "xdr:colOff");
 
         // xdr:row
         write_start_tag(writer, "xdr:row", vec![], false);
-        write_text_node(writer, &self.row.to_string());
+        write_text_node(writer, self.row.to_string());
         write_end_tag(writer, "xdr:row");
 
         // xdr:rowOff
         write_start_tag(writer, "xdr:rowOff", vec![], false);
-        write_text_node(writer, &self.row_off.to_string());
+        write_text_node(writer, self.row_off.to_string());
         write_end_tag(writer, "xdr:rowOff");
 
         write_end_tag(writer, "to");

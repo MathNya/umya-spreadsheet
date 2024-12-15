@@ -114,8 +114,7 @@ impl NumberingFormats {
 
         formats_to_write
             .into_iter()
-            .enumerate()
-            .for_each(|(_, (index, numbering_format))| {
+            .for_each(|(index, numbering_format)| {
                 numbering_format.write_to(writer, index);
             });
 

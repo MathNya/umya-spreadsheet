@@ -37,13 +37,10 @@ impl GroupShapeProperties {
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
-                match e.name().0 {
-                    b"a:xfrm" => {
-                        let mut obj = Transform2D::default();
-                        obj.set_attributes(reader, e);
-                        self.set_transform2d(obj);
-                    }
-                    _ => (),
+                if e.name().0 == b"a:xfrm" {
+                    let mut obj = Transform2D::default();
+                    obj.set_attributes(reader, e);
+                    self.set_transform2d(obj);
                 }
             },
             Event::End(ref e) => {

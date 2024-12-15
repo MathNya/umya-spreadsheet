@@ -86,7 +86,7 @@ impl Cell {
         let CellCoordinates { col, row } = coordinate.into();
 
         let formula = self.cell_value.get_formula();
-        if formula != "" {
+        if !formula.is_empty() {
             let org_col_num = self.coordinate.get_col_num();
             let org_row_num = self.coordinate.get_row_num();
             let offset_col_num = col as i32 - *org_col_num as i32;
@@ -491,11 +491,8 @@ impl Cell {
 
         write_start_tag(writer, "c", attributes, false);
         // f
-        match &self.cell_value.formula {
-            Some(v) => {
-                v.write_to(writer, &coordinate, formula_shared_list);
-            }
-            None => {}
+        if let Some(v) = &self.cell_value.formula {
+            v.write_to(writer, &coordinate, formula_shared_list);
         }
 
         // v

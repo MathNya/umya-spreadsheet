@@ -156,7 +156,7 @@ impl SheetFormatProperties {
 
         let str_custom_height = self.custom_height.get_value_string();
         if self.custom_height.has_value() {
-            attributes.push(("customHeight", &str_custom_height));
+            attributes.push(("customHeight", str_custom_height));
         }
 
         let str_default_column_width = self.default_column_width.get_value_string();
@@ -186,12 +186,12 @@ impl SheetFormatProperties {
 
         let str_thick_bottom = self.thick_bottom.get_value_string();
         if self.thick_bottom.has_value() {
-            attributes.push(("thickBottom", &str_thick_bottom));
+            attributes.push(("thickBottom", str_thick_bottom));
         }
 
         let str_thick_top = self.thick_top.get_value_string();
         if self.thick_top.has_value() {
-            attributes.push(("thickTop", &str_thick_top));
+            attributes.push(("thickTop", str_thick_top));
         }
 
         write_start_tag(writer, "sheetFormatPr", attributes, true);

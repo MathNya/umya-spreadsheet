@@ -61,7 +61,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     #[inline]
     pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
-            make_file_from_bin(target, &mut self.arv, data, None, &self.is_light)?;
+            make_file_from_bin(target, self.arv, data, None, &self.is_light)?;
             self.files.push(target.to_string());
         }
         Ok(())
@@ -69,7 +69,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
     #[inline]
     pub(crate) fn get_arv_mut(&mut self) -> &mut zip::ZipWriter<W> {
-        &mut self.arv
+        self.arv
     }
 
     #[inline]
@@ -188,7 +188,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     ) -> Result<i32, XlsxError> {
         let file_path = format!("{}/table{}.xml", PKG_TABLES, table_no);
         self.add_writer(&file_path, writer)?;
-        return Ok(table_no);
+        Ok(table_no)
     }
 
     #[inline]
@@ -284,7 +284,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
             // Override Unsupported
             if content_type.is_empty() {
                 for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
-                    if &**old_part_name == &file {
+                    if **old_part_name == file {
                         content_type = old_content_type;
                     }
                 }

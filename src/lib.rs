@@ -121,7 +121,6 @@
     clippy::style,
     clippy::complexity,
     clippy::perf,
-    clippy::cargo
 )]
 
 extern crate chrono;

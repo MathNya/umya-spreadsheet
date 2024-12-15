@@ -72,9 +72,11 @@ impl DataValidations {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // ext
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("uri", "{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}"));
-        attributes.push(("xmlns:x14", SHEET_MS_MAIN_NS));
+        let attributes = vec![
+            ("uri", "{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}"),
+            ("xmlns:x14", SHEET_MS_MAIN_NS),
+        ];
+        
         write_start_tag(writer, "ext", attributes, false);
 
         // dataValidations
