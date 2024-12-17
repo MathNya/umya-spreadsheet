@@ -18,7 +18,7 @@ pub struct BevelTop {
 
 impl BevelTop {
     #[inline]
-    pub fn get_width(&self) -> &i64 {
+    pub fn get_width(&self) -> i64 {
         self.width.get_value()
     }
 
@@ -29,7 +29,7 @@ impl BevelTop {
     }
 
     #[inline]
-    pub fn get_height(&self) -> &i64 {
+    pub fn get_height(&self) -> i64 {
         self.height.get_value()
     }
 

@@ -90,7 +90,7 @@ impl NonVisualConnectionShapeProperties {
         write_start_tag(writer, "xdr:nvCxnSpPr", vec![], false);
 
         // xdr:cNvPr
-        self.non_visual_drawing_properties.write_to(writer, &0);
+        self.non_visual_drawing_properties.write_to(writer, 0);
 
         // xdr:cNvCxnSpPr
         self.non_visual_connector_shape_drawing_properties

@@ -57,10 +57,10 @@ impl SequenceOfReferences {
 impl AdjustmentCoordinate for SequenceOfReferences {
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for range in &mut self.range_collection {
             range.adjustment_insert_coordinate(
@@ -74,10 +74,10 @@ impl AdjustmentCoordinate for SequenceOfReferences {
 
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for range in &mut self.range_collection {
             range.adjustment_remove_coordinate(
@@ -91,10 +91,10 @@ impl AdjustmentCoordinate for SequenceOfReferences {
 
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         for range in &self.range_collection {
             if range.is_remove_coordinate(

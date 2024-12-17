@@ -4,8 +4,7 @@ use crate::structs::RichText;
 use crate::structs::TextElement;
 use crate::structs::UnderlineValues;
 use crate::structs::VerticalAlignmentRunValues;
-use chrono::format;
-use html_parser::{Dom, Element, Node};
+use html_parser::{Dom, Node};
 use std::collections::HashMap;
 use thin_vec::ThinVec;
 
@@ -51,6 +50,7 @@ pub fn html_to_richtext_custom(
     Ok(result)
 }
 
+#[allow(clippy::field_reassign_with_default)]
 fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<HtmlFlatData> {
     let mut result: ThinVec<HtmlFlatData> = ThinVec::new();
 
@@ -71,7 +71,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
                     data.text = format!("{}{}", data.text, "\n");
                     continue;
                 }
-                if &data.text != "" {
+                if !data.text.is_empty() {
                     result.push(data);
                     data = HtmlFlatData::default();
                     data.element.extend_from_slice(parent_element);
@@ -103,7 +103,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
             _ => {}
         }
     }
-    if &data.text != "" {
+    if !data.text.is_empty() {
         result.push(data);
     }
     result
@@ -113,15 +113,15 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
     let mut result = RichText::default();
 
     for html_flat_data in html_flat_data_list {
-        let mut font_name: Option<&str> = method.font_name(html_flat_data);
-        let mut size: Option<f64> = method.size(html_flat_data);
-        let mut color: Option<String> = method.color(html_flat_data);
-        let mut is_bold: bool = method.is_bold(html_flat_data);
-        let mut is_italic: bool = method.is_italic(html_flat_data);
-        let mut is_underline: bool = method.is_underline(html_flat_data);
-        let mut is_superscript: bool = method.is_superscript(html_flat_data);
-        let mut is_subscript: bool = method.is_subscript(html_flat_data);
-        let mut is_strikethrough: bool = method.is_strikethrough(html_flat_data);
+        let font_name: Option<&str> = method.font_name(html_flat_data);
+        let size: Option<f64> = method.size(html_flat_data);
+        let color: Option<String> = method.color(html_flat_data);
+        let is_bold: bool = method.is_bold(html_flat_data);
+        let is_italic: bool = method.is_italic(html_flat_data);
+        let is_underline: bool = method.is_underline(html_flat_data);
+        let is_superscript: bool = method.is_superscript(html_flat_data);
+        let is_subscript: bool = method.is_subscript(html_flat_data);
+        let is_strikethrough: bool = method.is_strikethrough(html_flat_data);
 
         let mut text_element = TextElement::default();
         let mut font = Font::default();
@@ -192,7 +192,7 @@ impl HfdElement {
     pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<&str> {
         self.attributes
             .get(attribute)
-            .and_then(|v| (self.name == name).then(|| v))
+            .and_then(|v| (self.name == name).then_some(v))
             .map(|x| x.as_str())
     }
 
@@ -219,7 +219,7 @@ pub trait AnalysisMethod {
 struct DataAnalysis {}
 impl AnalysisMethod for DataAnalysis {
     #[inline]
-    fn font_name<'a>(&'a self, html_flat_data: &'a HtmlFlatData) -> Option<&str> {
+    fn font_name<'a>(&'a self, html_flat_data: &'a HtmlFlatData) -> Option<&'a str> {
         html_flat_data
             .element
             .iter()
@@ -236,7 +236,6 @@ impl AnalysisMethod for DataAnalysis {
     }
 
     fn color(&self, html_flat_data: &HtmlFlatData) -> Option<String> {
-        let mut result: Option<String> = None;
         html_flat_data
             .element
             .iter()
@@ -248,7 +247,7 @@ impl AnalysisMethod for DataAnalysis {
                     .find_map(|(key, value)| {
                         (*key.to_uppercase() == color).then(|| value.to_uppercase())
                     })
-                    .or_else(|| Some(color))
+                    .or(Some(color))
             })
     }
 
@@ -814,5 +813,5 @@ const COLOR_MAP: &[(&str, &str)] = &[
 #[test]
 fn convert_test() {
     let html = r#"<font color="red">test</font><br><font class="test" color="green">TE<b>S</b>T<br/>TEST</font>"#;
-    let result = html_to_richtext(html).unwrap();
+    let _ = html_to_richtext(html).unwrap();
 }

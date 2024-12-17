@@ -50,7 +50,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_refreshed_date(&self) -> &f64 {
+    pub fn get_refreshed_date(&self) -> f64 {
         self.refreshed_date.get_value()
     }
 
@@ -61,7 +61,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_created_version(&self) -> &u8 {
+    pub fn get_created_version(&self) -> u8 {
         self.created_version.get_value()
     }
 
@@ -72,7 +72,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_refreshed_version(&self) -> &u8 {
+    pub fn get_refreshed_version(&self) -> u8 {
         self.refreshed_version.get_value()
     }
 
@@ -83,7 +83,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_min_refreshable_version(&self) -> &u8 {
+    pub fn get_min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.get_value()
     }
 
@@ -94,7 +94,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
-    pub fn get_record_count(&self) -> &u32 {
+    pub fn get_record_count(&self) -> u32 {
         self.record_count.get_value()
     }
 
@@ -137,6 +137,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -181,14 +182,16 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("xmlns", SHEET_MAIN_NS));
-        attributes.push(("xmlns:r", REL_OFC_NS));
-        attributes.push(("xmlns:mc", MC_NS));
-        attributes.push(("mc:Ignorable", "xr"));
-        attributes.push(("xmlns:xr", SHEET_MS_REVISION_NS));
+        let mut attributes = vec![
+            ("xmlns", SHEET_MAIN_NS),
+            ("xmlns:r", REL_OFC_NS),
+            ("xmlns:mc", MC_NS),
+            ("mc:Ignorable", "xr"),
+            ("xmlns:xr", SHEET_MS_REVISION_NS),
+        ];
 
         if self.id.has_value() {
             attributes.push(("r:id", self.id.get_value_str()));

@@ -1,12 +1,9 @@
 // pivotTableStyleInfo
 use crate::reader::driver::*;
 use crate::structs::BooleanValue;
-use crate::structs::ByteValue;
-use crate::structs::Location;
 use crate::structs::StringValue;
-use crate::structs::UInt32Value;
 use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -23,17 +20,18 @@ pub struct PivotTableStyle {
 impl PivotTableStyle {
     #[inline]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name.get_value_str()
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
     #[inline]
-    pub fn get_show_row_headers(&self) -> &bool {
+    pub fn get_show_row_headers(&self) -> bool {
         self.show_row_headers.get_value()
     }
 
@@ -44,7 +42,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_column_headers(&self) -> &bool {
+    pub fn get_show_column_headers(&self) -> bool {
         self.show_column_headers.get_value()
     }
 
@@ -55,7 +53,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_row_stripes(&self) -> &bool {
+    pub fn get_show_row_stripes(&self) -> bool {
         self.show_row_stripes.get_value()
     }
 
@@ -66,7 +64,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_column_stripes(&self) -> &bool {
+    pub fn get_show_column_stripes(&self) -> bool {
         self.show_column_stripes.get_value()
     }
 
@@ -77,7 +75,7 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    pub fn get_show_last_column(&self) -> &bool {
+    pub fn get_show_last_column(&self) -> bool {
         self.show_last_column.get_value()
     }
 

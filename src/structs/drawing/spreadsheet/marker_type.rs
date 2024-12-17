@@ -16,8 +16,8 @@ pub struct MarkerType {
 }
 impl MarkerType {
     #[inline]
-    pub fn get_col(&self) -> &u32 {
-        &self.col
+    pub fn get_col(&self) -> u32 {
+        self.col
     }
 
     #[inline]
@@ -27,8 +27,8 @@ impl MarkerType {
     }
 
     #[inline]
-    pub fn get_col_off(&self) -> &i32 {
-        &self.col_off
+    pub fn get_col_off(&self) -> i32 {
+        self.col_off
     }
 
     #[inline]
@@ -44,8 +44,8 @@ impl MarkerType {
     }
 
     #[inline]
-    pub fn get_row(&self) -> &u32 {
-        &self.row
+    pub fn get_row(&self) -> u32 {
+        self.row
     }
 
     #[inline]
@@ -55,8 +55,8 @@ impl MarkerType {
     }
 
     #[inline]
-    pub fn get_row_off(&self) -> &i32 {
-        &self.row_off
+    pub fn get_row_off(&self) -> i32 {
+        self.row_off
     }
 
     #[inline]
@@ -73,7 +73,7 @@ impl MarkerType {
 
     #[inline]
     pub fn get_coordinate(&self) -> String {
-        coordinate_from_index(&(&self.col + 1), &(&self.row + 1))
+        coordinate_from_index(self.col + 1, self.row + 1)
     }
 
     #[inline]
@@ -133,22 +133,22 @@ impl MarkerType {
 
         // xdr:col
         write_start_tag(writer, "xdr:col", vec![], false);
-        write_text_node(writer, &self.col.to_string());
+        write_text_node(writer, self.col.to_string());
         write_end_tag(writer, "xdr:col");
 
         // xdr:colOff
         write_start_tag(writer, "xdr:colOff", vec![], false);
-        write_text_node(writer, &self.col_off.to_string());
+        write_text_node(writer, self.col_off.to_string());
         write_end_tag(writer, "xdr:colOff");
 
         // xdr:row
         write_start_tag(writer, "xdr:row", vec![], false);
-        write_text_node(writer, &self.row.to_string());
+        write_text_node(writer, self.row.to_string());
         write_end_tag(writer, "xdr:row");
 
         // xdr:rowOff
         write_start_tag(writer, "xdr:rowOff", vec![], false);
-        write_text_node(writer, &self.row_off.to_string());
+        write_text_node(writer, self.row_off.to_string());
         write_end_tag(writer, "xdr:rowOff");
 
         write_end_tag(writer, tag_name);
@@ -158,36 +158,36 @@ impl AdjustmentCoordinate for MarkerType {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        self.col = adjustment_insert_coordinate(&(&self.col + 1), root_col_num, offset_col_num) - 1;
-        self.row = adjustment_insert_coordinate(&(&self.row + 1), root_row_num, offset_row_num) - 1;
+        self.col = adjustment_insert_coordinate(self.col + 1, root_col_num, offset_col_num) - 1;
+        self.row = adjustment_insert_coordinate(self.row + 1, root_row_num, offset_row_num) - 1;
     }
 
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        self.col = adjustment_remove_coordinate(&(&self.col + 1), root_col_num, offset_col_num) - 1;
-        self.row = adjustment_remove_coordinate(&(&self.row + 1), root_row_num, offset_row_num) - 1;
+        self.col = adjustment_remove_coordinate(self.col + 1, root_col_num, offset_col_num) - 1;
+        self.row = adjustment_remove_coordinate(self.row + 1, root_row_num, offset_row_num) - 1;
     }
 
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
-        is_remove_coordinate(&(&self.col + 1), root_col_num, offset_col_num)
-            || is_remove_coordinate(&(&self.row + 1), root_row_num, offset_row_num)
+        is_remove_coordinate(self.col + 1, root_col_num, offset_col_num)
+            || is_remove_coordinate(self.row + 1, root_row_num, offset_row_num)
     }
 }

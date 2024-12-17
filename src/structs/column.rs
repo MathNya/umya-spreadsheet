@@ -53,7 +53,7 @@ impl Default for Column {
 
 impl Column {
     #[inline]
-    pub fn get_col_num(&self) -> &u32 {
+    pub fn get_col_num(&self) -> u32 {
         self.col_num.get_value()
     }
 
@@ -64,7 +64,7 @@ impl Column {
     }
 
     #[inline]
-    pub fn get_width(&self) -> &f64 {
+    pub fn get_width(&self) -> f64 {
         self.width.get_value()
     }
 
@@ -75,7 +75,7 @@ impl Column {
     }
 
     #[inline]
-    pub fn get_hidden(&self) -> &bool {
+    pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
 
@@ -86,7 +86,7 @@ impl Column {
     }
 
     #[inline]
-    pub fn get_best_fit(&self) -> &bool {
+    pub fn get_best_fit(&self) -> bool {
         self.best_fit.get_value()
     }
 
@@ -113,7 +113,7 @@ impl Column {
     }
 
     #[inline]
-    pub fn get_auto_width(&self) -> &bool {
+    pub fn get_auto_width(&self) -> bool {
         self.auto_width.get_value()
     }
 
@@ -124,7 +124,7 @@ impl Column {
     }
 
     pub(crate) fn calculation_auto_width(&mut self, cells: &Cells) -> &mut Self {
-        if !*self.get_auto_width() {
+        if !self.get_auto_width() {
             return self;
         }
 
@@ -132,7 +132,7 @@ impl Column {
 
         // default font size len.
         let column_font_size = match self.get_style().get_font() {
-            Some(font) => *font.get_font_size().get_val(),
+            Some(font) => font.get_font_size().get_val(),
             None => 11f64,
         };
 
@@ -140,10 +140,10 @@ impl Column {
         cell_list.sort_by(|a, b| {
             a.get_coordinate()
                 .get_row_num()
-                .cmp(b.get_coordinate().get_row_num())
+                .cmp(&b.get_coordinate().get_row_num())
         });
         for cell in cell_list {
-            let column_width = cell.get_width_point(&column_font_size);
+            let column_width = cell.get_width_point(column_font_size);
 
             if column_width > column_width_max {
                 column_width_max = column_width;
@@ -161,7 +161,7 @@ impl Column {
 
     #[inline]
     pub(crate) fn has_style(&self) -> bool {
-        &*self.style != &Style::default()
+        *self.style != Style::default()
     }
 
     #[inline]
@@ -195,7 +195,7 @@ impl Column {
 }
 impl AdjustmentValue for Column {
     #[inline]
-    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         if self.col_num.get_value() >= root_num {
             self.col_num
                 .set_value(self.col_num.get_value() + offset_num);
@@ -203,7 +203,7 @@ impl AdjustmentValue for Column {
     }
 
     #[inline]
-    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         if self.col_num.get_value() >= root_num {
             self.col_num
                 .set_value(self.col_num.get_value() - offset_num);
@@ -211,8 +211,7 @@ impl AdjustmentValue for Column {
     }
 
     #[inline]
-    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
-        self.col_num.get_value() >= root_num
-            && self.col_num.get_value() <= &(root_num + offset_num - 1)
+    fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
+        self.col_num.get_value() >= root_num && self.col_num.get_value() < root_num + offset_num
     }
 }

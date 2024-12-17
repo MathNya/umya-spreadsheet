@@ -19,7 +19,7 @@ pub struct RowItem {
 }
 impl RowItem {
     #[inline]
-    pub fn get_index(&self) -> &u32 {
+    pub fn get_index(&self) -> u32 {
         self.index.get_value()
     }
 
@@ -41,7 +41,7 @@ impl RowItem {
     }
 
     #[inline]
-    pub fn get_repeated_item_count(&self) -> &u32 {
+    pub fn get_repeated_item_count(&self) -> u32 {
         self.repeated_item_count.get_value()
     }
 
@@ -117,7 +117,7 @@ impl RowItem {
             attributes.push(("r", repeated_item_count_str.as_str()));
         }
         write_start_tag(writer, "i", attributes, empty_flg);
-        if empty_flg == false {
+        if !empty_flg {
             if let Some(v) = &self.member_property_index {
                 v.write_to(writer);
             }

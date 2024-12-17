@@ -12,7 +12,7 @@ pub struct BubbleScale {
     val: UInt32Value,
 }
 impl BubbleScale {
-    pub fn get_val(&self) -> &u32 {
+    pub fn get_val(&self) -> u32 {
         self.val.get_value()
     }
 

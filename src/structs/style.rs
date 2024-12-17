@@ -7,9 +7,6 @@ use crate::structs::NumberingFormat;
 use crate::structs::PatternValues;
 use crate::structs::Protection;
 use crate::structs::UInt32Value;
-use md5::Digest;
-
-use crate::BooleanValue;
 
 /// # Examples
 /// ## add border
@@ -260,7 +257,7 @@ impl Style {
     }
 
     #[inline]
-    pub fn get_format_id(&self) -> &u32 {
+    pub fn get_format_id(&self) -> u32 {
         self.format_id.get_value()
     }
 
@@ -293,6 +290,7 @@ impl Style {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn set_protection_crate(&mut self, value: Option<Protection>) -> &mut Self {
         self.protection = value;
         self

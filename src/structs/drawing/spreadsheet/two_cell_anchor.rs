@@ -158,7 +158,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
-    pub fn get_is_alternate_content(&self) -> &bool {
+    pub fn get_is_alternate_content(&self) -> bool {
         self.is_alternate_content.get_value()
     }
 
@@ -249,9 +249,9 @@ impl TwoCellAnchor {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
-        ole_id: &usize,
+        ole_id: usize,
     ) {
-        if *self.get_is_alternate_content() {
+        if self.get_is_alternate_content() {
             // mc:AlternateContent
             write_start_tag(
                 writer,
@@ -312,7 +312,7 @@ impl TwoCellAnchor {
 
         write_end_tag(writer, "xdr:twoCellAnchor");
 
-        if *self.get_is_alternate_content() {
+        if self.get_is_alternate_content() {
             write_end_tag(writer, "mc:Choice");
 
             // mc:Fallback
@@ -326,10 +326,10 @@ impl AdjustmentCoordinate for TwoCellAnchor {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.from_marker.adjustment_insert_coordinate(
             root_col_num,
@@ -348,10 +348,10 @@ impl AdjustmentCoordinate for TwoCellAnchor {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.from_marker.adjustment_remove_coordinate(
             root_col_num,
@@ -370,10 +370,10 @@ impl AdjustmentCoordinate for TwoCellAnchor {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.from_marker.is_remove_coordinate(
             root_col_num,
@@ -393,22 +393,19 @@ impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        match &mut self.graphic_frame {
-            Some(v) => {
-                v.adjustment_insert_coordinate_with_sheet(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(v) = &mut self.graphic_frame {
+            v.adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 
@@ -416,22 +413,19 @@ impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        match &mut self.graphic_frame {
-            Some(v) => {
-                v.adjustment_remove_coordinate_with_sheet(
-                    sheet_name,
-                    root_col_num,
-                    offset_col_num,
-                    root_row_num,
-                    offset_row_num,
-                );
-            }
-            None => {}
+        if let Some(v) = &mut self.graphic_frame {
+            v.adjustment_remove_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
         }
     }
 }

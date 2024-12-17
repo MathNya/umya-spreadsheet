@@ -3,7 +3,7 @@
 use crate::reader::driver::*;
 use crate::structs::Int64Value;
 use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -16,8 +16,8 @@ pub struct PositiveSize2DType {
 
 impl PositiveSize2DType {
     #[inline]
-    pub fn get_cx(&self) -> &i64 {
-        &self.cx.get_value()
+    pub fn get_cx(&self) -> i64 {
+        self.cx.get_value()
     }
 
     #[inline]
@@ -26,8 +26,8 @@ impl PositiveSize2DType {
     }
 
     #[inline]
-    pub fn get_cy(&self) -> &i64 {
-        &self.cy.get_value()
+    pub fn get_cy(&self) -> i64 {
+        self.cy.get_value()
     }
 
     #[inline]

@@ -48,7 +48,7 @@ impl StringPoint {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, index: &u32) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, index: u32) {
         // c:pt
         let index_str = index.to_string();
         write_start_tag(writer, "c:pt", vec![("idx", index_str.as_str())], false);

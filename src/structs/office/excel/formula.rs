@@ -1,5 +1,4 @@
 // xm:f
-use crate::reader::driver::*;
 use crate::structs::Address;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
@@ -41,16 +40,14 @@ impl Formula {
                 Ok(Event::Text(e)) => {
                     value = e.unescape().unwrap().to_string();
                 }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xm:f" => {
+                Ok(Event::End(ref e)) => {
+                    if e.name().into_inner() == b"xm:f" {
                         let mut obj = Address::default();
                         obj.set_address(value);
                         self.value = obj;
-                        value = String::from("");
                         return;
                     }
-                    _ => (),
-                },
+                }
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:f"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
@@ -62,7 +59,7 @@ impl Formula {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:f", vec![], false);
-        write_text_node(writer, &self.value.get_address());
+        write_text_node(writer, self.value.get_address());
         write_end_tag(writer, "xm:f");
     }
 }

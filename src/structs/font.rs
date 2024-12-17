@@ -116,7 +116,7 @@ impl Font {
     }
 
     #[inline]
-    pub fn get_size(&self) -> &f64 {
+    pub fn get_size(&self) -> f64 {
         self.font_size.get_val()
     }
 
@@ -143,7 +143,7 @@ impl Font {
     }
 
     #[inline]
-    pub fn get_family(&self) -> &i32 {
+    pub fn get_family(&self) -> i32 {
         self.font_family_numbering.get_val()
     }
 
@@ -170,7 +170,7 @@ impl Font {
     }
 
     #[inline]
-    pub fn get_bold(&self) -> &bool {
+    pub fn get_bold(&self) -> bool {
         self.font_bold.get_val()
     }
 
@@ -197,7 +197,7 @@ impl Font {
     }
 
     #[inline]
-    pub fn get_italic(&self) -> &bool {
+    pub fn get_italic(&self) -> bool {
         self.font_italic.get_val()
     }
 
@@ -253,7 +253,7 @@ impl Font {
     }
 
     #[inline]
-    pub fn get_strikethrough(&self) -> &bool {
+    pub fn get_strikethrough(&self) -> bool {
         self.font_strike.get_val()
     }
 
@@ -296,7 +296,7 @@ impl Font {
     }
 
     #[inline]
-    pub fn get_charset(&self) -> &i32 {
+    pub fn get_charset(&self) -> i32 {
         self.font_char_set.get_val()
     }
 

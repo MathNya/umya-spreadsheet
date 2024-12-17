@@ -46,33 +46,33 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_image(&self, col: &u32, row: &u32) -> Option<&Image> {
+    pub fn get_image(&self, col: u32, row: u32) -> Option<&Image> {
         self.image_collection
             .iter()
-            .find(|&image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
+            .find(|&image| image.get_col() == col - 1 && image.get_row() == row - 1)
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
+    pub fn get_image_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
         self.image_collection
             .iter_mut()
-            .find(|image| image.get_col() == &(col - 1) && image.get_row() == &(row - 1))
+            .find(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
     }
 
-    pub fn get_images(&self, col: &u32, row: &u32) -> Vec<&Image> {
+    pub fn get_images(&self, col: u32, row: u32) -> Vec<&Image> {
         let mut result: Vec<&Image> = Vec::new();
         for image in &self.image_collection {
-            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
+            if image.get_col() == col - 1 && image.get_row() == row - 1 {
                 result.push(image);
             }
         }
         result
     }
 
-    pub fn get_images_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Image> {
+    pub fn get_images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
         let mut result: Vec<&mut Image> = Vec::new();
         for image in &mut self.image_collection {
-            if image.get_col() == &(col - 1) && image.get_row() == &(row - 1) {
+            if image.get_col() == col - 1 && image.get_row() == row - 1 {
                 result.push(image);
             }
         }
@@ -96,33 +96,33 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_chart(&self, col: &u32, row: &u32) -> Option<&Chart> {
+    pub fn get_chart(&self, col: u32, row: u32) -> Option<&Chart> {
         self.chart_collection
             .iter()
-            .find(|&chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
+            .find(|&chart| chart.get_col() == col - 1 && chart.get_row() == row - 1)
     }
 
     #[inline]
-    pub fn get_chart_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
+    pub fn get_chart_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
         self.chart_collection
             .iter_mut()
-            .find(|chart| chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1))
+            .find(|chart| chart.get_col() == col - 1 && chart.get_row() == row - 1)
     }
 
-    pub fn get_charts(&self, col: &u32, row: &u32) -> Vec<&Chart> {
+    pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
         let mut result: Vec<&Chart> = Vec::new();
         for chart in &self.chart_collection {
-            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
+            if chart.get_col() == col - 1 && chart.get_row() == row - 1 {
                 result.push(chart);
             }
         }
         result
     }
 
-    pub fn get_charts_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Chart> {
+    pub fn get_charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
         let mut result: Vec<&mut Chart> = Vec::new();
         for chart in &mut self.chart_collection {
-            if chart.get_col() == &(col - 1) && chart.get_row() == &(row - 1) {
+            if chart.get_col() == col - 1 && chart.get_row() == row - 1 {
                 result.push(chart);
             }
         }
@@ -245,11 +245,8 @@ impl WorksheetDrawing {
             result.push(anchor);
         }
         for image in &mut self.image_collection {
-            match image.get_one_cell_anchor_mut() {
-                Some(anchor) => {
-                    result.push(anchor);
-                }
-                None => {}
+            if let Some(anchor) = image.get_one_cell_anchor_mut() {
+                result.push(anchor);
             }
         }
         result
@@ -261,15 +258,12 @@ impl WorksheetDrawing {
             result.push(anchor);
         }
         for chart in &mut self.chart_collection {
-            let mut anchor = chart.get_two_cell_anchor_mut();
+            let anchor = chart.get_two_cell_anchor_mut();
             result.push(anchor);
         }
         for image in &mut self.image_collection {
-            match image.get_two_cell_anchor_mut() {
-                Some(anchor) => {
-                    result.push(anchor);
-                }
-                None => {}
+            if let Some(anchor) = image.get_two_cell_anchor_mut() {
+                result.push(anchor);
             }
         }
         result
@@ -383,13 +377,13 @@ impl WorksheetDrawing {
 
         // xdr:twoCellAnchor
         for chart in &self.chart_collection {
-            chart.get_two_cell_anchor().write_to(writer, rel_list, &0);
+            chart.get_two_cell_anchor().write_to(writer, rel_list, 0);
         }
         for image in &self.image_collection {
             image.write_to(writer, rel_list);
         }
         for two_cell_anchor in &self.two_cell_anchor_collection {
-            two_cell_anchor.write_to(writer, rel_list, &0);
+            two_cell_anchor.write_to(writer, rel_list, 0);
         }
 
         // xdr:oneCellAnchor
@@ -398,12 +392,12 @@ impl WorksheetDrawing {
         }
 
         // mc:AlternateContent
-        let mut ole_id = 1000 + 25;
+        //        let mut ole_id = 1000 + 25;
         for ole_object in ole_objects.get_ole_object() {
             ole_object
                 .get_two_cell_anchor()
-                .write_to(writer, rel_list, &0);
-            ole_id += 1;
+                .write_to(writer, rel_list, 0);
+            //            ole_id += 1;
         }
 
         write_end_tag(writer, "xdr:wsDr");
@@ -412,10 +406,10 @@ impl WorksheetDrawing {
 impl AdjustmentCoordinate for WorksheetDrawing {
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for anchor in &mut self.one_cell_anchor_collection {
             anchor.adjustment_insert_coordinate(
@@ -453,12 +447,12 @@ impl AdjustmentCoordinate for WorksheetDrawing {
 
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
-        &mut self.one_cell_anchor_collection.retain(|k| {
+        self.one_cell_anchor_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for anchor in &mut self.one_cell_anchor_collection {
@@ -469,7 +463,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.two_cell_anchor_collection.retain(|k| {
+        self.two_cell_anchor_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for anchor in &mut self.two_cell_anchor_collection {
@@ -480,7 +474,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.chart_collection.retain(|k| {
+        self.chart_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for chart in &mut self.chart_collection {
@@ -491,7 +485,7 @@ impl AdjustmentCoordinate for WorksheetDrawing {
                 offset_row_num,
             );
         }
-        &mut self.image_collection.retain(|k| {
+        self.image_collection.retain(|k| {
             !(k.is_remove_coordinate(root_col_num, offset_col_num, root_row_num, offset_row_num))
         });
         for image in &mut self.image_collection {
@@ -508,10 +502,10 @@ impl AdjustmentCoordinateWithSheet for WorksheetDrawing {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         // chart
         for chart in &mut self.chart_collection {
@@ -528,10 +522,10 @@ impl AdjustmentCoordinateWithSheet for WorksheetDrawing {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         // chart
         for chart in &mut self.chart_collection {

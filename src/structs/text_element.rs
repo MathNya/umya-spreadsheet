@@ -42,6 +42,7 @@ impl TextElement {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_run_properties_crate(&mut self) -> Option<&mut Font> {
         self.run_properties.as_deref_mut()
     }

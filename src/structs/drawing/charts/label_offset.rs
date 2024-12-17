@@ -12,7 +12,7 @@ pub struct LabelOffset {
     val: UInt16Value,
 }
 impl LabelOffset {
-    pub fn get_val(&self) -> &u16 {
+    pub fn get_val(&self) -> u16 {
         self.val.get_value()
     }
 

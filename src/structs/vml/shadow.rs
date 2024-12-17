@@ -14,7 +14,7 @@ pub struct Shadow {
     obscured: TrueFalseValue,
 }
 impl Shadow {
-    pub fn get_on(&self) -> &bool {
+    pub fn get_on(&self) -> bool {
         self.on.get_value()
     }
 
@@ -32,7 +32,7 @@ impl Shadow {
         self
     }
 
-    pub fn get_obscured(&self) -> &bool {
+    pub fn get_obscured(&self) -> bool {
         self.obscured.get_value()
     }
 

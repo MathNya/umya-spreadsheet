@@ -13,8 +13,8 @@ pub struct PictureLocks {
 
 impl PictureLocks {
     #[inline]
-    pub fn get_no_change_aspect(&self) -> &bool {
-        &self.no_change_aspect
+    pub fn get_no_change_aspect(&self) -> bool {
+        self.no_change_aspect
     }
 
     #[inline]

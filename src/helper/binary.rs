@@ -1,9 +1,6 @@
 use crate::structs::MediaObject;
-use base64::{engine::general_purpose::STANDARD, Engine as _};
-use std::fs;
 use std::fs::File;
 use std::io::BufReader;
-use std::io::Cursor;
 use std::io::Read;
 
 #[inline]
@@ -13,7 +10,7 @@ pub fn get_binary_data(path: &str) -> Vec<u8> {
 
     let file = File::open(path).unwrap();
     BufReader::new(file).read_to_end(&mut buf).unwrap();
-    return buf;
+    buf
 }
 
 #[inline]

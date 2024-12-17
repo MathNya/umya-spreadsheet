@@ -36,7 +36,7 @@ pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProt
         password,
         key_hash_algorithm,
         &key_salt_value,
-        &key_spin_count,
+        key_spin_count,
     );
 
     let salt_value_str = STANDARD.encode(key_salt_value);
@@ -58,7 +58,7 @@ pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut Wor
         password,
         key_hash_algorithm,
         &key_salt_value,
-        &key_spin_count,
+        key_spin_count,
     );
 
     let salt_value_str = STANDARD.encode(key_salt_value);
@@ -80,7 +80,7 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
         password,
         key_hash_algorithm,
         &key_salt_value,
-        &key_spin_count,
+        key_spin_count,
     );
 
     let salt_value_str = STANDARD.encode(key_salt_value);
@@ -116,11 +116,11 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
 
     // encrypted_package
     let encrypted_package = crypt_package(
-        &true,
+        true,
         package_cipher_algorithm,
         package_cipher_chaining,
         package_hash_algorithm,
-        &package_block_size,
+        package_block_size,
         &package_salt_value,
         &package_key,
         data,
@@ -131,11 +131,11 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     let hmac_key_iv = create_iv(
         package_hash_algorithm,
         &package_salt_value,
-        &package_block_size,
-        &BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY.to_vec(),
+        package_block_size,
+        BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
     );
     let encrypted_hmac_key = crypt(
-        &true,
+        true,
         package_cipher_algorithm,
         package_cipher_chaining,
         &package_key,
@@ -149,11 +149,11 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     let hmac_value_iv = create_iv(
         package_hash_algorithm,
         &package_salt_value,
-        &package_block_size,
-        &BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE.to_vec(),
+        package_block_size,
+        BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
     );
     let encrypted_hmac_value = crypt(
-        &true,
+        true,
         package_cipher_algorithm,
         package_cipher_chaining,
         &package_key,
@@ -167,12 +167,12 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         password,
         key_hash_algorithm,
         &key_salt_value,
-        &key_spin_count,
-        &key_key_bits,
-        &BLOCK_KEYS_KEY.to_vec(),
+        key_spin_count,
+        key_key_bits,
+        BLOCK_KEYS_KEY,
     );
     let encrypted_key_value = crypt(
-        &true,
+        true,
         key_cipher_algorithm,
         key_cipher_chaining,
         &key,
@@ -187,12 +187,12 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         password,
         key_hash_algorithm,
         &key_salt_value,
-        &key_spin_count,
-        &key_key_bits,
-        &BLOCK_VERIFIER_HASH_INPUT.to_vec(),
+        key_spin_count,
+        key_key_bits,
+        BLOCK_VERIFIER_HASH_INPUT,
     );
     let encrypted_verifier_hash_input = crypt(
-        &true,
+        true,
         key_cipher_algorithm,
         key_cipher_chaining,
         &verifier_hash_input_key,
@@ -207,12 +207,12 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         password,
         key_hash_algorithm,
         &key_salt_value,
-        &key_spin_count,
-        &key_key_bits,
-        &BLOCK_VERIFIER_HASH_VALUE.to_vec(),
+        key_spin_count,
+        key_key_bits,
+        BLOCK_VERIFIER_HASH_VALUE,
     );
     let encrypted_verifier_hash_value = crypt(
-        &true,
+        true,
         key_cipher_algorithm,
         key_cipher_chaining,
         &verifier_hash_value_key,
@@ -224,19 +224,19 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     // XML
     let encryption_info_buffer = build_encryption_info(
         &package_salt_value,
-        &package_block_size,
-        &package_key_bits,
-        &package_hash_size,
+        package_block_size,
+        package_key_bits,
+        package_hash_size,
         package_cipher_algorithm,
         package_cipher_chaining,
         package_hash_algorithm,
         &encrypted_hmac_key,
         &encrypted_hmac_value,
-        &key_spin_count,
+        key_spin_count,
         &key_salt_value,
-        &key_block_size,
-        &key_key_bits,
-        &key_hash_size,
+        key_block_size,
+        key_key_bits,
+        key_hash_size,
         key_cipher_algorithm,
         key_cipher_chaining,
         key_hash_algorithm,
@@ -259,18 +259,18 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
 // Encrypt/decrypt the package
 #[allow(clippy::too_many_arguments)]
 fn crypt_package(
-    encrypt: &bool,
+    encrypt: bool,
     cipher_algorithm: &str,
     cipher_chaining: &str,
     hash_algorithm: &str,
-    block_size: &usize,
+    block_size: usize,
     salt_value: &[u8],
     key: &[u8],
     input: &[u8],
 ) -> Vec<u8> {
     // The first 8 bytes is supposed to be the length, but it seems like it is really the length - 4..
     let mut output_chunks: Vec<Vec<u8>> = Vec::new();
-    let offset = if encrypt == &true { 0 } else { PACKAGE_OFFSET };
+    let offset = if encrypt { 0 } else { PACKAGE_OFFSET };
 
     // The package is encoded in chunks. Encrypt/decrypt each and concat.
     let mut i: usize = 0;
@@ -294,7 +294,7 @@ fn crypt_package(
 
         // Create the initialization vector
         // Create the block key from the current index
-        let block_key_buffer = create_uint32_le_buffer(&(i as u32), None);
+        let block_key_buffer = create_uint32_le_buffer(i as u32, None);
         let iv = create_iv(hash_algorithm, salt_value, block_size, &block_key_buffer);
 
         // Encrypt/decrypt the chunk and add it to the array
@@ -316,16 +316,16 @@ fn crypt_package(
     let output_chunks_as: Vec<_> = output_chunks.iter().map(AsRef::as_ref).collect();
     let mut output = buffer_concat(output_chunks_as);
 
-    if *encrypt {
+    if encrypt {
         // Put the length of the package in the first 8 bytes
         let input_len = input.len();
         output = buffer_concat(vec![
-            &create_uint32_le_buffer(&(input_len as u32), Some(&PACKAGE_OFFSET)),
+            &create_uint32_le_buffer(input_len as u32, Some(PACKAGE_OFFSET)),
             &output,
         ]);
     } else {
         // Truncate the buffer to the size in the prefix
-        let length = buffer_read_u_int32_le(input, &0);
+        let length = buffer_read_u_int32_le(input, 0);
         output = output[0..length as usize].to_vec();
     }
 
@@ -336,20 +336,20 @@ fn crypt_package(
 fn create_iv(
     hash_algorithm: &str,
     salt_value: &[u8],
-    block_size: &usize,
+    block_size: usize,
     block_key: &[u8],
 ) -> Vec<u8> {
     // Create the initialization vector by hashing the salt with the block key.
     // Truncate or pad as needed to meet the block size.
     let mut iv = hash(hash_algorithm, vec![salt_value, block_key]).unwrap();
-    match iv.len().cmp(block_size) {
+    match iv.len().cmp(&block_size) {
         Ordering::Less => {
-            let mut tmp = buffer_alloc(0x36, *block_size);
+            let mut tmp = buffer_alloc(0x36, block_size);
             buffer_copy(&mut tmp, &iv);
             iv = tmp;
         }
         Ordering::Greater => {
-            iv = buffer_slice(&iv, 0, *block_size);
+            iv = buffer_slice(&iv, 0, block_size);
         }
         _ => {}
     }
@@ -358,7 +358,7 @@ fn create_iv(
 
 // Encrypt/decrypt input
 fn crypt(
-    _encrypt: &bool,
+    _encrypt: bool,
     _cipher_algorithm: &str,
     _cipher_chaining: &str,
     key: &[u8],
@@ -400,8 +400,8 @@ fn convert_password_to_key(
     password: &str,
     hash_algorithm: &str,
     salt_value: &[u8],
-    spin_count: &usize,
-    key_bits: &usize,
+    spin_count: usize,
+    key_bits: usize,
     block_key: &[u8],
 ) -> Vec<u8> {
     // Password must be in unicode buffer
@@ -417,8 +417,8 @@ fn convert_password_to_key(
     let mut key = hash(hash_algorithm, vec![salt_value, &password_buffer]).unwrap();
 
     // Now regenerate until spin count
-    for i in 0..*spin_count {
-        let iterator = create_uint32_le_buffer(&(i as u32), None);
+    for i in 0..spin_count {
+        let iterator = create_uint32_le_buffer(i as u32, None);
         key = hash(hash_algorithm, vec![&iterator, &key]).unwrap();
     }
 
@@ -442,7 +442,7 @@ fn convert_password_to_hash(
     password: &str,
     hash_algorithm: &str,
     salt_value: &[u8],
-    spin_count: &usize,
+    spin_count: usize,
 ) -> Vec<u8> {
     // Password must be in unicode buffer
     let mut password_buffer: Vec<u8> = Vec::new();
@@ -457,8 +457,8 @@ fn convert_password_to_hash(
     let mut key = hash(hash_algorithm, vec![salt_value, &password_buffer]).unwrap();
 
     // Now regenerate until spin count
-    for i in 0..*spin_count {
-        let iterator = create_uint32_le_buffer(&(i as u32), None);
+    for i in 0..spin_count {
+        let iterator = create_uint32_le_buffer(i as u32, None);
         key = hash(hash_algorithm, vec![&key, &iterator]).unwrap();
     }
 
@@ -480,49 +480,49 @@ fn hash(algorithm: &str, buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
 #[inline]
 fn gen_random_16() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 16];
-    getrandom::getrandom(buf);
+    getrandom::getrandom(buf).unwrap();
     buf.to_vec()
 }
 
 #[inline]
 fn gen_random_32() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 32];
-    getrandom::getrandom(buf);
+    getrandom::getrandom(buf).unwrap();
     buf.to_vec()
 }
 
 #[inline]
 fn gen_random_64() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 64];
-    getrandom::getrandom(buf);
+    getrandom::getrandom(buf).unwrap();
     buf.to_vec()
 }
 
 // Create a buffer of an integer encoded as a uint32le
 #[inline]
-fn create_uint32_le_buffer(value: &u32, buffer_size: Option<&usize>) -> Vec<u8> {
-    let bs_prm = buffer_size.unwrap_or(&4);
-    let mut buffer = buffer_alloc(0, *bs_prm);
-    buffer_write_u_int32_le(&mut buffer, value, &0);
+fn create_uint32_le_buffer(value: u32, buffer_size: Option<usize>) -> Vec<u8> {
+    let bs_prm = buffer_size.unwrap_or(4);
+    let mut buffer = buffer_alloc(0, bs_prm);
+    buffer_write_u_int32_le(&mut buffer, value, 0);
     buffer
 }
 
 #[allow(clippy::too_many_arguments)]
 fn build_encryption_info(
     package_salt_value: &[u8],
-    package_block_size: &usize,
-    package_key_bits: &usize,
-    package_hash_size: &usize,
+    package_block_size: usize,
+    package_key_bits: usize,
+    package_hash_size: usize,
     package_cipher_algorithm: &str,
     package_cipher_chaining: &str,
     package_hash_algorithm: &str,
     data_integrity_encrypted_hmac_key: &[u8],
     data_integrity_encrypted_hmac_value: &[u8],
-    key_spin_count: &usize,
+    key_spin_count: usize,
     key_salt_value: &[u8],
-    key_block_size: &usize,
-    key_key_bits: &usize,
-    key_hash_size: &usize,
+    key_block_size: usize,
+    key_key_bits: usize,
+    key_hash_size: usize,
     key_cipher_algorithm: &str,
     key_cipher_chaining: &str,
     key_hash_algorithm: &str,
@@ -532,11 +532,13 @@ fn build_encryption_info(
 ) -> Vec<u8> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new(
-        "1.0",
-        Some("UTF-8"),
-        Some("yes"),
-    )));
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // Map the object into the appropriate XML structure. Buffers are encoded in base 64.
@@ -632,7 +634,7 @@ fn build_encryption_info(
     write_end_tag(&mut writer, "encryption");
 
     let result = writer.into_inner().into_inner().to_vec();
-    buffer_concat(vec![&ENCRYPTION_INFO_PREFIX.to_vec(), &result])
+    buffer_concat(vec![ENCRYPTION_INFO_PREFIX, &result])
 }
 
 #[inline]
@@ -654,18 +656,18 @@ fn buffer_concat(buffers: Vec<&[u8]>) -> Vec<u8> {
 }
 fn buffer_copy(buffer1: &mut [u8], buffer2: &[u8]) {
     for (i, byte) in buffer2.iter().enumerate() {
-        std::mem::replace(&mut buffer1[i], *byte);
+        let _ = std::mem::replace(&mut buffer1[i], *byte);
     }
 }
 
 #[inline]
-fn buffer_read_u_int32_le(buffer: &[u8], _cnt: &usize) -> u32 {
+fn buffer_read_u_int32_le(buffer: &[u8], _cnt: usize) -> u32 {
     LittleEndian::read_u32(buffer)
 }
 
 #[inline]
-fn buffer_write_u_int32_le(buffer: &mut [u8], value: &u32, _cnt: &usize) {
-    LittleEndian::write_u32(buffer, *value);
+fn buffer_write_u_int32_le(buffer: &mut [u8], value: u32, _cnt: usize) {
+    LittleEndian::write_u32(buffer, value);
 }
 
 #[cfg(test)]
@@ -721,11 +723,11 @@ mod tests {
 
         // encrypted_package
         let encrypted_package = crypt_package(
-            &true,
+            true,
             package_cipher_algorithm,
             package_cipher_chaining,
             package_hash_algorithm,
-            &package_block_size,
+            package_block_size,
             &package_salt_value,
             &package_key,
             &data,
@@ -736,14 +738,14 @@ mod tests {
         let hmac_key_iv = create_iv(
             package_hash_algorithm,
             &package_salt_value,
-            &package_block_size,
-            &BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY.to_vec(),
+            package_block_size,
+            BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
         );
         let converted = encode_hex(&hmac_key_iv);
         assert_eq!(&converted, "ba1bf00eed82b07ee65e574eb1f46043");
 
         let encrypted_hmac_key = crypt(
-            &true,
+            true,
             package_cipher_algorithm,
             package_cipher_chaining,
             &package_key,
@@ -762,14 +764,14 @@ mod tests {
         let hmac_value_iv = create_iv(
             package_hash_algorithm,
             &package_salt_value,
-            &package_block_size,
-            &BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE.to_vec(),
+            package_block_size,
+            BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
         );
         let converted = encode_hex(&hmac_value_iv);
         assert_eq!(&converted, "088385b871292e7ed8414f173c5b6622");
 
         let encrypted_hmac_value = crypt(
-            &true,
+            true,
             package_cipher_algorithm,
             package_cipher_chaining,
             &package_key,
@@ -785,9 +787,9 @@ mod tests {
             password,
             key_hash_algorithm,
             &key_salt_value,
-            &key_spin_count,
-            &key_key_bits,
-            &BLOCK_KEYS_KEY.to_vec(),
+            key_spin_count,
+            key_key_bits,
+            BLOCK_KEYS_KEY,
         );
         let converted = encode_hex(&key);
         assert_eq!(
@@ -796,7 +798,7 @@ mod tests {
         );
 
         let encrypted_key_value = crypt(
-            &true,
+            true,
             key_cipher_algorithm,
             key_cipher_chaining,
             &key,
@@ -816,9 +818,9 @@ mod tests {
             password,
             key_hash_algorithm,
             &key_salt_value,
-            &key_spin_count,
-            &key_key_bits,
-            &BLOCK_VERIFIER_HASH_INPUT.to_vec(),
+            key_spin_count,
+            key_key_bits,
+            BLOCK_VERIFIER_HASH_INPUT,
         );
         let converted = encode_hex(&verifier_hash_input_key);
         assert_eq!(
@@ -827,7 +829,7 @@ mod tests {
         );
 
         let encrypted_verifier_hash_input = crypt(
-            &true,
+            true,
             key_cipher_algorithm,
             key_cipher_chaining,
             &verifier_hash_input_key,
@@ -847,15 +849,15 @@ mod tests {
             password,
             key_hash_algorithm,
             &key_salt_value,
-            &key_spin_count,
-            &key_key_bits,
-            &BLOCK_VERIFIER_HASH_VALUE.to_vec(),
+            key_spin_count,
+            key_key_bits,
+            BLOCK_VERIFIER_HASH_VALUE,
         );
         //let converted = encode_hex(&verifier_hash_value_key);
         //assert_eq!(&converted, "d5515a6062e3e99551b80b92db1fe646483884cdb63e1e7595a9f2cca7532884");
 
         let encrypted_verifier_hash_value = crypt(
-            &true,
+            true,
             key_cipher_algorithm,
             key_cipher_chaining,
             &verifier_hash_value_key,
@@ -869,19 +871,19 @@ mod tests {
         // XML
         let _ = build_encryption_info(
             &package_salt_value,
-            &package_block_size,
-            &package_key_bits,
-            &package_hash_size,
+            package_block_size,
+            package_key_bits,
+            package_hash_size,
             package_cipher_algorithm,
             package_cipher_chaining,
             package_hash_algorithm,
             &encrypted_hmac_key,
             &encrypted_hmac_value,
-            &key_spin_count,
+            key_spin_count,
             &key_salt_value,
-            &key_block_size,
-            &key_key_bits,
-            &key_hash_size,
+            key_block_size,
+            key_key_bits,
+            key_hash_size,
             key_cipher_algorithm,
             key_cipher_chaining,
             key_hash_algorithm,
@@ -896,10 +898,7 @@ mod tests {
         let package_salt_value = decode_hex("4c251b321d85cecfcb6d952ba6d81846").unwrap();
         let result = hash(
             "SHA512",
-            vec![
-                &package_salt_value,
-                &BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY.to_vec(),
-            ],
+            vec![&package_salt_value, BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY],
         )
         .unwrap();
         let converted = encode_hex(&result);
@@ -923,9 +922,9 @@ mod tests {
             "password",
             "SHA512",
             &key_salt_value,
-            &100000,
-            &256,
-            &BLOCK_KEYS_KEY.to_vec(),
+            100000,
+            256,
+            BLOCK_KEYS_KEY,
         );
         let converted = encode_hex(&result);
         assert_eq!(

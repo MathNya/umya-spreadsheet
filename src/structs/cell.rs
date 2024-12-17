@@ -86,13 +86,13 @@ impl Cell {
         let CellCoordinates { col, row } = coordinate.into();
 
         let formula = self.cell_value.get_formula();
-        if formula != "" {
+        if !formula.is_empty() {
             let org_col_num = self.coordinate.get_col_num();
             let org_row_num = self.coordinate.get_row_num();
-            let offset_col_num = col as i32 - *org_col_num as i32;
-            let offset_row_num = row as i32 - *org_row_num as i32;
+            let offset_col_num = col as i32 - org_col_num as i32;
+            let offset_row_num = row as i32 - org_row_num as i32;
             let mut tokens = parse_to_tokens(format!("={}", formula));
-            adjustment_formula_coordinate(&mut tokens, &offset_col_num, &offset_row_num);
+            adjustment_formula_coordinate(&mut tokens, offset_col_num, offset_row_num);
             let result_formula = render(tokens.as_ref());
             self.cell_value.set_formula(result_formula);
         }
@@ -122,7 +122,7 @@ impl Cell {
     }
 
     #[inline]
-    pub fn get_cell_meta_index(&self) -> &u32 {
+    pub fn get_cell_meta_index(&self) -> u32 {
         self.cell_meta_index.get_value()
     }
 
@@ -273,7 +273,7 @@ impl Cell {
     }
 
     #[inline]
-    pub fn get_formula_shared_index(&self) -> Option<&u32> {
+    pub fn get_formula_shared_index(&self) -> Option<u32> {
         if let Some(v) = self.get_formula_obj() {
             if v.get_formula_type() == &CellFormulaValues::Shared {
                 return Some(v.get_shared_index());
@@ -282,7 +282,7 @@ impl Cell {
         None
     }
 
-    pub(crate) fn get_width_point(&self, column_font_size: &f64) -> f64 {
+    pub(crate) fn get_width_point(&self, column_font_size: f64) -> f64 {
         // get cell value len.
         let char_cnt = self.get_width_point_cell();
 
@@ -452,7 +452,7 @@ impl Cell {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         shared_string_table: &Arc<RwLock<SharedStringTable>>,
         stylesheet: &mut Stylesheet,
-        formula_shared_list: &HashMap<&u32, (String, Option<String>)>,
+        formula_shared_list: &HashMap<u32, (String, Option<String>)>,
     ) {
         let empty_flag_value = self.cell_value.is_empty();
         let empty_flag_style = self.style.is_empty();
@@ -478,11 +478,11 @@ impl Cell {
             attributes.push(("s", &xf_index_str));
         }
 
-        let cell_meta_index_str = self.cell_meta_index.get_value_string();
-        if self.cell_meta_index.has_value() {
-            // NOT SUPPORT
-            //attributes.push(("cm", &cell_meta_index_str));
-        }
+        // NOT SUPPORTED
+        // let cell_meta_index_str = self.cell_meta_index.get_value_string();
+        // if self.cell_meta_index.has_value() {
+        //     attributes.push(("cm", &cell_meta_index_str));
+        // }
 
         if empty_flag_value {
             write_start_tag(writer, "c", attributes, true);
@@ -491,11 +491,8 @@ impl Cell {
 
         write_start_tag(writer, "c", attributes, false);
         // f
-        match &self.cell_value.formula {
-            Some(v) => {
-                v.write_to(writer, &coordinate, formula_shared_list);
-            }
-            None => {}
+        if let Some(v) = &self.cell_value.formula {
+            v.write_to(writer, &coordinate, formula_shared_list);
         }
 
         // v
@@ -537,10 +534,10 @@ impl AdjustmentCoordinate for Cell {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.coordinate.adjustment_insert_coordinate(
             root_col_num,
@@ -553,10 +550,10 @@ impl AdjustmentCoordinate for Cell {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.coordinate.adjustment_remove_coordinate(
             root_col_num,
@@ -572,10 +569,10 @@ impl AdjustmentCoordinateWith2Sheet for Cell {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.cell_value.adjustment_insert_coordinate_with_2sheet(
             self_sheet_name,
@@ -592,10 +589,10 @@ impl AdjustmentCoordinateWith2Sheet for Cell {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.cell_value.adjustment_remove_coordinate_with_2sheet(
             self_sheet_name,

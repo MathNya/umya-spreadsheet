@@ -14,7 +14,7 @@ pub struct Extents {
 }
 impl Extents {
     #[inline]
-    pub fn get_cx(&self) -> &i64 {
+    pub fn get_cx(&self) -> i64 {
         self.cx.get_value()
     }
 
@@ -25,7 +25,7 @@ impl Extents {
     }
 
     #[inline]
-    pub fn get_cy(&self) -> &i64 {
+    pub fn get_cy(&self) -> i64 {
         self.cy.get_value()
     }
 

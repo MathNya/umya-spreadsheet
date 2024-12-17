@@ -3,21 +3,18 @@ use chrono::{Duration, NaiveDateTime};
 pub const CALENDAR_WINDOWS_1900: &str = "1900";
 pub const CALENDAR_MAC_1904: &str = "1904";
 
-pub fn excel_to_date_time_object(
-    excel_timestamp: &f64,
-    time_zone: Option<String>,
-) -> NaiveDateTime {
+pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>) -> NaiveDateTime {
     let _time_zone = match time_zone {
         Some(v) => v,
         None => get_default_timezone(),
     };
 
-    let mut base_date = if excel_timestamp < &1f64 {
+    let base_date = if excel_timestamp < 1f64 {
         // Unix timestamp base date
         NaiveDateTime::parse_from_str("1970-01-01 00:00:00", "%Y-%m-%d %T").unwrap()
     } else {
         // Allow adjustment for 1900 Leap Year in MS Excel
-        if excel_timestamp < &60f64 {
+        if excel_timestamp < 60f64 {
             NaiveDateTime::parse_from_str("1899-12-31 00:00:00", "%Y-%m-%d %T").unwrap()
         } else {
             NaiveDateTime::parse_from_str("1899-12-30 00:00:00", "%Y-%m-%d %T").unwrap()
@@ -80,7 +77,7 @@ pub fn convert_date_mac_1904(
     convert_date_crate(year, month, day, hours, minutes, seconds, false)
 }
 
-fn convert_date_crate(
+pub fn convert_date_crate(
     year: i32,
     month: i32,
     day: i32,
@@ -89,41 +86,36 @@ fn convert_date_crate(
     seconds: i32,
     is_calendar_windows_1900: bool,
 ) -> f64 {
-    let mut year = year;
-    let mut month = month;
-    let mut myexcel_base_date = 0;
-    let mut excel1900is_leap_year = 0;
-
-    if is_calendar_windows_1900 {
-        excel1900is_leap_year = 1;
-        if &year == &1900 && &month <= &2 {
-            excel1900is_leap_year = 0;
-        }
-        myexcel_base_date = 2415020;
+    // Initialize the base date and leap year for the calendar
+    let (base_date, is_leap_year) = if is_calendar_windows_1900 {
+        let is_leap = if year == 1900 && month <= 2 { 0 } else { 1 };
+        (2415020, is_leap)
     } else {
-        myexcel_base_date = 2416481;
-    }
+        (2416481, 0)
+    };
 
-    // Julian base date Adjustment
-    if month > 2 {
-        month -= 3;
+    // Adjust month and year for Julian date calculation
+    let (year_adj, month_adj) = if month > 2 {
+        (year, month - 3)
     } else {
-        month += 9;
-        year -= 1;
-    }
+        (year - 1, month + 9)
+    };
 
-    // Calculate the Julian Date, then subtract the Excel base date (JD 2415020 = 31-Dec-1899 Giving Excel Date of 0)
-    let century = (year.to_string()[0..2]).parse::<i32>().unwrap();
-    let decade = (year.to_string()[2..4]).parse::<i32>().unwrap();
+    // Calculate the Julian date components
+    let century = year_adj / 100;
+    let decade = year_adj % 100;
 
-    let excel_date = ((146097 * century) / 4) as i32
-        + ((1461 * decade) / 4) as i32
-        + ((153 * month + 2) / 5) as i32
+    let julian_date = ((146097 * century) / 4)
+        + ((1461 * decade) / 4)
+        + ((153 * month_adj + 2) / 5)
         + day
         + 1721119
-        - myexcel_base_date
-        + excel1900is_leap_year;
-    let excel_time = ((hours * 3600) + (minutes * 60) + seconds) as f64 / 86400 as f64;
+        - base_date
+        + is_leap_year;
 
-    return (excel_date as f64 + excel_time) as f64;
+    // Calculate the time portion of the date
+    let time_in_days = ((hours * 3600 + minutes * 60 + seconds) as f64) / 86400.0;
+
+    // Return the final Excel date and time
+    julian_date as f64 + time_in_days
 }

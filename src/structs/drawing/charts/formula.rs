@@ -85,10 +85,10 @@ impl AdjustmentCoordinateWithSheet for Formula {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.address.adjustment_insert_coordinate_with_sheet(
             sheet_name,
@@ -102,10 +102,10 @@ impl AdjustmentCoordinateWithSheet for Formula {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.address.adjustment_remove_coordinate_with_sheet(
             sheet_name,

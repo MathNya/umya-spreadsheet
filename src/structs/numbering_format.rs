@@ -73,8 +73,8 @@ impl NumberingFormat {
         r#"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"#;
 
     #[inline]
-    pub fn get_number_format_id(&self) -> &u32 {
-        &self.number_format_id
+    pub fn get_number_format_id(&self) -> u32 {
+        self.number_format_id
     }
 
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
@@ -106,7 +106,7 @@ impl NumberingFormat {
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
-    /// let mut worksheet = book.get_sheet_mut(&0).unwrap();
+    /// let mut worksheet = book.get_sheet_mut(0).unwrap();
     /// let _ = worksheet.get_style_mut("C30")
     /// .get_number_format_mut()
     /// .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
@@ -137,8 +137,8 @@ impl NumberingFormat {
     }
 
     #[inline]
-    pub(crate) fn get_is_build_in(&self) -> &bool {
-        &self.is_build_in
+    pub(crate) fn get_is_build_in(&self) -> bool {
+        self.is_build_in
     }
 
     #[inline]
@@ -162,7 +162,7 @@ impl NumberingFormat {
         self.is_build_in = false;
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, number_format_id: &u32) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, number_format_id: u32) {
         // numFmt
         write_start_tag(
             writer,

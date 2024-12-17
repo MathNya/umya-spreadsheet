@@ -1,8 +1,6 @@
 // sst
-use super::drawing::Theme;
 use super::CellValue;
 use super::SharedStringItem;
-use crate::drawing::charts::View3D;
 use crate::helper::const_str::*;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
@@ -27,6 +25,7 @@ impl SharedStringTable {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut ThinVec<SharedStringItem> {
         &mut self.shared_string_item
     }

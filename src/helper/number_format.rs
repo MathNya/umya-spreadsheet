@@ -5,13 +5,10 @@ mod percentage_formater;
 
 use std::borrow::Cow;
 
-use crate::helper::date::*;
 use crate::structs::Color;
 use crate::structs::NumberingFormat;
-use fancy_regex::Captures;
 use fancy_regex::Matches;
 use fancy_regex::Regex;
-use thousands::Separable;
 
 pub struct Split<'r, 't> {
     finder: Matches<'r, 't>,
@@ -26,7 +23,7 @@ pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     }
 }
 
-impl<'r, 't> Iterator for Split<'r, 't> {
+impl<'t> Iterator for Split<'_, 't> {
     type Item = &'t str;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -86,7 +83,7 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     let sections: Vec<&str> = split(&SECTION_REGEX, &format).collect();
 
-    let (_, split_format, split_value) = split_format(sections, &value.parse::<f64>().unwrap());
+    let (_, split_format, split_value) = split_format(sections, value.parse::<f64>().unwrap());
     format = Cow::Owned(split_format);
     value = Cow::Owned(split_value);
 
@@ -101,20 +98,20 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     if DATE_TIME_REGEX.is_match(&format).unwrap_or(false) {
         // datetime format
-        value = date_formater::format_as_date(&value.parse::<f64>().unwrap(), &format);
+        value = date_formater::format_as_date(value.parse::<f64>().unwrap(), &format);
     } else if format.starts_with('"') && format.ends_with('"') {
         let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
         value = Cow::Owned(conv_format.to_string());
     } else if PERCENT_DOLLAR_REGEX.is_match(&format).unwrap_or(false) {
         // % number format
-        value = percentage_formater::format_as_percentage(&value.parse::<f64>().unwrap(), &format);
+        value = percentage_formater::format_as_percentage(value.parse::<f64>().unwrap(), &format);
     } else {
-        value = number_formater::format_as_number(&value.parse::<f64>().unwrap(), &format);
+        value = number_formater::format_as_number(value.parse::<f64>().unwrap(), &format);
     }
     value.trim().to_string()
 }
 
-fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
+fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     let mut converted_sections: Vec<String> = Vec::new();
 
     // Extract the relevant section depending on whether number is positive, negative, or zero?
@@ -153,57 +150,59 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     ];
     sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
-        if color_re.find(section).ok().flatten().is_some() {
-            let mut item: Vec<String> = Vec::new();
-            for ite in color_re.captures(section).ok().flatten().unwrap().iter() {
-                item.push(ite.unwrap().as_str().to_string());
+
+        // Process color matching
+        if let Some(captures) = color_re.captures(section).ok().flatten() {
+            let items: Vec<String> = captures
+                .iter()
+                .filter_map(|cap| cap.map(|c| c.as_str().to_string()))
+                .collect();
+
+            if let Some(first_item) = items.first() {
+                colors[idx] = first_item.clone();
             }
-            std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
+
             converted_section = color_re.replace_all(section, "").to_string();
         }
-        if cond_re.find(section).ok().flatten().is_some() {
-            let mut item: Vec<String> = Vec::new();
-            for ite in cond_re.captures(section).ok().flatten().unwrap().iter() {
-                match ite {
-                    Some(v) => item.push(v.as_str().to_string()),
-                    None => {}
-                }
+
+        // Process conditional matching
+        if let Some(captures) = cond_re.captures(section).ok().flatten() {
+            let items: Vec<String> = captures
+                .iter()
+                .filter_map(|cap| cap.map(|c| c.as_str().to_string()))
+                .collect();
+
+            if let Some(v) = items.get(1) {
+                condops[idx] = v.clone();
             }
-            match item.get(1) {
-                Some(v) => {
-                    std::mem::replace(&mut condops[idx], v.to_string());
-                }
-                None => {}
+            if let Some(v) = items.get(2) {
+                condvals[idx] = v.clone();
             }
-            match item.get(2) {
-                Some(v) => {
-                    std::mem::replace(&mut condvals[idx], v.to_string());
-                }
-                None => {}
-            }
+
             converted_section = cond_re.replace_all(section, "").to_string();
         }
+
         converted_sections.insert(idx, converted_section);
     });
 
     let mut color = &colors[0];
     let mut format: &str = &converted_sections[0];
-    let mut absval = *value;
+    let mut absval = value;
     match cnt {
         2 => {
             absval = absval.abs();
-            let condval_one = &condvals[0].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">=", &0f64) {
+            let condval_one = condvals[0].parse::<f64>().unwrap();
+            if !split_format_compare(value, &condops[0], condval_one, ">=", 0f64) {
                 color = &colors[1];
                 format = &converted_sections[1];
             }
         }
         3 | 4 => {
             absval = absval.abs();
-            let condval_one = &condvals[0].parse::<f64>().unwrap();
-            let condval_two = &condvals[1].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">", &0f64) {
-                if split_format_compare(value, &condops[1], condval_two, "<", &0f64) {
+            let condval_one = condvals[0].parse::<f64>().unwrap();
+            let condval_two = condvals[1].parse::<f64>().unwrap();
+            if !split_format_compare(value, &condops[0], condval_one, ">", 0f64) {
+                if split_format_compare(value, &condops[1], condval_two, "<", 0f64) {
                     color = &colors[1];
                     format = &converted_sections[1];
                 } else {
@@ -217,7 +216,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     (color.to_string(), format.into(), absval.to_string())
 }
 
-fn split_format_compare(value: &f64, cond: &str, val: &f64, dfcond: &str, dfval: &f64) -> bool {
+fn split_format_compare(value: f64, cond: &str, val: f64, dfcond: &str, dfval: f64) -> bool {
     let mut check_cond = cond;
     let mut check_val = val;
     if cond.is_empty() {

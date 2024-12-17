@@ -13,7 +13,7 @@ pub struct Style {
 }
 
 impl Style {
-    pub fn get_val(&self) -> &u8 {
+    pub fn get_val(&self) -> u8 {
         self.val.get_value()
     }
 

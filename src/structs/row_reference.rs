@@ -19,8 +19,8 @@ impl Default for RowReference {
 
 impl RowReference {
     #[inline]
-    pub fn get_num(&self) -> &u32 {
-        &self.num
+    pub fn get_num(&self) -> u32 {
+        self.num
     }
 
     #[inline]
@@ -53,8 +53,8 @@ impl RowReference {
     }
 
     #[inline]
-    pub fn get_is_lock(&self) -> &bool {
-        &self.is_lock
+    pub fn get_is_lock(&self) -> bool {
+        self.is_lock
     }
 
     #[inline]
@@ -76,17 +76,17 @@ impl RowReference {
 }
 impl AdjustmentValue for RowReference {
     #[inline]
-    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
-        self.num = adjustment_insert_coordinate(&self.num, root_num, offset_num);
+    fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
+        self.num = adjustment_insert_coordinate(self.num, root_num, offset_num);
     }
 
     #[inline]
-    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
-        self.num = adjustment_remove_coordinate(&self.num, root_num, offset_num);
+    fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
+        self.num = adjustment_remove_coordinate(self.num, root_num, offset_num);
     }
 
     #[inline]
-    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
-        is_remove_coordinate(&self.num, root_num, offset_num)
+    fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
+        is_remove_coordinate(self.num, root_num, offset_num)
     }
 }

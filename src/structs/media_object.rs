@@ -45,10 +45,10 @@ impl MediaObject {
             .iter()
             .position(|(k, v)| k == "IMAGE" && v == &*self.image_name);
         match find {
-            Some(v) => return (v + 1) as i32,
+            Some(v) => (v + 1) as i32,
             None => {
                 rel_list.push((String::from("IMAGE"), self.image_name.to_string()));
-                return rel_list.len() as i32;
+                rel_list.len() as i32
             }
         }
     }

@@ -58,18 +58,18 @@ impl OleObjects {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        r_id: &usize,
-        ole_id: &usize,
+        r_id: usize,
+        ole_id: usize,
     ) {
         if !self.ole_object.is_empty() {
             // oleObjects
             write_start_tag(writer, "oleObjects", vec![], false);
 
             // mc:AlternateContent
-            let mut r = *r_id;
-            let mut o = *ole_id;
+            let mut r = r_id;
+            let mut o = ole_id;
             for obj in &self.ole_object {
-                obj.write_to(writer, &r, &o);
+                obj.write_to(writer, r, o);
                 r += 2;
                 o += 1;
             }

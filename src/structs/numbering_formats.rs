@@ -28,7 +28,7 @@ impl NumberingFormats {
     #[inline]
     pub(crate) fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
         let number_format_id = value.get_number_format_id();
-        self.numbering_format.insert(*number_format_id, value);
+        self.numbering_format.insert(number_format_id, value);
         self
     }
 
@@ -50,8 +50,8 @@ impl NumberingFormats {
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_numbering_format() {
             Some(v) => {
-                if *v.get_is_build_in() {
-                    return *v.get_number_format_id();
+                if v.get_is_build_in() {
+                    return v.get_number_format_id();
                 }
 
                 let hash_code = v.get_hash_code();
@@ -102,7 +102,7 @@ impl NumberingFormats {
         let formats_to_write: HashMap<_, _> = self
             .numbering_format
             .iter()
-            .filter(|(k, v)| !*v.get_is_build_in())
+            .filter(|(_, v)| !v.get_is_build_in())
             .collect();
         if formats_to_write.is_empty() {
             return;
@@ -114,9 +114,8 @@ impl NumberingFormats {
 
         formats_to_write
             .into_iter()
-            .enumerate()
-            .for_each(|(_, (index, numbering_format))| {
-                numbering_format.write_to(writer, index);
+            .for_each(|(index, numbering_format)| {
+                numbering_format.write_to(writer, *index);
             });
 
         write_end_tag(writer, "numFmts");

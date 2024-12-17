@@ -378,83 +378,53 @@ impl ListStyle {
         write_start_tag(writer, "a:lstStyle", vec![], is_empty);
 
         // a:defPPr
-        match &self.text_paragraph_properties_type.get("def") {
-            Some(v) => {
-                v.write_to_default(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("def") {
+            v.write_to_default(writer);
         }
 
         // a:lvl1pPr
-        match &self.text_paragraph_properties_type.get("lv1") {
-            Some(v) => {
-                v.write_to_lvl1(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv1") {
+            v.write_to_lvl1(writer);
         }
 
         // a:lvl2pPr
-        match &self.text_paragraph_properties_type.get("lv2") {
-            Some(v) => {
-                v.write_to_lvl2(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv2") {
+            v.write_to_lvl2(writer);
         }
 
         // a:lvl3pPr
-        match &self.text_paragraph_properties_type.get("lv3") {
-            Some(v) => {
-                v.write_to_lvl3(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv3") {
+            v.write_to_lvl3(writer);
         }
 
         // a:lvl4pPr
-        match &self.text_paragraph_properties_type.get("lv4") {
-            Some(v) => {
-                v.write_to_lvl4(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv4") {
+            v.write_to_lvl4(writer);
         }
 
         // a:lvl5pPr
-        match &self.text_paragraph_properties_type.get("lv5") {
-            Some(v) => {
-                v.write_to_lvl5(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv5") {
+            v.write_to_lvl5(writer);
         }
 
         // a:lvl6pPr
-        match &self.text_paragraph_properties_type.get("lv6") {
-            Some(v) => {
-                v.write_to_lvl6(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv6") {
+            v.write_to_lvl6(writer);
         }
 
         // a:lvl7pPr
-        match &self.text_paragraph_properties_type.get("lv7") {
-            Some(v) => {
-                v.write_to_lvl7(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv7") {
+            v.write_to_lvl7(writer);
         }
 
         // a:lvl8pPr
-        match &self.text_paragraph_properties_type.get("lv8") {
-            Some(v) => {
-                v.write_to_lvl8(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv8") {
+            v.write_to_lvl8(writer);
         }
 
         // a:lvl9pPr
-        match &self.text_paragraph_properties_type.get("lv9") {
-            Some(v) => {
-                v.write_to_lvl9(writer);
-            }
-            None => {}
+        if let Some(v) = &self.text_paragraph_properties_type.get("lv9") {
+            v.write_to_lvl9(writer);
         }
 
         if !is_empty {

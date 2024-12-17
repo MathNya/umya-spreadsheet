@@ -59,7 +59,7 @@ impl RichText {
     pub(crate) fn get_hash_code(&self) -> String {
         let mut value = String::from("");
         for ele in &self.rich_text_elements {
-            write!(value, "{}", ele.get_hash_code());
+            write!(value, "{}", ele.get_hash_code()).unwrap();
         }
         format!("{:x}", md5::Md5::digest(&value))
     }

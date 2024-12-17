@@ -107,7 +107,7 @@ impl TabColor {
     }
 
     #[inline]
-    pub fn get_indexed(&self) -> &u32 {
+    pub fn get_indexed(&self) -> u32 {
         &self.indexed.get_value()
     }
 
@@ -123,7 +123,7 @@ impl TabColor {
     }
 
     #[inline]
-    pub fn get_theme_index(&self) -> &u32 {
+    pub fn get_theme_index(&self) -> u32 {
         &self.theme_index.get_value()
     }
 
@@ -151,7 +151,7 @@ impl TabColor {
     }
 
     #[inline]
-    pub fn get_tint(&self) -> &f64 {
+    pub fn get_tint(&self) -> f64 {
         &self.tint.get_value()
     }
 

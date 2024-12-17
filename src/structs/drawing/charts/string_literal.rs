@@ -60,7 +60,7 @@ impl StringLiteral {
 
         // c:pt
         for (index, obj) in self.string_point_list.iter().enumerate() {
-            obj.write_to(writer, &(index as u32));
+            obj.write_to(writer, index as u32);
         }
 
         write_end_tag(writer, "c:strLit");

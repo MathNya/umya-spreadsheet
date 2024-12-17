@@ -12,7 +12,7 @@ pub struct RotateY {
     val: UInt16Value,
 }
 impl RotateY {
-    pub fn get_val(&self) -> &u16 {
+    pub fn get_val(&self) -> u16 {
         self.val.get_value()
     }
 

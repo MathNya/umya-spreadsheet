@@ -25,7 +25,7 @@ pub struct SheetFormatProperties {
 
 impl SheetFormatProperties {
     #[inline]
-    pub fn get_base_column_width(&self) -> &u32 {
+    pub fn get_base_column_width(&self) -> u32 {
         self.base_column_width.get_value()
     }
 
@@ -36,7 +36,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_custom_height(&self) -> &bool {
+    pub fn get_custom_height(&self) -> bool {
         self.custom_height.get_value()
     }
 
@@ -47,7 +47,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_default_column_width(&self) -> &f64 {
+    pub fn get_default_column_width(&self) -> f64 {
         self.default_column_width.get_value()
     }
 
@@ -58,7 +58,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_default_row_height(&self) -> &f64 {
+    pub fn get_default_row_height(&self) -> f64 {
         self.default_row_height.get_value()
     }
 
@@ -69,7 +69,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_dy_descent(&self) -> &f64 {
+    pub fn get_dy_descent(&self) -> f64 {
         self.dy_descent.get_value()
     }
 
@@ -80,7 +80,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_outline_level_column(&self) -> &u8 {
+    pub fn get_outline_level_column(&self) -> u8 {
         self.outline_level_column.get_value()
     }
 
@@ -91,7 +91,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_outline_level_row(&self) -> &u8 {
+    pub fn get_outline_level_row(&self) -> u8 {
         self.outline_level_row.get_value()
     }
 
@@ -102,7 +102,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_thick_bottom(&self) -> &bool {
+    pub fn get_thick_bottom(&self) -> bool {
         self.thick_bottom.get_value()
     }
 
@@ -113,7 +113,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
-    pub fn get_thick_top(&self) -> &bool {
+    pub fn get_thick_top(&self) -> bool {
         self.thick_top.get_value()
     }
 
@@ -156,7 +156,7 @@ impl SheetFormatProperties {
 
         let str_custom_height = self.custom_height.get_value_string();
         if self.custom_height.has_value() {
-            attributes.push(("customHeight", &str_custom_height));
+            attributes.push(("customHeight", str_custom_height));
         }
 
         let str_default_column_width = self.default_column_width.get_value_string();
@@ -186,12 +186,12 @@ impl SheetFormatProperties {
 
         let str_thick_bottom = self.thick_bottom.get_value_string();
         if self.thick_bottom.has_value() {
-            attributes.push(("thickBottom", &str_thick_bottom));
+            attributes.push(("thickBottom", str_thick_bottom));
         }
 
         let str_thick_top = self.thick_top.get_value_string();
         if self.thick_top.has_value() {
-            attributes.push(("thickTop", &str_thick_top));
+            attributes.push(("thickTop", str_thick_top));
         }
 
         write_start_tag(writer, "sheetFormatPr", attributes, true);

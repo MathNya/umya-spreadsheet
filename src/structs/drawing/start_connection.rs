@@ -14,7 +14,7 @@ pub struct StartConnection {
 }
 impl StartConnection {
     #[inline]
-    pub fn get_id(&self) -> &u32 {
+    pub fn get_id(&self) -> u32 {
         self.id.get_value()
     }
 
@@ -24,7 +24,7 @@ impl StartConnection {
     }
 
     #[inline]
-    pub fn get_index(&self) -> &u32 {
+    pub fn get_index(&self) -> u32 {
         self.index.get_value()
     }
 

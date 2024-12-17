@@ -1,12 +1,10 @@
 // dataField
 use crate::reader::driver::*;
-use crate::structs::BooleanValue;
 use crate::structs::Int32Value;
-use crate::structs::Location;
 use crate::structs::StringValue;
 use crate::structs::UInt32Value;
 use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -21,17 +19,18 @@ pub struct DataField {
 impl DataField {
     #[inline]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name.get_value_str()
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
     #[inline]
-    pub fn get_fie_id(&self) -> &u32 {
+    pub fn get_fie_id(&self) -> u32 {
         self.fie_id.get_value()
     }
 
@@ -42,7 +41,7 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_base_fie_id(&self) -> &i32 {
+    pub fn get_base_fie_id(&self) -> i32 {
         self.base_fie_id.get_value()
     }
 
@@ -53,7 +52,7 @@ impl DataField {
     }
 
     #[inline]
-    pub fn get_base_item(&self) -> &u32 {
+    pub fn get_base_item(&self) -> u32 {
         self.base_item.get_value()
     }
 
@@ -76,6 +75,7 @@ impl DataField {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // dataField
         write_start_tag(

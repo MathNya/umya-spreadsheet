@@ -1,7 +1,5 @@
 use crate::helper::coordinate::*;
 
-use super::coordinate;
-
 /// `(col, row)`
 pub type BasicCellIndex = (u32, u32);
 

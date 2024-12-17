@@ -15,7 +15,7 @@ pub struct CommentRowTarget {
 
 impl CommentRowTarget {
     #[inline]
-    pub fn get_value(&self) -> &u32 {
+    pub fn get_value(&self) -> u32 {
         self.value.get_value()
     }
 
@@ -26,13 +26,15 @@ impl CommentRowTarget {
     }
 
     #[inline]
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows: &u32) {
+    #[allow(dead_code)]
+    pub(crate) fn adjustment_insert_row(&mut self, num_rows: u32) {
         let value = self.value.get_value() + num_rows;
         self.value.set_value(value);
     }
 
     #[inline]
-    pub(crate) fn adjustment_remove_row(&mut self, num_row: &u32) {
+    #[allow(dead_code)]
+    pub(crate) fn adjustment_remove_row(&mut self, num_row: u32) {
         if self.value.get_value() > num_row {
             let value = self.value.get_value() - num_row;
             self.value.set_value(value);
@@ -71,21 +73,21 @@ impl CommentRowTarget {
 }
 impl AdjustmentValue for CommentRowTarget {
     #[inline]
-    fn adjustment_insert_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         self.value.set_value(
-            adjustment_insert_coordinate(&(self.value.get_value() + &1), root_num, offset_num) - 1,
+            adjustment_insert_coordinate(self.value.get_value() + 1, root_num, offset_num) - 1,
         );
     }
 
     #[inline]
-    fn adjustment_remove_value(&mut self, root_num: &u32, offset_num: &u32) {
+    fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         self.value.set_value(
-            adjustment_remove_coordinate(&(self.value.get_value() + &1), root_num, offset_num) - 1,
+            adjustment_remove_coordinate(self.value.get_value() + 1, root_num, offset_num) - 1,
         );
     }
 
     #[inline]
-    fn is_remove_value(&self, root_num: &u32, offset_num: &u32) -> bool {
-        is_remove_coordinate(&(self.value.get_value() + 1), root_num, offset_num)
+    fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
+        is_remove_coordinate(self.value.get_value() + 1, root_num, offset_num)
     }
 }

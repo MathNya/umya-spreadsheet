@@ -21,6 +21,7 @@ impl Fonts {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_font_mut(&mut self) -> &mut ThinVec<Font> {
         &mut self.font
     }

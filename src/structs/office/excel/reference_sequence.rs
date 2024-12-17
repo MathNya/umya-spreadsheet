@@ -1,6 +1,4 @@
 // xm:sqref
-use crate::reader::driver::*;
-use crate::structs::Coordinate;
 use crate::structs::Range;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
@@ -73,14 +71,12 @@ impl ReferenceSequence {
                 Ok(Event::Text(e)) => {
                     value = e.unescape().unwrap().to_string();
                 }
-                Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"xm:sqref" => {
+                Ok(Event::End(ref e)) => {
+                    if e.name().into_inner() == b"xm:sqref" {
                         self.set_sqref(value);
-                        value = String::from("");
                         return;
                     }
-                    _ => (),
-                },
+                }
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:sqref"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
@@ -92,7 +88,7 @@ impl ReferenceSequence {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:sqref", vec![], false);
-        write_text_node(writer, &self.get_sqref());
+        write_text_node(writer, self.get_sqref());
         write_end_tag(writer, "xm:sqref");
     }
 }

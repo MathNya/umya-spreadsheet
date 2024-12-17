@@ -4,19 +4,19 @@ pub struct TrueFalseBlankValue {
 }
 impl TrueFalseBlankValue {
     #[inline]
-    pub(crate) fn get_value(&self) -> Option<&bool> {
-        self.value.as_ref()
+    pub(crate) fn get_value(&self) -> Option<bool> {
+        self.value
     }
 
     #[inline]
     pub(crate) fn _get_value_str(&self) -> &str {
-        self.get_value().map_or("", |v| if *v { "t" } else { "f" })
+        self.get_value().map_or("", |v| if v { "t" } else { "f" })
     }
 
     #[inline]
     pub(crate) fn get_value_string2(&self) -> &str {
         self.get_value()
-            .map_or("", |v| if *v { "True" } else { "False" })
+            .map_or("", |v| if v { "True" } else { "False" })
     }
 
     #[inline]

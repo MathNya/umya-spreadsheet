@@ -23,7 +23,7 @@ pub struct DefinedName {
 impl DefinedName {
     #[inline]
     pub fn get_name(&self) -> &str {
-        &self.name.get_value_str()
+        self.name.get_value_str()
     }
 
     #[inline]
@@ -46,7 +46,7 @@ impl DefinedName {
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let list = self.split_str(value);
         for v in &list {
-            if is_address(&v) {
+            if is_address(v) {
                 self.add_address(v);
             } else {
                 self.set_string_value(v);
@@ -64,6 +64,7 @@ impl DefinedName {
         self
     }
 
+    #[allow(dead_code)]
     pub(crate) fn get_sheet_name_crate(&self) -> String {
         if self.string_value.has_value() {
             return String::from("");
@@ -81,6 +82,7 @@ impl DefinedName {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_address_obj_mut(&mut self) -> &mut ThinVec<Address> {
         &mut self.address
     }
@@ -98,8 +100,8 @@ impl DefinedName {
     }
 
     #[inline]
-    pub fn get_local_sheet_id(&self) -> &u32 {
-        &self.local_sheet_id.get_value()
+    pub fn get_local_sheet_id(&self) -> u32 {
+        self.local_sheet_id.get_value()
     }
 
     #[inline]
@@ -108,8 +110,8 @@ impl DefinedName {
     }
 
     #[inline]
-    pub fn get_hidden(&self) -> &bool {
-        &self.hidden.get_value()
+    pub fn get_hidden(&self) -> bool {
+        self.hidden.get_value()
     }
 
     #[inline]
@@ -206,7 +208,7 @@ impl DefinedName {
         }
         let hidden_str = self.hidden.get_value_string();
         if self.hidden.has_value() {
-            attributes.push(("hidden", &hidden_str));
+            attributes.push(("hidden", hidden_str));
         }
         write_start_tag(writer, "definedName", attributes, false);
         write_text_node_conversion(writer, self.get_address());
@@ -217,10 +219,10 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         for address in &mut self.address {
             address.adjustment_insert_coordinate_with_sheet(
@@ -236,10 +238,10 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.address.retain(|x| {
             !(x.is_remove_coordinate_with_sheet(
@@ -262,13 +264,14 @@ impl AdjustmentCoordinateWithSheet for DefinedName {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     fn is_remove_coordinate_with_sheet(
         &self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         if self.string_value.has_value() {
             return false;

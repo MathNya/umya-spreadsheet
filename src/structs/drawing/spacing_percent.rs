@@ -13,7 +13,7 @@ pub struct SpacingPercent {
 }
 impl SpacingPercent {
     #[inline]
-    pub fn get_val(&self) -> &i32 {
+    pub fn get_val(&self) -> i32 {
         self.val.get_value()
     }
 

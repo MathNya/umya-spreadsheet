@@ -93,7 +93,7 @@ impl RawWorksheet {
 
     pub(crate) fn write<W: io::Seek + io::Write>(
         &self,
-        sheet_no: &i32,
+        sheet_no: i32,
         writer_mng: &mut WriterManager<W>,
     ) -> Result<(), XlsxError> {
         // Add worksheet

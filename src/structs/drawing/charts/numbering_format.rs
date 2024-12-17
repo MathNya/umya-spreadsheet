@@ -23,7 +23,7 @@ impl NumberingFormat {
         self
     }
 
-    pub fn get_source_linked(&self) -> &bool {
+    pub fn get_source_linked(&self) -> bool {
         self.source_linked.get_value()
     }
 

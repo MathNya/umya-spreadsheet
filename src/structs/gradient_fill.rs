@@ -19,7 +19,7 @@ pub struct GradientFill {
 
 impl GradientFill {
     #[inline]
-    pub fn get_degree(&self) -> &f64 {
+    pub fn get_degree(&self) -> f64 {
         self.degree.get_value()
     }
 

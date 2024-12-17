@@ -1,7 +1,6 @@
 use super::RichText;
 use super::SharedStringItem;
 use super::Text;
-use crate::helper::formula::*;
 use crate::structs::CellFormula;
 use crate::structs::CellRawValue;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
@@ -252,10 +251,10 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = &mut self.formula {
             v.adjustment_insert_coordinate_with_2sheet(
@@ -274,10 +273,10 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = &mut self.formula {
             v.adjustment_remove_coordinate_with_2sheet(
@@ -324,7 +323,7 @@ mod tests {
     fn error_checking() {
         let path = std::path::Path::new("./tests/test_files/pr_204.xlsx");
         let book = crate::reader::xlsx::read(path).unwrap();
-        let sheet = book.get_sheet(&0).unwrap();
+        let sheet = book.get_sheet(0).unwrap();
 
         let cell = sheet.get_cell_value("A1");
         assert!(cell.raw_value.is_error());

@@ -3,7 +3,7 @@
 use crate::reader::driver::*;
 use crate::structs::Int64Value;
 use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -16,8 +16,8 @@ pub struct Point2DType {
 
 impl Point2DType {
     #[inline]
-    pub fn get_x(&self) -> &i64 {
-        &self.x.get_value()
+    pub fn get_x(&self) -> i64 {
+        self.x.get_value()
     }
 
     #[inline]
@@ -26,8 +26,8 @@ impl Point2DType {
     }
 
     #[inline]
-    pub fn get_y(&self) -> &i64 {
-        &self.y.get_value()
+    pub fn get_y(&self) -> i64 {
+        self.y.get_value()
     }
 
     #[inline]

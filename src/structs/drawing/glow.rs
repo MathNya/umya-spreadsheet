@@ -16,7 +16,7 @@ pub struct Glow {
 
 impl Glow {
     #[inline]
-    pub fn get_radius(&self) -> &i64 {
+    pub fn get_radius(&self) -> i64 {
         self.radius.get_value()
     }
 

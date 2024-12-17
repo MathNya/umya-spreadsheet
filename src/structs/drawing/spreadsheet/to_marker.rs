@@ -14,7 +14,7 @@ pub struct ToMarker {
 }
 impl ToMarker {
     #[inline]
-    pub fn get_col(&self) -> &usize {
+    pub fn get_col(&self) -> usize {
         &self.col
     }
 
@@ -25,7 +25,7 @@ impl ToMarker {
     }
 
     #[inline]
-    pub fn get_col_off(&self) -> &usize {
+    pub fn get_col_off(&self) -> usize {
         &self.col_off
     }
 
@@ -36,7 +36,7 @@ impl ToMarker {
     }
 
     #[inline]
-    pub fn get_row(&self) -> &usize {
+    pub fn get_row(&self) -> usize {
         &self.row
     }
 
@@ -47,7 +47,7 @@ impl ToMarker {
     }
 
     #[inline]
-    pub fn get_row_off(&self) -> &usize {
+    pub fn get_row_off(&self) -> usize {
         &self.row_off
     }
 
@@ -58,17 +58,17 @@ impl ToMarker {
     }
 
     #[inline]
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows: &usize) {
+    pub(crate) fn adjustment_insert_row(&mut self, num_rows: usize) {
         self.row += num_rows;
     }
 
     #[inline]
-    pub(crate) fn adjustment_insert_column(&mut self, num_cols: &usize) {
+    pub(crate) fn adjustment_insert_column(&mut self, num_cols: usize) {
         self.col += num_cols;
     }
 
     #[inline]
-    pub(crate) fn adjustment_remove_row(&mut self, num_rows: &usize) {
+    pub(crate) fn adjustment_remove_row(&mut self, num_rows: usize) {
         self.row = if &self.row > num_rows {
             self.row - num_rows
         } else {
@@ -77,7 +77,7 @@ impl ToMarker {
     }
 
     #[inline]
-    pub(crate) fn adjustment_remove_column(&mut self, num_cols: &usize) {
+    pub(crate) fn adjustment_remove_column(&mut self, num_cols: usize) {
         self.col = if &self.col > num_cols {
             self.col - num_cols
         } else {

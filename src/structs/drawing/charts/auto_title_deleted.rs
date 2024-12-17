@@ -12,7 +12,7 @@ pub struct AutoTitleDeleted {
     val: BooleanValue,
 }
 impl AutoTitleDeleted {
-    pub fn get_val(&self) -> &bool {
+    pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 

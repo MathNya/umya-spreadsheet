@@ -14,8 +14,8 @@ pub struct ToMarker {
 }
 impl ToMarker {
     #[inline]
-    pub fn get_col(&self) -> &usize {
-        &self.col
+    pub fn get_col(&self) -> usize {
+        self.col
     }
 
     #[inline]
@@ -25,8 +25,8 @@ impl ToMarker {
     }
 
     #[inline]
-    pub fn get_col_off(&self) -> &usize {
-        &self.col_off
+    pub fn get_col_off(&self) -> usize {
+        self.col_off
     }
 
     #[inline]
@@ -36,8 +36,8 @@ impl ToMarker {
     }
 
     #[inline]
-    pub fn get_row(&self) -> &usize {
-        &self.row
+    pub fn get_row(&self) -> usize {
+        self.row
     }
 
     #[inline]
@@ -47,8 +47,8 @@ impl ToMarker {
     }
 
     #[inline]
-    pub fn get_row_off(&self) -> &usize {
-        &self.row_off
+    pub fn get_row_off(&self) -> usize {
+        self.row_off
     }
 
     #[inline]
@@ -58,23 +58,23 @@ impl ToMarker {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: usize) {
         self.row += num_rows;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: usize) {
         self.col += num_cols;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
-        self.row = self.row.saturating_sub(*num_rows).max(1);
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: usize) {
+        self.row = self.row.saturating_sub(num_rows).max(1);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &usize) {
-        self.col = self.col.saturating_sub(*num_cols).max(1);
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: usize) {
+        self.col = self.col.saturating_sub(num_cols).max(1);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -117,22 +117,22 @@ impl ToMarker {
 
         // xdr:col
         write_start_tag(writer, "xdr:col", vec![], false);
-        write_text_node(writer, &self.col.to_string());
+        write_text_node(writer, self.col.to_string());
         write_end_tag(writer, "xdr:col");
 
         // xdr:colOff
         write_start_tag(writer, "xdr:colOff", vec![], false);
-        write_text_node(writer, &self.col_off.to_string());
+        write_text_node(writer, self.col_off.to_string());
         write_end_tag(writer, "xdr:colOff");
 
         // xdr:row
         write_start_tag(writer, "xdr:row", vec![], false);
-        write_text_node(writer, &self.row.to_string());
+        write_text_node(writer, self.row.to_string());
         write_end_tag(writer, "xdr:row");
 
         // xdr:rowOff
         write_start_tag(writer, "xdr:rowOff", vec![], false);
-        write_text_node(writer, &self.row_off.to_string());
+        write_text_node(writer, self.row_off.to_string());
         write_end_tag(writer, "xdr:rowOff");
 
         write_end_tag(writer, "to");

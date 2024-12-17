@@ -2,7 +2,7 @@
 use crate::reader::driver::*;
 use crate::structs::Int32Value;
 use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -12,7 +12,7 @@ pub struct Field {
     x: Int32Value,
 }
 impl Field {
-    pub fn get_data_field(&self) -> &i32 {
+    pub fn get_data_field(&self) -> i32 {
         self.x.get_value()
     }
 

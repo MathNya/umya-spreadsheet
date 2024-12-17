@@ -21,8 +21,8 @@ pub struct Anchor {
 
 impl Anchor {
     #[inline]
-    pub fn get_left_column(&self) -> &u32 {
-        &self.left_column
+    pub fn get_left_column(&self) -> u32 {
+        self.left_column
     }
 
     #[inline]
@@ -32,8 +32,8 @@ impl Anchor {
     }
 
     #[inline]
-    pub fn get_left_offset(&self) -> &u32 {
-        &self.left_offset
+    pub fn get_left_offset(&self) -> u32 {
+        self.left_offset
     }
 
     #[inline]
@@ -43,8 +43,8 @@ impl Anchor {
     }
 
     #[inline]
-    pub fn get_top_row(&self) -> &u32 {
-        &self.top_row
+    pub fn get_top_row(&self) -> u32 {
+        self.top_row
     }
 
     #[inline]
@@ -54,8 +54,8 @@ impl Anchor {
     }
 
     #[inline]
-    pub fn get_top_offset(&self) -> &u32 {
-        &self.top_offset
+    pub fn get_top_offset(&self) -> u32 {
+        self.top_offset
     }
 
     #[inline]
@@ -65,8 +65,8 @@ impl Anchor {
     }
 
     #[inline]
-    pub fn get_right_column(&self) -> &u32 {
-        &self.right_column
+    pub fn get_right_column(&self) -> u32 {
+        self.right_column
     }
 
     #[inline]
@@ -76,8 +76,8 @@ impl Anchor {
     }
 
     #[inline]
-    pub fn get_right_offset(&self) -> &u32 {
-        &self.right_offset
+    pub fn get_right_offset(&self) -> u32 {
+        self.right_offset
     }
 
     #[inline]
@@ -87,8 +87,8 @@ impl Anchor {
     }
 
     #[inline]
-    pub fn get_bottom_row(&self) -> &u32 {
-        &self.bottom_row
+    pub fn get_bottom_row(&self) -> u32 {
+        self.bottom_row
     }
 
     #[inline]
@@ -98,8 +98,8 @@ impl Anchor {
     }
 
     #[inline]
-    pub fn get_bottom_offset(&self) -> &u32 {
-        &self.bottom_offset
+    pub fn get_bottom_offset(&self) -> u32 {
+        self.bottom_offset
     }
 
     #[inline]
@@ -109,25 +109,28 @@ impl Anchor {
     }
 
     #[inline]
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows: &u32) {
+    #[allow(dead_code)]
+    pub(crate) fn adjustment_insert_row(&mut self, num_rows: u32) {
         self.top_row += num_rows;
         self.bottom_row += num_rows;
     }
 
     #[inline]
-    pub(crate) fn adjustment_insert_column(&mut self, num_cols: &u32) {
+    #[allow(dead_code)]
+    pub(crate) fn adjustment_insert_column(&mut self, num_cols: u32) {
         self.left_column += num_cols;
         self.right_column += num_cols;
     }
 
     #[inline]
-    pub(crate) fn adjustment_remove_row(&mut self, num_rows: &u32) {
-        self.top_row = if &self.top_row > num_rows {
+    #[allow(dead_code)]
+    pub(crate) fn adjustment_remove_row(&mut self, num_rows: u32) {
+        self.top_row = if self.top_row > num_rows {
             self.top_row - num_rows
         } else {
             1
         };
-        self.bottom_row = if &self.bottom_row > num_rows {
+        self.bottom_row = if self.bottom_row > num_rows {
             self.bottom_row - num_rows
         } else {
             1
@@ -135,13 +138,14 @@ impl Anchor {
     }
 
     #[inline]
-    pub(crate) fn adjustment_remove_column(&mut self, num_cols: &u32) {
-        self.left_column = if &self.left_column > num_cols {
+    #[allow(dead_code)]
+    pub(crate) fn adjustment_remove_column(&mut self, num_cols: u32) {
+        self.left_column = if self.left_column > num_cols {
             self.left_column - num_cols
         } else {
             1
         };
-        self.right_column = if &self.right_column > num_cols {
+        self.right_column = if self.right_column > num_cols {
             self.right_column - num_cols
         } else {
             1
@@ -208,56 +212,52 @@ impl AdjustmentCoordinate for Anchor {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.left_column =
-            adjustment_insert_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num)
-                - 1;
+            adjustment_insert_coordinate(self.left_column + 1, root_col_num, offset_col_num) - 1;
         self.right_column =
-            adjustment_insert_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num)
-                - 1;
+            adjustment_insert_coordinate(self.right_column + 1, root_col_num, offset_col_num) - 1;
 
         self.top_row =
-            adjustment_insert_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
+            adjustment_insert_coordinate(self.top_row + 1, root_row_num, offset_row_num) - 1;
         self.bottom_row =
-            adjustment_insert_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
+            adjustment_insert_coordinate(self.bottom_row + 1, root_row_num, offset_row_num) - 1;
     }
 
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.left_column =
-            adjustment_remove_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num)
-                - 1;
+            adjustment_remove_coordinate(self.left_column + 1, root_col_num, offset_col_num) - 1;
         self.right_column =
-            adjustment_remove_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num)
-                - 1;
+            adjustment_remove_coordinate(self.right_column + 1, root_col_num, offset_col_num) - 1;
 
         self.top_row =
-            adjustment_remove_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num) - 1;
+            adjustment_remove_coordinate(self.top_row + 1, root_row_num, offset_row_num) - 1;
         self.bottom_row =
-            adjustment_remove_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num) - 1;
+            adjustment_remove_coordinate(self.bottom_row + 1, root_row_num, offset_row_num) - 1;
     }
 
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
-        is_remove_coordinate(&(&self.left_column + 1), root_col_num, offset_col_num)
-            || is_remove_coordinate(&(&self.right_column + 1), root_col_num, offset_col_num)
-            || is_remove_coordinate(&(&self.top_row + 1), root_row_num, offset_row_num)
-            || is_remove_coordinate(&(&self.bottom_row + 1), root_row_num, offset_row_num)
+        is_remove_coordinate(self.left_column + 1, root_col_num, offset_col_num)
+            || is_remove_coordinate(self.right_column + 1, root_col_num, offset_col_num)
+            || is_remove_coordinate(self.top_row + 1, root_row_num, offset_row_num)
+            || is_remove_coordinate(self.bottom_row + 1, root_row_num, offset_row_num)
     }
 }

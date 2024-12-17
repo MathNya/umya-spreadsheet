@@ -12,7 +12,7 @@ pub struct Overlay {
     val: BooleanValue,
 }
 impl Overlay {
-    pub fn get_val(&self) -> &bool {
+    pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 

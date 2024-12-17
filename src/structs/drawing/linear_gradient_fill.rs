@@ -16,7 +16,7 @@ pub struct LinearGradientFill {
 
 impl LinearGradientFill {
     #[inline]
-    pub fn get_angle(&self) -> &i32 {
+    pub fn get_angle(&self) -> i32 {
         self.angle.get_value()
     }
 
@@ -27,7 +27,7 @@ impl LinearGradientFill {
     }
 
     #[inline]
-    pub fn get_scaled(&self) -> &bool {
+    pub fn get_scaled(&self) -> bool {
         self.scaled.get_value()
     }
 

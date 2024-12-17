@@ -139,10 +139,10 @@ impl AdjustmentCoordinate for Range {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = &mut self.start_col {
             v.adjustment_insert_value(root_col_num, offset_col_num);
@@ -161,10 +161,10 @@ impl AdjustmentCoordinate for Range {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = &mut self.start_col {
             v.adjustment_remove_value(root_col_num, offset_col_num);
@@ -183,10 +183,10 @@ impl AdjustmentCoordinate for Range {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         let start_col_result = match &self.start_col {
             Some(v) => v.is_remove_value(root_col_num, offset_col_num),

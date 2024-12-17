@@ -5,8 +5,7 @@ use super::UInt32Value;
 use crate::helper::crypt::*;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -70,7 +69,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_spin_count(&self) -> &u32 {
+    pub fn get_spin_count(&self) -> u32 {
         self.spin_count.get_value()
     }
 
@@ -98,7 +97,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_sheet(&self) -> &bool {
+    pub fn get_sheet(&self) -> bool {
         self.sheet.get_value()
     }
 
@@ -109,7 +108,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_objects(&self) -> &bool {
+    pub fn get_objects(&self) -> bool {
         self.objects.get_value()
     }
 
@@ -120,7 +119,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_delete_rows(&self) -> &bool {
+    pub fn get_delete_rows(&self) -> bool {
         self.delete_rows.get_value()
     }
 
@@ -131,7 +130,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_insert_columns(&self) -> &bool {
+    pub fn get_insert_columns(&self) -> bool {
         self.insert_columns.get_value()
     }
 
@@ -142,7 +141,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_delete_columns(&self) -> &bool {
+    pub fn get_delete_columns(&self) -> bool {
         self.delete_columns.get_value()
     }
 
@@ -153,7 +152,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_insert_hyperlinks(&self) -> &bool {
+    pub fn get_insert_hyperlinks(&self) -> bool {
         self.insert_hyperlinks.get_value()
     }
 
@@ -164,7 +163,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_auto_filter(&self) -> &bool {
+    pub fn get_auto_filter(&self) -> bool {
         self.auto_filter.get_value()
     }
 
@@ -175,7 +174,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_scenarios(&self) -> &bool {
+    pub fn get_scenarios(&self) -> bool {
         self.scenarios.get_value()
     }
 
@@ -186,7 +185,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_format_cells(&self) -> &bool {
+    pub fn get_format_cells(&self) -> bool {
         self.format_cells.get_value()
     }
 
@@ -197,7 +196,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_format_columns(&self) -> &bool {
+    pub fn get_format_columns(&self) -> bool {
         self.format_columns.get_value()
     }
 
@@ -208,7 +207,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_insert_rows(&self) -> &bool {
+    pub fn get_insert_rows(&self) -> bool {
         self.insert_rows.get_value()
     }
 
@@ -219,7 +218,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_format_rows(&self) -> &bool {
+    pub fn get_format_rows(&self) -> bool {
         self.format_rows.get_value()
     }
 
@@ -230,7 +229,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_pivot_tables(&self) -> &bool {
+    pub fn get_pivot_tables(&self) -> bool {
         self.pivot_tables.get_value()
     }
 
@@ -241,7 +240,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_select_locked_cells(&self) -> &bool {
+    pub fn get_select_locked_cells(&self) -> bool {
         self.select_locked_cells.get_value()
     }
 
@@ -252,7 +251,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_select_unlocked_cells(&self) -> &bool {
+    pub fn get_select_unlocked_cells(&self) -> bool {
         self.select_unlocked_cells.get_value()
     }
 
@@ -263,7 +262,7 @@ impl SheetProtection {
     }
 
     #[inline]
-    pub fn get_sort(&self) -> &bool {
+    pub fn get_sort(&self) -> bool {
         self.sort.get_value()
     }
 

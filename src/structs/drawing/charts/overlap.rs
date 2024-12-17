@@ -12,7 +12,7 @@ pub struct Overlap {
     val: SByteValue,
 }
 impl Overlap {
-    pub fn get_val(&self) -> &i8 {
+    pub fn get_val(&self) -> i8 {
         self.val.get_value()
     }
 

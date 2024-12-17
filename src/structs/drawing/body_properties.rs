@@ -82,7 +82,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_left_inset(&self) -> &i32 {
+    pub fn get_left_inset(&self) -> i32 {
         self.left_inset.get_value()
     }
 
@@ -92,7 +92,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_top_inset(&self) -> &i32 {
+    pub fn get_top_inset(&self) -> i32 {
         self.top_inset.get_value()
     }
 
@@ -102,7 +102,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_right_inset(&self) -> &i32 {
+    pub fn get_right_inset(&self) -> i32 {
         self.right_inset.get_value()
     }
 
@@ -112,7 +112,7 @@ impl BodyProperties {
     }
 
     #[inline]
-    pub fn get_bottom_inset(&self) -> &i32 {
+    pub fn get_bottom_inset(&self) -> i32 {
         self.bottom_inset.get_value()
     }
 
@@ -138,40 +138,38 @@ impl BodyProperties {
         e: &BytesStart,
         empty_flag: bool,
     ) {
-        for attr in e.attributes().with_checks(false) {
-            if let Ok(attr) = attr {
-                let key = attr.key.into_inner();
-                let value = get_attribute_value(&attr).unwrap();
-                match key {
-                    b"vertOverflow" => {
-                        self.set_vert_overflow(value);
-                    }
-                    b"horzOverflow" => {
-                        self.set_horz_overflow(value);
-                    }
-                    b"rtlCol" => {
-                        self.set_rtl_col(value);
-                    }
-                    b"anchor" => {
-                        self.set_anchor(value);
-                    }
-                    b"wrap" => {
-                        self.wrap.set_value_string(value);
-                    }
-                    b"lIns" => {
-                        self.left_inset.set_value_string(value);
-                    }
-                    b"tIns" => {
-                        self.top_inset.set_value_string(value);
-                    }
-                    b"rIns" => {
-                        self.right_inset.set_value_string(value);
-                    }
-                    b"bIns" => {
-                        self.bottom_inset.set_value_string(value);
-                    }
-                    _ => {}
+        for attr in e.attributes().with_checks(false).flatten() {
+            let key = attr.key.into_inner();
+            let value = get_attribute_value(&attr).unwrap();
+            match key {
+                b"vertOverflow" => {
+                    self.set_vert_overflow(value);
                 }
+                b"horzOverflow" => {
+                    self.set_horz_overflow(value);
+                }
+                b"rtlCol" => {
+                    self.set_rtl_col(value);
+                }
+                b"anchor" => {
+                    self.set_anchor(value);
+                }
+                b"wrap" => {
+                    self.wrap.set_value_string(value);
+                }
+                b"lIns" => {
+                    self.left_inset.set_value_string(value);
+                }
+                b"tIns" => {
+                    self.top_inset.set_value_string(value);
+                }
+                b"rIns" => {
+                    self.right_inset.set_value_string(value);
+                }
+                b"bIns" => {
+                    self.bottom_inset.set_value_string(value);
+                }
+                _ => {}
             }
         }
 

@@ -5,8 +5,7 @@ use super::UInt32Value;
 use crate::helper::crypt::*;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -62,7 +61,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    pub fn get_workbook_spin_count(&self) -> &u32 {
+    pub fn get_workbook_spin_count(&self) -> u32 {
         self.workbook_spin_count.get_value()
     }
 
@@ -123,7 +122,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    pub fn get_revisions_spin_count(&self) -> &u32 {
+    pub fn get_revisions_spin_count(&self) -> u32 {
         self.revisions_spin_count.get_value()
     }
 
@@ -151,7 +150,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    pub fn get_lock_revision(&self) -> &bool {
+    pub fn get_lock_revision(&self) -> bool {
         self.lock_revision.get_value()
     }
 
@@ -162,7 +161,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    pub fn get_lock_structure(&self) -> &bool {
+    pub fn get_lock_structure(&self) -> bool {
         self.lock_structure.get_value()
     }
 
@@ -173,7 +172,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    pub fn get_lock_windows(&self) -> &bool {
+    pub fn get_lock_windows(&self) -> bool {
         self.lock_windows.get_value()
     }
 

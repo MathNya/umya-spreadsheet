@@ -4,11 +4,8 @@ pub struct Int32Value {
 }
 impl Int32Value {
     #[inline]
-    pub(crate) fn get_value(&self) -> &i32 {
-        match &self.value {
-            Some(v) => v,
-            None => &0,
-        }
+    pub(crate) fn get_value(&self) -> i32 {
+        self.value.unwrap_or(0)
     }
 
     #[inline]

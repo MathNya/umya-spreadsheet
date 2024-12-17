@@ -137,7 +137,7 @@ impl Shape {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
-        ole_id: &usize,
+        ole_id: usize,
     ) {
         // xdr:sp
         write_start_tag(

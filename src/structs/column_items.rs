@@ -30,6 +30,7 @@ impl ColumnItems {
     }
 
     #[inline]
+    #[allow(unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -61,6 +62,7 @@ impl ColumnItems {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // colItems
         write_start_tag(

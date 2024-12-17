@@ -17,8 +17,8 @@ pub struct GradientStop {
 
 impl GradientStop {
     #[inline]
-    pub fn get_position(&self) -> &i32 {
-        &self.position
+    pub fn get_position(&self) -> i32 {
+        self.position
     }
 
     #[inline]
@@ -119,12 +119,12 @@ impl GradientStop {
         );
 
         // a:schemeClr
-        for v in &self.scheme_color {
+        if let Some(v) = &self.scheme_color {
             v.write_to(writer);
         }
 
         // a:srgbClr
-        for v in &self.rgb_color_model_hex {
+        if let Some(v) = &self.rgb_color_model_hex {
             v.write_to(writer);
         }
 

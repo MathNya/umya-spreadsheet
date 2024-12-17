@@ -3,7 +3,6 @@ use crate::structs::EnumValue;
 use crate::structs::SourceValues;
 use crate::structs::WorksheetSource;
 
-use crate::helper::const_str::*;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
@@ -40,6 +39,7 @@ impl CacheSource {
         self
     }
 
+    #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -70,20 +70,19 @@ impl CacheSource {
         );
     }
 
+    #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheSource
         let empty_flg = self.worksheet_source.is_none();
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("type", self.r#type.get_hash_string()));
+        let attributes = vec![("type", self.r#type.get_hash_string())];
+
         write_start_tag(writer, "cacheSource", attributes, empty_flg);
 
         if !empty_flg {
             // worksheetSource
-            match &self.worksheet_source {
-                Some(v) => v.write_to(writer),
-                None => {}
+            if let Some(v) = &self.worksheet_source {
+                v.write_to(writer)
             }
-
             write_end_tag(writer, "cacheSource");
         }
     }

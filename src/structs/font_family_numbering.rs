@@ -14,7 +14,7 @@ pub struct FontFamilyNumbering {
 
 impl FontFamilyNumbering {
     #[inline]
-    pub fn get_val(&self) -> &i32 {
+    pub fn get_val(&self) -> i32 {
         self.val.get_value()
     }
 

@@ -8,7 +8,6 @@ use crate::structs::StringValue;
 use crate::structs::UInt32Value;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
 use crate::writer::driver::*;
-use quick_xml::de;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -32,7 +31,7 @@ pub struct CellFormula {
 }
 impl CellFormula {
     #[inline]
-    pub fn get_bx(&self) -> &bool {
+    pub fn get_bx(&self) -> bool {
         self.bx.get_value()
     }
 
@@ -43,7 +42,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_data_table_2d(&self) -> &bool {
+    pub fn get_data_table_2d(&self) -> bool {
         self.data_table_2d.get_value()
     }
 
@@ -54,7 +53,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_data_table_row(&self) -> &bool {
+    pub fn get_data_table_row(&self) -> bool {
         self.data_table_row.get_value()
     }
 
@@ -75,7 +74,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_input_1deleted(&self) -> &bool {
+    pub fn get_input_1deleted(&self) -> bool {
         self.input_1deleted.get_value()
     }
 
@@ -86,7 +85,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_input_2deleted(&self) -> &bool {
+    pub fn get_input_2deleted(&self) -> bool {
         self.input_2deleted.get_value()
     }
 
@@ -130,7 +129,7 @@ impl CellFormula {
     }
 
     #[inline]
-    pub fn get_shared_index(&self) -> &u32 {
+    pub fn get_shared_index(&self) -> u32 {
         self.shared_index.get_value()
     }
 
@@ -196,7 +195,7 @@ impl CellFormula {
 
         // Shared
         if self.formula_type.get_value() == &CellFormulaValues::Shared {
-            match formula_shared_list.get(self.shared_index.get_value()) {
+            match formula_shared_list.get(&self.shared_index.get_value()) {
                 Some((parent_cell_reference_str, token)) => {
                     let parent_cell = index_from_coordinate(parent_cell_reference_str);
                     let self_cell = index_from_coordinate(cell_reference_str);
@@ -213,10 +212,10 @@ impl CellFormula {
                     let mut token_new = token.clone();
                     let value = adjustment_insert_formula_coordinate(
                         &mut token_new,
-                        &root_col_num,
-                        &offset_col_num,
-                        &root_row_num,
-                        &offset_row_num,
+                        root_col_num,
+                        offset_col_num,
+                        root_row_num,
+                        offset_row_num,
                         "",
                         "",
                         true,
@@ -225,7 +224,7 @@ impl CellFormula {
                 }
                 None => {
                     formula_shared_list.insert(
-                        self.shared_index.get_value().clone(),
+                        self.shared_index.get_value(),
                         (
                             cell_reference_str.to_string(),
                             parse_to_tokens(format!("={}", self.text.get_value_str())),
@@ -240,41 +239,41 @@ impl CellFormula {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         coordinate: &str,
-        formula_shared_list: &HashMap<&u32, (String, Option<String>)>,
+        formula_shared_list: &HashMap<u32, (String, Option<String>)>,
     ) {
         // f
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let bx_str = self.bx.get_value_string();
         if self.bx.has_value() {
-            attributes.push(("bx", &bx_str));
+            attributes.push(("bx", bx_str));
         }
 
         let data_table_2d_str = self.data_table_2d.get_value_string();
         if self.data_table_2d.has_value() {
-            attributes.push(("dt2D", &data_table_2d_str));
+            attributes.push(("dt2D", data_table_2d_str));
         }
 
         let data_table_row_str = self.data_table_row.get_value_string();
         if self.data_table_row.has_value() {
-            attributes.push(("dtr", &data_table_row_str));
+            attributes.push(("dtr", data_table_row_str));
         }
 
         let formula_type_str = self.formula_type.get_value_string();
         if self.formula_type.has_value() {
             // Not SUPPORT Array
             if self.formula_type.get_value() != &CellFormulaValues::Array {
-                attributes.push(("t", &formula_type_str));
+                attributes.push(("t", formula_type_str));
             }
         }
 
         let input_1deleted_str = self.input_1deleted.get_value_string();
         if self.input_1deleted.has_value() {
-            attributes.push(("del1", &input_1deleted_str));
+            attributes.push(("del1", input_1deleted_str));
         }
 
         let input_2deleted_str = self.input_2deleted.get_value_string();
         if self.input_2deleted.has_value() {
-            attributes.push(("del2", &input_2deleted_str));
+            attributes.push(("del2", input_2deleted_str));
         }
 
         if self.r1.has_value() {
@@ -285,22 +284,19 @@ impl CellFormula {
             attributes.push(("r2", self.r2.get_value_str()));
         }
 
+        #[allow(unused_assignments)]
         let mut reference_str = String::from("");
-        match formula_shared_list.get(self.shared_index.get_value()) {
-            Some((start_col, end_col)) => {
-                if coordinate == start_col {
-                    reference_str = match end_col {
-                        Some(v) => {
-                            format!("{}:{}", start_col, v)
-                        }
-                        None => {
-                            format!("{}", start_col)
-                        }
-                    };
-                    attributes.push(("ref", &reference_str));
-                }
+        if let Some((start_col, end_col)) = formula_shared_list.get(&self.shared_index.get_value())
+        {
+            if coordinate == start_col {
+                reference_str = match end_col {
+                    Some(v) => {
+                        format!("{}:{}", start_col, v)
+                    }
+                    None => start_col.to_string(),
+                };
+                attributes.push(("ref", &reference_str));
             }
-            None => {}
         }
 
         let shared_index_str = self.shared_index.get_value_string();
@@ -318,10 +314,10 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = self.text.get_value() {
             let formula = adjustment_insert_formula_coordinate(
@@ -355,10 +351,10 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
         &mut self,
         self_sheet_name: &str,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         if let Some(v) = self.text.get_value() {
             let formula = adjustment_remove_formula_coordinate(

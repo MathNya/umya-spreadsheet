@@ -18,7 +18,7 @@ pub struct Break {
 
 impl Break {
     #[inline]
-    pub fn get_id(&self) -> &u32 {
+    pub fn get_id(&self) -> u32 {
         self.id.get_value()
     }
 
@@ -29,7 +29,7 @@ impl Break {
     }
 
     #[inline]
-    pub fn get_max(&self) -> &u32 {
+    pub fn get_max(&self) -> u32 {
         self.max.get_value()
     }
 
@@ -40,7 +40,7 @@ impl Break {
     }
 
     #[inline]
-    pub fn get_manual_page_break(&self) -> &bool {
+    pub fn get_manual_page_break(&self) -> bool {
         self.manual_page_break.get_value()
     }
 

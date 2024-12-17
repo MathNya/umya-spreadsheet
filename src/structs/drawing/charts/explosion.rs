@@ -12,7 +12,7 @@ pub struct Explosion {
     val: UInt32Value,
 }
 impl Explosion {
-    pub fn get_val(&self) -> &u32 {
+    pub fn get_val(&self) -> u32 {
         self.val.get_value()
     }
 

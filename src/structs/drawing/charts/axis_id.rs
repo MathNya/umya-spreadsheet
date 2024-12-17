@@ -12,7 +12,7 @@ pub struct AxisId {
     val: UInt32Value,
 }
 impl AxisId {
-    pub fn get_val(&self) -> &u32 {
+    pub fn get_val(&self) -> u32 {
         self.val.get_value()
     }
 

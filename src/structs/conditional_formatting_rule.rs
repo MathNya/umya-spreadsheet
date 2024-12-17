@@ -76,7 +76,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_priority(&self) -> &i32 {
+    pub fn get_priority(&self) -> i32 {
         self.priority.get_value()
     }
 
@@ -87,7 +87,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_percent(&self) -> &bool {
+    pub fn get_percent(&self) -> bool {
         self.percent.get_value()
     }
 
@@ -98,7 +98,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_bottom(&self) -> &bool {
+    pub fn get_bottom(&self) -> bool {
         self.bottom.get_value()
     }
 
@@ -109,7 +109,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_rank(&self) -> &u32 {
+    pub fn get_rank(&self) -> u32 {
         self.rank.get_value()
     }
 
@@ -120,7 +120,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_stop_if_true(&self) -> &bool {
+    pub fn get_stop_if_true(&self) -> bool {
         self.stop_if_true.get_value()
     }
 
@@ -131,7 +131,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_std_dev(&self) -> &i32 {
+    pub fn get_std_dev(&self) -> i32 {
         self.std_dev.get_value()
     }
 
@@ -142,7 +142,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_above_average(&self) -> &bool {
+    pub fn get_above_average(&self) -> bool {
         self.above_average.get_value()
     }
 
@@ -153,7 +153,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
-    pub fn get_equal_average(&self) -> &bool {
+    pub fn get_equal_average(&self) -> bool {
         self.equal_average.get_value()
     }
 

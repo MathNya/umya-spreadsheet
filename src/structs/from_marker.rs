@@ -16,8 +16,8 @@ pub struct FromMarker {
 
 impl FromMarker {
     #[inline]
-    pub fn get_col(&self) -> &usize {
-        &self.col
+    pub fn get_col(&self) -> usize {
+        self.col
     }
 
     #[inline]
@@ -27,8 +27,8 @@ impl FromMarker {
     }
 
     #[inline]
-    pub fn get_col_off(&self) -> &usize {
-        &self.col_off
+    pub fn get_col_off(&self) -> usize {
+        self.col_off
     }
 
     #[inline]
@@ -38,8 +38,8 @@ impl FromMarker {
     }
 
     #[inline]
-    pub fn get_row(&self) -> &usize {
-        &self.row
+    pub fn get_row(&self) -> usize {
+        self.row
     }
 
     #[inline]
@@ -49,8 +49,8 @@ impl FromMarker {
     }
 
     #[inline]
-    pub fn get_row_off(&self) -> &usize {
-        &self.row_off
+    pub fn get_row_off(&self) -> usize {
+        self.row_off
     }
 
     #[inline]
@@ -60,18 +60,18 @@ impl FromMarker {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: &usize) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: usize) {
         self.row += num_rows;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: &usize) {
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: usize) {
         self.col += num_cols;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: &usize) {
-        self.row = if &self.row > num_rows {
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: usize) {
+        self.row = if self.row > num_rows {
             self.row - num_rows
         } else {
             1
@@ -79,8 +79,8 @@ impl FromMarker {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: &usize) {
-        self.col = if &self.col > num_cols {
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: usize) {
+        self.col = if self.col > num_cols {
             self.col - num_cols
         } else {
             1
@@ -122,22 +122,22 @@ impl FromMarker {
 
         // xdr:col
         write_start_tag(writer, "xdr:col", vec![], false);
-        write_text_node(writer, &self.col.to_string());
+        write_text_node(writer, self.col.to_string());
         write_end_tag(writer, "xdr:col");
 
         // xdr:colOff
         write_start_tag(writer, "xdr:colOff", vec![], false);
-        write_text_node(writer, &self.col_off.to_string());
+        write_text_node(writer, self.col_off.to_string());
         write_end_tag(writer, "xdr:colOff");
 
         // xdr:row
         write_start_tag(writer, "xdr:row", vec![], false);
-        write_text_node(writer, &self.row.to_string());
+        write_text_node(writer, self.row.to_string());
         write_end_tag(writer, "xdr:row");
 
         // xdr:rowOff
         write_start_tag(writer, "xdr:rowOff", vec![], false);
-        write_text_node(writer, &self.row_off.to_string());
+        write_text_node(writer, self.row_off.to_string());
         write_end_tag(writer, "xdr:rowOff");
 
         write_end_tag(writer, "from");

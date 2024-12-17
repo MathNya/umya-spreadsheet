@@ -5,7 +5,6 @@ use super::Text;
 use super::TextElement;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
-use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -49,6 +48,7 @@ impl SharedStringItem {
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
     }

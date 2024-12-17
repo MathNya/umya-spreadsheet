@@ -106,15 +106,15 @@ use crate::traits::AdjustmentCoordinateWithSheet;
 /// // Get Chart by Worksheet.
 /// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
 /// let chart = worksheet.get_chart("C1");
-/// let chart = worksheet.get_chart_by_column_and_row(&3, &1);
+/// let chart = worksheet.get_chart_by_column_and_row(&3, 1);
 /// let chart = worksheet.get_chart_mut("C1");
-/// let chart = worksheet.get_chart_by_column_and_row_mut(&3, &1);
+/// let chart = worksheet.get_chart_by_column_and_row_mut(&3, 1);
 ///
 /// // Use this if there are multiple Charts in a given cell.
 /// let charts = worksheet.get_charts("C1");
-/// let charts = worksheet.get_charts_by_column_and_row(&3, &1);
+/// let charts = worksheet.get_charts_by_column_and_row(&3, 1);
 /// let charts = worksheet.get_charts_mut("C1");
-/// let charts = worksheet.get_charts_by_column_and_row_mut(&3, &1);
+/// let charts = worksheet.get_charts_by_column_and_row_mut(&3, 1);
 ///
 /// // Set Chart Title, Series Title, Horizonal Title and Vertical Title.
 /// let mut chart = book.get_sheet_by_name_mut("Sheet1").unwrap().get_chart_mut("C1").unwrap();
@@ -278,9 +278,7 @@ impl Chart {
 
     pub fn get_chart_space(&self) -> &ChartSpace {
         match self.two_cell_anchor.get_graphic_frame() {
-            Some(v) => {
-                return v.get_graphic().get_graphic_data().get_chart_space();
-            }
+            Some(v) => v.get_graphic().get_graphic_data().get_chart_space(),
             None => {
                 panic!("Non-ChartSpace.");
             }
@@ -289,12 +287,10 @@ impl Chart {
 
     pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
         match self.two_cell_anchor.get_graphic_frame_mut() {
-            Some(v) => {
-                return v
-                    .get_graphic_mut()
-                    .get_graphic_data_mut()
-                    .get_chart_space_mut();
-            }
+            Some(v) => v
+                .get_graphic_mut()
+                .get_graphic_data_mut()
+                .get_chart_space_mut(),
             None => {
                 panic!("Non-ChartSpace.");
             }
@@ -362,12 +358,12 @@ impl Chart {
     }
 
     #[inline]
-    pub(crate) fn get_col(&self) -> &u32 {
+    pub(crate) fn get_col(&self) -> u32 {
         self.two_cell_anchor.get_from_marker().get_col()
     }
 
     #[inline]
-    pub(crate) fn get_row(&self) -> &u32 {
+    pub(crate) fn get_row(&self) -> u32 {
         self.two_cell_anchor.get_from_marker().get_row()
     }
 
@@ -2209,10 +2205,10 @@ impl AdjustmentCoordinate for Chart {
     #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.two_cell_anchor.as_mut().adjustment_insert_coordinate(
             root_col_num,
@@ -2225,10 +2221,10 @@ impl AdjustmentCoordinate for Chart {
     #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.two_cell_anchor.as_mut().adjustment_remove_coordinate(
             root_col_num,
@@ -2241,10 +2237,10 @@ impl AdjustmentCoordinate for Chart {
     #[inline]
     fn is_remove_coordinate(
         &self,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) -> bool {
         self.two_cell_anchor.as_ref().is_remove_coordinate(
             root_col_num,
@@ -2259,10 +2255,10 @@ impl AdjustmentCoordinateWithSheet for Chart {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.two_cell_anchor
             .as_mut()
@@ -2279,10 +2275,10 @@ impl AdjustmentCoordinateWithSheet for Chart {
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
-        root_col_num: &u32,
-        offset_col_num: &u32,
-        root_row_num: &u32,
-        offset_row_num: &u32,
+        root_col_num: u32,
+        offset_col_num: u32,
+        root_row_num: u32,
+        offset_row_num: u32,
     ) {
         self.two_cell_anchor
             .as_mut()
