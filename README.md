@@ -16,6 +16,13 @@
 Please mention in issues if you have any questions.
 
 ## Update details
+### ver 2.2.1
+#### * Gridlines setting values can now be changed.
+```rust
+let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+let mut sheet = book.get_sheet_mut(&0).unwrap();
+sheet.get_sheet_views_mut().get_sheet_view_list_mut().get_mut(0).unwrap().set_show_grid_lines(false);
+```
 ### ver 2.2.0
 #### * Increased processing speed and reduced memory consumption.(Thank you. [schungx](https://github.com/schungx),[mxsrm](https://github.com/mxsrm))
 The return type has been changed in some functions.
@@ -45,13 +52,13 @@ sheet.add_comments(comment);
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.2.0"
+umya-spreadsheet = "2.2.1"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.2.0", features = ["js"] }
+umya-spreadsheet = { version = "2.2.1", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "2.2.0", features = ["image/png"] }
+umya-spreadsheet = { version = "2.2.1", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
