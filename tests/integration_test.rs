@@ -1590,7 +1590,7 @@ fn issue_210() {
     let path = std::path::Path::new("./tests/test_files/issue_210.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
     let sheet = book.get_sheet(0).unwrap();
-    for cell in sheet.get_cell_collection() {
+    for cell in sheet.get_cells() {
         if let Some(varA) = cell.get_style().get_alignment() {
             let horizontal = varA.get_horizontal().get_value_string();
             let vertical = varA.get_vertical().get_value_string();

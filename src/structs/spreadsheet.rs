@@ -419,10 +419,7 @@ impl Spreadsheet {
         self.work_sheet_collection
             .get(index)
             .map(|v| {
-                v.get_cell_collection_stream(
-                    &shared_string_table.read().unwrap(),
-                    self.get_stylesheet(),
-                )
+                v.get_cells_stream(&shared_string_table.read().unwrap(), self.get_stylesheet())
             })
             .ok_or("Not found.")
     }

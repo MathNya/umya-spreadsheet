@@ -58,9 +58,9 @@ pub struct Worksheet {
     sheet_id: Box<str>,
     title: Box<str>,
     state: EnumValue<SheetStateValues>,
-    cell_collection: Cells,
-    row_dimensions: Rows,
-    column_dimensions: Columns,
+    cells: Cells,
+    rows: Rows,
+    columns: Columns,
     worksheet_drawing: WorksheetDrawing,
     sheet_state: Box<str>,
     page_setup: PageSetup,
@@ -157,8 +157,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.cell_collection
-            .get_formatted_value_by_column_and_row(col, row)
+        self.cells.get_formatted_value_by_column_and_row(col, row)
     }
 
     // ************************
@@ -167,34 +166,34 @@ impl Worksheet {
     /// Get Cell List.
     #[inline]
     #[must_use]
-    pub fn get_cell_collection(&self) -> Vec<&Cell> {
-        self.cell_collection.get_collection()
+    pub fn get_cells(&self) -> Vec<&Cell> {
+        self.cells.get_collection()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_cell_collection_sorted(&self) -> Vec<&Cell> {
-        self.cell_collection.get_collection_sorted()
+    pub fn get_cells_sorted(&self) -> Vec<&Cell> {
+        self.cells.get_collection_sorted()
     }
 
     /// Get Cell List in mutable.
     #[inline]
-    pub fn get_cell_collection_mut(&mut self) -> Vec<&mut Cell> {
-        self.cell_collection.get_collection_mut()
+    pub fn get_cells_mut(&mut self) -> Vec<&mut Cell> {
+        self.cells.get_collection_mut()
     }
 
     #[inline]
     #[must_use]
     pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
-        self.cell_collection.get_collection_to_hashmap()
+        self.cells.get_collection_to_hashmap()
     }
 
     #[inline]
     pub fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Box<Cell>> {
-        self.cell_collection.get_collection_to_hashmap_mut()
+        self.cells.get_collection_to_hashmap_mut()
     }
 
-    pub(crate) fn get_cell_collection_stream(
+    pub(crate) fn get_cells_stream(
         &self,
         shared_string_table: &SharedStringTable,
         stylesheet: &Stylesheet,
@@ -212,15 +211,15 @@ impl Worksheet {
     /// (This method is crate only.)
     /// Get Cells.
     #[inline]
-    pub(crate) fn get_cell_collection_crate(&self) -> &Cells {
-        &self.cell_collection
+    pub(crate) fn get_cells_crate(&self) -> &Cells {
+        &self.cells
     }
 
     /// (This method is crate only.)
     /// Get Cells in mutable.
     #[inline]
-    pub(crate) fn get_cell_collection_crate_mut(&mut self) -> &mut Cells {
-        &mut self.cell_collection
+    pub(crate) fn get_cells_crate_mut(&mut self) -> &mut Cells {
+        &mut self.cells
     }
 
     /// Get cell.
@@ -243,7 +242,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        self.cell_collection.get(coordinate)
+        self.cells.get(coordinate)
     }
 
     /// Get cell with mutable.
@@ -267,34 +266,32 @@ impl Worksheet {
         self.get_row_dimension_mut(row);
         let row_dimension = self.get_row_dimension_mut(row).clone();
         let col_dimension = self.get_column_dimension_by_number_mut(col).clone();
-        self.cell_collection
+        self.cells
             .get_mut((col, row), &row_dimension, &col_dimension)
     }
 
     #[inline]
     #[must_use]
     pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.cell_collection.get_collection_by_column(column_num)
+        self.cells.get_collection_by_column(column_num)
     }
 
     #[inline]
     #[must_use]
     pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
-        self.cell_collection.get_collection_by_row(row_num)
+        self.cells.get_collection_by_row(row_num)
     }
 
     #[inline]
     #[must_use]
     pub fn get_collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
-        self.cell_collection
-            .get_collection_by_column_to_hashmap(column_num)
+        self.cells.get_collection_by_column_to_hashmap(column_num)
     }
 
     #[inline]
     #[must_use]
     pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
-        self.cell_collection
-            .get_collection_by_row_to_hashmap(row_num)
+        self.cells.get_collection_by_row_to_hashmap(row_num)
     }
 
     /// Set Cell
@@ -307,8 +304,7 @@ impl Worksheet {
         let col_dimension = self
             .get_column_dimension_by_number_mut(cell.get_coordinate().get_col_num())
             .clone();
-        self.cell_collection
-            .set(cell, &row_dimension, &col_dimension);
+        self.cells.set(cell, &row_dimension, &col_dimension);
         self
     }
 
@@ -327,7 +323,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.cell_collection.remove(col, row)
+        self.cells.remove(col, row)
     }
 
     /// Get cell value.
@@ -348,7 +344,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        self.cell_collection.get_cell_value(coordinate)
+        self.cells.get_cell_value(coordinate)
     }
 
     /// Get cell value with mutable.
@@ -386,7 +382,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
-        self.cell_collection.get_cell_value_by_range(range)
+        self.cells.get_cell_value_by_range(range)
     }
 
     /// Get style.
@@ -407,7 +403,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        self.cell_collection.get_style(coordinate)
+        self.cells.get_style(coordinate)
     }
 
     /// Get style with mutable.
@@ -568,7 +564,7 @@ impl Worksheet {
     /// Get Hyperlink convert to hashmap.
     pub(crate) fn get_hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
         let mut result: HashMap<String, &Hyperlink> = HashMap::new();
-        for cell in self.cell_collection.get_collection() {
+        for cell in self.cells.get_collection() {
             if let Some(hyperlink) = cell.get_hyperlink() {
                 let coordition = coordinate_from_index(
                     cell.get_coordinate().get_col_num(),
@@ -584,7 +580,7 @@ impl Worksheet {
     /// Has Hyperlink
     #[inline]
     pub(crate) fn has_hyperlink(&self) -> bool {
-        self.cell_collection.has_hyperlink()
+        self.cells.has_hyperlink()
     }
 
     // ************************
@@ -677,19 +673,19 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn get_column_dimensions(&self) -> &[Column] {
-        self.column_dimensions.get_column_collection()
+        self.columns.get_column_collection()
     }
 
     /// Get Column Dimension List in mutable.
     #[inline]
     pub fn get_column_dimensions_mut(&mut self) -> &mut Vec<Column> {
-        self.column_dimensions.get_column_collection_mut()
+        self.columns.get_column_collection_mut()
     }
 
     /// Calculation Auto Width.
     #[inline]
     pub fn calculation_auto_width(&mut self) -> &mut Self {
-        let cells = self.get_cell_collection_crate().clone();
+        let cells = self.get_cells_crate().clone();
         let merge_cells = self.get_merge_cells_crate().clone();
         self.get_column_dimensions_crate_mut()
             .calculation_auto_width(&cells, &merge_cells);
@@ -738,21 +734,21 @@ impl Worksheet {
     /// Get Column Dimension.
     #[inline]
     pub(crate) fn get_column_dimensions_crate(&self) -> &Columns {
-        &self.column_dimensions
+        &self.columns
     }
 
     /// (This method is crate only.)
     /// Get Column Dimension in mutable.
     #[inline]
     pub(crate) fn get_column_dimensions_crate_mut(&mut self) -> &mut Columns {
-        &mut self.column_dimensions
+        &mut self.columns
     }
 
     /// (This method is crate only.)
     /// Set Column Dimension.
     #[inline]
     pub(crate) fn set_column_dimensions_crate(&mut self, value: Columns) -> &mut Self {
-        self.column_dimensions = value;
+        self.columns = value;
         self
     }
 
@@ -762,52 +758,52 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn has_sheet_data(&self) -> bool {
-        self.row_dimensions.has_sheet_data()
+        self.rows.has_sheet_data()
     }
 
     /// Get Row Dimension List.
     #[inline]
     #[must_use]
     pub fn get_row_dimensions(&self) -> Vec<&Row> {
-        self.row_dimensions.get_row_dimensions()
+        self.rows.get_row_dimensions()
     }
 
     /// Get Row Dimension List in mutable.
     #[inline]
     pub fn get_row_dimensions_mut(&mut self) -> Vec<&mut Row> {
-        self.row_dimensions.get_row_dimensions_mut()
+        self.rows.get_row_dimensions_mut()
     }
 
     /// Get Row Dimension convert Hashmap.
     #[inline]
     #[must_use]
     pub fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Box<Row>> {
-        self.row_dimensions.get_row_dimensions_to_hashmap()
+        self.rows.get_row_dimensions_to_hashmap()
     }
 
     #[inline]
     pub fn get_row_dimensions_to_hashmap_mut(&mut self) -> &mut HashMap<u32, Box<Row>> {
-        self.row_dimensions.get_row_dimensions_to_hashmap_mut()
+        self.rows.get_row_dimensions_to_hashmap_mut()
     }
 
     /// Get Row Dimension.
     #[inline]
     #[must_use]
     pub fn get_row_dimension(&self, row: u32) -> Option<&Row> {
-        self.row_dimensions.get_row_dimension(row)
+        self.rows.get_row_dimension(row)
     }
 
     /// Get Row Dimension in mutable.
     #[inline]
     pub fn get_row_dimension_mut(&mut self, row: u32) -> &mut Row {
-        self.row_dimensions.get_row_dimension_mut(row)
+        self.rows.get_row_dimension_mut(row)
     }
 
     /// (This method is crate only.)
     /// Set Row Dimension.
     #[inline]
     pub(crate) fn set_row_dimension(&mut self, value: Row) -> &mut Self {
-        self.row_dimensions.set_row_dimension(value);
+        self.rows.set_row_dimension(value);
         self
     }
 
@@ -815,14 +811,14 @@ impl Worksheet {
     /// Get Row Dimension in mutable.
     #[inline]
     pub(crate) fn get_row_dimensions_crate_mut(&mut self) -> &mut Rows {
-        &mut self.row_dimensions
+        &mut self.rows
     }
 
     /// (This method is crate only.)
     /// Get Row Dimension.
     #[inline]
     pub(crate) fn _get_row_dimensions_crate(&self) -> &Rows {
-        &self.row_dimensions
+        &self.rows
     }
 
     // ************************
@@ -1153,7 +1149,7 @@ impl Worksheet {
     /// Calculate Worksheet Dimension.
     #[must_use]
     pub fn calculate_worksheet_dimension(&self) -> String {
-        let (column, row) = self.cell_collection.get_highest_column_and_row();
+        let (column, row) = self.cells.get_highest_column_and_row();
         if row == 0 {
             return "A1".to_string();
         }
@@ -1167,14 +1163,14 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn get_highest_column_and_row(&self) -> (u32, u32) {
-        self.cell_collection.get_highest_column_and_row()
+        self.cells.get_highest_column_and_row()
     }
 
     // Get Highest Column Index
     #[inline]
     #[must_use]
     pub fn get_highest_column(&self) -> u32 {
-        let (column, _row) = self.cell_collection.get_highest_column_and_row();
+        let (column, _row) = self.cells.get_highest_column_and_row();
         column
     }
 
@@ -1182,7 +1178,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn get_highest_row(&self) -> u32 {
-        let (_column, row) = self.cell_collection.get_highest_column_and_row();
+        let (_column, row) = self.cells.get_highest_column_and_row();
         row
     }
 
@@ -1848,14 +1844,14 @@ impl Worksheet {
         assert!(((row_end as i32 + row) <= 1048576), "Out of Range.");
 
         // Iterate row by row, collecting cell information (do I copy)
-        let cells = self.cell_collection.get_cell_by_range(range);
+        let cells = self.cells.get_cell_by_range(range);
         let mut copy_cells: Vec<Cell> = cells.into_iter().flatten().cloned().collect();
 
         // Delete cell information as iterating through in move mode
         if is_move {
             for (col_num, row_num) in &get_coordinate_list(&range_upper) {
-                self.cell_collection.remove(*col_num, *row_num);
-                self.cell_collection.remove(
+                self.cells.remove(*col_num, *row_num);
+                self.cells.remove(
                     (*col_num as i32 + column) as u32,
                     (*row_num as i32 + row) as u32,
                 );
@@ -1879,10 +1875,10 @@ impl Worksheet {
     pub fn cleanup(&mut self) {
         let (_, max_row) = self.get_highest_column_and_row();
         for row in (1..(max_row + 1)).rev() {
-            if self.row_dimensions.get_row_dimension(row).is_some() {
+            if self.rows.get_row_dimension(row).is_some() {
                 let mut indexes: Vec<(u32, u32)> = Vec::new();
                 {
-                    let cells: Vec<&Cell> = self.cell_collection.get_collection_by_row(row);
+                    let cells: Vec<&Cell> = self.cells.get_collection_by_row(row);
                     for cell in cells {
                         if !cell.is_visually_empty() {
                             return;
@@ -1894,11 +1890,9 @@ impl Worksheet {
                     }
                 }
 
-                self.row_dimensions
-                    .get_row_dimensions_to_hashmap_mut()
-                    .remove(&row);
+                self.rows.get_row_dimensions_to_hashmap_mut().remove(&row);
                 for (i_row, i_col) in indexes {
-                    self.cell_collection.remove(i_col, i_row);
+                    self.cells.remove(i_col, i_row);
                 }
             }
         }
@@ -1909,7 +1903,7 @@ impl Worksheet {
     where
         T: Into<CellCoordinates>,
     {
-        let style = self.cell_collection.get_style(source).clone();
+        let style = self.cells.get_style(source).clone();
         self.get_cell_mut(target).set_style(style);
     }
 
@@ -1965,7 +1959,7 @@ impl AdjustmentCoordinate for Worksheet {
     ) {
         if offset_col_num != 0 {
             // column dimensions
-            self.column_dimensions
+            self.columns
                 .adjustment_insert_value(root_col_num, offset_col_num);
         }
         if offset_row_num != 0 {
@@ -1989,13 +1983,12 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // cell
-        self.get_cell_collection_crate_mut()
-            .adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
+        self.get_cells_crate_mut().adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
 
         // worksheet_drawing
         self.get_worksheet_drawing_mut()
@@ -2056,7 +2049,7 @@ impl AdjustmentCoordinate for Worksheet {
     ) {
         if offset_col_num != 0 {
             // column dimensions
-            self.column_dimensions
+            self.columns
                 .adjustment_remove_value(root_col_num, offset_col_num);
         }
         if offset_row_num != 0 {
@@ -2091,13 +2084,12 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // cell
-        self.get_cell_collection_crate_mut()
-            .adjustment_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
+        self.get_cells_crate_mut().adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
 
         // worksheet_drawing
         self.get_worksheet_drawing_mut()
@@ -2185,7 +2177,7 @@ impl AdjustmentCoordinateWithSheet for Worksheet {
 
         // cell formula coordinate
         let title = self.title.clone();
-        self.get_cell_collection_crate_mut()
+        self.get_cells_crate_mut()
             .adjustment_insert_coordinate_with_2sheet(
                 &title,
                 sheet_name,
@@ -2220,7 +2212,7 @@ impl AdjustmentCoordinateWithSheet for Worksheet {
 
         // cell formula coordinate
         let title = self.title.clone();
-        self.get_cell_collection_crate_mut()
+        self.get_cells_crate_mut()
             .adjustment_remove_coordinate_with_2sheet(
                 &title,
                 sheet_name,

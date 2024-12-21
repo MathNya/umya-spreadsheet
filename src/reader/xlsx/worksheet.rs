@@ -70,7 +70,7 @@ pub(crate) fn read(
                 obj.set_attributes(
                     &mut reader,
                     e,
-                    worksheet.get_cell_collection_crate_mut(),
+                    worksheet.get_cells_crate_mut(),
                     shared_string_table,
                     stylesheet,
                     &mut formula_shared_list,
@@ -170,7 +170,7 @@ pub(crate) fn read(
                 obj.set_attributes(
                     &mut reader,
                     e,
-                    worksheet.get_cell_collection_crate_mut(),
+                    worksheet.get_cells_crate_mut(),
                     shared_string_table,
                     stylesheet,
                     &mut formula_shared_list,

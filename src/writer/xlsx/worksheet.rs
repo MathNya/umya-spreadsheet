@@ -100,7 +100,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // cols
     let mut column_dimensions = worksheet.get_column_dimensions_crate().clone();
     column_dimensions.calculation_auto_width(
-        worksheet.get_cell_collection_crate(),
+        worksheet.get_cells_crate(),
         worksheet.get_merge_cells_crate(),
     );
     column_dimensions.write_to(&mut writer, stylesheet);
@@ -115,7 +115,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // it's faster than get cell collection by row.
     // cells sort.
-    let cells = worksheet.get_cell_collection_sorted();
+    let cells = worksheet.get_cells_sorted();
 
     // make formula shared list
     let mut formula_shared_list: HashMap<u32, (String, Option<String>)> = HashMap::new();
