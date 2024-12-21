@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidations {
-    data_validation_list: ThinVec<DataValidation>,
+    data_validation_list: Vec<DataValidation>,
 }
 
 impl DataValidations {
@@ -21,15 +20,12 @@ impl DataValidations {
     }
 
     #[inline]
-    pub fn get_data_validation_list_mut(&mut self) -> &mut ThinVec<DataValidation> {
+    pub fn get_data_validation_list_mut(&mut self) -> &mut Vec<DataValidation> {
         &mut self.data_validation_list
     }
 
     #[inline]
-    pub fn set_data_validation_list(
-        &mut self,
-        value: impl Into<ThinVec<DataValidation>>,
-    ) -> &mut Self {
+    pub fn set_data_validation_list(&mut self, value: impl Into<Vec<DataValidation>>) -> &mut Self {
         self.data_validation_list = value.into();
         self
     }

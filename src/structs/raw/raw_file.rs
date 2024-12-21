@@ -4,12 +4,11 @@ use crate::structs::WriterManager;
 use crate::XlsxError;
 use std::io;
 use std::io::Read;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {
     file_target: StringValue,
-    file_data: ThinVec<u8>,
+    file_data: Vec<u8>,
 }
 impl RawFile {
     #[inline]
@@ -56,7 +55,7 @@ impl RawFile {
     }
 
     #[inline]
-    pub(crate) fn _get_file_data_mut(&mut self) -> &mut ThinVec<u8> {
+    pub(crate) fn _get_file_data_mut(&mut self) -> &mut Vec<u8> {
         &mut self.file_data
     }
 

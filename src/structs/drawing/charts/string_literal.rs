@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct StringLiteral {
-    string_point_list: ThinVec<StringPoint>,
+    string_point_list: Vec<StringPoint>,
 }
 
 impl StringLiteral {
@@ -19,7 +18,7 @@ impl StringLiteral {
         &self.string_point_list
     }
 
-    pub fn get_string_point_list_mut(&mut self) -> &mut ThinVec<StringPoint> {
+    pub fn get_string_point_list_mut(&mut self) -> &mut Vec<StringPoint> {
         &mut self.string_point_list
     }
 

@@ -7,14 +7,13 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct FontCollectionType {
     latin_font: TextFontType,
     east_asian_font: TextFontType,
     complex_script_font: TextFontType,
-    supplemental_font_list: ThinVec<SupplementalFont>,
+    supplemental_font_list: Vec<SupplementalFont>,
 }
 impl FontCollectionType {
     #[inline]
@@ -75,14 +74,14 @@ impl FontCollectionType {
     }
 
     #[inline]
-    pub fn get_supplemental_font_list_mut(&mut self) -> &mut ThinVec<SupplementalFont> {
+    pub fn get_supplemental_font_list_mut(&mut self) -> &mut Vec<SupplementalFont> {
         &mut self.supplemental_font_list
     }
 
     #[inline]
     pub fn set_supplemental_font_list(
         &mut self,
-        value: impl Into<ThinVec<SupplementalFont>>,
+        value: impl Into<Vec<SupplementalFont>>,
     ) -> &mut Self {
         self.supplemental_font_list = value.into();
         self

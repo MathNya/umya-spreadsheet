@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct DataFields {
-    list: ThinVec<DataField>,
+    list: Vec<DataField>,
 }
 impl DataFields {
     #[inline]
@@ -20,7 +19,7 @@ impl DataFields {
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut ThinVec<DataField> {
+    pub fn get_list_mut(&mut self) -> &mut Vec<DataField> {
         &mut self.list
     }
 

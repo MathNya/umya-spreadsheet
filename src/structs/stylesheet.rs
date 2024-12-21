@@ -17,7 +17,6 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Stylesheet {
@@ -30,7 +29,7 @@ pub(crate) struct Stylesheet {
     cell_styles: CellStyles,
     differential_formats: DifferentialFormats,
     colors: Colors,
-    maked_style_list: ThinVec<Style>,
+    maked_style_list: Vec<Style>,
 }
 
 impl Stylesheet {

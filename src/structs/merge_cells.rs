@@ -7,11 +7,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct MergeCells {
-    range: ThinVec<Range>,
+    range: Vec<Range>,
 }
 
 impl MergeCells {
@@ -21,7 +20,7 @@ impl MergeCells {
     }
 
     #[inline]
-    pub(crate) fn get_range_collection_mut(&mut self) -> &mut ThinVec<Range> {
+    pub(crate) fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
         &mut self.range
     }
 

@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct CellStyles {
-    cell_style: ThinVec<CellStyle>,
+    cell_style: Vec<CellStyle>,
 }
 
 impl CellStyles {
@@ -20,7 +19,7 @@ impl CellStyles {
     }
 
     #[inline]
-    pub fn _get_cell_style_mut(&mut self) -> &mut ThinVec<CellStyle> {
+    pub fn _get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
         &mut self.cell_style
     }
 

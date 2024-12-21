@@ -8,13 +8,12 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct RichText {
     body_properties: BodyProperties,
     list_style: ListStyle,
-    paragraph: ThinVec<Paragraph>,
+    paragraph: Vec<Paragraph>,
 }
 
 impl RichText {
@@ -49,7 +48,7 @@ impl RichText {
         &self.paragraph
     }
 
-    pub fn get_paragraph_mut(&mut self) -> &mut ThinVec<Paragraph> {
+    pub fn get_paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
         &mut self.paragraph
     }
 

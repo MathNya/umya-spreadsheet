@@ -7,11 +7,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct BordersCrate {
-    borders: ThinVec<Borders>,
+    borders: Vec<Borders>,
 }
 
 impl BordersCrate {
@@ -22,7 +21,7 @@ impl BordersCrate {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_borders_mut(&mut self) -> &mut ThinVec<Borders> {
+    pub(crate) fn get_borders_mut(&mut self) -> &mut Vec<Borders> {
         &mut self.borders
     }
 

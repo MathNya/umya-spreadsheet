@@ -10,14 +10,13 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObject {
     requires: StringValue,
     prog_id: StringValue,
     object_extension: Box<str>,
-    object_data: Option<ThinVec<u8>>,
+    object_data: Option<Vec<u8>>,
     embedded_object_properties: EmbeddedObjectProperties,
     two_cell_anchor: TwoCellAnchor,
     shape: Shape,
@@ -66,12 +65,12 @@ impl OleObject {
     }
 
     #[inline]
-    pub fn get_object_data_mut(&mut self) -> Option<&mut ThinVec<u8>> {
+    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
         self.object_data.as_mut()
     }
 
     #[inline]
-    pub fn set_object_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+    pub fn set_object_data(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.object_data = Some(value.into());
         self
     }

@@ -7,11 +7,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObjects {
-    ole_object: ThinVec<OleObject>,
+    ole_object: Vec<OleObject>,
 }
 
 impl OleObjects {
@@ -22,7 +21,7 @@ impl OleObjects {
     }
 
     #[inline]
-    pub fn get_ole_object_mut(&mut self) -> &mut ThinVec<OleObject> {
+    pub fn get_ole_object_mut(&mut self) -> &mut Vec<OleObject> {
         &mut self.ole_object
     }
 

@@ -17,25 +17,24 @@ use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::StringValue;
 use std::sync::Arc;
 use std::sync::RwLock;
-use thin_vec::ThinVec;
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.
 #[derive(Clone, Default, Debug)]
 pub struct Spreadsheet {
     properties: Properties,
-    work_sheet_collection: ThinVec<Worksheet>,
-    macros_code: Option<ThinVec<u8>>,
+    work_sheet_collection: Vec<Worksheet>,
+    macros_code: Option<Vec<u8>>,
     code_name: StringValue,
     ribbon_xml_data: StringValue,
     theme: Theme,
     stylesheet: Stylesheet,
     shared_string_table: Arc<RwLock<SharedStringTable>>,
     workbook_view: WorkbookView,
-    backup_context_types: ThinVec<(Box<str>, Box<str>)>,
-    pivot_caches: ThinVec<(Box<str>, Box<str>, Box<str>)>,
+    backup_context_types: Vec<(Box<str>, Box<str>)>,
+    pivot_caches: Vec<(Box<str>, Box<str>, Box<str>)>,
     workbook_protection: Option<Box<WorkbookProtection>>,
-    defined_names: ThinVec<DefinedName>,
+    defined_names: Vec<DefinedName>,
 }
 
 impl Spreadsheet {
@@ -235,7 +234,7 @@ impl Spreadsheet {
     /// # Arguments
     /// * `value` - Macros Code Raw Data.
     #[inline]
-    pub fn set_macros_code(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+    pub fn set_macros_code(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.macros_code = Some(value.into());
         self
     }
@@ -339,7 +338,7 @@ impl Spreadsheet {
 
     /// Get Work Sheet List in mutable.
     #[inline]
-    pub fn get_sheet_collection_mut(&mut self) -> &mut ThinVec<Worksheet> {
+    pub fn get_sheet_collection_mut(&mut self) -> &mut Vec<Worksheet> {
         self.read_sheet_collection();
         &mut self.work_sheet_collection
     }
@@ -643,7 +642,7 @@ impl Spreadsheet {
     #[inline]
     pub(crate) fn set_backup_context_types(
         &mut self,
-        value: impl Into<ThinVec<(String, String)>>,
+        value: impl Into<Vec<(String, String)>>,
     ) -> &mut Self {
         self.backup_context_types = value
             .into()
@@ -723,7 +722,7 @@ impl Spreadsheet {
 
     /// Get Defined Name (Vec) in mutable.
     #[inline]
-    pub fn get_defined_names_mut(&mut self) -> &mut ThinVec<DefinedName> {
+    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
         &mut self.defined_names
     }
 
@@ -731,7 +730,7 @@ impl Spreadsheet {
     /// # Arguments
     /// * `value` - Vec<DefinedName>.
     #[inline]
-    pub fn set_defined_names(&mut self, value: impl Into<ThinVec<DefinedName>>) {
+    pub fn set_defined_names(&mut self, value: impl Into<Vec<DefinedName>>) {
         self.defined_names = value.into();
     }
 

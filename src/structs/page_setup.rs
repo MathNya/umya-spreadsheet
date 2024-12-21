@@ -8,7 +8,6 @@ use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct PageSetup {
@@ -19,7 +18,7 @@ pub struct PageSetup {
     fit_to_width: UInt32Value,
     horizontal_dpi: UInt32Value,
     vertical_dpi: UInt32Value,
-    object_data: Option<ThinVec<u8>>,
+    object_data: Option<Vec<u8>>,
 }
 
 impl PageSetup {
@@ -114,12 +113,12 @@ impl PageSetup {
     }
 
     #[inline]
-    pub fn get_object_data_mut(&mut self) -> Option<&mut ThinVec<u8>> {
+    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
         self.object_data.as_mut()
     }
 
     #[inline]
-    pub fn set_object_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+    pub fn set_object_data(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.object_data = Some(value.into());
         self
     }

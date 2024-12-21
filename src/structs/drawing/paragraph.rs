@@ -8,12 +8,11 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
     paragraph_properties: ParagraphProperties,
-    run: ThinVec<Run>,
+    run: Vec<Run>,
     end_para_run_properties: Option<Box<RunProperties>>,
 }
 

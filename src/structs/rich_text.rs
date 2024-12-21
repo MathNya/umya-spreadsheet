@@ -8,11 +8,10 @@ use quick_xml::Writer;
 use std::borrow::Cow;
 use std::fmt::Write;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {
-    rich_text_elements: ThinVec<TextElement>,
+    rich_text_elements: Vec<TextElement>,
 }
 
 impl RichText {
@@ -42,12 +41,12 @@ impl RichText {
     }
 
     #[inline]
-    pub fn get_rich_text_elements_mut(&mut self) -> &mut ThinVec<TextElement> {
+    pub fn get_rich_text_elements_mut(&mut self) -> &mut Vec<TextElement> {
         &mut self.rich_text_elements
     }
 
     #[inline]
-    pub fn set_rich_text_elements(&mut self, value: impl Into<ThinVec<TextElement>>) -> &mut Self {
+    pub fn set_rich_text_elements(&mut self, value: impl Into<Vec<TextElement>>) -> &mut Self {
         self.rich_text_elements = value.into();
         self
     }

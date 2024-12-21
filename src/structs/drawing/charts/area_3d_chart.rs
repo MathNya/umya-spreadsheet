@@ -12,7 +12,6 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct Area3DChart {
@@ -20,7 +19,7 @@ pub struct Area3DChart {
     vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
     data_labels: Option<Box<DataLabels>>,
-    axis_id: ThinVec<AxisId>,
+    axis_id: Vec<AxisId>,
 }
 
 impl Area3DChart {
@@ -85,11 +84,11 @@ impl Area3DChart {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut Self {
+    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut Self {
         self.axis_id = value.into();
         self
     }

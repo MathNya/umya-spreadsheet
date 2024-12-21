@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct RowItems {
-    list: ThinVec<RowItem>,
+    list: Vec<RowItem>,
 }
 impl RowItems {
     #[inline]
@@ -20,7 +19,7 @@ impl RowItems {
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut ThinVec<RowItem> {
+    pub fn get_list_mut(&mut self) -> &mut Vec<RowItem> {
         &mut self.list
     }
 

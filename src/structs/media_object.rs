@@ -1,10 +1,8 @@
-use thin_vec::ThinVec;
-
 #[derive(Clone, Default, Debug)]
 pub struct MediaObject {
     image_title: Box<str>,
     image_name: Box<str>,
-    image_data: ThinVec<u8>,
+    image_data: Vec<u8>,
 }
 impl MediaObject {
     #[inline]
@@ -35,7 +33,7 @@ impl MediaObject {
     }
 
     #[inline]
-    pub fn set_image_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+    pub fn set_image_data(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.image_data = value.into();
         self
     }

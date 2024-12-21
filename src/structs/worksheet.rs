@@ -49,7 +49,6 @@ use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::traits::AdjustmentValue;
 use crate::StringValue;
 use std::collections::HashMap;
-use thin_vec::ThinVec;
 
 /// A Worksheet Object.
 #[derive(Clone, Debug, Default)]
@@ -68,20 +67,20 @@ pub struct Worksheet {
     page_margins: PageMargins,
     header_footer: HeaderFooter,
     sheet_views: SheetViews,
-    conditional_formatting_collection: ThinVec<ConditionalFormatting>,
+    conditional_formatting_collection: Vec<ConditionalFormatting>,
     merge_cells: MergeCells,
     auto_filter: Option<AutoFilter>,
-    comments: ThinVec<Comment>,
+    comments: Vec<Comment>,
     active_cell: Box<str>,
     tab_color: Option<Color>,
     code_name: StringValue,
     ole_objects: OleObjects,
-    defined_names: ThinVec<DefinedName>,
+    defined_names: Vec<DefinedName>,
     print_options: PrintOptions,
     column_breaks: ColumnBreaks,
     row_breaks: RowBreaks,
-    tables: ThinVec<Table>,
-    pivot_tables: ThinVec<PivotTable>,
+    tables: Vec<Table>,
+    pivot_tables: Vec<PivotTable>,
     data_validations: Option<DataValidations>,
     data_validations_2010: Option<DataValidations2010>,
     sheet_format_properties: SheetFormatProperties,
@@ -494,7 +493,7 @@ impl Worksheet {
 
     /// Get Comments in mutable.
     #[inline]
-    pub fn get_comments_mut(&mut self) -> &mut ThinVec<Comment> {
+    pub fn get_comments_mut(&mut self) -> &mut Vec<Comment> {
         &mut self.comments
     }
 
@@ -514,7 +513,7 @@ impl Worksheet {
     /// # Arguments
     /// * `value` - Comment List (Vec)
     #[inline]
-    pub fn set_comments(&mut self, value: impl Into<ThinVec<Comment>>) {
+    pub fn set_comments(&mut self, value: impl Into<Vec<Comment>>) {
         self.comments = value.into();
     }
 
@@ -549,7 +548,7 @@ impl Worksheet {
     #[inline]
     pub fn set_conditional_formatting_collection(
         &mut self,
-        value: impl Into<ThinVec<ConditionalFormatting>>,
+        value: impl Into<Vec<ConditionalFormatting>>,
     ) {
         self.conditional_formatting_collection = value.into();
     }
@@ -600,7 +599,7 @@ impl Worksheet {
 
     // Get Merge Cells in mutable.
     #[inline]
-    pub fn get_merge_cells_mut(&mut self) -> &mut ThinVec<Range> {
+    pub fn get_merge_cells_mut(&mut self) -> &mut Vec<Range> {
         self.merge_cells.get_range_collection_mut()
     }
 
@@ -683,7 +682,7 @@ impl Worksheet {
 
     /// Get Column Dimension List in mutable.
     #[inline]
-    pub fn get_column_dimensions_mut(&mut self) -> &mut ThinVec<Column> {
+    pub fn get_column_dimensions_mut(&mut self) -> &mut Vec<Column> {
         self.column_dimensions.get_column_collection_mut()
     }
 
@@ -1346,7 +1345,7 @@ impl Worksheet {
 
     /// Get Defined Name (Vec) in mutable.
     #[inline]
-    pub fn get_defined_names_mut(&mut self) -> &mut ThinVec<DefinedName> {
+    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
         &mut self.defined_names
     }
 
@@ -1354,7 +1353,7 @@ impl Worksheet {
     /// # Arguments
     /// * `value` - Vec<DefinedName>.
     #[inline]
-    pub fn set_defined_names(&mut self, value: impl Into<ThinVec<DefinedName>>) {
+    pub fn set_defined_names(&mut self, value: impl Into<Vec<DefinedName>>) {
         self.defined_names = value.into();
     }
 
@@ -1463,7 +1462,7 @@ impl Worksheet {
     }
 
     #[inline]
-    pub fn get_tables_mut(&mut self) -> &mut ThinVec<Table> {
+    pub fn get_tables_mut(&mut self) -> &mut Vec<Table> {
         &mut self.tables
     }
 
@@ -1485,7 +1484,7 @@ impl Worksheet {
     }
 
     #[inline]
-    pub fn get_pivot_tables_mut(&mut self) -> &mut ThinVec<PivotTable> {
+    pub fn get_pivot_tables_mut(&mut self) -> &mut Vec<PivotTable> {
         &mut self.pivot_tables
     }
 
@@ -1565,7 +1564,7 @@ impl Worksheet {
     /// # Return value
     /// * `&mut Vec<Image>` - Image Object List.
     #[inline]
-    pub fn get_image_collection_mut(&mut self) -> &mut ThinVec<Image> {
+    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
         self.get_worksheet_drawing_mut().get_image_collection_mut()
     }
 
@@ -1629,7 +1628,7 @@ impl Worksheet {
     /// # Return value
     /// * `&mut Vec<Chart>` - Chart Object List.
     #[inline]
-    pub fn get_chart_collection_mut(&mut self) -> &mut ThinVec<Chart> {
+    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
         self.get_worksheet_drawing_mut().get_chart_collection_mut()
     }
 

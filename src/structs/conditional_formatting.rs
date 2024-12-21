@@ -9,12 +9,11 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalFormatting {
     sequence_of_references: SequenceOfReferences,
-    conditional_collection: ThinVec<ConditionalFormattingRule>,
+    conditional_collection: Vec<ConditionalFormattingRule>,
 }
 
 impl ConditionalFormatting {
@@ -42,14 +41,14 @@ impl ConditionalFormatting {
     }
 
     #[inline]
-    pub fn get_conditional_collection_mut(&mut self) -> &mut ThinVec<ConditionalFormattingRule> {
+    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
         &mut self.conditional_collection
     }
 
     #[inline]
     pub fn set_conditional_collection(
         &mut self,
-        value: impl Into<ThinVec<ConditionalFormattingRule>>,
+        value: impl Into<Vec<ConditionalFormattingRule>>,
     ) -> &mut Self {
         self.conditional_collection = value.into();
         self

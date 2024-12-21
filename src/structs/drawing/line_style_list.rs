@@ -5,11 +5,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct LineStyleList {
-    outline_collection: ThinVec<Outline>,
+    outline_collection: Vec<Outline>,
 }
 
 impl LineStyleList {
@@ -20,12 +19,12 @@ impl LineStyleList {
     }
 
     #[inline]
-    pub fn get_outline_collection_mut(&mut self) -> &mut ThinVec<Outline> {
+    pub fn get_outline_collection_mut(&mut self) -> &mut Vec<Outline> {
         &mut self.outline_collection
     }
 
     #[inline]
-    pub fn set_outline_collection(&mut self, value: impl Into<ThinVec<Outline>>) -> &mut Self {
+    pub fn set_outline_collection(&mut self, value: impl Into<Vec<Outline>>) -> &mut Self {
         self.outline_collection = value.into();
         self
     }

@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct ColumnFields {
-    list: ThinVec<Field>,
+    list: Vec<Field>,
 }
 impl ColumnFields {
     #[inline]
@@ -20,7 +19,7 @@ impl ColumnFields {
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut ThinVec<Field> {
+    pub fn get_list_mut(&mut self) -> &mut Vec<Field> {
         &mut self.list
     }
 

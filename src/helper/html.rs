@@ -6,7 +6,6 @@ use crate::structs::UnderlineValues;
 use crate::structs::VerticalAlignmentRunValues;
 use html_parser::{Dom, Node};
 use std::collections::HashMap;
-use thin_vec::ThinVec;
 
 /// Generate rich text from html.
 /// # Arguments
@@ -51,8 +50,8 @@ pub fn html_to_richtext_custom(
 }
 
 #[allow(clippy::field_reassign_with_default)]
-fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<HtmlFlatData> {
-    let mut result: ThinVec<HtmlFlatData> = ThinVec::new();
+fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFlatData> {
+    let mut result: Vec<HtmlFlatData> = Vec::new();
 
     if node_list.is_empty() {
         return result;
@@ -173,14 +172,14 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
 #[derive(Clone, Default, Debug)]
 pub struct HtmlFlatData {
     text: String,
-    element: ThinVec<HfdElement>,
+    element: Vec<HfdElement>,
 }
 
 #[derive(Clone, Default, Debug)]
 pub struct HfdElement {
     name: String,
     attributes: HashMap<String, String>,
-    classes: ThinVec<String>,
+    classes: Vec<String>,
 }
 impl HfdElement {
     #[inline]

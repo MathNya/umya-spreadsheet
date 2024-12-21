@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct AdjustValueList {
-    shape_guide_collection: ThinVec<ShapeGuide>,
+    shape_guide_collection: Vec<ShapeGuide>,
 }
 
 impl AdjustValueList {
@@ -21,12 +20,12 @@ impl AdjustValueList {
     }
 
     #[inline]
-    pub fn get_shape_guide_collection_mut(&mut self) -> &mut ThinVec<ShapeGuide> {
+    pub fn get_shape_guide_collection_mut(&mut self) -> &mut Vec<ShapeGuide> {
         &mut self.shape_guide_collection
     }
 
     #[inline]
-    pub fn set_shape_guide_collection(&mut self, value: impl Into<ThinVec<ShapeGuide>>) {
+    pub fn set_shape_guide_collection(&mut self, value: impl Into<Vec<ShapeGuide>>) {
         self.shape_guide_collection = value.into();
     }
 

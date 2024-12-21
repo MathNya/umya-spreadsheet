@@ -10,12 +10,11 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {
     name: StringValue,
-    address: ThinVec<Address>,
+    address: Vec<Address>,
     string_value: StringValue,
     local_sheet_id: UInt32Value,
     hidden: BooleanValue,
@@ -85,7 +84,7 @@ impl DefinedName {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_address_obj_mut(&mut self) -> &mut ThinVec<Address> {
+    pub(crate) fn get_address_obj_mut(&mut self) -> &mut Vec<Address> {
         &mut self.address
     }
 

@@ -6,12 +6,11 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct FillStyleList {
-    solid_fill: ThinVec<SolidFill>,
-    gradient_fill_collection: ThinVec<GradientFill>,
+    solid_fill: Vec<SolidFill>,
+    gradient_fill_collection: Vec<GradientFill>,
 }
 
 impl FillStyleList {
@@ -22,12 +21,12 @@ impl FillStyleList {
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> &mut ThinVec<SolidFill> {
+    pub fn get_solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
         &mut self.solid_fill
     }
 
     #[inline]
-    pub fn set_solid_fill(&mut self, value: impl Into<ThinVec<SolidFill>>) -> &mut Self {
+    pub fn set_solid_fill(&mut self, value: impl Into<Vec<SolidFill>>) -> &mut Self {
         self.solid_fill = value.into();
         self
     }
@@ -45,14 +44,14 @@ impl FillStyleList {
     }
 
     #[inline]
-    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut ThinVec<GradientFill> {
+    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut Vec<GradientFill> {
         &mut self.gradient_fill_collection
     }
 
     #[inline]
     pub fn set_gradient_fill_collection(
         &mut self,
-        value: impl Into<ThinVec<GradientFill>>,
+        value: impl Into<Vec<GradientFill>>,
     ) -> &mut Self {
         self.gradient_fill_collection = value.into();
         self

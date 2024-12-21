@@ -28,7 +28,6 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct PlotArea {
@@ -46,9 +45,9 @@ pub struct PlotArea {
     area_chart: Option<AreaChart>,
     area_3d_chart: Option<Area3DChart>,
     of_pie_chart: Option<OfPieChart>,
-    category_axis: ThinVec<CategoryAxis>,
-    value_axis: ThinVec<ValueAxis>,
-    series_axis: ThinVec<SeriesAxis>,
+    category_axis: Vec<CategoryAxis>,
+    value_axis: Vec<ValueAxis>,
+    series_axis: Vec<SeriesAxis>,
     shape_properties: Option<ShapeProperties>,
 }
 
@@ -254,11 +253,11 @@ impl PlotArea {
         &self.category_axis
     }
 
-    pub fn get_category_axis_mut(&mut self) -> &mut ThinVec<CategoryAxis> {
+    pub fn get_category_axis_mut(&mut self) -> &mut Vec<CategoryAxis> {
         &mut self.category_axis
     }
 
-    pub fn set_category_axis(&mut self, value: impl Into<ThinVec<CategoryAxis>>) -> &mut Self {
+    pub fn set_category_axis(&mut self, value: impl Into<Vec<CategoryAxis>>) -> &mut Self {
         self.category_axis = value.into();
         self
     }
@@ -273,11 +272,11 @@ impl PlotArea {
         &self.value_axis
     }
 
-    pub fn get_value_axis_mut(&mut self) -> &mut ThinVec<ValueAxis> {
+    pub fn get_value_axis_mut(&mut self) -> &mut Vec<ValueAxis> {
         &mut self.value_axis
     }
 
-    pub fn set_value_axis(&mut self, value: impl Into<ThinVec<ValueAxis>>) -> &mut Self {
+    pub fn set_value_axis(&mut self, value: impl Into<Vec<ValueAxis>>) -> &mut Self {
         self.value_axis = value.into();
         self
     }
@@ -292,11 +291,11 @@ impl PlotArea {
         &self.series_axis
     }
 
-    pub fn get_series_axis_mut(&mut self) -> &mut ThinVec<SeriesAxis> {
+    pub fn get_series_axis_mut(&mut self) -> &mut Vec<SeriesAxis> {
         &mut self.series_axis
     }
 
-    pub fn set_series_axis(&mut self, value: impl Into<ThinVec<SeriesAxis>>) -> &mut Self {
+    pub fn set_series_axis(&mut self, value: impl Into<Vec<SeriesAxis>>) -> &mut Self {
         self.series_axis = value.into();
         self
     }

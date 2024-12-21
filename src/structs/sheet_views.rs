@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetViews {
-    sheet_view_list: ThinVec<SheetView>,
+    sheet_view_list: Vec<SheetView>,
 }
 
 impl SheetViews {
@@ -21,7 +20,7 @@ impl SheetViews {
     }
 
     #[inline]
-    pub fn get_sheet_view_list_mut(&mut self) -> &mut ThinVec<SheetView> {
+    pub fn get_sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
         &mut self.sheet_view_list
     }
 

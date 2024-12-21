@@ -18,14 +18,13 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
-    image_collection: ThinVec<Image>,
-    chart_collection: ThinVec<Chart>,
-    one_cell_anchor_collection: ThinVec<OneCellAnchor>,
-    two_cell_anchor_collection: ThinVec<TwoCellAnchor>,
+    image_collection: Vec<Image>,
+    chart_collection: Vec<Chart>,
+    one_cell_anchor_collection: Vec<OneCellAnchor>,
+    two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }
 
 impl WorksheetDrawing {
@@ -36,7 +35,7 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_image_collection_mut(&mut self) -> &mut ThinVec<Image> {
+    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
         &mut self.image_collection
     }
 
@@ -89,7 +88,7 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_chart_collection_mut(&mut self) -> &mut ThinVec<Chart> {
+    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
         &mut self.chart_collection
     }
 
@@ -142,7 +141,7 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<OneCellAnchor> {
+    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
         &mut self.one_cell_anchor_collection
     }
 
@@ -159,7 +158,7 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<TwoCellAnchor> {
+    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
         &mut self.two_cell_anchor_collection
     }
 

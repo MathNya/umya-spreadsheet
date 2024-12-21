@@ -10,11 +10,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Columns {
-    column: ThinVec<Column>,
+    column: Vec<Column>,
 }
 
 impl Columns {
@@ -24,7 +23,7 @@ impl Columns {
     }
 
     #[inline]
-    pub(crate) fn get_column_collection_mut(&mut self) -> &mut ThinVec<Column> {
+    pub(crate) fn get_column_collection_mut(&mut self) -> &mut Vec<Column> {
         &mut self.column
     }
 

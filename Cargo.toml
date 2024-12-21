@@ -27,7 +27,6 @@ image = { version = "0.25.5", optional = true }
 md-5 = "0.10.6"
 regex = "1.11.1"
 sha2 = "0.10.8"
-thin-vec = "0.2.13"
 thousands = "0.2.0"
 quick-xml = { version = "0.37.1", features = ["serialize"] }
 zip = { version = "2.2.1", default-features = false, features = ["deflate"] }

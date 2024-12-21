@@ -10,12 +10,11 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io;
 use std::io::Read;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
     file_target: StringValue,
-    relationship_list: ThinVec<RawRelationship>,
+    relationship_list: Vec<RawRelationship>,
 }
 
 impl RawRelationships {
@@ -43,7 +42,7 @@ impl RawRelationships {
     }
 
     #[inline]
-    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut ThinVec<RawRelationship> {
+    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
         &mut self.relationship_list
     }
 

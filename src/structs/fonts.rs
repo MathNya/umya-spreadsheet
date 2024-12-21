@@ -7,11 +7,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fonts {
-    font: ThinVec<Font>,
+    font: Vec<Font>,
 }
 
 impl Fonts {
@@ -22,7 +21,7 @@ impl Fonts {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_font_mut(&mut self) -> &mut ThinVec<Font> {
+    pub(crate) fn get_font_mut(&mut self) -> &mut Vec<Font> {
         &mut self.font
     }
 

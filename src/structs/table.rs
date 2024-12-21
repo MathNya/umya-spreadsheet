@@ -3,7 +3,7 @@ use super::{
     UInt32Value,
 };
 use crate::helper::coordinate::CellCoordinates;
-use thin_vec::ThinVec;
+
 //use reader::driver::*;
 
 #[derive(Clone, Default, Debug)]
@@ -11,7 +11,7 @@ pub struct Table {
     name: Box<str>,
     area: (Coordinate, Coordinate),
     display_name: Box<str>,
-    columns: ThinVec<TableColumn>,
+    columns: Vec<TableColumn>,
     style_info: Option<Box<TableStyleInfo>>,
     totals_row_shown: BooleanValue,
     totals_row_count: UInt32Value,
@@ -29,7 +29,7 @@ impl Table {
             area: (coord_beg, coord_end),
             name: name.clone(),
             display_name: name,
-            columns: ThinVec::<TableColumn>::default(),
+            columns: Vec::<TableColumn>::default(),
             style_info: None,
             totals_row_shown: BooleanValue::default(),
             totals_row_count: UInt32Value::default(),

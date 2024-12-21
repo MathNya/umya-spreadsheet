@@ -6,11 +6,10 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
 use std::vec;
-use thin_vec::ThinVec;
 
 #[derive(Default, Debug, Clone)]
 pub struct ReferenceSequence {
-    value: ThinVec<Range>,
+    value: Vec<Range>,
 }
 impl ReferenceSequence {
     #[inline]
@@ -20,12 +19,12 @@ impl ReferenceSequence {
     }
 
     #[inline]
-    pub fn get_value_mut(&mut self) -> &mut ThinVec<Range> {
+    pub fn get_value_mut(&mut self) -> &mut Vec<Range> {
         &mut self.value
     }
 
     #[inline]
-    pub fn set_value(&mut self, value: impl Into<ThinVec<Range>>) -> &mut Self {
+    pub fn set_value(&mut self, value: impl Into<Vec<Range>>) -> &mut Self {
         self.value = value.into();
         self
     }

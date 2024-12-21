@@ -6,11 +6,10 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct RowBreaks {
-    break_list: ThinVec<Break>,
+    break_list: Vec<Break>,
 }
 
 impl RowBreaks {
@@ -21,7 +20,7 @@ impl RowBreaks {
     }
 
     #[inline]
-    pub fn get_break_list_mut(&mut self) -> &mut ThinVec<Break> {
+    pub fn get_break_list_mut(&mut self) -> &mut Vec<Break> {
         &mut self.break_list
     }
 
