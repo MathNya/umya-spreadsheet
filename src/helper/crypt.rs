@@ -8,6 +8,7 @@ use byteorder::{ByteOrder, LittleEndian};
 use hmac::{Hmac, Mac};
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
+use rand::Rng;
 use sha2::{Digest, Sha512};
 use std::cmp::Ordering;
 use std::io;
@@ -27,7 +28,7 @@ const BLOCK_VERIFIER_HASH_INPUT: &[u8] = &[0xfe, 0xa7, 0xd2, 0x76, 0x3b, 0x4b, 0
 const BLOCK_VERIFIER_HASH_VALUE: &[u8] = &[0xd7, 0xaa, 0x0f, 0x6d, 0x30, 0x61, 0x34, 0x4e];
 
 pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProtection) {
-    let key_salt_value = gen_random_16();
+    let key_salt_value = gen_random_bytes(16);
     let key_hash_algorithm = "SHA-512";
     let key_spin_count = 100000;
 
@@ -49,7 +50,7 @@ pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProt
 }
 
 pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut WorkbookProtection) {
-    let key_salt_value = gen_random_16();
+    let key_salt_value = gen_random_bytes(16);
     let key_hash_algorithm = "SHA-512";
     let key_spin_count = 100000;
 
@@ -71,7 +72,7 @@ pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut Wor
 }
 
 pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut WorkbookProtection) {
-    let key_salt_value = gen_random_16();
+    let key_salt_value = gen_random_bytes(16);
     let key_hash_algorithm = "SHA-512";
     let key_spin_count = 100000;
 
@@ -94,10 +95,10 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
 
 pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     // package params
-    let package_key = gen_random_32();
+    let package_key = gen_random_bytes(32);
     let package_cipher_algorithm = "AES";
     let package_cipher_chaining = "ChainingModeCBC";
-    let package_salt_value = gen_random_16();
+    let package_salt_value = gen_random_bytes(16);
     let package_hash_algorithm = "SHA512";
     let package_hash_size = 64;
     let package_block_size = 16;
@@ -106,7 +107,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     // key params
     let key_cipher_algorithm = "AES";
     let key_cipher_chaining = "ChainingModeCBC";
-    let key_salt_value = gen_random_16();
+    let key_salt_value = gen_random_bytes(16);
     let key_hash_algorithm = "SHA512";
     let key_hash_size = 64;
     let key_block_size = 16;
@@ -126,7 +127,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     );
 
     // hmac key
-    let hmac_key = gen_random_64();
+    let hmac_key = gen_random_bytes(64);
     let hmac_key_iv = create_iv(
         package_hash_algorithm,
         &package_salt_value,
@@ -181,7 +182,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     .unwrap();
 
     // verifier_hash_input
-    let verifier_hash_input = gen_random_16();
+    let verifier_hash_input = gen_random_bytes(16);
     let verifier_hash_input_key = convert_password_to_key(
         password,
         key_hash_algorithm,
@@ -475,26 +476,9 @@ fn hash(algorithm: &str, buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
     digest.update(&buffer_concat(buffers)[..]);
     Ok(digest.finalize().to_vec())
 }
-
-#[inline]
-fn gen_random_16() -> Vec<u8> {
-    let buf: &mut [u8] = &mut [0; 16];
-    getrandom::getrandom(buf).unwrap();
-    buf.to_vec()
-}
-
-#[inline]
-fn gen_random_32() -> Vec<u8> {
-    let buf: &mut [u8] = &mut [0; 32];
-    getrandom::getrandom(buf).unwrap();
-    buf.to_vec()
-}
-
-#[inline]
-fn gen_random_64() -> Vec<u8> {
-    let buf: &mut [u8] = &mut [0; 64];
-    getrandom::getrandom(buf).unwrap();
-    buf.to_vec()
+fn gen_random_bytes(len: usize) -> Vec<u8> {
+    let mut rng = rand::thread_rng();
+    (0..len).map(|_| rng.gen()).collect()
 }
 
 // Create a buffer of an integer encoded as a uint32le

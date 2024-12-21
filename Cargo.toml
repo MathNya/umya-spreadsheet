@@ -21,7 +21,6 @@ cfb = "0.10.0"
 chrono = { version = "0.4.39", default-features = false, features = ["clock"] }
 encoding_rs = "0.8.35"
 fancy-regex = "0.14.0"
-getrandom = { version = "0.2.15" }
 hmac = "0.12.1"
 html_parser = "0.7.0"
 image = { version = "0.25.5", optional = true }
@@ -33,12 +32,13 @@ thin-vec = "0.2.13"
 thousands = "0.2.0"
 quick-xml = { version = "0.37.1", features = ["serialize"] }
 zip = { version = "2.2.1", default-features = false, features = ["deflate"] }
+rand = "0.8.5"
 
 [lib]
 doctest = false
 
 [features]
-js = ["getrandom/js"]
+js = []
 default = ["image"]
 
 [lints]

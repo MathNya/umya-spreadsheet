@@ -131,9 +131,9 @@ extern crate base64;
 extern crate byteorder;
 extern crate cbc;
 extern crate cfb;
-extern crate getrandom;
 extern crate hmac;
 extern crate html_parser;
+extern crate rand;
 extern crate sha2;
 
 #[macro_use]
