@@ -6,6 +6,7 @@ use crate::helper::coordinate::{
 use crate::helper::range::{get_join_range, get_split_range};
 use crate::structs::StringValue;
 use fancy_regex::Regex;
+use std::sync::OnceLock;
 
 /** PARTLY BASED ON: */
 /** Copyright (c) 2007 E. W. Bachtal, Inc. */
@@ -118,8 +119,11 @@ pub const ERRORS: &[&str] = &[
 ];
 const COMPARATORS_MULTI: &[&str] = &[">=", "<=", "<>"];
 
-lazy_static! {
-    pub static ref SCIENTIFIC_REGEX: Regex = Regex::new(r"/^[1-9]{1}(\\.\\d+)?E{1}$/").unwrap();
+// Initialize the OnceLock for the Regex
+static SCIENTIFIC_REGEX: OnceLock<Regex> = OnceLock::new();
+
+fn get_scientific_regex() -> &'static Regex {
+    SCIENTIFIC_REGEX.get_or_init(|| Regex::new(r"/^[1-9]{1}(\\.\\d+)?E{1}$/").unwrap())
 }
 
 pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> {
@@ -227,7 +231,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         if let Some(current_char) = formula.chars().nth(index) {
             if OPERATORS_SN.contains(current_char)
                 && value.len() > 1
-                && SCIENTIFIC_REGEX
+                && get_scientific_regex()
                     .is_match(&current_char.to_string())
                     .unwrap_or(false)
             {

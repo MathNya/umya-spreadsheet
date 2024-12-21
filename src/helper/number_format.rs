@@ -4,6 +4,7 @@ mod number_formater;
 mod percentage_formater;
 
 use std::borrow::Cow;
+use std::sync::OnceLock;
 
 use crate::structs::Color;
 use crate::structs::NumberingFormat;
@@ -48,13 +49,30 @@ impl<'t> Iterator for Split<'_, 't> {
     }
 }
 
-lazy_static! {
-    pub static ref ESCAPE_REGEX: Regex =
-        Regex::new(r#"(\\\(((.)(?!((AM\/PM)|(A\/P)))|([^ ])))(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
-    pub static ref SECTION_REGEX: Regex = Regex::new(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#).unwrap();
-    pub static ref DATE_TIME_REGEX: Regex =
-        Regex::new(r#"(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy](?=(?:[^"]|"[^"]*")*$)"#).unwrap();
-    pub static ref PERCENT_DOLLAR_REGEX: Regex = Regex::new("%$").unwrap();
+// Initialize OnceLock for each Regex
+static ESCAPE_REGEX: OnceLock<Regex> = OnceLock::new();
+static SECTION_REGEX: OnceLock<Regex> = OnceLock::new();
+static DATE_TIME_REGEX: OnceLock<Regex> = OnceLock::new();
+static PERCENT_DOLLAR_REGEX: OnceLock<Regex> = OnceLock::new();
+
+pub fn get_escape_regex() -> &'static Regex {
+    ESCAPE_REGEX.get_or_init(|| {
+        Regex::new(r#"(\\\(((.)(?!((AM\/PM)|(A\/P)))|([^ ])))(?=(?:[^"]|"[^"]*")*$)"#).unwrap()
+    })
+}
+
+pub fn get_section_regex() -> &'static Regex {
+    SECTION_REGEX.get_or_init(|| Regex::new(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#).unwrap())
+}
+
+pub fn get_date_time_regex() -> &'static Regex {
+    DATE_TIME_REGEX.get_or_init(|| {
+        Regex::new(r#"(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy](?=(?:[^"]|"[^"]*")*$)"#).unwrap()
+    })
+}
+
+pub fn get_percent_dollar_regex() -> &'static Regex {
+    PERCENT_DOLLAR_REGEX.get_or_init(|| Regex::new("%$").unwrap())
 }
 
 pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) -> String {
@@ -78,11 +96,11 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     // Convert any other escaped characters to quoted strings, e.g. (\T to "T")
 
-    let mut format = ESCAPE_REGEX.replace_all(&format, r#""$0""#);
+    let mut format = get_escape_regex().replace_all(&format, r#""$0""#);
 
     // Get the sections, there can be up to four sections, separated with a semi-colon (but only if not a quoted literal)
 
-    let sections: Vec<&str> = split(&SECTION_REGEX, &format).collect();
+    let sections: Vec<&str> = split(&get_section_regex(), &format).collect();
 
     let (_, split_format, split_value) = split_format(sections, value.parse::<f64>().unwrap());
     format = Cow::Owned(split_format);
@@ -97,13 +115,16 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
 
     //  Check for date/time characters (not inside quotes)
 
-    if DATE_TIME_REGEX.is_match(&format).unwrap_or(false) {
+    if get_date_time_regex().is_match(&format).unwrap_or(false) {
         // datetime format
         value = date_formater::format_as_date(value.parse::<f64>().unwrap(), &format);
     } else if format.starts_with('"') && format.ends_with('"') {
         let conv_format = format.trim_matches('"').parse::<f64>().unwrap();
         value = Cow::Owned(conv_format.to_string());
-    } else if PERCENT_DOLLAR_REGEX.is_match(&format).unwrap_or(false) {
+    } else if get_percent_dollar_regex()
+        .is_match(&format)
+        .unwrap_or(false)
+    {
         // % number format
         value = percentage_formater::format_as_percentage(value.parse::<f64>().unwrap(), &format);
     } else {

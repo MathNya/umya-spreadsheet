@@ -136,9 +136,6 @@ extern crate html_parser;
 extern crate rand;
 extern crate sha2;
 
-#[macro_use]
-extern crate lazy_static;
-
 pub mod helper;
 pub mod reader;
 pub mod structs;

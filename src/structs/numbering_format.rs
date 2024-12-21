@@ -7,6 +7,7 @@ use quick_xml::Reader;
 use quick_xml::Writer;
 use std::collections::HashMap;
 use std::io::Cursor;
+use std::sync::OnceLock;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {
@@ -79,13 +80,15 @@ impl NumberingFormat {
     }
 
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
-        let format_code_result = FILL_BUILT_IN_FORMAT_CODES.iter().find_map(|(key, val)| {
-            if key == &value {
-                Some(val.clone())
-            } else {
-                None
-            }
-        });
+        let format_code_result = get_fill_built_in_format_codes()
+            .iter()
+            .find_map(|(key, val)| {
+                if key == &value {
+                    Some(val.clone())
+                } else {
+                    None
+                }
+            });
 
         self.format_code = format_code_result
             .expect("Not Found NumberFormatId.")
@@ -114,7 +117,7 @@ impl NumberingFormat {
     /// ```
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into().into_boxed_str();
-        for (index, format) in FILL_BUILT_IN_FORMAT_CODES.iter() {
+        for (index, format) in get_fill_built_in_format_codes().iter() {
             if &*self.format_code == format {
                 self.number_format_id = *index;
                 self.is_build_in = true;
@@ -178,9 +181,12 @@ impl NumberingFormat {
     }
 }
 
-lazy_static! {
-    pub(crate) static ref FILL_BUILT_IN_FORMAT_CODES: HashMap<u32, String> = {
-        let mut map:HashMap<u32, String> = HashMap::new();
+pub(crate) static FILL_BUILT_IN_FORMAT_CODES: OnceLock<HashMap<u32, String>> = OnceLock::new();
+
+pub(crate) fn get_fill_built_in_format_codes() -> &'static HashMap<u32, String> {
+    FILL_BUILT_IN_FORMAT_CODES.get_or_init(|| {
+        let mut map: HashMap<u32, String> = HashMap::new();
+
         // General
         map.insert(0, NumberingFormat::FORMAT_GENERAL.to_string());
         map.insert(1, "0".to_string());
@@ -193,7 +199,7 @@ lazy_static! {
         map.insert(11, "0.00E+00".to_string());
         map.insert(12, "# ?/?".to_string());
         map.insert(13, "# ??/??".to_string());
-        map.insert(14, "m/d/yyyy".to_string()); // Despite ECMA 'mm-dd-yy");
+        map.insert(14, "m/d/yyyy".to_string());
         map.insert(15, "d-mmm-yy".to_string());
         map.insert(16, "d-mmm".to_string());
         map.insert(17, "mmm-yy".to_string());
@@ -201,17 +207,20 @@ lazy_static! {
         map.insert(19, "h:mm:ss AM/PM".to_string());
         map.insert(20, "h:mm".to_string());
         map.insert(21, "h:mm:ss".to_string());
-        map.insert(22, "m/d/yyyy h:mm".to_string()); // Despite ECMA 'm/d/yy h:mm");
+        map.insert(22, "m/d/yyyy h:mm".to_string());
 
-        map.insert(37, "#,##0_);(#,##0)".to_string()); //  Despite ECMA '#,##0 ;(#,##0)");
-        map.insert(38, "#,##0_);[Red](#,##0)".to_string()); //  Despite ECMA '#,##0 ;[Red](#,##0)");
-        map.insert(39, "#,##0.00_);(#,##0.00)".to_string()); //  Despite ECMA '#,##0.00;(#,##0.00)");
-        map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string()); //  Despite ECMA '#,##0.00;[Red](#,##0.00)");
+        map.insert(37, "#,##0_);(#,##0)".to_string());
+        map.insert(38, "#,##0_);[Red](#,##0)".to_string());
+        map.insert(39, "#,##0.00_);(#,##0.00)".to_string());
+        map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string());
 
-        map.insert(44, r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string());
+        map.insert(
+            44,
+            r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string(),
+        );
         map.insert(45, "mm:ss".to_string());
         map.insert(46, "[h]:mm:ss".to_string());
-        map.insert(47, "mm:ss.0".to_string()); //  Despite ECMA 'mmss.0");
+        map.insert(47, "mm:ss.0".to_string());
         map.insert(48, "##0.0E+0".to_string());
         map.insert(49, "@".to_string());
 
@@ -249,7 +258,7 @@ lazy_static! {
         map.insert(58, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
 
         map
-    };
+    })
 }
 
 #[cfg(test)]

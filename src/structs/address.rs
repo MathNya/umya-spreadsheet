@@ -4,6 +4,10 @@ use crate::helper::coordinate::index_from_coordinate;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use fancy_regex::Regex;
+use std::sync::OnceLock;
+
+// Initialize OnceLock for the Regex
+static RE: OnceLock<Regex> = OnceLock::new();
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {
@@ -84,10 +88,9 @@ impl Address {
                 with_space_char = "'";
             }
             if with_space_char.is_empty() {
-                lazy_static! {
-                    static ref RE: Regex = Regex::new(r"[^0-9a-zA-Z]").unwrap();
-                }
-                if RE.is_match(&sheet_name).unwrap_or(false) {
+                // Initialize the regex pattern using OnceLock
+                let re = RE.get_or_init(|| Regex::new(r"[^0-9a-zA-Z]").unwrap());
+                if re.is_match(&sheet_name).unwrap_or(false) {
                     with_space_char = "'";
                 }
             }

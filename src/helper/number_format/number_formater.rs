@@ -1,79 +1,65 @@
 use super::fraction_formater::format_as_fraction;
 use fancy_regex::Regex;
 use std::borrow::Cow;
+use std::sync::OnceLock;
 use thousands::Separable;
 
+// Initialize OnceLock for each Regex
+static THOUSANDS_SEP_REGEX: OnceLock<Regex> = OnceLock::new();
+static SCALE_REGEX: OnceLock<Regex> = OnceLock::new();
+static TRAILING_COMMA_REGEX: OnceLock<Regex> = OnceLock::new();
+static FRACTION_REGEX: OnceLock<Regex> = OnceLock::new();
+static SQUARE_BRACKET_REGEX: OnceLock<Regex> = OnceLock::new();
+static NUMBER_REGEX: OnceLock<Regex> = OnceLock::new();
+
 pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
-    lazy_static! {
-        static ref THOUSANDS_SEP_REGEX: Regex = Regex::new(r"(#,#|0,0)").unwrap();
-        static ref SCALE_REGEX: Regex = Regex::new(r"(#|0)(,+)").unwrap();
-        static ref TRAILING_COMMA_REGEX: Regex = Regex::new("(#|0),+").unwrap();
-        static ref FRACTION_REGEX: Regex = Regex::new(r"#?.*\?{1,2}\/\?{1,2}").unwrap();
-        static ref SQUARE_BRACKET_REGEX: Regex = Regex::new(r"\[[^\]]+\]").unwrap();
-        static ref NUMBER_REGEX: Regex = Regex::new(r"(0+)(\.?)(0*)").unwrap();
-    }
+    // Initialize regex patterns using OnceLock
+    let thousands_sep_regex = THOUSANDS_SEP_REGEX.get_or_init(|| Regex::new(r"(#,#|0,0)").unwrap());
+    let scale_regex = SCALE_REGEX.get_or_init(|| Regex::new(r"(#|0)(,+)").unwrap());
+    let trailing_comma_regex = TRAILING_COMMA_REGEX.get_or_init(|| Regex::new("(#|0),+").unwrap());
+    let fraction_regex =
+        FRACTION_REGEX.get_or_init(|| Regex::new(r"#?.*\?{1,2}\/\?{1,2}").unwrap());
+    let square_bracket_regex =
+        SQUARE_BRACKET_REGEX.get_or_init(|| Regex::new(r"\[[^\]]+\]").unwrap());
+    let number_regex = NUMBER_REGEX.get_or_init(|| Regex::new(r"(0+)(\.?)(0*)").unwrap());
 
     let mut value = value.to_string();
 
-    // The "_" in this string has already been stripped out,
-    // so this test is never true. Furthermore, testing
-    // on Excel shows this format uses Euro symbol, not "EUR".
-    //if ($format === self::FORMAT_CURRENCY_EUR_SIMPLE) {
-    //    return 'EUR ' . sprintf('%1.2f', $value);
-    //}
-
-    // Some non-number strings are quoted, so we'll get rid of the quotes, likewise any positional * symbols
     let mut format = format.replace(['"', '*'], "");
 
-    // Find out if we need thousands separator
-    // This is indicated by a comma enclosed by a digit placeholder:
-    //        #,#   or   0,0
-
-    let use_thousands = THOUSANDS_SEP_REGEX.is_match(&format).unwrap_or(false);
+    let use_thousands = thousands_sep_regex.is_match(&format).unwrap_or(false);
     if use_thousands {
         format = format.replace("0,0", "00");
         format = format.replace("#,#", "##");
     }
 
-    // Scale thousands, millions,...
-    // This is indicated by a number of commas after a digit placeholder:
-    //        #,   or    0.0,,
-    let mut scale: f64 = 1f64; // same as no scale
+    let mut scale: f64 = 1f64;
 
-    if SCALE_REGEX.is_match(&format).unwrap_or(false) {
+    if scale_regex.is_match(&format).unwrap_or(false) {
         let mut matches: Vec<String> = Vec::new();
-        for ite in SCALE_REGEX.captures(&format).ok().flatten().unwrap().iter() {
+        for ite in scale_regex.captures(&format).ok().flatten().unwrap().iter() {
             matches.push(ite.unwrap().as_str().to_string());
         }
         scale = f64::from(1000i32.pow(matches[2].len() as u32));
 
-        // strip the commas
-        format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into();
+        format = trailing_comma_regex.replace_all(&format, "$1").into();
     }
-    if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
+    if fraction_regex.is_match(&format).unwrap_or(false) {
         if value.parse::<usize>().is_err() {
-            //println!("format as fraction {} {}", value, format);
             value = format_as_fraction(value.parse::<f64>().unwrap(), &format);
         }
     } else {
-        // Handle the number itself
-
-        // scale number
         value = (value.parse::<f64>().unwrap() / scale).to_string();
-        // Strip #
         format = format.replace('#', "0");
-        // Remove \
         format = format.replace('\\', "");
-        // Remove locale code [$-###]
         format = format.replace("[$-.*]", "");
-        // Trim
         format = format.trim().to_string();
 
-        let m = SQUARE_BRACKET_REGEX.replace_all(&format, "");
+        let m = square_bracket_regex.replace_all(&format, "");
 
-        if NUMBER_REGEX.is_match(&m).unwrap_or(false) {
+        if number_regex.is_match(&m).unwrap_or(false) {
             let mut item: Vec<String> = Vec::new();
-            for ite in NUMBER_REGEX.captures(&m).ok().flatten().unwrap().iter() {
+            for ite in number_regex.captures(&m).ok().flatten().unwrap().iter() {
                 item.push(ite.unwrap().as_str().to_string());
             }
             value = format_straight_numeric_value(
@@ -93,9 +79,6 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
             item.push(ite.unwrap().as_str().to_string());
         }
         value = format!("{}{}", item.first().unwrap(), value);
-        //    //  Currency or Accounting
-        //    let currency_code = item.get(1).unwrap().to_string();
-        //    value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value, currency_code.as_str()).to_string();
     }
 
     Cow::Owned(value)
