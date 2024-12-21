@@ -298,7 +298,7 @@ impl Spreadsheet {
     /// (This method is crate only.)
     /// Set Default Value Stylesheet.
     #[inline]
-    pub(crate) fn set_stylesheet_defalut_value(&mut self) -> &mut Self {
+    pub(crate) fn set_stylesheet_default_value(&mut self) -> &mut Self {
         self.stylesheet.set_defalut_value();
         self
     }

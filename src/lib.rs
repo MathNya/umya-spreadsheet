@@ -147,19 +147,24 @@ pub mod writer;
 
 pub use self::structs::*;
 
-/// create new spreadsheet file.
-/// # Arguments
-/// # Return value
-/// * Spreadsheet structs object.
-/// # Examples
-/// ```
-/// let mut book = umya_spreadsheet::new_file();
-/// ```
+/// Creates a new spreadsheet with default settings.
+///
+/// Returns a new `Spreadsheet` instance initialized with:
+/// - Default theme
+/// - Default stylesheet
+/// - One worksheet named "Sheet1"
+/// - Active cell set to "A1"
+/// - Sheet view configured with workbook view ID 0
+///
+/// # Panics
+///
+/// Panics if unable to create a new worksheet named "Sheet1". This should never happen
+/// with default settings since it's the first worksheet in a new spreadsheet.
 #[must_use]
 pub fn new_file() -> Spreadsheet {
     let mut spreadsheet = Spreadsheet::default();
     spreadsheet.set_theme(drawing::Theme::get_default_value());
-    spreadsheet.set_stylesheet_defalut_value();
+    spreadsheet.set_stylesheet_default_value();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
     let mut sheet_view = SheetView::default();
@@ -171,13 +176,14 @@ pub fn new_file() -> Spreadsheet {
     spreadsheet
 }
 
-/// create new spreadsheet file.
-/// not include worksheet.
-/// At least one additional worksheet must be added before the correct file can be generated.
+/// Creates a new empty spreadsheet without any worksheets.
 ///
-/// # Arguments
-/// # Return value
-/// * Spreadsheet structs object.
+/// This function initializes a new spreadsheet with default theme and stylesheet settings.
+/// At least one worksheet must be added before generating a valid file.
+///
+/// # Returns
+/// A new `Spreadsheet` instance with default configuration but no worksheets.
+///
 /// # Examples
 /// ```
 /// let mut book = umya_spreadsheet::new_file_empty_worksheet();
@@ -186,6 +192,6 @@ pub fn new_file() -> Spreadsheet {
 pub fn new_file_empty_worksheet() -> Spreadsheet {
     let mut spreadsheet = Spreadsheet::default();
     spreadsheet.set_theme(drawing::Theme::get_default_value());
-    spreadsheet.set_stylesheet_defalut_value();
+    spreadsheet.set_stylesheet_default_value();
     spreadsheet
 }

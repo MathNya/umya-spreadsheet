@@ -353,8 +353,8 @@ fn hmac(algorithm: &str, key: &[u8], buffers: &[&[u8]]) -> Result<Vec<u8>, Strin
         "SHA512" | "SHA-512" => {
             type HmacSha512 = Hmac<Sha512>;
 
-            let mut mac = HmacSha512::new_from_slice(key)
-                .map_err(|e| format!("Error creating HMAC: {e}"))?;
+            let mut mac =
+                HmacSha512::new_from_slice(key).map_err(|e| format!("Error creating HMAC: {e}"))?;
             for buffer in buffers {
                 mac.update(buffer);
             }
@@ -418,10 +418,7 @@ fn convert_password_to_key(
     block_key: &[u8],
 ) -> Vec<u8> {
     // Convert password to UTF-16LE bytes
-    let password_bytes: Vec<u8> = password
-        .encode_utf16()
-        .flat_map(u16::to_le_bytes)
-        .collect();
+    let password_bytes: Vec<u8> = password.encode_utf16().flat_map(u16::to_le_bytes).collect();
 
     // Generate the initial hash
     let mut key = hash(hash_algorithm, &[salt_value, &password_bytes]).unwrap();
@@ -457,10 +454,7 @@ fn convert_password_to_hash(
     spin_count: usize,
 ) -> Vec<u8> {
     // Convert password to UTF-16LE bytes
-    let password_bytes: Vec<u8> = password
-        .encode_utf16()
-        .flat_map(u16::to_le_bytes)
-        .collect();
+    let password_bytes: Vec<u8> = password.encode_utf16().flat_map(u16::to_le_bytes).collect();
 
     // Generate the initial hash
     let mut hash_value = hash(hash_algorithm, &[salt_value, &password_bytes]).unwrap();
@@ -648,7 +642,7 @@ mod tests {
     fn encode_hex(bytes: &[u8]) -> String {
         let mut s = String::with_capacity(bytes.len() * 2);
         for &b in bytes {
-            write!(&mut s, "{:02x}", b).unwrap();
+            write!(&mut s, "{b:02x}").unwrap();
         }
         s
     }
