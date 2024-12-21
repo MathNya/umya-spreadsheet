@@ -1,6 +1,6 @@
 use super::Outline;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct LineStyleList {
 
 impl LineStyleList {
     #[inline]
+    #[must_use]
     pub fn get_outline_collection(&self) -> &[Outline] {
         &self.outline_collection
     }

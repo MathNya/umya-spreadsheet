@@ -6,8 +6,8 @@ use super::Selection;
 use super::SheetViewValues;
 use super::StringValue;
 use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -31,6 +31,7 @@ pub struct SheetView {
 
 impl SheetView {
     #[inline]
+    #[must_use]
     pub fn get_show_grid_lines(&self) -> bool {
         self.show_grid_lines.get_value()
     }
@@ -42,6 +43,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_tab_selected(&self) -> bool {
         self.tab_selected.get_value()
     }
@@ -53,6 +55,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_workbook_view_id(&self) -> u32 {
         self.workbook_view_id.get_value()
     }
@@ -64,6 +67,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_pane(&self) -> Option<&Pane> {
         self.pane.as_deref()
     }
@@ -80,6 +84,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_view(&self) -> &SheetViewValues {
         self.view.get_value()
     }
@@ -91,6 +96,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_zoom_scale(&self) -> u32 {
         self.zoom_scale.get_value()
     }
@@ -102,6 +108,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_zoom_scale_normal(&self) -> u32 {
         self.zoom_scale_normal.get_value()
     }
@@ -113,6 +120,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_zoom_scale_page_layout_view(&self) -> u32 {
         self.zoom_scale_page_layout_view.get_value()
     }
@@ -124,6 +132,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_zoom_scale_sheet_layout_view(&self) -> u32 {
         self.zoom_scale_sheet_layout_view.get_value()
     }
@@ -135,6 +144,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_left_cell(&self) -> &str {
         self.top_left_cell.get_value_str()
     }
@@ -146,6 +156,7 @@ impl SheetView {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_selection(&self) -> &[Selection] {
         &self.selection
     }
@@ -261,7 +272,7 @@ impl SheetView {
         }
         // pane
         if let Some(v) = &self.pane {
-            v.write_to(writer)
+            v.write_to(writer);
         }
         // selection
         for obj in &self.selection {

@@ -1,8 +1,8 @@
 // x14:dataValidations
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
+use crate::helper::const_str::{EXCEL_MAIN_NS, SHEET_MS_MAIN_NS};
+use crate::reader::driver::xml_read_loop;
 use crate::structs::office2010::excel::DataValidation;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct DataValidations {
 
 impl DataValidations {
     #[inline]
+    #[must_use]
     pub fn get_data_validation_list(&self) -> &[DataValidation] {
         &self.data_validation_list
     }

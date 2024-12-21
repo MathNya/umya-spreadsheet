@@ -6,13 +6,12 @@ use crate::structs::raw::RawRelationships;
 use crate::structs::Worksheet;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::result;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,
     drawing_file: &RawFile,
     drawing_relationships: Option<&RawRelationships>,
-) -> result::Result<(), XlsxError> {
+) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);

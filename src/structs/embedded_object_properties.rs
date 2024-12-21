@@ -2,10 +2,10 @@ use super::BooleanValue;
 use super::ObjectAnchor;
 use super::StringValue;
 use super::UInt32Value;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::raw::RawRelationships;
 use crate::structs::MediaObject;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -23,6 +23,7 @@ pub struct EmbeddedObjectProperties {
 
 impl EmbeddedObjectProperties {
     #[inline]
+    #[must_use]
     pub fn get_prog_id(&self) -> &str {
         self.prog_id.get_value_str()
     }
@@ -34,6 +35,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_id(&self) -> u32 {
         self.shape_id.get_value()
     }
@@ -45,6 +47,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
@@ -60,6 +63,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_size(&self) -> bool {
         self.default_size.get_value()
     }
@@ -71,6 +75,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_pict(&self) -> bool {
         self.auto_pict.get_value()
     }
@@ -82,6 +87,7 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_object_anchor(&self) -> &ObjectAnchor {
         &self.object_anchor
     }
@@ -139,7 +145,7 @@ impl EmbeddedObjectProperties {
         if self.auto_pict.has_value() {
             attributes.push(("autoPict", self.auto_pict.get_value_string()));
         }
-        let r_id_str = format!("rId{}", r_id);
+        let r_id_str = format!("rId{r_id}");
         attributes.push(("r:id", r_id_str.as_str()));
         write_start_tag(writer, "objectPr", attributes, false);
 

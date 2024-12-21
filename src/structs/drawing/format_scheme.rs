@@ -4,8 +4,8 @@ use super::BackgroundFillStyleList;
 use super::EffectStyleList;
 use super::FillStyleList;
 use super::LineStyleList;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -22,6 +22,7 @@ pub struct FormatScheme {
 
 impl FormatScheme {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -33,6 +34,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fill_style_list(&self) -> &FillStyleList {
         &self.fill_style_list
     }
@@ -48,6 +50,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_line_style_list(&self) -> &LineStyleList {
         &self.line_style_list
     }
@@ -63,6 +66,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_effect_style_list(&self) -> &EffectStyleList {
         &self.effect_style_list
     }
@@ -78,6 +82,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_background_fill_style_list(&self) -> &BackgroundFillStyleList {
         &self.background_fill_style_list
     }

@@ -1,4 +1,4 @@
-use quick_xml::escape::*;
+use quick_xml::escape::partial_escape;
 use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
 use quick_xml::Writer;
 use std::borrow::Cow;
@@ -69,7 +69,7 @@ pub(crate) fn write_new_line(writer: &mut Writer<Cursor<Vec<u8>>>) {
 }
 
 #[inline]
-pub(crate) fn make_file_from_writer<W: io::Seek + io::Write>(
+pub(crate) fn make_file_from_writer<W: io::Seek + Write>(
     path: &str,
     arv: &mut zip::ZipWriter<W>,
     writer: Writer<Cursor<Vec<u8>>>,
@@ -80,7 +80,7 @@ pub(crate) fn make_file_from_writer<W: io::Seek + io::Write>(
 }
 
 #[inline]
-pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
+pub(crate) fn make_file_from_bin<W: io::Seek + Write>(
     path: &str,
     arv: &mut zip::ZipWriter<W>,
     writer: &[u8],
@@ -99,7 +99,7 @@ pub(crate) fn make_file_from_bin<W: io::Seek + io::Write>(
 #[inline]
 pub(crate) fn to_path<'a>(path: &'a str, dir: Option<&'a str>) -> Cow<'a, str> {
     match dir {
-        Some(dir) => Cow::Owned(format!("{}/{}", dir, path)),
+        Some(dir) => Cow::Owned(format!("{dir}/{path}")),
         None => Cow::Borrowed(path),
     }
 }

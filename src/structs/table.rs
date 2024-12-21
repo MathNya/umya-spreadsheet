@@ -1,7 +1,8 @@
 use super::{
-    coordinate::*, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
+    coordinate::Coordinate, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues,
+    UInt32Value,
 };
-use crate::helper::coordinate::*;
+use crate::helper::coordinate::CellCoordinates;
 use thin_vec::ThinVec;
 //use reader::driver::*;
 
@@ -36,6 +37,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn is_ok(&self) -> bool {
         !(self.name.is_empty()
             || self.display_name.is_empty()
@@ -48,6 +50,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -61,6 +64,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_display_name(&self) -> &str {
         &self.display_name
     }
@@ -71,6 +75,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_area(&self) -> &(Coordinate, Coordinate) {
         &self.area
     }
@@ -91,6 +96,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_columns(&self) -> &[TableColumn] {
         &self.columns
     }
@@ -101,6 +107,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style_info(&self) -> Option<&TableStyleInfo> {
         self.style_info.as_deref()
     }
@@ -116,6 +123,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_totals_row_shown(&self) -> bool {
         self.totals_row_shown.get_value()
     }
@@ -141,6 +149,7 @@ impl Table {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_totals_row_count(&self) -> u32 {
         self.totals_row_count.get_value()
     }
@@ -182,6 +191,7 @@ pub struct TableColumn {
 }
 impl TableColumn {
     #[inline]
+    #[must_use]
     pub fn new(name: &str) -> Self {
         Self {
             name: name.to_string(),
@@ -192,6 +202,7 @@ impl TableColumn {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.as_str()
     }
@@ -208,6 +219,7 @@ impl TableColumn {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_totals_row_label(&self) -> Option<&str> {
         self.totals_row_label.get_value()
     }
@@ -234,6 +246,7 @@ impl TableColumn {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_totals_row_function(&self) -> &TotalsRowFunctionValues {
         self.totals_row_function.get_value()
     }
@@ -254,6 +267,7 @@ impl TableColumn {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_calculated_column_formula(&self) -> Option<&String> {
         self.calculated_column_formula.as_ref()
     }
@@ -274,6 +288,7 @@ pub struct TableStyleInfo {
 }
 impl TableStyleInfo {
     #[inline]
+    #[must_use]
     pub fn new(
         name: &str,
         show_first_col: bool,
@@ -291,26 +306,31 @@ impl TableStyleInfo {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.as_str()
     }
 
     #[inline]
+    #[must_use]
     pub fn is_show_first_col(&self) -> bool {
         self.show_first_col
     }
 
     #[inline]
+    #[must_use]
     pub fn is_show_last_col(&self) -> bool {
         self.show_last_col
     }
 
     #[inline]
+    #[must_use]
     pub fn is_show_row_stripes(&self) -> bool {
         self.show_row_stripes
     }
 
     #[inline]
+    #[must_use]
     pub fn is_show_col_stripes(&self) -> bool {
         self.show_col_stripes
     }

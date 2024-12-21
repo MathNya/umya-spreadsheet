@@ -12,8 +12,8 @@ use super::vml::Shadow;
 use super::vml::TextBox;
 use super::Coordinate;
 use super::RichText;
-use crate::helper::coordinate::*;
-use crate::reader::driver::*;
+use crate::helper::coordinate::CellCoordinates;
+use crate::reader::driver::get_attribute;
 use crate::structs::vml::Shape;
 use crate::traits::AdjustmentCoordinate;
 use quick_xml::events::{BytesStart, Event};
@@ -29,6 +29,7 @@ pub struct Comment {
 
 impl Comment {
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
@@ -39,6 +40,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_author(&self) -> &str {
         &self.author
     }
@@ -50,6 +52,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_text(&self) -> &RichText {
         &self.text
     }
@@ -72,6 +75,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         self.shape.get_client_data().get_anchor()
     }
@@ -88,6 +92,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape(&self) -> &Shape {
         &self.shape
     }

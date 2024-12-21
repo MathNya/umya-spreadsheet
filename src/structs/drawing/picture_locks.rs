@@ -1,6 +1,6 @@
 // a:picLocks
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct PictureLocks {
 
 impl PictureLocks {
     #[inline]
+    #[must_use]
     pub fn get_no_change_aspect(&self) -> bool {
         self.no_change_aspect
     }

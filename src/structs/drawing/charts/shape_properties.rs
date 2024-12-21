@@ -8,8 +8,8 @@ use super::super::Scene3DType;
 use super::super::Shape3DType;
 use super::super::SolidFill;
 use super::super::Transform2D;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -29,6 +29,7 @@ pub struct ShapeProperties {
 }
 
 impl ShapeProperties {
+    #[must_use]
     pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
         self.pattern_fill.as_ref()
     }
@@ -42,6 +43,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_ref()
     }
@@ -55,6 +57,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_geometry(&self) -> Option<&PresetGeometry> {
         self.preset_geometry.as_ref()
     }
@@ -68,6 +71,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_ref()
     }
@@ -81,6 +85,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
@@ -94,6 +99,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_ref()
     }
@@ -107,6 +113,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_ref()
     }
@@ -120,6 +127,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
         self.scene_3d_type.as_ref()
     }
@@ -133,6 +141,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
         self.shape_3d_type.as_ref()
     }

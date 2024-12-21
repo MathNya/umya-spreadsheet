@@ -1,17 +1,17 @@
 use crate::xml_read_loop;
 
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::PKG_SHARED_STRINGS;
 use crate::structs::SharedStringTable;
 use crate::structs::Spreadsheet;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::{io, result};
+use std::io;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     spreadsheet: &mut Spreadsheet,
-) -> result::Result<(), XlsxError> {
+) -> Result<(), XlsxError> {
     let r = io::BufReader::new(match arv.by_name(PKG_SHARED_STRINGS) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {

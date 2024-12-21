@@ -3,8 +3,8 @@ use super::super::EnumValue;
 use super::PercentageType;
 use super::PositiveFixedPercentageType;
 use super::SchemeColorValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -25,6 +25,7 @@ pub struct SchemeColor {
 
 impl SchemeColor {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &SchemeColorValues {
         self.val.get_value()
     }
@@ -36,6 +37,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_luminance(&self) -> Option<&PercentageType> {
         self.luminance.as_ref()
     }
@@ -51,6 +53,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_luminance_modulation(&self) -> Option<&PercentageType> {
         self.luminance_modulation.as_ref()
     }
@@ -66,6 +69,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_luminance_offset(&self) -> Option<&PercentageType> {
         self.luminance_offset.as_ref()
     }
@@ -81,6 +85,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_saturation(&self) -> Option<&PercentageType> {
         self.saturation.as_ref()
     }
@@ -96,6 +101,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_saturation_modulation(&self) -> Option<&PercentageType> {
         self.saturation_modulation.as_ref()
     }
@@ -111,6 +117,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shade(&self) -> Option<&PositiveFixedPercentageType> {
         self.shade.as_ref()
     }
@@ -126,6 +133,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alpha(&self) -> Option<&PositiveFixedPercentageType> {
         self.alpha.as_ref()
     }
@@ -141,6 +149,7 @@ impl SchemeColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_tint(&self) -> Option<&PositiveFixedPercentageType> {
         self.tint.as_ref()
     }

@@ -1,9 +1,9 @@
 // c:cat
 use super::StringLiteral;
 use super::StringReference;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct CategoryAxisData {
 }
 
 impl CategoryAxisData {
+    #[must_use]
     pub fn get_string_reference(&self) -> Option<&StringReference> {
         self.string_reference.as_ref()
     }
@@ -34,6 +35,7 @@ impl CategoryAxisData {
         self
     }
 
+    #[must_use]
     pub fn get_string_literal(&self) -> Option<&StringLiteral> {
         self.string_literal.as_ref()
     }

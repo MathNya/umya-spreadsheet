@@ -2,9 +2,12 @@ use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
+use super::driver::{make_file_from_writer, write_end_tag, write_new_line, write_start_tag};
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{
+    PIVOT_CACHE_DEF_NS, PKG_WORKBOOK_RELS, REL_NS, SHARED_STRINGS_NS, STYLES_NS, THEME_NS,
+    VBA_PROJECT_NS, WORKSHEET_NS,
+};
 use crate::structs::Spreadsheet;
 use crate::structs::WriterManager;
 
@@ -34,7 +37,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // relationships worksheet
     for _ in spreadsheet.get_sheet_collection_no_check() {
-        let path_str = format!("worksheets/sheet{}.xml", index);
+        let path_str = format!("worksheets/sheet{index}.xml");
         write_relationship(&mut writer, &index.to_string(), WORKSHEET_NS, &path_str, "");
         index += 1;
     }
@@ -108,7 +111,7 @@ fn write_relationship(
 ) {
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();
-    let r_id = format!("rId{}", p_id);
+    let r_id = format!("rId{p_id}");
     attributes.push(("Id", r_id.as_str()));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));

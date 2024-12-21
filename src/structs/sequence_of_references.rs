@@ -9,6 +9,7 @@ pub struct SequenceOfReferences {
 
 impl SequenceOfReferences {
     #[inline]
+    #[must_use]
     pub fn get_range_collection(&self) -> &[Range] {
         &self.range_collection
     }
@@ -46,10 +47,11 @@ impl SequenceOfReferences {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sqref(&self) -> String {
         self.range_collection
             .iter()
-            .map(|range| range.get_range())
+            .map(Range::get_range)
             .collect::<Vec<String>>()
             .join(" ")
     }

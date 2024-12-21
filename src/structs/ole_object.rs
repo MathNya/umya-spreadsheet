@@ -1,11 +1,11 @@
 use super::EmbeddedObjectProperties;
 use super::StringValue;
 use crate::helper::const_str::MC_NS;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::drawing::spreadsheet::TwoCellAnchor;
 use crate::structs::raw::RawRelationships;
 use crate::structs::vml::Shape;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -25,6 +25,7 @@ pub struct OleObject {
 
 impl OleObject {
     #[inline]
+    #[must_use]
     pub fn get_requires(&self) -> &str {
         self.requires.get_value_str()
     }
@@ -36,6 +37,7 @@ impl OleObject {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_prog_id(&self) -> &str {
         self.prog_id.get_value_str()
     }
@@ -47,6 +49,7 @@ impl OleObject {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_object_extension(&self) -> &str {
         &self.object_extension
     }
@@ -57,6 +60,7 @@ impl OleObject {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_object_data(&self) -> Option<&[u8]> {
         self.object_data.as_deref()
     }
@@ -73,6 +77,7 @@ impl OleObject {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_embedded_object_properties(&self) -> &EmbeddedObjectProperties {
         &self.embedded_object_properties
     }
@@ -89,6 +94,7 @@ impl OleObject {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
@@ -105,6 +111,7 @@ impl OleObject {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape(&self) -> &Shape {
         &self.shape
     }
@@ -201,8 +208,8 @@ impl OleObject {
         );
 
         // oleObject
-        let r_id_str = format!("rId{}", r_id);
-        let shape_id_str = format!("{}", ole_id);
+        let r_id_str = format!("rId{r_id}");
+        let shape_id_str = format!("{ole_id}");
         let attributes = vec![
             ("progId", self.prog_id.get_value_str()),
             ("shapeId", shape_id_str.as_str()),
@@ -221,7 +228,7 @@ impl OleObject {
         write_start_tag(writer, "mc:Fallback", vec![], false);
 
         // oleObject
-        let r_id_str = format!("rId{}", r_id);
+        let r_id_str = format!("rId{r_id}");
         let attributes = vec![
             ("progId", self.prog_id.get_value_str()),
             ("shapeId", shape_id_str.as_str()),

@@ -4,9 +4,9 @@ use super::NonVisualShapeProperties;
 use super::ShapeProperties;
 use super::ShapeStyle;
 use super::TextBody;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -23,6 +23,7 @@ pub struct Shape {
 
 impl Shape {
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
@@ -38,6 +39,7 @@ impl Shape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
         &self.non_visual_shape_properties
     }
@@ -52,6 +54,7 @@ impl Shape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
@@ -66,6 +69,7 @@ impl Shape {
         self.shape_properties = value;
     }
 
+    #[must_use]
     pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
         self.shape_style.as_deref()
     }
@@ -81,6 +85,7 @@ impl Shape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_text_body(&self) -> Option<&TextBody> {
         self.text_body.as_deref()
     }

@@ -1,9 +1,9 @@
 use super::ConditionalFormattingRule;
 use super::DifferentialFormats;
 use super::SequenceOfReferences;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
@@ -19,6 +19,7 @@ pub struct ConditionalFormatting {
 
 impl ConditionalFormatting {
     #[inline]
+    #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
@@ -35,6 +36,7 @@ impl ConditionalFormatting {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
         &self.conditional_collection
     }

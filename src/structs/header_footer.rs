@@ -1,8 +1,8 @@
 // headerFooter
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::OddFooter;
 use crate::structs::OddHeader;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct HeaderFooter {
 
 impl HeaderFooter {
     #[inline]
+    #[must_use]
     pub fn get_odd_header(&self) -> &OddHeader {
         &self.odd_header
     }
@@ -32,6 +33,7 @@ impl HeaderFooter {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_odd_footer(&self) -> &OddFooter {
         &self.odd_footer
     }

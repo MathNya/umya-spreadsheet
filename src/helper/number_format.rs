@@ -16,6 +16,7 @@ pub struct Split<'r, 't> {
 }
 
 #[inline]
+#[must_use]
 pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     Split {
         finder: regex.find_iter(text),
@@ -128,18 +129,18 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     let cond_re = Regex::new(cond_regex).unwrap();
 
     let mut colors = [
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
+        String::new(),
+        String::new(),
+        String::new(),
+        String::new(),
+        String::new(),
     ];
     let mut condops = [
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
+        String::new(),
+        String::new(),
+        String::new(),
+        String::new(),
+        String::new(),
     ];
     let mut condvals = [
         String::from("0"),

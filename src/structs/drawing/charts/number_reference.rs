@@ -4,7 +4,7 @@ use crate::xml_read_loop;
 use super::Formula;
 use super::NumberingCache;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -17,6 +17,7 @@ pub struct NumberReference {
 }
 
 impl NumberReference {
+    #[must_use]
     pub fn get_formula(&self) -> &Formula {
         &self.formula
     }
@@ -30,6 +31,7 @@ impl NumberReference {
         self
     }
 
+    #[must_use]
     pub fn get_numbering_cache(&self) -> &NumberingCache {
         &self.numbering_cache
     }

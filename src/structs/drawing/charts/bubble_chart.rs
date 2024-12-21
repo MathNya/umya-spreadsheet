@@ -6,9 +6,9 @@ use super::BubbleScale;
 use super::DataLabels;
 use super::ShowNegativeBubbles;
 use super::VaryColors;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -26,6 +26,7 @@ pub struct BubbleChart {
 }
 
 impl BubbleChart {
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -39,6 +40,7 @@ impl BubbleChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -52,6 +54,7 @@ impl BubbleChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -65,6 +68,7 @@ impl BubbleChart {
         self
     }
 
+    #[must_use]
     pub fn get_bubble_scale(&self) -> &BubbleScale {
         &self.bubble_scale
     }
@@ -78,6 +82,7 @@ impl BubbleChart {
         self
     }
 
+    #[must_use]
     pub fn get_show_negative_bubbles(&self) -> &ShowNegativeBubbles {
         &self.show_negative_bubbles
     }
@@ -91,6 +96,7 @@ impl BubbleChart {
         self
     }
 
+    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }

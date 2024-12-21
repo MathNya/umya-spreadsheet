@@ -2,9 +2,9 @@
 use super::BlipFill;
 use super::NonVisualPictureProperties;
 use super::ShapeProperties;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -19,6 +19,7 @@ pub struct Picture {
 
 impl Picture {
     #[inline]
+    #[must_use]
     pub fn get_non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
         &self.non_visual_picture_properties
     }
@@ -34,6 +35,7 @@ impl Picture {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_blip_fill(&self) -> &BlipFill {
         &self.blip_fill
     }
@@ -49,6 +51,7 @@ impl Picture {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }

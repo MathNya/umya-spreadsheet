@@ -1,6 +1,8 @@
-use super::driver::*;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{
+    MC_NS, PKG_SHEET, REL_OFC_NS, SHEETML_AC_NS, SHEET_DRAWING_NS, SHEET_MAIN_NS, SHEET_MS_MAIN_NS,
+};
 use crate::structs::Cell;
 use crate::structs::SharedStringTable;
 use crate::structs::Stylesheet;
@@ -287,7 +289,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             vec![("count", &tables.len().to_string())],
             false,
         );
-        for _table in worksheet.get_tables().iter() {
+        for _table in worksheet.get_tables() {
             let r_id_str = format!("rId{}", &r_id);
             write_start_tag(
                 &mut writer,
@@ -317,6 +319,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "worksheet");
 
-    let target = format!("{PKG_SHEET}{}.xml", sheet_no);
+    let target = format!("{PKG_SHEET}{sheet_no}.xml");
     writer_mng.add_writer(&target, writer)
 }

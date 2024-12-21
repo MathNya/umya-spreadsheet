@@ -8,6 +8,7 @@ pub struct AutoFilter {
 
 impl AutoFilter {
     #[inline]
+    #[must_use]
     pub fn get_range(&self) -> &Range {
         &self.range
     }

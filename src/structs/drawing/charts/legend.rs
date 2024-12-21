@@ -5,7 +5,7 @@ use super::LegendPosition;
 use super::Overlay;
 use super::ShapeProperties;
 use super::TextProperties;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -21,6 +21,7 @@ pub struct Legend {
 }
 
 impl Legend {
+    #[must_use]
     pub fn get_legend_position(&self) -> &LegendPosition {
         &self.legend_position
     }
@@ -34,6 +35,7 @@ impl Legend {
         self
     }
 
+    #[must_use]
     pub fn get_layout(&self) -> Option<&Layout> {
         self.layout.as_deref()
     }
@@ -47,6 +49,7 @@ impl Legend {
         self
     }
 
+    #[must_use]
     pub fn get_overlay(&self) -> &Overlay {
         &self.overlay
     }
@@ -60,6 +63,7 @@ impl Legend {
         self
     }
 
+    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_deref()
     }
@@ -73,6 +77,7 @@ impl Legend {
         self
     }
 
+    #[must_use]
     pub fn get_text_properties(&self) -> Option<&TextProperties> {
         self.text_properties.as_deref()
     }

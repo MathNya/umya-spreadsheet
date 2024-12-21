@@ -1,6 +1,6 @@
 use super::super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct TextFontType {
 
 impl TextFontType {
     #[inline]
+    #[must_use]
     pub fn get_typeface(&self) -> &str {
         self.typeface.get_value_str()
     }
@@ -27,6 +28,7 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_pitch_family(&self) -> &str {
         self.pitch_family.get_value_str()
     }
@@ -38,6 +40,7 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_charset(&self) -> &str {
         self.charset.get_value_str()
     }
@@ -49,6 +52,7 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_panose(&self) -> &str {
         self.panose.get_value_str()
     }

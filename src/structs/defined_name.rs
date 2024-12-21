@@ -2,10 +2,10 @@ use super::Address;
 use super::BooleanValue;
 use super::StringValue;
 use super::UInt32Value;
-use crate::helper::address::*;
-use crate::reader::driver::*;
+use crate::helper::address::is_address;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node_conversion};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -22,6 +22,7 @@ pub struct DefinedName {
 }
 impl DefinedName {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -32,6 +33,7 @@ impl DefinedName {
         self
     }
 
+    #[must_use]
     pub fn get_address(&self) -> String {
         if self.string_value.has_value() {
             return self.string_value.get_value_str().to_string();
@@ -67,7 +69,7 @@ impl DefinedName {
     #[allow(dead_code)]
     pub(crate) fn get_sheet_name_crate(&self) -> String {
         if self.string_value.has_value() {
-            return String::from("");
+            return String::new();
         }
         self.address
             .first()
@@ -95,11 +97,13 @@ impl DefinedName {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_local_sheet_id(&self) -> bool {
         self.local_sheet_id.has_value()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_local_sheet_id(&self) -> u32 {
         self.local_sheet_id.get_value()
     }
@@ -110,6 +114,7 @@ impl DefinedName {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
@@ -126,7 +131,7 @@ impl DefinedName {
         let mut is_pass_d = false;
         let mut is_pass_b = 0;
         let mut result: Vec<String> = Vec::new();
-        let mut string = String::from("");
+        let mut string = String::new();
         for c in &char_list {
             match c {
                 '(' => {
@@ -182,7 +187,7 @@ impl DefinedName {
         set_string_from_xml!(self, e, local_sheet_id, "localSheetId");
         set_string_from_xml!(self, e, hidden, "hidden");
 
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
                 Event::Text(e) => {

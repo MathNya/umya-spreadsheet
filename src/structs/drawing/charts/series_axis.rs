@@ -10,8 +10,8 @@ use super::MinorTickMark;
 use super::Scaling;
 use super::TickLabelPosition;
 use super::Title;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -33,6 +33,7 @@ pub struct SeriesAxis {
 }
 
 impl SeriesAxis {
+    #[must_use]
     pub fn get_axis_id(&self) -> &AxisId {
         &self.axis_id
     }
@@ -46,6 +47,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_scaling(&self) -> &Scaling {
         &self.scaling
     }
@@ -59,6 +61,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_delete(&self) -> &Delete {
         &self.delete
     }
@@ -72,6 +75,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_axis_position(&self) -> &AxisPosition {
         &self.axis_position
     }
@@ -85,6 +89,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
         self.major_gridlines.as_deref()
     }
@@ -98,6 +103,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
@@ -111,6 +117,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_tick_mark(&self) -> &MajorTickMark {
         &self.major_tick_mark
     }
@@ -124,6 +131,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_minor_tick_mark(&self) -> &MinorTickMark {
         &self.minor_tick_mark
     }
@@ -137,6 +145,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_label_position(&self) -> &TickLabelPosition {
         &self.tick_label_position
     }
@@ -150,6 +159,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_crossing_axis(&self) -> &CrossingAxis {
         &self.crossing_axis
     }
@@ -163,6 +173,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_crosses(&self) -> &Crosses {
         &self.crosses
     }

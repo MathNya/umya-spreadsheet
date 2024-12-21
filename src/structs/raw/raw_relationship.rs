@@ -1,9 +1,9 @@
-use crate::reader::driver::*;
+use crate::reader::driver::get_attribute;
 use crate::structs::raw::RawFile;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
 use crate::structs::XlsxError;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -80,7 +80,7 @@ impl RawRelationship {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: io::Read + io::Seek>(
+    pub(crate) fn set_attributes<R: io::BufRead, A: io::Read + io::Seek>(
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,

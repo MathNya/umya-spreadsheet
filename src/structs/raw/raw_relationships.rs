@@ -1,10 +1,10 @@
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
+use crate::helper::const_str::REL_NS;
+use crate::reader::driver::{join_paths, xml_read_loop};
 use crate::structs::raw::RawRelationship;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
 use crate::structs::XlsxError;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_new_line, write_start_tag};
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -23,7 +23,7 @@ impl RawRelationships {
     pub(crate) fn _get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
-        object_name.to_string()
+        (*object_name).to_string()
     }
 
     #[inline]
@@ -53,7 +53,7 @@ impl RawRelationships {
                 return relationship;
             }
         }
-        panic!("not found relationship as {}.", r_id);
+        panic!("not found relationship as {r_id}.");
     }
 
     #[inline]
@@ -62,7 +62,7 @@ impl RawRelationships {
         self
     }
 
-    pub(crate) fn set_attributes<R: io::Read + io::Seek>(
+    pub(crate) fn set_attributes<R: Read + io::Seek>(
         &mut self,
         arv: &mut zip::read::ZipArchive<R>,
         base_path: &str,
@@ -80,7 +80,7 @@ impl RawRelationships {
             let mut r = io::BufReader::new(file_path);
             let mut buf = Vec::new();
             r.read_to_end(&mut buf).unwrap();
-            std::io::Cursor::new(buf)
+            io::Cursor::new(buf)
         };
         let mut reader = Reader::from_reader(data);
         reader.config_mut().trim_text(true);

@@ -2,10 +2,10 @@
 use super::DoubleValue;
 use super::StringValue;
 use super::UInt32Value;
-use crate::helper::color::*;
-use crate::reader::driver::*;
+use crate::helper::color::calc_tint;
+use crate::reader::driver::get_attribute_value;
 use crate::structs::drawing::Theme;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -98,7 +98,8 @@ impl Color {
 
     /// Get Argb.
     /// If the color is based on the theme, it cannot be obtained with this function.
-    /// In that case, use get_argb_with_theme(&self, theme: &Theme).
+    /// In that case, use `get_argb_with_theme(&self`, theme: &Theme).
+    #[must_use]
     pub fn get_argb(&self) -> &str {
         if self.indexed.has_value() {
             if let Some(v) = INDEXED_COLORS.get(self.indexed.get_value() as usize) {
@@ -115,6 +116,7 @@ impl Color {
     /// let mut book = umya_spreadsheet::new_file();
     /// let theme = book.get_theme();
     /// ```
+    #[must_use]
     pub fn get_argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {
         if self.indexed.has_value() {
             return self.get_argb().to_owned().into();
@@ -139,21 +141,19 @@ impl Color {
     pub fn set_argb<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let argb = value.into();
         let indexed = INDEXED_COLORS.iter().position(|&r| r == argb);
-        match indexed {
-            Some(v) => {
-                self.indexed.set_value(v as u32);
-                self.argb.remove_value();
-            }
-            None => {
-                self.indexed.remove_value();
-                self.argb.set_value(argb);
-            }
+        if let Some(v) = indexed {
+            self.indexed.set_value(v as u32);
+            self.argb.remove_value();
+        } else {
+            self.indexed.remove_value();
+            self.argb.set_value(argb);
         }
         self.theme_index.remove_value();
         self
     }
 
     #[inline]
+    #[must_use]
     pub fn get_indexed(&self) -> u32 {
         self.indexed.get_value()
     }
@@ -167,6 +167,7 @@ impl Color {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_theme_index(&self) -> u32 {
         self.theme_index.get_value()
     }
@@ -180,6 +181,7 @@ impl Color {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_tint(&self) -> f64 {
         self.tint.get_value()
     }

@@ -1,7 +1,7 @@
 // xdr:xfrm
 use super::super::{Extents, Offset};
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::{BooleanValue, Int32Value};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -19,6 +19,7 @@ pub struct Transform {
 
 impl Transform {
     #[inline]
+    #[must_use]
     pub fn get_offset(&self) -> &Offset {
         &self.offset
     }
@@ -35,6 +36,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_extents(&self) -> &Extents {
         &self.extents
     }
@@ -51,6 +53,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rotation(&self) -> i32 {
         self.rotation.get_value()
     }
@@ -61,6 +64,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_flip(&self) -> bool {
         self.vertical_flip.get_value()
     }
@@ -71,6 +75,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_horizontal_flip(&self) -> bool {
         self.horizontal_flip.get_value()
     }

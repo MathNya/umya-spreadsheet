@@ -1,8 +1,8 @@
 use super::EffectList;
 use super::Scene3DType;
 use super::Shape3DType;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct EffectStyle {
 
 impl EffectStyle {
     #[inline]
+    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
@@ -34,6 +35,7 @@ impl EffectStyle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
         self.scene_3d_type.as_deref()
     }
@@ -50,6 +52,7 @@ impl EffectStyle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
         self.shape_3d_type.as_deref()
     }

@@ -8,11 +8,11 @@ use super::MoveWithCells;
 use super::ObjectValues;
 use super::ResizeWithCells;
 use super::Visible;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::EnumValue;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentValue;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -34,6 +34,7 @@ pub struct ClientData {
 
 impl ClientData {
     #[inline]
+    #[must_use]
     pub fn get_object_type(&self) -> &ObjectValues {
         self.object_type.get_value()
     }
@@ -45,6 +46,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_move_with_cells(&self) -> Option<&MoveWithCells> {
         self.move_with_cells.as_ref()
     }
@@ -61,6 +63,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_resize_with_cells(&self) -> Option<&ResizeWithCells> {
         self.resize_with_cells.as_ref()
     }
@@ -77,6 +80,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
@@ -93,6 +97,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_fill(&self) -> Option<&AutoFill> {
         self.auto_fill.as_ref()
     }
@@ -109,6 +114,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_comment_row_target(&self) -> Option<&CommentRowTarget> {
         self.comment_row_target.as_ref()
     }
@@ -125,6 +131,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_comment_column_target(&self) -> Option<&CommentColumnTarget> {
         self.comment_column_target.as_ref()
     }
@@ -141,6 +148,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_visible(&self) -> Option<&Visible> {
         self.visible.as_ref()
     }
@@ -157,6 +165,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_clipboard_format(&self) -> Option<&ClipboardFormat> {
         self.clipboard_format.as_ref()
     }
@@ -173,6 +182,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_size_picture(&self) -> Option<&AutoSizePicture> {
         self.auto_size_picture.as_ref()
     }

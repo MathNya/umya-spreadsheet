@@ -1,8 +1,8 @@
 // gradientFill
 use super::DoubleValue;
 use super::GradientStop;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -19,6 +19,7 @@ pub struct GradientFill {
 
 impl GradientFill {
     #[inline]
+    #[must_use]
     pub fn get_degree(&self) -> f64 {
         self.degree.get_value()
     }
@@ -30,6 +31,7 @@ impl GradientFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
@@ -46,7 +48,7 @@ impl GradientFill {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        let mut value = String::from("");
+        let mut value = String::new();
         for stop in &self.gradient_stop {
             write!(value, "{}", stop.get_hash_code().as_str()).unwrap();
         }

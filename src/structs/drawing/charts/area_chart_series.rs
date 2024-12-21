@@ -16,7 +16,7 @@ use super::Values;
 use super::XValues;
 use super::YValues;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -43,6 +43,7 @@ pub struct AreaChartSeries {
 }
 
 impl AreaChartSeries {
+    #[must_use]
     pub fn get_index(&self) -> &Index {
         &self.index
     }
@@ -56,6 +57,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_order(&self) -> &Order {
         &self.order
     }
@@ -69,6 +71,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_series_text(&self) -> Option<&SeriesText> {
         self.series_text.as_ref()
     }
@@ -82,6 +85,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_explosion(&self) -> Option<&Explosion> {
         self.explosion.as_ref()
     }
@@ -95,6 +99,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_invert_if_negative(&self) -> Option<&InvertIfNegative> {
         self.invert_if_negative.as_ref()
     }
@@ -108,6 +113,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_marker(&self) -> Option<&Marker> {
         self.marker.as_ref()
     }
@@ -121,6 +127,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -134,6 +141,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_category_axis_data(&self) -> Option<&CategoryAxisData> {
         self.category_axis_data.as_ref()
     }
@@ -147,6 +155,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_values(&self) -> Option<&Values> {
         self.values.as_ref()
     }
@@ -160,6 +169,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_x_values(&self) -> Option<&XValues> {
         self.x_values.as_ref()
     }
@@ -173,6 +183,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_y_values(&self) -> Option<&YValues> {
         self.y_values.as_ref()
     }
@@ -186,6 +197,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_bubble_size(&self) -> Option<&BubbleSize> {
         self.bubble_size.as_ref()
     }
@@ -199,6 +211,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_bubble_3d(&self) -> Option<&Bubble3D> {
         self.bubble_3d.as_ref()
     }
@@ -212,6 +225,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_smooth(&self) -> Option<&Smooth> {
         self.smooth.as_ref()
     }
@@ -225,6 +239,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> Option<&DataLabels> {
         self.data_labels.as_ref()
     }

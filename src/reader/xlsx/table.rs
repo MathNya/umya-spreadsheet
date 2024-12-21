@@ -1,23 +1,19 @@
-use super::driver::*;
+use super::driver::get_attribute_value;
 use super::XlsxError;
 use crate::structs::raw::RawFile;
 use crate::structs::Worksheet;
 use crate::structs::{Table, TableColumn, TableStyleInfo};
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::result;
 
-pub(crate) fn read(
-    worksheet: &mut Worksheet,
-    table_file: &RawFile,
-) -> result::Result<(), XlsxError> {
+pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(table_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
     let mut buf = Vec::new();
     let mut table = Table::default();
     let mut table_column = TableColumn::default();
-    let mut string_value = String::from("");
+    let mut string_value = String::new();
     loop {
         match reader.read_event_into(&mut buf) {
             Ok(Event::Empty(ref e)) => match e.name().into_inner() {
@@ -138,7 +134,7 @@ pub(crate) fn read(
             Ok(Event::End(ref e)) => match e.name().into_inner() {
                 b"calculatedColumnFormula" => {
                     table_column.set_calculated_column_formula(string_value);
-                    string_value = String::from("");
+                    string_value = String::new();
                 }
                 b"tableColumn" => {
                     // add column to table (if it has a name)

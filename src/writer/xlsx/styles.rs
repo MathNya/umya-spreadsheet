@@ -1,6 +1,6 @@
-use super::driver::*;
+use super::driver::write_new_line;
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::PKG_STYLES;
 use crate::structs::Stylesheet;
 use crate::structs::WriterManager;
 use quick_xml::events::{BytesDecl, Event};

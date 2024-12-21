@@ -1,13 +1,13 @@
 use crate::xml_read_loop;
 
-use super::driver::*;
+use super::driver::get_attribute;
 use super::XlsxError;
 use quick_xml::escape;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::{io, result};
+use std::io;
 
-use crate::helper::const_str::*;
+use crate::helper::const_str::PKG_WORKBOOK;
 use crate::structs::DefinedName;
 use crate::structs::Spreadsheet;
 use crate::structs::WorkbookProtection;
@@ -16,7 +16,7 @@ use crate::structs::Worksheet;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
-) -> result::Result<Spreadsheet, XlsxError> {
+) -> Result<Spreadsheet, XlsxError> {
     let r = io::BufReader::new(arv.by_name(PKG_WORKBOOK)?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
@@ -55,7 +55,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 b"pivotCache" => {
                     let cache_id = get_attribute(e, b"cacheId").unwrap();
                     let r_id = get_attribute(e, b"r:id").unwrap();
-                    spreadsheet.add_pivot_caches((r_id, cache_id, String::from("")));
+                    spreadsheet.add_pivot_caches((r_id, cache_id, String::new()));
                 }
                 _ => (),
             }

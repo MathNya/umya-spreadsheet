@@ -1,7 +1,7 @@
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
+use crate::helper::const_str::{CUSTOM_PROPS_NS, VTYPES_NS};
+use crate::reader::driver::xml_read_loop;
 use crate::structs::custom_properties::CustomDocumentProperty;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
@@ -16,6 +16,7 @@ pub struct Properties {
 
 impl Properties {
     #[inline]
+    #[must_use]
     pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
         &self.custom_document_property_list
     }

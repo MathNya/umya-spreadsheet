@@ -12,8 +12,8 @@ use super::StringValue;
 use super::Style;
 use super::TimePeriodValues;
 use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
@@ -43,6 +43,7 @@ pub struct ConditionalFormattingRule {
 
 impl ConditionalFormattingRule {
     #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &ConditionalFormatValues {
         self.r#type.get_value()
     }
@@ -54,6 +55,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_operator(&self) -> &ConditionalFormattingOperatorValues {
         self.operator.get_value()
     }
@@ -65,6 +67,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_text(&self) -> &str {
         self.text.get_value_str()
     }
@@ -76,6 +79,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_priority(&self) -> i32 {
         self.priority.get_value()
     }
@@ -87,6 +91,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_percent(&self) -> bool {
         self.percent.get_value()
     }
@@ -98,6 +103,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bottom(&self) -> bool {
         self.bottom.get_value()
     }
@@ -109,6 +115,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rank(&self) -> u32 {
         self.rank.get_value()
     }
@@ -120,6 +127,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_stop_if_true(&self) -> bool {
         self.stop_if_true.get_value()
     }
@@ -131,6 +139,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_std_dev(&self) -> i32 {
         self.std_dev.get_value()
     }
@@ -142,6 +151,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_above_average(&self) -> bool {
         self.above_average.get_value()
     }
@@ -153,6 +163,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_equal_average(&self) -> bool {
         self.equal_average.get_value()
     }
@@ -164,6 +175,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_time_period(&self) -> &TimePeriodValues {
         self.time_period.get_value()
     }
@@ -175,6 +187,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style(&self) -> Option<&Style> {
         self.style.as_deref()
     }
@@ -192,6 +205,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_color_scale(&self) -> Option<&ColorScale> {
         self.color_scale.as_ref()
     }
@@ -209,6 +223,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_data_bar(&self) -> Option<&DataBar> {
         self.data_bar.as_ref()
     }
@@ -226,6 +241,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_icon_set(&self) -> Option<&IconSet> {
         self.icon_set.as_ref()
     }
@@ -243,6 +259,7 @@ impl ConditionalFormattingRule {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula(&self) -> Option<&Formula> {
         self.formula.as_deref()
     }
@@ -405,22 +422,22 @@ impl ConditionalFormattingRule {
         if is_inner {
             // colorScale
             if let Some(v) = &self.color_scale {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             // dataBar
             if let Some(v) = &self.data_bar {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             // iconSet
             if let Some(v) = &self.icon_set {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             // formula
             if let Some(v) = &self.formula {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "cfRule");

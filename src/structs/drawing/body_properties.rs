@@ -3,8 +3,8 @@ use super::super::EnumValue;
 use super::super::Int32Value;
 use super::ShapeAutoFit;
 use super::TextWrappingValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute_value, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -27,6 +27,7 @@ pub struct BodyProperties {
 
 impl BodyProperties {
     #[inline]
+    #[must_use]
     pub fn get_vert_overflow(&self) -> Option<&str> {
         self.vert_overflow.get_value()
     }
@@ -38,6 +39,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_horz_overflow(&self) -> Option<&str> {
         self.horz_overflow.get_value()
     }
@@ -49,6 +51,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rtl_col(&self) -> Option<&str> {
         self.rtl_col.get_value()
     }
@@ -60,6 +63,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> Option<&str> {
         self.anchor.get_value()
     }
@@ -71,6 +75,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_wrap(&self) -> &TextWrappingValues {
         self.wrap.get_value()
     }
@@ -82,6 +87,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_left_inset(&self) -> i32 {
         self.left_inset.get_value()
     }
@@ -92,6 +98,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_inset(&self) -> i32 {
         self.top_inset.get_value()
     }
@@ -102,6 +109,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_right_inset(&self) -> i32 {
         self.right_inset.get_value()
     }
@@ -112,6 +120,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bottom_inset(&self) -> i32 {
         self.bottom_inset.get_value()
     }
@@ -122,6 +131,7 @@ impl BodyProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
         self.shape_auto_fit.as_ref()
     }

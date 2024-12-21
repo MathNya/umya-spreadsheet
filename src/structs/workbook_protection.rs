@@ -2,9 +2,9 @@
 use super::BooleanValue;
 use super::StringValue;
 use super::UInt32Value;
-use crate::helper::crypt::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::helper::crypt::{encrypt_revisions_protection, encrypt_workbook_protection};
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -28,6 +28,7 @@ pub struct WorkbookProtection {
 }
 impl WorkbookProtection {
     #[inline]
+    #[must_use]
     pub fn get_workbook_algorithm_name(&self) -> &str {
         self.workbook_algorithm_name.get_value_str()
     }
@@ -39,6 +40,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_workbook_hash_value(&self) -> &str {
         self.workbook_hash_value.get_value_str()
     }
@@ -50,6 +52,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_workbook_salt_value(&self) -> &str {
         self.workbook_salt_value.get_value_str()
     }
@@ -61,6 +64,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_workbook_spin_count(&self) -> u32 {
         self.workbook_spin_count.get_value()
     }
@@ -72,6 +76,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_workbook_password_raw(&self) -> &str {
         self.workbook_password.get_value_str()
     }
@@ -89,6 +94,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_revisions_algorithm_name(&self) -> &str {
         self.revisions_algorithm_name.get_value_str()
     }
@@ -100,6 +106,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_revisions_hash_value(&self) -> &str {
         self.revisions_hash_value.get_value_str()
     }
@@ -111,6 +118,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_revisions_salt_value(&self) -> &str {
         self.revisions_salt_value.get_value_str()
     }
@@ -122,6 +130,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_revisions_spin_count(&self) -> u32 {
         self.revisions_spin_count.get_value()
     }
@@ -133,6 +142,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_revisions_password_raw(&self) -> &str {
         self.revisions_password.get_value_str()
     }
@@ -150,6 +160,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_lock_revision(&self) -> bool {
         self.lock_revision.get_value()
     }
@@ -161,6 +172,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_lock_structure(&self) -> bool {
         self.lock_structure.get_value()
     }
@@ -172,6 +184,7 @@ impl WorkbookProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_lock_windows(&self) -> bool {
         self.lock_windows.get_value()
     }

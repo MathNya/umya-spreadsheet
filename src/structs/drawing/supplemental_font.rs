@@ -1,7 +1,7 @@
 // a:font
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::StringValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -15,6 +15,7 @@ pub struct SupplementalFont {
 
 impl SupplementalFont {
     #[inline]
+    #[must_use]
     pub fn get_script(&self) -> &str {
         self.script.get_value_str()
     }
@@ -26,6 +27,7 @@ impl SupplementalFont {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_typeface(&self) -> &str {
         self.typeface.get_value_str()
     }

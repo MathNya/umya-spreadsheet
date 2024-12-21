@@ -6,13 +6,12 @@ use crate::structs::Worksheet;
 use crate::xml_read_loop;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::result;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,
     drawing_file: &RawFile,
     drawing_relationships: Option<&RawRelationships>,
-) -> result::Result<(), XlsxError> {
+) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
@@ -26,22 +25,19 @@ pub(crate) fn read(
                 if e.name().into_inner() == b"v:shape" {
                     let mut obj = Shape::default();
                     obj.set_attributes(&mut reader, e, drawing_relationships);
-                    match obj.get_client_data().get_comment_column_target() {
-                        Some(_) => {
-                            worksheet
-                                .get_comments_mut()
-                                .get_mut(comment_index)
-                                .map(|comment| comment.set_shape(obj));
-                            comment_index += 1;
-                        }
-                        None => {
-                            worksheet
-                                .get_ole_objects_mut()
-                                .get_ole_object_mut()
-                                .get_mut(ole_index)
-                                .map(|ole_obj| ole_obj.set_shape(obj));
-                            ole_index += 1;
-                        }
+                    if obj.get_client_data().get_comment_column_target().is_some() {
+                        worksheet
+                            .get_comments_mut()
+                            .get_mut(comment_index)
+                            .map(|comment| comment.set_shape(obj));
+                        comment_index += 1;
+                    } else {
+                        worksheet
+                            .get_ole_objects_mut()
+                            .get_ole_object_mut()
+                            .get_mut(ole_index)
+                            .map(|ole_obj| ole_obj.set_shape(obj));
+                        ole_index += 1;
                     }
                 }
             },

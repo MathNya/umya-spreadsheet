@@ -1,9 +1,9 @@
 // a:blip
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
+use crate::helper::const_str::{DRAWING_MAIN_NS, REL_OFC_NS};
+use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::structs::raw::RawRelationships;
 use crate::structs::MediaObject;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -17,6 +17,7 @@ pub struct Blip {
 
 impl Blip {
     #[inline]
+    #[must_use]
     pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
@@ -33,6 +34,7 @@ impl Blip {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cstate(&self) -> &str {
         &self.cstate
     }
@@ -83,7 +85,7 @@ impl Blip {
     ) {
         // a:blip
         let r_id = self.image.get_rid(rel_list);
-        let r_id_str = format!("rId{}", r_id);
+        let r_id_str = format!("rId{r_id}");
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("xmlns:r", REL_OFC_NS));
         attributes.push(("r:embed", r_id_str.as_str()));

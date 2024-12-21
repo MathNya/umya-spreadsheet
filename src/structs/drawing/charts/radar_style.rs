@@ -1,8 +1,8 @@
 // c:radarStyle
 use super::super::super::EnumValue;
 use super::RadarStyleValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct RadarStyle {
     val: EnumValue<RadarStyleValues>,
 }
 impl RadarStyle {
+    #[must_use]
     pub fn get_val(&self) -> &RadarStyleValues {
         self.val.get_value()
     }

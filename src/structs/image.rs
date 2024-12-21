@@ -66,6 +66,7 @@ pub struct Image {
 /// ```
 impl Image {
     #[inline]
+    #[must_use]
     pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
         self.two_cell_anchor.as_deref()
     }
@@ -88,6 +89,7 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
         self.one_cell_anchor.as_deref()
     }
@@ -120,7 +122,7 @@ impl Image {
         let file = File::open(path).unwrap();
         BufReader::new(file).read_to_end(&mut buf).unwrap();
 
-        self.new_image_with_dimensions(height, width, image_name, buf, marker)
+        self.new_image_with_dimensions(height, width, image_name, buf, marker);
     }
 
     pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(
@@ -169,8 +171,10 @@ impl Image {
         one_cell_anchor.set_from_marker(marker);
         one_cell_anchor
             .get_extent_mut()
-            .set_cy(height as i64 * 9525);
-        one_cell_anchor.get_extent_mut().set_cx(width as i64 * 9525);
+            .set_cy(i64::from(height) * 9525);
+        one_cell_anchor
+            .get_extent_mut()
+            .set_cx(i64::from(width) * 9525);
         one_cell_anchor.set_picture(picture);
         self.set_one_cell_anchor(one_cell_anchor);
     }
@@ -190,11 +194,13 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_image(&self) -> bool {
         !self.get_media_object().is_empty()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image_name(&self) -> &str {
         match self.get_media_object().first() {
             Some(v) => v.get_image_name(),
@@ -203,6 +209,7 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image_data(&self) -> &[u8] {
         match self.get_media_object().first() {
             Some(v) => v.get_image_data(),
@@ -211,26 +218,31 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image_data_base64(&self) -> String {
         STANDARD.encode(self.get_image_data())
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         self.get_from_marker_type().get_coordinate()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_col(&self) -> u32 {
         self.get_from_marker_type().get_col()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row(&self) -> u32 {
         self.get_from_marker_type().get_row()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_from_marker_type(&self) -> &MarkerType {
         if let Some(anchor) = self.get_two_cell_anchor() {
             return anchor.get_from_marker();
@@ -242,6 +254,7 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
         self.get_two_cell_anchor()
             .as_ref()

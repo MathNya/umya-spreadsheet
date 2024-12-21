@@ -1,8 +1,8 @@
 // xdr:nvGrpSpPr
 use super::NonVisualDrawingProperties;
 use super::NonVisualGroupShapeDrawingProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct NonVisualGroupShapeProperties {
 
 impl NonVisualGroupShapeProperties {
     #[inline]
+    #[must_use]
     pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
@@ -35,6 +36,7 @@ impl NonVisualGroupShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_non_visual_group_shape_drawing_properties(
         &self,
     ) -> &NonVisualGroupShapeDrawingProperties {

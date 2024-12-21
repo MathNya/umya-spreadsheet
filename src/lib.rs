@@ -22,7 +22,7 @@
 //! let mut book = new_file();
 //!
 //! // new worksheet
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused =  book.new_sheet("Sheet2");
 //! ```
 //! ### Copy worksheet
 //! ```rust
@@ -31,13 +31,13 @@
 //!
 //! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
 //! clone_sheet.set_name("New Sheet");
-//! let _ = book.add_sheet(clone_sheet);
+//! let _unused =  book.add_sheet(clone_sheet);
 //! ```
 //! ### Change value
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused =  book.new_sheet("Sheet2");
 //!
 //! // change value
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
@@ -52,7 +52,7 @@
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused =  book.new_sheet("Sheet2");
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
 //!
 //! // read value
@@ -68,7 +68,7 @@
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused =  book.new_sheet("Sheet2");
 //!
 //! // add bottom border
 //! book.get_sheet_by_name_mut("Sheet2").unwrap()
@@ -109,15 +109,12 @@
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused =  book.new_sheet("Sheet2");
 //!
 //! // writer
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
-//! let _ = writer::xlsx::write(&book, path);
+//! let _unused =  writer::xlsx::write(&book, path);
 //! ```
-
-#![deny(clippy::correctness)]
-#![warn(clippy::style, clippy::complexity, clippy::perf, clippy::trivially_copy_pass_by_ref)]
 
 extern crate chrono;
 extern crate fancy_regex;
@@ -158,9 +155,10 @@ pub use self::structs::*;
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
 /// ```
-pub fn new_file() -> structs::Spreadsheet {
-    let mut spreadsheet = structs::Spreadsheet::default();
-    spreadsheet.set_theme(structs::drawing::Theme::get_default_value());
+#[must_use]
+pub fn new_file() -> Spreadsheet {
+    let mut spreadsheet = Spreadsheet::default();
+    spreadsheet.set_theme(drawing::Theme::get_default_value());
     spreadsheet.set_stylesheet_defalut_value();
     let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
@@ -184,9 +182,10 @@ pub fn new_file() -> structs::Spreadsheet {
 /// ```
 /// let mut book = umya_spreadsheet::new_file_empty_worksheet();
 /// ```
-pub fn new_file_empty_worksheet() -> structs::Spreadsheet {
-    let mut spreadsheet = structs::Spreadsheet::default();
-    spreadsheet.set_theme(structs::drawing::Theme::get_default_value());
+#[must_use]
+pub fn new_file_empty_worksheet() -> Spreadsheet {
+    let mut spreadsheet = Spreadsheet::default();
+    spreadsheet.set_theme(drawing::Theme::get_default_value());
     spreadsheet.set_stylesheet_defalut_value();
     spreadsheet
 }

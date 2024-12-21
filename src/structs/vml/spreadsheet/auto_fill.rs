@@ -1,6 +1,6 @@
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::TrueFalseBlankValue;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct AutoFill {
 
 impl AutoFill {
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> Option<bool> {
         self.value.get_value()
     }

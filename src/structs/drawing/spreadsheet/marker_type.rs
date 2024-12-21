@@ -1,7 +1,10 @@
 // xdr:from,xdr:to
-use crate::helper::coordinate::*;
+use crate::helper::coordinate::{
+    adjustment_insert_coordinate, adjustment_remove_coordinate, coordinate_from_index,
+    index_from_coordinate, is_remove_coordinate,
+};
 use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +19,7 @@ pub struct MarkerType {
 }
 impl MarkerType {
     #[inline]
+    #[must_use]
     pub fn get_col(&self) -> u32 {
         self.col
     }
@@ -27,6 +31,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_col_off(&self) -> i32 {
         self.col_off
     }
@@ -44,6 +49,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row(&self) -> u32 {
         self.row
     }
@@ -55,6 +61,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row_off(&self) -> i32 {
         self.row_off
     }
@@ -72,6 +79,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         coordinate_from_index(self.col + 1, self.row + 1)
     }
@@ -88,7 +96,7 @@ impl MarkerType {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {

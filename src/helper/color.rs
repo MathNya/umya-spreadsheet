@@ -1,5 +1,5 @@
 /**
- * https://ciintelligence.blogspot.com/2012/02/converting-excel-theme-color-and-tint.html
+ * <https://ciintelligence.blogspot.com/2012/02/converting-excel-theme-color-and-tint.html>
  */
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
@@ -19,12 +19,14 @@ pub struct MsHlsColor {
 const RGBMAX: f64 = 255.0;
 const HLSMAX: f64 = 255.0;
 
+#[must_use]
 pub fn calc_tint(rgb: &str, tint: f64) -> String {
     let mut ms_hls = convert_rgb_to_ms_hls(rgb);
-    ms_hls.l = calculate_final_lum_value(tint, ms_hls.l as f64);
+    ms_hls.l = calculate_final_lum_value(tint, f64::from(ms_hls.l));
     convert_ms_hls_to_rgb(&ms_hls)
 }
 
+#[must_use]
 pub fn calculate_final_lum_value(tint: f64, lum: f64) -> i32 {
     let lum1 = if tint < 0.0 {
         lum * (1.0 + tint)
@@ -35,6 +37,7 @@ pub fn calculate_final_lum_value(tint: f64, lum: f64) -> i32 {
     to_i32(lum1)
 }
 
+#[must_use]
 pub fn split_rgb(rgb: &str) -> (i32, i32, i32) {
     let r = i32::from_str_radix(&rgb[0..2], 16).unwrap();
     let g = i32::from_str_radix(&rgb[2..4], 16).unwrap();
@@ -43,27 +46,30 @@ pub fn split_rgb(rgb: &str) -> (i32, i32, i32) {
 }
 
 #[inline]
+#[must_use]
 pub fn join_rgb(r: i32, g: i32, b: i32) -> String {
-    format!("{:02X}{:02X}{:02X}", r, g, b)
+    format!("{r:02X}{g:02X}{b:02X}")
 }
 
+#[must_use]
 pub fn convert_rgb_to_ms_hls(rgb: &str) -> MsHlsColor {
     let hls = convert_rgb_to_hls(rgb);
     MsHlsColor {
-        h: to_i32(hls.h * self::HLSMAX),
-        l: to_i32(hls.l * self::HLSMAX),
-        s: to_i32(hls.s * self::HLSMAX),
+        h: to_i32(hls.h * HLSMAX),
+        l: to_i32(hls.l * HLSMAX),
+        s: to_i32(hls.s * HLSMAX),
     }
 }
 
+#[must_use]
 pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
     let mut hls = HlsColor::default();
 
     let (r_i, g_i, b_i) = split_rgb(rgb);
 
-    let r = r_i as f64 / RGBMAX;
-    let g = g_i as f64 / RGBMAX;
-    let b = b_i as f64 / RGBMAX;
+    let r = f64::from(r_i) / RGBMAX;
+    let g = f64::from(g_i) / RGBMAX;
+    let b = f64::from(b_i) / RGBMAX;
 
     let mut min = r;
     if min > g {
@@ -115,15 +121,17 @@ pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
     hls
 }
 
+#[must_use]
 pub fn convert_ms_hls_to_rgb(ms_hls: &MsHlsColor) -> String {
     let hls = HlsColor {
-        h: (ms_hls.h as f64 / self::HLSMAX),
-        l: (ms_hls.l as f64 / self::HLSMAX),
-        s: (ms_hls.s as f64 / self::HLSMAX),
+        h: (f64::from(ms_hls.h) / HLSMAX),
+        l: (f64::from(ms_hls.l) / HLSMAX),
+        s: (f64::from(ms_hls.s) / HLSMAX),
     };
     convert_hls_to_rgb(&hls)
 }
 
+#[must_use]
 pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
     if hls.s == 0.0 {
         let rtn_l = to_i32(hls.l * RGBMAX);
@@ -151,6 +159,7 @@ pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
     join_rgb(rtn_r, rtn_g, rtn_b)
 }
 
+#[must_use]
 pub fn set_color(t1: f64, t2: f64, t3: f64) -> f64 {
     let t3 = positive_decimal_part(t3);
 

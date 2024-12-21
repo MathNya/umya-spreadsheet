@@ -1,7 +1,7 @@
 // a:avLst
 use super::shape_guide::ShapeGuide;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -15,6 +15,7 @@ pub struct AdjustValueList {
 
 impl AdjustValueList {
     #[inline]
+    #[must_use]
     pub fn get_shape_guide_collection(&self) -> &[ShapeGuide] {
         &self.shape_guide_collection
     }

@@ -1,7 +1,7 @@
 // cacheFields
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::CacheField;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,6 +12,7 @@ pub struct CacheFields {
     list: Vec<CacheField>,
 }
 impl CacheFields {
+    #[must_use]
     pub fn get_list(&self) -> &Vec<CacheField> {
         &self.list
     }

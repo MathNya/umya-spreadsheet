@@ -1,8 +1,8 @@
 // numFmts
 use super::NumberingFormat;
 use super::Style;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -112,11 +112,9 @@ impl NumberingFormats {
         let cnt_str = cnt.to_string();
         write_start_tag(writer, "numFmts", vec![("count", &cnt_str)], false);
 
-        formats_to_write
-            .into_iter()
-            .for_each(|(index, numbering_format)| {
-                numbering_format.write_to(writer, *index);
-            });
+        for (index, numbering_format) in formats_to_write {
+            numbering_format.write_to(writer, *index);
+        }
 
         write_end_tag(writer, "numFmts");
     }

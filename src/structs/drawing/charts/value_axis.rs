@@ -14,8 +14,8 @@ use super::ShapeProperties;
 use super::TextProperties;
 use super::TickLabelPosition;
 use super::Title;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -41,6 +41,7 @@ pub struct ValueAxis {
 }
 
 impl ValueAxis {
+    #[must_use]
     pub fn get_axis_id(&self) -> &AxisId {
         &self.axis_id
     }
@@ -54,6 +55,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_scaling(&self) -> &Scaling {
         &self.scaling
     }
@@ -67,6 +69,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_delete(&self) -> &Delete {
         &self.delete
     }
@@ -80,6 +83,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_axis_position(&self) -> &AxisPosition {
         &self.axis_position
     }
@@ -93,6 +97,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
         self.major_gridlines.as_ref()
     }
@@ -106,6 +111,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
@@ -119,6 +125,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_numbering_format(&self) -> &NumberingFormat {
         &self.numbering_format
     }
@@ -132,6 +139,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_tick_mark(&self) -> &MajorTickMark {
         &self.major_tick_mark
     }
@@ -145,6 +153,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_minor_tick_mark(&self) -> &MinorTickMark {
         &self.minor_tick_mark
     }
@@ -158,6 +167,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_label_position(&self) -> &TickLabelPosition {
         &self.tick_label_position
     }
@@ -171,6 +181,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_crossing_axis(&self) -> &CrossingAxis {
         &self.crossing_axis
     }
@@ -184,6 +195,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_crosses(&self) -> &Crosses {
         &self.crosses
     }
@@ -197,6 +209,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_cross_between(&self) -> &CrossBetween {
         &self.cross_between
     }
@@ -210,6 +223,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -223,6 +237,7 @@ impl ValueAxis {
         self
     }
 
+    #[must_use]
     pub fn get_text_properties(&self) -> Option<&TextProperties> {
         self.text_properties.as_ref()
     }

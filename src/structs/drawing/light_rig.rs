@@ -3,8 +3,8 @@ use super::super::EnumValue;
 use super::LightRigDirectionValues;
 use super::LightRigValues;
 use super::Rotation;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -19,6 +19,7 @@ pub struct LightRig {
 
 impl LightRig {
     #[inline]
+    #[must_use]
     pub fn get_rig(&self) -> &LightRigValues {
         self.rig.get_value()
     }
@@ -30,6 +31,7 @@ impl LightRig {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_definition(&self) -> &LightRigDirectionValues {
         self.definition.get_value()
     }
@@ -41,6 +43,7 @@ impl LightRig {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rotation(&self) -> Option<&Rotation> {
         self.rotation.as_deref()
     }

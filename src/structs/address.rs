@@ -1,6 +1,6 @@
 use super::Range;
-use crate::helper::address::*;
-use crate::helper::coordinate::*;
+use crate::helper::address::split_address;
+use crate::helper::coordinate::index_from_coordinate;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use fancy_regex::Regex;
@@ -13,6 +13,7 @@ pub struct Address {
 
 impl Address {
     #[inline]
+    #[must_use]
     pub fn get_sheet_name(&self) -> &str {
         &self.sheet_name
     }
@@ -24,6 +25,7 @@ impl Address {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_range(&self) -> &Range {
         &self.range
     }
@@ -50,6 +52,7 @@ impl Address {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_address(&self) -> String {
         self.get_address_crate(false)
     }
@@ -70,14 +73,14 @@ impl Address {
             with_space_char = "'";
         }
         if is_ptn2 {
-            if sheet_name.contains("!") {
+            if sheet_name.contains('!') {
                 with_space_char = "'";
             }
-            if sheet_name.contains("'") {
+            if sheet_name.contains('\'') {
                 with_space_char = "'";
-                sheet_name = sheet_name.replace("'", "''").into_boxed_str();
+                sheet_name = sheet_name.replace('\'', "''").into_boxed_str();
             }
-            if sheet_name.contains(r#"""#) {
+            if sheet_name.contains('"') {
                 with_space_char = "'";
             }
             if with_space_char.is_empty() {

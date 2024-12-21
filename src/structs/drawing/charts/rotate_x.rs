@@ -1,7 +1,7 @@
 // c:rotX
 use super::super::super::SByteValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,6 +12,7 @@ pub struct RotateX {
     val: SByteValue,
 }
 impl RotateX {
+    #[must_use]
     pub fn get_val(&self) -> i8 {
         self.val.get_value()
     }

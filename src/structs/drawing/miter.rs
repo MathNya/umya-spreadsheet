@@ -1,6 +1,6 @@
 // a:miter
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use crate::Int32Value;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
@@ -14,6 +14,7 @@ pub struct Miter {
 
 impl Miter {
     #[inline]
+    #[must_use]
     pub fn get_limit(&self) -> i32 {
         self.limit.get_value()
     }

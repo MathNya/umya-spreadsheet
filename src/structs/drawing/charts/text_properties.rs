@@ -2,8 +2,8 @@
 use super::super::BodyProperties;
 use super::super::ListStyle;
 use super::super::Paragraph;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct TextProperties {
 }
 
 impl TextProperties {
+    #[must_use]
     pub fn get_body_properties(&self) -> &BodyProperties {
         &self.body_properties
     }
@@ -31,6 +32,7 @@ impl TextProperties {
         self
     }
 
+    #[must_use]
     pub fn get_list_style(&self) -> &ListStyle {
         &self.list_style
     }
@@ -44,6 +46,7 @@ impl TextProperties {
         self
     }
 
+    #[must_use]
     pub fn get_paragraph(&self) -> &[Paragraph] {
         &self.paragraph
     }

@@ -2,7 +2,7 @@ use crate::xml_read_loop;
 
 // c:pt
 use super::NumericValue;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct StringPoint {
 }
 
 impl StringPoint {
+    #[must_use]
     pub fn get_numeric_value(&self) -> &NumericValue {
         &self.numeric_value
     }

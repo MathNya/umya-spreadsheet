@@ -1,8 +1,8 @@
 // a:scene3d
 use super::Camera;
 use super::LightRig;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct Scene3DType {
 
 impl Scene3DType {
     #[inline]
+    #[must_use]
     pub fn get_camera(&self) -> Option<&Camera> {
         self.camera.as_ref()
     }
@@ -27,6 +28,7 @@ impl Scene3DType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_light_rig(&self) -> Option<&LightRig> {
         self.light_rig.as_ref()
     }

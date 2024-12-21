@@ -2,9 +2,12 @@ use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{
+    ARC_APP, ARC_CORE, ARC_CUSTOM, COREPROPS_REL, CUSTOMUI_NS, CUSTOM_PROPS_REL, OFCDOC_NS,
+    PKG_WORKBOOK, REL_NS, XPROPS_REL,
+};
 use crate::structs::Spreadsheet;
 use crate::structs::WriterManager;
 
@@ -71,7 +74,7 @@ fn write_relationship(
 ) {
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();
-    let r_id = format!("rId{}", p_id);
+    let r_id = format!("rId{p_id}");
     attributes.push(("Id", r_id.as_str()));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));

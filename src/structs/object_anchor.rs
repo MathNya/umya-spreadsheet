@@ -1,8 +1,8 @@
 use super::BooleanValue;
 use super::FromMarker;
 use super::ToMarker;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -17,6 +17,7 @@ pub struct ObjectAnchor {
 
 impl ObjectAnchor {
     #[inline]
+    #[must_use]
     pub fn get_move_with_cells(&self) -> bool {
         self.move_with_cells.get_value()
     }
@@ -28,6 +29,7 @@ impl ObjectAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_from_marker(&self) -> &FromMarker {
         &self.from_marker
     }
@@ -44,6 +46,7 @@ impl ObjectAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_to_marker(&self) -> &ToMarker {
         &self.to_marker
     }

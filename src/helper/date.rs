@@ -3,6 +3,7 @@ use chrono::{Duration, NaiveDateTime};
 pub const CALENDAR_WINDOWS_1900: &str = "1900";
 pub const CALENDAR_MAC_1904: &str = "1904";
 
+#[must_use]
 pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>) -> NaiveDateTime {
     let _time_zone = match time_zone {
         Some(v) => v,
@@ -42,6 +43,7 @@ fn get_default_timezone() -> String {
 }
 
 #[inline]
+#[must_use]
 pub fn convert_date(
     year: i32,
     month: i32,
@@ -54,6 +56,7 @@ pub fn convert_date(
 }
 
 #[inline]
+#[must_use]
 pub fn convert_date_windows_1900(
     year: i32,
     month: i32,
@@ -66,6 +69,7 @@ pub fn convert_date_windows_1900(
 }
 
 #[inline]
+#[must_use]
 pub fn convert_date_mac_1904(
     year: i32,
     month: i32,
@@ -77,6 +81,7 @@ pub fn convert_date_mac_1904(
     convert_date_crate(year, month, day, hours, minutes, seconds, false)
 }
 
+#[must_use]
 pub fn convert_date_crate(
     year: i32,
     month: i32,
@@ -114,8 +119,8 @@ pub fn convert_date_crate(
         + is_leap_year;
 
     // Calculate the time portion of the date
-    let time_in_days = ((hours * 3600 + minutes * 60 + seconds) as f64) / 86400.0;
+    let time_in_days = f64::from(hours * 3600 + minutes * 60 + seconds) / 86400.0;
 
     // Return the final Excel date and time
-    julian_date as f64 + time_in_days
+    f64::from(julian_date) + time_in_days
 }

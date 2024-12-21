@@ -1,9 +1,9 @@
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::raw::RawRelationships;
 use crate::structs::EnumValue;
 use crate::structs::OrientationValues;
 use crate::structs::UInt32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -24,6 +24,7 @@ pub struct PageSetup {
 
 impl PageSetup {
     #[inline]
+    #[must_use]
     pub fn get_paper_size(&self) -> u32 {
         self.paper_size.get_value()
     }
@@ -35,6 +36,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_orientation(&self) -> &OrientationValues {
         self.orientation.get_value()
     }
@@ -46,6 +48,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scale(&self) -> u32 {
         self.scale.get_value()
     }
@@ -57,6 +60,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fit_to_height(&self) -> u32 {
         self.fit_to_height.get_value()
     }
@@ -68,6 +72,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fit_to_width(&self) -> u32 {
         self.fit_to_width.get_value()
     }
@@ -79,6 +84,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_horizontal_dpi(&self) -> u32 {
         self.horizontal_dpi.get_value()
     }
@@ -90,6 +96,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_dpi(&self) -> u32 {
         self.vertical_dpi.get_value()
     }
@@ -101,6 +108,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_object_data(&self) -> Option<&[u8]> {
         self.object_data.as_deref()
     }
@@ -154,7 +162,7 @@ impl PageSetup {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut usize) {
         if self.has_param() {
             // pageSetup
-            let r_id_str = format!("rId{}", r_id);
+            let r_id_str = format!("rId{r_id}");
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             let paper_size = self.paper_size.get_value_string();
             if self.paper_size.has_value() {

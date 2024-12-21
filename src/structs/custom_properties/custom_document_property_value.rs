@@ -12,8 +12,8 @@ impl fmt::Display for CustomDocumentPropertyValue {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::String(v) => write!(f, "{}", v),
-            Self::Date(v) => write!(f, "{}", v),
+            Self::String(v) => write!(f, "{v}"),
+            Self::Date(v) => write!(f, "{v}"),
             Self::Numeric(v) => write!(f, "{}", &v),
             Self::Bool(v) => write!(f, "{}", if *v { "true" } else { "false" }),
             _ => write!(f, ""),

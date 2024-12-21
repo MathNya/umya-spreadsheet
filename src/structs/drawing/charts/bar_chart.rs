@@ -8,9 +8,9 @@ use super::GapWidth;
 use super::Grouping;
 use super::Overlap;
 use super::VaryColors;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -30,6 +30,7 @@ pub struct BarChart {
 }
 
 impl BarChart {
+    #[must_use]
     pub fn get_bar_direction(&self) -> &BarDirection {
         &self.bar_direction
     }
@@ -43,6 +44,7 @@ impl BarChart {
         self
     }
 
+    #[must_use]
     pub fn get_grouping(&self) -> &Grouping {
         &self.grouping
     }
@@ -56,6 +58,7 @@ impl BarChart {
         self
     }
 
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -69,6 +72,7 @@ impl BarChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -82,6 +86,7 @@ impl BarChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -95,6 +100,7 @@ impl BarChart {
         self
     }
 
+    #[must_use]
     pub fn get_gap_width(&self) -> &GapWidth {
         &self.gap_width
     }
@@ -108,6 +114,7 @@ impl BarChart {
         self
     }
 
+    #[must_use]
     pub fn get_overlap(&self) -> &Overlap {
         &self.overlap
     }
@@ -121,6 +128,7 @@ impl BarChart {
         self
     }
 
+    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }

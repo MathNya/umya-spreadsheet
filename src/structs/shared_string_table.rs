@@ -1,9 +1,9 @@
 // sst
 use super::CellValue;
 use super::SharedStringItem;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::helper::const_str::SHEET_MAIN_NS;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -54,14 +54,13 @@ impl SharedStringTable {
         }
 
         let hash_code = shared_string_item.get_hash_u64();
-        let n = match self.map.get(&hash_code) {
-            Some(v) => v.to_owned(),
-            None => {
-                let n = self.shared_string_item.len();
-                self.map.insert(hash_code, n);
-                self.set_shared_string_item(shared_string_item);
-                n
-            }
+        let n = if let Some(v) = self.map.get(&hash_code) {
+            v.to_owned()
+        } else {
+            let n = self.shared_string_item.len();
+            self.map.insert(hash_code, n);
+            self.set_shared_string_item(shared_string_item);
+            n
         };
         n
     }

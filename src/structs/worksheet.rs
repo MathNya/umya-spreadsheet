@@ -1,7 +1,9 @@
-use crate::helper::const_str::*;
-use crate::helper::coordinate::*;
-use crate::helper::range::*;
-use crate::reader::xlsx::worksheet::*;
+use crate::helper::const_str::PIVOT_CACHE_DEF_NS;
+use crate::helper::coordinate::{
+    column_index_from_string, coordinate_from_index, string_from_column_index, CellCoordinates,
+};
+use crate::helper::range::{get_coordinate_list, get_start_and_end_point};
+use crate::reader::xlsx::worksheet::read_lite;
 use crate::structs::drawing::spreadsheet::WorksheetDrawing;
 use crate::structs::office2010::excel::DataValidations as DataValidations2010;
 use crate::structs::raw::RawWorksheet;
@@ -112,7 +114,7 @@ impl Worksheet {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_cell((col, row))
             .map(|v| v.get_value().into())
-            .unwrap_or("".into())
+            .unwrap_or_default()
     }
 
     /// Get value number.
@@ -134,7 +136,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.get_cell((col, row)).and_then(|v| v.get_value_number())
+        self.get_cell((col, row)).and_then(Cell::get_value_number)
     }
 
     /// Get formatted value.
@@ -165,11 +167,13 @@ impl Worksheet {
     // ************************
     /// Get Cell List.
     #[inline]
+    #[must_use]
     pub fn get_cell_collection(&self) -> Vec<&Cell> {
         self.cell_collection.get_collection()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cell_collection_sorted(&self) -> Vec<&Cell> {
         self.cell_collection.get_collection_sorted()
     }
@@ -181,6 +185,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
         self.cell_collection.get_collection_to_hashmap()
     }
@@ -268,22 +273,26 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
         self.cell_collection.get_collection_by_column(column_num)
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
         self.cell_collection.get_collection_by_row(row_num)
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
         self.cell_collection
             .get_collection_by_column_to_hashmap(column_num)
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
         self.cell_collection
             .get_collection_by_row_to_hashmap(row_num)
@@ -326,7 +335,7 @@ impl Worksheet {
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(1, 1)`
     /// # Return value
-    /// * `&CellValue` - CellValue.
+    /// * `&CellValue` - `CellValue`.
     /// # Examples
     /// ```
     /// let book = umya_spreadsheet::new_file();
@@ -347,7 +356,7 @@ impl Worksheet {
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(1, 1)`
     /// # Return value
-    /// * `&mut CellValue` - CellValue with mutable.
+    /// * `&mut CellValue` - `CellValue` with mutable.
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
@@ -368,7 +377,7 @@ impl Worksheet {
     /// # Arguments
     /// * `range` - range. ex) "A1:C5"
     /// # Return value
-    /// *`Vec<&CellValue>` - CellValue List.
+    /// *`Vec<&CellValue>` - `CellValue` List.
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
@@ -376,6 +385,7 @@ impl Worksheet {
     /// let mut cell_value_List = worksheet.get_cell_value_by_range("A1:C5");
     /// ```
     #[inline]
+    #[must_use]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         self.cell_collection.get_cell_value_by_range(range)
     }
@@ -477,6 +487,7 @@ impl Worksheet {
     // ************************
     /// Get Comments
     #[inline]
+    #[must_use]
     pub fn get_comments(&self) -> &[Comment] {
         &self.comments
     }
@@ -489,6 +500,7 @@ impl Worksheet {
 
     /// Get Comments convert to hashmap.
     #[inline]
+    #[must_use]
     pub fn get_comments_to_hashmap(&self) -> HashMap<String, &Comment> {
         let mut result = HashMap::default();
         for comment in &self.comments {
@@ -516,6 +528,7 @@ impl Worksheet {
 
     /// Has Comments.
     #[inline]
+    #[must_use]
     pub fn has_comments(&self) -> bool {
         !self.comments.is_empty()
     }
@@ -523,15 +536,16 @@ impl Worksheet {
     // ************************
     // Conditional
     // ************************
-    /// Get ConditionalFormatting list.
+    /// Get `ConditionalFormatting` list.
     #[inline]
+    #[must_use]
     pub fn get_conditional_formatting_collection(&self) -> &[ConditionalFormatting] {
         &self.conditional_formatting_collection
     }
 
-    /// Set ConditionalFormatting.
+    /// Set `ConditionalFormatting`.
     /// # Arguments
-    /// * `value` - ConditionalSet List (Vec)
+    /// * `value` - `ConditionalSet` List (Vec)
     #[inline]
     pub fn set_conditional_formatting_collection(
         &mut self,
@@ -540,9 +554,9 @@ impl Worksheet {
         self.conditional_formatting_collection = value.into();
     }
 
-    /// Add ConditionalFormatting.
+    /// Add `ConditionalFormatting`.
     /// # Arguments
-    /// * `value` - ConditionalFormatting
+    /// * `value` - `ConditionalFormatting`
     #[inline]
     pub fn add_conditional_formatting_collection(&mut self, value: ConditionalFormatting) {
         self.conditional_formatting_collection.push(value);
@@ -579,6 +593,7 @@ impl Worksheet {
     // ************************
     // Get Merge Cells
     #[inline]
+    #[must_use]
     pub fn get_merge_cells(&self) -> &[Range] {
         self.merge_cells.get_range_collection()
     }
@@ -623,6 +638,7 @@ impl Worksheet {
     // ************************
     // Get Auto Filter (Option).
     #[inline]
+    #[must_use]
     pub fn get_auto_filter(&self) -> Option<&AutoFilter> {
         self.auto_filter.as_ref()
     }
@@ -660,6 +676,7 @@ impl Worksheet {
     // ************************
     /// Get Column Dimension List.
     #[inline]
+    #[must_use]
     pub fn get_column_dimensions(&self) -> &[Column] {
         self.column_dimensions.get_column_collection()
     }
@@ -684,6 +701,7 @@ impl Worksheet {
     /// # Arguments
     /// * `column` - Column Char. ex) "A"
     #[inline]
+    #[must_use]
     pub fn get_column_dimension(&self, column: &str) -> Option<&Column> {
         let column_upper = column.to_uppercase();
         let col = column_index_from_string(column_upper);
@@ -704,6 +722,7 @@ impl Worksheet {
     /// # Arguments
     /// * `col` - Column Number.
     #[inline]
+    #[must_use]
     pub fn get_column_dimension_by_number(&self, col: u32) -> Option<&Column> {
         self.get_column_dimensions_crate().get_column(col)
     }
@@ -742,12 +761,14 @@ impl Worksheet {
     // Row Dimensions
     // ************************
     #[inline]
+    #[must_use]
     pub fn has_sheet_data(&self) -> bool {
         self.row_dimensions.has_sheet_data()
     }
 
     /// Get Row Dimension List.
     #[inline]
+    #[must_use]
     pub fn get_row_dimensions(&self) -> Vec<&Row> {
         self.row_dimensions.get_row_dimensions()
     }
@@ -760,6 +781,7 @@ impl Worksheet {
 
     /// Get Row Dimension convert Hashmap.
     #[inline]
+    #[must_use]
     pub fn get_row_dimensions_to_hashmap(&self) -> &HashMap<u32, Box<Row>> {
         self.row_dimensions.get_row_dimensions_to_hashmap()
     }
@@ -771,6 +793,7 @@ impl Worksheet {
 
     /// Get Row Dimension.
     #[inline]
+    #[must_use]
     pub fn get_row_dimension(&self, row: u32) -> Option<&Row> {
         self.row_dimensions.get_row_dimension(row)
     }
@@ -806,28 +829,30 @@ impl Worksheet {
     // ************************
     // WorksheetDrawing
     // ************************
-    /// Get WorksheetDrawing.
+    /// Get `WorksheetDrawing`.
     #[inline]
+    #[must_use]
     pub fn get_worksheet_drawing(&self) -> &WorksheetDrawing {
         &self.worksheet_drawing
     }
 
-    /// Get WorksheetDrawing in mutable.
+    /// Get `WorksheetDrawing` in mutable.
     #[inline]
     pub fn get_worksheet_drawing_mut(&mut self) -> &mut WorksheetDrawing {
         &mut self.worksheet_drawing
     }
 
-    /// Set WorksheetDrawing.
+    /// Set `WorksheetDrawing`.
     /// # Arguments
-    /// * `value` - WorksheetDrawing
+    /// * `value` - `WorksheetDrawing`
     #[inline]
     pub fn set_worksheet_drawing(&mut self, value: WorksheetDrawing) {
         self.worksheet_drawing = value;
     }
 
-    /// Has WorksheetDrawing.
+    /// Has `WorksheetDrawing`.
     #[inline]
+    #[must_use]
     pub fn has_drawing_object(&self) -> bool {
         self.worksheet_drawing.has_drawing_object()
     }
@@ -1009,6 +1034,7 @@ impl Worksheet {
 
     /// Get Code Name.
     #[inline]
+    #[must_use]
     pub fn get_code_name(&self) -> Option<&str> {
         self.code_name.get_value()
     }
@@ -1023,6 +1049,7 @@ impl Worksheet {
 
     /// Get Header Footer.
     #[inline]
+    #[must_use]
     pub fn get_header_footer(&self) -> &HeaderFooter {
         &self.header_footer
     }
@@ -1044,6 +1071,7 @@ impl Worksheet {
 
     /// Get Active Cell.
     #[inline]
+    #[must_use]
     pub fn get_active_cell(&self) -> &str {
         &self.active_cell
     }
@@ -1071,6 +1099,7 @@ impl Worksheet {
 
     /// Get Sheet Id.
     #[inline]
+    #[must_use]
     pub fn get_sheet_id(&self) -> &str {
         &self.sheet_id
     }
@@ -1084,12 +1113,14 @@ impl Worksheet {
 
     /// Has Code Name.
     #[inline]
+    #[must_use]
     pub fn has_code_name(&self) -> bool {
         self.code_name.has_value()
     }
 
     /// Get Tab Color.
     #[inline]
+    #[must_use]
     pub fn get_tab_color(&self) -> Option<&Color> {
         self.tab_color.as_ref()
     }
@@ -1121,25 +1152,28 @@ impl Worksheet {
     }
 
     /// Calculate Worksheet Dimension.
+    #[must_use]
     pub fn calculate_worksheet_dimension(&self) -> String {
         let (column, row) = self.cell_collection.get_highest_column_and_row();
         if row == 0 {
             return "A1".to_string();
         }
         let column_str = string_from_column_index(column);
-        format!("A1:{}{}", column_str, row)
+        format!("A1:{column_str}{row}")
     }
 
     // Get Highest Column and Row Index
     /// # Return value
     /// *`(u32, u32)` - (column, row)
     #[inline]
+    #[must_use]
     pub fn get_highest_column_and_row(&self) -> (u32, u32) {
         self.cell_collection.get_highest_column_and_row()
     }
 
     // Get Highest Column Index
     #[inline]
+    #[must_use]
     pub fn get_highest_column(&self) -> u32 {
         let (column, _row) = self.cell_collection.get_highest_column_and_row();
         column
@@ -1147,18 +1181,20 @@ impl Worksheet {
 
     // Get Highest Row Index
     #[inline]
+    #[must_use]
     pub fn get_highest_row(&self) -> u32 {
         let (_column, row) = self.cell_collection.get_highest_column_and_row();
         row
     }
 
-    /// Get SheetName.
+    /// Get `SheetName`.
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         &self.title
     }
 
-    /// Set SheetName.
+    /// Set `SheetName`.
     /// # Arguments
     /// * `sheet_name` - Sheet Name. [Caution] no duplicate other worksheet.
     pub fn set_name<S: Into<String>>(&mut self, sheet_name: S) -> &mut Self {
@@ -1176,6 +1212,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_state(&self) -> &SheetStateValues {
         self.state.get_value()
     }
@@ -1198,6 +1235,7 @@ impl Worksheet {
 
     // Get Sheet State
     #[inline]
+    #[must_use]
     pub fn get_sheet_state(&self) -> &str {
         &self.sheet_state
     }
@@ -1213,6 +1251,7 @@ impl Worksheet {
 
     // Get Page Setup.
     #[inline]
+    #[must_use]
     pub fn get_page_setup(&self) -> &PageSetup {
         &self.page_setup
     }
@@ -1225,7 +1264,7 @@ impl Worksheet {
 
     /// Set Page Setup.
     /// # Arguments
-    /// * `value` - PageSetup.
+    /// * `value` - `PageSetup`.
     #[inline]
     pub fn set_page_setup(&mut self, value: PageSetup) -> &mut Self {
         self.page_setup = value;
@@ -1234,6 +1273,7 @@ impl Worksheet {
 
     // Get Page Margins.
     #[inline]
+    #[must_use]
     pub fn get_page_margins(&self) -> &PageMargins {
         &self.page_margins
     }
@@ -1246,7 +1286,7 @@ impl Worksheet {
 
     /// Set Page Margins.
     /// # Arguments
-    /// * `value` - PageMargins.
+    /// * `value` - `PageMargins`.
     #[inline]
     pub fn set_page_margins(&mut self, value: PageMargins) -> &mut Self {
         self.page_margins = value;
@@ -1255,6 +1295,7 @@ impl Worksheet {
 
     // Get SheetViews.
     #[inline]
+    #[must_use]
     pub fn get_sheets_views(&self) -> &SheetViews {
         &self.sheet_views
     }
@@ -1265,9 +1306,9 @@ impl Worksheet {
         &mut self.sheet_views
     }
 
-    /// Set SheetViews.
+    /// Set `SheetViews`.
     /// # Arguments
-    /// * `value` - SheetViews.
+    /// * `value` - `SheetViews`.
     #[inline]
     pub fn set_sheets_views(&mut self, value: SheetViews) -> &mut Self {
         self.sheet_views = value;
@@ -1276,6 +1317,7 @@ impl Worksheet {
 
     // Get Ole Objects.
     #[inline]
+    #[must_use]
     pub fn get_ole_objects(&self) -> &OleObjects {
         &self.ole_objects
     }
@@ -1288,7 +1330,7 @@ impl Worksheet {
 
     /// Set Ole Objects.
     /// # Arguments
-    /// * `value` - OleObjects.
+    /// * `value` - `OleObjects`.
     #[inline]
     pub fn set_ole_objects(&mut self, value: OleObjects) -> &mut Self {
         self.ole_objects = value;
@@ -1297,6 +1339,7 @@ impl Worksheet {
 
     /// Get Defined Name (Vec).
     #[inline]
+    #[must_use]
     pub fn get_defined_names(&self) -> &[DefinedName] {
         &self.defined_names
     }
@@ -1317,7 +1360,7 @@ impl Worksheet {
 
     /// Add Defined Name.
     /// # Arguments
-    /// * `value` - DefinedName.
+    /// * `value` - `DefinedName`.
     #[inline]
     pub fn add_defined_names(&mut self, value: DefinedName) {
         self.defined_names.push(value);
@@ -1325,7 +1368,7 @@ impl Worksheet {
 
     /// Add Defined Name.
     /// # Arguments
-    /// * `name` - Name. ex) "DefinedName01"
+    /// * `name` - Name. ex) "`DefinedName01`"
     /// * `address` - Address. ex) "A1:A2"
     #[inline]
     pub fn add_defined_name<S: Into<String>>(&mut self, name: S, address: S) -> Result<(), &str> {
@@ -1338,6 +1381,7 @@ impl Worksheet {
 
     /// Get Print Options.
     #[inline]
+    #[must_use]
     pub fn get_print_options(&self) -> &PrintOptions {
         &self.print_options
     }
@@ -1350,7 +1394,7 @@ impl Worksheet {
 
     /// Set Print Options.
     /// # Arguments
-    /// * `value` - PrintOptions.
+    /// * `value` - `PrintOptions`.
     #[inline]
     pub fn set_print_options(&mut self, value: PrintOptions) -> &mut Self {
         self.print_options = value;
@@ -1359,6 +1403,7 @@ impl Worksheet {
 
     /// Get Column Breaks.
     #[inline]
+    #[must_use]
     pub fn get_column_breaks(&self) -> &ColumnBreaks {
         &self.column_breaks
     }
@@ -1371,7 +1416,7 @@ impl Worksheet {
 
     /// Set Column Breaks.
     /// # Arguments
-    /// * `value` - ColumnBreaks.
+    /// * `value` - `ColumnBreaks`.
     #[inline]
     pub fn set_column_breaks(&mut self, value: ColumnBreaks) -> &mut Self {
         self.column_breaks = value;
@@ -1380,6 +1425,7 @@ impl Worksheet {
 
     /// Get Row Breaks.
     #[inline]
+    #[must_use]
     pub fn get_row_breaks(&self) -> &RowBreaks {
         &self.row_breaks
     }
@@ -1392,7 +1438,7 @@ impl Worksheet {
 
     /// Set Row Breaks.
     /// # Arguments
-    /// * `value` - RowBreaks.
+    /// * `value` - `RowBreaks`.
     #[inline]
     pub fn set_row_breaks(&mut self, value: RowBreaks) -> &mut Self {
         self.row_breaks = value;
@@ -1400,6 +1446,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_table(&self) -> bool {
         !self.tables.is_empty()
     }
@@ -1410,6 +1457,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_tables(&self) -> &[Table] {
         &self.tables
     }
@@ -1420,6 +1468,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_pivot_table(&self) -> bool {
         !self.pivot_tables.is_empty()
     }
@@ -1430,6 +1479,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_pivot_tables(&self) -> &[PivotTable] {
         &self.pivot_tables
     }
@@ -1440,6 +1490,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_data_validations(&self) -> Option<&DataValidations> {
         self.data_validations.as_ref()
     }
@@ -1462,6 +1513,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_data_validations_2010(&self) -> Option<&DataValidations2010> {
         self.data_validations_2010.as_ref()
     }
@@ -1484,6 +1536,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sheet_format_properties(&self) -> &SheetFormatProperties {
         &self.sheet_format_properties
     }
@@ -1503,6 +1556,7 @@ impl Worksheet {
     /// # Return value
     /// * `&Vec<Image>` - Image Object List.
     #[inline]
+    #[must_use]
     pub fn get_image_collection(&self) -> &[Image] {
         self.get_worksheet_drawing().get_image_collection()
     }
@@ -1566,6 +1620,7 @@ impl Worksheet {
     /// # Return value
     /// * `&Vec<Chart>` - Chart Object List.
     #[inline]
+    #[must_use]
     pub fn get_chart_collection(&self) -> &[Chart] {
         self.get_worksheet_drawing().get_chart_collection()
     }
@@ -1718,6 +1773,7 @@ impl Worksheet {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sheet_protection(&self) -> Option<&SheetProtection> {
         self.sheet_protection.as_ref()
     }
@@ -1787,18 +1843,10 @@ impl Worksheet {
         // impossible)
         let range_upper = range.to_uppercase();
         let (row_start, row_end, col_start, col_end) = get_start_and_end_point(&range_upper);
-        if (col_start as i32 + column) < 1 {
-            panic!("Out of Range.");
-        }
-        if (row_start as i32 + row) < 1 {
-            panic!("Out of Range.");
-        }
-        if (col_end as i32 + column) > 16384 {
-            panic!("Out of Range.");
-        }
-        if (row_end as i32 + row) > 1048576 {
-            panic!("Out of Range.");
-        }
+        assert!(((col_start as i32 + column) >= 1), "Out of Range.");
+        assert!(((row_start as i32 + row) >= 1), "Out of Range.");
+        assert!(((col_end as i32 + column) <= 16384), "Out of Range.");
+        assert!(((row_end as i32 + row) <= 1048576), "Out of Range.");
 
         // Iterate row by row, collecting cell information (do I copy)
         let cells = self.cell_collection.get_cell_by_range(range);
@@ -1806,15 +1854,13 @@ impl Worksheet {
 
         // Delete cell information as iterating through in move mode
         if is_move {
-            get_coordinate_list(&range_upper)
-                .iter()
-                .for_each(|(col_num, row_num)| {
-                    self.cell_collection.remove(*col_num, *row_num);
-                    self.cell_collection.remove(
-                        (*col_num as i32 + column) as u32,
-                        (*row_num as i32 + row) as u32,
-                    );
-                });
+            for (col_num, row_num) in &get_coordinate_list(&range_upper) {
+                self.cell_collection.remove(*col_num, *row_num);
+                self.cell_collection.remove(
+                    (*col_num as i32 + column) as u32,
+                    (*row_num as i32 + row) as u32,
+                );
+            }
         }
 
         // repaste by setting cell values

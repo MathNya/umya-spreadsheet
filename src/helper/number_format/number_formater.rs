@@ -1,12 +1,12 @@
-use super::fraction_formater::*;
+use super::fraction_formater::format_as_fraction;
 use fancy_regex::Regex;
 use std::borrow::Cow;
 use thousands::Separable;
 
 pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
     lazy_static! {
-        static ref THOUSANDS_SEP_REGEX: Regex = Regex::new(r#"(#,#|0,0)"#).unwrap();
-        static ref SCALE_REGEX: Regex = Regex::new(r#"(#|0)(,+)"#).unwrap();
+        static ref THOUSANDS_SEP_REGEX: Regex = Regex::new(r"(#,#|0,0)").unwrap();
+        static ref SCALE_REGEX: Regex = Regex::new(r"(#|0)(,+)").unwrap();
         static ref TRAILING_COMMA_REGEX: Regex = Regex::new("(#|0),+").unwrap();
         static ref FRACTION_REGEX: Regex = Regex::new(r"#?.*\?{1,2}\/\?{1,2}").unwrap();
         static ref SQUARE_BRACKET_REGEX: Regex = Regex::new(r"\[[^\]]+\]").unwrap();
@@ -45,10 +45,10 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
         for ite in SCALE_REGEX.captures(&format).ok().flatten().unwrap().iter() {
             matches.push(ite.unwrap().as_str().to_string());
         }
-        scale = 1000i32.pow(matches[2].len() as u32) as f64;
+        scale = f64::from(1000i32.pow(matches[2].len() as u32));
 
         // strip the commas
-        format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into()
+        format = TRAILING_COMMA_REGEX.replace_all(&format, "$1").into();
     }
     if FRACTION_REGEX.is_match(&format).unwrap_or(false) {
         if value.parse::<usize>().is_err() {
@@ -117,9 +117,9 @@ fn format_straight_numeric_value(
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();
-    let left_value = blocks.first().unwrap().to_string();
+    let left_value = (*blocks.first().unwrap()).to_string();
     let mut right_value = match blocks.get(1) {
-        Some(v) => v.to_string(),
+        Some(v) => (*v).to_string(),
         None => String::from("0"),
     };
     if right.is_empty() {
@@ -141,7 +141,7 @@ fn format_straight_numeric_value(
             right_value = right_value_conv;
         }
     }
-    value = format!("{}.{}", left_value, right_value);
+    value = format!("{left_value}.{right_value}");
     value
 
     //    if use_thousands == true {
@@ -189,7 +189,7 @@ fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Ve
 fn process_complex_number_format_mask(number: f64, mask: &str) -> String {
     let mut result = number.to_string();
     let mut mask = mask.to_string();
-    let re = Regex::new(r#"0+"#).unwrap();
+    let re = Regex::new(r"0+").unwrap();
     let mut masking_blocks: Vec<(String, usize)> = Vec::new();
     let mut masking_str: Vec<String> = Vec::new();
     let mut masking_beg: Vec<usize> = Vec::new();

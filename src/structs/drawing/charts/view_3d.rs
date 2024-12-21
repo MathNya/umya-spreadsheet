@@ -3,8 +3,8 @@ use super::Perspective;
 use super::RightAngleAxes;
 use super::RotateX;
 use super::RotateY;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -19,6 +19,7 @@ pub struct View3D {
 }
 
 impl View3D {
+    #[must_use]
     pub fn get_rotate_x(&self) -> Option<&RotateX> {
         self.rotate_x.as_ref()
     }
@@ -32,6 +33,7 @@ impl View3D {
         self
     }
 
+    #[must_use]
     pub fn get_rotate_y(&self) -> Option<&RotateY> {
         self.rotate_y.as_ref()
     }
@@ -45,6 +47,7 @@ impl View3D {
         self
     }
 
+    #[must_use]
     pub fn get_right_angle_axes(&self) -> Option<&RightAngleAxes> {
         self.right_angle_axes.as_ref()
     }
@@ -58,6 +61,7 @@ impl View3D {
         self
     }
 
+    #[must_use]
     pub fn get_perspective(&self) -> Option<&Perspective> {
         self.perspective.as_ref()
     }

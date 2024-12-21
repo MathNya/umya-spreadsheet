@@ -12,7 +12,7 @@ use super::Title;
 use super::View3D;
 use crate::structs::Spreadsheet;
 use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -38,6 +38,7 @@ impl Chart {
     pub const LANG_EN_GB: &'static str = "en_GB";
     pub const LANG_JA_JP: &'static str = "ja-JP";
 
+    #[must_use]
     pub fn get_title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
@@ -51,6 +52,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_auto_title_deleted(&self) -> &AutoTitleDeleted {
         &self.auto_title_deleted
     }
@@ -64,6 +66,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_view_3d(&self) -> Option<&View3D> {
         self.view_3d.as_ref()
     }
@@ -77,6 +80,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_floor(&self) -> Option<&Floor> {
         self.floor.as_ref()
     }
@@ -90,6 +94,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_side_wall(&self) -> Option<&SideWall> {
         self.side_wall.as_ref()
     }
@@ -103,6 +108,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_back_wall(&self) -> Option<&BackWall> {
         self.back_wall.as_ref()
     }
@@ -116,6 +122,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_plot_area(&self) -> &PlotArea {
         &self.plot_area
     }
@@ -129,6 +136,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_legend(&self) -> &Legend {
         &self.legend
     }
@@ -142,6 +150,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_plot_visible_only(&self) -> &PlotVisibleOnly {
         &self.plot_visible_only
     }
@@ -155,6 +164,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_display_blanks_as(&self) -> &DisplayBlanksAs {
         &self.display_blanks_as
     }
@@ -168,6 +178,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_show_data_labels_over_maximum(&self) -> &ShowDataLabelsOverMaximum {
         &self.show_data_labels_over_maximum
     }

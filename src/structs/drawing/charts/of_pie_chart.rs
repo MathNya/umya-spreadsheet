@@ -7,9 +7,9 @@ use super::OfPieType;
 use super::SecondPieSize;
 use super::SeriesLines;
 use super::VaryColors;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -27,6 +27,7 @@ pub struct OfPieChart {
 }
 
 impl OfPieChart {
+    #[must_use]
     pub fn get_of_pie_type(&self) -> &OfPieType {
         &self.of_pie_type
     }
@@ -40,6 +41,7 @@ impl OfPieChart {
         self
     }
 
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -53,6 +55,7 @@ impl OfPieChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -66,6 +69,7 @@ impl OfPieChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -79,6 +83,7 @@ impl OfPieChart {
         self
     }
 
+    #[must_use]
     pub fn get_gap_width(&self) -> &GapWidth {
         &self.gap_width
     }
@@ -92,6 +97,7 @@ impl OfPieChart {
         self
     }
 
+    #[must_use]
     pub fn get_second_pie_size(&self) -> &SecondPieSize {
         &self.second_pie_size
     }
@@ -105,6 +111,7 @@ impl OfPieChart {
         self
     }
 
+    #[must_use]
     pub fn get_series_lines(&self) -> &SeriesLines {
         &self.series_lines
     }

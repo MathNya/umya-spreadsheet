@@ -1,6 +1,6 @@
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::StringValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct Stroke {
 }
 
 impl Stroke {
+    #[must_use]
     pub fn get_color(&self) -> &str {
         self.color.get_value_str()
     }
@@ -23,6 +24,7 @@ impl Stroke {
         self
     }
 
+    #[must_use]
     pub fn get_color_2(&self) -> &str {
         self.color_2.get_value_str()
     }
@@ -32,6 +34,7 @@ impl Stroke {
         self
     }
 
+    #[must_use]
     pub fn get_dash_style(&self) -> &str {
         self.dash_style.get_value_str()
     }

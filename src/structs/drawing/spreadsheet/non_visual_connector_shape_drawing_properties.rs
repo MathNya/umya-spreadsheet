@@ -1,8 +1,8 @@
 // xdr:cNvCxnSpPr
 use super::super::EndConnection;
 use super::super::StartConnection;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct NonVisualConnectorShapeDrawingProperties {
 
 impl NonVisualConnectorShapeDrawingProperties {
     #[inline]
+    #[must_use]
     pub fn get_start_connection(&self) -> Option<&StartConnection> {
         self.start_connection.as_deref()
     }
@@ -31,6 +32,7 @@ impl NonVisualConnectorShapeDrawingProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_end_connection(&self) -> Option<&EndConnection> {
         self.end_connection.as_deref()
     }

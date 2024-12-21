@@ -1,9 +1,9 @@
 // a:graphic
 use super::GraphicData;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::raw::RawRelationships;
 use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct Graphic {
 
 impl Graphic {
     #[inline]
+    #[must_use]
     pub fn get_graphic_data(&self) -> &GraphicData {
         &self.graphic_data
     }

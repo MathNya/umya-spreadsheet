@@ -1,8 +1,8 @@
 // a:pattFill
 use super::BackgroundColor;
 use super::ForegroundColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -28,6 +28,7 @@ impl Default for PatternFill {
 
 impl PatternFill {
     #[inline]
+    #[must_use]
     pub fn get_preset(&self) -> &str {
         &self.preset
     }
@@ -39,6 +40,7 @@ impl PatternFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_foreground_color(&self) -> &ForegroundColor {
         &self.foreground_color
     }
@@ -55,6 +57,7 @@ impl PatternFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_background_color(&self) -> &BackgroundColor {
         &self.background_color
     }

@@ -1,5 +1,5 @@
 // a:gd
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::Writer;
 use std::io::Cursor;
 
@@ -10,6 +10,7 @@ pub struct ShapeGuide {
 }
 impl ShapeGuide {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -20,6 +21,7 @@ impl ShapeGuide {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fmla(&self) -> &str {
         &self.fmla
     }

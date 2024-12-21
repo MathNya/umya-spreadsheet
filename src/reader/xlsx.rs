@@ -5,7 +5,7 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use super::driver;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{COMMENTS_NS, DRAWINGS_NS, TABLE_NS, THEME_NS, VML_DRAWING_NS};
 use crate::structs::drawing::Theme;
 use crate::structs::raw::RawWorksheet;
 use crate::structs::SharedStringTable;

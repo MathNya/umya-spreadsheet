@@ -8,7 +8,7 @@ use super::Top;
 use super::TopMode;
 use super::Width;
 use super::WidthMode;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -29,6 +29,7 @@ pub struct ManualLayout {
 }
 
 impl ManualLayout {
+    #[must_use]
     pub fn get_height(&self) -> Option<&Height> {
         self.height.as_ref()
     }
@@ -42,6 +43,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_height_mode(&self) -> Option<&HeightMode> {
         self.height_mode.as_ref()
     }
@@ -55,6 +57,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_layout_target(&self) -> Option<&LayoutTarget> {
         self.layout_target.as_ref()
     }
@@ -68,6 +71,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_left(&self) -> Option<&Left> {
         self.left.as_ref()
     }
@@ -81,6 +85,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_left_mode(&self) -> Option<&LeftMode> {
         self.left_mode.as_ref()
     }
@@ -94,6 +99,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_top(&self) -> Option<&Top> {
         self.top.as_ref()
     }
@@ -107,6 +113,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_top_mode(&self) -> Option<&TopMode> {
         self.top_mode.as_ref()
     }
@@ -120,6 +127,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_width(&self) -> Option<&Width> {
         self.width.as_ref()
     }
@@ -133,6 +141,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_width_mode(&self) -> Option<&WidthMode> {
         self.width_mode.as_ref()
     }
@@ -146,6 +155,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.height.is_none()
             && self.height_mode.is_none()

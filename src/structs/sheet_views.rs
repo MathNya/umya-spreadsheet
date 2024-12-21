@@ -1,7 +1,7 @@
 // sheetViews
 use super::SheetView;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -15,6 +15,7 @@ pub struct SheetViews {
 
 impl SheetViews {
     #[inline]
+    #[must_use]
     pub fn get_sheet_view_list(&self) -> &[SheetView] {
         &self.sheet_view_list
     }

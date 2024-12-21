@@ -5,9 +5,9 @@ use super::DataLabels;
 use super::FirstSliceAngle;
 use super::HoleSize;
 use super::VaryColors;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -23,6 +23,7 @@ pub struct DoughnutChart {
 }
 
 impl DoughnutChart {
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -36,6 +37,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -49,6 +51,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -62,6 +65,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_first_slice_angle(&self) -> &FirstSliceAngle {
         &self.first_slice_angle
     }
@@ -75,6 +79,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_hole_size(&self) -> &HoleSize {
         &self.hole_size
     }

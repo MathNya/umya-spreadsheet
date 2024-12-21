@@ -1,6 +1,6 @@
 use super::super::Int32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct PositiveFixedPercentageType {
 
 impl PositiveFixedPercentageType {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> i32 {
         self.val.get_value()
     }
@@ -34,17 +35,17 @@ impl PositiveFixedPercentageType {
 
     #[inline]
     pub(crate) fn write_to_shade(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:shade")
+        self.write_to(writer, "a:shade");
     }
 
     #[inline]
     pub(crate) fn write_to_alpha(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:alpha")
+        self.write_to(writer, "a:alpha");
     }
 
     #[inline]
     pub(crate) fn write_to_tint(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:tint")
+        self.write_to(writer, "a:tint");
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tab_name: &str) {

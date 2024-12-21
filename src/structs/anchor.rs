@@ -12,6 +12,7 @@ pub struct Anchor {
 
 impl Anchor {
     #[inline]
+    #[must_use]
     pub fn get_left_column(&self) -> u32 {
         self.left_column
     }
@@ -22,6 +23,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_left_offset(&self) -> u32 {
         self.left_offset
     }
@@ -32,6 +34,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_row(&self) -> u32 {
         self.top_row
     }
@@ -42,6 +45,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_offset(&self) -> u32 {
         self.top_offset
     }
@@ -52,6 +56,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_right_column(&self) -> u32 {
         self.right_column
     }
@@ -62,6 +67,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_right_offset(&self) -> u32 {
         self.right_offset
     }
@@ -72,6 +78,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bottom_row(&self) -> u32 {
         self.bottom_row
     }
@@ -82,6 +89,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bottom_offset(&self) -> u32 {
         self.bottom_offset
     }

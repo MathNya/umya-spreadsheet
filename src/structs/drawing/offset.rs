@@ -1,7 +1,7 @@
 // a:off
 use super::super::super::Int64Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct Offset {
 }
 impl Offset {
     #[inline]
+    #[must_use]
     pub fn get_x(&self) -> i64 {
         self.x.get_value()
     }
@@ -24,6 +25,7 @@ impl Offset {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_y(&self) -> i64 {
         self.y.get_value()
     }

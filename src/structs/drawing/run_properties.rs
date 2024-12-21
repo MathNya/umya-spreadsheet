@@ -7,9 +7,9 @@ use super::Outline;
 use super::SolidFill;
 use super::TextCapsValues;
 use super::TextFontType;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::structs::StringValue;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -38,6 +38,7 @@ pub struct RunProperties {
 
 impl RunProperties {
     #[inline]
+    #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }
@@ -49,6 +50,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_kumimoji(&self) -> &str {
         self.kumimoji.get_value_str()
     }
@@ -60,6 +62,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_language(&self) -> &str {
         self.language.get_value_str()
     }
@@ -71,6 +74,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alternative_language(&self) -> &str {
         self.alternative_language.get_value_str()
     }
@@ -82,6 +86,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bold(&self) -> &str {
         self.bold.get_value_str()
     }
@@ -93,6 +98,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sz(&self) -> &str {
         self.sz.get_value_str()
     }
@@ -104,6 +110,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_italic(&self) -> &str {
         self.italic.get_value_str()
     }
@@ -115,6 +122,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_capital(&self) -> &TextCapsValues {
         self.capital.get_value()
     }
@@ -126,6 +134,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_spacing(&self) -> i32 {
         self.spacing.get_value()
     }
@@ -137,6 +146,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_strike(&self) -> &str {
         self.strike.get_value_str()
     }
@@ -148,6 +158,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
@@ -164,6 +175,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
@@ -180,6 +192,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_latin_font(&self) -> Option<&TextFontType> {
         self.latin_font.as_deref()
     }
@@ -196,6 +209,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
         self.east_asian_font.as_deref()
     }
@@ -212,6 +226,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
@@ -228,6 +243,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
@@ -244,6 +260,7 @@ impl RunProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
@@ -366,38 +383,38 @@ impl RunProperties {
 
     #[inline]
     pub(crate) fn write_to_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:rPr")
+        self.write_to(writer, "a:rPr");
     }
 
     #[inline]
     pub(crate) fn write_to_end_para_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:endParaRPr")
+        self.write_to(writer, "a:endParaRPr");
     }
 
     #[inline]
     pub(crate) fn write_to_def_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:defRPr")
+        self.write_to(writer, "a:defRPr");
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.kumimoji.has_value() {
-            attributes.push(("kumimoji", self.kumimoji.get_value_str()))
+            attributes.push(("kumimoji", self.kumimoji.get_value_str()));
         }
         if self.language.has_value() {
-            attributes.push(("lang", self.language.get_value_str()))
+            attributes.push(("lang", self.language.get_value_str()));
         }
         if self.alternative_language.has_value() {
-            attributes.push(("altLang", self.alternative_language.get_value_str()))
+            attributes.push(("altLang", self.alternative_language.get_value_str()));
         }
         if self.sz.has_value() {
-            attributes.push(("sz", self.sz.get_value_str()))
+            attributes.push(("sz", self.sz.get_value_str()));
         }
         if self.bold.has_value() {
-            attributes.push(("b", self.bold.get_value_str()))
+            attributes.push(("b", self.bold.get_value_str()));
         }
         if self.italic.has_value() {
-            attributes.push(("i", self.italic.get_value_str()))
+            attributes.push(("i", self.italic.get_value_str()));
         }
         if self.capital.has_value() {
             attributes.push(("cap", self.capital.get_value_string()));

@@ -1,8 +1,8 @@
 // cellStyle
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::StringValue;
 use crate::structs::UInt32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -17,6 +17,7 @@ pub struct CellStyle {
 
 impl CellStyle {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -28,6 +29,7 @@ impl CellStyle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_builtin_id(&self) -> u32 {
         self.builtin_id.get_value()
     }
@@ -39,6 +41,7 @@ impl CellStyle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_id(&self) -> u32 {
         self.format_id.get_value()
     }

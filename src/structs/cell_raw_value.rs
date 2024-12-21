@@ -30,6 +30,7 @@ impl fmt::Display for CellRawValue {
 
 impl CellRawValue {
     #[inline]
+    #[must_use]
     pub fn get_data_type(&self) -> &str {
         match self {
             Self::String(_) => "s",
@@ -64,6 +65,7 @@ impl CellRawValue {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rich_text(&self) -> Option<RichText> {
         match self {
             Self::RichText(v) => Some(v.clone()),
@@ -72,11 +74,13 @@ impl CellRawValue {
     }
 
     #[inline]
+    #[must_use]
     pub fn is_error(&self) -> bool {
         matches!(*self, CellRawValue::Error(_))
     }
 
     #[inline]
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         matches!(*self, CellRawValue::Empty)
     }

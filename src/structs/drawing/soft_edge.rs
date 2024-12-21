@@ -1,7 +1,7 @@
 // a:softEdge
 use super::super::super::Int64Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct SoftEdge {
 }
 impl SoftEdge {
     #[inline]
+    #[must_use]
     pub fn get_radius(&self) -> i64 {
         self.radius.get_value()
     }

@@ -1,6 +1,6 @@
 use super::TextElement;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -17,8 +17,9 @@ pub struct RichText {
 
 impl RichText {
     #[inline]
+    #[must_use]
     pub fn get_text(&self) -> Cow<'static, str> {
-        let mut text = String::from("");
+        let mut text = String::new();
         for rich_text_elements in &self.rich_text_elements {
             text = format!("{}{}", text, rich_text_elements.get_text());
         }
@@ -35,6 +36,7 @@ impl RichText {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rich_text_elements(&self) -> &[TextElement] {
         &self.rich_text_elements
     }
@@ -57,7 +59,7 @@ impl RichText {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        let mut value = String::from("");
+        let mut value = String::new();
         for ele in &self.rich_text_elements {
             write!(value, "{}", ele.get_hash_code()).unwrap();
         }

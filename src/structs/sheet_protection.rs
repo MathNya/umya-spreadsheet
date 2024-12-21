@@ -2,9 +2,9 @@
 use super::BooleanValue;
 use super::StringValue;
 use super::UInt32Value;
-use crate::helper::crypt::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::helper::crypt::encrypt_sheet_protection;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -36,6 +36,7 @@ pub struct SheetProtection {
 }
 impl SheetProtection {
     #[inline]
+    #[must_use]
     pub fn get_algorithm_name(&self) -> &str {
         self.algorithm_name.get_value_str()
     }
@@ -47,6 +48,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hash_value(&self) -> &str {
         self.hash_value.get_value_str()
     }
@@ -58,6 +60,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_salt_value(&self) -> &str {
         self.salt_value.get_value_str()
     }
@@ -69,6 +72,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_spin_count(&self) -> u32 {
         self.spin_count.get_value()
     }
@@ -80,6 +84,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_password_raw(&self) -> &str {
         self.password.get_value_str()
     }
@@ -97,6 +102,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sheet(&self) -> bool {
         self.sheet.get_value()
     }
@@ -108,6 +114,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_objects(&self) -> bool {
         self.objects.get_value()
     }
@@ -119,6 +126,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_delete_rows(&self) -> bool {
         self.delete_rows.get_value()
     }
@@ -130,6 +138,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_insert_columns(&self) -> bool {
         self.insert_columns.get_value()
     }
@@ -141,6 +150,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_delete_columns(&self) -> bool {
         self.delete_columns.get_value()
     }
@@ -152,6 +162,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_insert_hyperlinks(&self) -> bool {
         self.insert_hyperlinks.get_value()
     }
@@ -163,6 +174,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_filter(&self) -> bool {
         self.auto_filter.get_value()
     }
@@ -174,6 +186,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scenarios(&self) -> bool {
         self.scenarios.get_value()
     }
@@ -185,6 +198,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_cells(&self) -> bool {
         self.format_cells.get_value()
     }
@@ -196,6 +210,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_columns(&self) -> bool {
         self.format_columns.get_value()
     }
@@ -207,6 +222,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_insert_rows(&self) -> bool {
         self.insert_rows.get_value()
     }
@@ -218,6 +234,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_rows(&self) -> bool {
         self.format_rows.get_value()
     }
@@ -229,6 +246,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_pivot_tables(&self) -> bool {
         self.pivot_tables.get_value()
     }
@@ -240,6 +258,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_select_locked_cells(&self) -> bool {
         self.select_locked_cells.get_value()
     }
@@ -251,6 +270,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_select_unlocked_cells(&self) -> bool {
         self.select_unlocked_cells.get_value()
     }
@@ -262,6 +282,7 @@ impl SheetProtection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sort(&self) -> bool {
         self.sort.get_value()
     }

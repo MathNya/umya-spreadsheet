@@ -2,9 +2,9 @@ use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{PKG_WORKBOOK, REL_OFC_NS, SHEET_MAIN_NS};
 use crate::structs::Spreadsheet;
 use crate::structs::WriterManager;
 
@@ -76,7 +76,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     for worksheet in spreadsheet.get_sheet_collection_no_check() {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let id = index.to_string();
-        let r_id = format!("rId{}", index);
+        let r_id = format!("rId{index}");
         attributes.push(("name", worksheet.get_name()));
         attributes.push(("sheetId", &id));
         attributes.push(("r:id", &r_id));
@@ -127,7 +127,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if !pivot_cache_definition_collection.is_empty() {
         write_start_tag(&mut writer, "pivotCaches", vec![], false);
         for (_, val2, _) in pivot_cache_definition_collection {
-            let r_id = format!("rId{}", index);
+            let r_id = format!("rId{index}");
             write_start_tag(
                 &mut writer,
                 "pivotCache",

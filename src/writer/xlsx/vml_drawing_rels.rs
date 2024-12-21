@@ -2,9 +2,9 @@ use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{IMAGE_NS, PKG_VML_DRAWING_RELS, REL_NS};
 use crate::structs::Worksheet;
 use crate::structs::WriterManager;
 
@@ -37,7 +37,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 &mut writer,
                 r_id,
                 IMAGE_NS,
-                format!("../media/{}", value).as_str(),
+                format!("../media/{value}").as_str(),
                 "",
             );
         }
@@ -47,7 +47,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("{PKG_VML_DRAWING_RELS}{}.vml.rels", vml_drawing_no);
+        let file_path = format!("{PKG_VML_DRAWING_RELS}{vml_drawing_no}.vml.rels");
         return writer_mng.add_writer(&file_path, writer);
     }
     Ok(())
@@ -61,7 +61,7 @@ fn write_relationship(
     p_target_mode: &str,
 ) -> bool {
     let tag_name = "Relationship";
-    let r_id_str = format!("rId{}", r_id);
+    let r_id_str = format!("rId{r_id}");
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     attributes.push(("Id", &r_id_str));
     attributes.push(("Type", p_type));

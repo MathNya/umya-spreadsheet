@@ -1,7 +1,7 @@
 // a:tailEnd
-use crate::reader::driver::*;
+use crate::reader::driver::get_attribute;
 use crate::structs::StringValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct TailEnd {
 
 impl TailEnd {
     #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &str {
         self.t_type.get_value_str()
     }
@@ -26,6 +27,7 @@ impl TailEnd {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_width(&self) -> &str {
         self.width.get_value_str()
     }
@@ -36,6 +38,7 @@ impl TailEnd {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_length(&self) -> &str {
         self.length.get_value_str()
     }

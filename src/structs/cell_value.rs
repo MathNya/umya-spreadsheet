@@ -15,11 +15,13 @@ pub struct CellValue {
 }
 impl CellValue {
     #[inline]
+    #[must_use]
     pub fn get_data_type(&self) -> &str {
         self.raw_value.get_data_type()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_raw_value(&self) -> &CellRawValue {
         &self.raw_value
     }
@@ -33,11 +35,13 @@ impl CellValue {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.raw_value.to_string().into()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_value_number(&self) -> Option<f64> {
         self.raw_value.get_number()
     }
@@ -139,11 +143,13 @@ impl CellValue {
     }
 
     #[inline]
+    #[must_use]
     pub fn is_formula(&self) -> bool {
         self.formula.is_some()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula(&self) -> &str {
         match &self.formula {
             Some(v) => v.get_text(),
@@ -152,6 +158,7 @@ impl CellValue {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
         self.formula.as_deref()
     }
@@ -189,6 +196,7 @@ impl CellValue {
     }
 
     #[inline]
+    #[must_use]
     pub fn is_error(&self) -> bool {
         self.raw_value.is_error()
     }
@@ -225,6 +233,7 @@ impl CellValue {
     }
 
     #[inline]
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.is_value_empty() && self.is_formula_empty()
     }

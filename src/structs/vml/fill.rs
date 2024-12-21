@@ -1,9 +1,9 @@
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::raw::RawRelationships;
 use crate::structs::MediaObject;
 use crate::structs::StringValue;
 use crate::structs::TrueFalseValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -20,6 +20,7 @@ pub struct Fill {
 
 impl Fill {
     #[inline]
+    #[must_use]
     pub fn get_color(&self) -> &str {
         self.color.get_value_str()
     }
@@ -31,6 +32,7 @@ impl Fill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_color_2(&self) -> &str {
         self.color_2.get_value_str()
     }
@@ -42,6 +44,7 @@ impl Fill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_on(&self) -> bool {
         self.on.get_value()
     }
@@ -53,6 +56,7 @@ impl Fill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_focus_size(&self) -> &str {
         self.focus_size.get_value_str()
     }
@@ -64,6 +68,7 @@ impl Fill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image(&self) -> Option<&MediaObject> {
         self.image.as_ref()
     }
@@ -123,10 +128,10 @@ impl Fill {
         if self.focus_size.has_value() {
             attributes.push(("focussize", self.focus_size.get_value_str()));
         }
-        let mut _r_id_str = String::from("");
+        let mut _r_id_str = String::new();
         if let Some(image) = &self.image {
             let r_id = image.get_rid(rel_list);
-            _r_id_str = format!("rId{}", r_id);
+            _r_id_str = format!("rId{r_id}");
             attributes.push(("o:title", image.get_image_title()));
             attributes.push(("o:relid", _r_id_str.as_str()));
             attributes.push(("recolor", "t"));

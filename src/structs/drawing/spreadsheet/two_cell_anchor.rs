@@ -7,14 +7,14 @@ use super::GroupShape;
 use super::MarkerType;
 use super::Picture;
 use super::Shape;
+use crate::helper::const_str::DRAWING_MAIN_NS;
 use crate::helper::const_str::MC_NS;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::raw::RawRelationships;
 use crate::structs::BooleanValue;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -35,6 +35,7 @@ pub struct TwoCellAnchor {
 
 impl TwoCellAnchor {
     #[inline]
+    #[must_use]
     pub fn get_edit_as(&self) -> &EditAsValues {
         self.edit_as.get_value()
     }
@@ -46,6 +47,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
@@ -62,6 +64,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_to_marker(&self) -> &MarkerType {
         &self.to_marker
     }
@@ -78,6 +81,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
@@ -94,6 +98,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
         self.graphic_frame.as_deref()
     }
@@ -110,6 +115,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
@@ -126,6 +132,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
         self.connection_shape.as_deref()
     }
@@ -142,6 +149,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
@@ -158,6 +166,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_is_alternate_content(&self) -> bool {
         self.is_alternate_content.get_value()
     }
@@ -170,7 +179,7 @@ impl TwoCellAnchor {
 
     #[inline]
     pub(crate) fn is_support(&self) -> bool {
-        self.graphic_frame.as_ref().map_or(true, |v| {
+        self.graphic_frame.as_ref().is_none_or(|v| {
             v.get_graphic()
                 .get_graphic_data()
                 .get_chart_space()
@@ -299,7 +308,7 @@ impl TwoCellAnchor {
 
         // xdr:cxnSp
         if let Some(v) = &self.connection_shape {
-            v.write_to(writer, rel_list)
+            v.write_to(writer, rel_list);
         }
 
         // xdr:pic

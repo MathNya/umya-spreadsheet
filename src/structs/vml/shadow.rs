@@ -1,7 +1,7 @@
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::StringValue;
 use crate::structs::TrueFalseValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct Shadow {
     obscured: TrueFalseValue,
 }
 impl Shadow {
+    #[must_use]
     pub fn get_on(&self) -> bool {
         self.on.get_value()
     }
@@ -23,6 +24,7 @@ impl Shadow {
         self
     }
 
+    #[must_use]
     pub fn get_color(&self) -> &str {
         self.color.get_value_str()
     }
@@ -32,6 +34,7 @@ impl Shadow {
         self
     }
 
+    #[must_use]
     pub fn get_obscured(&self) -> bool {
         self.obscured.get_value()
     }

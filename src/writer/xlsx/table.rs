@@ -1,7 +1,10 @@
 use std::io;
 
-use super::{driver::*, XlsxError};
-use crate::helper::const_str::*;
+use super::{
+    driver::{write_end_tag, write_new_line, write_start_tag, write_text_node},
+    XlsxError,
+};
+use crate::helper::const_str::SHEET_MAIN_NS;
 use crate::structs::{Worksheet, WriterManager};
 use quick_xml::{
     events::{BytesDecl, Event},
@@ -13,7 +16,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     writer_mng: &mut WriterManager<W>,
 ) -> Result<Vec<String>, XlsxError> {
     let mut table_no_list = Vec::<String>::new();
-    for table in worksheet.get_tables().iter() {
+    for table in worksheet.get_tables() {
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
         // XML header
@@ -62,7 +65,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             false,
         );
         let mut col_id = 1;
-        for col in cols.iter() {
+        for col in cols {
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             let col_id_str = col_id.to_string();
             attributes.push(("id", &col_id_str));
@@ -96,19 +99,19 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                     ("name", style_info.get_name()),
                     (
                         "showFirstColumn",
-                        &(style_info.is_show_first_col() as i32).to_string(),
+                        &i32::from(style_info.is_show_first_col()).to_string(),
                     ),
                     (
                         "showLastColumn",
-                        &(style_info.is_show_last_col() as i32).to_string(),
+                        &i32::from(style_info.is_show_last_col()).to_string(),
                     ),
                     (
                         "showRowStripes",
-                        &(style_info.is_show_row_stripes() as i32).to_string(),
+                        &i32::from(style_info.is_show_row_stripes()).to_string(),
                     ),
                     (
                         "showColumnStripes",
-                        &(style_info.is_show_col_stripes() as i32).to_string(),
+                        &i32::from(style_info.is_show_col_stripes()).to_string(),
                     ),
                 ],
                 true,

@@ -1,5 +1,5 @@
 // a:fillRect
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct FillRectangle {
 }
 impl FillRectangle {
     #[inline]
+    #[must_use]
     pub fn get_bottom(&self) -> usize {
         self.bottom
     }
@@ -24,6 +25,7 @@ impl FillRectangle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_left(&self) -> usize {
         self.left
     }
@@ -34,6 +36,7 @@ impl FillRectangle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_right(&self) -> usize {
         self.right
     }
@@ -44,6 +47,7 @@ impl FillRectangle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top(&self) -> usize {
         self.top
     }

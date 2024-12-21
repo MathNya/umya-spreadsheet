@@ -1,7 +1,7 @@
 // oddHeader
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::StringValue;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -15,6 +15,7 @@ pub struct OddHeader {
 
 impl OddHeader {
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> &str {
         self.value.get_value_str()
     }

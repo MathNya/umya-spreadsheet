@@ -5,8 +5,8 @@ use super::DataValidationValues;
 use super::EnumValue;
 use super::SequenceOfReferences;
 use super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -28,6 +28,7 @@ pub struct DataValidation {
 }
 impl DataValidation {
     #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &DataValidationValues {
         self.r#type.get_value()
     }
@@ -39,6 +40,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
         self.operator.get_value()
     }
@@ -50,6 +52,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_allow_blank(&self) -> bool {
         self.allow_blank.get_value()
     }
@@ -61,6 +64,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_show_input_message(&self) -> bool {
         self.show_input_message.get_value()
     }
@@ -72,6 +76,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_show_error_message(&self) -> bool {
         self.show_error_message.get_value()
     }
@@ -83,6 +88,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_prompt_title(&self) -> &str {
         self.prompt_title.get_value_str()
     }
@@ -94,6 +100,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_prompt(&self) -> &str {
         self.prompt.get_value_str()
     }
@@ -105,6 +112,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
@@ -121,6 +129,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula1(&self) -> &str {
         self.formula1.get_value_str()
     }
@@ -132,6 +141,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula2(&self) -> &str {
         self.formula2.get_value_str()
     }

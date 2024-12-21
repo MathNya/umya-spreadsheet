@@ -1,5 +1,5 @@
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use md5::Digest;
 use quick_xml::escape;
 use quick_xml::events::BytesStart;
@@ -64,7 +64,7 @@ impl NumberingFormat {
     pub const FORMAT_DATE_YYYYMMDDSLASH: &'static str = "yyyy/mm/dd;@";
 
     pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r##""$"#,##0.00_-"##;
-    pub const FORMAT_CURRENCY_USD: &'static str = r###"$#,##0_-"###;
+    pub const FORMAT_CURRENCY_USD: &'static str = r"$#,##0_-";
     pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r#"#,##0.00_-"€""#;
     pub const FORMAT_CURRENCY_EUR: &'static str = r#"#,##0_-"€""#;
     pub const FORMAT_ACCOUNTING_USD: &'static str =
@@ -73,6 +73,7 @@ impl NumberingFormat {
         r#"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"#;
 
     #[inline]
+    #[must_use]
     pub fn get_number_format_id(&self) -> u32 {
         self.number_format_id
     }
@@ -102,12 +103,12 @@ impl NumberingFormat {
 
     /// Set the format code.
     /// # Arguments
-    /// * `value` - format code. (umya_spreadsheet::NumberingFormat)
+    /// * `value` - format code. (`umya_spreadsheet::NumberingFormat`)
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.get_sheet_mut(0).unwrap();
-    /// let _ = worksheet.get_style_mut("C30")
+    /// let _unused =  worksheet.get_style_mut("C30")
     /// .get_number_format_mut()
     /// .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
     /// ```
@@ -132,6 +133,7 @@ impl NumberingFormat {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_code(&self) -> &str {
         &self.format_code
     }

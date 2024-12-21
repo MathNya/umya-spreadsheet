@@ -1,6 +1,6 @@
 use super::super::Int32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct PercentageType {
 
 impl PercentageType {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> i32 {
         self.val.get_value()
     }
@@ -34,27 +35,27 @@ impl PercentageType {
 
     #[inline]
     pub(crate) fn write_to_lum(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lum")
+        self.write_to(writer, "a:lum");
     }
 
     #[inline]
     pub(crate) fn write_to_lum_mod(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lumMod")
+        self.write_to(writer, "a:lumMod");
     }
 
     #[inline]
     pub(crate) fn write_to_lum_off(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lumOff")
+        self.write_to(writer, "a:lumOff");
     }
 
     #[inline]
     pub(crate) fn write_to_sat(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:sat")
+        self.write_to(writer, "a:sat");
     }
 
     #[inline]
     pub(crate) fn write_to_sat_mod(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:satMod")
+        self.write_to(writer, "a:satMod");
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tab_name: &str) {

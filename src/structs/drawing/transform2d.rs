@@ -1,8 +1,8 @@
 // a:xfrm
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::structs::drawing::Point2DType;
 use crate::structs::drawing::PositiveSize2DType;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -22,6 +22,7 @@ pub struct Transform2D {
 
 impl Transform2D {
     #[inline]
+    #[must_use]
     pub fn get_offset(&self) -> &Point2DType {
         &self.offset
     }
@@ -37,6 +38,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_extents(&self) -> &PositiveSize2DType {
         &self.extents
     }
@@ -52,6 +54,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_child_offset(&self) -> Option<&Point2DType> {
         self.child_offset.as_deref()
     }
@@ -67,6 +70,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_child_extents(&self) -> Option<&PositiveSize2DType> {
         self.child_extents.as_deref()
     }
@@ -82,6 +86,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rot(&self) -> Option<&str> {
         self.rot.get_value()
     }
@@ -92,6 +97,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_flip_v(&self) -> Option<&str> {
         self.flip_v.get_value()
     }
@@ -102,6 +108,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_flip_h(&self) -> Option<&str> {
         self.flip_h.get_value()
     }
@@ -164,13 +171,13 @@ impl Transform2D {
         // a:xfrm
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if let Some(v) = self.rot.get_value() {
-            attributes.push(("rot", v))
+            attributes.push(("rot", v));
         }
         if let Some(v) = self.flip_h.get_value() {
-            attributes.push(("flipH", v))
+            attributes.push(("flipH", v));
         }
         if let Some(v) = self.flip_v.get_value() {
-            attributes.push(("flipV", v))
+            attributes.push(("flipV", v));
         }
         write_start_tag(writer, "a:xfrm", attributes, false);
 

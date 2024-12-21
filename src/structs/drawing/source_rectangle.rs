@@ -1,6 +1,6 @@
 // a:srcRect
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute_value;
+use crate::writer::driver::write_start_tag;
 use crate::StringValue;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
@@ -21,6 +21,7 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_t(&self) -> Option<&str> {
         self.t.get_value()
     }
@@ -31,6 +32,7 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_l(&self) -> Option<&str> {
         self.l.get_value()
     }
@@ -41,6 +43,7 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_r(&self) -> Option<&str> {
         self.r.get_value()
     }
@@ -51,6 +54,7 @@ impl SourceRectangle {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_b(&self) -> Option<&str> {
         self.b.get_value()
     }
@@ -76,16 +80,16 @@ impl SourceRectangle {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
 
         if let Some(v) = self.t.get_value() {
-            attributes.push(("t", v))
+            attributes.push(("t", v));
         }
         if let Some(v) = self.l.get_value() {
-            attributes.push(("l", v))
+            attributes.push(("l", v));
         }
         if let Some(v) = self.r.get_value() {
-            attributes.push(("r", v))
+            attributes.push(("r", v));
         }
         if let Some(v) = self.b.get_value() {
-            attributes.push(("b", v))
+            attributes.push(("b", v));
         }
         write_start_tag(writer, "a:srcRect", attributes, true);
     }

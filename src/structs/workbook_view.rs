@@ -1,6 +1,6 @@
 use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct WorkbookView {
 
 impl WorkbookView {
     #[inline]
+    #[must_use]
     pub fn get_active_tab(&self) -> u32 {
         self.active_tab.get_value()
     }
@@ -29,7 +30,7 @@ impl WorkbookView {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        set_string_from_xml!(self, e, active_tab, "activeTab")
+        set_string_from_xml!(self, e, active_tab, "activeTab");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

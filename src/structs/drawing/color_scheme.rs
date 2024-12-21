@@ -1,8 +1,8 @@
 // a:clrScheme
 use super::super::StringValue;
 use super::Color2Type;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -27,6 +27,7 @@ pub struct ColorScheme {
 
 impl ColorScheme {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -43,6 +44,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_accent1(&self) -> &Color2Type {
         &self.accent1
     }
@@ -58,6 +60,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_accent2(&self) -> &Color2Type {
         &self.accent2
     }
@@ -73,6 +76,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_accent3(&self) -> &Color2Type {
         &self.accent3
     }
@@ -88,6 +92,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_accent4(&self) -> &Color2Type {
         &self.accent4
     }
@@ -103,6 +108,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_accent5(&self) -> &Color2Type {
         &self.accent5
     }
@@ -118,6 +124,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_accent6(&self) -> &Color2Type {
         &self.accent6
     }
@@ -133,6 +140,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_dk1(&self) -> &Color2Type {
         &self.dk1
     }
@@ -148,6 +156,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_dk2(&self) -> &Color2Type {
         &self.dk2
     }
@@ -163,6 +172,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fol_hlink(&self) -> &Color2Type {
         &self.fol_hlink
     }
@@ -178,6 +188,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hlink(&self) -> &Color2Type {
         &self.hlink
     }
@@ -193,6 +204,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_lt1(&self) -> &Color2Type {
         &self.lt1
     }
@@ -208,6 +220,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_lt2(&self) -> &Color2Type {
         &self.lt2
     }
@@ -218,6 +231,7 @@ impl ColorScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_color_map(&self) -> Vec<String> {
         vec![
             self.lt1.get_val(),

@@ -2,7 +2,7 @@
 use super::ChartText;
 use super::Layout;
 use super::Overlay;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -17,6 +17,7 @@ pub struct Title {
 }
 
 impl Title {
+    #[must_use]
     pub fn get_chart_text(&self) -> Option<&ChartText> {
         self.chart_text.as_ref()
     }
@@ -30,6 +31,7 @@ impl Title {
         self
     }
 
+    #[must_use]
     pub fn get_layout(&self) -> Option<&Layout> {
         self.layout.as_ref()
     }
@@ -43,6 +45,7 @@ impl Title {
         self
     }
 
+    #[must_use]
     pub fn get_overlay(&self) -> &Overlay {
         &self.overlay
     }

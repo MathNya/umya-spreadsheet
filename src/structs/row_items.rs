@@ -1,7 +1,7 @@
 // rowItems
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::RowItem;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct RowItems {
 }
 impl RowItems {
     #[inline]
+    #[must_use]
     pub fn get_list(&self) -> &[RowItem] {
         &self.list
     }

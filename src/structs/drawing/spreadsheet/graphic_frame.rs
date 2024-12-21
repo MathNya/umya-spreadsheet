@@ -3,10 +3,10 @@ use super::super::super::StringValue;
 use super::super::Graphic;
 use super::NonVisualGraphicFrameProperties;
 use super::Transform;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::raw::RawRelationships;
 use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -22,6 +22,7 @@ pub struct GraphicFrame {
 
 impl GraphicFrame {
     #[inline]
+    #[must_use]
     pub fn get_macro(&self) -> &str {
         self.r#macro.get_value_str()
     }
@@ -33,6 +34,7 @@ impl GraphicFrame {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
         &self.non_visual_graphic_frame_properties
     }
@@ -54,6 +56,7 @@ impl GraphicFrame {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_transform(&self) -> &Transform {
         &self.transform
     }
@@ -70,6 +73,7 @@ impl GraphicFrame {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_graphic(&self) -> &Graphic {
         &self.graphic
     }

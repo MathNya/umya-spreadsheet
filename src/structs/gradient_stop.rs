@@ -1,8 +1,8 @@
 // stop
 use super::Color;
 use super::DoubleValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -17,6 +17,7 @@ pub struct GradientStop {
 
 impl GradientStop {
     #[inline]
+    #[must_use]
     pub fn get_position(&self) -> f64 {
         self.position.get_value()
     }
@@ -28,6 +29,7 @@ impl GradientStop {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_color(&self) -> &Color {
         &self.color
     }

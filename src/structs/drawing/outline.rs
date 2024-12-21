@@ -8,10 +8,10 @@ use super::PresetDash;
 use super::Round;
 use super::SolidFill;
 use super::TailEnd;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::EnumValue;
 use crate::structs::UInt32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -36,6 +36,7 @@ pub struct Outline {
 
 impl Outline {
     #[inline]
+    #[must_use]
     pub fn get_width(&self) -> u32 {
         self.width.get_value()
     }
@@ -47,6 +48,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cap_type(&self) -> Option<&str> {
         self.cap_type.get_value()
     }
@@ -58,6 +60,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_compound_line_type(&self) -> Option<&str> {
         self.compound_line_type.get_value()
     }
@@ -69,6 +72,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
@@ -85,6 +89,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
@@ -101,6 +106,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_tail_end(&self) -> Option<&TailEnd> {
         self.tail_end.as_deref()
     }
@@ -117,6 +123,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
@@ -133,6 +140,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bevel(&self) -> Option<&Bevel> {
         self.bevel.as_deref()
     }
@@ -149,6 +157,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_preset_dash(&self) -> Option<&PresetDash> {
         self.preset_dash.as_ref()
     }
@@ -165,6 +174,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_miter(&self) -> Option<&Miter> {
         self.miter.as_ref()
     }
@@ -181,6 +191,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_round(&self) -> Option<&Round> {
         self.round.as_ref()
     }
@@ -197,6 +208,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> &PenAlignmentValues {
         self.alignment.get_value()
     }

@@ -5,9 +5,9 @@ use super::AxisId;
 use super::DataLabels;
 use super::RadarStyle;
 use super::VaryColors;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -24,6 +24,7 @@ pub struct RadarChart {
 }
 
 impl RadarChart {
+    #[must_use]
     pub fn get_radar_style(&self) -> &RadarStyle {
         &self.radar_style
     }
@@ -37,6 +38,7 @@ impl RadarChart {
         self
     }
 
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -50,6 +52,7 @@ impl RadarChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -63,6 +66,7 @@ impl RadarChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -76,6 +80,7 @@ impl RadarChart {
         self
     }
 
+    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }

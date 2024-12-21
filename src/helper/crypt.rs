@@ -1,11 +1,10 @@
-use super::const_str::*;
+use super::const_str::{CERTIFICATE_NS, ENCRYPTION_NS, PASSWORD_NS};
 use crate::structs::SheetProtection;
 use crate::structs::WorkbookProtection;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_new_line, write_start_tag};
 use aes::cipher::{block_padding::NoPadding, BlockEncryptMut, KeyIvInit};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use byteorder::{ByteOrder, LittleEndian};
-use cfb;
 use hmac::{Hmac, Mac};
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
@@ -387,7 +386,7 @@ fn hmac(algorithm: &str, key: &[u8], buffers: Vec<&[u8]>) -> Result<Vec<u8>, Str
             HmacSha512::new_from_slice(key).unwrap()
         }
         _ => {
-            return Err(format!("algorithm {} not supported!", algorithm));
+            return Err(format!("algorithm {algorithm} not supported!"));
         }
     };
     mac.update(&buffer_concat(buffers));
@@ -470,7 +469,7 @@ fn hash(algorithm: &str, buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
     let mut digest = match algorithm {
         "SHA512" | "SHA-512" => Sha512::new(),
         _ => {
-            return Err(format!("algorithm {} not supported!", algorithm));
+            return Err(format!("algorithm {algorithm} not supported!"));
         }
     };
     digest.update(&buffer_concat(buffers)[..]);
@@ -633,7 +632,7 @@ fn build_encryption_info(
     write_end_tag(&mut writer, "keyEncryptors");
     write_end_tag(&mut writer, "encryption");
 
-    let result = writer.into_inner().into_inner().to_vec();
+    let result = writer.into_inner().into_inner().clone();
     buffer_concat(vec![ENCRYPTION_INFO_PREFIX, &result])
 }
 
@@ -656,7 +655,7 @@ fn buffer_concat(buffers: Vec<&[u8]>) -> Vec<u8> {
 }
 fn buffer_copy(buffer1: &mut [u8], buffer2: &[u8]) {
     for (i, byte) in buffer2.iter().enumerate() {
-        let _ = std::mem::replace(&mut buffer1[i], *byte);
+        let _unused = std::mem::replace(&mut buffer1[i], *byte);
     }
 }
 
@@ -696,7 +695,7 @@ mod tests {
     fn test_encrypt() {
         let mut file = File::open("./tests/test_files/aaa.xlsx").unwrap();
         let mut data = Vec::new();
-        let _ = file.read_to_end(&mut data).unwrap();
+        let _unused = file.read_to_end(&mut data).unwrap();
 
         let password = "password";
 
@@ -869,7 +868,7 @@ mod tests {
         //assert_eq!(&converted, "0d9c888111b40b630b739c95a5f5b6be67c8f96acdd1bee185bd808b507f652760a2e77f63a6ad0c46f985f2bb8dab4fcf9b86d6a40d9c21299bb4ddf788b250");
 
         // XML
-        let _ = build_encryption_info(
+        let _unused = build_encryption_info(
             &package_salt_value,
             package_block_size,
             package_key_bits,

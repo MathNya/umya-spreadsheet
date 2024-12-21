@@ -1,9 +1,9 @@
 // cacheField
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::SharedItems;
 use crate::structs::StringValue;
 use crate::structs::UInt32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct CacheField {
     shared_items: SharedItems,
 }
 impl CacheField {
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -26,6 +27,7 @@ impl CacheField {
         self
     }
 
+    #[must_use]
     pub fn get_number_format_id(&self) -> u32 {
         self.number_format_id.get_value()
     }
@@ -35,6 +37,7 @@ impl CacheField {
         self
     }
 
+    #[must_use]
     pub fn get_shared_items(&self) -> &SharedItems {
         &self.shared_items
     }

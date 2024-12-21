@@ -1,7 +1,7 @@
 use super::RgbColorModelHex;
 use super::SystemColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -20,6 +20,7 @@ impl Color2Type {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
@@ -35,6 +36,7 @@ impl Color2Type {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_system_color(&self) -> Option<&SystemColor> {
         self.system_color.as_deref()
     }
@@ -45,6 +47,7 @@ impl Color2Type {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> String {
         if let Some(v) = &self.rgb_color_model_hex {
             return v.get_val().to_string();
@@ -52,7 +55,7 @@ impl Color2Type {
         if let Some(v) = &self.system_color {
             return v.get_last_color().to_string();
         }
-        String::from("")
+        String::new()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

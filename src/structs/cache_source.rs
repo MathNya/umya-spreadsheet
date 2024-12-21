@@ -3,8 +3,8 @@ use crate::structs::EnumValue;
 use crate::structs::SourceValues;
 use crate::structs::WorksheetSource;
 
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -17,6 +17,7 @@ pub struct CacheSource {
 }
 
 impl CacheSource {
+    #[must_use]
     pub fn get_type(&self) -> &SourceValues {
         self.r#type.get_value()
     }
@@ -26,6 +27,7 @@ impl CacheSource {
         self
     }
 
+    #[must_use]
     pub fn get_worksheet_source(&self) -> Option<&WorksheetSource> {
         self.worksheet_source.as_ref()
     }
@@ -81,7 +83,7 @@ impl CacheSource {
         if !empty_flg {
             // worksheetSource
             if let Some(v) = &self.worksheet_source {
-                v.write_to(writer)
+                v.write_to(writer);
             }
             write_end_tag(writer, "cacheSource");
         }

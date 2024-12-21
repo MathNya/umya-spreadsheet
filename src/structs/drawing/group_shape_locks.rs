@@ -1,7 +1,7 @@
 // a:grpSpLocks
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::BooleanValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -20,6 +20,7 @@ pub struct GroupShapeLocks {
 
 impl GroupShapeLocks {
     #[inline]
+    #[must_use]
     pub fn get_no_change_aspect(&self) -> bool {
         self.no_change_aspect.get_value()
     }

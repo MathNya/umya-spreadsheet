@@ -1,7 +1,7 @@
 use std::io;
 
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::PKG_MEDIA;
 use crate::structs::Worksheet;
 use crate::structs::WriterManager;
 

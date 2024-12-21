@@ -1,8 +1,8 @@
 // c:sideWall
 use super::ShapeProperties;
 use super::Thickness;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -15,6 +15,7 @@ pub struct SideWall {
 }
 
 impl SideWall {
+    #[must_use]
     pub fn get_thickness(&self) -> Option<&Thickness> {
         self.thickness.as_ref()
     }
@@ -28,6 +29,7 @@ impl SideWall {
         self
     }
 
+    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }

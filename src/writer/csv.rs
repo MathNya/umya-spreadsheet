@@ -25,14 +25,14 @@ pub fn write_writer<W: io::Seek + io::Write>(
     // get max column and row.
     let (max_column, max_row) = worksheet.get_highest_column_and_row();
 
-    let mut data = String::from("");
+    let mut data = String::new();
     for row in 0u32..max_row {
         let mut row_vec: Vec<String> = Vec::new();
         for column in 0u32..max_column {
             // get value.
             let mut value = match worksheet.get_cell((column + 1, row + 1)) {
                 Some(cell) => cell.get_cell_value().get_value().into(),
-                None => String::from(""),
+                None => String::new(),
             };
             // do trim.
             if option.get_do_trim() {
@@ -83,7 +83,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// option.set_csv_encode_value(structs::CsvEncodeValues::ShiftJis);
 /// option.set_do_trim(true);
 /// option.set_wrap_with_char("\"");
-/// let _ = writer::csv::write(&book, path, Some(&option));
+/// let _unused =  writer::csv::write(&book, path, Some(&option));
 /// ```
 pub fn write<P: AsRef<Path>>(
     spreadsheet: &Spreadsheet,
@@ -101,7 +101,7 @@ pub fn write<P: AsRef<Path>>(
     };
     if let Err(v) = write_writer(
         spreadsheet,
-        &mut io::BufWriter::new(fs::File::create(path_tmp.as_ref() as &Path)?),
+        &mut io::BufWriter::new(fs::File::create::<&Path>(path_tmp.as_ref())?),
         option,
     ) {
         fs::remove_file(path_tmp)?;

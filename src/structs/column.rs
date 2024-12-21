@@ -3,7 +3,7 @@ use super::DoubleValue;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::Cells;
 use crate::traits::AdjustmentValue;
 use md5::Digest;
@@ -53,6 +53,7 @@ impl Default for Column {
 
 impl Column {
     #[inline]
+    #[must_use]
     pub fn get_col_num(&self) -> u32 {
         self.col_num.get_value()
     }
@@ -64,6 +65,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_width(&self) -> f64 {
         self.width.get_value()
     }
@@ -75,6 +77,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
@@ -86,6 +89,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_best_fit(&self) -> bool {
         self.best_fit.get_value()
     }
@@ -97,6 +101,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
@@ -113,6 +118,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_width(&self) -> bool {
         self.auto_width.get_value()
     }

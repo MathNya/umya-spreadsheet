@@ -1,4 +1,7 @@
-use crate::helper::coordinate::*;
+use crate::helper::coordinate::{
+    adjustment_insert_coordinate, adjustment_remove_coordinate, is_remove_coordinate,
+    string_from_column_index,
+};
 use crate::traits::AdjustmentValue;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -19,6 +22,7 @@ impl Default for ColumnReference {
 
 impl ColumnReference {
     #[inline]
+    #[must_use]
     pub fn get_num(&self) -> u32 {
         self.num
     }
@@ -53,6 +57,7 @@ impl ColumnReference {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_is_lock(&self) -> bool {
         self.is_lock
     }

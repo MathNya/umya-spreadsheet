@@ -1,8 +1,8 @@
 // sharedItems
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::BooleanValue;
 use crate::structs::DoubleValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct SharedItems {
     max_value: DoubleValue,
 }
 impl SharedItems {
+    #[must_use]
     pub fn get_contains_semi_mixed_types(&self) -> bool {
         self.contains_semi_mixed_types.get_value()
     }
@@ -27,6 +28,7 @@ impl SharedItems {
         self
     }
 
+    #[must_use]
     pub fn get_contains_string(&self) -> bool {
         self.contains_string.get_value()
     }
@@ -36,6 +38,7 @@ impl SharedItems {
         self
     }
 
+    #[must_use]
     pub fn get_contains_number(&self) -> bool {
         self.contains_number.get_value()
     }
@@ -45,6 +48,7 @@ impl SharedItems {
         self
     }
 
+    #[must_use]
     pub fn get_contains_integer(&self) -> bool {
         self.contains_integer.get_value()
     }
@@ -54,6 +58,7 @@ impl SharedItems {
         self
     }
 
+    #[must_use]
     pub fn get_min_value(&self) -> f64 {
         self.min_value.get_value()
     }
@@ -63,6 +68,7 @@ impl SharedItems {
         self
     }
 
+    #[must_use]
     pub fn get_max_value(&self) -> f64 {
         self.max_value.get_value()
     }

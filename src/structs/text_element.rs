@@ -1,8 +1,8 @@
 // r
 use super::Font;
 use super::Text;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -17,6 +17,7 @@ pub struct TextElement {
 
 impl TextElement {
     #[inline]
+    #[must_use]
     pub fn get_text(&self) -> &str {
         self.text.get_value()
     }
@@ -28,6 +29,7 @@ impl TextElement {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_run_properties(&self) -> Option<&Font> {
         self.run_properties.as_deref()
     }
@@ -54,6 +56,7 @@ impl TextElement {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font(&self) -> Option<&Font> {
         self.get_run_properties()
     }

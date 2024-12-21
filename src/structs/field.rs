@@ -1,7 +1,7 @@
 // field
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::Int32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,6 +12,7 @@ pub struct Field {
     x: Int32Value,
 }
 impl Field {
+    #[must_use]
     pub fn get_data_field(&self) -> i32 {
         self.x.get_value()
     }

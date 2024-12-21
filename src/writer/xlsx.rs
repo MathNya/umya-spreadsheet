@@ -1,5 +1,5 @@
 use super::driver;
-use crate::helper::crypt::*;
+use crate::helper::crypt::encrypt;
 use crate::structs::Spreadsheet;
 use crate::structs::WriterManager;
 use crate::XlsxError;
@@ -33,8 +33,8 @@ mod workbook_rels;
 mod worksheet;
 mod worksheet_rels;
 
-fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Vec<u8>, XlsxError> {
-    let mut arv = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
+fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, XlsxError> {
+    let mut arv = zip::ZipWriter::new(io::Cursor::new(Vec::new()));
     let mut writer_manager = WriterManager::new(&mut arv);
     writer_manager.set_is_light(is_light);
 
@@ -128,7 +128,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
         // Add printer_settings
         let printer_settings_no = match worksheet.get_page_setup().get_object_data() {
             Some(_) => printer_settings::write(worksheet, &mut writer_manager)?,
-            None => String::from(""),
+            None => String::new(),
         };
 
         // Add tables
@@ -213,7 +213,7 @@ pub fn write_writer_light<W: io::Write>(
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
 /// let path = std::path::Path::new("./tests/result_files/zzz.xlsx");
-/// let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+/// let _unused =  umya_spreadsheet::writer::xlsx::write(&book, path);
 /// ```
 pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), XlsxError> {
     let extension = path.as_ref().extension().unwrap().to_str().unwrap();
@@ -222,7 +222,7 @@ pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), X
         .with_extension(format!("{}{}", extension, "tmp"));
     if let Err(v) = write_writer(
         spreadsheet,
-        &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
+        &mut io::BufWriter::new(File::create(&path_tmp)?),
     ) {
         fs::remove_file(path_tmp)?;
         return Err(v);
@@ -241,7 +241,7 @@ pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), X
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
 /// let path = std::path::Path::new("./tests/result_files/zzz.xlsx");
-/// let _ = umya_spreadsheet::writer::xlsx::write_light(&book, path);
+/// let _unused =  umya_spreadsheet::writer::xlsx::write_light(&book, path);
 /// ```
 pub fn write_light<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), XlsxError> {
     let extension = path.as_ref().extension().unwrap().to_str().unwrap();
@@ -250,7 +250,7 @@ pub fn write_light<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result
         .with_extension(format!("{}{}", extension, "tmp"));
     if let Err(v) = write_writer_light(
         spreadsheet,
-        &mut io::BufWriter::new(fs::File::create(&path_tmp)?),
+        &mut io::BufWriter::new(File::create(&path_tmp)?),
     ) {
         fs::remove_file(path_tmp)?;
         return Err(v);
@@ -270,7 +270,7 @@ pub fn write_light<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
 /// let path = std::path::Path::new("./tests/result_files/zzz_password.xlsx");
-/// let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
+/// let _unused =  umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
 /// ```
 pub fn write_with_password<P: AsRef<Path>>(
     spreadsheet: &Spreadsheet,
@@ -307,7 +307,7 @@ pub fn write_with_password<P: AsRef<Path>>(
 /// ```
 /// let mut book = umya_spreadsheet::new_file();
 /// let path = std::path::Path::new("./tests/result_files/zzz_password.xlsx");
-/// let _ = umya_spreadsheet::writer::xlsx::write_with_password_light(&book, path, "password");
+/// let _unused =  umya_spreadsheet::writer::xlsx::write_with_password_light(&book, path, "password");
 /// ```
 pub fn write_with_password_light<P: AsRef<Path>>(
     spreadsheet: &Spreadsheet,
@@ -344,7 +344,7 @@ pub fn write_with_password_light<P: AsRef<Path>>(
 /// ```
 /// let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let to_path = std::path::Path::new("./tests/result_files/zzz_password2.xlsx");
-/// let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
+/// let _unused =  umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
 /// ```
 pub fn set_password<P: AsRef<Path>>(
     from_path: P,

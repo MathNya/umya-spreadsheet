@@ -1,8 +1,8 @@
 // a:ext
 // a:chExt
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::Int64Value;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct PositiveSize2DType {
 
 impl PositiveSize2DType {
     #[inline]
+    #[must_use]
     pub fn get_cx(&self) -> i64 {
         self.cx.get_value()
     }
@@ -26,6 +27,7 @@ impl PositiveSize2DType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cy(&self) -> i64 {
         self.cy.get_value()
     }

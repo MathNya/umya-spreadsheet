@@ -6,8 +6,8 @@ use super::SpaceAfter;
 use super::SpaceBefore;
 use super::TextAlignmentTypeValues;
 use super::TextFontAlignmentValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -24,6 +24,7 @@ pub struct TextParagraphPropertiesType {
 }
 impl TextParagraphPropertiesType {
     #[inline]
+    #[must_use]
     pub fn get_right_to_left(&self) -> bool {
         self.right_to_left.get_value()
     }
@@ -35,6 +36,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
         self.alignment.get_value()
     }
@@ -46,6 +48,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_alignment(&self) -> &TextFontAlignmentValues {
         self.font_alignment.get_value()
     }
@@ -57,6 +60,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_space_before(&self) -> Option<&SpaceBefore> {
         self.space_before.as_ref()
     }
@@ -73,6 +77,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_space_after(&self) -> Option<&SpaceAfter> {
         self.space_after.as_ref()
     }
@@ -89,6 +94,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
         self.default_run_properties.as_deref()
     }
@@ -163,52 +169,52 @@ impl TextParagraphPropertiesType {
 
     #[inline]
     pub(crate) fn write_to_default(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:defPPr")
+        self.write_to(writer, "a:defPPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl1(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl1pPr")
+        self.write_to(writer, "a:lvl1pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl2(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl2pPr")
+        self.write_to(writer, "a:lvl2pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl3(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl3pPr")
+        self.write_to(writer, "a:lvl3pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl4(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl4pPr")
+        self.write_to(writer, "a:lvl4pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl5(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl5pPr")
+        self.write_to(writer, "a:lvl5pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl6(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl6pPr")
+        self.write_to(writer, "a:lvl6pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl7(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl7pPr")
+        self.write_to(writer, "a:lvl7pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl8(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl8pPr")
+        self.write_to(writer, "a:lvl8pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl9(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl9pPr")
+        self.write_to(writer, "a:lvl9pPr");
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {

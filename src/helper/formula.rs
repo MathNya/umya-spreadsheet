@@ -1,13 +1,16 @@
-use crate::helper::address::*;
-use crate::helper::coordinate::*;
-use crate::helper::range::*;
+use crate::helper::address::{join_address, split_address};
+use crate::helper::coordinate::{
+    adjustment_insert_coordinate, adjustment_remove_coordinate, coordinate_from_index_with_lock,
+    index_from_coordinate,
+};
+use crate::helper::range::{get_join_range, get_split_range};
 use crate::structs::StringValue;
 use fancy_regex::Regex;
 
 /** PARTLY BASED ON: */
 /** Copyright (c) 2007 E. W. Bachtal, Inc. */
-/** https://ewbi.blogs.com/develops/2007/03/excel_formula_p.html */
-/** https://ewbi.blogs.com/develops/2004/12/excel_formula_p.html */
+/** <https://ewbi.blogs.com/develops/2007/03/excel_formula_p.html> */
+/** <https://ewbi.blogs.com/develops/2004/12/excel_formula_p.html> */
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum FormulaTokenTypes {
@@ -57,6 +60,7 @@ impl Default for FormulaToken {
 }
 impl FormulaToken {
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> &str {
         self.value.get_value_str()
     }
@@ -68,6 +72,7 @@ impl FormulaToken {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_token_type(&self) -> &FormulaTokenTypes {
         &self.token_type
     }
@@ -79,6 +84,7 @@ impl FormulaToken {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_token_sub_type(&self) -> &FormulaTokenSubTypes {
         &self.token_sub_type
     }
@@ -113,7 +119,7 @@ pub const ERRORS: &[&str] = &[
 const COMPARATORS_MULTI: &[&str] = &[">=", "<=", "<>"];
 
 lazy_static! {
-    pub static ref SCIENTIFIC_REGEX: Regex = Regex::new(r#"/^[1-9]{1}(\\.\\d+)?E{1}$/"#).unwrap();
+    pub static ref SCIENTIFIC_REGEX: Regex = Regex::new(r"/^[1-9]{1}(\\.\\d+)?E{1}$/").unwrap();
 }
 
 pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> {
@@ -136,18 +142,18 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     let mut in_error = false;
 
     let mut index = 1;
-    let mut value = String::from("");
+    let mut value = String::new();
 
     while index < formula_length {
         // double-quoted strings
         // embeds are doubled
         // end marks token
         if in_string {
-            if formula.chars().nth(index).unwrap() == self::QUOTE_DOUBLE {
+            if formula.chars().nth(index).unwrap() == QUOTE_DOUBLE {
                 if ((index + 2) <= formula_length)
-                    && (formula.chars().nth(index + 1).unwrap() == self::QUOTE_DOUBLE)
+                    && (formula.chars().nth(index + 1).unwrap() == QUOTE_DOUBLE)
                 {
-                    value = format!("{}{}", value, self::QUOTE_DOUBLE);
+                    value = format!("{value}{QUOTE_DOUBLE}");
                     index += 1;
                 } else {
                     in_string = false;
@@ -156,7 +162,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                     obj.set_token_type(FormulaTokenTypes::Operand);
                     obj.set_token_sub_type(FormulaTokenSubTypes::Text);
                     tokens1.push(obj);
-                    value = String::from("");
+                    value = String::new();
                 }
             } else {
                 value = format!("{}{}", value, formula.chars().nth(index).unwrap());
@@ -170,11 +176,11 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         // embeds are double
         // end does not mark a token
         if in_path {
-            if formula.chars().nth(index).unwrap() == self::QUOTE_SINGLE {
+            if formula.chars().nth(index).unwrap() == QUOTE_SINGLE {
                 if ((index + 2) <= formula_length)
-                    && (formula.chars().nth(index + 1).unwrap() == self::QUOTE_SINGLE)
+                    && (formula.chars().nth(index + 1).unwrap() == QUOTE_SINGLE)
                 {
-                    value = format!("{}{}", value, self::QUOTE_SINGLE);
+                    value = format!("{value}{QUOTE_SINGLE}");
                     index += 1;
                 } else {
                     in_path = false;
@@ -191,7 +197,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         // no embeds (changed to "()" by Excel)
         // end does not mark a token
         if in_range {
-            if formula.chars().nth(index).unwrap() == self::BRACKET_CLOSE {
+            if formula.chars().nth(index).unwrap() == BRACKET_CLOSE {
                 in_range = false;
             }
             value = format!("{}{}", value, formula.chars().nth(index).unwrap());
@@ -204,14 +210,14 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         if in_error {
             value = format!("{}{}", value, formula.chars().nth(index).unwrap());
             index += 1;
-            if self::ERRORS.iter().any(|&x| x == value.as_str()) {
+            if ERRORS.iter().any(|&x| x == value.as_str()) {
                 in_error = false;
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 obj.set_token_sub_type(FormulaTokenSubTypes::Error);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             continue;
@@ -219,7 +225,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
 
         // scientific notation check
         if let Some(current_char) = formula.chars().nth(index) {
-            if self::OPERATORS_SN.contains(current_char)
+            if OPERATORS_SN.contains(current_char)
                 && value.len() > 1
                 && SCIENTIFIC_REGEX
                     .is_match(&current_char.to_string())
@@ -234,14 +240,14 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         // independent character evaluation (order not important)
 
         // establish state-dependent character evaluations
-        if formula.chars().nth(index).unwrap() == self::QUOTE_DOUBLE {
+        if formula.chars().nth(index).unwrap() == QUOTE_DOUBLE {
             if !value.is_empty() {
                 // unexpected
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             in_string = true;
             index += 1;
@@ -249,14 +255,14 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
             continue;
         }
 
-        if formula.chars().nth(index).unwrap() == self::QUOTE_SINGLE {
+        if formula.chars().nth(index).unwrap() == QUOTE_SINGLE {
             if !value.is_empty() {
                 // unexpected
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             in_string = true;
             index += 1;
@@ -264,39 +270,39 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
             continue;
         }
 
-        if formula.chars().nth(index).unwrap() == self::BRACKET_OPEN {
+        if formula.chars().nth(index).unwrap() == BRACKET_OPEN {
             in_range = true;
-            value = format!("{}{}", value, self::BRACKET_OPEN);
+            value = format!("{value}{BRACKET_OPEN}");
             index += 1;
 
             continue;
         }
 
-        if formula.chars().nth(index).unwrap() == self::ERROR_START {
+        if formula.chars().nth(index).unwrap() == ERROR_START {
             if !value.is_empty() {
                 // unexpected
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             in_error = true;
-            value = format!("{}{}", value, self::ERROR_START);
+            value = format!("{value}{ERROR_START}");
             index += 1;
 
             continue;
         }
 
         // mark start and end of arrays and array rows
-        if formula.chars().nth(index).unwrap() == self::BRACE_OPEN {
+        if formula.chars().nth(index).unwrap() == BRACE_OPEN {
             if !value.is_empty() {
                 // unexpected
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = FormulaToken::default();
@@ -318,13 +324,13 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
             continue;
         }
 
-        if formula.chars().nth(index).unwrap() == self::SEMICOLON {
+        if formula.chars().nth(index).unwrap() == SEMICOLON {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap();
@@ -349,13 +355,13 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
             continue;
         }
 
-        if formula.chars().nth(index).unwrap() == self::BRACE_CLOSE {
+        if formula.chars().nth(index).unwrap() == BRACE_CLOSE {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap().clone();
@@ -374,22 +380,20 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         }
 
         // trim white-space
-        if formula.chars().nth(index).unwrap() == self::WHITESPACE {
+        if formula.chars().nth(index).unwrap() == WHITESPACE {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             let mut obj = FormulaToken::default();
             obj.set_value("");
             obj.set_token_type(FormulaTokenTypes::Whitespace);
             tokens1.push(obj);
             index += 1;
-            while (formula.chars().nth(index).unwrap() == self::WHITESPACE)
-                && (index < formula_length)
-            {
+            while (formula.chars().nth(index).unwrap() == WHITESPACE) && (index < formula_length) {
                 index += 1;
             }
 
@@ -407,7 +411,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             let mut obj = FormulaToken::default();
             obj.set_value(formula.chars().skip(index).take(2).collect::<String>());
@@ -420,13 +424,13 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         }
 
         // standard infix operators
-        if self::OPERATORS_INFIX.contains(formula.chars().nth(index).unwrap()) {
+        if OPERATORS_INFIX.contains(formula.chars().nth(index).unwrap()) {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             let mut obj = FormulaToken::default();
             obj.set_value(formula.chars().nth(index).unwrap());
@@ -438,13 +442,13 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         }
 
         // standard postfix operators (only one)
-        if self::OPERATORS_POSTFIX.contains(formula.chars().nth(index).unwrap()) {
+        if OPERATORS_POSTFIX.contains(formula.chars().nth(index).unwrap()) {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             let mut obj = FormulaToken::default();
             obj.set_value(formula.chars().nth(index).unwrap());
@@ -456,7 +460,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         }
 
         // start subexpression or function
-        if formula.chars().nth(index).unwrap() == self::PAREN_OPEN {
+        if formula.chars().nth(index).unwrap() == PAREN_OPEN {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
@@ -464,7 +468,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_token_sub_type(FormulaTokenSubTypes::Start);
                 tokens1.push(obj.clone());
                 stack.push(obj);
-                value = String::from("");
+                value = String::new();
             } else {
                 let mut obj = FormulaToken::default();
                 obj.set_value("");
@@ -479,13 +483,13 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         }
 
         // function, subexpression, or array parameters, or operand unions
-        if formula.chars().nth(index).unwrap() == self::COMMA {
+        if formula.chars().nth(index).unwrap() == COMMA {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap();
@@ -511,13 +515,13 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         }
 
         // stop subexpression
-        if formula.chars().nth(index).unwrap() == self::PAREN_CLOSE {
+        if formula.chars().nth(index).unwrap() == PAREN_CLOSE {
             if !value.is_empty() {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap();
@@ -615,7 +619,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         obj.set_token_type(FormulaTokenTypes::OperatorInfix);
         obj.set_token_sub_type(FormulaTokenSubTypes::Intersection);
         tokens2.push(obj);
-        value = String::from("");
+        value = String::new();
     }
 
     // move tokens to final list, switching infix "-" operators to prefix when appropriate, switching infix "+" operators
@@ -737,35 +741,35 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
 }
 
 pub(crate) fn render(formula_token_list: &[FormulaToken]) -> String {
-    let mut result = String::from("");
+    let mut result = String::new();
     for token in formula_token_list {
         if token.get_token_type() == &FormulaTokenTypes::Function
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Start
         {
             result = format!("{}{}", result, token.get_value());
-            result = format!("{}{}", result, self::PAREN_OPEN);
+            result = format!("{result}{PAREN_OPEN}");
         } else if token.get_token_type() == &FormulaTokenTypes::Function
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Stop
         {
-            result = format!("{}{}", result, self::PAREN_CLOSE);
+            result = format!("{result}{PAREN_CLOSE}");
         } else if token.get_token_type() == &FormulaTokenTypes::Subexpression
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Start
         {
-            result = format!("{}{}", result, self::PAREN_OPEN);
+            result = format!("{result}{PAREN_OPEN}");
         } else if token.get_token_type() == &FormulaTokenTypes::Subexpression
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Stop
         {
-            result = format!("{}{}", result, self::PAREN_CLOSE);
+            result = format!("{result}{PAREN_CLOSE}");
         } else if token.get_token_type() == &FormulaTokenTypes::Operand
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Text
         {
-            result = format!("{}{}", result, self::QUOTE_DOUBLE);
+            result = format!("{result}{QUOTE_DOUBLE}");
             result = format!("{}{}", result, token.get_value());
-            result = format!("{}{}", result, self::QUOTE_DOUBLE);
+            result = format!("{result}{QUOTE_DOUBLE}");
         } else if token.get_token_type() == &FormulaTokenTypes::OperatorInfix
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Intersection
         {
-            result = format!("{}{}", result, self::WHITESPACE);
+            result = format!("{result}{WHITESPACE}");
         } else {
             result = format!("{}{}", result, token.get_value());
         }
@@ -815,7 +819,7 @@ pub fn adjustment_formula_coordinate(
                         coordinate_from_index_with_lock(col_num, row_num, is_lock_col, is_lock_row);
                     coordinate_list_new.push(new_corrdinate);
                 } else {
-                    coordinate_list_new.push(coordinate.to_string());
+                    coordinate_list_new.push((*coordinate).to_string());
                 }
             }
             if has_error {
@@ -874,7 +878,7 @@ pub fn adjustment_insert_formula_coordinate(
                         );
                         coordinate_list_new.push(new_corrdinate);
                     } else {
-                        coordinate_list_new.push(coordinate.to_string());
+                        coordinate_list_new.push((*coordinate).to_string());
                     }
                 }
                 let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));
@@ -930,7 +934,7 @@ pub fn adjustment_remove_formula_coordinate(
                         );
                         coordinate_list_new.push(new_corrdinate);
                     } else {
-                        coordinate_list_new.push(coordinate.to_string());
+                        coordinate_list_new.push((*coordinate).to_string());
                     }
                 }
                 let new_value = join_address(sheet_name, &get_join_range(&coordinate_list_new));

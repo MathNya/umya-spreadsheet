@@ -1,6 +1,6 @@
 // x14:formula1
 use crate::structs::office::excel::Formula;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct DataValidationForumla1 {
 }
 impl DataValidationForumla1 {
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> &Formula {
         &self.value
     }

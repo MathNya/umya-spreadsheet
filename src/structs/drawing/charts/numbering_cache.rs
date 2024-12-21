@@ -2,7 +2,7 @@
 use super::FormatCode;
 use crate::structs::Address;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -15,6 +15,7 @@ pub struct NumberingCache {
 }
 
 impl NumberingCache {
+    #[must_use]
     pub fn get_format_code(&self) -> &FormatCode {
         &self.format_code
     }

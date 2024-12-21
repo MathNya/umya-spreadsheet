@@ -1,7 +1,7 @@
 // a:prstClr
 use super::alpha::Alpha;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -15,6 +15,7 @@ pub struct PresetColor {
 
 impl PresetColor {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &str {
         &self.val
     }
@@ -25,6 +26,7 @@ impl PresetColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alpha(&self) -> Option<&Alpha> {
         self.alpha.as_ref()
     }
@@ -70,7 +72,7 @@ impl PresetColor {
 
         // a:alpha
         if let Some(v) = &self.alpha {
-            v.write_to(writer)
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:prstClr");

@@ -1,8 +1,8 @@
 // c:tickLblPos
 use super::super::super::EnumValue;
 use super::TickLabelPositionValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct TickLabelPosition {
     val: EnumValue<TickLabelPositionValues>,
 }
 impl TickLabelPosition {
+    #[must_use]
     pub fn get_val(&self) -> &TickLabelPositionValues {
         self.val.get_value()
     }

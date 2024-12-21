@@ -1,7 +1,9 @@
-use crate::helper::coordinate::*;
-use crate::helper::formula::*;
-use crate::helper::number_format::*;
-use crate::reader::driver::*;
+use crate::helper::coordinate::CellCoordinates;
+use crate::helper::formula::{
+    adjustment_formula_coordinate, parse_to_tokens, render, FormulaToken,
+};
+use crate::helper::number_format::to_formatted_string;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::CellFormula;
 use crate::structs::CellFormulaValues;
 use crate::structs::CellRawValue;
@@ -17,7 +19,9 @@ use crate::structs::Stylesheet;
 use crate::structs::UInt32Value;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{
+    write_end_tag, write_start_tag, write_text_node, write_text_node_conversion,
+};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -36,6 +40,7 @@ pub struct Cell {
 }
 impl Cell {
     #[inline]
+    #[must_use]
     pub fn get_cell_value(&self) -> &CellValue {
         &self.cell_value
     }
@@ -52,6 +57,7 @@ impl Cell {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
@@ -68,6 +74,7 @@ impl Cell {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
@@ -91,7 +98,7 @@ impl Cell {
             let org_row_num = self.coordinate.get_row_num();
             let offset_col_num = col as i32 - org_col_num as i32;
             let offset_row_num = row as i32 - org_row_num as i32;
-            let mut tokens = parse_to_tokens(format!("={}", formula));
+            let mut tokens = parse_to_tokens(format!("={formula}"));
             adjustment_formula_coordinate(&mut tokens, offset_col_num, offset_row_num);
             let result_formula = render(tokens.as_ref());
             self.cell_value.set_formula(result_formula);
@@ -102,6 +109,7 @@ impl Cell {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
         self.hyperlink.as_deref()
     }
@@ -122,6 +130,7 @@ impl Cell {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cell_meta_index(&self) -> u32 {
         self.cell_meta_index.get_value()
     }
@@ -133,11 +142,13 @@ impl Cell {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.cell_value.get_value()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_value_number(&self) -> Option<f64> {
         self.cell_value.get_value_number()
     }
@@ -243,11 +254,13 @@ impl Cell {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_data_type(&self) -> &str {
         self.cell_value.get_data_type()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_raw_value(&self) -> &CellRawValue {
         self.cell_value.get_raw_value()
     }
@@ -258,21 +271,25 @@ impl Cell {
     }
 
     #[inline]
+    #[must_use]
     pub fn is_formula(&self) -> bool {
         self.cell_value.is_formula()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula(&self) -> &str {
         self.cell_value.get_formula()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
         self.cell_value.get_formula_obj()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula_shared_index(&self) -> Option<u32> {
         if let Some(v) = self.get_formula_obj() {
             if v.get_formula_type() == &CellFormulaValues::Shared {
@@ -315,6 +332,7 @@ impl Cell {
         })
     }
 
+    #[must_use]
     pub fn get_formatted_value(&self) -> String {
         let value = self.get_value();
 
@@ -351,8 +369,8 @@ impl Cell {
         empty_flag: bool,
         formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
     ) {
-        let mut type_value: String = String::from("");
-        let mut cell_reference: String = String::from("");
+        let mut type_value: String = String::new();
+        let mut cell_reference: String = String::new();
 
         if let Some(v) = get_attribute(e, b"r") {
             cell_reference = v;
@@ -374,7 +392,7 @@ impl Cell {
             return;
         }
 
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {

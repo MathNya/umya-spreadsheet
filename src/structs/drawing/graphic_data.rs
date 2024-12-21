@@ -1,11 +1,11 @@
 // *:graphicData
 use super::charts::ChartSpace;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
+use crate::helper::const_str::{DRAWINGML_CHART_NS, REL_OFC_NS};
+use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::reader::xlsx::chart;
 use crate::structs::raw::RawRelationships;
 use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct GraphicData {
 
 impl GraphicData {
     #[inline]
+    #[must_use]
     pub fn get_chart_space(&self) -> &ChartSpace {
         &self.chart_space
     }
@@ -73,7 +74,7 @@ impl GraphicData {
         );
 
         // c:chart
-        rel_list.push((String::from("CHART"), String::from("")));
+        rel_list.push((String::from("CHART"), String::new()));
         write_start_tag(
             writer,
             "c:chart",

@@ -86,7 +86,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
                     .map(|(name, value)| {
                         (
                             name.clone(),
-                            value.as_ref().map(|v| v.to_string()).unwrap_or_default(),
+                            value.as_ref().map(ToString::to_string).unwrap_or_default(),
                         )
                     })
                     .collect();
@@ -184,19 +184,22 @@ pub struct HfdElement {
 }
 impl HfdElement {
     #[inline]
+    #[must_use]
     pub fn has_name(&self, name: &str) -> bool {
         self.name == name
     }
 
     #[inline]
+    #[must_use]
     pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<&str> {
         self.attributes
             .get(attribute)
             .and_then(|v| (self.name == name).then_some(v))
-            .map(|x| x.as_str())
+            .map(String::as_str)
     }
 
     #[inline]
+    #[must_use]
     pub fn contains_class(&self, class: &str) -> bool {
         self.classes.contains(&class.to_string())
     }
@@ -239,7 +242,7 @@ impl AnalysisMethod for DataAnalysis {
         html_flat_data
             .element
             .iter()
-            .flat_map(|element| element.get_by_name_and_attribute("font", "color"))
+            .filter_map(|element| element.get_by_name_and_attribute("font", "color"))
             .find_map(|v| {
                 let color = v.trim_start_matches('#').to_uppercase();
                 COLOR_MAP
@@ -813,5 +816,5 @@ const COLOR_MAP: &[(&str, &str)] = &[
 #[test]
 fn convert_test() {
     let html = r#"<font color="red">test</font><br><font class="test" color="green">TE<b>S</b>T<br/>TEST</font>"#;
-    let _ = html_to_richtext(html).unwrap();
+    let _unused = html_to_richtext(html).unwrap();
 }

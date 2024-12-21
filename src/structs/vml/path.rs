@@ -1,7 +1,7 @@
 use super::office::ConnectValues;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::EnumValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,6 +12,7 @@ pub struct Path {
     connection_point_type: EnumValue<ConnectValues>,
 }
 impl Path {
+    #[must_use]
     pub fn get_connection_point_type(&self) -> &ConnectValues {
         self.connection_point_type.get_value()
     }

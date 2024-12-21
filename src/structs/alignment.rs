@@ -4,8 +4,8 @@ use super::EnumValue;
 use super::HorizontalAlignmentValues;
 use super::UInt32Value;
 use super::VerticalAlignmentValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use md5::Digest;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
@@ -22,6 +22,7 @@ pub struct Alignment {
 
 impl Alignment {
     #[inline]
+    #[must_use]
     pub fn get_horizontal(&self) -> &HorizontalAlignmentValues {
         self.horizontal.get_value()
     }
@@ -32,6 +33,7 @@ impl Alignment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical(&self) -> &VerticalAlignmentValues {
         self.vertical.get_value()
     }
@@ -42,6 +44,7 @@ impl Alignment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_wrap_text(&self) -> bool {
         self.wrap_text.get_value()
     }
@@ -52,6 +55,7 @@ impl Alignment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_text_rotation(&self) -> u32 {
         self.text_rotation.get_value()
     }

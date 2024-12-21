@@ -6,10 +6,10 @@ use super::SharedStringTable;
 use super::Style;
 use super::Stylesheet;
 use super::UInt32Value;
-use crate::helper::formula::*;
-use crate::reader::driver::*;
+use crate::helper::formula::FormulaToken;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::traits::AdjustmentValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -42,6 +42,7 @@ impl Default for Row {
 }
 impl Row {
     #[inline]
+    #[must_use]
     pub fn get_row_num(&self) -> u32 {
         self.row_num.get_value()
     }
@@ -53,6 +54,7 @@ impl Row {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_height(&self) -> f64 {
         self.height.get_value()
     }
@@ -65,6 +67,7 @@ impl Row {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_descent(&self) -> f64 {
         self.descent.get_value()
     }
@@ -76,6 +79,7 @@ impl Row {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_thick_bot(&self) -> bool {
         self.thick_bot.get_value()
     }
@@ -87,6 +91,7 @@ impl Row {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_custom_height(&self) -> bool {
         self.custom_height.get_value()
     }
@@ -98,6 +103,7 @@ impl Row {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
@@ -109,6 +115,7 @@ impl Row {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }

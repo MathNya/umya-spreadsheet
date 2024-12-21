@@ -1,7 +1,7 @@
 // worksheetSource
-use crate::reader::driver::*;
+use crate::reader::driver::get_attribute;
 use crate::structs::Address;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -13,6 +13,7 @@ pub struct WorksheetSource {
 }
 
 impl WorksheetSource {
+    #[must_use]
     pub fn get_address(&self) -> &Address {
         &self.address
     }

@@ -1,11 +1,11 @@
 // fills
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::structs::Cells;
 use crate::structs::Column;
 use crate::structs::MergeCells;
 use crate::structs::Stylesheet;
 use crate::traits::AdjustmentValue;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -114,7 +114,7 @@ impl Columns {
         // col
 
         let mut column_copy = self.column.clone();
-        column_copy.sort_by_key(|a| a.get_col_num());
+        column_copy.sort_by_key(Column::get_col_num);
         let mut column_iter = column_copy.iter();
         let mut column_raw = column_iter.next();
         let mut obj = column_raw.unwrap();
@@ -123,24 +123,21 @@ impl Columns {
 
         loop {
             column_raw = column_iter.next();
-            match column_raw {
-                Some(column) => {
-                    if column.get_col_num() == max + 1
-                        && column.get_hash_code() == obj.get_hash_code()
-                        && column.get_style() == obj.get_style()
-                    {
-                        max += 1;
-                    } else {
-                        self.write_to_column(writer, min, max, obj, stylesheet);
-                        obj = column;
-                        min = obj.get_col_num();
-                        max = min;
-                    }
-                }
-                None => {
+            if let Some(column) = column_raw {
+                if column.get_col_num() == max + 1
+                    && column.get_hash_code() == obj.get_hash_code()
+                    && column.get_style() == obj.get_style()
+                {
+                    max += 1;
+                } else {
                     self.write_to_column(writer, min, max, obj, stylesheet);
-                    break;
+                    obj = column;
+                    min = obj.get_col_num();
+                    max = min;
                 }
+            } else {
+                self.write_to_column(writer, min, max, obj, stylesheet);
+                break;
             }
         }
 

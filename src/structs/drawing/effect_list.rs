@@ -2,8 +2,8 @@
 use super::Glow;
 use super::OuterShadow;
 use super::SoftEdge;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct EffectList {
 
 impl EffectList {
     #[inline]
+    #[must_use]
     pub fn get_glow(&self) -> Option<&Glow> {
         self.glow.as_deref()
     }
@@ -33,6 +34,7 @@ impl EffectList {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
         self.outer_shadow.as_deref()
     }
@@ -48,6 +50,7 @@ impl EffectList {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
         self.soft_edge.as_deref()
     }

@@ -1,7 +1,7 @@
 // pivotField
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::BooleanValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct PivotField {
 }
 impl PivotField {
     #[inline]
+    #[must_use]
     pub fn get_data_field(&self) -> bool {
         self.data_field.get_value()
     }
@@ -25,6 +26,7 @@ impl PivotField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_show_all(&self) -> bool {
         self.show_all.get_value()
     }

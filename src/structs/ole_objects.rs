@@ -1,8 +1,8 @@
 // oleObjects
 use super::OleObject;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct OleObjects {
 
 impl OleObjects {
     #[inline]
+    #[must_use]
     pub fn get_ole_object(&self) -> &[OleObject] {
         &self.ole_object
     }

@@ -1,4 +1,4 @@
-use crate::reader::driver::*;
+use crate::reader::driver::join_paths;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
 use crate::XlsxError;
@@ -16,7 +16,7 @@ impl RawFile {
     pub(crate) fn get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
-        object_name.to_string()
+        (*object_name).to_string()
     }
 
     #[inline]
@@ -66,7 +66,7 @@ impl RawFile {
         self
     }
 
-    pub(crate) fn set_attributes<R: io::Read + io::Seek>(
+    pub(crate) fn set_attributes<R: Read + io::Seek>(
         &mut self,
         arv: &mut zip::read::ZipArchive<R>,
         base_path: &str,

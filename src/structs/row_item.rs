@@ -1,10 +1,10 @@
 // i
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::EnumValue;
 use crate::structs::ItemValues;
 use crate::structs::MemberPropertyIndex;
 use crate::structs::UInt32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -19,6 +19,7 @@ pub struct RowItem {
 }
 impl RowItem {
     #[inline]
+    #[must_use]
     pub fn get_index(&self) -> u32 {
         self.index.get_value()
     }
@@ -30,6 +31,7 @@ impl RowItem {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_item_type(&self) -> &ItemValues {
         self.item_type.get_value()
     }
@@ -41,6 +43,7 @@ impl RowItem {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_repeated_item_count(&self) -> u32 {
         self.repeated_item_count.get_value()
     }
@@ -52,6 +55,7 @@ impl RowItem {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_member_property_index(&self) -> Option<&MemberPropertyIndex> {
         self.member_property_index.as_ref()
     }

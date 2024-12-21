@@ -7,11 +7,11 @@ use super::EditingLanguage;
 use super::PrintSettings;
 use super::RoundedCorners;
 use super::ShapeProperties;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{DRAWINGML_CHART_NS, DRAWINGML_MAIN_NS, REL_OFC_NS};
 use crate::structs::office2010::drawing::charts::Style;
 use crate::structs::Spreadsheet;
 use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -29,6 +29,7 @@ pub struct ChartSpace {
 }
 
 impl ChartSpace {
+    #[must_use]
     pub fn get_date1904(&self) -> &Date1904 {
         &self.date1904
     }
@@ -42,6 +43,7 @@ impl ChartSpace {
         self
     }
 
+    #[must_use]
     pub fn get_editing_language(&self) -> &EditingLanguage {
         &self.editing_language
     }
@@ -55,6 +57,7 @@ impl ChartSpace {
         self
     }
 
+    #[must_use]
     pub fn get_rounded_corners(&self) -> &RoundedCorners {
         &self.rounded_corners
     }
@@ -68,6 +71,7 @@ impl ChartSpace {
         self
     }
 
+    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
@@ -81,6 +85,7 @@ impl ChartSpace {
         self
     }
 
+    #[must_use]
     pub fn get_chart(&self) -> &Chart {
         &self.chart
     }
@@ -94,6 +99,7 @@ impl ChartSpace {
         self
     }
 
+    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -107,6 +113,7 @@ impl ChartSpace {
         self
     }
 
+    #[must_use]
     pub fn get_print_settings(&self) -> Option<&PrintSettings> {
         self.print_settings.as_ref()
     }

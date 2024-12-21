@@ -1,9 +1,9 @@
 // dataField
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::Int32Value;
 use crate::structs::StringValue;
 use crate::structs::UInt32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct DataField {
 }
 impl DataField {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -30,6 +31,7 @@ impl DataField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fie_id(&self) -> u32 {
         self.fie_id.get_value()
     }
@@ -41,6 +43,7 @@ impl DataField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_base_fie_id(&self) -> i32 {
         self.base_fie_id.get_value()
     }
@@ -52,6 +55,7 @@ impl DataField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_base_item(&self) -> u32 {
         self.base_item.get_value()
     }

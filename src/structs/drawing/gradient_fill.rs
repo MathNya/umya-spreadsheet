@@ -5,8 +5,8 @@ use super::GradientStopList;
 use super::LinearGradientFill;
 use super::TileFlipValues;
 use super::TileRectangle;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -23,6 +23,7 @@ pub struct GradientFill {
 
 impl GradientFill {
     #[inline]
+    #[must_use]
     pub fn get_flip(&self) -> &TileFlipValues {
         self.flip.get_value()
     }
@@ -34,6 +35,7 @@ impl GradientFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rotate_with_shape(&self) -> bool {
         self.rotate_with_shape.get_value()
     }
@@ -45,6 +47,7 @@ impl GradientFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_gradient_stop_list(&self) -> &GradientStopList {
         &self.gradient_stop_list
     }
@@ -61,6 +64,7 @@ impl GradientFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_linear_gradient_fill(&self) -> Option<&LinearGradientFill> {
         self.linear_gradient_fill.as_deref()
     }
@@ -77,6 +81,7 @@ impl GradientFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_tile_rectangle(&self) -> Option<&TileRectangle> {
         self.tile_rectangle.as_deref()
     }

@@ -2,8 +2,8 @@
 use super::PresetColor;
 use super::RgbColorModelHex;
 use super::SchemeColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -26,6 +26,7 @@ pub struct OuterShadow {
 
 impl OuterShadow {
     #[inline]
+    #[must_use]
     pub fn get_blur_radius(&self) -> Option<&str> {
         self.blur_radius.get_value()
     }
@@ -37,6 +38,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_horizontal_ratio(&self) -> Option<&str> {
         self.horizontal_ratio.get_value()
     }
@@ -48,6 +50,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_ratio(&self) -> Option<&str> {
         self.vertical_ratio.get_value()
     }
@@ -59,6 +62,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> Option<&str> {
         self.alignment.get_value()
     }
@@ -70,6 +74,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_direction(&self) -> Option<&str> {
         self.direction.get_value()
     }
@@ -81,6 +86,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_distance(&self) -> Option<&str> {
         self.distance.get_value()
     }
@@ -91,6 +97,7 @@ impl OuterShadow {
         self
     }
 
+    #[must_use]
     pub fn get_rotate_with_shape(&self) -> Option<&str> {
         self.rotate_with_shape.get_value()
     }
@@ -102,6 +109,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_preset_color(&self) -> Option<&PresetColor> {
         self.preset_color.as_deref()
     }
@@ -118,6 +126,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
@@ -134,6 +143,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }

@@ -1,7 +1,7 @@
 // c:perspective
 use super::super::super::ByteValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,6 +12,7 @@ pub struct Perspective {
     val: ByteValue,
 }
 impl Perspective {
+    #[must_use]
     pub fn get_val(&self) -> u8 {
         self.val.get_value()
     }

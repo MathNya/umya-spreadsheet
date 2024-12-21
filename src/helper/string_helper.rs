@@ -1,6 +1,6 @@
 #[inline]
 pub(crate) fn _get_currency_code() -> String {
-    String::from("")
+    String::new()
 }
 
 #[inline]

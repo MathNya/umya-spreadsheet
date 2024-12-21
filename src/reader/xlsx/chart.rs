@@ -4,12 +4,8 @@ use crate::structs::raw::RawFile;
 use crate::xml_read_loop;
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use std::result;
 
-pub(crate) fn read(
-    raw_file: &RawFile,
-    chart_space: &mut ChartSpace,
-) -> result::Result<(), XlsxError> {
+pub(crate) fn read(raw_file: &RawFile, chart_space: &mut ChartSpace) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(raw_file.get_file_data());
     let mut reader = Reader::from_reader(data);
 

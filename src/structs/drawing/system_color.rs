@@ -2,8 +2,8 @@
 use super::super::super::EnumValue;
 use super::super::super::StringValue;
 use super::SystemColorValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -17,6 +17,7 @@ pub struct SystemColor {
 
 impl SystemColor {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &SystemColorValues {
         self.val.get_value()
     }
@@ -28,6 +29,7 @@ impl SystemColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_last_color(&self) -> &str {
         self.last_color.get_value_str()
     }

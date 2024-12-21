@@ -2,8 +2,8 @@
 use super::super::EnumValue;
 use super::super::Int64Value;
 use super::BevelPresetValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct BevelBottom {
 
 impl BevelBottom {
     #[inline]
+    #[must_use]
     pub fn get_width(&self) -> i64 {
         self.width.get_value()
     }
@@ -29,6 +30,7 @@ impl BevelBottom {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_height(&self) -> i64 {
         self.height.get_value()
     }
@@ -40,6 +42,7 @@ impl BevelBottom {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_preset(&self) -> &BevelPresetValues {
         self.preset.get_value()
     }

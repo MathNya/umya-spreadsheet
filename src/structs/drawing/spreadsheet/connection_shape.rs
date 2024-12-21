@@ -3,9 +3,9 @@ use super::super::super::Anchor;
 use super::NonVisualConnectionShapeProperties;
 use super::ShapeProperties;
 use super::ShapeStyle;
-use crate::reader::driver::*;
+use crate::reader::driver::xml_read_loop;
 use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -21,6 +21,7 @@ pub struct ConnectionShape {
 
 impl ConnectionShape {
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
@@ -36,6 +37,7 @@ impl ConnectionShape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_non_visual_connection_shape_properties(
         &self,
     ) -> &NonVisualConnectionShapeProperties {
@@ -58,6 +60,7 @@ impl ConnectionShape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
@@ -73,6 +76,7 @@ impl ConnectionShape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_style(&self) -> &ShapeStyle {
         &self.shape_style
     }

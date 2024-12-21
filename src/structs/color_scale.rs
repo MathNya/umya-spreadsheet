@@ -1,7 +1,7 @@
 use super::Color;
 use super::ConditionalFormatValueObject;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::BytesStart;
 use quick_xml::events::Event;
 use quick_xml::Reader;
@@ -17,6 +17,7 @@ pub struct ColorScale {
 
 impl ColorScale {
     #[inline]
+    #[must_use]
     pub fn get_cfvo_collection(&self) -> &[ConditionalFormatValueObject] {
         &self.cfvo_collection
     }
@@ -37,6 +38,7 @@ impl ColorScale {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_color_collection(&self) -> &[Color] {
         &self.color_collection
     }

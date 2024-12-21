@@ -1,8 +1,8 @@
 use super::Cell;
 use super::CellValue;
 use super::Style;
-use crate::helper::coordinate::*;
-use crate::helper::range::*;
+use crate::helper::coordinate::CellCoordinates;
+use crate::helper::range::get_coordinate_list;
 use crate::structs::Column;
 use crate::structs::Row;
 use crate::traits::AdjustmentCoordinate;
@@ -21,6 +21,7 @@ impl Cells {
         self.map.values().map(Box::as_ref).collect()
     }
 
+    #[must_use]
     pub fn get_collection_sorted(&self) -> Vec<&Cell> {
         let mut cells = self.get_collection();
         cells.sort_by(|a, b| {
@@ -42,6 +43,7 @@ impl Cells {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
         &self.map
     }
@@ -65,6 +67,7 @@ impl Cells {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
         self.map
             .iter()
@@ -74,6 +77,7 @@ impl Cells {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
         self.map
             .iter()
@@ -87,6 +91,7 @@ impl Cells {
         &mut self.map
     }
 
+    #[must_use]
     pub fn get_highest_column_and_row(&self) -> (u32, u32) {
         let mut col_max: u32 = 0;
         let mut row_max: u32 = 0;
@@ -103,6 +108,7 @@ impl Cells {
 
     /// Has Hyperlink
     #[inline]
+    #[must_use]
     pub fn has_hyperlink(&self) -> bool {
         self.map.values().any(|c| c.get_hyperlink().is_some())
     }
@@ -152,8 +158,7 @@ impl Cells {
         let CellCoordinates { col, row } = coordinate.into();
         self.map
             .get(&(row.to_owned(), col.to_owned()))
-            .map(|c| c.get_cell_value())
-            .unwrap_or(&self.default_cell_value)
+            .map_or(&self.default_cell_value, |c| c.get_cell_value())
     }
 
     #[inline]
@@ -164,8 +169,7 @@ impl Cells {
         let CellCoordinates { col, row } = coordinate.into();
         self.map
             .get(&(row.to_owned(), col.to_owned()))
-            .map(|c| c.get_style())
-            .unwrap_or(&self.default_style)
+            .map_or(&self.default_style, |c| c.get_style())
     }
 
     #[inline]
@@ -202,6 +206,7 @@ impl Cells {
         self.map.remove(&k).is_some()
     }
 
+    #[must_use]
     pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
         let mut result: Vec<Option<&Cell>> = Vec::new();
         let range_upper = range.to_uppercase();
@@ -212,6 +217,7 @@ impl Cells {
         result
     }
 
+    #[must_use]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         let mut result: Vec<&CellValue> = Vec::new();
         let range_upper = range.to_uppercase();
@@ -223,10 +229,11 @@ impl Cells {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formatted_value_by_column_and_row(&self, col_num: u32, row_num: u32) -> String {
         match self.get((col_num, row_num)) {
             Some(v) => v.get_formatted_value(),
-            None => "".into(),
+            None => String::new(),
         }
     }
 
@@ -243,7 +250,7 @@ impl Cells {
                     std::mem::take(cell),
                 )
             })
-            .collect()
+            .collect();
     }
 }
 impl AdjustmentCoordinate for Cells {

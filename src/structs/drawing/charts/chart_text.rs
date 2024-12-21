@@ -1,6 +1,6 @@
 // c:tx
 use super::RichText;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -13,6 +13,7 @@ pub struct ChartText {
 }
 
 impl ChartText {
+    #[must_use]
     pub fn get_rich_text(&self) -> &RichText {
         &self.rich_text
     }

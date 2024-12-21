@@ -61,6 +61,7 @@ pub struct Style {
 }
 impl Style {
     #[inline]
+    #[must_use]
     pub fn get_font(&self) -> Option<&Font> {
         self.font.as_deref()
     }
@@ -89,6 +90,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fill(&self) -> Option<&Fill> {
         self.fill.as_deref()
     }
@@ -105,6 +107,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.get_fill()
             .and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
@@ -157,6 +160,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_borders(&self) -> Option<&Borders> {
         self.borders.as_deref()
     }
@@ -186,6 +190,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
@@ -214,6 +219,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_numbering_format(&self) -> Option<&NumberingFormat> {
         self.numbering_format.as_deref()
     }
@@ -237,6 +243,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_number_format(&self) -> Option<&NumberingFormat> {
         self.get_numbering_format()
     }
@@ -257,6 +264,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_id(&self) -> u32 {
         self.format_id.get_value()
     }
@@ -268,6 +276,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_protection(&self) -> Option<&Protection> {
         self.protection.as_ref()
     }
@@ -317,6 +326,7 @@ impl Style {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());

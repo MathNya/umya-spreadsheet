@@ -19,9 +19,9 @@ use super::SolidFill;
 use super::SystemColor;
 use super::SystemColorValues;
 use super::ThemeElements;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::helper::const_str::DRAWINGML_MAIN_NS;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -35,6 +35,7 @@ pub struct Theme {
 
 impl Theme {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -46,6 +47,7 @@ impl Theme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_theme_elements(&self) -> &ThemeElements {
         &self.theme_elements
     }

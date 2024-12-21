@@ -2,9 +2,12 @@ use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::{
+    COMMENTS_NS, DRAWINGS_NS, HYPERLINK_NS, IMAGE_NS, OLE_OBJECT_NS, PACKAGE_NS, PKG_SHEET_RELS,
+    PRINTER_SETTINGS_NS, REL_NS, TABLE_NS, VML_DRAWING_NS,
+};
 use crate::structs::Worksheet;
 use crate::structs::WriterManager;
 
@@ -55,12 +58,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // write pageSetup
     if worksheet.get_page_setup().get_object_data().is_some() {
-        let object_name = format!("printerSettings{}.bin", printer_settings_no);
+        let object_name = format!("printerSettings{printer_settings_no}.bin");
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
             PRINTER_SETTINGS_NS,
-            format!("../printerSettings/{}", object_name).as_str(),
+            format!("../printerSettings/{object_name}").as_str(),
             "",
         );
         r_id += 1;
@@ -95,7 +98,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // write table relationships
-    for table_no in table_no_list.iter() {
+    for table_no in table_no_list {
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),
@@ -112,24 +115,24 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     for ole_object in worksheet.get_ole_objects().get_ole_object() {
         if ole_object.is_xlsx() {
             let excel_no = excel_no_list.next().unwrap();
-            let object_name = format!("Microsoft_Excel_Worksheet{}.xlsx", excel_no);
+            let object_name = format!("Microsoft_Excel_Worksheet{excel_no}.xlsx");
             write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),
                 PACKAGE_NS,
-                format!("../embeddings/{}", object_name).as_str(),
+                format!("../embeddings/{object_name}").as_str(),
                 "",
             );
             r_id += 1;
         }
         if ole_object.is_bin() {
             let ole_object_no = ole_object_no_list.next().unwrap();
-            let object_name = format!("oleObject{}.bin", ole_object_no);
+            let object_name = format!("oleObject{ole_object_no}.bin");
             write_relationship(
                 &mut writer,
                 r_id.to_string().as_str(),
                 OLE_OBJECT_NS,
-                format!("../embeddings/{}", object_name).as_str(),
+                format!("../embeddings/{object_name}").as_str(),
                 "",
             );
             r_id += 1;
@@ -143,7 +146,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             r_id.to_string().as_str(),
             IMAGE_NS,
-            format!("../media/{}", image_name).as_str(),
+            format!("../media/{image_name}").as_str(),
             "",
         );
         r_id += 1;
@@ -163,7 +166,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "Relationships");
 
     if is_write {
-        let file_path = format!("{PKG_SHEET_RELS}{}.xml.rels", worksheet_no);
+        let file_path = format!("{PKG_SHEET_RELS}{worksheet_no}.xml.rels");
         writer_mng.add_writer(&file_path, writer)?;
     }
     Ok(())
@@ -178,7 +181,7 @@ fn write_relationship(
 ) -> bool {
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();
-    let r_id = format!("rId{}", p_id);
+    let r_id = format!("rId{p_id}");
     attributes.push(("Id", r_id.as_str()));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));

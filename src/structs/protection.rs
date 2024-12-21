@@ -1,7 +1,7 @@
 // protection
 use super::BooleanValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use md5::Digest;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
@@ -16,6 +16,7 @@ pub struct Protection {
 
 impl Protection {
     #[inline]
+    #[must_use]
     pub fn get_locked(&self) -> bool {
         self.locked.get_value()
     }

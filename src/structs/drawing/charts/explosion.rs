@@ -1,7 +1,7 @@
 // c:explosion
 use super::super::super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -12,6 +12,7 @@ pub struct Explosion {
     val: UInt32Value,
 }
 impl Explosion {
+    #[must_use]
     pub fn get_val(&self) -> u32 {
         self.val.get_value()
     }

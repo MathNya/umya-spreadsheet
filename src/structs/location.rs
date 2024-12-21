@@ -1,7 +1,7 @@
 use super::StringValue;
 use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -15,6 +15,7 @@ pub struct Location {
     first_data_col: UInt32Value,
 }
 impl Location {
+    #[must_use]
     pub fn get_reference(&self) -> &str {
         self.reference.get_value_str()
     }
@@ -24,6 +25,7 @@ impl Location {
         self
     }
 
+    #[must_use]
     pub fn get_first_header_row(&self) -> u32 {
         self.first_header_row.get_value()
     }
@@ -33,6 +35,7 @@ impl Location {
         self
     }
 
+    #[must_use]
     pub fn get_first_data_row(&self) -> u32 {
         self.first_data_row.get_value()
     }
@@ -42,6 +45,7 @@ impl Location {
         self
     }
 
+    #[must_use]
     pub fn get_first_data_col(&self) -> u32 {
         self.first_data_col.get_value()
     }

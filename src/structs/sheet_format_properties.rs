@@ -3,8 +3,8 @@ use super::BooleanValue;
 use super::ByteValue;
 use super::DoubleValue;
 use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -25,6 +25,7 @@ pub struct SheetFormatProperties {
 
 impl SheetFormatProperties {
     #[inline]
+    #[must_use]
     pub fn get_base_column_width(&self) -> u32 {
         self.base_column_width.get_value()
     }
@@ -36,6 +37,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_custom_height(&self) -> bool {
         self.custom_height.get_value()
     }
@@ -47,6 +49,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_column_width(&self) -> f64 {
         self.default_column_width.get_value()
     }
@@ -58,6 +61,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_row_height(&self) -> f64 {
         self.default_row_height.get_value()
     }
@@ -69,6 +73,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_dy_descent(&self) -> f64 {
         self.dy_descent.get_value()
     }
@@ -80,6 +85,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_outline_level_column(&self) -> u8 {
         self.outline_level_column.get_value()
     }
@@ -91,6 +97,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_outline_level_row(&self) -> u8 {
         self.outline_level_row.get_value()
     }
@@ -102,6 +109,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_thick_bottom(&self) -> bool {
         self.thick_bottom.get_value()
     }
@@ -113,6 +121,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_thick_top(&self) -> bool {
         self.thick_top.get_value()
     }

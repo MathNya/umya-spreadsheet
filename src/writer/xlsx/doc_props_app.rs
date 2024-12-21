@@ -2,9 +2,9 @@ use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
+use super::driver::write_new_line;
 use super::XlsxError;
-use crate::helper::const_str::*;
+use crate::helper::const_str::ARC_APP;
 use crate::structs::Spreadsheet;
 use crate::structs::WriterManager;
 

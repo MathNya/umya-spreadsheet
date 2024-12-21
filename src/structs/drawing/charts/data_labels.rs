@@ -7,8 +7,8 @@ use super::ShowPercent;
 use super::ShowSeriesName;
 use super::ShowValue;
 use super::TextProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -27,6 +27,7 @@ pub struct DataLabels {
 }
 
 impl DataLabels {
+    #[must_use]
     pub fn get_show_legend_key(&self) -> &ShowLegendKey {
         &self.show_legend_key
     }
@@ -40,6 +41,7 @@ impl DataLabels {
         self
     }
 
+    #[must_use]
     pub fn get_show_value(&self) -> &ShowValue {
         &self.show_value
     }
@@ -53,6 +55,7 @@ impl DataLabels {
         self
     }
 
+    #[must_use]
     pub fn get_show_category_name(&self) -> &ShowCategoryName {
         &self.show_category_name
     }
@@ -66,6 +69,7 @@ impl DataLabels {
         self
     }
 
+    #[must_use]
     pub fn get_show_series_name(&self) -> &ShowSeriesName {
         &self.show_series_name
     }
@@ -79,6 +83,7 @@ impl DataLabels {
         self
     }
 
+    #[must_use]
     pub fn get_show_percent(&self) -> &ShowPercent {
         &self.show_percent
     }
@@ -92,6 +97,7 @@ impl DataLabels {
         self
     }
 
+    #[must_use]
     pub fn get_show_bubble_size(&self) -> &ShowBubbleSize {
         &self.show_bubble_size
     }
@@ -105,6 +111,7 @@ impl DataLabels {
         self
     }
 
+    #[must_use]
     pub fn get_show_leader_lines(&self) -> Option<&ShowLeaderLines> {
         self.show_leader_lines.as_ref()
     }
@@ -118,6 +125,7 @@ impl DataLabels {
         self
     }
 
+    #[must_use]
     pub fn get_text_properties(&self) -> Option<&TextProperties> {
         self.text_properties.as_ref()
     }

@@ -1,5 +1,5 @@
 // to
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -14,6 +14,7 @@ pub struct ToMarker {
 }
 impl ToMarker {
     #[inline]
+    #[must_use]
     pub fn get_col(&self) -> usize {
         self.col
     }
@@ -25,6 +26,7 @@ impl ToMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_col_off(&self) -> usize {
         self.col_off
     }
@@ -36,6 +38,7 @@ impl ToMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row(&self) -> usize {
         self.row
     }
@@ -47,6 +50,7 @@ impl ToMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row_off(&self) -> usize {
         self.row_off
     }
@@ -82,7 +86,7 @@ impl ToMarker {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {

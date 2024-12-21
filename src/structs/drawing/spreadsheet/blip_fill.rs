@@ -3,9 +3,9 @@ use super::super::super::BooleanValue;
 use super::super::Blip;
 use super::super::SourceRectangle;
 use super::super::Stretch;
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -21,6 +21,7 @@ pub struct BlipFill {
 
 impl BlipFill {
     #[inline]
+    #[must_use]
     pub fn get_rotate_with_shape(&self) -> bool {
         self.rotate_with_shape.get_value()
     }
@@ -32,6 +33,7 @@ impl BlipFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
         self.source_rectangle.as_deref()
     }
@@ -48,6 +50,7 @@ impl BlipFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_blip(&self) -> &Blip {
         &self.blip
     }
@@ -64,6 +67,7 @@ impl BlipFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_stretch(&self) -> &Stretch {
         &self.stretch
     }
@@ -132,7 +136,7 @@ impl BlipFill {
         // xdr:blipFill
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.rotate_with_shape.has_value() {
-            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()))
+            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()));
         }
         write_start_tag(writer, "xdr:blipFill", attributes, false);
 

@@ -1,8 +1,8 @@
 // brk
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::BooleanValue;
 use crate::structs::UInt32Value;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct Break {
 
 impl Break {
     #[inline]
+    #[must_use]
     pub fn get_id(&self) -> u32 {
         self.id.get_value()
     }
@@ -29,6 +30,7 @@ impl Break {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_max(&self) -> u32 {
         self.max.get_value()
     }
@@ -40,6 +42,7 @@ impl Break {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_manual_page_break(&self) -> bool {
         self.manual_page_break.get_value()
     }

@@ -1,5 +1,5 @@
 // c:v
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -12,6 +12,7 @@ pub struct NumericValue {
 }
 
 impl NumericValue {
+    #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }

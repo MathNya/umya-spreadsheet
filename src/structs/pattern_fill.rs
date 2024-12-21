@@ -2,8 +2,8 @@
 use super::Color;
 use super::EnumValue;
 use super::PatternValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -19,6 +19,7 @@ pub struct PatternFill {
 
 impl PatternFill {
     #[inline]
+    #[must_use]
     pub fn get_pattern_type(&self) -> &PatternValues {
         self.pattern_type.get_value()
     }
@@ -41,6 +42,7 @@ impl PatternFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_foreground_color(&self) -> Option<&Color> {
         self.foreground_color.as_deref()
     }
@@ -65,6 +67,7 @@ impl PatternFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.background_color.as_deref()
     }
@@ -100,8 +103,7 @@ impl PatternFill {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
-                "{}{}{}",
-                pattern_type, foreground_color, background_color
+                "{pattern_type}{foreground_color}{background_color}"
             ))
         )
     }

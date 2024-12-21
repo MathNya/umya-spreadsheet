@@ -53,6 +53,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 }
 
 #[inline]
+#[must_use]
 pub fn string_from_column_index(column_index: u32) -> String {
     assert!(column_index >= 1u32, "Column number starts from 1.");
 
@@ -94,10 +95,12 @@ where
 }
 
 #[inline]
+#[must_use]
 pub fn coordinate_from_index(col: u32, row: u32) -> String {
     format!("{}{}", string_from_column_index(col), row)
 }
 
+#[must_use]
 pub fn coordinate_from_index_with_lock(
     col: u32,
     row: u32,

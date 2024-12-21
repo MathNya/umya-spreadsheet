@@ -1,8 +1,8 @@
-use crate::reader::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::raw::RawRelationships;
 use crate::structs::MediaObject;
 use crate::structs::StringValue;
-use crate::writer::driver::*;
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct ImageData {
 
 impl ImageData {
     #[inline]
+    #[must_use]
     pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
@@ -31,6 +32,7 @@ impl ImageData {
         self
     }
 
+    #[must_use]
     pub fn get_title(&self) -> &str {
         self.title.get_value_str()
     }
@@ -66,9 +68,9 @@ impl ImageData {
     ) {
         // v:imagedata
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let mut _r_id_str = String::from("");
+        let mut _r_id_str = String::new();
         let r_id = &self.image.get_rid(rel_list);
-        _r_id_str = format!("rId{}", r_id);
+        _r_id_str = format!("rId{r_id}");
         attributes.push(("o:relid", _r_id_str.as_str()));
         if self.title.has_value() {
             attributes.push(("o:title", self.title.get_value_str()));

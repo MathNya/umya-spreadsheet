@@ -2,7 +2,7 @@
 // a:minorFont
 use super::SupplementalFont;
 use super::TextFontType;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -18,6 +18,7 @@ pub struct FontCollectionType {
 }
 impl FontCollectionType {
     #[inline]
+    #[must_use]
     pub fn get_latin_font(&self) -> &TextFontType {
         &self.latin_font
     }
@@ -34,6 +35,7 @@ impl FontCollectionType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_east_asian_font(&self) -> &TextFontType {
         &self.east_asian_font
     }
@@ -50,6 +52,7 @@ impl FontCollectionType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_complex_script_font(&self) -> &TextFontType {
         &self.complex_script_font
     }
@@ -66,6 +69,7 @@ impl FontCollectionType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_supplemental_font_list(&self) -> &[SupplementalFont] {
         &self.supplemental_font_list
     }
@@ -95,7 +99,7 @@ impl FontCollectionType {
         self.latin_font.set_panose("020F0302020204030204");
         self.east_asian_font.set_typeface("");
         self.complex_script_font.set_typeface("");
-        for (font_script, typeface) in self::MAJOR_FONTS {
+        for (font_script, typeface) in MAJOR_FONTS {
             let mut obj = SupplementalFont::default();
             obj.set_script(*font_script).set_typeface(*typeface);
             self.supplemental_font_list.push(obj);
@@ -108,7 +112,7 @@ impl FontCollectionType {
         self.latin_font.set_panose("020F0502020204030204");
         self.east_asian_font.set_typeface("");
         self.complex_script_font.set_typeface("");
-        for (font_script, typeface) in self::MINOR_FONTS {
+        for (font_script, typeface) in MINOR_FONTS {
             let mut obj = SupplementalFont::default();
             obj.set_script(*font_script).set_typeface(*typeface);
             self.supplemental_font_list.push(obj);

@@ -1,8 +1,8 @@
 // a:fontScheme
 use super::super::StringValue;
 use super::FontCollectionType;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -17,6 +17,7 @@ pub struct FontScheme {
 
 impl FontScheme {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -28,6 +29,7 @@ impl FontScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_major_font(&self) -> &FontCollectionType {
         &self.major_font
     }
@@ -44,6 +46,7 @@ impl FontScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_minor_font(&self) -> &FontCollectionType {
         &self.minor_font
     }

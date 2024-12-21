@@ -3,7 +3,7 @@ use crate::xml_read_loop;
 // c:val
 use super::NumberReference;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -15,6 +15,7 @@ pub struct Values {
 }
 
 impl Values {
+    #[must_use]
     pub fn get_number_reference(&self) -> &NumberReference {
         &self.number_reference
     }

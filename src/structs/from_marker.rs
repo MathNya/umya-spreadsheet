@@ -1,6 +1,6 @@
 // from
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct FromMarker {
 
 impl FromMarker {
     #[inline]
+    #[must_use]
     pub fn get_col(&self) -> usize {
         self.col
     }
@@ -27,6 +28,7 @@ impl FromMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_col_off(&self) -> usize {
         self.col_off
     }
@@ -38,6 +40,7 @@ impl FromMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row(&self) -> usize {
         self.row
     }
@@ -49,6 +52,7 @@ impl FromMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row_off(&self) -> usize {
         self.row_off
     }
@@ -92,7 +96,7 @@ impl FromMarker {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Text(e) => string_value = e.unescape().unwrap().to_string(),

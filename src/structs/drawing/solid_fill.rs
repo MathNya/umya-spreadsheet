@@ -1,8 +1,8 @@
 // a:solidFill
 use super::rgb_color_model_hex::RgbColorModelHex;
 use super::scheme_color::SchemeColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct SolidFill {
 
 impl SolidFill {
     #[inline]
+    #[must_use]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
@@ -31,6 +32,7 @@ impl SolidFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }

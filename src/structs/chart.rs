@@ -63,18 +63,18 @@ use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
 
 /// ## Supported chart types
-/// * AreaChart
-/// * Area3DChart
-/// * BarChart
-/// * Bar3DChart
-/// * BubbleChart
-/// * DoughnutChart
-/// * LineChart
-/// * Line3DChart
-/// * OfPieChart
-/// * PieChart
-/// * RadarChart
-/// * ScatterChart
+/// * `AreaChart`
+/// * `Area3DChart`
+/// * `BarChart`
+/// * `Bar3DChart`
+/// * `BubbleChart`
+/// * `DoughnutChart`
+/// * `LineChart`
+/// * `Line3DChart`
+/// * `OfPieChart`
+/// * `PieChart`
+/// * `RadarChart`
+/// * `ScatterChart`
 ///
 /// Other types will be supported sequentially.
 ///
@@ -224,16 +224,13 @@ impl Chart {
             .get_area_chart_series_list_mut()
             .get_area_chart_series_mut()
         {
-            match series.get_category_axis_data_mut() {
-                Some(v) => {
-                    v.remove_string_reference();
-                    v.set_string_literal(string_literal.clone());
-                }
-                None => {
-                    let mut obj = CategoryAxisData::default();
-                    obj.set_string_literal(string_literal.clone());
-                    series.set_category_axis_data(obj);
-                }
+            if let Some(v) = series.get_category_axis_data_mut() {
+                v.remove_string_reference();
+                v.set_string_literal(string_literal.clone());
+            } else {
+                let mut obj = CategoryAxisData::default();
+                obj.set_string_literal(string_literal.clone());
+                series.set_category_axis_data(obj);
             }
         }
         self
@@ -255,6 +252,7 @@ impl Chart {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
@@ -276,6 +274,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_chart_space(&self) -> &ChartSpace {
         match self.two_cell_anchor.get_graphic_frame() {
             Some(v) => v.get_graphic().get_graphic_data().get_chart_space(),
@@ -353,6 +352,7 @@ impl Chart {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         self.two_cell_anchor.get_from_marker().get_coordinate()
     }

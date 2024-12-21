@@ -12,7 +12,7 @@ use super::Strike;
 use super::Underline;
 use super::UnderlineValues;
 use super::VerticalTextAlignment;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -65,6 +65,7 @@ impl Font {
     pub const UNDERLINE_SINGLEACCOUNTING: &'static str = "singleAccounting";
 
     #[inline]
+    #[must_use]
     pub fn get_font_name(&self) -> &FontName {
         &self.font_name
     }
@@ -81,6 +82,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.font_name.get_val()
     }
@@ -100,6 +102,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_size(&self) -> &FontSize {
         &self.font_size
     }
@@ -116,6 +119,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_size(&self) -> f64 {
         self.font_size.get_val()
     }
@@ -127,6 +131,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_family_numbering(&self) -> &FontFamilyNumbering {
         &self.font_family_numbering
     }
@@ -143,6 +148,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_family(&self) -> i32 {
         self.font_family_numbering.get_val()
     }
@@ -154,6 +160,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_bold(&self) -> &Bold {
         &self.font_bold
     }
@@ -170,6 +177,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bold(&self) -> bool {
         self.font_bold.get_val()
     }
@@ -181,6 +189,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_italic(&self) -> &Italic {
         &self.font_italic
     }
@@ -197,6 +206,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_italic(&self) -> bool {
         self.font_italic.get_val()
     }
@@ -208,6 +218,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_underline(&self) -> &Underline {
         &self.font_underline
     }
@@ -224,6 +235,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_underline(&self) -> &str {
         self.font_underline.val.get_value_string()
     }
@@ -237,6 +249,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_strike(&self) -> &Strike {
         &self.font_strike
     }
@@ -253,6 +266,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_strikethrough(&self) -> bool {
         self.font_strike.get_val()
     }
@@ -264,6 +278,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
@@ -280,6 +295,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_char_set(&self) -> &FontCharSet {
         &self.font_char_set
     }
@@ -296,6 +312,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_charset(&self) -> i32 {
         self.font_char_set.get_val()
     }
@@ -307,6 +324,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_scheme(&self) -> &FontScheme {
         &self.font_scheme
     }
@@ -323,6 +341,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scheme(&self) -> &str {
         self.font_scheme.val.get_value_string()
     }
@@ -336,6 +355,7 @@ impl Font {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_text_alignment(&self) -> &VerticalTextAlignment {
         &self.vertical_text_alignment
     }

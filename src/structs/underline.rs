@@ -2,8 +2,8 @@
 use super::EnumTrait;
 use super::EnumValue;
 use super::UnderlineValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -16,6 +16,7 @@ pub struct Underline {
 
 impl Underline {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &UnderlineValues {
         if self.val.has_value() {
             return self.val.get_value();
@@ -36,7 +37,7 @@ impl Underline {
         e: &BytesStart,
     ) {
         self.set_val(UnderlineValues::default());
-        set_string_from_xml!(self, e, val, "val")
+        set_string_from_xml!(self, e, val, "val");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

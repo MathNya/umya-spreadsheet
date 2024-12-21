@@ -2,8 +2,8 @@
 use super::BorderStyleValues;
 use super::Color;
 use super::EnumValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use md5::Digest;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -18,6 +18,7 @@ pub struct Border {
 
 impl Border {
     #[inline]
+    #[must_use]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
@@ -34,6 +35,7 @@ impl Border {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style(&self) -> &BorderStyleValues {
         self.style.get_value()
     }
@@ -61,6 +63,7 @@ impl Border {
     pub const BORDER_THIN: &'static str = "thin";
 
     #[inline]
+    #[must_use]
     pub fn get_border_style(&self) -> &str {
         self.style.get_value_string()
     }

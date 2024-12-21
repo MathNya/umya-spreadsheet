@@ -1,6 +1,6 @@
 // c:layout
 use super::ManualLayout;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -13,6 +13,7 @@ pub struct Layout {
 }
 
 impl Layout {
+    #[must_use]
     pub fn get_manual_layout(&self) -> Option<&ManualLayout> {
         self.manual_layout.as_ref()
     }
@@ -26,6 +27,7 @@ impl Layout {
         self
     }
 
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.manual_layout.is_none()
     }

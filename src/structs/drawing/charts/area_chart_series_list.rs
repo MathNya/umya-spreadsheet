@@ -6,6 +6,7 @@ pub struct AreaChartSeriesList {
     area_chart_series: ThinVec<AreaChartSeries>,
 }
 impl AreaChartSeriesList {
+    #[must_use]
     pub fn get_area_chart_series(&self) -> &[AreaChartSeries] {
         &self.area_chart_series
     }

@@ -38,7 +38,7 @@ pub(crate) use crate::set_string_from_xml;
 pub(crate) fn normalize_path(path: &str) -> PathBuf {
     let path = Path::new(path);
     let mut components = path.components().peekable();
-    let mut ret = if let Some(c @ Component::Prefix(..)) = components.peek().cloned() {
+    let mut ret = if let Some(c @ Component::Prefix(..)) = components.peek().copied() {
         components.next();
         PathBuf::from(c.as_os_str())
     } else {
@@ -67,7 +67,7 @@ pub(crate) fn normalize_path(path: &str) -> PathBuf {
 pub(crate) fn join_paths(base_path: &str, target: &str) -> String {
     match target.split_once('/') {
         Some(("", target)) => normalize_path_to_str(target),
-        _ => normalize_path_to_str(&format!("{}/{}", base_path, target)),
+        _ => normalize_path_to_str(&format!("{base_path}/{target}")),
     }
 }
 

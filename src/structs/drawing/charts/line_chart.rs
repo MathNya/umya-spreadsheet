@@ -10,7 +10,7 @@ use super::ShowMarker;
 use super::Smooth;
 use super::VaryColors;
 use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -29,6 +29,7 @@ pub struct LineChart {
 }
 
 impl LineChart {
+    #[must_use]
     pub fn get_grouping(&self) -> &Grouping {
         &self.grouping
     }
@@ -42,6 +43,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -55,6 +57,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -68,6 +71,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -81,6 +85,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_show_marker(&self) -> &ShowMarker {
         &self.show_marker
     }
@@ -94,6 +99,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_smooth(&self) -> &Smooth {
         &self.smooth
     }
@@ -107,6 +113,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }

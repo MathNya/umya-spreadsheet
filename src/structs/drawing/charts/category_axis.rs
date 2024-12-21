@@ -18,7 +18,7 @@ use super::ShapeProperties;
 use super::TextProperties;
 use super::TickLabelPosition;
 use super::Title;
-use crate::writer::driver::*;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -46,6 +46,7 @@ pub struct CategoryAxis {
 }
 
 impl CategoryAxis {
+    #[must_use]
     pub fn get_axis_id(&self) -> &AxisId {
         &self.axis_id
     }
@@ -59,6 +60,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_scaling(&self) -> &Scaling {
         &self.scaling
     }
@@ -72,6 +74,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_delete(&self) -> &Delete {
         &self.delete
     }
@@ -85,6 +88,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_axis_position(&self) -> &AxisPosition {
         &self.axis_position
     }
@@ -98,6 +102,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
@@ -111,6 +116,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
         self.major_gridlines.as_ref()
     }
@@ -124,6 +130,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_tick_mark(&self) -> &MajorTickMark {
         &self.major_tick_mark
     }
@@ -137,6 +144,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_minor_tick_mark(&self) -> &MinorTickMark {
         &self.minor_tick_mark
     }
@@ -150,6 +158,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_label_position(&self) -> &TickLabelPosition {
         &self.tick_label_position
     }
@@ -163,6 +172,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_crossing_axis(&self) -> &CrossingAxis {
         &self.crossing_axis
     }
@@ -176,6 +186,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_crosses(&self) -> &Crosses {
         &self.crosses
     }
@@ -189,6 +200,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_auto_labeled(&self) -> &AutoLabeled {
         &self.auto_labeled
     }
@@ -202,6 +214,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_label_alignment(&self) -> &LabelAlignment {
         &self.label_alignment
     }
@@ -215,6 +228,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_label_offset(&self) -> &LabelOffset {
         &self.label_offset
     }
@@ -228,6 +242,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_no_multi_level_labels(&self) -> &NoMultiLevelLabels {
         &self.no_multi_level_labels
     }
@@ -241,6 +256,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -254,6 +270,7 @@ impl CategoryAxis {
         self
     }
 
+    #[must_use]
     pub fn get_text_properties(&self) -> Option<&TextProperties> {
         self.text_properties.as_ref()
     }

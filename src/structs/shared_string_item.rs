@@ -3,8 +3,8 @@ use super::PhoneticRun;
 use super::RichText;
 use super::Text;
 use super::TextElement;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -71,10 +71,10 @@ impl SharedStringItem {
             "{}{}",
             self.text
                 .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code()),
+                .map_or(String::from("NONE"), Text::get_hash_code),
             self.rich_text
                 .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code())
+                .map_or(String::from("NONE"), RichText::get_hash_code)
         );
         h.write(content.as_bytes());
         h.finish()

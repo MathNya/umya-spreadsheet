@@ -1,6 +1,6 @@
-use crate::helper::address::*;
-use crate::helper::coordinate::*;
-use crate::reader::xlsx::*;
+use crate::helper::address::split_address;
+use crate::helper::coordinate::column_index_from_string;
+use crate::reader::xlsx::raw_to_deserialize_by_worksheet;
 use crate::structs::drawing::Theme;
 use crate::structs::Address;
 use crate::structs::CellValue;
@@ -150,13 +150,14 @@ impl Spreadsheet {
     /// # Arguments
     /// * `address` - address. ex) "Sheet1!A1:C5"
     /// # Return value
-    /// *`Vec<&CellValue>` - CellValue List.
+    /// *`Vec<&CellValue>` - `CellValue` List.
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
     /// ```
     #[inline]
+    #[must_use]
     pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
         self.get_sheet_by_name(sheet_name)
@@ -169,7 +170,7 @@ impl Spreadsheet {
     /// # Arguments
     /// * `address` - Address Object
     /// # Return value
-    /// *`Vec<&CellValue>` - CellValue List.
+    /// *`Vec<&CellValue>` - `CellValue` List.
     #[inline]
     pub(crate) fn get_cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
         self.get_sheet_by_name(address.get_sheet_name())
@@ -179,6 +180,7 @@ impl Spreadsheet {
 
     /// Get Theme.
     #[inline]
+    #[must_use]
     pub fn get_theme(&self) -> &Theme {
         &self.theme
     }
@@ -200,6 +202,7 @@ impl Spreadsheet {
 
     /// Get Properties.
     #[inline]
+    #[must_use]
     pub fn get_properties(&self) -> &Properties {
         &self.properties
     }
@@ -223,6 +226,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
     #[inline]
+    #[must_use]
     pub fn get_macros_code(&self) -> Option<&[u8]> {
         self.macros_code.as_deref()
     }
@@ -245,6 +249,7 @@ impl Spreadsheet {
 
     /// Has Macros Code
     #[inline]
+    #[must_use]
     pub fn get_has_macros(&self) -> bool {
         self.macros_code.is_some()
     }
@@ -268,6 +273,7 @@ impl Spreadsheet {
     /// Must to be the same in workbook with VBA/macros code from this workbook
     /// for that code in Workbook object to work out of the box without adjustments
     #[inline]
+    #[must_use]
     pub fn get_code_name(&self) -> Option<&str> {
         self.code_name.get_value()
     }
@@ -315,6 +321,7 @@ impl Spreadsheet {
     }
 
     /// Get Work Sheet List.
+    #[must_use]
     pub fn get_sheet_collection(&self) -> &[Worksheet] {
         for worksheet in &self.work_sheet_collection {
             assert!(worksheet.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
@@ -325,6 +332,7 @@ impl Spreadsheet {
     /// Get Work Sheet List.
     /// No check deserialized.
     #[inline]
+    #[must_use]
     pub fn get_sheet_collection_no_check(&self) -> &[Worksheet] {
         &self.work_sheet_collection
     }
@@ -340,6 +348,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `usize` - Work Sheet Count.
     #[inline]
+    #[must_use]
     pub fn get_sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
     }
@@ -385,6 +394,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&Worksheet>`.
     #[inline]
+    #[must_use]
     pub fn get_sheet(&self, index: usize) -> Option<&Worksheet> {
         self.work_sheet_collection
             .get(index)
@@ -399,6 +409,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `Option<&Worksheet>.
     #[inline]
+    #[must_use]
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
             .and_then(|index| self.get_sheet(index))
@@ -453,6 +464,7 @@ impl Spreadsheet {
     /// # Return value
     /// * `&Worksheet` - Work sheet.
     #[inline]
+    #[must_use]
     pub fn get_active_sheet(&self) -> &Worksheet {
         let index = self.get_workbook_view().get_active_tab();
         self.get_sheet(index as usize).unwrap()
@@ -591,6 +603,7 @@ impl Spreadsheet {
 
     /// Get Workbook View.
     #[inline]
+    #[must_use]
     pub fn get_workbook_view(&self) -> &WorkbookView {
         &self.workbook_view
     }
@@ -603,7 +616,7 @@ impl Spreadsheet {
 
     /// Set Workbook View.
     /// # Arguments
-    /// * `value` - WorkbookView
+    /// * `value` - `WorkbookView`
     #[inline]
     pub fn set_workbook_view(&mut self, value: WorkbookView) -> &mut Self {
         self.workbook_view = value;
@@ -619,7 +632,7 @@ impl Spreadsheet {
         }
         self.get_sheet_collection_no_check()
             .iter()
-            .any(|sheet| sheet.has_defined_names())
+            .any(Worksheet::has_defined_names)
     }
 
     #[inline]
@@ -671,13 +684,14 @@ impl Spreadsheet {
     pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
             if **val1 == key {
-                *val3 = value.clone().into_boxed_str()
+                *val3 = value.clone().into_boxed_str();
             };
         });
         self
     }
 
     #[inline]
+    #[must_use]
     pub fn get_workbook_protection(&self) -> Option<&WorkbookProtection> {
         self.workbook_protection.as_deref()
     }
@@ -702,6 +716,7 @@ impl Spreadsheet {
 
     /// Get Defined Name (Vec).
     #[inline]
+    #[must_use]
     pub fn get_defined_names(&self) -> &[DefinedName] {
         &self.defined_names
     }
@@ -722,7 +737,7 @@ impl Spreadsheet {
 
     /// Add Defined Name.
     /// # Arguments
-    /// * `value` - DefinedName.
+    /// * `value` - `DefinedName`.
     #[inline]
     pub fn add_defined_names(&mut self, value: DefinedName) {
         self.defined_names.push(value);

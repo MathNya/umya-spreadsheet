@@ -1,4 +1,4 @@
-use super::driver::*;
+use super::driver::write_new_line;
 use super::XlsxError;
 use crate::structs::drawing::charts::ChartSpace;
 use crate::structs::Spreadsheet;
