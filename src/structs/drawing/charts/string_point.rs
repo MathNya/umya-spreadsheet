@@ -38,7 +38,7 @@ impl StringPoint {
             reader,
             Event::Start(ref e) => {
                 if e.name().0 == b"c:v" {
-                    self.numeric_value._set_attributes(reader, e);
+                    self.numeric_value.set_attributes(reader, e);
                 }
             },
             Event::End(ref e) => {
@@ -56,7 +56,7 @@ impl StringPoint {
         write_start_tag(writer, "c:pt", vec![("idx", index_str.as_str())], false);
 
         // c:v
-        self.numeric_value._write_to(writer);
+        self.numeric_value.write_to(writer);
 
         write_end_tag(writer, "c:pt");
     }

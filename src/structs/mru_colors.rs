@@ -21,7 +21,7 @@ impl MruColors {
     }
 
     #[inline]
-    pub(crate) fn _get_color_mut(&mut self) -> &mut Vec<Color> {
+    pub(crate) fn get_color_mut(&mut self) -> &mut Vec<Color> {
         &mut self.color
     }
 

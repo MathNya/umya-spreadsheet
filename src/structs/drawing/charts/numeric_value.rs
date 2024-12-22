@@ -24,7 +24,7 @@ impl NumericValue {
         self
     }
 
-    pub(crate) fn _set_attributes<R: std::io::BufRead>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
@@ -43,7 +43,7 @@ impl NumericValue {
         );
     }
 
-    pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:v
         write_start_tag(writer, "c:v", vec![], false);
         write_text_node(writer, &*self.text);

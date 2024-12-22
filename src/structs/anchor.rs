@@ -100,25 +100,25 @@ impl Anchor {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: u32) {
+    pub(crate) fn adjustment_insert_row(&mut self, num_rows: u32) {
         self.top_row += num_rows;
         self.bottom_row += num_rows;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: u32) {
+    pub(crate) fn adjustment_insert_column(&mut self, num_cols: u32) {
         self.left_column += num_cols;
         self.right_column += num_cols;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: u32) {
+    pub(crate) fn adjustment_remove_row(&mut self, num_rows: u32) {
         self.top_row = self.top_row.saturating_sub(num_rows).max(1);
         self.bottom_row = self.bottom_row.saturating_sub(num_rows).max(1);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: u32) {
+    pub(crate) fn adjustment_remove_column(&mut self, num_cols: u32) {
         self.left_column = self.left_column.saturating_sub(num_cols).max(1);
         self.right_column = self.right_column.saturating_sub(num_cols).max(1);
     }

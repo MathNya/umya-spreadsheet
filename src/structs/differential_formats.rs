@@ -17,12 +17,12 @@ pub(crate) struct DifferentialFormats {
 
 impl DifferentialFormats {
     #[inline]
-    pub(crate) fn _get_differential_format(&self) -> &[DifferentialFormat] {
+    pub(crate) fn get_differential_format(&self) -> &[DifferentialFormat] {
         &self.differential_format
     }
 
     #[inline]
-    pub(crate) fn _get_differential_format_mut(&mut self) -> &mut Vec<DifferentialFormat> {
+    pub(crate) fn get_differential_format_mut(&mut self) -> &mut Vec<DifferentialFormat> {
         &mut self.differential_format
     }
 

@@ -30,7 +30,7 @@ impl RawWorksheet {
     }
 
     #[inline]
-    pub(crate) fn _get_relationships_list_mut(&mut self) -> &mut Vec<RawRelationships> {
+    pub(crate) fn get_relationships_list_mut(&mut self) -> &mut Vec<RawRelationships> {
         &mut self.relationships_list
     }
 

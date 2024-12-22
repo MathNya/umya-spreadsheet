@@ -21,7 +21,7 @@ pub(crate) struct RawRelationships {
 
 impl RawRelationships {
     #[inline]
-    pub(crate) fn _get_file_name(&self) -> String {
+    pub(crate) fn get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
         (*object_name).to_string()
@@ -44,7 +44,7 @@ impl RawRelationships {
     }
 
     #[inline]
-    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
+    pub(crate) fn get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
         &mut self.relationship_list
     }
 

@@ -25,7 +25,7 @@ impl UInt16Value {
     }
 
     #[inline]
-    pub(crate) fn _has_value(&self) -> bool {
+    pub(crate) fn has_value(&self) -> bool {
         self.value.is_some()
     }
 }

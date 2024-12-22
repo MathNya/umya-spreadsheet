@@ -818,7 +818,7 @@ impl Worksheet {
     /// (This method is crate only.)
     /// Get Row Dimension.
     #[inline]
-    pub(crate) fn _get_row_dimensions_crate(&self) -> &Rows {
+    pub(crate) fn get_row_dimensions_crate(&self) -> &Rows {
         &self.rows
     }
 

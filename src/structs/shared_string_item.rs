@@ -27,7 +27,7 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _get_text_mut(&mut self) -> Option<&mut Text> {
+    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
     }
 
@@ -38,7 +38,7 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_text(&mut self) -> &mut Self {
         self.text = None;
         self
     }
@@ -61,7 +61,7 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_rich_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_rich_text(&mut self) -> &mut Self {
         self.rich_text = None;
         self
     }

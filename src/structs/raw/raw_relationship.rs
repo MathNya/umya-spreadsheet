@@ -66,7 +66,7 @@ impl RawRelationship {
     }
 
     #[inline]
-    pub(crate) fn _set_raw_file(&mut self, value: RawFile) -> &mut Self {
+    pub(crate) fn set_raw_file(&mut self, value: RawFile) -> &mut Self {
         self.raw_file = value;
         self
     }

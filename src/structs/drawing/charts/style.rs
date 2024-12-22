@@ -25,7 +25,7 @@ impl Style {
         self
     }
 
-    pub(crate) fn _set_attributes<R: std::io::BufRead>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
@@ -33,7 +33,7 @@ impl Style {
         self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }
 
-    pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:style
         write_start_tag(writer, "c:style", vec![("val", &self.val.get_value_string())], true);
     }

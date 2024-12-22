@@ -27,5 +27,5 @@ impl PhoneticRun {
         );
     }
 
-    pub(crate) fn _write_to(&self, _writer: &mut Writer<Cursor<Vec<u8>>>) {}
+    pub(crate) fn write_to(&self, _writer: &mut Writer<Cursor<Vec<u8>>>) {}
 }

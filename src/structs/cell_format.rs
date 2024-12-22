@@ -187,7 +187,7 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+    pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
     }
 
@@ -203,7 +203,7 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_protection_mut(&mut self) -> Option<&mut Protection> {
+    pub(crate) fn get_protection_mut(&mut self) -> Option<&mut Protection> {
         self.protection.as_mut()
     }
 
