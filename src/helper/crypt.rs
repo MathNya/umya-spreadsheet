@@ -624,28 +624,12 @@ fn build_encryption_info(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use hex_literal::hex;
     use std::fs::File;
     use std::io::Read;
-    use std::{fmt::Write, num::ParseIntError};
-
-    // Helper function to decode a hex string into bytes
-    fn decode_hex(s: &str) -> Result<Vec<u8>, ParseIntError> {
-        (0..s.len())
-            .step_by(2)
-            .map(|i| u8::from_str_radix(&s[i..i + 2], 16))
-            .collect()
-    }
-
-    // Helper function to encode bytes into a hex string
-    fn encode_hex(bytes: &[u8]) -> String {
-        let mut s = String::with_capacity(bytes.len() * 2);
-        for &b in bytes {
-            write!(&mut s, "{b:02x}").unwrap();
-        }
-        s
-    }
 
     #[test]
+    #[expect(clippy::too_many_lines)]
     fn test_encrypt() {
         const PACKAGE_CIPHER_ALGORITHM: &str = "AES";
         const KEY_CIPHER_ALGORITHM: &str = "AES";
@@ -659,14 +643,13 @@ mod tests {
         let password = "password";
 
         // Package parameters
-        let package_key =
-            decode_hex("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf").unwrap();
+        let package_key = hex!("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf");
         let package_hash_algorithm = "SHA512";
         let package_block_size = 16;
-        let package_salt_value = decode_hex("4c251b321d85cecfcb6d952ba6d81846").unwrap();
+        let package_salt_value = hex!("4c251b321d85cecfcb6d952ba6d81846");
 
         // Key parameters
-        let key_salt_value = decode_hex("3aa973eec73c98c4710021730ef5b513").unwrap();
+        let key_salt_value = hex!("3aa973eec73c98c4710021730ef5b513");
         let key_hash_algorithm = "SHA512";
         let key_spin_count = 100_000;
         let key_key_bits = 256;
@@ -682,19 +665,27 @@ mod tests {
         );
 
         // HMAC key
-        let hmac_key = decode_hex("4c6e4db6d9a60e5d41c3ca639a682aaa71da7437202fe92ec5d814bd1e9e4e6a831aee889eae3bc18bc1bebedae1f73393fddfffd0a0b6c557485fefcdb5e98b").unwrap();
+        let hmac_key = hex!(
+            "4c6e4db6d9a60e5d41c3ca639a682aaa71da7437202fe92ec5d814bd1e9e4e6a"
+            "831aee889eae3bc18bc1bebedae1f73393fddfffd0a0b6c557485fefcdb5e98b"
+        );
+
         let hmac_key_iv = create_iv(
             package_hash_algorithm,
             &package_salt_value,
             package_block_size,
             BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
         );
-        let converted = encode_hex(&hmac_key_iv);
-        assert_eq!(&converted, "ba1bf00eed82b07ee65e574eb1f46043");
+        assert_eq!(hmac_key_iv, hex!("ba1bf00eed82b07ee65e574eb1f46043"));
 
         let encrypted_hmac_key = crypt(true, &package_key, &hmac_key_iv, &hmac_key).unwrap();
-        let converted = encode_hex(&encrypted_hmac_key);
-        assert_eq!(&converted, "b32b1cdc4ac1af244377c1eb57efd31a819f555a7204adcc0cfe364b394bbdb086a8daef4f4c512d52e3db6a54b1d45e1dd1dbfa3ddacc29fe35449ba5225dc7");
+        assert_eq!(
+            encrypted_hmac_key,
+            hex!(
+                "b32b1cdc4ac1af244377c1eb57efd31a819f555a7204adcc0cfe364b394bbdb0
+                 86a8daef4f4c512d52e3db6a54b1d45e1dd1dbfa3ddacc29fe35449ba5225dc7"
+            )
+        );
 
         // HMAC value
         let hmac_value = hmac(package_hash_algorithm, &hmac_key, &[&encrypted_package]).unwrap();
@@ -708,8 +699,7 @@ mod tests {
             package_block_size,
             BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
         );
-        let converted = encode_hex(&hmac_value_iv);
-        assert_eq!(&converted, "088385b871292e7ed8414f173c5b6622");
+        assert_eq!(hmac_value_iv, hex!("088385b871292e7ed8414f173c5b6622"));
 
         let encrypted_hmac_value = crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
         // Uncomment the following lines to check the encrypted HMAC value
@@ -725,21 +715,19 @@ mod tests {
             key_key_bits,
             BLOCK_KEYS_KEY,
         );
-        let converted = encode_hex(&key);
         assert_eq!(
-            &converted,
-            "8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d"
+            key,
+            hex!("8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d")
         );
 
         let encrypted_key_value = crypt(true, &key, &key_salt_value, &package_key).unwrap();
-        let converted = encode_hex(&encrypted_key_value);
         assert_eq!(
-            &converted,
-            "5017ddc6146e56dfbf76734b3e99b80f36a4c9a2e9eb21fe77695f73850cc452"
+            encrypted_key_value,
+            hex!("5017ddc6146e56dfbf76734b3e99b80f36a4c9a2e9eb21fe77695f73850cc452")
         );
 
         // Verifier hash input
-        let verifier_hash_input = decode_hex("8f54777cba87efa55ea2db8399873815").unwrap();
+        let verifier_hash_input = hex!("8f54777cba87efa55ea2db8399873815");
         let verifier_hash_input_key = convert_password_to_key(
             password,
             key_hash_algorithm,
@@ -748,10 +736,9 @@ mod tests {
             key_key_bits,
             BLOCK_VERIFIER_HASH_INPUT,
         );
-        let converted = encode_hex(&verifier_hash_input_key);
         assert_eq!(
-            &converted,
-            "44e4b664c512b08e7577aa3fc7e11ad603e0877a476931fad5aa79e203304aff"
+            verifier_hash_input_key,
+            hex!("44e4b664c512b08e7577aa3fc7e11ad603e0877a476931fad5aa79e203304aff")
         );
 
         let encrypted_verifier_hash_input = crypt(
@@ -827,33 +814,37 @@ mod tests {
 
     #[test]
     fn test_hash() {
-        let package_salt_value = decode_hex("4c251b321d85cecfcb6d952ba6d81846").unwrap();
+        let package_salt_value = hex!("4c251b321d85cecfcb6d952ba6d81846");
         let result = hash(
             "SHA512",
             &[&package_salt_value, BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY],
         )
         .unwrap();
-        let converted = encode_hex(&result);
         assert_eq!(
-            &converted,
-            "ba1bf00eed82b07ee65e574eb1f460435d2a1405e81904fd01d5ed5adf43fdcfd8e9aeebad0c08065e0db20cdc8e4552744b61ad1b3cf9a3c5aad5b2a047e76b"
+            result,
+            hex!(
+                "ba1bf00eed82b07ee65e574eb1f460435d2a1405e81904fd01d5ed5adf43fdcf
+                 d8e9aeebad0c08065e0db20cdc8e4552744b61ad1b3cf9a3c5aad5b2a047e76b"
+            )
         );
     }
 
     #[test]
     fn test_buffer_slice() {
         // Since buffer_slice is not defined in the new code, we can replicate its functionality inline
-        let buffer = decode_hex("ba1bf00eed82b07ee65e574eb1f460435d2a1405e81904fd01d5ed5adf43fdcfd8e9aeebad0c08065e0db20cdc8e4552744b61ad1b3cf9a3c5aad5b2a047e76b").unwrap();
+        let buffer = hex!(
+            "ba1bf00eed82b07ee65e574eb1f460435d2a1405e81904fd01d5ed5adf43fdcf
+             d8e9aeebad0c08065e0db20cdc8e4552744b61ad1b3cf9a3c5aad5b2a047e76b"
+        );
         let start = 0;
         let end = 16;
         let result = buffer[start..end].to_vec();
-        let converted = encode_hex(&result);
-        assert_eq!(&converted, "ba1bf00eed82b07ee65e574eb1f46043");
+        assert_eq!(result, hex!("ba1bf00eed82b07ee65e574eb1f46043"));
     }
 
     #[test]
     fn test_convert_password_to_key() {
-        let key_salt_value = decode_hex("3aa973eec73c98c4710021730ef5b513").unwrap();
+        let key_salt_value = hex!("3aa973eec73c98c4710021730ef5b513");
         let result = convert_password_to_key(
             "password",
             "SHA512",
@@ -862,10 +853,9 @@ mod tests {
             256,
             BLOCK_KEYS_KEY,
         );
-        let converted = encode_hex(&result);
         assert_eq!(
-            &converted,
-            "8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d"
+            result,
+            hex!("8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d")
         );
     }
 }
