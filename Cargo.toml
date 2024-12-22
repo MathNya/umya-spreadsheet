@@ -24,12 +24,12 @@ hmac = "0.12.1"
 html_parser = "0.7.0"
 image = { version = "0.25.5", optional = true }
 md-5 = "0.10.6"
+quick-xml = { version = "0.37.1", features = ["serialize"] }
+rand = "0.8.5"
 regex = "1.11.1"
 sha2 = "0.10.8"
 thousands = "0.2.0"
-quick-xml = { version = "0.37.1", features = ["serialize"] }
 zip = { version = "2.2.1", default-features = false, features = ["deflate"] }
-rand = "0.8.5"
 
 [dev-dependencies]
 hex-literal = "0.4.1"
