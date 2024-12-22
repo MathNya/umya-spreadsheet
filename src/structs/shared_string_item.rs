@@ -8,10 +8,9 @@ use crate::writer::driver::{write_end_tag, write_start_tag};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
+use std::hash::DefaultHasher;
 use std::hash::Hasher;
 use std::io::Cursor;
-extern crate ahash;
-use self::ahash::AHasher;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringItem {
@@ -66,7 +65,7 @@ impl SharedStringItem {
     }
 
     pub(crate) fn get_hash_u64(&self) -> u64 {
-        let mut h = AHasher::default();
+        let mut h = DefaultHasher::default();
         let content = format!(
             "{}{}",
             self.text
