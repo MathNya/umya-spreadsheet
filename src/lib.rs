@@ -138,7 +138,6 @@
     variant_size_differences
 )]
 #![allow(dead_code)]
-
 #![deny(clippy::correctness)]
 #![warn(
     clippy::style,
