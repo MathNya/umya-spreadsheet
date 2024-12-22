@@ -410,7 +410,7 @@ impl Spreadsheet {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Option<&Worksheet>.
+    /// * `Option<&Worksheet>`.
     #[inline]
     #[must_use]
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
@@ -581,9 +581,10 @@ impl Spreadsheet {
     /// (This method is crate only.)
     /// Check for duplicate sheet name.
     pub(crate) fn check_sheet_name(&self, value: &str) -> Result<(), &'static str> {
-        match self.work_sheet_collection.iter().any(|work_sheet| value == work_sheet.get_name()) {
-            true => Err("name duplicate."),
-            false => Ok(()),
+        if self.work_sheet_collection.iter().any(|work_sheet| value == work_sheet.get_name()) {
+            Err("name duplicate.")
+        } else {
+            Ok(())
         }
     }
 
