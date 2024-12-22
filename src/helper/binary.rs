@@ -1,27 +1,61 @@
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Read;
+use std::{
+    fs,
+    io,
+    path::Path,
+};
 
 use crate::structs::MediaObject;
 
-#[inline]
-#[must_use]
-pub fn get_binary_data(path: &str) -> Vec<u8> {
-    let path = std::path::Path::new(path);
-    let mut buf = Vec::new();
-
-    let file = File::open(path).unwrap();
-    BufReader::new(file).read_to_end(&mut buf).unwrap();
-    buf
+/// Reads the binary data from a file at the specified path.
+///
+/// # Parameters
+///
+/// - `path`: A reference to a path from which to read the binary data.
+///
+/// # Returns
+///
+/// Returns a `Result` containing a `Vec<u8>` with the binary data if
+/// successful, or an `io::Error` if an error occurs while reading the file.
+///
+/// # Errors
+///
+/// This function will return an error if the file does not exist, the path is
+/// invalid, or if there are any I/O errors during the read operation.
+pub fn get_binary_data<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
+    fs::read(path)
 }
 
-#[inline]
+/// Creates a `MediaObject` from the file at the specified path.
+///
+/// # Parameters
+///
+/// - `path`: A reference to a path from which to create the `MediaObject`.
+///
+/// # Returns
+///
+/// Returns a `MediaObject` populated with the image data, name, and title
+/// extracted from the file at the specified path.
+///
+/// # Panics
+///
+/// This function will panic if the file cannot be read, as it calls `unwrap()`
+/// on the result of `get_binary_data(path)`. Ensure that the file exists and is
+/// readable before calling this function.
+///
+/// # Example
+///
+/// ```
+/// let media_object = make_media_object("path/to/image.png");
+/// ```
 #[must_use]
-pub fn make_media_object(path: &str) -> MediaObject {
-    let name = path.split('/').last().unwrap();
+pub fn make_media_object<P: AsRef<Path>>(path: P) -> MediaObject {
+    let path = path.as_ref();
+    let file_name = path.file_name().and_then(|name| name.to_str()).unwrap_or("");
+    let title = path.file_stem().and_then(|stem| stem.to_str()).unwrap_or("");
+
     let mut obj = MediaObject::default();
-    obj.set_image_data(get_binary_data(path));
-    obj.set_image_name(name);
-    obj.set_image_title(name.split('.').next().unwrap_or(""));
+    obj.set_image_data(get_binary_data(path).unwrap());
+    obj.set_image_name(file_name);
+    obj.set_image_title(title);
     obj
 }
