@@ -151,7 +151,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
     workbook_rels::write(spreadsheet, has_shared_string_table, &mut writer_manager)?;
     content_types::write(spreadsheet, &mut writer_manager)?;
 
-    arv.finish().map(std::io::Cursor::into_inner).map_err(Into::into)
+    arv.finish().map(io::Cursor::into_inner).map_err(Into::into)
 }
 
 /// write spreadsheet file to arbitrary writer.
