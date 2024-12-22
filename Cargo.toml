@@ -39,5 +39,4 @@ hex-literal = "0.4.1"
 doctest = false
 
 [features]
-js = []
 default = ["image"]
