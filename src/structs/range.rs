@@ -1,8 +1,14 @@
-use super::ColumnReference;
-use super::RowReference;
-use crate::helper::coordinate::index_from_coordinate;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentValue;
+use super::{
+    ColumnReference,
+    RowReference,
+};
+use crate::{
+    helper::coordinate::index_from_coordinate,
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentValue,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Range {

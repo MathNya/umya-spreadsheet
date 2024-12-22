@@ -1,15 +1,31 @@
 // cacheField
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::structs::SharedItems;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        SharedItems,
+        StringValue,
+        UInt32Value,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CacheField {

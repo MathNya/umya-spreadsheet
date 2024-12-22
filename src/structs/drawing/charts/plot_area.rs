@@ -1,35 +1,47 @@
 // c:plotArea
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::Area3DChart;
-use super::AreaChart;
-use super::AreaChartSeriesList;
-use super::Bar3DChart;
-use super::BarChart;
-use super::BubbleChart;
-use super::CategoryAxis;
-use super::DoughnutChart;
-use super::Formula;
-use super::GroupingValues;
-use super::Layout;
-use super::Line3DChart;
-use super::LineChart;
-use super::OfPieChart;
-use super::Pie3DChart;
-use super::PieChart;
-use super::RadarChart;
-use super::ScatterChart;
-use super::SeriesAxis;
-use super::ShapeProperties;
-use super::ValueAxis;
-use crate::structs::Spreadsheet;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::xml_read_loop;
+use super::{
+    Area3DChart,
+    AreaChart,
+    AreaChartSeriesList,
+    Bar3DChart,
+    BarChart,
+    BubbleChart,
+    CategoryAxis,
+    DoughnutChart,
+    Formula,
+    GroupingValues,
+    Layout,
+    Line3DChart,
+    LineChart,
+    OfPieChart,
+    Pie3DChart,
+    PieChart,
+    RadarChart,
+    ScatterChart,
+    SeriesAxis,
+    ShapeProperties,
+    ValueAxis,
+};
+use crate::{
+    structs::Spreadsheet,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PlotArea {

@@ -1,7 +1,9 @@
 use std::borrow::Cow;
 
-use fancy_regex::Captures;
-use fancy_regex::Regex;
+use fancy_regex::{
+    Captures,
+    Regex,
+};
 
 use crate::helper::date::excel_to_date_time_object;
 

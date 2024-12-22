@@ -2,13 +2,24 @@
 use std::io::Cursor;
 
 use md5::Digest;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use crate::reader::driver::xml_read_loop;
-use crate::structs::StringValue;
-use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::StringValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OddFooter {

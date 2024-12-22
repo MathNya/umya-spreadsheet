@@ -1,29 +1,41 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // c:catAx
 use super::AutoLabeled;
-use super::AxisId;
-use super::AxisPosition;
-use super::Crosses;
-use super::CrossingAxis;
-use super::Delete;
-use super::LabelAlignment;
-use super::LabelOffset;
-use super::MajorGridlines;
-use super::MajorTickMark;
-use super::MinorTickMark;
-use super::NoMultiLevelLabels;
-use super::Scaling;
-use super::ShapeProperties;
-use super::TextProperties;
-use super::TickLabelPosition;
-use super::Title;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::xml_read_loop;
+use super::{
+    AxisId,
+    AxisPosition,
+    Crosses,
+    CrossingAxis,
+    Delete,
+    LabelAlignment,
+    LabelOffset,
+    MajorGridlines,
+    MajorTickMark,
+    MinorTickMark,
+    NoMultiLevelLabels,
+    Scaling,
+    ShapeProperties,
+    TextProperties,
+    TickLabelPosition,
+    Title,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CategoryAxis {

@@ -1,16 +1,28 @@
 // workbookProtection
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::BytesStart;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::BooleanValue;
-use super::StringValue;
-use super::UInt32Value;
-use crate::helper::crypt::{encrypt_revisions_protection, encrypt_workbook_protection};
-use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::writer::driver::write_start_tag;
+use super::{
+    BooleanValue,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    helper::crypt::{
+        encrypt_revisions_protection,
+        encrypt_workbook_protection,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorkbookProtection {

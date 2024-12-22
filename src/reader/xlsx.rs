@@ -1,18 +1,32 @@
-use std::fs::File;
-use std::io;
-use std::path::Path;
-use std::sync::Arc;
-use std::sync::RwLock;
+use std::{
+    fs::File,
+    io,
+    path::Path,
+    sync::{
+        Arc,
+        RwLock,
+    },
+};
 
 use super::driver;
-use crate::XlsxError;
-use crate::helper::const_str::{COMMENTS_NS, DRAWINGS_NS, TABLE_NS, THEME_NS, VML_DRAWING_NS};
-use crate::structs::SharedStringTable;
-use crate::structs::Spreadsheet;
-use crate::structs::Stylesheet;
-use crate::structs::Worksheet;
-use crate::structs::drawing::Theme;
-use crate::structs::raw::RawWorksheet;
+use crate::{
+    XlsxError,
+    helper::const_str::{
+        COMMENTS_NS,
+        DRAWINGS_NS,
+        TABLE_NS,
+        THEME_NS,
+        VML_DRAWING_NS,
+    },
+    structs::{
+        SharedStringTable,
+        Spreadsheet,
+        Stylesheet,
+        Worksheet,
+        drawing::Theme,
+        raw::RawWorksheet,
+    },
+};
 
 pub(crate) mod chart;
 pub(crate) mod comment;

@@ -1,7 +1,9 @@
 use std::fmt;
 
-use super::RichText;
-use super::Text;
+use super::{
+    RichText,
+    Text,
+};
 use crate::CellErrorType;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Default)]

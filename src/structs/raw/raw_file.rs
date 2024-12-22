@@ -1,10 +1,16 @@
-use std::io;
-use std::io::Read;
+use std::{
+    io,
+    io::Read,
+};
 
-use crate::XlsxError;
-use crate::reader::driver::join_paths;
-use crate::structs::StringValue;
-use crate::structs::WriterManager;
+use crate::{
+    XlsxError,
+    reader::driver::join_paths,
+    structs::{
+        StringValue,
+        WriterManager,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {

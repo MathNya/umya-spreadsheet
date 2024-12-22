@@ -1,17 +1,35 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::EmbeddedObjectProperties;
-use super::StringValue;
-use crate::helper::const_str::MC_NS;
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::structs::drawing::spreadsheet::TwoCellAnchor;
-use crate::structs::raw::RawRelationships;
-use crate::structs::vml::Shape;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    EmbeddedObjectProperties,
+    StringValue,
+};
+use crate::{
+    helper::const_str::MC_NS,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        drawing::spreadsheet::TwoCellAnchor,
+        raw::RawRelationships,
+        vml::Shape,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObject {

@@ -1,19 +1,37 @@
 // a:lvl1pPr
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::super::BooleanValue;
-use super::super::EnumValue;
-use super::RunProperties;
-use super::SpaceAfter;
-use super::SpaceBefore;
-use super::TextAlignmentTypeValues;
-use super::TextFontAlignmentValues;
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    super::{
+        BooleanValue,
+        EnumValue,
+    },
+    RunProperties,
+    SpaceAfter,
+    SpaceBefore,
+    TextAlignmentTypeValues,
+    TextFontAlignmentValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TextParagraphPropertiesType {

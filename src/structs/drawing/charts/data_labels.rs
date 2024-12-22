@@ -1,20 +1,32 @@
 // c:dLbls
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::ShowBubbleSize;
-use super::ShowCategoryName;
-use super::ShowLeaderLines;
-use super::ShowLegendKey;
-use super::ShowPercent;
-use super::ShowSeriesName;
-use super::ShowValue;
-use super::TextProperties;
-use crate::reader::driver::xml_read_loop;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    ShowBubbleSize,
+    ShowCategoryName,
+    ShowLeaderLines,
+    ShowLegendKey,
+    ShowPercent,
+    ShowSeriesName,
+    ShowValue,
+    TextProperties,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DataLabels {

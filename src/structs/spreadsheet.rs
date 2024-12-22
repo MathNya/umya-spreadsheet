@@ -1,23 +1,33 @@
-use std::sync::Arc;
-use std::sync::RwLock;
+use std::sync::{
+    Arc,
+    RwLock,
+};
 
-use crate::StringValue;
-use crate::helper::address::split_address;
-use crate::helper::coordinate::column_index_from_string;
-use crate::reader::xlsx::raw_to_deserialize_by_worksheet;
-use crate::structs::Address;
-use crate::structs::CellValue;
-use crate::structs::Cells;
-use crate::structs::DefinedName;
-use crate::structs::Properties;
-use crate::structs::SharedStringTable;
-use crate::structs::Stylesheet;
-use crate::structs::WorkbookProtection;
-use crate::structs::WorkbookView;
-use crate::structs::Worksheet;
-use crate::structs::drawing::Theme;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::{
+    StringValue,
+    helper::{
+        address::split_address,
+        coordinate::column_index_from_string,
+    },
+    reader::xlsx::raw_to_deserialize_by_worksheet,
+    structs::{
+        Address,
+        CellValue,
+        Cells,
+        DefinedName,
+        Properties,
+        SharedStringTable,
+        Stylesheet,
+        WorkbookProtection,
+        WorkbookView,
+        Worksheet,
+        drawing::Theme,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+};
 
 /// A Spreadsheet Object.
 /// The starting point of all struct.

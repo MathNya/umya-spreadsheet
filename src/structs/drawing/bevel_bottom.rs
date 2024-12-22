@@ -1,15 +1,26 @@
 // a:bevelB
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::BytesStart;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::super::EnumValue;
-use super::super::Int64Value;
-use super::BevelPresetValues;
-use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::writer::driver::write_start_tag;
+use super::{
+    super::{
+        EnumValue,
+        Int64Value,
+    },
+    BevelPresetValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct BevelBottom {

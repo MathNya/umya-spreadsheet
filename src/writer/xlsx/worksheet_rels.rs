@@ -1,16 +1,40 @@
 use std::io;
 
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
-
-use super::XlsxError;
-use super::driver::{write_end_tag, write_new_line, write_start_tag};
-use crate::helper::const_str::{
-    COMMENTS_NS, DRAWINGS_NS, HYPERLINK_NS, IMAGE_NS, OLE_OBJECT_NS, PACKAGE_NS, PKG_SHEET_RELS,
-    PRINTER_SETTINGS_NS, REL_NS, TABLE_NS, VML_DRAWING_NS,
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
 };
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        COMMENTS_NS,
+        DRAWINGS_NS,
+        HYPERLINK_NS,
+        IMAGE_NS,
+        OLE_OBJECT_NS,
+        PACKAGE_NS,
+        PKG_SHEET_RELS,
+        PRINTER_SETTINGS_NS,
+        REL_NS,
+        TABLE_NS,
+        VML_DRAWING_NS,
+    },
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
+};
 
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn write<W: io::Seek + io::Write>(

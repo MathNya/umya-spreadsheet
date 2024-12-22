@@ -1,35 +1,62 @@
-use std::borrow::Cow;
-use std::collections::HashMap;
-use std::io::Cursor;
-use std::sync::{Arc, RwLock};
-
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
-
-use crate::helper::coordinate::CellCoordinates;
-use crate::helper::formula::{
-    FormulaToken, adjustment_formula_coordinate, parse_to_tokens, render,
+use std::{
+    borrow::Cow,
+    collections::HashMap,
+    io::Cursor,
+    sync::{
+        Arc,
+        RwLock,
+    },
 };
-use crate::helper::number_format::to_formatted_string;
-use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::structs::CellFormula;
-use crate::structs::CellFormulaValues;
-use crate::structs::CellRawValue;
-use crate::structs::CellValue;
-use crate::structs::Coordinate;
-use crate::structs::Hyperlink;
-use crate::structs::NumberingFormat;
-use crate::structs::RichText;
-use crate::structs::SharedStringItem;
-use crate::structs::SharedStringTable;
-use crate::structs::Style;
-use crate::structs::Stylesheet;
-use crate::structs::UInt32Value;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWith2Sheet;
-use crate::writer::driver::{
-    write_end_tag, write_start_tag, write_text_node, write_text_node_conversion,
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::{
+        coordinate::CellCoordinates,
+        formula::{
+            FormulaToken,
+            adjustment_formula_coordinate,
+            parse_to_tokens,
+            render,
+        },
+        number_format::to_formatted_string,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        CellFormula,
+        CellFormulaValues,
+        CellRawValue,
+        CellValue,
+        Coordinate,
+        Hyperlink,
+        NumberingFormat,
+        RichText,
+        SharedStringItem,
+        SharedStringTable,
+        Style,
+        Stylesheet,
+        UInt32Value,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWith2Sheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+        write_text_node_conversion,
+    },
 };
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]

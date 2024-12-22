@@ -1,16 +1,25 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::BytesStart;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::Coordinate;
-use super::DoubleValue;
-use super::EnumValue;
-use super::PaneStateValues;
-use super::PaneValues;
-use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::writer::driver::write_start_tag;
+use super::{
+    Coordinate,
+    DoubleValue,
+    EnumValue,
+    PaneStateValues,
+    PaneValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Pane {

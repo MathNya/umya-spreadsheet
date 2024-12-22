@@ -1,13 +1,24 @@
 use std::io;
 
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
 
-use super::XlsxError;
-use super::driver::write_new_line;
-use crate::helper::const_str::PKG_THEME;
-use crate::structs::WriterManager;
-use crate::structs::drawing::Theme;
+use super::{
+    XlsxError,
+    driver::write_new_line,
+};
+use crate::{
+    helper::const_str::PKG_THEME,
+    structs::{
+        WriterManager,
+        drawing::Theme,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     theme: &Theme,

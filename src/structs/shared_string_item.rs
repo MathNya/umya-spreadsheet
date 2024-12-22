@@ -1,18 +1,34 @@
 // si
-use std::hash::DefaultHasher;
-use std::hash::Hasher;
-use std::io::Cursor;
+use std::{
+    hash::{
+        DefaultHasher,
+        Hasher,
+    },
+    io::Cursor,
+};
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::PhoneticRun;
-use super::RichText;
-use super::Text;
-use super::TextElement;
-use crate::reader::driver::xml_read_loop;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    PhoneticRun,
+    RichText,
+    Text,
+    TextElement,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringItem {

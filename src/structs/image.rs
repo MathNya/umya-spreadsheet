@@ -1,22 +1,37 @@
-use std::fs;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Cursor;
-use std::io::Read;
-use std::sync::OnceLock;
+use std::{
+    fs,
+    fs::File,
+    io::{
+        BufReader,
+        Cursor,
+        Read,
+    },
+    sync::OnceLock,
+};
 
-use base64::{Engine as _, engine::general_purpose::STANDARD};
+use base64::{
+    Engine as _,
+    engine::general_purpose::STANDARD,
+};
 use quick_xml::Writer;
 
-use crate::structs::MediaObject;
-use crate::structs::drawing::FillRectangle;
-use crate::structs::drawing::PresetGeometry;
-use crate::structs::drawing::Stretch;
-use crate::structs::drawing::spreadsheet::MarkerType;
-use crate::structs::drawing::spreadsheet::OneCellAnchor;
-use crate::structs::drawing::spreadsheet::Picture;
-use crate::structs::drawing::spreadsheet::TwoCellAnchor;
-use crate::traits::AdjustmentCoordinate;
+use crate::{
+    structs::{
+        MediaObject,
+        drawing::{
+            FillRectangle,
+            PresetGeometry,
+            Stretch,
+            spreadsheet::{
+                MarkerType,
+                OneCellAnchor,
+                Picture,
+                TwoCellAnchor,
+            },
+        },
+    },
+    traits::AdjustmentCoordinate,
+};
 
 // Initialize OnceLock for the Vec<u8>
 static EMPTY_VEC: OnceLock<Vec<u8>> = OnceLock::new();

@@ -1,9 +1,15 @@
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-use crate::structs::drawing::charts::ChartSpace;
-use crate::structs::raw::RawFile;
-use crate::xml_read_loop;
+use crate::{
+    structs::{
+        drawing::charts::ChartSpace,
+        raw::RawFile,
+    },
+    xml_read_loop,
+};
 
 pub(crate) fn read(raw_file: &RawFile, chart_space: &mut ChartSpace) {
     let data = std::io::Cursor::new(raw_file.get_file_data());

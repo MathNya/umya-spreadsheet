@@ -1,15 +1,27 @@
 // c:rich
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::super::BodyProperties;
-use super::super::ListStyle;
-use super::super::Paragraph;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::xml_read_loop;
+use super::super::{
+    BodyProperties,
+    ListStyle,
+    Paragraph,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct RichText {

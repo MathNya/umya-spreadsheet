@@ -1,26 +1,48 @@
 // xdr:twoCellAnchor
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::super::super::EnumValue;
-use super::ConnectionShape;
-use super::EditAsValues;
-use super::GraphicFrame;
-use super::GroupShape;
-use super::MarkerType;
-use super::Picture;
-use super::Shape;
-use crate::helper::const_str::DRAWING_MAIN_NS;
-use crate::helper::const_str::MC_NS;
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::structs::BooleanValue;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    super::super::EnumValue,
+    ConnectionShape,
+    EditAsValues,
+    GraphicFrame,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
+};
+use crate::{
+    helper::const_str::{
+        DRAWING_MAIN_NS,
+        MC_NS,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        BooleanValue,
+        raw::RawRelationships,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {

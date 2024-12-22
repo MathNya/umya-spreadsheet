@@ -1,9 +1,13 @@
-use std::io;
-use std::io::Read;
+use std::{
+    io,
+    io::Read,
+};
 
 use super::XlsxError;
-use crate::helper::const_str::PKG_VBA_PROJECT;
-use crate::structs::Spreadsheet;
+use crate::{
+    helper::const_str::PKG_VBA_PROJECT,
+    structs::Spreadsheet,
+};
 
 pub(crate) fn read<R: Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

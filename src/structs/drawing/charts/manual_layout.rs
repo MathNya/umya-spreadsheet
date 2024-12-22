@@ -1,21 +1,33 @@
 // c:manualLayout
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::Height;
-use super::HeightMode;
-use super::LayoutTarget;
-use super::Left;
-use super::LeftMode;
-use super::Top;
-use super::TopMode;
-use super::Width;
-use super::WidthMode;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::xml_read_loop;
+use super::{
+    Height,
+    HeightMode,
+    LayoutTarget,
+    Left,
+    LeftMode,
+    Top,
+    TopMode,
+    Width,
+    WidthMode,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ManualLayout {

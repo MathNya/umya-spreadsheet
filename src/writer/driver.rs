@@ -1,10 +1,22 @@
-use std::borrow::Cow;
-use std::io;
-use std::io::{Cursor, Write};
+use std::{
+    borrow::Cow,
+    io,
+    io::{
+        Cursor,
+        Write,
+    },
+};
 
-use quick_xml::Writer;
-use quick_xml::escape::partial_escape;
-use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
+use quick_xml::{
+    Writer,
+    escape::partial_escape,
+    events::{
+        BytesEnd,
+        BytesStart,
+        BytesText,
+        Event,
+    },
+};
 
 pub(crate) fn write_start_tag<'a, S>(
     writer: &mut Writer<Cursor<Vec<u8>>>,

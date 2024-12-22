@@ -1,10 +1,16 @@
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-use crate::structs::Comment;
-use crate::structs::Worksheet;
-use crate::structs::raw::RawFile;
-use crate::xml_read_loop;
+use crate::{
+    structs::{
+        Comment,
+        Worksheet,
+        raw::RawFile,
+    },
+    xml_read_loop,
+};
 
 pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
     let data = std::io::Cursor::new(drawing_file.get_file_data());

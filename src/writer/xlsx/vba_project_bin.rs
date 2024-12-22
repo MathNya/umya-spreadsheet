@@ -1,9 +1,13 @@
 use std::io;
 
 use super::XlsxError;
-use crate::helper::const_str::PKG_VBA_PROJECT;
-use crate::structs::Spreadsheet;
-use crate::structs::WriterManager;
+use crate::{
+    helper::const_str::PKG_VBA_PROJECT,
+    structs::{
+        Spreadsheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,

@@ -1,13 +1,21 @@
-use std::borrow::Cow;
-use std::str::FromStr;
+use std::{
+    borrow::Cow,
+    str::FromStr,
+};
 
-use super::RichText;
-use super::SharedStringItem;
-use super::Text;
-use crate::CellErrorType;
-use crate::structs::CellFormula;
-use crate::structs::CellRawValue;
-use crate::traits::AdjustmentCoordinateWith2Sheet;
+use super::{
+    RichText,
+    SharedStringItem,
+    Text,
+};
+use crate::{
+    CellErrorType,
+    structs::{
+        CellFormula,
+        CellRawValue,
+    },
+    traits::AdjustmentCoordinateWith2Sheet,
+};
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {

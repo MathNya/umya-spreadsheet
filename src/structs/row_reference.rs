@@ -1,7 +1,11 @@
-use crate::helper::coordinate::{
-    adjustment_insert_coordinate, adjustment_remove_coordinate, is_remove_coordinate,
+use crate::{
+    helper::coordinate::{
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        is_remove_coordinate,
+    },
+    traits::AdjustmentValue,
 };
-use crate::traits::AdjustmentValue;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct RowReference {

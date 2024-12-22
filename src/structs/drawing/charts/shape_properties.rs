@@ -1,21 +1,33 @@
 // c:spPr
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::super::EffectList;
-use super::super::NoFill;
-use super::super::Outline;
-use super::super::PatternFill;
-use super::super::PresetGeometry;
-use super::super::Scene3DType;
-use super::super::Shape3DType;
-use super::super::SolidFill;
-use super::super::Transform2D;
-use crate::reader::driver::xml_read_loop;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::super::{
+    EffectList,
+    NoFill,
+    Outline,
+    PatternFill,
+    PresetGeometry,
+    Scene3DType,
+    Shape3DType,
+    SolidFill,
+    Transform2D,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {

@@ -1,5 +1,7 @@
-use std::iter::successors;
-use std::sync::OnceLock;
+use std::{
+    iter::successors,
+    sync::OnceLock,
+};
 
 use regex::Regex;
 
@@ -461,7 +463,8 @@ mod tests {
         assert_eq!(column_index_from_string("ZZ"), 702);
         assert_eq!(column_index_from_string("AAA"), 703);
         assert_eq!(column_index_from_string("LAV"), 8160);
-        assert_eq!(column_index_from_string("XFD"), 16384); // Max. supported by Excel 2012
+        assert_eq!(column_index_from_string("XFD"), 16384); // Max. supported by
+        // Excel 2012
     }
 
     #[test]

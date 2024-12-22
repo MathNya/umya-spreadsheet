@@ -1,25 +1,39 @@
 use std::collections::HashMap;
 
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-use super::XlsxError;
-use super::driver::{get_attribute, get_attribute_value, xml_read_loop};
-use crate::helper::formula::FormulaToken;
-use crate::structs::Cells;
-use crate::structs::Columns;
-use crate::structs::ConditionalFormatting;
-use crate::structs::DataValidations;
-use crate::structs::Hyperlink;
-use crate::structs::OleObjects;
-use crate::structs::Row;
-use crate::structs::SharedStringTable;
-use crate::structs::SheetProtection;
-use crate::structs::Stylesheet;
-use crate::structs::Worksheet;
-use crate::structs::office2010::excel::DataValidations as DataValidations2010;
-use crate::structs::raw::RawRelationships;
-use crate::structs::raw::RawWorksheet;
+use super::{
+    XlsxError,
+    driver::{
+        get_attribute,
+        get_attribute_value,
+        xml_read_loop,
+    },
+};
+use crate::{
+    helper::formula::FormulaToken,
+    structs::{
+        Cells,
+        Columns,
+        ConditionalFormatting,
+        DataValidations,
+        Hyperlink,
+        OleObjects,
+        Row,
+        SharedStringTable,
+        SheetProtection,
+        Stylesheet,
+        Worksheet,
+        office2010::excel::DataValidations as DataValidations2010,
+        raw::{
+            RawRelationships,
+            RawWorksheet,
+        },
+    },
+};
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

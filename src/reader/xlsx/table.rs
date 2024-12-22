@@ -1,11 +1,21 @@
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-use super::XlsxError;
-use super::driver::get_attribute_value;
-use crate::structs::Worksheet;
-use crate::structs::raw::RawFile;
-use crate::structs::{ShowColumn, ShowStripes, Table, TableColumn, TableStyleInfo};
+use super::{
+    XlsxError,
+    driver::get_attribute_value,
+};
+use crate::structs::{
+    ShowColumn,
+    ShowStripes,
+    Table,
+    TableColumn,
+    TableStyleInfo,
+    Worksheet,
+    raw::RawFile,
+};
 
 pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(table_file.get_file_data());

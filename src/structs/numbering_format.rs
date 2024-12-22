@@ -1,15 +1,21 @@
-use std::collections::HashMap;
-use std::io::Cursor;
-use std::sync::OnceLock;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+    sync::OnceLock,
+};
 
 use md5::Digest;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::escape;
-use quick_xml::events::BytesStart;
+use quick_xml::{
+    Reader,
+    Writer,
+    escape,
+    events::BytesStart,
+};
 
-use crate::reader::driver::get_attribute;
-use crate::writer::driver::write_start_tag;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {

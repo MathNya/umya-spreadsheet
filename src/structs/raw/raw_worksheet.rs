@@ -1,12 +1,21 @@
 use std::io;
 
-use crate::helper::const_str::{
-    PKG_DRAWINGS_RELS, PKG_SHEET, PKG_SHEET_RELS, PKG_VML_DRAWING_RELS,
+use crate::{
+    helper::const_str::{
+        PKG_DRAWINGS_RELS,
+        PKG_SHEET,
+        PKG_SHEET_RELS,
+        PKG_VML_DRAWING_RELS,
+    },
+    structs::{
+        WriterManager,
+        XlsxError,
+        raw::{
+            RawFile,
+            RawRelationships,
+        },
+    },
 };
-use crate::structs::WriterManager;
-use crate::structs::XlsxError;
-use crate::structs::raw::RawFile;
-use crate::structs::raw::RawRelationships;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {

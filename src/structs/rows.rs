@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 
-use crate::structs::Row;
-use crate::traits::AdjustmentValue;
+use crate::{
+    structs::Row,
+    traits::AdjustmentValue,
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Rows {

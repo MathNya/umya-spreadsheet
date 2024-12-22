@@ -1,18 +1,36 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-
-use crate::helper::const_str::{
-    COREPROPS_NS, DCMITYPE_NS, DCORE_NS, DCTERMS_NS, VTYPES_NS, XPROPS_NS, XSI_NS,
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
-use crate::reader::driver::xml_read_loop;
-use crate::structs::StringValue;
-use crate::structs::Worksheet;
-use crate::structs::custom_properties::Properties as CustomProperties;
-use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
+
+use crate::{
+    helper::const_str::{
+        COREPROPS_NS,
+        DCMITYPE_NS,
+        DCORE_NS,
+        DCTERMS_NS,
+        VTYPES_NS,
+        XPROPS_NS,
+        XSI_NS,
+    },
+    reader::driver::xml_read_loop,
+    structs::{
+        StringValue,
+        Worksheet,
+        custom_properties::Properties as CustomProperties,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Debug)]
 pub struct Properties {

@@ -1,12 +1,14 @@
-use crate::structs::Alignment;
-use crate::structs::Borders;
-use crate::structs::Color;
-use crate::structs::Fill;
-use crate::structs::Font;
-use crate::structs::NumberingFormat;
-use crate::structs::PatternValues;
-use crate::structs::Protection;
-use crate::structs::UInt32Value;
+use crate::structs::{
+    Alignment,
+    Borders,
+    Color,
+    Fill,
+    Font,
+    NumberingFormat,
+    PatternValues,
+    Protection,
+    UInt32Value,
+};
 
 /// # Examples
 /// ## add border

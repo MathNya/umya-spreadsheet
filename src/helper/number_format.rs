@@ -3,14 +3,20 @@ mod fraction_formater;
 mod number_formater;
 mod percentage_formater;
 
-use std::borrow::Cow;
-use std::sync::OnceLock;
+use std::{
+    borrow::Cow,
+    sync::OnceLock,
+};
 
-use fancy_regex::Matches;
-use fancy_regex::Regex;
+use fancy_regex::{
+    Matches,
+    Regex,
+};
 
-use crate::structs::Color;
-use crate::structs::NumberingFormat;
+use crate::structs::{
+    Color,
+    NumberingFormat,
+};
 
 pub struct Split<'r, 't> {
     finder: Matches<'r, 't>,

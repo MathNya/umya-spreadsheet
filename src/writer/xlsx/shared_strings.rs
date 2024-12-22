@@ -1,15 +1,30 @@
-use std::io;
-use std::sync::Arc;
-use std::sync::RwLock;
+use std::{
+    io,
+    sync::{
+        Arc,
+        RwLock,
+    },
+};
 
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
 
-use super::XlsxError;
-use super::driver::write_new_line;
-use crate::helper::const_str::PKG_SHARED_STRINGS;
-use crate::structs::SharedStringTable;
-use crate::structs::WriterManager;
+use super::{
+    XlsxError,
+    driver::write_new_line,
+};
+use crate::{
+    helper::const_str::PKG_SHARED_STRINGS,
+    structs::{
+        SharedStringTable,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     shared_string_table: &Arc<RwLock<SharedStringTable>>,

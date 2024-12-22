@@ -1,16 +1,30 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::ConditionalFormattingRule;
-use super::DifferentialFormats;
-use super::SequenceOfReferences;
-use crate::reader::driver::{get_attribute, xml_read_loop};
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    ConditionalFormattingRule,
+    DifferentialFormats,
+    SequenceOfReferences,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalFormatting {

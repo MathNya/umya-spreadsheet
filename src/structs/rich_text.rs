@@ -1,15 +1,27 @@
-use std::borrow::Cow;
-use std::fmt::Write;
-use std::io::Cursor;
+use std::{
+    borrow::Cow,
+    fmt::Write,
+    io::Cursor,
+};
 
 use md5::Digest;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 use super::TextElement;
-use crate::reader::driver::xml_read_loop;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {

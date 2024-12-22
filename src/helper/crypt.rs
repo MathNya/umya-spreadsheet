@@ -1,21 +1,66 @@
-use std::cmp::Ordering;
-use std::io::{self, Write};
-use std::path::Path;
+use std::{
+    cmp::Ordering,
+    io::{
+        self,
+        Write,
+    },
+    path::Path,
+};
 
-use aes::Aes256;
-use aes::cipher::{BlockDecryptMut, BlockEncryptMut, KeyIvInit, block_padding::NoPadding};
-use base64::{Engine as _, engine::general_purpose::STANDARD};
-use byteorder::{ByteOrder, LittleEndian};
-use cbc::{Decryptor, Encryptor};
-use hmac::{Hmac, Mac};
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
+use aes::{
+    Aes256,
+    cipher::{
+        BlockDecryptMut,
+        BlockEncryptMut,
+        KeyIvInit,
+        block_padding::NoPadding,
+    },
+};
+use base64::{
+    Engine as _,
+    engine::general_purpose::STANDARD,
+};
+use byteorder::{
+    ByteOrder,
+    LittleEndian,
+};
+use cbc::{
+    Decryptor,
+    Encryptor,
+};
+use hmac::{
+    Hmac,
+    Mac,
+};
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
 use rand::Rng;
-use sha2::{Digest, Sha512};
+use sha2::{
+    Digest,
+    Sha512,
+};
 
-use super::const_str::{CERTIFICATE_NS, ENCRYPTION_NS, PASSWORD_NS};
-use crate::structs::{SheetProtection, WorkbookProtection};
-use crate::writer::driver::{write_end_tag, write_new_line, write_start_tag};
+use super::const_str::{
+    CERTIFICATE_NS,
+    ENCRYPTION_NS,
+    PASSWORD_NS,
+};
+use crate::{
+    structs::{
+        SheetProtection,
+        WorkbookProtection,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
 
 type Aes256CbcEnc = Encryptor<Aes256>;
 type Aes256CbcDec = Decryptor<Aes256>;
@@ -740,8 +785,10 @@ fn build_encryption_info(
 
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
-    use std::io::Read;
+    use std::{
+        fs::File,
+        io::Read,
+    };
 
     use hex_literal::hex;
 

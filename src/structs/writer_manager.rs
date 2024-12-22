@@ -1,17 +1,42 @@
-use std::io;
-use std::io::Cursor;
+use std::{
+    io,
+    io::Cursor,
+};
 
 use quick_xml::Writer;
 
-use crate::helper::const_str::{
-    CHART_TYPE, COMMENTS_TYPE, CORE_PROPS_TYPE, CUSTOM_PROPS_TYPE, DRAWING_TYPE, OLE_OBJECT_TYPE,
-    PKG_CHARTS, PKG_DRAWINGS, PKG_EMBEDDINGS, PKG_PRNTR_SETTINGS, PKG_TABLES, SHARED_STRINGS_TYPE,
-    SHEET_TYPE, STYLES_TYPE, TABLE_TYPE, THEME_TYPE, VBA_TYPE, WORKBOOK_MACRO_TYPE, WORKBOOK_TYPE,
-    XPROPS_TYPE,
+use crate::{
+    helper::const_str::{
+        CHART_TYPE,
+        COMMENTS_TYPE,
+        CORE_PROPS_TYPE,
+        CUSTOM_PROPS_TYPE,
+        DRAWING_TYPE,
+        OLE_OBJECT_TYPE,
+        PKG_CHARTS,
+        PKG_DRAWINGS,
+        PKG_EMBEDDINGS,
+        PKG_PRNTR_SETTINGS,
+        PKG_TABLES,
+        SHARED_STRINGS_TYPE,
+        SHEET_TYPE,
+        STYLES_TYPE,
+        TABLE_TYPE,
+        THEME_TYPE,
+        VBA_TYPE,
+        WORKBOOK_MACRO_TYPE,
+        WORKBOOK_TYPE,
+        XPROPS_TYPE,
+    },
+    structs::{
+        Spreadsheet,
+        XlsxError,
+    },
+    writer::driver::{
+        make_file_from_bin,
+        make_file_from_writer,
+    },
 };
-use crate::structs::Spreadsheet;
-use crate::structs::XlsxError;
-use crate::writer::driver::{make_file_from_bin, make_file_from_writer};
 pub struct WriterManager<'a, W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: &'a mut zip::ZipWriter<W>,

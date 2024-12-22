@@ -1,21 +1,46 @@
-use std::collections::HashMap;
-use std::io;
-use std::sync::Arc;
-use std::sync::RwLock;
-
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
-
-use super::XlsxError;
-use super::driver::{write_end_tag, write_new_line, write_start_tag};
-use crate::helper::const_str::{
-    MC_NS, PKG_SHEET, REL_OFC_NS, SHEET_DRAWING_NS, SHEET_MAIN_NS, SHEET_MS_MAIN_NS, SHEETML_AC_NS,
+use std::{
+    collections::HashMap,
+    io,
+    sync::{
+        Arc,
+        RwLock,
+    },
 };
-use crate::structs::Cell;
-use crate::structs::SharedStringTable;
-use crate::structs::Stylesheet;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
+
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        MC_NS,
+        PKG_SHEET,
+        REL_OFC_NS,
+        SHEET_DRAWING_NS,
+        SHEET_MAIN_NS,
+        SHEET_MS_MAIN_NS,
+        SHEETML_AC_NS,
+    },
+    structs::{
+        Cell,
+        SharedStringTable,
+        Stylesheet,
+        Worksheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     sheet_no: i32,

@@ -1,17 +1,34 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::Address;
-use super::BooleanValue;
-use super::StringValue;
-use super::UInt32Value;
-use crate::helper::address::is_address;
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node_conversion};
+use super::{
+    Address,
+    BooleanValue,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    helper::address::is_address,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node_conversion,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {

@@ -2,11 +2,24 @@ use std::io;
 
 use quick_xml::Writer;
 
-use super::XlsxError;
-use super::driver::{write_end_tag, write_start_tag};
-use crate::helper::const_str::{EXCEL_NS, OFFICE_NS, VML_NS};
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        EXCEL_NS,
+        OFFICE_NS,
+        VML_NS,
+    },
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,

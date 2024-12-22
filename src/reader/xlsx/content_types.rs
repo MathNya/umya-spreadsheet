@@ -1,12 +1,21 @@
 use std::io;
 
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-use super::XlsxError;
-use super::driver::{get_attribute, xml_read_loop};
-use crate::helper::const_str::CONTENT_TYPES;
-use crate::structs::Spreadsheet;
+use super::{
+    XlsxError,
+    driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+};
+use crate::{
+    helper::const_str::CONTENT_TYPES,
+    structs::Spreadsheet,
+};
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

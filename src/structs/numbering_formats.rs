@@ -1,15 +1,29 @@
 // numFmts
-use std::collections::HashMap;
-use std::io::Cursor;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+};
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::NumberingFormat;
-use super::Style;
-use crate::reader::driver::xml_read_loop;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    NumberingFormat,
+    Style,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct NumberingFormats {

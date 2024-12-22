@@ -1,13 +1,18 @@
 use std::collections::HashMap;
 
-use html_parser::{Dom, Node};
+use html_parser::{
+    Dom,
+    Node,
+};
 
-use crate::structs::Color;
-use crate::structs::Font;
-use crate::structs::RichText;
-use crate::structs::TextElement;
-use crate::structs::UnderlineValues;
-use crate::structs::VerticalAlignmentRunValues;
+use crate::structs::{
+    Color,
+    Font,
+    RichText,
+    TextElement,
+    UnderlineValues,
+    VerticalAlignmentRunValues,
+};
 
 /// Generate rich text from html.
 /// # Arguments

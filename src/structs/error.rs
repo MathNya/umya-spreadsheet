@@ -1,4 +1,7 @@
-use std::{fmt, str::FromStr};
+use std::{
+    fmt,
+    str::FromStr,
+};
 
 use crate::from_err;
 
@@ -81,7 +84,13 @@ from_err!(std::string::FromUtf8Error, XlsxError, Uft8);
 impl fmt::Display for XlsxError {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use self::XlsxError::{CellError, Io, Uft8, Xml, Zip};
+        use self::XlsxError::{
+            CellError,
+            Io,
+            Uft8,
+            Xml,
+            Zip,
+        };
         match self {
             Io(i) => write!(f, "IoError: {i}"),
             Xml(s) => write!(f, "XmlError: {s}"),

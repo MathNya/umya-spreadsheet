@@ -1,12 +1,24 @@
 use std::io;
 
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-use super::XlsxError;
-use super::driver::{get_attribute, xml_read_loop};
-use crate::helper::const_str::{PIVOT_CACHE_DEF_NS, PKG_WORKBOOK_RELS};
-use crate::structs::Spreadsheet;
+use super::{
+    XlsxError,
+    driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+};
+use crate::{
+    helper::const_str::{
+        PIVOT_CACHE_DEF_NS,
+        PKG_WORKBOOK_RELS,
+    },
+    structs::Spreadsheet,
+};
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,

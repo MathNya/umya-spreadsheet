@@ -1,13 +1,19 @@
 use std::io;
 
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
 use super::XlsxError;
-use crate::helper::const_str::PKG_STYLES;
-use crate::structs::Spreadsheet;
-use crate::structs::Stylesheet;
-use crate::xml_read_loop;
+use crate::{
+    helper::const_str::PKG_STYLES,
+    structs::{
+        Spreadsheet,
+        Stylesheet,
+    },
+    xml_read_loop,
+};
 
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

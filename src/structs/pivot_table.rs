@@ -1,5 +1,7 @@
-use crate::structs::PivotCacheDefinition;
-use crate::structs::PivotTableDefinition;
+use crate::structs::{
+    PivotCacheDefinition,
+    PivotTableDefinition,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotTable {

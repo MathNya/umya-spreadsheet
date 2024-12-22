@@ -1,12 +1,21 @@
 use std::io;
 
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
 
-use super::XlsxError;
-use super::driver::write_new_line;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
+use super::{
+    XlsxError,
+    driver::write_new_line,
+};
+use crate::structs::{
+    Worksheet,
+    WriterManager,
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,

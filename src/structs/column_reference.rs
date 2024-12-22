@@ -1,8 +1,12 @@
-use crate::helper::coordinate::{
-    adjustment_insert_coordinate, adjustment_remove_coordinate, is_remove_coordinate,
-    string_from_column_index,
+use crate::{
+    helper::coordinate::{
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        is_remove_coordinate,
+        string_from_column_index,
+    },
+    traits::AdjustmentValue,
 };
-use crate::traits::AdjustmentValue;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct ColumnReference {

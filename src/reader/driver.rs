@@ -1,5 +1,11 @@
-use std::path::{Component, Path, PathBuf};
-use std::string::FromUtf8Error;
+use std::{
+    path::{
+        Component,
+        Path,
+        PathBuf,
+    },
+    string::FromUtf8Error,
+};
 
 use quick_xml::events::attributes::Attribute;
 

@@ -2,13 +2,25 @@ use std::sync::OnceLock;
 
 use fancy_regex::Regex;
 
-use crate::helper::address::{join_address, split_address};
-use crate::helper::coordinate::{
-    adjustment_insert_coordinate, adjustment_remove_coordinate, coordinate_from_index_with_lock,
-    index_from_coordinate,
+use crate::{
+    helper::{
+        address::{
+            join_address,
+            split_address,
+        },
+        coordinate::{
+            adjustment_insert_coordinate,
+            adjustment_remove_coordinate,
+            coordinate_from_index_with_lock,
+            index_from_coordinate,
+        },
+        range::{
+            get_join_range,
+            get_split_range,
+        },
+    },
+    structs::StringValue,
 };
-use crate::helper::range::{get_join_range, get_split_range};
-use crate::structs::StringValue;
 
 /// PARTLY BASED ON: */
 /// Copyright (c) 2007 E. W. Bachtal, Inc. */

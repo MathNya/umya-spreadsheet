@@ -1,26 +1,38 @@
 // front
-use std::io::Cursor;
-use std::str::FromStr;
+use std::{
+    io::Cursor,
+    str::FromStr,
+};
 
 use md5::Digest;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::Bold;
-use super::Color;
-use super::FontCharSet;
-use super::FontFamilyNumbering;
-use super::FontName;
-use super::FontScheme;
-use super::FontSchemeValues;
-use super::FontSize;
-use super::Italic;
-use super::Strike;
-use super::Underline;
-use super::UnderlineValues;
-use super::VerticalTextAlignment;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    Bold,
+    Color,
+    FontCharSet,
+    FontFamilyNumbering,
+    FontName,
+    FontScheme,
+    FontSchemeValues,
+    FontSize,
+    Italic,
+    Strike,
+    Underline,
+    UnderlineValues,
+    VerticalTextAlignment,
+};
+use crate::writer::driver::{
+    write_end_tag,
+    write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Font {

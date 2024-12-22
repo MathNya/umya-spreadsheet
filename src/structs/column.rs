@@ -1,15 +1,24 @@
 use md5::Digest;
-use quick_xml::Reader;
-use quick_xml::events::BytesStart;
+use quick_xml::{
+    Reader,
+    events::BytesStart,
+};
 
-use super::BooleanValue;
-use super::DoubleValue;
-use super::Style;
-use super::Stylesheet;
-use super::UInt32Value;
-use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::structs::Cells;
-use crate::traits::AdjustmentValue;
+use super::{
+    BooleanValue,
+    DoubleValue,
+    Style,
+    Stylesheet,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::Cells,
+    traits::AdjustmentValue,
+};
 
 /// # Examples
 /// ## set auto width

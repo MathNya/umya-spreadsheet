@@ -1,23 +1,36 @@
-use quick_xml::Reader;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::Coordinate;
-use super::RichText;
-use super::vml::Fill as VmlFill;
-use super::vml::Path;
-use super::vml::Shadow;
-use super::vml::TextBox;
-use super::vml::office::InsetMarginValues;
-use super::vml::spreadsheet::Anchor;
-use super::vml::spreadsheet::CommentColumnTarget;
-use super::vml::spreadsheet::CommentRowTarget;
-use super::vml::spreadsheet::MoveWithCells;
-use super::vml::spreadsheet::ResizeWithCells;
-use crate::helper::coordinate::CellCoordinates;
-use crate::reader::driver::get_attribute;
-use crate::structs::vml::Shape;
-use crate::traits::AdjustmentCoordinate;
-use crate::xml_read_loop;
+use super::{
+    Coordinate,
+    RichText,
+    vml::{
+        Fill as VmlFill,
+        Path,
+        Shadow,
+        TextBox,
+        office::InsetMarginValues,
+        spreadsheet::{
+            Anchor,
+            CommentColumnTarget,
+            CommentRowTarget,
+            MoveWithCells,
+            ResizeWithCells,
+        },
+    },
+};
+use crate::{
+    helper::coordinate::CellCoordinates,
+    reader::driver::get_attribute,
+    structs::vml::Shape,
+    traits::AdjustmentCoordinate,
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {

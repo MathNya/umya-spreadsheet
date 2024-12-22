@@ -1,33 +1,48 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::super::StringValue;
-use super::EffectList;
-use super::EffectStyle;
-use super::GradientFill;
-use super::GradientStop;
-use super::LinearGradientFill;
-use super::Miter;
-use super::OuterShadow;
-use super::Outline;
-use super::PenAlignmentValues;
-use super::PercentageType;
-use super::PositiveFixedPercentageType;
-use super::PresetDash;
-use super::PresetLineDashValues;
-use super::RgbColorModelHex;
-use super::SchemeColor;
-use super::SchemeColorValues;
-use super::SolidFill;
-use super::SystemColor;
-use super::SystemColorValues;
-use super::ThemeElements;
-use crate::helper::const_str::DRAWINGML_MAIN_NS;
-use crate::reader::driver::{get_attribute, xml_read_loop};
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    super::StringValue,
+    EffectList,
+    EffectStyle,
+    GradientFill,
+    GradientStop,
+    LinearGradientFill,
+    Miter,
+    OuterShadow,
+    Outline,
+    PenAlignmentValues,
+    PercentageType,
+    PositiveFixedPercentageType,
+    PresetDash,
+    PresetLineDashValues,
+    RgbColorModelHex,
+    SchemeColor,
+    SchemeColorValues,
+    SolidFill,
+    SystemColor,
+    SystemColorValues,
+    ThemeElements,
+};
+use crate::{
+    helper::const_str::DRAWINGML_MAIN_NS,
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Theme {

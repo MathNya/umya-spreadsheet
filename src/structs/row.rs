@@ -1,22 +1,37 @@
-use std::collections::HashMap;
-use std::io::Cursor;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+};
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::BooleanValue;
-use super::Cell;
-use super::Cells;
-use super::DoubleValue;
-use super::SharedStringTable;
-use super::Style;
-use super::Stylesheet;
-use super::UInt32Value;
-use crate::helper::formula::FormulaToken;
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::traits::AdjustmentValue;
-use crate::writer::driver::write_start_tag;
+use super::{
+    BooleanValue,
+    Cell,
+    Cells,
+    DoubleValue,
+    SharedStringTable,
+    Style,
+    Stylesheet,
+    UInt32Value,
+};
+use crate::{
+    helper::formula::FormulaToken,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    traits::AdjustmentValue,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct Row {

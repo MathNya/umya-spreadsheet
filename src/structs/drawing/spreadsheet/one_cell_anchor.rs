@@ -1,19 +1,31 @@
 // xdr:oneCellAnchor
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::Extent;
-use super::GroupShape;
-use super::MarkerType;
-use super::Picture;
-use super::Shape;
-use crate::reader::driver::xml_read_loop;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    Extent,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OneCellAnchor {

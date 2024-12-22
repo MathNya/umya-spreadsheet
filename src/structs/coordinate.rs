@@ -1,10 +1,19 @@
 use std::fmt;
 
-use super::ColumnReference;
-use super::RowReference;
-use crate::helper::coordinate::{coordinate_from_index_with_lock, index_from_coordinate};
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentValue;
+use super::{
+    ColumnReference,
+    RowReference,
+};
+use crate::{
+    helper::coordinate::{
+        coordinate_from_index_with_lock,
+        index_from_coordinate,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentValue,
+    },
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Coordinate {

@@ -1,25 +1,44 @@
 // xdr:wsDr
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::ConnectionShape;
-use super::GraphicFrame;
-use super::OneCellAnchor;
-use super::Picture;
-use super::Shape;
-use super::TwoCellAnchor;
-use crate::helper::const_str::{DRAWINGML_MAIN_NS, SHEET_DRAWING_NS};
-use crate::reader::driver::xml_read_loop;
-use crate::structs::Chart;
-use crate::structs::Image;
-use crate::structs::OleObjects;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    ConnectionShape,
+    GraphicFrame,
+    OneCellAnchor,
+    Picture,
+    Shape,
+    TwoCellAnchor,
+};
+use crate::{
+    helper::const_str::{
+        DRAWINGML_MAIN_NS,
+        SHEET_DRAWING_NS,
+    },
+    reader::driver::xml_read_loop,
+    structs::{
+        Chart,
+        Image,
+        OleObjects,
+        raw::RawRelationships,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {

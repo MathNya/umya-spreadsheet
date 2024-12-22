@@ -1,22 +1,40 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // c:chartSpace
 use super::Chart;
-use super::Date1904;
-use super::EditingLanguage;
-use super::PrintSettings;
-use super::RoundedCorners;
-use super::ShapeProperties;
-use crate::helper::const_str::{DRAWINGML_CHART_NS, DRAWINGML_MAIN_NS, REL_OFC_NS};
-use crate::structs::Spreadsheet;
-use crate::structs::office2010::drawing::charts::Style;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::xml_read_loop;
+use super::{
+    Date1904,
+    EditingLanguage,
+    PrintSettings,
+    RoundedCorners,
+    ShapeProperties,
+};
+use crate::{
+    helper::const_str::{
+        DRAWINGML_CHART_NS,
+        DRAWINGML_MAIN_NS,
+        REL_OFC_NS,
+    },
+    structs::{
+        Spreadsheet,
+        office2010::drawing::charts::Style,
+    },
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartSpace {

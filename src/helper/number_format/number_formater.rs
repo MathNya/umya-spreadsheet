@@ -1,5 +1,7 @@
-use std::borrow::Cow;
-use std::sync::OnceLock;
+use std::{
+    borrow::Cow,
+    sync::OnceLock,
+};
 
 use fancy_regex::Regex;
 use thousands::Separable;

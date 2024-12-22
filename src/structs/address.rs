@@ -3,10 +3,16 @@ use std::sync::OnceLock;
 use fancy_regex::Regex;
 
 use super::Range;
-use crate::helper::address::split_address;
-use crate::helper::coordinate::index_from_coordinate;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::{
+    helper::{
+        address::split_address,
+        coordinate::index_from_coordinate,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+};
 
 // Initialize OnceLock for the Regex
 static RE: OnceLock<Regex> = OnceLock::new();

@@ -1,25 +1,37 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::AutoTitleDeleted;
-use super::BackWall;
-use super::DisplayBlanksAs;
-use super::Floor;
-use super::Formula;
-use super::Legend;
-use super::PlotArea;
-use super::PlotVisibleOnly;
-use super::ShowDataLabelsOverMaximum;
-use super::SideWall;
-use super::Title;
-use super::View3D;
-use crate::structs::Spreadsheet;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::xml_read_loop;
+use super::{
+    AutoTitleDeleted,
+    BackWall,
+    DisplayBlanksAs,
+    Floor,
+    Formula,
+    Legend,
+    PlotArea,
+    PlotVisibleOnly,
+    ShowDataLabelsOverMaximum,
+    SideWall,
+    Title,
+    View3D,
+};
+use crate::{
+    structs::Spreadsheet,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Chart {

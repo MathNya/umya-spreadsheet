@@ -1,15 +1,33 @@
 // a:blip
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use crate::helper::const_str::{DRAWING_MAIN_NS, REL_OFC_NS};
-use crate::reader::driver::{get_attribute, xml_read_loop};
-use crate::structs::MediaObject;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use crate::{
+    helper::const_str::{
+        DRAWING_MAIN_NS,
+        REL_OFC_NS,
+    },
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    structs::{
+        MediaObject,
+        raw::RawRelationships,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Blip {

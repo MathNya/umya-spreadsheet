@@ -1,24 +1,42 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::Anchor;
-use super::AutoFill;
-use super::AutoSizePicture;
-use super::ClipboardFormat;
-use super::CommentColumnTarget;
-use super::CommentRowTarget;
-use super::MoveWithCells;
-use super::ObjectValues;
-use super::ResizeWithCells;
-use super::Visible;
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::structs::EnumValue;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentValue;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    Anchor,
+    AutoFill,
+    AutoSizePicture,
+    ClipboardFormat,
+    CommentColumnTarget,
+    CommentRowTarget,
+    MoveWithCells,
+    ObjectValues,
+    ResizeWithCells,
+    Visible,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::EnumValue,
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentValue,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ClientData {

@@ -1,16 +1,28 @@
 // xdr:pic
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::BlipFill;
-use super::NonVisualPictureProperties;
-use super::ShapeProperties;
-use crate::reader::driver::xml_read_loop;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    BlipFill,
+    NonVisualPictureProperties,
+    ShapeProperties,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Picture {

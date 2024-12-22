@@ -1,19 +1,30 @@
 // color
-use std::borrow::Cow;
-use std::io::Cursor;
+use std::{
+    borrow::Cow,
+    io::Cursor,
+};
 
 use md5::Digest;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::DoubleValue;
-use super::StringValue;
-use super::UInt32Value;
-use crate::helper::color::calc_tint;
-use crate::reader::driver::get_attribute_value;
-use crate::structs::drawing::Theme;
-use crate::writer::driver::write_start_tag;
+use super::{
+    DoubleValue,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    helper::color::calc_tint,
+    reader::driver::get_attribute_value,
+    structs::drawing::Theme,
+    writer::driver::write_start_tag,
+};
 
 const INDEXED_COLORS: &[&str] = &[
     "FF000000", //  System Colour #1 - Black

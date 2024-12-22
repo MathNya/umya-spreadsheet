@@ -1,14 +1,20 @@
-use std::fs;
-use std::fs::File;
-use std::io;
-use std::io::Read;
-use std::path::Path;
+use std::{
+    fs,
+    fs::File,
+    io,
+    io::Read,
+    path::Path,
+};
 
 use super::driver;
-use crate::XlsxError;
-use crate::helper::crypt::encrypt;
-use crate::structs::Spreadsheet;
-use crate::structs::WriterManager;
+use crate::{
+    XlsxError,
+    helper::crypt::encrypt,
+    structs::{
+        Spreadsheet,
+        WriterManager,
+    },
+};
 
 mod chart;
 mod comment;

@@ -1,27 +1,39 @@
 // c:valAx
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::AxisId;
-use super::AxisPosition;
-use super::CrossBetween;
-use super::Crosses;
-use super::CrossingAxis;
-use super::Delete;
-use super::MajorGridlines;
-use super::MajorTickMark;
-use super::MinorTickMark;
-use super::NumberingFormat;
-use super::Scaling;
-use super::ShapeProperties;
-use super::TextProperties;
-use super::TickLabelPosition;
-use super::Title;
-use crate::reader::driver::xml_read_loop;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    AxisId,
+    AxisPosition,
+    CrossBetween,
+    Crosses,
+    CrossingAxis,
+    Delete,
+    MajorGridlines,
+    MajorTickMark,
+    MinorTickMark,
+    NumberingFormat,
+    Scaling,
+    ShapeProperties,
+    TextProperties,
+    TickLabelPosition,
+    Title,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ValueAxis {

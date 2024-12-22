@@ -1,13 +1,33 @@
 use std::io;
 
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
 
-use super::XlsxError;
-use super::driver::{write_end_tag, write_new_line, write_start_tag};
-use crate::helper::const_str::{CHART_NS, IMAGE_NS, PKG_DRAWINGS_RELS, REL_NS};
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        CHART_NS,
+        IMAGE_NS,
+        PKG_DRAWINGS_RELS,
+        REL_NS,
+    },
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     _worksheet: &Worksheet,

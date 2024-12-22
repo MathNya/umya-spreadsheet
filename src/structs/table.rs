@@ -1,5 +1,9 @@
 use super::{
-    BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
+    BooleanValue,
+    EnumValue,
+    StringValue,
+    TotalsRowFunctionValues,
+    UInt32Value,
     coordinate::Coordinate,
 };
 use crate::helper::coordinate::CellCoordinates;

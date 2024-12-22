@@ -1,11 +1,19 @@
-use quick_xml::Reader;
-use quick_xml::events::Event;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
-use crate::reader::driver::xml_read_loop;
-use crate::structs::Worksheet;
-use crate::structs::drawing::spreadsheet::WorksheetDrawing;
-use crate::structs::raw::RawFile;
-use crate::structs::raw::RawRelationships;
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::{
+        Worksheet,
+        drawing::spreadsheet::WorksheetDrawing,
+        raw::{
+            RawFile,
+            RawRelationships,
+        },
+    },
+};
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

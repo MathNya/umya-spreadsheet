@@ -1,16 +1,38 @@
 use std::io;
 
-use quick_xml::Writer;
-use quick_xml::events::{BytesDecl, Event};
-
-use super::XlsxError;
-use super::driver::{make_file_from_writer, write_end_tag, write_new_line, write_start_tag};
-use crate::helper::const_str::{
-    PIVOT_CACHE_DEF_NS, PKG_WORKBOOK_RELS, REL_NS, SHARED_STRINGS_NS, STYLES_NS, THEME_NS,
-    VBA_PROJECT_NS, WORKSHEET_NS,
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
 };
-use crate::structs::Spreadsheet;
-use crate::structs::WriterManager;
+
+use super::{
+    XlsxError,
+    driver::{
+        make_file_from_writer,
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        PIVOT_CACHE_DEF_NS,
+        PKG_WORKBOOK_RELS,
+        REL_NS,
+        SHARED_STRINGS_NS,
+        STYLES_NS,
+        THEME_NS,
+        VBA_PROJECT_NS,
+        WORKSHEET_NS,
+    },
+    structs::{
+        Spreadsheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     spreadsheet: &Spreadsheet,

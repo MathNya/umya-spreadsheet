@@ -1,17 +1,35 @@
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::BooleanValue;
-use super::ObjectAnchor;
-use super::StringValue;
-use super::UInt32Value;
-use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::structs::MediaObject;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use super::{
+    BooleanValue,
+    ObjectAnchor,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        MediaObject,
+        raw::RawRelationships,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {

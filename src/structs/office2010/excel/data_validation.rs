@@ -1,20 +1,34 @@
 // x14:dataValidation
 use std::io::Cursor;
 
-use quick_xml::Reader;
-use quick_xml::Writer;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use crate::reader::driver::get_attribute;
-use crate::structs::BooleanValue;
-use crate::structs::DataValidationOperatorValues;
-use crate::structs::DataValidationValues;
-use crate::structs::EnumValue;
-use crate::structs::StringValue;
-use crate::structs::office::excel::ReferenceSequence;
-use crate::structs::office2010::excel::DataValidationForumla1;
-use crate::structs::office2010::excel::DataValidationForumla2;
-use crate::writer::driver::{write_end_tag, write_start_tag};
+use crate::{
+    reader::driver::get_attribute,
+    structs::{
+        BooleanValue,
+        DataValidationOperatorValues,
+        DataValidationValues,
+        EnumValue,
+        StringValue,
+        office::excel::ReferenceSequence,
+        office2010::excel::{
+            DataValidationForumla1,
+            DataValidationForumla2,
+        },
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
