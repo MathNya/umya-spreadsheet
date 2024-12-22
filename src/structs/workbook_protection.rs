@@ -1,14 +1,16 @@
 // workbookProtection
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::BooleanValue;
 use super::StringValue;
 use super::UInt32Value;
 use crate::helper::crypt::{encrypt_revisions_protection, encrypt_workbook_protection};
 use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorkbookProtection {
@@ -231,22 +233,14 @@ impl WorkbookProtection {
         // workbookProtection
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.workbook_algorithm_name.has_value() {
-            attributes.push((
-                "workbookAlgorithmName",
-                self.workbook_algorithm_name.get_value_str(),
-            ));
+            attributes
+                .push(("workbookAlgorithmName", self.workbook_algorithm_name.get_value_str()));
         }
         if self.workbook_hash_value.has_value() {
-            attributes.push((
-                "workbookHashValue",
-                self.workbook_hash_value.get_value_str(),
-            ));
+            attributes.push(("workbookHashValue", self.workbook_hash_value.get_value_str()));
         }
         if self.workbook_salt_value.has_value() {
-            attributes.push((
-                "workbookSaltValue",
-                self.workbook_salt_value.get_value_str(),
-            ));
+            attributes.push(("workbookSaltValue", self.workbook_salt_value.get_value_str()));
         }
         let workbook_spin_count = self.workbook_spin_count.get_value_string();
         if self.workbook_spin_count.has_value() {
@@ -256,22 +250,14 @@ impl WorkbookProtection {
             attributes.push(("workbookPassword", self.workbook_password.get_value_str()));
         }
         if self.revisions_algorithm_name.has_value() {
-            attributes.push((
-                "revisionsAlgorithmName",
-                self.revisions_algorithm_name.get_value_str(),
-            ));
+            attributes
+                .push(("revisionsAlgorithmName", self.revisions_algorithm_name.get_value_str()));
         }
         if self.revisions_hash_value.has_value() {
-            attributes.push((
-                "revisionsHashValue",
-                self.revisions_hash_value.get_value_str(),
-            ));
+            attributes.push(("revisionsHashValue", self.revisions_hash_value.get_value_str()));
         }
         if self.revisions_salt_value.has_value() {
-            attributes.push((
-                "revisionsSaltValue",
-                self.revisions_salt_value.get_value_str(),
-            ));
+            attributes.push(("revisionsSaltValue", self.revisions_salt_value.get_value_str()));
         }
         let revisions_spin_count = self.revisions_spin_count.get_value_string();
         if self.revisions_spin_count.has_value() {

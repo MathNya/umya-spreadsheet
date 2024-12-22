@@ -1,4 +1,10 @@
 // xdr:sp
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::super::super::Anchor;
 use super::NonVisualShapeProperties;
 use super::ShapeProperties;
@@ -7,10 +13,6 @@ use super::TextBody;
 use crate::reader::driver::xml_read_loop;
 use crate::structs::raw::RawRelationships;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
@@ -145,12 +147,7 @@ impl Shape {
         ole_id: usize,
     ) {
         // xdr:sp
-        write_start_tag(
-            writer,
-            "xdr:sp",
-            vec![("macro", ""), ("textlink", "")],
-            false,
-        );
+        write_start_tag(writer, "xdr:sp", vec![("macro", ""), ("textlink", "")], false);
 
         // xdr:nvSpPr
         self.non_visual_shape_properties.write_to(writer, ole_id);

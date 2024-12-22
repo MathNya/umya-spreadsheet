@@ -1,11 +1,12 @@
-use crate::structs::DoubleValue;
+use std::io::Cursor;
 
-use crate::reader::driver::get_attribute;
-use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::BytesStart;
+
+use crate::reader::driver::get_attribute;
+use crate::structs::DoubleValue;
+use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Default, Debug)]
 pub struct PageMargins {
@@ -94,17 +95,12 @@ impl PageMargins {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.left
-            .set_value_string(get_attribute(e, b"left").unwrap());
-        self.right
-            .set_value_string(get_attribute(e, b"right").unwrap());
+        self.left.set_value_string(get_attribute(e, b"left").unwrap());
+        self.right.set_value_string(get_attribute(e, b"right").unwrap());
         self.top.set_value_string(get_attribute(e, b"top").unwrap());
-        self.bottom
-            .set_value_string(get_attribute(e, b"bottom").unwrap());
-        self.header
-            .set_value_string(get_attribute(e, b"header").unwrap());
-        self.footer
-            .set_value_string(get_attribute(e, b"footer").unwrap());
+        self.bottom.set_value_string(get_attribute(e, b"bottom").unwrap());
+        self.header.set_value_string(get_attribute(e, b"header").unwrap());
+        self.footer.set_value_string(get_attribute(e, b"footer").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

@@ -1,13 +1,11 @@
-use super::driver::{get_attribute, get_attribute_value, xml_read_loop};
-use super::XlsxError;
-use quick_xml::events::Event;
-use quick_xml::Reader;
 use std::collections::HashMap;
 
+use quick_xml::Reader;
+use quick_xml::events::Event;
+
+use super::XlsxError;
+use super::driver::{get_attribute, get_attribute_value, xml_read_loop};
 use crate::helper::formula::FormulaToken;
-use crate::structs::office2010::excel::DataValidations as DataValidations2010;
-use crate::structs::raw::RawRelationships;
-use crate::structs::raw::RawWorksheet;
 use crate::structs::Cells;
 use crate::structs::Columns;
 use crate::structs::ConditionalFormatting;
@@ -19,6 +17,9 @@ use crate::structs::SharedStringTable;
 use crate::structs::SheetProtection;
 use crate::structs::Stylesheet;
 use crate::structs::Worksheet;
+use crate::structs::office2010::excel::DataValidations as DataValidations2010;
+use crate::structs::raw::RawRelationships;
+use crate::structs::raw::RawWorksheet;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,

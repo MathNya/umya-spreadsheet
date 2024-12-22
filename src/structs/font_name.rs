@@ -1,11 +1,13 @@
 // name
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::StringValue;
 use crate::reader::driver::get_attribute;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FontName {
@@ -38,12 +40,7 @@ impl FontName {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         // name, rFont
         if self.val.has_value() {
-            write_start_tag(
-                writer,
-                tag_name,
-                vec![("val", self.val.get_value_str())],
-                true,
-            );
+            write_start_tag(writer, tag_name, vec![("val", self.val.get_value_str())], true);
         }
     }
 }

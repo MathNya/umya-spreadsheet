@@ -1,13 +1,15 @@
+use std::io::Cursor;
+use std::vec;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::EffectList;
 use super::Scene3DType;
 use super::Shape3DType;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectStyle {

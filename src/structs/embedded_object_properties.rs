@@ -1,15 +1,17 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::BooleanValue;
 use super::ObjectAnchor;
 use super::StringValue;
 use super::UInt32Value;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::structs::raw::RawRelationships;
 use crate::structs::MediaObject;
+use crate::structs::raw::RawRelationships;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {
@@ -112,10 +114,8 @@ impl EmbeddedObjectProperties {
         let r_id = get_attribute(e, b"r:id").unwrap();
         let attached_file = relationships.get_relationship_by_rid(&r_id).get_raw_file();
 
-        self.get_image_mut()
-            .set_image_name(attached_file.get_file_name());
-        self.get_image_mut()
-            .set_image_data(attached_file.get_file_data());
+        self.get_image_mut().set_image_name(attached_file.get_file_name());
+        self.get_image_mut().set_image_data(attached_file.get_file_data());
 
         set_string_from_xml!(self, e, default_size, "defaultSize");
         set_string_from_xml!(self, e, auto_pict, "autoPict");

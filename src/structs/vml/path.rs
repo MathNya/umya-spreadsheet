@@ -1,11 +1,13 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::office::ConnectValues;
 use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::EnumValue;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Path {
@@ -34,10 +36,7 @@ impl Path {
         // v:path
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.connection_point_type.has_value() {
-            attributes.push((
-                "o:connecttype",
-                self.connection_point_type.get_value_string(),
-            ));
+            attributes.push(("o:connecttype", self.connection_point_type.get_value_string()));
         }
         write_start_tag(writer, "v:path", attributes, true);
     }

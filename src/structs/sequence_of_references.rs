@@ -48,11 +48,7 @@ impl SequenceOfReferences {
     #[inline]
     #[must_use]
     pub fn get_sqref(&self) -> String {
-        self.range_collection
-            .iter()
-            .map(Range::get_range)
-            .collect::<Vec<String>>()
-            .join(" ")
+        self.range_collection.iter().map(Range::get_range).collect::<Vec<String>>().join(" ")
     }
 }
 impl AdjustmentCoordinate for SequenceOfReferences {

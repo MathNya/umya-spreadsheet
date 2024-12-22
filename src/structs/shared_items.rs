@@ -1,12 +1,14 @@
 // sharedItems
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::BooleanValue;
 use crate::structs::DoubleValue;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct SharedItems {
@@ -97,10 +99,7 @@ impl SharedItems {
             writer,
             "sharedItems",
             vec![
-                (
-                    "containsSemiMixedTypes",
-                    self.contains_semi_mixed_types.get_value_string(),
-                ),
+                ("containsSemiMixedTypes", self.contains_semi_mixed_types.get_value_string()),
                 ("containsString", self.contains_string.get_value_string()),
                 ("containsNumber", self.contains_number.get_value_string()),
                 ("containsInteger", self.contains_integer.get_value_string()),

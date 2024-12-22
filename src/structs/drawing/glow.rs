@@ -1,12 +1,14 @@
 // a:glow
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::super::super::Int64Value;
 use super::SchemeColor;
 use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Glow {
@@ -43,8 +45,7 @@ impl Glow {
         reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.radius
-            .set_value_string(get_attribute(e, b"rad").unwrap());
+        self.radius.set_value_string(get_attribute(e, b"rad").unwrap());
 
         xml_read_loop!(
             reader,
@@ -66,12 +67,7 @@ impl Glow {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:glow
-        write_start_tag(
-            writer,
-            "a:glow",
-            vec![("rad", &self.radius.get_value_string())],
-            false,
-        );
+        write_start_tag(writer, "a:glow", vec![("rad", &self.radius.get_value_string())], false);
 
         // a:schemeClr
         if let Some(v) = &self.scheme_color {

@@ -7,33 +7,35 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 
 /// Converts an Excel timestamp to a `NaiveDateTime` object.
 ///
-/// This function takes an Excel timestamp, which is a numeric representation of a date and time,
-/// and converts it into a `NaiveDateTime` object. The integer part of the timestamp represents
-/// the number of days since a base date, while the fractional part represents the time of day.
+/// This function takes an Excel timestamp, which is a numeric representation of
+/// a date and time, and converts it into a `NaiveDateTime` object. The integer
+/// part of the timestamp represents the number of days since a base date, while
+/// the fractional part represents the time of day.
 ///
 /// # Parameters
 ///
-/// - `excel_timestamp: f64`
-///   The Excel timestamp to be converted. If the value is less than 1, it is treated as a Unix
-///   timestamp (seconds since January 1, 1970). If the value is greater than or equal to 1,
-///   it is treated as an Excel date.
+/// - `excel_timestamp: f64` The Excel timestamp to be converted. If the value
+///   is less than 1, it is treated as a Unix timestamp (seconds since January
+///   1, 1970). If the value is greater than or equal to 1, it is treated as an
+///   Excel date.
 ///
-/// - `time_zone: Option<String>`
-///   An optional string representing the desired time zone. If `None`, the function will use
-///   a default time zone obtained from the `get_default_timezone()` function.
+/// - `time_zone: Option<String>` An optional string representing the desired
+///   time zone. If `None`, the function will use a default time zone obtained
+///   from the `get_default_timezone()` function.
 ///
 /// # Returns
 ///
-/// Returns a `NaiveDateTime` object representing the converted date and time. This object does
-/// not contain any timezone information.
+/// Returns a `NaiveDateTime` object representing the converted date and time.
+/// This object does not contain any timezone information.
 ///
 /// # Behavior
 ///
-/// - If `excel_timestamp` is less than 1, it is interpreted as a Unix timestamp, using
-///   January 1, 1970, as the base date.
-/// - If `excel_timestamp` is between 1 and 60, the function accounts for the 1900 leap year
-///   bug in Excel by using December 31, 1899, as the base date.
-/// - For `excel_timestamp` values of 60 or greater, it uses December 30, 1899, as the base date.
+/// - If `excel_timestamp` is less than 1, it is interpreted as a Unix
+///   timestamp, using January 1, 1970, as the base date.
+/// - If `excel_timestamp` is between 1 and 60, the function accounts for the
+///   1900 leap year bug in Excel by using December 31, 1899, as the base date.
+/// - For `excel_timestamp` values of 60 or greater, it uses December 30, 1899,
+///   as the base date.
 ///
 /// # Example
 ///
@@ -49,8 +51,8 @@ pub const DEFAULT_TIMEZONE: &str = "UTC";
 ///
 /// # Panics
 ///
-/// This function will panic if the parsing of the base date fails. Ensure that the input
-/// timestamp is valid and within the expected range.
+/// This function will panic if the parsing of the base date fails. Ensure that
+/// the input timestamp is valid and within the expected range.
 #[must_use]
 pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>) -> NaiveDateTime {
     let _time_zone = match time_zone {
@@ -85,31 +87,27 @@ pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>
         + Duration::seconds(cast(seconds).unwrap())
 }
 
-/// Converts a date and time to an Excel timestamp using the Windows 1900 date system.
+/// Converts a date and time to an Excel timestamp using the Windows 1900 date
+/// system.
 ///
-/// This function takes individual components of a date and time (year, month, day, hours,
-/// minutes, and seconds) and converts them into an Excel timestamp. The conversion is based
-/// on the Windows 1900 date system, which accounts for the 1900 leap year bug.
+/// This function takes individual components of a date and time (year, month,
+/// day, hours, minutes, and seconds) and converts them into an Excel timestamp.
+/// The conversion is based on the Windows 1900 date system, which accounts for
+/// the 1900 leap year bug.
 ///
 /// # Parameters
 ///
-/// - `year: i32`
-///   The year component of the date.
+/// - `year: i32` The year component of the date.
 ///
-/// - `month: i32`
-///   The month component of the date (1-12).
+/// - `month: i32` The month component of the date (1-12).
 ///
-/// - `day: i32`
-///   The day component of the date (1-31).
+/// - `day: i32` The day component of the date (1-31).
 ///
-/// - `hours: i32`
-///   The hour component of the time (0-23).
+/// - `hours: i32` The hour component of the time (0-23).
 ///
-/// - `minutes: i32`
-///   The minute component of the time (0-59).
+/// - `minutes: i32` The minute component of the time (0-59).
 ///
-/// - `seconds: i32`
-///   The second component of the time (0-59).
+/// - `seconds: i32` The second component of the time (0-59).
 ///
 /// # Returns
 ///
@@ -124,7 +122,8 @@ pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>
 ///
 /// # Panics
 ///
-/// This function may panic if the provided date and time components are invalid.
+/// This function may panic if the provided date and time components are
+/// invalid.
 #[inline]
 #[must_use]
 pub fn convert_date(
@@ -138,31 +137,27 @@ pub fn convert_date(
     convert_date_windows_1900(year, month, day, hours, minutes, seconds)
 }
 
-/// Converts a date and time to an Excel timestamp using the Windows 1900 date system.
+/// Converts a date and time to an Excel timestamp using the Windows 1900 date
+/// system.
 ///
-/// This function takes individual components of a date and time (year, month, day, hours,
-/// minutes, and seconds) and converts them into an Excel timestamp specifically for the
-/// Windows 1900 date system, which includes the 1900 leap year bug.
+/// This function takes individual components of a date and time (year, month,
+/// day, hours, minutes, and seconds) and converts them into an Excel timestamp
+/// specifically for the Windows 1900 date system, which includes the 1900 leap
+/// year bug.
 ///
 /// # Parameters
 ///
-/// - `year: i32`
-///   The year component of the date.
+/// - `year: i32` The year component of the date.
 ///
-/// - `month: i32`
-///   The month component of the date (1-12).
+/// - `month: i32` The month component of the date (1-12).
 ///
-/// - `day: i32`
-///   The day component of the date (1-31).
+/// - `day: i32` The day component of the date (1-31).
 ///
-/// - `hours: i32`
-///   The hour component of the time (0-23).
+/// - `hours: i32` The hour component of the time (0-23).
 ///
-/// - `minutes: i32`
-///   The minute component of the time (0-59).
+/// - `minutes: i32` The minute component of the time (0-59).
 ///
-/// - `seconds: i32`
-///   The second component of the time (0-59).
+/// - `seconds: i32` The second component of the time (0-59).
 ///
 /// # Returns
 ///
@@ -177,7 +172,8 @@ pub fn convert_date(
 ///
 /// # Panics
 ///
-/// This function may panic if the provided date and time components are invalid.
+/// This function may panic if the provided date and time components are
+/// invalid.
 #[inline]
 #[must_use]
 pub fn convert_date_windows_1900(
@@ -191,35 +187,32 @@ pub fn convert_date_windows_1900(
     convert_date_crate(year, month, day, hours, minutes, seconds, true)
 }
 
-/// Converts a date and time to an Excel timestamp using the Mac 1904 date system.
+/// Converts a date and time to an Excel timestamp using the Mac 1904 date
+/// system.
 ///
-/// This function takes individual components of a date and time (year, month, day, hours,
-/// minutes, and seconds) and converts them into an Excel timestamp specifically for the
-/// Mac 1904 date system, which has a different base date compared to the Windows 1900 date system.
+/// This function takes individual components of a date and time (year, month,
+/// day, hours, minutes, and seconds) and converts them into an Excel timestamp
+/// specifically for the Mac 1904 date system, which has a different base date
+/// compared to the Windows 1900 date system.
 ///
 /// # Parameters
 ///
-/// - `year: i32`
-///   The year component of the date.
+/// - `year: i32` The year component of the date.
 ///
-/// - `month: i32`
-///   The month component of the date (1-12).
+/// - `month: i32` The month component of the date (1-12).
 ///
-/// - `day: i32`
-///   The day component of the date (1-31).
+/// - `day: i32` The day component of the date (1-31).
 ///
-/// - `hours: i32`
-///   The hour component of the time (0-23).
+/// - `hours: i32` The hour component of the time (0-23).
 ///
-/// - `minutes: i32`
-///   The minute component of the time (0-59).
+/// - `minutes: i32` The minute component of the time (0-59).
 ///
-/// - `seconds: i32`
-///   The second component of the time (0-59).
+/// - `seconds: i32` The second component of the time (0-59).
 ///
 /// # Returns
 ///
-/// Returns an `f64` representing the corresponding Excel timestamp for the Mac 1904 date system.
+/// Returns an `f64` representing the corresponding Excel timestamp for the Mac
+/// 1904 date system.
 ///
 /// # Example
 ///
@@ -230,7 +223,8 @@ pub fn convert_date_windows_1900(
 ///
 /// # Panics
 ///
-/// This function may panic if the provided date and time components are invalid.
+/// This function may panic if the provided date and time components are
+/// invalid.
 #[inline]
 #[must_use]
 pub fn convert_date_mac_1904(
@@ -244,40 +238,36 @@ pub fn convert_date_mac_1904(
     convert_date_crate(year, month, day, hours, minutes, seconds, false)
 }
 
-/// Converts a date and time to an Excel timestamp based on the specified calendar system.
+/// Converts a date and time to an Excel timestamp based on the specified
+/// calendar system.
 ///
-/// This function takes individual components of a date and time (year, month, day, hours,
-/// minutes, and seconds) and converts them into an Excel timestamp. The conversion can be
-/// based on either the Windows 1900 date system or the Mac 1904 date system, depending on the
-/// value of the `is_calendar_windows_1900` parameter.
+/// This function takes individual components of a date and time (year, month,
+/// day, hours, minutes, and seconds) and converts them into an Excel timestamp.
+/// The conversion can be based on either the Windows 1900 date system or the
+/// Mac 1904 date system, depending on the value of the
+/// `is_calendar_windows_1900` parameter.
 ///
 /// # Parameters
 ///
-/// - `year: i32`
-///   The year component of the date.
+/// - `year: i32` The year component of the date.
 ///
-/// - `month: i32`
-///   The month component of the date (1-12).
+/// - `month: i32` The month component of the date (1-12).
 ///
-/// - `day: i32`
-///   The day component of the date (1-31).
+/// - `day: i32` The day component of the date (1-31).
 ///
-/// - `hours: i32`
-///   The hour component of the time (0-23).
+/// - `hours: i32` The hour component of the time (0-23).
 ///
-/// - `minutes: i32`
-///   The minute component of the time (0-59).
+/// - `minutes: i32` The minute component of the time (0-59).
 ///
-/// - `seconds: i32`
-///   The second component of the time (0-59).
+/// - `seconds: i32` The second component of the time (0-59).
 ///
-/// - `is_calendar_windows_1900: bool`
-///   A boolean indicating whether to use the Windows 1900 date system (`true`) or the Mac 1904
-///   date system (`false`).
+/// - `is_calendar_windows_1900: bool` A boolean indicating whether to use the
+///   Windows 1900 date system (`true`) or the Mac 1904 date system (`false`).
 ///
 /// # Returns
 ///
-/// Returns an `f64` representing the corresponding Excel timestamp for the specified calendar system.
+/// Returns an `f64` representing the corresponding Excel timestamp for the
+/// specified calendar system.
 ///
 /// # Example
 ///
@@ -291,7 +281,8 @@ pub fn convert_date_mac_1904(
 ///
 /// # Panics
 ///
-/// This function may panic if the provided date and time components are invalid.
+/// This function may panic if the provided date and time components are
+/// invalid.
 #[must_use]
 pub fn convert_date_crate(
     year: i32,
@@ -311,11 +302,7 @@ pub fn convert_date_crate(
     };
 
     // Adjust month and year for Julian date calculation
-    let (year_adj, month_adj) = if month > 2 {
-        (year, month - 3)
-    } else {
-        (year - 1, month + 9)
-    };
+    let (year_adj, month_adj) = if month > 2 { (year, month - 3) } else { (year - 1, month + 9) };
 
     // Calculate the Julian date components
     let century = year_adj / 100;

@@ -1,6 +1,4 @@
-/**
- * <https://ciintelligence.blogspot.com/2012/02/converting-excel-theme-color-and-tint.html>
- */
+/// <https://ciintelligence.blogspot.com/2012/02/converting-excel-theme-color-and-tint.html>
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct HlsColor {
@@ -54,11 +52,7 @@ pub fn join_rgb(r: i32, g: i32, b: i32) -> String {
 #[must_use]
 pub fn convert_rgb_to_ms_hls(rgb: &str) -> MsHlsColor {
     let hls = convert_rgb_to_hls(rgb);
-    MsHlsColor {
-        h: to_i32(hls.h * HLSMAX),
-        l: to_i32(hls.l * HLSMAX),
-        s: to_i32(hls.s * HLSMAX),
-    }
+    MsHlsColor { h: to_i32(hls.h * HLSMAX), l: to_i32(hls.l * HLSMAX), s: to_i32(hls.s * HLSMAX) }
 }
 
 #[must_use]
@@ -138,11 +132,7 @@ pub fn convert_hls_to_rgb(hls: &HlsColor) -> String {
         return join_rgb(rtn_l, rtn_l, rtn_l);
     }
 
-    let t1 = if hls.l < 0.5 {
-        hls.l * (1.0 + hls.s)
-    } else {
-        hls.l + hls.s - (hls.l * hls.s)
-    };
+    let t1 = if hls.l < 0.5 { hls.l * (1.0 + hls.s) } else { hls.l + hls.s - (hls.l * hls.s) };
 
     let t2 = 2.0 * hls.l - t1;
     let h = hls.h;

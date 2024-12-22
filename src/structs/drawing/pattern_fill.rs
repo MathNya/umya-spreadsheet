@@ -1,12 +1,14 @@
 // a:pattFill
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::BackgroundColor;
 use super::ForegroundColor;
 use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Debug)]
 pub struct PatternFill {

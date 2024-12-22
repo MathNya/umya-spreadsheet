@@ -1,12 +1,14 @@
-use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::structs::raw::RawRelationships;
-use crate::structs::MediaObject;
-use crate::structs::StringValue;
-use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
+use std::io::Cursor;
+
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::BytesStart;
+
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::structs::MediaObject;
+use crate::structs::StringValue;
+use crate::structs::raw::RawRelationships;
+use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Default, Debug)]
 pub struct ImageData {
@@ -51,10 +53,8 @@ impl ImageData {
         if let Some(relid) = get_attribute(e, b"o:relid") {
             if let Some(rel) = drawing_relationships {
                 let relationship = rel.get_relationship_by_rid(&relid);
-                self.get_image_mut()
-                    .set_image_name(relationship.get_raw_file().get_file_name());
-                self.get_image_mut()
-                    .set_image_data(relationship.get_raw_file().get_file_data());
+                self.get_image_mut().set_image_name(relationship.get_raw_file().get_file_name());
+                self.get_image_mut().set_image_data(relationship.get_raw_file().get_file_data());
             }
         }
 

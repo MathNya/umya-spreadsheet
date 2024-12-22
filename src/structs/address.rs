@@ -1,10 +1,12 @@
+use std::sync::OnceLock;
+
+use fancy_regex::Regex;
+
 use super::Range;
 use crate::helper::address::split_address;
 use crate::helper::coordinate::index_from_coordinate;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
-use fancy_regex::Regex;
-use std::sync::OnceLock;
 
 // Initialize OnceLock for the Regex
 static RE: OnceLock<Regex> = OnceLock::new();
@@ -100,10 +102,7 @@ impl Address {
                 with_space_char = "'";
             }
         }
-        format!(
-            "{}{}{}!{}",
-            &with_space_char, sheet_name, &with_space_char, range
-        )
+        format!("{}{}{}!{}", &with_space_char, sheet_name, &with_space_char, range)
     }
 }
 impl AdjustmentCoordinateWithSheet for Address {

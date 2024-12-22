@@ -1,7 +1,8 @@
-use crate::structs::MediaObject;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Read;
+
+use crate::structs::MediaObject;
 
 #[inline]
 #[must_use]

@@ -1,13 +1,15 @@
 // c:numCache
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::FormatCode;
 use crate::structs::Address;
 use crate::structs::Spreadsheet;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberingCache {
@@ -65,21 +67,11 @@ impl NumberingCache {
         self.format_code.write_to(writer);
 
         // c:ptCount
-        write_start_tag(
-            writer,
-            "c:ptCount",
-            vec![("val", coll_value_count.as_str())],
-            true,
-        );
+        write_start_tag(writer, "c:ptCount", vec![("val", coll_value_count.as_str())], true);
 
         for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
-            write_start_tag(
-                writer,
-                "c:pt",
-                vec![("idx", idx.to_string().as_str())],
-                false,
-            );
+            write_start_tag(writer, "c:pt", vec![("idx", idx.to_string().as_str())], false);
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);

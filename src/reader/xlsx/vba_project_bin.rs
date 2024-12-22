@@ -1,7 +1,7 @@
-use super::XlsxError;
 use std::io;
 use std::io::Read;
 
+use super::XlsxError;
 use crate::helper::const_str::PKG_VBA_PROJECT;
 use crate::structs::Spreadsheet;
 

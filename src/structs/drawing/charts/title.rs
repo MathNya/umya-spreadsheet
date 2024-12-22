@@ -1,13 +1,15 @@
 // c:title
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::ChartText;
 use super::Layout;
 use super::Overlay;
 use crate::writer::driver::{write_end_tag, write_start_tag};
 use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Title {

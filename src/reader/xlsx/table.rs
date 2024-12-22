@@ -1,10 +1,11 @@
-use super::driver::get_attribute_value;
-use super::XlsxError;
-use crate::structs::raw::RawFile;
-use crate::structs::Worksheet;
-use crate::structs::{Table, TableColumn, TableStyleInfo};
-use quick_xml::events::Event;
 use quick_xml::Reader;
+use quick_xml::events::Event;
+
+use super::XlsxError;
+use super::driver::get_attribute_value;
+use crate::structs::Worksheet;
+use crate::structs::raw::RawFile;
+use crate::structs::{Table, TableColumn, TableStyleInfo};
 
 pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(table_file.get_file_data());
@@ -83,7 +84,7 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
             },
             Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
             Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                b"table" => {
+                b"table" =>
                     for attr in e.attributes().with_checks(false).flatten() {
                         let attr_val = get_attribute_value(&attr)?;
                         match attr.key.0 {
@@ -107,8 +108,7 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                             }
                             _ => {}
                         }
-                    }
-                }
+                    },
                 b"tableColumn" => {
                     table_column = TableColumn::default();
                     for attr in e.attributes().with_checks(false).flatten() {

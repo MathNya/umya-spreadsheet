@@ -1,13 +1,15 @@
 // a:blip
-use crate::helper::const_str::{DRAWING_MAIN_NS, REL_OFC_NS};
-use crate::reader::driver::{get_attribute, xml_read_loop};
-use crate::structs::raw::RawRelationships;
-use crate::structs::MediaObject;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
+use std::io::Cursor;
+
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::{BytesStart, Event};
+
+use crate::helper::const_str::{DRAWING_MAIN_NS, REL_OFC_NS};
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::structs::MediaObject;
+use crate::structs::raw::RawRelationships;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 
 #[derive(Clone, Default, Debug)]
 pub struct Blip {
@@ -58,10 +60,8 @@ impl Blip {
 
         let picture_id = get_attribute(e, b"r:embed").unwrap();
         let relationship = drawing_relationships.get_relationship_by_rid(&picture_id);
-        self.get_image_mut()
-            .set_image_name(relationship.get_raw_file().get_file_name());
-        self.get_image_mut()
-            .set_image_data(relationship.get_raw_file().get_file_data());
+        self.get_image_mut().set_image_name(relationship.get_raw_file().get_file_name());
+        self.get_image_mut().set_image_data(relationship.get_raw_file().get_file_data());
 
         if empty_flag {
             return;

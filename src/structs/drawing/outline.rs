@@ -1,4 +1,10 @@
 // a:ln
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Bevel;
 use super::GradientFill;
 use super::Miter;
@@ -8,15 +14,11 @@ use super::PresetDash;
 use super::Round;
 use super::SolidFill;
 use super::TailEnd;
+use crate::StringValue;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::EnumValue;
 use crate::structs::UInt32Value;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Outline {

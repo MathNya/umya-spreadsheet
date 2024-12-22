@@ -1,14 +1,16 @@
+use std::io;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use crate::reader::driver::get_attribute;
-use crate::structs::raw::RawFile;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
 use crate::structs::XlsxError;
+use crate::structs::raw::RawFile;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io;
-use std::io::Cursor;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationship {
@@ -95,8 +97,7 @@ impl RawRelationship {
         }
         if self.get_target_mode() != "External" {
             let target = self.get_target().to_string();
-            self.get_raw_file_mut()
-                .set_attributes(arv, base_path, &target);
+            self.get_raw_file_mut().set_attributes(arv, base_path, &target);
         }
     }
 

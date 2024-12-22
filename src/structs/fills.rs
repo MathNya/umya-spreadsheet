@@ -1,12 +1,14 @@
 // fills
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Fill;
 use super::Style;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fills {
@@ -75,12 +77,7 @@ impl Fills {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if !self.fill.is_empty() {
             // fills
-            write_start_tag(
-                writer,
-                "fills",
-                vec![("count", &self.fill.len().to_string())],
-                false,
-            );
+            write_start_tag(writer, "fills", vec![("count", &self.fill.len().to_string())], false);
 
             // fill
             for fill in &self.fill {

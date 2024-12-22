@@ -1,12 +1,13 @@
+use std::borrow::Cow;
+use std::str::FromStr;
+
 use super::RichText;
 use super::SharedStringItem;
 use super::Text;
+use crate::CellErrorType;
 use crate::structs::CellFormula;
 use crate::structs::CellRawValue;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
-use crate::CellErrorType;
-use std::borrow::Cow;
-use std::str::FromStr;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
@@ -65,13 +66,15 @@ impl CellValue {
         self.raw_value.get_rich_text()
     }
 
-    /// Set the raw value after trying to convert `value` into one of the supported data types.
-    /// <br />
+    /// Set the raw value after trying to convert `value` into one of the
+    /// supported data types. <br />
     /// Types that `value` may be converted to:
     /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
-    /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
+    /// - `Error` - if the string was either
+    ///   `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#
+    ///   DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
     #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -220,15 +223,14 @@ impl CellValue {
             "" => CellRawValue::Empty,
             "TRUE" => CellRawValue::Bool(true),
             "FALSE" => CellRawValue::Bool(false),
-            _ => {
+            _ =>
                 if let Ok(error_type) = CellErrorType::from_str(&uppercase_value) {
                     CellRawValue::Error(error_type)
                 } else if let Ok(f) = value.parse::<f64>() {
                     CellRawValue::Numeric(f)
                 } else {
                     CellRawValue::String(value.into())
-                }
-            }
+                },
         }
     }
 

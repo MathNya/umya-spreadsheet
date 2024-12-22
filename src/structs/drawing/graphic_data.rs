@@ -1,4 +1,10 @@
 // *:graphicData
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::charts::ChartSpace;
 use crate::helper::const_str::{DRAWINGML_CHART_NS, REL_OFC_NS};
 use crate::reader::driver::{get_attribute, xml_read_loop};
@@ -6,10 +12,6 @@ use crate::reader::xlsx::chart;
 use crate::structs::raw::RawRelationships;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicData {
@@ -66,12 +68,7 @@ impl GraphicData {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // a:graphicData
-        write_start_tag(
-            writer,
-            "a:graphicData",
-            vec![("uri", DRAWINGML_CHART_NS)],
-            false,
-        );
+        write_start_tag(writer, "a:graphicData", vec![("uri", DRAWINGML_CHART_NS)], false);
 
         // c:chart
         rel_list.push((String::from("CHART"), String::new()));

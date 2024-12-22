@@ -1,14 +1,15 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 
 // c:numRef
 use super::Formula;
 use super::NumberingCache;
 use crate::structs::Spreadsheet;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberReference {
@@ -78,8 +79,7 @@ impl NumberReference {
         self.formula.write_to(writer);
 
         // c:numCache
-        self.numbering_cache
-            .write_to(writer, self.get_formula().get_address(), spreadsheet);
+        self.numbering_cache.write_to(writer, self.get_formula().get_address(), spreadsheet);
 
         write_end_tag(writer, "c:numRef");
     }

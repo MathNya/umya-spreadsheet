@@ -1,16 +1,18 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
+
 use crate::helper::const_str::{
     COREPROPS_NS, DCMITYPE_NS, DCORE_NS, DCTERMS_NS, VTYPES_NS, XPROPS_NS, XSI_NS,
 };
 use crate::reader::driver::xml_read_loop;
-use crate::structs::custom_properties::Properties as CustomProperties;
 use crate::structs::StringValue;
 use crate::structs::Worksheet;
+use crate::structs::custom_properties::Properties as CustomProperties;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Debug)]
 pub struct Properties {
@@ -363,12 +365,7 @@ impl Properties {
 
         // dcterms:created
         if self.created.has_value() {
-            write_start_tag(
-                writer,
-                "dcterms:created",
-                vec![("xsi:type", "dcterms:W3CDTF")],
-                false,
-            );
+            write_start_tag(writer, "dcterms:created", vec![("xsi:type", "dcterms:W3CDTF")], false);
             write_text_node(writer, self.created.get_value_str());
             write_end_tag(writer, "dcterms:created");
         }
@@ -436,12 +433,7 @@ impl Properties {
         write_start_tag(writer, "HeadingPairs", vec![], false);
 
         // vt:vector
-        write_start_tag(
-            writer,
-            "vt:vector",
-            vec![("size", "2"), ("baseType", "variant")],
-            false,
-        );
+        write_start_tag(writer, "vt:vector", vec![("size", "2"), ("baseType", "variant")], false);
 
         // vt:variant
         write_start_tag(writer, "vt:variant", vec![], false);

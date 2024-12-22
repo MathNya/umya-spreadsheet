@@ -1,4 +1,11 @@
 // dxf
+use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Alignment;
 use super::Borders;
 use super::Fill;
@@ -6,11 +13,6 @@ use super::Font;
 use super::Style;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormat {

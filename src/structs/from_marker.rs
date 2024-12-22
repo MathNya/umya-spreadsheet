@@ -1,10 +1,12 @@
 // from
-use crate::reader::driver::xml_read_loop;
-use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::{BytesStart, Event};
+use std::io::Cursor;
+
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::{BytesStart, Event};
+
+use crate::reader::driver::xml_read_loop;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 
 #[derive(Clone, Default, Debug)]
 pub struct FromMarker {
@@ -75,20 +77,12 @@ impl FromMarker {
 
     #[inline]
     pub(crate) fn _adjustment_remove_row(&mut self, num_rows: usize) {
-        self.row = if self.row > num_rows {
-            self.row - num_rows
-        } else {
-            1
-        };
+        self.row = if self.row > num_rows { self.row - num_rows } else { 1 };
     }
 
     #[inline]
     pub(crate) fn _adjustment_remove_column(&mut self, num_cols: usize) {
-        self.col = if self.col > num_cols {
-            self.col - num_cols
-        } else {
-            1
-        };
+        self.col = if self.col > num_cols { self.col - num_cols } else { 1 };
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

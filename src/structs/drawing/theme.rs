@@ -1,3 +1,9 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::super::StringValue;
 use super::EffectList;
 use super::EffectStyle;
@@ -22,10 +28,6 @@ use super::ThemeElements;
 use crate::helper::const_str::DRAWINGML_MAIN_NS;
 use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Theme {
@@ -68,25 +70,17 @@ impl Theme {
         def.set_name("Office Theme");
 
         // color_scheme
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
-            .set_name("Office");
+        def.get_theme_elements_mut().get_color_scheme_mut().set_name("Office");
 
         let mut dk1 = SystemColor::default();
         dk1.set_val(SystemColorValues::WindowText);
         dk1.set_last_color("000000");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
-            .get_dk1_mut()
-            .set_system_color(dk1); // dk1
+        def.get_theme_elements_mut().get_color_scheme_mut().get_dk1_mut().set_system_color(dk1); // dk1
 
         let mut lt1 = SystemColor::default();
         lt1.set_val(SystemColorValues::Window);
         lt1.set_last_color("FFFFFF");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
-            .get_lt1_mut()
-            .set_system_color(lt1); // lt1
+        def.get_theme_elements_mut().get_color_scheme_mut().get_lt1_mut().set_system_color(lt1); // lt1
 
         let mut dk2 = RgbColorModelHex::default();
         dk2.set_val("44546A");
@@ -159,9 +153,7 @@ impl Theme {
             .set_rgb_color_model_hex(fol_hlink); // folHlink
 
         // font_scheme
-        def.get_theme_elements_mut()
-            .get_font_scheme_mut()
-            .set_name("Office");
+        def.get_theme_elements_mut().get_font_scheme_mut().set_name("Office");
 
         def.get_theme_elements_mut()
             .get_font_scheme_mut()
@@ -174,9 +166,7 @@ impl Theme {
             .set_defalut_value_minor();
 
         // format_scheme
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
-            .set_name("Office");
+        def.get_theme_elements_mut().get_format_scheme_mut().set_name("Office");
 
         let mut solid_fill = SolidFill::default();
         let mut scheme_color = SchemeColor::default();
@@ -204,9 +194,7 @@ impl Theme {
         tint.set_val(67000);
         scheme_color.set_tint(tint);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(50000);
@@ -222,9 +210,7 @@ impl Theme {
         tint.set_val(73000);
         scheme_color.set_tint(tint);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(100000);
@@ -240,9 +226,7 @@ impl Theme {
         tint.set_val(81000);
         scheme_color.set_tint(tint);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
         linear_gradient_fill.set_angle(5400000);
@@ -271,9 +255,7 @@ impl Theme {
         lum_mod.set_val(102000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(50000);
@@ -289,9 +271,7 @@ impl Theme {
         lum_mod.set_val(100000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(100000);
@@ -307,9 +287,7 @@ impl Theme {
         lum_mod.set_val(99000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
         linear_gradient_fill.set_angle(5400000);
@@ -477,9 +455,7 @@ impl Theme {
         lum_mod.set_val(102000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(50000);
@@ -498,9 +474,7 @@ impl Theme {
         lum_mod.set_val(103000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
         gradient_stop.set_position(100000);
@@ -513,9 +487,7 @@ impl Theme {
         sat_mod.set_val(120000);
         scheme_color.set_saturation_modulation(sat_mod);
         gradient_stop.set_scheme_color(scheme_color);
-        gradient_fill
-            .get_gradient_stop_list_mut()
-            .add_gradient_stop(gradient_stop);
+        gradient_fill.get_gradient_stop_list_mut().add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
         linear_gradient_fill.set_angle(5400000);

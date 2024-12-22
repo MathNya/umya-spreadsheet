@@ -1,16 +1,18 @@
 // si
+use std::hash::DefaultHasher;
+use std::hash::Hasher;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::PhoneticRun;
 use super::RichText;
 use super::Text;
 use super::TextElement;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::hash::DefaultHasher;
-use std::hash::Hasher;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringItem {
@@ -68,12 +70,8 @@ impl SharedStringItem {
         let mut h = DefaultHasher::default();
         let content = format!(
             "{}{}",
-            self.text
-                .as_ref()
-                .map_or(String::from("NONE"), Text::get_hash_code),
-            self.rich_text
-                .as_ref()
-                .map_or(String::from("NONE"), RichText::get_hash_code)
+            self.text.as_ref().map_or(String::from("NONE"), Text::get_hash_code),
+            self.rich_text.as_ref().map_or(String::from("NONE"), RichText::get_hash_code)
         );
         h.write(content.as_bytes());
         h.finish()

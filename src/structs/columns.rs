@@ -1,4 +1,10 @@
 // fills
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::structs::Cells;
 use crate::structs::Column;
@@ -6,10 +12,6 @@ use crate::structs::MergeCells;
 use crate::structs::Stylesheet;
 use crate::traits::AdjustmentValue;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Columns {
@@ -29,9 +31,7 @@ impl Columns {
 
     #[inline]
     pub(crate) fn get_column(&self, value: u32) -> Option<&Column> {
-        self.column
-            .iter()
-            .find(|&column| value == column.get_col_num())
+        self.column.iter().find(|&column| value == column.get_col_num())
     }
 
     pub(crate) fn get_column_mut(&mut self, value: u32) -> &mut Column {
@@ -183,8 +183,7 @@ impl AdjustmentValue for Columns {
     }
 
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
-        self.get_column_collection_mut()
-            .retain(|x| !(x.is_remove_value(root_num, offset_num)));
+        self.get_column_collection_mut().retain(|x| !(x.is_remove_value(root_num, offset_num)));
         for column_dimension in &mut self.column {
             column_dimension.adjustment_remove_value(root_num, offset_num);
         }

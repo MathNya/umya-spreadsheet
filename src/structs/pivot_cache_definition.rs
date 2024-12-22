@@ -1,4 +1,10 @@
 // pivotCacheDefinition
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::helper::const_str::{MC_NS, REL_OFC_NS, SHEET_MAIN_NS, SHEET_MS_REVISION_NS};
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::ByteValue;
@@ -8,10 +14,6 @@ use crate::structs::DoubleValue;
 use crate::structs::StringValue;
 use crate::structs::UInt32Value;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotCacheDefinition {
@@ -222,10 +224,7 @@ impl PivotCacheDefinition {
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push((
-                "minRefreshableVersion",
-                min_refreshable_version_str.as_str(),
-            ));
+            attributes.push(("minRefreshableVersion", min_refreshable_version_str.as_str()));
         }
         let record_count_str = self.record_count.get_value_string();
         if self.record_count.has_value() {

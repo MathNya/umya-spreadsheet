@@ -1,4 +1,12 @@
 // front
+use std::io::Cursor;
+use std::str::FromStr;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Bold;
 use super::Color;
 use super::FontCharSet;
@@ -13,12 +21,6 @@ use super::Underline;
 use super::UnderlineValues;
 use super::VerticalTextAlignment;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::str::FromStr;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Font {
@@ -37,30 +39,29 @@ pub struct Font {
 impl Font {
     // Charset
     pub const CHARSET_ANSI: i32 = 0;
+    pub const CHARSET_ARABIC: i32 = 178;
+    pub const CHARSET_BALTIC: i32 = 186;
+    pub const CHARSET_CHINESEBIG5: i32 = 136;
     pub const CHARSET_DEFAULT: i32 = 1;
-    pub const CHARSET_SYMBOL: i32 = 2;
-    pub const CHARSET_SHIFTJIS: i32 = 128;
+    pub const CHARSET_EASTEUROPE: i32 = 238;
+    pub const CHARSET_GB2312: i32 = 134;
+    pub const CHARSET_GREEK: i32 = 161;
     pub const CHARSET_HANGEUL: i32 = 129;
     pub const CHARSET_HANGUL: i32 = 129;
-    pub const CHARSET_GB2312: i32 = 134;
-    pub const CHARSET_CHINESEBIG5: i32 = 136;
-    pub const CHARSET_OEM: i32 = 255;
-    pub const CHARSET_JOHAB: i32 = 130;
     pub const CHARSET_HEBREW: i32 = 177;
-    pub const CHARSET_ARABIC: i32 = 178;
-    pub const CHARSET_GREEK: i32 = 161;
+    pub const CHARSET_JOHAB: i32 = 130;
+    pub const CHARSET_MAC: i32 = 77;
+    pub const CHARSET_OEM: i32 = 255;
+    pub const CHARSET_RUSSIAN: i32 = 204;
+    pub const CHARSET_SHIFTJIS: i32 = 128;
+    pub const CHARSET_SYMBOL: i32 = 2;
+    pub const CHARSET_THAI: i32 = 222;
     pub const CHARSET_TURKISH: i32 = 162;
     pub const CHARSET_VIETNAMESE: i32 = 163;
-    pub const CHARSET_THAI: i32 = 222;
-    pub const CHARSET_EASTEUROPE: i32 = 238;
-    pub const CHARSET_RUSSIAN: i32 = 204;
-    pub const CHARSET_MAC: i32 = 77;
-    pub const CHARSET_BALTIC: i32 = 186;
-
-    // Underline types
-    pub const UNDERLINE_NONE: &'static str = "none";
     pub const UNDERLINE_DOUBLE: &'static str = "double";
     pub const UNDERLINE_DOUBLEACCOUNTING: &'static str = "doubleAccounting";
+    // Underline types
+    pub const UNDERLINE_NONE: &'static str = "none";
     pub const UNDERLINE_SINGLE: &'static str = "single";
     pub const UNDERLINE_SINGLEACCOUNTING: &'static str = "singleAccounting";
 
@@ -243,8 +244,7 @@ impl Font {
     #[inline]
     pub fn set_underline<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
-        self.font_underline
-            .set_val(UnderlineValues::from_str(&obj).unwrap());
+        self.font_underline.set_val(UnderlineValues::from_str(&obj).unwrap());
         self
     }
 
@@ -349,8 +349,7 @@ impl Font {
     #[inline]
     pub fn set_scheme<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
-        self.font_scheme
-            .set_val(FontSchemeValues::from_str(&obj).unwrap());
+        self.font_scheme.set_val(FontSchemeValues::from_str(&obj).unwrap());
         self
     }
 

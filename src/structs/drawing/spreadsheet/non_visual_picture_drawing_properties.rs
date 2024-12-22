@@ -1,12 +1,14 @@
-//xdr:cNvPicPr
+// xdr:cNvPicPr
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::super::PictureLocks;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::BooleanValue;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualPictureDrawingProperties {
@@ -76,10 +78,8 @@ impl NonVisualPictureDrawingProperties {
         // xdr:cNvPicPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.prefer_relative_resize.has_value() {
-            attributes.push((
-                "preferRelativeResize",
-                self.prefer_relative_resize.get_value_string(),
-            ));
+            attributes
+                .push(("preferRelativeResize", self.prefer_relative_resize.get_value_string()));
         }
 
         match &self.picture_locks {

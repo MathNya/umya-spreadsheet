@@ -123,10 +123,8 @@ impl AdjustmentCoordinate for Coordinate {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        self.column
-            .adjustment_insert_value(root_col_num, offset_col_num);
-        self.row
-            .adjustment_insert_value(root_row_num, offset_row_num);
+        self.column.adjustment_insert_value(root_col_num, offset_col_num);
+        self.row.adjustment_insert_value(root_row_num, offset_row_num);
     }
 
     #[inline]
@@ -137,10 +135,8 @@ impl AdjustmentCoordinate for Coordinate {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        self.column
-            .adjustment_remove_value(root_col_num, offset_col_num);
-        self.row
-            .adjustment_remove_value(root_row_num, offset_row_num);
+        self.column.adjustment_remove_value(root_col_num, offset_col_num);
+        self.row.adjustment_remove_value(root_row_num, offset_row_num);
     }
 
     #[inline]

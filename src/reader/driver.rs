@@ -1,6 +1,7 @@
-use quick_xml::events::attributes::Attribute;
 use std::path::{Component, Path, PathBuf};
 use std::string::FromUtf8Error;
+
+use quick_xml::events::attributes::Attribute;
 
 #[macro_export]
 macro_rules! xml_read_loop {
@@ -79,14 +80,10 @@ pub(crate) fn normalize_path_to_str(path: &str) -> String {
 
 #[inline]
 pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -> Option<String> {
-    e.attributes()
-        .with_checks(false)
-        .find_map(|attr| match attr {
-            Ok(ref attr) if attr.key.into_inner() == key => {
-                Some(get_attribute_value(attr).unwrap())
-            }
-            _ => None,
-        })
+    e.attributes().with_checks(false).find_map(|attr| match attr {
+        Ok(ref attr) if attr.key.into_inner() == key => Some(get_attribute_value(attr).unwrap()),
+        _ => None,
+    })
 }
 
 #[inline]

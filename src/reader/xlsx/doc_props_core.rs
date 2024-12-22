@@ -1,8 +1,9 @@
-use super::XlsxError;
-use quick_xml::events::Event;
-use quick_xml::Reader;
 use std::io;
 
+use quick_xml::Reader;
+use quick_xml::events::Event;
+
+use super::XlsxError;
 use crate::helper::const_str::ARC_CORE;
 use crate::structs::Spreadsheet;
 
@@ -24,13 +25,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     let mut buf = Vec::new();
     loop {
         match reader.read_event_into(&mut buf) {
-            Ok(Event::Start(ref e)) => {
+            Ok(Event::Start(ref e)) =>
                 if e.name().into_inner() == b"cp:coreProperties" {
-                    spreadsheet
-                        .get_properties_mut()
-                        .set_attributes_core(&mut reader, e);
-                }
-            }
+                    spreadsheet.get_properties_mut().set_attributes_core(&mut reader, e);
+                },
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),

@@ -1,5 +1,6 @@
-use crate::from_err;
 use std::{fmt, str::FromStr};
+
+use crate::from_err;
 
 // https://msdn.microsoft.com/en-us/library/office/ff839168.aspx
 /// An enum to represent all different errors that can appear as

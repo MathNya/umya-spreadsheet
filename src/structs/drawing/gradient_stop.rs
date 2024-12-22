@@ -1,12 +1,14 @@
 // a:gs
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::RgbColorModelHex;
 use super::SchemeColor;
 use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientStop {
@@ -114,12 +116,7 @@ impl GradientStop {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:gs
-        write_start_tag(
-            writer,
-            "a:gs",
-            vec![("pos", &self.position.to_string())],
-            false,
-        );
+        write_start_tag(writer, "a:gs", vec![("pos", &self.position.to_string())], false);
 
         // a:schemeClr
         if let Some(v) = &self.scheme_color {

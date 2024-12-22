@@ -1,7 +1,8 @@
+use std::fmt;
+
 use super::RichText;
 use super::Text;
 use crate::CellErrorType;
-use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Default)]
 pub enum CellRawValue {

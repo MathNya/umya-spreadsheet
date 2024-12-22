@@ -1,10 +1,12 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::structs::StringValue;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node_no_escape};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Debug)]
 pub struct TextBox {
@@ -56,9 +58,7 @@ impl TextBox {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Empty(ref e)) => {
-                    let mut tag = std::str::from_utf8(e.name().into_inner())
-                        .unwrap()
-                        .to_string();
+                    let mut tag = std::str::from_utf8(e.name().into_inner()).unwrap().to_string();
                     let mut attrs = vec![];
                     e.attributes().for_each(|a| {
                         if let Ok(attribute) = a {
@@ -76,9 +76,7 @@ impl TextBox {
                     inner_text = format!("{inner_text}<{tag}/>");
                 }
                 Ok(Event::Start(ref e)) => {
-                    let mut tag = std::str::from_utf8(e.name().into_inner())
-                        .unwrap()
-                        .to_string();
+                    let mut tag = std::str::from_utf8(e.name().into_inner()).unwrap().to_string();
                     let mut attrs = vec![];
                     e.attributes().for_each(|a| {
                         if let Ok(attribute) = a {
@@ -112,7 +110,7 @@ impl TextBox {
             }
             buf.clear();
         }
-        //reader.check_end_names(true);
+        // reader.check_end_names(true);
         self.set_innder(inner_text);
     }
 

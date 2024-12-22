@@ -1,6 +1,15 @@
+use std::borrow::Cow;
+use std::collections::HashMap;
+use std::io::Cursor;
+use std::sync::{Arc, RwLock};
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::helper::coordinate::CellCoordinates;
 use crate::helper::formula::{
-    adjustment_formula_coordinate, parse_to_tokens, render, FormulaToken,
+    FormulaToken, adjustment_formula_coordinate, parse_to_tokens, render,
 };
 use crate::helper::number_format::to_formatted_string;
 use crate::reader::driver::{get_attribute, set_string_from_xml};
@@ -22,13 +31,6 @@ use crate::traits::AdjustmentCoordinateWith2Sheet;
 use crate::writer::driver::{
     write_end_tag, write_start_tag, write_text_node, write_text_node_conversion,
 };
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::borrow::Cow;
-use std::collections::HashMap;
-use std::io::Cursor;
-use std::sync::{Arc, RwLock};
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {
@@ -158,13 +160,15 @@ impl Cell {
         self.cell_value.get_value_lazy()
     }
 
-    /// Set the cell's value after trying to convert `value` into one of the supported data types.
-    /// <br />
+    /// Set the cell's value after trying to convert `value` into one of the
+    /// supported data types. <br />
     /// Types that `value` may be converted to:
     /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
-    /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
+    /// - `Error` - if the string was either
+    ///   `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#
+    ///   DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
     #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -403,24 +407,22 @@ impl Cell {
                         obj.set_attributes(reader, e, false, &cell_reference, formula_shared_list);
                         self.cell_value.set_formula_obj(obj);
                     }
-                    b"t" => {
+                    b"t" =>
                         if let Some(Ok(attribute)) = e.attributes().next() {
                             if attribute.key.into_inner() == b"xml:space"
                                 && attribute.value.as_ref() == b"preserve"
                             {
                                 reader.config_mut().trim_text(false);
                             }
-                        }
-                    }
+                        },
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) => {
+                Ok(Event::Empty(ref e)) =>
                     if e.name().into_inner() == b"f" {
                         let mut obj = CellFormula::default();
                         obj.set_attributes(reader, e, true, &cell_reference, formula_shared_list);
                         self.cell_value.set_formula_obj(obj);
-                    }
-                }
+                    },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"v" => match type_value.as_str() {
                         "str" => {
@@ -428,10 +430,8 @@ impl Cell {
                         }
                         "s" => {
                             let index = string_value.parse::<usize>().unwrap();
-                            let shared_string_item = shared_string_table
-                                .get_shared_string_item()
-                                .get(index)
-                                .unwrap();
+                            let shared_string_item =
+                                shared_string_table.get_shared_string_item().get(index).unwrap();
                             self.set_shared_string_item(shared_string_item.clone());
                         }
                         "b" => {
@@ -446,11 +446,10 @@ impl Cell {
                         }
                         _ => {}
                     },
-                    b"is" => {
+                    b"is" =>
                         if type_value == "inlineStr" {
                             self.set_value_crate(&string_value);
-                        }
-                    }
+                        },
                     b"c" => return,
                     b"t" => {
                         reader.config_mut().trim_text(true);
@@ -519,13 +518,11 @@ impl Cell {
         } else {
             write_start_tag(writer, "v", vec![], false);
 
-            //todo use typed value
+            // todo use typed value
             match self.get_data_type_crate() {
                 "s" => {
-                    let val_index = shared_string_table
-                        .write()
-                        .unwrap()
-                        .set_cell(self.get_cell_value());
+                    let val_index =
+                        shared_string_table.write().unwrap().set_cell(self.get_cell_value());
                     write_text_node(writer, val_index.to_string());
                 }
                 "str" => {

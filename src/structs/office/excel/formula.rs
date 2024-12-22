@@ -1,11 +1,13 @@
 // xm:f
-use crate::structs::Address;
-use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
 use std::vec;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
+use crate::structs::Address;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 
 #[derive(Default, Debug, Clone)]
 pub struct Formula {
@@ -41,14 +43,13 @@ impl Formula {
                 Ok(Event::Text(e)) => {
                     value = e.unescape().unwrap().to_string();
                 }
-                Ok(Event::End(ref e)) => {
+                Ok(Event::End(ref e)) =>
                     if e.name().into_inner() == b"xm:f" {
                         let mut obj = Address::default();
                         obj.set_address(value);
                         self.value = obj;
                         return;
-                    }
-                }
+                    },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:f"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),

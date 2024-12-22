@@ -1,14 +1,15 @@
 // a:srgbClr
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::super::StringValue;
 use super::PercentageType;
 use super::PositiveFixedPercentageType;
-
 use crate::reader::driver::{get_attribute, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct RgbColorModelHex {
@@ -247,12 +248,7 @@ impl RgbColorModelHex {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srgbClr
         if self.with_inner_params() {
-            write_start_tag(
-                writer,
-                "a:srgbClr",
-                vec![("val", (self.val.get_value_str()))],
-                false,
-            );
+            write_start_tag(writer, "a:srgbClr", vec![("val", (self.val.get_value_str()))], false);
 
             // a:luminance
             if let Some(v) = &self.luminance {
@@ -296,12 +292,7 @@ impl RgbColorModelHex {
 
             write_end_tag(writer, "a:srgbClr");
         } else {
-            write_start_tag(
-                writer,
-                "a:srgbClr",
-                vec![("val", (self.val.get_value_str()))],
-                true,
-            );
+            write_start_tag(writer, "a:srgbClr", vec![("val", (self.val.get_value_str()))], true);
         }
     }
 }

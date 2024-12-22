@@ -1,4 +1,10 @@
 // xdr:wsDr
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::ConnectionShape;
 use super::GraphicFrame;
 use super::OneCellAnchor;
@@ -7,17 +13,13 @@ use super::Shape;
 use super::TwoCellAnchor;
 use crate::helper::const_str::{DRAWINGML_MAIN_NS, SHEET_DRAWING_NS};
 use crate::reader::driver::xml_read_loop;
-use crate::structs::raw::RawRelationships;
 use crate::structs::Chart;
 use crate::structs::Image;
 use crate::structs::OleObjects;
+use crate::structs::raw::RawRelationships;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
@@ -380,10 +382,7 @@ impl WorksheetDrawing {
         write_start_tag(
             writer,
             "xdr:wsDr",
-            vec![
-                ("xmlns:xdr", SHEET_DRAWING_NS),
-                ("xmlns:a", DRAWINGML_MAIN_NS),
-            ],
+            vec![("xmlns:xdr", SHEET_DRAWING_NS), ("xmlns:a", DRAWINGML_MAIN_NS)],
             false,
         );
 
@@ -406,9 +405,7 @@ impl WorksheetDrawing {
         // mc:AlternateContent
         //        let mut ole_id = 1000 + 25;
         for ole_object in ole_objects.get_ole_object() {
-            ole_object
-                .get_two_cell_anchor()
-                .write_to(writer, rel_list, 0);
+            ole_object.get_two_cell_anchor().write_to(writer, rel_list, 0);
             //            ole_id += 1;
         }
 

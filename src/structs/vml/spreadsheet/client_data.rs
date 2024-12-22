@@ -1,3 +1,9 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Anchor;
 use super::AutoFill;
 use super::AutoSizePicture;
@@ -13,10 +19,6 @@ use crate::structs::EnumValue;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentValue;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct ClientData {

@@ -1,3 +1,9 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::EmbeddedObjectProperties;
 use super::StringValue;
 use crate::helper::const_str::MC_NS;
@@ -6,10 +12,6 @@ use crate::structs::drawing::spreadsheet::TwoCellAnchor;
 use crate::structs::raw::RawRelationships;
 use crate::structs::vml::Shape;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObject {
@@ -191,12 +193,7 @@ impl OleObject {
         ole_id: usize,
     ) {
         // mc:AlternateContent
-        write_start_tag(
-            writer,
-            "mc:AlternateContent",
-            vec![("xmlns:mc", MC_NS)],
-            false,
-        );
+        write_start_tag(writer, "mc:AlternateContent", vec![("xmlns:mc", MC_NS)], false);
 
         // mc:Choice
         write_start_tag(

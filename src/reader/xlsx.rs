@@ -5,14 +5,14 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 use super::driver;
+use crate::XlsxError;
 use crate::helper::const_str::{COMMENTS_NS, DRAWINGS_NS, TABLE_NS, THEME_NS, VML_DRAWING_NS};
-use crate::structs::drawing::Theme;
-use crate::structs::raw::RawWorksheet;
 use crate::structs::SharedStringTable;
 use crate::structs::Spreadsheet;
 use crate::structs::Stylesheet;
 use crate::structs::Worksheet;
-use crate::XlsxError;
+use crate::structs::drawing::Theme;
+use crate::structs::raw::RawWorksheet;
 
 pub(crate) mod chart;
 pub(crate) mod comment;
@@ -99,8 +99,8 @@ pub fn read<P: AsRef<Path>>(path: P) -> Result<Spreadsheet, XlsxError> {
 
 /// lazy read spreadsheet file.
 /// Delays the loading of the worksheet until it is needed.
-/// When loading a file with a large amount of data, response improvement can be expected.
-/// # Arguments
+/// When loading a file with a large amount of data, response improvement can be
+/// expected. # Arguments
 /// * `path` - file path to read.
 /// # Return value
 /// * `Result` - OK is Spreadsheet. Err is error message.
@@ -126,13 +126,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
 
     let raw_data_of_worksheet = worksheet.get_raw_data_of_worksheet().clone();
     let shared_string_table = &*shared_string_table.read().unwrap();
-    worksheet::read(
-        worksheet,
-        &raw_data_of_worksheet,
-        shared_string_table,
-        stylesheet,
-    )
-    .unwrap();
+    worksheet::read(worksheet, &raw_data_of_worksheet, shared_string_table, stylesheet).unwrap();
 
     if let Some(v) = raw_data_of_worksheet.get_worksheet_relationships() {
         for relationship in v.get_relationship_list() {

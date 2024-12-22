@@ -1,3 +1,10 @@
+use std::collections::HashMap;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::BooleanValue;
 use super::Cell;
 use super::Cells;
@@ -10,11 +17,6 @@ use crate::helper::formula::FormulaToken;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::traits::AdjustmentValue;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct Row {
@@ -243,16 +245,14 @@ impl AdjustmentValue for Row {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         if self.row_num.get_value() >= root_num {
-            self.row_num
-                .set_value(self.row_num.get_value() + offset_num);
+            self.row_num.set_value(self.row_num.get_value() + offset_num);
         }
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         if self.row_num.get_value() >= root_num {
-            self.row_num
-                .set_value(self.row_num.get_value() - offset_num);
+            self.row_num.set_value(self.row_num.get_value() - offset_num);
         }
     }
 

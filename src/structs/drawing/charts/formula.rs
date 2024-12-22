@@ -1,4 +1,8 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 
 // c:f
 use super::super::super::Address;
@@ -6,10 +10,7 @@ use super::super::super::StringValue;
 use crate::helper::address::is_address;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node_no_escape};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct Formula {

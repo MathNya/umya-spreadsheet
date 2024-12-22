@@ -1,4 +1,10 @@
 // xdr:twoCellAnchor
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::super::super::EnumValue;
 use super::ConnectionShape;
 use super::EditAsValues;
@@ -10,15 +16,11 @@ use super::Shape;
 use crate::helper::const_str::DRAWING_MAIN_NS;
 use crate::helper::const_str::MC_NS;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
-use crate::structs::raw::RawRelationships;
 use crate::structs::BooleanValue;
+use crate::structs::raw::RawRelationships;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {
@@ -264,12 +266,7 @@ impl TwoCellAnchor {
     ) {
         if self.get_is_alternate_content() {
             // mc:AlternateContent
-            write_start_tag(
-                writer,
-                "mc:AlternateContent",
-                vec![("xmlns:mc", MC_NS)],
-                false,
-            );
+            write_start_tag(writer, "mc:AlternateContent", vec![("xmlns:mc", MC_NS)], false);
 
             // mc:Choice
             write_start_tag(

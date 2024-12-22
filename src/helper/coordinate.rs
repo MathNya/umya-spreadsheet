@@ -8,7 +8,8 @@ use regex::Regex;
 ///
 /// # Arguments
 ///
-/// * `index` - A 1-based index to convert to a string. Must be greater than or equal to 1.
+/// * `index` - A 1-based index to convert to a string. Must be greater than or
+///   equal to 1.
 ///
 /// # Returns
 ///
@@ -40,11 +41,13 @@ fn index_to_alpha(index: u32) -> String {
 ///
 /// # Arguments
 ///
-/// * `alpha` - A string slice or reference to a string representing the column name.
+/// * `alpha` - A string slice or reference to a string representing the column
+///   name.
 ///
 /// # Returns
 ///
-/// A `u32` representing the 1-based index corresponding to the given column name.
+/// A `u32` representing the 1-based index corresponding to the given column
+/// name.
 ///
 /// # Examples
 ///
@@ -78,12 +81,13 @@ where
 ///
 /// # Arguments
 ///
-/// * `column` - A string slice or reference to a string representing the column name.
+/// * `column` - A string slice or reference to a string representing the column
+///   name.
 ///
 /// # Returns
 ///
-/// A `u32` representing the 1-based index corresponding to the given column name,
-/// or 0 if the input is "0".
+/// A `u32` representing the 1-based index corresponding to the given column
+/// name, or 0 if the input is "0".
 ///
 /// # Examples
 ///
@@ -104,14 +108,16 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
     alpha_to_index(column_c)
 }
 
-/// Converts a 1-based column index to its corresponding Excel-style column label.
+/// Converts a 1-based column index to its corresponding Excel-style column
+/// label.
 ///
-/// This function takes a column index starting from 1 and returns a string representing
-/// the column label as used in Excel (e.g., 1 -> "A", 27 -> "AA").
+/// This function takes a column index starting from 1 and returns a string
+/// representing the column label as used in Excel (e.g., 1 -> "A", 27 -> "AA").
 ///
 /// # Parameters
 ///
-/// - `column_index`: A 1-based column index. Must be greater than or equal to 1.
+/// - `column_index`: A 1-based column index. Must be greater than or equal to
+///   1.
 ///
 /// # Returns
 ///
@@ -119,7 +125,8 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 ///
 /// # Panics
 ///
-/// Panics if the `column_index` is less than 1, as column numbering starts from 1.
+/// Panics if the `column_index` is less than 1, as column numbering starts from
+/// 1.
 ///
 /// # Examples
 ///
@@ -138,28 +145,34 @@ pub fn string_from_column_index(column_index: u32) -> String {
     index_to_alpha(column_index)
 }
 
-/// Parses an Excel-style coordinate string into column and row indices, along with lock flags.
+/// Parses an Excel-style coordinate string into column and row indices, along
+/// with lock flags.
 ///
-/// This function takes a coordinate string, which may include column letters and row numbers,
-/// and optional '$' symbols indicating locked columns or rows. It returns a tuple containing
-/// the column index, row index, and optional lock flags for each.
+/// This function takes a coordinate string, which may include column letters
+/// and row numbers, and optional '$' symbols indicating locked columns or rows.
+/// It returns a tuple containing the column index, row index, and optional lock
+/// flags for each.
 ///
 /// # Type Parameters
 ///
-/// - `T`: A type that can be referenced as a string slice, such as `&str` or `String`.
+/// - `T`: A type that can be referenced as a string slice, such as `&str` or
+///   `String`.
 ///
 /// # Parameters
 ///
-/// - `coordinate`: The coordinate string to parse. It should be in the format of Excel cell
-///   references, such as "A1", "$B$2", or "C$3".
+/// - `coordinate`: The coordinate string to parse. It should be in the format
+///   of Excel cell references, such as "A1", "$B$2", or "C$3".
 ///
 /// # Returns
 ///
 /// A tuple `(Option<u32>, Option<u32>, Option<bool>, Option<bool>)` where:
-/// - The first element is the column index, if present, calculated using `alpha_to_index`.
+/// - The first element is the column index, if present, calculated using
+///   `alpha_to_index`.
 /// - The second element is the row index, if present, parsed as a `u32`.
-/// - The third element is a flag indicating if the column is locked, if applicable.
-/// - The fourth element is a flag indicating if the row is locked, if applicable.
+/// - The third element is a flag indicating if the column is locked, if
+///   applicable.
+/// - The fourth element is a flag indicating if the row is locked, if
+///   applicable.
 ///
 /// # Examples
 ///
@@ -173,7 +186,8 @@ pub fn string_from_column_index(column_index: u32) -> String {
 ///
 /// # Panics
 ///
-/// This function does not panic. It returns `None` for column or row indices if they cannot be parsed.
+/// This function does not panic. It returns `None` for column or row indices if
+/// they cannot be parsed.
 pub fn index_from_coordinate<T>(coordinate: T) -> CellIndex
 where
     T: AsRef<str>,
@@ -201,8 +215,8 @@ where
 
 /// Converts a column index and row index into an Excel-style coordinate string.
 ///
-/// This function takes a 1-based column index and a row index, and returns a string
-/// representing the coordinate in Excel format (e.g., (1, 1) -> "A1").
+/// This function takes a 1-based column index and a row index, and returns a
+/// string representing the coordinate in Excel format (e.g., (1, 1) -> "A1").
 ///
 /// # Parameters
 ///
@@ -246,9 +260,10 @@ pub fn coordinate_from_index_with_lock(
 
 /// Adjusts a coordinate index by inserting an offset if conditions are met.
 ///
-/// This function checks if the given `num` is greater than or equal to `root_num`
-/// and if `offset_num` is not zero. If both conditions are satisfied, it returns
-/// the sum of `num` and `offset_num`. Otherwise, it returns `num` unchanged.
+/// This function checks if the given `num` is greater than or equal to
+/// `root_num` and if `offset_num` is not zero. If both conditions are
+/// satisfied, it returns the sum of `num` and `offset_num`. Otherwise, it
+/// returns `num` unchanged.
 ///
 /// # Parameters
 ///
@@ -271,24 +286,22 @@ pub fn coordinate_from_index_with_lock(
 /// ```
 #[inline]
 pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
-    if num >= root_num && offset_num != 0 {
-        num + offset_num
-    } else {
-        num
-    }
+    if num >= root_num && offset_num != 0 { num + offset_num } else { num }
 }
 
 /// Adjusts a coordinate index by removing an offset if conditions are met.
 ///
-/// This function checks if the given `num` is greater than or equal to `root_num`
-/// and if `offset_num` is not zero. If both conditions are satisfied, it returns
-/// the result of subtracting `offset_num` from `num`. Otherwise, it returns `num` unchanged.
+/// This function checks if the given `num` is greater than or equal to
+/// `root_num` and if `offset_num` is not zero. If both conditions are
+/// satisfied, it returns the result of subtracting `offset_num` from `num`.
+/// Otherwise, it returns `num` unchanged.
 ///
 /// # Parameters
 ///
 /// - `num`: The original coordinate index to be adjusted.
 /// - `root_num`: The threshold coordinate index for applying the offset.
-/// - `offset_num`: The offset to be subtracted from `num` if conditions are met.
+/// - `offset_num`: The offset to be subtracted from `num` if conditions are
+///   met.
 ///
 /// # Returns
 ///
@@ -305,19 +318,15 @@ pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: 
 /// ```
 #[inline]
 pub(crate) fn adjustment_remove_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
-    if num >= root_num && offset_num != 0 {
-        num - offset_num
-    } else {
-        num
-    }
+    if num >= root_num && offset_num != 0 { num - offset_num } else { num }
 }
 
 /// Determines if a coordinate index falls within a removable range.
 ///
 /// This function checks whether the given `num` is within the range defined by
-/// `root_num` and `offset_num`. Specifically, it returns `true` if `num` is greater
-/// than or equal to `root_num` and less than the sum of `root_num` and `offset_num`,
-/// provided both `root_num` and `offset_num` are non-zero.
+/// `root_num` and `offset_num`. Specifically, it returns `true` if `num` is
+/// greater than or equal to `root_num` and less than the sum of `root_num` and
+/// `offset_num`, provided both `root_num` and `offset_num` are non-zero.
 ///
 /// # Parameters
 ///
@@ -363,7 +372,8 @@ pub struct CellCoordinates {
 }
 
 impl CellCoordinates {
-    /// Creates a new `CellCoordinates` instance with the specified column and row indices.
+    /// Creates a new `CellCoordinates` instance with the specified column and
+    /// row indices.
     ///
     /// # Parameters
     ///
@@ -380,7 +390,8 @@ impl CellCoordinates {
 }
 
 impl From<(u32, u32)> for CellCoordinates {
-    /// Converts a tuple of column and row indices into a `CellCoordinates` instance.
+    /// Converts a tuple of column and row indices into a `CellCoordinates`
+    /// instance.
     ///
     /// # Parameters
     ///
@@ -396,7 +407,8 @@ impl From<(u32, u32)> for CellCoordinates {
 }
 
 impl From<String> for CellCoordinates {
-    /// Converts a string representation of a cell coordinate into a `CellCoordinates` instance.
+    /// Converts a string representation of a cell coordinate into a
+    /// `CellCoordinates` instance.
     ///
     /// The string is expected to be in Excel-style format (e.g., "A1").
     ///
@@ -414,10 +426,11 @@ impl From<String> for CellCoordinates {
 }
 
 impl From<&str> for CellCoordinates {
-    /// Converts a string slice representation of a cell coordinate into a `CellCoordinates` instance.
+    /// Converts a string slice representation of a cell coordinate into a
+    /// `CellCoordinates` instance.
     ///
-    /// The string is expected to be in Excel-style format (e.g., "A1"). The function converts
-    /// the string to uppercase before parsing.
+    /// The string is expected to be in Excel-style format (e.g., "A1"). The
+    /// function converts the string to uppercase before parsing.
     ///
     /// # Parameters
     ///
@@ -466,53 +479,17 @@ mod tests {
 
     #[test]
     fn index_from_coordinate_1() {
-        assert_eq!(
-            index_from_coordinate("$A$4"),
-            (Some(1), Some(4), Some(true), Some(true))
-        );
-        assert_eq!(
-            index_from_coordinate("$A4"),
-            (Some(1), Some(4), Some(true), Some(false))
-        );
-        assert_eq!(
-            index_from_coordinate("A4"),
-            (Some(1), Some(4), Some(false), Some(false))
-        );
-        assert_eq!(
-            index_from_coordinate("Z91"),
-            (Some(26), Some(91), Some(false), Some(false))
-        );
-        assert_eq!(
-            index_from_coordinate("AA91"),
-            (Some(27), Some(91), Some(false), Some(false))
-        );
-        assert_eq!(
-            index_from_coordinate("AA$91"),
-            (Some(27), Some(91), Some(false), Some(true))
-        );
-        assert_eq!(
-            index_from_coordinate("$AA91"),
-            (Some(27), Some(91), Some(true), Some(false))
-        );
-        assert_eq!(
-            index_from_coordinate("$AA$91"),
-            (Some(27), Some(91), Some(true), Some(true))
-        );
-        assert_eq!(
-            index_from_coordinate("A"),
-            (Some(1), None, Some(false), None)
-        );
-        assert_eq!(
-            index_from_coordinate("$A"),
-            (Some(1), None, Some(true), None)
-        );
-        assert_eq!(
-            index_from_coordinate("5"),
-            (None, Some(5), None, Some(false))
-        );
-        assert_eq!(
-            index_from_coordinate("$5"),
-            (None, Some(5), None, Some(true))
-        );
+        assert_eq!(index_from_coordinate("$A$4"), (Some(1), Some(4), Some(true), Some(true)));
+        assert_eq!(index_from_coordinate("$A4"), (Some(1), Some(4), Some(true), Some(false)));
+        assert_eq!(index_from_coordinate("A4"), (Some(1), Some(4), Some(false), Some(false)));
+        assert_eq!(index_from_coordinate("Z91"), (Some(26), Some(91), Some(false), Some(false)));
+        assert_eq!(index_from_coordinate("AA91"), (Some(27), Some(91), Some(false), Some(false)));
+        assert_eq!(index_from_coordinate("AA$91"), (Some(27), Some(91), Some(false), Some(true)));
+        assert_eq!(index_from_coordinate("$AA91"), (Some(27), Some(91), Some(true), Some(false)));
+        assert_eq!(index_from_coordinate("$AA$91"), (Some(27), Some(91), Some(true), Some(true)));
+        assert_eq!(index_from_coordinate("A"), (Some(1), None, Some(false), None));
+        assert_eq!(index_from_coordinate("$A"), (Some(1), None, Some(true), None));
+        assert_eq!(index_from_coordinate("5"), (None, Some(5), None, Some(false)));
+        assert_eq!(index_from_coordinate("$5"), (None, Some(5), None, Some(true)));
     }
 }

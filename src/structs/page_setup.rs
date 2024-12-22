@@ -1,13 +1,15 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::structs::raw::RawRelationships;
 use crate::structs::EnumValue;
 use crate::structs::OrientationValues;
 use crate::structs::UInt32Value;
+use crate::structs::raw::RawRelationships;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct PageSetup {
@@ -150,10 +152,8 @@ impl PageSetup {
         set_string_from_xml!(self, e, vertical_dpi, "verticalDpi");
 
         if let Some(r_id) = get_attribute(e, b"r:id") {
-            let attached_file = relationships
-                .unwrap()
-                .get_relationship_by_rid(&r_id)
-                .get_raw_file();
+            let attached_file =
+                relationships.unwrap().get_relationship_by_rid(&r_id).get_raw_file();
             self.set_object_data(attached_file.get_file_data());
         }
     }

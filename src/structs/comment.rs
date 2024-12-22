@@ -1,23 +1,23 @@
-use crate::xml_read_loop;
+use quick_xml::Reader;
+use quick_xml::events::{BytesStart, Event};
 
+use super::Coordinate;
+use super::RichText;
+use super::vml::Fill as VmlFill;
+use super::vml::Path;
+use super::vml::Shadow;
+use super::vml::TextBox;
 use super::vml::office::InsetMarginValues;
 use super::vml::spreadsheet::Anchor;
 use super::vml::spreadsheet::CommentColumnTarget;
 use super::vml::spreadsheet::CommentRowTarget;
 use super::vml::spreadsheet::MoveWithCells;
 use super::vml::spreadsheet::ResizeWithCells;
-use super::vml::Fill as VmlFill;
-use super::vml::Path;
-use super::vml::Shadow;
-use super::vml::TextBox;
-use super::Coordinate;
-use super::RichText;
 use crate::helper::coordinate::CellCoordinates;
 use crate::reader::driver::get_attribute;
 use crate::structs::vml::Shape;
 use crate::traits::AdjustmentCoordinate;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
+use crate::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
@@ -118,7 +118,10 @@ impl Comment {
 
         self.get_shape_mut()
             .set_type("#_x0000_t202")
-            .set_style("position:absolute;margin-left:275.25pt;margin-top:61.5pt;width:207.75pt;height:145.5pt;z-index:1;visibility:hidden;mso-wrap-style:tight")
+            .set_style(
+                "position:absolute;margin-left:275.25pt;margin-top:61.5pt;width:207.75pt;height:\
+                 145.5pt;z-index:1;visibility:hidden;mso-wrap-style:tight",
+            )
             .set_fill_color("infoBackground [80]")
             .set_inset_mode(InsetMarginValues::Auto);
 
@@ -141,14 +144,10 @@ impl Comment {
         self.get_shape_mut().set_text_box(textbox);
 
         let movewithcells = MoveWithCells::default();
-        self.get_shape_mut()
-            .get_client_data_mut()
-            .set_move_with_cells(movewithcells);
+        self.get_shape_mut().get_client_data_mut().set_move_with_cells(movewithcells);
 
         let resizewithcells = ResizeWithCells::default();
-        self.get_shape_mut()
-            .get_client_data_mut()
-            .set_resize_with_cells(resizewithcells);
+        self.get_shape_mut().get_client_data_mut().set_resize_with_cells(resizewithcells);
 
         self.get_shape_mut()
             .get_client_data_mut()
@@ -184,10 +183,7 @@ impl Comment {
         let coordinate = get_attribute(e, b"ref").unwrap();
         self.get_coordinate_mut().set_coordinate(coordinate);
 
-        let author_id = get_attribute(e, b"authorId")
-            .unwrap()
-            .parse::<usize>()
-            .unwrap();
+        let author_id = get_attribute(e, b"authorId").unwrap().parse::<usize>().unwrap();
         let author = authors.get(author_id).unwrap();
         self.set_author(author);
 

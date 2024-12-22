@@ -1,3 +1,8 @@
+use std::io;
+use std::io::Cursor;
+
+use quick_xml::Writer;
+
 use crate::helper::const_str::{
     CHART_TYPE, COMMENTS_TYPE, CORE_PROPS_TYPE, CUSTOM_PROPS_TYPE, DRAWING_TYPE, OLE_OBJECT_TYPE,
     PKG_CHARTS, PKG_DRAWINGS, PKG_EMBEDDINGS, PKG_PRNTR_SETTINGS, PKG_TABLES, SHARED_STRINGS_TYPE,
@@ -7,9 +12,6 @@ use crate::helper::const_str::{
 use crate::structs::Spreadsheet;
 use crate::structs::XlsxError;
 use crate::writer::driver::{make_file_from_bin, make_file_from_writer};
-use quick_xml::Writer;
-use std::io;
-use std::io::Cursor;
 pub struct WriterManager<'a, W: io::Seek + io::Write> {
     files: Vec<String>,
     arv: &'a mut zip::ZipWriter<W>,
@@ -20,12 +22,7 @@ pub struct WriterManager<'a, W: io::Seek + io::Write> {
 impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     #[inline]
     pub fn new(arv: &'a mut zip::ZipWriter<W>) -> Self {
-        WriterManager {
-            files: Vec::new(),
-            arv,
-            is_light: false,
-            table_no: 0,
-        }
+        WriterManager { files: Vec::new(), arv, is_light: false, table_no: 0 }
     }
 
     #[inline]

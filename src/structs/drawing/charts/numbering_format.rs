@@ -1,12 +1,14 @@
 // c:numFmt
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::super::super::BooleanValue;
 use super::super::super::StringValue;
 use crate::reader::driver::get_attribute;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberingFormat {
@@ -39,10 +41,8 @@ impl NumberingFormat {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.format_code
-            .set_value_string(get_attribute(e, b"formatCode").unwrap());
-        self.source_linked
-            .set_value_string(get_attribute(e, b"sourceLinked").unwrap());
+        self.format_code.set_value_string(get_attribute(e, b"formatCode").unwrap());
+        self.source_linked.set_value_string(get_attribute(e, b"sourceLinked").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

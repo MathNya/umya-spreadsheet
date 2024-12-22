@@ -1,10 +1,11 @@
+use quick_xml::Reader;
+use quick_xml::events::Event;
+
 use super::XlsxError;
-use crate::structs::raw::RawFile;
 use crate::structs::PivotTable;
 use crate::structs::PivotTableDefinition;
 use crate::structs::Worksheet;
-use quick_xml::events::Event;
-use quick_xml::Reader;
+use crate::structs::raw::RawFile;
 
 #[allow(dead_code)]
 pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) -> Result<(), XlsxError> {
@@ -15,18 +16,16 @@ pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) -> Res
     let mut pivot_table = PivotTable::default();
     loop {
         match reader.read_event_into(&mut buf) {
-            Ok(Event::Start(ref e)) => {
+            Ok(Event::Start(ref e)) =>
                 if e.name().into_inner() == b"pivotTableDefinition" {
                     let mut obj = PivotTableDefinition::default();
                     obj.set_attributes(&mut reader, e);
                     pivot_table.set_pivot_table_definition(obj);
-                }
-            }
-            Ok(Event::End(ref e)) => {
+                },
+            Ok(Event::End(ref e)) =>
                 if e.name().into_inner() == b"pivotTableDefinition" {
                     break;
-                }
-            }
+                },
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),

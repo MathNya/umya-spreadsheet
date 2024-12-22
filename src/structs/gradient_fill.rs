@@ -1,14 +1,16 @@
 // gradientFill
+use std::fmt::Write;
+use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::DoubleValue;
 use super::GradientStop;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::fmt::Write;
-use std::io::Cursor;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientFill {
@@ -51,10 +53,7 @@ impl GradientFill {
         for stop in &self.gradient_stop {
             write!(value, "{}", stop.get_hash_code().as_str()).unwrap();
         }
-        format!(
-            "{:x}",
-            md5::Md5::digest(format!("{}{}", &self.degree.get_value_string(), value,))
-        )
+        format!("{:x}", md5::Md5::digest(format!("{}{}", &self.degree.get_value_string(), value,)))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

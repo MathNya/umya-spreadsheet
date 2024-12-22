@@ -1,13 +1,15 @@
-use crate::reader::driver::get_attribute;
-use crate::writer::driver::write_start_tag;
-use md5::Digest;
-use quick_xml::escape;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::collections::HashMap;
 use std::io::Cursor;
 use std::sync::OnceLock;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::escape;
+use quick_xml::events::BytesStart;
+
+use crate::reader::driver::get_attribute;
+use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {
@@ -28,33 +30,21 @@ impl Default for NumberingFormat {
 }
 
 impl NumberingFormat {
-    // Pre-defined formats
-    pub const FORMAT_GENERAL: &'static str = "General";
-
-    pub const FORMAT_TEXT: &'static str = "@";
-
-    pub const FORMAT_NUMBER: &'static str = "0";
-    pub const FORMAT_NUMBER_00: &'static str = "0.00";
-    pub const FORMAT_NUMBER_COMMA_SEPARATED1: &'static str = "#,##0.00";
-    pub const FORMAT_NUMBER_COMMA_SEPARATED2: &'static str = "#,##0.00_-";
-
-    pub const FORMAT_PERCENTAGE: &'static str = "0%";
-    pub const FORMAT_PERCENTAGE_00: &'static str = "0.00%";
-
-    pub const FORMAT_DATE_YYYYMMDD2: &'static str = "yyyy-mm-dd";
-    pub const FORMAT_DATE_YYYYMMDD: &'static str = "yyyy-mm-dd";
+    pub const FORMAT_ACCOUNTING_EUR: &'static str =
+        r#"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"#;
+    pub const FORMAT_ACCOUNTING_USD: &'static str =
+        r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#;
+    pub const FORMAT_CURRENCY_EUR: &'static str = r#"#,##0_-"€""#;
+    pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r#"#,##0.00_-"€""#;
+    pub const FORMAT_CURRENCY_USD: &'static str = r"$#,##0_-";
+    pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r##""$"#,##0.00_-"##;
+    pub const FORMAT_DATE_DATETIME: &'static str = "d/m/yy h:mm";
     pub const FORMAT_DATE_DDMMYYYY: &'static str = "dd-mm-yyyy";
     pub const FORMAT_DATE_DDMMYYYYSLASH: &'static str = "dd/mm/yyyy";
-    pub const FORMAT_DATE_DMYSLASH: &'static str = "d/m/yy";
-    pub const FORMAT_DATE_DMYMINUS: &'static str = "d-m-yy";
     pub const FORMAT_DATE_DMMINUS: &'static str = "d-m";
+    pub const FORMAT_DATE_DMYMINUS: &'static str = "d-m-yy";
+    pub const FORMAT_DATE_DMYSLASH: &'static str = "d/m/yy";
     pub const FORMAT_DATE_MYMINUS: &'static str = "m-yy";
-    pub const FORMAT_DATE_XLSX14: &'static str = "mm-dd-yy";
-    pub const FORMAT_DATE_XLSX15: &'static str = "d-mmm-yy";
-    pub const FORMAT_DATE_XLSX16: &'static str = "d-mmm";
-    pub const FORMAT_DATE_XLSX17: &'static str = "mmm-yy";
-    pub const FORMAT_DATE_XLSX22: &'static str = "m/d/yy h:mm";
-    pub const FORMAT_DATE_DATETIME: &'static str = "d/m/yy h:mm";
     pub const FORMAT_DATE_TIME1: &'static str = "h:mm AM/PM";
     pub const FORMAT_DATE_TIME2: &'static str = "h:mm:ss AM/PM";
     pub const FORMAT_DATE_TIME3: &'static str = "h:mm";
@@ -62,16 +52,23 @@ impl NumberingFormat {
     pub const FORMAT_DATE_TIME5: &'static str = "mm:ss";
     pub const FORMAT_DATE_TIME6: &'static str = "h:mm:ss";
     pub const FORMAT_DATE_TIME8: &'static str = "h:mm:ss;@";
+    pub const FORMAT_DATE_XLSX14: &'static str = "mm-dd-yy";
+    pub const FORMAT_DATE_XLSX15: &'static str = "d-mmm-yy";
+    pub const FORMAT_DATE_XLSX16: &'static str = "d-mmm";
+    pub const FORMAT_DATE_XLSX17: &'static str = "mmm-yy";
+    pub const FORMAT_DATE_XLSX22: &'static str = "m/d/yy h:mm";
+    pub const FORMAT_DATE_YYYYMMDD: &'static str = "yyyy-mm-dd";
+    pub const FORMAT_DATE_YYYYMMDD2: &'static str = "yyyy-mm-dd";
     pub const FORMAT_DATE_YYYYMMDDSLASH: &'static str = "yyyy/mm/dd;@";
-
-    pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r##""$"#,##0.00_-"##;
-    pub const FORMAT_CURRENCY_USD: &'static str = r"$#,##0_-";
-    pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r#"#,##0.00_-"€""#;
-    pub const FORMAT_CURRENCY_EUR: &'static str = r#"#,##0_-"€""#;
-    pub const FORMAT_ACCOUNTING_USD: &'static str =
-        r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#;
-    pub const FORMAT_ACCOUNTING_EUR: &'static str =
-        r#"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"#;
+    // Pre-defined formats
+    pub const FORMAT_GENERAL: &'static str = "General";
+    pub const FORMAT_NUMBER: &'static str = "0";
+    pub const FORMAT_NUMBER_00: &'static str = "0.00";
+    pub const FORMAT_NUMBER_COMMA_SEPARATED1: &'static str = "#,##0.00";
+    pub const FORMAT_NUMBER_COMMA_SEPARATED2: &'static str = "#,##0.00_-";
+    pub const FORMAT_PERCENTAGE: &'static str = "0%";
+    pub const FORMAT_PERCENTAGE_00: &'static str = "0.00%";
+    pub const FORMAT_TEXT: &'static str = "@";
 
     #[inline]
     #[must_use]
@@ -82,17 +79,9 @@ impl NumberingFormat {
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
         let format_code_result = get_fill_built_in_format_codes()
             .iter()
-            .find_map(|(key, val)| {
-                if key == &value {
-                    Some(val.clone())
-                } else {
-                    None
-                }
-            });
+            .find_map(|(key, val)| if key == &value { Some(val.clone()) } else { None });
 
-        self.format_code = format_code_result
-            .expect("Not Found NumberFormatId.")
-            .into_boxed_str();
+        self.format_code = format_code_result.expect("Not Found NumberFormatId.").into_boxed_str();
         self.number_format_id = value;
         self.is_build_in = true;
         self
@@ -111,9 +100,10 @@ impl NumberingFormat {
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.get_sheet_mut(0).unwrap();
-    /// let _unused =  worksheet.get_style_mut("C30")
-    /// .get_number_format_mut()
-    /// .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
+    /// let _unused = worksheet
+    ///     .get_style_mut("C30")
+    ///     .get_number_format_mut()
+    ///     .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
     /// ```
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into().into_boxed_str();
@@ -156,10 +146,7 @@ impl NumberingFormat {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.number_format_id = get_attribute(e, b"numFmtId")
-            .unwrap()
-            .parse::<u32>()
-            .unwrap();
+        self.number_format_id = get_attribute(e, b"numFmtId").unwrap().parse::<u32>().unwrap();
         self.format_code = escape::unescape(get_attribute(e, b"formatCode").unwrap().as_str())
             .unwrap()
             .to_string()
@@ -214,10 +201,7 @@ pub(crate) fn get_fill_built_in_format_codes() -> &'static HashMap<u32, String> 
         map.insert(39, "#,##0.00_);(#,##0.00)".to_string());
         map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string());
 
-        map.insert(
-            44,
-            r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string(),
-        );
+        map.insert(44, r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string());
         map.insert(45, "mm:ss".to_string());
         map.insert(46, "[h]:mm:ss".to_string());
         map.insert(47, "mm:ss.0".to_string());

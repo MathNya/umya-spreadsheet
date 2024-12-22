@@ -1,4 +1,10 @@
 // c:radarChart
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::AreaChartSeries;
 use super::AreaChartSeriesList;
 use super::AxisId;
@@ -8,10 +14,6 @@ use super::VaryColors;
 use crate::reader::driver::xml_read_loop;
 use crate::structs::Spreadsheet;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct RadarChart {

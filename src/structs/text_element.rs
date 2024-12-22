@@ -1,13 +1,15 @@
 // r
+use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Font;
 use super::Text;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct TextElement {
@@ -74,18 +76,14 @@ impl TextElement {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::Md5::digest(format!(
-                "{}{}",
-                &self.text.get_value(),
-                match &self.run_properties {
-                    Some(v) => {
-                        v.get_hash_code()
-                    }
-                    None => {
-                        "None".into()
-                    }
-                },
-            ))
+            md5::Md5::digest(format!("{}{}", &self.text.get_value(), match &self.run_properties {
+                Some(v) => {
+                    v.get_hash_code()
+                }
+                None => {
+                    "None".into()
+                }
+            },))
         )
     }
 

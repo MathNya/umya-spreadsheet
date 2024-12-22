@@ -1,9 +1,10 @@
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
 
-use super::driver::{write_end_tag, write_new_line, write_start_tag};
+use quick_xml::Writer;
+use quick_xml::events::{BytesDecl, Event};
+
 use super::XlsxError;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use crate::helper::const_str::{PKG_WORKBOOK, REL_OFC_NS, SHEET_MAIN_NS};
 use crate::structs::Spreadsheet;
 use crate::structs::WriterManager;
@@ -14,13 +15,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer
-        .write_event(Event::Decl(BytesDecl::new(
-            "1.0",
-            Some("UTF-8"),
-            Some("yes"),
-        )))
-        .unwrap();
+    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
     write_new_line(&mut writer);
 
     // workbook
@@ -35,24 +30,16 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "fileVersion",
-        vec![
-            ("appName", "xl"),
-            ("lastEdited", "5"),
-            ("lowestEdited", "4"),
-            ("rupBuild", "9302"),
-        ],
+        vec![("appName", "xl"), ("lastEdited", "5"), ("lowestEdited", "4"), ("rupBuild", "9302")],
         true,
     );
 
     // workbookPr
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     attributes.push(("filterPrivacy", "1"));
-    //attributes.push(("defaultThemeVersion", "124226"));
+    // attributes.push(("defaultThemeVersion", "124226"));
     if spreadsheet.get_has_macros() {
-        attributes.push((
-            "codeName",
-            spreadsheet.get_code_name().unwrap_or("ThisWorkbook"),
-        ));
+        attributes.push(("codeName", spreadsheet.get_code_name().unwrap_or("ThisWorkbook")));
     }
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 

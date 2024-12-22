@@ -1,15 +1,17 @@
 // a:bodyPr
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::super::EnumValue;
 use super::super::Int32Value;
 use super::ShapeAutoFit;
 use super::TextWrappingValues;
+use crate::StringValue;
 use crate::reader::driver::{get_attribute_value, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct BodyProperties {

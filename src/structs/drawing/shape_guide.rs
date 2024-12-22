@@ -1,7 +1,9 @@
 // a:gd
-use crate::writer::driver::write_start_tag;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::Writer;
+
+use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeGuide {
@@ -32,11 +34,6 @@ impl ShapeGuide {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        write_start_tag(
-            writer,
-            "a:gd",
-            vec![("name", &self.name), ("fmla", &self.fmla)],
-            true,
-        );
+        write_start_tag(writer, "a:gd", vec![("name", &self.name), ("fmla", &self.fmla)], true);
     }
 }

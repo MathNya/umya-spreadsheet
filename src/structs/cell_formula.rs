@@ -1,7 +1,14 @@
+use std::collections::HashMap;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::helper::coordinate::index_from_coordinate;
 use crate::helper::formula::{
-    adjustment_insert_formula_coordinate, adjustment_remove_formula_coordinate, parse_to_tokens,
-    FormulaToken,
+    FormulaToken, adjustment_insert_formula_coordinate, adjustment_remove_formula_coordinate,
+    parse_to_tokens,
 };
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::structs::BooleanValue;
@@ -11,11 +18,6 @@ use crate::structs::StringValue;
 use crate::structs::UInt32Value;
 use crate::traits::AdjustmentCoordinateWith2Sheet;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node_conversion};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellFormula {

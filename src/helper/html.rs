@@ -1,11 +1,13 @@
+use std::collections::HashMap;
+
+use html_parser::{Dom, Node};
+
 use crate::structs::Color;
 use crate::structs::Font;
 use crate::structs::RichText;
 use crate::structs::TextElement;
 use crate::structs::UnderlineValues;
 use crate::structs::VerticalAlignmentRunValues;
-use html_parser::{Dom, Node};
-use std::collections::HashMap;
 
 /// Generate rich text from html.
 /// # Arguments
@@ -83,10 +85,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFl
                     .attributes
                     .iter()
                     .map(|(name, value)| {
-                        (
-                            name.clone(),
-                            value.as_ref().map(ToString::to_string).unwrap_or_default(),
-                        )
+                        (name.clone(), value.as_ref().map(ToString::to_string).unwrap_or_default())
                     })
                     .collect();
 
@@ -147,16 +146,13 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
             font.set_italic(is_italic);
         }
         if is_underline {
-            font.get_font_underline_mut()
-                .set_val(UnderlineValues::Single);
+            font.get_font_underline_mut().set_val(UnderlineValues::Single);
         }
         if is_superscript {
-            font.get_vertical_text_alignment_mut()
-                .set_val(VerticalAlignmentRunValues::Superscript);
+            font.get_vertical_text_alignment_mut().set_val(VerticalAlignmentRunValues::Superscript);
         }
         if is_subscript {
-            font.get_vertical_text_alignment_mut()
-                .set_val(VerticalAlignmentRunValues::Subscript);
+            font.get_vertical_text_alignment_mut().set_val(VerticalAlignmentRunValues::Subscript);
         }
         if is_strikethrough {
             font.set_strikethrough(is_strikethrough);
@@ -231,9 +227,7 @@ impl AnalysisMethod for DataAnalysis {
     #[inline]
     fn size(&self, html_flat_data: &HtmlFlatData) -> Option<f64> {
         html_flat_data.element.iter().find_map(|element| {
-            element
-                .get_by_name_and_attribute("font", "size")
-                .and_then(|v| v.parse::<f64>().ok())
+            element.get_by_name_and_attribute("font", "size").and_then(|v| v.parse::<f64>().ok())
         })
     }
 
@@ -255,10 +249,7 @@ impl AnalysisMethod for DataAnalysis {
 
     #[inline]
     fn is_tag(&self, html_flat_data: &HtmlFlatData, tag: &str) -> bool {
-        html_flat_data
-            .element
-            .iter()
-            .any(|element| element.has_name(tag))
+        html_flat_data.element.iter().any(|element| element.has_name(tag))
     }
 
     #[inline]

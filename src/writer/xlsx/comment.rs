@@ -1,11 +1,13 @@
-use super::driver::{write_end_tag, write_new_line, write_start_tag, write_text_node};
+use std::io;
+
+use quick_xml::Writer;
+use quick_xml::events::{BytesDecl, Event};
+
 use super::XlsxError;
+use super::driver::{write_end_tag, write_new_line, write_start_tag, write_text_node};
 use crate::helper::const_str::SHEET_MAIN_NS;
 use crate::structs::Worksheet;
 use crate::structs::WriterManager;
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
-use std::io;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
@@ -17,22 +19,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer
-        .write_event(Event::Decl(BytesDecl::new(
-            "1.0",
-            Some("UTF-8"),
-            Some("yes"),
-        )))
-        .unwrap();
+    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
     write_new_line(&mut writer);
 
     // comments
-    write_start_tag(
-        &mut writer,
-        "comments",
-        vec![("xmlns", SHEET_MAIN_NS)],
-        false,
-    );
+    write_start_tag(&mut writer, "comments", vec![("xmlns", SHEET_MAIN_NS)], false);
 
     // authors
     let authors = get_authors(worksheet);
@@ -88,8 +79,5 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
 
 #[inline]
 fn get_author_id(authors: &[String], author: &str) -> String {
-    authors
-        .iter()
-        .position(|value| author == value)
-        .map_or(String::new(), |i| i.to_string())
+    authors.iter().position(|value| author == value).map_or(String::new(), |i| i.to_string())
 }

@@ -1,4 +1,11 @@
 // dataValidation
+use std::io::Cursor;
+use std::vec;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::BooleanValue;
 use super::DataValidationOperatorValues;
 use super::DataValidationValues;
@@ -7,11 +14,6 @@ use super::SequenceOfReferences;
 use super::StringValue;
 use crate::reader::driver::get_attribute;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
@@ -234,10 +236,7 @@ impl DataValidation {
         }
 
         if self.show_input_message.has_value() {
-            attributes.push((
-                "showInputMessage",
-                self.show_input_message.get_value_string(),
-            ));
+            attributes.push(("showInputMessage", self.show_input_message.get_value_string()));
         }
 
         if self.operator.has_value() {
@@ -245,10 +244,7 @@ impl DataValidation {
         }
 
         if self.show_error_message.has_value() {
-            attributes.push((
-                "showErrorMessage",
-                self.show_error_message.get_value_string(),
-            ));
+            attributes.push(("showErrorMessage", self.show_error_message.get_value_string()));
         }
 
         if self.prompt_title.has_value() {

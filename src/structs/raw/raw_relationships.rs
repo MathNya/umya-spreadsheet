@@ -1,15 +1,17 @@
+use std::io;
+use std::io::Read;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesDecl, Event};
+
 use crate::helper::const_str::REL_NS;
 use crate::reader::driver::{join_paths, xml_read_loop};
-use crate::structs::raw::RawRelationship;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
 use crate::structs::XlsxError;
+use crate::structs::raw::RawRelationship;
 use crate::writer::driver::{write_end_tag, write_new_line, write_start_tag};
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io;
-use std::io::Read;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
@@ -110,13 +112,7 @@ impl RawRelationships {
 
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
         // XML header
-        writer
-            .write_event(Event::Decl(BytesDecl::new(
-                "1.0",
-                Some("UTF-8"),
-                Some("yes"),
-            )))
-            .unwrap();
+        writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
         write_new_line(&mut writer);
 
         // relationships

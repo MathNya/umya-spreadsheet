@@ -1,8 +1,9 @@
 use std::borrow::Cow;
 
-use crate::helper::date::excel_to_date_time_object;
 use fancy_regex::Captures;
 use fancy_regex::Regex;
+
+use crate::helper::date::excel_to_date_time_object;
 
 const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     // first remove escapes related to non-format characters
@@ -63,8 +64,8 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
     let re = Regex::new(r"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])").unwrap();
     let format = re.replace_all(&format, r"");
 
-    // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to lower-case;
-    //    but we don't want to change any quoted strings
+    // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to
+    // lower-case;    but we don't want to change any quoted strings
     let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
     let mut format = re.replace_all(&format, |caps: &Captures| {
         let caps_string = caps.get(0).unwrap().as_str();
@@ -104,7 +105,8 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
     }
     format = Cow::Owned(converted_blocks.join(r""));
 
-    // escape any quoted characters so that DateTime format() will render them correctly
+    // escape any quoted characters so that DateTime format() will render them
+    // correctly
     let re = Regex::new(r#""(.*)""#).unwrap();
     let format = re.replace_all(&format, |caps: &Captures| {
         let caps_string = caps.get(0).unwrap().as_str();

@@ -1,9 +1,10 @@
+use std::io;
+use std::io::Read;
+
+use crate::XlsxError;
 use crate::reader::driver::join_paths;
 use crate::structs::StringValue;
 use crate::structs::WriterManager;
-use crate::XlsxError;
-use std::io;
-use std::io::Read;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {
@@ -32,10 +33,7 @@ impl RawFile {
 
     #[inline]
     pub(crate) fn get_extension(&self) -> String {
-        self.get_file_name()
-            .rsplit_once('.')
-            .map(|(_, ext)| ext.to_lowercase())
-            .unwrap()
+        self.get_file_name().rsplit_once('.').map(|(_, ext)| ext.to_lowercase()).unwrap()
     }
 
     #[inline]

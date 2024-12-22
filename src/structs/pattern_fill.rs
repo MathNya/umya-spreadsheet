@@ -1,14 +1,16 @@
 // patternFill
+use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Color;
 use super::EnumValue;
 use super::PatternValues;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct PatternFill {
@@ -49,8 +51,7 @@ impl PatternFill {
 
     #[inline]
     pub fn get_foreground_color_mut(&mut self) -> &mut Color {
-        self.foreground_color
-            .get_or_insert(Box::new(Color::default()))
+        self.foreground_color.get_or_insert(Box::new(Color::default()))
     }
 
     #[inline]
@@ -74,8 +75,7 @@ impl PatternFill {
 
     #[inline]
     pub fn get_background_color_mut(&mut self) -> &mut Color {
-        self.background_color
-            .get_or_insert(Box::new(Color::default()))
+        self.background_color.get_or_insert(Box::new(Color::default()))
     }
 
     #[inline]
@@ -92,33 +92,21 @@ impl PatternFill {
 
     pub(crate) fn get_hash_code(&self) -> String {
         let pattern_type = self.pattern_type.get_value_string();
-        let foreground_color = self
-            .foreground_color
-            .as_ref()
-            .map_or("None".into(), |v| v.get_hash_code());
-        let background_color = self
-            .background_color
-            .as_ref()
-            .map_or("None".into(), |v| v.get_hash_code());
+        let foreground_color =
+            self.foreground_color.as_ref().map_or("None".into(), |v| v.get_hash_code());
+        let background_color =
+            self.background_color.as_ref().map_or("None".into(), |v| v.get_hash_code());
         format!(
             "{:x}",
-            md5::Md5::digest(format!(
-                "{pattern_type}{foreground_color}{background_color}"
-            ))
+            md5::Md5::digest(format!("{pattern_type}{foreground_color}{background_color}"))
         )
     }
 
     // When opened in software such as Excel, it is visually blank.
     pub(crate) fn is_visually_empty(&self) -> bool {
         !(self.pattern_type.get_value() != &PatternValues::None
-            || self
-                .foreground_color
-                .as_ref()
-                .is_some_and(|x| !x.is_visually_empty())
-            || self
-                .background_color
-                .as_ref()
-                .is_some_and(|x| x.is_visually_empty()))
+            || self.foreground_color.as_ref().is_some_and(|x| !x.is_visually_empty())
+            || self.background_color.as_ref().is_some_and(|x| x.is_visually_empty()))
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

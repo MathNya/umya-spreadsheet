@@ -1,9 +1,10 @@
-use quick_xml::escape::partial_escape;
-use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
-use quick_xml::Writer;
 use std::borrow::Cow;
 use std::io;
 use std::io::{Cursor, Write};
+
+use quick_xml::Writer;
+use quick_xml::escape::partial_escape;
+use quick_xml::events::{BytesEnd, BytesStart, BytesText, Event};
 
 pub(crate) fn write_start_tag<'a, S>(
     writer: &mut Writer<Cursor<Vec<u8>>>,
@@ -30,9 +31,7 @@ pub(crate) fn write_end_tag<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, tag_nam
 where
     S: Into<Cow<'a, str>>,
 {
-    writer
-        .write_event(Event::End(BytesEnd::new(tag_name.into())))
-        .unwrap();
+    writer.write_event(Event::End(BytesEnd::new(tag_name.into()))).unwrap();
 }
 
 #[inline]
@@ -40,9 +39,7 @@ pub(crate) fn write_text_node<'a, S>(writer: &mut Writer<Cursor<Vec<u8>>>, data:
 where
     S: Into<Cow<'a, str>>,
 {
-    writer
-        .write_event(Event::Text(BytesText::new(&data.into())))
-        .unwrap();
+    writer.write_event(Event::Text(BytesText::new(&data.into()))).unwrap();
 }
 
 #[inline]

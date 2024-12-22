@@ -1,3 +1,9 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Address;
 use super::BooleanValue;
 use super::StringValue;
@@ -6,10 +12,6 @@ use crate::helper::address::is_address;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::traits::AdjustmentCoordinateWithSheet;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node_conversion};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {
@@ -70,11 +72,7 @@ impl DefinedName {
         if self.string_value.has_value() {
             return String::new();
         }
-        self.address
-            .first()
-            .unwrap_or(&Address::default())
-            .get_sheet_name()
-            .to_string()
+        self.address.first().unwrap_or(&Address::default()).get_sheet_name().to_string()
     }
 
     #[inline]
@@ -151,13 +149,12 @@ impl DefinedName {
                         string.push(*c);
                     }
                 }
-                ',' => {
+                ',' =>
                     if !is_pass_s && !is_pass_d && is_pass_b == 0 {
                         result.push(std::mem::take(&mut string));
                     } else {
                         string.push(*c);
-                    }
-                }
+                    },
                 _ => {
                     string.push(*c);
                 }

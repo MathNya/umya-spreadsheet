@@ -1,4 +1,10 @@
 // sheetView
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::BooleanValue;
 use super::EnumValue;
 use super::Pane;
@@ -8,10 +14,6 @@ use super::StringValue;
 use super::UInt32Value;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetView {
@@ -183,18 +185,8 @@ impl SheetView {
         set_string_from_xml!(self, e, view, "view");
         set_string_from_xml!(self, e, zoom_scale, "zoomScale");
         set_string_from_xml!(self, e, zoom_scale_normal, "zoomScaleNormal");
-        set_string_from_xml!(
-            self,
-            e,
-            zoom_scale_page_layout_view,
-            "zoomScalePageLayoutView"
-        );
-        set_string_from_xml!(
-            self,
-            e,
-            zoom_scale_sheet_layout_view,
-            "zoomScaleSheetLayoutView"
-        );
+        set_string_from_xml!(self, e, zoom_scale_page_layout_view, "zoomScalePageLayoutView");
+        set_string_from_xml!(self, e, zoom_scale_sheet_layout_view, "zoomScaleSheetLayoutView");
         set_string_from_xml!(self, e, top_left_cell, "topLeftCell");
 
         if empty_flag {

@@ -1,12 +1,14 @@
 // xdr:nvGraphicFramePr
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::NonVisualDrawingProperties;
 use super::NonVisualGraphicFrameDrawingProperties;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualGraphicFrameProperties {
@@ -102,8 +104,7 @@ impl NonVisualGraphicFrameProperties {
         self.non_visual_drawing_properties.write_to(writer, 0);
 
         // xdr:cNvGraphicFramePr
-        self.non_visual_graphic_frame_drawing_properties
-            .write_to(writer);
+        self.non_visual_graphic_frame_drawing_properties.write_to(writer);
 
         write_end_tag(writer, "xdr:nvGraphicFramePr");
     }

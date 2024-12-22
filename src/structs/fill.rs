@@ -1,13 +1,15 @@
+use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::GradientFill;
 use super::PatternFill;
 use super::PatternValues;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Fill {
@@ -106,10 +108,7 @@ impl Fill {
     // When opened in software such as Excel, it is visually blank.
     #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
-        !(self
-            .pattern_fill
-            .as_ref()
-            .is_some_and(|x| !x.is_visually_empty())
+        !(self.pattern_fill.as_ref().is_some_and(|x| !x.is_visually_empty())
             || self.gradient_fill.as_ref().is_some())
     }
 

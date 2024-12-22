@@ -1,3 +1,4 @@
+use std::fmt::Write;
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -6,7 +7,6 @@ use crate::structs::CsvEncodeValues;
 use crate::structs::CsvWriterOption;
 use crate::structs::Spreadsheet;
 use crate::structs::XlsxError;
-use std::fmt::Write;
 
 /// write spreadsheet file to arbitrary writer.
 /// # Arguments
@@ -83,7 +83,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// option.set_csv_encode_value(structs::CsvEncodeValues::ShiftJis);
 /// option.set_do_trim(true);
 /// option.set_wrap_with_char("\"");
-/// let _unused =  writer::csv::write(&book, path, Some(&option));
+/// let _unused = writer::csv::write(&book, path, Some(&option));
 /// ```
 pub fn write<P: AsRef<Path>>(
     spreadsheet: &Spreadsheet,
@@ -91,9 +91,7 @@ pub fn write<P: AsRef<Path>>(
     option: Option<&CsvWriterOption>,
 ) -> Result<(), XlsxError> {
     let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path
-        .as_ref()
-        .with_extension(format!("{}{}", extension, "tmp"));
+    let path_tmp = path.as_ref().with_extension(format!("{}{}", extension, "tmp"));
     let def_option = CsvWriterOption::default();
     let option = match option {
         Some(v) => v,

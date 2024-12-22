@@ -1,11 +1,13 @@
 // a:miter
-use crate::reader::driver::{get_attribute, set_string_from_xml};
-use crate::writer::driver::write_start_tag;
-use crate::Int32Value;
-use quick_xml::events::BytesStart;
+use std::io::Cursor;
+
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::BytesStart;
+
+use crate::Int32Value;
+use crate::reader::driver::{get_attribute, set_string_from_xml};
+use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Default, Debug)]
 pub struct Miter {

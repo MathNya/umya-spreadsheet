@@ -1,11 +1,12 @@
+use quick_xml::Reader;
+use quick_xml::events::Event;
+
 use super::XlsxError;
+use crate::structs::Worksheet;
 use crate::structs::raw::RawFile;
 use crate::structs::raw::RawRelationships;
 use crate::structs::vml::Shape;
-use crate::structs::Worksheet;
 use crate::xml_read_loop;
-use quick_xml::events::Event;
-use quick_xml::Reader;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,
@@ -47,7 +48,7 @@ pub(crate) fn read(
     Ok(())
 }
 
-//fn set_style(comment:&mut Comment, style_string:&str) {
+// fn set_style(comment:&mut Comment, style_string:&str) {
 //    let styles: Vec<&str> = style_string.split(';').collect();
 //    for style in &styles {
 //        let params: Vec<&str> = style.split(':').collect();
@@ -60,8 +61,8 @@ pub(crate) fn read(
 //                "margin-top" => comment.set_margin_top(value),
 //                "width" => comment.set_width(value),
 //                "height" => comment.set_height(value),
-//                "visibility" => comment.set_visible(if value == "visible" { true } else { false }),
-//                _ => {}
+//                "visibility" => comment.set_visible(if value == "visible" {
+// true } else { false }),                _ => {}
 //            }
 //        }
 //    }

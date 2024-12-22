@@ -2,11 +2,7 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
     let sign = if value < 0f64 { "-" } else { "" };
 
     let integer_part = value.abs().floor();
-    let decimal_part = (value.abs() % 1f64)
-        .to_string()
-        .replace("0.", "")
-        .parse::<f64>()
-        .unwrap();
+    let decimal_part = (value.abs() % 1f64).to_string().replace("0.", "").parse::<f64>().unwrap();
     let decimal_length = decimal_part.to_string().len();
     let decimal_divisor = 10f64.powi(decimal_length as i32);
 
@@ -25,10 +21,7 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
 
     if format.contains('#') {
         if integer_part == 0f64 {
-            result = format!(
-                "{}{}/{}",
-                &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
-            );
+            result = format!("{}{}/{}", &sign, &adjusted_decimal_part, &adjusted_decimal_divisor);
         } else {
             result = format!(
                 "{}{} {}/{}",
@@ -50,10 +43,7 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
         );
     } else {
         adjusted_decimal_part += integer_part * adjusted_decimal_divisor;
-        result = format!(
-            "{}{}/{}",
-            &sign, &adjusted_decimal_part, &adjusted_decimal_divisor
-        );
+        result = format!("{}{}/{}", &sign, &adjusted_decimal_part, &adjusted_decimal_divisor);
     }
 
     result
@@ -61,9 +51,5 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
 
 #[inline]
 fn gcd(a: f64, b: f64) -> f64 {
-    if b == 0f64 {
-        a
-    } else {
-        gcd(b, a % b)
-    }
+    if b == 0f64 { a } else { gcd(b, a % b) }
 }

@@ -1,12 +1,14 @@
 // c:barDir
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::super::super::EnumValue;
 use super::BarDirectionValues;
 use crate::reader::driver::get_attribute;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct BarDirection {
@@ -33,11 +35,6 @@ impl BarDirection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:barDir
-        write_start_tag(
-            writer,
-            "c:barDir",
-            vec![("val", self.val.get_value_string())],
-            true,
-        );
+        write_start_tag(writer, "c:barDir", vec![("val", self.val.get_value_string())], true);
     }
 }

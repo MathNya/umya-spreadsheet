@@ -1,14 +1,16 @@
 // sst
+use std::collections::HashMap;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::CellValue;
 use super::SharedStringItem;
 use crate::helper::const_str::SHEET_MAIN_NS;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringTable {
@@ -101,10 +103,7 @@ impl SharedStringTable {
             vec![
                 ("xmlns", SHEET_MAIN_NS),
                 ("count", self.regist_count.to_string().as_str()),
-                (
-                    "uniqueCount",
-                    self.shared_string_item.len().to_string().as_str(),
-                ),
+                ("uniqueCount", self.shared_string_item.len().to_string().as_str()),
             ],
             false,
         );

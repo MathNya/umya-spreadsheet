@@ -1,13 +1,15 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::helper::coordinate::{
     adjustment_insert_coordinate, adjustment_remove_coordinate, is_remove_coordinate,
 };
 use crate::reader::driver::xml_read_loop;
 use crate::traits::AdjustmentCoordinate;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Anchor {
@@ -135,31 +137,17 @@ impl Anchor {
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn adjustment_remove_row(&mut self, num_rows: u32) {
-        self.top_row = if self.top_row > num_rows {
-            self.top_row - num_rows
-        } else {
-            1
-        };
-        self.bottom_row = if self.bottom_row > num_rows {
-            self.bottom_row - num_rows
-        } else {
-            1
-        };
+        self.top_row = if self.top_row > num_rows { self.top_row - num_rows } else { 1 };
+        self.bottom_row = if self.bottom_row > num_rows { self.bottom_row - num_rows } else { 1 };
     }
 
     #[inline]
     #[allow(dead_code)]
     pub(crate) fn adjustment_remove_column(&mut self, num_cols: u32) {
-        self.left_column = if self.left_column > num_cols {
-            self.left_column - num_cols
-        } else {
-            1
-        };
-        self.right_column = if self.right_column > num_cols {
-            self.right_column - num_cols
-        } else {
-            1
-        };
+        self.left_column =
+            if self.left_column > num_cols { self.left_column - num_cols } else { 1 };
+        self.right_column =
+            if self.right_column > num_cols { self.right_column - num_cols } else { 1 };
     }
 
     #[inline]

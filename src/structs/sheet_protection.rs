@@ -1,14 +1,16 @@
 // sheetProtection
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::BooleanValue;
 use super::StringValue;
 use super::UInt32Value;
 use crate::helper::crypt::encrypt_sheet_protection;
 use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct SheetProtection {
@@ -362,10 +364,7 @@ impl SheetProtection {
             attributes.push(("deleteColumns", self.delete_columns.get_value_string()));
         }
         if self.insert_hyperlinks.has_value() {
-            attributes.push((
-                "insertHyperlinks",
-                self.insert_hyperlinks.get_value_string(),
-            ));
+            attributes.push(("insertHyperlinks", self.insert_hyperlinks.get_value_string()));
         }
         if self.auto_filter.has_value() {
             attributes.push(("autoFilter", self.auto_filter.get_value_string()));
@@ -389,16 +388,10 @@ impl SheetProtection {
             attributes.push(("pivotTables", self.pivot_tables.get_value_string()));
         }
         if self.select_locked_cells.has_value() {
-            attributes.push((
-                "selectLockedCells",
-                self.select_locked_cells.get_value_string(),
-            ));
+            attributes.push(("selectLockedCells", self.select_locked_cells.get_value_string()));
         }
         if self.select_unlocked_cells.has_value() {
-            attributes.push((
-                "selectUnlockedCells",
-                self.select_unlocked_cells.get_value_string(),
-            ));
+            attributes.push(("selectUnlockedCells", self.select_unlocked_cells.get_value_string()));
         }
         if self.sort.has_value() {
             attributes.push(("sort", self.sort.get_value_string()));

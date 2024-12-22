@@ -1,9 +1,11 @@
+use std::io;
+
+use quick_xml::Reader;
+use quick_xml::events::Event;
+
 use super::XlsxError;
 use crate::structs::drawing::Theme;
 use crate::xml_read_loop;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use std::io;
 
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

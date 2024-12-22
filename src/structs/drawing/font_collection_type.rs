@@ -1,12 +1,14 @@
 // a:majorFont
 // a:minorFont
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::SupplementalFont;
 use super::TextFontType;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct FontCollectionType {
@@ -154,10 +156,7 @@ impl FontCollectionType {
                     _ => (),
                 },
                 Ok(Event::Eof) => {
-                    panic!(
-                        "Error: Could not find {} end element",
-                        "a:majorFont, a:minorFont"
-                    )
+                    panic!("Error: Could not find {} end element", "a:majorFont, a:minorFont")
                 }
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),

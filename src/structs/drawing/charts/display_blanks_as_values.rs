@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum DisplayBlanksAsValues {
     Gap,
@@ -22,6 +23,7 @@ impl EnumTrait for DisplayBlanksAsValues {
 }
 impl FromStr for DisplayBlanksAsValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "gap" => Ok(Self::Gap),

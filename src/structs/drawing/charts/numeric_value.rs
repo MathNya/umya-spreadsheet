@@ -1,10 +1,12 @@
 // c:v
-use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
+use std::io::Cursor;
+
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::{BytesStart, Event};
+
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
+use crate::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct NumericValue {

@@ -1,18 +1,18 @@
-use crate::xml_read_loop;
-
-use super::driver::get_attribute;
-use super::XlsxError;
-use quick_xml::escape;
-use quick_xml::events::Event;
-use quick_xml::Reader;
 use std::io;
 
+use quick_xml::Reader;
+use quick_xml::escape;
+use quick_xml::events::Event;
+
+use super::XlsxError;
+use super::driver::get_attribute;
 use crate::helper::const_str::PKG_WORKBOOK;
 use crate::structs::DefinedName;
 use crate::structs::Spreadsheet;
 use crate::structs::WorkbookProtection;
 use crate::structs::WorkbookView;
 use crate::structs::Worksheet;
+use crate::xml_read_loop;
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,

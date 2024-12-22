@@ -1,13 +1,15 @@
 // numFmts
+use std::collections::HashMap;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::NumberingFormat;
 use super::Style;
 use crate::reader::driver::xml_read_loop;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct NumberingFormats {
@@ -41,8 +43,7 @@ impl NumberingFormats {
     pub(crate) fn get_build_in_formats(&mut self) {
         for (index, code) in super::numbering_format::get_fill_built_in_format_codes() {
             let mut obj = NumberingFormat::default();
-            obj.set_number_format_id_crate(*index)
-                .set_format_code_crate(code.clone());
+            obj.set_number_format_id_crate(*index).set_format_code_crate(code.clone());
             self.set_numbering_format(obj);
         }
     }
@@ -99,11 +100,8 @@ impl NumberingFormats {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let formats_to_write: HashMap<_, _> = self
-            .numbering_format
-            .iter()
-            .filter(|(_, v)| !v.get_is_build_in())
-            .collect();
+        let formats_to_write: HashMap<_, _> =
+            self.numbering_format.iter().filter(|(_, v)| !v.get_is_build_in()).collect();
         if formats_to_write.is_empty() {
             return;
         }
@@ -129,27 +127,19 @@ mod tests {
         let mut obj = NumberingFormats::default();
 
         let mut style = Style::default();
-        style
-            .get_number_format_mut()
-            .set_format_code(NumberingFormat::FORMAT_TEXT);
+        style.get_number_format_mut().set_format_code(NumberingFormat::FORMAT_TEXT);
         assert_eq!(obj.set_style(&style), 49);
 
         let mut style = Style::default();
-        style
-            .get_number_format_mut()
-            .set_format_code("test-yyyy-mm-dd");
+        style.get_number_format_mut().set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();
-        style
-            .get_number_format_mut()
-            .set_format_code("test-yyyy/mm/dd");
+        style.get_number_format_mut().set_format_code("test-yyyy/mm/dd");
         assert_eq!(obj.set_style(&style), 177);
 
         let mut style = Style::default();
-        style
-            .get_number_format_mut()
-            .set_format_code("test-yyyy-mm-dd");
+        style.get_number_format_mut().set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();
@@ -157,15 +147,11 @@ mod tests {
         assert_eq!(obj.set_style(&style), 30);
 
         let mut style = Style::default();
-        style
-            .get_number_format_mut()
-            .set_format_code(NumberingFormat::FORMAT_TEXT);
+        style.get_number_format_mut().set_format_code(NumberingFormat::FORMAT_TEXT);
         assert_eq!(obj.set_style(&style), 49);
 
         let mut style = Style::default();
-        style
-            .get_number_format_mut()
-            .set_format_code(NumberingFormat::FORMAT_DATE_TIME5);
+        style.get_number_format_mut().set_format_code(NumberingFormat::FORMAT_DATE_TIME5);
         assert_eq!(obj.set_style(&style), 45);
     }
 }

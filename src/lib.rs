@@ -22,7 +22,7 @@
 //! let mut book = new_file();
 //!
 //! // new worksheet
-//! let _unused =  book.new_sheet("Sheet2");
+//! let _unused = book.new_sheet("Sheet2");
 //! ```
 //! ### Copy worksheet
 //! ```rust
@@ -31,7 +31,7 @@
 //!
 //! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
 //! clone_sheet.set_name("New Sheet");
-//! let _unused =  book.add_sheet(clone_sheet);
+//! let _unused = book.add_sheet(clone_sheet);
 //! ```
 //! ### Change value
 //! ```rust
@@ -52,7 +52,7 @@
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _unused =  book.new_sheet("Sheet2");
+//! let _unused = book.new_sheet("Sheet2");
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
 //!
 //! // read value
@@ -61,27 +61,29 @@
 //! let a1_value = book.get_sheet(1).unwrap().get_value((1, 1));
 //! // or formatted value
 //! let a1_value = book.get_sheet(1).unwrap().get_formatted_value("A1");
-//! assert_eq!("TEST1", a1_value);  // TEST1
+//! assert_eq!("TEST1", a1_value); // TEST1
 //! ```
 //! ### Change style
 //! more example is [**here**](Style).
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _unused =  book.new_sheet("Sheet2");
+//! let _unused = book.new_sheet("Sheet2");
 //!
 //! // add bottom border
-//! book.get_sheet_by_name_mut("Sheet2").unwrap()
-//! .get_style_mut("A1")
-//! .get_borders_mut()
-//! .get_bottom_mut()
-//! .set_border_style(Border::BORDER_MEDIUM);
+//! book.get_sheet_by_name_mut("Sheet2")
+//!     .unwrap()
+//!     .get_style_mut("A1")
+//!     .get_borders_mut()
+//!     .get_bottom_mut()
+//!     .set_border_style(Border::BORDER_MEDIUM);
 //! // or
-//! book.get_sheet_mut(1).unwrap()
-//! .get_style_mut((1, 1))
-//! .get_borders_mut()
-//! .get_bottom_mut()
-//! .set_border_style(Border::BORDER_MEDIUM);
+//! book.get_sheet_mut(1)
+//!     .unwrap()
+//!     .get_style_mut((1, 1))
+//!     .get_borders_mut()
+//!     .get_bottom_mut()
+//!     .set_border_style(Border::BORDER_MEDIUM);
 //! ```
 //! ### Insert or Remove Rows(or Columns)
 //! ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample2.png)
@@ -109,11 +111,11 @@
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _unused =  book.new_sheet("Sheet2");
+//! let _unused = book.new_sheet("Sheet2");
 //!
 //! // writer
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
-//! let _unused =  writer::xlsx::write(&book, path);
+//! let _unused = writer::xlsx::write(&book, path);
 //! ```
 
 #![deny(
@@ -148,8 +150,7 @@
 
 extern crate chrono;
 extern crate fancy_regex;
-#[cfg(feature = "image")]
-extern crate image;
+#[cfg(feature = "image")] extern crate image;
 extern crate md5;
 extern crate quick_xml;
 extern crate thousands;
@@ -184,8 +185,9 @@ pub use self::structs::*;
 ///
 /// # Panics
 ///
-/// Panics if unable to create a new worksheet named "Sheet1". This should never happen
-/// with default settings since it's the first worksheet in a new spreadsheet.
+/// Panics if unable to create a new worksheet named "Sheet1". This should never
+/// happen with default settings since it's the first worksheet in a new
+/// spreadsheet.
 #[must_use]
 pub fn new_file() -> Spreadsheet {
     let mut spreadsheet = Spreadsheet::default();
@@ -204,8 +206,9 @@ pub fn new_file() -> Spreadsheet {
 
 /// Creates a new empty spreadsheet without any worksheets.
 ///
-/// This function initializes a new spreadsheet with default theme and stylesheet settings.
-/// At least one worksheet must be added before generating a valid file.
+/// This function initializes a new spreadsheet with default theme and
+/// stylesheet settings. At least one worksheet must be added before generating
+/// a valid file.
 ///
 /// # Returns
 /// A new `Spreadsheet` instance with default configuration but no worksheets.

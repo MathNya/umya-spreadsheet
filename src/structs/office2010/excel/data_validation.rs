@@ -1,18 +1,20 @@
 // x14:dataValidation
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::reader::driver::get_attribute;
-use crate::structs::office::excel::ReferenceSequence;
-use crate::structs::office2010::excel::DataValidationForumla1;
-use crate::structs::office2010::excel::DataValidationForumla2;
 use crate::structs::BooleanValue;
 use crate::structs::DataValidationOperatorValues;
 use crate::structs::DataValidationValues;
 use crate::structs::EnumValue;
 use crate::structs::StringValue;
+use crate::structs::office::excel::ReferenceSequence;
+use crate::structs::office2010::excel::DataValidationForumla1;
+use crate::structs::office2010::excel::DataValidationForumla2;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
@@ -234,11 +236,10 @@ impl DataValidation {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) => {
+                Ok(Event::End(ref e)) =>
                     if e.name().into_inner() == b"x14:dataValidation" {
                         return;
-                    }
-                }
+                    },
                 Ok(Event::Eof) => {
                     panic!("Error: Could not find {} end element", "x14:dataValidation")
                 }
@@ -262,10 +263,7 @@ impl DataValidation {
         }
 
         if self.show_input_message.has_value() {
-            attributes.push((
-                "showInputMessage",
-                self.show_input_message.get_value_string(),
-            ));
+            attributes.push(("showInputMessage", self.show_input_message.get_value_string()));
         }
 
         if self.operator.has_value() {
@@ -273,10 +271,7 @@ impl DataValidation {
         }
 
         if self.show_error_message.has_value() {
-            attributes.push((
-                "showErrorMessage",
-                self.show_error_message.get_value_string(),
-            ));
+            attributes.push(("showErrorMessage", self.show_error_message.get_value_string()));
         }
 
         if self.prompt_title.has_value() {

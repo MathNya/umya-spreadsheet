@@ -1,4 +1,12 @@
 // color
+use std::borrow::Cow;
+use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::DoubleValue;
 use super::StringValue;
 use super::UInt32Value;
@@ -6,12 +14,6 @@ use crate::helper::color::calc_tint;
 use crate::reader::driver::get_attribute_value;
 use crate::structs::drawing::Theme;
 use crate::writer::driver::write_start_tag;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::borrow::Cow;
-use std::io::Cursor;
 
 const INDEXED_COLORS: &[&str] = &[
     "FF000000", //  System Colour #1 - Black
@@ -80,25 +82,24 @@ pub struct Color {
     tint: DoubleValue,
 }
 impl Color {
-    pub const NAMED_COLORS: &'static [&'static str] = &[
-        "Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan",
-    ];
-
     // Colors
     pub const COLOR_BLACK: &'static str = "FF000000";
-    pub const COLOR_WHITE: &'static str = "FFFFFFFF";
-    pub const COLOR_RED: &'static str = "FFFF0000";
-    pub const COLOR_DARKRED: &'static str = "FF800000";
     pub const COLOR_BLUE: &'static str = "FF0000FF";
     pub const COLOR_DARKBLUE: &'static str = "FF000080";
-    pub const COLOR_GREEN: &'static str = "FF00FF00";
     pub const COLOR_DARKGREEN: &'static str = "FF008000";
-    pub const COLOR_YELLOW: &'static str = "FFFFFF00";
+    pub const COLOR_DARKRED: &'static str = "FF800000";
     pub const COLOR_DARKYELLOW: &'static str = "FF808000";
+    pub const COLOR_GREEN: &'static str = "FF00FF00";
+    pub const COLOR_RED: &'static str = "FFFF0000";
+    pub const COLOR_WHITE: &'static str = "FFFFFFFF";
+    pub const COLOR_YELLOW: &'static str = "FFFFFF00";
+    pub const NAMED_COLORS: &'static [&'static str] =
+        &["Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan"];
 
     /// Get Argb.
-    /// If the color is based on the theme, it cannot be obtained with this function.
-    /// In that case, use `get_argb_with_theme(&self`, theme: &Theme).
+    /// If the color is based on the theme, it cannot be obtained with this
+    /// function. In that case, use `get_argb_with_theme(&self`, theme:
+    /// &Theme).
     #[must_use]
     pub fn get_argb(&self) -> &str {
         if self.indexed.has_value() {
@@ -123,11 +124,8 @@ impl Color {
         }
         if self.theme_index.has_value() {
             let key = self.theme_index.get_value();
-            if let Some(v) = theme
-                .get_theme_elements()
-                .get_color_scheme()
-                .get_color_map()
-                .get(key as usize)
+            if let Some(v) =
+                theme.get_theme_elements().get_color_scheme().get_color_map().get(key as usize)
             {
                 if self.tint.has_value() {
                     return calc_tint(v, self.tint.get_value()).into();
@@ -229,20 +227,16 @@ impl Color {
         for attr in e.attributes().with_checks(false).flatten() {
             match attr.key.0 {
                 b"indexed" => {
-                    self.indexed
-                        .set_value_string(get_attribute_value(&attr).unwrap());
+                    self.indexed.set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 b"theme" => {
-                    self.theme_index
-                        .set_value_string(get_attribute_value(&attr).unwrap());
+                    self.theme_index.set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 b"rgb" => {
-                    self.argb
-                        .set_value_string(get_attribute_value(&attr).unwrap());
+                    self.argb.set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 b"tint" => {
-                    self.tint
-                        .set_value_string(get_attribute_value(&attr).unwrap());
+                    self.tint.set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 _ => {}
             }
@@ -262,10 +256,8 @@ impl Color {
                     b"tabColor" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!(
-                    "Error: Could not find {} end element",
-                    "color,fgColor,bgColor,tabColor"
-                ),
+                Ok(Event::Eof) =>
+                    panic!("Error: Could not find {} end element", "color,fgColor,bgColor,tabColor"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

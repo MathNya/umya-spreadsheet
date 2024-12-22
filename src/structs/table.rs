@@ -1,10 +1,10 @@
 use super::{
-    coordinate::Coordinate, BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues,
-    UInt32Value,
+    BooleanValue, EnumValue, StringValue, TotalsRowFunctionValues, UInt32Value,
+    coordinate::Coordinate,
 };
 use crate::helper::coordinate::CellCoordinates;
 
-//use reader::driver::*;
+// use reader::driver::*;
 
 #[derive(Clone, Default, Debug)]
 pub struct Table {

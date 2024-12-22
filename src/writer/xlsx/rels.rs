@@ -1,11 +1,12 @@
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
 
-use super::driver::{write_end_tag, write_new_line, write_start_tag};
+use quick_xml::Writer;
+use quick_xml::events::{BytesDecl, Event};
+
 use super::XlsxError;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use crate::helper::const_str::{
-    ARC_APP, ARC_CORE, ARC_CUSTOM, COREPROPS_REL, CUSTOMUI_NS, CUSTOM_PROPS_REL, OFCDOC_NS,
+    ARC_APP, ARC_CORE, ARC_CUSTOM, COREPROPS_REL, CUSTOM_PROPS_REL, CUSTOMUI_NS, OFCDOC_NS,
     PKG_WORKBOOK, REL_NS, XPROPS_REL,
 };
 use crate::structs::Spreadsheet;
@@ -17,13 +18,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer
-        .write_event(Event::Decl(BytesDecl::new(
-            "1.0",
-            Some("UTF-8"),
-            Some("yes"),
-        )))
-        .unwrap();
+    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
     write_new_line(&mut writer);
 
     // relationships
@@ -54,7 +49,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             "5",
             CUSTOMUI_NS,
-            "xl/todo.xml", //TODO
+            "xl/todo.xml", // TODO
             "",
         );
     }

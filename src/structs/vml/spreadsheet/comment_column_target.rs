@@ -1,3 +1,9 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::helper::coordinate::{
     adjustment_insert_coordinate, adjustment_remove_coordinate, is_remove_coordinate,
 };
@@ -5,10 +11,6 @@ use crate::reader::driver::xml_read_loop;
 use crate::structs::UInt32Value;
 use crate::traits::AdjustmentValue;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct CommentColumnTarget {

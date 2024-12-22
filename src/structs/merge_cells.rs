@@ -1,12 +1,13 @@
 // mergeCell
-use super::Range;
+use std::io::Cursor;
 
-use crate::reader::driver::{get_attribute, xml_read_loop};
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::{BytesStart, Event};
+
+use super::Range;
+use crate::reader::driver::{get_attribute, xml_read_loop};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct MergeCells {
@@ -91,10 +92,7 @@ impl MergeCells {
             write_start_tag(
                 writer,
                 "mergeCells",
-                vec![(
-                    "count",
-                    self.get_range_collection().len().to_string().as_str(),
-                )],
+                vec![("count", self.get_range_collection().len().to_string().as_str())],
                 false,
             );
 

@@ -1,11 +1,13 @@
 // a:ext
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::super::super::Int64Value;
 use crate::reader::driver::get_attribute;
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Extents {
@@ -52,10 +54,7 @@ impl Extents {
         write_start_tag(
             writer,
             "a:ext",
-            vec![
-                ("cx", &self.cx.get_value_string()),
-                ("cy", &self.cy.get_value_string()),
-            ],
+            vec![("cx", &self.cx.get_value_string()), ("cy", &self.cy.get_value_string())],
             true,
         );
     }

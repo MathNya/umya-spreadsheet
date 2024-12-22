@@ -1,8 +1,10 @@
-use super::fraction_formater::format_as_fraction;
-use fancy_regex::Regex;
 use std::borrow::Cow;
 use std::sync::OnceLock;
+
+use fancy_regex::Regex;
 use thousands::Separable;
+
+use super::fraction_formater::format_as_fraction;
 
 // Initialize OnceLock for each Regex
 static THOUSANDS_SEP_REGEX: OnceLock<Regex> = OnceLock::new();
@@ -130,22 +132,28 @@ fn format_straight_numeric_value(
     //    if use_thousands == true {
     //        value = value.parse::<f64>().unwrap().separate_with_commas();
     //        dbg!(&value);
-    //        value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
-    //        dbg!(&value);
+    //        value = Regex::new(&number_regex).unwrap().replace_all(&format,
+    // value.as_str());        dbg!(&value);
     //    } else {
     //        if Regex::new(r#"[0#]E[+-]0"#).unwrap().find(&format).is_some() {
     //            // Scientific format
     //            value = value.parse::<f64>().unwrap().to_string();
-    //        } else if Regex::new(r#"0([^\d\.]+)0"#).unwrap().find(&format).is_some() || format.find(".").is_some() {
-    //            if value.parse::<f64>().unwrap() as usize as f64 == value.parse::<f64>().unwrap() && format.find(".").is_some() {
-    //                let format_collect:Vec<&str> = format.split('.').collect();
-    //                let pow = 10i32.pow(format_collect.get(1).unwrap().len() as u32);
-    //                value = format!("{}", value.parse::<i32>().unwrap() * pow);
+    //        } else if
+    // Regex::new(r#"0([^\d\.]+)0"#).unwrap().find(&format).is_some() ||
+    // format.find(".").is_some() {            if
+    // value.parse::<f64>().unwrap() as usize as f64 ==
+    // value.parse::<f64>().unwrap() && format.find(".").is_some() {
+    //                let format_collect:Vec<&str> =
+    // format.split('.').collect();                let pow =
+    // 10i32.pow(format_collect.get(1).unwrap().len() as u32);              
+    // value = format!("{}", value.parse::<i32>().unwrap() * pow);
     //            }
-    //            value = complex_number_format_mask(&value.parse::<f64>().unwrap(), &format, true);
-    //        } else {
-    //            value = format!("{:0width$.len$}", value, width = min_width, len = right.len());
-    //            value = Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
+    //            value =
+    // complex_number_format_mask(&value.parse::<f64>().unwrap(), &format,
+    // true);        } else {
+    //            value = format!("{:0width$.len$}", value, width = min_width,
+    // len = right.len());            value =
+    // Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
     //        }
     //    }
     //    value
@@ -184,10 +192,7 @@ fn process_complex_number_format_mask(number: f64, mask: &str) -> String {
         masking_beg.push(beg);
     }
     for i in 0..masking_str.len() {
-        masking_blocks.push((
-            masking_str.get(i).unwrap().clone(),
-            *masking_beg.get(i).unwrap(),
-        ));
+        masking_blocks.push((masking_str.get(i).unwrap().clone(), *masking_beg.get(i).unwrap()));
     }
 
     if masking_blocks.len() > 1 {
@@ -236,12 +241,7 @@ fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> 
         let result1 =
             complex_number_format_mask(numbers[0].parse::<f64>().unwrap(), &masks[0], false);
         let result2 = complex_number_format_mask(
-            numbers[1]
-                .chars()
-                .rev()
-                .collect::<String>()
-                .parse::<f64>()
-                .unwrap(),
+            numbers[1].chars().rev().collect::<String>().parse::<f64>().unwrap(),
             &masks[1].chars().rev().collect::<String>(),
             false,
         )

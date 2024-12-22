@@ -1,4 +1,8 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
 
 // c:catAx
 use super::AutoLabeled;
@@ -19,10 +23,7 @@ use super::TextProperties;
 use super::TickLabelPosition;
 use super::Title;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct CategoryAxis {

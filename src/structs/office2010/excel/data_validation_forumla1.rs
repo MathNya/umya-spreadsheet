@@ -1,11 +1,13 @@
 // x14:formula1
-use crate::structs::office::excel::Formula;
-use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
 use std::vec;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
+use crate::structs::office::excel::Formula;
+use crate::writer::driver::{write_end_tag, write_start_tag};
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidationForumla1 {
@@ -37,19 +39,17 @@ impl DataValidationForumla1 {
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
-                Ok(Event::Start(ref e)) => {
+                Ok(Event::Start(ref e)) =>
                     if e.name().into_inner() == b"xm:f" {
                         let mut obj = Formula::default();
                         obj.set_attributes(reader, e);
                         self.value = obj;
                         return;
-                    }
-                }
-                Ok(Event::End(ref e)) => {
+                    },
+                Ok(Event::End(ref e)) =>
                     if e.name().into_inner() == b"x14:formula1" {
                         return;
-                    }
-                }
+                    },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "x14:formula1"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),

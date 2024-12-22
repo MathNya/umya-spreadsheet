@@ -13,10 +13,7 @@ pub struct ColumnReference {
 impl Default for ColumnReference {
     #[inline]
     fn default() -> Self {
-        Self {
-            num: 1,
-            is_lock: false,
-        }
+        Self { num: 1, is_lock: false }
     }
 }
 
@@ -76,11 +73,7 @@ impl ColumnReference {
 
     #[inline]
     pub(crate) fn get_coordinate(&self) -> String {
-        format!(
-            "{}{}",
-            if self.is_lock { "$" } else { "" },
-            string_from_column_index(self.num),
-        )
+        format!("{}{}", if self.is_lock { "$" } else { "" }, string_from_column_index(self.num),)
     }
 }
 impl AdjustmentValue for ColumnReference {

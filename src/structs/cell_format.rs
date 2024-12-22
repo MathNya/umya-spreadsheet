@@ -1,14 +1,16 @@
 // xf
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use super::Alignment;
 use super::BooleanValue;
 use super::Protection;
 use super::UInt32Value;
 use crate::reader::driver::{get_attribute, set_string_from_xml, xml_read_loop};
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormat {
@@ -280,10 +282,7 @@ impl CellFormat {
             attributes.push(("applyFont", self.apply_font.get_value_string()));
         }
         if self.apply_number_format.has_value() {
-            attributes.push((
-                "applyNumberFormat",
-                self.apply_number_format.get_value_string(),
-            ));
+            attributes.push(("applyNumberFormat", self.apply_number_format.get_value_string()));
         }
         if self.apply_fill.has_value() {
             attributes.push(("applyFill", self.apply_fill.get_value_string()));

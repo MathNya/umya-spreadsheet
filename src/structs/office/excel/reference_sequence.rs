@@ -1,11 +1,13 @@
 // xm:sqref
-use crate::structs::Range;
-use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
 use std::vec;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
+use crate::structs::Range;
+use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
 
 #[derive(Default, Debug, Clone)]
 pub struct ReferenceSequence {
@@ -53,11 +55,7 @@ impl ReferenceSequence {
     #[inline]
     #[must_use]
     pub fn get_sqref(&self) -> String {
-        self.value
-            .iter()
-            .map(Range::get_range)
-            .collect::<Vec<String>>()
-            .join(" ")
+        self.value.iter().map(Range::get_range).collect::<Vec<String>>().join(" ")
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -72,12 +70,11 @@ impl ReferenceSequence {
                 Ok(Event::Text(e)) => {
                     value = e.unescape().unwrap().to_string();
                 }
-                Ok(Event::End(ref e)) => {
+                Ok(Event::End(ref e)) =>
                     if e.name().into_inner() == b"xm:sqref" {
                         self.set_sqref(value);
                         return;
-                    }
-                }
+                    },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xm:sqref"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),

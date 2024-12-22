@@ -1,11 +1,13 @@
 // family
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+
 use super::Int32Value;
 use crate::reader::driver::{get_attribute, set_string_from_xml};
 use crate::writer::driver::write_start_tag;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FontFamilyNumbering {
@@ -38,12 +40,7 @@ impl FontFamilyNumbering {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // family
         if self.val.has_value() {
-            write_start_tag(
-                writer,
-                "family",
-                vec![("val", &self.val.get_value_string())],
-                true,
-            );
+            write_start_tag(writer, "family", vec![("val", &self.val.get_value_string())], true);
         }
     }
 }

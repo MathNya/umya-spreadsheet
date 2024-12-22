@@ -1,12 +1,14 @@
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
+
 use crate::helper::const_str::{CUSTOM_PROPS_NS, VTYPES_NS};
 use crate::reader::driver::xml_read_loop;
 use crate::structs::custom_properties::CustomDocumentProperty;
 use crate::writer::driver::{write_end_tag, write_start_tag};
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Default, Debug, Clone)]
 pub struct Properties {

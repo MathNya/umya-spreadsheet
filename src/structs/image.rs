@@ -1,20 +1,22 @@
-use crate::structs::drawing::spreadsheet::MarkerType;
-use crate::structs::drawing::spreadsheet::OneCellAnchor;
-use crate::structs::drawing::spreadsheet::Picture;
-use crate::structs::drawing::spreadsheet::TwoCellAnchor;
-use crate::structs::drawing::FillRectangle;
-use crate::structs::drawing::PresetGeometry;
-use crate::structs::drawing::Stretch;
-use crate::structs::MediaObject;
-use crate::traits::AdjustmentCoordinate;
-use base64::{engine::general_purpose::STANDARD, Engine as _};
-use quick_xml::Writer;
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Cursor;
 use std::io::Read;
 use std::sync::OnceLock;
+
+use base64::{Engine as _, engine::general_purpose::STANDARD};
+use quick_xml::Writer;
+
+use crate::structs::MediaObject;
+use crate::structs::drawing::FillRectangle;
+use crate::structs::drawing::PresetGeometry;
+use crate::structs::drawing::Stretch;
+use crate::structs::drawing::spreadsheet::MarkerType;
+use crate::structs::drawing::spreadsheet::OneCellAnchor;
+use crate::structs::drawing::spreadsheet::Picture;
+use crate::structs::drawing::spreadsheet::TwoCellAnchor;
+use crate::traits::AdjustmentCoordinate;
 
 // Initialize OnceLock for the Vec<u8>
 static EMPTY_VEC: OnceLock<Vec<u8>> = OnceLock::new();
@@ -38,8 +40,7 @@ pub struct Image {
 /// marker.set_coordinate("B3");
 /// let mut image = umya_spreadsheet::structs::Image::default();
 /// image.new_image("./images/sample1.png", marker);
-/// book.get_sheet_by_name_mut("Sheet1").unwrap()
-///     .add_image(image);
+/// book.get_sheet_by_name_mut("Sheet1").unwrap().add_image(image);
 ///
 /// // Get Image by Worksheet.
 /// let worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
@@ -55,18 +56,20 @@ pub struct Image {
 /// let images = worksheet.get_images_by_column_and_row_mut(&2, 1);
 ///
 /// // Download Image
-/// book.get_sheet_by_name("Sheet1").unwrap()
-/// .get_image_collection()
-/// .get(0)
-/// .unwrap()
-/// .download_image("./tests/result_files/bbb.png");
+/// book.get_sheet_by_name("Sheet1")
+///     .unwrap()
+///     .get_image_collection()
+///     .get(0)
+///     .unwrap()
+///     .download_image("./tests/result_files/bbb.png");
 ///
 /// // Change Image
-/// book.get_sheet_by_name_mut("Sheet1").unwrap()
-/// .get_image_collection_mut()
-/// .get_mut(0)
-/// .unwrap()
-/// .change_image("./images/sample1.png");
+/// book.get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_image_collection_mut()
+///     .get_mut(0)
+///     .unwrap()
+///     .change_image("./images/sample1.png");
 /// ```
 impl Image {
     #[inline]
@@ -173,12 +176,8 @@ impl Image {
 
         let mut one_cell_anchor = OneCellAnchor::default();
         one_cell_anchor.set_from_marker(marker);
-        one_cell_anchor
-            .get_extent_mut()
-            .set_cy(i64::from(height) * 9525);
-        one_cell_anchor
-            .get_extent_mut()
-            .set_cx(i64::from(width) * 9525);
+        one_cell_anchor.get_extent_mut().set_cy(i64::from(height) * 9525);
+        one_cell_anchor.get_extent_mut().set_cx(i64::from(width) * 9525);
         one_cell_anchor.set_picture(picture);
         self.set_one_cell_anchor(one_cell_anchor);
     }
@@ -260,9 +259,7 @@ impl Image {
     #[inline]
     #[must_use]
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
-        self.get_two_cell_anchor()
-            .as_ref()
-            .map(|anchor| anchor.get_to_marker())
+        self.get_two_cell_anchor().as_ref().map(|anchor| anchor.get_to_marker())
     }
 
     pub(crate) fn get_media_object(&self) -> Vec<&MediaObject> {

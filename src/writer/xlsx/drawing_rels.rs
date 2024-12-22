@@ -1,9 +1,10 @@
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
 
-use super::driver::{write_end_tag, write_new_line, write_start_tag};
+use quick_xml::Writer;
+use quick_xml::events::{BytesDecl, Event};
+
 use super::XlsxError;
+use super::driver::{write_end_tag, write_new_line, write_start_tag};
 use crate::helper::const_str::{CHART_NS, IMAGE_NS, PKG_DRAWINGS_RELS, REL_NS};
 use crate::structs::Worksheet;
 use crate::structs::WriterManager;
@@ -19,13 +20,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer
-        .write_event(Event::Decl(BytesDecl::new(
-            "1.0",
-            Some("UTF-8"),
-            Some("yes"),
-        )))
-        .unwrap();
+    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
     write_new_line(&mut writer);
 
     // relationships

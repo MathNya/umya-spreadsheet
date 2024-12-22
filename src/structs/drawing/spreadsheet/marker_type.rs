@@ -1,14 +1,16 @@
 // xdr:from,xdr:to
+use std::io::Cursor;
+
+use quick_xml::Reader;
+use quick_xml::Writer;
+use quick_xml::events::{BytesStart, Event};
+
 use crate::helper::coordinate::{
     adjustment_insert_coordinate, adjustment_remove_coordinate, coordinate_from_index,
     index_from_coordinate, is_remove_coordinate,
 };
 use crate::traits::AdjustmentCoordinate;
 use crate::writer::driver::{write_end_tag, write_start_tag, write_text_node};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {
@@ -125,6 +127,7 @@ impl MarkerType {
             buf.clear();
         }
     }
+
     #[inline]
     pub(crate) fn write_to_from(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "xdr:from");

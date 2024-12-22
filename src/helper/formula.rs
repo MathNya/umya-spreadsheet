@@ -1,3 +1,7 @@
+use std::sync::OnceLock;
+
+use fancy_regex::Regex;
+
 use crate::helper::address::{join_address, split_address};
 use crate::helper::coordinate::{
     adjustment_insert_coordinate, adjustment_remove_coordinate, coordinate_from_index_with_lock,
@@ -5,13 +9,11 @@ use crate::helper::coordinate::{
 };
 use crate::helper::range::{get_join_range, get_split_range};
 use crate::structs::StringValue;
-use fancy_regex::Regex;
-use std::sync::OnceLock;
 
-/** PARTLY BASED ON: */
-/** Copyright (c) 2007 E. W. Bachtal, Inc. */
-/** <https://ewbi.blogs.com/develops/2007/03/excel_formula_p.html> */
-/** <https://ewbi.blogs.com/develops/2004/12/excel_formula_p.html> */
+/// PARTLY BASED ON: */
+/// Copyright (c) 2007 E. W. Bachtal, Inc. */
+/// <https://ewbi.blogs.com/develops/2007/03/excel_formula_p.html> */
+/// <https://ewbi.blogs.com/develops/2004/12/excel_formula_p.html>
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum FormulaTokenTypes {
@@ -114,9 +116,7 @@ const OPERATORS_SN: &str = "+-";
 const OPERATORS_INFIX: &str = "+-*/^&=><";
 const OPERATORS_POSTFIX: &str = "%";
 
-pub const ERRORS: &[&str] = &[
-    "#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?", "#NUM!", "#N/A",
-];
+pub const ERRORS: &[&str] = &["#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?", "#NUM!", "#N/A"];
 const COMPARATORS_MULTI: &[&str] = &[">=", "<=", "<>"];
 
 // Initialize the OnceLock for the Regex
@@ -231,9 +231,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         if let Some(current_char) = formula.chars().nth(index) {
             if OPERATORS_SN.contains(current_char)
                 && value.len() > 1
-                && get_scientific_regex()
-                    .is_match(&current_char.to_string())
-                    .unwrap_or(false)
+                && get_scientific_regex().is_match(&current_char.to_string()).unwrap_or(false)
             {
                 value.push(current_char);
                 index += 1;
@@ -551,7 +549,8 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         tokens1.push(obj);
     }
 
-    // move tokenList to new set, excluding unnecessary white-space tokens and converting necessary ones to intersections
+    // move tokenList to new set, excluding unnecessary white-space tokens and
+    // converting necessary ones to intersections
     let token_count = tokens1.len();
     #[allow(unused_assignments)]
     let mut previous_token = None;
@@ -626,8 +625,10 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         value = String::new();
     }
 
-    // move tokens to final list, switching infix "-" operators to prefix when appropriate, switching infix "+" operators
-    // to noop when appropriate, identifying operand and infix-operator subtypes, and pulling "@" from function names
+    // move tokens to final list, switching infix "-" operators to prefix when
+    // appropriate, switching infix "+" operators to noop when appropriate,
+    // identifying operand and infix-operator subtypes, and pulling "@" from
+    // function names
     let token_count = tokens2.len();
     #[allow(unused_assignments)]
     let mut previous_token = None;
@@ -955,27 +956,15 @@ mod tests {
     #[test]
     fn test() {
         let formula = "=10+9";
-        assert_eq!(
-            format!("={}", render(parse_to_tokens(formula).as_ref())),
-            formula
-        );
+        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
 
         let formula = "=SUM(E7:I7)";
-        assert_eq!(
-            format!("={}", render(parse_to_tokens(formula).as_ref())),
-            formula
-        );
+        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
 
         let formula = "=SUM(Sheet2!E7:I7)";
-        assert_eq!(
-            format!("={}", render(parse_to_tokens(formula).as_ref())),
-            formula
-        );
+        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
 
         let formula = "=\"TEST\"";
-        assert_eq!(
-            format!("={}", render(parse_to_tokens(formula).as_ref())),
-            formula
-        );
+        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
     }
 }

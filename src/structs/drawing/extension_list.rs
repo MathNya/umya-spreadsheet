@@ -1,10 +1,12 @@
 // a:extLst
-use crate::reader::driver::xml_read_loop;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
+use std::io::Cursor;
+
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::io::Cursor;
+use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
+
+use crate::reader::driver::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct ExtensionList {}
