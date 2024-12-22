@@ -62,14 +62,14 @@ impl AdjustValueList {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:avLst
-        if !self.shape_guide_collection.is_empty() {
+        if self.shape_guide_collection.is_empty() {
+            write_start_tag(writer, "a:avLst", vec![], true);
+        } else {
             write_start_tag(writer, "a:avLst", vec![], false);
             for gd in &self.shape_guide_collection {
                 gd.write_to(writer);
             }
             write_end_tag(writer, "a:avLst");
-        } else {
-            write_start_tag(writer, "a:avLst", vec![], true);
         }
     }
 }

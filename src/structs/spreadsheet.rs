@@ -362,7 +362,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_deserialize_by_worksheet(worksheet, shared_string_table.clone(), &stylesheet);
+            raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
         }
         self
     }
@@ -373,7 +373,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_deserialize_by_worksheet(worksheet, shared_string_table, &stylesheet);
+        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
         self
     }
 
@@ -437,7 +437,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         self.work_sheet_collection.get_mut(index).map(|v| {
-            raw_to_deserialize_by_worksheet(v, shared_string_table, &stylesheet);
+            raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
             v
         })
     }
@@ -673,10 +673,10 @@ impl Spreadsheet {
     }
 
     #[inline]
-    pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
+    pub(crate) fn update_pivot_caches(&mut self, key: &str, value: &str) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
-            if **val1 == key {
-                *val3 = value.clone().into_boxed_str();
+            if &**val1 == key {
+                *val3 = value.to_owned().into_boxed_str();
             };
         });
         self

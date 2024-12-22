@@ -146,7 +146,7 @@ impl GraphicFrame {
         self.transform.write_to(writer);
 
         // a:graphic
-        self.graphic.write_to(writer, rel_list);
+        Graphic::write_to(writer, rel_list);
 
         write_end_tag(writer, "xdr:graphicFrame");
     }

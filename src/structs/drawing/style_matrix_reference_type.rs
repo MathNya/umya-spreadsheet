@@ -68,18 +68,10 @@ impl StyleMatrixReferenceType {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"a:lnRef" => {
-                        return;
-                    }
-                    b"a:fillRef" => {
-                        return;
-                    }
-                    b"a:effectRef" => {
-                        return;
-                    }
-                    b"a:fontRef" => {
-                        return;
-                    }
+                    b"a:lnRef"     |
+                    b"a:fillRef"   |
+                    b"a:effectRef" |
+                    b"a:fontRef" => return,
                     _ => (),
                 }
             },

@@ -47,7 +47,7 @@ impl DefinedName {
     }
 
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let list = self.split_str(value);
+        let list = Self::split_str(value);
         for v in &list {
             if is_address(v) {
                 self.add_address(v);
@@ -121,7 +121,7 @@ impl DefinedName {
         self.hidden.set_value(value);
     }
 
-    fn split_str<S: Into<String>>(&self, value: S) -> Vec<String> {
+    fn split_str<S: Into<String>>(value: S) -> Vec<String> {
         let value = value.into();
         let char_list: Vec<char> = value.chars().collect::<Vec<char>>();
         let mut is_pass_s = false;

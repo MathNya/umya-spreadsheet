@@ -1,14 +1,13 @@
 use quick_xml::Reader;
 use quick_xml::events::Event;
 
-use super::XlsxError;
 use crate::structs::PivotTable;
 use crate::structs::PivotTableDefinition;
 use crate::structs::Worksheet;
 use crate::structs::raw::RawFile;
 
 #[allow(dead_code)]
-pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) -> Result<(), XlsxError> {
+pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) {
     let data = std::io::Cursor::new(pivot_table_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
@@ -33,5 +32,4 @@ pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) -> Res
         buf.clear();
     }
     worksheet.add_pivot_table(pivot_table);
-    Ok(())
 }

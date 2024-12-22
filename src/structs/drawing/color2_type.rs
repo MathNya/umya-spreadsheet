@@ -99,19 +99,19 @@ impl Color2Type {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                b"a:accent1" => return,
-                b"a:accent2" => return,
-                b"a:accent3" => return,
-                b"a:accent4" => return,
-                b"a:accent5" => return,
-                b"a:accent6" => return,
-                b"a:dk1" => return,
-                b"a:dk2" => return,
-                b"a:folHlink" => return,
-                b"a:hlink" => return,
-                b"a:lt1" => return,
-                b"a:lt2" => return,
-                _ => (),
+                    b"a:accent1"  |
+                    b"a:accent2"  |
+                    b"a:accent3"  |
+                    b"a:accent4"  |
+                    b"a:accent5"  |
+                    b"a:accent6"  |
+                    b"a:dk1"      |
+                    b"a:dk2"      |
+                    b"a:folHlink" |
+                    b"a:hlink"    |
+                    b"a:lt1"      |
+                    b"a:lt2"      => return,
+                    _             => (),
                 }
             },
             Event::Eof => panic!("Error: Could not find {} end element", "Color2Type")

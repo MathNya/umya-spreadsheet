@@ -71,10 +71,10 @@ impl PrintSettings {
             Event::Start(ref e) => {
                 match e.name().0 {
                 b"c:headerFooter" => {
-                    self.header_footer.set_attributes(reader, e);
+                    HeaderFooter::set_attributes(reader, e);
                 }
                 b"c:pageSetup" => {
-                    self.page_setup.set_attributes(reader, e);
+                    PageSetup::set_attributes(reader, e);
                 }
                 _ => (),
                 }
@@ -98,13 +98,13 @@ impl PrintSettings {
         write_start_tag(writer, "c:printSettings", vec![], false);
 
         // c:headerFooter
-        self.header_footer.write_to(writer);
+        HeaderFooter::write_to(writer);
 
         // c:pageMargins
         self.page_margins.write_to(writer);
 
         // c:pageSetup
-        self.page_setup.write_to(writer);
+        PageSetup::write_to(writer);
 
         write_end_tag(writer, "c:printSettings");
     }

@@ -199,7 +199,7 @@ impl Row {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         stylesheet: &mut Stylesheet,
-        spans: String,
+        spans: &str,
         empty_flag: bool,
     ) {
         let xf_index_str: String;
@@ -210,7 +210,7 @@ impl Row {
         let row_num = self.row_num.get_value_string();
         attributes.push(("r", &row_num));
         if !empty_flag {
-            attributes.push(("spans", &spans));
+            attributes.push(("spans", spans));
         }
         let height = self.height.get_value_string();
         if self.height.get_value() != 0f64 {

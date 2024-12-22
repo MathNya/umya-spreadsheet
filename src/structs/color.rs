@@ -140,7 +140,7 @@ impl Color {
         let argb = value.into();
         let indexed = INDEXED_COLORS.iter().position(|&r| r == argb);
         if let Some(v) = indexed {
-            self.indexed.set_value(v as u32);
+            self.indexed.set_value(u32::try_from(v).unwrap());
             self.argb.remove_value();
         } else {
             self.indexed.remove_value();
@@ -250,10 +250,7 @@ impl Color {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"color" => return,
-                    b"fgColor" => return,
-                    b"bgColor" => return,
-                    b"tabColor" => return,
+                    b"color" | b"fgColor" | b"bgColor" | b"tabColor" => return,
                     _ => (),
                 },
                 Ok(Event::Eof) =>

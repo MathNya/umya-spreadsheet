@@ -214,10 +214,8 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
             // Override workbook
             if file.starts_with("/xl/workbook.xml") {
-                content_type = match spreadsheet.get_has_macros() {
-                    true => WORKBOOK_MACRO_TYPE,
-                    false => WORKBOOK_TYPE,
-                };
+                content_type =
+                    if spreadsheet.get_has_macros() { WORKBOOK_MACRO_TYPE } else { WORKBOOK_TYPE };
             }
 
             // Override sheet

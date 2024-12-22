@@ -98,8 +98,10 @@ impl Cell {
         if !formula.is_empty() {
             let org_col_num = self.coordinate.get_col_num();
             let org_row_num = self.coordinate.get_row_num();
-            let offset_col_num = col as i32 - org_col_num as i32;
-            let offset_row_num = row as i32 - org_row_num as i32;
+            let offset_col_num: i32 = num_traits::cast::<_, i32>(col).unwrap()
+                - num_traits::cast::<_, i32>(org_col_num).unwrap();
+            let offset_row_num: i32 = num_traits::cast::<_, i32>(row).unwrap()
+                - num_traits::cast::<_, i32>(org_row_num).unwrap();
             let mut tokens = parse_to_tokens(format!("={formula}"));
             adjustment_formula_coordinate(&mut tokens, offset_col_num, offset_row_num);
             let result_formula = render(tokens.as_ref());
@@ -252,7 +254,7 @@ impl Cell {
     }
 
     #[inline]
-    pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
+    pub(crate) fn set_shared_string_item(&mut self, value: &SharedStringItem) -> &mut Self {
         self.cell_value.set_shared_string_item(value);
         self
     }
@@ -432,7 +434,7 @@ impl Cell {
                             let index = string_value.parse::<usize>().unwrap();
                             let shared_string_item =
                                 shared_string_table.get_shared_string_item().get(index).unwrap();
-                            self.set_shared_string_item(shared_string_item.clone());
+                            self.set_shared_string_item(shared_string_item);
                         }
                         "b" => {
                             let prm = string_value == "1";

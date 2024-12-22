@@ -89,7 +89,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFl
                     })
                     .collect();
 
-                elm.classes = element.classes.clone();
+                elm.classes.clone_from(&element.classes);
                 data.element.push(elm);
 
                 let mut children = read_node(&element.children, &data.element);
@@ -98,7 +98,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFl
                 data = HtmlFlatData::default();
                 data.element.extend_from_slice(parent_element);
             }
-            _ => {}
+            Node::Comment(_) => {}
         }
     }
     if !data.text.is_empty() {

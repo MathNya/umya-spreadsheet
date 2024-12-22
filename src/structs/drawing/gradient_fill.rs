@@ -117,8 +117,8 @@ impl GradientFill {
                     self.set_linear_gradient_fill(obj);
                 }
                 b"a:tileRect" => {
-                    let mut obj = TileRectangle::default();
-                    obj.set_attributes(reader, e);
+                    let obj = TileRectangle::default();
+                    TileRectangle::set_attributes(reader, e);
                     self.set_tile_rectangle(obj);
                 }
                 _ => (),
@@ -158,8 +158,8 @@ impl GradientFill {
         }
 
         // a:tileRect
-        if let Some(v) = &self.tile_rectangle {
-            v.write_to(writer);
+        if self.tile_rectangle.is_some() {
+            TileRectangle::write_to(writer);
         }
 
         write_end_tag(writer, "a:gradFill");

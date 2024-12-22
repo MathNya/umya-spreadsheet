@@ -58,7 +58,7 @@ impl StringReference {
                     self.formula.set_attributes(reader, e);
                 }
                 b"c:strCache" => {
-                    self.string_cache.set_attributes(reader, e);
+                    StringCache::set_attributes(reader, e);
                 }
                 _ => (),
             },
@@ -79,7 +79,7 @@ impl StringReference {
         self.formula.write_to(writer);
 
         // c:strCache
-        self.string_cache.write_to(writer, self.get_formula().get_address(), spreadsheet);
+        StringCache::write_to(writer, self.get_formula().get_address(), spreadsheet);
 
         write_end_tag(writer, "c:strRef");
     }

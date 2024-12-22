@@ -1,7 +1,6 @@
 use quick_xml::Reader;
 use quick_xml::events::Event;
 
-use super::XlsxError;
 use crate::structs::Worksheet;
 use crate::structs::raw::RawFile;
 use crate::structs::raw::RawRelationships;
@@ -12,7 +11,7 @@ pub(crate) fn read(
     worksheet: &mut Worksheet,
     drawing_file: &RawFile,
     drawing_relationships: Option<&RawRelationships>,
-) -> Result<(), XlsxError> {
+) {
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
@@ -44,8 +43,6 @@ pub(crate) fn read(
             },
             Event::Eof => break,
     );
-
-    Ok(())
 }
 
 // fn set_style(comment:&mut Comment, style_string:&str) {

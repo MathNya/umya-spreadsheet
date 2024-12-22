@@ -117,7 +117,7 @@ pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
 
 pub(crate) fn raw_to_deserialize_by_worksheet(
     worksheet: &mut Worksheet,
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &Arc<RwLock<SharedStringTable>>,
     stylesheet: &Stylesheet,
 ) {
     if worksheet.is_deserialized() {
@@ -137,12 +137,11 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                         worksheet,
                         relationship.get_raw_file(),
                         raw_data_of_worksheet.get_drawing_relationships(),
-                    )
-                    .unwrap();
+                    );
                 }
                 // comment
                 COMMENTS_NS => {
-                    comment::read(worksheet, relationship.get_raw_file()).unwrap();
+                    comment::read(worksheet, relationship.get_raw_file());
                 }
                 // table
                 TABLE_NS => {
@@ -158,8 +157,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                     worksheet,
                     relationship.get_raw_file(),
                     raw_data_of_worksheet.get_vml_drawing_relationships(),
-                )
-                .unwrap();
+                );
             }
         }
     }

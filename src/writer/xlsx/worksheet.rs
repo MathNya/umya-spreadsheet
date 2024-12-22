@@ -20,7 +20,7 @@ use crate::structs::WriterManager;
 pub(crate) fn write<W: io::Seek + io::Write>(
     sheet_no: i32,
     worksheet: &Worksheet,
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &Arc<RwLock<SharedStringTable>>,
     stylesheet: &mut Stylesheet,
     has_macros: bool,
     writer_mng: &mut WriterManager<W>,
@@ -50,9 +50,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // sheetPr
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     if has_macros {
-        let code_name = match worksheet.has_code_name() {
-            true => worksheet.get_code_name().as_ref().unwrap(),
-            false => worksheet.get_name(),
+        let code_name = if worksheet.has_code_name() {
+            worksheet.get_code_name().as_ref().unwrap()
+        } else {
+            worksheet.get_name()
         };
         attributes.push(("codeName", code_name));
     }
@@ -142,7 +143,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // row
         if cells_in_row.is_empty() {
-            let spans = "0:0".to_string();
+            let spans = "0:0";
             row.write_to(&mut writer, stylesheet, spans, true);
         } else {
             let (first_num, last_num) = (
@@ -151,10 +152,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             );
             let spans = format!("{first_num}:{last_num}");
 
-            row.write_to(&mut writer, stylesheet, spans, false);
+            row.write_to(&mut writer, stylesheet, &spans, false);
             // c
             for cell in cells_in_row {
-                cell.write_to(&mut writer, &shared_string_table, stylesheet, &formula_shared_list);
+                cell.write_to(&mut writer, shared_string_table, stylesheet, &formula_shared_list);
             }
 
             write_end_tag(&mut writer, "row");

@@ -12,7 +12,7 @@ use crate::structs::SharedStringTable;
 use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &Arc<RwLock<SharedStringTable>>,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     if shared_string_table.read().unwrap().get_shared_string_item().is_empty() {

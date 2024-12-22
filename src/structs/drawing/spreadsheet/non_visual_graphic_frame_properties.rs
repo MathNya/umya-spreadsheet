@@ -75,8 +75,7 @@ impl NonVisualGraphicFrameProperties {
                             .set_attributes(reader, e, true);
                     },
                     b"xdr:cNvGraphicFramePr" => {
-                        self.non_visual_graphic_frame_drawing_properties
-                            .set_attributes(reader, e);
+                        NonVisualGraphicFrameDrawingProperties::set_attributes(reader, e);
                     },
                     _ => (),
                 }
@@ -104,7 +103,7 @@ impl NonVisualGraphicFrameProperties {
         self.non_visual_drawing_properties.write_to(writer, 0);
 
         // xdr:cNvGraphicFramePr
-        self.non_visual_graphic_frame_drawing_properties.write_to(writer);
+        NonVisualGraphicFrameDrawingProperties::write_to(writer);
 
         write_end_tag(writer, "xdr:nvGraphicFramePr");
     }

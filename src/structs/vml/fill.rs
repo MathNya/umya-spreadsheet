@@ -110,7 +110,11 @@ impl Fill {
         }
     }
 
+    /// We allow the `unused_assignments` lint here, because the compiler is not
+    /// smart enough to see, that defining `r_id_str` outside of the `if let
+    /// Some()` is necessary to avoid lifetime errors.
     #[inline]
+    #[allow(unused_assignments)]
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
@@ -130,12 +134,12 @@ impl Fill {
         if self.focus_size.has_value() {
             attributes.push(("focussize", self.focus_size.get_value_str()));
         }
-        let mut _r_id_str = String::new();
+        let mut r_id_str = String::new();
         if let Some(image) = &self.image {
             let r_id = image.get_rid(rel_list);
-            _r_id_str = format!("rId{r_id}");
+            r_id_str = format!("rId{r_id}");
             attributes.push(("o:title", image.get_image_title()));
-            attributes.push(("o:relid", _r_id_str.as_str()));
+            attributes.push(("o:relid", r_id_str.as_str()));
             attributes.push(("recolor", "t"));
             attributes.push(("rotate", "t"));
             attributes.push(("type", "frame"));

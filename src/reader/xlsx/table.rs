@@ -5,7 +5,7 @@ use super::XlsxError;
 use super::driver::get_attribute_value;
 use crate::structs::Worksheet;
 use crate::structs::raw::RawFile;
-use crate::structs::{Table, TableColumn, TableStyleInfo};
+use crate::structs::{ShowColumn, ShowStripes, Table, TableColumn, TableStyleInfo};
 
 pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<(), XlsxError> {
     let data = std::io::Cursor::new(table_file.get_file_data());
@@ -45,38 +45,50 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                 }
                 b"tableStyleInfo" => {
                     let mut name = String::new();
-                    let mut show_first_col = false;
-                    let mut show_last_col = false;
-                    let mut show_row_stripes = false;
-                    let mut show_col_stripes = false;
+                    let mut show_first_col = ShowColumn::Hide;
+                    let mut show_last_col = ShowColumn::Hide;
+                    let mut show_row_stripes = ShowStripes::Hide;
+                    let mut show_col_stripes = ShowStripes::Hide;
                     for attr in e.attributes().with_checks(false).flatten() {
                         let attr_val = get_attribute_value(&attr)?;
                         match attr.key.0 {
                             b"name" => {
                                 name = attr_val;
                             }
-                            b"showFirstColumn" => {
-                                show_first_col = attr_val == "1";
-                            }
-                            b"showLastColumn" => {
-                                show_last_col = attr_val == "1";
-                            }
-                            b"showRowStripes" => {
-                                show_row_stripes = attr_val == "1";
-                            }
-                            b"showColumnStripes" => {
-                                show_col_stripes = attr_val == "1";
-                            }
+                            b"showFirstColumn" =>
+                                if attr_val == "1" {
+                                    show_first_col = ShowColumn::Show;
+                                },
+                            b"showLastColumn" =>
+                                if attr_val == "1" {
+                                    show_last_col = ShowColumn::Show;
+                                },
+                            b"showRowStripes" =>
+                                if attr_val == "1" {
+                                    show_row_stripes = ShowStripes::Show;
+                                },
+                            b"showColumnStripes" =>
+                                if attr_val == "1" {
+                                    show_col_stripes = ShowStripes::Show;
+                                },
                             _ => {}
                         }
                     }
-                    if !name.is_empty() {
+                    if name.is_empty() {
                         table.set_style_info(Some(TableStyleInfo::new(
                             &name,
                             show_first_col,
                             show_last_col,
                             show_row_stripes,
                             show_col_stripes,
+                        )));
+                    } else {
+                        table.set_style_info(Some(TableStyleInfo::new(
+                            &name,
+                            ShowColumn::Hide,
+                            ShowColumn::Hide,
+                            ShowStripes::Hide,
+                            ShowStripes::Hide,
                         )));
                     }
                 }

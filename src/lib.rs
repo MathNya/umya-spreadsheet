@@ -147,7 +147,13 @@
     clippy::cargo,
     clippy::suspicious
 )]
-#![allow(clippy::module_name_repetitions)]
+#![allow(
+    clippy::missing_errors_doc,
+    clippy::missing_panics_doc,
+    clippy::module_name_repetitions,
+    clippy::similar_names,
+    clippy::too_many_lines
+)]
 
 extern crate chrono;
 extern crate fancy_regex;

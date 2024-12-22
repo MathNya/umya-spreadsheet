@@ -412,10 +412,7 @@ impl Font {
                     b"name" => {
                         self.font_name.set_attributes(reader, e);
                     }
-                    b"rFont" => {
-                        self.font_name.set_attributes(reader, e);
-                    }
-                    b"sz" => {
+                    b"rFont" | b"sz" => {
                         self.font_size.set_attributes(reader, e);
                     }
                     b"family" => {
@@ -448,8 +445,7 @@ impl Font {
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"font" => return,
-                    b"rPr" => return,
+                    b"font" | b"rPr" => return,
                     _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "font, rPr"),

@@ -175,7 +175,7 @@ impl Table {
         T: Into<CellCoordinates>,
     {
         let cell_coord: CellCoordinates = cc.into();
-        let mut coord: Coordinate = Default::default();
+        let mut coord: Coordinate = Coordinate::default();
         coord.set_col_num(cell_coord.col);
         coord.set_row_num(cell_coord.row);
         coord
@@ -278,23 +278,48 @@ impl TableColumn {
     }
 }
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Debug)]
 pub struct TableStyleInfo {
     name: String,
-    show_first_col: bool,
-    show_last_col: bool,
-    show_row_stripes: bool,
-    show_col_stripes: bool,
+    show_first_col: ShowColumn,
+    show_last_col: ShowColumn,
+    show_row_stripes: ShowStripes,
+    show_col_stripes: ShowStripes,
 }
+
+#[derive(Debug, Clone, Copy)]
+pub enum ShowColumn {
+    Show,
+    Hide,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum ShowStripes {
+    Show,
+    Hide,
+}
+
+impl Default for TableStyleInfo {
+    fn default() -> Self {
+        Self {
+            name: String::new(),                 // Default name can be an empty string
+            show_first_col: ShowColumn::Hide,    // Default to Hide
+            show_last_col: ShowColumn::Hide,     // Default to Hide
+            show_row_stripes: ShowStripes::Hide, // Default to Hide
+            show_col_stripes: ShowStripes::Hide, // Default to Hide
+        }
+    }
+}
+
 impl TableStyleInfo {
     #[inline]
     #[must_use]
     pub fn new(
         name: &str,
-        show_first_col: bool,
-        show_last_col: bool,
-        show_row_stripes: bool,
-        show_col_stripes: bool,
+        show_first_col: ShowColumn,
+        show_last_col: ShowColumn,
+        show_row_stripes: ShowStripes,
+        show_col_stripes: ShowStripes,
     ) -> Self {
         Self {
             name: name.to_string(),
@@ -314,24 +339,24 @@ impl TableStyleInfo {
     #[inline]
     #[must_use]
     pub fn is_show_first_col(&self) -> bool {
-        self.show_first_col
+        matches!(self.show_first_col, ShowColumn::Show)
     }
 
     #[inline]
     #[must_use]
     pub fn is_show_last_col(&self) -> bool {
-        self.show_last_col
+        matches!(self.show_last_col, ShowColumn::Show)
     }
 
     #[inline]
     #[must_use]
     pub fn is_show_row_stripes(&self) -> bool {
-        self.show_row_stripes
+        matches!(self.show_row_stripes, ShowStripes::Show)
     }
 
     #[inline]
     #[must_use]
     pub fn is_show_col_stripes(&self) -> bool {
-        self.show_col_stripes
+        matches!(self.show_col_stripes, ShowStripes::Show)
     }
 }

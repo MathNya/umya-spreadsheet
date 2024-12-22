@@ -193,8 +193,8 @@ impl BodyProperties {
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"a:spAutoFit" {
-                    let mut obj = ShapeAutoFit::default();
-                    obj.set_attributes(reader, e);
+                    let obj = ShapeAutoFit::default();
+                    ShapeAutoFit::set_attributes(reader, e);
                     self.set_shape_auto_fit(obj);
                 }
             },
@@ -247,8 +247,8 @@ impl BodyProperties {
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);
 
         if !*empty_flag {
-            if let Some(v) = &self.shape_auto_fit {
-                v.write_to(writer);
+            if self.shape_auto_fit.is_some() {
+                ShapeAutoFit::write_to(writer);
             }
 
             write_end_tag(writer, "a:bodyPr");

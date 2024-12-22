@@ -56,6 +56,7 @@ pub fn convert_rgb_to_ms_hls(rgb: &str) -> MsHlsColor {
 }
 
 #[must_use]
+#[allow(clippy::float_cmp)]
 pub fn convert_rgb_to_hls(rgb: &str) -> HlsColor {
     let mut hls = HlsColor::default();
 
@@ -176,5 +177,5 @@ fn positive_decimal_part(hue: f64) -> f64 {
 
 #[inline]
 fn to_i32(num: f64) -> i32 {
-    num.round() as i32
+    num_traits::cast(num.round()).unwrap()
 }

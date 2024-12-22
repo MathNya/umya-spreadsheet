@@ -32,10 +32,10 @@ impl RowReference {
     #[inline]
     pub(crate) fn offset_num(&mut self, value: i32) -> &mut Self {
         if value > 0 {
-            self.plus_num(value as u32);
+            self.plus_num(value.try_into().unwrap());
         }
         if value < 0 {
-            self.minus_num(-value as u32);
+            self.minus_num((-value).try_into().unwrap());
         }
         self
     }

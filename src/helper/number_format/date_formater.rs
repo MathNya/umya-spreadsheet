@@ -82,7 +82,11 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
             for (before, after) in DATE_FORMAT_REPLACEMENTS {
                 block = block.replace(before, after);
             }
-            if !block.contains("%P") {
+            if block.contains("%P") {
+                for (before, after) in DATE_FORMAT_REPLACEMENTS_12 {
+                    block = block.replace(before, after);
+                }
+            } else {
                 // 24-hour time format
                 // when [h]:mm format, the [h] should replace to the hours of the value * 24
                 if block.contains("[h]") {
@@ -92,10 +96,6 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
                     continue;
                 }
                 for (before, after) in DATE_FORMAT_REPLACEMENTS_24 {
-                    block = block.replace(before, after);
-                }
-            } else {
-                for (before, after) in DATE_FORMAT_REPLACEMENTS_12 {
                     block = block.replace(before, after);
                 }
             }

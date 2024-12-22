@@ -137,8 +137,8 @@ impl ChartSpace {
             reader,
             Event::Start(ref e) => match e.name().into_inner() {
                 b"mc:AlternateContent" => {
-                    let mut obj = Style::default();
-                    obj.set_attributes(reader, e);
+                    let obj = Style::default();
+                    Style::set_attributes(reader, e);
                     self.set_style(obj);
                 }
                 b"c:chart" => {
@@ -200,7 +200,7 @@ impl ChartSpace {
         self.rounded_corners.write_to(writer);
 
         // mc:AlternateContent
-        self.style.write_to(writer);
+        Style::write_to(writer);
 
         // c:chart
         self.chart.write_to(writer, spreadsheet);

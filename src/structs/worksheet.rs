@@ -202,7 +202,6 @@ impl Worksheet {
         assert!(!self.is_deserialized(), "This Worksheet is Deserialized.");
 
         read_lite(self.raw_data_of_worksheet.as_ref().unwrap(), shared_string_table, stylesheet)
-            .unwrap()
     }
 
     /// (This method is crate only.)
@@ -453,7 +452,7 @@ impl Worksheet {
     ///     .set_border_style(umya_spreadsheet::Border::BORDER_MEDIUM);
     /// worksheet.set_style_by_range("A1:A3", style);
     /// ```
-    pub fn set_style_by_range(&mut self, range: &str, style: Style) -> &mut Self {
+    pub fn set_style_by_range(&mut self, range: &str, style: &Style) -> &mut Self {
         let range_upper = range.to_uppercase();
         let coordinate_list = get_coordinate_list(&range_upper);
 
@@ -1833,10 +1832,16 @@ impl Worksheet {
         // the left is impossible)
         let range_upper = range.to_uppercase();
         let (row_start, row_end, col_start, col_end) = get_start_and_end_point(&range_upper);
-        assert!(((col_start as i32 + column) >= 1), "Out of Range.");
-        assert!(((row_start as i32 + row) >= 1), "Out of Range.");
-        assert!(((col_end as i32 + column) <= 16384), "Out of Range.");
-        assert!(((row_end as i32 + row) <= 1048576), "Out of Range.");
+        assert!(((num_traits::cast::<_, i32>(col_start).unwrap() + column) >= 1), "Out of Range.");
+        assert!(((num_traits::cast::<_, i32>(row_start).unwrap() + row) >= 1), "Out of Range.");
+        assert!(
+            ((num_traits::cast::<_, i32>(col_end).unwrap() + column) <= 16_384),
+            "Out of Range."
+        );
+        assert!(
+            ((num_traits::cast::<_, i32>(row_end).unwrap() + row) <= 1_048_576),
+            "Out of Range."
+        );
 
         // Iterate row by row, collecting cell information (do I copy)
         let cells = self.cells.get_cell_by_range(range);
@@ -1846,8 +1851,10 @@ impl Worksheet {
         if is_move {
             for (col_num, row_num) in &get_coordinate_list(&range_upper) {
                 self.cells.remove(*col_num, *row_num);
-                self.cells
-                    .remove((*col_num as i32 + column) as u32, (*row_num as i32 + row) as u32);
+                self.cells.remove(
+                    *col_num + num_traits::cast::<_, u32>(column).unwrap(),
+                    *row_num + num_traits::cast::<_, u32>(row).unwrap(),
+                );
             }
         }
 
@@ -1867,7 +1874,7 @@ impl Worksheet {
     #[inline]
     pub fn cleanup(&mut self) {
         let (_, max_row) = self.get_highest_column_and_row();
-        for row in (1..(max_row + 1)).rev() {
+        for row in (1..=max_row).rev() {
             if self.rows.get_row_dimension(row).is_some() {
                 let mut indexes: Vec<(u32, u32)> = Vec::new();
                 {

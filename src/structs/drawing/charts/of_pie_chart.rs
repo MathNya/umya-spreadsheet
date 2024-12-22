@@ -146,7 +146,7 @@ impl OfPieChart {
                         self.data_labels.set_attributes(reader, e);
                     }
                     b"c:serLines" => {
-                        self.series_lines.set_attributes(reader, e);
+                        SeriesLines::set_attributes(reader, e);
                     }
                     _ => (),
                 }
@@ -202,7 +202,7 @@ impl OfPieChart {
         self.second_pie_size.write_to(writer);
 
         // c:serLines
-        self.series_lines.write_to(writer);
+        SeriesLines::write_to(writer);
 
         write_end_tag(writer, "c:ofPieChart");
     }

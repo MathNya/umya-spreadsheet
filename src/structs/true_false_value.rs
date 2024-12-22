@@ -11,10 +11,7 @@ impl TrueFalseValue {
 
     #[inline]
     pub(crate) fn get_value_string(&self) -> &str {
-        match self.get_value() {
-            true => "t",
-            false => "f",
-        }
+        if self.get_value() { "t" } else { "f" }
     }
 
     #[inline]

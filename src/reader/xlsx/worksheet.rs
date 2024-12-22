@@ -40,8 +40,7 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"codeName" => {
                             worksheet.set_code_name(get_attribute_value(attr)?);
                         }
-                        Ok(_) => {}
-                        Err(_) => {}
+                        Ok(_) | Err(_) => {}
                     }
                 }
             }
@@ -61,8 +60,7 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"activeCell" => {
                             worksheet.set_active_cell(get_attribute_value(attr)?);
                         }
-                        Ok(_) => {}
-                        Err(_) => {}
+                        Ok(_) | Err(_) => {}
                     }
                 }
             }
@@ -140,8 +138,7 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"codeName" => {
                             worksheet.set_code_name(get_attribute_value(attr)?);
                         }
-                        Ok(_) => {}
-                        Err(_) => {}
+                        Ok(_) | Err(_) => {}
                     }
                 }
             }
@@ -161,8 +158,7 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"activeCell" => {
                             worksheet.set_active_cell(get_attribute_value(attr)?);
                         }
-                        Ok(_) => {}
-                        Err(_) => {}
+                        Ok(_) | Err(_) => {}
                     }
                 }
             }
@@ -223,7 +219,7 @@ pub(crate) fn read_lite(
     raw_data_of_worksheet: &RawWorksheet,
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
-) -> Result<Cells, XlsxError> {
+) -> Cells {
     let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
@@ -263,7 +259,7 @@ pub(crate) fn read_lite(
         Event::Eof => break,
     );
 
-    Ok(cells)
+    cells
 }
 
 fn get_hyperlink(

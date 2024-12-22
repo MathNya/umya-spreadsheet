@@ -356,8 +356,8 @@ impl RunProperties {
                     self.set_east_asian_font(obj);
                 }
                 b"a:noFill" => {
-                    let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e);
+                    let obj = NoFill::default();
+                    NoFill::set_attributes(reader, e);
                     self.set_no_fill(obj);
                 }
                 b"a:effectLst" => {
@@ -370,10 +370,8 @@ impl RunProperties {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                b"a:rPr" => return,
-                b"a:endParaRPr" => return,
-                b"a:defRPr" => return,
-                _ => (),
+                    b"a:rPr" | b"a:endParaRPr" | b"a:defRPr" => return,
+                    _ => (),
                 }
             },
             Event::Eof => panic!(
@@ -463,8 +461,8 @@ impl RunProperties {
             }
 
             // a:noFill
-            if let Some(v) = &self.no_fill {
-                v.write_to(writer);
+            if self.no_fill.is_some() {
+                NoFill::write_to(writer);
             }
 
             // a:effectLst

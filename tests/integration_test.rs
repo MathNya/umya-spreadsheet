@@ -301,7 +301,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::LineChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::LineChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -321,7 +321,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::PieChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::PieChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -340,7 +340,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::DoughnutChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::DoughnutChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -359,7 +359,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::AreaChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::AreaChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -378,7 +378,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::BarChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::BarChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -397,7 +397,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::Bar3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::Bar3DChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -416,7 +416,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::Line3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::Line3DChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -435,7 +435,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::Pie3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::Pie3DChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -454,7 +454,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::Area3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::Area3DChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -473,7 +473,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::OfPieChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::OfPieChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -493,7 +493,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::BubbleChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::BubbleChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -513,7 +513,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::RadarChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::RadarChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -532,7 +532,7 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(ChartType::ScatterChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(&ChartType::ScatterChart, from_marker, to_marker, area_chart_series_list)
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -584,7 +584,7 @@ fn new_sheet_and_edit() {
     // set style by range
     let mut style = Style::default();
     style.set_background_color(BG_COLOR);
-    sheet.set_style_by_range("A3:A4", style);
+    sheet.set_style_by_range("A3:A4", &style);
 
     let path = std::path::Path::new("./tests/result_files/bbb_new_sheet_value.xlsx");
     let _unused = writer::xlsx::write(&book, path);

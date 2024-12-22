@@ -113,12 +113,12 @@ impl Border {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"left" => return,
-                    b"right" => return,
-                    b"top" => return,
-                    b"bottom" => return,
-                    b"diagonal" => return,
-                    b"vertical" => return,
+                    b"left"     |
+                    b"right"    |
+                    b"top"      |
+                    b"bottom"   |
+                    b"diagonal" |
+                    b"vertical" |
                     b"horizontal" => return,
                     _ => (),
                 }

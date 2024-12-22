@@ -99,8 +99,7 @@ impl SharedStringItem {
                         vec_text_element.push(obj);
                     }
                     b"rPh" => {
-                        let mut obj = PhoneticRun::default();
-                        obj.set_attributes(reader, e);
+                        PhoneticRun::set_attributes(reader, e);
                     }
                     _ => (),
                 }

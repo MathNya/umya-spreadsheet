@@ -68,10 +68,9 @@ impl ImageData {
     ) {
         // v:imagedata
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let mut _r_id_str = String::new();
         let r_id = &self.image.get_rid(rel_list);
-        _r_id_str = format!("rId{r_id}");
-        attributes.push(("o:relid", _r_id_str.as_str()));
+        let r_id_str = format!("rId{r_id}");
+        attributes.push(("o:relid", r_id_str.as_str()));
         if self.title.has_value() {
             attributes.push(("o:title", self.title.get_value_str()));
         }

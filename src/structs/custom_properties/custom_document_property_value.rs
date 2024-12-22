@@ -12,11 +12,10 @@ impl fmt::Display for CustomDocumentPropertyValue {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::String(v) => write!(f, "{v}"),
-            Self::Date(v) => write!(f, "{v}"),
+            Self::String(v) | Self::Date(v) => write!(f, "{v}"),
             Self::Numeric(v) => write!(f, "{}", &v),
             Self::Bool(v) => write!(f, "{}", if *v { "true" } else { "false" }),
-            _ => write!(f, ""),
+            Self::Null => write!(f, ""),
         }
     }
 }
@@ -34,7 +33,7 @@ impl CustomDocumentPropertyValue {
             Self::Date(_) => Some("vt:filetime"),
             Self::Numeric(_) => Some("vt:i4"),
             Self::Bool(_) => Some("vt:bool"),
-            _ => None,
+            Self::Null => None,
         }
     }
 

@@ -164,7 +164,7 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
                 captures.iter().filter_map(|cap| cap.map(|c| c.as_str().to_string())).collect();
 
             if let Some(first_item) = items.first() {
-                colors[idx] = first_item.clone();
+                colors[idx].clone_from(first_item);
             }
 
             converted_section = color_re.replace_all(section, "").to_string();
@@ -176,10 +176,10 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
                 captures.iter().filter_map(|cap| cap.map(|c| c.as_str().to_string())).collect();
 
             if let Some(v) = items.get(1) {
-                condops[idx] = v.clone();
+                condops[idx].clone_from(v);
             }
             if let Some(v) = items.get(2) {
-                condvals[idx] = v.clone();
+                condvals[idx].clone_from(v);
             }
 
             converted_section = cond_re.replace_all(section, "").to_string();
@@ -219,6 +219,7 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     (color.to_string(), format.into(), absval.to_string())
 }
 
+#[allow(clippy::float_cmp)]
 fn split_format_compare(value: f64, cond: &str, val: f64, dfcond: &str, dfval: f64) -> bool {
     let mut check_cond = cond;
     let mut check_val = val;

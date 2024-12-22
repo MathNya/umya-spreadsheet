@@ -42,7 +42,7 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
         for ite in scale_regex.captures(&format).ok().flatten().unwrap().iter() {
             matches.push(ite.unwrap().as_str().to_string());
         }
-        scale = f64::from(1000i32.pow(matches[2].len() as u32));
+        scale = f64::from(1000i32.pow(num_traits::cast(matches[2].len()).unwrap()));
 
         format = trailing_comma_regex.replace_all(&format, "$1").into();
     }
@@ -114,7 +114,7 @@ fn format_straight_numeric_value(
         if right_value == "0" {
             right_value = right.to_string();
         } else if right.len() > right_value.len() {
-            let pow = 10i32.pow(right.len() as u32);
+            let pow = 10i32.pow(num_traits::cast(right.len()).unwrap());
             right_value = format!("{}", right_value.parse::<i32>().unwrap() * pow);
         } else {
             let mut right_value_conv: String = right_value.chars().take(right.len()).collect();

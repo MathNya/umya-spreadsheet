@@ -463,7 +463,14 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
 
         // start subexpression or function
         if formula.chars().nth(index).unwrap() == PAREN_OPEN {
-            if !value.is_empty() {
+            if value.is_empty() {
+                let mut obj = FormulaToken::default();
+                obj.set_value("");
+                obj.set_token_type(FormulaTokenTypes::Subexpression);
+                obj.set_token_sub_type(FormulaTokenSubTypes::Start);
+                tokens1.push(obj.clone());
+                stack.push(obj);
+            } else {
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Function);
@@ -471,13 +478,6 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 tokens1.push(obj.clone());
                 stack.push(obj);
                 value = String::new();
-            } else {
-                let mut obj = FormulaToken::default();
-                obj.set_value("");
-                obj.set_token_type(FormulaTokenTypes::Subexpression);
-                obj.set_token_sub_type(FormulaTokenSubTypes::Start);
-                tokens1.push(obj.clone());
-                stack.push(obj);
             }
             index += 1;
 
@@ -803,22 +803,22 @@ pub fn adjustment_formula_coordinate(
                     let is_lock_col = cell.2.unwrap();
                     let is_lock_row = cell.3.unwrap();
                     if !is_lock_col {
-                        let calc_col_num = col_num as i32 + offset_col_num;
+                        let calc_col_num =
+                            num_traits::cast::<_, i32>(col_num).unwrap() + offset_col_num;
                         if calc_col_num < 1 {
                             has_error = true;
                             break;
-                        } else {
-                            col_num = calc_col_num as u32;
                         }
+                        col_num = num_traits::cast::<_, u32>(calc_col_num).unwrap();
                     }
                     if !is_lock_row {
-                        let calc_row_num = row_num as i32 + offset_row_num;
+                        let calc_row_num =
+                            num_traits::cast::<_, i32>(row_num).unwrap() + offset_row_num;
                         if calc_row_num < 1 {
                             has_error = true;
                             break;
-                        } else {
-                            row_num = calc_row_num as u32;
                         }
+                        row_num = num_traits::cast::<_, u32>(calc_row_num).unwrap();
                     }
                     let new_corrdinate =
                         coordinate_from_index_with_lock(col_num, row_num, is_lock_col, is_lock_row);

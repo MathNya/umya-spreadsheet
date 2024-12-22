@@ -50,7 +50,7 @@ impl GraphicData {
                     let relationship = drawing_relationships
                         .unwrap()
                         .get_relationship_by_rid(&chart_id);
-                    chart::read(relationship.get_raw_file(), &mut self.chart_space).unwrap();
+                    chart::read(relationship.get_raw_file(), &mut self.chart_space);
                 }
             },
             Event::End(ref e) => {
@@ -63,7 +63,6 @@ impl GraphicData {
     }
 
     pub(crate) fn write_to(
-        &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {

@@ -34,8 +34,7 @@ impl CellRawValue {
     #[must_use]
     pub fn get_data_type(&self) -> &str {
         match self {
-            Self::String(_) => "s",
-            Self::RichText(_) => "s",
+            Self::String(_) | Self::RichText(_) => "s",
             Self::Numeric(_) => "n",
             Self::Bool(_) => "b",
             Self::Error(_) => "e",

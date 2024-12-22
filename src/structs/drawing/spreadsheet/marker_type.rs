@@ -116,8 +116,7 @@ impl MarkerType {
                     b"xdr:rowOff" => {
                         self.row_off = string_value.parse::<i32>().unwrap();
                     }
-                    b"xdr:from" => return,
-                    b"xdr:to" => return,
+                    b"xdr:from" | b"xdr:to" => return,
                     _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xdr:from,xdr:to"),

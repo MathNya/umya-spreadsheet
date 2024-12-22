@@ -205,7 +205,7 @@ impl CellValue {
     }
 
     #[inline]
-    pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
+    pub(crate) fn set_shared_string_item(&mut self, value: &SharedStringItem) -> &mut Self {
         if let Some(v) = value.get_text() {
             self.set_value_string(v.get_value());
         }

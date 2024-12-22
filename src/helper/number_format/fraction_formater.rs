@@ -4,7 +4,7 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
     let integer_part = value.abs().floor();
     let decimal_part = (value.abs() % 1f64).to_string().replace("0.", "").parse::<f64>().unwrap();
     let decimal_length = decimal_part.to_string().len();
-    let decimal_divisor = 10f64.powi(decimal_length as i32);
+    let decimal_divisor = 10f64.powi(num_traits::cast(decimal_length).unwrap());
 
     let gcd = gcd(decimal_part, decimal_divisor);
 

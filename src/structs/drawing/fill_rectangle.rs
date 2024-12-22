@@ -60,15 +60,10 @@ impl FillRectangle {
     }
 
     #[inline]
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
-        &mut self,
-        _reader: &mut Reader<R>,
-        _e: &BytesStart,
-    ) {
-    }
+    pub(crate) fn set_attributes<R: std::io::BufRead>(_reader: &mut Reader<R>, _e: &BytesStart) {}
 
     #[inline]
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:fillRect
         write_start_tag(writer, "a:fillRect", vec![], true);
     }

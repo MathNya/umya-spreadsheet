@@ -57,9 +57,9 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
             let worksheet_no = index + 1;
             if worksheet.is_deserialized() {
                 worksheet::write(
-                    worksheet_no as i32,
+                    worksheet_no.try_into().unwrap(),
                     worksheet,
-                    shared_string_table.clone(),
+                    &shared_string_table,
                     &mut stylesheet,
                     spreadsheet.get_has_macros(),
                     &mut writer_manager,
@@ -67,7 +67,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
             } else {
                 worksheet
                     .get_raw_data_of_worksheet()
-                    .write(worksheet_no as i32, &mut writer_manager)
+                    .write(worksheet_no.try_into().unwrap(), &mut writer_manager)
             }
         },
     )?;
@@ -143,7 +143,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
 
     // Finalize file list and add remaining components
     writer_manager.file_list_sort();
-    shared_strings::write(shared_string_table.clone(), &mut writer_manager)?;
+    shared_strings::write(&shared_string_table, &mut writer_manager)?;
     styles::write(&stylesheet, &mut writer_manager)?;
     workbook::write(spreadsheet, &mut writer_manager)?;
 

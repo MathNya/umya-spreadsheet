@@ -264,13 +264,13 @@ impl Outline {
                         self.set_tail_end(obj);
                     }
                     b"a:noFill" => {
-                        let mut obj = NoFill::default();
-                        obj.set_attributes(reader, e);
+                        let obj = NoFill::default();
+                        NoFill::set_attributes(reader, e);
                         self.set_no_fill(obj);
                     }
                     b"a:bevel" => {
-                        let mut obj = Bevel::default();
-                        obj.set_attributes(reader, e);
+                        let obj = Bevel::default();
+                        Bevel::set_attributes(reader, e);
                         self.set_bevel(obj);
                     }
                     b"a:miter" => {
@@ -284,8 +284,8 @@ impl Outline {
                         self.set_preset_dash(obj);
                     }
                     b"a:round" => {
-                        let mut obj = Round::default();
-                        obj.set_attributes(reader, e);
+                        let obj = Round::default();
+                        Round::set_attributes(reader, e);
                         self.set_round(obj);
                     }
                     _ => (),
@@ -329,8 +329,8 @@ impl Outline {
         }
 
         // a:round
-        if let Some(v) = &self.round {
-            v.write_to(writer);
+        if self.round.is_some() {
+            Round::write_to(writer);
         }
 
         // a:tailEnd
@@ -339,13 +339,13 @@ impl Outline {
         }
 
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:bevel
-        if let Some(v) = &self.bevel {
-            v.write_to(writer);
+        if self.bevel.is_some() {
+            Bevel::write_to(writer);
         }
 
         // a:prstDash

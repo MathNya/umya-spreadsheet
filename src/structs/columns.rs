@@ -129,13 +129,13 @@ impl Columns {
                 {
                     max += 1;
                 } else {
-                    self.write_to_column(writer, min, max, obj, stylesheet);
+                    Self::write_to_column(writer, min, max, obj, stylesheet);
                     obj = column;
                     min = obj.get_col_num();
                     max = min;
                 }
             } else {
-                self.write_to_column(writer, min, max, obj, stylesheet);
+                Self::write_to_column(writer, min, max, obj, stylesheet);
                 break;
             }
         }
@@ -144,7 +144,6 @@ impl Columns {
     }
 
     pub(crate) fn write_to_column(
-        &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         min: u32,
         max: u32,

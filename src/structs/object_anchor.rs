@@ -99,16 +99,10 @@ impl ObjectAnchor {
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner() {
-                    b"from" => {
+                    b"from" | b"xdr:from" => {
                         self.from_marker.set_attributes(reader, e);
                     }
-                    b"xdr:from" => {
-                        self.from_marker.set_attributes(reader, e);
-                    }
-                    b"to" => {
-                        self.to_marker.set_attributes(reader, e);
-                    }
-                    b"xdr:to" => {
+                    b"to" | b"xdr:to" => {
                         self.to_marker.set_attributes(reader, e);
                     }
                     _ => (),

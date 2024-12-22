@@ -13,11 +13,7 @@ use crate::writer::driver::{write_end_tag, write_start_tag};
 pub struct Style {}
 
 impl Style {
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
-        &mut self,
-        reader: &mut Reader<R>,
-        _e: &BytesStart,
-    ) {
+    pub(crate) fn set_attributes<R: std::io::BufRead>(reader: &mut Reader<R>, _e: &BytesStart) {
         xml_read_loop!(
             reader,
             Event::End(ref e) => {
@@ -29,7 +25,7 @@ impl Style {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>) {
         // mc:AlternateContent
         write_start_tag(writer, "mc:AlternateContent", vec![("xmlns:mc", MC_NS)], false);
 

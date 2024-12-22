@@ -114,7 +114,7 @@ impl NumberingFormat {
                 return self;
             }
         }
-        self.number_format_id = 999999;
+        self.number_format_id = 999_999;
         self.is_build_in = false;
         self
     }

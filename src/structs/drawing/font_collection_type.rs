@@ -147,12 +147,7 @@ impl FontCollectionType {
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:majorFont" => {
-                        return;
-                    }
-                    b"a:minorFont" => {
-                        return;
-                    }
+                    b"a:majorFont" | b"a:minorFont" => return,
                     _ => (),
                 },
                 Ok(Event::Eof) => {

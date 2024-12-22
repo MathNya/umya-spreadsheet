@@ -59,7 +59,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
         CsvEncodeValues::Big5 => encoding_rs::BIG5.encode(&data).0.into_owned(),
         CsvEncodeValues::Utf16Le => encoding_rs::UTF_16LE.encode(&data).0.into_owned(),
         CsvEncodeValues::Utf16Be => encoding_rs::UTF_16BE.encode(&data).0.into_owned(),
-        _ => data.into_bytes(),
+        CsvEncodeValues::Utf8 => data.into_bytes(),
     };
 
     // output.

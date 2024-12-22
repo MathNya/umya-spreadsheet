@@ -204,8 +204,8 @@ impl ShapeProperties {
                         self.set_effect_list(effect_list);
                     }
                     b"a:extLst" => {
-                        let mut obj = ExtensionList::default();
-                        obj.set_attributes(reader, e);
+                        let obj = ExtensionList::default();
+                        ExtensionList::set_attributes(reader, e);
                         self.set_extension_list(obj);
                     }
                     _ => (),
@@ -213,8 +213,8 @@ impl ShapeProperties {
             },
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"a:noFill" {
-                    let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e);
+                    let obj = NoFill::default();
+                    NoFill::set_attributes(reader, e);
                     self.set_no_fill(obj);
                 }
             },
@@ -254,8 +254,8 @@ impl ShapeProperties {
         }
 
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:ln

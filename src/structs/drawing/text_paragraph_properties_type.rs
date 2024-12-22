@@ -152,15 +152,15 @@ impl TextParagraphPropertiesType {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"a:defPPr"  => return,
-                    b"a:lvl1pPr" => return,
-                    b"a:lvl2pPr" => return,
-                    b"a:lvl3pPr" => return,
-                    b"a:lvl4pPr" => return,
-                    b"a:lvl5pPr" => return,
-                    b"a:lvl6pPr" => return,
-                    b"a:lvl7pPr" => return,
-                    b"a:lvl8pPr" => return,
+                    b"a:defPPr"  |
+                    b"a:lvl1pPr" |
+                    b"a:lvl2pPr" |
+                    b"a:lvl3pPr" |
+                    b"a:lvl4pPr" |
+                    b"a:lvl5pPr" |
+                    b"a:lvl6pPr" |
+                    b"a:lvl7pPr" |
+                    b"a:lvl8pPr" |
                     b"a:lvl9pPr" => return,
                     _ =>()
                 }
