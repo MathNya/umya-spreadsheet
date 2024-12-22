@@ -32,7 +32,7 @@ rand = "0.8.5"
 regex = "1.11.1"
 sha2 = "0.10.8"
 thousands = "0.2.0"
-zip = { version = "2.2.1", default-features = false, features = ["deflate"] }
+zip = { version = "2.2.2", default-features = false, features = ["deflate"] }
 
 [dev-dependencies]
 hex-literal = "0.4.1"
