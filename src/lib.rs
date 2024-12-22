@@ -116,6 +116,36 @@
 //! let _unused =  writer::xlsx::write(&book, path);
 //! ```
 
+#![deny(
+    explicit_outlives_requirements,
+    let_underscore_drop,
+    meta_variable_misuse,
+    non_ascii_idents,
+    non_local_definitions,
+    redundant_imports,
+    redundant_lifetimes,
+    single_use_lifetimes,
+    trivial_casts,
+    trivial_numeric_casts,
+    unit_bindings,
+    unsafe_code,
+    unused_import_braces,
+    unused_lifetimes,
+    unused_macro_rules,
+    unused_qualifications,
+    variant_size_differences
+)]
+#![deny(clippy::correctness)]
+#![warn(
+    clippy::style,
+    clippy::complexity,
+    clippy::perf,
+    clippy::pedantic,
+    clippy::cargo,
+    clippy::suspicious
+)]
+#![allow(clippy::module_name_repetitions)]
+
 extern crate chrono;
 extern crate fancy_regex;
 #[cfg(feature = "image")]

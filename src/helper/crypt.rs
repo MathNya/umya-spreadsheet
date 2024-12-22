@@ -113,7 +113,7 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
 }
 
 /// Concatenates multiple byte slices into a single `Vec<u8>`.
-#[expect(dead_code)]
+#[allow(dead_code)]
 fn buffer_concat(buffers: &[&[u8]]) -> Vec<u8> {
     // Calculate the total length of the resulting vector.
     let total_length = buffers.iter().map(|buffer| buffer.len()).sum();

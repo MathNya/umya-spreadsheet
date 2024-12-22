@@ -40,35 +40,3 @@ doctest = false
 [features]
 js = []
 default = ["image"]
-
-[lints]
-workspace = true
-
-[workspace.lints.rust]
-explicit_outlives_requirements = "deny"
-let-underscore-drop = "deny"
-meta-variable-misuse = "deny"
-non_ascii_idents = "deny"
-non-local-definitions = "deny"
-redundant-imports = "deny"
-redundant-lifetimes = "deny"
-single-use-lifetimes = "deny"
-trivial-casts = "deny"
-trivial_numeric_casts = "deny"
-unit-bindings = "deny"
-unsafe-code = "deny"  # Will only be allowed in platform-specific modules
-unused-import-braces = "deny"
-unused-lifetimes = "deny"
-unused-macro-rules = "deny"
-unused_qualifications = "deny"
-variant_size_differences = "deny"
-
-[workspace.lints.clippy]
-correctness = { level = "deny", priority = -1 }
-style = { level = "warn", priority = -1 }
-complexity = { level = "warn", priority = -1 }
-perf = { level = "warn", priority = -1 }
-pedantic = { level = "warn", priority = -1 }
-cargo = { level = "warn", priority = -1 }
-suspicious = { level = "warn", priority = -1 }
-module_name_repetitions = "allow"
