@@ -98,7 +98,7 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
     // Get the sections, there can be up to four sections, separated with a
     // semi-colon (but only if not a quoted literal)
 
-    let sections: Vec<&str> = split(&get_section_regex(), &format).collect();
+    let sections: Vec<&str> = split(get_section_regex(), &format).collect();
 
     let (_, split_format, split_value) = split_format(sections, value.parse::<f64>().unwrap());
     format = Cow::Owned(split_format);

@@ -89,7 +89,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFl
                     })
                     .collect();
 
-                elm.classes = element.classes.clone().into();
+                elm.classes = element.classes.clone();
                 data.element.push(elm);
 
                 let mut children = read_node(&element.children, &data.element);

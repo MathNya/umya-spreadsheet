@@ -107,7 +107,7 @@ impl NumberingFormat {
     /// ```
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into().into_boxed_str();
-        for (index, format) in get_fill_built_in_format_codes().iter() {
+        for (index, format) in get_fill_built_in_format_codes() {
             if &*self.format_code == format {
                 self.number_format_id = *index;
                 self.is_build_in = true;

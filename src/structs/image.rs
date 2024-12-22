@@ -22,7 +22,7 @@ use crate::traits::AdjustmentCoordinate;
 static EMPTY_VEC: OnceLock<Vec<u8>> = OnceLock::new();
 
 fn get_empty_vec() -> &'static Vec<u8> {
-    EMPTY_VEC.get_or_init(|| Vec::new())
+    EMPTY_VEC.get_or_init(Vec::new)
 }
 
 #[derive(Clone, Default, Debug)]
@@ -216,7 +216,7 @@ impl Image {
     pub fn get_image_data(&self) -> &[u8] {
         match self.get_media_object().first() {
             Some(v) => v.get_image_data(),
-            None => &get_empty_vec(),
+            None => get_empty_vec(),
         }
     }
 

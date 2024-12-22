@@ -192,8 +192,8 @@ pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut Wor
 /// # Arguments
 ///
 /// * `password` - The password string to use for encryption
-/// * `workbook_protection` - Mutable reference to the WorkbookProtection object
-///   to update
+/// * `workbook_protection` - Mutable reference to the `WorkbookProtection`
+///   object to update
 #[allow(clippy::cast_possible_truncation)]
 pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut WorkbookProtection) {
     generate_random_bytes!(salt, 16);
@@ -541,7 +541,7 @@ fn hash_concatenated(buffers: &[&[u8]]) -> Vec<u8> {
 ///
 /// # Returns
 /// A vector containing the derived key bytes, truncated or padded to match
-/// key_bits length
+/// `key_bits` length
 #[allow(clippy::cast_possible_truncation)]
 fn convert_password_to_key(
     password: &str,
