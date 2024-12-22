@@ -126,8 +126,16 @@ macro_rules! generate_random_bytes {
 }
 
 /// Encrypts the sheet protection using the provided password.
-/// Updates the `sheet_protection` object with algorithm name, salt value, spin
-/// count, and hash value.
+///
+/// Updates the `sheet_protection` object with the algorithm name, salt value,
+/// spin count, and hash value.
+///
+/// # Parameters
+///
+/// - `password`: The password to use for encryption.
+/// - `sheet_protection`: The `SheetProtection` object to update with encryption
+///   details.
+#[allow(clippy::cast_possible_truncation)]
 pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProtection) {
     generate_random_bytes!(salt, 16);
 
@@ -147,8 +155,16 @@ pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProt
 }
 
 /// Encrypts the workbook protection using the provided password.
-/// Updates the `workbook_protection` object with algorithm name, salt value,
-/// spin count, and hash value.
+///
+/// Updates the `workbook_protection` object with the algorithm name, salt
+/// value, spin count, and hash value.
+///
+/// # Parameters
+///
+/// - `password`: The password to use for encryption.
+/// - `workbook_protection`: The `WorkbookProtection` object to update with
+///   encryption details.
+#[allow(clippy::cast_possible_truncation)]
 pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut WorkbookProtection) {
     generate_random_bytes!(salt, 16);
 
@@ -168,8 +184,17 @@ pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut Wor
 }
 
 /// Encrypts the revisions protection using the provided password.
-/// Updates the `workbook_protection` object with algorithm name, salt value,
-/// spin count, and hash value.
+///
+/// This function generates a random salt, derives a key from the password using
+/// SHA-512, and updates the workbook protection settings with the encrypted
+/// values.
+///
+/// # Arguments
+///
+/// * `password` - The password string to use for encryption
+/// * `workbook_protection` - Mutable reference to the WorkbookProtection object
+///   to update
+#[allow(clippy::cast_possible_truncation)]
 pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut WorkbookProtection) {
     generate_random_bytes!(salt, 16);
 
@@ -188,7 +213,10 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
     workbook_protection.remove_revisions_password_raw();
 }
 
-/// Concatenates multiple byte slices into a single `Vec<u8>`.
+/// Concatenates multiple byte slices into a single vector.
+///
+/// Takes a slice of byte slices and combines them sequentially into a single
+/// `Vec<u8>`. Pre-allocates the exact required capacity to avoid reallocations.
 #[allow(dead_code)]
 fn buffer_concat(buffers: &[&[u8]]) -> Vec<u8> {
     // Calculate the total length of the resulting vector.
@@ -336,9 +364,20 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     }
 }
 
-/// Encrypts or decrypts the package data.
-/// The package is processed in chunks, encrypting or decrypting each chunk
-/// separately.
+/// Encrypts or decrypts package data using AES-256 in CBC mode.
+///
+/// # Parameters
+/// - `encrypt`: Whether to encrypt (true) or decrypt (false) the data
+/// - `block_size`: Size of encryption blocks in bytes
+/// - `salt`: Salt value for IV generation
+/// - `key`: Encryption/decryption key
+/// - `input`: Data to encrypt/decrypt
+///
+/// # Returns
+/// A vector containing the encrypted/decrypted data. For encryption, includes
+/// an 8-byte length prefix. For decryption, output is truncated to the original
+/// length.
+#[allow(clippy::cast_possible_truncation)]
 fn crypt_package(
     encrypt: bool,
     block_size: usize,
@@ -393,9 +432,17 @@ fn crypt_package(
     output
 }
 
-/// Encrypts or decrypts data using AES-256 in CBC mode with the given key and
-/// IV. The `encrypt` parameter determines whether to encrypt (true) or decrypt
-/// (false).
+/// Performs AES-256-CBC encryption or decryption on input data.
+///
+/// # Arguments
+/// * `encrypt` - If true, encrypts the data. If false, decrypts the data
+/// * `key` - 256-bit encryption/decryption key
+/// * `iv` - Initialization vector for CBC mode
+/// * `input` - Data to be encrypted/decrypted
+///
+/// # Returns
+/// * `Ok(Vec<u8>)` - Encrypted/decrypted data
+/// * `Err(String)` - Error message if operation fails
 fn crypt(encrypt: bool, key: &[u8], iv: &[u8], input: &[u8]) -> Result<Vec<u8>, String> {
     match key.len() * 8 {
         256 => {
@@ -423,8 +470,14 @@ fn crypt(encrypt: bool, key: &[u8], iv: &[u8], input: &[u8]) -> Result<Vec<u8>, 
     }
 }
 
-/// Calculates an HMAC using the specified algorithm over the concatenated
-/// buffers.
+/// Calculates an HMAC using SHA-512 over concatenated input buffers.
+///
+/// # Arguments
+/// * `key` - The key used for HMAC calculation
+/// * `buffers` - Slice of byte slices to be concatenated and hashed
+///
+/// # Returns
+/// A vector containing the calculated HMAC bytes
 fn hmac(key: &[u8], buffers: &[&[u8]]) -> Vec<u8> {
     let mut mac = Hmac::<Sha512>::new_from_slice(key).unwrap();
     for buffer in buffers {
@@ -433,9 +486,17 @@ fn hmac(key: &[u8], buffers: &[&[u8]]) -> Vec<u8> {
     mac.finalize().into_bytes().to_vec()
 }
 
-/// Creates an initialization vector (IV) by hashing the salt value and the
-/// block key. The resulting hash is truncated or padded to match the block
-/// size.
+/// Creates an IV by hashing the salt value and block key together.
+/// The resulting hash is adjusted to match the specified block size
+/// by either padding with zeros or truncating.
+///
+/// # Arguments
+/// * `salt_value` - Salt value to use in hash
+/// * `block_size` - Target size for the IV in bytes
+/// * `block_key` - Block key to use in hash
+///
+/// # Returns
+/// A vector containing the IV adjusted to the block size
 fn create_iv(salt_value: &[u8], block_size: usize, block_key: &[u8]) -> Vec<u8> {
     // Hash the salt value and block key together
     let mut iv = hash_concatenated(&[salt_value, block_key]);
@@ -456,7 +517,9 @@ fn create_iv(salt_value: &[u8], block_size: usize, block_key: &[u8]) -> Vec<u8> 
     iv
 }
 
-/// Calculates a hash of the concatenated buffers using the specified algorithm.
+/// Takes a slice of byte slices and computes their SHA-512 hash.
+/// Concatenates all input buffers and processes them sequentially.
+/// Returns the resulting hash as a vector of bytes.
 fn hash_concatenated(buffers: &[&[u8]]) -> Vec<u8> {
     let mut hasher = Sha512::new();
 
@@ -467,8 +530,19 @@ fn hash_concatenated(buffers: &[&[u8]]) -> Vec<u8> {
     hasher.finalize().to_vec()
 }
 
-/// Converts the provided password into a cryptographic key using the specified
-/// hash algorithm, salt value, spin count, key length, and block key.
+/// Generates a cryptographic key from a password using SHA-512 hashing.
+///
+/// # Arguments
+/// * `password` - Password string to convert
+/// * `salt` - Salt bytes for key derivation
+/// * `spin_count` - Number of iterations for key strengthening
+/// * `key_bits` - Desired key length in bits
+/// * `block_key` - Additional key material for final hash
+///
+/// # Returns
+/// A vector containing the derived key bytes, truncated or padded to match
+/// key_bits length
+#[allow(clippy::cast_possible_truncation)]
 fn convert_password_to_key(
     password: &str,
     salt: &[u8],
@@ -513,8 +587,16 @@ fn convert_password_to_key(
     }
 }
 
-/// Converts the provided password into a hash using the specified hash
-/// algorithm, salt value, and spin count.
+/// Generates a cryptographic hash of a password using SHA-512.
+///
+/// # Arguments
+/// * `password` - The password string to hash
+/// * `salt` - The salt bytes to use in hashing
+/// * `spin_count` - Number of iterations for the hash function
+///
+/// # Returns
+/// A vector containing the final hash value
+#[allow(clippy::cast_possible_truncation)]
 fn convert_password_to_hash(password: &str, salt: &[u8], spin_count: usize) -> Vec<u8> {
     // Convert password to UTF-16LE bytes
     let password_bytes: Vec<u8> = password.encode_utf16().flat_map(u16::to_le_bytes).collect();
@@ -552,8 +634,22 @@ fn create_uint32_le_buffer(value: u32, buffer_size: Option<usize>) -> Vec<u8> {
     buffer
 }
 
-/// Builds the encryption info XML data.
-/// Returns a vector of bytes representing the encryption info.
+/// Constructs the encryption info XML data for document protection.
+///
+/// # Arguments
+/// * `package_salt` - Salt value for package encryption
+/// * `data_integrity_encrypted_hmac_key` - Encrypted HMAC key for data
+///   integrity
+/// * `data_integrity_encrypted_hmac_value` - Encrypted HMAC value for data
+///   integrity
+/// * `key_salt` - Salt value for key encryption
+/// * `key_encrypted_verifier_hash_input` - Encrypted verifier hash input
+/// * `key_encrypted_verifier_hash_value` - Encrypted verifier hash value
+/// * `key_encrypted_key_value` - Encrypted key value
+///
+/// # Returns
+/// A vector of bytes containing the encryption info XML prefixed with the
+/// standard header
 fn build_encryption_info(
     package_salt: &[u8],
     data_integrity_encrypted_hmac_key: &[u8],
