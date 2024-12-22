@@ -9,8 +9,7 @@ use cbc::{Decryptor, Encryptor};
 use hmac::{Hmac, Mac};
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
-use rand::rngs::OsRng;
-use rand::RngCore;
+use rand::{thread_rng, Rng};
 use sha2::{Digest, Sha512};
 use std::cmp::Ordering;
 use std::io::{self, Write};
@@ -470,9 +469,8 @@ fn convert_password_to_hash(
 
 /// Generates a vector of random bytes of the specified length using a cryptographically secure random number generator.
 fn gen_random_bytes(len: usize) -> Vec<u8> {
-    let mut rng = OsRng;
     let mut bytes = vec![0u8; len];
-    rng.fill_bytes(&mut bytes);
+    thread_rng().fill(&mut bytes[..]);
     bytes
 }
 
