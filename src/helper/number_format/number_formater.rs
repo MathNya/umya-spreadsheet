@@ -145,7 +145,7 @@ fn format_straight_numeric_value(
     // value.parse::<f64>().unwrap() && format.find(".").is_some() {
     //                let format_collect:Vec<&str> =
     // format.split('.').collect();                let pow =
-    // 10i32.pow(format_collect.get(1).unwrap().len() as u32);              
+    // 10i32.pow(format_collect.get(1).unwrap().len() as u32);
     // value = format!("{}", value.parse::<i32>().unwrap() * pow);
     //            }
     //            value =
