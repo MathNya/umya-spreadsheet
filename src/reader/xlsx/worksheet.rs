@@ -198,7 +198,10 @@ pub(crate) fn read(
                     .set_attributes(&mut reader, e);
             }
             b"hyperlink" => {
-                let (coor, hyperlink) = get_hyperlink(e, raw_data_of_worksheet.get_worksheet_relationships());
+                let (coor, hyperlink) = get_hyperlink(
+                    e,
+                    raw_data_of_worksheet.get_worksheet_relationships()
+                );
                 worksheet.get_cell_mut(coor).set_hyperlink(hyperlink);
             }
             b"printOptions" => {

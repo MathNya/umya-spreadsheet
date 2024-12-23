@@ -20,3 +20,4 @@ use_small_heuristics = "Max"
 use_try_shorthand = true
 where_single_line = false
 wrap_comments = true
+error_on_line_overflow = true
