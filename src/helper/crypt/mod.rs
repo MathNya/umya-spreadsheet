@@ -10,16 +10,16 @@ use crate::structs::{
     WorkbookProtection,
 };
 
+pub(crate) mod algo;
 pub(crate) mod constants;
-pub(crate) mod utils_algo;
-pub(crate) mod utils_key;
-pub(crate) mod utils_other;
+pub(crate) mod key;
+pub(crate) mod utils;
 
 use base64::{
     Engine as _,
     engine::general_purpose::STANDARD,
 };
-use utils_other::generate_random_bytes;
+use utils::generate_random_bytes;
 
 /// Encrypts the sheet protection using the provided password.
 ///
@@ -36,7 +36,7 @@ pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProt
     generate_random_bytes!(salt, 16);
 
     // Convert the password into a hash
-    let key = utils_key::convert_password_to_hash(password, &salt, constants::KEY_SPIN_COUNT);
+    let key = key::convert_password_to_hash(password, &salt, constants::KEY_SPIN_COUNT);
 
     // Encode the salt and hash value in base64
     let salt_value_str = STANDARD.encode(salt);
@@ -65,7 +65,7 @@ pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut Wor
     generate_random_bytes!(salt, 16);
 
     // Convert the password into a hash
-    let key = utils_key::convert_password_to_hash(password, &salt, constants::KEY_SPIN_COUNT);
+    let key = key::convert_password_to_hash(password, &salt, constants::KEY_SPIN_COUNT);
 
     // Encode the salt and hash value in base64
     let salt_value_str = STANDARD.encode(salt);
@@ -95,7 +95,7 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
     generate_random_bytes!(salt, 16);
 
     // Convert the password into a hash
-    let key = utils_key::convert_password_to_hash(password, &salt, constants::KEY_SPIN_COUNT);
+    let key = key::convert_password_to_hash(password, &salt, constants::KEY_SPIN_COUNT);
 
     // Encode the salt and hash value in base64
     let salt_value_str = STANDARD.encode(salt);
@@ -167,7 +167,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     generate_random_bytes!(verifier_hash_input, 16);
 
     // Encrypt the package
-    let encrypted_package = utils_algo::crypt_package(
+    let encrypted_package = algo::crypt_package(
         true,
         constants::PACKAGE_BLOCK_SIZE,
         &package_salt,
@@ -176,43 +176,42 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     );
 
     // Generate HMAC key and encrypt it
-    let hmac_key_iv = utils_key::create_iv(
+    let hmac_key_iv = key::create_iv(
         &package_salt,
         constants::PACKAGE_BLOCK_SIZE,
         &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
     );
-    let encrypted_hmac_key =
-        utils_algo::crypt(true, &package_key, &hmac_key_iv, &hmac_key).unwrap();
+    let encrypted_hmac_key = algo::crypt(true, &package_key, &hmac_key_iv, &hmac_key).unwrap();
 
     // Generate HMAC value and encrypt it
-    let hmac_value = utils_key::hmac(&hmac_key, &[&encrypted_package]);
-    let hmac_value_iv = utils_key::create_iv(
+    let hmac_value = key::hmac(&hmac_key, &[&encrypted_package]);
+    let hmac_value_iv = key::create_iv(
         &package_salt,
         constants::PACKAGE_BLOCK_SIZE,
         &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
     );
     let encrypted_hmac_value =
-        utils_algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
+        algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
 
     // Convert the password to a key
-    let key = utils_key::convert_password_to_key(
+    let key = key::convert_password_to_key(
         password,
         &key_salt,
         constants::KEY_SPIN_COUNT,
         constants::KEY_BITLENGTH,
         &constants::BLOCK_KEYS_KEY,
     );
-    let encrypted_key_value = utils_algo::crypt(true, &key, &key_salt, &package_key).unwrap();
+    let encrypted_key_value = algo::crypt(true, &key, &key_salt, &package_key).unwrap();
 
     // Generate verifier hash input and encrypt it
-    let verifier_hash_input_key = utils_key::convert_password_to_key(
+    let verifier_hash_input_key = key::convert_password_to_key(
         password,
         &key_salt,
         constants::KEY_SPIN_COUNT,
         constants::KEY_BITLENGTH,
         &constants::BLOCK_VERIFIER_HASH_INPUT,
     );
-    let encrypted_verifier_hash_input = utils_algo::crypt(
+    let encrypted_verifier_hash_input = algo::crypt(
         true,
         &verifier_hash_input_key,
         &key_salt,
@@ -221,15 +220,15 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     .unwrap();
 
     // Generate verifier hash value and encrypt it
-    let verifier_hash_value = utils_other::hash_concatenated(&[&verifier_hash_input]);
-    let verifier_hash_value_key = utils_key::convert_password_to_key(
+    let verifier_hash_value = utils::hash_concatenated(&[&verifier_hash_input]);
+    let verifier_hash_value_key = key::convert_password_to_key(
         password,
         &key_salt,
         constants::KEY_SPIN_COUNT,
         constants::KEY_BITLENGTH,
         &constants::BLOCK_VERIFIER_HASH_VALUE,
     );
-    let encrypted_verifier_hash_value = utils_algo::crypt(
+    let encrypted_verifier_hash_value = algo::crypt(
         true,
         &verifier_hash_value_key,
         &key_salt,
@@ -238,7 +237,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     .unwrap();
 
     // Build the encryption info XML data
-    let encryption_info_buffer = utils_algo::build_encryption_info(
+    let encryption_info_buffer = algo::build_encryption_info(
         &package_salt,
         &encrypted_hmac_key,
         &encrypted_hmac_value,
@@ -287,7 +286,7 @@ mod tests {
         let key_salt = hex!("3aa973eec73c98c4710021730ef5b513");
 
         // Encrypted package
-        let encrypted_package = utils_algo::crypt_package(
+        let encrypted_package = algo::crypt_package(
             true,
             constants::PACKAGE_BLOCK_SIZE,
             &package_salt,
@@ -301,15 +300,14 @@ mod tests {
             "831aee889eae3bc18bc1bebedae1f73393fddfffd0a0b6c557485fefcdb5e98b"
         );
 
-        let hmac_key_iv = utils_key::create_iv(
+        let hmac_key_iv = key::create_iv(
             &package_salt,
             constants::PACKAGE_BLOCK_SIZE,
             &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
         );
         assert_eq!(hmac_key_iv, hex!("ba1bf00eed82b07ee65e574eb1f46043"));
 
-        let encrypted_hmac_key =
-            utils_algo::crypt(true, &package_key, &hmac_key_iv, &hmac_key).unwrap();
+        let encrypted_hmac_key = algo::crypt(true, &package_key, &hmac_key_iv, &hmac_key).unwrap();
         assert_eq!(
             encrypted_hmac_key,
             hex!(
@@ -319,14 +317,14 @@ mod tests {
         );
 
         // HMAC value
-        let hmac_value = utils_key::hmac(&hmac_key, &[&encrypted_package]);
+        let hmac_value = key::hmac(&hmac_key, &[&encrypted_package]);
         // Uncomment the following lines to check the HMAC value
         // let converted = encode_hex(&hmac_value);
         // assert_eq!(&converted,
         // "41748c1ed0bcbbc46301a0a21e00747b6fafaa52ddbe4952a77a399ed4514b40c9b7e59f1c52c4cc72881794435336cc6e42fef4498245575bb9c2343480773f"
         // );
 
-        let hmac_value_iv = utils_key::create_iv(
+        let hmac_value_iv = key::create_iv(
             &package_salt,
             constants::PACKAGE_BLOCK_SIZE,
             &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
@@ -334,7 +332,7 @@ mod tests {
         assert_eq!(hmac_value_iv, hex!("088385b871292e7ed8414f173c5b6622"));
 
         let encrypted_hmac_value =
-            utils_algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
+            algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
         // Uncomment the following lines to check the encrypted HMAC value
         // let converted = encode_hex(&encrypted_hmac_value);
         // assert_eq!(&converted,
@@ -342,7 +340,7 @@ mod tests {
         // );
 
         // Key
-        let key = utils_key::convert_password_to_key(
+        let key = key::convert_password_to_key(
             password,
             &key_salt,
             constants::KEY_SPIN_COUNT,
@@ -354,7 +352,7 @@ mod tests {
             hex!("8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d")
         );
 
-        let encrypted_key_value = utils_algo::crypt(true, &key, &key_salt, &package_key).unwrap();
+        let encrypted_key_value = algo::crypt(true, &key, &key_salt, &package_key).unwrap();
         assert_eq!(
             encrypted_key_value,
             hex!("5017ddc6146e56dfbf76734b3e99b80f36a4c9a2e9eb21fe77695f73850cc452")
@@ -362,7 +360,7 @@ mod tests {
 
         // Verifier hash input
         let verifier_hash_input = hex!("8f54777cba87efa55ea2db8399873815");
-        let verifier_hash_input_key = utils_key::convert_password_to_key(
+        let verifier_hash_input_key = key::convert_password_to_key(
             password,
             &key_salt,
             constants::KEY_SPIN_COUNT,
@@ -374,7 +372,7 @@ mod tests {
             hex!("44e4b664c512b08e7577aa3fc7e11ad603e0877a476931fad5aa79e203304aff")
         );
 
-        let encrypted_verifier_hash_input = utils_algo::crypt(
+        let encrypted_verifier_hash_input = algo::crypt(
             true,
             &verifier_hash_input_key,
             &key_salt,
@@ -386,14 +384,14 @@ mod tests {
         // assert_eq!(&converted, "2fb9eea58e227ffa549449e941f1199e");
 
         // Verifier hash value
-        let verifier_hash_value = utils_other::hash_concatenated(&[&verifier_hash_input]);
+        let verifier_hash_value = utils::hash_concatenated(&[&verifier_hash_input]);
         // Uncomment the following lines to check the verifier hash value
         // let converted = encode_hex(&verifier_hash_value);
         // assert_eq!(&converted,
         // "920b1de74f38d9cb3ccb3394119ed37e958404fdc47560b1bf647d3c49c22549625fe4a0bd36798bd68a0d98ae64f6ab64a330c9890c62bb740aa492c226ae1f"
         // );
 
-        let verifier_hash_value_key = utils_key::convert_password_to_key(
+        let verifier_hash_value_key = key::convert_password_to_key(
             password,
             &key_salt,
             constants::KEY_SPIN_COUNT,
@@ -407,7 +405,7 @@ mod tests {
         //     "d5515a6062e3e99551b80b92db1fe646483884cdb63e1e7595a9f2cca7532884"
         // );
 
-        let encrypted_verifier_hash_value = utils_algo::crypt(
+        let encrypted_verifier_hash_value = algo::crypt(
             true,
             &verifier_hash_value_key,
             &key_salt,
@@ -422,7 +420,7 @@ mod tests {
         // );
 
         // Build encryption info
-        let _unused = utils_algo::build_encryption_info(
+        let _unused = algo::build_encryption_info(
             &package_salt,
             &encrypted_hmac_key,
             &encrypted_hmac_value,
@@ -436,7 +434,7 @@ mod tests {
     #[test]
     fn test_hash() {
         let package_salt = hex!("4c251b321d85cecfcb6d952ba6d81846");
-        let result = utils_other::hash_concatenated(&[
+        let result = utils::hash_concatenated(&[
             &package_salt,
             &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
         ]);
@@ -466,7 +464,7 @@ mod tests {
     #[test]
     fn test_convert_password_to_key() {
         let key_salt = hex!("3aa973eec73c98c4710021730ef5b513");
-        let result = utils_key::convert_password_to_key(
+        let result = key::convert_password_to_key(
             "password",
             &key_salt,
             100_000,

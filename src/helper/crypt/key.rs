@@ -9,7 +9,7 @@ use sha2::{
     Sha512,
 };
 
-use super::utils_other::hash_concatenated;
+use super::utils::hash_concatenated;
 
 /// Calculates an HMAC using SHA-512 over concatenated input buffers.
 ///
