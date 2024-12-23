@@ -28,9 +28,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormat {
-    font: Option<Box<Font>>,
-    fill: Option<Fill>,
-    borders: Option<Box<Borders>>,
+    font:      Option<Box<Font>>,
+    fill:      Option<Fill>,
+    borders:   Option<Box<Borders>>,
     alignment: Option<Alignment>,
 }
 

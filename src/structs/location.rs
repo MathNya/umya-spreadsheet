@@ -20,10 +20,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Location {
-    reference: StringValue,
+    reference:        StringValue,
     first_header_row: UInt32Value,
-    first_data_row: UInt32Value,
-    first_data_col: UInt32Value,
+    first_data_row:   UInt32Value,
+    first_data_col:   UInt32Value,
 }
 impl Location {
     #[must_use]

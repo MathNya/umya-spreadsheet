@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Floor {
-    thickness: Option<Thickness>,
+    thickness:        Option<Thickness>,
     shape_properties: Option<Box<ShapeProperties>>,
 }
 

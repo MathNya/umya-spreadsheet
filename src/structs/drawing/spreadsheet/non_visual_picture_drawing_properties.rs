@@ -27,7 +27,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualPictureDrawingProperties {
     prefer_relative_resize: BooleanValue,
-    picture_locks: Option<PictureLocks>,
+    picture_locks:          Option<PictureLocks>,
 }
 
 impl NonVisualPictureDrawingProperties {

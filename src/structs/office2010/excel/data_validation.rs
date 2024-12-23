@@ -32,16 +32,16 @@ use crate::{
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type: EnumValue<DataValidationValues>,
-    operator: EnumValue<DataValidationOperatorValues>,
-    allow_blank: BooleanValue,
+    r#type:             EnumValue<DataValidationValues>,
+    operator:           EnumValue<DataValidationOperatorValues>,
+    allow_blank:        BooleanValue,
     show_input_message: BooleanValue,
     show_error_message: BooleanValue,
-    prompt_title: StringValue,
-    prompt: StringValue,
+    prompt_title:       StringValue,
+    prompt:             StringValue,
     reference_sequence: ReferenceSequence,
-    formula1: Option<Box<DataValidationForumla1>>,
-    formula2: Option<Box<DataValidationForumla2>>,
+    formula1:           Option<Box<DataValidationForumla1>>,
+    formula2:           Option<Box<DataValidationForumla2>>,
 }
 impl DataValidation {
     #[inline]
@@ -250,10 +250,11 @@ impl DataValidation {
                     }
                     _ => (),
                 },
-                Ok(Event::End(ref e)) =>
+                Ok(Event::End(ref e)) => {
                     if e.name().into_inner() == b"x14:dataValidation" {
                         return;
-                    },
+                    }
+                }
                 Ok(Event::Eof) => {
                     panic!("Error: Could not find {} end element", "x14:dataValidation")
                 }

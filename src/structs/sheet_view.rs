@@ -33,17 +33,17 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetView {
-    show_grid_lines: BooleanValue,
-    tab_selected: BooleanValue,
-    workbook_view_id: UInt32Value,
-    pane: Option<Box<Pane>>,
-    view: EnumValue<SheetViewValues>,
-    zoom_scale: UInt32Value,
-    zoom_scale_normal: UInt32Value,
-    zoom_scale_page_layout_view: UInt32Value,
+    show_grid_lines:              BooleanValue,
+    tab_selected:                 BooleanValue,
+    workbook_view_id:             UInt32Value,
+    pane:                         Option<Box<Pane>>,
+    view:                         EnumValue<SheetViewValues>,
+    zoom_scale:                   UInt32Value,
+    zoom_scale_normal:            UInt32Value,
+    zoom_scale_page_layout_view:  UInt32Value,
     zoom_scale_sheet_layout_view: UInt32Value,
-    top_left_cell: StringValue,
-    selection: Vec<Selection>,
+    top_left_cell:                StringValue,
+    selection:                    Vec<Selection>,
 }
 
 impl SheetView {

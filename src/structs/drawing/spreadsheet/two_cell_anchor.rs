@@ -46,14 +46,14 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {
-    edit_as: EnumValue<EditAsValues>,
-    from_marker: MarkerType,
-    to_marker: MarkerType,
-    group_shape: Option<Box<GroupShape>>,
-    graphic_frame: Option<Box<GraphicFrame>>,
-    shape: Option<Box<Shape>>,
-    connection_shape: Option<Box<ConnectionShape>>,
-    picture: Option<Box<Picture>>,
+    edit_as:              EnumValue<EditAsValues>,
+    from_marker:          MarkerType,
+    to_marker:            MarkerType,
+    group_shape:          Option<Box<GroupShape>>,
+    graphic_frame:        Option<Box<GraphicFrame>>,
+    shape:                Option<Box<Shape>>,
+    connection_shape:     Option<Box<ConnectionShape>>,
+    picture:              Option<Box<Picture>>,
     is_alternate_content: BooleanValue,
 }
 

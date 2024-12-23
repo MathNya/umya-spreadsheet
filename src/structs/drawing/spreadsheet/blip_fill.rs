@@ -32,9 +32,9 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct BlipFill {
     rotate_with_shape: BooleanValue,
-    blip: Blip,
-    source_rectangle: Option<Box<SourceRectangle>>,
-    stretch: Stretch,
+    blip:              Blip,
+    source_rectangle:  Option<Box<SourceRectangle>>,
+    stretch:           Stretch,
 }
 
 impl BlipFill {

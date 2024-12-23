@@ -12,9 +12,9 @@ use crate::writer::driver::write_start_tag;
 #[derive(Clone, Default, Debug)]
 pub struct FillRectangle {
     bottom: usize,
-    left: usize,
-    right: usize,
-    top: usize,
+    left:   usize,
+    right:  usize,
+    top:    usize,
 }
 impl FillRectangle {
     #[inline]

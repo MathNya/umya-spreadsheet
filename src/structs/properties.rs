@@ -34,19 +34,19 @@ use crate::{
 
 #[derive(Clone, Debug)]
 pub struct Properties {
-    creator: StringValue,
-    last_modified_by: StringValue,
-    created: StringValue,
-    modified: StringValue,
-    title: StringValue,
-    description: StringValue,
-    subject: StringValue,
-    keywords: StringValue,
-    category: StringValue,
-    manager: StringValue,
-    company: StringValue,
-    revision: StringValue,
-    version: StringValue,
+    creator:           StringValue,
+    last_modified_by:  StringValue,
+    created:           StringValue,
+    modified:          StringValue,
+    title:             StringValue,
+    description:       StringValue,
+    subject:           StringValue,
+    keywords:          StringValue,
+    category:          StringValue,
+    manager:           StringValue,
+    company:           StringValue,
+    revision:          StringValue,
+    version:           StringValue,
     custom_properties: CustomProperties,
 }
 impl Default for Properties {

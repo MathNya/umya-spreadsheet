@@ -29,8 +29,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct ObjectAnchor {
     move_with_cells: BooleanValue,
-    from_marker: FromMarker,
-    to_marker: ToMarker,
+    from_marker:     FromMarker,
+    to_marker:       ToMarker,
 }
 
 impl ObjectAnchor {

@@ -29,11 +29,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct DoughnutChart {
-    vary_colors: VaryColors,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    first_slice_angle: FirstSliceAngle,
-    hole_size: HoleSize,
+    data_labels:            DataLabels,
+    first_slice_angle:      FirstSliceAngle,
+    hole_size:              HoleSize,
 }
 
 impl DoughnutChart {

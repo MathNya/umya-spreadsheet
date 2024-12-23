@@ -31,13 +31,13 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct OfPieChart {
-    of_pie_type: OfPieType,
-    vary_colors: VaryColors,
+    of_pie_type:            OfPieType,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    gap_width: GapWidth,
-    second_pie_size: SecondPieSize,
-    series_lines: SeriesLines,
+    data_labels:            DataLabels,
+    gap_width:              GapWidth,
+    second_pie_size:        SecondPieSize,
+    series_lines:           SeriesLines,
 }
 
 impl OfPieChart {

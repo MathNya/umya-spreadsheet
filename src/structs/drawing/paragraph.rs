@@ -25,8 +25,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
-    paragraph_properties: ParagraphProperties,
-    run: Vec<Run>,
+    paragraph_properties:    ParagraphProperties,
+    run:                     Vec<Run>,
     end_para_run_properties: Option<Box<RunProperties>>,
 }
 

@@ -21,7 +21,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct LinearGradientFill {
-    angle: Int32Value,
+    angle:  Int32Value,
     scaled: BooleanValue,
 }
 

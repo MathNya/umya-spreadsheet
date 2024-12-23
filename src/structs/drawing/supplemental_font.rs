@@ -18,7 +18,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct SupplementalFont {
-    script: StringValue,
+    script:   StringValue,
     typeface: StringValue,
 }
 

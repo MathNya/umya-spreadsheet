@@ -30,9 +30,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct RowItem {
-    index: UInt32Value,
-    item_type: EnumValue<ItemValues>,
-    repeated_item_count: UInt32Value,
+    index:                 UInt32Value,
+    item_type:             EnumValue<ItemValues>,
+    repeated_item_count:   UInt32Value,
     member_property_index: Option<MemberPropertyIndex>,
 }
 impl RowItem {

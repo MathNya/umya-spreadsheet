@@ -38,13 +38,13 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartSpace {
-    date1904: Date1904,
+    date1904:         Date1904,
     editing_language: EditingLanguage,
-    rounded_corners: RoundedCorners,
-    style: Style,
-    chart: Chart,
+    rounded_corners:  RoundedCorners,
+    style:            Style,
+    chart:            Chart,
     shape_properties: Option<ShapeProperties>,
-    print_settings: Option<PrintSettings>,
+    print_settings:   Option<PrintSettings>,
 }
 
 impl ChartSpace {

@@ -27,8 +27,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientStop {
-    position: i32,
-    scheme_color: Option<Box<SchemeColor>>,
+    position:            i32,
+    scheme_color:        Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 

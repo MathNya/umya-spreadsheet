@@ -14,8 +14,8 @@ use crate::{
 pub struct Range {
     start_col: Option<ColumnReference>,
     start_row: Option<RowReference>,
-    end_col: Option<ColumnReference>,
-    end_row: Option<RowReference>,
+    end_col:   Option<ColumnReference>,
+    end_row:   Option<RowReference>,
 }
 
 impl Range {

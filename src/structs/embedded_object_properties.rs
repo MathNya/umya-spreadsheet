@@ -33,11 +33,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {
-    prog_id: StringValue,
-    shape_id: UInt32Value,
-    image: MediaObject,
-    default_size: BooleanValue,
-    auto_pict: BooleanValue,
+    prog_id:       StringValue,
+    shape_id:      UInt32Value,
+    image:         MediaObject,
+    default_size:  BooleanValue,
+    auto_pict:     BooleanValue,
     object_anchor: ObjectAnchor,
 }
 

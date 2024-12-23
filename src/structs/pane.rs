@@ -24,10 +24,10 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Pane {
     horizontal_split: DoubleValue,
-    vertical_split: DoubleValue,
-    top_left_cell: Coordinate,
-    active_pane: EnumValue<PaneValues>,
-    state: EnumValue<PaneStateValues>,
+    vertical_split:   DoubleValue,
+    top_left_cell:    Coordinate,
+    active_pane:      EnumValue<PaneValues>,
+    state:            EnumValue<PaneStateValues>,
 }
 
 impl Pane {

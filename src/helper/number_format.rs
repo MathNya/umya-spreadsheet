@@ -20,7 +20,7 @@ use crate::structs::{
 
 pub struct Split<'r, 't> {
     finder: Matches<'r, 't>,
-    last: usize,
+    last:   usize,
 }
 
 #[inline]
@@ -28,7 +28,7 @@ pub struct Split<'r, 't> {
 pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     Split {
         finder: regex.find_iter(text),
-        last: 0,
+        last:   0,
     }
 }
 
@@ -43,14 +43,15 @@ impl<'t> Iterator for Split<'_, 't> {
                 self.last = m.end();
                 Some(matched)
             }
-            _ =>
+            _ => {
                 if self.last > text.len() {
                     None
                 } else {
                     let s = &text[self.last..];
                     self.last = text.len() + 1;
                     Some(s)
-                },
+                }
+            }
         }
     }
 }

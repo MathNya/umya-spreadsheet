@@ -22,10 +22,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct DataField {
-    name: StringValue,
-    fie_id: UInt32Value,
+    name:        StringValue,
+    fie_id:      UInt32Value,
     base_fie_id: Int32Value,
-    base_item: UInt32Value,
+    base_item:   UInt32Value,
 }
 impl DataField {
     #[inline]

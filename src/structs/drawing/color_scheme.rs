@@ -28,19 +28,19 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ColorScheme {
-    name: StringValue,
-    accent1: Color2Type,
-    accent2: Color2Type,
-    accent3: Color2Type,
-    accent4: Color2Type,
-    accent5: Color2Type,
-    accent6: Color2Type,
-    dk1: Color2Type,
-    dk2: Color2Type,
+    name:      StringValue,
+    accent1:   Color2Type,
+    accent2:   Color2Type,
+    accent3:   Color2Type,
+    accent4:   Color2Type,
+    accent5:   Color2Type,
+    accent6:   Color2Type,
+    dk1:       Color2Type,
+    dk2:       Color2Type,
     fol_hlink: Color2Type,
-    hlink: Color2Type,
-    lt1: Color2Type,
-    lt2: Color2Type,
+    hlink:     Color2Type,
+    lt1:       Color2Type,
+    lt2:       Color2Type,
 }
 
 impl ColorScheme {

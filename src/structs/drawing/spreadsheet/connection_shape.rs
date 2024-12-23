@@ -27,10 +27,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ConnectionShape {
-    anchor: Anchor,
+    anchor:                                 Anchor,
     non_visual_connection_shape_properties: NonVisualConnectionShapeProperties,
-    shape_properties: ShapeProperties,
-    shape_style: ShapeStyle,
+    shape_properties:                       ShapeProperties,
+    shape_style:                            ShapeStyle,
 }
 
 impl ConnectionShape {

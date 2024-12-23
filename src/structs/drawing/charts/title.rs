@@ -26,8 +26,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Title {
     chart_text: Option<ChartText>,
-    layout: Option<Layout>,
-    overlay: Overlay,
+    layout:     Option<Layout>,
+    overlay:    Overlay,
 }
 
 impl Title {

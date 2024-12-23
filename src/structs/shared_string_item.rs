@@ -32,7 +32,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringItem {
-    text: Option<Text>,
+    text:      Option<Text>,
     rich_text: Option<RichText>,
 }
 

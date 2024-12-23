@@ -14,10 +14,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct TextFontType {
-    typeface: StringValue,
+    typeface:     StringValue,
     pitch_family: StringValue,
-    charset: StringValue,
-    panose: StringValue,
+    charset:      StringValue,
+    panose:       StringValue,
 }
 
 impl TextFontType {

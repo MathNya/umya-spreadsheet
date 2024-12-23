@@ -20,7 +20,7 @@ static RE: OnceLock<Regex> = OnceLock::new();
 #[derive(Clone, Default, Debug)]
 pub struct Address {
     sheet_name: Box<str>,
-    range: Range,
+    range:      Range,
 }
 
 impl Address {

@@ -30,19 +30,19 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormat {
-    number_format_id: UInt32Value,
-    font_id: UInt32Value,
-    fill_id: UInt32Value,
-    border_id: UInt32Value,
-    format_id: UInt32Value,
+    number_format_id:    UInt32Value,
+    font_id:             UInt32Value,
+    fill_id:             UInt32Value,
+    border_id:           UInt32Value,
+    format_id:           UInt32Value,
     apply_number_format: BooleanValue,
-    apply_fill: BooleanValue,
-    apply_border: BooleanValue,
-    apply_font: BooleanValue,
-    apply_alignment: BooleanValue,
-    apply_protection: BooleanValue,
-    alignment: Option<Alignment>,
-    protection: Option<Protection>,
+    apply_fill:          BooleanValue,
+    apply_border:        BooleanValue,
+    apply_font:          BooleanValue,
+    apply_alignment:     BooleanValue,
+    apply_protection:    BooleanValue,
+    alignment:           Option<Alignment>,
+    protection:          Option<Protection>,
 }
 
 impl CellFormat {

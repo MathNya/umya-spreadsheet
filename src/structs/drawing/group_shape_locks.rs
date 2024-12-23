@@ -19,12 +19,12 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct GroupShapeLocks {
     no_change_aspect: BooleanValue,
-    no_grouping: BooleanValue,
-    no_move: BooleanValue,
-    no_resize: BooleanValue,
-    no_rotation: BooleanValue,
-    no_selection: BooleanValue,
-    no_ungrouping: BooleanValue,
+    no_grouping:      BooleanValue,
+    no_move:          BooleanValue,
+    no_resize:        BooleanValue,
+    no_rotation:      BooleanValue,
+    no_selection:     BooleanValue,
+    no_ungrouping:    BooleanValue,
 }
 
 impl GroupShapeLocks {

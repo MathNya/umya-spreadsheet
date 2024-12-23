@@ -33,17 +33,17 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct SeriesAxis {
-    axis_id: AxisId,
-    scaling: Scaling,
-    delete: Delete,
-    axis_position: AxisPosition,
-    major_gridlines: Option<Box<MajorGridlines>>,
-    title: Option<Title>,
-    major_tick_mark: MajorTickMark,
-    minor_tick_mark: MinorTickMark,
+    axis_id:             AxisId,
+    scaling:             Scaling,
+    delete:              Delete,
+    axis_position:       AxisPosition,
+    major_gridlines:     Option<Box<MajorGridlines>>,
+    title:               Option<Title>,
+    major_tick_mark:     MajorTickMark,
+    minor_tick_mark:     MinorTickMark,
     tick_label_position: TickLabelPosition,
-    crossing_axis: CrossingAxis,
-    crosses: Crosses,
+    crossing_axis:       CrossingAxis,
+    crosses:             Crosses,
 }
 
 impl SeriesAxis {

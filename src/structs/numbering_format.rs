@@ -20,8 +20,8 @@ use crate::{
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {
     number_format_id: u32,
-    format_code: Box<str>,
-    is_build_in: bool,
+    format_code:      Box<str>,
+    is_build_in:      bool,
 }
 
 impl Default for NumberingFormat {
@@ -29,8 +29,8 @@ impl Default for NumberingFormat {
     fn default() -> Self {
         Self {
             number_format_id: 0,
-            format_code: NumberingFormat::FORMAT_GENERAL.into(),
-            is_build_in: true,
+            format_code:      NumberingFormat::FORMAT_GENERAL.into(),
+            is_build_in:      true,
         }
     }
 }

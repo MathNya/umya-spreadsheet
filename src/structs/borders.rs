@@ -29,15 +29,15 @@ use crate::{
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Borders {
-    left_border: Border,
-    right_border: Border,
-    top_border: Border,
-    bottom_border: Border,
-    diagonal_border: Border,
-    vertical_border: Border,
+    left_border:       Border,
+    right_border:      Border,
+    top_border:        Border,
+    bottom_border:     Border,
+    diagonal_border:   Border,
+    vertical_border:   Border,
     horizontal_border: Border,
-    diagonal_down: BooleanValue,
-    diagonal_up: BooleanValue,
+    diagonal_down:     BooleanValue,
+    diagonal_up:       BooleanValue,
 }
 
 impl Borders {

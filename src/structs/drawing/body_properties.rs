@@ -32,15 +32,15 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct BodyProperties {
-    vert_overflow: StringValue,
-    horz_overflow: StringValue,
-    rtl_col: StringValue,
-    anchor: StringValue,
-    wrap: EnumValue<TextWrappingValues>,
-    left_inset: Int32Value,
-    top_inset: Int32Value,
-    right_inset: Int32Value,
-    bottom_inset: Int32Value,
+    vert_overflow:  StringValue,
+    horz_overflow:  StringValue,
+    rtl_col:        StringValue,
+    anchor:         StringValue,
+    wrap:           EnumValue<TextWrappingValues>,
+    left_inset:     Int32Value,
+    top_inset:      Int32Value,
+    right_inset:    Int32Value,
+    bottom_inset:   Int32Value,
     shape_auto_fit: Option<ShapeAutoFit>,
 }
 

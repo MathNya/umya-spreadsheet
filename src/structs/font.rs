@@ -36,16 +36,16 @@ use crate::writer::driver::{
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Font {
-    font_name: FontName,
-    font_size: FontSize,
-    font_family_numbering: FontFamilyNumbering,
-    font_bold: Bold,
-    font_italic: Italic,
-    font_underline: Underline,
-    font_strike: Strike,
-    color: Color,
-    font_char_set: FontCharSet,
-    font_scheme: FontScheme,
+    font_name:               FontName,
+    font_size:               FontSize,
+    font_family_numbering:   FontFamilyNumbering,
+    font_bold:               Bold,
+    font_italic:             Italic,
+    font_underline:          Underline,
+    font_strike:             Strike,
+    color:                   Color,
+    font_char_set:           FontCharSet,
+    font_scheme:             FontScheme,
     vertical_text_alignment: VerticalTextAlignment,
 }
 impl Font {

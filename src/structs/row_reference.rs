@@ -9,7 +9,7 @@ use crate::{
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct RowReference {
-    num: u32,
+    num:     u32,
     is_lock: bool,
 }
 
@@ -17,7 +17,7 @@ impl Default for RowReference {
     #[inline]
     fn default() -> Self {
         Self {
-            num: 1,
+            num:     1,
             is_lock: false,
         }
     }

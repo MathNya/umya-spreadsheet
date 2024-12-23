@@ -25,7 +25,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct TextElement {
-    text: Text,
+    text:           Text,
     run_properties: Option<Box<Font>>,
 }
 

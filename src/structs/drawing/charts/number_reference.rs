@@ -23,7 +23,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberReference {
-    formula: Formula,
+    formula:         Formula,
     numbering_cache: NumberingCache,
 }
 

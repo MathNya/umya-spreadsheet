@@ -22,10 +22,10 @@ use crate::{
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationship {
-    id: StringValue,
-    r_type: StringValue,
-    target: StringValue,
-    raw_file: RawFile,
+    id:          StringValue,
+    r_type:      StringValue,
+    target:      StringValue,
+    raw_file:    RawFile,
     target_mode: StringValue,
 }
 

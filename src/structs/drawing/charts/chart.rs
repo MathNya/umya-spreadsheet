@@ -35,16 +35,16 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Chart {
-    title: Option<Title>,
-    auto_title_deleted: AutoTitleDeleted,
-    view_3d: Option<View3D>,
-    floor: Option<Floor>,
-    side_wall: Option<SideWall>,
-    back_wall: Option<BackWall>,
-    plot_area: PlotArea,
-    legend: Legend,
-    plot_visible_only: PlotVisibleOnly,
-    display_blanks_as: DisplayBlanksAs,
+    title:                         Option<Title>,
+    auto_title_deleted:            AutoTitleDeleted,
+    view_3d:                       Option<View3D>,
+    floor:                         Option<Floor>,
+    side_wall:                     Option<SideWall>,
+    back_wall:                     Option<BackWall>,
+    plot_area:                     PlotArea,
+    legend:                        Legend,
+    plot_visible_only:             PlotVisibleOnly,
+    display_blanks_as:             DisplayBlanksAs,
     show_data_labels_over_maximum: ShowDataLabelsOverMaximum,
 }
 

@@ -28,9 +28,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {
-    col: u32,
+    col:     u32,
     col_off: i32,
-    row: u32,
+    row:     u32,
     row_off: i32,
 }
 impl MarkerType {
@@ -133,7 +133,9 @@ impl MarkerType {
                     b"xdr:from" | b"xdr:to" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xdr:from,xdr:to"),
+                Ok(Event::Eof) => {
+                    panic!("Error: Could not find {} end element", "xdr:from,xdr:to")
+                }
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

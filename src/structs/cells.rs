@@ -22,9 +22,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
-    map: HashMap<(u32, u32), Box<Cell>>,
+    map:                HashMap<(u32, u32), Box<Cell>>,
     default_cell_value: CellValue,
-    default_style: Style,
+    default_style:      Style,
 }
 impl Cells {
     #[inline]

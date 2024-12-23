@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct BevelTop {
-    width: Int64Value,
+    width:  Int64Value,
     height: Int64Value,
     preset: EnumValue<BevelPresetValues>,
 }

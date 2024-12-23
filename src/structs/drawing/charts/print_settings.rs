@@ -26,8 +26,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct PrintSettings {
     header_footer: HeaderFooter,
-    page_margins: PageMargins,
-    page_setup: PageSetup,
+    page_margins:  PageMargins,
+    page_setup:    PageSetup,
 }
 
 impl PrintSettings {

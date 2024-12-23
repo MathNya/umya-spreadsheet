@@ -35,25 +35,25 @@ use crate::{
 
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct Row {
-    row_num: UInt32Value,
-    height: DoubleValue,
-    descent: DoubleValue,
-    thick_bot: BooleanValue,
+    row_num:       UInt32Value,
+    height:        DoubleValue,
+    descent:       DoubleValue,
+    thick_bot:     BooleanValue,
     custom_height: BooleanValue,
-    hidden: BooleanValue,
-    style: Box<Style>,
+    hidden:        BooleanValue,
+    style:         Box<Style>,
 }
 impl Default for Row {
     #[inline]
     fn default() -> Self {
         Self {
-            row_num: UInt32Value::default(),
-            height: DoubleValue::default(),
-            descent: DoubleValue::default(),
-            thick_bot: BooleanValue::default(),
+            row_num:       UInt32Value::default(),
+            height:        DoubleValue::default(),
+            descent:       DoubleValue::default(),
+            thick_bot:     BooleanValue::default(),
             custom_height: BooleanValue::default(),
-            hidden: BooleanValue::default(),
-            style: Box::new(Style::default()),
+            hidden:        BooleanValue::default(),
+            style:         Box::new(Style::default()),
         }
     }
 }

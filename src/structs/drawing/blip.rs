@@ -31,7 +31,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Blip {
-    image: MediaObject,
+    image:  MediaObject,
     cstate: Box<str>,
 }
 

@@ -27,8 +27,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Picture {
     non_visual_picture_properties: NonVisualPictureProperties,
-    blip_fill: BlipFill,
-    shape_properties: ShapeProperties,
+    blip_fill:                     BlipFill,
+    shape_properties:              ShapeProperties,
 }
 
 impl Picture {

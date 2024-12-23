@@ -34,10 +34,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicFrame {
-    r#macro: StringValue,
+    r#macro:                             StringValue,
     non_visual_graphic_frame_properties: NonVisualGraphicFrameProperties,
-    transform: Transform,
-    graphic: Graphic,
+    transform:                           Transform,
+    graphic:                             Graphic,
 }
 
 impl GraphicFrame {

@@ -23,7 +23,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct StringReference {
-    formula: Formula,
+    formula:      Formula,
     string_cache: StringCache,
 }
 

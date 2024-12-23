@@ -25,7 +25,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Formula {
-    address: Address,
+    address:      Address,
     string_value: StringValue,
 }
 

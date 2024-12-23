@@ -33,13 +33,13 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObject {
-    requires: StringValue,
-    prog_id: StringValue,
-    object_extension: Box<str>,
-    object_data: Option<Vec<u8>>,
+    requires:                   StringValue,
+    prog_id:                    StringValue,
+    object_extension:           Box<str>,
+    object_data:                Option<Vec<u8>>,
     embedded_object_properties: EmbeddedObjectProperties,
-    two_cell_anchor: TwoCellAnchor,
-    shape: Shape,
+    two_cell_anchor:            TwoCellAnchor,
+    shape:                      Shape,
 }
 
 impl OleObject {

@@ -15,7 +15,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {
     file_target: StringValue,
-    file_data: Vec<u8>,
+    file_data:   Vec<u8>,
 }
 impl RawFile {
     #[inline]

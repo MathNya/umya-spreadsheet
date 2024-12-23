@@ -37,21 +37,21 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ValueAxis {
-    axis_id: AxisId,
-    scaling: Scaling,
-    delete: Delete,
-    axis_position: AxisPosition,
-    major_gridlines: Option<MajorGridlines>,
-    title: Option<Title>,
-    numbering_format: NumberingFormat,
-    major_tick_mark: MajorTickMark,
-    minor_tick_mark: MinorTickMark,
+    axis_id:             AxisId,
+    scaling:             Scaling,
+    delete:              Delete,
+    axis_position:       AxisPosition,
+    major_gridlines:     Option<MajorGridlines>,
+    title:               Option<Title>,
+    numbering_format:    NumberingFormat,
+    major_tick_mark:     MajorTickMark,
+    minor_tick_mark:     MinorTickMark,
     tick_label_position: TickLabelPosition,
-    crossing_axis: CrossingAxis,
-    crosses: Crosses,
-    cross_between: CrossBetween,
-    shape_properties: Option<ShapeProperties>,
-    text_properties: Option<TextProperties>,
+    crossing_axis:       CrossingAxis,
+    crosses:             Crosses,
+    cross_between:       CrossBetween,
+    shape_properties:    Option<ShapeProperties>,
+    text_properties:     Option<TextProperties>,
 }
 
 impl ValueAxis {

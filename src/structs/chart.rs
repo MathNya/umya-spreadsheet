@@ -145,7 +145,7 @@ use crate::{
 /// ```
 #[derive(Clone, Debug)]
 pub struct Chart {
-    two_cell_anchor: Box<TwoCellAnchor>,
+    two_cell_anchor:  Box<TwoCellAnchor>,
     default_language: String,
 }
 
@@ -153,7 +153,7 @@ impl Default for Chart {
     #[inline]
     fn default() -> Self {
         Self {
-            two_cell_anchor: Box::new(TwoCellAnchor::default()),
+            two_cell_anchor:  Box::new(TwoCellAnchor::default()),
             default_language: "en-GB".into(),
         }
     }
@@ -176,14 +176,16 @@ impl Chart {
         let title = self.make_title(value);
         let plot_area = self.get_plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
-            1 =>
+            1 => {
                 if let Some(v) = plot_area.get_value_axis_mut().get_mut(0) {
                     v.set_title(title);
-                },
-            2 =>
+                }
+            }
+            2 => {
                 if let Some(v) = plot_area.get_value_axis_mut().get_mut(1) {
                     v.set_title(title);
-                },
+                }
+            }
             _ => {}
         }
         self
@@ -193,14 +195,16 @@ impl Chart {
         let title = self.make_title(value);
         let plot_area = self.get_plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
-            1 =>
+            1 => {
                 if let Some(v) = plot_area.get_category_axis_mut().get_mut(0) {
                     v.set_title(title);
-                },
-            2 =>
+                }
+            }
+            2 => {
                 if let Some(v) = plot_area.get_value_axis_mut().get_mut(0) {
                     v.set_title(title);
-                },
+                }
+            }
             _ => {}
         }
         self

@@ -178,15 +178,15 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
 
 #[derive(Clone, Default, Debug)]
 pub struct HtmlFlatData {
-    text: String,
+    text:    String,
     element: Vec<HfdElement>,
 }
 
 #[derive(Clone, Default, Debug)]
 pub struct HfdElement {
-    name: String,
+    name:       String,
     attributes: HashMap<String, String>,
-    classes: Vec<String>,
+    classes:    Vec<String>,
 }
 impl HfdElement {
     #[inline]

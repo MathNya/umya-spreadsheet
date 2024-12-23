@@ -28,15 +28,15 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct RgbColorModelHex {
-    val: StringValue,
-    luminance: Option<PercentageType>,
-    luminance_modulation: Option<PercentageType>,
-    luminance_offset: Option<PercentageType>,
-    saturation: Option<PercentageType>,
+    val:                   StringValue,
+    luminance:             Option<PercentageType>,
+    luminance_modulation:  Option<PercentageType>,
+    luminance_offset:      Option<PercentageType>,
+    saturation:            Option<PercentageType>,
     saturation_modulation: Option<PercentageType>,
-    shade: Option<PositiveFixedPercentageType>,
-    alpha: Option<PositiveFixedPercentageType>,
-    tint: Option<PositiveFixedPercentageType>,
+    shade:                 Option<PositiveFixedPercentageType>,
+    alpha:                 Option<PositiveFixedPercentageType>,
+    tint:                  Option<PositiveFixedPercentageType>,
 }
 
 impl RgbColorModelHex {

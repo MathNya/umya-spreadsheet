@@ -28,9 +28,9 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct GroupShape {
     non_visual_group_shape_properties: NonVisualGroupShapeProperties,
-    group_shape_properties: GroupShapeProperties,
-    picture_collection: Vec<Picture>,
-    shape_collection: Vec<Shape>,
+    group_shape_properties:            GroupShapeProperties,
+    picture_collection:                Vec<Picture>,
+    shape_collection:                  Vec<Shape>,
 }
 
 impl GroupShape {

@@ -18,7 +18,7 @@ use crate::{
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Coordinate {
     column: ColumnReference,
-    row: RowReference,
+    row:    RowReference,
 }
 
 impl fmt::Display for Coordinate {

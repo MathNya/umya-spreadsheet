@@ -21,12 +21,12 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotTableStyle {
-    name: StringValue,
-    show_row_headers: BooleanValue,
+    name:                StringValue,
+    show_row_headers:    BooleanValue,
     show_column_headers: BooleanValue,
-    show_row_stripes: BooleanValue,
+    show_row_stripes:    BooleanValue,
     show_column_stripes: BooleanValue,
-    show_last_column: BooleanValue,
+    show_last_column:    BooleanValue,
 }
 impl PivotTableStyle {
     #[inline]

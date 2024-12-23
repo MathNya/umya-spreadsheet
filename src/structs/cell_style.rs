@@ -21,9 +21,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct CellStyle {
-    name: StringValue,
+    name:       StringValue,
     builtin_id: UInt32Value,
-    format_id: UInt32Value,
+    format_id:  UInt32Value,
 }
 
 impl CellStyle {

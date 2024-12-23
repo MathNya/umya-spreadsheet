@@ -37,12 +37,12 @@ use crate::{
 /// ```
 #[derive(Clone, Debug)]
 pub struct Column {
-    col_num: UInt32Value,
-    pub(crate) width: DoubleValue,
-    pub(crate) hidden: BooleanValue,
+    col_num:             UInt32Value,
+    pub(crate) width:    DoubleValue,
+    pub(crate) hidden:   BooleanValue,
     pub(crate) best_fit: BooleanValue,
-    style: Box<Style>,
-    auto_width: BooleanValue,
+    style:               Box<Style>,
+    auto_width:          BooleanValue,
 }
 
 impl Default for Column {

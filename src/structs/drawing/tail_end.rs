@@ -16,7 +16,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct TailEnd {
     t_type: StringValue,
-    width: StringValue,
+    width:  StringValue,
     length: StringValue,
 }
 

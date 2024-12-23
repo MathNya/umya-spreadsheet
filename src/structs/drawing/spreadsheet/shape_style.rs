@@ -21,10 +21,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeStyle {
-    line_reference: Option<Box<StyleMatrixReferenceType>>,
-    fill_reference: Option<Box<StyleMatrixReferenceType>>,
+    line_reference:   Option<Box<StyleMatrixReferenceType>>,
+    fill_reference:   Option<Box<StyleMatrixReferenceType>>,
     effect_reference: Option<Box<StyleMatrixReferenceType>>,
-    font_reference: Option<Box<StyleMatrixReferenceType>>,
+    font_reference:   Option<Box<StyleMatrixReferenceType>>,
 }
 
 impl ShapeStyle {

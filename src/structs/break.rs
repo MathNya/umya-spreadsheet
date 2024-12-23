@@ -21,9 +21,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Break {
-    id: UInt32Value,
-    max: UInt32Value,
-    min: UInt32Value,
+    id:                UInt32Value,
+    max:               UInt32Value,
+    min:               UInt32Value,
     manual_page_break: BooleanValue,
 }
 

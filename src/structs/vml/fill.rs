@@ -22,11 +22,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Fill {
-    color: StringValue,
-    color_2: StringValue,
-    on: TrueFalseValue,
+    color:      StringValue,
+    color_2:    StringValue,
+    on:         TrueFalseValue,
     focus_size: StringValue,
-    image: Option<MediaObject>,
+    image:      Option<MediaObject>,
 }
 
 impl Fill {

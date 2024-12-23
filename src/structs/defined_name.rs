@@ -32,11 +32,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {
-    name: StringValue,
-    address: Vec<Address>,
-    string_value: StringValue,
+    name:           StringValue,
+    address:        Vec<Address>,
+    string_value:   StringValue,
     local_sheet_id: UInt32Value,
-    hidden: BooleanValue,
+    hidden:         BooleanValue,
 }
 impl DefinedName {
     #[inline]
@@ -170,12 +170,13 @@ impl DefinedName {
                         string.push(*c);
                     }
                 }
-                ',' =>
+                ',' => {
                     if !is_pass_s && !is_pass_d && is_pass_b == 0 {
                         result.push(std::mem::take(&mut string));
                     } else {
                         string.push(*c);
-                    },
+                    }
+                }
                 _ => {
                     string.push(*c);
                 }

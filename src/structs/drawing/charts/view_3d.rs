@@ -26,10 +26,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct View3D {
-    rotate_x: Option<RotateX>,
-    rotate_y: Option<RotateY>,
+    rotate_x:         Option<RotateX>,
+    rotate_y:         Option<RotateY>,
     right_angle_axes: Option<RightAngleAxes>,
-    perspective: Option<Perspective>,
+    perspective:      Option<Perspective>,
 }
 
 impl View3D {

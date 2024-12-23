@@ -24,7 +24,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Color2Type {
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
-    system_color: Option<Box<SystemColor>>,
+    system_color:        Option<Box<SystemColor>>,
 }
 
 impl Color2Type {

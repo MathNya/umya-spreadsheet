@@ -23,7 +23,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ColorScale {
-    cfvo_collection: Vec<ConditionalFormatValueObject>,
+    cfvo_collection:  Vec<ConditionalFormatValueObject>,
     color_collection: Vec<Color>,
 }
 

@@ -30,9 +30,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct LightRig {
-    rig: EnumValue<LightRigValues>,
+    rig:        EnumValue<LightRigValues>,
     definition: EnumValue<LightRigDirectionValues>,
-    rotation: Option<Box<Rotation>>,
+    rotation:   Option<Box<Rotation>>,
 }
 
 impl LightRig {

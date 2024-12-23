@@ -25,8 +25,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ThemeElements {
-    color_scheme: ColorScheme,
-    font_scheme: FontScheme,
+    color_scheme:  ColorScheme,
+    font_scheme:   FontScheme,
     format_scheme: FormatScheme,
 }
 

@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Scene3DType {
-    camera: Option<Camera>,
+    camera:    Option<Camera>,
     light_rig: Option<LightRig>,
 }
 

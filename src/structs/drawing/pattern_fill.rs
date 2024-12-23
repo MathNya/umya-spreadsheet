@@ -27,7 +27,7 @@ use crate::{
 
 #[derive(Clone, Debug)]
 pub struct PatternFill {
-    preset: Box<str>,
+    preset:           Box<str>,
     foreground_color: ForegroundColor,
     background_color: BackgroundColor,
 }
@@ -36,7 +36,7 @@ impl Default for PatternFill {
     #[inline]
     fn default() -> Self {
         Self {
-            preset: "pct5".into(),
+            preset:           "pct5".into(),
             foreground_color: ForegroundColor::default(),
             background_color: BackgroundColor::default(),
         }

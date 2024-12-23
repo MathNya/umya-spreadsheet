@@ -25,9 +25,9 @@ use crate::{
 
 #[derive(Default, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Alignment {
-    horizontal: EnumValue<HorizontalAlignmentValues>,
-    vertical: EnumValue<VerticalAlignmentValues>,
-    wrap_text: BooleanValue,
+    horizontal:    EnumValue<HorizontalAlignmentValues>,
+    vertical:      EnumValue<VerticalAlignmentValues>,
+    wrap_text:     BooleanValue,
     text_rotation: UInt32Value,
 }
 

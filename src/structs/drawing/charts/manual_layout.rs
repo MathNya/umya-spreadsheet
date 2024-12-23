@@ -31,15 +31,15 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ManualLayout {
-    height: Option<Height>,
-    height_mode: Option<HeightMode>,
+    height:        Option<Height>,
+    height_mode:   Option<HeightMode>,
     layout_target: Option<LayoutTarget>,
-    left: Option<Left>,
-    left_mode: Option<LeftMode>,
-    top: Option<Top>,
-    top_mode: Option<TopMode>,
-    width: Option<Width>,
-    width_mode: Option<WidthMode>,
+    left:          Option<Left>,
+    left_mode:     Option<LeftMode>,
+    top:           Option<Top>,
+    top_mode:      Option<TopMode>,
+    width:         Option<Width>,
+    width_mode:    Option<WidthMode>,
 }
 
 impl ManualLayout {

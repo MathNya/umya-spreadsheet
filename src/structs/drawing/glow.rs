@@ -27,7 +27,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Glow {
-    radius: Int64Value,
+    radius:       Int64Value,
     scheme_color: Option<Box<SchemeColor>>,
 }
 

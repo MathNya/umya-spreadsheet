@@ -20,8 +20,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Shadow {
-    on: TrueFalseValue,
-    color: StringValue,
+    on:       TrueFalseValue,
+    color:    StringValue,
     obscured: TrueFalseValue,
 }
 impl Shadow {

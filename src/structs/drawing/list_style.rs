@@ -27,7 +27,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ListStyle {
-    effect_list: Option<Box<EffectList>>,
+    effect_list:                    Option<Box<EffectList>>,
     text_paragraph_properties_type: HashMap<Box<str>, Box<TextParagraphPropertiesType>>,
 }
 

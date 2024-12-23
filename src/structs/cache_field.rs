@@ -29,9 +29,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct CacheField {
-    name: StringValue,
+    name:             StringValue,
     number_format_id: UInt32Value,
-    shared_items: SharedItems,
+    shared_items:     SharedItems,
 }
 impl CacheField {
     #[must_use]

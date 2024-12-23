@@ -26,7 +26,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct ConditionalFormatValueObject {
     r#type: EnumValue<ConditionalFormatValueObjectValues>,
-    val: StringValue,
+    val:    StringValue,
 }
 
 impl ConditionalFormatValueObject {

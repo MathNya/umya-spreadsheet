@@ -18,8 +18,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Rotation {
-    latitude: Int32Value,
-    longitude: Int32Value,
+    latitude:   Int32Value,
+    longitude:  Int32Value,
     revolution: Int32Value,
 }
 

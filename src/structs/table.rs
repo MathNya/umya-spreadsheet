@@ -12,11 +12,11 @@ use crate::helper::coordinate::CellCoordinates;
 
 #[derive(Clone, Default, Debug)]
 pub struct Table {
-    name: Box<str>,
-    area: (Coordinate, Coordinate),
-    display_name: Box<str>,
-    columns: Vec<TableColumn>,
-    style_info: Option<Box<TableStyleInfo>>,
+    name:             Box<str>,
+    area:             (Coordinate, Coordinate),
+    display_name:     Box<str>,
+    columns:          Vec<TableColumn>,
+    style_info:       Option<Box<TableStyleInfo>>,
     totals_row_shown: BooleanValue,
     totals_row_count: UInt32Value,
 }
@@ -30,11 +30,11 @@ impl Table {
         let coord_end = Self::cell_coord_to_coord(area.1);
         let name: Box<str> = name.into();
         Self {
-            area: (coord_beg, coord_end),
-            name: name.clone(),
-            display_name: name,
-            columns: Vec::<TableColumn>::default(),
-            style_info: None,
+            area:             (coord_beg, coord_end),
+            name:             name.clone(),
+            display_name:     name,
+            columns:          Vec::<TableColumn>::default(),
+            style_info:       None,
             totals_row_shown: BooleanValue::default(),
             totals_row_count: UInt32Value::default(),
         }
@@ -188,9 +188,9 @@ impl Table {
 
 #[derive(Clone, Default, Debug)]
 pub struct TableColumn {
-    name: String,
-    totals_row_label: StringValue,
-    totals_row_function: EnumValue<TotalsRowFunctionValues>,
+    name:                      String,
+    totals_row_label:          StringValue,
+    totals_row_function:       EnumValue<TotalsRowFunctionValues>,
     calculated_column_formula: Option<String>,
 }
 impl TableColumn {
@@ -198,9 +198,9 @@ impl TableColumn {
     #[must_use]
     pub fn new(name: &str) -> Self {
         Self {
-            name: name.to_string(),
-            totals_row_label: StringValue::default(),
-            totals_row_function: EnumValue::default(),
+            name:                      name.to_string(),
+            totals_row_label:          StringValue::default(),
+            totals_row_function:       EnumValue::default(),
             calculated_column_formula: None,
         }
     }
@@ -284,9 +284,9 @@ impl TableColumn {
 
 #[derive(Clone, Debug)]
 pub struct TableStyleInfo {
-    name: String,
-    show_first_col: ShowColumn,
-    show_last_col: ShowColumn,
+    name:             String,
+    show_first_col:   ShowColumn,
+    show_last_col:    ShowColumn,
     show_row_stripes: ShowStripes,
     show_col_stripes: ShowStripes,
 }
@@ -306,9 +306,9 @@ pub enum ShowStripes {
 impl Default for TableStyleInfo {
     fn default() -> Self {
         Self {
-            name: String::new(),                 // Default name can be an empty string
-            show_first_col: ShowColumn::Hide,    // Default to Hide
-            show_last_col: ShowColumn::Hide,     // Default to Hide
+            name:             String::new(), // Default name can be an empty string
+            show_first_col:   ShowColumn::Hide, // Default to Hide
+            show_last_col:    ShowColumn::Hide, // Default to Hide
             show_row_stripes: ShowStripes::Hide, // Default to Hide
             show_col_stripes: ShowStripes::Hide, // Default to Hide
         }

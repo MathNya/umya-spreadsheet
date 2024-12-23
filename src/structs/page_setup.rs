@@ -22,14 +22,14 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct PageSetup {
-    paper_size: UInt32Value,
-    orientation: EnumValue<OrientationValues>,
-    scale: UInt32Value,
-    fit_to_height: UInt32Value,
-    fit_to_width: UInt32Value,
+    paper_size:     UInt32Value,
+    orientation:    EnumValue<OrientationValues>,
+    scale:          UInt32Value,
+    fit_to_height:  UInt32Value,
+    fit_to_width:   UInt32Value,
     horizontal_dpi: UInt32Value,
-    vertical_dpi: UInt32Value,
-    object_data: Option<Vec<u8>>,
+    vertical_dpi:   UInt32Value,
+    object_data:    Option<Vec<u8>>,
 }
 
 impl PageSetup {

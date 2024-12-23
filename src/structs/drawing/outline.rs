@@ -40,18 +40,18 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Outline {
-    width: UInt32Value,
-    cap_type: StringValue,
+    width:              UInt32Value,
+    cap_type:           StringValue,
     compound_line_type: StringValue,
-    solid_fill: Option<Box<SolidFill>>,
-    gradient_fill: Option<Box<GradientFill>>,
-    tail_end: Option<Box<TailEnd>>,
-    no_fill: Option<NoFill>,
-    bevel: Option<Box<Bevel>>,
-    preset_dash: Option<PresetDash>,
-    miter: Option<Miter>,
-    round: Option<Round>,
-    alignment: EnumValue<PenAlignmentValues>,
+    solid_fill:         Option<Box<SolidFill>>,
+    gradient_fill:      Option<Box<GradientFill>>,
+    tail_end:           Option<Box<TailEnd>>,
+    no_fill:            Option<NoFill>,
+    bevel:              Option<Box<Bevel>>,
+    preset_dash:        Option<PresetDash>,
+    miter:              Option<Miter>,
+    round:              Option<Round>,
+    alignment:          EnumValue<PenAlignmentValues>,
 }
 
 impl Outline {

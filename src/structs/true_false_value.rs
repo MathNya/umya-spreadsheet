@@ -1,6 +1,6 @@
 #[derive(Clone, Default, Debug)]
 pub struct TrueFalseValue {
-    value: Option<bool>,
+    value:         Option<bool>,
     value_default: bool,
 }
 impl TrueFalseValue {

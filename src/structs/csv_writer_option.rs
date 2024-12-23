@@ -4,8 +4,8 @@ use crate::structs::CsvEncodeValues;
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct CsvWriterOption {
     pub(crate) csv_encode_values: EnumValue<CsvEncodeValues>,
-    pub(crate) wrap_with_char: Box<str>,
-    pub(crate) do_trim: bool,
+    pub(crate) wrap_with_char:    Box<str>,
+    pub(crate) do_trim:           bool,
 }
 impl CsvWriterOption {
     #[inline]

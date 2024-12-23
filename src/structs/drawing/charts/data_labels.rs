@@ -30,14 +30,14 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct DataLabels {
-    show_legend_key: ShowLegendKey,
-    show_value: ShowValue,
+    show_legend_key:    ShowLegendKey,
+    show_value:         ShowValue,
     show_category_name: ShowCategoryName,
-    show_series_name: ShowSeriesName,
-    show_percent: ShowPercent,
-    show_bubble_size: ShowBubbleSize,
-    show_leader_lines: Option<ShowLeaderLines>,
-    text_properties: Option<TextProperties>,
+    show_series_name:   ShowSeriesName,
+    show_percent:       ShowPercent,
+    show_bubble_size:   ShowBubbleSize,
+    show_leader_lines:  Option<ShowLeaderLines>,
+    text_properties:    Option<TextProperties>,
 }
 
 impl DataLabels {

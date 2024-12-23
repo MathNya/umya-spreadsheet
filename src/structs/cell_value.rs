@@ -20,7 +20,7 @@ use crate::{
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
     pub(crate) raw_value: CellRawValue,
-    pub(crate) formula: Option<Box<CellFormula>>,
+    pub(crate) formula:   Option<Box<CellFormula>>,
 }
 impl CellValue {
     #[inline]
@@ -231,14 +231,15 @@ impl CellValue {
             "" => CellRawValue::Empty,
             "TRUE" => CellRawValue::Bool(true),
             "FALSE" => CellRawValue::Bool(false),
-            _ =>
+            _ => {
                 if let Ok(error_type) = CellErrorType::from_str(&uppercase_value) {
                     CellRawValue::Error(error_type)
                 } else if let Ok(f) = value.parse::<f64>() {
                     CellRawValue::Numeric(f)
                 } else {
                     CellRawValue::String(value.into())
-                },
+                }
+            }
         }
     }
 

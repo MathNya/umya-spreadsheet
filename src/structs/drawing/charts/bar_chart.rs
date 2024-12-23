@@ -32,14 +32,14 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct BarChart {
-    bar_direction: BarDirection,
-    grouping: Grouping,
-    vary_colors: VaryColors,
+    bar_direction:          BarDirection,
+    grouping:               Grouping,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    gap_width: GapWidth,
-    overlap: Overlap,
-    axis_id: Vec<AxisId>,
+    data_labels:            DataLabels,
+    gap_width:              GapWidth,
+    overlap:                Overlap,
+    axis_id:                Vec<AxisId>,
 }
 
 impl BarChart {

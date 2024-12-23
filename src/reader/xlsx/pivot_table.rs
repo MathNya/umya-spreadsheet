@@ -19,16 +19,18 @@ pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) {
     let mut pivot_table = PivotTable::default();
     loop {
         match reader.read_event_into(&mut buf) {
-            Ok(Event::Start(ref e)) =>
+            Ok(Event::Start(ref e)) => {
                 if e.name().into_inner() == b"pivotTableDefinition" {
                     let mut obj = PivotTableDefinition::default();
                     obj.set_attributes(&mut reader, e);
                     pivot_table.set_pivot_table_definition(obj);
-                },
-            Ok(Event::End(ref e)) =>
+                }
+            }
+            Ok(Event::End(ref e)) => {
                 if e.name().into_inner() == b"pivotTableDefinition" {
                     break;
-                },
+                }
+            }
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),

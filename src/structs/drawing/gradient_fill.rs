@@ -34,11 +34,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientFill {
-    flip: EnumValue<TileFlipValues>,
-    rotate_with_shape: BooleanValue,
-    gradient_stop_list: GradientStopList,
+    flip:                 EnumValue<TileFlipValues>,
+    rotate_with_shape:    BooleanValue,
+    gradient_stop_list:   GradientStopList,
     linear_gradient_fill: Option<Box<LinearGradientFill>>,
-    tile_rectangle: Option<Box<TileRectangle>>,
+    tile_rectangle:       Option<Box<TileRectangle>>,
 }
 
 impl GradientFill {

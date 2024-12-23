@@ -96,10 +96,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             v.write_to_tab_color(&mut writer);
             write_end_tag(&mut writer, "sheetPr");
         }
-        None =>
+        None => {
             if !attributes.is_empty() {
                 write_start_tag(&mut writer, "sheetPr", attributes, true);
-            },
+            }
+        }
     }
 
     // outlinePr

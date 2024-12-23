@@ -25,7 +25,7 @@ use crate::{
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Fill {
-    pattern_fill: Option<Box<PatternFill>>,
+    pattern_fill:  Option<Box<PatternFill>>,
     gradient_fill: Option<Box<GradientFill>>,
 }
 

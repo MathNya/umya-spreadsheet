@@ -26,8 +26,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct TextProperties {
     body_properties: BodyProperties,
-    list_style: ListStyle,
-    paragraph: Vec<Paragraph>,
+    list_style:      ListStyle,
+    paragraph:       Vec<Paragraph>,
 }
 
 impl TextProperties {

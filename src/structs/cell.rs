@@ -61,11 +61,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {
-    coordinate: Coordinate,
+    coordinate:            Coordinate,
     pub(crate) cell_value: Box<CellValue>,
-    style: Box<Style>,
-    hyperlink: Option<Box<Hyperlink>>,
-    cell_meta_index: UInt32Value,
+    style:                 Box<Style>,
+    hyperlink:             Option<Box<Hyperlink>>,
+    cell_meta_index:       UInt32Value,
 }
 impl Cell {
     #[inline]
@@ -436,22 +436,24 @@ impl Cell {
                         obj.set_attributes(reader, e, false, &cell_reference, formula_shared_list);
                         self.cell_value.set_formula_obj(obj);
                     }
-                    b"t" =>
+                    b"t" => {
                         if let Some(Ok(attribute)) = e.attributes().next() {
                             if attribute.key.into_inner() == b"xml:space"
                                 && attribute.value.as_ref() == b"preserve"
                             {
                                 reader.config_mut().trim_text(false);
                             }
-                        },
+                        }
+                    }
                     _ => (),
                 },
-                Ok(Event::Empty(ref e)) =>
+                Ok(Event::Empty(ref e)) => {
                     if e.name().into_inner() == b"f" {
                         let mut obj = CellFormula::default();
                         obj.set_attributes(reader, e, true, &cell_reference, formula_shared_list);
                         self.cell_value.set_formula_obj(obj);
-                    },
+                    }
+                }
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"v" => match type_value.as_str() {
                         "str" => {
@@ -477,10 +479,11 @@ impl Cell {
                         }
                         _ => {}
                     },
-                    b"is" =>
+                    b"is" => {
                         if type_value == "inlineStr" {
                             self.set_value_crate(&string_value);
-                        },
+                        }
+                    }
                     b"c" => return,
                     b"t" => {
                         reader.config_mut().trim_text(true);

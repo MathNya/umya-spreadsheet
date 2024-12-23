@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Debug)]
 pub struct TextBox {
-    style: StringValue,
+    style:  StringValue,
     innder: StringValue,
 }
 

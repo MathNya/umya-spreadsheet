@@ -32,7 +32,7 @@ use crate::{
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientFill {
-    degree: DoubleValue,
+    degree:        DoubleValue,
     gradient_stop: Vec<GradientStop>,
 }
 

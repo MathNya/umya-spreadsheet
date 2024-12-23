@@ -1,7 +1,7 @@
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Hyperlink {
-    url: Box<str>,
-    tooltip: Box<str>,
+    url:      Box<str>,
+    tooltip:  Box<str>,
     location: bool,
 }
 impl Hyperlink {

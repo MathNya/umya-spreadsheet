@@ -31,8 +31,8 @@ use crate::{
 
 #[derive(Default, Debug, Clone)]
 pub struct CustomDocumentProperty {
-    name: StringValue,
-    link_target: StringValue,
+    name:                           StringValue,
+    link_target:                    StringValue,
     custom_document_property_value: CustomDocumentPropertyValue,
 }
 

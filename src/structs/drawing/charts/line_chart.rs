@@ -31,13 +31,13 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct LineChart {
-    grouping: Grouping,
-    vary_colors: VaryColors,
+    grouping:               Grouping,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    show_marker: ShowMarker,
-    smooth: Smooth,
-    axis_id: Vec<AxisId>,
+    data_labels:            DataLabels,
+    show_marker:            ShowMarker,
+    smooth:                 Smooth,
+    axis_id:                Vec<AxisId>,
 }
 
 impl LineChart {

@@ -30,10 +30,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct FormatScheme {
-    name: StringValue,
-    fill_style_list: FillStyleList,
-    line_style_list: LineStyleList,
-    effect_style_list: EffectStyleList,
+    name:                       StringValue,
+    fill_style_list:            FillStyleList,
+    line_style_list:            LineStyleList,
+    effect_style_list:          EffectStyleList,
     background_fill_style_list: BackgroundFillStyleList,
 }
 

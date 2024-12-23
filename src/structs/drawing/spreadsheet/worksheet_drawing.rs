@@ -42,8 +42,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
-    image_collection: Vec<Image>,
-    chart_collection: Vec<Chart>,
+    image_collection:           Vec<Image>,
+    chart_collection:           Vec<Chart>,
     one_cell_anchor_collection: Vec<OneCellAnchor>,
     two_cell_anchor_collection: Vec<TwoCellAnchor>,
 }

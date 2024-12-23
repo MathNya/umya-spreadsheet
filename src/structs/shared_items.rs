@@ -22,11 +22,11 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct SharedItems {
     contains_semi_mixed_types: BooleanValue,
-    contains_string: BooleanValue,
-    contains_number: BooleanValue,
-    contains_integer: BooleanValue,
-    min_value: DoubleValue,
-    max_value: DoubleValue,
+    contains_string:           BooleanValue,
+    contains_number:           BooleanValue,
+    contains_integer:          BooleanValue,
+    min_value:                 DoubleValue,
+    max_value:                 DoubleValue,
 }
 impl SharedItems {
     #[must_use]

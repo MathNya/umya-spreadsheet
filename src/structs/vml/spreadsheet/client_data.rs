@@ -40,16 +40,16 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ClientData {
-    object_type: EnumValue<ObjectValues>,
-    move_with_cells: Option<MoveWithCells>,
-    resize_with_cells: Option<ResizeWithCells>,
-    anchor: Anchor,
-    auto_fill: Option<AutoFill>,
-    comment_row_target: Option<CommentRowTarget>,
+    object_type:           EnumValue<ObjectValues>,
+    move_with_cells:       Option<MoveWithCells>,
+    resize_with_cells:     Option<ResizeWithCells>,
+    anchor:                Anchor,
+    auto_fill:             Option<AutoFill>,
+    comment_row_target:    Option<CommentRowTarget>,
     comment_column_target: Option<CommentColumnTarget>,
-    visible: Option<Visible>,
-    clipboard_format: Option<ClipboardFormat>,
-    auto_size_picture: Option<AutoSizePicture>,
+    visible:               Option<Visible>,
+    clipboard_format:      Option<ClipboardFormat>,
+    auto_size_picture:     Option<AutoSizePicture>,
 }
 
 impl ClientData {

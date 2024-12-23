@@ -38,8 +38,8 @@ use crate::{
     },
 };
 pub struct WriterManager<'a, W: io::Seek + io::Write> {
-    files: Vec<String>,
-    arv: &'a mut zip::ZipWriter<W>,
+    files:    Vec<String>,
+    arv:      &'a mut zip::ZipWriter<W>,
     is_light: bool,
     table_no: i32,
 }

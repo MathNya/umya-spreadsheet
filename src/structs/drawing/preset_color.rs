@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetColor {
-    val: Box<str>,
+    val:   Box<str>,
     alpha: Option<Alpha>,
 }
 

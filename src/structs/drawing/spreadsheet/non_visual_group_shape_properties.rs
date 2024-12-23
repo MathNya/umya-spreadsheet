@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualGroupShapeProperties {
-    non_visual_drawing_properties: NonVisualDrawingProperties,
+    non_visual_drawing_properties:             NonVisualDrawingProperties,
     non_visual_group_shape_drawing_properties: NonVisualGroupShapeDrawingProperties,
 }
 

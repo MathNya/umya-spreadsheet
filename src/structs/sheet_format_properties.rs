@@ -23,15 +23,15 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetFormatProperties {
-    base_column_width: UInt32Value,
-    custom_height: BooleanValue,
+    base_column_width:    UInt32Value,
+    custom_height:        BooleanValue,
     default_column_width: DoubleValue,
-    default_row_height: DoubleValue,
-    dy_descent: DoubleValue,
+    default_row_height:   DoubleValue,
+    dy_descent:           DoubleValue,
     outline_level_column: ByteValue,
-    outline_level_row: ByteValue,
-    thick_bottom: BooleanValue,
-    thick_top: BooleanValue,
+    outline_level_row:    ByteValue,
+    thick_bottom:         BooleanValue,
+    thick_top:            BooleanValue,
 }
 
 impl SheetFormatProperties {

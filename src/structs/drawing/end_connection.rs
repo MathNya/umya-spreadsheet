@@ -15,7 +15,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct EndConnection {
-    id: UInt32Value,
+    id:    UInt32Value,
     index: UInt32Value,
 }
 impl EndConnection {

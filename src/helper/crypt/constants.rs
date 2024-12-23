@@ -1,5 +1,3 @@
-#![cfg_attr(any(), rustfmt::skip)]
-
 /// Constants used in the encryption process
 pub const ENCRYPTION_INFO_PREFIX: [u8; 8] = [
     0x04, 0x00, 0x04, 0x00, 
@@ -36,19 +34,21 @@ pub const BLOCK_VERIFIER_HASH_VALUE: [u8; 8] = [
 ];
 
 // Package parameters
-pub const PACKAGE_BLOCK_SIZE: usize = 16;
+pub const PACKAGE_BLOCK_SIZE: usize      = 16;
 pub const PACKAGE_CIPHER_ALGORITHM: &str = "AES";
-pub const PACKAGE_CIPHER_CHAINING: &str = "ChainingModeCBC";
-pub const PACKAGE_HASH_ALGORITHM: &str = "SHA512";
-pub const PACKAGE_HASH_SIZE: usize = 64;
-pub const PACKAGE_KEY_BITS: usize = PACKAGE_KEY_LENGTH * 8;
-pub const PACKAGE_KEY_LENGTH: usize = 32;
+pub const PACKAGE_CIPHER_CHAINING: &str  = "ChainingModeCBC";
+pub const PACKAGE_HASH_ALGORITHM: &str   = "SHA512";
+pub const PACKAGE_HASH_SIZE: usize       = 64;
+pub const PACKAGE_KEY_BITS: usize        = PACKAGE_KEY_LENGTH * 8;
+pub const PACKAGE_KEY_LENGTH: usize      = 32;
 
 // Key parameters
-pub const KEY_BITLENGTH: usize = 256;
-pub const KEY_BLOCK_SIZE: usize = 16;
-pub const KEY_CIPHER_ALGORITHM: &str = "AES";
-pub const KEY_CIPHER_CHAINING: &str = "ChainingModeCBC";
-pub const KEY_HASH_ALGORITHM: &str = "SHA-512";
-pub const KEY_HASH_SIZE: usize = 64;
-pub const KEY_SPIN_COUNT: usize = 100_000;
+pub const KEY_BITLENGTH: usize           = 256;
+pub const KEY_BLOCK_SIZE: usize          = 16;
+pub const KEY_CIPHER_ALGORITHM: &str     = "AES";
+pub const KEY_CIPHER_CHAINING: &str      = "ChainingModeCBC";
+pub const KEY_HASH_ALGORITHM: &str       = "SHA-512";
+pub const KEY_HASH_SIZE: usize           = 64;
+pub const KEY_SPIN_COUNT: usize          = 100_000;
+
+// Ths file is ignored by rustfmt.

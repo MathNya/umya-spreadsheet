@@ -31,8 +31,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Shape3DType {
     preset_material: EnumValue<PresetMaterialTypeValues>,
-    bevel_top: Option<Box<BevelTop>>,
-    bevel_bottom: Option<Box<BevelBottom>>,
+    bevel_top:       Option<Box<BevelTop>>,
+    bevel_bottom:    Option<Box<BevelBottom>>,
 }
 
 impl Shape3DType {

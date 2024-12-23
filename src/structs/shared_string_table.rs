@@ -29,8 +29,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringTable {
     shared_string_item: Vec<SharedStringItem>,
-    map: HashMap<u64, usize>,
-    regist_count: usize,
+    map:                HashMap<u64, usize>,
+    regist_count:       usize,
 }
 
 impl SharedStringTable {

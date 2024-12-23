@@ -65,22 +65,26 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                             b"name" => {
                                 name = attr_val;
                             }
-                            b"showFirstColumn" =>
+                            b"showFirstColumn" => {
                                 if attr_val == "1" {
                                     show_first_col = ShowColumn::Show;
-                                },
-                            b"showLastColumn" =>
+                                }
+                            }
+                            b"showLastColumn" => {
                                 if attr_val == "1" {
                                     show_last_col = ShowColumn::Show;
-                                },
-                            b"showRowStripes" =>
+                                }
+                            }
+                            b"showRowStripes" => {
                                 if attr_val == "1" {
                                     show_row_stripes = ShowStripes::Show;
-                                },
-                            b"showColumnStripes" =>
+                                }
+                            }
+                            b"showColumnStripes" => {
                                 if attr_val == "1" {
                                     show_col_stripes = ShowStripes::Show;
-                                },
+                                }
+                            }
                             _ => {}
                         }
                     }
@@ -106,7 +110,7 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
             },
             Ok(Event::Text(e)) => string_value = e.unescape().unwrap().to_string(),
             Ok(Event::Start(ref e)) => match e.name().into_inner() {
-                b"table" =>
+                b"table" => {
                     for attr in e.attributes().with_checks(false).flatten() {
                         let attr_val = get_attribute_value(&attr)?;
                         match attr.key.0 {
@@ -130,7 +134,8 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                             }
                             _ => {}
                         }
-                    },
+                    }
+                }
                 b"tableColumn" => {
                     table_column = TableColumn::default();
                     for attr in e.attributes().with_checks(false).flatten() {

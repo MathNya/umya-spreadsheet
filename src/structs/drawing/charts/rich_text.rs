@@ -26,8 +26,8 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct RichText {
     body_properties: BodyProperties,
-    list_style: ListStyle,
-    paragraph: Vec<Paragraph>,
+    list_style:      ListStyle,
+    paragraph:       Vec<Paragraph>,
 }
 
 impl RichText {

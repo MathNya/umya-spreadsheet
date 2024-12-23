@@ -31,8 +31,8 @@ use crate::{
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct PatternFill {
     pub(crate) pattern_type: EnumValue<PatternValues>,
-    foreground_color: Option<Box<Color>>,
-    background_color: Option<Box<Color>>,
+    foreground_color:        Option<Box<Color>>,
+    background_color:        Option<Box<Color>>,
 }
 
 impl PatternFill {

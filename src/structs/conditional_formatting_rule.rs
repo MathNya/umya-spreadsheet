@@ -39,23 +39,23 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ConditionalFormattingRule {
-    r#type: EnumValue<ConditionalFormatValues>,
-    operator: EnumValue<ConditionalFormattingOperatorValues>,
-    text: StringValue,
-    priority: Int32Value,
-    percent: BooleanValue,
-    bottom: BooleanValue,
-    rank: UInt32Value,
-    stop_if_true: BooleanValue,
-    std_dev: Int32Value,
+    r#type:        EnumValue<ConditionalFormatValues>,
+    operator:      EnumValue<ConditionalFormattingOperatorValues>,
+    text:          StringValue,
+    priority:      Int32Value,
+    percent:       BooleanValue,
+    bottom:        BooleanValue,
+    rank:          UInt32Value,
+    stop_if_true:  BooleanValue,
+    std_dev:       Int32Value,
     above_average: BooleanValue,
     equal_average: BooleanValue,
-    time_period: EnumValue<TimePeriodValues>,
-    style: Option<Box<Style>>,
-    color_scale: Option<ColorScale>,
-    data_bar: Option<DataBar>,
-    icon_set: Option<IconSet>,
-    formula: Option<Box<Formula>>,
+    time_period:   EnumValue<TimePeriodValues>,
+    style:         Option<Box<Style>>,
+    color_scale:   Option<ColorScale>,
+    data_bar:      Option<DataBar>,
+    icon_set:      Option<IconSet>,
+    formula:       Option<Box<Formula>>,
 }
 
 impl ConditionalFormattingRule {

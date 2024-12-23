@@ -25,7 +25,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualConnectorShapeDrawingProperties {
     start_connection: Option<Box<StartConnection>>,
-    end_connection: Option<Box<EndConnection>>,
+    end_connection:   Option<Box<EndConnection>>,
 }
 
 impl NonVisualConnectorShapeDrawingProperties {

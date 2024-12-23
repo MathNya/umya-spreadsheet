@@ -28,11 +28,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
-    anchor: Anchor,
+    anchor:                      Anchor,
     non_visual_shape_properties: NonVisualShapeProperties,
-    shape_properties: ShapeProperties,
-    shape_style: Option<Box<ShapeStyle>>,
-    text_body: Option<Box<TextBody>>,
+    shape_properties:            ShapeProperties,
+    shape_style:                 Option<Box<ShapeStyle>>,
+    text_body:                   Option<Box<TextBody>>,
 }
 
 impl Shape {

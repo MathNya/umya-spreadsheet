@@ -30,10 +30,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform {
-    offset: Offset,
-    extents: Extents,
-    rotation: Int32Value,
-    vertical_flip: BooleanValue,
+    offset:          Offset,
+    extents:         Extents,
+    rotation:        Int32Value,
+    vertical_flip:   BooleanValue,
     horizontal_flip: BooleanValue,
 }
 

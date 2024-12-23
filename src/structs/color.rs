@@ -82,15 +82,15 @@ const INDEXED_COLORS: &[&str] = &[
     "FF993300", //  Standard Colour #53
     "FF993366", //  Standard Colour #54
     "FF333399", //  Standard Colour #55
-    "FF333333", //  Standard Colour #56
+    "FF333333", // Standard Colour #56
 ];
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Color {
-    indexed: UInt32Value,
+    indexed:     UInt32Value,
     theme_index: UInt32Value,
-    argb: StringValue,
-    tint: DoubleValue,
+    argb:        StringValue,
+    tint:        DoubleValue,
 }
 impl Color {
     // Colors

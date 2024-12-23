@@ -17,8 +17,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Stroke {
-    color: StringValue,
-    color_2: StringValue,
+    color:      StringValue,
+    color_2:    StringValue,
     dash_style: StringValue,
 }
 

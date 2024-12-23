@@ -35,9 +35,9 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
     coordinate: Coordinate,
-    author: Box<str>,
-    text: RichText,
-    shape: Shape,
+    author:     Box<str>,
+    text:       RichText,
+    shape:      Shape,
 }
 
 impl Comment {

@@ -19,7 +19,7 @@ use crate::{
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {
-    worksheet_file: RawFile,
+    worksheet_file:     RawFile,
     relationships_list: Vec<RawRelationships>,
 }
 impl RawWorksheet {

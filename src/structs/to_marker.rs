@@ -18,9 +18,9 @@ use crate::writer::driver::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ToMarker {
-    col: usize,
+    col:     usize,
     col_off: usize,
-    row: usize,
+    row:     usize,
     row_off: usize,
 }
 impl ToMarker {

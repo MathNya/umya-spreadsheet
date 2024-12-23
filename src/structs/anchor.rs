@@ -1,12 +1,12 @@
 #[derive(Default, Debug, Clone)]
 pub struct Anchor {
-    left_column: u32,
-    left_offset: u32,
-    top_row: u32,
-    top_offset: u32,
-    right_column: u32,
-    right_offset: u32,
-    bottom_row: u32,
+    left_column:   u32,
+    left_offset:   u32,
+    top_row:       u32,
+    top_offset:    u32,
+    right_column:  u32,
+    right_offset:  u32,
+    bottom_row:    u32,
     bottom_offset: u32,
 }
 

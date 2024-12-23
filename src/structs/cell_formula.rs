@@ -44,18 +44,18 @@ use crate::{
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellFormula {
-    bx: BooleanValue,
-    data_table_2d: BooleanValue,
+    bx:             BooleanValue,
+    data_table_2d:  BooleanValue,
     data_table_row: BooleanValue,
-    formula_type: EnumValue<CellFormulaValues>,
+    formula_type:   EnumValue<CellFormulaValues>,
     input_1deleted: BooleanValue,
     input_2deleted: BooleanValue,
-    r1: StringValue,
-    r2: StringValue,
-    reference: StringValue,
-    shared_index: UInt32Value,
-    text: StringValue,
-    text_view: StringValue,
+    r1:             StringValue,
+    r2:             StringValue,
+    reference:      StringValue,
+    shared_index:   UInt32Value,
+    text:           StringValue,
+    text_view:      StringValue,
 }
 impl CellFormula {
     #[inline]

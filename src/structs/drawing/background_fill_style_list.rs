@@ -23,7 +23,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct BackgroundFillStyleList {
-    solid_fill: Vec<SolidFill>,
+    solid_fill:               Vec<SolidFill>,
     gradient_fill_collection: Vec<GradientFill>,
 }
 

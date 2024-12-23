@@ -21,9 +21,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct FromMarker {
-    col: usize,
+    col:     usize,
     col_off: usize,
-    row: usize,
+    row:     usize,
     row_off: usize,
 }
 

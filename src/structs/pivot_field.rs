@@ -19,7 +19,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct PivotField {
     data_field: BooleanValue,
-    show_all: BooleanValue,
+    show_all:   BooleanValue,
 }
 impl PivotField {
     #[inline]

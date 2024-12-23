@@ -26,19 +26,19 @@ use crate::{
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorkbookProtection {
-    workbook_algorithm_name: StringValue,
-    workbook_hash_value: StringValue,
-    workbook_salt_value: StringValue,
-    workbook_spin_count: UInt32Value,
-    workbook_password: StringValue,
+    workbook_algorithm_name:  StringValue,
+    workbook_hash_value:      StringValue,
+    workbook_salt_value:      StringValue,
+    workbook_spin_count:      UInt32Value,
+    workbook_password:        StringValue,
     revisions_algorithm_name: StringValue,
-    revisions_hash_value: StringValue,
-    revisions_salt_value: StringValue,
-    revisions_spin_count: UInt32Value,
-    revisions_password: StringValue,
-    lock_revision: BooleanValue,
-    lock_structure: BooleanValue,
-    lock_windows: BooleanValue,
+    revisions_hash_value:     StringValue,
+    revisions_salt_value:     StringValue,
+    revisions_spin_count:     UInt32Value,
+    revisions_password:       StringValue,
+    lock_revision:            BooleanValue,
+    lock_structure:           BooleanValue,
+    lock_windows:             BooleanValue,
 }
 impl WorkbookProtection {
     #[inline]

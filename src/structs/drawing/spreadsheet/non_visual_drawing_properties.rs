@@ -29,8 +29,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualDrawingProperties {
-    id: UInt32Value,
-    name: StringValue,
+    id:     UInt32Value,
+    name:   StringValue,
     hidden: BooleanValue,
 }
 

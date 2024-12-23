@@ -38,15 +38,15 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotCacheDefinition {
-    id: StringValue,
-    refreshed_by: StringValue,
-    refreshed_date: DoubleValue,
-    created_version: ByteValue,
-    refreshed_version: ByteValue,
+    id:                      StringValue,
+    refreshed_by:            StringValue,
+    refreshed_date:          DoubleValue,
+    created_version:         ByteValue,
+    refreshed_version:       ByteValue,
     min_refreshable_version: ByteValue,
-    record_count: UInt32Value,
-    cache_source: CacheSource,
-    cache_fields: CacheFields,
+    record_count:            UInt32Value,
+    cache_source:            CacheSource,
+    cache_fields:            CacheFields,
 }
 
 impl PivotCacheDefinition {

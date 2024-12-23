@@ -26,11 +26,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Legend {
-    legend_position: LegendPosition,
-    layout: Option<Box<Layout>>,
-    overlay: Overlay,
+    legend_position:  LegendPosition,
+    layout:           Option<Box<Layout>>,
+    overlay:          Overlay,
     shape_properties: Option<Box<ShapeProperties>>,
-    text_properties: Option<Box<TextProperties>>,
+    text_properties:  Option<Box<TextProperties>>,
 }
 
 impl Legend {

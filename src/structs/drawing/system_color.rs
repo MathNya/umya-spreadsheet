@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct SystemColor {
-    val: EnumValue<SystemColorValues>,
+    val:        EnumValue<SystemColorValues>,
     last_color: StringValue,
 }
 

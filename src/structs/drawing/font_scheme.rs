@@ -27,7 +27,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct FontScheme {
-    name: StringValue,
+    name:       StringValue,
     major_font: FontCollectionType,
     minor_font: FontCollectionType,
 }

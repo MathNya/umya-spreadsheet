@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct SideWall {
-    thickness: Option<Thickness>,
+    thickness:        Option<Thickness>,
     shape_properties: Option<ShapeProperties>,
 }
 

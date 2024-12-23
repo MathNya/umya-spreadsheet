@@ -27,7 +27,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectStyle {
-    effect_list: Option<Box<EffectList>>,
+    effect_list:   Option<Box<EffectList>>,
     scene_3d_type: Option<Box<Scene3DType>>,
     shape_3d_type: Option<Box<Shape3DType>>,
 }

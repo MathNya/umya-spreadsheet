@@ -10,7 +10,7 @@ use crate::{
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct ColumnReference {
-    num: u32,
+    num:     u32,
     is_lock: bool,
 }
 
@@ -18,7 +18,7 @@ impl Default for ColumnReference {
     #[inline]
     fn default() -> Self {
         Self {
-            num: 1,
+            num:     1,
             is_lock: false,
         }
     }

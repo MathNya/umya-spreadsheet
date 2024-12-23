@@ -21,7 +21,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Run {
-    text: Box<str>,
+    text:           Box<str>,
     run_properties: RunProperties,
 }
 

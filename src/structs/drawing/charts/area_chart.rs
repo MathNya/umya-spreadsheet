@@ -29,11 +29,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct AreaChart {
-    grouping: Grouping,
-    vary_colors: VaryColors,
+    grouping:               Grouping,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    axis_id: Vec<AxisId>,
+    data_labels:            DataLabels,
+    axis_id:                Vec<AxisId>,
 }
 
 impl AreaChart {

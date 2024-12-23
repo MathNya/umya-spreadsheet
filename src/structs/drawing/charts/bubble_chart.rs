@@ -30,12 +30,12 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct BubbleChart {
-    vary_colors: VaryColors,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    bubble_scale: BubbleScale,
-    show_negative_bubbles: ShowNegativeBubbles,
-    axis_id: Vec<AxisId>,
+    data_labels:            DataLabels,
+    bubble_scale:           BubbleScale,
+    show_negative_bubbles:  ShowNegativeBubbles,
+    axis_id:                Vec<AxisId>,
 }
 
 impl BubbleChart {

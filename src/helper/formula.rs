@@ -59,16 +59,16 @@ pub enum FormulaTokenSubTypes {
 
 #[derive(Clone, Debug)]
 pub struct FormulaToken {
-    value: StringValue,
-    token_type: FormulaTokenTypes,
+    value:          StringValue,
+    token_type:     FormulaTokenTypes,
     token_sub_type: FormulaTokenSubTypes,
 }
 impl Default for FormulaToken {
     #[inline]
     fn default() -> Self {
         Self {
-            value: StringValue::default(),
-            token_type: FormulaTokenTypes::Unknown,
+            value:          StringValue::default(),
+            token_type:     FormulaTokenTypes::Unknown,
             token_sub_type: FormulaTokenSubTypes::Nothing,
         }
     }

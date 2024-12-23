@@ -22,9 +22,9 @@ use crate::writer::driver::{
 
 #[derive(Clone, Default, Debug)]
 pub struct FontCollectionType {
-    latin_font: TextFontType,
-    east_asian_font: TextFontType,
-    complex_script_font: TextFontType,
+    latin_font:             TextFontType,
+    east_asian_font:        TextFontType,
+    complex_script_font:    TextFontType,
     supplemental_font_list: Vec<SupplementalFont>,
 }
 impl FontCollectionType {

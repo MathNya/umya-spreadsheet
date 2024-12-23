@@ -25,9 +25,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectList {
-    glow: Option<Box<Glow>>,
+    glow:         Option<Box<Glow>>,
     outer_shadow: Option<Box<OuterShadow>>,
-    soft_edge: Option<Box<SoftEdge>>,
+    soft_edge:    Option<Box<SoftEdge>>,
 }
 
 impl EffectList {

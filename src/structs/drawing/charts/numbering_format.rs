@@ -18,7 +18,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberingFormat {
-    format_code: StringValue,
+    format_code:   StringValue,
     source_linked: BooleanValue,
 }
 impl NumberingFormat {

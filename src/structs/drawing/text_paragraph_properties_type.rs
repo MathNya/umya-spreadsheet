@@ -35,11 +35,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct TextParagraphPropertiesType {
-    right_to_left: BooleanValue,
-    alignment: EnumValue<TextAlignmentTypeValues>,
-    font_alignment: EnumValue<TextFontAlignmentValues>,
-    space_before: Option<SpaceBefore>,
-    space_after: Option<SpaceAfter>,
+    right_to_left:          BooleanValue,
+    alignment:              EnumValue<TextAlignmentTypeValues>,
+    font_alignment:         EnumValue<TextFontAlignmentValues>,
+    space_before:           Option<SpaceBefore>,
+    space_after:            Option<SpaceAfter>,
     default_run_properties: Option<Box<RunProperties>>,
 }
 impl TextParagraphPropertiesType {

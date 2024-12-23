@@ -28,10 +28,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct PieChart {
-    vary_colors: VaryColors,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    first_slice_angle: FirstSliceAngle,
+    data_labels:            DataLabels,
+    first_slice_angle:      FirstSliceAngle,
 }
 
 impl PieChart {

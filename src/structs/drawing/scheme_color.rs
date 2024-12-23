@@ -29,15 +29,15 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct SchemeColor {
-    val: EnumValue<SchemeColorValues>,
-    luminance: Option<PercentageType>,
-    luminance_modulation: Option<PercentageType>,
-    luminance_offset: Option<PercentageType>,
-    saturation: Option<PercentageType>,
+    val:                   EnumValue<SchemeColorValues>,
+    luminance:             Option<PercentageType>,
+    luminance_modulation:  Option<PercentageType>,
+    luminance_offset:      Option<PercentageType>,
+    saturation:            Option<PercentageType>,
     saturation_modulation: Option<PercentageType>,
-    shade: Option<PositiveFixedPercentageType>,
-    alpha: Option<PositiveFixedPercentageType>,
-    tint: Option<PositiveFixedPercentageType>,
+    shade:                 Option<PositiveFixedPercentageType>,
+    alpha:                 Option<PositiveFixedPercentageType>,
+    tint:                  Option<PositiveFixedPercentageType>,
 }
 
 impl SchemeColor {

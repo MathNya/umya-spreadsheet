@@ -31,14 +31,14 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    transform2d: Option<Box<Transform2D>>,
+    transform2d:     Option<Box<Transform2D>>,
     preset_geometry: PresetGeometry,
-    blip_fill: Option<Box<BlipFill>>,
-    solid_fill: Option<Box<SolidFill>>,
-    outline: Option<Box<Outline>>,
-    effect_list: Option<Box<EffectList>>,
-    no_fill: Option<NoFill>,
-    extension_list: Option<ExtensionList>,
+    blip_fill:       Option<Box<BlipFill>>,
+    solid_fill:      Option<Box<SolidFill>>,
+    outline:         Option<Box<Outline>>,
+    effect_list:     Option<Box<EffectList>>,
+    no_fill:         Option<NoFill>,
+    extension_list:  Option<ExtensionList>,
 }
 impl ShapeProperties {
     #[inline]

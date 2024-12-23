@@ -29,11 +29,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct RadarChart {
-    radar_style: RadarStyle,
-    vary_colors: VaryColors,
+    radar_style:            RadarStyle,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    axis_id: Vec<AxisId>,
+    data_labels:            DataLabels,
+    axis_id:                Vec<AxisId>,
 }
 
 impl RadarChart {

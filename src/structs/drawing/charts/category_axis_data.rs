@@ -26,7 +26,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct CategoryAxisData {
     string_reference: Option<StringReference>,
-    string_literal: Option<StringLiteral>,
+    string_literal:   Option<StringLiteral>,
 }
 
 impl CategoryAxisData {

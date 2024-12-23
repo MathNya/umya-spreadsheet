@@ -39,16 +39,16 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Stylesheet {
-    numbering_formats: NumberingFormats,
-    fonts: Fonts,
-    fills: Fills,
-    borders: BordersCrate,
-    cell_style_formats: CellStyleFormats,
-    cell_formats: CellFormats,
-    cell_styles: CellStyles,
+    numbering_formats:    NumberingFormats,
+    fonts:                Fonts,
+    fills:                Fills,
+    borders:              BordersCrate,
+    cell_style_formats:   CellStyleFormats,
+    cell_formats:         CellFormats,
+    cell_styles:          CellStyles,
     differential_formats: DifferentialFormats,
-    colors: Colors,
-    maked_style_list: Vec<Style>,
+    colors:               Colors,
+    maked_style_list:     Vec<Style>,
 }
 
 impl Stylesheet {

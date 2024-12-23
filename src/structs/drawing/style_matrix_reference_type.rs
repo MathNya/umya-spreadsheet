@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct StyleMatrixReferenceType {
-    index: Box<str>,
+    index:        Box<str>,
     scheme_color: Option<Box<SchemeColor>>,
 }
 

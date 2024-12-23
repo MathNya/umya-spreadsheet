@@ -29,15 +29,15 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct OuterShadow {
-    blur_radius: StringValue,
-    alignment: StringValue,
-    horizontal_ratio: StringValue,
-    vertical_ratio: StringValue,
-    direction: StringValue,
-    distance: StringValue,
-    rotate_with_shape: StringValue,
-    preset_color: Option<Box<PresetColor>>,
-    scheme_color: Option<Box<SchemeColor>>,
+    blur_radius:         StringValue,
+    alignment:           StringValue,
+    horizontal_ratio:    StringValue,
+    vertical_ratio:      StringValue,
+    direction:           StringValue,
+    distance:            StringValue,
+    rotate_with_shape:   StringValue,
+    preset_color:        Option<Box<PresetColor>>,
+    scheme_color:        Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 

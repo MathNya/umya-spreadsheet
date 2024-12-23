@@ -33,19 +33,19 @@ use crate::{
 /// The starting point of all struct.
 #[derive(Clone, Default, Debug)]
 pub struct Spreadsheet {
-    properties: Properties,
+    properties:            Properties,
     work_sheet_collection: Vec<Worksheet>,
-    macros_code: Option<Vec<u8>>,
-    code_name: StringValue,
-    ribbon_xml_data: StringValue,
-    theme: Theme,
-    stylesheet: Stylesheet,
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
-    workbook_view: WorkbookView,
-    backup_context_types: Vec<(Box<str>, Box<str>)>,
-    pivot_caches: Vec<(Box<str>, Box<str>, Box<str>)>,
-    workbook_protection: Option<Box<WorkbookProtection>>,
-    defined_names: Vec<DefinedName>,
+    macros_code:           Option<Vec<u8>>,
+    code_name:             StringValue,
+    ribbon_xml_data:       StringValue,
+    theme:                 Theme,
+    stylesheet:            Stylesheet,
+    shared_string_table:   Arc<RwLock<SharedStringTable>>,
+    workbook_view:         WorkbookView,
+    backup_context_types:  Vec<(Box<str>, Box<str>)>,
+    pivot_caches:          Vec<(Box<str>, Box<str>, Box<str>)>,
+    workbook_protection:   Option<Box<WorkbookProtection>>,
+    defined_names:         Vec<DefinedName>,
 }
 
 impl Spreadsheet {

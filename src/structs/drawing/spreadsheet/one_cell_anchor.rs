@@ -30,10 +30,10 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct OneCellAnchor {
     from_marker: MarkerType,
-    extent: Extent,
+    extent:      Extent,
     group_shape: Option<Box<GroupShape>>,
-    shape: Option<Box<Shape>>,
-    picture: Option<Box<Picture>>,
+    shape:       Option<Box<Shape>>,
+    picture:     Option<Box<Picture>>,
 }
 
 impl OneCellAnchor {

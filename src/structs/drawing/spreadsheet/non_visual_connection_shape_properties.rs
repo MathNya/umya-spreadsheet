@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualConnectionShapeProperties {
-    non_visual_drawing_properties: NonVisualDrawingProperties,
+    non_visual_drawing_properties:                 NonVisualDrawingProperties,
     non_visual_connector_shape_drawing_properties: NonVisualConnectorShapeDrawingProperties,
 }
 

@@ -33,7 +33,7 @@ use crate::{
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
-    file_target: StringValue,
+    file_target:       StringValue,
     relationship_list: Vec<RawRelationship>,
 }
 

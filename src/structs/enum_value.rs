@@ -4,7 +4,7 @@ use super::EnumTrait;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct EnumValue<T: EnumTrait + FromStr> {
-    value: Option<T>,
+    value:         Option<T>,
     value_default: T,
 }
 

@@ -1,8 +1,8 @@
 #[derive(Clone, Default, Debug)]
 pub struct MediaObject {
     title: Box<str>,
-    name: Box<str>,
-    data: Vec<u8>,
+    name:  Box<str>,
+    data:  Vec<u8>,
 }
 impl MediaObject {
     #[inline]

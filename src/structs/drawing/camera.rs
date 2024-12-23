@@ -29,7 +29,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Camera {
-    preset: EnumValue<PresetCameraValues>,
+    preset:   EnumValue<PresetCameraValues>,
     rotation: Option<Box<Rotation>>,
 }
 

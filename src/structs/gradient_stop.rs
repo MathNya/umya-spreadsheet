@@ -30,7 +30,7 @@ use crate::{
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct GradientStop {
     position: DoubleValue,
-    color: Color,
+    color:    Color,
 }
 
 impl GradientStop {

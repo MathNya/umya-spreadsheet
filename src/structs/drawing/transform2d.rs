@@ -28,13 +28,13 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform2D {
-    offset: Point2DType,
-    extents: PositiveSize2DType,
-    child_offset: Option<Box<Point2DType>>,
+    offset:        Point2DType,
+    extents:       PositiveSize2DType,
+    child_offset:  Option<Box<Point2DType>>,
     child_extents: Option<Box<PositiveSize2DType>>,
-    rot: StringValue,
-    flip_v: StringValue,
-    flip_h: StringValue,
+    rot:           StringValue,
+    flip_v:        StringValue,
+    flip_h:        StringValue,
 }
 
 impl Transform2D {

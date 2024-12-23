@@ -31,10 +31,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ParagraphProperties {
-    right_to_left: StringValue,
-    alignment: EnumValue<TextAlignmentTypeValues>,
+    right_to_left:          StringValue,
+    alignment:              EnumValue<TextAlignmentTypeValues>,
     default_run_properties: Option<Box<RunProperties>>,
-    line_spacing: Option<LineSpacing>,
+    line_spacing:           Option<LineSpacing>,
 }
 
 impl ParagraphProperties {

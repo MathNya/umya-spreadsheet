@@ -24,7 +24,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetGeometry {
-    geometry: Box<str>,
+    geometry:          Box<str>,
     adjust_value_list: AdjustValueList,
 }
 

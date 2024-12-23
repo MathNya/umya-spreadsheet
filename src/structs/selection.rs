@@ -22,8 +22,8 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Selection {
-    pane: EnumValue<PaneValues>,
-    active_cell: Option<Coordinate>,
+    pane:                   EnumValue<PaneValues>,
+    active_cell:            Option<Coordinate>,
     sequence_of_references: SequenceOfReferences,
 }
 

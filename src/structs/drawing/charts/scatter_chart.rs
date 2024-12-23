@@ -29,11 +29,11 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ScatterChart {
-    scatter_style: ScatterStyle,
-    vary_colors: VaryColors,
+    scatter_style:          ScatterStyle,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    axis_id: Vec<AxisId>,
+    data_labels:            DataLabels,
+    axis_id:                Vec<AxisId>,
 }
 
 impl ScatterChart {

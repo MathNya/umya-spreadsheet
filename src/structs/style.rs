@@ -77,13 +77,13 @@ use crate::structs::{
 /// ```
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Style {
-    font: Option<Box<Font>>,
-    fill: Option<Box<Fill>>,
-    borders: Option<Box<Borders>>,
-    alignment: Option<Alignment>,
+    font:             Option<Box<Font>>,
+    fill:             Option<Box<Fill>>,
+    borders:          Option<Box<Borders>>,
+    alignment:        Option<Alignment>,
     numbering_format: Option<Box<NumberingFormat>>,
-    format_id: UInt32Value,
-    protection: Option<Protection>,
+    format_id:        UInt32Value,
+    protection:       Option<Protection>,
 }
 impl Style {
     #[inline]

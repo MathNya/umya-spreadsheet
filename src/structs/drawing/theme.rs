@@ -46,7 +46,7 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Theme {
-    name: StringValue,
+    name:           StringValue,
     theme_elements: ThemeElements,
 }
 

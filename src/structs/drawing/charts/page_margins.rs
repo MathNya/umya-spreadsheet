@@ -16,9 +16,9 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct PageMargins {
     bottom: DoubleValue,
-    left: DoubleValue,
-    right: DoubleValue,
-    top: DoubleValue,
+    left:   DoubleValue,
+    right:  DoubleValue,
+    top:    DoubleValue,
     header: DoubleValue,
     footer: DoubleValue,
 }

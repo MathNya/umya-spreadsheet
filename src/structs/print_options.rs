@@ -18,7 +18,7 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct PrintOptions {
     horizontal_centered: BooleanValue,
-    vertical_centered: BooleanValue,
+    vertical_centered:   BooleanValue,
 }
 
 impl PrintOptions {

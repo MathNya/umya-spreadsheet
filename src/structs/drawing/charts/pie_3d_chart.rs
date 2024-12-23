@@ -27,9 +27,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Pie3DChart {
-    vary_colors: VaryColors,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
+    data_labels:            DataLabels,
 }
 
 impl Pie3DChart {
