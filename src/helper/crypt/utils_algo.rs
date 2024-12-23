@@ -305,8 +305,11 @@ pub(crate) fn build_encryption_info(
     write_end_tag(&mut writer, "keyEncryptors");
     write_end_tag(&mut writer, "encryption");
 
-    let result = writer.into_inner().into_inner().clone();
+    let data = writer.into_inner().into_inner();
 
-    // Combine the constants::ENCRYPTION_INFO_PREFIX and the XML data
-    [constants::ENCRYPTION_INFO_PREFIX.to_vec(), result].concat()
+    let mut result = Vec::with_capacity(constants::ENCRYPTION_INFO_PREFIX.len() + data.len());
+    result.extend_from_slice(&constants::ENCRYPTION_INFO_PREFIX);
+    result.extend(data);
+
+    result
 }
