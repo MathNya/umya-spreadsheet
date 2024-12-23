@@ -1,3 +1,59 @@
+//! Password-based key derivation and cryptographic hash functions for Excel
+//! protection.
+//!
+//! This module implements specialized cryptographic operations following the
+//! Office Open XML standard for document protection, including:
+//!
+//! - HMAC-SHA512 generation
+//! - Initialization Vector (IV) creation
+//! - Password-to-key derivation
+//! - Password hashing with salt and iteration count
+//!
+//! # Key Features
+//!
+//! - UTF-16LE password encoding for Microsoft Office compatibility
+//! - Configurable key strengthening through iteration counts
+//! - Salt-based key derivation
+//! - Flexible IV generation with block size adjustment
+//!
+//! # Examples
+//!
+//! Generate an HMAC:
+//! ```
+//! use crate::crypto::hmac;
+//!
+//! let key = b"secret_key";
+//! let data = [b"data1", b"data2"];
+//! let mac = hmac(key, &data);
+//! ```
+//!
+//! Create a key from password:
+//! ```
+//! use crate::crypto::convert_password_to_key;
+//!
+//! let password = "MyPassword123";
+//! let salt = vec![1, 2, 3, 4];
+//! let key = convert_password_to_key(
+//!     password, &salt, 100_000,    // spin count
+//!     256,        // key bits
+//!     &[0u8; 16], // block key
+//! );
+//! ```
+//!
+//! # Implementation Details
+//!
+//! - Uses SHA-512 for all hashing operations
+//! - HMAC implementation via the `hmac` crate
+//! - Automatic handling of key/IV size requirements
+//! - Consistent password encoding for Office compatibility
+//!
+//! # Security Considerations
+//!
+//! - Implements industry-standard key derivation practices
+//! - Uses cryptographically secure hash functions
+//! - Supports configurable iteration counts for key strengthening
+//! - Properly handles salt integration
+
 use std::cmp::Ordering;
 
 use hmac::{

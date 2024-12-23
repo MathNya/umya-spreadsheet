@@ -1,3 +1,55 @@
+//! Cryptographic operations for Excel document protection and encryption.
+//!
+//! This module implements the Office Open XML (OOXML) encryption standard for
+//! Excel workbooks, providing functionality for:
+//!
+//! - AES-256-CBC encryption and decryption of package data
+//! - XML-based encryption info generation
+//! - Cryptographic utility functions
+//!
+//! # Architecture
+//!
+//! The module is structured around three main components:
+//!
+//! 1. Package encryption/decryption (`crypt_package`)
+//! 2. Low-level AES operations (`crypt`)
+//! 3. Encryption info XML generation (`build_encryption_info`)
+//!
+//! # Examples
+//!
+//! ```
+//! use crate::helper::crypt;
+//!
+//! // Encrypt package data
+//! let encrypted = crypt::crypt_package(true, 16, &salt, &key, &input_data);
+//!
+//! // Perform raw AES-256-CBC encryption
+//! let result = crypt::crypt(true, &key, &iv, &data).expect("Encryption failed");
+//! ```
+//!
+//! # Implementation Details
+//!
+//! - Uses AES-256 in CBC mode for encryption/decryption
+//! - Implements OOXML standard chunk-based processing
+//! - Supports both encryption and decryption operations
+//! - Handles padding and initialization vectors
+//! - Generates standard-compliant encryption info XML
+//!
+//! # Dependencies
+//!
+//! - `aes`: AES block cipher implementation
+//! - `cbc`: CBC mode encryption
+//! - `base64`: Encoding of binary data
+//! - `quick-xml`: XML generation
+//! - `byteorder`: Byte order handling
+//!
+//! # Security Considerations
+//!
+//! - Uses cryptographically secure random values for salts
+//! - Implements standard OOXML encryption specifications
+//! - Properly handles encryption padding
+//! - Validates key sizes and parameters
+
 use std::io;
 
 use aes::{

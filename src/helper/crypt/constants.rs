@@ -1,3 +1,32 @@
+//! Cryptographic constants and parameters for Excel document encryption.
+//!
+//! This module defines the standard constants used in the Office Open XML (OOXML)
+//! encryption process, including:
+//!
+//! - Encryption format version identifiers
+//! - Block keys for various encryption stages
+//! - Package encryption parameters
+//! - Key derivation constants
+//!
+//! # Implementation Details
+//!
+//! - Uses AES-256 for encryption
+//! - Implements CBC mode for block chaining
+//! - SHA-512 for hashing operations
+//! - 100,000 iterations for key derivation
+//! - 4096-byte chunks for package encryption
+//!
+//! # Standards Compliance
+//!
+//! These constants comply with the OOXML standard for document encryption
+//! and are compatible with Microsoft Office encryption implementations.
+//!
+//! # Note
+//!
+//! These constants are essential for maintaining compatibility with the
+//! Office Open XML encryption standard and should not be modified unless
+//! the standard changes.
+
 /// Constants used in the encryption process
 pub const ENCRYPTION_INFO_PREFIX: [u8; 8] = [
     0x04, 0x00, 0x04, 0x00, 

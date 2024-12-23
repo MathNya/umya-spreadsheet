@@ -1,3 +1,61 @@
+//! Cryptographic utility functions and macros for secure operations.
+//!
+//! This module provides essential cryptographic utilities including:
+//! - Random byte generation
+//! - Buffer concatenation
+//! - SHA-512 hashing
+//!
+//! # Features
+//!
+//! - Secure random number generation using the `rand` crate
+//! - Efficient buffer concatenation with pre-allocation
+//! - SHA-512 hash computation using the `sha2` crate
+//!
+//! # Examples
+//!
+//! Generate random bytes:
+//! ```
+//! use crate::helper::crypto::generate_random_bytes;
+//!
+//! generate_random_bytes!(salt, 16);
+//! // `salt` now contains 16 cryptographically secure random bytes
+//! ```
+//!
+//! Concatenate buffers and compute hash:
+//! ```
+//! use crate::helper::crypto::{
+//!     buffer_concat,
+//!     hash_concatenated,
+//! };
+//!
+//! let data1 = b"password";
+//! let data2 = b"salt";
+//!
+//! // Concatenate buffers
+//! let combined = buffer_concat(&[data1, data2]);
+//!
+//! // Compute SHA-512 hash
+//! let hash = hash_concatenated(&[data1, data2]);
+//! ```
+//!
+//! # Implementation Details
+//!
+//! The module uses:
+//! - Thread-local random number generator for secure byte generation
+//! - Optimized buffer concatenation with pre-allocated capacity
+//! - SHA-512 implementation from the `sha2` crate
+//!
+//! # Security Considerations
+//!
+//! - Uses cryptographically secure random number generation
+//! - Implements standard SHA-512 hashing
+//! - Ensures efficient memory management for large buffers
+//!
+//! # Note
+//!
+//! This module is intended for internal use within the crate, as indicated
+//! by the `pub(crate)` visibility modifiers.
+
 use sha2::{
     Digest,
     Sha512,

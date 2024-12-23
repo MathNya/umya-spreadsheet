@@ -1,3 +1,36 @@
+//! Cryptographic utilities for Excel workbook and worksheet protection.
+//!
+//! This module provides functionality for encrypting and managing protection
+//! settings in Excel workbooks and worksheets. It includes methods for:
+//! - Password-based encryption
+//! - Hash generation
+//! - Salt management
+//! - Protection settings configuration
+//!
+//! The encryption process follows Microsoft's Office Open XML standards for
+//! document protection, using standardized algorithms and key derivation
+//! functions.
+//!
+//! # Examples
+//!
+//! ```
+//! use crate::{
+//!     helper::crypt,
+//!     structs::SheetProtection,
+//! };
+//!
+//! let mut protection = SheetProtection::new();
+//! crypt::encrypt_sheet_protection("mypassword", &mut protection);
+//! ```
+//!
+//! # Security
+//!
+//! The module implements industry-standard cryptographic practices:
+//! - Random salt generation for each encryption
+//! - Configurable key spin count for key derivation
+//! - Base64 encoding for binary data storage
+//! - Secure password hashing
+
 use std::{
     io::Write,
     path::Path,
