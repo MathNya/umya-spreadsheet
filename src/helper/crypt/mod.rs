@@ -292,6 +292,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     }
 }
 
+#[allow(unused_macros)]
 #[cfg(test)]
 mod tests {
     use std::{
@@ -300,6 +301,22 @@ mod tests {
     };
 
     use hex_literal::hex;
+
+    /// Prints a byte slice as a hex string, prefixed with the variable name.
+    ///
+    /// This macro takes a reference to a byte slice (`&[u8]`) and prints both
+    /// the variable name and its hexadecimal representation to stdout.
+    macro_rules! print_hex {
+        ($var:expr) => {
+            println!(
+                "{} = {}",
+                stringify!($var),
+                $var.iter()
+                    .map(|b| format!("{:02x}", b))
+                    .collect::<String>()
+            );
+        };
+    }
 
     use super::*;
 
@@ -396,7 +413,7 @@ mod tests {
         );
 
         // Verifier hash input
-        let verifier_hash_input = "8f54777cba87efa55ea2db8399873815".as_bytes().to_vec();
+        let verifier_hash_input = hex!("8f54777cba87efa55ea2db8399873815");
         let verifier_hash_input_key = key::convert_password_to_key(
             password,
             &key_salt,
@@ -418,7 +435,7 @@ mod tests {
         .unwrap();
         assert_eq!(
             encrypted_verifier_hash_input,
-            hex!("61cda90622dd509863f8d8ec82d6aa8705a64ebeec0ab0200789577d2fd3fffe")
+            hex!("2fb9eea58e227ffa549449e941f1199e")
         );
 
         // Verifier hash value
@@ -426,8 +443,8 @@ mod tests {
         assert_eq!(
             verifier_hash_value,
             hex!(
-                "79515158b032a68e5a9f0b9113615c7d8adc4817a6fb8e71b4a0b32012c3c2ae"
-                "6de30b717d5d99a24d56adda36d9196c622bb909ab5273f19820bf1afbcc1659"
+                "920b1de74f38d9cb3ccb3394119ed37e958404fdc47560b1bf647d3c49c22549"
+                "625fe4a0bd36798bd68a0d98ae64f6ab64a330c9890c62bb740aa492c226ae1f"
             )
         );
 
@@ -453,8 +470,8 @@ mod tests {
         assert_eq!(
             encrypted_verifier_hash_value,
             hex!(
-                "48c07f1162b21b8983f7b49f5044cc9edd8a1c5913492bb5404b45dc74d636af"
-                "9ad5c52661e785844a878502a2de558bb0c6700269b6d69f52cc5eff6e2d42ec"
+                "0d9c888111b40b630b739c95a5f5b6be67c8f96acdd1bee185bd808b507f6527"
+                "60a2e77f63a6ad0c46f985f2bb8dab4fcf9b86d6a40d9c21299bb4ddf788b250"
             )
         );
 
