@@ -351,11 +351,13 @@ mod tests {
 
         // HMAC value
         let hmac_value = key::hmac(&hmac_key, &[&encrypted_package]);
-        // Uncomment the following lines to check the HMAC value
-        // let converted = encode_hex(&hmac_value);
-        // assert_eq!(&converted,
-        // "41748c1ed0bcbbc46301a0a21e00747b6fafaa52ddbe4952a77a399ed4514b40c9b7e59f1c52c4cc72881794435336cc6e42fef4498245575bb9c2343480773f"
-        // );
+        assert_eq!(
+            hmac_value,
+            hex!(
+                "48ed7b8718e55f7f6e19e1cae6a447afacff5e5e3fe92ac836908e6cdeeb68a2"
+                "5fa1cbaaa4d7f7c0acabc2f7f22ad87bf11eaf74169fb6e6f78ab033e038928c"
+            )
+        );
 
         let hmac_value_iv = key::create_iv(
             &package_salt,
@@ -366,11 +368,13 @@ mod tests {
 
         let encrypted_hmac_value =
             algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
-        // Uncomment the following lines to check the encrypted HMAC value
-        // let converted = encode_hex(&encrypted_hmac_value);
-        // assert_eq!(&converted,
-        // "1f6fc2877101ac12ccee6dbb0e5ea2556cc61c2c532b89ffc701fd16c5078e7e8264034ded6dc00469039f706fce12747db817574f13b49d18e914fdf4e3e93b"
-        // );
+        assert_eq!(
+            encrypted_hmac_value,
+            hex!(
+                "f75c7f3c44fadf9b4bbf2ff693586710c52e043d8db69e3e538be5f10d36f86d"
+                "24dd5f4b9f71a2ce928abbbfe46e791a6c683703bcb30d5214997e60bbd547f6"
+            )
+        );
 
         // Key
         let key = key::convert_password_to_key(
@@ -392,7 +396,7 @@ mod tests {
         );
 
         // Verifier hash input
-        let verifier_hash_input = hex!("8f54777cba87efa55ea2db8399873815");
+        let verifier_hash_input = "8f54777cba87efa55ea2db8399873815".as_bytes().to_vec();
         let verifier_hash_input_key = key::convert_password_to_key(
             password,
             &key_salt,
@@ -412,17 +416,20 @@ mod tests {
             &verifier_hash_input,
         )
         .unwrap();
-        // Uncomment the following lines to check the encrypted verifier hash input
-        // let converted = encode_hex(&encrypted_verifier_hash_input);
-        // assert_eq!(&converted, "2fb9eea58e227ffa549449e941f1199e");
+        assert_eq!(
+            encrypted_verifier_hash_input,
+            hex!("61cda90622dd509863f8d8ec82d6aa8705a64ebeec0ab0200789577d2fd3fffe")
+        );
 
         // Verifier hash value
         let verifier_hash_value = utils::hash_concatenated(&[&verifier_hash_input]);
-        // Uncomment the following lines to check the verifier hash value
-        // let converted = encode_hex(&verifier_hash_value);
-        // assert_eq!(&converted,
-        // "920b1de74f38d9cb3ccb3394119ed37e958404fdc47560b1bf647d3c49c22549625fe4a0bd36798bd68a0d98ae64f6ab64a330c9890c62bb740aa492c226ae1f"
-        // );
+        assert_eq!(
+            verifier_hash_value,
+            hex!(
+                "79515158b032a68e5a9f0b9113615c7d8adc4817a6fb8e71b4a0b32012c3c2ae"
+                "6de30b717d5d99a24d56adda36d9196c622bb909ab5273f19820bf1afbcc1659"
+            )
+        );
 
         let verifier_hash_value_key = key::convert_password_to_key(
             password,
@@ -431,12 +438,10 @@ mod tests {
             constants::KEY_BITLENGTH,
             &constants::BLOCK_VERIFIER_HASH_VALUE,
         );
-        // Uncomment the following lines to check the verifier hash value key
-        // let converted = encode_hex(&verifier_hash_value_key);
-        // assert_eq!(
-        //     &converted,
-        //     "d5515a6062e3e99551b80b92db1fe646483884cdb63e1e7595a9f2cca7532884"
-        // );
+        assert_eq!(
+            verifier_hash_value_key,
+            hex!("d5515a6062e3e99551b80b92db1fe646483884cdb63e1e7595a9f2cca7532884")
+        );
 
         let encrypted_verifier_hash_value = algo::crypt(
             true,
@@ -445,12 +450,13 @@ mod tests {
             &verifier_hash_value,
         )
         .unwrap();
-        // Uncomment the following lines to check the encrypted verifier hash value
-        // let converted = encode_hex(&encrypted_verifier_hash_value);
-        // assert_eq!(
-        //     &converted,
-        //     "0d9c888111b40b630b739c95a5f5b6be67c8f96acdd1bee185bd808b507f652760a2e77f63a6ad0c46f985f2bb8dab4fcf9b86d6a40d9c21299bb4ddf788b250"
-        // );
+        assert_eq!(
+            encrypted_verifier_hash_value,
+            hex!(
+                "48c07f1162b21b8983f7b49f5044cc9edd8a1c5913492bb5404b45dc74d636af"
+                "9ad5c52661e785844a878502a2de558bb0c6700269b6d69f52cc5eff6e2d42ec"
+            )
+        );
 
         // Build encryption info
         let _unused = algo::build_encryption_info(
