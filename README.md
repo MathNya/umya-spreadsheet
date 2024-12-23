@@ -142,7 +142,7 @@ book.get_sheet_by_name_mut("Sheet1").unwrap()
 
 ### Struct 
 
-Pass the book as a ```Spreadsheet``` to modify it in other functions. 
+Pass the book as a ```Workbook``` to modify it in other functions. 
 
 ```rust
 
@@ -150,7 +150,7 @@ let mut book = umya_spreadsheet::new_file();
 let _unused =  book.new_sheet("Sheet2");
 update_excel(&mut book);
 
-fn update_excel(book: &mut Spreadsheet) {
+fn update_excel(book:  &mut Workbook) {
    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("Test"); 
 }
 ```

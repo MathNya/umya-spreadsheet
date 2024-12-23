@@ -29,10 +29,10 @@ use crate::{
     },
 };
 
-/// A Spreadsheet Object.
+/// A Workbook Object.
 /// The starting point of all struct.
 #[derive(Clone, Default, Debug)]
-pub struct Spreadsheet {
+pub struct Workbook {
     properties:            Properties,
     work_sheet_collection: Vec<Worksheet>,
     macros_code:           Option<Vec<u8>>,
@@ -48,7 +48,7 @@ pub struct Spreadsheet {
     defined_names:         Vec<DefinedName>,
 }
 
-impl Spreadsheet {
+impl Workbook {
     // ************************
     // update Coordinate
     // ************************
@@ -502,7 +502,7 @@ impl Spreadsheet {
     #[inline]
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
         let title = value.get_name();
-        Spreadsheet::check_sheet_name(self, title)?;
+        Workbook::check_sheet_name(self, title)?;
         self.work_sheet_collection.push(value);
         Ok(self.work_sheet_collection.last_mut().unwrap())
     }
@@ -549,9 +549,9 @@ impl Spreadsheet {
         sheet_title: S,
     ) -> Result<&mut Worksheet, &'static str> {
         let v = sheet_title.into();
-        Spreadsheet::check_sheet_name(self, &v)?;
+        Workbook::check_sheet_name(self, &v)?;
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
-        Ok(Spreadsheet::add_new_sheet_crate(self, sheet_id, v))
+        Ok(Workbook::add_new_sheet_crate(self, sheet_id, v))
     }
 
     /// (This method is crate only.)
@@ -588,7 +588,7 @@ impl Spreadsheet {
         sheet_name: S,
     ) -> Result<(), &'static str> {
         let sheet_name_str = sheet_name.into();
-        Spreadsheet::check_sheet_name(self, sheet_name_str.as_ref())?;
+        Workbook::check_sheet_name(self, sheet_name_str.as_ref())?;
         self.work_sheet_collection
             .get_mut(index)
             .map(|sheet| {
@@ -760,7 +760,7 @@ impl Spreadsheet {
         self.defined_names.push(value);
     }
 }
-impl AdjustmentCoordinateWithSheet for Spreadsheet {
+impl AdjustmentCoordinateWithSheet for Workbook {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,

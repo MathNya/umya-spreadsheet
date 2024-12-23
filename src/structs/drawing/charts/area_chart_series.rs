@@ -29,7 +29,7 @@ use super::{
     YValues,
 };
 use crate::{
-    structs::Spreadsheet,
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -383,7 +383,7 @@ impl AreaChartSeries {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:ser
         write_start_tag(writer, "c:ser", vec![], false);
 
@@ -425,27 +425,27 @@ impl AreaChartSeries {
 
         // c:cat
         if let Some(v) = &self.category_axis_data {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:val
         if let Some(v) = &self.values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:xVal
         if let Some(v) = &self.x_values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:yVal
         if let Some(v) = &self.y_values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bubbleSize
         if let Some(v) = &self.bubble_size {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bubble3D

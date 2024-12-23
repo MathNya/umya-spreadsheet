@@ -18,7 +18,7 @@ use super::{
 };
 use crate::{
     reader::driver::xml_read_loop,
-    structs::Spreadsheet,
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -110,7 +110,7 @@ impl Pie3DChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:pie3DChart
         write_start_tag(writer, "c:pie3DChart", vec![], false);
 
@@ -119,7 +119,7 @@ impl Pie3DChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

@@ -15,13 +15,13 @@ use super::{
 use crate::{
     helper::const_str::ARC_APP,
     structs::{
-        Spreadsheet,
+        Workbook,
         WriterManager,
     },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -36,9 +36,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // Properties
-    spreadsheet
-        .get_properties()
-        .write_to_app(&mut writer, spreadsheet.get_sheet_collection_no_check());
+    wb.get_properties()
+        .write_to_app(&mut writer, wb.get_sheet_collection_no_check());
 
     writer_mng.add_writer(ARC_APP, writer)
 }

@@ -14,12 +14,12 @@ use super::{
 };
 use crate::{
     helper::const_str::CONTENT_TYPES,
-    structs::Spreadsheet,
+    structs::Workbook,
 };
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
+    wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
     let r = io::BufReader::new(arv.by_name(CONTENT_TYPES)?);
     let mut reader = Reader::from_reader(r);
@@ -38,6 +38,6 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         Event::Eof => break,
     );
 
-    spreadsheet.set_backup_context_types(list);
+    wb.set_backup_context_types(list);
     Ok(())
 }

@@ -6,12 +6,12 @@ use std::{
 use super::XlsxError;
 use crate::{
     helper::const_str::PKG_VBA_PROJECT,
-    structs::Spreadsheet,
+    structs::Workbook,
 };
 
 pub(crate) fn read<R: Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
+    wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
     let mut r = io::BufReader::new(match arv.by_name(PKG_VBA_PROJECT) {
         Ok(v) => v,
@@ -25,7 +25,7 @@ pub(crate) fn read<R: Read + io::Seek>(
     let mut buf = Vec::new();
     r.read_to_end(&mut buf)?;
 
-    spreadsheet.set_macros_code(buf);
+    wb.set_macros_code(buf);
 
     Ok(())
 }

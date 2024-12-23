@@ -23,7 +23,7 @@ use super::{
 };
 use crate::{
     reader::driver::xml_read_loop,
-    structs::Spreadsheet,
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -215,7 +215,7 @@ impl BarChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:barChart
         write_start_tag(writer, "c:barChart", vec![], false);
 
@@ -230,7 +230,7 @@ impl BarChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

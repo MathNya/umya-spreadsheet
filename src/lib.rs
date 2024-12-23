@@ -185,9 +185,9 @@ pub mod writer;
 
 pub use self::structs::*;
 
-/// Creates a new spreadsheet with default settings.
+/// Creates a new workbook with default settings.
 ///
-/// Returns a new `Spreadsheet` instance initialized with:
+/// Returns a new `Workbook` instance initialized with:
 /// - Default theme
 /// - Default stylesheet
 /// - One worksheet named "Sheet1"
@@ -200,38 +200,38 @@ pub use self::structs::*;
 /// happen with default settings since it's the first worksheet in a new
 /// spreadsheet.
 #[must_use]
-pub fn new_file() -> Spreadsheet {
-    let mut spreadsheet = Spreadsheet::default();
-    spreadsheet.set_theme(drawing::Theme::get_default_value());
-    spreadsheet.set_stylesheet_default_value();
-    let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
+pub fn new_file() -> Workbook {
+    let mut wb = Workbook::default();
+    wb.set_theme(drawing::Theme::get_default_value());
+    wb.set_stylesheet_default_value();
+    let worksheet = wb.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
     let mut sheet_view = SheetView::default();
     sheet_view.set_workbook_view_id(0);
     let mut sheet_views = SheetViews::default();
     sheet_views.add_sheet_view_list_mut(sheet_view);
     worksheet.set_sheets_views(sheet_views);
-    spreadsheet.set_active_sheet(0);
-    spreadsheet
+    wb.set_active_sheet(0);
+    wb
 }
 
-/// Creates a new empty spreadsheet without any worksheets.
+/// Creates a new empty workbook without any worksheets.
 ///
-/// This function initializes a new spreadsheet with default theme and
+/// This function initializes a new workbook with default theme and
 /// stylesheet settings. At least one worksheet must be added before generating
 /// a valid file.
 ///
 /// # Returns
-/// A new `Spreadsheet` instance with default configuration but no worksheets.
+/// A new `Workbook` instance with default configuration but no worksheets.
 ///
 /// # Examples
 /// ```
 /// let mut book = umya_spreadsheet::new_file_empty_worksheet();
 /// ```
 #[must_use]
-pub fn new_file_empty_worksheet() -> Spreadsheet {
-    let mut spreadsheet = Spreadsheet::default();
-    spreadsheet.set_theme(drawing::Theme::get_default_value());
-    spreadsheet.set_stylesheet_default_value();
-    spreadsheet
+pub fn new_file_empty_worksheet() -> Workbook {
+    let mut wb = Workbook::default();
+    wb.set_theme(drawing::Theme::get_default_value());
+    wb.set_stylesheet_default_value();
+    wb
 }

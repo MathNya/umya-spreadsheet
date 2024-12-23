@@ -10,14 +10,14 @@ use crate::{
     helper::const_str::PKG_SHARED_STRINGS,
     structs::{
         SharedStringTable,
-        Spreadsheet,
+        Workbook,
     },
     xml_read_loop,
 };
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
+    wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
     let r = io::BufReader::new(match arv.by_name(PKG_SHARED_STRINGS) {
         Ok(v) => v,
@@ -37,7 +37,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
             if e.name().into_inner() == b"sst" {
                 let mut obj = SharedStringTable::default();
                 obj.set_attributes(&mut reader, e);
-                spreadsheet.set_shared_string_table(obj);
+                wb.set_shared_string_table(obj);
             }
         },
         Event::Eof => break,

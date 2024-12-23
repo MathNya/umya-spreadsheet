@@ -21,7 +21,7 @@ use super::{
     VaryColors,
 };
 use crate::{
-    structs::Spreadsheet,
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -192,7 +192,7 @@ impl LineChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:lineChart
         write_start_tag(writer, "c:lineChart", vec![], false);
 
@@ -204,7 +204,7 @@ impl LineChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

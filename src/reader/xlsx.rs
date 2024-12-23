@@ -20,8 +20,8 @@ use crate::{
     },
     structs::{
         SharedStringTable,
-        Spreadsheet,
         Stylesheet,
+        Workbook,
         Worksheet,
         drawing::Theme,
         raw::RawWorksheet,
@@ -51,11 +51,11 @@ pub(crate) mod worksheet;
 /// # Arguments
 /// * `reader` - reader to read from.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is `Workbook`. Err is error message.
 pub fn read_reader<R: io::Read + io::Seek>(
     reader: R,
     with_sheet_read: bool,
-) -> Result<Spreadsheet, XlsxError> {
+) -> Result<Workbook, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
     let mut book = workbook::read(&mut arv)?;
@@ -99,14 +99,14 @@ pub fn read_reader<R: io::Read + io::Seek>(
 /// # Arguments
 /// * `path` - file path to read.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is Workbook. Err is error message.
 /// # Examples
 /// ```
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 /// ```
 #[inline]
-pub fn read<P: AsRef<Path>>(path: P) -> Result<Spreadsheet, XlsxError> {
+pub fn read<P: AsRef<Path>>(path: P) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, true)
 }
@@ -117,14 +117,14 @@ pub fn read<P: AsRef<Path>>(path: P) -> Result<Spreadsheet, XlsxError> {
 /// expected. # Arguments
 /// * `path` - file path to read.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is Workbook. Err is error message.
 /// # Examples
 /// ```
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 /// ```
 #[inline]
-pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
+pub fn lazy_read(path: &Path) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, false)
 }

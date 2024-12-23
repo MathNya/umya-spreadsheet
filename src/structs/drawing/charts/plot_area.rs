@@ -34,7 +34,7 @@ use super::{
     ValueAxis,
 };
 use crate::{
-    structs::Spreadsheet,
+    structs::Workbook,
     traits::AdjustmentCoordinateWithSheet,
     writer::driver::{
         write_end_tag,
@@ -662,7 +662,7 @@ impl PlotArea {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:plotArea
         write_start_tag(writer, "c:plotArea", vec![], false);
 
@@ -671,67 +671,67 @@ impl PlotArea {
 
         // c:lineChart
         if let Some(v) = &self.line_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:line3DChart
         if let Some(v) = &self.line_3d_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:pieChart
         if let Some(v) = &self.pie_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:pie3DChart
         if let Some(v) = &self.pie_3d_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:doughnutChart
         if let Some(v) = &self.doughnut_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:scatterChart
         if let Some(v) = &self.scatter_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:barChart
         if let Some(v) = &self.bar_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bar3DChart
         if let Some(v) = &self.bar_3d_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:radarChart
         if let Some(v) = &self.radar_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bubbleChart
         if let Some(v) = &self.bubble_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:areaChart
         if let Some(v) = &self.area_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:area3DChart
         if let Some(v) = &self.area_3d_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:ofPieChart
         if let Some(v) = &self.of_pie_chart {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:catAx

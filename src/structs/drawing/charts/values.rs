@@ -12,7 +12,7 @@ use quick_xml::{
 // c:val
 use super::NumberReference;
 use crate::{
-    structs::Spreadsheet,
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -61,12 +61,12 @@ impl Values {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:val
         write_start_tag(writer, "c:val", vec![], false);
 
         // c:numRef
-        self.number_reference.write_to(writer, spreadsheet);
+        self.number_reference.write_to(writer, wb);
 
         write_end_tag(writer, "c:val");
     }

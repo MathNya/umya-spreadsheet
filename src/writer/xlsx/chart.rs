@@ -13,14 +13,14 @@ use super::{
     driver::write_new_line,
 };
 use crate::structs::{
-    Spreadsheet,
+    Workbook,
     WriterManager,
     drawing::charts::ChartSpace,
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     chart_space: &ChartSpace,
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<String, XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -35,7 +35,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // c:chartSpace
-    chart_space.write_to(&mut writer, spreadsheet);
+    chart_space.write_to(&mut writer, wb);
 
     let file_no = writer_mng.add_file_at_chart(writer)?;
     Ok(file_no.to_string())

@@ -10,8 +10,8 @@ pub mod vml;
 mod error;
 pub use self::error::*;
 
-mod spreadsheet;
-pub use self::spreadsheet::*;
+mod workbook;
+pub use self::workbook::*;
 
 mod worksheet;
 pub use self::worksheet::*;

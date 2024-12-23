@@ -24,7 +24,7 @@ use super::{
     View3D,
 };
 use crate::{
-    structs::Spreadsheet,
+    structs::Workbook,
     traits::AdjustmentCoordinateWithSheet,
     writer::driver::{
         write_end_tag,
@@ -278,7 +278,7 @@ impl Chart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:chart
         write_start_tag(writer, "c:chart", vec![], false);
 
@@ -311,7 +311,7 @@ impl Chart {
         }
 
         // c:plotArea
-        self.plot_area.write_to(writer, spreadsheet);
+        self.plot_area.write_to(writer, wb);
 
         // c:legend
         self.legend.write_to(writer);

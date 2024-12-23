@@ -14,7 +14,7 @@ use crate::{
     reader::driver::xml_read_loop,
     structs::{
         Address,
-        Spreadsheet,
+        Workbook,
     },
     writer::driver::{
         write_end_tag,
@@ -39,12 +39,8 @@ impl StringCache {
         );
     }
 
-    pub(crate) fn write_to(
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-        address: &Address,
-        spreadsheet: &Spreadsheet,
-    ) {
-        let cell_value_list = spreadsheet.get_cell_value_by_address_crate(address);
+    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>, address: &Address, wb: &Workbook) {
+        let cell_value_list = wb.get_cell_value_by_address_crate(address);
         let coll_value_count = cell_value_list.len().to_string();
         // c:strCache
         write_start_tag(writer, "c:strCache", vec![], false);

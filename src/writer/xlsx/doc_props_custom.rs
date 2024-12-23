@@ -15,16 +15,16 @@ use super::{
 use crate::{
     helper::const_str::ARC_CUSTOM,
     structs::{
-        Spreadsheet,
+        Workbook,
         WriterManager,
     },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
-    if spreadsheet
+    if wb
         .get_properties()
         .get_custom_properties()
         .get_custom_document_property_list()
@@ -45,7 +45,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // Properties
-    spreadsheet.get_properties().write_to_custom(&mut writer);
+    wb.get_properties().write_to_custom(&mut writer);
 
     writer_mng.add_writer(ARC_CUSTOM, writer)
 }

@@ -29,13 +29,13 @@ use crate::{
         WORKSHEET_NS,
     },
     structs::{
-        Spreadsheet,
+        Workbook,
         WriterManager,
     },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     has_shared_string_table: bool,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
@@ -59,14 +59,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let mut index = 1;
 
     // relationships worksheet
-    for _ in spreadsheet.get_sheet_collection_no_check() {
+    for _ in wb.get_sheet_collection_no_check() {
         let path_str = format!("worksheets/sheet{index}.xml");
         write_relationship(&mut writer, &index.to_string(), WORKSHEET_NS, &path_str, "");
         index += 1;
     }
 
     // relationships pivot_cache_definition
-    for (_, _, pivot_cache_definition) in spreadsheet.get_pivot_caches() {
+    for (_, _, pivot_cache_definition) in wb.get_pivot_caches() {
         write_relationship(
             &mut writer,
             &index.to_string(),
@@ -104,7 +104,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // relationships for vbaProject if needed
-    if spreadsheet.get_has_macros() {
+    if wb.get_has_macros() {
         write_relationship(
             &mut writer,
             &index.to_string(),

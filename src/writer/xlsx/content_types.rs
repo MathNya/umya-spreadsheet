@@ -27,13 +27,13 @@ use crate::{
         WORKBOOK,
     },
     structs::{
-        Spreadsheet,
+        Workbook,
         WriterManager,
     },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let is_light = writer_mng.get_is_light();
@@ -148,7 +148,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Override
-    for (part_name, content_type) in writer_mng.make_context_type_override(spreadsheet) {
+    for (part_name, content_type) in writer_mng.make_context_type_override(wb) {
         write_start_tag(
             &mut writer,
             "Override",

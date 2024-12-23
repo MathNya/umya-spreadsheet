@@ -13,7 +13,7 @@ use quick_xml::{
 use super::Formula;
 use super::StringCache;
 use crate::{
-    structs::Spreadsheet,
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -81,7 +81,7 @@ impl StringReference {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:strRef
         write_start_tag(writer, "c:strRef", vec![], false);
 
@@ -89,7 +89,7 @@ impl StringReference {
         self.formula.write_to(writer);
 
         // c:strCache
-        StringCache::write_to(writer, self.get_formula().get_address(), spreadsheet);
+        StringCache::write_to(writer, self.get_formula().get_address(), wb);
 
         write_end_tag(writer, "c:strRef");
     }

@@ -30,13 +30,13 @@ use crate::{
         XPROPS_REL,
     },
     structs::{
-        Spreadsheet,
+        Workbook,
         WriterManager,
     },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -63,7 +63,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_relationship(&mut writer, "1", OFCDOC_NS, PKG_WORKBOOK, "");
 
     // relationship docProps/custom.xml
-    if !spreadsheet
+    if !wb
         .get_properties()
         .get_custom_properties()
         .get_custom_document_property_list()
@@ -73,7 +73,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // a custom UI in workbook ?
-    if spreadsheet.has_ribbon() {
+    if wb.has_ribbon() {
         write_relationship(
             &mut writer,
             "5",

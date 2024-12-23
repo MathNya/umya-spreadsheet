@@ -127,7 +127,7 @@ fn lazy_read_and_wite_no_edit() {
     let _unused = writer::xlsx::write(&book, path);
 }
 
-fn read_and_wite_method(book: &mut Spreadsheet) {
+fn read_and_wite_method(book: &mut Workbook) {
     let _unused = book
         .get_sheet_mut(0)
         .unwrap()
@@ -323,7 +323,7 @@ fn lazy_read_and_wite_xlsm_no_edit() {
     let _unused = writer::xlsx::write(&book, path);
 }
 
-fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
+fn read_and_wite_xlsm_method(book: &mut Workbook) {
     let _unused = book
         .get_sheet_mut(0)
         .unwrap()

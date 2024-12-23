@@ -29,7 +29,7 @@ use crate::{
         XPROPS_TYPE,
     },
     structs::{
-        Spreadsheet,
+        Workbook,
         XlsxError,
     },
     writer::driver::{
@@ -231,10 +231,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         self.files.iter().any(|file| file.ends_with(&extension))
     }
 
-    pub(crate) fn make_context_type_override(
-        &mut self,
-        spreadsheet: &Spreadsheet,
-    ) -> Vec<(String, String)> {
+    pub(crate) fn make_context_type_override(&mut self, wb: &Workbook) -> Vec<(String, String)> {
         self.file_list_sort();
 
         let mut list: Vec<(String, String)> = Vec::new();
@@ -244,7 +241,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
             // Override workbook
             if file.starts_with("/xl/workbook.xml") {
-                content_type = if spreadsheet.get_has_macros() {
+                content_type = if wb.get_has_macros() {
                     WORKBOOK_MACRO_TYPE
                 } else {
                     WORKBOOK_TYPE
@@ -318,7 +315,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
             // Override Unsupported
             if content_type.is_empty() {
-                for (old_part_name, old_content_type) in spreadsheet.get_backup_context_types() {
+                for (old_part_name, old_content_type) in wb.get_backup_context_types() {
                     if **old_part_name == file {
                         content_type = old_content_type;
                     }

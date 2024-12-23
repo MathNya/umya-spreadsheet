@@ -8,23 +8,23 @@ use std::{
 use crate::structs::{
     CsvEncodeValues,
     CsvWriterOption,
-    Spreadsheet,
+    Workbook,
     XlsxError,
 };
 
 /// write spreadsheet file to arbitrary writer.
 /// # Arguments
-/// * `spreadsheet` - Spreadsheet structs object.
+/// * `wb` - Workbook structs object.
 /// * `writer` - writer to write to.
 /// # Return value
 /// * `Result` - OK is void. Err is error message.
 pub fn write_writer<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer: &mut W,
     option: &CsvWriterOption,
 ) -> Result<(), XlsxError> {
     // get worksheet.
-    let worksheet = spreadsheet.get_active_sheet();
+    let worksheet = wb.get_active_sheet();
 
     // get max column and row.
     let (max_column, max_row) = worksheet.get_highest_column_and_row();
@@ -73,7 +73,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
 
 /// write spreadsheet file.
 /// # Arguments
-/// * `spreadsheet` - Spreadsheet structs object.
+/// * `wb` - Workbook structs object.
 /// * `path` - file path to save.
 /// * `option` - options.
 /// # Return value
@@ -90,7 +90,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// let _unused = writer::csv::write(&book, path, Some(&option));
 /// ```
 pub fn write<P: AsRef<Path>>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     path: P,
     option: Option<&CsvWriterOption>,
 ) -> Result<(), XlsxError> {
@@ -104,7 +104,7 @@ pub fn write<P: AsRef<Path>>(
         None => &def_option,
     };
     if let Err(v) = write_writer(
-        spreadsheet,
+        wb,
         &mut io::BufWriter::new(fs::File::create::<&Path>(path_tmp.as_ref())?),
         option,
     ) {

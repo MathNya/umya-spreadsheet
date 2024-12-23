@@ -16,7 +16,7 @@ use super::{
 };
 use crate::{
     reader::driver::xml_read_loop,
-    structs::Spreadsheet,
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -99,13 +99,13 @@ impl CategoryAxisData {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:cat
         write_start_tag(writer, "c:cat", vec![], false);
 
         // c:strRef
         if let Some(v) = &self.string_reference {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:strLit

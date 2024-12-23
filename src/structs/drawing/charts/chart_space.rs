@@ -25,7 +25,7 @@ use crate::{
         REL_OFC_NS,
     },
     structs::{
-        Spreadsheet,
+        Workbook,
         office2010::drawing::charts::Style,
     },
     traits::AdjustmentCoordinateWithSheet,
@@ -195,7 +195,7 @@ impl ChartSpace {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:chartSpace
         write_start_tag(
             writer,
@@ -221,7 +221,7 @@ impl ChartSpace {
         Style::write_to(writer);
 
         // c:chart
-        self.chart.write_to(writer, spreadsheet);
+        self.chart.write_to(writer, wb);
 
         // c:spPr
         if let Some(v) = &self.shape_properties {

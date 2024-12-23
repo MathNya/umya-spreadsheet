@@ -8,12 +8,12 @@ use quick_xml::{
 use super::XlsxError;
 use crate::{
     helper::const_str::ARC_CUSTOM,
-    structs::Spreadsheet,
+    structs::Workbook,
 };
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
+    wb: &mut Workbook,
 ) -> Result<(), XlsxError> {
     let r = io::BufReader::new(match arv.by_name(ARC_CUSTOM) {
         Ok(v) => v,
@@ -31,8 +31,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         match reader.read_event_into(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 if e.name().into_inner() == b"Properties" {
-                    spreadsheet
-                        .get_properties_mut()
+                    wb.get_properties_mut()
                         .set_attributes_custom(&mut reader, e);
                 }
             }
