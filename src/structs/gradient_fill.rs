@@ -71,7 +71,10 @@ impl GradientFill {
         for stop in &self.gradient_stop {
             write!(value, "{}", stop.get_hash_code().as_str()).unwrap();
         }
-        format!("{:x}", md5::Md5::digest(format!("{}{}", &self.degree.get_value_string(), value,)))
+        format!(
+            "{:x}",
+            md5::Md5::digest(format!("{}{}", &self.degree.get_value_string(), value,))
+        )
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

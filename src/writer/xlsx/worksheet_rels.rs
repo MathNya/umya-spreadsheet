@@ -53,7 +53,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // relationships
@@ -106,7 +112,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             r_id.to_string().as_str(),
             VML_DRAWING_NS,
-            format!("../drawings/vmlDrawing{}.vml", vml_drawing_no.to_string().as_str()).as_str(),
+            format!(
+                "../drawings/vmlDrawing{}.vml",
+                vml_drawing_no.to_string().as_str()
+            )
+            .as_str(),
             "",
         );
         r_id += 1;
@@ -153,7 +163,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             r_id += 1;
         }
 
-        let image_name = ole_object.get_embedded_object_properties().get_image().get_image_name();
+        let image_name = ole_object
+            .get_embedded_object_properties()
+            .get_image()
+            .get_image_name();
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),

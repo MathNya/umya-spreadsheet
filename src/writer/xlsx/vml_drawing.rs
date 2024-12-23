@@ -35,7 +35,11 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "xml",
-        vec![("xmlns:v", VML_NS), ("xmlns:o", OFFICE_NS), ("xmlns:x", EXCEL_NS)],
+        vec![
+            ("xmlns:v", VML_NS),
+            ("xmlns:o", OFFICE_NS),
+            ("xmlns:x", EXCEL_NS),
+        ],
         false,
     );
 
@@ -43,7 +47,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "o:shapelayout", vec![("v:ext", "edit")], false);
 
     // o:idmap
-    write_start_tag(&mut writer, "o:idmap", vec![("v:ext", "edit"), ("data", "1")], true);
+    write_start_tag(
+        &mut writer,
+        "o:idmap",
+        vec![("v:ext", "edit"), ("data", "1")],
+        true,
+    );
 
     write_end_tag(&mut writer, "o:shapelayout");
 
@@ -72,17 +81,42 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // v:formulas
         write_start_tag(&mut writer, "v:formulas", vec![], false);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "if lineDrawn pixelLineWidth 0")], true);
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "if lineDrawn pixelLineWidth 0")],
+            true,
+        );
         write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @0 1 0")], true);
         write_start_tag(&mut writer, "v:f", vec![("eqn", "sum 0 0 @1")], true);
         write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @2 1 2")], true);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @3 21600 pixelWidth")], true);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @3 21600 pixelHeight")], true);
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "prod @3 21600 pixelWidth")],
+            true,
+        );
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "prod @3 21600 pixelHeight")],
+            true,
+        );
         write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @0 0 1")], true);
         write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @6 1 2")], true);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @7 21600 pixelWidth")], true);
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "prod @7 21600 pixelWidth")],
+            true,
+        );
         write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @8 21600 0")], true);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @7 21600 pixelHeight")], true);
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "prod @7 21600 pixelHeight")],
+            true,
+        );
         write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @10 21600 0")], true);
         write_end_tag(&mut writer, "v:formulas");
 
@@ -90,18 +124,29 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "v:path",
-            vec![("o:extrusionok", "f"), ("gradientshapeok", "t"), ("o:connecttype", "rect")],
+            vec![
+                ("o:extrusionok", "f"),
+                ("gradientshapeok", "t"),
+                ("o:connecttype", "rect"),
+            ],
             true,
         );
 
         // o:lock
-        write_start_tag(&mut writer, "o:lock", vec![("v:ext", "edit"), ("aspectratio", "t")], true);
+        write_start_tag(
+            &mut writer,
+            "o:lock",
+            vec![("v:ext", "edit"), ("aspectratio", "t")],
+            true,
+        );
 
         write_end_tag(&mut writer, "v:shapetype");
 
         for ole_object in worksheet.get_ole_objects().get_ole_object() {
             // v:shape
-            ole_object.get_shape().write_to(&mut writer, id, &mut rel_list);
+            ole_object
+                .get_shape()
+                .write_to(&mut writer, id, &mut rel_list);
             id += 1;
         }
     }

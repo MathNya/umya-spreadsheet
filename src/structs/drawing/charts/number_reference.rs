@@ -89,7 +89,8 @@ impl NumberReference {
         self.formula.write_to(writer);
 
         // c:numCache
-        self.numbering_cache.write_to(writer, self.get_formula().get_address(), spreadsheet);
+        self.numbering_cache
+            .write_to(writer, self.get_formula().get_address(), spreadsheet);
 
         write_end_tag(writer, "c:numRef");
     }

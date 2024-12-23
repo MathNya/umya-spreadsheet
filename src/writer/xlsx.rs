@@ -58,8 +58,11 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
     let mut stylesheet = spreadsheet.get_stylesheet().clone();
 
     // Process each worksheet
-    spreadsheet.get_sheet_collection_no_check().iter().enumerate().try_for_each(
-        |(index, worksheet)| {
+    spreadsheet
+        .get_sheet_collection_no_check()
+        .iter()
+        .enumerate()
+        .try_for_each(|(index, worksheet)| {
             let worksheet_no = index + 1;
             if worksheet.is_deserialized() {
                 worksheet::write(
@@ -75,12 +78,14 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
                     .get_raw_data_of_worksheet()
                     .write(worksheet_no.try_into().unwrap(), &mut writer_manager)
             }
-        },
-    )?;
+        })?;
 
     // Process objects associated with worksheets
-    spreadsheet.get_sheet_collection_no_check().iter().enumerate().try_for_each(
-        |(index, worksheet)| {
+    spreadsheet
+        .get_sheet_collection_no_check()
+        .iter()
+        .enumerate()
+        .try_for_each(|(index, worksheet)| {
             let worksheet_no = index + 1;
             if !worksheet.is_deserialized() {
                 return Ok(());
@@ -123,8 +128,10 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
             media::write(worksheet, &mut writer_manager)?;
 
             // Add printer settings
-            let printer_settings_no =
-                worksheet.get_page_setup().get_object_data().map_or_else(String::new, |_| {
+            let printer_settings_no = worksheet
+                .get_page_setup()
+                .get_object_data()
+                .map_or_else(String::new, |_| {
                     printer_settings::write(worksheet, &mut writer_manager).unwrap_or_default()
                 });
 
@@ -144,8 +151,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<Vec<u8>, Xls
                 &table_no_list,
                 &mut writer_manager,
             )
-        },
-    )?;
+        })?;
 
     // Finalize file list and add remaining components
     writer_manager.file_list_sort();
@@ -206,8 +212,13 @@ pub fn write_writer_light<W: io::Write>(
 /// ```
 pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), XlsxError> {
     let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path.as_ref().with_extension(format!("{}{}", extension, "tmp"));
-    if let Err(v) = write_writer(spreadsheet, &mut io::BufWriter::new(File::create(&path_tmp)?)) {
+    let path_tmp = path
+        .as_ref()
+        .with_extension(format!("{}{}", extension, "tmp"));
+    if let Err(v) = write_writer(
+        spreadsheet,
+        &mut io::BufWriter::new(File::create(&path_tmp)?),
+    ) {
         fs::remove_file(path_tmp)?;
         return Err(v);
     }
@@ -229,10 +240,13 @@ pub fn write<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), X
 /// ```
 pub fn write_light<P: AsRef<Path>>(spreadsheet: &Spreadsheet, path: P) -> Result<(), XlsxError> {
     let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path.as_ref().with_extension(format!("{}{}", extension, "tmp"));
-    if let Err(v) =
-        write_writer_light(spreadsheet, &mut io::BufWriter::new(File::create(&path_tmp)?))
-    {
+    let path_tmp = path
+        .as_ref()
+        .with_extension(format!("{}{}", extension, "tmp"));
+    if let Err(v) = write_writer_light(
+        spreadsheet,
+        &mut io::BufWriter::new(File::create(&path_tmp)?),
+    ) {
         fs::remove_file(path_tmp)?;
         return Err(v);
     }
@@ -259,7 +273,9 @@ pub fn write_with_password<P: AsRef<Path>>(
     password: &str,
 ) -> Result<(), XlsxError> {
     let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path.as_ref().with_extension(format!("{}{}", extension, "tmp"));
+    let path_tmp = path
+        .as_ref()
+        .with_extension(format!("{}{}", extension, "tmp"));
     let buffer = match make_buffer(spreadsheet, false) {
         Ok(v) => v,
         Err(v) => {
@@ -295,7 +311,9 @@ pub fn write_with_password_light<P: AsRef<Path>>(
     password: &str,
 ) -> Result<(), XlsxError> {
     let extension = path.as_ref().extension().unwrap().to_str().unwrap();
-    let path_tmp = path.as_ref().with_extension(format!("{}{}", extension, "tmp"));
+    let path_tmp = path
+        .as_ref()
+        .with_extension(format!("{}{}", extension, "tmp"));
     let buffer = match make_buffer(spreadsheet, true) {
         Ok(v) => v,
         Err(v) => {

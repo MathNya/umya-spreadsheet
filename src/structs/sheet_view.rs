@@ -201,8 +201,18 @@ impl SheetView {
         set_string_from_xml!(self, e, view, "view");
         set_string_from_xml!(self, e, zoom_scale, "zoomScale");
         set_string_from_xml!(self, e, zoom_scale_normal, "zoomScaleNormal");
-        set_string_from_xml!(self, e, zoom_scale_page_layout_view, "zoomScalePageLayoutView");
-        set_string_from_xml!(self, e, zoom_scale_sheet_layout_view, "zoomScaleSheetLayoutView");
+        set_string_from_xml!(
+            self,
+            e,
+            zoom_scale_page_layout_view,
+            "zoomScalePageLayoutView"
+        );
+        set_string_from_xml!(
+            self,
+            e,
+            zoom_scale_sheet_layout_view,
+            "zoomScaleSheetLayoutView"
+        );
         set_string_from_xml!(self, e, top_left_cell, "topLeftCell");
 
         if empty_flag {

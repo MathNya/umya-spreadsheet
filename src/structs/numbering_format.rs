@@ -85,9 +85,17 @@ impl NumberingFormat {
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
         let format_code_result = get_fill_built_in_format_codes()
             .iter()
-            .find_map(|(key, val)| if key == &value { Some(val.clone()) } else { None });
+            .find_map(|(key, val)| {
+                if key == &value {
+                    Some(val.clone())
+                } else {
+                    None
+                }
+            });
 
-        self.format_code = format_code_result.expect("Not Found NumberFormatId.").into_boxed_str();
+        self.format_code = format_code_result
+            .expect("Not Found NumberFormatId.")
+            .into_boxed_str();
         self.number_format_id = value;
         self.is_build_in = true;
         self
@@ -152,7 +160,10 @@ impl NumberingFormat {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.number_format_id = get_attribute(e, b"numFmtId").unwrap().parse::<u32>().unwrap();
+        self.number_format_id = get_attribute(e, b"numFmtId")
+            .unwrap()
+            .parse::<u32>()
+            .unwrap();
         self.format_code = escape::unescape(get_attribute(e, b"formatCode").unwrap().as_str())
             .unwrap()
             .to_string()
@@ -207,7 +218,10 @@ pub(crate) fn get_fill_built_in_format_codes() -> &'static HashMap<u32, String> 
         map.insert(39, "#,##0.00_);(#,##0.00)".to_string());
         map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string());
 
-        map.insert(44, r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string());
+        map.insert(
+            44,
+            r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string(),
+        );
         map.insert(45, "mm:ss".to_string());
         map.insert(46, "[h]:mm:ss".to_string());
         map.insert(47, "mm:ss.0".to_string());

@@ -88,14 +88,18 @@ impl TextElement {
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
-            md5::Md5::digest(format!("{}{}", &self.text.get_value(), match &self.run_properties {
-                Some(v) => {
-                    v.get_hash_code()
-                }
-                None => {
-                    "None".into()
-                }
-            },))
+            md5::Md5::digest(format!(
+                "{}{}",
+                &self.text.get_value(),
+                match &self.run_properties {
+                    Some(v) => {
+                        v.get_hash_code()
+                    }
+                    None => {
+                        "None".into()
+                    }
+                },
+            ))
         )
     }
 

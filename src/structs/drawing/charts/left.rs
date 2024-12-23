@@ -38,6 +38,11 @@ impl Left {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:x
-        write_start_tag(writer, "c:x", vec![("val", &self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:x",
+            vec![("val", &self.val.get_value_string())],
+            true,
+        );
     }
 }

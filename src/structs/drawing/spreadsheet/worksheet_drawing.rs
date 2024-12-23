@@ -401,7 +401,10 @@ impl WorksheetDrawing {
         write_start_tag(
             writer,
             "xdr:wsDr",
-            vec![("xmlns:xdr", SHEET_DRAWING_NS), ("xmlns:a", DRAWINGML_MAIN_NS)],
+            vec![
+                ("xmlns:xdr", SHEET_DRAWING_NS),
+                ("xmlns:a", DRAWINGML_MAIN_NS),
+            ],
             false,
         );
 
@@ -424,7 +427,9 @@ impl WorksheetDrawing {
         // mc:AlternateContent
         //        let mut ole_id = 1000 + 25;
         for ole_object in ole_objects.get_ole_object() {
-            ole_object.get_two_cell_anchor().write_to(writer, rel_list, 0);
+            ole_object
+                .get_two_cell_anchor()
+                .write_to(writer, rel_list, 0);
             //            ole_id += 1;
         }
 

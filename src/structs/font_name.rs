@@ -44,7 +44,12 @@ impl FontName {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         // name, rFont
         if self.val.has_value() {
-            write_start_tag(writer, tag_name, vec![("val", self.val.get_value_str())], true);
+            write_start_tag(
+                writer,
+                tag_name,
+                vec![("val", self.val.get_value_str())],
+                true,
+            );
         }
     }
 }

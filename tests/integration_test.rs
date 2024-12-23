@@ -128,7 +128,11 @@ fn lazy_read_and_wite_no_edit() {
 }
 
 fn read_and_wite_method(book: &mut Spreadsheet) {
-    let _unused = book.get_sheet_mut(0).unwrap().get_cell_mut("A1").set_value("TEST1");
+    let _unused = book
+        .get_sheet_mut(0)
+        .unwrap()
+        .get_cell_mut("A1")
+        .set_value("TEST1");
     let a1_value = book.get_sheet(0).unwrap().get_value("A1");
     assert_eq!("TEST1", a1_value);
     let _unused = book.get_sheet_mut(0).unwrap().remove_cell((1, 1));
@@ -140,24 +144,63 @@ fn read_and_wite_method(book: &mut Spreadsheet) {
     let b5_value = book.get_sheet(0).unwrap().get_value("B5");
     assert_eq!(" ", b5_value);
 
-    assert_eq!("1.0000", book.get_sheet(0).unwrap().get_formatted_value((2, 20)));
-    assert_eq!("$3,333.0000", book.get_sheet(0).unwrap().get_formatted_value("B21"));
-    assert_eq!("$ 333.00", book.get_sheet(0).unwrap().get_formatted_value("B22"));
-    assert_eq!("2020年3月", book.get_sheet(0).unwrap().get_formatted_value("B23"));
-    assert_eq!("2:33 pm", book.get_sheet(0).unwrap().get_formatted_value("B24"));
-    assert_eq!("5.00%", book.get_sheet(0).unwrap().get_formatted_value("B25"));
+    assert_eq!(
+        "1.0000",
+        book.get_sheet(0).unwrap().get_formatted_value((2, 20))
+    );
+    assert_eq!(
+        "$3,333.0000",
+        book.get_sheet(0).unwrap().get_formatted_value("B21")
+    );
+    assert_eq!(
+        "$ 333.00",
+        book.get_sheet(0).unwrap().get_formatted_value("B22")
+    );
+    assert_eq!(
+        "2020年3月",
+        book.get_sheet(0).unwrap().get_formatted_value("B23")
+    );
+    assert_eq!(
+        "2:33 pm",
+        book.get_sheet(0).unwrap().get_formatted_value("B24")
+    );
+    assert_eq!(
+        "5.00%",
+        book.get_sheet(0).unwrap().get_formatted_value("B25")
+    );
     assert_eq!("1/2", book.get_sheet(0).unwrap().get_formatted_value("B26"));
-    assert_eq!("12/15/2020 14:01", book.get_sheet(0).unwrap().get_formatted_value("B27"));
+    assert_eq!(
+        "12/15/2020 14:01",
+        book.get_sheet(0).unwrap().get_formatted_value("B27")
+    );
     assert_eq!("444", book.get_sheet(0).unwrap().get_formatted_value("B28"));
-    assert_eq!("14-Dec-20", book.get_sheet(0).unwrap().get_formatted_value("B29"));
-    assert_eq!("2020年10月1日", book.get_sheet(0).unwrap().get_formatted_value("B30"));
-    assert_eq!("1.2345", book.get_sheet(0).unwrap().get_formatted_value("B31"));
+    assert_eq!(
+        "14-Dec-20",
+        book.get_sheet(0).unwrap().get_formatted_value("B29")
+    );
+    assert_eq!(
+        "2020年10月1日",
+        book.get_sheet(0).unwrap().get_formatted_value("B30")
+    );
+    assert_eq!(
+        "1.2345",
+        book.get_sheet(0).unwrap().get_formatted_value("B31")
+    );
     assert_eq!("1.2", book.get_sheet(0).unwrap().get_formatted_value("B32"));
-    assert_eq!("12,345,675,544.00", book.get_sheet(0).unwrap().get_formatted_value("B33"));
-    assert_eq!("1.235", book.get_sheet(0).unwrap().get_formatted_value("B34"));
+    assert_eq!(
+        "12,345,675,544.00",
+        book.get_sheet(0).unwrap().get_formatted_value("B33")
+    );
+    assert_eq!(
+        "1.235",
+        book.get_sheet(0).unwrap().get_formatted_value("B34")
+    );
     assert_eq!("1", book.get_sheet(0).unwrap().get_formatted_value("B35"));
     assert_eq!("", book.get_sheet(0).unwrap().get_formatted_value("B36"));
-    assert_eq!("123456789012345678", book.get_sheet(0).unwrap().get_formatted_value("B37"));
+    assert_eq!(
+        "123456789012345678",
+        book.get_sheet(0).unwrap().get_formatted_value("B37")
+    );
 
     let _unused = book
         .get_sheet_by_name_mut("Sheet1")
@@ -172,7 +215,10 @@ fn read_and_wite_method(book: &mut Spreadsheet) {
         .get_number_format_mut()
         .set_format_code(NumberingFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
 
-    let value = book.get_sheet_by_name_mut("Sheet1").unwrap().get_formatted_value("A1");
+    let value = book
+        .get_sheet_by_name_mut("Sheet1")
+        .unwrap()
+        .get_formatted_value("A1");
     assert_eq!("49,046,881.12", &value);
 
     let fg = Color::default().set_argb(Color::COLOR_BLACK).to_owned();
@@ -199,7 +245,10 @@ fn read_and_wite_method(book: &mut Spreadsheet) {
         .get_font_mut()
         .set_name("Arial");
 
-    book.get_sheet_by_name_mut("Sheet1").unwrap().get_row_dimension_mut(3).set_height(46.0);
+    book.get_sheet_by_name_mut("Sheet1")
+        .unwrap()
+        .get_row_dimension_mut(3)
+        .set_height(46.0);
 }
 
 #[test]
@@ -275,8 +324,17 @@ fn lazy_read_and_wite_xlsm_no_edit() {
 }
 
 fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
-    let _unused = book.get_sheet_mut(0).unwrap().get_cell_mut((1, 1)).set_value("TEST1");
-    let a1_value = book.get_sheet(0).unwrap().get_cell((1, 1)).unwrap().get_value();
+    let _unused = book
+        .get_sheet_mut(0)
+        .unwrap()
+        .get_cell_mut((1, 1))
+        .set_value("TEST1");
+    let a1_value = book
+        .get_sheet(0)
+        .unwrap()
+        .get_cell((1, 1))
+        .unwrap()
+        .get_value();
     assert_eq!("TEST1", a1_value);
 
     // copy sheet
@@ -301,7 +359,12 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::LineChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::LineChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
@@ -309,7 +372,9 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title")
         .set_grouping(drawing::charts::GroupingValues::Standard);
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (pie chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -321,14 +386,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::PieChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::PieChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (doughnut chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -340,14 +412,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::DoughnutChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::DoughnutChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (area chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -359,14 +438,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::AreaChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::AreaChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (bar chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -378,14 +464,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::BarChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::BarChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (bar 3d chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -397,14 +490,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::Bar3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::Bar3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (line 3d chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -416,14 +516,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::Line3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::Line3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (pie 3d chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -435,14 +542,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::Pie3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::Pie3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (area 3d chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -454,14 +568,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::Area3DChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::Area3DChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (of pie chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -473,54 +594,81 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::OfPieChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::OfPieChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (bubble chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
     let mut to_marker = drawing::spreadsheet::MarkerType::default();
     from_marker.set_coordinate("A3");
     to_marker.set_coordinate("B4");
-    let area_chart_series_list =
-        vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10", "New Sheet!$I$7:$I$10"];
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+        "New Sheet!$I$7:$I$10",
+    ];
     let series_title_list = vec!["Line1", "Line2", "Line3"];
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::BubbleChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::BubbleChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (radar chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
     let mut to_marker = drawing::spreadsheet::MarkerType::default();
     from_marker.set_coordinate("B3");
     to_marker.set_coordinate("C4");
-    let area_chart_series_list =
-        vec!["New Sheet!$G$7:$G$10", "New Sheet!$H$7:$H$10", "New Sheet!$I$7:$I$10"];
+    let area_chart_series_list = vec![
+        "New Sheet!$G$7:$G$10",
+        "New Sheet!$H$7:$H$10",
+        "New Sheet!$I$7:$I$10",
+    ];
     let series_title_list = vec!["Line1", "Line2", "Line3"];
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::RadarChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::RadarChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // add chart (scatter chart)
     let mut from_marker = drawing::spreadsheet::MarkerType::default();
@@ -532,14 +680,21 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     let series_point_title_list = vec!["Point1", "Point2", "Point3", "Point4"];
     let mut chart = Chart::default();
     chart
-        .new_chart(&ChartType::ScatterChart, from_marker, to_marker, area_chart_series_list)
+        .new_chart(
+            &ChartType::ScatterChart,
+            from_marker,
+            to_marker,
+            area_chart_series_list,
+        )
         .set_series_title(series_title_list)
         .set_series_point_title(series_point_title_list)
         .set_default_language("ja-JP")
         .set_title("Chart Title")
         .set_horizontal_title("Horizontal Title")
         .set_vertical_title("Vertical Title");
-    book.get_sheet_by_name_mut("Sheet7").unwrap().add_chart(chart);
+    book.get_sheet_by_name_mut("Sheet7")
+        .unwrap()
+        .add_chart(chart);
 
     // Add Image
     let _unused = book.new_sheet("Sheet Image");
@@ -547,7 +702,9 @@ fn read_and_wite_xlsm_method(book: &mut Spreadsheet) {
     marker.set_coordinate("B3");
     let mut image = Image::default();
     image.new_image("./images/sample1.png", marker);
-    book.get_sheet_by_name_mut("Sheet Image").unwrap().add_image(image);
+    book.get_sheet_by_name_mut("Sheet Image")
+        .unwrap()
+        .add_image(image);
 }
 
 #[test]
@@ -590,8 +747,12 @@ fn new_sheet_and_edit() {
     let _unused = writer::xlsx::write(&book, path);
 
     let mut book = reader::xlsx::lazy_read(path).unwrap();
-    let a2_value =
-        book.get_sheet_by_name_mut(TEST_SHEET).unwrap().get_cell("A2").unwrap().get_value();
+    let a2_value = book
+        .get_sheet_by_name_mut(TEST_SHEET)
+        .unwrap()
+        .get_cell("A2")
+        .unwrap()
+        .get_value();
     assert_eq!("test", a2_value);
 
     {
@@ -631,24 +792,64 @@ fn new_file_and_edit() {
     let _unused = book.new_sheet("Sheet3");
 
     // change value.
-    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell("A1").unwrap().get_value();
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .get_cell_mut("A1")
+        .set_value("TEST1");
+    let a1_value = book
+        .get_sheet_by_name("Sheet2")
+        .unwrap()
+        .get_cell("A1")
+        .unwrap()
+        .get_value();
     assert_eq!("TEST1", a1_value);
 
-    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut((2, 2)).set_value_number(1);
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell((2, 2)).unwrap().get_value();
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .get_cell_mut((2, 2))
+        .set_value_number(1);
+    let a1_value = book
+        .get_sheet_by_name("Sheet2")
+        .unwrap()
+        .get_cell((2, 2))
+        .unwrap()
+        .get_value();
     assert_eq!("1", a1_value);
 
-    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut((2, 2)).set_value_number(1);
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell((2, 2)).unwrap().get_value();
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .get_cell_mut((2, 2))
+        .set_value_number(1);
+    let a1_value = book
+        .get_sheet_by_name("Sheet2")
+        .unwrap()
+        .get_cell((2, 2))
+        .unwrap()
+        .get_value();
     assert_eq!("1", a1_value);
 
-    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut((3, 3)).set_value_bool(true);
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell((3, 3)).unwrap().get_value();
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .get_cell_mut((3, 3))
+        .set_value_bool(true);
+    let a1_value = book
+        .get_sheet_by_name("Sheet2")
+        .unwrap()
+        .get_cell((3, 3))
+        .unwrap()
+        .get_value();
     assert_eq!("TRUE", a1_value);
 
-    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut((3, 3)).set_value_bool(true);
-    let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_cell((3, 3)).unwrap().get_value();
+    book.get_sheet_by_name_mut("Sheet2")
+        .unwrap()
+        .get_cell_mut((3, 3))
+        .set_value_bool(true);
+    let a1_value = book
+        .get_sheet_by_name("Sheet2")
+        .unwrap()
+        .get_cell((3, 3))
+        .unwrap()
+        .get_value();
     assert_eq!("TRUE", a1_value);
 
     // add bottom border.
@@ -698,12 +899,16 @@ fn new_file_and_edit() {
 
     worksheet.get_cell_mut("F1").set_value("AAAAAAAAAAAAAAAAAA");
     worksheet.get_cell_mut("F2").set_value("BBBBBBBBBBB");
-    worksheet.get_cell_mut("F4").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet
+        .get_cell_mut("F4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("F").set_auto_width(true);
 
     worksheet.get_cell_mut("G1").set_value("AAAAAAAAAAAAAAAAAA");
     worksheet.get_cell_mut("G2").set_value("BBBBBBBBBBB");
-    worksheet.get_cell_mut("G3").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet
+        .get_cell_mut("G3")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("G").set_width(60f64);
 
     worksheet.get_cell_mut("D1").set_value("テスト");
@@ -741,16 +946,24 @@ fn new_file_and_edit() {
         .set_val(5f64);
     worksheet.get_column_dimension_mut("J").set_auto_width(true);
 
-    worksheet.get_cell_mut("K4").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet
+        .get_cell_mut("K4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("K").set_auto_width(true);
 
-    worksheet.get_cell_mut("L4").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet
+        .get_cell_mut("L4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("L").set_auto_width(true);
 
-    worksheet.get_cell_mut("M4").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet
+        .get_cell_mut("M4")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("M").set_auto_width(true);
 
-    worksheet.get_cell_mut("N1").set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
+    worksheet
+        .get_cell_mut("N1")
+        .set_value("CCCCCCCCCCCCCCCCCCCCCCCCCC");
     worksheet.get_column_dimension_mut("N").set_auto_width(true);
 
     worksheet.add_merge_cells("K8:L8");
@@ -912,12 +1125,18 @@ fn move_range_test() {
     let range = "C5:F9";
     let row = 12;
     let column = 4;
-    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range, row, column);
+    book.get_sheet_by_name_mut(sheet_name)
+        .unwrap()
+        .move_range(range, row, column);
 
     // Checking to ensure cells that move into another cell overwrites it
     let range_2 = "A14:A14";
-    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range, row, column);
-    book.get_sheet_by_name_mut(sheet_name).unwrap().move_range(range_2, 0, 1);
+    book.get_sheet_by_name_mut(sheet_name)
+        .unwrap()
+        .move_range(range, row, column);
+    book.get_sheet_by_name_mut(sheet_name)
+        .unwrap()
+        .move_range(range_2, 0, 1);
 
     let path = std::path::Path::new("./tests/result_files/bbb_move_range.xlsx");
     let _unused = writer::xlsx::write_light(&book, path);
@@ -938,7 +1157,11 @@ fn issue_72() {
 fn issue_129() {
     let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
     let book = reader::xlsx::read(path).unwrap();
-    let img = book.get_sheet_by_name("Sheet1").unwrap().get_image("M17").unwrap();
+    let img = book
+        .get_sheet_by_name("Sheet1")
+        .unwrap()
+        .get_image("M17")
+        .unwrap();
     // dbg!(img.get_one_cell_anchor().is_some());
     // dbg!(img.get_two_cell_anchor().is_some());
     assert_eq!(img.get_image_name(), "image1.png");
@@ -981,7 +1204,10 @@ fn sheetlock_test() {
     let mut book = reader::xlsx::read(path).unwrap();
 
     let mut sheet = book.get_sheet_mut(2).unwrap();
-    sheet.get_sheet_protection_mut().set_password("password").set_sheet(true);
+    sheet
+        .get_sheet_protection_mut()
+        .set_password("password")
+        .set_sheet(true);
 
     let path = std::path::Path::new("./tests/result_files/sheet_lock.xlsx");
     let _unused = writer::xlsx::write(&book, path);
@@ -992,7 +1218,8 @@ fn workbooklock_test() {
     let path = std::path::Path::new("./tests/test_files/book_lock.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
 
-    book.get_workbook_protection_mut().set_workbook_password("password");
+    book.get_workbook_protection_mut()
+        .set_workbook_password("password");
 
     let path = std::path::Path::new("./tests/result_files/book_lock.xlsx");
     let _unused = writer::xlsx::write(&book, path);
@@ -1024,7 +1251,11 @@ fn html_to_richtext_test() {
     let richtext = helper::html::html_to_richtext(html).unwrap();
 
     sheet.get_cell_mut("G16").set_rich_text(richtext);
-    sheet.get_cell_mut("G16").get_style_mut().get_alignment_mut().set_wrap_text(true);
+    sheet
+        .get_cell_mut("G16")
+        .get_style_mut()
+        .get_alignment_mut()
+        .set_wrap_text(true);
 
     let path = std::path::Path::new("./tests/result_files/bbb_html_to_richtext.xlsx");
     let _unused = writer::xlsx::write(&book, path);
@@ -1048,7 +1279,9 @@ fn issue_172() {
     let mut book = new_file();
     let mut sheet = book.get_sheet_mut(0).unwrap();
     sheet.get_cell_mut("A1").set_value_number(value);
-    sheet.get_style_mut("A1").set_numbering_format(numbering_format);
+    sheet
+        .get_style_mut("A1")
+        .set_numbering_format(numbering_format);
 
     let result = sheet.get_formatted_value("A1");
     assert_eq!("03-Feb-24", result);
@@ -1119,7 +1352,14 @@ fn issue_178_2() {
 fn issue_185() {
     let path = std::path::Path::new("./tests/test_files/issue_185.xlsx");
     let book = reader::xlsx::read(path).unwrap();
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("A1").unwrap().is_formula(), true);
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("A1")
+            .unwrap()
+            .is_formula(),
+        true
+    );
 }
 
 #[test]
@@ -1206,9 +1446,30 @@ fn issue_194() {
     let mut book = reader::xlsx::read(path).unwrap();
     book.get_sheet_mut(0).unwrap().insert_new_column("D", 1);
 
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("B2").unwrap().get_formula(), "SUM(B1)");
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("C2").unwrap().get_formula(), "SUM(C1)");
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("E2").unwrap().get_formula(), "SUM(E1)");
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("B2")
+            .unwrap()
+            .get_formula(),
+        "SUM(B1)"
+    );
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("C2")
+            .unwrap()
+            .get_formula(),
+        "SUM(C1)"
+    );
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("E2")
+            .unwrap()
+            .get_formula(),
+        "SUM(E1)"
+    );
 
     let path = std::path::Path::new("./tests/result_files/issue_194.xlsx");
     let _unused = writer::xlsx::write(&book, path);
@@ -1284,14 +1545,42 @@ fn issue_188_4() {
     let path = std::path::Path::new("./tests/test_files/issue_188_4.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
 
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("H4").unwrap().get_formula(), "SUM(B4:G4)");
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("H5").unwrap().get_formula(), "SUM(B5:G5)");
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("H4")
+            .unwrap()
+            .get_formula(),
+        "SUM(B4:G4)"
+    );
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("H5")
+            .unwrap()
+            .get_formula(),
+        "SUM(B5:G5)"
+    );
 
     // remove
     book.get_sheet_mut(0).unwrap().remove_column("E", 1);
 
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("G4").unwrap().get_formula(), "SUM(B4:F4)");
-    assert_eq!(book.get_sheet(0).unwrap().get_cell("G5").unwrap().get_formula(), "SUM(B5:F5)");
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("G4")
+            .unwrap()
+            .get_formula(),
+        "SUM(B4:F4)"
+    );
+    assert_eq!(
+        book.get_sheet(0)
+            .unwrap()
+            .get_cell("G5")
+            .unwrap()
+            .get_formula(),
+        "SUM(B5:F5)"
+    );
 
     let path = std::path::Path::new("./tests/result_files/issue_188_4.xlsx");
     let _unused = writer::xlsx::write(&book, path);
@@ -1395,7 +1684,9 @@ fn issue_216() {
 fn issue_217() {
     let path = std::path::Path::new("./tests/test_files/issue_217.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
-    book.get_sheet_mut(2).unwrap().set_state(SheetStateValues::Hidden);
+    book.get_sheet_mut(2)
+        .unwrap()
+        .set_state(SheetStateValues::Hidden);
     let path = std::path::Path::new("./tests/result_files/issue_217.xlsx");
     let _unused = writer::xlsx::write(&book, path);
 }
@@ -1451,13 +1742,25 @@ fn issue_220() {
     let path = std::path::Path::new("./tests/test_files/issue_220.xlsx");
     let mut book = reader::xlsx::read(path).unwrap();
 
-    book.get_sheet_mut(0).unwrap().get_cell_mut("A1").set_value("TEST1");
+    book.get_sheet_mut(0)
+        .unwrap()
+        .get_cell_mut("A1")
+        .set_value("TEST1");
 
-    book.get_sheet_mut(0).unwrap().get_cell_mut("B1").set_value("TEST1");
+    book.get_sheet_mut(0)
+        .unwrap()
+        .get_cell_mut("B1")
+        .set_value("TEST1");
 
-    book.get_sheet_mut(0).unwrap().get_cell_mut("B2").set_value("TEST1");
+    book.get_sheet_mut(0)
+        .unwrap()
+        .get_cell_mut("B2")
+        .set_value("TEST1");
 
-    book.get_sheet_mut(0).unwrap().get_cell_mut("A2").set_value("TEST1");
+    book.get_sheet_mut(0)
+        .unwrap()
+        .get_cell_mut("A2")
+        .set_value("TEST1");
 
     let path = std::path::Path::new("./tests/result_files/issue_220.xlsx");
     let _unused = writer::xlsx::write(&book, path);
@@ -1478,7 +1781,10 @@ fn issue_224() {
     let mut sheet = book.get_sheet_mut(0).unwrap();
     let mut num = NumberingFormat::default();
     num.set_format_code("[<1]0;0");
-    sheet.get_cell_mut("A1").get_style_mut().set_numbering_format(num);
+    sheet
+        .get_cell_mut("A1")
+        .get_style_mut()
+        .set_numbering_format(num);
     sheet.get_cell_mut("A1").set_value_number(1.3);
     assert_eq!("1", sheet.get_formatted_value("A1"));
 }
@@ -1506,7 +1812,10 @@ fn issue_230() {
     let mut wb = new_file();
     let sheet = wb.get_sheet_mut(0).unwrap();
     sheet.get_cell_mut("A1").set_value("12");
-    sheet.get_style_mut("A1").get_number_format_mut().set_format_code("#\\ #");
+    sheet
+        .get_style_mut("A1")
+        .get_number_format_mut()
+        .set_format_code("#\\ #");
     // assert_eq!("1 2", sheet.get_formatted_value("A1"));
 }
 
@@ -1541,7 +1850,11 @@ fn issue_244() {
     comment.set_text_string("TEST");
 
     let media_object = helper::binary::make_media_object("./images/sample1.png");
-    comment.get_shape_mut().get_fill_mut().unwrap().set_image(media_object);
+    comment
+        .get_shape_mut()
+        .get_fill_mut()
+        .unwrap()
+        .set_image(media_object);
 
     sheet.add_comments(comment);
 

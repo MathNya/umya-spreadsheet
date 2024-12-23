@@ -170,7 +170,9 @@ impl Spreadsheet {
     #[must_use]
     pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
-        self.get_sheet_by_name(sheet_name).unwrap().get_cell_value_by_range(range)
+        self.get_sheet_by_name(sheet_name)
+            .unwrap()
+            .get_cell_value_by_range(range)
     }
 
     /// (This method is crate only.)
@@ -396,7 +398,9 @@ impl Spreadsheet {
 
     #[inline]
     pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Option<usize> {
-        self.work_sheet_collection.iter().position(|sheet| sheet.get_name() == sheet_name)
+        self.work_sheet_collection
+            .iter()
+            .position(|sheet| sheet.get_name() == sheet_name)
     }
 
     /// Get Work Sheet.
@@ -424,7 +428,8 @@ impl Spreadsheet {
     #[inline]
     #[must_use]
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
-        self.find_sheet_index_by_name(sheet_name).and_then(|index| self.get_sheet(index))
+        self.find_sheet_index_by_name(sheet_name)
+            .and_then(|index| self.get_sheet(index))
     }
 
     pub fn get_lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, &'static str> {
@@ -459,7 +464,8 @@ impl Spreadsheet {
     /// * `Option<&mut Worksheet>`.
     #[inline]
     pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
-        self.find_sheet_index_by_name(sheet_name).and_then(move |index| self.get_sheet_mut(index))
+        self.find_sheet_index_by_name(sheet_name)
+            .and_then(move |index| self.get_sheet_mut(index))
     }
 
     #[inline]
@@ -522,7 +528,8 @@ impl Spreadsheet {
     /// * `Result<(), &'static str>` - OK:removed worksheet. Err:Error.
     pub fn remove_sheet_by_name(&mut self, sheet_name: &str) -> Result<(), &'static str> {
         let cnt_before = self.work_sheet_collection.len();
-        self.work_sheet_collection.retain(|x| x.get_name() != sheet_name);
+        self.work_sheet_collection
+            .retain(|x| x.get_name() != sheet_name);
         let cnt_after = self.work_sheet_collection.len();
         if cnt_before == cnt_after {
             return Err("out of index.");
@@ -562,7 +569,9 @@ impl Spreadsheet {
         let mut worksheet = Worksheet::default();
         worksheet.set_sheet_id(sheet_id);
         worksheet.set_name(sheet_title.into());
-        worksheet.get_sheet_format_properties_mut().set_defalut_value();
+        worksheet
+            .get_sheet_format_properties_mut()
+            .set_defalut_value();
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
     }
@@ -591,7 +600,11 @@ impl Spreadsheet {
     /// (This method is crate only.)
     /// Check for duplicate sheet name.
     pub(crate) fn check_sheet_name(&self, value: &str) -> Result<(), &'static str> {
-        if self.work_sheet_collection.iter().any(|work_sheet| value == work_sheet.get_name()) {
+        if self
+            .work_sheet_collection
+            .iter()
+            .any(|work_sheet| value == work_sheet.get_name())
+        {
             Err("name duplicate.")
         } else {
             Ok(())
@@ -634,7 +647,9 @@ impl Spreadsheet {
         if !self.defined_names.is_empty() {
             return true;
         }
-        self.get_sheet_collection_no_check().iter().any(Worksheet::has_defined_names)
+        self.get_sheet_collection_no_check()
+            .iter()
+            .any(Worksheet::has_defined_names)
     }
 
     #[inline]
@@ -700,7 +715,8 @@ impl Spreadsheet {
 
     #[inline]
     pub fn get_workbook_protection_mut(&mut self) -> &mut WorkbookProtection {
-        self.workbook_protection.get_or_insert(Box::new(WorkbookProtection::default()))
+        self.workbook_protection
+            .get_or_insert(Box::new(WorkbookProtection::default()))
     }
 
     #[inline]

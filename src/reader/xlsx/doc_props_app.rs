@@ -31,7 +31,9 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         match reader.read_event_into(&mut buf) {
             Ok(Event::Start(ref e)) =>
                 if e.name().into_inner() == b"Properties" {
-                    spreadsheet.get_properties_mut().set_attributes_app(&mut reader, e);
+                    spreadsheet
+                        .get_properties_mut()
+                        .set_attributes_app(&mut reader, e);
                 },
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),

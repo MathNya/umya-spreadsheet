@@ -161,7 +161,10 @@ impl FontCollectionType {
                     _ => (),
                 },
                 Ok(Event::Eof) => {
-                    panic!("Error: Could not find {} end element", "a:majorFont, a:minorFont")
+                    panic!(
+                        "Error: Could not find {} end element",
+                        "a:majorFont, a:minorFont"
+                    )
                 }
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),

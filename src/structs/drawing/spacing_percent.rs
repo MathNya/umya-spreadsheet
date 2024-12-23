@@ -42,6 +42,11 @@ impl SpacingPercent {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:spcPct
-        write_start_tag(writer, "a:spcPct", vec![("val", &self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "a:spcPct",
+            vec![("val", &self.val.get_value_string())],
+            true,
+        );
     }
 }

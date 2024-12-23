@@ -41,6 +41,11 @@ impl ScatterStyle {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:scatterStyle
-        write_start_tag(writer, "c:scatterStyle", vec![("val", self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:scatterStyle",
+            vec![("val", self.val.get_value_string())],
+            true,
+        );
     }
 }

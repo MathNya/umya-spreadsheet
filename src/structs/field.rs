@@ -41,6 +41,11 @@ impl Field {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotField
-        write_start_tag(writer, "field", vec![("x", self.x.get_value_string().as_str())], true);
+        write_start_tag(
+            writer,
+            "field",
+            vec![("x", self.x.get_value_string().as_str())],
+            true,
+        );
     }
 }

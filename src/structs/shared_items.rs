@@ -108,7 +108,10 @@ impl SharedItems {
             writer,
             "sharedItems",
             vec![
-                ("containsSemiMixedTypes", self.contains_semi_mixed_types.get_value_string()),
+                (
+                    "containsSemiMixedTypes",
+                    self.contains_semi_mixed_types.get_value_string(),
+                ),
                 ("containsString", self.contains_string.get_value_string()),
                 ("containsNumber", self.contains_number.get_value_string()),
                 ("containsInteger", self.contains_integer.get_value_string()),

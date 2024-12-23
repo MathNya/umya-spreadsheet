@@ -53,7 +53,10 @@
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
 //! let _unused = book.new_sheet("Sheet2");
-//! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+//! book.get_sheet_by_name_mut("Sheet2")
+//!     .unwrap()
+//!     .get_cell_mut("A1")
+//!     .set_value("TEST1");
 //!
 //! // read value
 //! let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");

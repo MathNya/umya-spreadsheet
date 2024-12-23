@@ -298,7 +298,10 @@ impl CellFormat {
             attributes.push(("applyFont", self.apply_font.get_value_string()));
         }
         if self.apply_number_format.has_value() {
-            attributes.push(("applyNumberFormat", self.apply_number_format.get_value_string()));
+            attributes.push((
+                "applyNumberFormat",
+                self.apply_number_format.get_value_string(),
+            ));
         }
         if self.apply_fill.has_value() {
             attributes.push(("applyFill", self.apply_fill.get_value_string()));

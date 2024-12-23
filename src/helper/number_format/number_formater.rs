@@ -194,7 +194,10 @@ fn process_complex_number_format_mask(number: f64, mask: &str) -> String {
         masking_beg.push(beg);
     }
     for i in 0..masking_str.len() {
-        masking_blocks.push((masking_str.get(i).unwrap().clone(), *masking_beg.get(i).unwrap()));
+        masking_blocks.push((
+            masking_str.get(i).unwrap().clone(),
+            *masking_beg.get(i).unwrap(),
+        ));
     }
 
     if masking_blocks.len() > 1 {
@@ -243,7 +246,12 @@ fn complex_number_format_mask(number: f64, mask: &str, split_on_point: bool) -> 
         let result1 =
             complex_number_format_mask(numbers[0].parse::<f64>().unwrap(), &masks[0], false);
         let result2 = complex_number_format_mask(
-            numbers[1].chars().rev().collect::<String>().parse::<f64>().unwrap(),
+            numbers[1]
+                .chars()
+                .rev()
+                .collect::<String>()
+                .parse::<f64>()
+                .unwrap(),
             &masks[1].chars().rev().collect::<String>(),
             false,
         )

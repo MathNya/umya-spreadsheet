@@ -47,8 +47,10 @@ impl NumberingFormat {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.format_code.set_value_string(get_attribute(e, b"formatCode").unwrap());
-        self.source_linked.set_value_string(get_attribute(e, b"sourceLinked").unwrap());
+        self.format_code
+            .set_value_string(get_attribute(e, b"formatCode").unwrap());
+        self.source_linked
+            .set_value_string(get_attribute(e, b"sourceLinked").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

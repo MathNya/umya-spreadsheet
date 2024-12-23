@@ -63,7 +63,10 @@ impl Extent {
         write_start_tag(
             writer,
             "xdr:ext",
-            vec![("cx", &self.cx.get_value_string()), ("cy", &self.cy.get_value_string())],
+            vec![
+                ("cx", &self.cx.get_value_string()),
+                ("cy", &self.cy.get_value_string()),
+            ],
             true,
         );
     }

@@ -157,10 +157,14 @@ impl Comment {
         self.get_shape_mut().set_text_box(textbox);
 
         let movewithcells = MoveWithCells::default();
-        self.get_shape_mut().get_client_data_mut().set_move_with_cells(movewithcells);
+        self.get_shape_mut()
+            .get_client_data_mut()
+            .set_move_with_cells(movewithcells);
 
         let resizewithcells = ResizeWithCells::default();
-        self.get_shape_mut().get_client_data_mut().set_resize_with_cells(resizewithcells);
+        self.get_shape_mut()
+            .get_client_data_mut()
+            .set_resize_with_cells(resizewithcells);
 
         self.get_shape_mut()
             .get_client_data_mut()
@@ -196,7 +200,10 @@ impl Comment {
         let coordinate = get_attribute(e, b"ref").unwrap();
         self.get_coordinate_mut().set_coordinate(coordinate);
 
-        let author_id = get_attribute(e, b"authorId").unwrap().parse::<usize>().unwrap();
+        let author_id = get_attribute(e, b"authorId")
+            .unwrap()
+            .parse::<usize>()
+            .unwrap();
         let author = authors.get(author_id).unwrap();
         self.set_author(author);
 

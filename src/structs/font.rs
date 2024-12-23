@@ -256,7 +256,8 @@ impl Font {
     #[inline]
     pub fn set_underline<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
-        self.font_underline.set_val(UnderlineValues::from_str(&obj).unwrap());
+        self.font_underline
+            .set_val(UnderlineValues::from_str(&obj).unwrap());
         self
     }
 
@@ -361,7 +362,8 @@ impl Font {
     #[inline]
     pub fn set_scheme<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
-        self.font_scheme.set_val(FontSchemeValues::from_str(&obj).unwrap());
+        self.font_scheme
+            .set_val(FontSchemeValues::from_str(&obj).unwrap());
         self
     }
 

@@ -89,7 +89,11 @@ impl DefinedName {
         if self.string_value.has_value() {
             return String::new();
         }
-        self.address.first().unwrap_or(&Address::default()).get_sheet_name().to_string()
+        self.address
+            .first()
+            .unwrap_or(&Address::default())
+            .get_sheet_name()
+            .to_string()
     }
 
     #[inline]

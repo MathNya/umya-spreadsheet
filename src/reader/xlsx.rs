@@ -140,7 +140,13 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
 
     let raw_data_of_worksheet = worksheet.get_raw_data_of_worksheet().clone();
     let shared_string_table = &*shared_string_table.read().unwrap();
-    worksheet::read(worksheet, &raw_data_of_worksheet, shared_string_table, stylesheet).unwrap();
+    worksheet::read(
+        worksheet,
+        &raw_data_of_worksheet,
+        shared_string_table,
+        stylesheet,
+    )
+    .unwrap();
 
     if let Some(v) = raw_data_of_worksheet.get_worksheet_relationships() {
         for relationship in v.get_relationship_list() {

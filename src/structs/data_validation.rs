@@ -251,7 +251,10 @@ impl DataValidation {
         }
 
         if self.show_input_message.has_value() {
-            attributes.push(("showInputMessage", self.show_input_message.get_value_string()));
+            attributes.push((
+                "showInputMessage",
+                self.show_input_message.get_value_string(),
+            ));
         }
 
         if self.operator.has_value() {
@@ -259,7 +262,10 @@ impl DataValidation {
         }
 
         if self.show_error_message.has_value() {
-            attributes.push(("showErrorMessage", self.show_error_message.get_value_string()));
+            attributes.push((
+                "showErrorMessage",
+                self.show_error_message.get_value_string(),
+            ));
         }
 
         if self.prompt_title.has_value() {

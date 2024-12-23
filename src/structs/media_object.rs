@@ -39,7 +39,9 @@ impl MediaObject {
     }
 
     pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
-        let find = rel_list.iter().position(|(k, v)| k == "IMAGE" && v == &*self.name);
+        let find = rel_list
+            .iter()
+            .position(|(k, v)| k == "IMAGE" && v == &*self.name);
         if let Some(v) = find {
             (v + 1).try_into().unwrap()
         } else {

@@ -40,7 +40,12 @@ impl Style {
 
     pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>) {
         // mc:AlternateContent
-        write_start_tag(writer, "mc:AlternateContent", vec![("xmlns:mc", MC_NS)], false);
+        write_start_tag(
+            writer,
+            "mc:AlternateContent",
+            vec![("xmlns:mc", MC_NS)],
+            false,
+        );
 
         // mc:Choice
         write_start_tag(

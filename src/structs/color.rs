@@ -104,8 +104,9 @@ impl Color {
     pub const COLOR_RED: &'static str = "FFFF0000";
     pub const COLOR_WHITE: &'static str = "FFFFFFFF";
     pub const COLOR_YELLOW: &'static str = "FFFFFF00";
-    pub const NAMED_COLORS: &'static [&'static str] =
-        &["Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan"];
+    pub const NAMED_COLORS: &'static [&'static str] = &[
+        "Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan",
+    ];
 
     /// Get Argb.
     /// If the color is based on the theme, it cannot be obtained with this
@@ -135,8 +136,11 @@ impl Color {
         }
         if self.theme_index.has_value() {
             let key = self.theme_index.get_value();
-            if let Some(v) =
-                theme.get_theme_elements().get_color_scheme().get_color_map().get(key as usize)
+            if let Some(v) = theme
+                .get_theme_elements()
+                .get_color_scheme()
+                .get_color_map()
+                .get(key as usize)
             {
                 if self.tint.has_value() {
                     return calc_tint(v, self.tint.get_value()).into();
@@ -238,16 +242,20 @@ impl Color {
         for attr in e.attributes().with_checks(false).flatten() {
             match attr.key.0 {
                 b"indexed" => {
-                    self.indexed.set_value_string(get_attribute_value(&attr).unwrap());
+                    self.indexed
+                        .set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 b"theme" => {
-                    self.theme_index.set_value_string(get_attribute_value(&attr).unwrap());
+                    self.theme_index
+                        .set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 b"rgb" => {
-                    self.argb.set_value_string(get_attribute_value(&attr).unwrap());
+                    self.argb
+                        .set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 b"tint" => {
-                    self.tint.set_value_string(get_attribute_value(&attr).unwrap());
+                    self.tint
+                        .set_value_string(get_attribute_value(&attr).unwrap());
                 }
                 _ => {}
             }
@@ -264,8 +272,10 @@ impl Color {
                     b"color" | b"fgColor" | b"bgColor" | b"tabColor" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) =>
-                    panic!("Error: Could not find {} end element", "color,fgColor,bgColor,tabColor"),
+                Ok(Event::Eof) => panic!(
+                    "Error: Could not find {} end element",
+                    "color,fgColor,bgColor,tabColor"
+                ),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }

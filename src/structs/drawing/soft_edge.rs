@@ -36,11 +36,17 @@ impl SoftEdge {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.radius.set_value_string(get_attribute(e, b"rad").unwrap());
+        self.radius
+            .set_value_string(get_attribute(e, b"rad").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:softEdge
-        write_start_tag(writer, "a:softEdge", vec![("rad", &self.radius.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "a:softEdge",
+            vec![("rad", &self.radius.get_value_string())],
+            true,
+        );
     }
 }

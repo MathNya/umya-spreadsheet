@@ -35,11 +35,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // comments
-    write_start_tag(&mut writer, "comments", vec![("xmlns", SHEET_MAIN_NS)], false);
+    write_start_tag(
+        &mut writer,
+        "comments",
+        vec![("xmlns", SHEET_MAIN_NS)],
+        false,
+    );
 
     // authors
     let authors = get_authors(worksheet);
@@ -95,5 +106,8 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
 
 #[inline]
 fn get_author_id(authors: &[String], author: &str) -> String {
-    authors.iter().position(|value| author == value).map_or(String::new(), |i| i.to_string())
+    authors
+        .iter()
+        .position(|value| author == value)
+        .map_or(String::new(), |i| i.to_string())
 }

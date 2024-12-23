@@ -1,5 +1,6 @@
 brace_style = "SameLineWhere"
 condense_wildcard_suffixes = true
+error_on_line_overflow = true
 fn_params_layout = "Tall"
 format_code_in_doc_comments = true
 format_macro_matchers = true
@@ -16,8 +17,7 @@ reorder_impl_items = true
 style_edition = "2024"
 type_punctuation_density = "Wide"
 use_field_init_shorthand = true
-use_small_heuristics = "Max"
+use_small_heuristics = "Default"
 use_try_shorthand = true
 where_single_line = false
 wrap_comments = true
-error_on_line_overflow = true

@@ -430,7 +430,12 @@ impl PivotTableDefinition {
         set_string_from_xml!(self, e, apply_font_formats, "applyFontFormats");
         set_string_from_xml!(self, e, apply_pattern_formats, "applyPatternFormats");
         set_string_from_xml!(self, e, apply_alignment_formats, "applyAlignmentFormats");
-        set_string_from_xml!(self, e, apply_width_height_formats, "applyWidthHeightFormats");
+        set_string_from_xml!(
+            self,
+            e,
+            apply_width_height_formats,
+            "applyWidthHeightFormats"
+        );
         set_string_from_xml!(self, e, data_caption, "dataCaption");
         set_string_from_xml!(self, e, updated_version, "updatedVersion");
         set_string_from_xml!(self, e, min_refreshable_version, "minRefreshableVersion");
@@ -511,20 +516,34 @@ impl PivotTableDefinition {
             attributes.push(("cacheId", cache_id_str.as_str()));
         }
         if self.apply_number_formats.has_value() {
-            attributes.push(("applyNumberFormats", self.apply_number_formats.get_value_string()));
+            attributes.push((
+                "applyNumberFormats",
+                self.apply_number_formats.get_value_string(),
+            ));
         }
         if self.apply_border_formats.has_value() {
-            attributes.push(("applyBorderFormats", self.apply_border_formats.get_value_string()));
+            attributes.push((
+                "applyBorderFormats",
+                self.apply_border_formats.get_value_string(),
+            ));
         }
         if self.apply_font_formats.has_value() {
-            attributes.push(("applyFontFormats", self.apply_font_formats.get_value_string()));
+            attributes.push((
+                "applyFontFormats",
+                self.apply_font_formats.get_value_string(),
+            ));
         }
         if self.apply_pattern_formats.has_value() {
-            attributes.push(("applyPatternFormats", self.apply_pattern_formats.get_value_string()));
+            attributes.push((
+                "applyPatternFormats",
+                self.apply_pattern_formats.get_value_string(),
+            ));
         }
         if self.apply_alignment_formats.has_value() {
-            attributes
-                .push(("applyAlignmentFormats", self.apply_alignment_formats.get_value_string()));
+            attributes.push((
+                "applyAlignmentFormats",
+                self.apply_alignment_formats.get_value_string(),
+            ));
         }
         if self.apply_width_height_formats.has_value() {
             attributes.push((
@@ -541,10 +560,16 @@ impl PivotTableDefinition {
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push(("minRefreshableVersion", min_refreshable_version_str.as_str()));
+            attributes.push((
+                "minRefreshableVersion",
+                min_refreshable_version_str.as_str(),
+            ));
         }
         if self.use_auto_formatting.has_value() {
-            attributes.push(("useAutoFormatting", self.use_auto_formatting.get_value_string()));
+            attributes.push((
+                "useAutoFormatting",
+                self.use_auto_formatting.get_value_string(),
+            ));
         }
         if self.item_print_titles.has_value() {
             attributes.push(("itemPrintTitles", self.item_print_titles.get_value_string()));
@@ -564,8 +589,10 @@ impl PivotTableDefinition {
             attributes.push(("outlineData", self.outline_data.get_value_string()));
         }
         if self.multiple_field_filters.has_value() {
-            attributes
-                .push(("multipleFieldFilters", self.multiple_field_filters.get_value_string()));
+            attributes.push((
+                "multipleFieldFilters",
+                self.multiple_field_filters.get_value_string(),
+            ));
         }
         write_start_tag(writer, "pivotTableDefinition", attributes, false);
 

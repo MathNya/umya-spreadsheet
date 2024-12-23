@@ -127,7 +127,9 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.get_cell((col, row)).map(|v| v.get_value().into()).unwrap_or_default()
+        self.get_cell((col, row))
+            .map(|v| v.get_value().into())
+            .unwrap_or_default()
     }
 
     /// Get value number.
@@ -215,7 +217,11 @@ impl Worksheet {
     ) -> Cells {
         assert!(!self.is_deserialized(), "This Worksheet is Deserialized.");
 
-        read_lite(self.raw_data_of_worksheet.as_ref().unwrap(), shared_string_table, stylesheet)
+        read_lite(
+            self.raw_data_of_worksheet.as_ref().unwrap(),
+            shared_string_table,
+            stylesheet,
+        )
     }
 
     /// (This method is crate only.)
@@ -278,7 +284,8 @@ impl Worksheet {
         self.get_row_dimension_mut(row);
         let row_dimension = self.get_row_dimension_mut(row).clone();
         let col_dimension = self.get_column_dimension_by_number_mut(col).clone();
-        self.cells.get_mut((col, row), &row_dimension, &col_dimension)
+        self.cells
+            .get_mut((col, row), &row_dimension, &col_dimension)
     }
 
     #[inline]
@@ -309,9 +316,12 @@ impl Worksheet {
     /// # Arguments
     /// * `cell` - Cell
     pub fn set_cell(&mut self, cell: Cell) -> &mut Self {
-        let row_dimension = self.get_row_dimension_mut(cell.get_coordinate().get_row_num()).clone();
-        let col_dimension =
-            self.get_column_dimension_by_number_mut(cell.get_coordinate().get_col_num()).clone();
+        let row_dimension = self
+            .get_row_dimension_mut(cell.get_coordinate().get_row_num())
+            .clone();
+        let col_dimension = self
+            .get_column_dimension_by_number_mut(cell.get_coordinate().get_col_num())
+            .clone();
         self.cells.set(cell, &row_dimension, &col_dimension);
         self
     }
@@ -481,7 +491,8 @@ impl Worksheet {
         if row_num_start == 0 {
             let (col_num_end, _) = coordinate_list[1];
             for col_num in col_num_start..=col_num_end {
-                self.get_column_dimension_by_number_mut(col_num).set_style(style.clone());
+                self.get_column_dimension_by_number_mut(col_num)
+                    .set_style(style.clone());
             }
             return self;
         }
@@ -702,7 +713,8 @@ impl Worksheet {
     pub fn calculation_auto_width(&mut self) -> &mut Self {
         let cells = self.get_cells_crate().clone();
         let merge_cells = self.get_merge_cells_crate().clone();
-        self.get_column_dimensions_crate_mut().calculation_auto_width(&cells, &merge_cells);
+        self.get_column_dimensions_crate_mut()
+            .calculation_auto_width(&cells, &merge_cells);
         self
     }
 
@@ -1691,8 +1703,9 @@ impl Worksheet {
         let mut list: Vec<&MediaObject> = Vec::new();
         for image in self.get_worksheet_drawing().get_image_collection() {
             for media_object in image.get_media_object() {
-                let is_new =
-                    !list.iter().any(|v| v.get_image_name() == media_object.get_image_name());
+                let is_new = !list
+                    .iter()
+                    .any(|v| v.get_image_name() == media_object.get_image_name());
                 if is_new {
                     list.push(media_object);
                 }
@@ -1700,7 +1713,9 @@ impl Worksheet {
         }
         for ole_objects in self.get_ole_objects().get_ole_object() {
             let media_object = ole_objects.get_embedded_object_properties().get_image();
-            let is_new = !list.iter().any(|v| v.get_image_name() == media_object.get_image_name());
+            let is_new = !list
+                .iter()
+                .any(|v| v.get_image_name() == media_object.get_image_name());
             if is_new {
                 list.push(media_object);
             }
@@ -1708,8 +1723,9 @@ impl Worksheet {
         for ole_objects in self.get_ole_objects().get_ole_object() {
             if let Some(fill) = ole_objects.get_shape().get_fill() {
                 if let Some(media_object) = fill.get_image() {
-                    let is_new =
-                        !list.iter().any(|v| v.get_image_name() == media_object.get_image_name());
+                    let is_new = !list
+                        .iter()
+                        .any(|v| v.get_image_name() == media_object.get_image_name());
                     if is_new {
                         list.push(media_object);
                     }
@@ -1719,8 +1735,9 @@ impl Worksheet {
         for comment in self.get_comments() {
             if let Some(fill) = comment.get_shape().get_fill() {
                 if let Some(media_object) = fill.get_image() {
-                    let is_new =
-                        !list.iter().any(|v| v.get_image_name() == media_object.get_image_name());
+                    let is_new = !list
+                        .iter()
+                        .any(|v| v.get_image_name() == media_object.get_image_name());
                     if is_new {
                         list.push(media_object);
                     }
@@ -1759,7 +1776,9 @@ impl Worksheet {
 
     #[inline]
     pub(crate) fn get_raw_data_of_worksheet(&self) -> &RawWorksheet {
-        self.raw_data_of_worksheet.as_ref().expect("Not found at raw data of worksheet.")
+        self.raw_data_of_worksheet
+            .as_ref()
+            .expect("Not found at raw data of worksheet.")
     }
 
     #[inline]
@@ -1782,7 +1801,8 @@ impl Worksheet {
 
     #[inline]
     pub fn get_sheet_protection_mut(&mut self) -> &mut SheetProtection {
-        self.sheet_protection.get_or_insert(SheetProtection::default())
+        self.sheet_protection
+            .get_or_insert(SheetProtection::default())
     }
 
     #[inline]
@@ -1846,8 +1866,14 @@ impl Worksheet {
         // the left is impossible)
         let range_upper = range.to_uppercase();
         let (row_start, row_end, col_start, col_end) = get_start_and_end_point(&range_upper);
-        assert!(((num_traits::cast::<_, i32>(col_start).unwrap() + column) >= 1), "Out of Range.");
-        assert!(((num_traits::cast::<_, i32>(row_start).unwrap() + row) >= 1), "Out of Range.");
+        assert!(
+            ((num_traits::cast::<_, i32>(col_start).unwrap() + column) >= 1),
+            "Out of Range."
+        );
+        assert!(
+            ((num_traits::cast::<_, i32>(row_start).unwrap() + row) >= 1),
+            "Out of Range."
+        );
         assert!(
             ((num_traits::cast::<_, i32>(col_end).unwrap() + column) <= 16_384),
             "Out of Range."
@@ -1973,7 +1999,8 @@ impl AdjustmentCoordinate for Worksheet {
     ) {
         if offset_col_num != 0 {
             // column dimensions
-            self.columns.adjustment_insert_value(root_col_num, offset_col_num);
+            self.columns
+                .adjustment_insert_value(root_col_num, offset_col_num);
         }
         if offset_row_num != 0 {
             // row dimensions
@@ -2004,12 +2031,13 @@ impl AdjustmentCoordinate for Worksheet {
         );
 
         // worksheet_drawing
-        self.get_worksheet_drawing_mut().adjustment_insert_coordinate(
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.get_worksheet_drawing_mut()
+            .adjustment_insert_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
 
         // comments
         for comment in &mut self.comments {
@@ -2061,7 +2089,8 @@ impl AdjustmentCoordinate for Worksheet {
     ) {
         if offset_col_num != 0 {
             // column dimensions
-            self.columns.adjustment_remove_value(root_col_num, offset_col_num);
+            self.columns
+                .adjustment_remove_value(root_col_num, offset_col_num);
         }
         if offset_row_num != 0 {
             // row dimensions
@@ -2103,12 +2132,13 @@ impl AdjustmentCoordinate for Worksheet {
         );
 
         // worksheet_drawing
-        self.get_worksheet_drawing_mut().adjustment_remove_coordinate(
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.get_worksheet_drawing_mut()
+            .adjustment_remove_coordinate(
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
 
         // comments
         self.comments.retain(|x| {
@@ -2187,23 +2217,25 @@ impl AdjustmentCoordinateWithSheet for Worksheet {
 
         // cell formula coordinate
         let title = self.title.clone();
-        self.get_cells_crate_mut().adjustment_insert_coordinate_with_2sheet(
-            &title,
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.get_cells_crate_mut()
+            .adjustment_insert_coordinate_with_2sheet(
+                &title,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
 
         // worksheet_drawing
-        self.worksheet_drawing.adjustment_insert_coordinate_with_sheet(
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.worksheet_drawing
+            .adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
     }
 
     fn adjustment_remove_coordinate_with_sheet(
@@ -2220,22 +2252,24 @@ impl AdjustmentCoordinateWithSheet for Worksheet {
 
         // cell formula coordinate
         let title = self.title.clone();
-        self.get_cells_crate_mut().adjustment_remove_coordinate_with_2sheet(
-            &title,
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.get_cells_crate_mut()
+            .adjustment_remove_coordinate_with_2sheet(
+                &title,
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
 
         // worksheet_drawing
-        self.worksheet_drawing.adjustment_remove_coordinate_with_sheet(
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.worksheet_drawing
+            .adjustment_remove_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
     }
 }

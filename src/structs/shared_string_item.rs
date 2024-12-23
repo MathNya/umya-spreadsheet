@@ -86,8 +86,12 @@ impl SharedStringItem {
         let mut h = DefaultHasher::default();
         let content = format!(
             "{}{}",
-            self.text.as_ref().map_or(String::from("NONE"), Text::get_hash_code),
-            self.rich_text.as_ref().map_or(String::from("NONE"), RichText::get_hash_code)
+            self.text
+                .as_ref()
+                .map_or(String::from("NONE"), Text::get_hash_code),
+            self.rich_text
+                .as_ref()
+                .map_or(String::from("NONE"), RichText::get_hash_code)
         );
         h.write(content.as_bytes());
         h.finish()

@@ -15,7 +15,8 @@ impl TrueFalseBlankValue {
 
     #[inline]
     pub(crate) fn get_value_string2(&self) -> &str {
-        self.get_value().map_or("", |v| if v { "True" } else { "False" })
+        self.get_value()
+            .map_or("", |v| if v { "True" } else { "False" })
     }
 
     #[inline]

@@ -57,14 +57,18 @@ impl RawWorksheet {
     }
 
     pub(crate) fn get_drawing_relationships(&self) -> Option<&RawRelationships> {
-        self.get_relationships_list()
-            .iter()
-            .find(|&relationships| relationships.get_file_target().starts_with(PKG_DRAWINGS_RELS))
+        self.get_relationships_list().iter().find(|&relationships| {
+            relationships
+                .get_file_target()
+                .starts_with(PKG_DRAWINGS_RELS)
+        })
     }
 
     pub(crate) fn get_vml_drawing_relationships(&self) -> Option<&RawRelationships> {
         self.get_relationships_list().iter().find(|&relationships| {
-            relationships.get_file_target().starts_with(PKG_VML_DRAWING_RELS)
+            relationships
+                .get_file_target()
+                .starts_with(PKG_VML_DRAWING_RELS)
         })
     }
 
@@ -73,7 +77,8 @@ impl RawWorksheet {
         arv: &mut zip::read::ZipArchive<R>,
         target: &str,
     ) {
-        self.get_worksheet_file_mut().set_attributes(arv, "xl", target);
+        self.get_worksheet_file_mut()
+            .set_attributes(arv, "xl", target);
 
         let base_path = self.get_worksheet_file().get_path();
         let target = self.get_worksheet_file().make_rel_name();

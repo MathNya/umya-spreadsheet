@@ -68,7 +68,11 @@ impl ReferenceSequence {
     #[inline]
     #[must_use]
     pub fn get_sqref(&self) -> String {
-        self.value.iter().map(Range::get_range).collect::<Vec<String>>().join(" ")
+        self.value
+            .iter()
+            .map(Range::get_range)
+            .collect::<Vec<String>>()
+            .join(" ")
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

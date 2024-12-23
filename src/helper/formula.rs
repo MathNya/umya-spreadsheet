@@ -128,7 +128,9 @@ const OPERATORS_SN: &str = "+-";
 const OPERATORS_INFIX: &str = "+-*/^&=><";
 const OPERATORS_POSTFIX: &str = "%";
 
-pub const ERRORS: &[&str] = &["#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?", "#NUM!", "#N/A"];
+pub const ERRORS: &[&str] = &[
+    "#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?", "#NUM!", "#N/A",
+];
 const COMPARATORS_MULTI: &[&str] = &[">=", "<=", "<>"];
 
 // Initialize the OnceLock for the Regex
@@ -243,7 +245,9 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         if let Some(current_char) = formula.chars().nth(index) {
             if OPERATORS_SN.contains(current_char)
                 && value.len() > 1
-                && get_scientific_regex().is_match(&current_char.to_string()).unwrap_or(false)
+                && get_scientific_regex()
+                    .is_match(&current_char.to_string())
+                    .unwrap_or(false)
             {
                 value.push(current_char);
                 index += 1;
@@ -968,15 +972,27 @@ mod tests {
     #[test]
     fn test() {
         let formula = "=10+9";
-        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
 
         let formula = "=SUM(E7:I7)";
-        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
 
         let formula = "=SUM(Sheet2!E7:I7)";
-        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
 
         let formula = "=\"TEST\"";
-        assert_eq!(format!("={}", render(parse_to_tokens(formula).as_ref())), formula);
+        assert_eq!(
+            format!("={}", render(parse_to_tokens(formula).as_ref())),
+            formula
+        );
     }
 }

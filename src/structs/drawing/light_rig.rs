@@ -114,7 +114,10 @@ impl LightRig {
         write_start_tag(
             writer,
             "a:lightRig",
-            vec![("rig", self.rig.get_value_string()), ("dir", self.definition.get_value_string())],
+            vec![
+                ("rig", self.rig.get_value_string()),
+                ("dir", self.definition.get_value_string()),
+            ],
             !with_inner,
         );
 

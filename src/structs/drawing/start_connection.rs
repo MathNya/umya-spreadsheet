@@ -48,7 +48,8 @@ impl StartConnection {
         e: &BytesStart,
     ) {
         self.id.set_value_string(get_attribute(e, b"id").unwrap());
-        self.index.set_value_string(get_attribute(e, b"idx").unwrap());
+        self.index
+            .set_value_string(get_attribute(e, b"idx").unwrap());
     }
 
     #[inline]
@@ -56,7 +57,10 @@ impl StartConnection {
         write_start_tag(
             writer,
             "a:stCxn",
-            vec![("id", &self.id.get_value_string()), ("idx", &self.index.get_value_string())],
+            vec![
+                ("id", &self.id.get_value_string()),
+                ("idx", &self.index.get_value_string()),
+            ],
             true,
         );
     }

@@ -373,7 +373,10 @@ impl SheetProtection {
             attributes.push(("deleteColumns", self.delete_columns.get_value_string()));
         }
         if self.insert_hyperlinks.has_value() {
-            attributes.push(("insertHyperlinks", self.insert_hyperlinks.get_value_string()));
+            attributes.push((
+                "insertHyperlinks",
+                self.insert_hyperlinks.get_value_string(),
+            ));
         }
         if self.auto_filter.has_value() {
             attributes.push(("autoFilter", self.auto_filter.get_value_string()));
@@ -397,10 +400,16 @@ impl SheetProtection {
             attributes.push(("pivotTables", self.pivot_tables.get_value_string()));
         }
         if self.select_locked_cells.has_value() {
-            attributes.push(("selectLockedCells", self.select_locked_cells.get_value_string()));
+            attributes.push((
+                "selectLockedCells",
+                self.select_locked_cells.get_value_string(),
+            ));
         }
         if self.select_unlocked_cells.has_value() {
-            attributes.push(("selectUnlockedCells", self.select_unlocked_cells.get_value_string()));
+            attributes.push((
+                "selectUnlockedCells",
+                self.select_unlocked_cells.get_value_string(),
+            ));
         }
         if self.sort.has_value() {
             attributes.push(("sort", self.sort.get_value_string()));

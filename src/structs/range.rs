@@ -23,7 +23,10 @@ impl Range {
         let org_value = value.into();
         let coordinate_collection: Vec<&str> = org_value.split(':').collect();
 
-        assert!(matches!(coordinate_collection.len(), 1 | 2), "Non-standard coordinate");
+        assert!(
+            matches!(coordinate_collection.len(), 1 | 2),
+            "Non-standard coordinate"
+        );
 
         let (
             row,         //

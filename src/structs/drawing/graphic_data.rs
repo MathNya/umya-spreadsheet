@@ -85,7 +85,12 @@ impl GraphicData {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // a:graphicData
-        write_start_tag(writer, "a:graphicData", vec![("uri", DRAWINGML_CHART_NS)], false);
+        write_start_tag(
+            writer,
+            "a:graphicData",
+            vec![("uri", DRAWINGML_CHART_NS)],
+            false,
+        );
 
         // c:chart
         rel_list.push((String::from("CHART"), String::new()));

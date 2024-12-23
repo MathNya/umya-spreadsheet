@@ -38,6 +38,11 @@ impl EditingLanguage {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:lang
-        write_start_tag(writer, "c:lang", vec![("val", self.val.get_value_str())], true);
+        write_start_tag(
+            writer,
+            "c:lang",
+            vec![("val", self.val.get_value_str())],
+            true,
+        );
     }
 }

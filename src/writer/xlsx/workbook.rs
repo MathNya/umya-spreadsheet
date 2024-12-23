@@ -34,7 +34,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // workbook
@@ -49,7 +55,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "fileVersion",
-        vec![("appName", "xl"), ("lastEdited", "5"), ("lowestEdited", "4"), ("rupBuild", "9302")],
+        vec![
+            ("appName", "xl"),
+            ("lastEdited", "5"),
+            ("lowestEdited", "4"),
+            ("rupBuild", "9302"),
+        ],
         true,
     );
 
@@ -58,7 +69,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     attributes.push(("filterPrivacy", "1"));
     // attributes.push(("defaultThemeVersion", "124226"));
     if spreadsheet.get_has_macros() {
-        attributes.push(("codeName", spreadsheet.get_code_name().unwrap_or("ThisWorkbook")));
+        attributes.push((
+            "codeName",
+            spreadsheet.get_code_name().unwrap_or("ThisWorkbook"),
+        ));
     }
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 

@@ -131,7 +131,12 @@ impl GradientStop {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:gs
-        write_start_tag(writer, "a:gs", vec![("pos", &self.position.to_string())], false);
+        write_start_tag(
+            writer,
+            "a:gs",
+            vec![("pos", &self.position.to_string())],
+            false,
+        );
 
         // a:schemeClr
         if let Some(v) = &self.scheme_color {

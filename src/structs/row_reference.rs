@@ -16,7 +16,10 @@ pub struct RowReference {
 impl Default for RowReference {
     #[inline]
     fn default() -> Self {
-        Self { num: 1, is_lock: false }
+        Self {
+            num: 1,
+            is_lock: false,
+        }
     }
 }
 

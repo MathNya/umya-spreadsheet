@@ -212,8 +212,13 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         constants::KEY_BITLENGTH,
         &constants::BLOCK_VERIFIER_HASH_INPUT,
     );
-    let encrypted_verifier_hash_input =
-        utils_algo::crypt(true, &verifier_hash_input_key, &key_salt, &verifier_hash_input).unwrap();
+    let encrypted_verifier_hash_input = utils_algo::crypt(
+        true,
+        &verifier_hash_input_key,
+        &key_salt,
+        &verifier_hash_input,
+    )
+    .unwrap();
 
     // Generate verifier hash value and encrypt it
     let verifier_hash_value = utils_other::hash_concatenated(&[&verifier_hash_input]);
@@ -224,8 +229,13 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
         constants::KEY_BITLENGTH,
         &constants::BLOCK_VERIFIER_HASH_VALUE,
     );
-    let encrypted_verifier_hash_value =
-        utils_algo::crypt(true, &verifier_hash_value_key, &key_salt, &verifier_hash_value).unwrap();
+    let encrypted_verifier_hash_value = utils_algo::crypt(
+        true,
+        &verifier_hash_value_key,
+        &key_salt,
+        &verifier_hash_value,
+    )
+    .unwrap();
 
     // Build the encryption info XML data
     let encryption_info_buffer = utils_algo::build_encryption_info(
@@ -339,7 +349,10 @@ mod tests {
             constants::KEY_BITLENGTH,
             &constants::BLOCK_KEYS_KEY,
         );
-        assert_eq!(key, hex!("8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d"));
+        assert_eq!(
+            key,
+            hex!("8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d")
+        );
 
         let encrypted_key_value = utils_algo::crypt(true, &key, &key_salt, &package_key).unwrap();
         assert_eq!(
@@ -361,9 +374,13 @@ mod tests {
             hex!("44e4b664c512b08e7577aa3fc7e11ad603e0877a476931fad5aa79e203304aff")
         );
 
-        let encrypted_verifier_hash_input =
-            utils_algo::crypt(true, &verifier_hash_input_key, &key_salt, &verifier_hash_input)
-                .unwrap();
+        let encrypted_verifier_hash_input = utils_algo::crypt(
+            true,
+            &verifier_hash_input_key,
+            &key_salt,
+            &verifier_hash_input,
+        )
+        .unwrap();
         // Uncomment the following lines to check the encrypted verifier hash input
         // let converted = encode_hex(&encrypted_verifier_hash_input);
         // assert_eq!(&converted, "2fb9eea58e227ffa549449e941f1199e");
@@ -390,9 +407,13 @@ mod tests {
         //     "d5515a6062e3e99551b80b92db1fe646483884cdb63e1e7595a9f2cca7532884"
         // );
 
-        let encrypted_verifier_hash_value =
-            utils_algo::crypt(true, &verifier_hash_value_key, &key_salt, &verifier_hash_value)
-                .unwrap();
+        let encrypted_verifier_hash_value = utils_algo::crypt(
+            true,
+            &verifier_hash_value_key,
+            &key_salt,
+            &verifier_hash_value,
+        )
+        .unwrap();
         // Uncomment the following lines to check the encrypted verifier hash value
         // let converted = encode_hex(&encrypted_verifier_hash_value);
         // assert_eq!(

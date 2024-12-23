@@ -46,6 +46,11 @@ impl PictureLocks {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:picLocks
         let no_change_aspect = if self.no_change_aspect { "1" } else { "2" };
-        write_start_tag(writer, "a:picLocks", vec![("noChangeAspect", no_change_aspect)], true);
+        write_start_tag(
+            writer,
+            "a:picLocks",
+            vec![("noChangeAspect", no_change_aspect)],
+            true,
+        );
     }
 }

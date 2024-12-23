@@ -38,6 +38,11 @@ impl ShowSeriesName {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:showSerName
-        write_start_tag(writer, "c:showSerName", vec![("val", self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:showSerName",
+            vec![("val", self.val.get_value_string())],
+            true,
+        );
     }
 }

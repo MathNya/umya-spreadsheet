@@ -6,9 +6,11 @@ static ADDRESS_REGEX: OnceLock<Regex> = OnceLock::new();
 
 #[must_use]
 pub fn split_address(address: &str) -> (&str, &str) {
-    address.rsplit_once('!').map_or(("", address), |(sheet_name, range)| {
-        (sheet_name.trim_matches(&['\'', '"'][..]), range)
-    })
+    address
+        .rsplit_once('!')
+        .map_or(("", address), |(sheet_name, range)| {
+            (sheet_name.trim_matches(&['\'', '"'][..]), range)
+        })
 }
 
 #[must_use]

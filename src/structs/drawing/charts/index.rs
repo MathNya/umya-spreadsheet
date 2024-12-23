@@ -38,6 +38,11 @@ impl Index {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:idx
-        write_start_tag(writer, "c:idx", vec![("val", &self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:idx",
+            vec![("val", &self.val.get_value_string())],
+            true,
+        );
     }
 }

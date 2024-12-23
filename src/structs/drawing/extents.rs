@@ -58,7 +58,10 @@ impl Extents {
         write_start_tag(
             writer,
             "a:ext",
-            vec![("cx", &self.cx.get_value_string()), ("cy", &self.cy.get_value_string())],
+            vec![
+                ("cx", &self.cx.get_value_string()),
+                ("cy", &self.cy.get_value_string()),
+            ],
             true,
         );
     }

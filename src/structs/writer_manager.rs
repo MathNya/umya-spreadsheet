@@ -47,7 +47,12 @@ pub struct WriterManager<'a, W: io::Seek + io::Write> {
 impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
     #[inline]
     pub fn new(arv: &'a mut zip::ZipWriter<W>) -> Self {
-        WriterManager { files: Vec::new(), arv, is_light: false, table_no: 0 }
+        WriterManager {
+            files: Vec::new(),
+            arv,
+            is_light: false,
+            table_no: 0,
+        }
     }
 
     #[inline]
@@ -239,8 +244,11 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
             // Override workbook
             if file.starts_with("/xl/workbook.xml") {
-                content_type =
-                    if spreadsheet.get_has_macros() { WORKBOOK_MACRO_TYPE } else { WORKBOOK_TYPE };
+                content_type = if spreadsheet.get_has_macros() {
+                    WORKBOOK_MACRO_TYPE
+                } else {
+                    WORKBOOK_TYPE
+                };
             }
 
             // Override sheet

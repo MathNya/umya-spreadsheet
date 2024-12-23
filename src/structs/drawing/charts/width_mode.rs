@@ -41,6 +41,11 @@ impl WidthMode {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:wMode
-        write_start_tag(writer, "c:wMode", vec![("val", self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:wMode",
+            vec![("val", self.val.get_value_string())],
+            true,
+        );
     }
 }

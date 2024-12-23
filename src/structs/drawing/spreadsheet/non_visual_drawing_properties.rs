@@ -78,7 +78,8 @@ impl NonVisualDrawingProperties {
         empty_flg: bool,
     ) {
         self.id.set_value_string(get_attribute(e, b"id").unwrap());
-        self.name.set_value_string(get_attribute(e, b"name").unwrap());
+        self.name
+            .set_value_string(get_attribute(e, b"name").unwrap());
         set_string_from_xml!(self, e, hidden, "hidden");
 
         if empty_flg {

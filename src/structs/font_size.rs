@@ -44,7 +44,12 @@ impl FontSize {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sz
         if self.val.has_value() {
-            write_start_tag(writer, "sz", vec![("val", &self.val.get_value_string())], true);
+            write_start_tag(
+                writer,
+                "sz",
+                vec![("val", &self.val.get_value_string())],
+                true,
+            );
         }
     }
 }

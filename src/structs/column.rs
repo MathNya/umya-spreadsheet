@@ -154,7 +154,9 @@ impl Column {
 
         let mut cell_list = cells.get_collection_by_column(self.get_col_num());
         cell_list.sort_by(|a, b| {
-            a.get_coordinate().get_row_num().cmp(&b.get_coordinate().get_row_num())
+            a.get_coordinate()
+                .get_row_num()
+                .cmp(&b.get_coordinate().get_row_num())
         });
         for cell in cell_list {
             let column_width = cell.get_width_point(column_font_size);
@@ -211,14 +213,16 @@ impl AdjustmentValue for Column {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         if self.col_num.get_value() >= root_num {
-            self.col_num.set_value(self.col_num.get_value() + offset_num);
+            self.col_num
+                .set_value(self.col_num.get_value() + offset_num);
         }
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         if self.col_num.get_value() >= root_num {
-            self.col_num.set_value(self.col_num.get_value() - offset_num);
+            self.col_num
+                .set_value(self.col_num.get_value() - offset_num);
         }
     }
 

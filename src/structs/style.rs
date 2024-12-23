@@ -16,16 +16,31 @@ use crate::structs::{
 /// ```rust
 /// use umya_spreadsheet::*;
 /// let mut book = new_file();
-/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("D2");
+/// let mut style = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_style_mut("D2");
 ///
 /// // add bottom border
-/// style.get_borders_mut().get_bottom_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_bottom_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add top border
-/// style.get_borders_mut().get_top_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_top_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add left border
-/// style.get_borders_mut().get_left_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_left_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// // add right border
-/// style.get_borders_mut().get_right_mut().set_border_style(Border::BORDER_MEDIUM);
+/// style
+///     .get_borders_mut()
+///     .get_right_mut()
+///     .set_border_style(Border::BORDER_MEDIUM);
 /// ```
 ///
 /// ## change cell color
@@ -34,7 +49,10 @@ use crate::structs::{
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+/// let mut style = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_style_mut("A1");
 ///
 /// // fill color on red.
 /// style.set_background_color(Color::COLOR_RED);
@@ -46,10 +64,16 @@ use crate::structs::{
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
+/// let mut style = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_style_mut("A1");
 ///
 /// // font color on red.
-/// style.get_font_mut().get_color_mut().set_argb(Color::COLOR_RED);
+/// style
+///     .get_font_mut()
+///     .get_color_mut()
+///     .set_argb(Color::COLOR_RED);
 /// ```
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Style {
@@ -111,7 +135,8 @@ impl Style {
     #[inline]
     #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
-        self.get_fill().and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
+        self.get_fill()
+            .and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
     }
 
     #[inline]
@@ -141,7 +166,10 @@ impl Style {
             .set_pattern_type(pattern)
             .get_background_color_mut()
             .set_argb(color1);
-        self.get_fill_mut().get_pattern_fill_mut().get_foreground_color_mut().set_argb(color2);
+        self.get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .set_argb(color2);
         self
     }
 
@@ -165,7 +193,8 @@ impl Style {
 
     #[inline]
     pub fn get_borders_mut(&mut self) -> &mut Borders {
-        self.borders.get_or_insert(Box::new(Borders::get_default_value()))
+        self.borders
+            .get_or_insert(Box::new(Borders::get_default_value()))
     }
 
     #[inline]
@@ -223,7 +252,8 @@ impl Style {
 
     #[inline]
     pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
-        self.numbering_format.get_or_insert(Box::new(NumberingFormat::default()))
+        self.numbering_format
+            .get_or_insert(Box::new(NumberingFormat::default()))
     }
 
     #[inline]
@@ -315,7 +345,10 @@ impl Style {
     #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         !(self.fill.as_ref().is_some_and(|x| !x.is_visually_empty())
-            || self.borders.as_ref().is_some_and(|x| !x.is_visually_empty()))
+            || self
+                .borders
+                .as_ref()
+                .is_some_and(|x| !x.is_visually_empty()))
     }
 
     #[inline]

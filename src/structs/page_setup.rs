@@ -161,8 +161,10 @@ impl PageSetup {
         set_string_from_xml!(self, e, vertical_dpi, "verticalDpi");
 
         if let Some(r_id) = get_attribute(e, b"r:id") {
-            let attached_file =
-                relationships.unwrap().get_relationship_by_rid(&r_id).get_raw_file();
+            let attached_file = relationships
+                .unwrap()
+                .get_relationship_by_rid(&r_id)
+                .get_raw_file();
             self.set_object_data(attached_file.get_file_data());
         }
     }

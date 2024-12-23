@@ -69,7 +69,11 @@ pub(crate) fn crypt_package(
     input: &[u8],
 ) -> Vec<u8> {
     let mut output_chunks: Vec<Vec<u8>> = Vec::new();
-    let offset = if encrypt { 0 } else { constants::PACKAGE_OFFSET };
+    let offset = if encrypt {
+        0
+    } else {
+        constants::PACKAGE_OFFSET
+    };
 
     // Process the package in chunks
     let mut i: usize = 0;
@@ -200,14 +204,24 @@ pub(crate) fn build_encryption_info(
 ) -> Vec<u8> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // Start encryption element
     write_start_tag(
         &mut writer,
         "encryption",
-        vec![("xmlns", ENCRYPTION_NS), ("xmlns:p", PASSWORD_NS), ("xmlns:c", CERTIFICATE_NS)],
+        vec![
+            ("xmlns", ENCRYPTION_NS),
+            ("xmlns:p", PASSWORD_NS),
+            ("xmlns:c", CERTIFICATE_NS),
+        ],
         false,
     );
 
@@ -233,8 +247,14 @@ pub(crate) fn build_encryption_info(
         &mut writer,
         "dataIntegrity",
         vec![
-            ("encryptedHmacKey", &STANDARD.encode(data_integrity_encrypted_hmac_key)),
-            ("encryptedHmacValue", &STANDARD.encode(data_integrity_encrypted_hmac_value)),
+            (
+                "encryptedHmacKey",
+                &STANDARD.encode(data_integrity_encrypted_hmac_key),
+            ),
+            (
+                "encryptedHmacValue",
+                &STANDARD.encode(data_integrity_encrypted_hmac_value),
+            ),
         ],
         true,
     );
@@ -243,7 +263,12 @@ pub(crate) fn build_encryption_info(
     write_start_tag(&mut writer, "keyEncryptors", vec![], false);
 
     // keyEncryptor element
-    write_start_tag(&mut writer, "keyEncryptor", vec![("uri", PASSWORD_NS)], false);
+    write_start_tag(
+        &mut writer,
+        "keyEncryptor",
+        vec![("uri", PASSWORD_NS)],
+        false,
+    );
 
     // p:encryptedKey element
     write_start_tag(
@@ -259,9 +284,18 @@ pub(crate) fn build_encryption_info(
             ("cipherChaining", constants::KEY_CIPHER_CHAINING),
             ("hashAlgorithm", constants::KEY_HASH_ALGORITHM),
             ("saltValue", &STANDARD.encode(key_salt)),
-            ("encryptedVerifierHashInput", &STANDARD.encode(key_encrypted_verifier_hash_input)),
-            ("encryptedVerifierHashValue", &STANDARD.encode(key_encrypted_verifier_hash_value)),
-            ("encryptedKeyValue", &STANDARD.encode(key_encrypted_key_value)),
+            (
+                "encryptedVerifierHashInput",
+                &STANDARD.encode(key_encrypted_verifier_hash_input),
+            ),
+            (
+                "encryptedVerifierHashValue",
+                &STANDARD.encode(key_encrypted_verifier_hash_value),
+            ),
+            (
+                "encryptedKeyValue",
+                &STANDARD.encode(key_encrypted_key_value),
+            ),
         ],
         true,
     );

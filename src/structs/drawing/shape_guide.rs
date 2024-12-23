@@ -34,6 +34,11 @@ impl ShapeGuide {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        write_start_tag(writer, "a:gd", vec![("name", &self.name), ("fmla", &self.fmla)], true);
+        write_start_tag(
+            writer,
+            "a:gd",
+            vec![("name", &self.name), ("fmla", &self.fmla)],
+            true,
+        );
     }
 }

@@ -109,7 +109,9 @@ use crate::{
 ///     to_marker,
 ///     area_chart_series_list,
 /// );
-/// book.get_sheet_by_name_mut("Sheet1").unwrap().add_chart(chart);
+/// book.get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .add_chart(chart);
 ///
 /// // Get Chart by Worksheet.
 /// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
@@ -125,7 +127,11 @@ use crate::{
 /// let charts = worksheet.get_charts_by_column_and_row_mut(&3, 1);
 ///
 /// // Set Chart Title, Series Title, Horizonal Title and Vertical Title.
-/// let mut chart = book.get_sheet_by_name_mut("Sheet1").unwrap().get_chart_mut("C1").unwrap();
+/// let mut chart = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_chart_mut("C1")
+///     .unwrap();
 /// chart
 ///     .set_series_title(vec!["Line1", "Line2"])
 ///     .set_series_point_title(vec!["Point1", "Point2", "Point3", "Point4"])
@@ -202,7 +208,10 @@ impl Chart {
 
     pub fn set_series_title<S: Into<String>>(&mut self, value: Vec<S>) -> &mut Self {
         let mut value_iter = value.into_iter().map(Into::into);
-        for series in self.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+        for series in self
+            .get_area_chart_series_list_mut()
+            .get_area_chart_series_mut()
+        {
             let value_raw = value_iter.next();
             if let Some(v) = value_raw {
                 let mut series_text = SeriesText::default();
@@ -220,7 +229,10 @@ impl Chart {
             string_point.get_numeric_value_mut().set_text(v);
             string_literal.add_string_point_list(string_point);
         }
-        for series in self.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+        for series in self
+            .get_area_chart_series_list_mut()
+            .get_area_chart_series_mut()
+        {
             if let Some(v) = series.get_category_axis_data_mut() {
                 v.remove_string_reference();
                 v.set_string_literal(string_literal.clone());
@@ -235,7 +247,9 @@ impl Chart {
 
     #[inline]
     pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
-        self.get_chart_space_mut().get_chart_mut().get_plot_area_mut()
+        self.get_chart_space_mut()
+            .get_chart_mut()
+            .get_plot_area_mut()
     }
 
     #[inline]
@@ -281,7 +295,10 @@ impl Chart {
 
     pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
         match self.two_cell_anchor.get_graphic_frame_mut() {
-            Some(v) => v.get_graphic_mut().get_graphic_data_mut().get_chart_space_mut(),
+            Some(v) => v
+                .get_graphic_mut()
+                .get_graphic_data_mut()
+                .get_chart_space_mut(),
             None => {
                 panic!("Non-ChartSpace.");
             }
@@ -361,28 +378,38 @@ impl Chart {
 
     fn convert_series(area_chart_series_list: Vec<&str>, smooth: bool) -> AreaChartSeriesList {
         let mut acsl_obj = AreaChartSeriesList::default();
-        area_chart_series_list.into_iter().enumerate().for_each(|(idx, area_chart_series)| {
-            let mut values = Values::default();
-            values.get_number_reference_mut().get_formula_mut().set_address_str(area_chart_series);
-            values
-                .get_number_reference_mut()
-                .get_numbering_cache_mut()
-                .get_format_code_mut()
-                .set_text("General");
+        area_chart_series_list
+            .into_iter()
+            .enumerate()
+            .for_each(|(idx, area_chart_series)| {
+                let mut values = Values::default();
+                values
+                    .get_number_reference_mut()
+                    .get_formula_mut()
+                    .set_address_str(area_chart_series);
+                values
+                    .get_number_reference_mut()
+                    .get_numbering_cache_mut()
+                    .get_format_code_mut()
+                    .set_text("General");
 
-            let mut acs_object = AreaChartSeries::default();
-            acs_object.get_index_mut().set_val(u32::try_from(idx).unwrap());
-            acs_object.get_order_mut().set_val(u32::try_from(idx).unwrap());
-            acs_object.set_values(values);
-            if smooth {
-                acs_object.set_smooth(Smooth::default());
-            } else {
-                let mut invert_if_negative = InvertIfNegative::default();
-                invert_if_negative.set_val(0f64);
-                acs_object.set_invert_if_negative(invert_if_negative);
-            }
-            acsl_obj.add_area_chart_series(acs_object);
-        });
+                let mut acs_object = AreaChartSeries::default();
+                acs_object
+                    .get_index_mut()
+                    .set_val(u32::try_from(idx).unwrap());
+                acs_object
+                    .get_order_mut()
+                    .set_val(u32::try_from(idx).unwrap());
+                acs_object.set_values(values);
+                if smooth {
+                    acs_object.set_smooth(Smooth::default());
+                } else {
+                    let mut invert_if_negative = InvertIfNegative::default();
+                    invert_if_negative.set_val(0f64);
+                    acs_object.set_invert_if_negative(invert_if_negative);
+                }
+                acsl_obj.add_area_chart_series(acs_object);
+            });
         acsl_obj
     }
 
@@ -396,7 +423,9 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut line_chart = LineChart::default();
-        line_chart.get_grouping_mut().set_val(GroupingValues::Stacked);
+        line_chart
+            .get_grouping_mut()
+            .set_val(GroupingValues::Stacked);
         line_chart.set_area_chart_series_list(acsl_obj);
         line_chart.get_show_marker_mut().set_val(true);
         line_chart.add_axis_id(axis_id1);
@@ -404,11 +433,22 @@ impl Chart {
 
         let mut category_axis = CategoryAxis::default();
         category_axis.get_axis_id_mut().set_val(213_468_160);
-        category_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        category_axis.get_major_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        category_axis.get_tick_crossing_axis_mut().set_val(169_590_080);
+        category_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        category_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        category_axis
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
@@ -416,14 +456,29 @@ impl Chart {
 
         let mut value_axis = ValueAxis::default();
         value_axis.get_axis_id_mut().set_val(169_590_080);
-        value_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis.get_numbering_format_mut().set_format_code("General");
-        value_axis.get_numbering_format_mut().set_source_linked(true);
-        value_axis.get_major_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
+        value_axis
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
@@ -514,18 +569,31 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut line_3d_chart = Line3DChart::default();
-        line_3d_chart.get_grouping_mut().set_val(GroupingValues::Stacked);
+        line_3d_chart
+            .get_grouping_mut()
+            .set_val(GroupingValues::Stacked);
         line_3d_chart.set_area_chart_series_list(acsl_obj);
         line_3d_chart.add_axis_id(axis_id1);
         line_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
         category_axis.get_axis_id_mut().set_val(213_468_160);
-        category_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        category_axis.get_major_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        category_axis.get_tick_crossing_axis_mut().set_val(169_590_080);
+        category_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        category_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        category_axis
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
@@ -533,14 +601,29 @@ impl Chart {
 
         let mut value_axis = ValueAxis::default();
         value_axis.get_axis_id_mut().set_val(169_590_080);
-        value_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis.get_numbering_format_mut().set_format_code("General");
-        value_axis.get_numbering_format_mut().set_source_linked(true);
-        value_axis.get_major_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
+        value_axis
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
@@ -625,7 +708,9 @@ impl Chart {
         let mut pie_chart = PieChart::default();
         pie_chart.get_vary_colors_mut().set_val(true);
         pie_chart.set_area_chart_series_list(acsl_obj);
-        pie_chart.get_data_labels_mut().set_show_leader_lines(show_leader_lines);
+        pie_chart
+            .get_data_labels_mut()
+            .set_show_leader_lines(show_leader_lines);
 
         let layout = Layout::default();
 
@@ -633,8 +718,12 @@ impl Chart {
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph.get_paragraph_properties_mut().set_right_to_left("0");
-        paragraph.get_paragraph_properties_mut().set_default_run_properties(default_run_properties);
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_right_to_left("0");
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
         let mut text_properties = TextProperties::default();
@@ -718,7 +807,9 @@ impl Chart {
         let mut pie_3d_chart = Pie3DChart::default();
         pie_3d_chart.get_vary_colors_mut().set_val(true);
         pie_3d_chart.set_area_chart_series_list(acsl_obj);
-        pie_3d_chart.get_data_labels_mut().set_show_leader_lines(show_leader_lines);
+        pie_3d_chart
+            .get_data_labels_mut()
+            .set_show_leader_lines(show_leader_lines);
 
         let layout = Layout::default();
 
@@ -726,8 +817,12 @@ impl Chart {
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph.get_paragraph_properties_mut().set_right_to_left("0");
-        paragraph.get_paragraph_properties_mut().set_default_run_properties(default_run_properties);
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_right_to_left("0");
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
         let mut text_properties = TextProperties::default();
@@ -805,7 +900,9 @@ impl Chart {
         for area_chart_series in area_chart_series_list {
             if ptn == 0 {
                 let mut string_reference = StringReference::default();
-                string_reference.get_formula_mut().set_address_str(area_chart_series);
+                string_reference
+                    .get_formula_mut()
+                    .set_address_str(area_chart_series);
 
                 let mut category_axis_data = CategoryAxisData::default();
                 category_axis_data.set_string_reference(string_reference);
@@ -841,7 +938,9 @@ impl Chart {
         let mut doughnut_chart = DoughnutChart::default();
         doughnut_chart.get_vary_colors_mut().set_val(true);
         doughnut_chart.set_area_chart_series_list(acsl_obj);
-        doughnut_chart.get_data_labels_mut().set_show_leader_lines(show_leader_lines);
+        doughnut_chart
+            .get_data_labels_mut()
+            .set_show_leader_lines(show_leader_lines);
         doughnut_chart.get_hole_size_mut().set_val(50);
 
         let layout = Layout::default();
@@ -907,18 +1006,31 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut area_chart = AreaChart::default();
-        area_chart.get_grouping_mut().set_val(GroupingValues::Standard);
+        area_chart
+            .get_grouping_mut()
+            .set_val(GroupingValues::Standard);
         area_chart.set_area_chart_series_list(acsl_obj);
         area_chart.add_axis_id(axis_id1);
         area_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
         category_axis.get_axis_id_mut().set_val(213_468_160);
-        category_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        category_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        category_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        category_axis.get_tick_crossing_axis_mut().set_val(169_590_080);
+        category_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        category_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        category_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        category_axis
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
@@ -926,16 +1038,33 @@ impl Chart {
 
         let mut value_axis = ValueAxis::default();
         value_axis.get_axis_id_mut().set_val(169_590_080);
-        value_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis.get_numbering_format_mut().set_format_code("General");
-        value_axis.get_numbering_format_mut().set_source_linked(true);
-        value_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
+        value_axis
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
-        value_axis.get_cross_between_mut().set_val(CrossBetweenValues::MidpointCategory);
+        value_axis
+            .get_cross_between_mut()
+            .set_val(CrossBetweenValues::MidpointCategory);
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1016,18 +1145,31 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut area_3d_chart = Area3DChart::default();
-        area_3d_chart.get_grouping_mut().set_val(GroupingValues::Standard);
+        area_3d_chart
+            .get_grouping_mut()
+            .set_val(GroupingValues::Standard);
         area_3d_chart.set_area_chart_series_list(acsl_obj);
         area_3d_chart.add_axis_id(axis_id1);
         area_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
         category_axis.get_axis_id_mut().set_val(213_468_160);
-        category_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        category_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        category_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        category_axis.get_tick_crossing_axis_mut().set_val(169_590_080);
+        category_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        category_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        category_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        category_axis
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
@@ -1035,16 +1177,33 @@ impl Chart {
 
         let mut value_axis = ValueAxis::default();
         value_axis.get_axis_id_mut().set_val(169_590_080);
-        value_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis.get_numbering_format_mut().set_format_code("General");
-        value_axis.get_numbering_format_mut().set_source_linked(true);
-        value_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
+        value_axis
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
-        value_axis.get_cross_between_mut().set_val(CrossBetweenValues::MidpointCategory);
+        value_axis
+            .get_cross_between_mut()
+            .set_val(CrossBetweenValues::MidpointCategory);
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1120,8 +1279,12 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut bar_chart = BarChart::default();
-        bar_chart.get_bar_direction_mut().set_val(BarDirectionValues::Column);
-        bar_chart.get_grouping_mut().set_val(GroupingValues::Stacked);
+        bar_chart
+            .get_bar_direction_mut()
+            .set_val(BarDirectionValues::Column);
+        bar_chart
+            .get_grouping_mut()
+            .set_val(GroupingValues::Stacked);
         bar_chart.set_area_chart_series_list(acsl_obj);
         bar_chart.get_gap_width_mut().set_val(150);
         bar_chart.get_overlap_mut().set_val(100);
@@ -1130,12 +1293,25 @@ impl Chart {
 
         let mut category_axis = CategoryAxis::default();
         category_axis.get_axis_id_mut().set_val(213_468_160);
-        category_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        category_axis.get_axis_position_mut().set_val(AxisPositionValues::Bottom);
-        category_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        category_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        category_axis.get_tick_crossing_axis_mut().set_val(169_590_080);
+        category_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        category_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Bottom);
+        category_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        category_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        category_axis
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
@@ -1143,14 +1319,29 @@ impl Chart {
 
         let mut value_axis = ValueAxis::default();
         value_axis.get_axis_id_mut().set_val(169_590_080);
-        value_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis.get_numbering_format_mut().set_format_code("General");
-        value_axis.get_numbering_format_mut().set_source_linked(true);
-        value_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
+        value_axis
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let mut graphic_frame = GraphicFrame::default();
@@ -1232,8 +1423,12 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut bar_3d_chart = Bar3DChart::default();
-        bar_3d_chart.get_bar_direction_mut().set_val(BarDirectionValues::Column);
-        bar_3d_chart.get_grouping_mut().set_val(GroupingValues::Stacked);
+        bar_3d_chart
+            .get_bar_direction_mut()
+            .set_val(BarDirectionValues::Column);
+        bar_3d_chart
+            .get_grouping_mut()
+            .set_val(GroupingValues::Stacked);
         bar_3d_chart.set_area_chart_series_list(acsl_obj);
         bar_3d_chart.get_gap_width_mut().set_val(150);
         bar_3d_chart.get_shape_mut().set_val(ShapeValues::Box);
@@ -1242,12 +1437,25 @@ impl Chart {
 
         let mut category_axis = CategoryAxis::default();
         category_axis.get_axis_id_mut().set_val(213_468_160);
-        category_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        category_axis.get_axis_position_mut().set_val(AxisPositionValues::Bottom);
-        category_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        category_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        category_axis.get_tick_crossing_axis_mut().set_val(169_590_080);
+        category_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        category_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Bottom);
+        category_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        category_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        category_axis
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
@@ -1255,14 +1463,29 @@ impl Chart {
 
         let mut value_axis = ValueAxis::default();
         value_axis.get_axis_id_mut().set_val(169_590_080);
-        value_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis.get_numbering_format_mut().set_format_code("General");
-        value_axis.get_numbering_format_mut().set_source_linked(true);
-        value_axis.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
+        value_axis
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let mut graphic_frame = GraphicFrame::default();
@@ -1339,14 +1562,20 @@ impl Chart {
         of_pie_chart.get_of_pie_type_mut().set_val(OfPieValues::Bar);
         of_pie_chart.get_vary_colors_mut().set_val(true);
         of_pie_chart.set_area_chart_series_list(acsl_obj);
-        of_pie_chart.get_data_labels_mut().set_show_leader_lines(show_leader_lines);
+        of_pie_chart
+            .get_data_labels_mut()
+            .set_show_leader_lines(show_leader_lines);
 
         let default_run_properties = RunProperties::default();
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph.get_paragraph_properties_mut().set_right_to_left("0");
-        paragraph.get_paragraph_properties_mut().set_default_run_properties(default_run_properties);
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_right_to_left("0");
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
         let mut text_properties = TextProperties::default();
@@ -1482,40 +1711,84 @@ impl Chart {
         bubble_chart.get_bubble_scale_mut().set_val(100);
         bubble_chart.add_axis_id(axis_id1);
         bubble_chart.add_axis_id(axis_id2);
-        bubble_chart.get_data_labels_mut().set_show_leader_lines(show_leader_lines);
+        bubble_chart
+            .get_data_labels_mut()
+            .set_show_leader_lines(show_leader_lines);
 
         let mut value_axis_1 = ValueAxis::default();
         value_axis_1.get_axis_id_mut().set_val(213_468_160);
-        value_axis_1.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis_1.get_axis_position_mut().set_val(AxisPositionValues::Bottom);
-        value_axis_1.get_numbering_format_mut().set_format_code("General");
-        value_axis_1.get_numbering_format_mut().set_source_linked(true);
-        value_axis_1.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis_1.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis_1.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        value_axis_1.get_tick_crossing_axis_mut().set_val(169_590_080);
-        value_axis_1.get_cross_between_mut().set_val(CrossBetweenValues::MidpointCategory);
+        value_axis_1
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis_1
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Bottom);
+        value_axis_1
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis_1
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis_1
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis_1
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis_1
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        value_axis_1
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
+        value_axis_1
+            .get_cross_between_mut()
+            .set_val(CrossBetweenValues::MidpointCategory);
 
         let major_gridlines = MajorGridlines::default();
         let mut value_axis_2 = ValueAxis::default();
         value_axis_2.get_axis_id_mut().set_val(169_590_080);
-        value_axis_2.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis_2.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis_2
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis_2
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis_2.set_major_gridlines(major_gridlines);
-        value_axis_2.get_numbering_format_mut().set_format_code("General");
-        value_axis_2.get_numbering_format_mut().set_source_linked(true);
-        value_axis_2.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis_2.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis_2.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        value_axis_2.get_tick_crossing_axis_mut().set_val(213_468_160);
-        value_axis_2.get_cross_between_mut().set_val(CrossBetweenValues::MidpointCategory);
+        value_axis_2
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis_2
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis_2
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis_2
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis_2
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        value_axis_2
+            .get_tick_crossing_axis_mut()
+            .set_val(213_468_160);
+        value_axis_2
+            .get_cross_between_mut()
+            .set_val(CrossBetweenValues::MidpointCategory);
 
         let default_run_properties = RunProperties::default();
         let mut end_paragraph_run_properties = RunProperties::default();
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
-        paragraph.get_paragraph_properties_mut().set_right_to_left("0");
-        paragraph.get_paragraph_properties_mut().set_default_run_properties(default_run_properties);
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_right_to_left("0");
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
         let mut text_properties = TextProperties::default();
@@ -1602,11 +1875,22 @@ impl Chart {
 
         let mut category_axis = CategoryAxis::default();
         category_axis.get_axis_id_mut().set_val(213_468_160);
-        category_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        category_axis.get_major_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        category_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        category_axis.get_tick_crossing_axis_mut().set_val(169_590_080);
+        category_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        category_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        category_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        category_axis
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
@@ -1614,14 +1898,29 @@ impl Chart {
 
         let mut value_axis = ValueAxis::default();
         value_axis.get_axis_id_mut().set_val(169_590_080);
-        value_axis.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
-        value_axis.get_numbering_format_mut().set_format_code("General");
-        value_axis.get_numbering_format_mut().set_source_linked(true);
-        value_axis.get_major_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
+        value_axis
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
@@ -1751,29 +2050,67 @@ impl Chart {
 
         let mut value_axis_1 = ValueAxis::default();
         value_axis_1.get_axis_id_mut().set_val(213_468_160);
-        value_axis_1.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis_1.get_axis_position_mut().set_val(AxisPositionValues::Bottom);
-        value_axis_1.get_numbering_format_mut().set_format_code("General");
-        value_axis_1.get_numbering_format_mut().set_source_linked(true);
-        value_axis_1.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis_1.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis_1.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        value_axis_1.get_tick_crossing_axis_mut().set_val(169_590_080);
-        value_axis_1.get_cross_between_mut().set_val(CrossBetweenValues::MidpointCategory);
+        value_axis_1
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis_1
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Bottom);
+        value_axis_1
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis_1
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis_1
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis_1
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis_1
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        value_axis_1
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
+        value_axis_1
+            .get_cross_between_mut()
+            .set_val(CrossBetweenValues::MidpointCategory);
 
         let major_gridlines = MajorGridlines::default();
         let mut value_axis_2 = ValueAxis::default();
         value_axis_2.get_axis_id_mut().set_val(169_590_080);
-        value_axis_2.get_scaling_mut().get_orientation_mut().set_val(OrientationValues::MinMax);
-        value_axis_2.get_axis_position_mut().set_val(AxisPositionValues::Left);
+        value_axis_2
+            .get_scaling_mut()
+            .get_orientation_mut()
+            .set_val(OrientationValues::MinMax);
+        value_axis_2
+            .get_axis_position_mut()
+            .set_val(AxisPositionValues::Left);
         value_axis_2.set_major_gridlines(major_gridlines);
-        value_axis_2.get_numbering_format_mut().set_format_code("General");
-        value_axis_2.get_numbering_format_mut().set_source_linked(true);
-        value_axis_2.get_major_tick_mark_mut().set_val(TickMarkValues::Outside);
-        value_axis_2.get_minor_tick_mark_mut().set_val(TickMarkValues::None);
-        value_axis_2.get_tick_label_position_mut().set_val(TickLabelPositionValues::NextTo);
-        value_axis_2.get_tick_crossing_axis_mut().set_val(213_468_160);
-        value_axis_2.get_cross_between_mut().set_val(CrossBetweenValues::MidpointCategory);
+        value_axis_2
+            .get_numbering_format_mut()
+            .set_format_code("General");
+        value_axis_2
+            .get_numbering_format_mut()
+            .set_source_linked(true);
+        value_axis_2
+            .get_major_tick_mark_mut()
+            .set_val(TickMarkValues::Outside);
+        value_axis_2
+            .get_minor_tick_mark_mut()
+            .set_val(TickMarkValues::None);
+        value_axis_2
+            .get_tick_label_position_mut()
+            .set_val(TickLabelPositionValues::NextTo);
+        value_axis_2
+            .get_tick_crossing_axis_mut()
+            .set_val(213_468_160);
+        value_axis_2
+            .get_cross_between_mut()
+            .set_val(CrossBetweenValues::MidpointCategory);
 
         let layout = Layout::default();
 
@@ -1867,7 +2204,9 @@ impl Chart {
         let default_run_properties = RunProperties::default();
 
         let mut paragraph = Paragraph::default();
-        paragraph.get_paragraph_properties_mut().set_default_run_properties(default_run_properties);
+        paragraph
+            .get_paragraph_properties_mut()
+            .set_default_run_properties(default_run_properties);
         paragraph.add_run(run);
 
         let mut chart_text = ChartText::default();
@@ -1938,13 +2277,15 @@ impl AdjustmentCoordinateWithSheet for Chart {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        self.two_cell_anchor.as_mut().adjustment_insert_coordinate_with_sheet(
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.two_cell_anchor
+            .as_mut()
+            .adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
     }
 
     #[inline]
@@ -1956,12 +2297,14 @@ impl AdjustmentCoordinateWithSheet for Chart {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        self.two_cell_anchor.as_mut().adjustment_insert_coordinate_with_sheet(
-            sheet_name,
-            root_col_num,
-            offset_col_num,
-            root_row_num,
-            offset_row_num,
-        );
+        self.two_cell_anchor
+            .as_mut()
+            .adjustment_insert_coordinate_with_sheet(
+                sheet_name,
+                root_col_num,
+                offset_col_num,
+                root_row_num,
+                offset_row_num,
+            );
     }
 }

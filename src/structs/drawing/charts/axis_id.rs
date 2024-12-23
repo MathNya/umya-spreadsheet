@@ -38,6 +38,11 @@ impl AxisId {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:axId
-        write_start_tag(writer, "c:axId", vec![("val", &self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:axId",
+            vec![("val", &self.val.get_value_string())],
+            true,
+        );
     }
 }

@@ -88,12 +88,15 @@ impl PageMargins {
         _reader: &mut Reader<R>,
         e: &BytesStart,
     ) {
-        self.bottom.set_value_string(get_attribute(e, b"b").unwrap());
+        self.bottom
+            .set_value_string(get_attribute(e, b"b").unwrap());
         self.left.set_value_string(get_attribute(e, b"l").unwrap());
         self.right.set_value_string(get_attribute(e, b"r").unwrap());
         self.top.set_value_string(get_attribute(e, b"t").unwrap());
-        self.header.set_value_string(get_attribute(e, b"header").unwrap());
-        self.footer.set_value_string(get_attribute(e, b"footer").unwrap());
+        self.header
+            .set_value_string(get_attribute(e, b"header").unwrap());
+        self.footer
+            .set_value_string(get_attribute(e, b"footer").unwrap());
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

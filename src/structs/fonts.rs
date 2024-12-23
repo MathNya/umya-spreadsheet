@@ -98,7 +98,10 @@ impl Fonts {
             write_start_tag(
                 writer,
                 "fonts",
-                vec![("count", &self.font.len().to_string()), ("x14ac:knownFonts", "1")],
+                vec![
+                    ("count", &self.font.len().to_string()),
+                    ("x14ac:knownFonts", "1"),
+                ],
                 false,
             );
 

@@ -108,7 +108,10 @@ impl Address {
                 with_space_char = "'";
             }
         }
-        format!("{}{}{}!{}", &with_space_char, sheet_name, &with_space_char, range)
+        format!(
+            "{}{}{}!{}",
+            &with_space_char, sheet_name, &with_space_char, range
+        )
     }
 }
 impl AdjustmentCoordinateWithSheet for Address {

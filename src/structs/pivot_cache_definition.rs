@@ -245,7 +245,10 @@ impl PivotCacheDefinition {
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push(("minRefreshableVersion", min_refreshable_version_str.as_str()));
+            attributes.push((
+                "minRefreshableVersion",
+                min_refreshable_version_str.as_str(),
+            ));
         }
         let record_count_str = self.record_count.get_value_string();
         if self.record_count.has_value() {

@@ -34,7 +34,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
         // XML header
-        writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
+        writer
+            .write_event(Event::Decl(BytesDecl::new(
+                "1.0",
+                Some("UTF-8"),
+                Some("yes"),
+            )))
+            .unwrap();
         write_new_line(&mut writer);
 
         // table area coordinates
@@ -105,10 +111,22 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 "tableStyleInfo",
                 vec![
                     ("name", style_info.get_name()),
-                    ("showFirstColumn", &i32::from(style_info.is_show_first_col()).to_string()),
-                    ("showLastColumn", &i32::from(style_info.is_show_last_col()).to_string()),
-                    ("showRowStripes", &i32::from(style_info.is_show_row_stripes()).to_string()),
-                    ("showColumnStripes", &i32::from(style_info.is_show_col_stripes()).to_string()),
+                    (
+                        "showFirstColumn",
+                        &i32::from(style_info.is_show_first_col()).to_string(),
+                    ),
+                    (
+                        "showLastColumn",
+                        &i32::from(style_info.is_show_last_col()).to_string(),
+                    ),
+                    (
+                        "showRowStripes",
+                        &i32::from(style_info.is_show_row_stripes()).to_string(),
+                    ),
+                    (
+                        "showColumnStripes",
+                        &i32::from(style_info.is_show_col_stripes()).to_string(),
+                    ),
                 ],
                 true,
             );

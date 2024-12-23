@@ -78,8 +78,10 @@ impl Blip {
 
         let picture_id = get_attribute(e, b"r:embed").unwrap();
         let relationship = drawing_relationships.get_relationship_by_rid(&picture_id);
-        self.get_image_mut().set_image_name(relationship.get_raw_file().get_file_name());
-        self.get_image_mut().set_image_data(relationship.get_raw_file().get_file_data());
+        self.get_image_mut()
+            .set_image_name(relationship.get_raw_file().get_file_name());
+        self.get_image_mut()
+            .set_image_data(relationship.get_raw_file().get_file_data());
 
         if empty_flag {
             return;

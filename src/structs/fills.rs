@@ -89,7 +89,12 @@ impl Fills {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if !self.fill.is_empty() {
             // fills
-            write_start_tag(writer, "fills", vec![("count", &self.fill.len().to_string())], false);
+            write_start_tag(
+                writer,
+                "fills",
+                vec![("count", &self.fill.len().to_string())],
+                false,
+            );
 
             // fill
             for fill in &self.fill {

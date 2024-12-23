@@ -41,6 +41,11 @@ impl Shape {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:shape
-        write_start_tag(writer, "c:shape", vec![("val", self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:shape",
+            vec![("val", self.val.get_value_string())],
+            true,
+        );
     }
 }

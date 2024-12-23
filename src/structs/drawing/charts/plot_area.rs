@@ -407,91 +407,130 @@ impl PlotArea {
     pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
         if let Some(v) = &mut self.line_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.line_3d_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.pie_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.pie_3d_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.doughnut_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.scatter_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.bar_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.bar_3d_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.radar_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.bubble_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.area_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.area_3d_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.of_pie_chart {
-            for ser in v.get_area_chart_series_list_mut().get_area_chart_series_mut() {
+            for ser in v
+                .get_area_chart_series_list_mut()
+                .get_area_chart_series_mut()
+            {
                 for formula in ser.get_formula_mut() {
                     result.push(formula);
                 }

@@ -263,7 +263,12 @@ impl RgbColorModelHex {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srgbClr
         if self.with_inner_params() {
-            write_start_tag(writer, "a:srgbClr", vec![("val", (self.val.get_value_str()))], false);
+            write_start_tag(
+                writer,
+                "a:srgbClr",
+                vec![("val", (self.val.get_value_str()))],
+                false,
+            );
 
             // a:luminance
             if let Some(v) = &self.luminance {
@@ -307,7 +312,12 @@ impl RgbColorModelHex {
 
             write_end_tag(writer, "a:srgbClr");
         } else {
-            write_start_tag(writer, "a:srgbClr", vec![("val", (self.val.get_value_str()))], true);
+            write_start_tag(
+                writer,
+                "a:srgbClr",
+                vec![("val", (self.val.get_value_str()))],
+                true,
+            );
         }
     }
 }

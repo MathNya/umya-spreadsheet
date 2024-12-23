@@ -44,6 +44,11 @@ impl PresetDash {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:prstDash
-        write_start_tag(writer, "a:prstDash", vec![("val", self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "a:prstDash",
+            vec![("val", self.val.get_value_string())],
+            true,
+        );
     }
 }

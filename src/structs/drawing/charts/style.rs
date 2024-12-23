@@ -39,6 +39,11 @@ impl Style {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:style
-        write_start_tag(writer, "c:style", vec![("val", &self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:style",
+            vec![("val", &self.val.get_value_string())],
+            true,
+        );
     }
 }

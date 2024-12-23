@@ -41,6 +41,11 @@ impl Symbol {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:symbol
-        write_start_tag(writer, "c:symbol", vec![("val", self.val.get_value_string())], true);
+        write_start_tag(
+            writer,
+            "c:symbol",
+            vec![("val", self.val.get_value_string())],
+            true,
+        );
     }
 }

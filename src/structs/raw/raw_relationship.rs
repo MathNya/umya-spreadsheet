@@ -105,7 +105,8 @@ impl RawRelationship {
         }
         if self.get_target_mode() != "External" {
             let target = self.get_target().to_string();
-            self.get_raw_file_mut().set_attributes(arv, base_path, &target);
+            self.get_raw_file_mut()
+                .set_attributes(arv, base_path, &target);
         }
     }
 

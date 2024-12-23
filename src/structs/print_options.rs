@@ -66,11 +66,16 @@ impl PrintOptions {
             // printOptions
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             if self.horizontal_centered.has_value() {
-                attributes
-                    .push(("horizontalCentered", self.horizontal_centered.get_value_string()));
+                attributes.push((
+                    "horizontalCentered",
+                    self.horizontal_centered.get_value_string(),
+                ));
             }
             if self.vertical_centered.has_value() {
-                attributes.push(("verticalCentered", self.vertical_centered.get_value_string()));
+                attributes.push((
+                    "verticalCentered",
+                    self.vertical_centered.get_value_string(),
+                ));
             }
             write_start_tag(writer, "printOptions", attributes, true);
         }

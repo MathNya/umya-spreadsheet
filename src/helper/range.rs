@@ -18,7 +18,10 @@ pub fn get_coordinate_list(range_str: &str) -> Vec<BasicCellIndex> {
 pub fn get_start_and_end_point(range_str: &str) -> (u32, u32, u32, u32) {
     let coordinate_collection: Vec<&str> = range_str.split(':').collect();
 
-    assert!(matches!(coordinate_collection.len(), 1 | 2), "Non-standard range.");
+    assert!(
+        matches!(coordinate_collection.len(), 1 | 2),
+        "Non-standard range."
+    );
 
     let mut is_col_select = false;
     let mut is_row_select = false;

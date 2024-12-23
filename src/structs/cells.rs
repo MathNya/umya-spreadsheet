@@ -36,8 +36,14 @@ impl Cells {
     pub fn get_collection_sorted(&self) -> Vec<&Cell> {
         let mut cells = self.get_collection();
         cells.sort_by(|a, b| {
-            (a.get_coordinate().get_row_num(), a.get_coordinate().get_col_num())
-                .cmp(&(b.get_coordinate().get_row_num(), b.get_coordinate().get_col_num()))
+            (
+                a.get_coordinate().get_row_num(),
+                a.get_coordinate().get_col_num(),
+            )
+                .cmp(&(
+                    b.get_coordinate().get_row_num(),
+                    b.get_coordinate().get_col_num(),
+                ))
         });
         cells
     }
@@ -84,7 +90,11 @@ impl Cells {
     #[inline]
     #[must_use]
     pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
-        self.map.iter().filter(|(k, _v)| k.0 == row_num).map(|(k, v)| (k.1, v.as_ref())).collect()
+        self.map
+            .iter()
+            .filter(|(k, _v)| k.0 == row_num)
+            .map(|(k, v)| (k.1, v.as_ref()))
+            .collect()
     }
 
     #[inline]
@@ -120,7 +130,9 @@ impl Cells {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.map.get(&(row.to_owned(), col.to_owned())).map(Box::as_ref)
+        self.map
+            .get(&(row.to_owned(), col.to_owned()))
+            .map(Box::as_ref)
     }
 
     pub(crate) fn get_mut<T>(
@@ -133,18 +145,20 @@ impl Cells {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.map.entry((row.to_owned(), col.to_owned())).or_insert_with(|| {
-            let mut c = Cell::default();
-            c.get_coordinate_mut().set_col_num(col);
-            c.get_coordinate_mut().set_row_num(row);
-            if col_dimenshon.has_style() {
-                c.set_style(col_dimenshon.get_style().clone());
-            }
-            if row_dimenshon.has_style() {
-                c.set_style(row_dimenshon.get_style().clone());
-            }
-            Box::new(c)
-        })
+        self.map
+            .entry((row.to_owned(), col.to_owned()))
+            .or_insert_with(|| {
+                let mut c = Cell::default();
+                c.get_coordinate_mut().set_col_num(col);
+                c.get_coordinate_mut().set_row_num(row);
+                if col_dimenshon.has_style() {
+                    c.set_style(col_dimenshon.get_style().clone());
+                }
+                if row_dimenshon.has_style() {
+                    c.set_style(row_dimenshon.get_style().clone());
+                }
+                Box::new(c)
+            })
     }
 
     #[inline]
@@ -240,7 +254,10 @@ impl Cells {
             .iter_mut()
             .map(|(_, cell)| {
                 (
-                    (cell.get_coordinate().get_row_num(), cell.get_coordinate().get_col_num()),
+                    (
+                        cell.get_coordinate().get_row_num(),
+                        cell.get_coordinate().get_col_num(),
+                    ),
                     std::mem::take(cell),
                 )
             })

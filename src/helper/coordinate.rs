@@ -288,7 +288,11 @@ pub fn coordinate_from_index_with_lock(
 /// ```
 #[inline]
 pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
-    if num >= root_num && offset_num != 0 { num + offset_num } else { num }
+    if num >= root_num && offset_num != 0 {
+        num + offset_num
+    } else {
+        num
+    }
 }
 
 /// Adjusts a coordinate index by removing an offset if conditions are met.
@@ -320,7 +324,11 @@ pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: 
 /// ```
 #[inline]
 pub(crate) fn adjustment_remove_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
-    if num >= root_num && offset_num != 0 { num - offset_num } else { num }
+    if num >= root_num && offset_num != 0 {
+        num - offset_num
+    } else {
+        num
+    }
 }
 
 /// Determines if a coordinate index falls within a removable range.
@@ -482,17 +490,53 @@ mod tests {
 
     #[test]
     fn index_from_coordinate_1() {
-        assert_eq!(index_from_coordinate("$A$4"), (Some(1), Some(4), Some(true), Some(true)));
-        assert_eq!(index_from_coordinate("$A4"), (Some(1), Some(4), Some(true), Some(false)));
-        assert_eq!(index_from_coordinate("A4"), (Some(1), Some(4), Some(false), Some(false)));
-        assert_eq!(index_from_coordinate("Z91"), (Some(26), Some(91), Some(false), Some(false)));
-        assert_eq!(index_from_coordinate("AA91"), (Some(27), Some(91), Some(false), Some(false)));
-        assert_eq!(index_from_coordinate("AA$91"), (Some(27), Some(91), Some(false), Some(true)));
-        assert_eq!(index_from_coordinate("$AA91"), (Some(27), Some(91), Some(true), Some(false)));
-        assert_eq!(index_from_coordinate("$AA$91"), (Some(27), Some(91), Some(true), Some(true)));
-        assert_eq!(index_from_coordinate("A"), (Some(1), None, Some(false), None));
-        assert_eq!(index_from_coordinate("$A"), (Some(1), None, Some(true), None));
-        assert_eq!(index_from_coordinate("5"), (None, Some(5), None, Some(false)));
-        assert_eq!(index_from_coordinate("$5"), (None, Some(5), None, Some(true)));
+        assert_eq!(
+            index_from_coordinate("$A$4"),
+            (Some(1), Some(4), Some(true), Some(true))
+        );
+        assert_eq!(
+            index_from_coordinate("$A4"),
+            (Some(1), Some(4), Some(true), Some(false))
+        );
+        assert_eq!(
+            index_from_coordinate("A4"),
+            (Some(1), Some(4), Some(false), Some(false))
+        );
+        assert_eq!(
+            index_from_coordinate("Z91"),
+            (Some(26), Some(91), Some(false), Some(false))
+        );
+        assert_eq!(
+            index_from_coordinate("AA91"),
+            (Some(27), Some(91), Some(false), Some(false))
+        );
+        assert_eq!(
+            index_from_coordinate("AA$91"),
+            (Some(27), Some(91), Some(false), Some(true))
+        );
+        assert_eq!(
+            index_from_coordinate("$AA91"),
+            (Some(27), Some(91), Some(true), Some(false))
+        );
+        assert_eq!(
+            index_from_coordinate("$AA$91"),
+            (Some(27), Some(91), Some(true), Some(true))
+        );
+        assert_eq!(
+            index_from_coordinate("A"),
+            (Some(1), None, Some(false), None)
+        );
+        assert_eq!(
+            index_from_coordinate("$A"),
+            (Some(1), None, Some(true), None)
+        );
+        assert_eq!(
+            index_from_coordinate("5"),
+            (None, Some(5), None, Some(false))
+        );
+        assert_eq!(
+            index_from_coordinate("$5"),
+            (None, Some(5), None, Some(true))
+        );
     }
 }

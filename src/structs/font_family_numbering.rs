@@ -47,7 +47,12 @@ impl FontFamilyNumbering {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // family
         if self.val.has_value() {
-            write_start_tag(writer, "family", vec![("val", &self.val.get_value_string())], true);
+            write_start_tag(
+                writer,
+                "family",
+                vec![("val", &self.val.get_value_string())],
+                true,
+            );
         }
     }
 }

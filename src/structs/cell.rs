@@ -459,8 +459,10 @@ impl Cell {
                         }
                         "s" => {
                             let index = string_value.parse::<usize>().unwrap();
-                            let shared_string_item =
-                                shared_string_table.get_shared_string_item().get(index).unwrap();
+                            let shared_string_item = shared_string_table
+                                .get_shared_string_item()
+                                .get(index)
+                                .unwrap();
                             self.set_shared_string_item(shared_string_item);
                         }
                         "b" => {
@@ -550,8 +552,10 @@ impl Cell {
             // todo use typed value
             match self.get_data_type_crate() {
                 "s" => {
-                    let val_index =
-                        shared_string_table.write().unwrap().set_cell(self.get_cell_value());
+                    let val_index = shared_string_table
+                        .write()
+                        .unwrap()
+                        .set_cell(self.get_cell_value());
                     write_text_node(writer, val_index.to_string());
                 }
                 "str" => {

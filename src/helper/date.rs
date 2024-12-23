@@ -305,7 +305,11 @@ pub fn convert_date_crate(
     };
 
     // Adjust month and year for Julian date calculation
-    let (year_adj, month_adj) = if month > 2 { (year, month - 3) } else { (year - 1, month + 9) };
+    let (year_adj, month_adj) = if month > 2 {
+        (year, month - 3)
+    } else {
+        (year - 1, month + 9)
+    };
 
     // Calculate the Julian date components
     let century = year_adj / 100;

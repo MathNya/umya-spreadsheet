@@ -53,7 +53,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
     // XML header
-    writer.write_event(Event::Decl(BytesDecl::new("1.0", Some("UTF-8"), Some("yes")))).unwrap();
+    writer
+        .write_event(Event::Decl(BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            Some("yes"),
+        )))
+        .unwrap();
     write_new_line(&mut writer);
 
     // worksheet
@@ -114,12 +120,16 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet.get_sheets_views().write_to(&mut writer);
 
     // sheetFormatPr
-    worksheet.get_sheet_format_properties().write_to(&mut writer);
+    worksheet
+        .get_sheet_format_properties()
+        .write_to(&mut writer);
 
     // cols
     let mut column_dimensions = worksheet.get_column_dimensions_crate().clone();
-    column_dimensions
-        .calculation_auto_width(worksheet.get_cells_crate(), worksheet.get_merge_cells_crate());
+    column_dimensions.calculation_auto_width(
+        worksheet.get_cells_crate(),
+        worksheet.get_merge_cells_crate(),
+    );
     column_dimensions.write_to(&mut writer, stylesheet);
 
     // sheetData
@@ -142,7 +152,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 Some((start_cell, _)) => {
                     formula_shared_list.insert(
                         si,
-                        (start_cell.clone(), Some(cell.get_coordinate().get_coordinate())),
+                        (
+                            start_cell.clone(),
+                            Some(cell.get_coordinate().get_coordinate()),
+                        ),
                     );
                 }
                 None => {
@@ -180,7 +193,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             row.write_to(&mut writer, stylesheet, &spans, false);
             // c
             for cell in cells_in_row {
-                cell.write_to(&mut writer, shared_string_table, stylesheet, &formula_shared_list);
+                cell.write_to(
+                    &mut writer,
+                    shared_string_table,
+                    stylesheet,
+                    &formula_shared_list,
+                );
             }
 
             write_end_tag(&mut writer, "row");
@@ -198,7 +216,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // autoFilter
     if let Some(v) = worksheet.get_auto_filter() {
-        write_start_tag(&mut writer, "autoFilter", vec![("ref", &v.get_range().get_range())], true);
+        write_start_tag(
+            &mut writer,
+            "autoFilter",
+            vec![("ref", &v.get_range().get_range())],
+            true,
+        );
     }
 
     // mergeCells
@@ -263,14 +286,24 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if worksheet.has_drawing_object() {
         // drawing
         let r_id_str = format!("rId{}", &r_id);
-        write_start_tag(&mut writer, "drawing", vec![("r:id", r_id_str.as_str())], true);
+        write_start_tag(
+            &mut writer,
+            "drawing",
+            vec![("r:id", r_id_str.as_str())],
+            true,
+        );
         r_id += 1;
     }
 
     // legacyDrawing
     if worksheet.has_legacy_drawing() {
         let r_id_str = format!("rId{}", &r_id);
-        write_start_tag(&mut writer, "legacyDrawing", vec![("r:id", r_id_str.as_str())], true);
+        write_start_tag(
+            &mut writer,
+            "legacyDrawing",
+            vec![("r:id", r_id_str.as_str())],
+            true,
+        );
         r_id += 1;
     }
 
@@ -285,7 +318,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
         for _table in worksheet.get_tables() {
             let r_id_str = format!("rId{}", &r_id);
-            write_start_tag(&mut writer, "tablePart", vec![("r:id", r_id_str.as_str())], true);
+            write_start_tag(
+                &mut writer,
+                "tablePart",
+                vec![("r:id", r_id_str.as_str())],
+                true,
+            );
             r_id += 1;
         }
         write_end_tag(&mut writer, "tableParts");
@@ -293,7 +331,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // oleObjects
     let ole_id = 1000 + 25;
-    worksheet.get_ole_objects().write_to(&mut writer, r_id, ole_id);
+    worksheet
+        .get_ole_objects()
+        .write_to(&mut writer, r_id, ole_id);
 
     // extLst
     if worksheet.get_data_validations_2010().is_some() {

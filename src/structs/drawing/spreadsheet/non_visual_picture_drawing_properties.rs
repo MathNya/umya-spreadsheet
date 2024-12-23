@@ -92,8 +92,10 @@ impl NonVisualPictureDrawingProperties {
         // xdr:cNvPicPr
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.prefer_relative_resize.has_value() {
-            attributes
-                .push(("preferRelativeResize", self.prefer_relative_resize.get_value_string()));
+            attributes.push((
+                "preferRelativeResize",
+                self.prefer_relative_resize.get_value_string(),
+            ));
         }
 
         match &self.picture_locks {

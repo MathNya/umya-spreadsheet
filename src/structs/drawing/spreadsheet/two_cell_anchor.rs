@@ -288,7 +288,12 @@ impl TwoCellAnchor {
     ) {
         if self.get_is_alternate_content() {
             // mc:AlternateContent
-            write_start_tag(writer, "mc:AlternateContent", vec![("xmlns:mc", MC_NS)], false);
+            write_start_tag(
+                writer,
+                "mc:AlternateContent",
+                vec![("xmlns:mc", MC_NS)],
+                false,
+            );
 
             // mc:Choice
             write_start_tag(

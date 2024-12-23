@@ -55,7 +55,9 @@ pub struct Image {
 /// marker.set_coordinate("B3");
 /// let mut image = umya_spreadsheet::structs::Image::default();
 /// image.new_image("./images/sample1.png", marker);
-/// book.get_sheet_by_name_mut("Sheet1").unwrap().add_image(image);
+/// book.get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .add_image(image);
 ///
 /// // Get Image by Worksheet.
 /// let worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
@@ -191,8 +193,12 @@ impl Image {
 
         let mut one_cell_anchor = OneCellAnchor::default();
         one_cell_anchor.set_from_marker(marker);
-        one_cell_anchor.get_extent_mut().set_cy(i64::from(height) * 9525);
-        one_cell_anchor.get_extent_mut().set_cx(i64::from(width) * 9525);
+        one_cell_anchor
+            .get_extent_mut()
+            .set_cy(i64::from(height) * 9525);
+        one_cell_anchor
+            .get_extent_mut()
+            .set_cx(i64::from(width) * 9525);
         one_cell_anchor.set_picture(picture);
         self.set_one_cell_anchor(one_cell_anchor);
     }
@@ -274,7 +280,9 @@ impl Image {
     #[inline]
     #[must_use]
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
-        self.get_two_cell_anchor().as_ref().map(|anchor| anchor.get_to_marker())
+        self.get_two_cell_anchor()
+            .as_ref()
+            .map(|anchor| anchor.get_to_marker())
     }
 
     pub(crate) fn get_media_object(&self) -> Vec<&MediaObject> {

@@ -159,7 +159,12 @@ impl Shape {
         ole_id: usize,
     ) {
         // xdr:sp
-        write_start_tag(writer, "xdr:sp", vec![("macro", ""), ("textlink", "")], false);
+        write_start_tag(
+            writer,
+            "xdr:sp",
+            vec![("macro", ""), ("textlink", "")],
+            false,
+        );
 
         // xdr:nvSpPr
         self.non_visual_shape_properties.write_to(writer, ole_id);

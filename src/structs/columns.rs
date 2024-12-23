@@ -46,7 +46,9 @@ impl Columns {
 
     #[inline]
     pub(crate) fn get_column(&self, value: u32) -> Option<&Column> {
-        self.column.iter().find(|&column| value == column.get_col_num())
+        self.column
+            .iter()
+            .find(|&column| value == column.get_col_num())
     }
 
     pub(crate) fn get_column_mut(&mut self, value: u32) -> &mut Column {
@@ -197,7 +199,8 @@ impl AdjustmentValue for Columns {
     }
 
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
-        self.get_column_collection_mut().retain(|x| !(x.is_remove_value(root_num, offset_num)));
+        self.get_column_collection_mut()
+            .retain(|x| !(x.is_remove_value(root_num, offset_num)));
         for column_dimension in &mut self.column {
             column_dimension.adjustment_remove_value(root_num, offset_num);
         }

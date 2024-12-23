@@ -39,7 +39,10 @@ impl RawFile {
 
     #[inline]
     pub(crate) fn get_extension(&self) -> String {
-        self.get_file_name().rsplit_once('.').map(|(_, ext)| ext.to_lowercase()).unwrap()
+        self.get_file_name()
+            .rsplit_once('.')
+            .map(|(_, ext)| ext.to_lowercase())
+            .unwrap()
     }
 
     #[inline]

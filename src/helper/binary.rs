@@ -50,8 +50,14 @@ pub fn get_binary_data<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
 #[must_use]
 pub fn make_media_object<P: AsRef<Path>>(path: P) -> MediaObject {
     let path = path.as_ref();
-    let file_name = path.file_name().and_then(|name| name.to_str()).unwrap_or("");
-    let title = path.file_stem().and_then(|stem| stem.to_str()).unwrap_or("");
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("");
+    let title = path
+        .file_stem()
+        .and_then(|stem| stem.to_str())
+        .unwrap_or("");
 
     let mut obj = MediaObject::default();
     obj.set_image_data(get_binary_data(path).unwrap());

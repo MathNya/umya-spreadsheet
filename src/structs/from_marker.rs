@@ -88,12 +88,20 @@ impl FromMarker {
 
     #[inline]
     pub(crate) fn adjustment_remove_row(&mut self, num_rows: usize) {
-        self.row = if self.row > num_rows { self.row - num_rows } else { 1 };
+        self.row = if self.row > num_rows {
+            self.row - num_rows
+        } else {
+            1
+        };
     }
 
     #[inline]
     pub(crate) fn adjustment_remove_column(&mut self, num_cols: usize) {
-        self.col = if self.col > num_cols { self.col - num_cols } else { 1 };
+        self.col = if self.col > num_cols {
+            self.col - num_cols
+        } else {
+            1
+        };
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
