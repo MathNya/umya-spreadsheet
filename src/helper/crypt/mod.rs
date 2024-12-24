@@ -295,12 +295,13 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
 #[allow(unused_macros)]
 #[cfg(test)]
 mod tests {
-    use std::{
-        fs::File,
-        io::Read,
-    };
+    use std::fs;
 
     use hex_literal::hex;
+    use sha2::{
+        Digest,
+        Sha256,
+    };
 
     /// Prints a byte slice as a hex string, prefixed with the variable name.
     ///
@@ -321,19 +322,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_encrypt() {
-        let mut file = File::open("./tests/test_files/aaa.xlsx").unwrap();
-        let mut data = Vec::new();
-        file.read_to_end(&mut data).unwrap();
-
-        let password = "password";
+    fn test_encrypt_package() {
+        let data = fs::read("./tests/test_files/aaa.xlsx").unwrap();
 
         // Package parameters
         let package_key = hex!("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf");
         let package_salt = hex!("4c251b321d85cecfcb6d952ba6d81846");
-
-        // Key parameters
-        let key_salt = hex!("3aa973eec73c98c4710021730ef5b513");
 
         // Encrypted package
         let encrypted_package = algo::crypt_package(
@@ -343,6 +337,18 @@ mod tests {
             &package_key,
             &data,
         );
+
+        assert_eq!(
+            Sha256::digest(&encrypted_package).to_vec(),
+            hex!("c2f7aa6ef36f5389aee63255887e103d7e9d9388c6dcaaa821fb62119ebdd697")
+        );
+    }
+
+    #[test]
+    fn test_encrypt_hmac_key() {
+        // Package parameters
+        let package_key = hex!("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf");
+        let package_salt = hex!("4c251b321d85cecfcb6d952ba6d81846");
 
         // HMAC key
         let hmac_key = hex!(
@@ -365,8 +371,26 @@ mod tests {
                  86a8daef4f4c512d52e3db6a54b1d45e1dd1dbfa3ddacc29fe35449ba5225dc7"
             )
         );
+    }
 
-        // HMAC value
+    #[test]
+    fn test_encrypt_hmac_value() {
+        let hmac_key = hex!(
+            "4c6e4db6d9a60e5d41c3ca639a682aaa71da7437202fe92ec5d814bd1e9e4e6a"
+            "831aee889eae3bc18bc1bebedae1f73393fddfffd0a0b6c557485fefcdb5e98b"
+        );
+
+        // Use the data specific from "test_encrypt"
+        let data = fs::read("./tests/test_files/aaa.xlsx").unwrap();
+
+        let encrypted_package = algo::crypt_package(
+            true,
+            constants::PACKAGE_BLOCK_SIZE,
+            &hex!("4c251b321d85cecfcb6d952ba6d81846"), // package_salt
+            &hex!("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf"), /* package_key */
+            &data,
+        );
+
         let hmac_value = key::hmac(&hmac_key, &[&encrypted_package]);
         assert_eq!(
             hmac_value,
@@ -377,14 +401,19 @@ mod tests {
         );
 
         let hmac_value_iv = key::create_iv(
-            &package_salt,
+            &hex!("4c251b321d85cecfcb6d952ba6d81846"),
             constants::PACKAGE_BLOCK_SIZE,
             &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_VALUE,
         );
         assert_eq!(hmac_value_iv, hex!("088385b871292e7ed8414f173c5b6622"));
 
-        let encrypted_hmac_value =
-            algo::crypt(true, &package_key, &hmac_value_iv, &hmac_value).unwrap();
+        let encrypted_hmac_value = algo::crypt(
+            true,
+            &hex!("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf"),
+            &hmac_value_iv,
+            &hmac_value,
+        )
+        .unwrap();
         assert_eq!(
             encrypted_hmac_value,
             hex!(
@@ -392,8 +421,13 @@ mod tests {
                 "24dd5f4b9f71a2ce928abbbfe46e791a6c683703bcb30d5214997e60bbd547f6"
             )
         );
+    }
 
-        // Key
+    #[test]
+    fn test_convert_password_to_key() {
+        let key_salt = hex!("3aa973eec73c98c4710021730ef5b513");
+        let password = "password";
+
         let key = key::convert_password_to_key(
             password,
             &key_salt,
@@ -406,11 +440,23 @@ mod tests {
             hex!("8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d")
         );
 
-        let encrypted_key_value = algo::crypt(true, &key, &key_salt, &package_key).unwrap();
+        let encrypted_key_value = algo::crypt(
+            true,
+            &key,
+            &key_salt,
+            &hex!("cdf9defae2480933c503350e16334453d1cb8348bb2fea585db7f9e1f78fe9bf"),
+        )
+        .unwrap();
         assert_eq!(
             encrypted_key_value,
             hex!("5017ddc6146e56dfbf76734b3e99b80f36a4c9a2e9eb21fe77695f73850cc452")
         );
+    }
+
+    #[test]
+    fn test_encrypt_verifier_hash() {
+        let key_salt = hex!("3aa973eec73c98c4710021730ef5b513");
+        let password = "password";
 
         // Verifier hash input
         let verifier_hash_input = hex!("8f54777cba87efa55ea2db8399873815");
@@ -474,62 +520,32 @@ mod tests {
                 "60a2e77f63a6ad0c46f985f2bb8dab4fcf9b86d6a40d9c21299bb4ddf788b250"
             )
         );
+    }
 
-        // Build encryption info
+    #[test]
+    fn test_build_encryption_info() {
         let encryption_info = algo::build_encryption_info(
-            &package_salt,
-            &encrypted_hmac_key,
-            &encrypted_hmac_value,
-            &key_salt,
-            &encrypted_verifier_hash_input,
-            &encrypted_verifier_hash_value,
-            &encrypted_key_value,
+            &hex!("4c251b321d85cecfcb6d952ba6d81846"),
+            &hex!(
+                "b32b1cdc4ac1af244377c1eb57efd31a819f555a7204adcc0cfe364b394bbdb0"
+                "86a8daef4f4c512d52e3db6a54b1d45e1dd1dbfa3ddacc29fe35449ba5225dc7"
+            ),
+            &hex!(
+                "f75c7f3c44fadf9b4bbf2ff693586710c52e043d8db69e3e538be5f10d36f86d"
+                "24dd5f4b9f71a2ce928abbbfe46e791a6c683703bcb30d5214997e60bbd547f6"
+            ),
+            &hex!("3aa973eec73c98c4710021730ef5b513"),
+            &hex!("2fb9eea58e227ffa549449e941f1199e"),
+            &hex!(
+                "0d9c888111b40b630b739c95a5f5b6be67c8f96acdd1bee185bd808b507f6527
+                 60a2e77f63a6ad0c46f985f2bb8dab4fcf9b86d6a40d9c21299bb4ddf788b250"
+            ),
+            &hex!("5017ddc6146e56dfbf76734b3e99b80f36a4c9a2e9eb21fe77695f73850cc452"),
         );
+
         assert_eq!(
-            encryption_info,
-            hex!(
-                "04000400400000003c3f786d6c2076657273696f6e3d22312e302220656e636f"
-                "64696e673d225554462d3822207374616e64616c6f6e653d22796573223f3e0d"
-                "0a3c656e6372797074696f6e20786d6c6e733d22687474703a2f2f736368656d"
-                "61732e6d6963726f736f66742e636f6d2f6f66666963652f323030362f656e63"
-                "72797074696f6e2220786d6c6e733a703d22687474703a2f2f736368656d6173"
-                "2e6d6963726f736f66742e636f6d2f6f66666963652f323030362f6b6579456e"
-                "63727970746f722f70617373776f72642220786d6c6e733a633d22687474703a"
-                "2f2f736368656d61732e6d6963726f736f66742e636f6d2f6f66666963652f32"
-                "3030362f6b6579456e63727970746f722f6365727469666963617465223e3c6b"
-                "6579446174612073616c7453697a653d2231362220626c6f636b53697a653d22"
-                "313622206b6579426974733d2232353622206861736853697a653d2236342220"
-                "636970686572416c676f726974686d3d22414553222063697068657243686169"
-                "6e696e673d22436861696e696e674d6f6465434243222068617368416c676f72"
-                "6974686d3d22534841353132222073616c7456616c75653d22544355624d6832"
-                "467a732f4c625a55727074675952673d3d222f3e3c64617461496e7465677269"
-                "747920656e63727970746564486d61634b65793d227379736333457242727952"
-                "4464384872562b2f54476f476656567079424b334d44503432537a6c4c766243"
-                "47714e7276543078524c564c6a3232705573645265486448622b6a33617a436e"
-                "2b4e55536270534a6478773d3d2220656e63727970746564486d616356616c75"
-                "653d223931782f504554363335744c76792f326b31686e454d55754244324e74"
-                "70342b5534766c385130322b47306b3356394c6e3347697a704b4b75372f6b62"
-                "6e6b61624767334137797a445649556d5835677539564839673d3d222f3e3c6b"
-                "6579456e63727970746f72733e3c6b6579456e63727970746f72207572693d22"
-                "687474703a2f2f736368656d61732e6d6963726f736f66742e636f6d2f6f6666"
-                "6963652f323030362f6b6579456e63727970746f722f70617373776f7264223e"
-                "3c703a656e637279707465644b6579207370696e436f756e743d223130303030"
-                "30222073616c7453697a653d2231362220626c6f636b53697a653d2231362220"
-                "6b6579426974733d2232353622206861736853697a653d223634222063697068"
-                "6572416c676f726974686d3d224145532220636970686572436861696e696e67"
-                "3d22436861696e696e674d6f6465434243222068617368416c676f726974686d"
-                "3d225348412d353132222073616c7456616c75653d224f716c7a377363386d4d"
-                "52784143467a4476573145773d3d2220656e6372797074656456657269666965"
-                "7248617368496e7075743d224c376e7570593469662f70556c456e705166455a"
-                "6e673d3d2220656e6372797074656456657269666965724861736856616c7565"
-                "3d22445a79496752473043324d4c6335795670665732766d66492b57724e3062"
-                "3768686232416931422f5a5364676f75642f593661744445623568664b376a61"
-                "74507a3575473171514e6e4345706d3754643934697955413d3d2220656e6372"
-                "79707465644b657956616c75653d22554266647868527556742b2f646e4e4c50"
-                "706d34447a616b79614c703679482b64326c666334554d7846493d222f3e3c2f"
-                "6b6579456e63727970746f723e3c2f6b6579456e63727970746f72733e3c2f65"
-                "6e6372797074696f6e3e"
-            )
+            Sha256::digest(&encryption_info).to_vec(),
+            hex!("31f0b53f3d92aa053607641946534b96488e9df8abe64268cc1f337b5e4de8b8")
         );
     }
 
@@ -546,22 +562,6 @@ mod tests {
                 "ba1bf00eed82b07ee65e574eb1f460435d2a1405e81904fd01d5ed5adf43fdcf
                  d8e9aeebad0c08065e0db20cdc8e4552744b61ad1b3cf9a3c5aad5b2a047e76b"
             )
-        );
-    }
-
-    #[test]
-    fn test_convert_password_to_key() {
-        let key_salt = hex!("3aa973eec73c98c4710021730ef5b513");
-        let result = key::convert_password_to_key(
-            "password",
-            &key_salt,
-            100_000,
-            256,
-            &constants::BLOCK_KEYS_KEY,
-        );
-        assert_eq!(
-            result,
-            hex!("8d5869311b1c1fdb59a1de6fe1e6f2ce7dccd4deb198a6dfb1f7fb55bc03487d")
         );
     }
 }
