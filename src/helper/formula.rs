@@ -140,20 +140,35 @@ fn get_scientific_regex() -> &'static Regex {
     SCIENTIFIC_REGEX.get_or_init(|| Regex::new(r"/^[1-9]{1}(\\.\\d+)?E{1}$/").unwrap())
 }
 
-pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> {
-    let mut tokens: Vec<FormulaToken> = Vec::new();
+macro_rules! token {
+    ($value:expr, $typ:expr, $sub:expr) => {{
+        let mut obj = FormulaToken::default();
+        obj.set_value($value);
+        obj.set_token_type($typ);
+        obj.set_token_sub_type($sub);
+        obj
+    }};
+}
 
-    let formula = formula.into();
-    let formula_length = formula.chars().count();
-    if formula_length < 2 || !formula.starts_with('=') {
-        return tokens;
+pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> {
+    let formula_str = formula.into();
+    let formula_length = formula_str.chars().count();
+
+    // quick checks
+    if formula_length < 2 || !formula_str.starts_with('=') {
+        return Vec::new();
     }
 
-    // Helper variables
+    let (_, tokens2) = parse_into_intermediate_tokens(&formula_str);
+    finalize_tokens(&tokens2)
+}
+
+fn parse_into_intermediate_tokens(formula: &str) -> (Vec<FormulaToken>, Vec<FormulaToken>) {
     let mut tokens1: Vec<FormulaToken> = Vec::new();
     let mut tokens2: Vec<FormulaToken> = Vec::new();
     let mut stack: Vec<FormulaToken> = Vec::new();
 
+    // state flags
     let mut in_string = false;
     let mut in_path = false;
     let mut in_range = false;
@@ -161,403 +176,64 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
 
     let mut index = 1;
     let mut value = String::new();
+    let formula_length = formula.chars().count();
 
     while index < formula_length {
         // double-quoted strings
-        // embeds are doubled
-        // end marks token
         if in_string {
-            if formula.chars().nth(index).unwrap() == QUOTE_DOUBLE {
-                if ((index + 2) <= formula_length)
-                    && (formula.chars().nth(index + 1).unwrap() == QUOTE_DOUBLE)
-                {
-                    value = format!("{value}{QUOTE_DOUBLE}");
-                    index += 1;
-                } else {
-                    in_string = false;
-                    let mut obj = FormulaToken::default();
-                    obj.set_value(value);
-                    obj.set_token_type(FormulaTokenTypes::Operand);
-                    obj.set_token_sub_type(FormulaTokenSubTypes::Text);
-                    tokens1.push(obj);
-                    value = String::new();
-                }
-            } else {
-                value = format!("{}{}", value, formula.chars().nth(index).unwrap());
-            }
-            index += 1;
-
+            handle_in_string(
+                formula,
+                &mut index,
+                &mut value,
+                &mut tokens1,
+                &mut in_string,
+            );
             continue;
         }
 
         // single-quoted strings (links)
-        // embeds are double
-        // end does not mark a token
         if in_path {
-            if formula.chars().nth(index).unwrap() == QUOTE_SINGLE {
-                if ((index + 2) <= formula_length)
-                    && (formula.chars().nth(index + 1).unwrap() == QUOTE_SINGLE)
-                {
-                    value = format!("{value}{QUOTE_SINGLE}");
-                    index += 1;
-                } else {
-                    in_path = false;
-                }
-            } else {
-                value = format!("{}{}", value, formula.chars().nth(index).unwrap());
-            }
-            index += 1;
-
+            handle_in_path(formula, &mut index, &mut value, &mut in_path);
             continue;
         }
 
-        // bracked strings (R1C1 range index or linked workbook name)
-        // no embeds (changed to "()" by Excel)
-        // end does not mark a token
+        // bracketed strings (R1C1 range index or workbook name)
         if in_range {
-            if formula.chars().nth(index).unwrap() == BRACKET_CLOSE {
-                in_range = false;
-            }
-            value = format!("{}{}", value, formula.chars().nth(index).unwrap());
-
+            handle_in_range(formula, &mut index, &mut value, &mut in_range);
             continue;
         }
 
         // error values
-        // end marks a token, determined from absolute list of values
         if in_error {
-            value = format!("{}{}", value, formula.chars().nth(index).unwrap());
-            index += 1;
-            if ERRORS.iter().any(|&x| x == value.as_str()) {
-                in_error = false;
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                obj.set_token_sub_type(FormulaTokenSubTypes::Error);
-                tokens1.push(obj);
-                value = String::new();
-            }
-
+            handle_in_error(formula, &mut index, &mut value, &mut tokens1, &mut in_error);
             continue;
         }
 
         // scientific notation check
-        if let Some(current_char) = formula.chars().nth(index) {
-            if OPERATORS_SN.contains(current_char)
-                && value.len() > 1
-                && get_scientific_regex()
-                    .is_match(&current_char.to_string())
-                    .unwrap_or(false)
-            {
-                value.push(current_char);
-                index += 1;
-                continue;
-            }
-        }
-
-        // independent character evaluation (order not important)
-
-        // establish state-dependent character evaluations
-        if formula.chars().nth(index).unwrap() == QUOTE_DOUBLE {
-            if !value.is_empty() {
-                // unexpected
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Unknown);
-                tokens1.push(obj);
-                value = String::new();
-            }
-            in_string = true;
-            index += 1;
-
+        if handle_scientific_notation(formula, &mut index, &mut value) {
             continue;
         }
 
-        if formula.chars().nth(index).unwrap() == QUOTE_SINGLE {
-            if !value.is_empty() {
-                // unexpected
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Unknown);
-                tokens1.push(obj);
-                value = String::new();
-            }
-            in_string = true;
-            index += 1;
-
+        // handle special characters
+        if handle_special_characters(
+            formula,
+            &mut index,
+            &mut value,
+            &mut tokens1,
+            &mut stack,
+            &mut in_string,
+            &mut in_range,
+            &mut in_error,
+        ) {
             continue;
         }
 
-        if formula.chars().nth(index).unwrap() == BRACKET_OPEN {
-            in_range = true;
-            value = format!("{value}{BRACKET_OPEN}");
-            index += 1;
-
-            continue;
-        }
-
-        if formula.chars().nth(index).unwrap() == ERROR_START {
-            if !value.is_empty() {
-                // unexpected
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Unknown);
-                tokens1.push(obj);
-                value = String::new();
-            }
-            in_error = true;
-            value = format!("{value}{ERROR_START}");
-            index += 1;
-
-            continue;
-        }
-
-        // mark start and end of arrays and array rows
-        if formula.chars().nth(index).unwrap() == BRACE_OPEN {
-            if !value.is_empty() {
-                // unexpected
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Unknown);
-                tokens1.push(obj);
-                value = String::new();
-            }
-
-            let mut obj = FormulaToken::default();
-            obj.set_value("ARRAY");
-            obj.set_token_type(FormulaTokenTypes::Function);
-            obj.set_token_sub_type(FormulaTokenSubTypes::Start);
-            tokens1.push(obj.clone());
-            stack.push(obj);
-
-            let mut obj = FormulaToken::default();
-            obj.set_value("ARRAYROW");
-            obj.set_token_type(FormulaTokenTypes::Function);
-            obj.set_token_sub_type(FormulaTokenSubTypes::Start);
-            tokens1.push(obj.clone());
-            stack.push(obj);
-
-            index += 1;
-
-            continue;
-        }
-
-        if formula.chars().nth(index).unwrap() == SEMICOLON {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-
-            let mut obj = stack.pop().unwrap();
-            obj.set_value("");
-            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
-            tokens1.push(obj);
-
-            let mut obj = FormulaToken::default();
-            obj.set_value(",");
-            obj.set_token_type(FormulaTokenTypes::Argument);
-            tokens1.push(obj);
-
-            let mut obj = FormulaToken::default();
-            obj.set_value("ARRAYROW");
-            obj.set_token_type(FormulaTokenTypes::Function);
-            obj.set_token_sub_type(FormulaTokenSubTypes::Start);
-            tokens1.push(obj.clone());
-            stack.push(obj);
-
-            index += 1;
-
-            continue;
-        }
-
-        if formula.chars().nth(index).unwrap() == BRACE_CLOSE {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-
-            let mut obj = stack.pop().unwrap().clone();
-            obj.set_value("");
-            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
-            tokens1.push(obj);
-
-            let mut obj = stack.pop().unwrap().clone();
-            obj.set_value("");
-            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
-            tokens1.push(obj);
-
-            index += 1;
-
-            continue;
-        }
-
-        // trim white-space
-        if formula.chars().nth(index).unwrap() == WHITESPACE {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-            let mut obj = FormulaToken::default();
-            obj.set_value("");
-            obj.set_token_type(FormulaTokenTypes::Whitespace);
-            tokens1.push(obj);
-            index += 1;
-            while (formula.chars().nth(index).unwrap() == WHITESPACE) && (index < formula_length) {
-                index += 1;
-            }
-
-            continue;
-        }
-
-        // multi-character comparators
-        if (index + 2) <= formula_length
-            && COMPARATORS_MULTI
-                .iter()
-                .any(|&x| x == formula.chars().skip(index).take(2).collect::<String>())
-        {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-            let mut obj = FormulaToken::default();
-            obj.set_value(formula.chars().skip(index).take(2).collect::<String>());
-            obj.set_token_type(FormulaTokenTypes::OperatorInfix);
-            obj.set_token_sub_type(FormulaTokenSubTypes::Logical);
-            tokens1.push(obj);
-            index += 2;
-
-            continue;
-        }
-
-        // standard infix operators
-        if OPERATORS_INFIX.contains(formula.chars().nth(index).unwrap()) {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-            let mut obj = FormulaToken::default();
-            obj.set_value(formula.chars().nth(index).unwrap());
-            obj.set_token_type(FormulaTokenTypes::OperatorInfix);
-            tokens1.push(obj);
-            index += 1;
-
-            continue;
-        }
-
-        // standard postfix operators (only one)
-        if OPERATORS_POSTFIX.contains(formula.chars().nth(index).unwrap()) {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-            let mut obj = FormulaToken::default();
-            obj.set_value(formula.chars().nth(index).unwrap());
-            obj.set_token_type(FormulaTokenTypes::OperatorPostfix);
-            tokens1.push(obj);
-            index += 1;
-
-            continue;
-        }
-
-        // start subexpression or function
-        if formula.chars().nth(index).unwrap() == PAREN_OPEN {
-            if value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value("");
-                obj.set_token_type(FormulaTokenTypes::Subexpression);
-                obj.set_token_sub_type(FormulaTokenSubTypes::Start);
-                tokens1.push(obj.clone());
-                stack.push(obj);
-            } else {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Function);
-                obj.set_token_sub_type(FormulaTokenSubTypes::Start);
-                tokens1.push(obj.clone());
-                stack.push(obj);
-                value = String::new();
-            }
-            index += 1;
-
-            continue;
-        }
-
-        // function, subexpression, or array parameters, or operand unions
-        if formula.chars().nth(index).unwrap() == COMMA {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-
-            let mut obj = stack.pop().unwrap();
-            obj.set_value("");
-            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
-            stack.push(obj.clone());
-
-            if obj.get_token_type() == &FormulaTokenTypes::Function {
-                let mut obj = FormulaToken::default();
-                obj.set_value(",");
-                obj.set_token_type(FormulaTokenTypes::OperatorInfix);
-                obj.set_token_sub_type(FormulaTokenSubTypes::Union);
-                tokens1.push(obj);
-            } else {
-                let mut obj = FormulaToken::default();
-                obj.set_value(",");
-                obj.set_token_type(FormulaTokenTypes::Argument);
-                tokens1.push(obj);
-            }
-            index += 1;
-
-            continue;
-        }
-
-        // stop subexpression
-        if formula.chars().nth(index).unwrap() == PAREN_CLOSE {
-            if !value.is_empty() {
-                let mut obj = FormulaToken::default();
-                obj.set_value(value);
-                obj.set_token_type(FormulaTokenTypes::Operand);
-                tokens1.push(obj);
-                value = String::new();
-            }
-
-            let mut obj = stack.pop().unwrap();
-            obj.set_value("");
-            obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
-            tokens1.push(obj);
-
-            index += 1;
-
-            continue;
-        }
-
-        // token accumulation
-        value = format!("{}{}", value, formula.chars().nth(index).unwrap());
+        // accumulate as normal char
+        value.push(formula.chars().nth(index).unwrap());
         index += 1;
     }
 
-    // dump remaining accumulation
+    // dump remaining
     if !value.is_empty() {
         let mut obj = FormulaToken::default();
         obj.set_value(value.clone());
@@ -565,200 +241,600 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         tokens1.push(obj);
     }
 
-    // move tokenList to new set, excluding unnecessary white-space tokens and
-    // converting necessary ones to intersections
-    let token_count = tokens1.len();
-    #[allow(unused_assignments)]
-    let mut previous_token = None;
-    #[allow(unused_assignments)]
-    let mut next_token = None;
+    // trim whitespace, handle intersection
+    cleanup_tokens(&tokens1, &mut tokens2);
+
+    (tokens1, tokens2)
+}
+
+fn finalize_tokens(tokens_in: &[FormulaToken]) -> Vec<FormulaToken> {
+    let mut tokens: Vec<FormulaToken> = Vec::new();
+    let token_count = tokens_in.len();
+    let mut previous_token: Option<FormulaToken>;
+
     for i in 0..token_count {
-        let token = tokens1.get(i).unwrap();
+        let mut token = tokens_in[i].clone();
         if i > 0 {
-            match tokens1.get(i - 1) {
-                Some(v) => {
-                    previous_token = Some(v.clone());
-                }
-                None => {
-                    previous_token = None;
-                }
-            }
+            previous_token = Some(tokens_in[i - 1].clone());
         } else {
             previous_token = None;
         }
 
-        match tokens1.get(i + 1) {
-            Some(_) => {
-                next_token = Some(tokens1.get(i + 1).unwrap());
-            }
-            None => {
-                next_token = None;
-            }
-        }
-
-        if token.get_token_type() != &FormulaTokenTypes::Whitespace {
-            tokens2.push(token.clone());
-
-            continue;
-        }
-
-        if previous_token.is_none() {
-            continue;
-        }
-
-        if !(((previous_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Function)
-            && (previous_token.as_ref().unwrap().get_token_sub_type()
-                == &FormulaTokenSubTypes::Stop))
-            || ((previous_token.as_ref().unwrap().get_token_type()
-                == &FormulaTokenTypes::Subexpression)
-                && (previous_token.as_ref().unwrap().get_token_sub_type()
-                    == &FormulaTokenSubTypes::Stop))
-            || (previous_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Operand))
-        {
-            continue;
-        }
-
-        if next_token.is_none() {
-            continue;
-        }
-
-        if !(((next_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Function)
-            && (next_token.as_ref().unwrap().get_token_sub_type() == &FormulaTokenSubTypes::Start))
-            || ((next_token.as_ref().unwrap().get_token_type()
-                == &FormulaTokenTypes::Subexpression)
-                && (next_token.as_ref().unwrap().get_token_sub_type()
-                    == &FormulaTokenSubTypes::Start))
-            || (next_token.as_ref().unwrap().get_token_type() == &FormulaTokenTypes::Operand))
-        {
-            continue;
-        }
-
-        let mut obj = FormulaToken::default();
-        obj.set_value(value);
-        obj.set_token_type(FormulaTokenTypes::OperatorInfix);
-        obj.set_token_sub_type(FormulaTokenSubTypes::Intersection);
-        tokens2.push(obj);
-        value = String::new();
-    }
-
-    // move tokens to final list, switching infix "-" operators to prefix when
-    // appropriate, switching infix "+" operators to noop when appropriate,
-    // identifying operand and infix-operator subtypes, and pulling "@" from
-    // function names
-    let token_count = tokens2.len();
-    #[allow(unused_assignments)]
-    let mut previous_token = None;
-    for i in 0..token_count {
-        let mut token = tokens2.get(i).unwrap().clone();
-        if i > 0 {
-            match tokens2.get(i - 1) {
-                Some(v) => {
-                    previous_token = Some(v.clone());
-                }
-                None => {
-                    previous_token = None;
-                }
-            }
-        } else {
-            previous_token = None;
-        }
-
+        // switch infix "-" to prefix
         if token.get_token_type() == &FormulaTokenTypes::OperatorInfix && token.get_value() == "-" {
             if i == 0 {
                 token.set_token_type(FormulaTokenTypes::OperatorPrefix);
-            } else if ((previous_token.as_ref().unwrap().get_token_type()
-                == &FormulaTokenTypes::Function)
-                && (previous_token.as_ref().unwrap().get_token_sub_type()
-                    == &FormulaTokenSubTypes::Stop))
-                || ((previous_token.as_ref().unwrap().get_token_type()
-                    == &FormulaTokenTypes::Subexpression)
-                    && (previous_token.as_ref().unwrap().get_token_sub_type()
-                        == &FormulaTokenSubTypes::Stop))
-                || (previous_token.as_ref().unwrap().get_token_type()
-                    == &FormulaTokenTypes::OperatorPostfix)
-                || (previous_token.as_ref().unwrap().get_token_type()
-                    == &FormulaTokenTypes::Operand)
-            {
+            } else if should_token_be_math(&previous_token) {
                 token.set_token_sub_type(FormulaTokenSubTypes::Math);
             } else {
                 token.set_token_type(FormulaTokenTypes::OperatorPrefix);
             }
-
             tokens.push(token.clone());
-
             continue;
         }
 
+        // switch infix "+" to prefix/noop
         if token.get_token_type() == &FormulaTokenTypes::OperatorInfix && token.get_value() == "+" {
             if i == 0 {
+                // skip
                 continue;
-            } else if ((previous_token.as_ref().unwrap().get_token_type()
-                == &FormulaTokenTypes::Function)
-                && (previous_token.as_ref().unwrap().get_token_sub_type()
-                    == &FormulaTokenSubTypes::Stop))
-                || ((previous_token.as_ref().unwrap().get_token_type()
-                    == &FormulaTokenTypes::Subexpression)
-                    && (previous_token.as_ref().unwrap().get_token_sub_type()
-                        == &FormulaTokenSubTypes::Stop))
-                || (previous_token.as_ref().unwrap().get_token_type()
-                    == &FormulaTokenTypes::OperatorPostfix)
-                || (previous_token.as_ref().unwrap().get_token_type()
-                    == &FormulaTokenTypes::Operand)
-            {
+            } else if should_token_be_math(&previous_token) {
                 token.set_token_sub_type(FormulaTokenSubTypes::Math);
             } else {
+                // skip
                 continue;
             }
-
             tokens.push(token.clone());
-
             continue;
         }
 
+        // set operator subtypes
         if token.get_token_type() == &FormulaTokenTypes::OperatorInfix
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Nothing
         {
-            if "<>=".contains(token.get_value().chars().next().unwrap()) {
-                token.set_token_sub_type(FormulaTokenSubTypes::Logical);
-            } else if token.get_value() == "&" {
-                token.set_token_sub_type(FormulaTokenSubTypes::Concatenation);
-            } else {
-                token.set_token_sub_type(FormulaTokenSubTypes::Math);
+            if let Some(c) = token.get_value().chars().next() {
+                if "<>=".contains(c) {
+                    token.set_token_sub_type(FormulaTokenSubTypes::Logical);
+                } else if c == '&' {
+                    token.set_token_sub_type(FormulaTokenSubTypes::Concatenation);
+                } else {
+                    token.set_token_sub_type(FormulaTokenSubTypes::Math);
+                }
             }
-
             tokens.push(token.clone());
-
             continue;
         }
 
+        // set operand subtypes
         if token.get_token_type() == &FormulaTokenTypes::Operand
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Nothing
         {
-            if token.get_value().parse::<f64>().is_err() {
-                if token.get_value().to_uppercase() == "TRUE"
-                    || token.get_value().to_uppercase() == "FALSE"
-                {
-                    token.set_token_sub_type(FormulaTokenSubTypes::Logical);
-                } else {
-                    token.set_token_sub_type(FormulaTokenSubTypes::Range);
-                }
-            } else {
+            if token.get_value().parse::<f64>().is_ok() {
                 token.set_token_sub_type(FormulaTokenSubTypes::Number);
+            } else if ["TRUE", "FALSE"].contains(&token.get_value().to_uppercase().as_str()) {
+                token.set_token_sub_type(FormulaTokenSubTypes::Logical);
+            } else {
+                token.set_token_sub_type(FormulaTokenSubTypes::Range);
             }
-
             tokens.push(token.clone());
-
             continue;
         }
+
+        // remove leading '@' from function
         if let FormulaTokenTypes::Function = token.get_token_type() {
-            if !token.get_value().is_empty() && token.get_value().starts_with('@') {
-                token.set_value(token.get_value().chars().skip(1).collect::<String>());
+            let val = token.get_value();
+            if val.starts_with('@') {
+                token.set_value(val.trim_start_matches('@').to_string());
             }
         }
 
         tokens.push(token.clone());
     }
     tokens
+}
+
+// --------------------------------------------------------------------------
+// Below are the smaller "handler" helper functions referenced above.
+// --------------------------------------------------------------------------
+
+fn handle_in_string(
+    formula: &str,
+    index: &mut usize,
+    value: &mut String,
+    tokens: &mut Vec<FormulaToken>,
+    in_string: &mut bool,
+) {
+    if formula.chars().nth(*index).unwrap() == QUOTE_DOUBLE {
+        // double quote check
+        if (*index + 2) <= formula.chars().count()
+            && formula.chars().nth(*index + 1).unwrap() == QUOTE_DOUBLE
+        {
+            *value = format!("{value}{QUOTE_DOUBLE}");
+            *index += 1;
+        } else {
+            *in_string = false;
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Operand);
+            obj.set_token_sub_type(FormulaTokenSubTypes::Text);
+            tokens.push(obj);
+            *value = String::new();
+        }
+    } else {
+        value.push(formula.chars().nth(*index).unwrap());
+    }
+    *index += 1;
+}
+
+fn handle_in_path(formula: &str, index: &mut usize, value: &mut String, in_path: &mut bool) {
+    if formula.chars().nth(*index).unwrap() == QUOTE_SINGLE {
+        if (*index + 2) <= formula.chars().count()
+            && formula.chars().nth(*index + 1).unwrap() == QUOTE_SINGLE
+        {
+            *value = format!("{value}{QUOTE_SINGLE}");
+            *index += 1;
+        } else {
+            *in_path = false;
+        }
+    } else {
+        value.push(formula.chars().nth(*index).unwrap());
+    }
+    *index += 1;
+}
+
+fn handle_in_range(formula: &str, index: &mut usize, value: &mut String, in_range: &mut bool) {
+    if formula.chars().nth(*index).unwrap() == BRACKET_CLOSE {
+        *in_range = false;
+    }
+    value.push(formula.chars().nth(*index).unwrap());
+    *index += 1;
+}
+
+fn handle_in_error(
+    formula: &str,
+    index: &mut usize,
+    value: &mut String,
+    tokens: &mut Vec<FormulaToken>,
+    in_error: &mut bool,
+) {
+    value.push(formula.chars().nth(*index).unwrap());
+    *index += 1;
+    if ERRORS.iter().any(|&x| x == value.as_str()) {
+        *in_error = false;
+        let mut obj = FormulaToken::default();
+        obj.set_value(value.clone());
+        obj.set_token_type(FormulaTokenTypes::Operand);
+        obj.set_token_sub_type(FormulaTokenSubTypes::Error);
+        tokens.push(obj);
+        *value = String::new();
+    }
+}
+
+fn handle_scientific_notation(formula: &str, index: &mut usize, value: &mut String) -> bool {
+    if let Some(current_char) = formula.chars().nth(*index) {
+        if OPERATORS_SN.contains(current_char)
+            && value.len() > 1
+            && get_scientific_regex()
+                .is_match(&current_char.to_string())
+                .unwrap_or(false)
+        {
+            value.push(current_char);
+            *index += 1;
+            return true;
+        }
+    }
+    false
+}
+
+#[allow(clippy::too_many_arguments)]
+fn handle_special_characters(
+    formula: &str,
+    index: &mut usize,
+    value: &mut String,
+    tokens1: &mut Vec<FormulaToken>,
+    stack: &mut Vec<FormulaToken>,
+    in_string: &mut bool,
+    in_range: &mut bool,
+    in_error: &mut bool,
+) -> bool {
+    let current_char = formula.chars().nth(*index).unwrap();
+
+    // handle double quote
+    if current_char == QUOTE_DOUBLE {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Unknown);
+            tokens1.push(obj);
+            value.clear();
+        }
+        *in_string = true;
+        *index += 1;
+        return true;
+    }
+
+    // handle single quote
+    if current_char == QUOTE_SINGLE {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Unknown);
+            tokens1.push(obj);
+            value.clear();
+        }
+        *in_string = true;
+        *index += 1;
+        return true;
+    }
+
+    // handle bracket open
+    if current_char == BRACKET_OPEN {
+        *in_range = true;
+        value.push(BRACKET_OPEN);
+        *index += 1;
+        return true;
+    }
+
+    // handle error start
+    if current_char == ERROR_START {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Unknown);
+            tokens1.push(obj);
+            value.clear();
+        }
+        *in_error = true;
+        value.push(ERROR_START);
+        *index += 1;
+        return true;
+    }
+
+    // handle braces and semicolons (array constructs)
+    if handle_array_chars(current_char, value, tokens1, stack) {
+        *index += 1;
+        return true;
+    }
+
+    // handle whitespace
+    if current_char == WHITESPACE {
+        handle_whitespace(value, tokens1);
+        *index += 1;
+        // skip consecutive spaces
+        let len = formula.chars().count();
+        while *index < len && formula.chars().nth(*index).unwrap() == WHITESPACE {
+            *index += 1;
+        }
+        return true;
+    }
+
+    // handle multi-character comparators
+    if handle_multi_char_comparator(formula, index, value, tokens1) {
+        return true;
+    }
+
+    // handle infix operators
+    if OPERATORS_INFIX.contains(current_char) {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Operand);
+            tokens1.push(obj);
+            value.clear();
+        }
+        let mut obj = FormulaToken::default();
+        obj.set_value(current_char);
+        obj.set_token_type(FormulaTokenTypes::OperatorInfix);
+        tokens1.push(obj);
+        *index += 1;
+        return true;
+    }
+
+    // handle postfix operators
+    if OPERATORS_POSTFIX.contains(current_char) {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Operand);
+            tokens1.push(obj);
+            value.clear();
+        }
+        let mut obj = FormulaToken::default();
+        obj.set_value(current_char);
+        obj.set_token_type(FormulaTokenTypes::OperatorPostfix);
+        tokens1.push(obj);
+        *index += 1;
+        return true;
+    }
+
+    // handle subexpression / function start
+    if current_char == PAREN_OPEN {
+        if value.is_empty() {
+            let obj = token!(
+                "",
+                FormulaTokenTypes::Subexpression,
+                FormulaTokenSubTypes::Start
+            );
+            tokens1.push(obj.clone());
+            stack.push(obj);
+        } else {
+            let obj = token!(
+                value.clone(),
+                FormulaTokenTypes::Function,
+                FormulaTokenSubTypes::Start
+            );
+            tokens1.push(obj.clone());
+            stack.push(obj);
+            value.clear();
+        }
+        *index += 1;
+        return true;
+    }
+
+    // handle function/operand unions
+    if current_char == COMMA {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Operand);
+            tokens1.push(obj);
+            value.clear();
+        }
+
+        let mut obj = stack.pop().unwrap();
+        obj.set_value("");
+        obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+        stack.push(obj.clone());
+
+        if obj.get_token_type() == &FormulaTokenTypes::Function {
+            let mut op = FormulaToken::default();
+            op.set_value(",");
+            op.set_token_type(FormulaTokenTypes::OperatorInfix);
+            op.set_token_sub_type(FormulaTokenSubTypes::Union);
+            tokens1.push(op);
+        } else {
+            let mut arg = FormulaToken::default();
+            arg.set_value(",");
+            arg.set_token_type(FormulaTokenTypes::Argument);
+            tokens1.push(arg);
+        }
+        *index += 1;
+        return true;
+    }
+
+    // handle subexpression/function stop
+    if current_char == PAREN_CLOSE {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Operand);
+            tokens1.push(obj);
+            value.clear();
+        }
+        let mut obj = stack.pop().unwrap();
+        obj.set_value("");
+        obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+        tokens1.push(obj);
+        *index += 1;
+        return true;
+    }
+
+    false
+}
+
+fn handle_array_chars(
+    current_char: char,
+    value: &mut String,
+    tokens1: &mut Vec<FormulaToken>,
+    stack: &mut Vec<FormulaToken>,
+) -> bool {
+    // handle {
+    if current_char == BRACE_OPEN {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Unknown);
+            tokens1.push(obj);
+            value.clear();
+        }
+        let arr_start = token!(
+            "ARRAY",
+            FormulaTokenTypes::Function,
+            FormulaTokenSubTypes::Start
+        );
+        tokens1.push(arr_start.clone());
+        stack.push(arr_start);
+
+        let arr_row = token!(
+            "ARRAYROW",
+            FormulaTokenTypes::Function,
+            FormulaTokenSubTypes::Start
+        );
+        tokens1.push(arr_row.clone());
+        stack.push(arr_row);
+        return true;
+    }
+
+    // handle ;
+    if current_char == SEMICOLON {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Operand);
+            tokens1.push(obj);
+            value.clear();
+        }
+        let mut obj = stack.pop().unwrap();
+        obj.set_value("");
+        obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
+        tokens1.push(obj);
+
+        let mut comma = FormulaToken::default();
+        comma.set_value(",");
+        comma.set_token_type(FormulaTokenTypes::Argument);
+        tokens1.push(comma);
+
+        let arr_row = token!(
+            "ARRAYROW",
+            FormulaTokenTypes::Function,
+            FormulaTokenSubTypes::Start
+        );
+        tokens1.push(arr_row.clone());
+        stack.push(arr_row);
+        return true;
+    }
+
+    // handle }
+    if current_char == BRACE_CLOSE {
+        if !value.is_empty() {
+            let mut obj = FormulaToken::default();
+            obj.set_value(value.clone());
+            obj.set_token_type(FormulaTokenTypes::Operand);
+            tokens1.push(obj);
+            value.clear();
+        }
+        let mut obj_end = stack.pop().unwrap();
+        obj_end.set_value("");
+        obj_end.set_token_sub_type(FormulaTokenSubTypes::Stop);
+        tokens1.push(obj_end);
+
+        let mut arr_end = stack.pop().unwrap();
+        arr_end.set_value("");
+        arr_end.set_token_sub_type(FormulaTokenSubTypes::Stop);
+        tokens1.push(arr_end);
+        return true;
+    }
+
+    false
+}
+
+fn handle_whitespace(value: &mut String, tokens1: &mut Vec<FormulaToken>) {
+    if !value.is_empty() {
+        let mut obj = FormulaToken::default();
+        obj.set_value(value.clone());
+        obj.set_token_type(FormulaTokenTypes::Operand);
+        tokens1.push(obj);
+        value.clear();
+    }
+    let mut space = FormulaToken::default();
+    space.set_value("");
+    space.set_token_type(FormulaTokenTypes::Whitespace);
+    tokens1.push(space);
+}
+
+fn handle_multi_char_comparator(
+    formula: &str,
+    index: &mut usize,
+    value: &mut String,
+    tokens1: &mut Vec<FormulaToken>,
+) -> bool {
+    let formula_length = formula.chars().count();
+    if (*index + 2) <= formula_length {
+        let next_two = formula.chars().skip(*index).take(2).collect::<String>();
+        if COMPARATORS_MULTI.iter().any(|&x| x == next_two) {
+            // flush current value
+            if !value.is_empty() {
+                let mut obj = FormulaToken::default();
+                obj.set_value(value.clone());
+                obj.set_token_type(FormulaTokenTypes::Operand);
+                tokens1.push(obj);
+                value.clear();
+            }
+            let mut obj = FormulaToken::default();
+            obj.set_value(next_two);
+            obj.set_token_type(FormulaTokenTypes::OperatorInfix);
+            obj.set_token_sub_type(FormulaTokenSubTypes::Logical);
+            tokens1.push(obj);
+            *index += 2;
+            return true;
+        }
+    }
+    false
+}
+
+fn cleanup_tokens(tokens1: &[FormulaToken], tokens2: &mut Vec<FormulaToken>) {
+    let token_count = tokens1.len();
+    let mut value = String::new();
+    for i in 0..token_count {
+        let token = &tokens1[i];
+        if token.get_token_type() != &FormulaTokenTypes::Whitespace {
+            tokens2.push(token.clone());
+            continue;
+        }
+
+        let mut previous_token: Option<&FormulaToken> = None;
+        let mut next_token: Option<&FormulaToken> = None;
+
+        if i > 0 {
+            previous_token = tokens1.get(i - 1);
+        }
+        if i + 1 < token_count {
+            next_token = tokens1.get(i + 1);
+        }
+
+        if let Some(p) = previous_token {
+            if !is_operand_or_close(p) {
+                continue;
+            }
+        }
+        if let Some(n) = next_token {
+            if !is_operand_or_open(n) {
+                continue;
+            }
+        }
+        tokens2.push(token!(
+            value.clone(),
+            FormulaTokenTypes::OperatorInfix,
+            FormulaTokenSubTypes::Intersection
+        ));
+        value.clear();
+
+        if let Some(n) = next_token {
+            if !is_operand_or_open(n) {
+                continue;
+            }
+        }
+        tokens2.push(token!(
+            value.clone(),
+            FormulaTokenTypes::OperatorInfix,
+            FormulaTokenSubTypes::Intersection
+        ));
+        value.clear();
+    }
+}
+
+#[allow(clippy::ref_option)]
+fn should_token_be_math(previous_token: &Option<FormulaToken>) -> bool {
+    if previous_token.is_none() {
+        return false;
+    }
+    let t = previous_token.as_ref().unwrap();
+    if (t.get_token_type() == &FormulaTokenTypes::Function
+        && t.get_token_sub_type() == &FormulaTokenSubTypes::Stop)
+        || (t.get_token_type() == &FormulaTokenTypes::Subexpression
+            && t.get_token_sub_type() == &FormulaTokenSubTypes::Stop)
+        || (t.get_token_type() == &FormulaTokenTypes::OperatorPostfix)
+        || (t.get_token_type() == &FormulaTokenTypes::Operand)
+    {
+        return true;
+    }
+    false
+}
+
+fn is_operand_or_close(token: &FormulaToken) -> bool {
+    ((token.get_token_type() == &FormulaTokenTypes::Function)
+        && (token.get_token_sub_type() == &FormulaTokenSubTypes::Stop))
+        || ((token.get_token_type() == &FormulaTokenTypes::Subexpression)
+            && (token.get_token_sub_type() == &FormulaTokenSubTypes::Stop))
+        || (token.get_token_type() == &FormulaTokenTypes::Operand)
+}
+
+fn is_operand_or_open(token: &FormulaToken) -> bool {
+    ((token.get_token_type() == &FormulaTokenTypes::Function)
+        && (token.get_token_sub_type() == &FormulaTokenSubTypes::Start))
+        || ((token.get_token_type() == &FormulaTokenTypes::Subexpression)
+            && (token.get_token_sub_type() == &FormulaTokenSubTypes::Start))
+        || (token.get_token_type() == &FormulaTokenTypes::Operand)
 }
 
 pub(crate) fn render(formula_token_list: &[FormulaToken]) -> String {
