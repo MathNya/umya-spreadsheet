@@ -550,20 +550,6 @@ mod tests {
     }
 
     #[test]
-    fn test_buffer_slice() {
-        // Since buffer_slice is not defined in the new code, we can replicate its
-        // functionality inline
-        let buffer = hex!(
-            "ba1bf00eed82b07ee65e574eb1f460435d2a1405e81904fd01d5ed5adf43fdcf
-             d8e9aeebad0c08065e0db20cdc8e4552744b61ad1b3cf9a3c5aad5b2a047e76b"
-        );
-        let start = 0;
-        let end = 16;
-        let result = buffer[start..end].to_vec();
-        assert_eq!(result, hex!("ba1bf00eed82b07ee65e574eb1f46043"));
-    }
-
-    #[test]
     fn test_convert_password_to_key() {
         let key_salt = hex!("3aa973eec73c98c4710021730ef5b513");
         let result = key::convert_password_to_key(
