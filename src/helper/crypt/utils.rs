@@ -80,7 +80,7 @@ use sha2::{
 macro_rules! generate_random_bytes {
     ($var_name:ident, $size:expr) => {
         let mut $var_name = [0u8; $size];
-        rand::thread_rng().fill(&mut $var_name[..]);
+        rand::thread_rng().fill(&mut $var_name);
     };
 }
 
