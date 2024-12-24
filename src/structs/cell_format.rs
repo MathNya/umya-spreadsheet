@@ -1,30 +1,48 @@
 // xf
-use super::Alignment;
-use super::BooleanValue;
-use super::Protection;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Alignment,
+    BooleanValue,
+    Protection,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormat {
-    number_format_id: UInt32Value,
-    font_id: UInt32Value,
-    fill_id: UInt32Value,
-    border_id: UInt32Value,
-    format_id: UInt32Value,
+    number_format_id:    UInt32Value,
+    font_id:             UInt32Value,
+    fill_id:             UInt32Value,
+    border_id:           UInt32Value,
+    format_id:           UInt32Value,
     apply_number_format: BooleanValue,
-    apply_fill: BooleanValue,
-    apply_border: BooleanValue,
-    apply_font: BooleanValue,
-    apply_alignment: BooleanValue,
-    apply_protection: BooleanValue,
-    alignment: Option<Alignment>,
-    protection: Option<Protection>,
+    apply_fill:          BooleanValue,
+    apply_border:        BooleanValue,
+    apply_font:          BooleanValue,
+    apply_alignment:     BooleanValue,
+    apply_protection:    BooleanValue,
+    alignment:           Option<Alignment>,
+    protection:          Option<Protection>,
 }
 
 impl CellFormat {
@@ -185,7 +203,7 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+    pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
     }
 
@@ -201,7 +219,7 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_protection_mut(&mut self) -> Option<&mut Protection> {
+    pub(crate) fn get_protection_mut(&mut self) -> Option<&mut Protection> {
         self.protection.as_mut()
     }
 

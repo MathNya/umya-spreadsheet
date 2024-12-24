@@ -1,21 +1,28 @@
-use super::super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::StringValue;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TextFontType {
-    typeface: StringValue,
+    typeface:     StringValue,
     pitch_family: StringValue,
-    charset: StringValue,
-    panose: StringValue,
+    charset:      StringValue,
+    panose:       StringValue,
 }
 
 impl TextFontType {
     #[inline]
+    #[must_use]
     pub fn get_typeface(&self) -> &str {
         self.typeface.get_value_str()
     }
@@ -27,6 +34,7 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_pitch_family(&self) -> &str {
         self.pitch_family.get_value_str()
     }
@@ -38,6 +46,7 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_charset(&self) -> &str {
         self.charset.get_value_str()
     }
@@ -49,6 +58,7 @@ impl TextFontType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_panose(&self) -> &str {
         self.panose.get_value_str()
     }

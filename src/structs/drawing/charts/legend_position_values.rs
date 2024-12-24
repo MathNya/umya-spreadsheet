@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum LegendPositionValues {
     Bottom,
@@ -26,6 +27,7 @@ impl EnumTrait for LegendPositionValues {
 }
 impl FromStr for LegendPositionValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "b" => Ok(Self::Bottom),

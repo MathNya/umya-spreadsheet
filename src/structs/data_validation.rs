@@ -1,33 +1,51 @@
 // dataValidation
-use super::BooleanValue;
-use super::DataValidationOperatorValues;
-use super::DataValidationValues;
-use super::EnumValue;
-use super::SequenceOfReferences;
-use super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
+use std::{
+    io::Cursor,
+    vec,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BooleanValue,
+    DataValidationOperatorValues,
+    DataValidationValues,
+    EnumValue,
+    SequenceOfReferences,
+    StringValue,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type: EnumValue<DataValidationValues>,
-    operator: EnumValue<DataValidationOperatorValues>,
-    allow_blank: BooleanValue,
-    show_input_message: BooleanValue,
-    show_error_message: BooleanValue,
-    prompt_title: StringValue,
-    prompt: StringValue,
+    r#type:                 EnumValue<DataValidationValues>,
+    operator:               EnumValue<DataValidationOperatorValues>,
+    allow_blank:            BooleanValue,
+    show_input_message:     BooleanValue,
+    show_error_message:     BooleanValue,
+    prompt_title:           StringValue,
+    prompt:                 StringValue,
     sequence_of_references: SequenceOfReferences,
-    formula1: StringValue,
-    formula2: StringValue,
+    formula1:               StringValue,
+    formula2:               StringValue,
 }
 impl DataValidation {
     #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &DataValidationValues {
         self.r#type.get_value()
     }
@@ -39,6 +57,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
         self.operator.get_value()
     }
@@ -50,6 +69,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_allow_blank(&self) -> bool {
         self.allow_blank.get_value()
     }
@@ -61,6 +81,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_show_input_message(&self) -> bool {
         self.show_input_message.get_value()
     }
@@ -72,6 +93,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_show_error_message(&self) -> bool {
         self.show_error_message.get_value()
     }
@@ -83,6 +105,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_prompt_title(&self) -> &str {
         self.prompt_title.get_value_str()
     }
@@ -94,6 +117,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_prompt(&self) -> &str {
         self.prompt.get_value_str()
     }
@@ -105,6 +129,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
@@ -121,6 +146,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula1(&self) -> &str {
         self.formula1.get_value_str()
     }
@@ -132,6 +158,7 @@ impl DataValidation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_formula2(&self) -> &str {
         self.formula2.get_value_str()
     }
@@ -201,7 +228,9 @@ impl DataValidation {
                     b"dataValidation" => return,
                     _ => {}
                 },
-                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "dataValidation"),
+                Ok(Event::Eof) => {
+                    panic!("Error: Could not find {} end element", "dataValidation")
+                }
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => {}
             }

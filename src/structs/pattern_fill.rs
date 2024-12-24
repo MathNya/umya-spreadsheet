@@ -1,24 +1,43 @@
 // patternFill
-use super::Color;
-use super::EnumValue;
-use super::PatternValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Color,
+    EnumValue,
+    PatternValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct PatternFill {
     pub(crate) pattern_type: EnumValue<PatternValues>,
-    foreground_color: Option<Box<Color>>,
-    background_color: Option<Box<Color>>,
+    foreground_color:        Option<Box<Color>>,
+    background_color:        Option<Box<Color>>,
 }
 
 impl PatternFill {
     #[inline]
+    #[must_use]
     pub fn get_pattern_type(&self) -> &PatternValues {
         self.pattern_type.get_value()
     }
@@ -41,6 +60,7 @@ impl PatternFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_foreground_color(&self) -> Option<&Color> {
         self.foreground_color.as_deref()
     }
@@ -65,6 +85,7 @@ impl PatternFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.background_color.as_deref()
     }
@@ -100,8 +121,7 @@ impl PatternFill {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
-                "{}{}{}",
-                pattern_type, foreground_color, background_color
+                "{pattern_type}{foreground_color}{background_color}"
             ))
         )
     }

@@ -1,30 +1,45 @@
 // xm:sqref
-use crate::structs::Range;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
-use thin_vec::ThinVec;
+use std::{
+    io::Cursor,
+    vec,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    structs::Range,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct ReferenceSequence {
-    value: ThinVec<Range>,
+    value: Vec<Range>,
 }
 impl ReferenceSequence {
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> &[Range] {
         &self.value
     }
 
     #[inline]
-    pub fn get_value_mut(&mut self) -> &mut ThinVec<Range> {
+    pub fn get_value_mut(&mut self) -> &mut Vec<Range> {
         &mut self.value
     }
 
     #[inline]
-    pub fn set_value(&mut self, value: impl Into<ThinVec<Range>>) -> &mut Self {
+    pub fn set_value(&mut self, value: impl Into<Vec<Range>>) -> &mut Self {
         self.value = value.into();
         self
     }
@@ -51,10 +66,11 @@ impl ReferenceSequence {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sqref(&self) -> String {
         self.value
             .iter()
-            .map(|range| range.get_range())
+            .map(Range::get_range)
             .collect::<Vec<String>>()
             .join(" ")
     }
@@ -64,7 +80,7 @@ impl ReferenceSequence {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {

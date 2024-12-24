@@ -1,22 +1,37 @@
-use super::GradientFill;
-use super::PatternFill;
-use super::PatternValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    GradientFill,
+    PatternFill,
+    PatternValues,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Fill {
-    pattern_fill: Option<Box<PatternFill>>,
+    pattern_fill:  Option<Box<PatternFill>>,
     gradient_fill: Option<Box<GradientFill>>,
 }
 
 impl Fill {
     #[inline]
+    #[must_use]
     pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
         self.pattern_fill.as_deref()
     }
@@ -38,6 +53,7 @@ impl Fill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }

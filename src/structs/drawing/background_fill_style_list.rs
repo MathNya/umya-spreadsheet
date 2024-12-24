@@ -1,32 +1,46 @@
-use super::GradientFill;
-use super::SolidFill;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    GradientFill,
+    SolidFill,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct BackgroundFillStyleList {
-    solid_fill: ThinVec<SolidFill>,
-    gradient_fill_collection: ThinVec<GradientFill>,
+    solid_fill:               Vec<SolidFill>,
+    gradient_fill_collection: Vec<GradientFill>,
 }
 
 impl BackgroundFillStyleList {
     #[inline]
+    #[must_use]
     pub fn get_solid_fill(&self) -> &[SolidFill] {
         &self.solid_fill
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> &mut ThinVec<SolidFill> {
+    pub fn get_solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
         &mut self.solid_fill
     }
 
     #[inline]
-    pub fn set_solid_fill(&mut self, value: impl Into<ThinVec<SolidFill>>) -> &mut Self {
+    pub fn set_solid_fill(&mut self, value: impl Into<Vec<SolidFill>>) -> &mut Self {
         self.solid_fill = value.into();
         self
     }
@@ -38,19 +52,20 @@ impl BackgroundFillStyleList {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_gradient_fill_collection(&self) -> &[GradientFill] {
         &self.gradient_fill_collection
     }
 
     #[inline]
-    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut ThinVec<GradientFill> {
+    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut Vec<GradientFill> {
         &mut self.gradient_fill_collection
     }
 
     #[inline]
     pub fn set_gradient_fill_collection(
         &mut self,
-        value: impl Into<ThinVec<GradientFill>>,
+        value: impl Into<Vec<GradientFill>>,
     ) -> &mut Self {
         self.gradient_fill_collection = value.into();
         self

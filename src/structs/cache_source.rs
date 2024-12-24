@@ -1,22 +1,40 @@
 // cacheSource
-use crate::structs::EnumValue;
-use crate::structs::SourceValues;
-use crate::structs::WorksheetSource;
-
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        SourceValues,
+        WorksheetSource,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CacheSource {
-    r#type: EnumValue<SourceValues>,
+    r#type:           EnumValue<SourceValues>,
     worksheet_source: Option<WorksheetSource>,
 }
 
 impl CacheSource {
+    #[must_use]
     pub fn get_type(&self) -> &SourceValues {
         self.r#type.get_value()
     }
@@ -26,6 +44,7 @@ impl CacheSource {
         self
     }
 
+    #[must_use]
     pub fn get_worksheet_source(&self) -> Option<&WorksheetSource> {
         self.worksheet_source.as_ref()
     }
@@ -81,7 +100,7 @@ impl CacheSource {
         if !empty_flg {
             // worksheetSource
             if let Some(v) = &self.worksheet_source {
-                v.write_to(writer)
+                v.write_to(writer);
             }
             write_end_tag(writer, "cacheSource");
         }

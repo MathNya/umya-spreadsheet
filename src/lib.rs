@@ -22,7 +22,7 @@
 //! let mut book = new_file();
 //!
 //! // new worksheet
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused = book.new_sheet("Sheet2");
 //! ```
 //! ### Copy worksheet
 //! ```rust
@@ -31,13 +31,13 @@
 //!
 //! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
 //! clone_sheet.set_name("New Sheet");
-//! let _ = book.add_sheet(clone_sheet);
+//! let _unused = book.add_sheet(clone_sheet);
 //! ```
 //! ### Change value
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused =  book.new_sheet("Sheet2");
 //!
 //! // change value
 //! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
@@ -52,8 +52,11 @@
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
-//! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
+//! let _unused = book.new_sheet("Sheet2");
+//! book.get_sheet_by_name_mut("Sheet2")
+//!     .unwrap()
+//!     .get_cell_mut("A1")
+//!     .set_value("TEST1");
 //!
 //! // read value
 //! let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");
@@ -61,27 +64,29 @@
 //! let a1_value = book.get_sheet(1).unwrap().get_value((1, 1));
 //! // or formatted value
 //! let a1_value = book.get_sheet(1).unwrap().get_formatted_value("A1");
-//! assert_eq!("TEST1", a1_value);  // TEST1
+//! assert_eq!("TEST1", a1_value); // TEST1
 //! ```
 //! ### Change style
 //! more example is [**here**](Style).
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused = book.new_sheet("Sheet2");
 //!
 //! // add bottom border
-//! book.get_sheet_by_name_mut("Sheet2").unwrap()
-//! .get_style_mut("A1")
-//! .get_borders_mut()
-//! .get_bottom_mut()
-//! .set_border_style(Border::BORDER_MEDIUM);
+//! book.get_sheet_by_name_mut("Sheet2")
+//!     .unwrap()
+//!     .get_style_mut("A1")
+//!     .get_borders_mut()
+//!     .get_bottom_mut()
+//!     .set_border_style(Border::BORDER_MEDIUM);
 //! // or
-//! book.get_sheet_mut(1).unwrap()
-//! .get_style_mut((1, 1))
-//! .get_borders_mut()
-//! .get_bottom_mut()
-//! .set_border_style(Border::BORDER_MEDIUM);
+//! book.get_sheet_mut(1)
+//!     .unwrap()
+//!     .get_style_mut((1, 1))
+//!     .get_borders_mut()
+//!     .get_bottom_mut()
+//!     .set_border_style(Border::BORDER_MEDIUM);
 //! ```
 //! ### Insert or Remove Rows(or Columns)
 //! ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample2.png)
@@ -109,15 +114,49 @@
 //! ```rust
 //! use umya_spreadsheet::*;
 //! let mut book = new_file();
-//! let _ = book.new_sheet("Sheet2");
+//! let _unused = book.new_sheet("Sheet2");
 //!
 //! // writer
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
-//! let _ = writer::xlsx::write(&book, path);
+//! let _unused = writer::xlsx::write(&book, path);
 //! ```
 
+#![deny(
+    explicit_outlives_requirements,
+    let_underscore_drop,
+    meta_variable_misuse,
+    non_ascii_idents,
+    non_local_definitions,
+    redundant_imports,
+    redundant_lifetimes,
+    single_use_lifetimes,
+    trivial_casts,
+    trivial_numeric_casts,
+    unit_bindings,
+    unsafe_code,
+    unused_import_braces,
+    unused_lifetimes,
+    unused_macro_rules,
+    unused_qualifications,
+    variant_size_differences
+)]
+#![allow(dead_code)]
 #![deny(clippy::correctness)]
-#![warn(clippy::style, clippy::complexity, clippy::perf, clippy::trivially_copy_pass_by_ref)]
+#![warn(
+    clippy::style,
+    clippy::complexity,
+    clippy::perf,
+    clippy::pedantic,
+    clippy::cargo,
+    clippy::suspicious
+)]
+#![allow(
+    clippy::missing_errors_doc,
+    clippy::missing_panics_doc,
+    clippy::module_name_repetitions,
+    clippy::similar_names,
+    clippy::too_many_lines
+)]
 
 extern crate chrono;
 extern crate fancy_regex;
@@ -125,7 +164,6 @@ extern crate fancy_regex;
 extern crate image;
 extern crate md5;
 extern crate quick_xml;
-extern crate thin_vec;
 extern crate thousands;
 extern crate zip;
 
@@ -134,13 +172,10 @@ extern crate base64;
 extern crate byteorder;
 extern crate cbc;
 extern crate cfb;
-extern crate getrandom;
 extern crate hmac;
 extern crate html_parser;
+extern crate rand;
 extern crate sha2;
-
-#[macro_use]
-extern crate lazy_static;
 
 pub mod helper;
 pub mod reader;
@@ -150,43 +185,53 @@ pub mod writer;
 
 pub use self::structs::*;
 
-/// create new spreadsheet file.
-/// # Arguments
-/// # Return value
-/// * Spreadsheet structs object.
-/// # Examples
-/// ```
-/// let mut book = umya_spreadsheet::new_file();
-/// ```
-pub fn new_file() -> structs::Spreadsheet {
-    let mut spreadsheet = structs::Spreadsheet::default();
-    spreadsheet.set_theme(structs::drawing::Theme::get_default_value());
-    spreadsheet.set_stylesheet_defalut_value();
-    let worksheet = spreadsheet.new_sheet("Sheet1").unwrap();
+/// Creates a new workbook with default settings.
+///
+/// Returns a new `Workbook` instance initialized with:
+/// - Default theme
+/// - Default stylesheet
+/// - One worksheet named "Sheet1"
+/// - Active cell set to "A1"
+/// - Sheet view configured with workbook view ID 0
+///
+/// # Panics
+///
+/// Panics if unable to create a new worksheet named "Sheet1". This should never
+/// happen with default settings since it's the first worksheet in a new
+/// spreadsheet.
+#[must_use]
+pub fn new_file() -> Workbook {
+    let mut wb = Workbook::default();
+    wb.set_theme(drawing::Theme::get_default_value());
+    wb.set_stylesheet_default_value();
+    let worksheet = wb.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
     let mut sheet_view = SheetView::default();
     sheet_view.set_workbook_view_id(0);
     let mut sheet_views = SheetViews::default();
     sheet_views.add_sheet_view_list_mut(sheet_view);
     worksheet.set_sheets_views(sheet_views);
-    spreadsheet.set_active_sheet(0);
-    spreadsheet
+    wb.set_active_sheet(0);
+    wb
 }
 
-/// create new spreadsheet file.
-/// not include worksheet.
-/// At least one additional worksheet must be added before the correct file can be generated.
+/// Creates a new empty workbook without any worksheets.
 ///
-/// # Arguments
-/// # Return value
-/// * Spreadsheet structs object.
+/// This function initializes a new workbook with default theme and
+/// stylesheet settings. At least one worksheet must be added before generating
+/// a valid file.
+///
+/// # Returns
+/// A new `Workbook` instance with default configuration but no worksheets.
+///
 /// # Examples
 /// ```
 /// let mut book = umya_spreadsheet::new_file_empty_worksheet();
 /// ```
-pub fn new_file_empty_worksheet() -> structs::Spreadsheet {
-    let mut spreadsheet = structs::Spreadsheet::default();
-    spreadsheet.set_theme(structs::drawing::Theme::get_default_value());
-    spreadsheet.set_stylesheet_defalut_value();
-    spreadsheet
+#[must_use]
+pub fn new_file_empty_worksheet() -> Workbook {
+    let mut wb = Workbook::default();
+    wb.set_theme(drawing::Theme::get_default_value());
+    wb.set_stylesheet_default_value();
+    wb
 }

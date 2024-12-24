@@ -1,16 +1,27 @@
 // mruColors
-use super::Color;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::Color;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct MruColors {
-    color: ThinVec<Color>,
+    color: Vec<Color>,
 }
 
 impl MruColors {
@@ -20,7 +31,7 @@ impl MruColors {
     }
 
     #[inline]
-    pub(crate) fn _get_color_mut(&mut self) -> &mut ThinVec<Color> {
+    pub(crate) fn get_color_mut(&mut self) -> &mut Vec<Color> {
         &mut self.color
     }
 

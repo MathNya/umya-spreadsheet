@@ -1,12 +1,18 @@
-use crate::structs::Color;
-use crate::structs::Font;
-use crate::structs::RichText;
-use crate::structs::TextElement;
-use crate::structs::UnderlineValues;
-use crate::structs::VerticalAlignmentRunValues;
-use html_parser::{Dom, Node};
 use std::collections::HashMap;
-use thin_vec::ThinVec;
+
+use html_parser::{
+    Dom,
+    Node,
+};
+
+use crate::structs::{
+    Color,
+    Font,
+    RichText,
+    TextElement,
+    UnderlineValues,
+    VerticalAlignmentRunValues,
+};
 
 /// Generate rich text from html.
 /// # Arguments
@@ -51,8 +57,8 @@ pub fn html_to_richtext_custom(
 }
 
 #[allow(clippy::field_reassign_with_default)]
-fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<HtmlFlatData> {
-    let mut result: ThinVec<HtmlFlatData> = ThinVec::new();
+fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> Vec<HtmlFlatData> {
+    let mut result: Vec<HtmlFlatData> = Vec::new();
 
     if node_list.is_empty() {
         return result;
@@ -86,12 +92,12 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
                     .map(|(name, value)| {
                         (
                             name.clone(),
-                            value.as_ref().map(|v| v.to_string()).unwrap_or_default(),
+                            value.as_ref().map(ToString::to_string).unwrap_or_default(),
                         )
                     })
                     .collect();
 
-                elm.classes = element.classes.clone().into();
+                elm.classes.clone_from(&element.classes);
                 data.element.push(elm);
 
                 let mut children = read_node(&element.children, &data.element);
@@ -100,7 +106,7 @@ fn read_node(node_list: &Vec<Node>, parent_element: &[HfdElement]) -> ThinVec<Ht
                 data = HtmlFlatData::default();
                 data.element.extend_from_slice(parent_element);
             }
-            _ => {}
+            Node::Comment(_) => {}
         }
     }
     if !data.text.is_empty() {
@@ -172,31 +178,34 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
 
 #[derive(Clone, Default, Debug)]
 pub struct HtmlFlatData {
-    text: String,
-    element: ThinVec<HfdElement>,
+    text:    String,
+    element: Vec<HfdElement>,
 }
 
 #[derive(Clone, Default, Debug)]
 pub struct HfdElement {
-    name: String,
+    name:       String,
     attributes: HashMap<String, String>,
-    classes: ThinVec<String>,
+    classes:    Vec<String>,
 }
 impl HfdElement {
     #[inline]
+    #[must_use]
     pub fn has_name(&self, name: &str) -> bool {
         self.name == name
     }
 
     #[inline]
+    #[must_use]
     pub fn get_by_name_and_attribute(&self, name: &str, attribute: &str) -> Option<&str> {
         self.attributes
             .get(attribute)
             .and_then(|v| (self.name == name).then_some(v))
-            .map(|x| x.as_str())
+            .map(String::as_str)
     }
 
     #[inline]
+    #[must_use]
     pub fn contains_class(&self, class: &str) -> bool {
         self.classes.contains(&class.to_string())
     }
@@ -239,7 +248,7 @@ impl AnalysisMethod for DataAnalysis {
         html_flat_data
             .element
             .iter()
-            .flat_map(|element| element.get_by_name_and_attribute("font", "color"))
+            .filter_map(|element| element.get_by_name_and_attribute("font", "color"))
             .find_map(|v| {
                 let color = v.trim_start_matches('#').to_uppercase();
                 COLOR_MAP
@@ -813,5 +822,5 @@ const COLOR_MAP: &[(&str, &str)] = &[
 #[test]
 fn convert_test() {
     let html = r#"<font color="red">test</font><br><font class="test" color="green">TE<b>S</b>T<br/>TEST</font>"#;
-    let _ = html_to_richtext(html).unwrap();
+    let _unused = html_to_richtext(html).unwrap();
 }

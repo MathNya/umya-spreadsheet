@@ -1,38 +1,53 @@
 // c:serAx
-use super::AxisId;
-use super::AxisPosition;
-use super::Crosses;
-use super::CrossingAxis;
-use super::Delete;
-use super::MajorGridlines;
-use super::MajorTickMark;
-use super::MinorTickMark;
-use super::Scaling;
-use super::TickLabelPosition;
-use super::Title;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    AxisId,
+    AxisPosition,
+    Crosses,
+    CrossingAxis,
+    Delete,
+    MajorGridlines,
+    MajorTickMark,
+    MinorTickMark,
+    Scaling,
+    TickLabelPosition,
+    Title,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SeriesAxis {
-    axis_id: AxisId,
-    scaling: Scaling,
-    delete: Delete,
-    axis_position: AxisPosition,
-    major_gridlines: Option<Box<MajorGridlines>>,
-    title: Option<Title>,
-    major_tick_mark: MajorTickMark,
-    minor_tick_mark: MinorTickMark,
+    axis_id:             AxisId,
+    scaling:             Scaling,
+    delete:              Delete,
+    axis_position:       AxisPosition,
+    major_gridlines:     Option<Box<MajorGridlines>>,
+    title:               Option<Title>,
+    major_tick_mark:     MajorTickMark,
+    minor_tick_mark:     MinorTickMark,
     tick_label_position: TickLabelPosition,
-    crossing_axis: CrossingAxis,
-    crosses: Crosses,
+    crossing_axis:       CrossingAxis,
+    crosses:             Crosses,
 }
 
 impl SeriesAxis {
+    #[must_use]
     pub fn get_axis_id(&self) -> &AxisId {
         &self.axis_id
     }
@@ -46,6 +61,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_scaling(&self) -> &Scaling {
         &self.scaling
     }
@@ -59,6 +75,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_delete(&self) -> &Delete {
         &self.delete
     }
@@ -72,6 +89,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_axis_position(&self) -> &AxisPosition {
         &self.axis_position
     }
@@ -85,6 +103,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
         self.major_gridlines.as_deref()
     }
@@ -98,6 +117,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
@@ -111,6 +131,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_major_tick_mark(&self) -> &MajorTickMark {
         &self.major_tick_mark
     }
@@ -124,6 +145,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_minor_tick_mark(&self) -> &MinorTickMark {
         &self.minor_tick_mark
     }
@@ -137,6 +159,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_label_position(&self) -> &TickLabelPosition {
         &self.tick_label_position
     }
@@ -150,6 +173,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_tick_crossing_axis(&self) -> &CrossingAxis {
         &self.crossing_axis
     }
@@ -163,6 +187,7 @@ impl SeriesAxis {
         self
     }
 
+    #[must_use]
     pub fn get_crosses(&self) -> &Crosses {
         &self.crosses
     }

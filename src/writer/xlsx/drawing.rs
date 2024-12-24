@@ -1,11 +1,21 @@
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
-use super::XlsxError;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::write_new_line,
+};
+use crate::structs::{
+    Worksheet,
+    WriterManager,
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
@@ -14,7 +24,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let mut rel_list: Vec<(String, String)> = Vec::new();
 
     if !worksheet.has_drawing_object() {
-        return Ok((String::from(""), rel_list));
+        return Ok((String::new(), rel_list));
     }
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));

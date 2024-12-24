@@ -1,18 +1,31 @@
-use super::Range;
-use crate::helper::address::*;
-use crate::helper::coordinate::*;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
+use std::sync::OnceLock;
+
 use fancy_regex::Regex;
+
+use super::Range;
+use crate::{
+    helper::{
+        address::split_address,
+        coordinate::index_from_coordinate,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+};
+
+// Initialize OnceLock for the Regex
+static RE: OnceLock<Regex> = OnceLock::new();
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {
     sheet_name: Box<str>,
-    range: Range,
+    range:      Range,
 }
 
 impl Address {
     #[inline]
+    #[must_use]
     pub fn get_sheet_name(&self) -> &str {
         &self.sheet_name
     }
@@ -24,6 +37,7 @@ impl Address {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_range(&self) -> &Range {
         &self.range
     }
@@ -50,6 +64,7 @@ impl Address {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_address(&self) -> String {
         self.get_address_crate(false)
     }
@@ -70,21 +85,20 @@ impl Address {
             with_space_char = "'";
         }
         if is_ptn2 {
-            if sheet_name.contains("!") {
+            if sheet_name.contains('!') {
                 with_space_char = "'";
             }
-            if sheet_name.contains("'") {
+            if sheet_name.contains('\'') {
                 with_space_char = "'";
-                sheet_name = sheet_name.replace("'", "''").into_boxed_str();
+                sheet_name = sheet_name.replace('\'', "''").into_boxed_str();
             }
-            if sheet_name.contains(r#"""#) {
+            if sheet_name.contains('"') {
                 with_space_char = "'";
             }
             if with_space_char.is_empty() {
-                lazy_static! {
-                    static ref RE: Regex = Regex::new(r"[^0-9a-zA-Z]").unwrap();
-                }
-                if RE.is_match(&sheet_name).unwrap_or(false) {
+                // Initialize the regex pattern using OnceLock
+                let re = RE.get_or_init(|| Regex::new(r"[^0-9a-zA-Z]").unwrap());
+                if re.is_match(&sheet_name).unwrap_or(false) {
                     with_space_char = "'";
                 }
             }

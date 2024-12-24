@@ -1,46 +1,67 @@
-use super::office::InsetMarginValues;
-use super::spreadsheet::ClientData;
-use super::Fill;
-use super::ImageData;
-use super::Path;
-use super::Shadow;
-use super::Stroke;
-use super::TextBox;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::structs::EnumValue;
-use crate::structs::Int32Value;
-use crate::structs::StringValue;
-use crate::structs::TrueFalseValue;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Fill,
+    ImageData,
+    Path,
+    Shadow,
+    Stroke,
+    TextBox,
+    office::InsetMarginValues,
+    spreadsheet::ClientData,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        Int32Value,
+        StringValue,
+        TrueFalseValue,
+        raw::RawRelationships,
+    },
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
-    style: StringValue,
-    r_type: StringValue,
-    filled: TrueFalseValue,
-    fill_color: StringValue,
-    stroked: TrueFalseValue,
-    stroke_color: StringValue,
-    stroke_weight: StringValue,
-    inset_mode: EnumValue<InsetMarginValues>,
-    fill: Option<Box<Fill>>,
-    image_data: Option<Box<ImageData>>,
-    stroke: Option<Box<Stroke>>,
-    shadow: Option<Box<Shadow>>,
-    path: Option<Box<Path>>,
-    text_box: Option<Box<TextBox>>,
-    client_data: ClientData,
+    style:           StringValue,
+    r_type:          StringValue,
+    filled:          TrueFalseValue,
+    fill_color:      StringValue,
+    stroked:         TrueFalseValue,
+    stroke_color:    StringValue,
+    stroke_weight:   StringValue,
+    inset_mode:      EnumValue<InsetMarginValues>,
+    fill:            Option<Box<Fill>>,
+    image_data:      Option<Box<ImageData>>,
+    stroke:          Option<Box<Stroke>>,
+    shadow:          Option<Box<Shadow>>,
+    path:            Option<Box<Path>>,
+    text_box:        Option<Box<TextBox>>,
+    client_data:     ClientData,
     optional_number: Int32Value,
     coordinate_size: StringValue,
 }
 
 impl Shape {
+    #[must_use]
     pub fn get_style(&self) -> &str {
         self.style.get_value_str()
     }
@@ -50,6 +71,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_type(&self) -> &str {
         self.r_type.get_value_str()
     }
@@ -59,6 +81,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_filled(&self) -> bool {
         self.filled.get_value()
     }
@@ -68,6 +91,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_fill_color(&self) -> &str {
         self.fill_color.get_value_str()
     }
@@ -77,6 +101,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_stroked(&self) -> bool {
         self.stroked.get_value()
     }
@@ -86,6 +111,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_stroke_color(&self) -> &str {
         self.stroke_color.get_value_str()
     }
@@ -95,6 +121,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_stroke_weight(&self) -> &str {
         self.stroke_weight.get_value_str()
     }
@@ -104,6 +131,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_inset_mode(&self) -> &InsetMarginValues {
         self.inset_mode.get_value()
     }
@@ -113,6 +141,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_fill(&self) -> Option<&Fill> {
         self.fill.as_deref()
     }
@@ -126,6 +155,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_image_data(&self) -> Option<&ImageData> {
         self.image_data.as_deref()
     }
@@ -139,6 +169,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_stroke(&self) -> Option<&Stroke> {
         self.stroke.as_deref()
     }
@@ -152,6 +183,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_shadow(&self) -> Option<&Shadow> {
         self.shadow.as_deref()
     }
@@ -165,6 +197,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_path(&self) -> Option<&Path> {
         self.path.as_deref()
     }
@@ -178,6 +211,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_text_box(&self) -> Option<&TextBox> {
         self.text_box.as_deref()
     }
@@ -191,6 +225,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_client_data(&self) -> &ClientData {
         &self.client_data
     }
@@ -204,6 +239,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_optional_number(&self) -> i32 {
         self.optional_number.get_value()
     }
@@ -213,6 +249,7 @@ impl Shape {
         self
     }
 
+    #[must_use]
     pub fn get_coordinate_size(&self) -> &str {
         self.coordinate_size.get_value_str()
     }
@@ -302,7 +339,7 @@ impl Shape {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // v:shape
-        let id_str = format!("_x0000_s{}", id);
+        let id_str = format!("_x0000_s{id}");
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         attributes.push(("id", &id_str));
         if self.r_type.has_value() {

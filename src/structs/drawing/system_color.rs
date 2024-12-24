@@ -1,22 +1,36 @@
 // a:sysClr
-use super::super::super::EnumValue;
-use super::super::super::StringValue;
-use super::SystemColorValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    super::super::{
+        EnumValue,
+        StringValue,
+    },
+    SystemColorValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SystemColor {
-    val: EnumValue<SystemColorValues>,
+    val:        EnumValue<SystemColorValues>,
     last_color: StringValue,
 }
 
 impl SystemColor {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &SystemColorValues {
         self.val.get_value()
     }
@@ -28,6 +42,7 @@ impl SystemColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_last_color(&self) -> &str {
         self.last_color.get_value_str()
     }

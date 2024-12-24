@@ -1,28 +1,43 @@
 // c:doughnutChart
-use super::AreaChartSeries;
-use super::AreaChartSeriesList;
-use super::DataLabels;
-use super::FirstSliceAngle;
-use super::HoleSize;
-use super::VaryColors;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    AreaChartSeries,
+    AreaChartSeriesList,
+    DataLabels,
+    FirstSliceAngle,
+    HoleSize,
+    VaryColors,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DoughnutChart {
-    vary_colors: VaryColors,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    first_slice_angle: FirstSliceAngle,
-    hole_size: HoleSize,
+    data_labels:            DataLabels,
+    first_slice_angle:      FirstSliceAngle,
+    hole_size:              HoleSize,
 }
 
 impl DoughnutChart {
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -36,6 +51,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -49,6 +65,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -62,6 +79,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_first_slice_angle(&self) -> &FirstSliceAngle {
         &self.first_slice_angle
     }
@@ -75,6 +93,7 @@ impl DoughnutChart {
         self
     }
 
+    #[must_use]
     pub fn get_hole_size(&self) -> &HoleSize {
         &self.hole_size
     }
@@ -128,7 +147,7 @@ impl DoughnutChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:doughnutChart
         write_start_tag(writer, "c:doughnutChart", vec![], false);
 
@@ -137,7 +156,7 @@ impl DoughnutChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

@@ -1,33 +1,57 @@
 // pivotCacheDefinition
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::ByteValue;
-use crate::structs::CacheFields;
-use crate::structs::CacheSource;
-use crate::structs::DoubleValue;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::const_str::{
+        MC_NS,
+        REL_OFC_NS,
+        SHEET_MAIN_NS,
+        SHEET_MS_REVISION_NS,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        ByteValue,
+        CacheFields,
+        CacheSource,
+        DoubleValue,
+        StringValue,
+        UInt32Value,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotCacheDefinition {
-    id: StringValue,
-    refreshed_by: StringValue,
-    refreshed_date: DoubleValue,
-    created_version: ByteValue,
-    refreshed_version: ByteValue,
+    id:                      StringValue,
+    refreshed_by:            StringValue,
+    refreshed_date:          DoubleValue,
+    created_version:         ByteValue,
+    refreshed_version:       ByteValue,
     min_refreshable_version: ByteValue,
-    record_count: UInt32Value,
-    cache_source: CacheSource,
-    cache_fields: CacheFields,
+    record_count:            UInt32Value,
+    cache_source:            CacheSource,
+    cache_fields:            CacheFields,
 }
 
 impl PivotCacheDefinition {
     #[inline]
+    #[must_use]
     pub fn get_id(&self) -> &str {
         self.id.get_value_str()
     }
@@ -39,6 +63,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_refreshed_by(&self) -> &str {
         self.refreshed_by.get_value_str()
     }
@@ -50,6 +75,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_refreshed_date(&self) -> f64 {
         self.refreshed_date.get_value()
     }
@@ -61,6 +87,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_created_version(&self) -> u8 {
         self.created_version.get_value()
     }
@@ -72,6 +99,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_refreshed_version(&self) -> u8 {
         self.refreshed_version.get_value()
     }
@@ -83,6 +111,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.get_value()
     }
@@ -94,6 +123,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_record_count(&self) -> u32 {
         self.record_count.get_value()
     }
@@ -105,6 +135,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cache_source(&self) -> &CacheSource {
         &self.cache_source
     }
@@ -121,6 +152,7 @@ impl PivotCacheDefinition {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cache_fields(&self) -> &CacheFields {
         &self.cache_fields
     }

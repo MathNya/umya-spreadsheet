@@ -1,18 +1,27 @@
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+    sync::OnceLock,
+};
+
 use md5::Digest;
-use quick_xml::escape;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
+use quick_xml::{
+    Reader,
+    Writer,
+    escape,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct NumberingFormat {
     number_format_id: u32,
-    format_code: Box<str>,
-    is_build_in: bool,
+    format_code:      Box<str>,
+    is_build_in:      bool,
 }
 
 impl Default for NumberingFormat {
@@ -20,40 +29,28 @@ impl Default for NumberingFormat {
     fn default() -> Self {
         Self {
             number_format_id: 0,
-            format_code: NumberingFormat::FORMAT_GENERAL.into(),
-            is_build_in: true,
+            format_code:      NumberingFormat::FORMAT_GENERAL.into(),
+            is_build_in:      true,
         }
     }
 }
 
 impl NumberingFormat {
-    // Pre-defined formats
-    pub const FORMAT_GENERAL: &'static str = "General";
-
-    pub const FORMAT_TEXT: &'static str = "@";
-
-    pub const FORMAT_NUMBER: &'static str = "0";
-    pub const FORMAT_NUMBER_00: &'static str = "0.00";
-    pub const FORMAT_NUMBER_COMMA_SEPARATED1: &'static str = "#,##0.00";
-    pub const FORMAT_NUMBER_COMMA_SEPARATED2: &'static str = "#,##0.00_-";
-
-    pub const FORMAT_PERCENTAGE: &'static str = "0%";
-    pub const FORMAT_PERCENTAGE_00: &'static str = "0.00%";
-
-    pub const FORMAT_DATE_YYYYMMDD2: &'static str = "yyyy-mm-dd";
-    pub const FORMAT_DATE_YYYYMMDD: &'static str = "yyyy-mm-dd";
+    pub const FORMAT_ACCOUNTING_EUR: &'static str =
+        r#"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"#;
+    pub const FORMAT_ACCOUNTING_USD: &'static str =
+        r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#;
+    pub const FORMAT_CURRENCY_EUR: &'static str = r#"#,##0_-"€""#;
+    pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r#"#,##0.00_-"€""#;
+    pub const FORMAT_CURRENCY_USD: &'static str = r"$#,##0_-";
+    pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r##""$"#,##0.00_-"##;
+    pub const FORMAT_DATE_DATETIME: &'static str = "d/m/yy h:mm";
     pub const FORMAT_DATE_DDMMYYYY: &'static str = "dd-mm-yyyy";
     pub const FORMAT_DATE_DDMMYYYYSLASH: &'static str = "dd/mm/yyyy";
-    pub const FORMAT_DATE_DMYSLASH: &'static str = "d/m/yy";
-    pub const FORMAT_DATE_DMYMINUS: &'static str = "d-m-yy";
     pub const FORMAT_DATE_DMMINUS: &'static str = "d-m";
+    pub const FORMAT_DATE_DMYMINUS: &'static str = "d-m-yy";
+    pub const FORMAT_DATE_DMYSLASH: &'static str = "d/m/yy";
     pub const FORMAT_DATE_MYMINUS: &'static str = "m-yy";
-    pub const FORMAT_DATE_XLSX14: &'static str = "mm-dd-yy";
-    pub const FORMAT_DATE_XLSX15: &'static str = "d-mmm-yy";
-    pub const FORMAT_DATE_XLSX16: &'static str = "d-mmm";
-    pub const FORMAT_DATE_XLSX17: &'static str = "mmm-yy";
-    pub const FORMAT_DATE_XLSX22: &'static str = "m/d/yy h:mm";
-    pub const FORMAT_DATE_DATETIME: &'static str = "d/m/yy h:mm";
     pub const FORMAT_DATE_TIME1: &'static str = "h:mm AM/PM";
     pub const FORMAT_DATE_TIME2: &'static str = "h:mm:ss AM/PM";
     pub const FORMAT_DATE_TIME3: &'static str = "h:mm";
@@ -61,30 +58,40 @@ impl NumberingFormat {
     pub const FORMAT_DATE_TIME5: &'static str = "mm:ss";
     pub const FORMAT_DATE_TIME6: &'static str = "h:mm:ss";
     pub const FORMAT_DATE_TIME8: &'static str = "h:mm:ss;@";
+    pub const FORMAT_DATE_XLSX14: &'static str = "mm-dd-yy";
+    pub const FORMAT_DATE_XLSX15: &'static str = "d-mmm-yy";
+    pub const FORMAT_DATE_XLSX16: &'static str = "d-mmm";
+    pub const FORMAT_DATE_XLSX17: &'static str = "mmm-yy";
+    pub const FORMAT_DATE_XLSX22: &'static str = "m/d/yy h:mm";
+    pub const FORMAT_DATE_YYYYMMDD: &'static str = "yyyy-mm-dd";
+    pub const FORMAT_DATE_YYYYMMDD2: &'static str = "yyyy-mm-dd";
     pub const FORMAT_DATE_YYYYMMDDSLASH: &'static str = "yyyy/mm/dd;@";
-
-    pub const FORMAT_CURRENCY_USD_SIMPLE: &'static str = r##""$"#,##0.00_-"##;
-    pub const FORMAT_CURRENCY_USD: &'static str = r###"$#,##0_-"###;
-    pub const FORMAT_CURRENCY_EUR_SIMPLE: &'static str = r#"#,##0.00_-"€""#;
-    pub const FORMAT_CURRENCY_EUR: &'static str = r#"#,##0_-"€""#;
-    pub const FORMAT_ACCOUNTING_USD: &'static str =
-        r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#;
-    pub const FORMAT_ACCOUNTING_EUR: &'static str =
-        r#"_("€"* #,##0.00_);_("€"* \(#,##0.00\);_("€"* "-"??_);_(@_)"#;
+    // Pre-defined formats
+    pub const FORMAT_GENERAL: &'static str = "General";
+    pub const FORMAT_NUMBER: &'static str = "0";
+    pub const FORMAT_NUMBER_00: &'static str = "0.00";
+    pub const FORMAT_NUMBER_COMMA_SEPARATED1: &'static str = "#,##0.00";
+    pub const FORMAT_NUMBER_COMMA_SEPARATED2: &'static str = "#,##0.00_-";
+    pub const FORMAT_PERCENTAGE: &'static str = "0%";
+    pub const FORMAT_PERCENTAGE_00: &'static str = "0.00%";
+    pub const FORMAT_TEXT: &'static str = "@";
 
     #[inline]
+    #[must_use]
     pub fn get_number_format_id(&self) -> u32 {
         self.number_format_id
     }
 
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
-        let format_code_result = FILL_BUILT_IN_FORMAT_CODES.iter().find_map(|(key, val)| {
-            if key == &value {
-                Some(val.clone())
-            } else {
-                None
-            }
-        });
+        let format_code_result = get_fill_built_in_format_codes()
+            .iter()
+            .find_map(|(key, val)| {
+                if key == &value {
+                    Some(val.clone())
+                } else {
+                    None
+                }
+            });
 
         self.format_code = format_code_result
             .expect("Not Found NumberFormatId.")
@@ -102,25 +109,26 @@ impl NumberingFormat {
 
     /// Set the format code.
     /// # Arguments
-    /// * `value` - format code. (umya_spreadsheet::NumberingFormat)
+    /// * `value` - format code. (`umya_spreadsheet::NumberingFormat`)
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut worksheet = book.get_sheet_mut(0).unwrap();
-    /// let _ = worksheet.get_style_mut("C30")
-    /// .get_number_format_mut()
-    /// .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
+    /// let _unused = worksheet
+    ///     .get_style_mut("C30")
+    ///     .get_number_format_mut()
+    ///     .set_format_code(umya_spreadsheet::NumberingFormat::FORMAT_DATE_XLSX17);
     /// ```
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into().into_boxed_str();
-        for (index, format) in FILL_BUILT_IN_FORMAT_CODES.iter() {
+        for (index, format) in get_fill_built_in_format_codes() {
             if &*self.format_code == format {
                 self.number_format_id = *index;
                 self.is_build_in = true;
                 return self;
             }
         }
-        self.number_format_id = 999999;
+        self.number_format_id = 999_999;
         self.is_build_in = false;
         self
     }
@@ -132,6 +140,7 @@ impl NumberingFormat {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_code(&self) -> &str {
         &self.format_code
     }
@@ -176,9 +185,12 @@ impl NumberingFormat {
     }
 }
 
-lazy_static! {
-    pub(crate) static ref FILL_BUILT_IN_FORMAT_CODES: HashMap<u32, String> = {
-        let mut map:HashMap<u32, String> = HashMap::new();
+pub(crate) static FILL_BUILT_IN_FORMAT_CODES: OnceLock<HashMap<u32, String>> = OnceLock::new();
+
+pub(crate) fn get_fill_built_in_format_codes() -> &'static HashMap<u32, String> {
+    FILL_BUILT_IN_FORMAT_CODES.get_or_init(|| {
+        let mut map: HashMap<u32, String> = HashMap::new();
+
         // General
         map.insert(0, NumberingFormat::FORMAT_GENERAL.to_string());
         map.insert(1, "0".to_string());
@@ -191,7 +203,7 @@ lazy_static! {
         map.insert(11, "0.00E+00".to_string());
         map.insert(12, "# ?/?".to_string());
         map.insert(13, "# ??/??".to_string());
-        map.insert(14, "m/d/yyyy".to_string()); // Despite ECMA 'mm-dd-yy");
+        map.insert(14, "m/d/yyyy".to_string());
         map.insert(15, "d-mmm-yy".to_string());
         map.insert(16, "d-mmm".to_string());
         map.insert(17, "mmm-yy".to_string());
@@ -199,17 +211,20 @@ lazy_static! {
         map.insert(19, "h:mm:ss AM/PM".to_string());
         map.insert(20, "h:mm".to_string());
         map.insert(21, "h:mm:ss".to_string());
-        map.insert(22, "m/d/yyyy h:mm".to_string()); // Despite ECMA 'm/d/yy h:mm");
+        map.insert(22, "m/d/yyyy h:mm".to_string());
 
-        map.insert(37, "#,##0_);(#,##0)".to_string()); //  Despite ECMA '#,##0 ;(#,##0)");
-        map.insert(38, "#,##0_);[Red](#,##0)".to_string()); //  Despite ECMA '#,##0 ;[Red](#,##0)");
-        map.insert(39, "#,##0.00_);(#,##0.00)".to_string()); //  Despite ECMA '#,##0.00;(#,##0.00)");
-        map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string()); //  Despite ECMA '#,##0.00;[Red](#,##0.00)");
+        map.insert(37, "#,##0_);(#,##0)".to_string());
+        map.insert(38, "#,##0_);[Red](#,##0)".to_string());
+        map.insert(39, "#,##0.00_);(#,##0.00)".to_string());
+        map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string());
 
-        map.insert(44, r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string());
+        map.insert(
+            44,
+            r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string(),
+        );
         map.insert(45, "mm:ss".to_string());
         map.insert(46, "[h]:mm:ss".to_string());
-        map.insert(47, "mm:ss.0".to_string()); //  Despite ECMA 'mmss.0");
+        map.insert(47, "mm:ss.0".to_string());
         map.insert(48, "##0.0E+0".to_string());
         map.insert(49, "@".to_string());
 
@@ -247,7 +262,7 @@ lazy_static! {
         map.insert(58, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
 
         map
-    };
+    })
 }
 
 #[cfg(test)]

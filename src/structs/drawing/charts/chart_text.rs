@@ -1,11 +1,23 @@
 // c:tx
-use super::RichText;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::RichText;
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartText {
@@ -13,6 +25,7 @@ pub struct ChartText {
 }
 
 impl ChartText {
+    #[must_use]
     pub fn get_rich_text(&self) -> &RichText {
         &self.rich_text
     }

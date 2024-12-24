@@ -1,23 +1,35 @@
-use super::Coordinate;
-use super::EnumValue;
-use super::PaneValues;
-use super::SequenceOfReferences;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    Coordinate,
+    EnumValue,
+    PaneValues,
+    SequenceOfReferences,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Selection {
-    pane: EnumValue<PaneValues>,
-    active_cell: Option<Coordinate>,
+    pane:                   EnumValue<PaneValues>,
+    active_cell:            Option<Coordinate>,
     sequence_of_references: SequenceOfReferences,
 }
 
 impl Selection {
     #[inline]
+    #[must_use]
     pub fn get_pane(&self) -> &PaneValues {
         self.pane.get_value()
     }
@@ -29,6 +41,7 @@ impl Selection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_active_cell(&self) -> Option<&Coordinate> {
         self.active_cell.as_ref()
     }
@@ -45,6 +58,7 @@ impl Selection {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
@@ -99,7 +113,7 @@ impl Selection {
 
         let active_cell_str = match &self.active_cell {
             Some(active_cell) => active_cell.to_string(),
-            None => String::from(""),
+            None => String::new(),
         };
         if !active_cell_str.is_empty() {
             attributes.push(("activeCell", active_cell_str.as_str()));

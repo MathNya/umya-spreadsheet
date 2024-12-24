@@ -1,15 +1,20 @@
-use super::XlsxError;
-use crate::helper::const_str::*;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use std::{io, result};
+use std::io;
 
-use crate::structs::Spreadsheet;
+use quick_xml::{
+    Reader,
+    events::Event,
+};
+
+use super::XlsxError;
+use crate::{
+    helper::const_str::ARC_APP,
+    structs::Workbook,
+};
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
-) -> result::Result<(), XlsxError> {
+    wb: &mut Workbook,
+) -> Result<(), XlsxError> {
     let r = io::BufReader::new(match arv.by_name(ARC_APP) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
@@ -26,9 +31,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         match reader.read_event_into(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 if e.name().into_inner() == b"Properties" {
-                    spreadsheet
-                        .get_properties_mut()
-                        .set_attributes_app(&mut reader, e);
+                    wb.get_properties_mut().set_attributes_app(&mut reader, e);
                 }
             }
             Ok(Event::Eof) => break,

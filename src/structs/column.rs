@@ -1,14 +1,24 @@
-use super::BooleanValue;
-use super::DoubleValue;
-use super::Style;
-use super::Stylesheet;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::structs::Cells;
-use crate::traits::AdjustmentValue;
 use md5::Digest;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
+use quick_xml::{
+    Reader,
+    events::BytesStart,
+};
+
+use super::{
+    BooleanValue,
+    DoubleValue,
+    Style,
+    Stylesheet,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::Cells,
+    traits::AdjustmentValue,
+};
 
 /// # Examples
 /// ## set auto width
@@ -27,12 +37,12 @@ use quick_xml::Reader;
 /// ```
 #[derive(Clone, Debug)]
 pub struct Column {
-    col_num: UInt32Value,
-    pub(crate) width: DoubleValue,
-    pub(crate) hidden: BooleanValue,
+    col_num:             UInt32Value,
+    pub(crate) width:    DoubleValue,
+    pub(crate) hidden:   BooleanValue,
     pub(crate) best_fit: BooleanValue,
-    style: Box<Style>,
-    auto_width: BooleanValue,
+    style:               Box<Style>,
+    auto_width:          BooleanValue,
 }
 
 impl Default for Column {
@@ -53,6 +63,7 @@ impl Default for Column {
 
 impl Column {
     #[inline]
+    #[must_use]
     pub fn get_col_num(&self) -> u32 {
         self.col_num.get_value()
     }
@@ -64,6 +75,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_width(&self) -> f64 {
         self.width.get_value()
     }
@@ -75,6 +87,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
@@ -86,6 +99,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_best_fit(&self) -> bool {
         self.best_fit.get_value()
     }
@@ -97,6 +111,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
@@ -113,6 +128,7 @@ impl Column {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_width(&self) -> bool {
         self.auto_width.get_value()
     }

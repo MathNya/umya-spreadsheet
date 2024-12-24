@@ -1,30 +1,42 @@
 // sheetFormatPr
-use super::BooleanValue;
-use super::ByteValue;
-use super::DoubleValue;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    BooleanValue,
+    ByteValue,
+    DoubleValue,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetFormatProperties {
-    base_column_width: UInt32Value,
-    custom_height: BooleanValue,
+    base_column_width:    UInt32Value,
+    custom_height:        BooleanValue,
     default_column_width: DoubleValue,
-    default_row_height: DoubleValue,
-    dy_descent: DoubleValue,
+    default_row_height:   DoubleValue,
+    dy_descent:           DoubleValue,
     outline_level_column: ByteValue,
-    outline_level_row: ByteValue,
-    thick_bottom: BooleanValue,
-    thick_top: BooleanValue,
+    outline_level_row:    ByteValue,
+    thick_bottom:         BooleanValue,
+    thick_top:            BooleanValue,
 }
 
 impl SheetFormatProperties {
     #[inline]
+    #[must_use]
     pub fn get_base_column_width(&self) -> u32 {
         self.base_column_width.get_value()
     }
@@ -36,6 +48,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_custom_height(&self) -> bool {
         self.custom_height.get_value()
     }
@@ -47,6 +60,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_column_width(&self) -> f64 {
         self.default_column_width.get_value()
     }
@@ -58,6 +72,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_row_height(&self) -> f64 {
         self.default_row_height.get_value()
     }
@@ -69,6 +84,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_dy_descent(&self) -> f64 {
         self.dy_descent.get_value()
     }
@@ -80,6 +96,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_outline_level_column(&self) -> u8 {
         self.outline_level_column.get_value()
     }
@@ -91,6 +108,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_outline_level_row(&self) -> u8 {
         self.outline_level_row.get_value()
     }
@@ -102,6 +120,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_thick_bottom(&self) -> bool {
         self.thick_bottom.get_value()
     }
@@ -113,6 +132,7 @@ impl SheetFormatProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_thick_top(&self) -> bool {
         self.thick_top.get_value()
     }

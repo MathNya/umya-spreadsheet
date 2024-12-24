@@ -1,21 +1,31 @@
 // a:rot
-use super::super::Int32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::Int32Value;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Rotation {
-    latitude: Int32Value,
-    longitude: Int32Value,
+    latitude:   Int32Value,
+    longitude:  Int32Value,
     revolution: Int32Value,
 }
 
 impl Rotation {
     #[inline]
+    #[must_use]
     pub fn get_latitude(&self) -> i32 {
         self.latitude.get_value()
     }
@@ -27,6 +37,7 @@ impl Rotation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_longitude(&self) -> i32 {
         self.longitude.get_value()
     }
@@ -38,6 +49,7 @@ impl Rotation {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_revolution(&self) -> i32 {
         self.revolution.get_value()
     }

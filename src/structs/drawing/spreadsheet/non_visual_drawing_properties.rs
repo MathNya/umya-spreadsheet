@@ -1,23 +1,42 @@
-//xdr:cNvPr
-use super::super::super::BooleanValue;
-use super::super::super::StringValue;
-use super::super::super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
+// xdr:cNvPr
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::super::{
+    BooleanValue,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualDrawingProperties {
-    id: UInt32Value,
-    name: StringValue,
+    id:     UInt32Value,
+    name:   StringValue,
     hidden: BooleanValue,
 }
 
 impl NonVisualDrawingProperties {
     #[inline]
+    #[must_use]
     pub fn get_id(&self) -> u32 {
         self.id.get_value()
     }
@@ -29,6 +48,7 @@ impl NonVisualDrawingProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -40,6 +60,7 @@ impl NonVisualDrawingProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
@@ -89,7 +110,7 @@ impl NonVisualDrawingProperties {
         write_start_tag(writer, "xdr:cNvPr", attributes, !with_inner);
 
         if with_inner {
-            let spid = format!("_x0000_s{}", ole_id);
+            let spid = format!("_x0000_s{ole_id}");
             write_start_tag(writer, "a:extLst", vec![], false);
             write_start_tag(
                 writer,

@@ -11,10 +11,7 @@ impl BooleanValue {
 
     #[inline]
     pub(crate) fn get_value_string(&self) -> &str {
-        match self.get_value() {
-            true => "1",
-            false => "0",
-        }
+        if self.get_value() { "1" } else { "0" }
     }
 
     #[inline]

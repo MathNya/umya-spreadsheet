@@ -1,21 +1,33 @@
 // a:lin
-use super::super::super::BooleanValue;
-use super::super::super::Int32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::{
+    BooleanValue,
+    Int32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct LinearGradientFill {
-    angle: Int32Value,
+    angle:  Int32Value,
     scaled: BooleanValue,
 }
 
 impl LinearGradientFill {
     #[inline]
+    #[must_use]
     pub fn get_angle(&self) -> i32 {
         self.angle.get_value()
     }
@@ -27,6 +39,7 @@ impl LinearGradientFill {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scaled(&self) -> bool {
         self.scaled.get_value()
     }

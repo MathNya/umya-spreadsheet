@@ -1,30 +1,46 @@
 // border
-use super::BooleanValue;
-use super::Border;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BooleanValue,
+    Border,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Borders {
-    left_border: Border,
-    right_border: Border,
-    top_border: Border,
-    bottom_border: Border,
-    diagonal_border: Border,
-    vertical_border: Border,
+    left_border:       Border,
+    right_border:      Border,
+    top_border:        Border,
+    bottom_border:     Border,
+    diagonal_border:   Border,
+    vertical_border:   Border,
     horizontal_border: Border,
-    diagonal_down: BooleanValue,
-    diagonal_up: BooleanValue,
+    diagonal_down:     BooleanValue,
+    diagonal_up:       BooleanValue,
 }
 
 impl Borders {
-    // Border style
-    pub const BORDER_NONE: &'static str = "none";
     pub const BORDER_DASHDOT: &'static str = "dashDot";
     pub const BORDER_DASHDOTDOT: &'static str = "dashDotDot";
     pub const BORDER_DASHED: &'static str = "dashed";
@@ -35,6 +51,8 @@ impl Borders {
     pub const BORDER_MEDIUMDASHDOT: &'static str = "mediumDashDot";
     pub const BORDER_MEDIUMDASHDOTDOT: &'static str = "mediumDashDotDot";
     pub const BORDER_MEDIUMDASHED: &'static str = "mediumDashed";
+    // Border style
+    pub const BORDER_NONE: &'static str = "none";
     pub const BORDER_SLANTDASHDOT: &'static str = "slantDashDot";
     pub const BORDER_THICK: &'static str = "thick";
     pub const BORDER_THIN: &'static str = "thin";

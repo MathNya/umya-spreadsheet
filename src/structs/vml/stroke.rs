@@ -1,19 +1,29 @@
-use crate::reader::driver::*;
-use crate::structs::StringValue;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::StringValue,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Stroke {
-    color: StringValue,
-    color_2: StringValue,
+    color:      StringValue,
+    color_2:    StringValue,
     dash_style: StringValue,
 }
 
 impl Stroke {
+    #[must_use]
     pub fn get_color(&self) -> &str {
         self.color.get_value_str()
     }
@@ -23,6 +33,7 @@ impl Stroke {
         self
     }
 
+    #[must_use]
     pub fn get_color_2(&self) -> &str {
         self.color_2.get_value_str()
     }
@@ -32,6 +43,7 @@ impl Stroke {
         self
     }
 
+    #[must_use]
     pub fn get_dash_style(&self) -> &str {
         self.dash_style.get_value_str()
     }

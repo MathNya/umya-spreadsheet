@@ -1,18 +1,27 @@
 // c:axPos
-use super::super::super::EnumValue;
-use super::AxisPositionValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    super::super::EnumValue,
+    AxisPositionValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct AxisPosition {
     val: EnumValue<AxisPositionValues>,
 }
 impl AxisPosition {
+    #[must_use]
     pub fn get_val(&self) -> &AxisPositionValues {
         self.val.get_value()
     }

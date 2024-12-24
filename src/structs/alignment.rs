@@ -1,27 +1,39 @@
 // alignment
-use super::BooleanValue;
-use super::EnumValue;
-use super::HorizontalAlignmentValues;
-use super::UInt32Value;
-use super::VerticalAlignmentValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    BooleanValue,
+    EnumValue,
+    HorizontalAlignmentValues,
+    UInt32Value,
+    VerticalAlignmentValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Default, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Alignment {
-    horizontal: EnumValue<HorizontalAlignmentValues>,
-    vertical: EnumValue<VerticalAlignmentValues>,
-    wrap_text: BooleanValue,
+    horizontal:    EnumValue<HorizontalAlignmentValues>,
+    vertical:      EnumValue<VerticalAlignmentValues>,
+    wrap_text:     BooleanValue,
     text_rotation: UInt32Value,
 }
 
 impl Alignment {
     #[inline]
+    #[must_use]
     pub fn get_horizontal(&self) -> &HorizontalAlignmentValues {
         self.horizontal.get_value()
     }
@@ -32,6 +44,7 @@ impl Alignment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical(&self) -> &VerticalAlignmentValues {
         self.vertical.get_value()
     }
@@ -42,6 +55,7 @@ impl Alignment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_wrap_text(&self) -> bool {
         self.wrap_text.get_value()
     }
@@ -52,6 +66,7 @@ impl Alignment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_text_rotation(&self) -> u32 {
         self.text_rotation.get_value()
     }

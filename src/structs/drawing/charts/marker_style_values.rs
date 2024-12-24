@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum MarkerStyleValues {
     Auto,
@@ -40,6 +41,7 @@ impl EnumTrait for MarkerStyleValues {
 }
 impl FromStr for MarkerStyleValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "auto" => Ok(Self::Auto),

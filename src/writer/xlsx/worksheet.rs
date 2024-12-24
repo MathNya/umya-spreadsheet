@@ -1,22 +1,51 @@
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Cell;
-use crate::structs::SharedStringTable;
-use crate::structs::Stylesheet;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io;
-use std::sync::Arc;
-use std::sync::RwLock;
+use std::{
+    collections::HashMap,
+    io,
+    sync::{
+        Arc,
+        RwLock,
+    },
+};
+
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        MC_NS,
+        PKG_SHEET,
+        REL_OFC_NS,
+        SHEET_DRAWING_NS,
+        SHEET_MAIN_NS,
+        SHEET_MS_MAIN_NS,
+        SHEETML_AC_NS,
+    },
+    structs::{
+        Cell,
+        SharedStringTable,
+        Stylesheet,
+        Worksheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     sheet_no: i32,
     worksheet: &Worksheet,
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &Arc<RwLock<SharedStringTable>>,
     stylesheet: &mut Stylesheet,
     has_macros: bool,
     writer_mng: &mut WriterManager<W>,
@@ -52,9 +81,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // sheetPr
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     if has_macros {
-        let code_name = match worksheet.has_code_name() {
-            true => worksheet.get_code_name().as_ref().unwrap(),
-            false => worksheet.get_name(),
+        let code_name = if worksheet.has_code_name() {
+            worksheet.get_code_name().as_ref().unwrap()
+        } else {
+            worksheet.get_name()
         };
         attributes.push(("codeName", code_name));
     }
@@ -74,7 +104,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // outlinePr
-    //write_start_tag(&mut writer, "outlinePr", vec![
+    // write_start_tag(&mut writer, "outlinePr", vec![
     //    ("summaryBelow", if worksheet.show_summary_below {"1"} else {"0"}),
     //    ("summaryRight", if worksheet.show_summary_right {"1"} else {"0"}),
     //], true);
@@ -98,7 +128,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // cols
     let mut column_dimensions = worksheet.get_column_dimensions_crate().clone();
     column_dimensions.calculation_auto_width(
-        worksheet.get_cell_collection_crate(),
+        worksheet.get_cells_crate(),
         worksheet.get_merge_cells_crate(),
     );
     column_dimensions.write_to(&mut writer, stylesheet);
@@ -113,7 +143,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // it's faster than get cell collection by row.
     // cells sort.
-    let cells = worksheet.get_cell_collection_sorted();
+    let cells = worksheet.get_cells_sorted();
 
     // make formula shared list
     let mut formula_shared_list: HashMap<u32, (String, Option<String>)> = HashMap::new();
@@ -152,7 +182,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // row
         if cells_in_row.is_empty() {
-            let spans = "0:0".to_string();
+            let spans = "0:0";
             row.write_to(&mut writer, stylesheet, spans, true);
         } else {
             let (first_num, last_num) = (
@@ -161,12 +191,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             );
             let spans = format!("{first_num}:{last_num}");
 
-            row.write_to(&mut writer, stylesheet, spans, false);
+            row.write_to(&mut writer, stylesheet, &spans, false);
             // c
             for cell in cells_in_row {
                 cell.write_to(
                     &mut writer,
-                    &shared_string_table,
+                    shared_string_table,
                     stylesheet,
                     &formula_shared_list,
                 );
@@ -287,7 +317,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             vec![("count", &tables.len().to_string())],
             false,
         );
-        for _table in worksheet.get_tables().iter() {
+        for _table in worksheet.get_tables() {
             let r_id_str = format!("rId{}", &r_id);
             write_start_tag(
                 &mut writer,
@@ -317,6 +347,6 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     write_end_tag(&mut writer, "worksheet");
 
-    let target = format!("{PKG_SHEET}{}.xml", sheet_no);
+    let target = format!("{PKG_SHEET}{sheet_no}.xml");
     writer_mng.add_writer(&target, writer)
 }

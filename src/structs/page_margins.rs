@@ -1,23 +1,29 @@
-use crate::structs::DoubleValue;
-
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::get_attribute,
+    structs::DoubleValue,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PageMargins {
-    left: DoubleValue,
-    right: DoubleValue,
-    top: DoubleValue,
+    left:   DoubleValue,
+    right:  DoubleValue,
+    top:    DoubleValue,
     bottom: DoubleValue,
     header: DoubleValue,
     footer: DoubleValue,
 }
 impl PageMargins {
     #[inline]
+    #[must_use]
     pub fn get_left(&self) -> f64 {
         self.left.get_value()
     }
@@ -29,6 +35,7 @@ impl PageMargins {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_right(&self) -> f64 {
         self.right.get_value()
     }
@@ -40,6 +47,7 @@ impl PageMargins {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top(&self) -> f64 {
         self.top.get_value()
     }
@@ -51,6 +59,7 @@ impl PageMargins {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bottom(&self) -> f64 {
         self.bottom.get_value()
     }
@@ -62,6 +71,7 @@ impl PageMargins {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_header(&self) -> f64 {
         self.header.get_value()
     }
@@ -73,6 +83,7 @@ impl PageMargins {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_footer(&self) -> f64 {
         self.footer.get_value()
     }

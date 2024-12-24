@@ -1,29 +1,44 @@
 // xdr:oneCellAnchor
-use super::Extent;
-use super::GroupShape;
-use super::MarkerType;
-use super::Picture;
-use super::Shape;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Extent,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OneCellAnchor {
     from_marker: MarkerType,
-    extent: Extent,
+    extent:      Extent,
     group_shape: Option<Box<GroupShape>>,
-    shape: Option<Box<Shape>>,
-    picture: Option<Box<Picture>>,
+    shape:       Option<Box<Shape>>,
+    picture:     Option<Box<Picture>>,
 }
 
 impl OneCellAnchor {
     #[inline]
+    #[must_use]
     pub fn get_from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
@@ -40,6 +55,7 @@ impl OneCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_extent(&self) -> &Extent {
         &self.extent
     }
@@ -56,6 +72,7 @@ impl OneCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
@@ -72,6 +89,7 @@ impl OneCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
@@ -88,6 +106,7 @@ impl OneCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }

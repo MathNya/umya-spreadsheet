@@ -1,33 +1,47 @@
 // dxf
-use super::Alignment;
-use super::Borders;
-use super::Fill;
-use super::Font;
-use super::Style;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Alignment,
+    Borders,
+    Fill,
+    Font,
+    Style,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormat {
-    font: Option<Box<Font>>,
-    fill: Option<Fill>,
-    borders: Option<Box<Borders>>,
+    font:      Option<Box<Font>>,
+    fill:      Option<Fill>,
+    borders:   Option<Box<Borders>>,
     alignment: Option<Alignment>,
 }
 
 impl DifferentialFormat {
     #[inline]
-    pub(crate) fn _get_font(&self) -> Option<&Font> {
+    pub(crate) fn get_font(&self) -> Option<&Font> {
         self.font.as_deref()
     }
 
     #[inline]
-    pub(crate) fn _get_font_mut(&mut self) -> Option<&mut Font> {
+    pub(crate) fn get_font_mut(&mut self) -> Option<&mut Font> {
         self.font.as_deref_mut()
     }
 
@@ -38,12 +52,12 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_fill(&self) -> Option<&Fill> {
+    pub(crate) fn get_fill(&self) -> Option<&Fill> {
         self.fill.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_fill_mut(&mut self) -> Option<&mut Fill> {
+    pub(crate) fn get_fill_mut(&mut self) -> Option<&mut Fill> {
         self.fill.as_mut()
     }
 
@@ -54,12 +68,12 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_borders(&self) -> Option<&Borders> {
+    pub(crate) fn get_borders(&self) -> Option<&Borders> {
         self.borders.as_deref()
     }
 
     #[inline]
-    pub(crate) fn _get_borders_mut(&mut self) -> Option<&mut Borders> {
+    pub(crate) fn get_borders_mut(&mut self) -> Option<&mut Borders> {
         self.borders.as_deref_mut()
     }
 
@@ -70,12 +84,12 @@ impl DifferentialFormat {
     }
 
     #[inline]
-    pub(crate) fn _get_alignment(&self) -> Option<&Alignment> {
+    pub(crate) fn get_alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+    pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
     }
 

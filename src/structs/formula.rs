@@ -1,22 +1,38 @@
 // formula
-use super::Address;
-use super::StringValue;
-use crate::helper::address::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Address,
+    StringValue,
+};
+use crate::{
+    helper::address::is_address,
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Formula {
-    address: Address,
+    address:      Address,
     string_value: StringValue,
 }
 
 impl Formula {
     #[inline]
+    #[must_use]
     pub fn get_address(&self) -> &Address {
         &self.address
     }
@@ -27,6 +43,7 @@ impl Formula {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_address_str(&self) -> String {
         if self.string_value.has_value() {
             return self.string_value.get_value_str().to_string();

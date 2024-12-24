@@ -1,4 +1,4 @@
-//! structs of raw_data.
+//! structs of `raw_data`.
 
 mod raw_file;
 pub(crate) use self::raw_file::*;

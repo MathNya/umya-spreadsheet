@@ -1,11 +1,23 @@
 // c:marker
-use super::Symbol;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::Symbol;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Marker {
@@ -13,6 +25,7 @@ pub struct Marker {
 }
 
 impl Marker {
+    #[must_use]
     pub fn get_symbol(&self) -> Option<&Symbol> {
         self.symbol.as_ref()
     }

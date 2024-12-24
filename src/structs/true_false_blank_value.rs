@@ -9,7 +9,7 @@ impl TrueFalseBlankValue {
     }
 
     #[inline]
-    pub(crate) fn _get_value_str(&self) -> &str {
+    pub(crate) fn get_value_str(&self) -> &str {
         self.get_value().map_or("", |v| if v { "t" } else { "f" })
     }
 
@@ -37,9 +37,9 @@ impl TrueFalseBlankValue {
     }
 
     #[inline]
-    pub(crate) fn _get_hash_string(&self) -> &str {
+    pub(crate) fn get_hash_string(&self) -> &str {
         if self.has_value() {
-            return self._get_value_str();
+            return self.get_value_str();
         }
         "empty!!"
     }

@@ -1,21 +1,41 @@
 // xdr:from,xdr:to
-use crate::helper::coordinate::*;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::coordinate::{
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        coordinate_from_index,
+        index_from_coordinate,
+        is_remove_coordinate,
+    },
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {
-    col: u32,
+    col:     u32,
     col_off: i32,
-    row: u32,
+    row:     u32,
     row_off: i32,
 }
 impl MarkerType {
     #[inline]
+    #[must_use]
     pub fn get_col(&self) -> u32 {
         self.col
     }
@@ -27,6 +47,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_col_off(&self) -> i32 {
         self.col_off
     }
@@ -44,6 +65,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row(&self) -> u32 {
         self.row
     }
@@ -55,6 +77,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row_off(&self) -> i32 {
         self.row_off
     }
@@ -72,6 +95,7 @@ impl MarkerType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         coordinate_from_index(self.col + 1, self.row + 1)
     }
@@ -88,7 +112,7 @@ impl MarkerType {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
@@ -106,17 +130,19 @@ impl MarkerType {
                     b"xdr:rowOff" => {
                         self.row_off = string_value.parse::<i32>().unwrap();
                     }
-                    b"xdr:from" => return,
-                    b"xdr:to" => return,
+                    b"xdr:from" | b"xdr:to" => return,
                     _ => (),
                 },
-                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "xdr:from,xdr:to"),
+                Ok(Event::Eof) => {
+                    panic!("Error: Could not find {} end element", "xdr:from,xdr:to")
+                }
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => (),
             }
             buf.clear();
         }
     }
+
     #[inline]
     pub(crate) fn write_to_from(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "xdr:from");

@@ -1,15 +1,35 @@
 // *:graphicData
-use super::charts::ChartSpace;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::reader::xlsx::chart;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::charts::ChartSpace;
+use crate::{
+    helper::const_str::{
+        DRAWINGML_CHART_NS,
+        REL_OFC_NS,
+    },
+    reader::{
+        driver::{
+            get_attribute,
+            xml_read_loop,
+        },
+        xlsx::chart,
+    },
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicData {
@@ -18,6 +38,7 @@ pub struct GraphicData {
 
 impl GraphicData {
     #[inline]
+    #[must_use]
     pub fn get_chart_space(&self) -> &ChartSpace {
         &self.chart_space
     }
@@ -47,7 +68,7 @@ impl GraphicData {
                     let relationship = drawing_relationships
                         .unwrap()
                         .get_relationship_by_rid(&chart_id);
-                    chart::read(relationship.get_raw_file(), &mut self.chart_space).unwrap();
+                    chart::read(relationship.get_raw_file(), &mut self.chart_space);
                 }
             },
             Event::End(ref e) => {
@@ -60,7 +81,6 @@ impl GraphicData {
     }
 
     pub(crate) fn write_to(
-        &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {
@@ -73,7 +93,7 @@ impl GraphicData {
         );
 
         // c:chart
-        rel_list.push((String::from("CHART"), String::from("")));
+        rel_list.push((String::from("CHART"), String::new()));
         write_start_tag(
             writer,
             "c:chart",

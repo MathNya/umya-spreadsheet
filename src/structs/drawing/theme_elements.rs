@@ -1,18 +1,32 @@
 // a:themeElements
-use super::ColorScheme;
-use super::FontScheme;
-use super::FormatScheme;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ColorScheme,
+    FontScheme,
+    FormatScheme,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ThemeElements {
-    color_scheme: ColorScheme,
-    font_scheme: FontScheme,
+    color_scheme:  ColorScheme,
+    font_scheme:   FontScheme,
     format_scheme: FormatScheme,
 }
 
@@ -23,6 +37,7 @@ impl ThemeElements {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_color_scheme(&self) -> &ColorScheme {
         &self.color_scheme
     }
@@ -38,6 +53,7 @@ impl ThemeElements {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_scheme(&self) -> &FontScheme {
         &self.font_scheme
     }
@@ -53,6 +69,7 @@ impl ThemeElements {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_format_scheme(&self) -> &FormatScheme {
         &self.format_scheme
     }

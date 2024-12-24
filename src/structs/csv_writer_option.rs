@@ -4,11 +4,12 @@ use crate::structs::CsvEncodeValues;
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct CsvWriterOption {
     pub(crate) csv_encode_values: EnumValue<CsvEncodeValues>,
-    pub(crate) wrap_with_char: Box<str>,
-    pub(crate) do_trim: bool,
+    pub(crate) wrap_with_char:    Box<str>,
+    pub(crate) do_trim:           bool,
 }
 impl CsvWriterOption {
     #[inline]
+    #[must_use]
     pub fn get_csv_encode_value(&self) -> &CsvEncodeValues {
         self.csv_encode_values.get_value()
     }
@@ -20,6 +21,7 @@ impl CsvWriterOption {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_wrap_with_char(&self) -> &str {
         &self.wrap_with_char
     }
@@ -31,6 +33,7 @@ impl CsvWriterOption {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_do_trim(&self) -> bool {
         self.do_trim
     }

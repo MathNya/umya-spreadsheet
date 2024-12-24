@@ -1,5 +1,7 @@
-use super::BorderStyleValues;
-use super::Color;
+use super::{
+    BorderStyleValues,
+    Color,
+};
 
 pub trait BorderPropertiesType {
     fn get_color(&self) -> &Color;

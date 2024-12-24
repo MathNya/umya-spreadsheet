@@ -1,13 +1,24 @@
 // u
-use super::EnumTrait;
-use super::EnumValue;
-use super::UnderlineValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    EnumTrait,
+    EnumValue,
+    UnderlineValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Underline {
@@ -16,6 +27,7 @@ pub struct Underline {
 
 impl Underline {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &UnderlineValues {
         if self.val.has_value() {
             return self.val.get_value();
@@ -36,7 +48,7 @@ impl Underline {
         e: &BytesStart,
     ) {
         self.set_val(UnderlineValues::default());
-        set_string_from_xml!(self, e, val, "val")
+        set_string_from_xml!(self, e, val, "val");
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

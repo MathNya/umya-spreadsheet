@@ -1,17 +1,24 @@
 // c:rotX
-use super::super::super::SByteValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::SByteValue;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct RotateX {
     val: SByteValue,
 }
 impl RotateX {
+    #[must_use]
     pub fn get_val(&self) -> i8 {
         self.val.get_value()
     }

@@ -1,26 +1,45 @@
 // a:pPr
-use super::super::EnumValue;
-use super::LineSpacing;
-use super::RunProperties;
-use super::TextAlignmentTypeValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::EnumValue,
+    LineSpacing,
+    RunProperties,
+    TextAlignmentTypeValues,
+};
+use crate::{
+    StringValue,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ParagraphProperties {
-    right_to_left: StringValue,
-    alignment: EnumValue<TextAlignmentTypeValues>,
+    right_to_left:          StringValue,
+    alignment:              EnumValue<TextAlignmentTypeValues>,
     default_run_properties: Option<Box<RunProperties>>,
-    line_spacing: Option<LineSpacing>,
+    line_spacing:           Option<LineSpacing>,
 }
 
 impl ParagraphProperties {
     #[inline]
+    #[must_use]
     pub fn get_right_to_left(&self) -> Option<&str> {
         self.right_to_left.get_value()
     }
@@ -32,6 +51,7 @@ impl ParagraphProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
         self.alignment.get_value()
     }
@@ -43,6 +63,7 @@ impl ParagraphProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
         self.default_run_properties.as_deref()
     }
@@ -59,6 +80,7 @@ impl ParagraphProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_line_spacing(&self) -> Option<&LineSpacing> {
         self.line_spacing.as_ref()
     }
@@ -138,12 +160,12 @@ impl ParagraphProperties {
         if !empty_flag {
             // a:defRPr
             if let Some(v) = &self.default_run_properties {
-                v.write_to_def_rpr(writer)
+                v.write_to_def_rpr(writer);
             }
 
             // a:lnSpc
             if let Some(v) = &self.line_spacing {
-                v.write_to(writer)
+                v.write_to(writer);
             }
 
             write_end_tag(writer, "a:pPr");

@@ -1,5 +1,6 @@
-use super::EnumTrait;
 use std::str::FromStr;
+
+use super::EnumTrait;
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub enum SourceValues {
     Consolidation,
@@ -24,6 +25,7 @@ impl EnumTrait for SourceValues {
 }
 impl FromStr for SourceValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "consolidation" => Ok(Self::Consolidation),

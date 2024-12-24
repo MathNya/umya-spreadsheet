@@ -1,26 +1,38 @@
-use super::Coordinate;
-use super::DoubleValue;
-use super::EnumValue;
-use super::PaneStateValues;
-use super::PaneValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    Coordinate,
+    DoubleValue,
+    EnumValue,
+    PaneStateValues,
+    PaneValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Pane {
     horizontal_split: DoubleValue,
-    vertical_split: DoubleValue,
-    top_left_cell: Coordinate,
-    active_pane: EnumValue<PaneValues>,
-    state: EnumValue<PaneStateValues>,
+    vertical_split:   DoubleValue,
+    top_left_cell:    Coordinate,
+    active_pane:      EnumValue<PaneValues>,
+    state:            EnumValue<PaneStateValues>,
 }
 
 impl Pane {
     #[inline]
+    #[must_use]
     pub fn get_horizontal_split(&self) -> f64 {
         self.horizontal_split.get_value()
     }
@@ -32,6 +44,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_split(&self) -> f64 {
         self.vertical_split.get_value()
     }
@@ -43,6 +56,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_left_cell(&self) -> &Coordinate {
         &self.top_left_cell
     }
@@ -59,6 +73,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_active_pane(&self) -> &PaneValues {
         self.active_pane.get_value()
     }
@@ -70,6 +85,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_state(&self) -> &PaneStateValues {
         self.state.get_value()
     }

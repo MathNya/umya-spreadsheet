@@ -1,25 +1,35 @@
 // a:grpSpLocks
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::BooleanValue,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GroupShapeLocks {
     no_change_aspect: BooleanValue,
-    no_grouping: BooleanValue,
-    no_move: BooleanValue,
-    no_resize: BooleanValue,
-    no_rotation: BooleanValue,
-    no_selection: BooleanValue,
-    no_ungrouping: BooleanValue,
+    no_grouping:      BooleanValue,
+    no_move:          BooleanValue,
+    no_resize:        BooleanValue,
+    no_rotation:      BooleanValue,
+    no_selection:     BooleanValue,
+    no_ungrouping:    BooleanValue,
 }
 
 impl GroupShapeLocks {
     #[inline]
+    #[must_use]
     pub fn get_no_change_aspect(&self) -> bool {
         self.no_change_aspect.get_value()
     }

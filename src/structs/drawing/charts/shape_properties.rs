@@ -1,34 +1,49 @@
 // c:spPr
-use super::super::EffectList;
-use super::super::NoFill;
-use super::super::Outline;
-use super::super::PatternFill;
-use super::super::PresetGeometry;
-use super::super::Scene3DType;
-use super::super::Shape3DType;
-use super::super::SolidFill;
-use super::super::Transform2D;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    EffectList,
+    NoFill,
+    Outline,
+    PatternFill,
+    PresetGeometry,
+    Scene3DType,
+    Shape3DType,
+    SolidFill,
+    Transform2D,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    pattern_fill: Option<PatternFill>,
-    transform2d: Option<Transform2D>,
+    pattern_fill:    Option<PatternFill>,
+    transform2d:     Option<Transform2D>,
     preset_geometry: Option<PresetGeometry>,
-    solid_fill: Option<SolidFill>,
-    no_fill: Option<NoFill>,
-    outline: Option<Outline>,
-    effect_list: Option<EffectList>,
-    scene_3d_type: Option<Scene3DType>,
-    shape_3d_type: Option<Shape3DType>,
+    solid_fill:      Option<SolidFill>,
+    no_fill:         Option<NoFill>,
+    outline:         Option<Outline>,
+    effect_list:     Option<EffectList>,
+    scene_3d_type:   Option<Scene3DType>,
+    shape_3d_type:   Option<Shape3DType>,
 }
 
 impl ShapeProperties {
+    #[must_use]
     pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
         self.pattern_fill.as_ref()
     }
@@ -42,6 +57,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_ref()
     }
@@ -55,6 +71,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_geometry(&self) -> Option<&PresetGeometry> {
         self.preset_geometry.as_ref()
     }
@@ -68,6 +85,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_ref()
     }
@@ -81,6 +99,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
@@ -94,6 +113,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_ref()
     }
@@ -107,6 +127,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_ref()
     }
@@ -120,6 +141,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
         self.scene_3d_type.as_ref()
     }
@@ -133,6 +155,7 @@ impl ShapeProperties {
         self
     }
 
+    #[must_use]
     pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
         self.shape_3d_type.as_ref()
     }
@@ -200,8 +223,8 @@ impl ShapeProperties {
             },
             Event::Empty(ref e) => {
                 if e.name().0 == b"a:noFill" {
-                    let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e);
+                    let obj = NoFill::default();
+                    NoFill::set_attributes(reader, e);
                     self.set_no_fill(obj);
                 }
             },
@@ -239,8 +262,8 @@ impl ShapeProperties {
         }
 
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:ln

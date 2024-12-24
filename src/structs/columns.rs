@@ -1,20 +1,36 @@
 // fills
-use crate::reader::driver::*;
-use crate::structs::Cells;
-use crate::structs::Column;
-use crate::structs::MergeCells;
-use crate::structs::Stylesheet;
-use crate::traits::AdjustmentValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    structs::{
+        Cells,
+        Column,
+        MergeCells,
+        Stylesheet,
+    },
+    traits::AdjustmentValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Columns {
-    column: ThinVec<Column>,
+    column: Vec<Column>,
 }
 
 impl Columns {
@@ -24,7 +40,7 @@ impl Columns {
     }
 
     #[inline]
-    pub(crate) fn get_column_collection_mut(&mut self) -> &mut ThinVec<Column> {
+    pub(crate) fn get_column_collection_mut(&mut self) -> &mut Vec<Column> {
         &mut self.column
     }
 
@@ -114,7 +130,7 @@ impl Columns {
         // col
 
         let mut column_copy = self.column.clone();
-        column_copy.sort_by_key(|a| a.get_col_num());
+        column_copy.sort_by_key(Column::get_col_num);
         let mut column_iter = column_copy.iter();
         let mut column_raw = column_iter.next();
         let mut obj = column_raw.unwrap();
@@ -123,24 +139,21 @@ impl Columns {
 
         loop {
             column_raw = column_iter.next();
-            match column_raw {
-                Some(column) => {
-                    if column.get_col_num() == max + 1
-                        && column.get_hash_code() == obj.get_hash_code()
-                        && column.get_style() == obj.get_style()
-                    {
-                        max += 1;
-                    } else {
-                        self.write_to_column(writer, min, max, obj, stylesheet);
-                        obj = column;
-                        min = obj.get_col_num();
-                        max = min;
-                    }
+            if let Some(column) = column_raw {
+                if column.get_col_num() == max + 1
+                    && column.get_hash_code() == obj.get_hash_code()
+                    && column.get_style() == obj.get_style()
+                {
+                    max += 1;
+                } else {
+                    Self::write_to_column(writer, min, max, obj, stylesheet);
+                    obj = column;
+                    min = obj.get_col_num();
+                    max = min;
                 }
-                None => {
-                    self.write_to_column(writer, min, max, obj, stylesheet);
-                    break;
-                }
+            } else {
+                Self::write_to_column(writer, min, max, obj, stylesheet);
+                break;
             }
         }
 
@@ -148,7 +161,6 @@ impl Columns {
     }
 
     pub(crate) fn write_to_column(
-        &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         min: u32,
         max: u32,

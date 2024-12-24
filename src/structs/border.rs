@@ -1,14 +1,32 @@
 // left right top bottom
-use super::BorderStyleValues;
-use super::Color;
-use super::EnumValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BorderStyleValues,
+    Color,
+    EnumValue,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Border {
@@ -17,7 +35,24 @@ pub struct Border {
 }
 
 impl Border {
+    pub const BORDER_DASHDOT: &'static str = "dashDot";
+    pub const BORDER_DASHDOTDOT: &'static str = "dashDotDot";
+    pub const BORDER_DASHED: &'static str = "dashed";
+    pub const BORDER_DOTTED: &'static str = "dotted";
+    pub const BORDER_DOUBLE: &'static str = "double";
+    pub const BORDER_HAIR: &'static str = "hair";
+    pub const BORDER_MEDIUM: &'static str = "medium";
+    pub const BORDER_MEDIUMDASHDOT: &'static str = "mediumDashDot";
+    pub const BORDER_MEDIUMDASHDOTDOT: &'static str = "mediumDashDotDot";
+    pub const BORDER_MEDIUMDASHED: &'static str = "mediumDashed";
+    // Border style
+    pub const BORDER_NONE: &'static str = "none";
+    pub const BORDER_SLANTDASHDOT: &'static str = "slantDashDot";
+    pub const BORDER_THICK: &'static str = "thick";
+    pub const BORDER_THIN: &'static str = "thin";
+
     #[inline]
+    #[must_use]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
@@ -34,6 +69,7 @@ impl Border {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_style(&self) -> &BorderStyleValues {
         self.style.get_value()
     }
@@ -44,26 +80,12 @@ impl Border {
         self
     }
 
-    // Border style
-    pub const BORDER_NONE: &'static str = "none";
-    pub const BORDER_DASHDOT: &'static str = "dashDot";
-    pub const BORDER_DASHDOTDOT: &'static str = "dashDotDot";
-    pub const BORDER_DASHED: &'static str = "dashed";
-    pub const BORDER_DOTTED: &'static str = "dotted";
-    pub const BORDER_DOUBLE: &'static str = "double";
-    pub const BORDER_HAIR: &'static str = "hair";
-    pub const BORDER_MEDIUM: &'static str = "medium";
-    pub const BORDER_MEDIUMDASHDOT: &'static str = "mediumDashDot";
-    pub const BORDER_MEDIUMDASHDOTDOT: &'static str = "mediumDashDotDot";
-    pub const BORDER_MEDIUMDASHED: &'static str = "mediumDashed";
-    pub const BORDER_SLANTDASHDOT: &'static str = "slantDashDot";
-    pub const BORDER_THICK: &'static str = "thick";
-    pub const BORDER_THIN: &'static str = "thin";
-
     #[inline]
+    #[must_use]
     pub fn get_border_style(&self) -> &str {
         self.style.get_value_string()
     }
+
     #[inline]
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
@@ -107,12 +129,12 @@ impl Border {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"left" => return,
-                    b"right" => return,
-                    b"top" => return,
-                    b"bottom" => return,
-                    b"diagonal" => return,
-                    b"vertical" => return,
+                    b"left"     |
+                    b"right"    |
+                    b"top"      |
+                    b"bottom"   |
+                    b"diagonal" |
+                    b"vertical" |
                     b"horizontal" => return,
                     _ => (),
                 }

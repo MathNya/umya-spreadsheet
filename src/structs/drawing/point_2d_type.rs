@@ -1,12 +1,21 @@
 // a:off
 // a:chOff
-use crate::reader::driver::*;
-use crate::structs::Int64Value;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::Int64Value,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Point2DType {
@@ -16,6 +25,7 @@ pub struct Point2DType {
 
 impl Point2DType {
     #[inline]
+    #[must_use]
     pub fn get_x(&self) -> i64 {
         self.x.get_value()
     }
@@ -26,6 +36,7 @@ impl Point2DType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_y(&self) -> i64 {
         self.y.get_value()
     }

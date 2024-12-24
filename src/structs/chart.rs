@@ -1,80 +1,92 @@
-use crate::structs::drawing::charts::Area3DChart;
-use crate::structs::drawing::charts::AreaChart;
-use crate::structs::drawing::charts::AreaChartSeries;
-use crate::structs::drawing::charts::AreaChartSeriesList;
-use crate::structs::drawing::charts::AxisId;
-use crate::structs::drawing::charts::AxisPositionValues;
-use crate::structs::drawing::charts::Bar3DChart;
-use crate::structs::drawing::charts::BarChart;
-use crate::structs::drawing::charts::BarDirectionValues;
-use crate::structs::drawing::charts::Bubble3D;
-use crate::structs::drawing::charts::BubbleChart;
-use crate::structs::drawing::charts::BubbleSize;
-use crate::structs::drawing::charts::CategoryAxis;
-use crate::structs::drawing::charts::CategoryAxisData;
-use crate::structs::drawing::charts::ChartSpace;
-use crate::structs::drawing::charts::ChartText;
-use crate::structs::drawing::charts::CrossBetweenValues;
-use crate::structs::drawing::charts::DisplayBlanksAsValues;
-use crate::structs::drawing::charts::DoughnutChart;
-use crate::structs::drawing::charts::GroupingValues;
-use crate::structs::drawing::charts::InvertIfNegative;
-use crate::structs::drawing::charts::Layout;
-use crate::structs::drawing::charts::LegendPositionValues;
-use crate::structs::drawing::charts::Line3DChart;
-use crate::structs::drawing::charts::LineChart;
-use crate::structs::drawing::charts::MajorGridlines;
-use crate::structs::drawing::charts::OfPieChart;
-use crate::structs::drawing::charts::OfPieValues;
-use crate::structs::drawing::charts::OrientationValues;
-use crate::structs::drawing::charts::Pie3DChart;
-use crate::structs::drawing::charts::PieChart;
-use crate::structs::drawing::charts::PlotArea;
-use crate::structs::drawing::charts::PrintSettings;
-use crate::structs::drawing::charts::RadarChart;
-use crate::structs::drawing::charts::RightAngleAxes;
-use crate::structs::drawing::charts::RotateX;
-use crate::structs::drawing::charts::RotateY;
-use crate::structs::drawing::charts::ScatterChart;
-use crate::structs::drawing::charts::SeriesText;
-use crate::structs::drawing::charts::ShapeValues;
-use crate::structs::drawing::charts::ShowLeaderLines;
-use crate::structs::drawing::charts::Smooth;
-use crate::structs::drawing::charts::StringLiteral;
-use crate::structs::drawing::charts::StringPoint;
-use crate::structs::drawing::charts::StringReference;
-use crate::structs::drawing::charts::TextProperties;
-use crate::structs::drawing::charts::TickLabelPositionValues;
-use crate::structs::drawing::charts::TickMarkValues;
-use crate::structs::drawing::charts::Title;
-use crate::structs::drawing::charts::ValueAxis;
-use crate::structs::drawing::charts::Values;
-use crate::structs::drawing::charts::View3D;
-use crate::structs::drawing::charts::XValues;
-use crate::structs::drawing::charts::YValues;
-use crate::structs::drawing::spreadsheet::GraphicFrame;
-use crate::structs::drawing::spreadsheet::MarkerType;
-use crate::structs::drawing::spreadsheet::TwoCellAnchor;
-use crate::structs::drawing::Paragraph;
-use crate::structs::drawing::Run;
-use crate::structs::drawing::RunProperties;
-use crate::structs::ChartType;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::{
+    structs::{
+        ChartType,
+        drawing::{
+            Paragraph,
+            Run,
+            RunProperties,
+            charts::{
+                Area3DChart,
+                AreaChart,
+                AreaChartSeries,
+                AreaChartSeriesList,
+                AxisId,
+                AxisPositionValues,
+                Bar3DChart,
+                BarChart,
+                BarDirectionValues,
+                Bubble3D,
+                BubbleChart,
+                BubbleSize,
+                CategoryAxis,
+                CategoryAxisData,
+                ChartSpace,
+                ChartText,
+                CrossBetweenValues,
+                DisplayBlanksAsValues,
+                DoughnutChart,
+                GroupingValues,
+                InvertIfNegative,
+                Layout,
+                LegendPositionValues,
+                Line3DChart,
+                LineChart,
+                MajorGridlines,
+                OfPieChart,
+                OfPieValues,
+                OrientationValues,
+                Pie3DChart,
+                PieChart,
+                PlotArea,
+                PrintSettings,
+                RadarChart,
+                RightAngleAxes,
+                RotateX,
+                RotateY,
+                ScatterChart,
+                SeriesText,
+                ShapeValues,
+                ShowLeaderLines,
+                Smooth,
+                StringLiteral,
+                StringPoint,
+                StringReference,
+                TextProperties,
+                TickLabelPositionValues,
+                TickMarkValues,
+                Title,
+                ValueAxis,
+                Values,
+                View3D,
+                XValues,
+                YValues,
+            },
+            spreadsheet::{
+                GraphicFrame,
+                MarkerType,
+                TwoCellAnchor,
+            },
+        },
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+};
 
 /// ## Supported chart types
-/// * AreaChart
-/// * Area3DChart
-/// * BarChart
-/// * Bar3DChart
-/// * BubbleChart
-/// * DoughnutChart
-/// * LineChart
-/// * Line3DChart
-/// * OfPieChart
-/// * PieChart
-/// * RadarChart
-/// * ScatterChart
+/// * `AreaChart`
+/// * `Area3DChart`
+/// * `BarChart`
+/// * `Bar3DChart`
+/// * `BubbleChart`
+/// * `DoughnutChart`
+/// * `LineChart`
+/// * `Line3DChart`
+/// * `OfPieChart`
+/// * `PieChart`
+/// * `RadarChart`
+/// * `ScatterChart`
 ///
 /// Other types will be supported sequentially.
 ///
@@ -89,10 +101,7 @@ use crate::traits::AdjustmentCoordinateWithSheet;
 /// let mut to_marker = umya_spreadsheet::structs::drawing::spreadsheet::MarkerType::default();
 /// from_marker.set_coordinate("C1");
 /// to_marker.set_coordinate("D11");
-/// let area_chart_series_list = vec![
-///     "Sheet1!$A$1:$A$10",
-///     "Sheet1!$B$1:$B$10",
-/// ];
+/// let area_chart_series_list = vec!["Sheet1!$A$1:$A$10", "Sheet1!$B$1:$B$10"];
 /// let mut chart = umya_spreadsheet::structs::Chart::default();
 /// chart.new_chart(
 ///     umya_spreadsheet::structs::ChartType::LineChart,
@@ -100,7 +109,8 @@ use crate::traits::AdjustmentCoordinateWithSheet;
 ///     to_marker,
 ///     area_chart_series_list,
 /// );
-/// book.get_sheet_by_name_mut("Sheet1").unwrap()
+/// book.get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
 ///     .add_chart(chart);
 ///
 /// // Get Chart by Worksheet.
@@ -117,7 +127,11 @@ use crate::traits::AdjustmentCoordinateWithSheet;
 /// let charts = worksheet.get_charts_by_column_and_row_mut(&3, 1);
 ///
 /// // Set Chart Title, Series Title, Horizonal Title and Vertical Title.
-/// let mut chart = book.get_sheet_by_name_mut("Sheet1").unwrap().get_chart_mut("C1").unwrap();
+/// let mut chart = book
+///     .get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_chart_mut("C1")
+///     .unwrap();
 /// chart
 ///     .set_series_title(vec!["Line1", "Line2"])
 ///     .set_series_point_title(vec!["Point1", "Point2", "Point3", "Point4"])
@@ -127,12 +141,11 @@ use crate::traits::AdjustmentCoordinateWithSheet;
 ///
 /// // line chart is a stack line chart by default.
 /// // To change it to an actual line chart, configure as follows
-/// chart
-///     .set_grouping(umya_spreadsheet::drawing::charts::GroupingValues::Standard);
+/// chart.set_grouping(umya_spreadsheet::drawing::charts::GroupingValues::Standard);
 /// ```
 #[derive(Clone, Debug)]
 pub struct Chart {
-    two_cell_anchor: Box<TwoCellAnchor>,
+    two_cell_anchor:  Box<TwoCellAnchor>,
     default_language: String,
 }
 
@@ -140,7 +153,7 @@ impl Default for Chart {
     #[inline]
     fn default() -> Self {
         Self {
-            two_cell_anchor: Box::new(TwoCellAnchor::default()),
+            two_cell_anchor:  Box::new(TwoCellAnchor::default()),
             default_language: "en-GB".into(),
         }
     }
@@ -224,16 +237,13 @@ impl Chart {
             .get_area_chart_series_list_mut()
             .get_area_chart_series_mut()
         {
-            match series.get_category_axis_data_mut() {
-                Some(v) => {
-                    v.remove_string_reference();
-                    v.set_string_literal(string_literal.clone());
-                }
-                None => {
-                    let mut obj = CategoryAxisData::default();
-                    obj.set_string_literal(string_literal.clone());
-                    series.set_category_axis_data(obj);
-                }
+            if let Some(v) = series.get_category_axis_data_mut() {
+                v.remove_string_reference();
+                v.set_string_literal(string_literal.clone());
+            } else {
+                let mut obj = CategoryAxisData::default();
+                obj.set_string_literal(string_literal.clone());
+                series.set_category_axis_data(obj);
             }
         }
         self
@@ -255,6 +265,7 @@ impl Chart {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
@@ -276,6 +287,7 @@ impl Chart {
         self
     }
 
+    #[must_use]
     pub fn get_chart_space(&self) -> &ChartSpace {
         match self.two_cell_anchor.get_graphic_frame() {
             Some(v) => v.get_graphic().get_graphic_data().get_chart_space(),
@@ -299,7 +311,7 @@ impl Chart {
 
     pub fn new_chart(
         &mut self,
-        chart_type: ChartType,
+        chart_type: &ChartType,
         from_marker: MarkerType,
         to_marker: MarkerType,
         area_chart_series_list: Vec<&str>,
@@ -353,6 +365,7 @@ impl Chart {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         self.two_cell_anchor.get_from_marker().get_coordinate()
     }
@@ -367,11 +380,7 @@ impl Chart {
         self.two_cell_anchor.get_from_marker().get_row()
     }
 
-    fn convert_series(
-        &self,
-        area_chart_series_list: Vec<&str>,
-        smooth: bool,
-    ) -> AreaChartSeriesList {
+    fn convert_series(area_chart_series_list: Vec<&str>, smooth: bool) -> AreaChartSeriesList {
         let mut acsl_obj = AreaChartSeriesList::default();
         area_chart_series_list
             .into_iter()
@@ -388,30 +397,34 @@ impl Chart {
                     .get_format_code_mut()
                     .set_text("General");
 
-                let mut acs_obj = AreaChartSeries::default();
-                acs_obj.get_index_mut().set_val(idx as u32);
-                acs_obj.get_order_mut().set_val(idx as u32);
-                acs_obj.set_values(values);
+                let mut acs_object = AreaChartSeries::default();
+                acs_object
+                    .get_index_mut()
+                    .set_val(u32::try_from(idx).unwrap());
+                acs_object
+                    .get_order_mut()
+                    .set_val(u32::try_from(idx).unwrap());
+                acs_object.set_values(values);
                 if smooth {
-                    acs_obj.set_smooth(Smooth::default());
+                    acs_object.set_smooth(Smooth::default());
                 } else {
                     let mut invert_if_negative = InvertIfNegative::default();
                     invert_if_negative.set_val(0f64);
-                    acs_obj.set_invert_if_negative(invert_if_negative);
+                    acs_object.set_invert_if_negative(invert_if_negative);
                 }
-                acsl_obj.add_area_chart_series(acs_obj);
+                acsl_obj.add_area_chart_series(acs_object);
             });
         acsl_obj
     }
 
     pub(crate) fn new_chart_line_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let acsl_obj = self.convert_series(area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut line_chart = LineChart::default();
         line_chart
@@ -423,7 +436,7 @@ impl Chart {
         line_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213468160);
+        category_axis.get_axis_id_mut().set_val(213_468_160);
         category_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -439,14 +452,14 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
             .get_tick_crossing_axis_mut()
-            .set_val(169590080);
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169590080);
+        value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -470,7 +483,7 @@ impl Chart {
         value_axis
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
 
@@ -535,7 +548,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -551,13 +564,13 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = self.convert_series(area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut line_3d_chart = Line3DChart::default();
         line_3d_chart
@@ -568,7 +581,7 @@ impl Chart {
         line_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213468160);
+        category_axis.get_axis_id_mut().set_val(213_468_160);
         category_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -584,14 +597,14 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
             .get_tick_crossing_axis_mut()
-            .set_val(169590080);
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169590080);
+        value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -615,7 +628,7 @@ impl Chart {
         value_axis
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
 
@@ -686,12 +699,12 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let acsl_obj = self.convert_series(area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -774,7 +787,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -790,7 +803,7 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = self.convert_series(area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -879,13 +892,13 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_doughnut_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
-        let mut acs_obj = AreaChartSeries::default();
+        let mut acs_object = AreaChartSeries::default();
         let mut idx = 0;
         let mut ptn = 0;
         for area_chart_series in area_chart_series_list {
@@ -897,7 +910,7 @@ impl Chart {
 
                 let mut category_axis_data = CategoryAxisData::default();
                 category_axis_data.set_string_reference(string_reference);
-                acs_obj.set_category_axis_data(category_axis_data);
+                acs_object.set_category_axis_data(category_axis_data);
 
                 ptn += 1;
             } else if ptn == 1 {
@@ -911,13 +924,13 @@ impl Chart {
                     .get_numbering_cache_mut()
                     .get_format_code_mut()
                     .set_text("General");
-                acs_obj.set_values(values);
+                acs_object.set_values(values);
 
-                acs_obj.get_index_mut().set_val(idx);
-                acs_obj.get_order_mut().set_val(idx);
-                acsl_obj.add_area_chart_series(acs_obj);
+                acs_object.get_index_mut().set_val(idx);
+                acs_object.get_order_mut().set_val(idx);
+                acsl_obj.add_area_chart_series(acs_object);
 
-                acs_obj = AreaChartSeries::default();
+                acs_object = AreaChartSeries::default();
                 idx += 1;
                 ptn = 0;
             }
@@ -983,18 +996,18 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_area_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let acsl_obj = self.convert_series(area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut area_chart = AreaChart::default();
         area_chart
@@ -1005,7 +1018,7 @@ impl Chart {
         area_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213468160);
+        category_axis.get_axis_id_mut().set_val(213_468_160);
         category_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1021,14 +1034,14 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
             .get_tick_crossing_axis_mut()
-            .set_val(169590080);
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169590080);
+        value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1052,7 +1065,7 @@ impl Chart {
         value_axis
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
         value_axis
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
@@ -1111,7 +1124,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1127,13 +1140,13 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = self.convert_series(area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut area_3d_chart = Area3DChart::default();
         area_3d_chart
@@ -1144,7 +1157,7 @@ impl Chart {
         area_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213468160);
+        category_axis.get_axis_id_mut().set_val(213_468_160);
         category_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1160,14 +1173,14 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
             .get_tick_crossing_axis_mut()
-            .set_val(169590080);
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169590080);
+        value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1191,7 +1204,7 @@ impl Chart {
         value_axis
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
         value_axis
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
@@ -1256,18 +1269,18 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_bar_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let acsl_obj = self.convert_series(area_chart_series_list, false);
+        let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut bar_chart = BarChart::default();
         bar_chart
@@ -1283,7 +1296,7 @@ impl Chart {
         bar_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213468160);
+        category_axis.get_axis_id_mut().set_val(213_468_160);
         category_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1302,14 +1315,14 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
             .get_tick_crossing_axis_mut()
-            .set_val(169590080);
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169590080);
+        value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1333,7 +1346,7 @@ impl Chart {
         value_axis
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1389,7 +1402,7 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1405,13 +1418,13 @@ impl Chart {
         view_3d.set_rotate_y(rotate_y);
         view_3d.set_right_angle_axes(right_angle_axes);
 
-        let acsl_obj = self.convert_series(area_chart_series_list, false);
+        let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut bar_3d_chart = Bar3DChart::default();
         bar_3d_chart
@@ -1427,7 +1440,7 @@ impl Chart {
         bar_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213468160);
+        category_axis.get_axis_id_mut().set_val(213_468_160);
         category_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1446,14 +1459,14 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
             .get_tick_crossing_axis_mut()
-            .set_val(169590080);
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169590080);
+        value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1477,7 +1490,7 @@ impl Chart {
         value_axis
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1539,12 +1552,12 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_of_pie_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let acsl_obj = self.convert_series(area_chart_series_list, false);
+        let acsl_obj = Self::convert_series(area_chart_series_list, false);
 
         let mut show_leader_lines = ShowLeaderLines::default();
         show_leader_lines.set_val(true);
@@ -1619,13 +1632,13 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_bubble_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
-        let mut acs_obj = AreaChartSeries::default();
+        let mut acs_object = AreaChartSeries::default();
         let mut idx = 0;
         let mut ptn = 0;
         for area_chart_series in area_chart_series_list {
@@ -1640,7 +1653,7 @@ impl Chart {
                     .get_numbering_cache_mut()
                     .get_format_code_mut()
                     .set_text("General");
-                acs_obj.set_x_values(x_values);
+                acs_object.set_x_values(x_values);
 
                 ptn += 1;
             } else if ptn == 1 {
@@ -1654,7 +1667,7 @@ impl Chart {
                     .get_numbering_cache_mut()
                     .get_format_code_mut()
                     .set_text("General");
-                acs_obj.set_y_values(y_values);
+                acs_object.set_y_values(y_values);
 
                 ptn += 1;
             } else if ptn == 2 {
@@ -1668,20 +1681,20 @@ impl Chart {
                     .get_numbering_cache_mut()
                     .get_format_code_mut()
                     .set_text("General");
-                acs_obj.set_bubble_size(bubble_size);
+                acs_object.set_bubble_size(bubble_size);
 
                 let mut invert_if_negative = InvertIfNegative::default();
                 invert_if_negative.set_val(0f64);
 
                 let bubble_3d = Bubble3D::default();
 
-                acs_obj.get_index_mut().set_val(idx);
-                acs_obj.get_order_mut().set_val(idx);
-                acs_obj.set_invert_if_negative(invert_if_negative);
-                acs_obj.set_bubble_3d(bubble_3d);
-                acsl_obj.add_area_chart_series(acs_obj);
+                acs_object.get_index_mut().set_val(idx);
+                acs_object.get_order_mut().set_val(idx);
+                acs_object.set_invert_if_negative(invert_if_negative);
+                acs_object.set_bubble_3d(bubble_3d);
+                acsl_obj.add_area_chart_series(acs_object);
 
-                acs_obj = AreaChartSeries::default();
+                acs_object = AreaChartSeries::default();
                 ptn = 0;
                 idx += 1;
             }
@@ -1691,10 +1704,10 @@ impl Chart {
         show_leader_lines.set_val(true);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut bubble_chart = BubbleChart::default();
         bubble_chart.get_vary_colors_mut().set_val(false);
@@ -1707,7 +1720,7 @@ impl Chart {
             .set_show_leader_lines(show_leader_lines);
 
         let mut value_axis_1 = ValueAxis::default();
-        value_axis_1.get_axis_id_mut().set_val(213468160);
+        value_axis_1.get_axis_id_mut().set_val(213_468_160);
         value_axis_1
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1730,14 +1743,16 @@ impl Chart {
         value_axis_1
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_1.get_tick_crossing_axis_mut().set_val(169590080);
+        value_axis_1
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         value_axis_1
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let major_gridlines = MajorGridlines::default();
         let mut value_axis_2 = ValueAxis::default();
-        value_axis_2.get_axis_id_mut().set_val(169590080);
+        value_axis_2.get_axis_id_mut().set_val(169_590_080);
         value_axis_2
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1761,7 +1776,9 @@ impl Chart {
         value_axis_2
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_2.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis_2
+            .get_tick_crossing_axis_mut()
+            .set_val(213_468_160);
         value_axis_2
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
@@ -1842,18 +1859,18 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_radar_chart(&mut self, area_chart_series_list: Vec<&str>) {
-        let acsl_obj = self.convert_series(area_chart_series_list, true);
+        let acsl_obj = Self::convert_series(area_chart_series_list, true);
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut radar_chart = RadarChart::default();
         radar_chart.set_area_chart_series_list(acsl_obj);
@@ -1861,7 +1878,7 @@ impl Chart {
         radar_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213468160);
+        category_axis.get_axis_id_mut().set_val(213_468_160);
         category_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1877,14 +1894,14 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
             .get_tick_crossing_axis_mut()
-            .set_val(169590080);
+            .set_val(169_590_080);
         category_axis.get_auto_labeled_mut().set_val(true);
         category_axis.get_label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169590080);
+        value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
             .get_orientation_mut()
@@ -1908,7 +1925,7 @@ impl Chart {
         value_axis
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
 
@@ -1973,13 +1990,13 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     pub(crate) fn new_chart_scatter_chart(&mut self, area_chart_series_list: Vec<&str>) {
         let mut acsl_obj = AreaChartSeriesList::default();
-        let mut acs_obj = AreaChartSeries::default();
+        let mut acs_object = AreaChartSeries::default();
         let mut idx = 0;
         let mut ptn = 0;
         for area_chart_series in area_chart_series_list {
@@ -1994,7 +2011,7 @@ impl Chart {
                     .get_numbering_cache_mut()
                     .get_format_code_mut()
                     .set_text("General");
-                acs_obj.set_x_values(x_values);
+                acs_object.set_x_values(x_values);
 
                 ptn += 1;
             } else if ptn == 1 {
@@ -2008,27 +2025,27 @@ impl Chart {
                     .get_numbering_cache_mut()
                     .get_format_code_mut()
                     .set_text("General");
-                acs_obj.set_y_values(y_values);
+                acs_object.set_y_values(y_values);
 
                 let mut invert_if_negative = InvertIfNegative::default();
                 invert_if_negative.set_val(0f64);
 
-                acs_obj.get_index_mut().set_val(idx);
-                acs_obj.get_order_mut().set_val(idx);
-                acs_obj.set_invert_if_negative(invert_if_negative);
-                acsl_obj.add_area_chart_series(acs_obj);
+                acs_object.get_index_mut().set_val(idx);
+                acs_object.get_order_mut().set_val(idx);
+                acs_object.set_invert_if_negative(invert_if_negative);
+                acsl_obj.add_area_chart_series(acs_object);
 
-                acs_obj = AreaChartSeries::default();
+                acs_object = AreaChartSeries::default();
                 ptn = 0;
                 idx += 1;
             }
         }
 
         let mut axis_id1 = AxisId::default();
-        axis_id1.set_val(213468160);
+        axis_id1.set_val(213_468_160);
 
         let mut axis_id2 = AxisId::default();
-        axis_id2.set_val(169590080);
+        axis_id2.set_val(169_590_080);
 
         let mut scatter_chart = ScatterChart::default();
         scatter_chart.set_area_chart_series_list(acsl_obj);
@@ -2036,7 +2053,7 @@ impl Chart {
         scatter_chart.add_axis_id(axis_id2);
 
         let mut value_axis_1 = ValueAxis::default();
-        value_axis_1.get_axis_id_mut().set_val(213468160);
+        value_axis_1.get_axis_id_mut().set_val(213_468_160);
         value_axis_1
             .get_scaling_mut()
             .get_orientation_mut()
@@ -2059,14 +2076,16 @@ impl Chart {
         value_axis_1
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_1.get_tick_crossing_axis_mut().set_val(169590080);
+        value_axis_1
+            .get_tick_crossing_axis_mut()
+            .set_val(169_590_080);
         value_axis_1
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let major_gridlines = MajorGridlines::default();
         let mut value_axis_2 = ValueAxis::default();
-        value_axis_2.get_axis_id_mut().set_val(169590080);
+        value_axis_2.get_axis_id_mut().set_val(169_590_080);
         value_axis_2
             .get_scaling_mut()
             .get_orientation_mut()
@@ -2090,7 +2109,9 @@ impl Chart {
         value_axis_2
             .get_tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis_2.get_tick_crossing_axis_mut().set_val(213468160);
+        value_axis_2
+            .get_tick_crossing_axis_mut()
+            .set_val(213_468_160);
         value_axis_2
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
@@ -2158,12 +2179,12 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .set_print_settings(self.make_print_settings());
+            .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
     #[inline]
-    pub(crate) fn make_print_settings(&self) -> PrintSettings {
+    pub(crate) fn make_print_settings() -> PrintSettings {
         let mut obj = PrintSettings::default();
         obj.get_page_margins_mut()
             .set_bottom(0.75)

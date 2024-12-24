@@ -1,21 +1,37 @@
-use super::ConditionalFormatValueObjectValues;
-use super::EnumValue;
-use super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ConditionalFormatValueObjectValues,
+    EnumValue,
+    StringValue,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ConditionalFormatValueObject {
     r#type: EnumValue<ConditionalFormatValueObjectValues>,
-    val: StringValue,
+    val:    StringValue,
 }
 
 impl ConditionalFormatValueObject {
     #[inline]
+    #[must_use]
     pub fn get_type(&self) -> &ConditionalFormatValueObjectValues {
         self.r#type.get_value()
     }
@@ -27,6 +43,7 @@ impl ConditionalFormatValueObject {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &str {
         self.val.get_value_str()
     }

@@ -1,24 +1,38 @@
-use super::TextElement;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
+use std::{
+    borrow::Cow,
+    fmt::Write,
+    io::Cursor,
+};
+
 use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::borrow::Cow;
-use std::fmt::Write;
-use std::io::Cursor;
-use thin_vec::ThinVec;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::TextElement;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct RichText {
-    rich_text_elements: ThinVec<TextElement>,
+    rich_text_elements: Vec<TextElement>,
 }
 
 impl RichText {
     #[inline]
+    #[must_use]
     pub fn get_text(&self) -> Cow<'static, str> {
-        let mut text = String::from("");
+        let mut text = String::new();
         for rich_text_elements in &self.rich_text_elements {
             text = format!("{}{}", text, rich_text_elements.get_text());
         }
@@ -35,17 +49,18 @@ impl RichText {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rich_text_elements(&self) -> &[TextElement] {
         &self.rich_text_elements
     }
 
     #[inline]
-    pub fn get_rich_text_elements_mut(&mut self) -> &mut ThinVec<TextElement> {
+    pub fn get_rich_text_elements_mut(&mut self) -> &mut Vec<TextElement> {
         &mut self.rich_text_elements
     }
 
     #[inline]
-    pub fn set_rich_text_elements(&mut self, value: impl Into<ThinVec<TextElement>>) -> &mut Self {
+    pub fn set_rich_text_elements(&mut self, value: impl Into<Vec<TextElement>>) -> &mut Self {
         self.rich_text_elements = value.into();
         self
     }
@@ -57,7 +72,7 @@ impl RichText {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        let mut value = String::from("");
+        let mut value = String::new();
         for ele in &self.rich_text_elements {
             write!(value, "{}", ele.get_hash_code()).unwrap();
         }

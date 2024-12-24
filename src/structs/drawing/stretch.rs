@@ -1,11 +1,23 @@
 // a:stretch
-use super::fill_rectangle::FillRectangle;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::fill_rectangle::FillRectangle;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Stretch {
@@ -14,6 +26,7 @@ pub struct Stretch {
 
 impl Stretch {
     #[inline]
+    #[must_use]
     pub fn get_fill_rectangle(&self) -> Option<&FillRectangle> {
         self.fill_rectangle.as_deref()
     }
@@ -37,8 +50,8 @@ impl Stretch {
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"a:fillRect" {
-                    let mut fill_rectangle = FillRectangle::default();
-                    fill_rectangle.set_attributes(reader, e);
+                    let fill_rectangle = FillRectangle::default();
+                    FillRectangle::set_attributes(reader, e);
                     self.set_fill_rectangle(fill_rectangle);
                 }
             },
@@ -54,9 +67,9 @@ impl Stretch {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:stretch
         match &self.fill_rectangle {
-            Some(v) => {
+            Some(_) => {
                 write_start_tag(writer, "a:stretch", vec![], false);
-                v.write_to(writer);
+                FillRectangle::write_to(writer);
                 write_end_tag(writer, "a:stretch");
             }
             None => {
