@@ -181,7 +181,11 @@ pub mod helper;
 pub mod reader;
 pub mod structs;
 pub mod traits;
+mod version;
 pub mod writer;
+
+#[allow(unused_imports)]
+pub use version::*;
 
 pub use self::structs::*;
 
