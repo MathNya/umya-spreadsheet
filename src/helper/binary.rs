@@ -1,29 +1,9 @@
 use std::{
     fs,
-    io,
     path::Path,
 };
 
 use crate::structs::MediaObject;
-
-/// Reads the binary data from a file at the specified path.
-///
-/// # Parameters
-///
-/// - `path`: A reference to a path from which to read the binary data.
-///
-/// # Returns
-///
-/// Returns a `Result` containing a `Vec<u8>` with the binary data if
-/// successful, or an `io::Error` if an error occurs while reading the file.
-///
-/// # Errors
-///
-/// This function will return an error if the file does not exist, the path is
-/// invalid, or if there are any I/O errors during the read operation.
-pub fn get_binary_data<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
-    fs::read(path)
-}
 
 /// Creates a `MediaObject` from the file at the specified path.
 ///
@@ -60,7 +40,7 @@ pub fn make_media_object<P: AsRef<Path>>(path: P) -> MediaObject {
         .unwrap_or("");
 
     let mut obj = MediaObject::default();
-    obj.set_image_data(get_binary_data(path).unwrap());
+    obj.set_image_data(fs::read(path).unwrap());
     obj.set_image_name(file_name);
     obj.set_image_title(title);
     obj
