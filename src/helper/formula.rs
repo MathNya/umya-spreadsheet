@@ -1,7 +1,3 @@
-use std::sync::OnceLock;
-
-use fancy_regex::Regex;
-
 use crate::{
     helper::{
         address::{
@@ -18,6 +14,7 @@ use crate::{
             get_join_range,
             get_split_range,
         },
+        utils::compile_regex,
     },
     structs::StringValue,
 };
@@ -132,13 +129,6 @@ pub const ERRORS: &[&str] = &[
     "#NULL!", "#DIV/0!", "#VALUE!", "#REF!", "#NAME?", "#NUM!", "#N/A",
 ];
 const COMPARATORS_MULTI: &[&str] = &[">=", "<=", "<>"];
-
-// Initialize the OnceLock for the Regex
-static SCIENTIFIC_REGEX: OnceLock<Regex> = OnceLock::new();
-
-fn get_scientific_regex() -> &'static Regex {
-    SCIENTIFIC_REGEX.get_or_init(|| Regex::new(r"/^[1-9]{1}(\\.\\d+)?E{1}$/").unwrap())
-}
 
 macro_rules! token {
     ($value:expr, $typ:expr, $sub:expr) => {{
@@ -414,7 +404,7 @@ fn handle_scientific_notation(formula: &str, index: &mut usize, value: &mut Stri
     if let Some(current_char) = formula.chars().nth(*index) {
         if OPERATORS_SN.contains(current_char)
             && value.len() > 1
-            && get_scientific_regex()
+            && compile_regex!(r"/^[1-9]{1}(\\.\\d+)?E{1}$/")
                 .is_match(&current_char.to_string())
                 .unwrap_or(false)
         {

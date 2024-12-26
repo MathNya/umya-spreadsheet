@@ -1,8 +1,4 @@
-use std::sync::OnceLock;
-
-use fancy_regex::Regex;
-
-static ADDRESS_REGEX: OnceLock<Regex> = OnceLock::new();
+use crate::helper::utils::compile_regex;
 
 #[must_use]
 pub fn split_address(address: &str) -> (&str, &str) {
@@ -54,10 +50,9 @@ pub fn join_address(sheet_name: &str, address: &str) -> String {
 /// assert!(!is_address(invalid_address));
 /// ```
 pub fn is_address<S: AsRef<str>>(input: S) -> bool {
-    let regex = ADDRESS_REGEX.get_or_init(|| {
-        Regex::new(r"^([^\:\\\?\[\]\/\*]+\!)?(\$?[A-Z]{1,3}\$?[0-9]+)(\:\$?[A-Z]{1,3}\$?[0-9]+)?$")
-            .unwrap()
-    });
+    let regex = compile_regex!(
+        r"^([^\:\\\?\[\]\/\*]+\!)?(\$?[A-Z]{1,3}\$?[0-9]+)(\:\$?[A-Z]{1,3}\$?[0-9]+)?$"
+    );
     regex.is_match(input.as_ref()).unwrap()
 }
 

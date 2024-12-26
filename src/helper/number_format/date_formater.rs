@@ -1,11 +1,11 @@
 use std::borrow::Cow;
 
-use fancy_regex::{
-    Captures,
-    Regex,
-};
+use fancy_regex::Captures;
 
-use crate::helper::date::excel_to_date_time_object;
+use crate::helper::{
+    date::excel_to_date_time_object,
+    utils::compile_regex,
+};
 
 const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     // first remove escapes related to non-format characters
@@ -63,12 +63,12 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
     // general syntax: [$<Currency string>-<language info>]
     // language info is in hexadecimal
     // strip off chinese part like [DBNum1][$-804]
-    let re = Regex::new(r"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])").unwrap();
+    let re = compile_regex!(r"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])");
     let format = re.replace_all(&format, r"");
 
     // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to
     // lower-case;    but we don't want to change any quoted strings
-    let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
+    let re = compile_regex!(r#"(?:^|")([^"]*)(?:$|")"#);
     let mut format = re.replace_all(&format, |caps: &Captures| {
         let caps_string = caps.get(0).unwrap().as_str();
         caps_string.to_lowercase()
@@ -109,7 +109,7 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
 
     // escape any quoted characters so that DateTime format() will render them
     // correctly
-    let re = Regex::new(r#""(.*)""#).unwrap();
+    let re = compile_regex!(r#""(.*)""#);
     let format = re.replace_all(&format, |caps: &Captures| {
         let caps_string = caps.get(0).unwrap().as_str();
         caps_string.to_lowercase()

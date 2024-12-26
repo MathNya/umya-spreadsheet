@@ -3,19 +3,16 @@ mod fraction_formater;
 mod number_formater;
 mod percentage_formater;
 
-use std::{
-    borrow::Cow,
-    sync::OnceLock,
-};
+use std::borrow::Cow;
 
 use fancy_regex::{
     Matches,
     Regex,
 };
 
-use crate::structs::{
-    Color,
-    NumberingFormat,
+use crate::{
+    helper::utils::compile_regex,
+    structs::NumberingFormat,
 };
 
 pub struct Split<'r, 't> {
@@ -56,30 +53,20 @@ impl<'t> Iterator for Split<'_, 't> {
     }
 }
 
-// Initialize OnceLock for each Regex
-static ESCAPE_REGEX: OnceLock<Regex> = OnceLock::new();
-static SECTION_REGEX: OnceLock<Regex> = OnceLock::new();
-static DATE_TIME_REGEX: OnceLock<Regex> = OnceLock::new();
-static PERCENT_DOLLAR_REGEX: OnceLock<Regex> = OnceLock::new();
-
 pub fn get_escape_regex() -> &'static Regex {
-    ESCAPE_REGEX.get_or_init(|| {
-        Regex::new(r#"(\\\(((.)(?!((AM\/PM)|(A\/P)))|([^ ])))(?=(?:[^"]|"[^"]*")*$)"#).unwrap()
-    })
+    compile_regex!(r#"(\\\(((.)(?!((AM\/PM)|(A\/P)))|([^ ])))(?=(?:[^"]|"[^"]*")*$)"#)
 }
 
 pub fn get_section_regex() -> &'static Regex {
-    SECTION_REGEX.get_or_init(|| Regex::new(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#).unwrap())
+    compile_regex!(r#"(;)(?=(?:[^"]|"[^"]*")*$)"#)
 }
 
 pub fn get_date_time_regex() -> &'static Regex {
-    DATE_TIME_REGEX.get_or_init(|| {
-        Regex::new(r#"(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy](?=(?:[^"]|"[^"]*")*$)"#).unwrap()
-    })
+    compile_regex!(r#"(\[\$[A-Z]*-[0-9A-F]*\])*[hmsdy](?=(?:[^"]|"[^"]*")*$)"#)
 }
 
 pub fn get_percent_dollar_regex() -> &'static Regex {
-    PERCENT_DOLLAR_REGEX.get_or_init(|| Regex::new("%$").unwrap())
+    compile_regex!("%$")
 }
 
 pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) -> String {
@@ -117,7 +104,7 @@ pub fn to_formatted_string<S: AsRef<str>, P: AsRef<str>>(value: S, format: P) ->
     // In Excel formats, "_" is used to add spacing,
     //    The following character indicates the size of the spacing, which we can't
     // do in HTML, so we just use a standard space
-    let re = Regex::new("_.").unwrap();
+    let re = compile_regex!("_.");
     let format = re.replace_all(&format, " ");
 
     // Let's begin inspecting the format and converting the value to a formatted
@@ -154,10 +141,11 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     //   3 sections:  [POSITIVE/TEXT] [NEGATIVE] [ZERO]
     //   4 sections:  [POSITIVE] [NEGATIVE] [ZERO] [TEXT]
     let cnt: usize = sections.len();
-    let color_regex: String = format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
-    let cond_regex = r"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]";
-    let color_re = Regex::new(&color_regex).unwrap();
-    let cond_re = Regex::new(cond_regex).unwrap();
+
+    // let color_re: String = format!("{}{}{}", "\\[(",
+    // Color::NAMED_COLORS.join("|"), ")\\]");
+    let color_re = compile_regex!(r"\[(Black|White|Red|Green|Blue|Yellow|Magenta|Cyan)\]");
+    let cond_re = compile_regex!(r"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]");
 
     let mut colors = [
         String::new(),

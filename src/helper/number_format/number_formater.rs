@@ -1,31 +1,17 @@
-use std::{
-    borrow::Cow,
-    sync::OnceLock,
-};
+use std::borrow::Cow;
 
-use fancy_regex::Regex;
 use thousands::Separable;
 
 use super::fraction_formater::format_as_fraction;
-
-// Initialize OnceLock for each Regex
-static THOUSANDS_SEP_REGEX: OnceLock<Regex> = OnceLock::new();
-static SCALE_REGEX: OnceLock<Regex> = OnceLock::new();
-static TRAILING_COMMA_REGEX: OnceLock<Regex> = OnceLock::new();
-static FRACTION_REGEX: OnceLock<Regex> = OnceLock::new();
-static SQUARE_BRACKET_REGEX: OnceLock<Regex> = OnceLock::new();
-static NUMBER_REGEX: OnceLock<Regex> = OnceLock::new();
+use crate::helper::utils::compile_regex;
 
 pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
-    // Initialize regex patterns using OnceLock
-    let thousands_sep_regex = THOUSANDS_SEP_REGEX.get_or_init(|| Regex::new(r"(#,#|0,0)").unwrap());
-    let scale_regex = SCALE_REGEX.get_or_init(|| Regex::new(r"(#|0)(,+)").unwrap());
-    let trailing_comma_regex = TRAILING_COMMA_REGEX.get_or_init(|| Regex::new("(#|0),+").unwrap());
-    let fraction_regex =
-        FRACTION_REGEX.get_or_init(|| Regex::new(r"#?.*\?{1,2}\/\?{1,2}").unwrap());
-    let square_bracket_regex =
-        SQUARE_BRACKET_REGEX.get_or_init(|| Regex::new(r"\[[^\]]+\]").unwrap());
-    let number_regex = NUMBER_REGEX.get_or_init(|| Regex::new(r"(0+)(\.?)(0*)").unwrap());
+    let thousands_sep_regex = compile_regex!(r"(#,#|0,0)");
+    let scale_regex = compile_regex!(r"(#|0)(,+)");
+    let trailing_comma_regex = compile_regex!("(#|0),+");
+    let fraction_regex = compile_regex!(r"#?.*\?{1,2}\/\?{1,2}");
+    let square_bracket_regex = compile_regex!(r"\[[^\]]+\]");
+    let number_regex = compile_regex!(r"(0+)(\.?)(0*)");
 
     let mut value = value.to_string();
 
@@ -76,7 +62,7 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
         }
     }
 
-    let re = Regex::new(r"\$[^0-9]*").unwrap();
+    let re = compile_regex!(r"\$[^0-9]*");
     if re.find(&format).ok().flatten().is_some() {
         let mut item: Vec<String> = Vec::new();
         for ite in re.captures(&format).ok().flatten().unwrap().iter() {
@@ -130,35 +116,6 @@ fn format_straight_numeric_value(
     }
     value = format!("{left_value}.{right_value}");
     value
-
-    //    if use_thousands == true {
-    //        value = value.parse::<f64>().unwrap().separate_with_commas();
-    //        dbg!(&value);
-    //        value = Regex::new(&number_regex).unwrap().replace_all(&format,
-    // value.as_str());        dbg!(&value);
-    //    } else {
-    //        if Regex::new(r#"[0#]E[+-]0"#).unwrap().find(&format).is_some() {
-    //            // Scientific format
-    //            value = value.parse::<f64>().unwrap().to_string();
-    //        } else if
-    // Regex::new(r#"0([^\d\.]+)0"#).unwrap().find(&format).is_some() ||
-    // format.find(".").is_some() {            if
-    // value.parse::<f64>().unwrap() as usize as f64 ==
-    // value.parse::<f64>().unwrap() && format.find(".").is_some() {
-    //                let format_collect:Vec<&str> =
-    // format.split('.').collect();                let pow =
-    // 10i32.pow(format_collect.get(1).unwrap().len() as u32);
-    // value = format!("{}", value.parse::<i32>().unwrap() * pow);
-    //            }
-    //            value =
-    // complex_number_format_mask(&value.parse::<f64>().unwrap(), &format,
-    // true);        } else {
-    //            value = format!("{:0width$.len$}", value, width = min_width,
-    // len = right.len());            value =
-    // Regex::new(&number_regex).unwrap().replace_all(&format, value.as_str());
-    //        }
-    //    }
-    //    value
 }
 
 #[allow(dead_code)]
@@ -182,7 +139,7 @@ fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Ve
 fn process_complex_number_format_mask(number: f64, mask: &str) -> String {
     let mut result = number.to_string();
     let mut mask = mask.to_string();
-    let re = Regex::new(r"0+").unwrap();
+    let re = compile_regex!(r"0+");
     let mut masking_blocks: Vec<(String, usize)> = Vec::new();
     let mut masking_str: Vec<String> = Vec::new();
     let mut masking_beg: Vec<usize> = Vec::new();

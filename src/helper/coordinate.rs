@@ -1,9 +1,6 @@
-use std::{
-    iter::successors,
-    sync::OnceLock,
-};
+use std::iter::successors;
 
-use regex::Regex;
+use crate::helper::utils::compile_regex;
 
 /// Converts a 1-based index to a string representation using letters
 /// similar to Excel column naming (e.g., 1 -> "A", 27 -> "AA").
@@ -194,10 +191,11 @@ pub fn index_from_coordinate<T>(coordinate: T) -> CellIndex
 where
     T: AsRef<str>,
 {
-    static RE: OnceLock<Regex> = OnceLock::new();
-    let re = RE.get_or_init(|| Regex::new(r"((\$)?([A-Z]{1,3}))?((\$)?([0-9]+))?").unwrap());
+    let re = compile_regex!(r"((\$)?([A-Z]{1,3}))?((\$)?([0-9]+))?");
 
     re.captures(coordinate.as_ref())
+        .ok()
+        .flatten()
         .map(|v| {
             let col = v.get(3).map(|v| alpha_to_index(v.as_str())); // col number: [A-Z]{1,3}
             let row = v.get(6).and_then(|v| v.as_str().parse::<u32>().ok()); // row number: [0-9]+

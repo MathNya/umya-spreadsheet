@@ -1,21 +1,15 @@
-use std::sync::OnceLock;
-
-use fancy_regex::Regex;
-
 use super::Range;
 use crate::{
     helper::{
         address::split_address,
         coordinate::index_from_coordinate,
+        utils::compile_regex,
     },
     traits::{
         AdjustmentCoordinate,
         AdjustmentCoordinateWithSheet,
     },
 };
-
-// Initialize OnceLock for the Regex
-static RE: OnceLock<Regex> = OnceLock::new();
 
 #[derive(Clone, Default, Debug)]
 pub struct Address {
@@ -95,12 +89,12 @@ impl Address {
             if sheet_name.contains('"') {
                 with_space_char = "'";
             }
-            if with_space_char.is_empty() {
-                // Initialize the regex pattern using OnceLock
-                let re = RE.get_or_init(|| Regex::new(r"[^0-9a-zA-Z]").unwrap());
-                if re.is_match(&sheet_name).unwrap_or(false) {
-                    with_space_char = "'";
-                }
+            if with_space_char.is_empty()
+                && compile_regex!(r"[^0-9a-zA-Z]")
+                    .is_match(&sheet_name)
+                    .unwrap_or(false)
+            {
+                with_space_char = "'";
             }
             if with_space_char.is_empty()
                 && (None, None, None, None) != index_from_coordinate(&sheet_name)
