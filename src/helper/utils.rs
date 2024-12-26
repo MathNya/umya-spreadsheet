@@ -86,7 +86,7 @@ macro_rules! assert_sha256 {
 /// ```
 macro_rules! compile_regex {
     ($re:literal $(,)?) => {{
-        static RE: once_cell::sync::OnceCell<fancy_regex::Regex> = once_cell::sync::OnceCell::new();
+        static RE: std::sync::OnceLock<fancy_regex::Regex> = std::sync::OnceLock::new();
         RE.get_or_init(|| fancy_regex::Regex::new($re).unwrap())
     }};
 }
