@@ -292,7 +292,7 @@ pub fn encrypt<P: AsRef<Path>>(filepath: &P, data: &[u8], password: &str) {
     }
 }
 
-#[allow(unused_macros)]
+#[allow(unused_imports)]
 #[cfg(test)]
 mod tests {
     use std::fs;
@@ -303,23 +303,12 @@ mod tests {
         Sha256,
     };
 
-    /// Prints a byte slice as a hex string, prefixed with the variable name.
-    ///
-    /// This macro takes a reference to a byte slice (`&[u8]`) and prints both
-    /// the variable name and its hexadecimal representation to stdout.
-    macro_rules! print_hex {
-        ($var:expr) => {
-            println!(
-                "{} = {}",
-                stringify!($var),
-                $var.iter()
-                    .map(|b| format!("{:02x}", b))
-                    .collect::<String>()
-            );
-        };
-    }
-
     use super::*;
+    use crate::helper::utils::{
+        assert_sha256,
+        print_hex,
+        print_sha256_hex,
+    };
 
     #[test]
     fn test_encrypt_package() {
@@ -338,9 +327,9 @@ mod tests {
             &data,
         );
 
-        assert_eq!(
-            Sha256::digest(&encrypted_package).to_vec(),
-            hex!("c2f7aa6ef36f5389aee63255887e103d7e9d9388c6dcaaa821fb62119ebdd697")
+        assert_sha256!(
+            &encrypted_package,
+            "c2f7aa6ef36f5389aee63255887e103d7e9d9388c6dcaaa821fb62119ebdd697"
         );
     }
 
@@ -543,9 +532,9 @@ mod tests {
             &hex!("5017ddc6146e56dfbf76734b3e99b80f36a4c9a2e9eb21fe77695f73850cc452"),
         );
 
-        assert_eq!(
-            Sha256::digest(&encryption_info).to_vec(),
-            hex!("31f0b53f3d92aa053607641946534b96488e9df8abe64268cc1f337b5e4de8b8")
+        assert_sha256!(
+            encryption_info,
+            "31f0b53f3d92aa053607641946534b96488e9df8abe64268cc1f337b5e4de8b8"
         );
     }
 
@@ -556,6 +545,7 @@ mod tests {
             &package_salt,
             &constants::BLOCK_KEYS_DATA_INTEGRITY_HMAC_KEY,
         ]);
+
         assert_eq!(
             result,
             hex!(

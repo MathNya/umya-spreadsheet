@@ -140,7 +140,7 @@
     unused_qualifications,
     variant_size_differences
 )]
-#![allow(dead_code)]
+#![allow(dead_code, unused_macros)]
 #![deny(clippy::correctness)]
 #![warn(
     clippy::style,
