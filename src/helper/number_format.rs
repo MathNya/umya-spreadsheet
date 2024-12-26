@@ -142,8 +142,7 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     //   4 sections:  [POSITIVE] [NEGATIVE] [ZERO] [TEXT]
     let cnt: usize = sections.len();
 
-    // let color_re: String = format!("{}{}{}", "\\[(",
-    // Color::NAMED_COLORS.join("|"), ")\\]");
+    // format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
     let color_re = compile_regex!(r"\[(Black|White|Red|Green|Blue|Yellow|Magenta|Cyan)\]");
     let cond_re = compile_regex!(r"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]");
 
@@ -168,6 +167,7 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
         String::from("0"),
         String::from("0"),
     ];
+
     sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
 
