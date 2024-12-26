@@ -55,10 +55,10 @@ impl NumberingFormats {
     }
 
     pub(crate) fn get_build_in_formats(&mut self) {
-        for (index, code) in super::numbering_format::get_fill_built_in_format_codes() {
+        for (index, code) in super::numbering_format::FILL_BUILT_IN_FORMAT_CODES.entries() {
             let mut obj = NumberingFormat::default();
             obj.set_number_format_id_crate(*index)
-                .set_format_code_crate(code.clone());
+                .set_format_code_crate(code.to_owned());
             self.set_numbering_format(obj);
         }
     }

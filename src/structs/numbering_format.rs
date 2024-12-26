@@ -1,10 +1,7 @@
-use std::{
-    collections::HashMap,
-    io::Cursor,
-    sync::OnceLock,
-};
+use std::io::Cursor;
 
 use md5::Digest;
+use phf::phf_map;
 use quick_xml::{
     Reader,
     Writer,
@@ -83,18 +80,17 @@ impl NumberingFormat {
     }
 
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
-        let format_code_result = get_fill_built_in_format_codes()
-            .iter()
-            .find_map(|(key, val)| {
-                if key == &value {
-                    Some(val.clone())
-                } else {
-                    None
-                }
-            });
+        let format_code_result = FILL_BUILT_IN_FORMAT_CODES.entries().find_map(|(key, val)| {
+            if key == &value {
+                Some(val.to_owned())
+            } else {
+                None
+            }
+        });
 
         self.format_code = format_code_result
             .expect("Not Found NumberFormatId.")
+            .to_owned()
             .into_boxed_str();
         self.number_format_id = value;
         self.is_build_in = true;
@@ -121,8 +117,8 @@ impl NumberingFormat {
     /// ```
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into().into_boxed_str();
-        for (index, format) in get_fill_built_in_format_codes() {
-            if &*self.format_code == format {
+        for (index, format) in FILL_BUILT_IN_FORMAT_CODES.entries() {
+            if &&*self.format_code == format {
                 self.number_format_id = *index;
                 self.is_build_in = true;
                 return self;
@@ -185,85 +181,73 @@ impl NumberingFormat {
     }
 }
 
-pub(crate) static FILL_BUILT_IN_FORMAT_CODES: OnceLock<HashMap<u32, String>> = OnceLock::new();
+pub(crate) static FILL_BUILT_IN_FORMAT_CODES: phf::Map<u32, &'static str> = phf_map! {
+    0u32 => NumberingFormat::FORMAT_GENERAL,
+    1u32 => "0",
+    2u32 => "0.00",
+    3u32 => "#,##0",
+    4u32 => "#,##0.00",
 
-pub(crate) fn get_fill_built_in_format_codes() -> &'static HashMap<u32, String> {
-    FILL_BUILT_IN_FORMAT_CODES.get_or_init(|| {
-        let mut map: HashMap<u32, String> = HashMap::new();
+    9u32 => "0%",
+    10u32 => "0.00%",
+    11u32 => "0.00E+00",
+    12u32 => "# ?/?",
+    13u32 => "# ??/??",
+    14u32 => "m/d/yyyy",
+    15u32 => "d-mmm-yy",
+    16u32 => "d-mmm",
+    17u32 => "mmm-yy",
+    18u32 => "h:mm AM/PM",
+    19u32 => "h:mm:ss AM/PM",
+    20u32 => "h:mm",
+    21u32 => "h:mm:ss",
+    22u32 => "m/d/yyyy h:mm",
 
-        // General
-        map.insert(0, NumberingFormat::FORMAT_GENERAL.to_string());
-        map.insert(1, "0".to_string());
-        map.insert(2, "0.00".to_string());
-        map.insert(3, "#,##0".to_string());
-        map.insert(4, "#,##0.00".to_string());
+    37u32 => "#,##0_);(#,##0)",
+    38u32 => "#,##0_);[Red](#,##0)",
+    39u32 => "#,##0.00_);(#,##0.00)",
+    40u32 => "#,##0.00_);[Red](#,##0.00)",
 
-        map.insert(9, "0%".to_string());
-        map.insert(10, "0.00%".to_string());
-        map.insert(11, "0.00E+00".to_string());
-        map.insert(12, "# ?/?".to_string());
-        map.insert(13, "# ??/??".to_string());
-        map.insert(14, "m/d/yyyy".to_string());
-        map.insert(15, "d-mmm-yy".to_string());
-        map.insert(16, "d-mmm".to_string());
-        map.insert(17, "mmm-yy".to_string());
-        map.insert(18, "h:mm AM/PM".to_string());
-        map.insert(19, "h:mm:ss AM/PM".to_string());
-        map.insert(20, "h:mm".to_string());
-        map.insert(21, "h:mm:ss".to_string());
-        map.insert(22, "m/d/yyyy h:mm".to_string());
+    44u32 => r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#,
+    45u32 => "mm:ss",
+    46u32 => "[h]:mm:ss",
+    47u32 => "mm:ss.0",
+    48u32 => "##0.0E+0",
+    49u32 => "@",
 
-        map.insert(37, "#,##0_);(#,##0)".to_string());
-        map.insert(38, "#,##0_);[Red](#,##0)".to_string());
-        map.insert(39, "#,##0.00_);(#,##0.00)".to_string());
-        map.insert(40, "#,##0.00_);[Red](#,##0.00)".to_string());
+    // CHT
+    27u32 => "[$-404]e/m/d",
+    30u32 => "m/d/yy",
+    36u32 => "[$-404]e/m/d",
+    50u32 => "[$-404]e/m/d",
+    57u32 => "[$-404]e/m/d",
 
-        map.insert(
-            44,
-            r#"_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"??_);_(@_)"#.to_string(),
-        );
-        map.insert(45, "mm:ss".to_string());
-        map.insert(46, "[h]:mm:ss".to_string());
-        map.insert(47, "mm:ss.0".to_string());
-        map.insert(48, "##0.0E+0".to_string());
-        map.insert(49, "@".to_string());
+    // THA
+    59u32 => "t0",
+    60u32 => "t0.00",
+    61u32 => "t#,##0",
+    62u32 => "t#,##0.00",
+    67u32 => "t0%",
+    68u32 => "t0.00%",
+    69u32 => "t# ?/?",
+    70u32 => "t# ??/??",
 
-        // CHT
-        map.insert(27, "[$-404]e/m/d".to_string());
-        map.insert(30, "m/d/yy".to_string());
-        map.insert(36, "[$-404]e/m/d".to_string());
-        map.insert(50, "[$-404]e/m/d".to_string());
-        map.insert(57, "[$-404]e/m/d".to_string());
-
-        // THA
-        map.insert(59, "t0".to_string());
-        map.insert(60, "t0.00".to_string());
-        map.insert(61, "t#,##0".to_string());
-        map.insert(62, "t#,##0.00".to_string());
-        map.insert(67, "t0%".to_string());
-        map.insert(68, "t0.00%".to_string());
-        map.insert(69, "t# ?/?".to_string());
-        map.insert(70, "t# ??/??".to_string());
-
-        // JPN
-        map.insert(28, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
-        map.insert(29, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
-        map.insert(31, r#"yyyy"年"m"月"d"日""#.to_string());
-        map.insert(32, r#"h"時"mm"分""#.to_string());
-        map.insert(33, r#"h"時"mm"分"ss"秒""#.to_string());
-        map.insert(34, r#"yyyy"年"m"月""#.to_string());
-        map.insert(35, r#"m"月"d"日""#.to_string());
-        map.insert(51, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
-        map.insert(52, r#"yyyy"年"m"月""#.to_string());
-        map.insert(53, r#"m"月"d"日""#.to_string());
-        map.insert(54, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
-        map.insert(55, r#"yyyy"年"m"月""#.to_string());
-        map.insert(56, r#"m"月"d"日""#.to_string());
-        map.insert(58, r#"[$-411]ggge"年"m"月"d"日""#.to_string());
-
-        map
-    })
-}
+    // JPN
+    28u32 => r#"[$-411]ggge"年"m"月"d"日""#,
+    29u32 => r#"[$-411]ggge"年"m"月"d"日""#,
+    31u32 => r#"yyyy"年"m"月"d"日""#,
+    32u32 => r#"h"時"mm"分""#,
+    33u32 => r#"h"時"mm"分"ss"秒""#,
+    34u32 => r#"yyyy"年"m"月""#,
+    35u32 => r#"m"月"d"日""#,
+    51u32 => r#"[$-411]ggge"年"m"月"d"日""#,
+    52u32 => r#"yyyy"年"m"月""#,
+    53u32 => r#"m"月"d"日""#,
+    54u32 => r#"[$-411]ggge"年"m"月"d"日""#,
+    55u32 => r#"yyyy"年"m"月""#,
+    56u32 => r#"m"月"d"日""#,
+    58u32 => r#"[$-411]ggge"年"m"月"d"日""#,
+};
 
 #[cfg(test)]
 mod tests {
