@@ -1,56 +1,95 @@
+//! # umya-spreadsheet
+//!
+//! A pure `rust` library for reading and writing Microsoft Excel (xlsx) files.
+//!
 //! ## Example
+//!
 //! ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample1.png)
+//!
 //! ### Reader or New File
+//!
 //! ```rust
 //! use umya_spreadsheet::*;
 //!
-//! // reader
+//! // Reader
 //! let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 //! let mut book = reader::xlsx::read(path).unwrap();
-//! // or
-//! // lazy reader
-//! //  Delays the loading of the worksheet until it is needed.//! //  When loading a file with a large amount of data, response improvement can be expected.
+//!
+//! // Lazy Reader
+//! // Delays loading of worksheets until they are needed.
+//! // Can improve performance when loading large files.
 //! let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 //! let mut book = reader::xlsx::lazy_read(path).unwrap();
-//! // or
-//! // new file
+//!
+//! // New file
 //! let mut book = new_file();
 //! ```
-//! ### New worksheet
+//!
+//! ### New Worksheet
+//!
 //! ```rust
 //! use umya_spreadsheet::*;
+//!
 //! let mut book = new_file();
 //!
-//! // new worksheet
+//! // New worksheet
 //! let _unused = book.new_sheet("Sheet2");
 //! ```
-//! ### Copy worksheet
+//!
+//! ### Copy Worksheet
+//!
 //! ```rust
 //! use umya_spreadsheet::*;
+//!
 //! let mut book = new_file();
 //!
 //! let mut clone_sheet = book.get_sheet(0).unwrap().clone();
 //! clone_sheet.set_name("New Sheet");
 //! let _unused = book.add_sheet(clone_sheet);
 //! ```
-//! ### Change value
-//! ```rust
-//! use umya_spreadsheet::*;
-//! let mut book = new_file();
-//! let _unused =  book.new_sheet("Sheet2");
 //!
-//! // change value
-//! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("TEST1");
-//! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("B2").set_value_from_i32(1);
-//! book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("C3").set_value_from_bool(true);
-//! // or
-//! book.get_sheet_mut(1).unwrap().get_cell_mut((1, 1)).set_value("TEST1");
-//! book.get_sheet_mut(1).unwrap().get_cell_mut((2, 2)).set_value_from_i32(1));
-//! book.get_sheet_mut(1).unwrap().get_cell_mut((3, 3)).set_value_from_bool(true));
-//! ```
-//! ### Read value
+//! ### Change Value
+//!
 //! ```rust
 //! use umya_spreadsheet::*;
+//!
+//! let mut book = new_file();
+//! let _unused = book.new_sheet("Sheet2");
+//!
+//! // Change value using string cell address
+//! book.get_sheet_by_name_mut("Sheet2")
+//!     .unwrap()
+//!     .get_cell_mut("A1")
+//!     .set_value("TEST1");
+//! book.get_sheet_by_name_mut("Sheet2")
+//!     .unwrap()
+//!     .get_cell_mut("B2")
+//!     .set_value_from_i32(1);
+//! book.get_sheet_by_name_mut("Sheet2")
+//!     .unwrap()
+//!     .get_cell_mut("C3")
+//!     .set_value_from_bool(true);
+//!
+//! // Change value using tuple cell address
+//! book.get_sheet_mut(1)
+//!     .unwrap()
+//!     .get_cell_mut((1, 1))
+//!     .set_value("TEST1");
+//! book.get_sheet_mut(1)
+//!     .unwrap()
+//!     .get_cell_mut((2, 2))
+//!     .set_value_from_i32(1);
+//! book.get_sheet_mut(1)
+//!     .unwrap()
+//!     .get_cell_mut((3, 3))
+//!     .set_value_from_bool(true);
+//! ```
+//!
+//! ### Read Value
+//!
+//! ```rust
+//! use umya_spreadsheet::*;
+//!
 //! let mut book = new_file();
 //! let _unused = book.new_sheet("Sheet2");
 //! book.get_sheet_by_name_mut("Sheet2")
@@ -58,29 +97,37 @@
 //!     .get_cell_mut("A1")
 //!     .set_value("TEST1");
 //!
-//! // read value
+//! // Read value by string cell address
 //! let a1_value = book.get_sheet_by_name("Sheet2").unwrap().get_value("A1");
-//! // or
+//!
+//! // Read value by tuple cell address
 //! let a1_value = book.get_sheet(1).unwrap().get_value((1, 1));
-//! // or formatted value
+//!
+//! // Read formatted value by string cell address
 //! let a1_value = book.get_sheet(1).unwrap().get_formatted_value("A1");
-//! assert_eq!("TEST1", a1_value); // TEST1
+//!
+//! assert_eq!("TEST1", a1_value);
 //! ```
-//! ### Change style
-//! more example is [**here**](Style).
+//!
+//! ### Change Style
+//!
+//! More examples can be found in the [Style](crate::structs::style) module.
+//!
 //! ```rust
 //! use umya_spreadsheet::*;
+//!
 //! let mut book = new_file();
 //! let _unused = book.new_sheet("Sheet2");
 //!
-//! // add bottom border
+//! // Add a bottom border using string cell address
 //! book.get_sheet_by_name_mut("Sheet2")
 //!     .unwrap()
 //!     .get_style_mut("A1")
 //!     .get_borders_mut()
 //!     .get_bottom_mut()
 //!     .set_border_style(Border::BORDER_MEDIUM);
-//! // or
+//!
+//! // Add a bottom border using tuple cell address
 //! book.get_sheet_mut(1)
 //!     .unwrap()
 //!     .get_style_mut((1, 1))
@@ -88,35 +135,44 @@
 //!     .get_bottom_mut()
 //!     .set_border_style(Border::BORDER_MEDIUM);
 //! ```
-//! ### Insert or Remove Rows(or Columns)
+//!
+//! ### Insert or Remove Rows/Columns
+//!
 //! ![Result Image](https://github.com/MathNya/umya-spreadsheet/raw/master/images/sample2.png)
+//!
 //! ```rust
 //! use umya_spreadsheet::*;
+//!
 //! let mut book = new_file();
 //!
-//! // insert rows
+//! // Insert rows
 //! book.insert_new_row("Sheet1", &2, &3);
 //!
-//! // insert columns
+//! // Insert columns by column name
 //! book.insert_new_column("Sheet1", "B", &3);
-//! // or
+//!
+//! // Insert columns by index
 //! book.insert_new_column_by_index("Sheet1", &2, &3);
 //!
-//! // remove rows
+//! // Remove rows
 //! book.remove_row("Sheet1", &6, &2);
 //!
-//! // remove columns
+//! // Remove columns by column name
 //! book.remove_column("Sheet1", "F", &2);
-//! // or
+//!
+//! // Remove columns by index
 //! book.remove_column_by_index("Sheet1", &6, &2);
 //! ```
+//!
 //! ### Writer
+//!
 //! ```rust
 //! use umya_spreadsheet::*;
+//!
 //! let mut book = new_file();
 //! let _unused = book.new_sheet("Sheet2");
 //!
-//! // writer
+//! // Write to a file
 //! let path = std::path::Path::new("C:/spread_test_data/ccc.xlsx");
 //! let _unused = writer::xlsx::write(&book, path);
 //! ```
