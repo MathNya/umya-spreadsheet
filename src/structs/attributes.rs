@@ -113,3 +113,22 @@ impl<'a> From<(&'a str, &Box<str>)> for AttrPair<'a> {
         )
     }
 }
+
+impl<'a> From<AttrPair<'a>> for (&'a str, std::borrow::Cow<'a, str>) {
+    /// Converts an `AttrPair` into a tuple of a string slice and a `Cow` of a
+    /// string slice.
+    ///
+    /// This method takes an `AttrPair` and returns a tuple of a string slice
+    /// and a `Cow` of a string slice. The attribute name becomes the string
+    /// slice, and the attribute value becomes the `Cow` of a string slice.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let attr_pair = AttrPair::from(("name", "value"));
+    /// let tuple = <(&str, Cow<str>)>::from(attr_pair);
+    /// ```
+    fn from(attr_pair: AttrPair<'a>) -> Self {
+        (attr_pair.0, attr_pair.1)
+    }
+}
