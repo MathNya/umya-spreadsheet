@@ -93,7 +93,8 @@ impl CacheSource {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheSource
         let empty_flg = self.worksheet_source.is_none();
-        let attributes = vec![("type", self.r#type.get_hash_string())];
+        let attributes: crate::structs::AttrCollection =
+            vec![("type", self.r#type.get_hash_string()).into()];
 
         write_start_tag(writer, "cacheSource", attributes, empty_flg);
 

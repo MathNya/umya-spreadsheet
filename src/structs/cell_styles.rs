@@ -70,7 +70,7 @@ impl CellStyles {
             write_start_tag(
                 writer,
                 "cellStyles",
-                vec![("count", &self.cell_style.len().to_string())],
+                vec![("count", &self.cell_style.len().to_string()).into()],
                 false,
             );
 

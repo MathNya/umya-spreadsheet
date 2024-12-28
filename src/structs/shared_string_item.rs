@@ -152,7 +152,7 @@ impl SharedStringItem {
             v.write_to_none(writer);
         }
 
-        write_start_tag(writer, "phoneticPr", vec![("fontId", "1")], true);
+        write_start_tag(writer, "phoneticPr", vec![("fontId", "1").into()], true);
 
         write_end_tag(writer, "si");
     }

@@ -267,7 +267,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", (self.val.get_value_string()))],
+                vec![("val", self.val.get_value_string()).into()],
                 false,
             );
 
@@ -316,7 +316,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", (self.val.get_value_string()))],
+                vec![("val", self.val.get_value_string()).into()],
                 true,
             );
         }

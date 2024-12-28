@@ -280,40 +280,43 @@ impl CellFormat {
         let empty_flag = self.alignment.is_none() && self.protection.is_none();
 
         // xf
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let number_format_id = self.number_format_id.get_value_string();
-        attributes.push(("numFmtId", &number_format_id));
+        attributes.push(("numFmtId", &number_format_id).into());
         let font_id = self.font_id.get_value_string();
-        attributes.push(("fontId", &font_id));
+        attributes.push(("fontId", &font_id).into());
         let fill_id = self.fill_id.get_value_string();
-        attributes.push(("fillId", &fill_id));
+        attributes.push(("fillId", &fill_id).into());
         let border_id = self.border_id.get_value_string();
-        attributes.push(("borderId", &border_id));
+        attributes.push(("borderId", &border_id).into());
 
         let format_id = self.format_id.get_value_string();
         if is_cell_xfs {
-            attributes.push(("xfId", &format_id));
+            attributes.push(("xfId", &format_id).into());
         }
         if self.apply_font.has_value() {
-            attributes.push(("applyFont", self.apply_font.get_value_string()));
+            attributes.push(("applyFont", self.apply_font.get_value_string()).into());
         }
         if self.apply_number_format.has_value() {
-            attributes.push((
-                "applyNumberFormat",
-                self.apply_number_format.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyNumberFormat",
+                    self.apply_number_format.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.apply_fill.has_value() {
-            attributes.push(("applyFill", self.apply_fill.get_value_string()));
+            attributes.push(("applyFill", self.apply_fill.get_value_string()).into());
         }
         if self.apply_border.has_value() {
-            attributes.push(("applyBorder", self.apply_border.get_value_string()));
+            attributes.push(("applyBorder", self.apply_border.get_value_string()).into());
         }
         if self.apply_alignment.has_value() {
-            attributes.push(("applyAlignment", self.apply_alignment.get_value_string()));
+            attributes.push(("applyAlignment", self.apply_alignment.get_value_string()).into());
         }
         if self.apply_protection.has_value() {
-            attributes.push(("applyProtection", self.apply_protection.get_value_string()));
+            attributes.push(("applyProtection", self.apply_protection.get_value_string()).into());
         }
         write_start_tag(writer, "xf", attributes, empty_flag);
 

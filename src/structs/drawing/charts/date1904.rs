@@ -41,7 +41,7 @@ impl Date1904 {
         write_start_tag(
             writer,
             "c:date1904",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

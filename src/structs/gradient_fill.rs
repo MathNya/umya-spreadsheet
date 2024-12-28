@@ -107,7 +107,7 @@ impl GradientFill {
         write_start_tag(
             writer,
             "gradientFill",
-            vec![("degree", &self.degree.get_value_string())],
+            vec![("degree", &self.degree.get_value_string()).into()],
             false,
         );
 

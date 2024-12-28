@@ -21,7 +21,7 @@ use quick_xml::{
 pub(crate) fn write_start_tag<'a, S>(
     writer: &mut Writer<Cursor<Vec<u8>>>,
     tag_name: S,
-    attributes: Vec<(&str, &str)>,
+    attributes: crate::structs::AttrCollection,
     empty_flag: bool,
 ) where
     S: Into<Cow<'a, str>>,
@@ -29,6 +29,11 @@ pub(crate) fn write_start_tag<'a, S>(
     let tag_name = tag_name.into();
     let len = tag_name.len();
     let mut elem = BytesStart::from_content(tag_name, len);
+    // Convert each AttrPair to a tuple that quick_xml can handle
+    let attributes = attributes
+        .into_iter()
+        .map(|attr| (attr.0, attr.1))
+        .collect::<Vec<_>>();
     elem.extend_attributes(attributes);
 
     if empty_flag {

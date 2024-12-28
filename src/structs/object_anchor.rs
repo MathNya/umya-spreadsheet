@@ -135,9 +135,9 @@ impl ObjectAnchor {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // anchor
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.move_with_cells.has_value() {
-            attributes.push(("moveWithCells", self.move_with_cells.get_value_string()));
+            attributes.push(("moveWithCells", self.move_with_cells.get_value_string()).into());
         }
         write_start_tag(writer, "anchor", attributes, false);
 

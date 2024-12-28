@@ -281,46 +281,46 @@ impl CellFormula {
         formula_shared_list: &HashMap<u32, (String, Option<String>)>,
     ) {
         // f
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let bx_str = self.bx.get_value_string();
         if self.bx.has_value() {
-            attributes.push(("bx", bx_str));
+            attributes.push(("bx", bx_str).into());
         }
 
         let data_table_2d_str = self.data_table_2d.get_value_string();
         if self.data_table_2d.has_value() {
-            attributes.push(("dt2D", data_table_2d_str));
+            attributes.push(("dt2D", data_table_2d_str).into());
         }
 
         let data_table_row_str = self.data_table_row.get_value_string();
         if self.data_table_row.has_value() {
-            attributes.push(("dtr", data_table_row_str));
+            attributes.push(("dtr", data_table_row_str).into());
         }
 
         let formula_type_str = self.formula_type.get_value_string();
         if self.formula_type.has_value() {
             // Not SUPPORT Array
             if self.formula_type.get_value() != &CellFormulaValues::Array {
-                attributes.push(("t", formula_type_str));
+                attributes.push(("t", formula_type_str).into());
             }
         }
 
         let input_1deleted_str = self.input_1deleted.get_value_string();
         if self.input_1deleted.has_value() {
-            attributes.push(("del1", input_1deleted_str));
+            attributes.push(("del1", input_1deleted_str).into());
         }
 
         let input_2deleted_str = self.input_2deleted.get_value_string();
         if self.input_2deleted.has_value() {
-            attributes.push(("del2", input_2deleted_str));
+            attributes.push(("del2", input_2deleted_str).into());
         }
 
         if self.r1.has_value() {
-            attributes.push(("r1", self.r1.get_value_str()));
+            attributes.push(("r1", self.r1.get_value_str()).into());
         }
 
         if self.r2.has_value() {
-            attributes.push(("r2", self.r2.get_value_str()));
+            attributes.push(("r2", self.r2.get_value_str()).into());
         }
 
         #[allow(unused_assignments)]
@@ -334,13 +334,13 @@ impl CellFormula {
                     }
                     None => start_col.to_string(),
                 };
-                attributes.push(("ref", &reference_str));
+                attributes.push(("ref", &reference_str).into());
             }
         }
 
         let shared_index_str = self.shared_index.get_value_string();
         if self.shared_index.has_value() {
-            attributes.push(("si", &shared_index_str));
+            attributes.push(("si", &shared_index_str).into());
         }
 
         write_start_tag(writer, "f", attributes, false);

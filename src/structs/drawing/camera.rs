@@ -99,7 +99,7 @@ impl Camera {
         write_start_tag(
             writer,
             "a:camera",
-            vec![("prst", self.preset.get_value_string())],
+            vec![("prst", self.preset.get_value_string()).into()],
             !with_inner,
         );
 

@@ -85,18 +85,18 @@ impl DataValidations {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // ext
         let attributes = vec![
-            ("uri", "{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}"),
-            ("xmlns:x14", SHEET_MS_MAIN_NS),
+            ("uri", "{CCE6A557-97BC-4b89-ADB6-D9C93CAAB3DF}").into(),
+            ("xmlns:x14", SHEET_MS_MAIN_NS).into(),
         ];
 
         write_start_tag(writer, "ext", attributes, false);
 
         // dataValidations
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         let count = self.data_validation_list.len().to_string();
-        attributes.push(("count", &count));
-        attributes.push(("xmlns:xm", EXCEL_MAIN_NS));
+        attributes.push(("count", &count).into());
+        attributes.push(("xmlns:xm", EXCEL_MAIN_NS).into());
 
         write_start_tag(writer, "x14:dataValidations", attributes, false);
 

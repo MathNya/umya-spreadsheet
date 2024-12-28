@@ -183,9 +183,9 @@ impl Border {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         // left,right,top,bottom,diagonal,vertical,horizontal
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection<'_> = Vec::new();
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_string()));
+            attributes.push(("style", self.style.get_value_string()).into());
         }
 
         let empty_flag = !self.color.has_value();

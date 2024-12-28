@@ -41,7 +41,7 @@ impl Overlap {
         write_start_tag(
             writer,
             "c:overlap",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", &self.val.get_value_string()).into()],
             true,
         );
     }

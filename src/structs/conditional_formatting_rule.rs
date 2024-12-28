@@ -370,68 +370,68 @@ impl ConditionalFormattingRule {
             || self.formula.is_some();
 
         // cfRule
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         let r#type = self.r#type.get_value_string();
         if self.r#type.has_value() {
-            attributes.push(("type", r#type));
+            attributes.push(("type", r#type).into());
         }
 
         let operator = self.operator.get_value_string();
         if self.operator.has_value() {
-            attributes.push(("operator", operator));
+            attributes.push(("operator", operator).into());
         }
 
         let dxf_id_str: String;
         if let Some(v) = &self.style {
             let dxf_id = differential_formats.set_style(v);
             dxf_id_str = dxf_id.to_string();
-            attributes.push(("dxfId", &dxf_id_str));
+            attributes.push(("dxfId", &dxf_id_str).into());
         }
 
         let priority = self.priority.get_value_string();
         if self.priority.has_value() {
-            attributes.push(("priority", &priority));
+            attributes.push(("priority", &priority).into());
         }
 
         let percent = self.percent.get_value_string();
         if self.percent.has_value() {
-            attributes.push(("percent", percent));
+            attributes.push(("percent", percent).into());
         }
 
         let bottom = self.bottom.get_value_string();
         if self.bottom.has_value() {
-            attributes.push(("bottom", bottom));
+            attributes.push(("bottom", bottom).into());
         }
 
         let rank = self.rank.get_value_string();
         if self.rank.has_value() {
-            attributes.push(("rank", &rank));
+            attributes.push(("rank", &rank).into());
         }
 
         let stop_if_true = self.stop_if_true.get_value_string();
         if self.stop_if_true.has_value() {
-            attributes.push(("stopIfTrue", stop_if_true));
+            attributes.push(("stopIfTrue", stop_if_true).into());
         }
 
         let std_dev = self.std_dev.get_value_string();
         if self.std_dev.has_value() {
-            attributes.push(("stdDev", &std_dev));
+            attributes.push(("stdDev", &std_dev).into());
         }
 
         let time_period = self.time_period.get_value_string();
         if self.time_period.has_value() {
-            attributes.push(("timePeriod", time_period));
+            attributes.push(("timePeriod", time_period).into());
         }
 
         let above_average = self.above_average.get_value_string();
         if self.above_average.has_value() {
-            attributes.push(("aboveAverage", above_average));
+            attributes.push(("aboveAverage", above_average).into());
         }
 
         let equal_average = self.equal_average.get_value_string();
         if self.equal_average.has_value() {
-            attributes.push(("equalAverage", equal_average));
+            attributes.push(("equalAverage", equal_average).into());
         }
 
         write_start_tag(writer, "cfRule", attributes, !is_inner);

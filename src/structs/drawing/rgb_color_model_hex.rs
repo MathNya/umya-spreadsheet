@@ -266,7 +266,7 @@ impl RgbColorModelHex {
             write_start_tag(
                 writer,
                 "a:srgbClr",
-                vec![("val", (self.val.get_value_str()))],
+                vec![("val", self.val.get_value_str()).into()],
                 false,
             );
 
@@ -315,7 +315,7 @@ impl RgbColorModelHex {
             write_start_tag(
                 writer,
                 "a:srgbClr",
-                vec![("val", (self.val.get_value_str()))],
+                vec![("val", self.val.get_value_str()).into()],
                 true,
             );
         }

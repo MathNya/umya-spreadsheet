@@ -94,7 +94,7 @@ impl Selection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         let mut active_cell_id = 0;
         if let Some(active_cell) = &self.active_cell {
@@ -108,7 +108,7 @@ impl Selection {
         }
 
         if self.pane.has_value() {
-            attributes.push(("pane", self.pane.get_value_string()));
+            attributes.push(("pane", self.pane.get_value_string()).into());
         }
 
         let active_cell_str = match &self.active_cell {
@@ -116,17 +116,17 @@ impl Selection {
             None => String::new(),
         };
         if !active_cell_str.is_empty() {
-            attributes.push(("activeCell", active_cell_str.as_str()));
+            attributes.push(("activeCell", active_cell_str.as_str()).into());
         }
 
         let active_cell_id_str = active_cell_id.to_string();
         if active_cell_id > 0 {
-            attributes.push(("activeCellId", active_cell_id_str.as_str()));
+            attributes.push(("activeCellId", active_cell_id_str.as_str()).into());
         }
 
         let sqref = self.sequence_of_references.get_sqref();
         if !sqref.is_empty() {
-            attributes.push(("sqref", sqref.as_str()));
+            attributes.push(("sqref", sqref.as_str()).into());
         }
 
         write_start_tag(writer, "selection", attributes, true);

@@ -79,17 +79,17 @@ impl BevelTop {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:bevelT
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let width = self.width.get_value_string();
         if self.width.has_value() {
-            attributes.push(("w", &width));
+            attributes.push(("w", &width).into());
         }
         let height = self.height.get_value_string();
         if self.height.has_value() {
-            attributes.push(("h", &height));
+            attributes.push(("h", &height).into());
         }
         if self.preset.has_value() {
-            attributes.push(("prst", self.preset.get_value_string()));
+            attributes.push(("prst", self.preset.get_value_string()).into());
         }
 
         write_start_tag(writer, "a:bevelT", attributes, true);

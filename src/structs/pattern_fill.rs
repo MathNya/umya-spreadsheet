@@ -181,9 +181,9 @@ impl PatternFill {
         let empty_flag = self.foreground_color.is_none() && self.background_color.is_none();
 
         // patternFill
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.pattern_type.has_value() {
-            attributes.push(("patternType", self.pattern_type.get_value_string()));
+            attributes.push(("patternType", self.pattern_type.get_value_string()).into());
         }
         write_start_tag(writer, "patternFill", attributes, empty_flag);
 

@@ -378,12 +378,12 @@ impl Borders {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // border
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.diagonal_up.has_value() {
-            attributes.push(("diagonalUp", self.diagonal_up.get_value_string()));
+            attributes.push(("diagonalUp", self.diagonal_up.get_value_string()).into());
         }
         if self.diagonal_down.has_value() {
-            attributes.push(("diagonalDown", self.diagonal_down.get_value_string()));
+            attributes.push(("diagonalDown", self.diagonal_down.get_value_string()).into());
         }
         write_start_tag(writer, "border", attributes, false);
 

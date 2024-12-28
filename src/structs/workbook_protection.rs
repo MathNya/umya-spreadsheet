@@ -243,65 +243,83 @@ impl WorkbookProtection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // workbookProtection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.workbook_algorithm_name.has_value() {
-            attributes.push((
-                "workbookAlgorithmName",
-                self.workbook_algorithm_name.get_value_str(),
-            ));
+            attributes.push(
+                (
+                    "workbookAlgorithmName",
+                    self.workbook_algorithm_name.get_value_str(),
+                )
+                    .into(),
+            );
         }
         if self.workbook_hash_value.has_value() {
-            attributes.push((
-                "workbookHashValue",
-                self.workbook_hash_value.get_value_str(),
-            ));
+            attributes.push(
+                (
+                    "workbookHashValue",
+                    self.workbook_hash_value.get_value_str(),
+                )
+                    .into(),
+            );
         }
         if self.workbook_salt_value.has_value() {
-            attributes.push((
-                "workbookSaltValue",
-                self.workbook_salt_value.get_value_str(),
-            ));
+            attributes.push(
+                (
+                    "workbookSaltValue",
+                    self.workbook_salt_value.get_value_str(),
+                )
+                    .into(),
+            );
         }
         let workbook_spin_count = self.workbook_spin_count.get_value_string();
         if self.workbook_spin_count.has_value() {
-            attributes.push(("workbookSpinCount", &workbook_spin_count));
+            attributes.push(("workbookSpinCount", &workbook_spin_count).into());
         }
         if self.workbook_password.has_value() {
-            attributes.push(("workbookPassword", self.workbook_password.get_value_str()));
+            attributes.push(("workbookPassword", self.workbook_password.get_value_str()).into());
         }
         if self.revisions_algorithm_name.has_value() {
-            attributes.push((
-                "revisionsAlgorithmName",
-                self.revisions_algorithm_name.get_value_str(),
-            ));
+            attributes.push(
+                (
+                    "revisionsAlgorithmName",
+                    self.revisions_algorithm_name.get_value_str(),
+                )
+                    .into(),
+            );
         }
         if self.revisions_hash_value.has_value() {
-            attributes.push((
-                "revisionsHashValue",
-                self.revisions_hash_value.get_value_str(),
-            ));
+            attributes.push(
+                (
+                    "revisionsHashValue",
+                    self.revisions_hash_value.get_value_str(),
+                )
+                    .into(),
+            );
         }
         if self.revisions_salt_value.has_value() {
-            attributes.push((
-                "revisionsSaltValue",
-                self.revisions_salt_value.get_value_str(),
-            ));
+            attributes.push(
+                (
+                    "revisionsSaltValue",
+                    self.revisions_salt_value.get_value_str(),
+                )
+                    .into(),
+            );
         }
         let revisions_spin_count = self.revisions_spin_count.get_value_string();
         if self.revisions_spin_count.has_value() {
-            attributes.push(("revisionsSpinCount", &revisions_spin_count));
+            attributes.push(("revisionsSpinCount", &revisions_spin_count).into());
         }
         if self.revisions_password.has_value() {
-            attributes.push(("revisionsPassword", self.revisions_password.get_value_str()));
+            attributes.push(("revisionsPassword", self.revisions_password.get_value_str()).into());
         }
         if self.lock_revision.has_value() {
-            attributes.push(("lockRevision", self.lock_revision.get_value_string()));
+            attributes.push(("lockRevision", self.lock_revision.get_value_string()).into());
         }
         if self.lock_structure.has_value() {
-            attributes.push(("lockStructure", self.lock_structure.get_value_string()));
+            attributes.push(("lockStructure", self.lock_structure.get_value_string()).into());
         }
         if self.lock_windows.has_value() {
-            attributes.push(("lockWindows", self.lock_windows.get_value_string()));
+            attributes.push(("lockWindows", self.lock_windows.get_value_string()).into());
         }
 
         write_start_tag(writer, "workbookProtection", attributes, true);

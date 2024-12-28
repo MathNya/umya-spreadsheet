@@ -267,40 +267,46 @@ impl DataValidation {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x14:dataValidation
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         if self.r#type.has_value() {
-            attributes.push(("type", self.r#type.get_value_string()));
+            attributes.push(("type", self.r#type.get_value_string()).into());
         }
 
         if self.allow_blank.has_value() {
-            attributes.push(("allowBlank", self.allow_blank.get_value_string()));
+            attributes.push(("allowBlank", self.allow_blank.get_value_string()).into());
         }
 
         if self.show_input_message.has_value() {
-            attributes.push((
-                "showInputMessage",
-                self.show_input_message.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "showInputMessage",
+                    self.show_input_message.get_value_string(),
+                )
+                    .into(),
+            );
         }
 
         if self.operator.has_value() {
-            attributes.push(("operator", self.operator.get_value_string()));
+            attributes.push(("operator", self.operator.get_value_string()).into());
         }
 
         if self.show_error_message.has_value() {
-            attributes.push((
-                "showErrorMessage",
-                self.show_error_message.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "showErrorMessage",
+                    self.show_error_message.get_value_string(),
+                )
+                    .into(),
+            );
         }
 
         if self.prompt_title.has_value() {
-            attributes.push(("promptTitle", self.prompt_title.get_value_str()));
+            attributes.push(("promptTitle", self.prompt_title.get_value_str()).into());
         }
 
         if self.prompt.has_value() {
-            attributes.push(("prompt", self.prompt.get_value_str()));
+            attributes.push(("prompt", self.prompt.get_value_str()).into());
         }
 
         write_start_tag(writer, "x14:dataValidation", attributes, false);

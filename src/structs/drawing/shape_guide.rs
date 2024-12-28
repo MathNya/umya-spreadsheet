@@ -37,7 +37,7 @@ impl ShapeGuide {
         write_start_tag(
             writer,
             "a:gd",
-            vec![("name", &self.name), ("fmla", &self.fmla)],
+            vec![("name", &self.name).into(), ("fmla", &self.fmla).into()],
             true,
         );
     }

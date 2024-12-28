@@ -161,9 +161,9 @@ impl FormatScheme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:fmtScheme
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.get_value_str()).into());
         }
         write_start_tag(writer, "a:fmtScheme", attributes, false);
 

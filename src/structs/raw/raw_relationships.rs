@@ -137,7 +137,12 @@ impl RawRelationships {
         write_new_line(&mut writer);
 
         // relationships
-        write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
+        write_start_tag(
+            &mut writer,
+            "Relationships",
+            vec![("xmlns", REL_NS).into()],
+            false,
+        );
 
         for relationship in self.get_relationship_list() {
             relationship.write_to(&mut writer);

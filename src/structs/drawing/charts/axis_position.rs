@@ -44,7 +44,7 @@ impl AxisPosition {
         write_start_tag(
             writer,
             "c:axPos",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

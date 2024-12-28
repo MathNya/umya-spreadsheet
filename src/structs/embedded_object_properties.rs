@@ -158,15 +158,15 @@ impl EmbeddedObjectProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: usize) {
         // objectPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.default_size.has_value() {
-            attributes.push(("defaultSize", self.default_size.get_value_string()));
+            attributes.push(("defaultSize", self.default_size.get_value_string()).into());
         }
         if self.auto_pict.has_value() {
-            attributes.push(("autoPict", self.auto_pict.get_value_string()));
+            attributes.push(("autoPict", self.auto_pict.get_value_string()).into());
         }
         let r_id_str = format!("rId{r_id}");
-        attributes.push(("r:id", r_id_str.as_str()));
+        attributes.push(("r:id", r_id_str.as_str()).into());
         write_start_tag(writer, "objectPr", attributes, false);
 
         // anchor

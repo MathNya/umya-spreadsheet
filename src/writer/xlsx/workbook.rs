@@ -47,7 +47,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "workbook",
-        vec![("xmlns", SHEET_MAIN_NS), ("xmlns:r", REL_OFC_NS)],
+        vec![
+            ("xmlns", SHEET_MAIN_NS).into(),
+            ("xmlns:r", REL_OFC_NS).into(),
+        ],
         false,
     );
 
@@ -56,20 +59,20 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         &mut writer,
         "fileVersion",
         vec![
-            ("appName", "xl"),
-            ("lastEdited", "5"),
-            ("lowestEdited", "4"),
-            ("rupBuild", "9302"),
+            ("appName", "xl").into(),
+            ("lastEdited", "5").into(),
+            ("lowestEdited", "4").into(),
+            ("rupBuild", "9302").into(),
         ],
         true,
     );
 
     // workbookPr
-    let mut attributes: Vec<(&str, &str)> = Vec::new();
-    attributes.push(("filterPrivacy", "1"));
-    // attributes.push(("defaultThemeVersion", "124226"));
+    let mut attributes: crate::structs::AttrCollection = Vec::new();
+    attributes.push(("filterPrivacy", "1").into());
+    // attributes.push(("defaultThemeVersion", "124226").into());
     if wb.get_has_macros() {
-        attributes.push(("codeName", wb.get_code_name().unwrap_or("ThisWorkbook")));
+        attributes.push(("codeName", wb.get_code_name().unwrap_or("ThisWorkbook")).into());
     }
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 
@@ -91,14 +94,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     let mut index = 1;
     for worksheet in wb.get_sheet_collection_no_check() {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let id = index.to_string();
         let r_id = format!("rId{index}");
-        attributes.push(("name", worksheet.get_name()));
-        attributes.push(("sheetId", &id));
-        attributes.push(("r:id", &r_id));
+        attributes.push(("name", worksheet.get_name()).into());
+        attributes.push(("sheetId", &id).into());
+        attributes.push(("r:id", &r_id).into());
         if worksheet.has_state() {
-            attributes.push(("state", worksheet.get_state_str()));
+            attributes.push(("state", worksheet.get_state_str()).into());
         }
 
         // sheet
@@ -129,7 +132,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         &mut writer,
         "calcPr",
         vec![
-            ("calcId", "122211"),
+            ("calcId", "122211").into(),
             //("calcId", "999999"),
             //("calcMode", "auto"),
             //("calcCompleted", if recalc_required {"1"} else {"0"}),
@@ -148,7 +151,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             write_start_tag(
                 &mut writer,
                 "pivotCache",
-                vec![("cacheId", &val2), ("r:id", &r_id)],
+                vec![("cacheId", &val2).into(), ("r:id", &r_id).into()],
                 true,
             );
             index += 1;

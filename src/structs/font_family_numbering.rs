@@ -50,7 +50,7 @@ impl FontFamilyNumbering {
             write_start_tag(
                 writer,
                 "family",
-                vec![("val", &self.val.get_value_string())],
+                vec![("val", self.val.get_value_string()).into()],
                 true,
             );
         }

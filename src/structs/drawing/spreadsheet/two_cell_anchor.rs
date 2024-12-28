@@ -291,7 +291,7 @@ impl TwoCellAnchor {
             write_start_tag(
                 writer,
                 "mc:AlternateContent",
-                vec![("xmlns:mc", MC_NS)],
+                vec![("xmlns:mc", MC_NS).into()],
                 false,
             );
 
@@ -299,15 +299,18 @@ impl TwoCellAnchor {
             write_start_tag(
                 writer,
                 "mc:Choice",
-                vec![("xmlns:a14", DRAWING_MAIN_NS), ("Requires", "a14")],
+                vec![
+                    ("xmlns:a14", DRAWING_MAIN_NS).into(),
+                    ("Requires", "a14").into(),
+                ],
                 false,
             );
         }
 
         // xdr:twoCellAnchor
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.edit_as.has_value() {
-            attributes.push(("editAs", self.edit_as.get_value_string()));
+            attributes.push(("editAs", self.edit_as.get_value_string()).into());
         }
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 

@@ -270,7 +270,12 @@ impl PresetGeometry {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:prstGeom
-        write_start_tag(writer, "a:prstGeom", vec![("prst", &self.geometry)], false);
+        write_start_tag(
+            writer,
+            "a:prstGeom",
+            vec![("prst", &self.geometry).into()],
+            false,
+        );
 
         // a:avLst
         self.adjust_value_list.write_to(writer);

@@ -67,11 +67,11 @@ impl Point2DType {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let x_str = self.x.get_value_string();
-        attributes.push(("x", &x_str));
+        attributes.push(("x", &x_str).into());
         let y_str = self.y.get_value_string();
-        attributes.push(("y", &y_str));
+        attributes.push(("y", &y_str).into());
         write_start_tag(writer, tag_name, attributes, true);
     }
 }

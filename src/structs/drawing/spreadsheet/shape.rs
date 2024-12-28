@@ -162,7 +162,7 @@ impl Shape {
         write_start_tag(
             writer,
             "xdr:sp",
-            vec![("macro", ""), ("textlink", "")],
+            vec![("macro", "").into(), ("textlink", "").into()],
             false,
         );
 

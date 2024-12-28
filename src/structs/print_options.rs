@@ -64,18 +64,24 @@ impl PrintOptions {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if self.has_param() {
             // printOptions
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             if self.horizontal_centered.has_value() {
-                attributes.push((
-                    "horizontalCentered",
-                    self.horizontal_centered.get_value_string(),
-                ));
+                attributes.push(
+                    (
+                        "horizontalCentered",
+                        self.horizontal_centered.get_value_string(),
+                    )
+                        .into(),
+                );
             }
             if self.vertical_centered.has_value() {
-                attributes.push((
-                    "verticalCentered",
-                    self.vertical_centered.get_value_string(),
-                ));
+                attributes.push(
+                    (
+                        "verticalCentered",
+                        self.vertical_centered.get_value_string(),
+                    )
+                        .into(),
+                );
             }
             write_start_tag(writer, "printOptions", attributes, true);
         }

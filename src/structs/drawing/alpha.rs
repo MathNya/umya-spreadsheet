@@ -40,6 +40,6 @@ impl Alpha {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:alpha
-        write_start_tag(writer, "a:alpha", vec![("val", &self.val)], true);
+        write_start_tag(writer, "a:alpha", vec![("val", &self.val).into()], true);
     }
 }

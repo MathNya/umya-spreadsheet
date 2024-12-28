@@ -44,7 +44,7 @@ impl LeftMode {
         write_start_tag(
             writer,
             "c:xMode",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

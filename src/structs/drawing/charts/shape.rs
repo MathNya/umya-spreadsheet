@@ -44,7 +44,7 @@ impl Shape {
         write_start_tag(
             writer,
             "c:shape",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

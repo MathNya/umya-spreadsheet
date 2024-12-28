@@ -103,11 +103,12 @@ impl CacheField {
             writer,
             "pivotField",
             vec![
-                ("name", self.name.get_value_str()),
+                ("name", self.name.get_value_str()).into(),
                 (
                     "numFmtId",
                     self.number_format_id.get_value_string().as_str(),
-                ),
+                )
+                    .into(),
             ],
             false,
         );

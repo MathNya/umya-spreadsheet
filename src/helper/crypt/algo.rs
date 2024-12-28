@@ -270,9 +270,9 @@ pub(crate) fn build_encryption_info(
         &mut writer,
         "encryption",
         vec![
-            ("xmlns", ENCRYPTION_NS),
-            ("xmlns:p", PASSWORD_NS),
-            ("xmlns:c", CERTIFICATE_NS),
+            ("xmlns", ENCRYPTION_NS).into(),
+            ("xmlns:p", PASSWORD_NS).into(),
+            ("xmlns:c", CERTIFICATE_NS).into(),
         ],
         false,
     );
@@ -282,14 +282,14 @@ pub(crate) fn build_encryption_info(
         &mut writer,
         "keyData",
         vec![
-            ("saltSize", &package_salt.len().to_string()),
-            ("blockSize", &constants::PACKAGE_BLOCK_SIZE.to_string()),
-            ("keyBits", &constants::PACKAGE_KEY_BITS.to_string()),
-            ("hashSize", &constants::PACKAGE_HASH_SIZE.to_string()),
-            ("cipherAlgorithm", constants::PACKAGE_CIPHER_ALGORITHM),
-            ("cipherChaining", constants::PACKAGE_CIPHER_CHAINING),
-            ("hashAlgorithm", constants::PACKAGE_HASH_ALGORITHM),
-            ("saltValue", &STANDARD.encode(package_salt)),
+            ("saltSize", &package_salt.len().to_string()).into(),
+            ("blockSize", &constants::PACKAGE_BLOCK_SIZE.to_string()).into(),
+            ("keyBits", &constants::PACKAGE_KEY_BITS.to_string()).into(),
+            ("hashSize", &constants::PACKAGE_HASH_SIZE.to_string()).into(),
+            ("cipherAlgorithm", constants::PACKAGE_CIPHER_ALGORITHM).into(),
+            ("cipherChaining", constants::PACKAGE_CIPHER_CHAINING).into(),
+            ("hashAlgorithm", constants::PACKAGE_HASH_ALGORITHM).into(),
+            ("saltValue", &STANDARD.encode(package_salt)).into(),
         ],
         true,
     );
@@ -302,11 +302,13 @@ pub(crate) fn build_encryption_info(
             (
                 "encryptedHmacKey",
                 &STANDARD.encode(data_integrity_encrypted_hmac_key),
-            ),
+            )
+                .into(),
             (
                 "encryptedHmacValue",
                 &STANDARD.encode(data_integrity_encrypted_hmac_value),
-            ),
+            )
+                .into(),
         ],
         true,
     );
@@ -318,7 +320,7 @@ pub(crate) fn build_encryption_info(
     write_start_tag(
         &mut writer,
         "keyEncryptor",
-        vec![("uri", PASSWORD_NS)],
+        vec![("uri", PASSWORD_NS).into()],
         false,
     );
 
@@ -327,27 +329,30 @@ pub(crate) fn build_encryption_info(
         &mut writer,
         "p:encryptedKey",
         vec![
-            ("spinCount", &constants::KEY_SPIN_COUNT.to_string()),
-            ("saltSize", &key_salt.len().to_string()),
-            ("blockSize", &constants::KEY_BLOCK_SIZE.to_string()),
-            ("keyBits", &constants::KEY_BITLENGTH.to_string()),
-            ("hashSize", &constants::KEY_HASH_SIZE.to_string()),
-            ("cipherAlgorithm", constants::KEY_CIPHER_ALGORITHM),
-            ("cipherChaining", constants::KEY_CIPHER_CHAINING),
-            ("hashAlgorithm", constants::KEY_HASH_ALGORITHM),
-            ("saltValue", &STANDARD.encode(key_salt)),
+            ("spinCount", &constants::KEY_SPIN_COUNT.to_string()).into(),
+            ("saltSize", &key_salt.len().to_string()).into(),
+            ("blockSize", &constants::KEY_BLOCK_SIZE.to_string()).into(),
+            ("keyBits", &constants::KEY_BITLENGTH.to_string()).into(),
+            ("hashSize", &constants::KEY_HASH_SIZE.to_string()).into(),
+            ("cipherAlgorithm", constants::KEY_CIPHER_ALGORITHM).into(),
+            ("cipherChaining", constants::KEY_CIPHER_CHAINING).into(),
+            ("hashAlgorithm", constants::KEY_HASH_ALGORITHM).into(),
+            ("saltValue", &STANDARD.encode(key_salt)).into(),
             (
                 "encryptedVerifierHashInput",
                 &STANDARD.encode(key_encrypted_verifier_hash_input),
-            ),
+            )
+                .into(),
             (
                 "encryptedVerifierHashValue",
                 &STANDARD.encode(key_encrypted_verifier_hash_value),
-            ),
+            )
+                .into(),
             (
                 "encryptedKeyValue",
                 &STANDARD.encode(key_encrypted_key_value),
-            ),
+            )
+                .into(),
         ],
         true,
     );

@@ -80,14 +80,14 @@ impl ConditionalFormatValueObject {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cfvo
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let ctype = self.r#type.get_value_string();
         if self.r#type.has_value() {
-            attributes.push(("type", ctype));
+            attributes.push(("type", ctype).into());
         }
         let val = self.val.get_value_str();
         if self.val.has_value() {
-            attributes.push(("val", val));
+            attributes.push(("val", val).into());
         }
 
         write_start_tag(writer, "cfvo", attributes, true);

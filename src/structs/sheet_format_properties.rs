@@ -168,50 +168,50 @@ impl SheetFormatProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sheetFormatPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let str_base_column_width = self.base_column_width.get_value_string();
         if self.base_column_width.has_value() {
-            attributes.push(("baseColWidth", &str_base_column_width));
+            attributes.push(("baseColWidth", &str_base_column_width).into());
         }
 
         let str_custom_height = self.custom_height.get_value_string();
         if self.custom_height.has_value() {
-            attributes.push(("customHeight", str_custom_height));
+            attributes.push(("customHeight", str_custom_height).into());
         }
 
         let str_default_column_width = self.default_column_width.get_value_string();
         if self.default_column_width.has_value() {
-            attributes.push(("defaultColWidth", &str_default_column_width));
+            attributes.push(("defaultColWidth", &str_default_column_width).into());
         }
 
         let str_default_row_height = self.default_row_height.get_value_string();
         if self.default_row_height.has_value() {
-            attributes.push(("defaultRowHeight", &str_default_row_height));
+            attributes.push(("defaultRowHeight", &str_default_row_height).into());
         }
 
         let str_dy_descent = self.dy_descent.get_value_string();
         if self.dy_descent.has_value() {
-            attributes.push(("x14ac:dyDescent", &str_dy_descent));
+            attributes.push(("x14ac:dyDescent", &str_dy_descent).into());
         }
 
         let str_outline_level_column = self.outline_level_column.get_value_string();
         if self.outline_level_column.has_value() {
-            attributes.push(("outlineLevelCol", &str_outline_level_column));
+            attributes.push(("outlineLevelCol", &str_outline_level_column).into());
         }
 
         let str_outline_level_row = self.outline_level_row.get_value_string();
         if self.outline_level_row.has_value() {
-            attributes.push(("outlineLevelRow", &str_outline_level_row));
+            attributes.push(("outlineLevelRow", &str_outline_level_row).into());
         }
 
         let str_thick_bottom = self.thick_bottom.get_value_string();
         if self.thick_bottom.has_value() {
-            attributes.push(("thickBottom", str_thick_bottom));
+            attributes.push(("thickBottom", str_thick_bottom).into());
         }
 
         let str_thick_top = self.thick_top.get_value_string();
         if self.thick_top.has_value() {
-            attributes.push(("thickTop", str_thick_top));
+            attributes.push(("thickTop", str_thick_top).into());
         }
 
         write_start_tag(writer, "sheetFormatPr", attributes, true);

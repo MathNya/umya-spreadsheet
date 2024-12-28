@@ -65,15 +65,15 @@ impl Stroke {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:stroke
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_str()));
+            attributes.push(("color", self.color.get_value_str()).into());
         }
         if self.color_2.has_value() {
-            attributes.push(("color2", self.color_2.get_value_str()));
+            attributes.push(("color2", self.color_2.get_value_str()).into());
         }
         if self.dash_style.has_value() {
-            attributes.push(("dashstyle", self.dash_style.get_value_str()));
+            attributes.push(("dashstyle", self.dash_style.get_value_str()).into());
         }
         write_start_tag(writer, "v:stroke", attributes, true);
     }

@@ -45,7 +45,7 @@ impl SpacingPercent {
         write_start_tag(
             writer,
             "a:spcPct",
-            vec![("val", &self.val.get_value_string())],
+            vec![("val", &self.val.get_value_string()).into()],
             true,
         );
     }

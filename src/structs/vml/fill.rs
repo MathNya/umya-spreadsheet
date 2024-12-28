@@ -130,28 +130,28 @@ impl Fill {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // v:fill
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_str()));
+            attributes.push(("color", self.color.get_value_str()).into());
         }
         if self.color_2.has_value() {
-            attributes.push(("color2", self.color_2.get_value_str()));
+            attributes.push(("color2", self.color_2.get_value_str()).into());
         }
         if self.on.has_value() {
-            attributes.push(("on", self.on.get_value_string()));
+            attributes.push(("on", self.on.get_value_string()).into());
         }
         if self.focus_size.has_value() {
-            attributes.push(("focussize", self.focus_size.get_value_str()));
+            attributes.push(("focussize", self.focus_size.get_value_str()).into());
         }
         let mut r_id_str = String::new();
         if let Some(image) = &self.image {
             let r_id = image.get_rid(rel_list);
             r_id_str = format!("rId{r_id}");
-            attributes.push(("o:title", image.get_image_title()));
-            attributes.push(("o:relid", r_id_str.as_str()));
-            attributes.push(("recolor", "t"));
-            attributes.push(("rotate", "t"));
-            attributes.push(("type", "frame"));
+            attributes.push(("o:title", image.get_image_title()).into());
+            attributes.push(("o:relid", r_id_str.as_str()).into());
+            attributes.push(("recolor", "t").into());
+            attributes.push(("rotate", "t").into());
+            attributes.push(("type", "frame").into());
         }
         write_start_tag(writer, "v:fill", attributes, true);
     }

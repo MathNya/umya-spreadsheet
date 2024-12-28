@@ -97,10 +97,10 @@ impl DataField {
             writer,
             "dataField",
             vec![
-                ("name", self.name.get_value_str()),
-                ("fld", self.fie_id.get_value_string().as_str()),
-                ("baseField", self.base_fie_id.get_value_string().as_str()),
-                ("baseItem", self.base_item.get_value_string().as_str()),
+                ("name", self.name.get_value_str()).into(),
+                ("fld", self.fie_id.get_value_string().as_str()).into(),
+                ("baseField", self.base_fie_id.get_value_string().as_str()).into(),
+                ("baseItem", self.base_item.get_value_string().as_str()).into(),
             ],
             true,
         );

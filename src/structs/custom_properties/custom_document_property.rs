@@ -153,19 +153,19 @@ impl CustomDocumentProperty {
         let is_inner = self.custom_document_property_value.get_tag().is_some();
 
         // property
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        attributes.push(("fmtid", r"{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"));
+        attributes.push(("fmtid", r"{D5CDD505-2E9C-101B-9397-08002B2CF9AE}").into());
 
         let pid_str = pid.to_string();
-        attributes.push(("pid", &pid_str));
+        attributes.push(("pid", &pid_str).into());
 
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.get_value_str()).into());
         }
 
         if self.link_target.has_value() {
-            attributes.push(("linkTarget", self.link_target.get_value_str()));
+            attributes.push(("linkTarget", self.link_target.get_value_str()).into());
         }
 
         write_start_tag(writer, "property", attributes, !is_inner);

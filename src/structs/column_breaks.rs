@@ -85,8 +85,8 @@ impl ColumnBreaks {
                 writer,
                 "colBreaks",
                 vec![
-                    ("count", count.to_string().as_str()),
-                    ("manualBreakCount", manual_count.to_string().as_str()),
+                    ("count", count.to_string()).into(),
+                    ("manualBreakCount", manual_count.to_string()).into(),
                 ],
                 false,
             );

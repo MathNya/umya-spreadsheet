@@ -50,9 +50,9 @@ impl Strike {
             return;
         }
 
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if !self.val.get_value() {
-            attributes.push(("val", self.val.get_value_string()));
+            attributes.push(("val", self.val.get_value_string()).into());
         }
         write_start_tag(writer, "strike", attributes, true);
     }

@@ -64,14 +64,14 @@ impl SystemColor {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srgbClr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let val = self.val.get_value_string();
         if self.val.has_value() {
-            attributes.push(("val", val));
+            attributes.push(("val", val).into());
         }
         let last_color = self.last_color.get_value_str();
         if self.last_color.has_value() {
-            attributes.push(("lastClr", last_color));
+            attributes.push(("lastClr", last_color).into());
         }
         write_start_tag(writer, "a:sysClr", attributes, true);
     }

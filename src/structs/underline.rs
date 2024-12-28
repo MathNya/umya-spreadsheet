@@ -54,9 +54,9 @@ impl Underline {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // u
         if self.val.has_value() {
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             if self.val.get_value_string() != UnderlineValues::Single.get_value_string() {
-                attributes.push(("val", self.val.get_value_string()));
+                attributes.push(("val", self.val.get_value_string()).into());
             }
             write_start_tag(writer, "u", attributes, true);
         }

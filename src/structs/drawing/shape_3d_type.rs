@@ -115,10 +115,10 @@ impl Shape3DType {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:sp3d
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let preset_material = self.preset_material.get_value_string();
         if self.preset_material.has_value() {
-            attributes.push(("prstMaterial", preset_material));
+            attributes.push(("prstMaterial", preset_material).into());
         }
         write_start_tag(writer, "a:sp3d", attributes, false);
 

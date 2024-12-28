@@ -119,10 +119,10 @@ impl ConditionalFormatting {
         let is_inner = !self.conditional_collection.is_empty();
 
         // conditionalFormatting
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
-        attributes.push(("sqref", sequence_of_references));
+        attributes.push(("sqref", sequence_of_references).into());
 
         write_start_tag(writer, "conditionalFormatting", attributes, !is_inner);
 

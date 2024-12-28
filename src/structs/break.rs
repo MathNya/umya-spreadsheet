@@ -78,23 +78,23 @@ impl Break {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // brk
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let id = self.id.get_value_string();
-        attributes.push(("id", &id));
+        attributes.push(("id", &id).into());
 
         let max = self.max.get_value_string();
         if self.max.has_value() {
-            attributes.push(("max", &max));
+            attributes.push(("max", &max).into());
         }
 
         let min = self.min.get_value_string();
         if self.min.has_value() {
-            attributes.push(("min", &min));
+            attributes.push(("min", &min).into());
         }
 
         let manual_page_break = self.manual_page_break.get_value_string();
         if self.manual_page_break.has_value() {
-            attributes.push(("man", manual_page_break));
+            attributes.push(("man", manual_page_break).into());
         }
         write_start_tag(writer, "brk", attributes, true);
     }

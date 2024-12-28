@@ -100,7 +100,10 @@ impl Properties {
         write_start_tag(
             writer,
             "Properties",
-            vec![("xmlns", CUSTOM_PROPS_NS), ("xmlns:vt", VTYPES_NS)],
+            vec![
+                ("xmlns", CUSTOM_PROPS_NS).into(),
+                ("xmlns:vt", VTYPES_NS).into(),
+            ],
             false,
         );
         let mut pid = 2;

@@ -320,19 +320,19 @@ impl Outline {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:ln
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let width = self.width.get_value_string();
         if self.width.has_value() {
-            attributes.push(("w", &width));
+            attributes.push(("w", &width).into());
         }
         if let Some(v) = self.cap_type.get_value() {
-            attributes.push(("cap", v));
+            attributes.push(("cap", v).into());
         }
         if let Some(v) = self.compound_line_type.get_value() {
-            attributes.push(("cmpd", v));
+            attributes.push(("cmpd", v).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", (self.alignment.get_value_string())));
+            attributes.push(("algn", (self.alignment.get_value_string())).into());
         }
         write_start_tag(writer, "a:ln", attributes, false);
 

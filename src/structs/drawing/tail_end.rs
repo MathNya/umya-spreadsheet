@@ -74,15 +74,15 @@ impl TailEnd {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:tailEnd
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.t_type.has_value() {
-            attributes.push(("type", (self.t_type.get_value_str())));
+            attributes.push(("type", (self.t_type.get_value_str())).into());
         }
         if self.width.has_value() {
-            attributes.push(("w", (self.width.get_value_str())));
+            attributes.push(("w", (self.width.get_value_str())).into());
         }
         if self.length.has_value() {
-            attributes.push(("len", (self.length.get_value_str())));
+            attributes.push(("len", (self.length.get_value_str())).into());
         }
         write_start_tag(writer, "a:tailEnd", attributes, true);
     }

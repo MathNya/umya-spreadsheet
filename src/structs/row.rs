@@ -235,36 +235,36 @@ impl Row {
         let xf_index = stylesheet.set_style(self.get_style());
 
         // row
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let row_num = self.row_num.get_value_string();
-        attributes.push(("r", &row_num));
+        attributes.push(("r", &row_num).into());
         if !empty_flag {
-            attributes.push(("spans", spans));
+            attributes.push(("spans", spans).into());
         }
         let height = self.height.get_value_string();
         if self.height.get_value() != 0f64 {
-            attributes.push(("ht", &height));
+            attributes.push(("ht", &height).into());
         }
         if self.thick_bot.get_value() {
-            attributes.push(("thickBot", self.thick_bot.get_value_string()));
+            attributes.push(("thickBot", self.thick_bot.get_value_string()).into());
         }
         if self.custom_height.get_value() {
-            attributes.push(("customHeight", self.custom_height.get_value_string()));
+            attributes.push(("customHeight", self.custom_height.get_value_string()).into());
         }
         if xf_index > 0 {
-            attributes.push(("customFormat", "1"));
+            attributes.push(("customFormat", "1").into());
         }
         if self.hidden.get_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()));
+            attributes.push(("hidden", self.hidden.get_value_string()).into());
         }
         let descent = self.descent.get_value_string();
         if self.descent.has_value() {
-            attributes.push(("x14ac:dyDescent", &descent));
+            attributes.push(("x14ac:dyDescent", &descent).into());
         }
 
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
-            attributes.push(("s", &xf_index_str));
+            attributes.push(("s", &xf_index_str).into());
         }
 
         write_start_tag(writer, "row", attributes, empty_flag);

@@ -134,7 +134,7 @@ impl GradientStop {
         write_start_tag(
             writer,
             "a:gs",
-            vec![("pos", &self.position.to_string())],
+            vec![("pos", &self.position.to_string()).into()],
             false,
         );
 

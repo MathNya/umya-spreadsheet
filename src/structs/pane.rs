@@ -113,19 +113,19 @@ impl Pane {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pane
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let coordinate = self.top_left_cell.to_string();
         let horizontal_split = self.horizontal_split.get_value_string();
         if self.horizontal_split.has_value() {
-            attributes.push(("xSplit", &horizontal_split));
+            attributes.push(("xSplit", &horizontal_split).into());
         }
         let vertical_split = self.vertical_split.get_value_string();
         if self.vertical_split.has_value() {
-            attributes.push(("ySplit", &vertical_split));
+            attributes.push(("ySplit", &vertical_split).into());
         }
-        attributes.push(("topLeftCell", coordinate.as_str()));
-        attributes.push(("activePane", self.active_pane.get_value_string()));
-        attributes.push(("state", self.state.get_value_string()));
+        attributes.push(("topLeftCell", coordinate.as_str()).into());
+        attributes.push(("activePane", self.active_pane.get_value_string()).into());
+        attributes.push(("state", self.state.get_value_string()).into());
         write_start_tag(writer, "pane", attributes, true);
     }
 }

@@ -402,8 +402,8 @@ impl WorksheetDrawing {
             writer,
             "xdr:wsDr",
             vec![
-                ("xmlns:xdr", SHEET_DRAWING_NS),
-                ("xmlns:a", DRAWINGML_MAIN_NS),
+                ("xmlns:xdr", SHEET_DRAWING_NS).into(),
+                ("xmlns:a", DRAWINGML_MAIN_NS).into(),
             ],
             false,
         );

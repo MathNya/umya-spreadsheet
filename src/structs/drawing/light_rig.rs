@@ -115,8 +115,8 @@ impl LightRig {
             writer,
             "a:lightRig",
             vec![
-                ("rig", self.rig.get_value_string()),
-                ("dir", self.definition.get_value_string()),
+                ("rig", self.rig.get_value_string()).into(),
+                ("dir", self.definition.get_value_string()).into(),
             ],
             !with_inner,
         );

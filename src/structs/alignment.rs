@@ -103,19 +103,19 @@ impl Alignment {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // alignment
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.horizontal.has_value() {
-            attributes.push(("horizontal", self.horizontal.get_value_string()));
+            attributes.push(("horizontal", self.horizontal.get_value_string()).into());
         }
         if self.vertical.has_value() {
-            attributes.push(("vertical", self.vertical.get_value_string()));
+            attributes.push(("vertical", self.vertical.get_value_string()).into());
         }
         if self.wrap_text.has_value() {
-            attributes.push(("wrapText", self.wrap_text.get_value_string()));
+            attributes.push(("wrapText", self.wrap_text.get_value_string()).into());
         }
         let text_rotation = self.text_rotation.get_value_string();
         if self.text_rotation.has_value() {
-            attributes.push(("textRotation", &text_rotation));
+            attributes.push(("textRotation", text_rotation).into());
         }
         write_start_tag(writer, "alignment", attributes, true);
     }

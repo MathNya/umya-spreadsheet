@@ -41,12 +41,15 @@ impl Path {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:path
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.connection_point_type.has_value() {
-            attributes.push((
-                "o:connecttype",
-                self.connection_point_type.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "o:connecttype",
+                    self.connection_point_type.get_value_string(),
+                )
+                    .into(),
+            );
         }
         write_start_tag(writer, "v:path", attributes, true);
     }

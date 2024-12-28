@@ -217,42 +217,45 @@ impl PivotCacheDefinition {
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
-        let mut attributes = vec![
-            ("xmlns", SHEET_MAIN_NS),
-            ("xmlns:r", REL_OFC_NS),
-            ("xmlns:mc", MC_NS),
-            ("mc:Ignorable", "xr"),
-            ("xmlns:xr", SHEET_MS_REVISION_NS),
+        let mut attributes: crate::structs::AttrCollection = vec![
+            ("xmlns", SHEET_MAIN_NS).into(),
+            ("xmlns:r", REL_OFC_NS).into(),
+            ("xmlns:mc", MC_NS).into(),
+            ("mc:Ignorable", "xr").into(),
+            ("xmlns:xr", SHEET_MS_REVISION_NS).into(),
         ];
 
         if self.id.has_value() {
-            attributes.push(("r:id", self.id.get_value_str()));
+            attributes.push(("r:id", self.id.get_value_str()).into());
         }
         if self.refreshed_by.has_value() {
-            attributes.push(("refreshedBy", self.refreshed_by.get_value_str()));
+            attributes.push(("refreshedBy", self.refreshed_by.get_value_str()).into());
         }
         let refreshed_date_str = self.refreshed_date.get_value_string();
         if self.refreshed_date.has_value() {
-            attributes.push(("refreshedDate", refreshed_date_str.as_str()));
+            attributes.push(("refreshedDate", refreshed_date_str.as_str()).into());
         }
         let created_version_str = self.created_version.get_value_string();
         if self.created_version.has_value() {
-            attributes.push(("createdVersion", created_version_str.as_str()));
+            attributes.push(("createdVersion", created_version_str.as_str()).into());
         }
         let refreshed_version_str = self.refreshed_version.get_value_string();
         if self.refreshed_version.has_value() {
-            attributes.push(("refreshedVersion", refreshed_version_str.as_str()));
+            attributes.push(("refreshedVersion", refreshed_version_str.as_str()).into());
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push((
-                "minRefreshableVersion",
-                min_refreshable_version_str.as_str(),
-            ));
+            attributes.push(
+                (
+                    "minRefreshableVersion",
+                    min_refreshable_version_str.as_str(),
+                )
+                    .into(),
+            );
         }
         let record_count_str = self.record_count.get_value_string();
         if self.record_count.has_value() {
-            attributes.push(("recordCount", record_count_str.as_str()));
+            attributes.push(("recordCount", record_count_str.as_str()).into());
         }
 
         write_start_tag(writer, "pivotTableDefinition", attributes, false);

@@ -99,8 +99,8 @@ impl Fonts {
                 writer,
                 "fonts",
                 vec![
-                    ("count", &self.font.len().to_string()),
-                    ("x14ac:knownFonts", "1"),
+                    ("count", &self.font.len().to_string()).into(),
+                    ("x14ac:knownFonts", "1").into(),
                 ],
                 false,
             );

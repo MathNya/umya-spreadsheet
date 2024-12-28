@@ -41,7 +41,7 @@ impl ShowNegativeBubbles {
         write_start_tag(
             writer,
             "c:showNegBubbles",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

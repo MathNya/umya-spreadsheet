@@ -63,11 +63,11 @@ impl Text {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // t
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.value.starts_with(|c: char| c.is_whitespace())
             || self.value.ends_with(|c: char| c.is_whitespace())
         {
-            attributes.push(("xml:space", "preserve"));
+            attributes.push(("xml:space", "preserve").into());
         }
         write_start_tag(writer, "t", attributes, false);
         write_text_node(writer, &*self.value);

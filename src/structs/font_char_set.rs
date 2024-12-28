@@ -47,9 +47,9 @@ impl FontCharSet {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // charset
         if self.val.has_value() {
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             let val = self.val.get_value_string();
-            attributes.push(("val", &val));
+            attributes.push(("val", &val).into());
             write_start_tag(writer, "charset", attributes, true);
         }
     }

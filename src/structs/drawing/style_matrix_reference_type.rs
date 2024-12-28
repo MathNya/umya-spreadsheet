@@ -94,12 +94,12 @@ impl StyleMatrixReferenceType {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         if let Some(color) = &self.scheme_color {
-            write_start_tag(writer, tag_name, vec![("idx", &self.index)], false);
+            write_start_tag(writer, tag_name, vec![("idx", &self.index).into()], false);
             // a:schemeClr
             color.write_to(writer);
             write_end_tag(writer, tag_name);
         } else {
-            write_start_tag(writer, tag_name, vec![("idx", &self.index)], true);
+            write_start_tag(writer, tag_name, vec![("idx", &self.index).into()], true);
         }
     }
 }

@@ -64,8 +64,8 @@ impl PivotField {
             writer,
             "pivotField",
             vec![
-                ("dataField", self.data_field.get_value_string()),
-                ("showAll", self.show_all.get_value_string()),
+                ("dataField", self.data_field.get_value_string()).into(),
+                ("showAll", self.show_all.get_value_string()).into(),
             ],
             true,
         );

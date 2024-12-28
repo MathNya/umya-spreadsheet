@@ -214,7 +214,7 @@ impl OleObject {
         write_start_tag(
             writer,
             "mc:AlternateContent",
-            vec![("xmlns:mc", MC_NS)],
+            vec![("xmlns:mc", MC_NS).into()],
             false,
         );
 
@@ -222,7 +222,7 @@ impl OleObject {
         write_start_tag(
             writer,
             "mc:Choice",
-            vec![("Requires", self.requires.get_value_str())],
+            vec![("Requires", self.requires.get_value_str()).into()],
             false,
         );
 
@@ -230,9 +230,9 @@ impl OleObject {
         let r_id_str = format!("rId{r_id}");
         let shape_id_str = format!("{ole_id}");
         let attributes = vec![
-            ("progId", self.prog_id.get_value_str()),
-            ("shapeId", shape_id_str.as_str()),
-            ("r:id", r_id_str.as_str()),
+            ("progId", self.prog_id.get_value_str()).into(),
+            ("shapeId", shape_id_str.as_str()).into(),
+            ("r:id", r_id_str.as_str()).into(),
         ];
         write_start_tag(writer, "oleObject", attributes, false);
 
@@ -249,9 +249,9 @@ impl OleObject {
         // oleObject
         let r_id_str = format!("rId{r_id}");
         let attributes = vec![
-            ("progId", self.prog_id.get_value_str()),
-            ("shapeId", shape_id_str.as_str()),
-            ("r:id", r_id_str.as_str()),
+            ("progId", self.prog_id.get_value_str()).into(),
+            ("shapeId", shape_id_str.as_str()).into(),
+            ("r:id", r_id_str.as_str()).into(),
         ];
         write_start_tag(writer, "oleObject", attributes, true);
 

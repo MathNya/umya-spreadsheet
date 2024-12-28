@@ -445,10 +445,10 @@ impl Stylesheet {
             writer,
             "styleSheet",
             vec![
-                ("xmlns", SHEET_MAIN_NS),
-                ("xmlns:mc", MC_NS),
-                ("mc:Ignorable", "x14ac"),
-                ("xmlns:x14ac", SHEETML_AC_NS),
+                ("xmlns", SHEET_MAIN_NS).into(),
+                ("xmlns:mc", MC_NS).into(),
+                ("mc:Ignorable", "x14ac").into(),
+                ("xmlns:x14ac", SHEETML_AC_NS).into(),
             ],
             false,
         );
@@ -485,9 +485,9 @@ impl Stylesheet {
             writer,
             "tableStyles",
             vec![
-                ("count", "0"),
-                ("defaultTableStyle", "TableStyleMedium2"),
-                ("defaultPivotStyle", "PivotStyleMedium9"),
+                ("count", "0").into(),
+                ("defaultTableStyle", "TableStyleMedium2").into(),
+                ("defaultPivotStyle", "PivotStyleMedium9").into(),
             ],
             true,
         );
@@ -500,8 +500,8 @@ impl Stylesheet {
             writer,
             "ext",
             vec![
-                ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}"),
-                ("xmlns:x14", SHEET_MS_MAIN_NS),
+                ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}").into(),
+                ("xmlns:x14", SHEET_MS_MAIN_NS).into(),
             ],
             false,
         );
@@ -510,7 +510,7 @@ impl Stylesheet {
         write_start_tag(
             writer,
             "x14:slicerStyles",
-            vec![("defaultSlicerStyle", "SlicerStyleLight1")],
+            vec![("defaultSlicerStyle", "SlicerStyleLight1").into()],
             true,
         );
 

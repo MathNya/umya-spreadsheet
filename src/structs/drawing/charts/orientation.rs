@@ -44,7 +44,7 @@ impl Orientation {
         write_start_tag(
             writer,
             "c:orientation",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

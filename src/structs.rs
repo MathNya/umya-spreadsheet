@@ -43,6 +43,7 @@ pub_mod_use![
     pub(crate) text,
 
     pub address,
+    pub attributes,
     pub alignment,
     pub anchor,
     pub auto_filter,

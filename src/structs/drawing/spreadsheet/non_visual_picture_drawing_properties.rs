@@ -90,12 +90,15 @@ impl NonVisualPictureDrawingProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:cNvPicPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.prefer_relative_resize.has_value() {
-            attributes.push((
-                "preferRelativeResize",
-                self.prefer_relative_resize.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "preferRelativeResize",
+                    self.prefer_relative_resize.get_value_string(),
+                )
+                    .into(),
+            );
         }
 
         match &self.picture_locks {

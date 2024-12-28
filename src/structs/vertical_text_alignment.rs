@@ -52,7 +52,7 @@ impl VerticalTextAlignment {
             write_start_tag(
                 writer,
                 "vertAlign",
-                vec![("val", self.val.get_value_string())],
+                vec![("val", self.val.get_value_string()).into()],
                 true,
             );
         }

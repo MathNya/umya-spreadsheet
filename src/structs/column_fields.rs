@@ -73,7 +73,7 @@ impl ColumnFields {
         write_start_tag(
             writer,
             "colFields",
-            vec![("count", self.list.len().to_string().as_str())],
+            vec![("count", self.list.len().to_string()).into()],
             false,
         );
 

@@ -84,19 +84,22 @@ impl Location {
             writer,
             "location",
             vec![
-                ("ref", self.reference.get_value_str()),
+                ("ref", self.reference.get_value_str()).into(),
                 (
                     "firstHeaderRow",
                     self.first_header_row.get_value_string().as_str(),
-                ),
+                )
+                    .into(),
                 (
                     "firstDataRow",
                     self.first_data_row.get_value_string().as_str(),
-                ),
+                )
+                    .into(),
                 (
                     "firstDataCol",
                     self.first_data_col.get_value_string().as_str(),
-                ),
+                )
+                    .into(),
             ],
             true,
         );

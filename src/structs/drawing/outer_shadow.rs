@@ -251,27 +251,27 @@ impl OuterShadow {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:outerShdw
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if let Some(v) = self.blur_radius.get_value() {
-            attributes.push(("blurRad", v));
+            attributes.push(("blurRad", v).into());
         }
         if let Some(v) = self.distance.get_value() {
-            attributes.push(("dist", v));
+            attributes.push(("dist", v).into());
         }
         if let Some(v) = self.direction.get_value() {
-            attributes.push(("dir", v));
+            attributes.push(("dir", v).into());
         }
         if let Some(v) = self.horizontal_ratio.get_value() {
-            attributes.push(("sx", v));
+            attributes.push(("sx", v).into());
         }
         if let Some(v) = self.vertical_ratio.get_value() {
-            attributes.push(("sy", v));
+            attributes.push(("sy", v).into());
         }
         if let Some(v) = self.alignment.get_value() {
-            attributes.push(("algn", v));
+            attributes.push(("algn", v).into());
         }
         if let Some(v) = self.rotate_with_shape.get_value() {
-            attributes.push(("rotWithShape", v));
+            attributes.push(("rotWithShape", v).into());
         }
         write_start_tag(writer, "a:outerShdw", attributes, false);
 

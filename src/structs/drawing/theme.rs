@@ -574,10 +574,10 @@ impl Theme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:theme
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("xmlns:a", DRAWINGML_MAIN_NS));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("xmlns:a", DRAWINGML_MAIN_NS).into());
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.get_value_str()).into());
         }
         write_start_tag(writer, "a:theme", attributes, false);
 

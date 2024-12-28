@@ -44,7 +44,7 @@ impl Symbol {
         write_start_tag(
             writer,
             "c:symbol",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

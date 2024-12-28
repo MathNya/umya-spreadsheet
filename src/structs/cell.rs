@@ -512,27 +512,27 @@ impl Cell {
         }
 
         // c
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let coordinate = self.coordinate.to_string();
-        attributes.push(("r", &coordinate));
+        attributes.push(("r", &coordinate).into());
         if self.get_data_type_crate() == "s"
             || self.get_data_type_crate() == "b"
             || self.get_data_type_crate() == "str"
             || self.get_data_type_crate() == "e"
         {
-            attributes.push(("t", self.get_data_type_crate()));
+            attributes.push(("t", self.get_data_type_crate()).into());
         }
         let xf_index_str: String;
         let xf_index = stylesheet.set_style(self.get_style());
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
-            attributes.push(("s", &xf_index_str));
+            attributes.push(("s", &xf_index_str).into());
         }
 
         // NOT SUPPORTED
         // let cell_meta_index_str = self.cell_meta_index.get_value_string();
         // if self.cell_meta_index.has_value() {
-        //     attributes.push(("cm", &cell_meta_index_str));
+        //    attributes.push(("cm", &cell_meta_index_str).into());
         // }
 
         if empty_flag_value {

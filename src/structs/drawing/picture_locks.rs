@@ -49,7 +49,7 @@ impl PictureLocks {
         write_start_tag(
             writer,
             "a:picLocks",
-            vec![("noChangeAspect", no_change_aspect)],
+            vec![("noChangeAspect", no_change_aspect).into()],
             true,
         );
     }

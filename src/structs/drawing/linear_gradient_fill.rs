@@ -62,13 +62,13 @@ impl LinearGradientFill {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lin
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let ang = self.angle.get_value_string();
         if self.angle.has_value() {
-            attributes.push(("ang", &ang));
+            attributes.push(("ang", &ang).into());
         }
         if self.scaled.has_value() {
-            attributes.push(("scaled", self.scaled.get_value_string()));
+            attributes.push(("scaled", self.scaled.get_value_string()).into());
         }
         write_start_tag(writer, "a:lin", attributes, true);
     }

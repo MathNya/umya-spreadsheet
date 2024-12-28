@@ -49,18 +49,13 @@ impl StringCache {
         write_start_tag(
             writer,
             "c:ptCount",
-            vec![("val", coll_value_count.as_str())],
+            vec![("val", coll_value_count.as_str()).into()],
             true,
         );
 
         for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
-            write_start_tag(
-                writer,
-                "c:pt",
-                vec![("idx", idx.to_string().as_str())],
-                false,
-            );
+            write_start_tag(writer, "c:pt", vec![("idx", idx.to_string()).into()], false);
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);

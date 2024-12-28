@@ -88,7 +88,7 @@ impl GraphicData {
         write_start_tag(
             writer,
             "a:graphicData",
-            vec![("uri", DRAWINGML_CHART_NS)],
+            vec![("uri", DRAWINGML_CHART_NS).into()],
             false,
         );
 
@@ -98,9 +98,9 @@ impl GraphicData {
             writer,
             "c:chart",
             vec![
-                ("xmlns:c", DRAWINGML_CHART_NS),
-                ("xmlns:r", REL_OFC_NS),
-                ("r:id", format!("rId{}", rel_list.len()).as_str()),
+                ("xmlns:c", DRAWINGML_CHART_NS).into(),
+                ("xmlns:r", REL_OFC_NS).into(),
+                ("r:id", format!("rId{}", rel_list.len()).as_str()).into(),
             ],
             true,
         );

@@ -146,12 +146,12 @@ impl ParagraphProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:pPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if let Some(v) = self.right_to_left.get_value() {
-            attributes.push(("rtl", v));
+            attributes.push(("rtl", v).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", self.alignment.get_value_string()));
+            attributes.push(("algn", self.alignment.get_value_string()).into());
         }
 
         let empty_flag = self.default_run_properties.is_none() && self.line_spacing.is_none();

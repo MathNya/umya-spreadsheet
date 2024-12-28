@@ -152,9 +152,9 @@ impl BlipFill {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:blipFill
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.rotate_with_shape.has_value() {
-            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()));
+            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()).into());
         }
         write_start_tag(writer, "xdr:blipFill", attributes, false);
 

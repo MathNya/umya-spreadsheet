@@ -70,12 +70,12 @@ impl Protection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // protection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.locked.has_value() {
-            attributes.push(("locked", self.locked.get_value_string()));
+            attributes.push(("locked", self.locked.get_value_string()).into());
         }
         if self.hidden.has_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()));
+            attributes.push(("hidden", self.hidden.get_value_string()).into());
         }
         write_start_tag(writer, "protection", attributes, true);
     }

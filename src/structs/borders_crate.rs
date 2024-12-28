@@ -98,7 +98,7 @@ impl BordersCrate {
             write_start_tag(
                 writer,
                 "borders",
-                vec![("count", &self.borders.len().to_string())],
+                vec![("count", &self.borders.len().to_string()).into()],
                 false,
             );
 

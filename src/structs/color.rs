@@ -308,19 +308,19 @@ impl Color {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let theme_index = self.theme_index.get_value_string();
         let indexed = self.indexed.get_value_string();
         if self.theme_index.has_value() {
-            attributes.push(("theme", &theme_index));
+            attributes.push(("theme", &theme_index).into());
         } else if self.indexed.has_value() {
-            attributes.push(("indexed", &indexed));
+            attributes.push(("indexed", &indexed).into());
         } else if self.argb.has_value() {
-            attributes.push(("rgb", self.argb.get_value_str()));
+            attributes.push(("rgb", self.argb.get_value_str()).into());
         }
         let tint = self.tint.get_value_string();
         if self.tint.has_value() {
-            attributes.push(("tint", &tint));
+            attributes.push(("tint", &tint).into());
         }
 
         if !attributes.is_empty() {

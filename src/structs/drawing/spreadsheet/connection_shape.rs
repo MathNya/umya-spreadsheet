@@ -143,7 +143,7 @@ impl ConnectionShape {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:cxnSp
-        write_start_tag(writer, "xdr:cxnSp", vec![("macro", "")], false);
+        write_start_tag(writer, "xdr:cxnSp", vec![("macro", "").into()], false);
 
         // xdr:nvCxnSpPr
         self.non_visual_connection_shape_properties.write_to(writer);

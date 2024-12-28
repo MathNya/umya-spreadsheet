@@ -102,13 +102,13 @@ fn write_worksheet_header(writer: &mut InternalWriter) {
         writer,
         "worksheet",
         vec![
-            ("xmlns", SHEET_MAIN_NS),
-            ("xmlns:r", REL_OFC_NS),
-            ("xmlns:xdr", SHEET_DRAWING_NS),
-            ("xmlns:x14", SHEET_MS_MAIN_NS),
-            ("xmlns:mc", MC_NS),
-            ("mc:Ignorable", "x14ac"),
-            ("xmlns:x14ac", SHEETML_AC_NS),
+            ("xmlns", SHEET_MAIN_NS).into(),
+            ("xmlns:r", REL_OFC_NS).into(),
+            ("xmlns:xdr", SHEET_DRAWING_NS).into(),
+            ("xmlns:x14", SHEET_MS_MAIN_NS).into(),
+            ("xmlns:mc", MC_NS).into(),
+            ("mc:Ignorable", "x14ac").into(),
+            ("xmlns:x14ac", SHEETML_AC_NS).into(),
         ],
         false,
     );
@@ -127,14 +127,14 @@ fn write_worksheet_properties(
     worksheet: &Worksheet,
     has_macros: bool,
 ) {
-    let mut attributes: Vec<(&str, &str)> = Vec::new();
+    let mut attributes: crate::structs::AttrCollection = Vec::new();
     if has_macros {
         let code_name = if worksheet.has_code_name() {
             worksheet.get_code_name().as_ref().unwrap()
         } else {
             worksheet.get_name()
         };
-        attributes.push(("codeName", code_name));
+        attributes.push(("codeName", code_name).into());
     }
 
     match worksheet.get_tab_color() {
@@ -161,7 +161,7 @@ fn write_dimension_and_views(writer: &mut InternalWriter, worksheet: &Worksheet)
     write_start_tag(
         writer,
         "dimension",
-        vec![("ref", worksheet.calculate_worksheet_dimension().as_str())],
+        vec![("ref", worksheet.calculate_worksheet_dimension().as_str()).into()],
         true,
     );
 
@@ -282,13 +282,13 @@ fn write_worksheet_features(
         write_start_tag(
             writer,
             "autoFilter",
-            vec![("ref", &v.get_range().get_range())],
+            vec![("ref", &v.get_range().get_range()).into()],
             true,
         );
     }
 
     worksheet.get_merge_cells_crate().write_to(writer);
-    write_start_tag(writer, "phoneticPr", vec![("fontId", "1")], true);
+    write_start_tag(writer, "phoneticPr", vec![("fontId", "1").into()], true);
 
     for conditional_formatting in worksheet.get_conditional_formatting_collection() {
         conditional_formatting.write_to(writer, stylesheet.get_differential_formats_mut());
@@ -418,12 +418,12 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
 
         for (coordition, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
             let r_id_str = format!("rId{}", &r_id);
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
-            attributes.push(("ref", &coordition));
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
+            attributes.push(("ref", &coordition).into());
             if hyperlink.get_location() {
-                attributes.push(("location", hyperlink.get_url()));
+                attributes.push(("location", hyperlink.get_url()).into());
             } else {
-                attributes.push(("r:id", r_id_str.as_str()));
+                attributes.push(("r:id", r_id_str.as_str()).into());
                 r_id += 1;
             }
             write_start_tag(writer, "hyperlink", attributes, true);
@@ -477,7 +477,12 @@ fn write_print_settings(writer: &mut InternalWriter, worksheet: &Worksheet, r_id
 fn write_drawings(writer: &mut InternalWriter, worksheet: &Worksheet, mut r_id: i32) -> i32 {
     if worksheet.has_drawing_object() {
         let r_id_str = format!("rId{}", &r_id);
-        write_start_tag(writer, "drawing", vec![("r:id", r_id_str.as_str())], true);
+        write_start_tag(
+            writer,
+            "drawing",
+            vec![("r:id", r_id_str.as_str()).into()],
+            true,
+        );
         r_id += 1;
     }
 
@@ -486,7 +491,7 @@ fn write_drawings(writer: &mut InternalWriter, worksheet: &Worksheet, mut r_id: 
         write_start_tag(
             writer,
             "legacyDrawing",
-            vec![("r:id", r_id_str.as_str())],
+            vec![("r:id", r_id_str.as_str()).into()],
             true,
         );
         r_id += 1;
@@ -508,12 +513,17 @@ fn write_tables_and_objects(writer: &mut InternalWriter, worksheet: &Worksheet, 
         write_start_tag(
             writer,
             "tableParts",
-            vec![("count", &tables.len().to_string())],
+            vec![("count", &tables.len().to_string()).into()],
             false,
         );
         for _table in worksheet.get_tables() {
             let r_id_str = format!("rId{}", &r_id);
-            write_start_tag(writer, "tablePart", vec![("r:id", r_id_str.as_str())], true);
+            write_start_tag(
+                writer,
+                "tablePart",
+                vec![("r:id", r_id_str.as_str()).into()],
+                true,
+            );
             r_id += 1;
         }
         write_end_tag(writer, "tableParts");

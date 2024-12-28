@@ -92,7 +92,7 @@ impl Fills {
             write_start_tag(
                 writer,
                 "fills",
-                vec![("count", &self.fill.len().to_string())],
+                vec![("count", &self.fill.len().to_string()).into()],
                 false,
             );
 

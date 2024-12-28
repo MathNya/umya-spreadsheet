@@ -67,15 +67,15 @@ impl Shadow {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:shadow
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.on.has_value() {
-            attributes.push(("on", self.on.get_value_string()));
+            attributes.push(("on", self.on.get_value_string()).into());
         }
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_str()));
+            attributes.push(("color", self.color.get_value_str()).into());
         }
         if self.obscured.has_value() {
-            attributes.push(("obscured", self.obscured.get_value_string()));
+            attributes.push(("obscured", self.obscured.get_value_string()).into());
         }
         write_start_tag(writer, "v:shadow", attributes, true);
     }

@@ -115,12 +115,13 @@ impl SharedStringTable {
             writer,
             "sst",
             vec![
-                ("xmlns", SHEET_MAIN_NS),
-                ("count", self.regist_count.to_string().as_str()),
+                ("xmlns", SHEET_MAIN_NS).into(),
+                ("count", self.regist_count.to_string()).into(),
                 (
                     "uniqueCount",
                     self.shared_string_item.len().to_string().as_str(),
-                ),
+                )
+                    .into(),
             ],
             false,
         );

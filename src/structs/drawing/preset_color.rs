@@ -83,7 +83,7 @@ impl PresetColor {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:prstClr
-        write_start_tag(writer, "a:prstClr", vec![("val", &self.val)], false);
+        write_start_tag(writer, "a:prstClr", vec![("val", &self.val).into()], false);
 
         // a:alpha
         if let Some(v) = &self.alpha {

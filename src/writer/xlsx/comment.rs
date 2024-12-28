@@ -48,7 +48,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "comments",
-        vec![("xmlns", SHEET_MAIN_NS)],
+        vec![("xmlns", SHEET_MAIN_NS).into()],
         false,
     );
 
@@ -71,7 +71,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "comment",
-            vec![("ref", &coordinate), ("authorId", author_id.as_str())],
+            vec![
+                ("ref", &coordinate).into(),
+                ("authorId", author_id.as_str()).into(),
+            ],
             false,
         );
 

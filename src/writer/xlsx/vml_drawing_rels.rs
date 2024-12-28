@@ -48,7 +48,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
+    write_start_tag(
+        &mut writer,
+        "Relationships",
+        vec![("xmlns", REL_NS).into()],
+        false,
+    );
 
     let mut r_id = 1;
     for (key, value) in rel_list {
@@ -82,12 +87,12 @@ fn write_relationship(
 ) -> bool {
     let tag_name = "Relationship";
     let r_id_str = format!("rId{r_id}");
-    let mut attributes: Vec<(&str, &str)> = Vec::new();
-    attributes.push(("Id", &r_id_str));
-    attributes.push(("Type", p_type));
-    attributes.push(("Target", p_target));
+    let mut attributes: crate::structs::AttrCollection = Vec::new();
+    attributes.push(("Id", &r_id_str).into());
+    attributes.push(("Type", p_type).into());
+    attributes.push(("Target", p_target).into());
     if !p_target_mode.is_empty() {
-        attributes.push(("TargetMode", p_target_mode));
+        attributes.push(("TargetMode", p_target_mode).into());
     }
     write_start_tag(writer, tag_name, attributes, true);
     true

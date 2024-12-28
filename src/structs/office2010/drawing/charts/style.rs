@@ -43,7 +43,7 @@ impl Style {
         write_start_tag(
             writer,
             "mc:AlternateContent",
-            vec![("xmlns:mc", MC_NS)],
+            vec![("xmlns:mc", MC_NS).into()],
             false,
         );
 
@@ -51,12 +51,15 @@ impl Style {
         write_start_tag(
             writer,
             "mc:Choice",
-            vec![("Requires", "c14"), ("xmlns:c14", DRAWING_CHART_NS)],
+            vec![
+                ("Requires", "c14").into(),
+                ("xmlns:c14", DRAWING_CHART_NS).into(),
+            ],
             false,
         );
 
         // c14:style
-        write_start_tag(writer, "c14:style", vec![("val", "102")], true);
+        write_start_tag(writer, "c14:style", vec![("val", "102").into()], true);
 
         write_end_tag(writer, "mc:Choice");
 
@@ -64,7 +67,7 @@ impl Style {
         write_start_tag(writer, "mc:Fallback", vec![], false);
 
         // c14:style
-        write_start_tag(writer, "c:style", vec![("val", "2")], true);
+        write_start_tag(writer, "c:style", vec![("val", "2").into()], true);
 
         write_end_tag(writer, "mc:Fallback");
 

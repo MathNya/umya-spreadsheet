@@ -44,15 +44,15 @@ impl WorkbookView {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
-        let mut attributes = vec![
-            ("xWindow", "240"),
-            ("yWindow", "105"),
-            ("windowWidth", "14805"),
-            ("windowHeight", "8010"),
+        let mut attributes: crate::structs::AttrCollection = vec![
+            ("xWindow", "240").into(),
+            ("yWindow", "105").into(),
+            ("windowWidth", "14805").into(),
+            ("windowHeight", "8010").into(),
         ];
         let active_tab = self.active_tab.get_value_string();
         if self.active_tab.has_value() {
-            attributes.push(("activeTab", &active_tab));
+            attributes.push(("activeTab", &active_tab).into());
         }
 
         // workbookView

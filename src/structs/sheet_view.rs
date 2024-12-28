@@ -249,38 +249,38 @@ impl SheetView {
         let empty_flag = self.pane.is_none() && self.selection.is_empty();
 
         // sheetView
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.show_grid_lines.has_value() {
-            attributes.push(("showGridLines", self.show_grid_lines.get_value_string()));
+            attributes.push(("showGridLines", self.show_grid_lines.get_value_string()).into());
         }
         if self.tab_selected.get_value() {
-            attributes.push(("tabSelected", self.tab_selected.get_value_string()));
+            attributes.push(("tabSelected", self.tab_selected.get_value_string()).into());
         }
         if self.view.has_value() {
-            attributes.push(("view", self.view.get_value_string()));
+            attributes.push(("view", self.view.get_value_string()).into());
         }
         let zoom_scale = self.zoom_scale.get_value_string();
         if self.zoom_scale.has_value() {
-            attributes.push(("zoomScale", &zoom_scale));
+            attributes.push(("zoomScale", &zoom_scale).into());
         }
         let zoom_scale_normal = self.zoom_scale_normal.get_value_string();
         if self.zoom_scale_normal.has_value() {
-            attributes.push(("zoomScaleNormal", &zoom_scale_normal));
+            attributes.push(("zoomScaleNormal", &zoom_scale_normal).into());
         }
         let zoom_scale_page_layout_view = self.zoom_scale_page_layout_view.get_value_string();
         if self.zoom_scale_page_layout_view.has_value() {
-            attributes.push(("zoomScalePageLayoutView", &zoom_scale_page_layout_view));
+            attributes.push(("zoomScalePageLayoutView", &zoom_scale_page_layout_view).into());
         }
         let zoom_scale_sheet_layout_view = self.zoom_scale_sheet_layout_view.get_value_string();
         if self.zoom_scale_sheet_layout_view.has_value() {
-            attributes.push(("zoomScaleSheetLayoutView", &zoom_scale_sheet_layout_view));
+            attributes.push(("zoomScaleSheetLayoutView", &zoom_scale_sheet_layout_view).into());
         }
         let top_left_cell = self.top_left_cell.get_value_str();
         if self.top_left_cell.has_value() {
-            attributes.push(("topLeftCell", top_left_cell));
+            attributes.push(("topLeftCell", top_left_cell).into());
         }
         let workbook_view_id = self.workbook_view_id.get_value_string();
-        attributes.push(("workbookViewId", &workbook_view_id));
+        attributes.push(("workbookViewId", &workbook_view_id).into());
 
         write_start_tag(writer, "sheetView", attributes, empty_flag);
 

@@ -126,7 +126,7 @@ impl NumberingFormats {
 
         let cnt = formats_to_write.len();
         let cnt_str = cnt.to_string();
-        write_start_tag(writer, "numFmts", vec![("count", &cnt_str)], false);
+        write_start_tag(writer, "numFmts", vec![("count", &cnt_str).into()], false);
 
         for (index, numbering_format) in formats_to_write {
             numbering_format.write_to(writer, *index);

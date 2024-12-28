@@ -111,12 +111,12 @@ impl RawRelationship {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("Id", self.get_id()));
-        attributes.push(("Type", self.get_type()));
-        attributes.push(("Target", self.get_target()));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("Id", self.get_id()).into());
+        attributes.push(("Type", self.get_type()).into());
+        attributes.push(("Target", self.get_target()).into());
         if self.get_target_mode() != "" {
-            attributes.push(("TargetMode", self.get_target_mode()));
+            attributes.push(("TargetMode", self.get_target_mode()).into());
         }
         write_start_tag(writer, "Relationship", attributes, true);
     }

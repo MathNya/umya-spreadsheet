@@ -44,7 +44,7 @@ impl TickLabelPosition {
         write_start_tag(
             writer,
             "c:tickLblPos",
-            vec![("val", self.val.get_value_string())],
+            vec![("val", self.val.get_value_string()).into()],
             true,
         );
     }

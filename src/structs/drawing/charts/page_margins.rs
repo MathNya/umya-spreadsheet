@@ -105,12 +105,12 @@ impl PageMargins {
             writer,
             "c:pageMargins",
             vec![
-                ("b", &self.bottom.get_value_string()),
-                ("l", &self.left.get_value_string()),
-                ("r", &self.right.get_value_string()),
-                ("t", &self.top.get_value_string()),
-                ("header", &self.header.get_value_string()),
-                ("footer", &self.footer.get_value_string()),
+                ("b", self.bottom.get_value_string()).into(),
+                ("l", self.left.get_value_string()).into(),
+                ("r", self.right.get_value_string()).into(),
+                ("t", self.top.get_value_string()).into(),
+                ("header", self.header.get_value_string()).into(),
+                ("footer", self.footer.get_value_string()).into(),
             ],
             true,
         );

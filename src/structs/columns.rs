@@ -168,25 +168,25 @@ impl Columns {
         stylesheet: &mut Stylesheet,
     ) {
         // col
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let min_str = min.to_string();
         let max_str = max.to_string();
-        attributes.push(("min", min_str.as_str()));
-        attributes.push(("max", max_str.as_str()));
+        attributes.push(("min", min_str).into());
+        attributes.push(("max", max_str).into());
         let width = column.width.get_value_string();
-        attributes.push(("width", &width));
+        attributes.push(("width", &width).into());
         if column.hidden.get_value() {
-            attributes.push(("hidden", column.hidden.get_value_string()));
+            attributes.push(("hidden", column.hidden.get_value_string()).into());
         }
         if column.best_fit.get_value() {
-            attributes.push(("bestFit", column.best_fit.get_value_string()));
+            attributes.push(("bestFit", column.best_fit.get_value_string()).into());
         }
-        attributes.push(("customWidth", "1"));
+        attributes.push(("customWidth", "1").into());
         let xf_index_str: String;
         let xf_index = stylesheet.set_style(column.get_style());
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
-            attributes.push(("style", &xf_index_str));
+            attributes.push(("style", &xf_index_str).into());
         }
         write_start_tag(writer, "col", attributes, true);
     }

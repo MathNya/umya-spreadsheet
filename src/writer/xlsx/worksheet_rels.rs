@@ -63,7 +63,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
+    write_start_tag(
+        &mut writer,
+        "Relationships",
+        vec![("xmlns", REL_NS).into()],
+        false,
+    );
 
     let mut r_id: i32 = 1;
 
@@ -100,7 +105,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             r_id.to_string().as_str(),
             DRAWINGS_NS,
-            format!("../drawings/drawing{}.xml", drawing_no.to_string().as_str()).as_str(),
+            format!("../drawings/drawing{drawing_no}.xml").as_str(),
             "",
         );
         r_id += 1;
@@ -128,7 +133,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             r_id.to_string().as_str(),
             TABLE_NS,
-            format!("../tables/table{}.xml", table_no.to_string().as_str()).as_str(),
+            format!("../tables/table{table_no}.xml").as_str(),
             "",
         );
         r_id += 1;
@@ -183,7 +188,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             r_id.to_string().as_str(),
             COMMENTS_NS,
-            format!("../comments{}.xml", comment_no.to_string().as_str()).as_str(),
+            format!("../comments{comment_no}.xml").as_str(),
             "",
         );
     }
@@ -205,13 +210,13 @@ fn write_relationship(
     p_target_mode: &str,
 ) -> bool {
     let tag_name = "Relationship";
-    let mut attributes: Vec<(&str, &str)> = Vec::new();
+    let mut attributes: crate::structs::AttrCollection = Vec::new();
     let r_id = format!("rId{p_id}");
-    attributes.push(("Id", r_id.as_str()));
-    attributes.push(("Type", p_type));
-    attributes.push(("Target", p_target));
+    attributes.push(("Id", r_id.as_str()).into());
+    attributes.push(("Type", p_type).into());
+    attributes.push(("Target", p_target).into());
     if !p_target_mode.is_empty() {
-        attributes.push(("TargetMode", p_target_mode));
+        attributes.push(("TargetMode", p_target_mode).into());
     }
     write_start_tag(writer, tag_name, attributes, true);
     true

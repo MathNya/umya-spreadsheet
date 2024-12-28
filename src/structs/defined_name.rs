@@ -223,15 +223,15 @@ impl DefinedName {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // definedName
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", self.get_name()));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("name", self.get_name()).into());
         let local_sheet_id_str = self.local_sheet_id.get_value_string();
         if self.local_sheet_id.has_value() {
-            attributes.push(("localSheetId", &local_sheet_id_str));
+            attributes.push(("localSheetId", &local_sheet_id_str).into());
         }
         let hidden_str = self.hidden.get_value_string();
         if self.hidden.has_value() {
-            attributes.push(("hidden", hidden_str));
+            attributes.push(("hidden", hidden_str).into());
         }
         write_start_tag(writer, "definedName", attributes, false);
         write_text_node_conversion(writer, self.get_address());

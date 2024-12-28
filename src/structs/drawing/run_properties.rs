@@ -414,34 +414,34 @@ impl RunProperties {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.kumimoji.has_value() {
-            attributes.push(("kumimoji", self.kumimoji.get_value_str()));
+            attributes.push(("kumimoji", self.kumimoji.get_value_str()).into());
         }
         if self.language.has_value() {
-            attributes.push(("lang", self.language.get_value_str()));
+            attributes.push(("lang", self.language.get_value_str()).into());
         }
         if self.alternative_language.has_value() {
-            attributes.push(("altLang", self.alternative_language.get_value_str()));
+            attributes.push(("altLang", self.alternative_language.get_value_str()).into());
         }
         if self.sz.has_value() {
-            attributes.push(("sz", self.sz.get_value_str()));
+            attributes.push(("sz", self.sz.get_value_str()).into());
         }
         if self.bold.has_value() {
-            attributes.push(("b", self.bold.get_value_str()));
+            attributes.push(("b", self.bold.get_value_str()).into());
         }
         if self.italic.has_value() {
-            attributes.push(("i", self.italic.get_value_str()));
+            attributes.push(("i", self.italic.get_value_str()).into());
         }
         if self.capital.has_value() {
-            attributes.push(("cap", self.capital.get_value_string()));
+            attributes.push(("cap", self.capital.get_value_string()).into());
         }
         let spc = self.spacing.get_value_string();
         if self.spacing.has_value() {
-            attributes.push(("spc", &spc));
+            attributes.push(("spc", &spc).into());
         }
         if self.strike.has_value() {
-            attributes.push(("strike", self.strike.get_value_str()));
+            attributes.push(("strike", self.strike.get_value_str()).into());
         }
         if self.solid_fill.is_some()
             || self.outline.is_some()

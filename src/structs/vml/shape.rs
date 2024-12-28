@@ -340,38 +340,38 @@ impl Shape {
     ) {
         // v:shape
         let id_str = format!("_x0000_s{id}");
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("id", &id_str));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("id", &id_str).into());
         if self.r_type.has_value() {
-            attributes.push(("type", self.r_type.get_value_str()));
+            attributes.push(("type", self.r_type.get_value_str()).into());
         }
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_str()));
+            attributes.push(("style", self.style.get_value_str()).into());
         }
         if self.filled.has_value() {
-            attributes.push(("filled", self.filled.get_value_string()));
+            attributes.push(("filled", self.filled.get_value_string()).into());
         }
         if self.fill_color.has_value() {
-            attributes.push(("fillcolor", self.fill_color.get_value_str()));
+            attributes.push(("fillcolor", self.fill_color.get_value_str()).into());
         }
         if self.stroked.has_value() {
-            attributes.push(("stroked", self.stroked.get_value_string()));
+            attributes.push(("stroked", self.stroked.get_value_string()).into());
         }
         if self.stroke_color.has_value() {
-            attributes.push(("strokecolor", self.stroke_color.get_value_str()));
+            attributes.push(("strokecolor", self.stroke_color.get_value_str()).into());
         }
         if self.stroke_weight.has_value() {
-            attributes.push(("strokeweight", self.stroke_weight.get_value_str()));
+            attributes.push(("strokeweight", self.stroke_weight.get_value_str()).into());
         }
         if self.inset_mode.has_value() {
-            attributes.push(("o:insetmode", self.inset_mode.get_value_string()));
+            attributes.push(("o:insetmode", self.inset_mode.get_value_string()).into());
         }
         let optional_number_str = self.optional_number.get_value_string();
         if self.optional_number.has_value() {
-            attributes.push(("o:spt", &optional_number_str));
+            attributes.push(("o:spt", &optional_number_str).into());
         }
         if self.coordinate_size.has_value() {
-            attributes.push(("coordsize", self.coordinate_size.get_value_str()));
+            attributes.push(("coordsize", self.coordinate_size.get_value_str()).into());
         }
         write_start_tag(writer, "v:shape", attributes, false);
 

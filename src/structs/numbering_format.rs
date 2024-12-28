@@ -173,8 +173,8 @@ impl NumberingFormat {
             writer,
             "numFmt",
             vec![
-                ("numFmtId", number_format_id.to_string().as_str()),
-                ("formatCode", &self.format_code),
+                ("numFmtId", number_format_id.to_string()).into(),
+                ("formatCode", &self.format_code).into(),
             ],
             true,
         );

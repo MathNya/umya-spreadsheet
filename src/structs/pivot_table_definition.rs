@@ -501,98 +501,125 @@ impl PivotTableDefinition {
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
-        let mut attributes = vec![
-            ("xmlns", SHEET_MAIN_NS),
-            ("xmlns:mc", MC_NS),
-            ("mc:Ignorable", "xr"),
-            ("xmlns:xr", SHEET_MS_REVISION_NS),
+        let mut attributes: crate::structs::AttrCollection = vec![
+            ("xmlns", SHEET_MAIN_NS).into(),
+            ("xmlns:mc", MC_NS).into(),
+            ("mc:Ignorable", "xr").into(),
+            ("xmlns:xr", SHEET_MS_REVISION_NS).into(),
         ];
 
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.get_value_str()).into());
         }
         let cache_id_str = self.cache_id.get_value_string();
         if self.cache_id.has_value() {
-            attributes.push(("cacheId", cache_id_str.as_str()));
+            attributes.push(("cacheId", cache_id_str.as_str()).into());
         }
         if self.apply_number_formats.has_value() {
-            attributes.push((
-                "applyNumberFormats",
-                self.apply_number_formats.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyNumberFormats",
+                    self.apply_number_formats.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.apply_border_formats.has_value() {
-            attributes.push((
-                "applyBorderFormats",
-                self.apply_border_formats.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyBorderFormats",
+                    self.apply_border_formats.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.apply_font_formats.has_value() {
-            attributes.push((
-                "applyFontFormats",
-                self.apply_font_formats.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyFontFormats",
+                    self.apply_font_formats.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.apply_pattern_formats.has_value() {
-            attributes.push((
-                "applyPatternFormats",
-                self.apply_pattern_formats.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyPatternFormats",
+                    self.apply_pattern_formats.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.apply_alignment_formats.has_value() {
-            attributes.push((
-                "applyAlignmentFormats",
-                self.apply_alignment_formats.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyAlignmentFormats",
+                    self.apply_alignment_formats.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.apply_width_height_formats.has_value() {
-            attributes.push((
-                "applyWidthHeightFormats",
-                self.apply_width_height_formats.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "applyWidthHeightFormats",
+                    self.apply_width_height_formats.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.data_caption.has_value() {
-            attributes.push(("dataCaption", self.data_caption.get_value_str()));
+            attributes.push(("dataCaption", self.data_caption.get_value_str()).into());
         }
         let updated_version_str = self.updated_version.get_value_string();
         if self.updated_version.has_value() {
-            attributes.push(("updatedVersion", updated_version_str.as_str()));
+            attributes.push(("updatedVersion", updated_version_str.as_str()).into());
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push((
-                "minRefreshableVersion",
-                min_refreshable_version_str.as_str(),
-            ));
+            attributes.push(
+                (
+                    "minRefreshableVersion",
+                    min_refreshable_version_str.as_str(),
+                )
+                    .into(),
+            );
         }
         if self.use_auto_formatting.has_value() {
-            attributes.push((
-                "useAutoFormatting",
-                self.use_auto_formatting.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "useAutoFormatting",
+                    self.use_auto_formatting.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.item_print_titles.has_value() {
-            attributes.push(("itemPrintTitles", self.item_print_titles.get_value_string()));
+            attributes.push(("itemPrintTitles", self.item_print_titles.get_value_string()).into());
         }
         let created_version_str = self.created_version.get_value_string();
         if self.created_version.has_value() {
-            attributes.push(("createdVersion", created_version_str.as_str()));
+            attributes.push(("createdVersion", created_version_str.as_str()).into());
         }
         let indent_str = self.indent.get_value_string();
         if self.indent.has_value() {
-            attributes.push(("indent", indent_str.as_str()));
+            attributes.push(("indent", indent_str.as_str()).into());
         }
         if self.outline.has_value() {
-            attributes.push(("outline", self.outline.get_value_string()));
+            attributes.push(("outline", self.outline.get_value_string()).into());
         }
         if self.outline_data.has_value() {
-            attributes.push(("outlineData", self.outline_data.get_value_string()));
+            attributes.push(("outlineData", self.outline_data.get_value_string()).into());
         }
         if self.multiple_field_filters.has_value() {
-            attributes.push((
-                "multipleFieldFilters",
-                self.multiple_field_filters.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "multipleFieldFilters",
+                    self.multiple_field_filters.get_value_string(),
+                )
+                    .into(),
+            );
         }
         write_start_tag(writer, "pivotTableDefinition", attributes, false);
 

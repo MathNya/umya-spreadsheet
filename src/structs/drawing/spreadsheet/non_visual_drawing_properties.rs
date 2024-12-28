@@ -100,12 +100,12 @@ impl NonVisualDrawingProperties {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, ole_id: usize) {
         let with_inner = ole_id > 0;
         // xdr:cNvPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let id = self.id.get_value_string();
-        attributes.push(("id", &id));
-        attributes.push(("name", self.name.get_value_str()));
+        attributes.push(("id", &id).into());
+        attributes.push(("name", self.name.get_value_str()).into());
         if self.hidden.has_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()));
+            attributes.push(("hidden", self.hidden.get_value_string()).into());
         }
         write_start_tag(writer, "xdr:cNvPr", attributes, !with_inner);
 
@@ -115,10 +115,15 @@ impl NonVisualDrawingProperties {
             write_start_tag(
                 writer,
                 "a:ext",
-                vec![("uri", "{63B3BB69-23CF-44E3-9099-C40C66FF867C}")],
+                vec![("uri", "{63B3BB69-23CF-44E3-9099-C40C66FF867C}").into()],
                 false,
             );
-            write_start_tag(writer, "a14:compatExt", vec![("spid", spid.as_str())], true);
+            write_start_tag(
+                writer,
+                "a14:compatExt",
+                vec![("spid", spid.as_str()).into()],
+                true,
+            );
 
             write_end_tag(writer, "a:ext");
             write_end_tag(writer, "a:extLst");

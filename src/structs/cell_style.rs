@@ -77,12 +77,12 @@ impl CellStyle {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cellStyle
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", self.name.get_value_str()));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("name", self.name.get_value_str()).into());
         let format_id = self.format_id.get_value_string();
-        attributes.push(("xfId", &format_id));
+        attributes.push(("xfId", &format_id).into());
         let builtin_id = self.builtin_id.get_value_string();
-        attributes.push(("builtinId", &builtin_id));
+        attributes.push(("builtinId", &builtin_id).into());
         write_start_tag(writer, "cellStyle", attributes, true);
     }
 }

@@ -239,15 +239,15 @@ impl TextParagraphPropertiesType {
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         // a:lvl1pPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.right_to_left.has_value() {
-            attributes.push(("rtl", self.right_to_left.get_value_string()));
+            attributes.push(("rtl", self.right_to_left.get_value_string()).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", self.alignment.get_value_string()));
+            attributes.push(("algn", self.alignment.get_value_string()).into());
         }
         if self.font_alignment.has_value() {
-            attributes.push(("fontAlgn", self.font_alignment.get_value_string()));
+            attributes.push(("fontAlgn", self.font_alignment.get_value_string()).into());
         }
         write_start_tag(writer, tag_name, attributes, false);
 

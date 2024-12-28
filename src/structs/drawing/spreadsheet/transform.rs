@@ -138,16 +138,16 @@ impl Transform {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:xfrm
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let rot = self.rotation.get_value_string();
         if self.rotation.has_value() {
-            attributes.push(("rot", &rot));
+            attributes.push(("rot", &rot).into());
         }
         if self.horizontal_flip.has_value() {
-            attributes.push(("flipH", self.horizontal_flip.get_value_string()));
+            attributes.push(("flipH", self.horizontal_flip.get_value_string()).into());
         }
         if self.vertical_flip.has_value() {
-            attributes.push(("flipV", self.vertical_flip.get_value_string()));
+            attributes.push(("flipV", self.vertical_flip.get_value_string()).into());
         }
         write_start_tag(writer, "xdr:xfrm", attributes, false);
 

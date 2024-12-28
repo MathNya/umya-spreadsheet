@@ -201,9 +201,9 @@ impl ChartSpace {
             writer,
             "c:chartSpace",
             vec![
-                ("xmlns:c", DRAWINGML_CHART_NS),
-                ("xmlns:a", DRAWINGML_MAIN_NS),
-                ("xmlns:r", REL_OFC_NS),
+                ("xmlns:c", DRAWINGML_CHART_NS).into(),
+                ("xmlns:a", DRAWINGML_MAIN_NS).into(),
+                ("xmlns:r", REL_OFC_NS).into(),
             ],
             false,
         );

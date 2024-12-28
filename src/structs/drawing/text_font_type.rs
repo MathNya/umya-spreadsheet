@@ -104,18 +104,18 @@ impl TextFontType {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tab_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.typeface.has_value() {
-            attributes.push(("typeface", self.typeface.get_value_str()));
+            attributes.push(("typeface", self.typeface.get_value_str()).into());
         }
         if self.pitch_family.has_value() {
-            attributes.push(("pitchFamily", self.pitch_family.get_value_str()));
+            attributes.push(("pitchFamily", self.pitch_family.get_value_str()).into());
         }
         if self.charset.has_value() {
-            attributes.push(("charset", self.charset.get_value_str()));
+            attributes.push(("charset", self.charset.get_value_str()).into());
         }
         if self.panose.has_value() {
-            attributes.push(("panose", self.panose.get_value_str()));
+            attributes.push(("panose", self.panose.get_value_str()).into());
         }
         write_start_tag(writer, tab_name, attributes, true);
     }

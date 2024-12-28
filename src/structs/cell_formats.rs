@@ -77,7 +77,7 @@ impl CellFormats {
             write_start_tag(
                 writer,
                 "cellXfs",
-                vec![("count", &self.cell_format.len().to_string())],
+                vec![("count", &self.cell_format.len().to_string()).into()],
                 false,
             );
 

@@ -123,7 +123,12 @@ impl PatternFill {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:pattFill
-        write_start_tag(writer, "a:pattFill", vec![("prst", &self.preset)], false);
+        write_start_tag(
+            writer,
+            "a:pattFill",
+            vec![("prst", &self.preset).into()],
+            false,
+        );
 
         // a:fgClr
         self.foreground_color.write_to(writer);

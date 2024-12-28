@@ -173,37 +173,37 @@ impl PageSetup {
         if self.has_param() {
             // pageSetup
             let r_id_str = format!("rId{r_id}");
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             let paper_size = self.paper_size.get_value_string();
             if self.paper_size.has_value() {
-                attributes.push(("paperSize", &paper_size));
+                attributes.push(("paperSize", &paper_size).into());
             }
             let scale = self.scale.get_value_string();
             if self.scale.has_value() {
-                attributes.push(("scale", &scale));
+                attributes.push(("scale", &scale).into());
             }
             let orientation = self.orientation.get_value_string();
             if self.orientation.has_value() {
-                attributes.push(("orientation", orientation));
+                attributes.push(("orientation", orientation).into());
             }
             let fit_to_height = self.fit_to_height.get_value_string();
             if self.fit_to_height.has_value() {
-                attributes.push(("fitToHeight", &fit_to_height));
+                attributes.push(("fitToHeight", &fit_to_height).into());
             }
             let fit_to_width = self.fit_to_width.get_value_string();
             if self.fit_to_width.has_value() {
-                attributes.push(("fitToWidth", &fit_to_width));
+                attributes.push(("fitToWidth", &fit_to_width).into());
             }
             let horizontal_dpi = self.horizontal_dpi.get_value_string();
             if self.horizontal_dpi.has_value() {
-                attributes.push(("horizontalDpi", &horizontal_dpi));
+                attributes.push(("horizontalDpi", &horizontal_dpi).into());
             }
             let vertical_dpi = self.vertical_dpi.get_value_string();
             if self.vertical_dpi.has_value() {
-                attributes.push(("verticalDpi", &vertical_dpi));
+                attributes.push(("verticalDpi", &vertical_dpi).into());
             }
             if self.object_data.is_some() {
-                attributes.push(("r:id", r_id_str.as_str()));
+                attributes.push(("r:id", r_id_str.as_str()).into());
                 *r_id += 1;
             }
             write_start_tag(writer, "pageSetup", attributes, true);

@@ -80,10 +80,10 @@ impl DataValidations {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // dataValidations
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         let count = self.data_validation_list.len().to_string();
-        attributes.push(("count", &count));
+        attributes.push(("count", &count).into());
 
         write_start_tag(writer, "dataValidations", attributes, false);
 

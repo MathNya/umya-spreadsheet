@@ -86,7 +86,7 @@ impl Glow {
         write_start_tag(
             writer,
             "a:glow",
-            vec![("rad", &self.radius.get_value_string())],
+            vec![("rad", &self.radius.get_value_string()).into()],
             false,
         );
 

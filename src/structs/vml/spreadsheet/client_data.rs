@@ -323,7 +323,7 @@ impl ClientData {
         write_start_tag(
             writer,
             "x:ClientData",
-            vec![("ObjectType", self.object_type.get_value_string())],
+            vec![("ObjectType", self.object_type.get_value_string()).into()],
             false,
         );
 

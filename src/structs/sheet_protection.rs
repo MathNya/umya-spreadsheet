@@ -340,79 +340,88 @@ impl SheetProtection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sheetProtection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.algorithm_name.has_value() {
-            attributes.push(("algorithmName", self.algorithm_name.get_value_str()));
+            attributes.push(("algorithmName", self.algorithm_name.get_value_str()).into());
         }
         if self.hash_value.has_value() {
-            attributes.push(("hashValue", self.hash_value.get_value_str()));
+            attributes.push(("hashValue", self.hash_value.get_value_str()).into());
         }
         if self.salt_value.has_value() {
-            attributes.push(("saltValue", self.salt_value.get_value_str()));
+            attributes.push(("saltValue", self.salt_value.get_value_str()).into());
         }
         let spin_count = self.spin_count.get_value_string();
         if self.spin_count.has_value() {
-            attributes.push(("spinCount", &spin_count));
+            attributes.push(("spinCount", &spin_count).into());
         }
         if self.password.has_value() {
-            attributes.push(("password", self.password.get_value_str()));
+            attributes.push(("password", self.password.get_value_str()).into());
         }
         if self.sheet.has_value() {
-            attributes.push(("sheet", self.sheet.get_value_string()));
+            attributes.push(("sheet", self.sheet.get_value_string()).into());
         }
         if self.objects.has_value() {
-            attributes.push(("objects", self.objects.get_value_string()));
+            attributes.push(("objects", self.objects.get_value_string()).into());
         }
         if self.delete_rows.has_value() {
-            attributes.push(("deleteRows", self.delete_rows.get_value_string()));
+            attributes.push(("deleteRows", self.delete_rows.get_value_string()).into());
         }
         if self.insert_columns.has_value() {
-            attributes.push(("insertColumns", self.insert_columns.get_value_string()));
+            attributes.push(("insertColumns", self.insert_columns.get_value_string()).into());
         }
         if self.delete_columns.has_value() {
-            attributes.push(("deleteColumns", self.delete_columns.get_value_string()));
+            attributes.push(("deleteColumns", self.delete_columns.get_value_string()).into());
         }
         if self.insert_hyperlinks.has_value() {
-            attributes.push((
-                "insertHyperlinks",
-                self.insert_hyperlinks.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "insertHyperlinks",
+                    self.insert_hyperlinks.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.auto_filter.has_value() {
-            attributes.push(("autoFilter", self.auto_filter.get_value_string()));
+            attributes.push(("autoFilter", self.auto_filter.get_value_string()).into());
         }
         if self.scenarios.has_value() {
-            attributes.push(("scenarios", self.scenarios.get_value_string()));
+            attributes.push(("scenarios", self.scenarios.get_value_string()).into());
         }
         if self.format_cells.has_value() {
-            attributes.push(("formatCells", self.format_cells.get_value_string()));
+            attributes.push(("formatCells", self.format_cells.get_value_string()).into());
         }
         if self.format_columns.has_value() {
-            attributes.push(("formatColumns", self.format_columns.get_value_string()));
+            attributes.push(("formatColumns", self.format_columns.get_value_string()).into());
         }
         if self.insert_rows.has_value() {
-            attributes.push(("insertRows", self.insert_rows.get_value_string()));
+            attributes.push(("insertRows", self.insert_rows.get_value_string()).into());
         }
         if self.format_rows.has_value() {
-            attributes.push(("formatRows", self.format_rows.get_value_string()));
+            attributes.push(("formatRows", self.format_rows.get_value_string()).into());
         }
         if self.pivot_tables.has_value() {
-            attributes.push(("pivotTables", self.pivot_tables.get_value_string()));
+            attributes.push(("pivotTables", self.pivot_tables.get_value_string()).into());
         }
         if self.select_locked_cells.has_value() {
-            attributes.push((
-                "selectLockedCells",
-                self.select_locked_cells.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "selectLockedCells",
+                    self.select_locked_cells.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.select_unlocked_cells.has_value() {
-            attributes.push((
-                "selectUnlockedCells",
-                self.select_unlocked_cells.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "selectUnlockedCells",
+                    self.select_unlocked_cells.get_value_string(),
+                )
+                    .into(),
+            );
         }
         if self.sort.has_value() {
-            attributes.push(("sort", self.sort.get_value_string()));
+            attributes.push(("sort", self.sort.get_value_string()).into());
         }
 
         write_start_tag(writer, "sheetProtection", attributes, true);

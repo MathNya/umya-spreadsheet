@@ -96,7 +96,7 @@ impl DifferentialFormats {
             write_start_tag(
                 writer,
                 "dxfs",
-                vec![("count", &self.differential_format.len().to_string())],
+                vec![("count", &self.differential_format.len().to_string()).into()],
                 false,
             );
 

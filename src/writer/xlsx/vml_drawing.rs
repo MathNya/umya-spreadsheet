@@ -36,21 +36,26 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         &mut writer,
         "xml",
         vec![
-            ("xmlns:v", VML_NS),
-            ("xmlns:o", OFFICE_NS),
-            ("xmlns:x", EXCEL_NS),
+            ("xmlns:v", VML_NS).into(),
+            ("xmlns:o", OFFICE_NS).into(),
+            ("xmlns:x", EXCEL_NS).into(),
         ],
         false,
     );
 
     // o:shapelayout
-    write_start_tag(&mut writer, "o:shapelayout", vec![("v:ext", "edit")], false);
+    write_start_tag(
+        &mut writer,
+        "o:shapelayout",
+        vec![("v:ext", "edit").into()],
+        false,
+    );
 
     // o:idmap
     write_start_tag(
         &mut writer,
         "o:idmap",
-        vec![("v:ext", "edit"), ("data", "1")],
+        vec![("v:ext", "edit").into(), ("data", "1").into()],
         true,
     );
 
@@ -65,59 +70,84 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             "v:shapetype",
             vec![
-                ("id", "_x0000_t75"),
-                ("coordsize", "21600,21600"),
-                ("o:spt", "75"),
-                ("o:preferrelative", "t"),
-                ("path", "m@4@5l@4@11@9@11@9@5xe"),
-                ("filled", "f"),
-                ("stroked", "f"),
+                ("id", "_x0000_t75").into(),
+                ("coordsize", "21600,21600").into(),
+                ("o:spt", "75").into(),
+                ("o:preferrelative", "t").into(),
+                ("path", "m@4@5l@4@11@9@11@9@5xe").into(),
+                ("filled", "f").into(),
+                ("stroked", "f").into(),
             ],
             false,
         );
 
         // v:stroke
-        write_start_tag(&mut writer, "v:stroke", vec![("joinstyle", "miter")], true);
+        write_start_tag(
+            &mut writer,
+            "v:stroke",
+            vec![("joinstyle", "miter").into()],
+            true,
+        );
 
         // v:formulas
         write_start_tag(&mut writer, "v:formulas", vec![], false);
         write_start_tag(
             &mut writer,
             "v:f",
-            vec![("eqn", "if lineDrawn pixelLineWidth 0")],
+            vec![("eqn", "if lineDrawn pixelLineWidth 0").into()],
             true,
         );
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @0 1 0")], true);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum 0 0 @1")], true);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @2 1 2")], true);
+        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @0 1 0").into()], true);
+        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum 0 0 @1").into()], true);
         write_start_tag(
             &mut writer,
             "v:f",
-            vec![("eqn", "prod @3 21600 pixelWidth")],
+            vec![("eqn", "prod @2 1 2").into()],
             true,
         );
         write_start_tag(
             &mut writer,
             "v:f",
-            vec![("eqn", "prod @3 21600 pixelHeight")],
+            vec![("eqn", "prod @3 21600 pixelWidth").into()],
             true,
         );
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @0 0 1")], true);
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "prod @6 1 2")], true);
         write_start_tag(
             &mut writer,
             "v:f",
-            vec![("eqn", "prod @7 21600 pixelWidth")],
+            vec![("eqn", "prod @3 21600 pixelHeight").into()],
             true,
         );
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @8 21600 0")], true);
+        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @0 0 1").into()], true);
         write_start_tag(
             &mut writer,
             "v:f",
-            vec![("eqn", "prod @7 21600 pixelHeight")],
+            vec![("eqn", "prod @6 1 2").into()],
             true,
         );
-        write_start_tag(&mut writer, "v:f", vec![("eqn", "sum @10 21600 0")], true);
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "prod @7 21600 pixelWidth").into()],
+            true,
+        );
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "sum @8 21600 0").into()],
+            true,
+        );
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "prod @7 21600 pixelHeight").into()],
+            true,
+        );
+        write_start_tag(
+            &mut writer,
+            "v:f",
+            vec![("eqn", "sum @10 21600 0").into()],
+            true,
+        );
         write_end_tag(&mut writer, "v:formulas");
 
         // v:path
@@ -125,9 +155,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             "v:path",
             vec![
-                ("o:extrusionok", "f"),
-                ("gradientshapeok", "t"),
-                ("o:connecttype", "rect"),
+                ("o:extrusionok", "f").into(),
+                ("gradientshapeok", "t").into(),
+                ("o:connecttype", "rect").into(),
             ],
             true,
         );
@@ -136,7 +166,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "o:lock",
-            vec![("v:ext", "edit"), ("aspectratio", "t")],
+            vec![("v:ext", "edit").into(), ("aspectratio", "t").into()],
             true,
         );
 
@@ -158,22 +188,30 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             "v:shapetype",
             vec![
-                ("id", "_x0000_t202"),
-                ("coordsize", "21600,21600"),
-                ("o:spt", "202"),
-                ("path", "m,l,21600r21600,l21600,xe"),
+                ("id", "_x0000_t202").into(),
+                ("coordsize", "21600,21600").into(),
+                ("o:spt", "202").into(),
+                ("path", "m,l,21600r21600,l21600,xe").into(),
             ],
             false,
         );
 
         // v:stroke
-        write_start_tag(&mut writer, "v:stroke", vec![("joinstyle", "miter")], true);
+        write_start_tag(
+            &mut writer,
+            "v:stroke",
+            vec![("joinstyle", "miter").into()],
+            true,
+        );
 
         // v:path
         write_start_tag(
             &mut writer,
             "v:path",
-            vec![("gradientshapeok", "t"), ("o:connecttype", "rect")],
+            vec![
+                ("gradientshapeok", "t").into(),
+                ("o:connecttype", "rect").into(),
+            ],
             true,
         );
 

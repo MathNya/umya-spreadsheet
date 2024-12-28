@@ -322,11 +322,11 @@ impl Properties {
             writer,
             "cp:coreProperties",
             vec![
-                ("xmlns:cp", COREPROPS_NS),
-                ("xmlns:dc", DCORE_NS),
-                ("xmlns:dcterms", DCTERMS_NS),
-                ("xmlns:dcmitype", DCMITYPE_NS),
-                ("xmlns:xsi", XSI_NS),
+                ("xmlns:cp", COREPROPS_NS).into(),
+                ("xmlns:dc", DCORE_NS).into(),
+                ("xmlns:dcterms", DCTERMS_NS).into(),
+                ("xmlns:dcmitype", DCMITYPE_NS).into(),
+                ("xmlns:xsi", XSI_NS).into(),
             ],
             false,
         );
@@ -385,7 +385,7 @@ impl Properties {
             write_start_tag(
                 writer,
                 "dcterms:created",
-                vec![("xsi:type", "dcterms:W3CDTF")],
+                vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
             write_text_node(writer, self.created.get_value_str());
@@ -397,7 +397,7 @@ impl Properties {
             write_start_tag(
                 writer,
                 "dcterms:modified",
-                vec![("xsi:type", "dcterms:W3CDTF")],
+                vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
             write_text_node(writer, self.modified.get_value_str());
@@ -432,7 +432,7 @@ impl Properties {
         write_start_tag(
             writer,
             "Properties",
-            vec![("xmlns", XPROPS_NS), ("xmlns:vt", VTYPES_NS)],
+            vec![("xmlns", XPROPS_NS).into(), ("xmlns:vt", VTYPES_NS).into()],
             false,
         );
 
@@ -458,7 +458,7 @@ impl Properties {
         write_start_tag(
             writer,
             "vt:vector",
-            vec![("size", "2"), ("baseType", "variant")],
+            vec![("size", "2").into(), ("baseType", "variant").into()],
             false,
         );
 
@@ -493,7 +493,10 @@ impl Properties {
         write_start_tag(
             writer,
             "vt:vector",
-            vec![("size", &sheet_count_str), ("baseType", "lpstr")],
+            vec![
+                ("size", &sheet_count_str).into(),
+                ("baseType", "lpstr").into(),
+            ],
             false,
         );
 

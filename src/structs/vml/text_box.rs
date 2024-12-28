@@ -134,9 +134,9 @@ impl TextBox {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:textbox
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_str()));
+            attributes.push(("style", self.style.get_value_str()).into());
         }
         write_start_tag(writer, "v:textbox", attributes, false);
         write_text_node_no_escape(writer, self.innder.get_value_str());

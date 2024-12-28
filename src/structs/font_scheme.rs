@@ -47,7 +47,7 @@ impl FontScheme {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // scheme
         if self.val.has_value() {
-            let attributes = vec![("val", self.val.get_value_string())];
+            let attributes = vec![("val", self.val.get_value_string()).into()];
             write_start_tag(writer, "scheme", attributes, true);
         }
     }
