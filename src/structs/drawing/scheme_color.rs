@@ -41,147 +41,120 @@ pub struct SchemeColor {
 }
 
 impl SchemeColor {
-    #[inline]
     #[must_use]
     pub fn get_val(&self) -> &SchemeColorValues {
         self.val.get_value()
     }
 
-    #[inline]
     pub fn set_val(&mut self, value: SchemeColorValues) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_luminance(&self) -> Option<&PercentageType> {
         self.luminance.as_ref()
     }
 
-    #[inline]
     pub fn get_luminance_mut(&mut self) -> Option<&mut PercentageType> {
         self.luminance.as_mut()
     }
 
-    #[inline]
     pub fn set_luminance(&mut self, value: PercentageType) {
         self.luminance = Some(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_luminance_modulation(&self) -> Option<&PercentageType> {
         self.luminance_modulation.as_ref()
     }
 
-    #[inline]
     pub fn get_luminance_modulation_mut(&mut self) -> Option<&mut PercentageType> {
         self.luminance_modulation.as_mut()
     }
 
-    #[inline]
     pub fn set_luminance_modulation(&mut self, value: PercentageType) {
         self.luminance_modulation = Some(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_luminance_offset(&self) -> Option<&PercentageType> {
         self.luminance_offset.as_ref()
     }
 
-    #[inline]
     pub fn get_luminance_offset_mut(&mut self) -> Option<&mut PercentageType> {
         self.luminance_offset.as_mut()
     }
 
-    #[inline]
     pub fn set_luminance_offset(&mut self, value: PercentageType) {
         self.luminance_offset = Some(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_saturation(&self) -> Option<&PercentageType> {
         self.saturation.as_ref()
     }
 
-    #[inline]
     pub fn get_saturation_mut(&mut self) -> Option<&mut PercentageType> {
         self.saturation.as_mut()
     }
 
-    #[inline]
     pub fn set_saturation(&mut self, value: PercentageType) {
         self.saturation = Some(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_saturation_modulation(&self) -> Option<&PercentageType> {
         self.saturation_modulation.as_ref()
     }
 
-    #[inline]
     pub fn get_saturation_modulation_mut(&mut self) -> Option<&mut PercentageType> {
         self.saturation_modulation.as_mut()
     }
 
-    #[inline]
     pub fn set_saturation_modulation(&mut self, value: PercentageType) {
         self.saturation_modulation = Some(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_shade(&self) -> Option<&PositiveFixedPercentageType> {
         self.shade.as_ref()
     }
 
-    #[inline]
     pub fn get_shade_mut(&mut self) -> Option<&mut PositiveFixedPercentageType> {
         self.shade.as_mut()
     }
 
-    #[inline]
     pub fn set_shade(&mut self, value: PositiveFixedPercentageType) {
         self.shade = Some(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_alpha(&self) -> Option<&PositiveFixedPercentageType> {
         self.alpha.as_ref()
     }
 
-    #[inline]
     pub fn get_alpha_mut(&mut self) -> Option<&mut PositiveFixedPercentageType> {
         self.alpha.as_mut()
     }
 
-    #[inline]
     pub fn set_alpha(&mut self, value: PositiveFixedPercentageType) {
         self.alpha = Some(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_tint(&self) -> Option<&PositiveFixedPercentageType> {
         self.tint.as_ref()
     }
 
-    #[inline]
     pub fn get_tint_mut(&mut self) -> Option<&mut PositiveFixedPercentageType> {
         self.tint.as_mut()
     }
 
-    #[inline]
     pub fn set_tint(&mut self, value: PositiveFixedPercentageType) {
         self.tint = Some(value);
     }
 
-    #[inline]
     pub(crate) fn with_inner_params(&self) -> bool {
         self.luminance.is_some()
             || self.luminance_modulation.is_some()

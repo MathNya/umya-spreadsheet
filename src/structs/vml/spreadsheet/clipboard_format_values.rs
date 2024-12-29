@@ -10,13 +10,11 @@ pub enum ClipboardFormatValues {
     PictureScreen,
 }
 impl Default for ClipboardFormatValues {
-    #[inline]
     fn default() -> Self {
         Self::PictureOld
     }
 }
 impl EnumTrait for ClipboardFormatValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Bitmap => "Bitmap",
@@ -30,7 +28,6 @@ impl EnumTrait for ClipboardFormatValues {
 impl FromStr for ClipboardFormatValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "Bitmap" => Ok(Self::Bitmap),

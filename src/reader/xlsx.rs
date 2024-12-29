@@ -105,7 +105,6 @@ pub fn read_reader<R: io::Read + io::Seek>(
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 /// ```
-#[inline]
 pub fn read<P: AsRef<Path>>(path: P) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, true)
@@ -123,7 +122,6 @@ pub fn read<P: AsRef<Path>>(path: P) -> Result<Workbook, XlsxError> {
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 /// ```
-#[inline]
 pub fn lazy_read(path: &Path) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, false)

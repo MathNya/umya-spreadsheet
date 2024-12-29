@@ -24,24 +24,20 @@ pub struct ColumnItems {
     list: Vec<RowItem>,
 }
 impl ColumnItems {
-    #[inline]
     #[must_use]
     pub fn get_list(&self) -> &[RowItem] {
         &self.list
     }
 
-    #[inline]
     pub fn get_list_mut(&mut self) -> &mut Vec<RowItem> {
         &mut self.list
     }
 
-    #[inline]
     pub fn add_list_mut(&mut self, value: RowItem) -> &mut Self {
         self.list.push(value);
         self
     }
 
-    #[inline]
     #[allow(unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
@@ -73,7 +69,6 @@ impl ColumnItems {
         );
     }
 
-    #[inline]
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // colItems

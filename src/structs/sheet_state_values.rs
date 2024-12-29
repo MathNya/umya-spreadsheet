@@ -8,13 +8,11 @@ pub enum SheetStateValues {
     Visible,
 }
 impl Default for SheetStateValues {
-    #[inline]
     fn default() -> Self {
         Self::Visible
     }
 }
 impl EnumTrait for SheetStateValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Hidden => "hidden",
@@ -26,7 +24,6 @@ impl EnumTrait for SheetStateValues {
 impl FromStr for SheetStateValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "hidden" => Ok(Self::Hidden),

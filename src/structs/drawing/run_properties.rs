@@ -56,240 +56,199 @@ pub struct RunProperties {
 }
 
 impl RunProperties {
-    #[inline]
     #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }
 
-    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.text = value.into().into_boxed_str();
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_kumimoji(&self) -> &str {
         self.kumimoji.get_value_str()
     }
 
-    #[inline]
     pub fn set_kumimoji<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.kumimoji.set_value_string(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_language(&self) -> &str {
         self.language.get_value_str()
     }
 
-    #[inline]
     pub fn set_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.language.set_value_string(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_alternative_language(&self) -> &str {
         self.alternative_language.get_value_str()
     }
 
-    #[inline]
     pub fn set_alternative_language<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.alternative_language.set_value_string(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_bold(&self) -> &str {
         self.bold.get_value_str()
     }
 
-    #[inline]
     pub fn set_bold<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.bold.set_value_string(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_sz(&self) -> &str {
         self.sz.get_value_str()
     }
 
-    #[inline]
     pub fn set_sz<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.sz.set_value_string(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_italic(&self) -> &str {
         self.italic.get_value_str()
     }
 
-    #[inline]
     pub fn set_italic<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.italic.set_value_string(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_capital(&self) -> &TextCapsValues {
         self.capital.get_value()
     }
 
-    #[inline]
     pub fn set_capital(&mut self, value: TextCapsValues) -> &mut Self {
         self.capital.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_spacing(&self) -> i32 {
         self.spacing.get_value()
     }
 
-    #[inline]
     pub fn set_spacing(&mut self, value: i32) -> &mut Self {
         self.spacing.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_strike(&self) -> &str {
         self.strike.get_value_str()
     }
 
-    #[inline]
     pub fn set_strike<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.strike.set_value_string(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
 
-    #[inline]
     pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
         self.solid_fill = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
 
-    #[inline]
     pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
         self.outline.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_outline(&mut self, value: Outline) -> &mut Self {
         self.outline = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_latin_font(&self) -> Option<&TextFontType> {
         self.latin_font.as_deref()
     }
 
-    #[inline]
     pub fn get_latin_font_mut(&mut self) -> Option<&mut TextFontType> {
         self.latin_font.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_latin_font(&mut self, value: TextFontType) -> &mut Self {
         self.latin_font = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
         self.east_asian_font.as_deref()
     }
 
-    #[inline]
     pub fn get_east_asian_font_mut(&mut self) -> Option<&mut TextFontType> {
         self.east_asian_font.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_east_asian_font(&mut self, value: TextFontType) -> &mut Self {
         self.east_asian_font = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
 
-    #[inline]
     pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
         self.gradient_fill.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
         self.gradient_fill = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
-    #[inline]
     pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
     }
 
-    #[inline]
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
         self.no_fill = Some(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
-    #[inline]
     pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
         self.effect_list = Some(Box::new(value));
         self
@@ -398,17 +357,14 @@ impl RunProperties {
         );
     }
 
-    #[inline]
     pub(crate) fn write_to_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:rPr");
     }
 
-    #[inline]
     pub(crate) fn write_to_end_para_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:endParaRPr");
     }
 
-    #[inline]
     pub(crate) fn write_to_def_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:defRPr");
     }

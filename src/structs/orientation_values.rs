@@ -8,13 +8,11 @@ pub enum OrientationValues {
     Portrait,
 }
 impl Default for OrientationValues {
-    #[inline]
     fn default() -> Self {
         Self::Default
     }
 }
 impl EnumTrait for OrientationValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Default => "default",
@@ -26,7 +24,6 @@ impl EnumTrait for OrientationValues {
 impl FromStr for OrientationValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "default" => Ok(Self::Default),

@@ -35,115 +35,96 @@ pub struct SheetFormatProperties {
 }
 
 impl SheetFormatProperties {
-    #[inline]
     #[must_use]
     pub fn get_base_column_width(&self) -> u32 {
         self.base_column_width.get_value()
     }
 
-    #[inline]
     pub fn set_base_column_width(&mut self, value: u32) -> &mut Self {
         self.base_column_width.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_custom_height(&self) -> bool {
         self.custom_height.get_value()
     }
 
-    #[inline]
     pub fn set_custom_height(&mut self, value: bool) -> &mut Self {
         self.custom_height.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_default_column_width(&self) -> f64 {
         self.default_column_width.get_value()
     }
 
-    #[inline]
     pub fn set_default_column_width(&mut self, value: f64) -> &mut Self {
         self.default_column_width.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_default_row_height(&self) -> f64 {
         self.default_row_height.get_value()
     }
 
-    #[inline]
     pub fn set_default_row_height(&mut self, value: f64) -> &mut Self {
         self.default_row_height.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_dy_descent(&self) -> f64 {
         self.dy_descent.get_value()
     }
 
-    #[inline]
     pub fn set_dy_descent(&mut self, value: f64) -> &mut Self {
         self.dy_descent.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_outline_level_column(&self) -> u8 {
         self.outline_level_column.get_value()
     }
 
-    #[inline]
     pub fn set_outline_level_column(&mut self, value: u8) -> &mut Self {
         self.outline_level_column.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_outline_level_row(&self) -> u8 {
         self.outline_level_row.get_value()
     }
 
-    #[inline]
     pub fn set_outline_level_row(&mut self, value: u8) -> &mut Self {
         self.outline_level_row.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_thick_bottom(&self) -> bool {
         self.thick_bottom.get_value()
     }
 
-    #[inline]
     pub fn set_thick_bottom(&mut self, value: bool) -> &mut Self {
         self.thick_bottom.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_thick_top(&self) -> bool {
         self.thick_top.get_value()
     }
 
-    #[inline]
     pub fn set_thick_top(&mut self, value: bool) -> &mut Self {
         self.thick_top.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
         self.default_row_height.set_value(13.5);
         self.dy_descent.set_value(0.15);

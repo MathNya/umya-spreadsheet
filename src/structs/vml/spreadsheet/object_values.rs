@@ -24,13 +24,11 @@ pub enum ObjectValues {
     Spin,
 }
 impl Default for ObjectValues {
-    #[inline]
     fn default() -> Self {
         Self::Note
     }
 }
 impl EnumTrait for ObjectValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::AuditingLine => "LineA",
@@ -58,7 +56,6 @@ impl EnumTrait for ObjectValues {
 impl FromStr for ObjectValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "LineA" => Ok(Self::AuditingLine),

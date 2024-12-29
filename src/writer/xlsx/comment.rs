@@ -107,7 +107,6 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
     authors
 }
 
-#[inline]
 fn get_author_id(authors: &[String], author: &str) -> String {
     authors
         .iter()

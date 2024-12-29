@@ -28,18 +28,15 @@ pub(crate) struct Fills {
 }
 
 impl Fills {
-    #[inline]
     pub(crate) fn get_fill(&self) -> &[Fill] {
         &self.fill
     }
 
-    #[inline]
     #[allow(dead_code)]
     pub(crate) fn get_fill_mut(&mut self) -> &mut Vec<Fill> {
         &mut self.fill
     }
 
-    #[inline]
     pub(crate) fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill.push(value);
         self

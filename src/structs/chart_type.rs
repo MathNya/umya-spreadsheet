@@ -23,7 +23,6 @@ impl Default for ChartType {
     }
 }
 impl EnumTrait for ChartType {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::LineChart => "line_chart",
@@ -45,7 +44,6 @@ impl EnumTrait for ChartType {
 impl FromStr for ChartType {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "line_chart" => Ok(Self::LineChart),

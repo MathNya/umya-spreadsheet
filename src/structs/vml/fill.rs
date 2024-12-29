@@ -30,72 +30,60 @@ pub struct Fill {
 }
 
 impl Fill {
-    #[inline]
     #[must_use]
     pub fn get_color(&self) -> &str {
         self.color.get_value_str()
     }
 
-    #[inline]
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.color.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_color_2(&self) -> &str {
         self.color_2.get_value_str()
     }
 
-    #[inline]
     pub fn set_color_2<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.color_2.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_on(&self) -> bool {
         self.on.get_value()
     }
 
-    #[inline]
     pub fn set_on(&mut self, value: bool) -> &mut Self {
         self.on.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_focus_size(&self) -> &str {
         self.focus_size.get_value_str()
     }
 
-    #[inline]
     pub fn set_focus_size<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.focus_size.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_image(&self) -> Option<&MediaObject> {
         self.image.as_ref()
     }
 
-    #[inline]
     pub fn get_image_mut(&mut self) -> Option<&mut MediaObject> {
         self.image.as_mut()
     }
 
-    #[inline]
     pub fn set_image(&mut self, value: MediaObject) -> &mut Self {
         self.image = Some(value);
         self
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -122,7 +110,6 @@ impl Fill {
     /// We allow the `unused_assignments` lint here, because the compiler is not
     /// smart enough to see, that defining `r_id_str` outside of the `if let
     /// Some()` is necessary to avoid lifetime errors.
-    #[inline]
     #[allow(unused_assignments)]
     pub(crate) fn write_to(
         &self,

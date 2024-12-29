@@ -77,183 +77,152 @@ impl Font {
     pub const UNDERLINE_SINGLE: &'static str = "single";
     pub const UNDERLINE_SINGLEACCOUNTING: &'static str = "singleAccounting";
 
-    #[inline]
     #[must_use]
     pub fn get_font_name(&self) -> &FontName {
         &self.font_name
     }
 
-    #[inline]
     pub fn get_font_name_mut(&mut self) -> &mut FontName {
         &mut self.font_name
     }
 
-    #[inline]
     pub fn set_font_name(&mut self, value: FontName) -> &mut Self {
         self.font_name = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
         self.font_name.get_val()
     }
 
-    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.font_name.set_val(value);
         self.set_scheme("none");
         self
     }
 
-    #[inline]
     pub fn set_name_with_scheme<S: Into<String>>(&mut self, name: S, scheme: S) -> &mut Self {
         self.set_name(name);
         self.set_scheme(scheme);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_size(&self) -> &FontSize {
         &self.font_size
     }
 
-    #[inline]
     pub fn get_font_size_mut(&mut self) -> &mut FontSize {
         &mut self.font_size
     }
 
-    #[inline]
     pub fn set_font_size(&mut self, value: FontSize) -> &mut Self {
         self.font_size = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_size(&self) -> f64 {
         self.font_size.get_val()
     }
 
-    #[inline]
     pub fn set_size(&mut self, value: f64) -> &mut Self {
         self.font_size.set_val(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_family_numbering(&self) -> &FontFamilyNumbering {
         &self.font_family_numbering
     }
 
-    #[inline]
     pub fn get_font_family_numbering_mut(&mut self) -> &mut FontFamilyNumbering {
         &mut self.font_family_numbering
     }
 
-    #[inline]
     pub fn set_font_family_numbering(&mut self, value: FontFamilyNumbering) -> &mut Self {
         self.font_family_numbering = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_family(&self) -> i32 {
         self.font_family_numbering.get_val()
     }
 
-    #[inline]
     pub fn set_family(&mut self, value: i32) -> &mut Self {
         self.font_family_numbering.set_val(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_bold(&self) -> &Bold {
         &self.font_bold
     }
 
-    #[inline]
     pub fn get_font_bold_mut(&mut self) -> &mut Bold {
         &mut self.font_bold
     }
 
-    #[inline]
     pub fn set_font_bold(&mut self, value: Bold) -> &mut Self {
         self.font_bold = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_bold(&self) -> bool {
         self.font_bold.get_val()
     }
 
-    #[inline]
     pub fn set_bold(&mut self, value: bool) -> &mut Self {
         self.font_bold.set_val(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_italic(&self) -> &Italic {
         &self.font_italic
     }
 
-    #[inline]
     pub fn get_font_italic_mut(&mut self) -> &mut Italic {
         &mut self.font_italic
     }
 
-    #[inline]
     pub fn set_font_italic(&mut self, value: Italic) -> &mut Self {
         self.font_italic = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_italic(&self) -> bool {
         self.font_italic.get_val()
     }
 
-    #[inline]
     pub fn set_italic(&mut self, value: bool) -> &mut Self {
         self.font_italic.set_val(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_underline(&self) -> &Underline {
         &self.font_underline
     }
 
-    #[inline]
     pub fn get_font_underline_mut(&mut self) -> &mut Underline {
         &mut self.font_underline
     }
 
-    #[inline]
     pub fn set_font_underline(&mut self, value: Underline) -> &mut Self {
         self.font_underline = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_underline(&self) -> &str {
         self.font_underline.val.get_value_string()
     }
 
-    #[inline]
     pub fn set_underline<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
         self.font_underline
@@ -261,105 +230,87 @@ impl Font {
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_strike(&self) -> &Strike {
         &self.font_strike
     }
 
-    #[inline]
     pub fn get_font_strike_mut(&mut self) -> &mut Strike {
         &mut self.font_strike
     }
 
-    #[inline]
     pub fn set_font_strike(&mut self, value: Strike) -> &mut Self {
         self.font_strike = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_strikethrough(&self) -> bool {
         self.font_strike.get_val()
     }
 
-    #[inline]
     pub fn set_strikethrough(&mut self, value: bool) -> &mut Self {
         self.font_strike.set_val(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
 
-    #[inline]
     pub fn get_color_mut(&mut self) -> &mut Color {
         &mut self.color
     }
 
-    #[inline]
     pub fn set_color(&mut self, value: Color) -> &mut Self {
         self.color = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_char_set(&self) -> &FontCharSet {
         &self.font_char_set
     }
 
-    #[inline]
     pub fn get_font_char_set_mut(&mut self) -> &mut FontCharSet {
         &mut self.font_char_set
     }
 
-    #[inline]
     pub fn set_font_char_set(&mut self, value: FontCharSet) -> &mut Self {
         self.font_char_set = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_charset(&self) -> i32 {
         self.font_char_set.get_val()
     }
 
-    #[inline]
     pub fn set_charset(&mut self, value: i32) -> &mut Self {
         self.font_char_set.set_val(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font_scheme(&self) -> &FontScheme {
         &self.font_scheme
     }
 
-    #[inline]
     pub fn get_font_scheme_mut(&mut self) -> &mut FontScheme {
         &mut self.font_scheme
     }
 
-    #[inline]
     pub fn set_font_scheme(&mut self, value: FontScheme) -> &mut Self {
         self.font_scheme = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_scheme(&self) -> &str {
         self.font_scheme.val.get_value_string()
     }
 
-    #[inline]
     pub fn set_scheme<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let obj = value.into();
         self.font_scheme
@@ -367,24 +318,20 @@ impl Font {
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_vertical_text_alignment(&self) -> &VerticalTextAlignment {
         &self.vertical_text_alignment
     }
 
-    #[inline]
     pub fn get_vertical_text_alignment_mut(&mut self) -> &mut VerticalTextAlignment {
         &mut self.vertical_text_alignment
     }
 
-    #[inline]
     pub fn set_vertical_text_alignment(&mut self, value: VerticalTextAlignment) -> &mut Self {
         self.vertical_text_alignment = value;
         self
     }
 
-    #[inline]
     pub(crate) fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_size(11.0);
@@ -470,13 +417,11 @@ impl Font {
         }
     }
 
-    #[inline]
     pub(crate) fn write_to_font(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // font
         self.write_to(writer, "font", "name");
     }
 
-    #[inline]
     pub(crate) fn write_to_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // rPr
         self.write_to(writer, "rPr", "rFont");

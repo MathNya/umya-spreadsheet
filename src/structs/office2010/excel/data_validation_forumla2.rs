@@ -26,18 +26,15 @@ pub struct DataValidationForumla2 {
     value: Formula,
 }
 impl DataValidationForumla2 {
-    #[inline]
     #[must_use]
     pub fn get_value(&self) -> &Formula {
         &self.value
     }
 
-    #[inline]
     pub fn get_value_mut(&mut self) -> &mut Formula {
         &mut self.value
     }
 
-    #[inline]
     pub fn set_value(&mut self, value: Formula) -> &mut Self {
         self.value = value;
         self
@@ -72,7 +69,6 @@ impl DataValidationForumla2 {
         }
     }
 
-    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "x14:formula2", vec![], false);
         self.value.write_to(writer);

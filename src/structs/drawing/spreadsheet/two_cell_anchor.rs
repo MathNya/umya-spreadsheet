@@ -58,150 +58,124 @@ pub struct TwoCellAnchor {
 }
 
 impl TwoCellAnchor {
-    #[inline]
     #[must_use]
     pub fn get_edit_as(&self) -> &EditAsValues {
         self.edit_as.get_value()
     }
 
-    #[inline]
     pub fn set_edit_as(&mut self, value: EditAsValues) -> &mut Self {
         self.edit_as.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
 
-    #[inline]
     pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.from_marker
     }
 
-    #[inline]
     pub fn set_from_marker(&mut self, value: MarkerType) -> &mut Self {
         self.from_marker = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_to_marker(&self) -> &MarkerType {
         &self.to_marker
     }
 
-    #[inline]
     pub fn get_to_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.to_marker
     }
 
-    #[inline]
     pub fn set_to_marker(&mut self, value: MarkerType) -> &mut Self {
         self.to_marker = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
 
-    #[inline]
     pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
         self.group_shape.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_group_shape(&mut self, value: GroupShape) -> &mut Self {
         self.group_shape = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
         self.graphic_frame.as_deref()
     }
 
-    #[inline]
     pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
         self.graphic_frame.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_graphic_frame(&mut self, value: GraphicFrame) -> &mut Self {
         self.graphic_frame = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
 
-    #[inline]
     pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
         self.shape.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_shape(&mut self, value: Shape) -> &mut Self {
         self.shape = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
         self.connection_shape.as_deref()
     }
 
-    #[inline]
     pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
         self.connection_shape.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_connection_shape(&mut self, value: ConnectionShape) -> &mut Self {
         self.connection_shape = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
 
-    #[inline]
     pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
         self.picture.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_picture(&mut self, value: Picture) -> &mut Self {
         self.picture = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_is_alternate_content(&self) -> bool {
         self.is_alternate_content.get_value()
     }
 
-    #[inline]
     pub fn set_is_alternate_content(&mut self, value: bool) -> &mut Self {
         self.is_alternate_content.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn is_support(&self) -> bool {
         match self.graphic_frame.as_ref() {
             Some(v) => v
@@ -215,12 +189,10 @@ impl TwoCellAnchor {
         }
     }
 
-    #[inline]
     pub(crate) fn is_chart(&self) -> bool {
         self.graphic_frame.is_some()
     }
 
-    #[inline]
     pub(crate) fn is_image(&self) -> bool {
         self.picture.is_some() || self.group_shape.is_some()
     }
@@ -361,7 +333,6 @@ impl TwoCellAnchor {
     }
 }
 impl AdjustmentCoordinate for TwoCellAnchor {
-    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: u32,
@@ -383,7 +354,6 @@ impl AdjustmentCoordinate for TwoCellAnchor {
         );
     }
 
-    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: u32,
@@ -405,7 +375,6 @@ impl AdjustmentCoordinate for TwoCellAnchor {
         );
     }
 
-    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: u32,
@@ -427,7 +396,6 @@ impl AdjustmentCoordinate for TwoCellAnchor {
     }
 }
 impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
-    #[inline]
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
@@ -447,7 +415,6 @@ impl AdjustmentCoordinateWithSheet for TwoCellAnchor {
         }
     }
 
-    #[inline]
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,

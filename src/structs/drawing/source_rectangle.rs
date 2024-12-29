@@ -21,45 +21,37 @@ pub struct SourceRectangle {
     b: StringValue,
 }
 impl SourceRectangle {
-    #[inline]
     pub fn set_t<S: Into<String>>(&mut self, value: S) {
         self.t.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_t(&self) -> Option<&str> {
         self.t.get_value()
     }
 
-    #[inline]
     pub fn set_l<S: Into<String>>(&mut self, value: S) {
         self.l.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_l(&self) -> Option<&str> {
         self.l.get_value()
     }
 
-    #[inline]
     pub fn set_r<S: Into<String>>(&mut self, value: S) {
         self.r.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_r(&self) -> Option<&str> {
         self.r.get_value()
     }
 
-    #[inline]
     pub fn set_b<S: Into<String>>(&mut self, value: S) {
         self.b.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_b(&self) -> Option<&str> {
         self.b.get_value()

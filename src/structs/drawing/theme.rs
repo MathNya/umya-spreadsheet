@@ -51,30 +51,25 @@ pub struct Theme {
 }
 
 impl Theme {
-    #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
 
-    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_theme_elements(&self) -> &ThemeElements {
         &self.theme_elements
     }
 
-    #[inline]
     pub fn get_theme_elements_mut(&mut self) -> &mut ThemeElements {
         &mut self.theme_elements
     }
 
-    #[inline]
     pub fn set_theme_elements(&mut self, value: ThemeElements) -> &mut Self {
         self.theme_elements = value;
         self

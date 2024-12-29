@@ -28,13 +28,11 @@ pub struct GroupShapeLocks {
 }
 
 impl GroupShapeLocks {
-    #[inline]
     #[must_use]
     pub fn get_no_change_aspect(&self) -> bool {
         self.no_change_aspect.get_value()
     }
 
-    #[inline]
     pub fn set_no_change_aspect(&mut self, value: bool) {
         self.no_change_aspect.set_value(value);
     }

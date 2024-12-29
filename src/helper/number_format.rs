@@ -20,7 +20,6 @@ pub struct Split<'r, 't> {
     last:   usize,
 }
 
-#[inline]
 #[must_use]
 pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     Split {

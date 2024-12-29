@@ -10,14 +10,12 @@ pub enum FontSchemeValues {
 }
 
 impl Default for FontSchemeValues {
-    #[inline]
     fn default() -> Self {
         Self::None
     }
 }
 
 impl EnumTrait for FontSchemeValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Major => "major",
@@ -30,7 +28,6 @@ impl EnumTrait for FontSchemeValues {
 impl FromStr for FontSchemeValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "major" => Ok(Self::Major),

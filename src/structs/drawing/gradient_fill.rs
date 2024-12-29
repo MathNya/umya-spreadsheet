@@ -42,76 +42,63 @@ pub struct GradientFill {
 }
 
 impl GradientFill {
-    #[inline]
     #[must_use]
     pub fn get_flip(&self) -> &TileFlipValues {
         self.flip.get_value()
     }
 
-    #[inline]
     pub fn set_flip(&mut self, value: TileFlipValues) -> &mut GradientFill {
         self.flip.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_rotate_with_shape(&self) -> bool {
         self.rotate_with_shape.get_value()
     }
 
-    #[inline]
     pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut GradientFill {
         self.rotate_with_shape.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_gradient_stop_list(&self) -> &GradientStopList {
         &self.gradient_stop_list
     }
 
-    #[inline]
     pub fn get_gradient_stop_list_mut(&mut self) -> &mut GradientStopList {
         &mut self.gradient_stop_list
     }
 
-    #[inline]
     pub fn set_gradient_stop_list(&mut self, value: GradientStopList) -> &mut GradientFill {
         self.gradient_stop_list = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_linear_gradient_fill(&self) -> Option<&LinearGradientFill> {
         self.linear_gradient_fill.as_deref()
     }
 
-    #[inline]
     pub fn get_linear_gradient_fill_mut(&mut self) -> Option<&mut LinearGradientFill> {
         self.linear_gradient_fill.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_linear_gradient_fill(&mut self, value: LinearGradientFill) -> &mut GradientFill {
         self.linear_gradient_fill = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_tile_rectangle(&self) -> Option<&TileRectangle> {
         self.tile_rectangle.as_deref()
     }
 
-    #[inline]
     pub fn get_tile_rectangle_mut(&mut self) -> Option<&mut TileRectangle> {
         self.tile_rectangle.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_tile_rectangle(&mut self, value: TileRectangle) -> &mut GradientFill {
         self.tile_rectangle = Some(Box::new(value));
         self

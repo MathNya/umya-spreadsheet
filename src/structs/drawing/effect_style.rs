@@ -33,52 +33,43 @@ pub struct EffectStyle {
 }
 
 impl EffectStyle {
-    #[inline]
     #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
-    #[inline]
     pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
         self.effect_list = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
         self.scene_3d_type.as_deref()
     }
 
-    #[inline]
     pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
         self.scene_3d_type.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_scene_3d_type(&mut self, value: Scene3DType) -> &mut Self {
         self.scene_3d_type = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
         self.shape_3d_type.as_deref()
     }
 
-    #[inline]
     pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
         self.shape_3d_type.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_shape_3d_type(&mut self, value: Shape3DType) -> &mut Self {
         self.shape_3d_type = Some(Box::new(value));
         self

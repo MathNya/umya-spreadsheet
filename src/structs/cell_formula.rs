@@ -58,126 +58,105 @@ pub struct CellFormula {
     text_view:      StringValue,
 }
 impl CellFormula {
-    #[inline]
     #[must_use]
     pub fn get_bx(&self) -> bool {
         self.bx.get_value()
     }
 
-    #[inline]
     pub fn set_bx(&mut self, value: bool) -> &mut Self {
         self.bx.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_data_table_2d(&self) -> bool {
         self.data_table_2d.get_value()
     }
 
-    #[inline]
     pub fn set_data_table_2d(&mut self, value: bool) -> &mut Self {
         self.data_table_2d.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_data_table_row(&self) -> bool {
         self.data_table_row.get_value()
     }
 
-    #[inline]
     pub fn set_data_table_row(&mut self, value: bool) -> &mut Self {
         self.data_table_row.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_formula_type(&self) -> &CellFormulaValues {
         self.formula_type.get_value()
     }
 
-    #[inline]
     pub fn set_formula_type(&mut self, value: CellFormulaValues) {
         self.formula_type.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_input_1deleted(&self) -> bool {
         self.input_1deleted.get_value()
     }
 
-    #[inline]
     pub fn set_input_1deleted(&mut self, value: bool) -> &mut Self {
         self.input_1deleted.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_input_2deleted(&self) -> bool {
         self.input_2deleted.get_value()
     }
 
-    #[inline]
     pub fn set_input_2deleted(&mut self, value: bool) -> &mut Self {
         self.input_2deleted.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_r1(&self) -> &str {
         self.r1.get_value_str()
     }
 
-    #[inline]
     pub fn set_r1<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.r1.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_r2(&self) -> &str {
         self.r2.get_value_str()
     }
 
-    #[inline]
     pub fn set_r2<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.r2.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_reference(&self) -> &str {
         self.reference.get_value_str()
     }
 
-    #[inline]
     pub fn set_reference<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.reference.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_shared_index(&self) -> u32 {
         self.shared_index.get_value()
     }
 
-    #[inline]
     pub fn set_shared_index(&mut self, value: u32) -> &mut Self {
         self.shared_index.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_text(&self) -> &str {
         if self.text_view.has_value() {
@@ -186,13 +165,11 @@ impl CellFormula {
         self.text.get_value_str()
     }
 
-    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.text.set_value(value);
         self
     }
 
-    #[inline]
     pub fn set_text_view<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.text_view.set_value(value);
         self

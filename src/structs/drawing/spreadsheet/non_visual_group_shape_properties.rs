@@ -29,18 +29,15 @@ pub struct NonVisualGroupShapeProperties {
 }
 
 impl NonVisualGroupShapeProperties {
-    #[inline]
     #[must_use]
     pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
 
-    #[inline]
     pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
         &mut self.non_visual_drawing_properties
     }
 
-    #[inline]
     pub fn set_non_visual_drawing_properties(
         &mut self,
         value: NonVisualDrawingProperties,
@@ -49,7 +46,6 @@ impl NonVisualGroupShapeProperties {
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_non_visual_group_shape_drawing_properties(
         &self,
@@ -57,14 +53,12 @@ impl NonVisualGroupShapeProperties {
         &self.non_visual_group_shape_drawing_properties
     }
 
-    #[inline]
     pub fn get_non_visual_group_shape_drawing_properties_mut(
         &mut self,
     ) -> &mut NonVisualGroupShapeDrawingProperties {
         &mut self.non_visual_group_shape_drawing_properties
     }
 
-    #[inline]
     pub fn set_non_visual_group_shape_drawing_properties(
         &mut self,
         value: NonVisualGroupShapeDrawingProperties,

@@ -44,126 +44,105 @@ pub struct DataValidation {
     formula2:               StringValue,
 }
 impl DataValidation {
-    #[inline]
     #[must_use]
     pub fn get_type(&self) -> &DataValidationValues {
         self.r#type.get_value()
     }
 
-    #[inline]
     pub fn set_type(&mut self, value: DataValidationValues) -> &mut Self {
         self.r#type.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
         self.operator.get_value()
     }
 
-    #[inline]
     pub fn set_operator(&mut self, value: DataValidationOperatorValues) -> &mut Self {
         self.operator.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_allow_blank(&self) -> bool {
         self.allow_blank.get_value()
     }
 
-    #[inline]
     pub fn set_allow_blank(&mut self, value: bool) -> &mut Self {
         self.allow_blank.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_show_input_message(&self) -> bool {
         self.show_input_message.get_value()
     }
 
-    #[inline]
     pub fn set_show_input_message(&mut self, value: bool) -> &mut Self {
         self.show_input_message.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_show_error_message(&self) -> bool {
         self.show_error_message.get_value()
     }
 
-    #[inline]
     pub fn set_show_error_message(&mut self, value: bool) -> &mut Self {
         self.show_error_message.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_prompt_title(&self) -> &str {
         self.prompt_title.get_value_str()
     }
 
-    #[inline]
     pub fn set_prompt_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prompt_title.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_prompt(&self) -> &str {
         self.prompt.get_value_str()
     }
 
-    #[inline]
     pub fn set_prompt<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prompt.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
-    #[inline]
     pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
     }
 
-    #[inline]
     pub fn set_sequence_of_references(&mut self, value: SequenceOfReferences) -> &mut Self {
         self.sequence_of_references = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_formula1(&self) -> &str {
         self.formula1.get_value_str()
     }
 
-    #[inline]
     pub fn set_formula1<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.formula1.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_formula2(&self) -> &str {
         self.formula2.get_value_str()
     }
 
-    #[inline]
     pub fn set_formula2<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.formula2.set_value(value);
         self

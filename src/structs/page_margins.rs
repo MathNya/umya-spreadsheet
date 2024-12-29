@@ -22,73 +22,61 @@ pub struct PageMargins {
     footer: DoubleValue,
 }
 impl PageMargins {
-    #[inline]
     #[must_use]
     pub fn get_left(&self) -> f64 {
         self.left.get_value()
     }
 
-    #[inline]
     pub fn set_left(&mut self, value: f64) -> &mut Self {
         self.left.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_right(&self) -> f64 {
         self.right.get_value()
     }
 
-    #[inline]
     pub fn set_right(&mut self, value: f64) -> &mut Self {
         self.right.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_top(&self) -> f64 {
         self.top.get_value()
     }
 
-    #[inline]
     pub fn set_top(&mut self, value: f64) -> &mut Self {
         self.top.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_bottom(&self) -> f64 {
         self.bottom.get_value()
     }
 
-    #[inline]
     pub fn set_bottom(&mut self, value: f64) -> &mut Self {
         self.bottom.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_header(&self) -> f64 {
         self.header.get_value()
     }
 
-    #[inline]
     pub fn set_header(&mut self, value: f64) -> &mut Self {
         self.header.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_footer(&self) -> f64 {
         self.footer.get_value()
     }
 
-    #[inline]
     pub fn set_footer(&mut self, value: f64) -> &mut Self {
         self.footer.set_value(value);
         self

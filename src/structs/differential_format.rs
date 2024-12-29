@@ -35,71 +35,58 @@ pub(crate) struct DifferentialFormat {
 }
 
 impl DifferentialFormat {
-    #[inline]
     pub(crate) fn get_font(&self) -> Option<&Font> {
         self.font.as_deref()
     }
 
-    #[inline]
     pub(crate) fn get_font_mut(&mut self) -> Option<&mut Font> {
         self.font.as_deref_mut()
     }
 
-    #[inline]
     pub(crate) fn set_font(&mut self, value: Font) -> &mut Self {
         self.font = Some(Box::new(value));
         self
     }
 
-    #[inline]
     pub(crate) fn get_fill(&self) -> Option<&Fill> {
         self.fill.as_ref()
     }
 
-    #[inline]
     pub(crate) fn get_fill_mut(&mut self) -> Option<&mut Fill> {
         self.fill.as_mut()
     }
 
-    #[inline]
     pub(crate) fn set_fill(&mut self, value: Fill) -> &mut Self {
         self.fill = Some(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_borders(&self) -> Option<&Borders> {
         self.borders.as_deref()
     }
 
-    #[inline]
     pub(crate) fn get_borders_mut(&mut self) -> Option<&mut Borders> {
         self.borders.as_deref_mut()
     }
 
-    #[inline]
     pub(crate) fn set_borders(&mut self, value: Borders) -> &mut Self {
         self.borders = Some(Box::new(value));
         self
     }
 
-    #[inline]
     pub(crate) fn get_alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
 
-    #[inline]
     pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
     }
 
-    #[inline]
     pub(crate) fn set_alignment(&mut self, value: Alignment) -> &mut Self {
         self.alignment = Some(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_style(&self) -> Style {
         let mut style = Style::default();
         style.set_font_crate(self.font.as_deref().cloned());
@@ -109,7 +96,6 @@ impl DifferentialFormat {
         style
     }
 
-    #[inline]
     pub(crate) fn set_style(&mut self, style: &Style) {
         self.font = style.get_font().cloned().map(Box::new);
         self.fill = style.get_fill().cloned();

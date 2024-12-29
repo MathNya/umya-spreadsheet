@@ -46,184 +46,150 @@ pub(crate) struct CellFormat {
 }
 
 impl CellFormat {
-    #[inline]
     pub(crate) fn get_number_format_id(&self) -> u32 {
         self.number_format_id.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_number_format_id(&mut self, value: u32) -> &mut Self {
         self.number_format_id.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_font_id(&self) -> u32 {
         self.font_id.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_font_id(&mut self, value: u32) -> &mut Self {
         self.font_id.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_fill_id(&self) -> u32 {
         self.fill_id.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_fill_id(&mut self, value: u32) -> &mut Self {
         self.fill_id.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_border_id(&self) -> u32 {
         self.border_id.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_border_id(&mut self, value: u32) -> &mut Self {
         self.border_id.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_format_id(&self) -> u32 {
         self.format_id.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_format_id(&mut self, value: u32) -> &mut Self {
         self.format_id.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_apply_number_format(&self) -> bool {
         self.apply_number_format.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_apply_number_format(&mut self, value: bool) -> &mut Self {
         self.apply_number_format.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_apply_number_format(&self) -> bool {
         self.apply_number_format.has_value()
     }
 
-    #[inline]
     pub(crate) fn get_apply_fill(&self) -> bool {
         self.apply_fill.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_apply_fill(&mut self, value: bool) -> &mut Self {
         self.apply_fill.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_apply_fill(&self) -> bool {
         self.apply_fill.has_value()
     }
 
-    #[inline]
     pub(crate) fn get_apply_border(&self) -> bool {
         self.apply_border.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_apply_border(&mut self, value: bool) -> &mut Self {
         self.apply_border.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_apply_border(&self) -> bool {
         self.apply_border.has_value()
     }
 
-    #[inline]
     pub(crate) fn get_apply_font(&self) -> bool {
         self.apply_font.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_apply_font(&mut self, value: bool) -> &mut Self {
         self.apply_font.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_apply_font(&self) -> bool {
         self.apply_font.has_value()
     }
 
-    #[inline]
     pub(crate) fn get_apply_alignment(&self) -> bool {
         self.apply_alignment.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_apply_alignment(&mut self, value: bool) -> &mut Self {
         self.apply_alignment.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_apply_alignment(&self) -> bool {
         self.apply_alignment.has_value()
     }
 
-    #[inline]
     pub(crate) fn get_apply_protection(&self) -> bool {
         self.apply_protection.get_value()
     }
 
-    #[inline]
     pub(crate) fn set_apply_protection(&mut self, value: bool) -> &mut Self {
         self.apply_protection.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_apply_protection(&self) -> bool {
         self.apply_protection.has_value()
     }
 
-    #[inline]
     pub(crate) fn get_alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
 
-    #[inline]
     pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
     }
 
-    #[inline]
     pub(crate) fn set_alignment(&mut self, value: Alignment) -> &mut Self {
         self.alignment = Some(value);
         self
     }
 
-    #[inline]
     pub(crate) fn get_protection(&self) -> Option<&Protection> {
         self.protection.as_ref()
     }
 
-    #[inline]
     pub(crate) fn get_protection_mut(&mut self) -> Option<&mut Protection> {
         self.protection.as_mut()
     }
 
-    #[inline]
     pub(crate) fn set_protection(&mut self, value: Protection) -> &mut Self {
         self.protection = Some(value);
         self

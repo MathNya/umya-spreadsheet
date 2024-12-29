@@ -28,37 +28,31 @@ pub struct ColorScale {
 }
 
 impl ColorScale {
-    #[inline]
     #[must_use]
     pub fn get_cfvo_collection(&self) -> &[ConditionalFormatValueObject] {
         &self.cfvo_collection
     }
 
-    #[inline]
     pub fn set_cfvo_collection(&mut self, value: Vec<ConditionalFormatValueObject>) -> &mut Self {
         self.cfvo_collection = value;
         self
     }
 
-    #[inline]
     pub fn add_cfvo_collection(&mut self, value: ConditionalFormatValueObject) -> &mut Self {
         self.cfvo_collection.push(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_color_collection(&self) -> &[Color] {
         &self.color_collection
     }
 
-    #[inline]
     pub fn set_color_collection(&mut self, value: impl Into<Vec<Color>>) -> &mut Self {
         self.color_collection = value.into();
         self
     }
 
-    #[inline]
     pub fn add_color_collection(&mut self, value: Color) -> &mut Self {
         self.color_collection.push(value);
         self

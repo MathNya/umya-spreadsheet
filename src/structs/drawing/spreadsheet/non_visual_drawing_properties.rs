@@ -35,37 +35,31 @@ pub struct NonVisualDrawingProperties {
 }
 
 impl NonVisualDrawingProperties {
-    #[inline]
     #[must_use]
     pub fn get_id(&self) -> u32 {
         self.id.get_value()
     }
 
-    #[inline]
     pub fn set_id(&mut self, value: u32) -> &mut Self {
         self.id.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
 
-    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
 
-    #[inline]
     pub fn set_hidden(&mut self, value: bool) -> &mut Self {
         self.hidden.set_value(value);
         self

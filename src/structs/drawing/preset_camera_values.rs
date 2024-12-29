@@ -67,13 +67,11 @@ pub enum PresetCameraValues {
     PerspectiveRight,
 }
 impl Default for PresetCameraValues {
-    #[inline]
     fn default() -> Self {
         Self::LegacyObliqueTopLeft
     }
 }
 impl EnumTrait for PresetCameraValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::IsometricBottomDown => "isometricBottomDown",
@@ -144,7 +142,6 @@ impl EnumTrait for PresetCameraValues {
 impl FromStr for PresetCameraValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "isometricBottomDown" => Ok(Self::IsometricBottomDown),

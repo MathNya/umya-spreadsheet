@@ -38,69 +38,57 @@ pub struct Transform {
 }
 
 impl Transform {
-    #[inline]
     #[must_use]
     pub fn get_offset(&self) -> &Offset {
         &self.offset
     }
 
-    #[inline]
     pub fn get_offset_mut(&mut self) -> &mut Offset {
         &mut self.offset
     }
 
-    #[inline]
     pub fn set_offset(&mut self, value: Offset) -> &mut Transform {
         self.offset = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_extents(&self) -> &Extents {
         &self.extents
     }
 
-    #[inline]
     pub fn get_extents_mut(&mut self) -> &mut Extents {
         &mut self.extents
     }
 
-    #[inline]
     pub fn set_extents(&mut self, value: Extents) -> &mut Transform {
         self.extents = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_rotation(&self) -> i32 {
         self.rotation.get_value()
     }
 
-    #[inline]
     pub fn set_rotation(&mut self, value: i32) {
         self.rotation.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_vertical_flip(&self) -> bool {
         self.vertical_flip.get_value()
     }
 
-    #[inline]
     pub fn set_vertical_flip(&mut self, value: bool) {
         self.vertical_flip.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_horizontal_flip(&self) -> bool {
         self.horizontal_flip.get_value()
     }
 
-    #[inline]
     pub fn set_horizontal_flip(&mut self, value: bool) {
         self.horizontal_flip.set_value(value);
     }

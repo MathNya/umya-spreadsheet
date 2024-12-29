@@ -50,125 +50,104 @@ pub struct PivotCacheDefinition {
 }
 
 impl PivotCacheDefinition {
-    #[inline]
     #[must_use]
     pub fn get_id(&self) -> &str {
         self.id.get_value_str()
     }
 
-    #[inline]
     pub fn set_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.id.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_refreshed_by(&self) -> &str {
         self.refreshed_by.get_value_str()
     }
 
-    #[inline]
     pub fn set_refreshed_by<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.refreshed_by.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_refreshed_date(&self) -> f64 {
         self.refreshed_date.get_value()
     }
 
-    #[inline]
     pub fn set_refreshed_date(&mut self, value: f64) -> &mut Self {
         self.refreshed_date.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_created_version(&self) -> u8 {
         self.created_version.get_value()
     }
 
-    #[inline]
     pub fn set_created_version(&mut self, value: u8) -> &mut Self {
         self.created_version.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_refreshed_version(&self) -> u8 {
         self.refreshed_version.get_value()
     }
 
-    #[inline]
     pub fn set_refreshed_version(&mut self, value: u8) -> &mut Self {
         self.refreshed_version.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.get_value()
     }
 
-    #[inline]
     pub fn set_min_refreshable_version(&mut self, value: u8) -> &mut Self {
         self.min_refreshable_version.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_record_count(&self) -> u32 {
         self.record_count.get_value()
     }
 
-    #[inline]
     pub fn set_record_count(&mut self, value: u32) -> &mut Self {
         self.record_count.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_cache_source(&self) -> &CacheSource {
         &self.cache_source
     }
 
-    #[inline]
     pub fn get_cache_source_mut(&mut self) -> &mut CacheSource {
         &mut self.cache_source
     }
 
-    #[inline]
     pub fn set_cache_source(&mut self, value: CacheSource) -> &mut Self {
         self.cache_source = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_cache_fields(&self) -> &CacheFields {
         &self.cache_fields
     }
 
-    #[inline]
     pub fn get_cache_fields_mut(&mut self) -> &mut CacheFields {
         &mut self.cache_fields
     }
 
-    #[inline]
     pub fn set_cache_fields(&mut self, value: CacheFields) -> &mut Self {
         self.cache_fields = value;
         self
     }
 
-    #[inline]
     #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
@@ -213,7 +192,6 @@ impl PivotCacheDefinition {
         );
     }
 
-    #[inline]
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition

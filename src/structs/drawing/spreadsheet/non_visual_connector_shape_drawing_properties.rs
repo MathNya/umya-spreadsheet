@@ -29,34 +29,28 @@ pub struct NonVisualConnectorShapeDrawingProperties {
 }
 
 impl NonVisualConnectorShapeDrawingProperties {
-    #[inline]
     #[must_use]
     pub fn get_start_connection(&self) -> Option<&StartConnection> {
         self.start_connection.as_deref()
     }
 
-    #[inline]
     pub fn set_start_connection(&mut self, value: StartConnection) {
         self.start_connection = Some(Box::new(value));
     }
 
-    #[inline]
     pub fn remove_start_connection(&mut self) {
         self.start_connection = None;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_end_connection(&self) -> Option<&EndConnection> {
         self.end_connection.as_deref()
     }
 
-    #[inline]
     pub fn set_end_connection(&mut self, value: EndConnection) {
         self.end_connection = Some(Box::new(value));
     }
 
-    #[inline]
     pub fn remove_end_connection(&mut self) {
         self.end_connection = None;
     }

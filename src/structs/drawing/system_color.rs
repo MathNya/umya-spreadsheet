@@ -29,30 +29,25 @@ pub struct SystemColor {
 }
 
 impl SystemColor {
-    #[inline]
     #[must_use]
     pub fn get_val(&self) -> &SystemColorValues {
         self.val.get_value()
     }
 
-    #[inline]
     pub fn set_val(&mut self, value: SystemColorValues) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_last_color(&self) -> &str {
         self.last_color.get_value_str()
     }
 
-    #[inline]
     pub fn set_last_color<S: Into<String>>(&mut self, value: S) {
         self.last_color.set_value(value.into());
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

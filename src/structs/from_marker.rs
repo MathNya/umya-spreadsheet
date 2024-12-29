@@ -28,65 +28,54 @@ pub struct FromMarker {
 }
 
 impl FromMarker {
-    #[inline]
     #[must_use]
     pub fn get_col(&self) -> usize {
         self.col
     }
 
-    #[inline]
     pub fn set_col(&mut self, value: usize) -> &mut FromMarker {
         self.col = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_col_off(&self) -> usize {
         self.col_off
     }
 
-    #[inline]
     pub fn set_col_off(&mut self, value: usize) -> &mut FromMarker {
         self.col_off = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_row(&self) -> usize {
         self.row
     }
 
-    #[inline]
     pub fn set_row(&mut self, value: usize) -> &mut FromMarker {
         self.row = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_row_off(&self) -> usize {
         self.row_off
     }
 
-    #[inline]
     pub fn set_row_off(&mut self, value: usize) -> &mut FromMarker {
         self.row_off = value;
         self
     }
 
-    #[inline]
     pub(crate) fn adjustment_insert_row(&mut self, num_rows: usize) {
         self.row += num_rows;
     }
 
-    #[inline]
     pub(crate) fn adjustment_insert_column(&mut self, num_cols: usize) {
         self.col += num_cols;
     }
 
-    #[inline]
     pub(crate) fn adjustment_remove_row(&mut self, num_rows: usize) {
         self.row = if self.row > num_rows {
             self.row - num_rows
@@ -95,7 +84,6 @@ impl FromMarker {
         };
     }
 
-    #[inline]
     pub(crate) fn adjustment_remove_column(&mut self, num_cols: usize) {
         self.col = if self.col > num_cols {
             self.col - num_cols

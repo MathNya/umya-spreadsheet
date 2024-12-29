@@ -22,13 +22,11 @@ pub enum SchemeColorValues {
     Text2,
 }
 impl Default for SchemeColorValues {
-    #[inline]
     fn default() -> Self {
         Self::Background1
     }
 }
 impl EnumTrait for SchemeColorValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Accent1 => "accent1",
@@ -54,7 +52,6 @@ impl EnumTrait for SchemeColorValues {
 impl FromStr for SchemeColorValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "accent1" => Ok(Self::Accent1),

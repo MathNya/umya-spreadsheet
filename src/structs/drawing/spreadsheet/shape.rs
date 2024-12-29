@@ -36,23 +36,19 @@ pub struct Shape {
 }
 
 impl Shape {
-    #[inline]
     #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
 
-    #[inline]
     pub fn get_anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
     }
 
-    #[inline]
     pub fn set_anchor(&mut self, value: Anchor) {
         self.anchor = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
         &self.non_visual_shape_properties
@@ -62,23 +58,19 @@ impl Shape {
         &mut self.non_visual_shape_properties
     }
 
-    #[inline]
     pub fn set_non_visual_shape_properties(&mut self, value: NonVisualShapeProperties) {
         self.non_visual_shape_properties = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
-    #[inline]
     pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
     }
 
-    #[inline]
     pub fn set_shape_properties(&mut self, value: ShapeProperties) {
         self.shape_properties = value;
     }
@@ -88,28 +80,23 @@ impl Shape {
         self.shape_style.as_deref()
     }
 
-    #[inline]
     pub fn get_shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
         self.shape_style.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_shape_style(&mut self, value: ShapeStyle) {
         self.shape_style = Some(Box::new(value));
     }
 
-    #[inline]
     #[must_use]
     pub fn get_text_body(&self) -> Option<&TextBody> {
         self.text_body.as_deref()
     }
 
-    #[inline]
     pub fn get_text_body_mut(&mut self) -> Option<&mut TextBody> {
         self.text_body.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_text_body(&mut self, value: TextBody) {
         self.text_body = Some(Box::new(value));
     }

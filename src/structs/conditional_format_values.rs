@@ -23,13 +23,11 @@ pub enum ConditionalFormatValues {
     UniqueValues,
 }
 impl Default for ConditionalFormatValues {
-    #[inline]
     fn default() -> Self {
         Self::Expression
     }
 }
 impl EnumTrait for ConditionalFormatValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::AboveAverage => "aboveAverage",
@@ -56,7 +54,6 @@ impl EnumTrait for ConditionalFormatValues {
 impl FromStr for ConditionalFormatValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "aboveAverage" => Ok(Self::AboveAverage),

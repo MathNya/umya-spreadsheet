@@ -168,7 +168,6 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
 /// * `writer` - writer to write to.
 /// # Return value
 /// * `Result` - OK is void. Err is error message.
-#[inline]
 pub fn write_writer<W: io::Write>(wb: &Workbook, mut writer: W) -> Result<(), XlsxError> {
     let buffer = make_buffer(wb, false)?;
     writer.write_all(&buffer)?;
@@ -181,7 +180,6 @@ pub fn write_writer<W: io::Write>(wb: &Workbook, mut writer: W) -> Result<(), Xl
 /// * `writer` - writer to write to.
 /// # Return value
 /// * `Result` - OK is void. Err is error message.
-#[inline]
 pub fn write_writer_light<W: io::Write>(wb: &Workbook, mut writer: W) -> Result<(), XlsxError> {
     let buffer = make_buffer(wb, true)?;
     writer.write_all(&buffer)?;

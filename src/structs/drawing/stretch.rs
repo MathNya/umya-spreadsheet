@@ -25,18 +25,15 @@ pub struct Stretch {
 }
 
 impl Stretch {
-    #[inline]
     #[must_use]
     pub fn get_fill_rectangle(&self) -> Option<&FillRectangle> {
         self.fill_rectangle.as_deref()
     }
 
-    #[inline]
     pub fn get_fill_rectangle_mut(&mut self) -> Option<&mut FillRectangle> {
         self.fill_rectangle.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_fill_rectangle(&mut self, value: FillRectangle) {
         self.fill_rectangle = Some(Box::new(value));
     }

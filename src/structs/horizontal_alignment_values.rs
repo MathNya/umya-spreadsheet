@@ -13,13 +13,11 @@ pub enum HorizontalAlignmentValues {
     Right,
 }
 impl Default for HorizontalAlignmentValues {
-    #[inline]
     fn default() -> Self {
         Self::General
     }
 }
 impl EnumTrait for HorizontalAlignmentValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Center => "center",
@@ -36,7 +34,6 @@ impl EnumTrait for HorizontalAlignmentValues {
 impl FromStr for HorizontalAlignmentValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "center" => Ok(Self::Center),

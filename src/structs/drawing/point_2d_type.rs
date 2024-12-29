@@ -24,29 +24,24 @@ pub struct Point2DType {
 }
 
 impl Point2DType {
-    #[inline]
     #[must_use]
     pub fn get_x(&self) -> i64 {
         self.x.get_value()
     }
 
-    #[inline]
     pub fn set_x(&mut self, value: i64) {
         self.x.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_y(&self) -> i64 {
         self.y.get_value()
     }
 
-    #[inline]
     pub fn set_y(&mut self, value: i64) {
         self.y.set_value(value);
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -56,12 +51,10 @@ impl Point2DType {
         set_string_from_xml!(self, e, y, "y");
     }
 
-    #[inline]
     pub(crate) fn write_to_off(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:off");
     }
 
-    #[inline]
     pub(crate) fn write_to_ch_off(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:chOff");
     }

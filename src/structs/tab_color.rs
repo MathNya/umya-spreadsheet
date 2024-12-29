@@ -98,12 +98,10 @@ impl TabColor {
         "Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan",
     ];
 
-    #[inline]
     pub fn get_argb(&self) -> &str {
         &self.argb.get_value()
     }
 
-    #[inline]
     pub fn set_argb<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.indexed.remove_value();
         self.theme_index.remove_value();
@@ -111,7 +109,6 @@ impl TabColor {
         self
     }
 
-    #[inline]
     pub fn get_indexed(&self) -> u32 {
         &self.indexed.get_value()
     }
@@ -127,12 +124,10 @@ impl TabColor {
         self
     }
 
-    #[inline]
     pub fn get_theme_index(&self) -> u32 {
         &self.theme_index.get_value()
     }
 
-    #[inline]
     pub fn set_theme_index(&mut self, index: u32) -> &mut Self {
         self.indexed.remove_value();
         self.theme_index.set_value(index);
@@ -155,18 +150,15 @@ impl TabColor {
         self
     }
 
-    #[inline]
     pub fn get_tint(&self) -> f64 {
         &self.tint.get_value()
     }
 
-    #[inline]
     pub fn set_tint(&mut self, value: f64) -> &mut Self {
         self.tint.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_value(&self) -> bool {
         self.theme_index.has_value()
             || self.indexed.has_value()
@@ -174,7 +166,6 @@ impl TabColor {
             || self.tint.has_value()
     }
 
-    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",

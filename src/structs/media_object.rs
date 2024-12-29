@@ -5,34 +5,28 @@ pub struct MediaObject {
     data:  Vec<u8>,
 }
 impl MediaObject {
-    #[inline]
     pub fn get_image_title(&self) -> &str {
         &self.title
     }
 
-    #[inline]
     pub fn set_image_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.title = value.into().into_boxed_str();
         self
     }
 
-    #[inline]
     pub fn get_image_name(&self) -> &str {
         &self.name
     }
 
-    #[inline]
     pub fn set_image_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name = value.into().into_boxed_str();
         self
     }
 
-    #[inline]
     pub fn get_image_data(&self) -> &[u8] {
         &self.data
     }
 
-    #[inline]
     pub fn set_image_data(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.data = value.into();
         self

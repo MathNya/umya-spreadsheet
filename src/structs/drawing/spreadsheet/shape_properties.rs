@@ -41,137 +41,113 @@ pub struct ShapeProperties {
     extension_list:  Option<ExtensionList>,
 }
 impl ShapeProperties {
-    #[inline]
     #[must_use]
     pub fn get_transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_deref()
     }
 
-    #[inline]
     pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
         self.transform2d.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_transform2d(&mut self, value: Transform2D) -> &mut Self {
         self.transform2d = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_geometry(&self) -> &PresetGeometry {
         &self.preset_geometry
     }
 
-    #[inline]
     pub fn get_geometry_mut(&mut self) -> &mut PresetGeometry {
         &mut self.preset_geometry
     }
 
-    #[inline]
     pub fn set_geometry(&mut self, value: PresetGeometry) -> &mut Self {
         self.preset_geometry = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_blip_fill(&self) -> Option<&BlipFill> {
         self.blip_fill.as_deref()
     }
 
-    #[inline]
     pub fn get_blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
         self.blip_fill.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_blip_fill(&mut self, value: BlipFill) -> &mut Self {
         self.blip_fill = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
 
-    #[inline]
     pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_solid_fill(&mut self, value: SolidFill) -> &mut Self {
         self.solid_fill = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
 
-    #[inline]
     pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
         self.outline.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_outline(&mut self, value: Outline) -> &mut Self {
         self.outline = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
-    #[inline]
     pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
         self.effect_list = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
-    #[inline]
     pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
     }
 
-    #[inline]
     pub fn set_no_fill(&mut self, value: NoFill) -> &mut Self {
         self.no_fill = Some(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_extension_list(&self) -> Option<&ExtensionList> {
         self.extension_list.as_ref()
     }
 
-    #[inline]
     pub fn get_extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
         self.extension_list.as_mut()
     }
 
-    #[inline]
     pub fn set_extension_list(&mut self, value: ExtensionList) -> &mut Self {
         self.extension_list = Some(value);
         self

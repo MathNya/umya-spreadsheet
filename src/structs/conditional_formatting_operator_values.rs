@@ -17,13 +17,11 @@ pub enum ConditionalFormattingOperatorValues {
     NotEqual,
 }
 impl Default for ConditionalFormattingOperatorValues {
-    #[inline]
     fn default() -> Self {
         Self::LessThan
     }
 }
 impl EnumTrait for ConditionalFormattingOperatorValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::BeginsWith => "beginsWith",
@@ -44,7 +42,6 @@ impl EnumTrait for ConditionalFormattingOperatorValues {
 impl FromStr for ConditionalFormattingOperatorValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "beginsWith" => Ok(Self::BeginsWith),

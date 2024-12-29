@@ -41,181 +41,151 @@ pub struct WorkbookProtection {
     lock_windows:             BooleanValue,
 }
 impl WorkbookProtection {
-    #[inline]
     #[must_use]
     pub fn get_workbook_algorithm_name(&self) -> &str {
         self.workbook_algorithm_name.get_value_str()
     }
 
-    #[inline]
     pub fn set_workbook_algorithm_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.workbook_algorithm_name.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_workbook_hash_value(&self) -> &str {
         self.workbook_hash_value.get_value_str()
     }
 
-    #[inline]
     pub fn set_workbook_hash_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.workbook_hash_value.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_workbook_salt_value(&self) -> &str {
         self.workbook_salt_value.get_value_str()
     }
 
-    #[inline]
     pub fn set_workbook_salt_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.workbook_salt_value.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_workbook_spin_count(&self) -> u32 {
         self.workbook_spin_count.get_value()
     }
 
-    #[inline]
     pub fn set_workbook_spin_count(&mut self, value: u32) -> &mut Self {
         self.workbook_spin_count.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_workbook_password_raw(&self) -> &str {
         self.workbook_password.get_value_str()
     }
 
-    #[inline]
     pub fn set_workbook_password_raw<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.workbook_password.set_value(value);
         self
     }
 
-    #[inline]
     pub fn remove_workbook_password_raw(&mut self) -> &mut Self {
         self.workbook_password.remove_value();
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_revisions_algorithm_name(&self) -> &str {
         self.revisions_algorithm_name.get_value_str()
     }
 
-    #[inline]
     pub fn set_revisions_algorithm_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.revisions_algorithm_name.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_revisions_hash_value(&self) -> &str {
         self.revisions_hash_value.get_value_str()
     }
 
-    #[inline]
     pub fn set_revisions_hash_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.revisions_hash_value.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_revisions_salt_value(&self) -> &str {
         self.revisions_salt_value.get_value_str()
     }
 
-    #[inline]
     pub fn set_revisions_salt_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.revisions_salt_value.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_revisions_spin_count(&self) -> u32 {
         self.revisions_spin_count.get_value()
     }
 
-    #[inline]
     pub fn set_revisions_spin_count(&mut self, value: u32) -> &mut Self {
         self.revisions_spin_count.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_revisions_password_raw(&self) -> &str {
         self.revisions_password.get_value_str()
     }
 
-    #[inline]
     pub fn set_revisions_password_raw<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.revisions_password.set_value(value);
         self
     }
 
-    #[inline]
     pub fn remove_revisions_password_raw(&mut self) -> &mut Self {
         self.revisions_password.remove_value();
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_lock_revision(&self) -> bool {
         self.lock_revision.get_value()
     }
 
-    #[inline]
     pub fn set_lock_revision(&mut self, value: bool) -> &mut Self {
         self.lock_revision.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_lock_structure(&self) -> bool {
         self.lock_structure.get_value()
     }
 
-    #[inline]
     pub fn set_lock_structure(&mut self, value: bool) -> &mut Self {
         self.lock_structure.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_lock_windows(&self) -> bool {
         self.lock_windows.get_value()
     }
 
-    #[inline]
     pub fn set_lock_windows(&mut self, value: bool) -> &mut Self {
         self.lock_windows.set_value(value);
         self
     }
 
-    #[inline]
     pub fn set_workbook_password(&mut self, password: &str) -> &mut Self {
         encrypt_workbook_protection(password, self);
         self
     }
 
-    #[inline]
     pub fn set_revisions_password(&mut self, password: &str) -> &mut Self {
         encrypt_revisions_protection(password, self);
         self

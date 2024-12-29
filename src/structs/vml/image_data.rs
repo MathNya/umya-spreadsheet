@@ -26,18 +26,15 @@ pub struct ImageData {
 }
 
 impl ImageData {
-    #[inline]
     #[must_use]
     pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
 
-    #[inline]
     pub fn get_image_mut(&mut self) -> &mut MediaObject {
         &mut self.image
     }
 
-    #[inline]
     pub fn set_image(&mut self, value: MediaObject) -> &mut Self {
         self.image = value;
         self

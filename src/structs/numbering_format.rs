@@ -22,7 +22,6 @@ pub struct NumberingFormat {
 }
 
 impl Default for NumberingFormat {
-    #[inline]
     fn default() -> Self {
         Self {
             number_format_id: 0,
@@ -73,7 +72,6 @@ impl NumberingFormat {
     pub const FORMAT_PERCENTAGE_00: &'static str = "0.00%";
     pub const FORMAT_TEXT: &'static str = "@";
 
-    #[inline]
     #[must_use]
     pub fn get_number_format_id(&self) -> u32 {
         self.number_format_id
@@ -97,7 +95,6 @@ impl NumberingFormat {
         self
     }
 
-    #[inline]
     pub(crate) fn set_number_format_id_crate(&mut self, value: u32) -> &mut Self {
         self.number_format_id = value;
         self
@@ -129,24 +126,20 @@ impl NumberingFormat {
         self
     }
 
-    #[inline]
     pub(crate) fn set_format_code_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.format_code = value.into().into_boxed_str();
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_format_code(&self) -> &str {
         &self.format_code
     }
 
-    #[inline]
     pub(crate) fn get_is_build_in(&self) -> bool {
         self.is_build_in
     }
 
-    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!("{:x}", md5::Md5::digest(&*self.format_code))
     }

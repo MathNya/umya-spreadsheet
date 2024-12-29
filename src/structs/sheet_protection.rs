@@ -46,265 +46,221 @@ pub struct SheetProtection {
     sort:                  BooleanValue,
 }
 impl SheetProtection {
-    #[inline]
     #[must_use]
     pub fn get_algorithm_name(&self) -> &str {
         self.algorithm_name.get_value_str()
     }
 
-    #[inline]
     pub fn set_algorithm_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.algorithm_name.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_hash_value(&self) -> &str {
         self.hash_value.get_value_str()
     }
 
-    #[inline]
     pub fn set_hash_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.hash_value.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_salt_value(&self) -> &str {
         self.salt_value.get_value_str()
     }
 
-    #[inline]
     pub fn set_salt_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.salt_value.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_spin_count(&self) -> u32 {
         self.spin_count.get_value()
     }
 
-    #[inline]
     pub fn set_spin_count(&mut self, value: u32) -> &mut Self {
         self.spin_count.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_password_raw(&self) -> &str {
         self.password.get_value_str()
     }
 
-    #[inline]
     pub fn set_password_raw<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.password.set_value(value);
         self
     }
 
-    #[inline]
     pub fn remove_password_raw(&mut self) -> &mut Self {
         self.password.remove_value();
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_sheet(&self) -> bool {
         self.sheet.get_value()
     }
 
-    #[inline]
     pub fn set_sheet(&mut self, value: bool) -> &mut Self {
         self.sheet.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_objects(&self) -> bool {
         self.objects.get_value()
     }
 
-    #[inline]
     pub fn set_objects(&mut self, value: bool) -> &mut Self {
         self.objects.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_delete_rows(&self) -> bool {
         self.delete_rows.get_value()
     }
 
-    #[inline]
     pub fn set_delete_rows(&mut self, value: bool) -> &mut Self {
         self.delete_rows.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_insert_columns(&self) -> bool {
         self.insert_columns.get_value()
     }
 
-    #[inline]
     pub fn set_insert_columns(&mut self, value: bool) -> &mut Self {
         self.insert_columns.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_delete_columns(&self) -> bool {
         self.delete_columns.get_value()
     }
 
-    #[inline]
     pub fn set_delete_columns(&mut self, value: bool) -> &mut Self {
         self.delete_columns.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_insert_hyperlinks(&self) -> bool {
         self.insert_hyperlinks.get_value()
     }
 
-    #[inline]
     pub fn set_insert_hyperlinks(&mut self, value: bool) -> &mut Self {
         self.insert_hyperlinks.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_auto_filter(&self) -> bool {
         self.auto_filter.get_value()
     }
 
-    #[inline]
     pub fn set_auto_filter(&mut self, value: bool) -> &mut Self {
         self.auto_filter.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_scenarios(&self) -> bool {
         self.scenarios.get_value()
     }
 
-    #[inline]
     pub fn set_scenarios(&mut self, value: bool) -> &mut Self {
         self.scenarios.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_format_cells(&self) -> bool {
         self.format_cells.get_value()
     }
 
-    #[inline]
     pub fn set_format_cells(&mut self, value: bool) -> &mut Self {
         self.format_cells.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_format_columns(&self) -> bool {
         self.format_columns.get_value()
     }
 
-    #[inline]
     pub fn set_format_columns(&mut self, value: bool) -> &mut Self {
         self.format_columns.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_insert_rows(&self) -> bool {
         self.insert_rows.get_value()
     }
 
-    #[inline]
     pub fn set_insert_rows(&mut self, value: bool) -> &mut Self {
         self.insert_rows.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_format_rows(&self) -> bool {
         self.format_rows.get_value()
     }
 
-    #[inline]
     pub fn set_format_rows(&mut self, value: bool) -> &mut Self {
         self.format_rows.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_pivot_tables(&self) -> bool {
         self.pivot_tables.get_value()
     }
 
-    #[inline]
     pub fn set_pivot_tables(&mut self, value: bool) -> &mut Self {
         self.pivot_tables.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_select_locked_cells(&self) -> bool {
         self.select_locked_cells.get_value()
     }
 
-    #[inline]
     pub fn set_select_locked_cells(&mut self, value: bool) -> &mut Self {
         self.select_locked_cells.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_select_unlocked_cells(&self) -> bool {
         self.select_unlocked_cells.get_value()
     }
 
-    #[inline]
     pub fn set_select_unlocked_cells(&mut self, value: bool) -> &mut Self {
         self.select_unlocked_cells.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_sort(&self) -> bool {
         self.sort.get_value()
     }
 
-    #[inline]
     pub fn set_sort(&mut self, value: bool) -> &mut Self {
         self.sort.set_value(value);
         self
     }
 
-    #[inline]
     pub fn set_password(&mut self, password: &str) -> &mut Self {
         encrypt_sheet_protection(password, self);
         self

@@ -6,7 +6,6 @@ use crate::structs::{
     WriterManager,
 };
 
-#[inline]
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,

@@ -11,24 +11,20 @@ pub struct ShapeGuide {
     fmla: Box<str>,
 }
 impl ShapeGuide {
-    #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
         &self.name
     }
 
-    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) {
         self.name = value.into().into_boxed_str();
     }
 
-    #[inline]
     #[must_use]
     pub fn get_fmla(&self) -> &str {
         &self.fmla
     }
 
-    #[inline]
     pub fn set_fmla<S: Into<String>>(&mut self, value: S) {
         self.fmla = value.into().into_boxed_str();
     }

@@ -29,34 +29,28 @@ pub struct SolidFill {
 }
 
 impl SolidFill {
-    #[inline]
     #[must_use]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
-    #[inline]
     pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
         self.scheme_color.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_scheme_color(&mut self, value: SchemeColor) {
         self.scheme_color = Some(Box::new(value));
     }
 
-    #[inline]
     #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
-    #[inline]
     pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) {
         self.rgb_color_model_hex = Some(Box::new(value));
     }

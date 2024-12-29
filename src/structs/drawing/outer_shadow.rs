@@ -42,73 +42,61 @@ pub struct OuterShadow {
 }
 
 impl OuterShadow {
-    #[inline]
     #[must_use]
     pub fn get_blur_radius(&self) -> Option<&str> {
         self.blur_radius.get_value()
     }
 
-    #[inline]
     pub fn set_blur_radius<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.blur_radius.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_horizontal_ratio(&self) -> Option<&str> {
         self.horizontal_ratio.get_value()
     }
 
-    #[inline]
     pub fn set_horizontal_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.horizontal_ratio.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_vertical_ratio(&self) -> Option<&str> {
         self.vertical_ratio.get_value()
     }
 
-    #[inline]
     pub fn set_vertical_ratio<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.vertical_ratio.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_alignment(&self) -> Option<&str> {
         self.alignment.get_value()
     }
 
-    #[inline]
     pub fn set_alignment<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.alignment.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_direction(&self) -> Option<&str> {
         self.direction.get_value()
     }
 
-    #[inline]
     pub fn set_direction<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.direction.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_distance(&self) -> Option<&str> {
         self.distance.get_value()
     }
 
-    #[inline]
     pub fn set_distance<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.distance.set_value(value);
         self
@@ -119,58 +107,48 @@ impl OuterShadow {
         self.rotate_with_shape.get_value()
     }
 
-    #[inline]
     pub fn set_rotate_with_shape<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.rotate_with_shape.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_preset_color(&self) -> Option<&PresetColor> {
         self.preset_color.as_deref()
     }
 
-    #[inline]
     pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
         self.preset_color.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_preset_color(&mut self, value: PresetColor) -> &mut Self {
         self.preset_color = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
-    #[inline]
     pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
         self.scheme_color.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_scheme_color(&mut self, value: SchemeColor) -> &mut Self {
         self.scheme_color = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
-    #[inline]
     pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) -> &mut Self {
         self.rgb_color_model_hex = Some(Box::new(value));
         self

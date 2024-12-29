@@ -19,31 +19,26 @@ pub struct Extents {
     cy: Int64Value,
 }
 impl Extents {
-    #[inline]
     #[must_use]
     pub fn get_cx(&self) -> i64 {
         self.cx.get_value()
     }
 
-    #[inline]
     pub fn set_cx(&mut self, value: i64) -> &mut Extents {
         self.cx.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_cy(&self) -> i64 {
         self.cy.get_value()
     }
 
-    #[inline]
     pub fn set_cy(&mut self, value: i64) -> &mut Extents {
         self.cy.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

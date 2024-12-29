@@ -44,211 +44,172 @@ pub struct ColorScheme {
 }
 
 impl ColorScheme {
-    #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
 
-    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
-    #[inline]
     pub fn set_accent1(&mut self, value: Color2Type) {
         self.accent1 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_accent1(&self) -> &Color2Type {
         &self.accent1
     }
 
-    #[inline]
     pub fn get_accent1_mut(&mut self) -> &mut Color2Type {
         &mut self.accent1
     }
 
-    #[inline]
     pub fn set_accent2(&mut self, value: Color2Type) {
         self.accent2 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_accent2(&self) -> &Color2Type {
         &self.accent2
     }
 
-    #[inline]
     pub fn get_accent2_mut(&mut self) -> &mut Color2Type {
         &mut self.accent2
     }
 
-    #[inline]
     pub fn set_accent3(&mut self, value: Color2Type) {
         self.accent3 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_accent3(&self) -> &Color2Type {
         &self.accent3
     }
 
-    #[inline]
     pub fn get_accent3_mut(&mut self) -> &mut Color2Type {
         &mut self.accent3
     }
 
-    #[inline]
     pub fn set_accent4(&mut self, value: Color2Type) {
         self.accent4 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_accent4(&self) -> &Color2Type {
         &self.accent4
     }
 
-    #[inline]
     pub fn get_accent4_mut(&mut self) -> &mut Color2Type {
         &mut self.accent4
     }
 
-    #[inline]
     pub fn set_accent5(&mut self, value: Color2Type) {
         self.accent5 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_accent5(&self) -> &Color2Type {
         &self.accent5
     }
 
-    #[inline]
     pub fn get_accent5_mut(&mut self) -> &mut Color2Type {
         &mut self.accent5
     }
 
-    #[inline]
     pub fn set_accent6(&mut self, value: Color2Type) {
         self.accent6 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_accent6(&self) -> &Color2Type {
         &self.accent6
     }
 
-    #[inline]
     pub fn get_accent6_mut(&mut self) -> &mut Color2Type {
         &mut self.accent6
     }
 
-    #[inline]
     pub fn set_dk1(&mut self, value: Color2Type) {
         self.dk1 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_dk1(&self) -> &Color2Type {
         &self.dk1
     }
 
-    #[inline]
     pub fn get_dk1_mut(&mut self) -> &mut Color2Type {
         &mut self.dk1
     }
 
-    #[inline]
     pub fn set_dk2(&mut self, value: Color2Type) {
         self.dk2 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_dk2(&self) -> &Color2Type {
         &self.dk2
     }
 
-    #[inline]
     pub fn get_dk2_mut(&mut self) -> &mut Color2Type {
         &mut self.dk2
     }
 
-    #[inline]
     pub fn set_fol_hlink(&mut self, value: Color2Type) {
         self.fol_hlink = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_fol_hlink(&self) -> &Color2Type {
         &self.fol_hlink
     }
 
-    #[inline]
     pub fn get_fol_hlink_mut(&mut self) -> &mut Color2Type {
         &mut self.fol_hlink
     }
 
-    #[inline]
     pub fn set_hlink(&mut self, value: Color2Type) {
         self.hlink = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_hlink(&self) -> &Color2Type {
         &self.hlink
     }
 
-    #[inline]
     pub fn get_hlink_mut(&mut self) -> &mut Color2Type {
         &mut self.hlink
     }
 
-    #[inline]
     pub fn set_lt1(&mut self, value: Color2Type) {
         self.lt1 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_lt1(&self) -> &Color2Type {
         &self.lt1
     }
 
-    #[inline]
     pub fn get_lt1_mut(&mut self) -> &mut Color2Type {
         &mut self.lt1
     }
 
-    #[inline]
     pub fn set_lt2(&mut self, value: Color2Type) {
         self.lt2 = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_lt2(&self) -> &Color2Type {
         &self.lt2
     }
 
-    #[inline]
     pub fn get_lt2_mut(&mut self) -> &mut Color2Type {
         &mut self.lt2
     }
 
-    #[inline]
     #[must_use]
     pub fn get_color_map(&self) -> Vec<String> {
         vec![

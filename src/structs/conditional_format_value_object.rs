@@ -30,25 +30,21 @@ pub struct ConditionalFormatValueObject {
 }
 
 impl ConditionalFormatValueObject {
-    #[inline]
     #[must_use]
     pub fn get_type(&self) -> &ConditionalFormatValueObjectValues {
         self.r#type.get_value()
     }
 
-    #[inline]
     pub fn set_type(&mut self, value: ConditionalFormatValueObjectValues) -> &mut Self {
         self.r#type.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_val(&self) -> &str {
         self.val.get_value_str()
     }
 
-    #[inline]
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.val.set_value(value.into());
         self

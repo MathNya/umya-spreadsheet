@@ -30,25 +30,21 @@ pub struct TextElement {
 }
 
 impl TextElement {
-    #[inline]
     #[must_use]
     pub fn get_text(&self) -> &str {
         self.text.get_value()
     }
 
-    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.text.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_run_properties(&self) -> Option<&Font> {
         self.run_properties.as_deref()
     }
 
-    #[inline]
     pub fn get_run_properties_mut(&mut self) -> &mut Font {
         if self.run_properties.is_some() {
             return self.run_properties.as_mut().unwrap();
@@ -57,30 +53,25 @@ impl TextElement {
         self.run_properties.as_mut().unwrap()
     }
 
-    #[inline]
     #[allow(dead_code)]
     pub(crate) fn get_run_properties_crate(&mut self) -> Option<&mut Font> {
         self.run_properties.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_run_properties(&mut self, value: Font) -> &mut Self {
         self.run_properties = Some(Box::new(value));
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_font(&self) -> Option<&Font> {
         self.get_run_properties()
     }
 
-    #[inline]
     pub fn get_font_mut(&mut self) -> &mut Font {
         self.get_run_properties_mut()
     }
 
-    #[inline]
     pub fn set_font(&mut self, value: Font) -> &mut Self {
         self.set_run_properties(value)
     }

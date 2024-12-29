@@ -33,47 +33,39 @@ pub struct FontScheme {
 }
 
 impl FontScheme {
-    #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
 
-    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_major_font(&self) -> &FontCollectionType {
         &self.major_font
     }
 
-    #[inline]
     pub fn get_major_font_mut(&mut self) -> &mut FontCollectionType {
         &mut self.major_font
     }
 
-    #[inline]
     pub fn set_major_font(&mut self, value: FontCollectionType) -> &mut Self {
         self.major_font = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_minor_font(&self) -> &FontCollectionType {
         &self.minor_font
     }
 
-    #[inline]
     pub fn get_minor_font_mut(&mut self) -> &mut FontCollectionType {
         &mut self.minor_font
     }
 
-    #[inline]
     pub fn set_minor_font(&mut self, value: FontCollectionType) -> &mut Self {
         self.minor_font = value;
         self

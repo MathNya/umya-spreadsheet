@@ -25,19 +25,16 @@ pub struct VerticalTextAlignment {
 }
 
 impl VerticalTextAlignment {
-    #[inline]
     #[must_use]
     pub fn get_val(&self) -> &VerticalAlignmentRunValues {
         self.val.get_value()
     }
 
-    #[inline]
     pub fn set_val(&mut self, value: VerticalAlignmentRunValues) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

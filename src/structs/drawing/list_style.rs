@@ -32,31 +32,26 @@ pub struct ListStyle {
 }
 
 impl ListStyle {
-    #[inline]
     #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
-    #[inline]
     pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
     }
 
-    #[inline]
     pub fn set_effect_list(&mut self, value: EffectList) -> &mut Self {
         self.effect_list = Some(Box::new(value));
         self
     }
 
-    #[inline]
     pub fn get_default_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("def")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_default_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -65,7 +60,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_default_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -75,14 +69,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level1_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv1")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level1_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -91,7 +83,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level1_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -101,14 +92,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level2_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv2")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level2_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -117,7 +106,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level2_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -127,14 +115,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level3_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv3")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level3_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -143,7 +129,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level3_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -153,14 +138,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level4_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv4")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level4_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -169,7 +152,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level4_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -179,14 +161,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level5_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv5")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level5_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -195,7 +175,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level5_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -205,14 +184,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level6_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv6")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level6_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -221,7 +198,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level6_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -231,14 +207,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level7_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv7")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level7_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -247,7 +221,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level7_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -257,14 +230,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level8_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv8")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level8_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -273,7 +244,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level8_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -283,14 +253,12 @@ impl ListStyle {
         self
     }
 
-    #[inline]
     pub fn get_level9_paragraph_properties(&self) -> Option<&TextParagraphPropertiesType> {
         self.text_paragraph_properties_type
             .get("lv9")
             .map(Box::as_ref)
     }
 
-    #[inline]
     pub fn get_level9_paragraph_properties_mut(
         &mut self,
     ) -> Option<&mut TextParagraphPropertiesType> {
@@ -299,7 +267,6 @@ impl ListStyle {
             .map(Box::as_mut)
     }
 
-    #[inline]
     pub fn set_level9_paragraph_properties(
         &mut self,
         value: TextParagraphPropertiesType,
@@ -384,7 +351,6 @@ impl ListStyle {
         );
     }
 
-    #[inline]
     fn is_empty(&self) -> bool {
         self.effect_list.is_none() && self.text_paragraph_properties_type.is_empty()
     }

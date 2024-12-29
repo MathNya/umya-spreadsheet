@@ -7,18 +7,15 @@ pub struct AutoFilter {
 }
 
 impl AutoFilter {
-    #[inline]
     #[must_use]
     pub fn get_range(&self) -> &Range {
         &self.range
     }
 
-    #[inline]
     pub fn get_range_mut(&mut self) -> &mut Range {
         &mut self.range
     }
 
-    #[inline]
     pub(crate) fn set_range<S: Into<String>>(&mut self, value: S) {
         let mut range = Range::default();
         range.set_range(value.into());
@@ -26,7 +23,6 @@ impl AutoFilter {
     }
 }
 impl AdjustmentCoordinate for AutoFilter {
-    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: u32,
@@ -42,7 +38,6 @@ impl AdjustmentCoordinate for AutoFilter {
         );
     }
 
-    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: u32,

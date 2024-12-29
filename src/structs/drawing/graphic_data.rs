@@ -37,18 +37,15 @@ pub struct GraphicData {
 }
 
 impl GraphicData {
-    #[inline]
     #[must_use]
     pub fn get_chart_space(&self) -> &ChartSpace {
         &self.chart_space
     }
 
-    #[inline]
     pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
         &mut self.chart_space
     }
 
-    #[inline]
     pub fn set_chart_space(&mut self, value: ChartSpace) -> &GraphicData {
         self.chart_space = value;
         self
@@ -109,7 +106,6 @@ impl GraphicData {
     }
 }
 impl AdjustmentCoordinateWithSheet for GraphicData {
-    #[inline]
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
@@ -127,7 +123,6 @@ impl AdjustmentCoordinateWithSheet for GraphicData {
         );
     }
 
-    #[inline]
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,

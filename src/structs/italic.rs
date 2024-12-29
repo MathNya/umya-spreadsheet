@@ -22,19 +22,16 @@ pub struct Italic {
 }
 
 impl Italic {
-    #[inline]
     #[must_use]
     pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
 
-    #[inline]
     pub fn set_val(&mut self, value: bool) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -44,7 +41,6 @@ impl Italic {
         set_string_from_xml!(self, e, val, "val");
     }
 
-    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // i
         if self.val.get_value() {

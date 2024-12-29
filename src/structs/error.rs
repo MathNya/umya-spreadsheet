@@ -29,7 +29,6 @@ pub enum CellErrorType {
 }
 
 impl fmt::Display for CellErrorType {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         match *self {
             CellErrorType::Div0 => write!(f, "#DIV/0!"),
@@ -46,7 +45,6 @@ impl fmt::Display for CellErrorType {
 impl FromStr for CellErrorType {
     type Err = XlsxError;
 
-    #[inline]
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "#DIV/0!" => Ok(CellErrorType::Div0),
@@ -82,7 +80,6 @@ from_err!(zip::result::ZipError, XlsxError, Zip);
 from_err!(std::string::FromUtf8Error, XlsxError, Uft8);
 
 impl fmt::Display for XlsxError {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use self::XlsxError::{
             CellError,

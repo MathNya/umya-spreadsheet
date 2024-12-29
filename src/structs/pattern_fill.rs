@@ -36,13 +36,11 @@ pub struct PatternFill {
 }
 
 impl PatternFill {
-    #[inline]
     #[must_use]
     pub fn get_pattern_type(&self) -> &PatternValues {
         self.pattern_type.get_value()
     }
 
-    #[inline]
     pub fn set_pattern_type(&mut self, value: PatternValues) -> &mut Self {
         self.pattern_type.set_value(value);
         self
@@ -59,50 +57,42 @@ impl PatternFill {
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_foreground_color(&self) -> Option<&Color> {
         self.foreground_color.as_deref()
     }
 
-    #[inline]
     pub fn get_foreground_color_mut(&mut self) -> &mut Color {
         self.foreground_color
             .get_or_insert(Box::new(Color::default()))
     }
 
-    #[inline]
     pub fn set_foreground_color(&mut self, value: Color) -> &mut Self {
         self.foreground_color = Some(Box::new(value));
         self.auto_set_pattern_type();
         self
     }
 
-    #[inline]
     pub fn remove_foreground_color(&mut self) -> &mut Self {
         self.foreground_color = None;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.background_color.as_deref()
     }
 
-    #[inline]
     pub fn get_background_color_mut(&mut self) -> &mut Color {
         self.background_color
             .get_or_insert(Box::new(Color::default()))
     }
 
-    #[inline]
     pub fn set_background_color(&mut self, value: Color) -> &mut Self {
         self.background_color = Some(Box::new(value));
         self
     }
 
-    #[inline]
     pub fn remove_background_color(&mut self) -> &mut Self {
         self.background_color = None;
         self

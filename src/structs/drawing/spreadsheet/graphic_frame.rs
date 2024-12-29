@@ -41,32 +41,27 @@ pub struct GraphicFrame {
 }
 
 impl GraphicFrame {
-    #[inline]
     #[must_use]
     pub fn get_macro(&self) -> &str {
         self.r#macro.get_value_str()
     }
 
-    #[inline]
     pub fn set_macro<S: Into<String>>(&mut self, value: S) -> &mut GraphicFrame {
         self.r#macro.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
         &self.non_visual_graphic_frame_properties
     }
 
-    #[inline]
     pub fn get_non_visual_graphic_frame_properties_mut(
         &mut self,
     ) -> &mut NonVisualGraphicFrameProperties {
         &mut self.non_visual_graphic_frame_properties
     }
 
-    #[inline]
     pub fn set_non_visual_graphic_frame_properties(
         &mut self,
         value: NonVisualGraphicFrameProperties,
@@ -75,35 +70,29 @@ impl GraphicFrame {
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_transform(&self) -> &Transform {
         &self.transform
     }
 
-    #[inline]
     pub fn get_transform_mut(&mut self) -> &mut Transform {
         &mut self.transform
     }
 
-    #[inline]
     pub fn set_transform(&mut self, value: Transform) -> &mut Self {
         self.transform = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_graphic(&self) -> &Graphic {
         &self.graphic
     }
 
-    #[inline]
     pub fn get_graphic_mut(&mut self) -> &mut Graphic {
         &mut self.graphic
     }
 
-    #[inline]
     pub fn set_graphic(&mut self, value: Graphic) -> &mut Self {
         self.graphic = value;
         self
@@ -170,7 +159,6 @@ impl GraphicFrame {
     }
 }
 impl AdjustmentCoordinateWithSheet for GraphicFrame {
-    #[inline]
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,
@@ -188,7 +176,6 @@ impl AdjustmentCoordinateWithSheet for GraphicFrame {
         );
     }
 
-    #[inline]
     fn adjustment_remove_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,

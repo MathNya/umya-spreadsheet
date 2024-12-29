@@ -25,17 +25,14 @@ pub struct CellStyles {
 }
 
 impl CellStyles {
-    #[inline]
     pub fn get_cell_style(&self) -> &[CellStyle] {
         &self.cell_style
     }
 
-    #[inline]
     pub fn get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
         &mut self.cell_style
     }
 
-    #[inline]
     pub fn add_cell_style(&mut self, value: CellStyle) -> &mut Self {
         self.cell_style.push(value);
         self

@@ -31,29 +31,24 @@ pub struct NonVisualPictureDrawingProperties {
 }
 
 impl NonVisualPictureDrawingProperties {
-    #[inline]
     #[must_use]
     pub fn get_prefer_relative_resize(&self) -> bool {
         self.prefer_relative_resize.get_value()
     }
 
-    #[inline]
     pub fn set_prefer_relative_resize(&mut self, value: bool) {
         self.prefer_relative_resize.set_value(value);
     }
 
-    #[inline]
     #[must_use]
     pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
         self.picture_locks.as_ref()
     }
 
-    #[inline]
     pub fn get_picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
         self.picture_locks.as_mut()
     }
 
-    #[inline]
     pub fn set_picture_locks(&mut self, value: PictureLocks) {
         self.picture_locks = Some(value);
     }

@@ -7,30 +7,25 @@ pub struct SequenceOfReferences {
 }
 
 impl SequenceOfReferences {
-    #[inline]
     #[must_use]
     pub fn get_range_collection(&self) -> &[Range] {
         &self.range_collection
     }
 
-    #[inline]
     pub fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
         &mut self.range_collection
     }
 
-    #[inline]
     pub fn set_range_collection(&mut self, value: impl Into<Vec<Range>>) -> &mut Self {
         self.range_collection = value.into();
         self
     }
 
-    #[inline]
     pub fn add_range_collection(&mut self, value: Range) -> &mut Self {
         self.range_collection.push(value);
         self
     }
 
-    #[inline]
     pub fn remove_range_collection(&mut self) -> &mut Self {
         self.range_collection.clear();
         self
@@ -45,7 +40,6 @@ impl SequenceOfReferences {
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_sqref(&self) -> String {
         self.range_collection

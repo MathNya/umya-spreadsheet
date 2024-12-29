@@ -37,56 +37,47 @@ pub struct CustomDocumentProperty {
 }
 
 impl CustomDocumentProperty {
-    #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
 
-    #[inline]
     pub fn set_name<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.name.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_link_target(&self) -> &str {
         self.link_target.get_value_str()
     }
 
-    #[inline]
     pub fn set_link_target<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.link_target.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.custom_document_property_value.to_string().into()
     }
 
-    #[inline]
     #[must_use]
     pub fn get_value_number(&self) -> Option<i32> {
         self.custom_document_property_value.get_number()
     }
 
-    #[inline]
     #[must_use]
     pub fn get_value_bool(&self) -> Option<bool> {
         self.custom_document_property_value.get_bool()
     }
 
-    #[inline]
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.custom_document_property_value =
             CustomDocumentPropertyValue::String(value.into().into_boxed_str());
         self
     }
 
-    #[inline]
     pub fn set_value_number<T>(&mut self, value: T) -> &mut Self
     where
         T: Into<i32>,
@@ -95,7 +86,6 @@ impl CustomDocumentProperty {
         self
     }
 
-    #[inline]
     pub fn set_value_date(&mut self, year: i32, month: i32, day: i32) -> &mut Self {
         let value = format!("{year:>04}-{month:>02}-{day:>02}T10:00:00Z");
         self.custom_document_property_value =
@@ -103,14 +93,12 @@ impl CustomDocumentProperty {
         self
     }
 
-    #[inline]
     pub fn set_value_date_manual<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.custom_document_property_value =
             CustomDocumentPropertyValue::Date(value.into().into_boxed_str());
         self
     }
 
-    #[inline]
     pub fn set_value_bool(&mut self, value: bool) -> &mut Self {
         self.custom_document_property_value = CustomDocumentPropertyValue::Bool(value);
         self

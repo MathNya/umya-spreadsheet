@@ -34,24 +34,20 @@ pub(crate) struct SharedStringTable {
 }
 
 impl SharedStringTable {
-    #[inline]
     pub(crate) fn get_shared_string_item(&self) -> &[SharedStringItem] {
         &self.shared_string_item
     }
 
-    #[inline]
     #[allow(dead_code)]
     pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
         &mut self.shared_string_item
     }
 
-    #[inline]
     pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
         self.shared_string_item.push(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_value(&self) -> bool {
         !self.shared_string_item.is_empty()
     }

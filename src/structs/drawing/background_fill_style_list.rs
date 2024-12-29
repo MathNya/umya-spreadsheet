@@ -28,41 +28,34 @@ pub struct BackgroundFillStyleList {
 }
 
 impl BackgroundFillStyleList {
-    #[inline]
     #[must_use]
     pub fn get_solid_fill(&self) -> &[SolidFill] {
         &self.solid_fill
     }
 
-    #[inline]
     pub fn get_solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
         &mut self.solid_fill
     }
 
-    #[inline]
     pub fn set_solid_fill(&mut self, value: impl Into<Vec<SolidFill>>) -> &mut Self {
         self.solid_fill = value.into();
         self
     }
 
-    #[inline]
     pub fn add_solid_fill(&mut self, value: SolidFill) -> &mut Self {
         self.solid_fill.push(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_gradient_fill_collection(&self) -> &[GradientFill] {
         &self.gradient_fill_collection
     }
 
-    #[inline]
     pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut Vec<GradientFill> {
         &mut self.gradient_fill_collection
     }
 
-    #[inline]
     pub fn set_gradient_fill_collection(
         &mut self,
         value: impl Into<Vec<GradientFill>>,
@@ -71,7 +64,6 @@ impl BackgroundFillStyleList {
         self
     }
 
-    #[inline]
     pub fn add_gradient_fill_collection(&mut self, value: GradientFill) -> &mut Self {
         self.gradient_fill_collection.push(value);
         self

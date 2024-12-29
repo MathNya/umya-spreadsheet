@@ -21,19 +21,16 @@ pub struct WorkbookView {
 }
 
 impl WorkbookView {
-    #[inline]
     #[must_use]
     pub fn get_active_tab(&self) -> u32 {
         self.active_tab.get_value()
     }
 
-    #[inline]
     pub fn set_active_tab(&mut self, value: u32) -> &mut Self {
         self.active_tab.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

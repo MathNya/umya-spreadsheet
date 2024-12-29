@@ -8,13 +8,11 @@ pub enum EditAsValues {
     TwoCell,
 }
 impl Default for EditAsValues {
-    #[inline]
     fn default() -> Self {
         Self::TwoCell
     }
 }
 impl EnumTrait for EditAsValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Absolute => "absolute",
@@ -26,7 +24,6 @@ impl EnumTrait for EditAsValues {
 impl FromStr for EditAsValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "absolute" => Ok(Self::Absolute),

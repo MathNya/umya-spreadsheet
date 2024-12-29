@@ -13,13 +13,11 @@ pub enum DataValidationValues {
     Whole,
 }
 impl Default for DataValidationValues {
-    #[inline]
     fn default() -> Self {
         Self::None
     }
 }
 impl EnumTrait for DataValidationValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Custom => "custom",
@@ -36,7 +34,6 @@ impl EnumTrait for DataValidationValues {
 impl FromStr for DataValidationValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "custom" => Ok(Self::Custom),

@@ -21,35 +21,29 @@ pub struct TailEnd {
 }
 
 impl TailEnd {
-    #[inline]
     #[must_use]
     pub fn get_type(&self) -> &str {
         self.t_type.get_value_str()
     }
 
-    #[inline]
     pub fn set_type<S: Into<String>>(&mut self, value: S) {
         self.t_type.set_value(value.into());
     }
 
-    #[inline]
     #[must_use]
     pub fn get_width(&self) -> &str {
         self.width.get_value_str()
     }
 
-    #[inline]
     pub fn set_width<S: Into<String>>(&mut self, value: S) {
         self.width.set_value(value.into());
     }
 
-    #[inline]
     #[must_use]
     pub fn get_length(&self) -> &str {
         self.length.get_value_str()
     }
 
-    #[inline]
     pub fn set_length<S: Into<String>>(&mut self, value: S) {
         self.length.set_value(value.into());
     }

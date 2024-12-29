@@ -22,19 +22,16 @@ pub struct Miter {
 }
 
 impl Miter {
-    #[inline]
     #[must_use]
     pub fn get_limit(&self) -> i32 {
         self.limit.get_value()
     }
 
-    #[inline]
     pub fn set_limit(&mut self, value: i32) -> &mut Self {
         self.limit.set_value(value);
         self
     }
 
-    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

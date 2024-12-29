@@ -32,50 +32,41 @@ pub struct Picture {
 }
 
 impl Picture {
-    #[inline]
     #[must_use]
     pub fn get_non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
         &self.non_visual_picture_properties
     }
 
-    #[inline]
     pub fn get_non_visual_picture_properties_mut(&mut self) -> &mut NonVisualPictureProperties {
         &mut self.non_visual_picture_properties
     }
 
-    #[inline]
     pub fn set_non_visual_picture_properties(&mut self, value: NonVisualPictureProperties) {
         self.non_visual_picture_properties = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_blip_fill(&self) -> &BlipFill {
         &self.blip_fill
     }
 
-    #[inline]
     pub fn get_blip_fill_mut(&mut self) -> &mut BlipFill {
         &mut self.blip_fill
     }
 
-    #[inline]
     pub fn set_blip_fill(&mut self, value: BlipFill) {
         self.blip_fill = value;
     }
 
-    #[inline]
     #[must_use]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
-    #[inline]
     pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
     }
 
-    #[inline]
     pub fn set_shape_properties(&mut self, value: ShapeProperties) {
         self.shape_properties = value;
     }

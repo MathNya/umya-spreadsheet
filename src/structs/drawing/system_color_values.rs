@@ -35,13 +35,11 @@ pub enum SystemColorValues {
     WindowText,
 }
 impl Default for SystemColorValues {
-    #[inline]
     fn default() -> Self {
         Self::ScrollBar
     }
 }
 impl EnumTrait for SystemColorValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::ActiveBorder => "activeBorder",
@@ -80,7 +78,6 @@ impl EnumTrait for SystemColorValues {
 impl FromStr for SystemColorValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "activeBorder" => Ok(Self::ActiveBorder),

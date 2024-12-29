@@ -25,18 +25,15 @@ pub struct SheetViews {
 }
 
 impl SheetViews {
-    #[inline]
     #[must_use]
     pub fn get_sheet_view_list(&self) -> &[SheetView] {
         &self.sheet_view_list
     }
 
-    #[inline]
     pub fn get_sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
         &mut self.sheet_view_list
     }
 
-    #[inline]
     pub fn add_sheet_view_list_mut(&mut self, value: SheetView) -> &mut Self {
         self.sheet_view_list.push(value);
         self

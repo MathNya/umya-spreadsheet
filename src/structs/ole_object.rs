@@ -43,115 +43,95 @@ pub struct OleObject {
 }
 
 impl OleObject {
-    #[inline]
     #[must_use]
     pub fn get_requires(&self) -> &str {
         self.requires.get_value_str()
     }
 
-    #[inline]
     pub fn set_requires<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.requires.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_prog_id(&self) -> &str {
         self.prog_id.get_value_str()
     }
 
-    #[inline]
     pub fn set_prog_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prog_id.set_value(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_object_extension(&self) -> &str {
         &self.object_extension
     }
 
-    #[inline]
     pub fn set_object_extension<S: Into<String>>(&mut self, value: S) {
         self.object_extension = value.into().into_boxed_str();
     }
 
-    #[inline]
     #[must_use]
     pub fn get_object_data(&self) -> Option<&[u8]> {
         self.object_data.as_deref()
     }
 
-    #[inline]
     pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
         self.object_data.as_mut()
     }
 
-    #[inline]
     pub fn set_object_data(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.object_data = Some(value.into());
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_embedded_object_properties(&self) -> &EmbeddedObjectProperties {
         &self.embedded_object_properties
     }
 
-    #[inline]
     pub fn get_embedded_object_properties_mut(&mut self) -> &mut EmbeddedObjectProperties {
         &mut self.embedded_object_properties
     }
 
-    #[inline]
     pub fn set_embedded_object_properties(&mut self, value: EmbeddedObjectProperties) -> &mut Self {
         self.embedded_object_properties = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
 
-    #[inline]
     pub fn get_two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
         &mut self.two_cell_anchor
     }
 
-    #[inline]
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
         self.two_cell_anchor = value;
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn get_shape(&self) -> &Shape {
         &self.shape
     }
 
-    #[inline]
     pub fn get_shape_mut(&mut self) -> &mut Shape {
         &mut self.shape
     }
 
-    #[inline]
     pub fn set_shape(&mut self, value: Shape) -> &mut Self {
         self.shape = value;
         self
     }
 
-    #[inline]
     pub(crate) fn is_bin(&self) -> bool {
         &*self.object_extension == "bin"
     }
 
-    #[inline]
     pub(crate) fn is_xlsx(&self) -> bool {
         &*self.object_extension == "xlsx"
     }

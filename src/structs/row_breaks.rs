@@ -25,24 +25,20 @@ pub struct RowBreaks {
 }
 
 impl RowBreaks {
-    #[inline]
     #[must_use]
     pub fn get_break_list(&self) -> &[Break] {
         &self.break_list
     }
 
-    #[inline]
     pub fn get_break_list_mut(&mut self) -> &mut Vec<Break> {
         &mut self.break_list
     }
 
-    #[inline]
     pub fn add_break_list(&mut self, value: Break) -> &mut Self {
         self.break_list.push(value);
         self
     }
 
-    #[inline]
     pub(crate) fn has_param(&self) -> bool {
         !self.break_list.is_empty()
     }

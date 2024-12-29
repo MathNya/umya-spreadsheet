@@ -23,19 +23,16 @@ pub struct CellValue {
     pub(crate) formula:   Option<Box<CellFormula>>,
 }
 impl CellValue {
-    #[inline]
     #[must_use]
     pub fn get_data_type(&self) -> &str {
         self.raw_value.get_data_type()
     }
 
-    #[inline]
     #[must_use]
     pub fn get_raw_value(&self) -> &CellRawValue {
         &self.raw_value
     }
 
-    #[inline]
     pub(crate) fn get_data_type_crate(&self) -> &str {
         match &self.formula {
             Some(_) => "str",
@@ -43,19 +40,16 @@ impl CellValue {
         }
     }
 
-    #[inline]
     #[must_use]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.raw_value.to_string().into()
     }
 
-    #[inline]
     #[must_use]
     pub fn get_value_number(&self) -> Option<f64> {
         self.raw_value.get_number()
     }
 
-    #[inline]
     pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
         if let CellRawValue::Lazy(v) = &self.raw_value {
             self.raw_value = Self::guess_typed_data(v);
@@ -64,12 +58,10 @@ impl CellValue {
         self.raw_value.to_string().into()
     }
 
-    #[inline]
     pub(crate) fn get_text(&self) -> Option<Text> {
         self.raw_value.get_text()
     }
 
-    #[inline]
     pub(crate) fn get_rich_text(&self) -> Option<RichText> {
         self.raw_value.get_rich_text()
     }
@@ -84,52 +76,44 @@ impl CellValue {
     ///   `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#
     ///   DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
-    #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
         self.remove_formula();
         self
     }
 
-    #[inline]
     pub(crate) fn set_value_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = Self::guess_typed_data(&value.into());
         self
     }
 
-    #[inline]
     pub fn set_value_lazy<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::Lazy(value.into().into_boxed_str());
         self
     }
 
-    #[inline]
     pub fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into().into_boxed_str());
         self.remove_formula();
         self
     }
 
-    #[inline]
     pub(crate) fn set_value_string_crate<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.raw_value = CellRawValue::String(value.into().into_boxed_str());
         self
     }
 
-    #[inline]
     pub fn set_value_bool(&mut self, value: bool) -> &mut Self {
         self.raw_value = CellRawValue::Bool(value);
         self.remove_formula();
         self
     }
 
-    #[inline]
     pub(crate) fn set_value_bool_crate(&mut self, value: bool) -> &mut Self {
         self.raw_value = CellRawValue::Bool(value);
         self
     }
 
-    #[inline]
     pub fn set_value_number<T>(&mut self, value: T) -> &mut Self
     where
         T: Into<f64>,
@@ -139,27 +123,23 @@ impl CellValue {
         self
     }
 
-    #[inline]
     pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.raw_value = CellRawValue::RichText(value);
         self.remove_formula();
         self
     }
 
-    #[inline]
     pub fn set_blank(&mut self) -> &mut Self {
         self.raw_value = CellRawValue::Empty;
         self.remove_formula();
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn is_formula(&self) -> bool {
         self.formula.is_some()
     }
 
-    #[inline]
     #[must_use]
     pub fn get_formula(&self) -> &str {
         match &self.formula {
@@ -168,13 +148,11 @@ impl CellValue {
         }
     }
 
-    #[inline]
     #[must_use]
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
         self.formula.as_deref()
     }
 
-    #[inline]
     pub fn set_formula<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let mut obj = CellFormula::default();
         obj.set_text(value.into());
@@ -182,37 +160,31 @@ impl CellValue {
         self
     }
 
-    #[inline]
     pub fn set_formula_obj(&mut self, value: CellFormula) -> &mut Self {
         self.formula = Some(Box::new(value));
         self
     }
 
-    #[inline]
     pub fn remove_formula(&mut self) -> &mut Self {
         self.formula = None;
         self
     }
 
-    #[inline]
     pub fn set_formula_result_default<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.set_value_crate(value);
         self
     }
 
-    #[inline]
     pub fn set_error<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.set_value_crate(value);
         self
     }
 
-    #[inline]
     #[must_use]
     pub fn is_error(&self) -> bool {
         self.raw_value.is_error()
     }
 
-    #[inline]
     pub(crate) fn set_shared_string_item(&mut self, value: &SharedStringItem) -> &mut Self {
         if let Some(v) = value.get_text() {
             self.set_value_string(v.get_value());
@@ -223,7 +195,6 @@ impl CellValue {
         self
     }
 
-    #[inline]
     pub(crate) fn guess_typed_data(value: &str) -> CellRawValue {
         let uppercase_value = value.to_uppercase();
 
@@ -243,30 +214,25 @@ impl CellValue {
         }
     }
 
-    #[inline]
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.is_value_empty() && self.is_formula_empty()
     }
 
-    #[inline]
     pub(crate) fn is_value_empty(&self) -> bool {
         self.raw_value.is_empty()
     }
 
-    #[inline]
     pub(crate) fn is_formula_empty(&self) -> bool {
         !self.is_formula()
     }
 
     // When opened in software such as Excel, it is visually blank.
-    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         self.get_value() == "" && self.is_formula_empty()
     }
 }
 impl AdjustmentCoordinateWith2Sheet for CellValue {
-    #[inline]
     fn adjustment_insert_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,
@@ -288,7 +254,6 @@ impl AdjustmentCoordinateWith2Sheet for CellValue {
         }
     }
 
-    #[inline]
     fn adjustment_remove_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,

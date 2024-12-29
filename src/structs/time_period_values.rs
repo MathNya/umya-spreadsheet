@@ -15,13 +15,11 @@ pub enum TimePeriodValues {
     Yesterday,
 }
 impl Default for TimePeriodValues {
-    #[inline]
     fn default() -> Self {
         Self::Today
     }
 }
 impl EnumTrait for TimePeriodValues {
-    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Last7Days => "last7Days",
@@ -40,7 +38,6 @@ impl EnumTrait for TimePeriodValues {
 impl FromStr for TimePeriodValues {
     type Err = ();
 
-    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "last7Days" => Ok(Self::Last7Days),
