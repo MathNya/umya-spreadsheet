@@ -763,9 +763,9 @@ fn new_sheet_and_edit() {
             .get_fill_mut()
             .get_pattern_fill_mut()
             .get_foreground_color_mut()
-            .get_argb();
+            .get_argb_str();
 
-        assert_eq!(a3_bg, BG_COLOR);
+        assert_eq!(a3_bg, "FF333000");
     }
 
     {
@@ -776,9 +776,9 @@ fn new_sheet_and_edit() {
             .get_fill_mut()
             .get_pattern_fill_mut()
             .get_foreground_color_mut()
-            .get_argb();
+            .get_argb_str();
 
-        assert_eq!(a4_bg, BG_COLOR);
+        assert_eq!(a4_bg, "FF333000");
     }
 }
 
@@ -872,20 +872,20 @@ fn new_file_and_edit() {
         .get_style_mut("A1")
         .get_font_mut()
         .get_color_mut()
-        .set_argb("00FF0000");
+        .set_argb_str("00FF0000");
 
     // change background color.
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_style_mut("A1")
-        .set_background_color(Color::COLOR_BLUE);
+        .set_background_color(Color::COLOR_BLUE_STR);
 
     book.get_sheet_by_name_mut("Sheet2")
         .unwrap()
         .get_style_mut("A2")
         .set_background_color_with_pattern(
-            Color::COLOR_BLUE,
-            Color::COLOR_RED,
+            Color::COLOR_BLUE_STR,
+            Color::COLOR_RED_STR,
             PatternValues::DarkGrid,
         );
 
@@ -1418,7 +1418,12 @@ fn expect_red_indexed_color() {
 
     let cell = book.get_sheet(0).unwrap().get_cell("A1").unwrap();
 
-    let color = cell.get_style().get_font().unwrap().get_color().get_argb();
+    let color = cell
+        .get_style()
+        .get_font()
+        .unwrap()
+        .get_color()
+        .get_argb_str();
 
     assert_eq!("FFFF0000", color);
 }
@@ -1697,7 +1702,7 @@ fn issue_218() {
     let out_sheet = out_book.new_sheet("listDataTable").unwrap();
 
     let mut color = Color::default();
-    color.set_argb("FF0000");
+    color.set_argb_str("FF0000");
     let mut pattern_fill = PatternFill::default();
     pattern_fill.set_background_color(color);
     let mut fill = Fill::default();

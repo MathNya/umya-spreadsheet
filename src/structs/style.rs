@@ -140,22 +140,22 @@ impl Style {
     }
 
     #[inline]
-    pub fn set_background_color<S: Into<String>>(&mut self, color: S) -> &mut Self {
+    pub fn set_background_color<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
         self.set_background_color_solid(color);
         self
     }
 
-    pub fn set_background_color_solid<S: Into<String>>(&mut self, color: S) -> &mut Self {
+    pub fn set_background_color_solid<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
         self.get_fill_mut()
             .get_pattern_fill_mut()
             .set_pattern_type(PatternValues::Solid)
             .remove_background_color()
             .get_foreground_color_mut()
-            .set_argb(color);
+            .set_argb_str(color);
         self
     }
 
-    pub fn set_background_color_with_pattern<S: Into<String>>(
+    pub fn set_background_color_with_pattern<S: AsRef<str>>(
         &mut self,
         color1: S,
         color2: S,
@@ -165,11 +165,11 @@ impl Style {
             .get_pattern_fill_mut()
             .set_pattern_type(pattern)
             .get_background_color_mut()
-            .set_argb(color1);
+            .set_argb_str(color1);
         self.get_fill_mut()
             .get_pattern_fill_mut()
             .get_foreground_color_mut()
-            .set_argb(color2);
+            .set_argb_str(color2);
         self
     }
 

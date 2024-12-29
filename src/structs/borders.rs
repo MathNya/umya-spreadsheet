@@ -27,254 +27,117 @@ use crate::{
     },
 };
 
+use paste::paste;
+
+pub(crate) enum BordersIndex {
+    Left = 0,
+    Right = 1,
+    Top = 2,
+    Bottom = 3,
+    Diagonal = 4,
+    Vertical = 5,
+    Horizontal = 6,
+}
+
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Borders {
-    left_border:       Border,
-    right_border:      Border,
-    top_border:        Border,
-    bottom_border:     Border,
-    diagonal_border:   Border,
-    vertical_border:   Border,
-    horizontal_border: Border,
-    diagonal_down:     BooleanValue,
-    diagonal_up:       BooleanValue,
+    data:          Box<[Border; 7]>,
+    diagonal_down: BooleanValue,
+    diagonal_up:   BooleanValue,
+}
+
+macro_rules! border_const {
+    ($($name:ident => $value:expr),*) => {
+        impl Borders {
+            $(pub const $name: &'static str = $value;)*
+        }
+    }
+}
+
+macro_rules! border_accessors {
+    ($($fn_name:ident, $index:ident),*) => {
+        impl Borders {
+            paste! {
+                $(
+                    pub fn [<get_ $fn_name _border>](&self) -> &Border {
+                        &self.data[BordersIndex::$index as usize]
+                    }
+
+                    pub fn [<get_ $fn_name _border_mut>](&mut self) -> &mut Border {
+                        &mut self.data[BordersIndex::$index as usize]
+                    }
+
+                    pub fn [<set_ $fn_name _border>](&mut self, value: Border) -> &mut Self {
+                        self.data[BordersIndex::$index as usize] = value;
+                        self
+                    }
+
+                    pub fn [<get_ $fn_name>](&self) -> &Border {
+                        &self.data[BordersIndex::$index as usize]
+                    }
+
+                    pub fn [<get_ $fn_name _mut>](&mut self) -> &mut Border {
+                        &mut self.data[BordersIndex::$index as usize]
+                    }
+
+                    pub fn [<set_ $fn_name>](&mut self, value: Border) -> &mut Self {
+                        self.data[BordersIndex::$index as usize] = value;
+                        self
+                    }
+                )*
+            }
+        }
+    }
+}
+
+border_const! {
+    BORDER_DASHDOT => "dashDot",
+    BORDER_DASHDOTDOT => "dashDotDot", 
+    BORDER_DASHED => "dashed",
+    BORDER_DOTTED => "dotted",
+    BORDER_DOUBLE => "double",
+    BORDER_HAIR => "hair",
+    BORDER_MEDIUM => "medium",
+    BORDER_MEDIUMDASHDOT => "mediumDashDot",
+    BORDER_MEDIUMDASHDOTDOT => "mediumDashDotDot",
+    BORDER_MEDIUMDASHED => "mediumDashed",
+    BORDER_NONE => "none",
+    BORDER_SLANTDASHDOT => "slantDashDot",
+    BORDER_THICK => "thick",
+    BORDER_THIN => "thin"
+}
+
+border_accessors! {
+    left, Left,
+    right, Right,
+    top, Top,
+    bottom, Bottom,
+    diagonal, Diagonal,
+    vertical, Vertical,
+    horizontal, Horizontal
 }
 
 impl Borders {
-    pub const BORDER_DASHDOT: &'static str = "dashDot";
-    pub const BORDER_DASHDOTDOT: &'static str = "dashDotDot";
-    pub const BORDER_DASHED: &'static str = "dashed";
-    pub const BORDER_DOTTED: &'static str = "dotted";
-    pub const BORDER_DOUBLE: &'static str = "double";
-    pub const BORDER_HAIR: &'static str = "hair";
-    pub const BORDER_MEDIUM: &'static str = "medium";
-    pub const BORDER_MEDIUMDASHDOT: &'static str = "mediumDashDot";
-    pub const BORDER_MEDIUMDASHDOTDOT: &'static str = "mediumDashDotDot";
-    pub const BORDER_MEDIUMDASHED: &'static str = "mediumDashed";
-    // Border style
-    pub const BORDER_NONE: &'static str = "none";
-    pub const BORDER_SLANTDASHDOT: &'static str = "slantDashDot";
-    pub const BORDER_THICK: &'static str = "thick";
-    pub const BORDER_THIN: &'static str = "thin";
-
-    #[inline]
-    pub fn get_left_border(&self) -> &Border {
-        &self.left_border
-    }
-
-    #[inline]
-    pub fn get_left_border_mut(&mut self) -> &mut Border {
-        &mut self.left_border
-    }
-
-    #[inline]
-    pub fn set_left_border(&mut self, value: Border) -> &mut Self {
-        self.left_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_left(&self) -> &Border {
-        &self.left_border
-    }
-
-    #[inline]
-    pub fn get_left_mut(&mut self) -> &mut Border {
-        &mut self.left_border
-    }
-
-    #[inline]
-    pub fn set_left(&mut self, value: Border) -> &mut Self {
-        self.left_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_right_border(&self) -> &Border {
-        &self.right_border
-    }
-
-    #[inline]
-    pub fn get_right_border_mut(&mut self) -> &mut Border {
-        &mut self.right_border
-    }
-
-    #[inline]
-    pub fn set_right_border(&mut self, value: Border) -> &mut Self {
-        self.right_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_right(&self) -> &Border {
-        &self.right_border
-    }
-
-    #[inline]
-    pub fn get_right_mut(&mut self) -> &mut Border {
-        &mut self.right_border
-    }
-
-    #[inline]
-    pub fn set_right(&mut self, value: Border) -> &mut Self {
-        self.right_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_top_border(&self) -> &Border {
-        &self.top_border
-    }
-
-    #[inline]
-    pub fn get_top_border_mut(&mut self) -> &mut Border {
-        &mut self.top_border
-    }
-
-    #[inline]
-    pub fn set_top_border(&mut self, value: Border) -> &mut Self {
-        self.top_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_top(&self) -> &Border {
-        &self.top_border
-    }
-
-    #[inline]
-    pub fn get_top_mut(&mut self) -> &mut Border {
-        &mut self.top_border
-    }
-
-    #[inline]
-    pub fn set_top(&mut self, value: Border) -> &mut Self {
-        self.top_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_bottom_border(&self) -> &Border {
-        &self.bottom_border
-    }
-
-    #[inline]
-    pub fn get_bottom_border_mut(&mut self) -> &mut Border {
-        &mut self.bottom_border
-    }
-
-    #[inline]
-    pub fn set_bottom_border(&mut self, value: Border) -> &mut Self {
-        self.bottom_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_bottom(&self) -> &Border {
-        &self.bottom_border
-    }
-
-    #[inline]
-    pub fn get_bottom_mut(&mut self) -> &mut Border {
-        &mut self.bottom_border
-    }
-
-    #[inline]
-    pub fn set_bottom(&mut self, value: Border) -> &mut Self {
-        self.bottom_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_diagonal_border(&self) -> &Border {
-        &self.diagonal_border
-    }
-
-    #[inline]
-    pub fn get_diagonal_border_mut(&mut self) -> &mut Border {
-        &mut self.diagonal_border
-    }
-
-    #[inline]
-    pub fn set_diagonal_border(&mut self, value: Border) -> &mut Self {
-        self.diagonal_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_diagonal(&self) -> &Border {
-        &self.diagonal_border
-    }
-
-    #[inline]
-    pub fn get_diagonal_mut(&mut self) -> &mut Border {
-        &mut self.diagonal_border
-    }
-
-    #[inline]
-    pub fn set_diagonal(&mut self, value: Border) -> &mut Self {
-        self.diagonal_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_vertical_border(&self) -> &Border {
-        &self.vertical_border
-    }
-
-    #[inline]
-    pub fn get_vertical_border_mut(&mut self) -> &mut Border {
-        &mut self.vertical_border
-    }
-
-    #[inline]
-    pub fn set_vertical_border(&mut self, value: Border) -> &mut Self {
-        self.vertical_border = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_horizontal_border(&self) -> &Border {
-        &self.horizontal_border
-    }
-
-    #[inline]
-    pub fn get_horizontal_border_mut(&mut self) -> &mut Border {
-        &mut self.horizontal_border
-    }
-
-    #[inline]
-    pub fn set_horizontal_border(&mut self, value: Border) -> &mut Self {
-        self.horizontal_border = value;
-        self
-    }
-
-    #[inline]
     pub fn get_diagonal_down(&self) -> bool {
         self.diagonal_down.get_value()
     }
 
-    #[inline]
     pub fn set_diagonal_down(&mut self, value: bool) {
         self.diagonal_down.set_value(value);
     }
 
-    #[inline]
     pub fn get_diagonal_up(&self) -> bool {
         self.diagonal_up.get_value()
     }
 
-    #[inline]
     pub fn set_diagonal_up(&mut self, value: bool) {
         self.diagonal_up.set_value(value);
     }
 
-    #[inline]
     pub(crate) fn get_default_value() -> Self {
         Self::default()
     }
 
-    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
@@ -293,16 +156,14 @@ impl Borders {
         )
     }
 
-    // When opened in software such as Excel, it is visually blank.
-    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
-        self.left_border.is_visually_empty()
-            || self.right_border.is_visually_empty()
-            || self.top_border.is_visually_empty()
-            || self.bottom_border.is_visually_empty()
-            || self.diagonal_border.is_visually_empty()
-            || self.vertical_border.is_visually_empty()
-            || self.horizontal_border.is_visually_empty()
+        self.data[BordersIndex::Left as usize].is_visually_empty()
+            || self.data[BordersIndex::Right as usize].is_visually_empty()
+            || self.data[BordersIndex::Top as usize].is_visually_empty()
+            || self.data[BordersIndex::Bottom as usize].is_visually_empty()
+            || self.data[BordersIndex::Diagonal as usize].is_visually_empty()
+            || self.data[BordersIndex::Vertical as usize].is_visually_empty()
+            || self.data[BordersIndex::Horizontal as usize].is_visually_empty()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -318,25 +179,25 @@ impl Borders {
             Event::Empty(ref e) => {
                 match e.name().into_inner() {
                     b"left" => {
-                        self.left_border.set_attributes(reader, e, true);
+                        self.data[BordersIndex::Left as usize].set_attributes(reader, e, true);
                     }
                     b"right" => {
-                        self.right_border.set_attributes(reader, e, true);
+                        self.data[BordersIndex::Right as usize].set_attributes(reader, e, true);
                     }
                     b"top" => {
-                        self.top_border.set_attributes(reader, e, true);
+                        self.data[BordersIndex::Top as usize].set_attributes(reader, e, true);
                     }
                     b"bottom" => {
-                        self.bottom_border.set_attributes(reader, e, true);
+                        self.data[BordersIndex::Bottom as usize].set_attributes(reader, e, true);
                     }
                     b"diagonal" => {
-                        self.diagonal_border.set_attributes(reader, e, true);
+                        self.data[BordersIndex::Diagonal as usize].set_attributes(reader, e, true);
                     }
                     b"vertical" => {
-                        self.vertical_border.set_attributes(reader, e, true);
+                        self.data[BordersIndex::Vertical as usize].set_attributes(reader, e, true);
                     }
                     b"horizontal" => {
-                        self.horizontal_border.set_attributes(reader, e, true);
+                        self.data[BordersIndex::Horizontal as usize].set_attributes(reader, e, true);
                     }
                     _ => (),
                 }
@@ -344,25 +205,25 @@ impl Borders {
             Event::Start(ref e) => {
                 match e.name().into_inner() {
                     b"left" => {
-                        self.left_border.set_attributes(reader, e, false);
+                        self.data[BordersIndex::Left as usize].set_attributes(reader, e, false);
                     }
                     b"right" => {
-                        self.right_border.set_attributes(reader, e, false);
+                        self.data[BordersIndex::Right as usize].set_attributes(reader, e, false);
                     }
                     b"top" => {
-                        self.top_border.set_attributes(reader, e, false);
+                        self.data[BordersIndex::Top as usize].set_attributes(reader, e, false);
                     }
                     b"bottom" => {
-                        self.bottom_border.set_attributes(reader, e, false);
+                        self.data[BordersIndex::Bottom as usize].set_attributes(reader, e, false);
                     }
                     b"diagonal" => {
-                        self.diagonal_border.set_attributes(reader, e, false);
+                        self.data[BordersIndex::Diagonal as usize].set_attributes(reader, e, false);
                     }
                     b"vertical" => {
-                        self.vertical_border.set_attributes(reader, e, false);
+                        self.data[BordersIndex::Vertical as usize].set_attributes(reader, e, false);
                     }
                     b"horizontal" => {
-                        self.horizontal_border.set_attributes(reader, e, false);
+                        self.data[BordersIndex::Horizontal as usize].set_attributes(reader, e, false);
                     }
                     _ => (),
                 }
@@ -388,28 +249,30 @@ impl Borders {
         write_start_tag(writer, "border", attributes, false);
 
         // left
-        self.left_border.write_to_left(writer);
+        self.data[BordersIndex::Left as usize].write_to_left(writer);
 
         // right
-        self.right_border.write_to_right(writer);
+        self.data[BordersIndex::Right as usize].write_to_right(writer);
 
         // top
-        self.top_border.write_to_top(writer);
+        self.data[BordersIndex::Top as usize].write_to_top(writer);
 
         // bottom
-        self.bottom_border.write_to_bottom(writer);
+        self.data[BordersIndex::Bottom as usize].write_to_bottom(writer);
 
         // diagonal
-        self.diagonal_border.write_to_diagonal(writer);
+        self.data[BordersIndex::Diagonal as usize].write_to_diagonal(writer);
 
         // vertical
-        if self.vertical_border.get_hash_code() != Border::default().get_hash_code() {
-            self.vertical_border.write_to_vertical(writer);
+        if self.data[BordersIndex::Vertical as usize].get_hash_code()
+            != Border::default().get_hash_code()
+        {
+            self.data[BordersIndex::Vertical as usize].write_to_vertical(writer);
         }
 
         // horizontal
-        if self.horizontal_border.get_hash_code() != Border::default().get_hash_code() {
-            self.horizontal_border.write_to_horizontal(writer);
+        if self.data[BordersIndex::Horizontal as usize].get_hash_code() != Border::default().get_hash_code() {
+            self.data[BordersIndex::Horizontal as usize].write_to_horizontal(writer);
         }
 
         write_end_tag(writer, "border");

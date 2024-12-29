@@ -143,7 +143,7 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
         if let Some(v) = color {
             let argb = v;
             let mut clr = Color::default();
-            clr.set_argb(argb);
+            clr.set_argb_str(argb);
             font.set_color(clr);
         }
 
