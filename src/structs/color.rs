@@ -5,6 +5,7 @@ use std::{
 };
 
 use md5::Digest;
+use phf::phf_map;
 use quick_xml::{
     Reader,
     Writer,
@@ -24,344 +25,134 @@ use crate::{
 
 pub type ARGB8 = Argb<u8>;
 
-const INDEXED_COLORS: [ARGB8; 56] = [
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x00,
-        b: 0x00,
-    }, //  System Colour #1 - Black
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0xFF,
-        b: 0xFF,
-    }, //  System Colour #2 - White
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0x00,
-        b: 0x00,
-    }, //  System Colour #3 - Red
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0xFF,
-        b: 0x00,
-    }, //  System Colour #4 - Green
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x00,
-        b: 0xFF,
-    }, //  System Colour #5 - Blue
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0xFF,
-        b: 0x00,
-    }, //  System Colour #6 - Yellow
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0x00,
-        b: 0xFF,
-    }, //  System Colour #7- Magenta
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0xFF,
-        b: 0xFF,
-    }, //  System Colour #8- Cyan
-    ARGB8 {
-        a: 0xFF,
-        r: 0x80,
-        g: 0x00,
-        b: 0x00,
-    }, //  Standard Colour #9
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x80,
-        b: 0x00,
-    }, //  Standard Colour #10
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x00,
-        b: 0x80,
-    }, //  Standard Colour #11
-    ARGB8 {
-        a: 0xFF,
-        r: 0x80,
-        g: 0x80,
-        b: 0x00,
-    }, //  Standard Colour #12
-    ARGB8 {
-        a: 0xFF,
-        r: 0x80,
-        g: 0x00,
-        b: 0x80,
-    }, //  Standard Colour #13
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x80,
-        b: 0x80,
-    }, //  Standard Colour #14
-    ARGB8 {
-        a: 0xFF,
-        r: 0xC0,
-        g: 0xC0,
-        b: 0xC0,
-    }, //  Standard Colour #15
-    ARGB8 {
-        a: 0xFF,
-        r: 0x80,
-        g: 0x80,
-        b: 0x80,
-    }, //  Standard Colour #16
-    ARGB8 {
-        a: 0xFF,
-        r: 0x99,
-        g: 0x99,
-        b: 0xFF,
-    }, //  Chart Fill Colour #17
-    ARGB8 {
-        a: 0xFF,
-        r: 0x99,
-        g: 0x33,
-        b: 0x66,
-    }, //  Chart Fill Colour #18
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0xFF,
-        b: 0xCC,
-    }, //  Chart Fill Colour #19
-    ARGB8 {
-        a: 0xFF,
-        r: 0xCC,
-        g: 0xFF,
-        b: 0xFF,
-    }, //  Chart Fill Colour #20
-    ARGB8 {
-        a: 0xFF,
-        r: 0x66,
-        g: 0x00,
-        b: 0x66,
-    }, //  Chart Fill Colour #21
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0x80,
-        b: 0x80,
-    }, //  Chart Fill Colour #22
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x66,
-        b: 0xCC,
-    }, //  Chart Fill Colour #23
-    ARGB8 {
-        a: 0xFF,
-        r: 0xCC,
-        g: 0xCC,
-        b: 0xFF,
-    }, //  Chart Fill Colour #24
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x00,
-        b: 0x80,
-    }, //  Chart Line Colour #25
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0x00,
-        b: 0xFF,
-    }, //  Chart Line Colour #26
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0xFF,
-        b: 0x00,
-    }, //  Chart Line Colour #27
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0xFF,
-        b: 0xFF,
-    }, //  Chart Line Colour #28
-    ARGB8 {
-        a: 0xFF,
-        r: 0x80,
-        g: 0x00,
-        b: 0x80,
-    }, //  Chart Line Colour #29
-    ARGB8 {
-        a: 0xFF,
-        r: 0x80,
-        g: 0x00,
-        b: 0x00,
-    }, //  Chart Line Colour #30
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x80,
-        b: 0x80,
-    }, //  Chart Line Colour #31
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x00,
-        b: 0xFF,
-    }, //  Chart Line Colour #32
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0xCC,
-        b: 0xFF,
-    }, //  Standard Colour #33
-    ARGB8 {
-        a: 0xFF,
-        r: 0xCC,
-        g: 0xFF,
-        b: 0xFF,
-    }, //  Standard Colour #34
-    ARGB8 {
-        a: 0xFF,
-        r: 0xCC,
-        g: 0xFF,
-        b: 0xCC,
-    }, //  Standard Colour #35
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0xFF,
-        b: 0x99,
-    }, //  Standard Colour #36
-    ARGB8 {
-        a: 0xFF,
-        r: 0x99,
-        g: 0xCC,
-        b: 0xFF,
-    }, //  Standard Colour #37
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0x99,
-        b: 0xCC,
-    }, //  Standard Colour #38
-    ARGB8 {
-        a: 0xFF,
-        r: 0xCC,
-        g: 0x99,
-        b: 0xFF,
-    }, //  Standard Colour #39
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0xCC,
-        b: 0x99,
-    }, //  Standard Colour #40
-    ARGB8 {
-        a: 0xFF,
-        r: 0x33,
-        g: 0x66,
-        b: 0xFF,
-    }, //  Standard Colour #41
-    ARGB8 {
-        a: 0xFF,
-        r: 0x33,
-        g: 0xCC,
-        b: 0xCC,
-    }, //  Standard Colour #42
-    ARGB8 {
-        a: 0xFF,
-        r: 0x99,
-        g: 0xCC,
-        b: 0x00,
-    }, //  Standard Colour #43
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0xCC,
-        b: 0x00,
-    }, //  Standard Colour #44
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0x99,
-        b: 0x00,
-    }, //  Standard Colour #45
-    ARGB8 {
-        a: 0xFF,
-        r: 0xFF,
-        g: 0x66,
-        b: 0x00,
-    }, //  Standard Colour #46
-    ARGB8 {
-        a: 0xFF,
-        r: 0x66,
-        g: 0x66,
-        b: 0x99,
-    }, //  Standard Colour #47
-    ARGB8 {
-        a: 0xFF,
-        r: 0x96,
-        g: 0x96,
-        b: 0x96,
-    }, //  Standard Colour #48
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x33,
-        b: 0x66,
-    }, //  Standard Colour #49
-    ARGB8 {
-        a: 0xFF,
-        r: 0x33,
-        g: 0x99,
-        b: 0x66,
-    }, //  Standard Colour #50
-    ARGB8 {
-        a: 0xFF,
-        r: 0x00,
-        g: 0x33,
-        b: 0x00,
-    }, //  Standard Colour #51
-    ARGB8 {
-        a: 0xFF,
-        r: 0x33,
-        g: 0x33,
-        b: 0x00,
-    }, //  Standard Colour #52
-    ARGB8 {
-        a: 0xFF,
-        r: 0x99,
-        g: 0x33,
-        b: 0x00,
-    }, //  Standard Colour #53
-    ARGB8 {
-        a: 0xFF,
-        r: 0x99,
-        g: 0x33,
-        b: 0x66,
-    }, //  Standard Colour #54
-    ARGB8 {
-        a: 0xFF,
-        r: 0x33,
-        g: 0x33,
-        b: 0x99,
-    }, //  Standard Colour #55
-    ARGB8 {
-        a: 0xFF,
-        r: 0x33,
-        g: 0x33,
-        b: 0x33,
-    }, // Standard Colour #56
-];
+macro_rules! argb {
+    ($a:expr, $r:expr, $g:expr, $b:expr) => {
+        ARGB8 {
+            a: $a,
+            r: $r,
+            g: $g,
+            b: $b,
+        }
+    };
+}
+
+static INDEX_TO_COLOR: phf::Map<u32, ARGB8> = phf_map! {
+    0u32 => argb!(0xFF, 0x00, 0x00, 0x00), // System Colour #1 - Black
+    1u32 => argb!(0xFF, 0xFF, 0xFF, 0xFF), // System Colour #2 - White
+    2u32 => argb!(0xFF, 0xFF, 0x00, 0x00), // System Colour #3 - Red
+    3u32 => argb!(0xFF, 0x00, 0xFF, 0x00), // System Colour #4 - Green
+    4u32 => argb!(0xFF, 0x00, 0x00, 0xFF), // System Colour #5 - Blue
+    5u32 => argb!(0xFF, 0xFF, 0xFF, 0x00), // System Colour #6 - Yellow
+    6u32 => argb!(0xFF, 0xFF, 0x00, 0xFF), // System Colour #7- Magenta
+    7u32 => argb!(0xFF, 0x00, 0xFF, 0xFF), // System Colour #8- Cyan
+    8u32 => argb!(0xFF, 0x80, 0x00, 0x00), // Standard Colour #9
+    9u32 => argb!(0xFF, 0x00, 0x80, 0x00), // Standard Colour #10
+    10u32 => argb!(0xFF, 0x00, 0x00, 0x80), // Standard Colour #11
+    11u32 => argb!(0xFF, 0x80, 0x80, 0x00), // Standard Colour #12
+    12u32 => argb!(0xFF, 0x80, 0x00, 0x80), // Standard Colour #13
+    13u32 => argb!(0xFF, 0x00, 0x80, 0x80), // Standard Colour #14
+    14u32 => argb!(0xFF, 0xC0, 0xC0, 0xC0), // Standard Colour #15
+    15u32 => argb!(0xFF, 0x80, 0x80, 0x80), // Standard Colour #16
+    16u32 => argb!(0xFF, 0x99, 0x99, 0xFF), // Chart Fill Colour #17
+    17u32 => argb!(0xFF, 0x99, 0x33, 0x66), // Chart Fill Colour #18
+    18u32 => argb!(0xFF, 0xFF, 0xFF, 0xCC), // Chart Fill Colour #19
+    19u32 => argb!(0xFF, 0xCC, 0xFF, 0xFF), // Chart Fill Colour #20
+    20u32 => argb!(0xFF, 0x66, 0x00, 0x66), // Chart Fill Colour #21
+    21u32 => argb!(0xFF, 0xFF, 0x80, 0x80), // Chart Fill Colour #22
+    22u32 => argb!(0xFF, 0x00, 0x66, 0xCC), // Chart Fill Colour #23
+    23u32 => argb!(0xFF, 0xCC, 0xCC, 0xFF), // Chart Fill Colour #24
+    24u32 => argb!(0xFF, 0x00, 0x00, 0x80), // Chart Line Colour #25
+    25u32 => argb!(0xFF, 0xFF, 0x00, 0xFF), // Chart Line Colour #26
+    26u32 => argb!(0xFF, 0xFF, 0xFF, 0x00), // Chart Line Colour #27
+    27u32 => argb!(0xFF, 0x00, 0xFF, 0xFF), // Chart Line Colour #28
+    28u32 => argb!(0xFF, 0x80, 0x00, 0x80), // Chart Line Colour #29
+    29u32 => argb!(0xFF, 0x80, 0x00, 0x00), // Chart Line Colour #30
+    30u32 => argb!(0xFF, 0x00, 0x80, 0x80), // Chart Line Colour #31
+    31u32 => argb!(0xFF, 0x00, 0x00, 0xFF), // Chart Line Colour #32
+    32u32 => argb!(0xFF, 0x00, 0xCC, 0xFF), // Standard Colour #33
+    33u32 => argb!(0xFF, 0xCC, 0xFF, 0xFF), // Standard Colour #34
+    34u32 => argb!(0xFF, 0xCC, 0xFF, 0xCC), // Standard Colour #35
+    35u32 => argb!(0xFF, 0xFF, 0xFF, 0x99), // Standard Colour #36
+    36u32 => argb!(0xFF, 0x99, 0xCC, 0xFF), // Standard Colour #37
+    37u32 => argb!(0xFF, 0xFF, 0x99, 0xCC), // Standard Colour #38
+    38u32 => argb!(0xFF, 0xCC, 0x99, 0xFF), // Standard Colour #39
+    39u32 => argb!(0xFF, 0xFF, 0xCC, 0x99), // Standard Colour #40
+    40u32 => argb!(0xFF, 0x33, 0x66, 0xFF), // Standard Colour #41
+    41u32 => argb!(0xFF, 0x33, 0xCC, 0xCC), // Standard Colour #42
+    42u32 => argb!(0xFF, 0x99, 0xCC, 0x00), // Standard Colour #43
+    43u32 => argb!(0xFF, 0xFF, 0xCC, 0x00), // Standard Colour #44
+    44u32 => argb!(0xFF, 0xFF, 0x99, 0x00), // Standard Colour #45
+    45u32 => argb!(0xFF, 0xFF, 0x66, 0x00), // Standard Colour #46
+    46u32 => argb!(0xFF, 0x66, 0x66, 0x99), // Standard Colour #47
+    47u32 => argb!(0xFF, 0x96, 0x96, 0x96), // Standard Colour #48
+    48u32 => argb!(0xFF, 0x00, 0x33, 0x66), // Standard Colour #49
+    49u32 => argb!(0xFF, 0x33, 0x99, 0x66), // Standard Colour #50
+    50u32 => argb!(0xFF, 0x00, 0x33, 0x00), // Standard Colour #51
+    51u32 => argb!(0xFF, 0x33, 0x33, 0x00), // Standard Colour #52
+    52u32 => argb!(0xFF, 0x99, 0x33, 0x00), // Standard Colour #53
+    53u32 => argb!(0xFF, 0x99, 0x33, 0x66), // Standard Colour #54
+    54u32 => argb!(0xFF, 0x33, 0x33, 0x99), // Standard Colour #55
+    55u32 => argb!(0xFF, 0x33, 0x33, 0x33), // Standard Colour #56
+};
+
+static COLOR_STR_TO_INDEX: phf::Map<&'static str, u32> = phf_map! {
+    "FF000000" => 0u32, // System Colour #1 - Black
+    "FFFFFFFF" => 1u32, // System Colour #2 - White
+    "FFFF0000" => 2u32, // System Colour #3 - Red
+    "FF00FF00" => 3u32, // System Colour #4 - Green
+    "FF0000FF" => 4u32, // System Colour #5 - Blue
+    "FFFFFF00" => 5u32, // System Colour #6 - Yellow
+    "FFFF00FF" => 6u32, // System Colour #7- Magenta
+    "FF00FFFF" => 7u32, // System Colour #8- Cyan
+    "FF800000" => 8u32, // Standard Colour #9
+    "FF008000" => 9u32, // Standard Colour #10
+    "FF000080" => 10u32, // Standard Colour #11
+    "FF808000" => 11u32, // Standard Colour #12
+    "FF800080" => 12u32, // Standard Colour #13
+    "FF008080" => 13u32, // Standard Colour #14
+    "FFC0C0C0" => 14u32, // Standard Colour #15
+    "FF808080" => 15u32, // Standard Colour #16
+    "FF9999FF" => 16u32, // Chart Fill Colour #17
+    "FF993366" => 17u32, // Chart Fill Colour #18
+    "FFFFFFCC" => 18u32, // Chart Fill Colour #19
+    "FFCCFFFF" => 19u32, // Chart Fill Colour #20
+    "FF660066" => 20u32, // Chart Fill Colour #21
+    "FFFF8080" => 21u32, // Chart Fill Colour #22
+    "FF0066CC" => 22u32, // Chart Fill Colour #23
+    "FFCCCCFF" => 23u32, // Chart Fill Colour #24
+//   "FF000080" => 24u32, // Chart Line Colour #25 - Duplicate Key !
+//   "FFFF00FF" => 25u32, // Chart Line Colour #26 - Duplicate Key !
+//   "FFFFFF00" => 26u32, // Chart Line Colour #27 - Duplicate Key !
+//   "FF00FFFF" => 27u32, // Chart Line Colour #28 - Duplicate Key !
+//   "FF800080" => 28u32, // Chart Line Colour #29 - Duplicate Key !
+//   "FF800000" => 29u32, // Chart Line Colour #30 - Duplicate Key !
+//   "FF008080" => 30u32, // Chart Line Colour #31 - Duplicate Key !
+//   "FF0000FF" => 31u32, // Chart Line Colour #32 - Duplicate Key !
+    "FF00CCFF" => 32u32, // Standard Colour #33
+//   "FFCCFFFF" => 33u32, // Standard Colour #34 - Duplicate Key !
+    "FFCCFFCC" => 34u32, // Standard Colour #35
+    "FFFFFF99" => 35u32, // Standard Colour #36
+    "FF99CCFF" => 36u32, // Standard Colour #37
+    "FFFF99CC" => 37u32, // Standard Colour #38
+    "FFCC99FF" => 38u32, // Standard Colour #39
+    "FFFFCC99" => 39u32, // Standard Colour #40
+    "FF3366FF" => 40u32, // Standard Colour #41
+    "FF33CCCC" => 41u32, // Standard Colour #42
+    "FF99CC00" => 42u32, // Standard Colour #43
+    "FFFFCC00" => 43u32, // Standard Colour #44
+    "FFFF9900" => 44u32, // Standard Colour #45
+    "FFFF6600" => 45u32, // Standard Colour #46
+    "FF666699" => 46u32, // Standard Colour #47
+    "FF969696" => 47u32, // Standard Colour #48
+    "FF003366" => 48u32, // Standard Colour #49
+    "FF339966" => 49u32, // Standard Colour #50
+    "FF003300" => 50u32, // Standard Colour #51
+    "FF333300" => 51u32, // Standard Colour #52
+    "FF993300" => 52u32, // Standard Colour #53
+//    "FF993366" => 53u32, // Standard Colour #54 - Duplicate Key !
+    "FF333399" => 54u32, // Standard Colour #55
+    "FF333333" => 55u32, // Standard Colour #56
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Color {
@@ -508,7 +299,7 @@ impl Color {
     #[must_use]
     pub fn get_argb(&self) -> ARGB8 {
         if let Some(idx) = self.indexed {
-            if let Some(v) = INDEXED_COLORS.get(idx as usize) {
+            if let Some(v) = INDEX_TO_COLOR.get(&idx) {
                 return *v;
             }
         }
@@ -545,10 +336,10 @@ impl Color {
 
     pub fn set_argb<S: Into<ARGB8>>(&mut self, value: S) -> &mut Self {
         let argb = value.into();
-        let indexed = INDEXED_COLORS.iter().position(|&r| r == argb);
+        let indexed = COLOR_STR_TO_INDEX.get(Self::argb8_to_hex(argb).as_ref());
 
         if let Some(v) = indexed {
-            self.indexed = Some(u32::try_from(v).unwrap());
+            self.indexed = Some(*v);
             self.argb = None;
         } else {
             self.indexed = None;
@@ -560,10 +351,10 @@ impl Color {
 
     pub fn set_argb_str<S: AsRef<str>>(&mut self, value: S) -> &mut Self {
         let argb = Self::hex_to_argb8(value.as_ref()).unwrap();
-        let indexed = INDEXED_COLORS.iter().position(|&r| r == argb);
+        let indexed = COLOR_STR_TO_INDEX.get(value.as_ref());
 
         if let Some(v) = indexed {
-            self.indexed = Some(u32::try_from(v).unwrap());
+            self.indexed = Some(*v);
             self.argb = None;
         } else {
             self.indexed = None;
