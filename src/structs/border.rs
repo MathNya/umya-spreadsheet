@@ -30,7 +30,7 @@ use crate::{
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Border {
-    color: Color,
+    color: Option<Box<Color>>,
     style: EnumValue<BorderStyleValues>,
 }
 
@@ -53,18 +53,13 @@ impl Border {
 
     #[inline]
     #[must_use]
-    pub fn get_color(&self) -> &Color {
-        &self.color
-    }
-
-    #[inline]
-    pub fn get_color_mut(&mut self) -> &mut Color {
-        &mut self.color
+    pub fn get_color(&self) -> Option<Color> {
+        self.color.as_ref().map(|v| *v.clone())
     }
 
     #[inline]
     pub fn set_color(&mut self, value: Color) -> &mut Self {
-        self.color = value;
+        self.color = Some(Box::new(value));
         self
     }
 
@@ -97,7 +92,7 @@ impl Border {
             md5::Md5::digest(format!(
                 "{}{}",
                 &self.style.get_value_string(),
-                &self.get_color().get_hash_code()
+                &self.get_color().unwrap_or_default().get_argb_str()
             ))
         )
     }
@@ -124,7 +119,7 @@ impl Border {
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"color" {
-                    self.color.set_attributes(reader, e, true);
+                    self.color.clone().unwrap_or_default().set_attributes(reader, e, true);
                 }
             },
             Event::End(ref e) => {
@@ -188,12 +183,15 @@ impl Border {
             attributes.push(("style", self.style.get_value_string()).into());
         }
 
-        let empty_flag = !self.color.has_value();
+        let empty_flag = self.color.is_none();
         write_start_tag(writer, tag_name, attributes, empty_flag);
 
         if !empty_flag {
             // color
-            self.color.write_to_color(writer);
+            self.color
+                .clone()
+                .unwrap_or_default()
+                .write_to_color(writer);
 
             write_end_tag(writer, tag_name);
         }

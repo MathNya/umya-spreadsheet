@@ -501,6 +501,11 @@ impl Color {
     }
 
     #[must_use]
+    pub fn get_argb_str(&self) -> String {
+        Self::argb8_to_hex(self.get_argb())
+    }
+
+    #[must_use]
     pub fn get_argb(&self) -> ARGB8 {
         if let Some(idx) = self.indexed {
             if let Some(v) = INDEXED_COLORS.get(idx as usize) {
@@ -508,15 +513,6 @@ impl Color {
             }
         }
         self.argb.unwrap_or_default()
-    }
-
-    /// Get Argb.
-    /// If the color is based on the theme, it cannot be obtained with this
-    /// function. In that case, use `get_argb_with_theme(&self`, theme:
-    /// &Theme).
-    #[must_use]
-    pub fn get_argb_str(&self) -> String {
-        Self::argb8_to_hex(self.get_argb())
     }
 
     /// Get Argb.
