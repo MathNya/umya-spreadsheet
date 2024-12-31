@@ -354,7 +354,7 @@ impl Workbook {
 
     /// Get Work Sheet List in mutable.
     #[inline]
-    pub fn get_sheet_collection_mut(&mut self) -> &mut Vec<Worksheet> {
+    pub fn get_sheet_collection_mut(&mut self) -> &mut [Worksheet] {
         self.read_sheet_collection();
         &mut self.work_sheet_collection
     }
