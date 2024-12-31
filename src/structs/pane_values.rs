@@ -9,11 +9,13 @@ pub enum PaneValues {
     TopRight,
 }
 impl Default for PaneValues {
+    #[inline]
     fn default() -> Self {
         Self::BottomRight
     }
 }
 impl EnumTrait for PaneValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::BottomLeft => "bottomLeft",
@@ -26,6 +28,7 @@ impl EnumTrait for PaneValues {
 impl FromStr for PaneValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "bottomLeft" => Ok(Self::BottomLeft),

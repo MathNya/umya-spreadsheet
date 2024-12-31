@@ -34,56 +34,68 @@ pub struct GroupShape {
 }
 
 impl GroupShape {
+    #[inline]
     #[must_use]
     pub fn get_non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
         &self.non_visual_group_shape_properties
     }
 
+    #[inline]
     pub fn get_non_visual_group_shape_properties_mut(
         &mut self,
     ) -> &mut NonVisualGroupShapeProperties {
         &mut self.non_visual_group_shape_properties
     }
 
+    #[inline]
     pub fn set_non_visual_group_shape_properties(&mut self, value: NonVisualGroupShapeProperties) {
         self.non_visual_group_shape_properties = value;
     }
 
+    #[inline]
     #[must_use]
     pub fn get_group_shape_properties(&self) -> &GroupShapeProperties {
         &self.group_shape_properties
     }
 
+    #[inline]
     pub fn get_group_shape_properties_mut(&mut self) -> &mut GroupShapeProperties {
         &mut self.group_shape_properties
     }
 
+    #[inline]
     pub fn set_group_shape_properties(&mut self, value: GroupShapeProperties) {
         self.group_shape_properties = value;
     }
 
+    #[inline]
     #[must_use]
     pub fn get_picture_collection(&self) -> &[Picture] {
         &self.picture_collection
     }
 
+    #[inline]
     pub fn get_picture_collection_mut(&mut self) -> &mut Vec<Picture> {
         &mut self.picture_collection
     }
 
+    #[inline]
     pub fn add_picture_collection(&mut self, value: Picture) {
         self.picture_collection.push(value);
     }
 
+    #[inline]
     #[must_use]
     pub fn get_shape_collection(&self) -> &[Shape] {
         &self.shape_collection
     }
 
+    #[inline]
     pub fn get_shape_collection_mut(&mut self) -> &mut Vec<Shape> {
         &mut self.shape_collection
     }
 
+    #[inline]
     pub fn add_shape_collection(&mut self, value: Shape) {
         self.shape_collection.push(value);
     }

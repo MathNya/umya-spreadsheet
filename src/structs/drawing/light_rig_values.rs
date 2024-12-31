@@ -32,11 +32,13 @@ pub enum LightRigValues {
     TwoPoints,
 }
 impl Default for LightRigValues {
+    #[inline]
     fn default() -> Self {
         Self::LegacyFlat1
     }
 }
 impl EnumTrait for LightRigValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Balanced => "balanced",
@@ -72,6 +74,7 @@ impl EnumTrait for LightRigValues {
 impl FromStr for LightRigValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "balanced" => Ok(Self::Balanced),

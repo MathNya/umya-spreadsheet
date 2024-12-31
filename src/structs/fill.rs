@@ -30,11 +30,13 @@ pub struct Fill {
 }
 
 impl Fill {
+    #[inline]
     #[must_use]
     pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
         self.pattern_fill.as_deref()
     }
 
+    #[inline]
     pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
         if self.pattern_fill.is_some() {
             return self.pattern_fill.as_mut().unwrap();
@@ -43,17 +45,20 @@ impl Fill {
         self.pattern_fill.as_mut().unwrap()
     }
 
+    #[inline]
     pub fn set_pattern_fill(&mut self, value: PatternFill) -> &mut Self {
         self.pattern_fill = Some(Box::new(value));
         self.gradient_fill = None;
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
 
+    #[inline]
     pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
         if self.gradient_fill.is_some() {
             return self.gradient_fill.as_mut().unwrap();
@@ -62,12 +67,14 @@ impl Fill {
         self.gradient_fill.as_mut().unwrap()
     }
 
+    #[inline]
     pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
         self.pattern_fill = None;
         self.gradient_fill = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub(crate) fn get_default_value() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
@@ -76,6 +83,7 @@ impl Fill {
         def
     }
 
+    #[inline]
     pub(crate) fn get_default_value_2() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
@@ -110,6 +118,7 @@ impl Fill {
     }
 
     // When opened in software such as Excel, it is visually blank.
+    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         !(self
             .pattern_fill

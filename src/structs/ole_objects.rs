@@ -26,15 +26,18 @@ pub struct OleObjects {
 }
 
 impl OleObjects {
+    #[inline]
     #[must_use]
     pub fn get_ole_object(&self) -> &[OleObject] {
         &self.ole_object
     }
 
+    #[inline]
     pub fn get_ole_object_mut(&mut self) -> &mut Vec<OleObject> {
         &mut self.ole_object
     }
 
+    #[inline]
     pub fn set_ole_object(&mut self, value: OleObject) -> &mut Self {
         self.ole_object.push(value);
         self

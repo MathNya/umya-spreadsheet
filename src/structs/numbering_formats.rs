@@ -31,20 +31,24 @@ pub(crate) struct NumberingFormats {
 }
 
 impl NumberingFormats {
+    #[inline]
     pub(crate) fn get_numbering_format(&self) -> &HashMap<u32, NumberingFormat> {
         &self.numbering_format
     }
 
+    #[inline]
     pub(crate) fn get_numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
         &mut self.numbering_format
     }
 
+    #[inline]
     pub(crate) fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
         let number_format_id = value.get_number_format_id();
         self.numbering_format.insert(number_format_id, value);
         self
     }
 
+    #[inline]
     pub(crate) fn init_setup(&mut self) -> &mut Self {
         self.get_build_in_formats();
         self

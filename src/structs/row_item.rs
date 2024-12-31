@@ -36,50 +36,60 @@ pub struct RowItem {
     member_property_index: Option<MemberPropertyIndex>,
 }
 impl RowItem {
+    #[inline]
     #[must_use]
     pub fn get_index(&self) -> u32 {
         self.index.get_value()
     }
 
+    #[inline]
     pub fn set_index(&mut self, value: u32) -> &mut Self {
         self.index.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_item_type(&self) -> &ItemValues {
         self.item_type.get_value()
     }
 
+    #[inline]
     pub fn set_item_type(&mut self, value: ItemValues) -> &mut Self {
         self.item_type.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_repeated_item_count(&self) -> u32 {
         self.repeated_item_count.get_value()
     }
 
+    #[inline]
     pub fn set_repeated_item_count(&mut self, value: u32) -> &mut Self {
         self.repeated_item_count.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_member_property_index(&self) -> Option<&MemberPropertyIndex> {
         self.member_property_index.as_ref()
     }
 
+    #[inline]
     pub fn get_member_property_index_mut(&mut self) -> Option<&mut MemberPropertyIndex> {
         self.member_property_index.as_mut()
     }
 
+    #[inline]
     pub fn set_member_property_index_color(&mut self, value: MemberPropertyIndex) -> &mut Self {
         self.member_property_index = Some(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -112,6 +122,7 @@ impl RowItem {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         let empty_flg = self.member_property_index.is_some();
         // i

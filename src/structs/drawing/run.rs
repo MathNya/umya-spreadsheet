@@ -26,24 +26,29 @@ pub struct Run {
 }
 
 impl Run {
+    #[inline]
     #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }
 
+    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) {
         self.text = value.into().into_boxed_str();
     }
 
+    #[inline]
     #[must_use]
     pub fn get_run_properties(&self) -> &RunProperties {
         &self.run_properties
     }
 
+    #[inline]
     pub fn get_run_properties_mut(&mut self) -> &mut RunProperties {
         &mut self.run_properties
     }
 
+    #[inline]
     pub fn set_run_properties(&mut self, value: RunProperties) {
         self.run_properties = value;
     }

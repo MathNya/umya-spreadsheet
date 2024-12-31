@@ -38,81 +38,99 @@ pub struct Transform2D {
 }
 
 impl Transform2D {
+    #[inline]
     #[must_use]
     pub fn get_offset(&self) -> &Point2DType {
         &self.offset
     }
 
+    #[inline]
     pub fn get_offset_mut(&mut self) -> &mut Point2DType {
         &mut self.offset
     }
 
+    #[inline]
     pub fn set_offset(&mut self, value: Point2DType) {
         self.offset = value;
     }
 
+    #[inline]
     #[must_use]
     pub fn get_extents(&self) -> &PositiveSize2DType {
         &self.extents
     }
 
+    #[inline]
     pub fn get_extents_mut(&mut self) -> &mut PositiveSize2DType {
         &mut self.extents
     }
 
+    #[inline]
     pub fn set_extents(&mut self, value: PositiveSize2DType) {
         self.extents = value;
     }
 
+    #[inline]
     #[must_use]
     pub fn get_child_offset(&self) -> Option<&Point2DType> {
         self.child_offset.as_deref()
     }
 
+    #[inline]
     pub fn get_child_offset_mut(&mut self) -> Option<&mut Point2DType> {
         self.child_offset.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_child_offset(&mut self, value: Point2DType) {
         self.child_offset = Some(Box::new(value));
     }
 
+    #[inline]
     #[must_use]
     pub fn get_child_extents(&self) -> Option<&PositiveSize2DType> {
         self.child_extents.as_deref()
     }
 
+    #[inline]
     pub fn get_child_extents_mut(&mut self) -> Option<&mut PositiveSize2DType> {
         self.child_extents.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_child_extents(&mut self, value: PositiveSize2DType) {
         self.child_extents = Some(Box::new(value));
     }
 
+    #[inline]
     #[must_use]
     pub fn get_rot(&self) -> Option<&str> {
         self.rot.get_value()
     }
 
+    #[inline]
     pub fn set_rot<S: Into<String>>(&mut self, value: S) {
         self.rot.set_value(value);
     }
 
+    #[inline]
     #[must_use]
     pub fn get_flip_v(&self) -> Option<&str> {
         self.flip_v.get_value()
     }
 
+    #[inline]
     pub fn set_flip_v<S: Into<String>>(&mut self, value: S) {
         self.flip_v.set_value(value);
     }
 
+    #[inline]
     #[must_use]
     pub fn get_flip_h(&self) -> Option<&str> {
         self.flip_h.get_value()
     }
 
+    #[inline]
     pub fn set_flip_h<S: Into<String>>(&mut self, value: S) {
         self.flip_h.set_value(value);
     }

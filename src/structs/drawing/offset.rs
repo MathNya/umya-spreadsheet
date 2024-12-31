@@ -19,24 +19,29 @@ pub struct Offset {
     y: Int64Value,
 }
 impl Offset {
+    #[inline]
     #[must_use]
     pub fn get_x(&self) -> i64 {
         self.x.get_value()
     }
 
+    #[inline]
     pub fn set_x(&mut self, value: i64) {
         self.x.set_value(value);
     }
 
+    #[inline]
     #[must_use]
     pub fn get_y(&self) -> i64 {
         self.y.get_value()
     }
 
+    #[inline]
     pub fn set_y(&mut self, value: i64) {
         self.y.set_value(value);
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

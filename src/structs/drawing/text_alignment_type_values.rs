@@ -12,11 +12,13 @@ pub enum TextAlignmentTypeValues {
     ThaiDistributed,
 }
 impl Default for TextAlignmentTypeValues {
+    #[inline]
     fn default() -> Self {
         Self::Left
     }
 }
 impl EnumTrait for TextAlignmentTypeValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Center => "ctr",
@@ -32,6 +34,7 @@ impl EnumTrait for TextAlignmentTypeValues {
 impl FromStr for TextAlignmentTypeValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "ctr" => Ok(Self::Center),

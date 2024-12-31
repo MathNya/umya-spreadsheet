@@ -9,6 +9,7 @@ pub struct EnumValue<T: EnumTrait + FromStr> {
 }
 
 impl<T: EnumTrait + FromStr> EnumValue<T> {
+    #[inline]
     pub(crate) fn get_value(&self) -> &T {
         match &self.value {
             Some(v) => v,
@@ -16,15 +17,18 @@ impl<T: EnumTrait + FromStr> EnumValue<T> {
         }
     }
 
+    #[inline]
     pub(crate) fn get_value_string(&self) -> &str {
         self.get_value().get_value_string()
     }
 
+    #[inline]
     pub(crate) fn set_value(&mut self, value: T) -> &mut EnumValue<T> {
         self.value = Some(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_value_string<S: Into<String>>(&mut self, value: S) -> &mut EnumValue<T> {
         if let Ok(v) = T::from_str(value.into().as_str()) {
             self.set_value(v);
@@ -32,10 +36,12 @@ impl<T: EnumTrait + FromStr> EnumValue<T> {
         self
     }
 
+    #[inline]
     pub(crate) fn has_value(&self) -> bool {
         self.value.is_some()
     }
 
+    #[inline]
     pub(crate) fn get_hash_string(&self) -> &str {
         if self.has_value() {
             return self.get_value_string();

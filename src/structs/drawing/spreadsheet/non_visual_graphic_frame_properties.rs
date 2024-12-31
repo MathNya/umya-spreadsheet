@@ -29,15 +29,18 @@ pub struct NonVisualGraphicFrameProperties {
 }
 
 impl NonVisualGraphicFrameProperties {
+    #[inline]
     #[must_use]
     pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
 
+    #[inline]
     pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
         &mut self.non_visual_drawing_properties
     }
 
+    #[inline]
     pub fn set_non_visual_drawing_properties(
         &mut self,
         value: NonVisualDrawingProperties,
@@ -46,6 +49,7 @@ impl NonVisualGraphicFrameProperties {
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_non_visual_graphic_frame_drawing_properties(
         &self,
@@ -53,12 +57,14 @@ impl NonVisualGraphicFrameProperties {
         &self.non_visual_graphic_frame_drawing_properties
     }
 
+    #[inline]
     pub fn get_non_visual_graphic_frame_drawing_properties_mut(
         &mut self,
     ) -> &mut NonVisualGraphicFrameDrawingProperties {
         &mut self.non_visual_graphic_frame_drawing_properties
     }
 
+    #[inline]
     pub fn set_non_visual_graphic_frame_drawing_properties(
         &mut self,
         value: NonVisualGraphicFrameDrawingProperties,

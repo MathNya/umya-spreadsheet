@@ -24,36 +24,43 @@ pub struct Rotation {
 }
 
 impl Rotation {
+    #[inline]
     #[must_use]
     pub fn get_latitude(&self) -> i32 {
         self.latitude.get_value()
     }
 
+    #[inline]
     pub fn set_latitude(&mut self, value: i32) -> &mut Self {
         self.latitude.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_longitude(&self) -> i32 {
         self.longitude.get_value()
     }
 
+    #[inline]
     pub fn set_longitude(&mut self, value: i32) -> &mut Self {
         self.longitude.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_revolution(&self) -> i32 {
         self.revolution.get_value()
     }
 
+    #[inline]
     pub fn set_revolution(&mut self, value: i32) -> &mut Self {
         self.revolution.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

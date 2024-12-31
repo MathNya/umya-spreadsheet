@@ -70,6 +70,7 @@ pub(crate) fn normalize_path(path: &str) -> PathBuf {
     ret
 }
 
+#[inline]
 pub(crate) fn join_paths(base_path: &str, target: &str) -> String {
     match target.split_once('/') {
         Some(("", target)) => normalize_path_to_str(target),
@@ -77,11 +78,13 @@ pub(crate) fn join_paths(base_path: &str, target: &str) -> String {
     }
 }
 
+#[inline]
 pub(crate) fn normalize_path_to_str(path: &str) -> String {
     let ret = normalize_path(path);
     ret.to_str().unwrap_or("").replace('\\', "/")
 }
 
+#[inline]
 pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -> Option<String> {
     e.attributes()
         .with_checks(false)
@@ -93,6 +96,7 @@ pub(crate) fn get_attribute(e: &quick_xml::events::BytesStart<'_>, key: &[u8]) -
         })
 }
 
+#[inline]
 pub(crate) fn get_attribute_value(attr: &Attribute) -> Result<String, FromUtf8Error> {
     String::from_utf8(attr.value.to_vec())
 }

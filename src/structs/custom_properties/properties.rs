@@ -28,15 +28,18 @@ pub struct Properties {
 }
 
 impl Properties {
+    #[inline]
     #[must_use]
     pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
         &self.custom_document_property_list
     }
 
+    #[inline]
     pub fn get_custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
         &mut self.custom_document_property_list
     }
 
+    #[inline]
     pub fn set_custom_document_property_list(
         &mut self,
         value: impl Into<Vec<CustomDocumentProperty>>,
@@ -45,6 +48,7 @@ impl Properties {
         self
     }
 
+    #[inline]
     pub fn add_custom_document_property_list(
         &mut self,
         value: CustomDocumentProperty,
@@ -53,6 +57,7 @@ impl Properties {
         self
     }
 
+    #[inline]
     pub fn remove_custom_document_property_list(
         &mut self,
         _value: CustomDocumentProperty,

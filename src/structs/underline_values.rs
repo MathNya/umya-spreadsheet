@@ -10,11 +10,13 @@ pub enum UnderlineValues {
     SingleAccounting,
 }
 impl Default for UnderlineValues {
+    #[inline]
     fn default() -> Self {
         Self::Single
     }
 }
 impl EnumTrait for UnderlineValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Double => "double",
@@ -28,6 +30,7 @@ impl EnumTrait for UnderlineValues {
 impl FromStr for UnderlineValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "double" => Ok(Self::Double),

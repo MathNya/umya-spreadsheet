@@ -26,16 +26,19 @@ pub struct ClipboardFormat {
 }
 
 impl ClipboardFormat {
+    #[inline]
     #[must_use]
     pub fn get_value(&self) -> &ClipboardFormatValues {
         self.value.get_value()
     }
 
+    #[inline]
     pub fn set_value(&mut self, value: ClipboardFormatValues) -> &mut Self {
         self.value.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -55,6 +58,7 @@ impl ClipboardFormat {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x:CF
         write_start_tag(writer, "x:CF", vec![], false);

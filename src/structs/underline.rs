@@ -26,6 +26,7 @@ pub struct Underline {
 }
 
 impl Underline {
+    #[inline]
     #[must_use]
     pub fn get_val(&self) -> &UnderlineValues {
         if self.val.has_value() {
@@ -34,11 +35,13 @@ impl Underline {
         &UnderlineValues::None
     }
 
+    #[inline]
     pub fn set_val(&mut self, value: UnderlineValues) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

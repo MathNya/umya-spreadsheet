@@ -18,6 +18,7 @@ pub enum CellRawValue {
     Empty,
 }
 impl fmt::Display for CellRawValue {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::String(v) => write!(f, "{v}"),
@@ -31,6 +32,7 @@ impl fmt::Display for CellRawValue {
 }
 
 impl CellRawValue {
+    #[inline]
     #[must_use]
     pub fn get_data_type(&self) -> &str {
         match self {
@@ -42,6 +44,7 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     pub(crate) fn get_text(&self) -> Option<Text> {
         match self {
             Self::String(_) | // _
@@ -55,6 +58,7 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     pub(crate) fn get_number(&self) -> Option<f64> {
         match self {
             Self::Numeric(number) => Some(*number),
@@ -62,6 +66,7 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     #[must_use]
     pub fn get_rich_text(&self) -> Option<RichText> {
         match self {
@@ -70,11 +75,13 @@ impl CellRawValue {
         }
     }
 
+    #[inline]
     #[must_use]
     pub fn is_error(&self) -> bool {
         matches!(*self, CellRawValue::Error(_))
     }
 
+    #[inline]
     #[must_use]
     pub fn is_empty(&self) -> bool {
         matches!(*self, CellRawValue::Empty)

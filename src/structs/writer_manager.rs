@@ -45,6 +45,7 @@ pub struct WriterManager<'a, W: io::Seek + io::Write> {
 }
 
 impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
+    #[inline]
     pub fn new(arv: &'a mut zip::ZipWriter<W>) -> Self {
         WriterManager {
             files: Vec::new(),
@@ -54,26 +55,31 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         }
     }
 
+    #[inline]
     pub fn set_is_light(&mut self, value: bool) -> &mut Self {
         self.is_light = value;
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_is_light(&self) -> bool {
         self.is_light
     }
 
+    #[inline]
     #[must_use]
     pub fn get_num_tables(&self) -> i32 {
         self.table_no
     }
 
+    #[inline]
     pub fn next_table_no(&mut self) -> i32 {
         self.table_no += 1;
         self.table_no
     }
 
+    #[inline]
     pub(crate) fn add_writer(
         &mut self,
         target: &str,
@@ -86,6 +92,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         Ok(())
     }
 
+    #[inline]
     pub(crate) fn add_bin(&mut self, target: &str, data: &[u8]) -> Result<(), XlsxError> {
         if !self.check_file_exist(target) {
             make_file_from_bin(target, self.arv, data, None, self.is_light)?;
@@ -94,15 +101,18 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         Ok(())
     }
 
+    #[inline]
     pub(crate) fn get_arv_mut(&mut self) -> &mut zip::ZipWriter<W> {
         self.arv
     }
 
+    #[inline]
     pub(crate) fn file_list_sort(&mut self) -> &mut Self {
         self.files.sort();
         self
     }
 
+    #[inline]
     pub(crate) fn check_file_exist(&mut self, file_path: &str) -> bool {
         self.file_list_sort();
         self.files.iter().any(|file| file == file_path)
@@ -204,6 +214,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         }
     }
 
+    #[inline]
     pub(crate) fn add_file_at_table(
         &mut self,
         writer: Writer<Cursor<Vec<u8>>>,
@@ -214,6 +225,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         Ok(table_no)
     }
 
+    #[inline]
     pub(crate) fn has_extension(&self, extension: &str) -> bool {
         let extension = format!(".{extension}");
         self.files.iter().any(|file| file.ends_with(&extension))

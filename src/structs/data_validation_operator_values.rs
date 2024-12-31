@@ -15,6 +15,7 @@ pub enum DataValidationOperatorValues {
 }
 
 impl EnumTrait for DataValidationOperatorValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match self {
             Self::Between => "between",
@@ -30,6 +31,7 @@ impl EnumTrait for DataValidationOperatorValues {
 }
 
 impl Default for DataValidationOperatorValues {
+    #[inline]
     fn default() -> Self {
         Self::LessThan
     }
@@ -38,6 +40,7 @@ impl Default for DataValidationOperatorValues {
 impl FromStr for DataValidationOperatorValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         Ok(match input {
             "between" => Self::Between,

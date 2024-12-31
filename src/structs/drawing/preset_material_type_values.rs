@@ -20,11 +20,13 @@ pub enum PresetMaterialTypeValues {
     WarmMatte,
 }
 impl Default for PresetMaterialTypeValues {
+    #[inline]
     fn default() -> Self {
         Self::LegacyMatte
     }
 }
 impl EnumTrait for PresetMaterialTypeValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Clear => "clear",
@@ -48,6 +50,7 @@ impl EnumTrait for PresetMaterialTypeValues {
 impl FromStr for PresetMaterialTypeValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "clear" => Ok(Self::Clear),

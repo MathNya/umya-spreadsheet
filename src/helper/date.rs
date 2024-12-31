@@ -127,6 +127,7 @@ pub fn excel_to_date_time_object(excel_timestamp: f64, time_zone: Option<String>
 ///
 /// This function may panic if the provided date and time components are
 /// invalid.
+#[inline]
 #[must_use]
 pub fn convert_date(
     year: i32,
@@ -176,6 +177,7 @@ pub fn convert_date(
 ///
 /// This function may panic if the provided date and time components are
 /// invalid.
+#[inline]
 #[must_use]
 pub fn convert_date_windows_1900(
     year: i32,
@@ -226,6 +228,7 @@ pub fn convert_date_windows_1900(
 ///
 /// This function may panic if the provided date and time components are
 /// invalid.
+#[inline]
 #[must_use]
 pub fn convert_date_mac_1904(
     year: i32,

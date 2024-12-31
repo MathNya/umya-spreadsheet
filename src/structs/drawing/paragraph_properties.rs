@@ -38,49 +38,59 @@ pub struct ParagraphProperties {
 }
 
 impl ParagraphProperties {
+    #[inline]
     #[must_use]
     pub fn get_right_to_left(&self) -> Option<&str> {
         self.right_to_left.get_value()
     }
 
+    #[inline]
     pub fn set_right_to_left<S: Into<String>>(&mut self, value: S) -> &mut ParagraphProperties {
         self.right_to_left.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
         self.alignment.get_value()
     }
 
+    #[inline]
     pub fn set_alignment(&mut self, value: TextAlignmentTypeValues) -> &mut ParagraphProperties {
         self.alignment.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
         self.default_run_properties.as_deref()
     }
 
+    #[inline]
     pub fn get_default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
         self.default_run_properties.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_default_run_properties(&mut self, value: RunProperties) -> &mut ParagraphProperties {
         self.default_run_properties = Some(Box::new(value));
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_line_spacing(&self) -> Option<&LineSpacing> {
         self.line_spacing.as_ref()
     }
 
+    #[inline]
     pub fn get_line_spacing_mut(&mut self) -> Option<&mut LineSpacing> {
         self.line_spacing.as_mut()
     }
 
+    #[inline]
     pub fn set_line_spacing(&mut self, value: LineSpacing) -> &mut Self {
         self.line_spacing = Some(value);
         self

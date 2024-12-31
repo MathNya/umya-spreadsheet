@@ -62,6 +62,7 @@ impl Workbook {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_row("Sheet1", &2, &3);
     /// ```
+    #[inline]
     pub fn insert_new_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
         self.adjustment_insert_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
     }
@@ -76,6 +77,7 @@ impl Workbook {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_column("Sheet1", "B", &3);
     /// ```
+    #[inline]
     pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
         let column_upper = column.to_uppercase();
         let column_index = column_index_from_string(column_upper);
@@ -92,6 +94,7 @@ impl Workbook {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.insert_new_column_by_index("Sheet1", &2, &3);
     /// ```
+    #[inline]
     pub fn insert_new_column_by_index(
         &mut self,
         sheet_name: &str,
@@ -111,6 +114,7 @@ impl Workbook {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_row("Sheet1", &2, &3);
     /// ```
+    #[inline]
     pub fn remove_row(&mut self, sheet_name: &str, row_index: u32, num_rows: u32) {
         self.adjustment_remove_coordinate_with_sheet(sheet_name, 0, 0, row_index, num_rows);
     }
@@ -125,6 +129,7 @@ impl Workbook {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_column("Sheet1", "B", &3);
     /// ```
+    #[inline]
     pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
         let column_upper = column.to_uppercase();
         let column_index = column_index_from_string(column_upper);
@@ -141,6 +146,7 @@ impl Workbook {
     /// let mut book = umya_spreadsheet::new_file();
     /// book.remove_column_by_index("Sheet1", &2, &3);
     /// ```
+    #[inline]
     pub fn remove_column_by_index(
         &mut self,
         sheet_name: &str,
@@ -160,6 +166,7 @@ impl Workbook {
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
     /// ```
+    #[inline]
     #[must_use]
     pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
@@ -174,6 +181,7 @@ impl Workbook {
     /// * `address` - Address Object
     /// # Return value
     /// *`Vec<&CellValue>` - `CellValue` List.
+    #[inline]
     pub(crate) fn get_cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
         self.get_sheet_by_name(address.get_sheet_name())
             .unwrap()
@@ -181,12 +189,14 @@ impl Workbook {
     }
 
     /// Get Theme.
+    #[inline]
     #[must_use]
     pub fn get_theme(&self) -> &Theme {
         &self.theme
     }
 
     /// Get Theme in mutable.
+    #[inline]
     pub fn get_theme_mut(&mut self) -> &mut Theme {
         &mut self.theme
     }
@@ -194,18 +204,21 @@ impl Workbook {
     /// Set Theme.
     /// # Arguments
     /// * `value` - Theme
+    #[inline]
     pub fn set_theme(&mut self, value: Theme) -> &mut Self {
         self.theme = value;
         self
     }
 
     /// Get Properties.
+    #[inline]
     #[must_use]
     pub fn get_properties(&self) -> &Properties {
         &self.properties
     }
 
     /// Get Properties in mutable.
+    #[inline]
     pub fn get_properties_mut(&mut self) -> &mut Properties {
         &mut self.properties
     }
@@ -213,6 +226,7 @@ impl Workbook {
     /// Set Properties.
     /// # Arguments
     /// * `value` - Properties
+    #[inline]
     pub fn set_properties(&mut self, value: Properties) -> &mut Self {
         self.properties = value;
         self
@@ -221,6 +235,7 @@ impl Workbook {
     /// Get Macros Code.
     /// # Return value
     /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
+    #[inline]
     #[must_use]
     pub fn get_macros_code(&self) -> Option<&[u8]> {
         self.macros_code.as_deref()
@@ -229,18 +244,21 @@ impl Workbook {
     /// Set Macros Code.
     /// # Arguments
     /// * `value` - Macros Code Raw Data.
+    #[inline]
     pub fn set_macros_code(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.macros_code = Some(value.into());
         self
     }
 
     /// Remove Macros Code
+    #[inline]
     pub fn remove_macros_code(&mut self) -> &mut Self {
         self.macros_code = None;
         self
     }
 
     /// Has Macros Code
+    #[inline]
     #[must_use]
     pub fn get_has_macros(&self) -> bool {
         self.macros_code.is_some()
@@ -254,6 +272,7 @@ impl Workbook {
     /// Default one is `ThisWorkbook`.
     ///
     /// Excel often uses `Workbook________` (8 underscores).
+    #[inline]
     pub fn set_code_name<S: Into<String>>(&mut self, codename: S) -> &mut Self {
         self.code_name.set_value(codename);
         self
@@ -264,6 +283,7 @@ impl Workbook {
     /// Must to be the same in workbook with VBA/macros code from this workbook
     /// for that code in Workbook object to work out of the box without
     /// adjustments
+    #[inline]
     #[must_use]
     pub fn get_code_name(&self) -> Option<&str> {
         self.code_name.get_value()
@@ -271,6 +291,7 @@ impl Workbook {
 
     /// (This method is crate only.)
     /// Get Stylesheet.
+    #[inline]
     pub(crate) fn get_stylesheet(&self) -> &Stylesheet {
         &self.stylesheet
     }
@@ -279,6 +300,7 @@ impl Workbook {
     /// Set Stylesheet.
     /// # Arguments
     /// * `value` - Stylesheet
+    #[inline]
     pub(crate) fn set_stylesheet(&mut self, value: Stylesheet) -> &mut Self {
         self.stylesheet = value;
         self
@@ -286,6 +308,7 @@ impl Workbook {
 
     /// (This method is crate only.)
     /// Set Default Value Stylesheet.
+    #[inline]
     pub(crate) fn set_stylesheet_default_value(&mut self) -> &mut Self {
         self.stylesheet.set_defalut_value();
         self
@@ -293,6 +316,7 @@ impl Workbook {
 
     /// (This method is crate only.)
     /// Get Shared String Table.
+    #[inline]
     pub(crate) fn get_shared_string_table(&self) -> Arc<RwLock<SharedStringTable>> {
         self.shared_string_table.clone()
     }
@@ -301,6 +325,7 @@ impl Workbook {
     /// Set Shared String Table.
     /// # Arguments
     /// * `value` - Shared String Table
+    #[inline]
     pub(crate) fn set_shared_string_table(&mut self, value: SharedStringTable) -> &mut Self {
         self.shared_string_table = Arc::new(RwLock::new(value));
         self
@@ -321,12 +346,14 @@ impl Workbook {
 
     /// Get Work Sheet List.
     /// No check deserialized.
+    #[inline]
     #[must_use]
     pub fn get_sheet_collection_no_check(&self) -> &[Worksheet] {
         &self.work_sheet_collection
     }
 
     /// Get Work Sheet List in mutable.
+    #[inline]
     pub fn get_sheet_collection_mut(&mut self) -> &mut Vec<Worksheet> {
         self.read_sheet_collection();
         &mut self.work_sheet_collection
@@ -335,12 +362,14 @@ impl Workbook {
     /// Get Work Sheet Count.
     /// # Return value
     /// * `usize` - Work Sheet Count.
+    #[inline]
     #[must_use]
     pub fn get_sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
     }
 
     /// deserialize by all worksheet.
+    #[inline]
     pub fn read_sheet_collection(&mut self) -> &mut Self {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
@@ -351,6 +380,7 @@ impl Workbook {
     }
 
     /// deserialize a worksheet.
+    #[inline]
     pub fn read_sheet(&mut self, index: usize) -> &mut Self {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
@@ -360,11 +390,13 @@ impl Workbook {
     }
 
     /// deserialize a worksheet.
+    #[inline]
     pub fn read_sheet_by_name(&mut self, sheet_name: &str) -> &mut Self {
         let index = self.find_sheet_index_by_name(sheet_name).unwrap();
         self.read_sheet(index)
     }
 
+    #[inline]
     pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Option<usize> {
         self.work_sheet_collection
             .iter()
@@ -376,6 +408,7 @@ impl Workbook {
     /// * `index` - sheet index
     /// # Return value
     /// * `Option<&Worksheet>`.
+    #[inline]
     #[must_use]
     pub fn get_sheet(&self, index: usize) -> Option<&Worksheet> {
         self.work_sheet_collection.get(index).inspect(|v| {
@@ -392,6 +425,7 @@ impl Workbook {
     /// * `sheet_name` - sheet name
     /// # Return value
     /// * `Option<&Worksheet>`.
+    #[inline]
     #[must_use]
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
@@ -428,11 +462,13 @@ impl Workbook {
     /// * `sheet_name` - sheet name
     /// # Return value
     /// * `Option<&mut Worksheet>`.
+    #[inline]
     pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
             .and_then(move |index| self.get_sheet_mut(index))
     }
 
+    #[inline]
     pub fn set_active_sheet(&mut self, index: u32) -> &mut Self {
         self.get_workbook_view_mut().set_active_tab(index);
         self
@@ -441,6 +477,7 @@ impl Workbook {
     /// Get Active Work Sheet.
     /// # Return value
     /// * `&Worksheet` - Work sheet.
+    #[inline]
     #[must_use]
     pub fn get_active_sheet(&self) -> &Worksheet {
         let index = self.get_workbook_view().get_active_tab();
@@ -450,6 +487,7 @@ impl Workbook {
     /// Get Active Work Sheet in mutable.
     /// # Return value
     /// * `&mut Worksheet` - Work sheet.
+    #[inline]
     pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
         let index = self.get_workbook_view().get_active_tab();
         self.get_sheet_mut(index as usize).unwrap()
@@ -461,6 +499,7 @@ impl Workbook {
     /// # Return value
     /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet.
     ///   Err:Error.
+    #[inline]
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
         let title = value.get_name();
         Workbook::check_sheet_name(self, title)?;
@@ -473,6 +512,7 @@ impl Workbook {
     /// * `index` - sheet index
     /// # Return value
     /// * `Result<(), &'static str>` - OK:removed worksheet. Err:Error.
+    #[inline]
     pub fn remove_sheet(&mut self, index: usize) -> Result<(), &'static str> {
         if self.work_sheet_collection.len() <= index {
             return Err("out of index.");
@@ -503,6 +543,7 @@ impl Workbook {
     /// # Return value
     /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet.
     ///   Err:Error.
+    #[inline]
     pub fn new_sheet<S: Into<String>>(
         &mut self,
         sheet_title: S,
@@ -572,17 +613,20 @@ impl Workbook {
 
     /// (This method is crate only.)
     /// Has Ribbon XML Data.
+    #[inline]
     pub(crate) fn has_ribbon(&self) -> bool {
         self.ribbon_xml_data.has_value()
     }
 
     /// Get Workbook View.
+    #[inline]
     #[must_use]
     pub fn get_workbook_view(&self) -> &WorkbookView {
         &self.workbook_view
     }
 
     /// Get Workbook View in mutable.
+    #[inline]
     pub fn get_workbook_view_mut(&mut self) -> &mut WorkbookView {
         &mut self.workbook_view
     }
@@ -590,6 +634,7 @@ impl Workbook {
     /// Set Workbook View.
     /// # Arguments
     /// * `value` - `WorkbookView`
+    #[inline]
     pub fn set_workbook_view(&mut self, value: WorkbookView) -> &mut Self {
         self.workbook_view = value;
         self
@@ -597,6 +642,7 @@ impl Workbook {
 
     /// (This method is crate only.)
     /// Has Defined Names.
+    #[inline]
     pub(crate) fn has_defined_names(&self) -> bool {
         if !self.defined_names.is_empty() {
             return true;
@@ -606,10 +652,12 @@ impl Workbook {
             .any(Worksheet::has_defined_names)
     }
 
+    #[inline]
     pub(crate) fn get_backup_context_types(&self) -> &[(Box<str>, Box<str>)] {
         &self.backup_context_types
     }
 
+    #[inline]
     pub(crate) fn set_backup_context_types(
         &mut self,
         value: impl Into<Vec<(String, String)>>,
@@ -639,6 +687,7 @@ impl Workbook {
         result
     }
 
+    #[inline]
     pub(crate) fn add_pivot_caches(&mut self, value: (String, String, String)) -> &mut Self {
         self.pivot_caches.push((
             value.0.into_boxed_str(),
@@ -648,6 +697,7 @@ impl Workbook {
         self
     }
 
+    #[inline]
     pub(crate) fn update_pivot_caches(&mut self, key: &str, value: &str) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
             if &**val1 == key {
@@ -657,33 +707,39 @@ impl Workbook {
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_workbook_protection(&self) -> Option<&WorkbookProtection> {
         self.workbook_protection.as_deref()
     }
 
+    #[inline]
     pub fn get_workbook_protection_mut(&mut self) -> &mut WorkbookProtection {
         self.workbook_protection
             .get_or_insert(Box::new(WorkbookProtection::default()))
     }
 
+    #[inline]
     pub fn set_workbook_protection(&mut self, value: WorkbookProtection) -> &mut Self {
         self.workbook_protection = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_workbook_protection(&mut self) -> &mut Self {
         self.workbook_protection = None;
         self
     }
 
     /// Get Defined Name (Vec).
+    #[inline]
     #[must_use]
     pub fn get_defined_names(&self) -> &[DefinedName] {
         &self.defined_names
     }
 
     /// Get Defined Name (Vec) in mutable.
+    #[inline]
     pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
         &mut self.defined_names
     }
@@ -691,6 +747,7 @@ impl Workbook {
     /// Set Defined Name (Vec).
     /// # Arguments
     /// * `value` - Vec<DefinedName>.
+    #[inline]
     pub fn set_defined_names(&mut self, value: impl Into<Vec<DefinedName>>) {
         self.defined_names = value.into();
     }
@@ -698,6 +755,7 @@ impl Workbook {
     /// Add Defined Name.
     /// # Arguments
     /// * `value` - `DefinedName`.
+    #[inline]
     pub fn add_defined_names(&mut self, value: DefinedName) {
         self.defined_names.push(value);
     }

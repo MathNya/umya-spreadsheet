@@ -9,6 +9,7 @@ pub enum CustomDocumentPropertyValue {
     Null,
 }
 impl fmt::Display for CustomDocumentPropertyValue {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::String(v) | Self::Date(v) => write!(f, "{v}"),
@@ -19,11 +20,13 @@ impl fmt::Display for CustomDocumentPropertyValue {
     }
 }
 impl Default for CustomDocumentPropertyValue {
+    #[inline]
     fn default() -> Self {
         Self::Null
     }
 }
 impl CustomDocumentPropertyValue {
+    #[inline]
     pub(crate) fn get_tag(&self) -> Option<&str> {
         match self {
             Self::String(_) => Some("vt:lpwstr"),
@@ -34,6 +37,7 @@ impl CustomDocumentPropertyValue {
         }
     }
 
+    #[inline]
     pub(crate) fn get_number(&self) -> Option<i32> {
         match self {
             Self::Numeric(number) => Some(*number),
@@ -41,6 +45,7 @@ impl CustomDocumentPropertyValue {
         }
     }
 
+    #[inline]
     pub(crate) fn get_bool(&self) -> Option<bool> {
         match self {
             Self::Bool(bool) => Some(*bool),

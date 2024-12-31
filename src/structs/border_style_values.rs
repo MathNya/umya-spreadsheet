@@ -19,11 +19,13 @@ pub enum BorderStyleValues {
     Thin,
 }
 impl Default for BorderStyleValues {
+    #[inline]
     fn default() -> Self {
         Self::None
     }
 }
 impl EnumTrait for BorderStyleValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::DashDot => "dashDot",
@@ -46,6 +48,7 @@ impl EnumTrait for BorderStyleValues {
 impl FromStr for BorderStyleValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "dashDot" => Ok(Self::DashDot),

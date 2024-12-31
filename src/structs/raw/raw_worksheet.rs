@@ -23,27 +23,33 @@ pub(crate) struct RawWorksheet {
     relationships_list: Vec<RawRelationships>,
 }
 impl RawWorksheet {
+    #[inline]
     pub(crate) fn get_worksheet_file(&self) -> &RawFile {
         &self.worksheet_file
     }
 
+    #[inline]
     pub(crate) fn get_worksheet_file_mut(&mut self) -> &mut RawFile {
         &mut self.worksheet_file
     }
 
+    #[inline]
     pub(crate) fn get_relationships_list(&self) -> &[RawRelationships] {
         &self.relationships_list
     }
 
+    #[inline]
     pub(crate) fn get_relationships_list_mut(&mut self) -> &mut Vec<RawRelationships> {
         &mut self.relationships_list
     }
 
+    #[inline]
     pub(crate) fn set_relationships(&mut self, value: RawRelationships) -> &mut Self {
         self.relationships_list.push(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_worksheet_relationships(&self) -> Option<&RawRelationships> {
         self.get_relationships_list()
             .iter()

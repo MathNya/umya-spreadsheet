@@ -38,25 +38,30 @@ pub(crate) struct RawRelationships {
 }
 
 impl RawRelationships {
+    #[inline]
     pub(crate) fn get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
         (*object_name).to_string()
     }
 
+    #[inline]
     pub(crate) fn get_file_target(&self) -> &str {
         self.file_target.get_value_str()
     }
 
+    #[inline]
     pub(crate) fn set_file_target<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.file_target.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_relationship_list(&self) -> &[RawRelationship] {
         &self.relationship_list
     }
 
+    #[inline]
     pub(crate) fn get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
         &mut self.relationship_list
     }
@@ -70,6 +75,7 @@ impl RawRelationships {
         panic!("not found relationship as {r_id}.");
     }
 
+    #[inline]
     pub(crate) fn add_relationship_list(&mut self, value: RawRelationship) -> &mut Self {
         self.relationship_list.push(value);
         self

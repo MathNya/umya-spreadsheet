@@ -15,11 +15,13 @@ pub enum CsvEncodeValues {
     Utf16Be,
 }
 impl Default for CsvEncodeValues {
+    #[inline]
     fn default() -> Self {
         Self::Utf8
     }
 }
 impl EnumTrait for CsvEncodeValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Utf8 => "utf_8",
@@ -38,6 +40,7 @@ impl EnumTrait for CsvEncodeValues {
 impl FromStr for CsvEncodeValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "utf_8" => Ok(Self::Utf8),

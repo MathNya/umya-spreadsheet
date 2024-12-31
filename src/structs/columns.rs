@@ -34,14 +34,17 @@ pub(crate) struct Columns {
 }
 
 impl Columns {
+    #[inline]
     pub(crate) fn get_column_collection(&self) -> &[Column] {
         &self.column
     }
 
+    #[inline]
     pub(crate) fn get_column_collection_mut(&mut self) -> &mut Vec<Column> {
         &mut self.column
     }
 
+    #[inline]
     pub(crate) fn get_column(&self, value: u32) -> Option<&Column> {
         self.column
             .iter()
@@ -62,6 +65,7 @@ impl Columns {
         panic!("Column not found.");
     }
 
+    #[inline]
     pub(crate) fn set_column(&mut self, value: Column) -> &mut Self {
         self.column.push(value);
         self

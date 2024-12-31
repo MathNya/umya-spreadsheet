@@ -10,11 +10,13 @@ pub enum VerticalAlignmentValues {
     Top,
 }
 impl Default for VerticalAlignmentValues {
+    #[inline]
     fn default() -> Self {
         Self::Bottom
     }
 }
 impl EnumTrait for VerticalAlignmentValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Bottom => "bottom",
@@ -28,6 +30,7 @@ impl EnumTrait for VerticalAlignmentValues {
 impl FromStr for VerticalAlignmentValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "bottom" => Ok(Self::Bottom),

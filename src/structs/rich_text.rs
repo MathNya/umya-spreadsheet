@@ -29,6 +29,7 @@ pub struct RichText {
 }
 
 impl RichText {
+    #[inline]
     #[must_use]
     pub fn get_text(&self) -> Cow<'static, str> {
         let mut text = String::new();
@@ -38,6 +39,7 @@ impl RichText {
         text.into()
     }
 
+    #[inline]
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.rich_text_elements.clear();
         let mut text_element = TextElement::default();
@@ -46,20 +48,24 @@ impl RichText {
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_rich_text_elements(&self) -> &[TextElement] {
         &self.rich_text_elements
     }
 
+    #[inline]
     pub fn get_rich_text_elements_mut(&mut self) -> &mut Vec<TextElement> {
         &mut self.rich_text_elements
     }
 
+    #[inline]
     pub fn set_rich_text_elements(&mut self, value: impl Into<Vec<TextElement>>) -> &mut Self {
         self.rich_text_elements = value.into();
         self
     }
 
+    #[inline]
     pub fn add_rich_text_elements(&mut self, value: TextElement) -> &mut Self {
         self.rich_text_elements.push(value);
         self
@@ -96,11 +102,13 @@ impl RichText {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to_none(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // none
         self.write_to(writer, "");
     }
 
+    #[inline]
     pub(crate) fn write_to_text(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // text
         self.write_to(writer, "text");

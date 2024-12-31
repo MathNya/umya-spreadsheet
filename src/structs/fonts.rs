@@ -28,15 +28,18 @@ pub(crate) struct Fonts {
 }
 
 impl Fonts {
+    #[inline]
     pub(crate) fn get_font(&self) -> &[Font] {
         &self.font
     }
 
+    #[inline]
     #[allow(dead_code)]
     pub(crate) fn get_font_mut(&mut self) -> &mut Vec<Font> {
         &mut self.font
     }
 
+    #[inline]
     pub(crate) fn set_font(&mut self, value: Font) -> &mut Self {
         self.font.push(value);
         self

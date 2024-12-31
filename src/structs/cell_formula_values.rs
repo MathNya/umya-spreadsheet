@@ -9,11 +9,13 @@ pub enum CellFormulaValues {
     Shared,
 }
 impl Default for CellFormulaValues {
+    #[inline]
     fn default() -> Self {
         Self::Normal
     }
 }
 impl EnumTrait for CellFormulaValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Array => "array",
@@ -26,6 +28,7 @@ impl EnumTrait for CellFormulaValues {
 impl FromStr for CellFormulaValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "array" => Ok(Self::Array),

@@ -24,20 +24,24 @@ pub struct DataFields {
     list: Vec<DataField>,
 }
 impl DataFields {
+    #[inline]
     #[must_use]
     pub fn get_list(&self) -> &[DataField] {
         &self.list
     }
 
+    #[inline]
     pub fn get_list_mut(&mut self) -> &mut Vec<DataField> {
         &mut self.list
     }
 
+    #[inline]
     pub fn add_list_mut(&mut self, value: DataField) -> &mut Self {
         self.list.push(value);
         self
     }
 
+    #[inline]
     #[allow(unused_variables)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
@@ -62,6 +66,7 @@ impl DataFields {
         );
     }
 
+    #[inline]
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // dataFields

@@ -28,32 +28,39 @@ pub struct Color2Type {
 }
 
 impl Color2Type {
+    #[inline]
     pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) {
         self.rgb_color_model_hex = Some(Box::new(value));
     }
 
+    #[inline]
     #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
+    #[inline]
     pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_system_color(&mut self, value: SystemColor) {
         self.system_color = Some(Box::new(value));
     }
 
+    #[inline]
     #[must_use]
     pub fn get_system_color(&self) -> Option<&SystemColor> {
         self.system_color.as_deref()
     }
 
+    #[inline]
     pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
         self.system_color.as_deref_mut()
     }
 
+    #[inline]
     #[must_use]
     pub fn get_val(&self) -> String {
         if let Some(v) = &self.rgb_color_model_hex {
@@ -123,61 +130,73 @@ impl Color2Type {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to_accent1(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:accent1
         self.write_to(writer, "a:accent1");
     }
 
+    #[inline]
     pub(crate) fn write_to_accent2(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:accent2
         self.write_to(writer, "a:accent2");
     }
 
+    #[inline]
     pub(crate) fn write_to_accent3(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:accent3
         self.write_to(writer, "a:accent3");
     }
 
+    #[inline]
     pub(crate) fn write_to_accent4(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:accent4
         self.write_to(writer, "a:accent4");
     }
 
+    #[inline]
     pub(crate) fn write_to_accent5(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:accent5
         self.write_to(writer, "a:accent5");
     }
 
+    #[inline]
     pub(crate) fn write_to_accent6(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:accent6
         self.write_to(writer, "a:accent6");
     }
 
+    #[inline]
     pub(crate) fn write_to_dk1(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:dk1
         self.write_to(writer, "a:dk1");
     }
 
+    #[inline]
     pub(crate) fn write_to_dk2(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:dk2
         self.write_to(writer, "a:dk2");
     }
 
+    #[inline]
     pub(crate) fn write_to_fol_hlink(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:folHlink
         self.write_to(writer, "a:folHlink");
     }
 
+    #[inline]
     pub(crate) fn write_to_hlink(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:hlink
         self.write_to(writer, "a:hlink");
     }
 
+    #[inline]
     pub(crate) fn write_to_lt1(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lt1
         self.write_to(writer, "a:lt1");
     }
 
+    #[inline]
     pub(crate) fn write_to_lt2(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lt2
         self.write_to(writer, "a:lt2");

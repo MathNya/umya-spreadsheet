@@ -22,30 +22,36 @@ pub struct PrintOptions {
 }
 
 impl PrintOptions {
+    #[inline]
     #[must_use]
     pub fn get_horizontal_centered(&self) -> bool {
         self.horizontal_centered.get_value()
     }
 
+    #[inline]
     pub fn set_horizontal_centered(&mut self, value: bool) -> &mut Self {
         self.horizontal_centered.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_vertical_centered(&self) -> bool {
         self.vertical_centered.get_value()
     }
 
+    #[inline]
     pub fn set_vertical_centered(&mut self, value: bool) -> &mut Self {
         self.vertical_centered.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn has_param(&self) -> bool {
         self.horizontal_centered.has_value() || self.vertical_centered.has_value()
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

@@ -25,15 +25,18 @@ pub struct GroupShapeProperties {
 }
 
 impl GroupShapeProperties {
+    #[inline]
     #[must_use]
     pub fn get_transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_ref()
     }
 
+    #[inline]
     pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
         self.transform2d.as_mut()
     }
 
+    #[inline]
     pub fn set_transform2d(&mut self, value: Transform2D) -> &mut Self {
         self.transform2d = Some(value);
         self

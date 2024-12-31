@@ -20,11 +20,13 @@ pub enum ItemValues {
     VarianceP,
 }
 impl Default for ItemValues {
+    #[inline]
     fn default() -> Self {
         Self::Default
     }
 }
 impl EnumTrait for ItemValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Average => "avg",
@@ -48,6 +50,7 @@ impl EnumTrait for ItemValues {
 impl FromStr for ItemValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "avg" => Ok(Self::Average),

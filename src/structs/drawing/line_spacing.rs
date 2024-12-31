@@ -25,20 +25,24 @@ pub struct LineSpacing {
 }
 
 impl LineSpacing {
+    #[inline]
     #[must_use]
     pub fn get_spacing_percent(&self) -> Option<&SpacingPercent> {
         self.spacing_percent.as_ref()
     }
 
+    #[inline]
     pub fn get_spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
         self.spacing_percent.as_mut()
     }
 
+    #[inline]
     pub fn set_spacing_percent(&mut self, value: SpacingPercent) -> &mut Self {
         self.spacing_percent = Some(value);
         self
     }
 
+    #[inline]
     pub fn remove_spacing_percent(&mut self) {
         self.spacing_percent = None;
     }

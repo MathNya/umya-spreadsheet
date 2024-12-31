@@ -28,14 +28,17 @@ pub(crate) struct MergeCells {
 }
 
 impl MergeCells {
+    #[inline]
     pub(crate) fn get_range_collection(&self) -> &[Range] {
         &self.range
     }
 
+    #[inline]
     pub(crate) fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
         &mut self.range
     }
 
+    #[inline]
     pub(crate) fn add_range<S: Into<String>>(&mut self, range: S) -> &mut Self {
         let mut obj = Range::default();
         obj.set_range(range);

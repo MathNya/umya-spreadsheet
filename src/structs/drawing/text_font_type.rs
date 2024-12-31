@@ -21,41 +21,49 @@ pub struct TextFontType {
 }
 
 impl TextFontType {
+    #[inline]
     #[must_use]
     pub fn get_typeface(&self) -> &str {
         self.typeface.get_value_str()
     }
 
+    #[inline]
     pub fn set_typeface<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.typeface.set_value(value.into());
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_pitch_family(&self) -> &str {
         self.pitch_family.get_value_str()
     }
 
+    #[inline]
     pub fn set_pitch_family<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.pitch_family.set_value(value.into());
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_charset(&self) -> &str {
         self.charset.get_value_str()
     }
 
+    #[inline]
     pub fn set_charset<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.charset.set_value(value.into());
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_panose(&self) -> &str {
         self.panose.get_value_str()
     }
 
+    #[inline]
     pub fn set_panose<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.panose.set_value(value.into());
         self
@@ -80,14 +88,17 @@ impl TextFontType {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to_latin(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:latin");
     }
 
+    #[inline]
     pub(crate) fn write_to_cs(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:cs");
     }
 
+    #[inline]
     pub(crate) fn write_to_ea(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         self.write_to(writer, "a:ea");
     }

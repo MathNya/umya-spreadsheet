@@ -18,16 +18,19 @@ pub struct SoftEdge {
     radius: Int64Value,
 }
 impl SoftEdge {
+    #[inline]
     #[must_use]
     pub fn get_radius(&self) -> i64 {
         self.radius.get_value()
     }
 
+    #[inline]
     pub fn set_radius(&mut self, value: i64) -> &mut SoftEdge {
         self.radius.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

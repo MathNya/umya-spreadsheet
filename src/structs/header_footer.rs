@@ -29,34 +29,41 @@ pub struct HeaderFooter {
 }
 
 impl HeaderFooter {
+    #[inline]
     #[must_use]
     pub fn get_odd_header(&self) -> &OddHeader {
         &self.odd_header
     }
 
+    #[inline]
     pub fn get_odd_header_mut(&mut self) -> &mut OddHeader {
         &mut self.odd_header
     }
 
+    #[inline]
     pub fn set_odd_header(&mut self, value: OddHeader) -> &mut Self {
         self.odd_header = value;
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_odd_footer(&self) -> &OddFooter {
         &self.odd_footer
     }
 
+    #[inline]
     pub fn get_odd_footer_mut(&mut self) -> &mut OddFooter {
         &mut self.odd_footer
     }
 
+    #[inline]
     pub fn set_odd_footer(&mut self, value: OddFooter) -> &mut Self {
         self.odd_footer = value;
         self
     }
 
+    #[inline]
     pub(crate) fn has_param(&self) -> bool {
         self.odd_header.has_param() || self.odd_footer.has_param()
     }

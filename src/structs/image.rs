@@ -81,39 +81,47 @@ pub struct Image {
 ///     .change_image("./images/sample1.png");
 /// ```
 impl Image {
+    #[inline]
     #[must_use]
     pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
         self.two_cell_anchor.as_deref()
     }
 
+    #[inline]
     pub fn get_two_cell_anchor_mut(&mut self) -> Option<&mut TwoCellAnchor> {
         self.two_cell_anchor.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_two_cell_anchor(&mut self, value: TwoCellAnchor) -> &mut Self {
         self.two_cell_anchor = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_two_cell_anchor(&mut self) -> &mut Self {
         self.two_cell_anchor = None;
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
         self.one_cell_anchor.as_deref()
     }
 
+    #[inline]
     pub fn get_one_cell_anchor_mut(&mut self) -> Option<&mut OneCellAnchor> {
         self.one_cell_anchor.as_deref_mut()
     }
 
+    #[inline]
     pub fn set_one_cell_anchor(&mut self, value: OneCellAnchor) -> &mut Self {
         self.one_cell_anchor = Some(Box::new(value));
         self
     }
 
+    #[inline]
     pub fn remove_one_cell_anchor(&mut self) -> &mut Self {
         self.one_cell_anchor = None;
         self
@@ -188,6 +196,7 @@ impl Image {
     }
 
     #[cfg(feature = "image")]
+    #[inline]
     pub fn change_image(&mut self, path: &str) {
         let marker = self.get_from_marker_type().clone();
         self.remove_two_cell_anchor();
@@ -195,15 +204,18 @@ impl Image {
         self.new_image(path, marker);
     }
 
+    #[inline]
     pub fn download_image(&self, path: &str) {
         fs::write(path, self.get_image_data()).unwrap();
     }
 
+    #[inline]
     #[must_use]
     pub fn has_image(&self) -> bool {
         !self.get_media_object().is_empty()
     }
 
+    #[inline]
     #[must_use]
     pub fn get_image_name(&self) -> &str {
         match self.get_media_object().first() {
@@ -212,6 +224,7 @@ impl Image {
         }
     }
 
+    #[inline]
     #[must_use]
     pub fn get_image_data(&self) -> &[u8] {
         match self.get_media_object().first() {
@@ -220,26 +233,31 @@ impl Image {
         }
     }
 
+    #[inline]
     #[must_use]
     pub fn get_image_data_base64(&self) -> String {
         STANDARD.encode(self.get_image_data())
     }
 
+    #[inline]
     #[must_use]
     pub fn get_coordinate(&self) -> String {
         self.get_from_marker_type().get_coordinate()
     }
 
+    #[inline]
     #[must_use]
     pub fn get_col(&self) -> u32 {
         self.get_from_marker_type().get_col()
     }
 
+    #[inline]
     #[must_use]
     pub fn get_row(&self) -> u32 {
         self.get_from_marker_type().get_row()
     }
 
+    #[inline]
     #[must_use]
     pub fn get_from_marker_type(&self) -> &MarkerType {
         if let Some(anchor) = self.get_two_cell_anchor() {
@@ -251,6 +269,7 @@ impl Image {
         panic!("Not Found MediaObject");
     }
 
+    #[inline]
     #[must_use]
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
         self.get_two_cell_anchor()
@@ -308,6 +327,7 @@ impl Image {
         result
     }
 
+    #[inline]
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
@@ -322,6 +342,7 @@ impl Image {
     }
 }
 impl AdjustmentCoordinate for Image {
+    #[inline]
     fn adjustment_insert_coordinate(
         &mut self,
         root_col_num: u32,
@@ -350,6 +371,7 @@ impl AdjustmentCoordinate for Image {
         }
     }
 
+    #[inline]
     fn adjustment_remove_coordinate(
         &mut self,
         root_col_num: u32,
@@ -378,6 +400,7 @@ impl AdjustmentCoordinate for Image {
         }
     }
 
+    #[inline]
     fn is_remove_coordinate(
         &self,
         root_col_num: u32,

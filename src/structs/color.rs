@@ -364,11 +364,13 @@ impl Color {
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_indexed(&self) -> u32 {
         self.indexed.unwrap_or(0)
     }
 
+    #[inline]
     pub fn set_indexed(&mut self, index: u32) -> &mut Self {
         self.indexed = Some(index);
         self.theme_index = None;
@@ -376,11 +378,13 @@ impl Color {
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_theme_index(&self) -> u32 {
         self.theme_index.unwrap_or(0)
     }
 
+    #[inline]
     pub fn set_theme_index(&mut self, index: u32) -> &mut Self {
         self.indexed = None;
         self.theme_index = Some(index);
@@ -388,16 +392,19 @@ impl Color {
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_tint(&self) -> f64 {
         self.tint.unwrap_or(0.0)
     }
 
+    #[inline]
     pub fn set_tint(&mut self, value: f64) -> &mut Color {
         self.tint = Some(value);
         self
     }
 
+    #[inline]
     pub(crate) fn has_value(&self) -> bool {
         self.theme_index.is_some()
             || self.indexed.is_some()
@@ -405,6 +412,7 @@ impl Color {
             || self.tint.is_some()
     }
 
+    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!(
             "{:x}",
@@ -419,6 +427,7 @@ impl Color {
     }
 
     // When opened in software such as Excel, it is visually blank.
+    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         !self.has_value()
     }
@@ -483,21 +492,25 @@ impl Color {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // color
         self.write_to(writer, "color");
     }
 
+    #[inline]
     pub(crate) fn write_to_fg_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // fgColor
         self.write_to(writer, "fgColor");
     }
 
+    #[inline]
     pub(crate) fn write_to_bg_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // bgColor
         self.write_to(writer, "bgColor");
     }
 
+    #[inline]
     pub(crate) fn write_to_tab_color(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // tabColor
         self.write_to(writer, "tabColor");

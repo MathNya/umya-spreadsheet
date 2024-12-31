@@ -22,26 +22,31 @@ pub struct PivotField {
     show_all:   BooleanValue,
 }
 impl PivotField {
+    #[inline]
     #[must_use]
     pub fn get_data_field(&self) -> bool {
         self.data_field.get_value()
     }
 
+    #[inline]
     pub fn set_data_field(&mut self, value: bool) -> &mut Self {
         self.data_field.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_show_all(&self) -> bool {
         self.show_all.get_value()
     }
 
+    #[inline]
     pub fn set_show_all(&mut self, value: bool) -> &mut Self {
         self.show_all.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -51,6 +56,7 @@ impl PivotField {
         set_string_from_xml!(self, e, show_all, "showAll");
     }
 
+    #[inline]
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotField

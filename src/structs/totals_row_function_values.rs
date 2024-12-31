@@ -15,11 +15,13 @@ pub enum TotalsRowFunctionValues {
     Variance,
 }
 impl Default for TotalsRowFunctionValues {
+    #[inline]
     fn default() -> Self {
         Self::None
     }
 }
 impl EnumTrait for TotalsRowFunctionValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Average => "average",
@@ -38,6 +40,7 @@ impl EnumTrait for TotalsRowFunctionValues {
 impl FromStr for TotalsRowFunctionValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "average" => Ok(Self::Average),

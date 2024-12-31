@@ -33,6 +33,7 @@ pub struct PatternFill {
 }
 
 impl Default for PatternFill {
+    #[inline]
     fn default() -> Self {
         Self {
             preset:           "pct5".into(),
@@ -43,39 +44,47 @@ impl Default for PatternFill {
 }
 
 impl PatternFill {
+    #[inline]
     #[must_use]
     pub fn get_preset(&self) -> &str {
         &self.preset
     }
 
+    #[inline]
     pub fn set_preset(&mut self, value: String) -> &mut PatternFill {
         self.preset = value.into_boxed_str();
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_foreground_color(&self) -> &ForegroundColor {
         &self.foreground_color
     }
 
+    #[inline]
     pub fn get_foreground_color_mut(&mut self) -> &mut ForegroundColor {
         &mut self.foreground_color
     }
 
+    #[inline]
     pub fn set_foreground_color(&mut self, value: ForegroundColor) -> &mut PatternFill {
         self.foreground_color = value;
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_background_color(&self) -> &BackgroundColor {
         &self.background_color
     }
 
+    #[inline]
     pub fn get_background_color_mut(&mut self) -> &mut BackgroundColor {
         &mut self.background_color
     }
 
+    #[inline]
     pub fn set_background_color(&mut self, value: BackgroundColor) -> &mut PatternFill {
         self.background_color = value;
         self

@@ -25,14 +25,17 @@ pub(crate) struct CellFormats {
 }
 
 impl CellFormats {
+    #[inline]
     pub(crate) fn get_cell_format(&self) -> &[CellFormat] {
         &self.cell_format
     }
 
+    #[inline]
     pub(crate) fn get_cell_format_mut(&mut self) -> &mut Vec<CellFormat> {
         &mut self.cell_format
     }
 
+    #[inline]
     pub(crate) fn set_cell_format(&mut self, value: CellFormat) -> &mut Self {
         self.cell_format.push(value);
         self

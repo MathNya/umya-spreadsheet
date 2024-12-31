@@ -23,26 +23,31 @@ pub struct SupplementalFont {
 }
 
 impl SupplementalFont {
+    #[inline]
     #[must_use]
     pub fn get_script(&self) -> &str {
         self.script.get_value_str()
     }
 
+    #[inline]
     pub fn set_script<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.script.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_typeface(&self) -> &str {
         self.typeface.get_value_str()
     }
 
+    #[inline]
     pub fn set_typeface<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.typeface.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,

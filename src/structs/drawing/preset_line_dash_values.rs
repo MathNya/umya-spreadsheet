@@ -16,11 +16,13 @@ pub enum PresetLineDashValues {
     SystemDot,
 }
 impl Default for PresetLineDashValues {
+    #[inline]
     fn default() -> Self {
         Self::Solid
     }
 }
 impl EnumTrait for PresetLineDashValues {
+    #[inline]
     fn get_value_string(&self) -> &str {
         match &self {
             Self::Dash => "dash",
@@ -40,6 +42,7 @@ impl EnumTrait for PresetLineDashValues {
 impl FromStr for PresetLineDashValues {
     type Err = ();
 
+    #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "dash" => Ok(Self::Dash),

@@ -97,6 +97,7 @@ where
 /// let index_zero = column_index_from_string("0");
 /// assert_eq!(index_zero, 0);
 /// ```
+#[inline]
 pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
     let column_c = column.as_ref();
     if column_c == "0" {
@@ -135,6 +136,7 @@ pub fn column_index_from_string<S: AsRef<str>>(column: S) -> u32 {
 /// let label = string_from_column_index(28);
 /// assert_eq!(label, "AB");
 /// ```
+#[inline]
 #[must_use]
 pub fn string_from_column_index(column_index: u32) -> String {
     assert!(column_index >= 1u32, "Column number starts from 1.");
@@ -234,6 +236,7 @@ where
 /// let coordinate = coordinate_from_index(28, 3);
 /// assert_eq!(coordinate, "AB3");
 /// ```
+#[inline]
 #[must_use]
 pub fn coordinate_from_index(col: u32, row: u32) -> String {
     format!("{}{}", string_from_column_index(col), row)
@@ -281,6 +284,7 @@ pub fn coordinate_from_index_with_lock(
 /// let adjusted = adjustment_insert_coordinate(2, 3, 2);
 /// assert_eq!(adjusted, 2); // No adjustment since 2 < 3
 /// ```
+#[inline]
 pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
     if num >= root_num && offset_num != 0 {
         num + offset_num
@@ -316,6 +320,7 @@ pub(crate) fn adjustment_insert_coordinate(num: u32, root_num: u32, offset_num: 
 /// let adjusted = adjustment_remove_coordinate(2, 3, 2);
 /// assert_eq!(adjusted, 2); // No adjustment since 2 < 3
 /// ```
+#[inline]
 pub(crate) fn adjustment_remove_coordinate(num: u32, root_num: u32, offset_num: u32) -> u32 {
     if num >= root_num && offset_num != 0 {
         num - offset_num
@@ -350,6 +355,7 @@ pub(crate) fn adjustment_remove_coordinate(num: u32, root_num: u32, offset_num: 
 /// let is_removable = is_remove_coordinate(6, 3, 2);
 /// assert_eq!(is_removable, false); // 6 is outside the range [3, 5)
 /// ```
+#[inline]
 pub(crate) fn is_remove_coordinate(num: u32, root_num: u32, offset_num: u32) -> bool {
     if root_num != 0 && offset_num != 0 {
         return num >= root_num && num < (root_num + offset_num);
@@ -385,6 +391,7 @@ impl CellCoordinates {
     /// # Returns
     ///
     /// A new `CellCoordinates` instance.
+    #[inline]
     fn new(col: u32, row: u32) -> Self {
         CellCoordinates { row, col }
     }
@@ -401,6 +408,7 @@ impl From<(u32, u32)> for CellCoordinates {
     /// # Returns
     ///
     /// A `CellCoordinates` instance representing the specified indices.
+    #[inline]
     fn from(value: (u32, u32)) -> Self {
         CellCoordinates::new(value.0, value.1)
     }
@@ -419,6 +427,7 @@ impl From<String> for CellCoordinates {
     /// # Returns
     ///
     /// A `CellCoordinates` instance representing the specified coordinate.
+    #[inline]
     fn from(value: String) -> Self {
         value.as_str().into()
     }
@@ -438,6 +447,7 @@ impl From<&str> for CellCoordinates {
     /// # Returns
     ///
     /// A `CellCoordinates` instance representing the specified coordinate.
+    #[inline]
     fn from(value: &str) -> Self {
         let (col, row, ..) = index_from_coordinate(value.to_uppercase());
         CellCoordinates::new(col.unwrap(), row.unwrap())

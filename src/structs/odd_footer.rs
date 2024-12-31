@@ -27,20 +27,24 @@ pub struct OddFooter {
 }
 
 impl OddFooter {
+    #[inline]
     #[must_use]
     pub fn get_value(&self) -> &str {
         self.value.get_value_str()
     }
 
+    #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.value.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn get_hash_code(&self) -> String {
         format!("{:x}", md5::Md5::digest(self.get_value()))
     }
 
+    #[inline]
     pub(crate) fn has_param(&self) -> bool {
         self.value.has_value()
     }
@@ -64,6 +68,7 @@ impl OddFooter {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if self.has_param() {
             // oddFooter

@@ -28,39 +28,47 @@ pub struct Selection {
 }
 
 impl Selection {
+    #[inline]
     #[must_use]
     pub fn get_pane(&self) -> &PaneValues {
         self.pane.get_value()
     }
 
+    #[inline]
     pub fn set_pane(&mut self, value: PaneValues) -> &mut Self {
         self.pane.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_active_cell(&self) -> Option<&Coordinate> {
         self.active_cell.as_ref()
     }
 
+    #[inline]
     pub fn get_active_cell_mut(&mut self) -> Option<&mut Coordinate> {
         self.active_cell.as_mut()
     }
 
+    #[inline]
     pub fn set_active_cell(&mut self, value: Coordinate) -> &mut Self {
         self.active_cell = Some(value);
         self
     }
 
+    #[inline]
     #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
+    #[inline]
     pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
     }
 
+    #[inline]
     pub fn set_sequence_of_references(&mut self, value: SequenceOfReferences) -> &mut Self {
         self.sequence_of_references = value;
         self

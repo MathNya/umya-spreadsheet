@@ -25,15 +25,18 @@ pub struct GradientStopList {
 }
 
 impl GradientStopList {
+    #[inline]
     #[must_use]
     pub fn get_gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
 
+    #[inline]
     pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
         &mut self.gradient_stop
     }
 
+    #[inline]
     pub fn set_gradient_stop(
         &mut self,
         value: impl Into<Vec<GradientStop>>,
@@ -42,6 +45,7 @@ impl GradientStopList {
         self
     }
 
+    #[inline]
     pub fn add_gradient_stop(&mut self, value: GradientStop) -> &mut GradientStopList {
         self.gradient_stop.push(value);
         self
