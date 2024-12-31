@@ -800,7 +800,7 @@ fn three_digit_hex_color_with_hash() {
     style.set_background_color(BG_COLOR);
     sheet.set_style_by_range("A3:A4", &style);
 
-    let path = std::path::Path::new("./tests/result_files/bbb_new_sheet_value.xlsx");
+    let path = std::path::Path::new("./tests/result_files/three_digit_hex_color_with_hash.xlsx");
     let _unused = writer::xlsx::write(&book, path);
 
     let mut book = reader::xlsx::lazy_read(path).unwrap();
@@ -857,7 +857,7 @@ fn three_digit_hex_color_without_hash() {
     style.set_background_color(BG_COLOR);
     sheet.set_style_by_range("A3:A4", &style);
 
-    let path = std::path::Path::new("./tests/result_files/bbb_new_sheet_value.xlsx");
+    let path = std::path::Path::new("./tests/result_files/three_digit_hex_color_without_hash.xlsx");
     let _unused = writer::xlsx::write(&book, path);
 
     let mut book = reader::xlsx::lazy_read(path).unwrap();
