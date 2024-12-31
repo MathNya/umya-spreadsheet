@@ -29,6 +29,7 @@ impl<'a> From<(&'a str, &'a str)> for AttrPair<'a> {
     /// ```
     /// let attr_pair = AttrPair::from(("name", "value"));
     /// ```
+    #[inline]
     fn from(tuple: (&'a str, &'a str)) -> Self {
         AttrPair(tuple.0, std::borrow::Cow::Borrowed(tuple.1))
     }
@@ -46,6 +47,7 @@ impl<'a> From<(&'a str, String)> for AttrPair<'a> {
     /// ```
     /// let attr_pair = AttrPair::from(("name", String::from("value")));
     /// ```
+    #[inline]
     fn from(tuple: (&'a str, String)) -> Self {
         AttrPair(tuple.0, std::borrow::Cow::Owned(tuple.1))
     }
@@ -66,6 +68,7 @@ impl<'a> From<(&'a str, &String)> for AttrPair<'a> {
     /// let string = String::from("value");
     /// let attr_pair = AttrPair::from(("name", &string));
     /// ```
+    #[inline]
     fn from(tuple: (&'a str, &String)) -> Self {
         AttrPair(tuple.0, std::borrow::Cow::Owned(tuple.1.to_owned()))
     }
@@ -86,6 +89,7 @@ impl<'a> From<(&'a str, Box<str>)> for AttrPair<'a> {
     /// let box_str = Box::new("value");
     /// let attr_pair = AttrPair::from(("name", box_str));
     /// ```
+    #[inline]
     fn from(tuple: (&'a str, Box<str>)) -> Self {
         AttrPair(tuple.0, std::borrow::Cow::Owned(tuple.1.into_string()))
     }
@@ -106,6 +110,7 @@ impl<'a> From<(&'a str, &Box<str>)> for AttrPair<'a> {
     /// let box_str = Box::new("value");
     /// let attr_pair = AttrPair::from(("name", &box_str));
     /// ```
+    #[inline]
     fn from(tuple: (&'a str, &Box<str>)) -> Self {
         AttrPair(
             tuple.0,
@@ -128,6 +133,7 @@ impl<'a> From<AttrPair<'a>> for (&'a str, std::borrow::Cow<'a, str>) {
     /// let attr_pair = AttrPair::from(("name", "value"));
     /// let tuple = <(&str, Cow<str>)>::from(attr_pair);
     /// ```
+    #[inline]
     fn from(attr_pair: AttrPair<'a>) -> Self {
         (attr_pair.0, attr_pair.1)
     }
