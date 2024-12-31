@@ -269,11 +269,17 @@ impl Color {
             let b = u8::from_str_radix(&hex[4..6], 16).ok()?;
 
             Some(ARGB8 { a, r, g, b })
-        } else if hex.len() < 6 {
+        } else if (hex.len() == 4 && hex.starts_with('#')) || hex.len() == 3 {
             // To pass an integration test where the hex string is "#333".
             // https://github.com/MathNya/umya-spreadsheet/pull/113
+            // https://github.com/MathNya/umya-spreadsheet/pull/250#issuecomment-2566258423
+            // https://www.w3schools.com/css/css_colors_hex.asp
 
-            let padded_hex = format!("{:0<6}", hex.replace('#', ""));
+            let padded_hex = hex
+                .replace('#', "")
+                .chars()
+                .map(|c| c.to_string().repeat(2))
+                .collect::<String>();
             let a = 0xFF;
             let r = u8::from_str_radix(&padded_hex[0..2], 16).ok()?;
             let g = u8::from_str_radix(&padded_hex[2..4], 16).ok()?;

@@ -765,7 +765,7 @@ fn new_sheet_and_edit() {
             .get_foreground_color_mut()
             .get_argb_str();
 
-        assert_eq!(a3_bg, "FF333000");
+        assert_eq!(a3_bg, "FF333333");
     }
 
     {
@@ -778,7 +778,121 @@ fn new_sheet_and_edit() {
             .get_foreground_color_mut()
             .get_argb_str();
 
-        assert_eq!(a4_bg, "FF333000");
+        assert_eq!(a4_bg, "FF333333");
+    }
+}
+
+#[test]
+fn three_digit_hex_color_with_hash() {
+    const BG_COLOR: &str = "#F0D";
+    const TEST_SHEET: &str = "Sheet2233";
+
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let mut book = reader::xlsx::lazy_read(path).unwrap();
+
+    // set cell value
+    let sheet = book.new_sheet(TEST_SHEET).unwrap();
+    let cell = sheet.get_cell_mut("A2");
+    let _unused = cell.set_value("test");
+
+    // set style by range
+    let mut style = Style::default();
+    style.set_background_color(BG_COLOR);
+    sheet.set_style_by_range("A3:A4", &style);
+
+    let path = std::path::Path::new("./tests/result_files/bbb_new_sheet_value.xlsx");
+    let _unused = writer::xlsx::write(&book, path);
+
+    let mut book = reader::xlsx::lazy_read(path).unwrap();
+    let a2_value = book
+        .get_sheet_by_name_mut(TEST_SHEET)
+        .unwrap()
+        .get_cell("A2")
+        .unwrap()
+        .get_value();
+    assert_eq!("test", a2_value);
+
+    {
+        let a3_bg = book
+            .get_sheet_by_name_mut(TEST_SHEET)
+            .unwrap()
+            .get_style_mut("A3")
+            .get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .get_argb_str();
+
+        assert_eq!(a3_bg, "FFFF00DD");
+    }
+
+    {
+        let a4_bg = book
+            .get_sheet_by_name_mut(TEST_SHEET)
+            .unwrap()
+            .get_style_mut("A4")
+            .get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .get_argb_str();
+
+        assert_eq!(a4_bg, "FFFF00DD");
+    }
+}
+
+#[test]
+fn three_digit_hex_color_without_hash() {
+    const BG_COLOR: &str = "ACE";
+    const TEST_SHEET: &str = "Sheet2233";
+
+    let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
+    let mut book = reader::xlsx::lazy_read(path).unwrap();
+
+    // set cell value
+    let sheet = book.new_sheet(TEST_SHEET).unwrap();
+    let cell = sheet.get_cell_mut("A2");
+    let _unused = cell.set_value("test");
+
+    // set style by range
+    let mut style = Style::default();
+    style.set_background_color(BG_COLOR);
+    sheet.set_style_by_range("A3:A4", &style);
+
+    let path = std::path::Path::new("./tests/result_files/bbb_new_sheet_value.xlsx");
+    let _unused = writer::xlsx::write(&book, path);
+
+    let mut book = reader::xlsx::lazy_read(path).unwrap();
+    let a2_value = book
+        .get_sheet_by_name_mut(TEST_SHEET)
+        .unwrap()
+        .get_cell("A2")
+        .unwrap()
+        .get_value();
+    assert_eq!("test", a2_value);
+
+    {
+        let a3_bg = book
+            .get_sheet_by_name_mut(TEST_SHEET)
+            .unwrap()
+            .get_style_mut("A3")
+            .get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .get_argb_str();
+
+        assert_eq!(a3_bg, "FFAACCEE");
+    }
+
+    {
+        let a4_bg = book
+            .get_sheet_by_name_mut(TEST_SHEET)
+            .unwrap()
+            .get_style_mut("A4")
+            .get_fill_mut()
+            .get_pattern_fill_mut()
+            .get_foreground_color_mut()
+            .get_argb_str();
+
+        assert_eq!(a4_bg, "FFAACCEE");
     }
 }
 
