@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum ShapeValues {
     Box,
@@ -28,6 +29,7 @@ impl EnumTrait for ShapeValues {
 }
 impl FromStr for ShapeValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "box" => Ok(Self::Box),

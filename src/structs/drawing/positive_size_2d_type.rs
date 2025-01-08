@@ -1,12 +1,21 @@
 // a:ext
 // a:chExt
-use crate::reader::driver::*;
-use crate::structs::Int64Value;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::Int64Value,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PositiveSize2DType {
@@ -16,6 +25,7 @@ pub struct PositiveSize2DType {
 
 impl PositiveSize2DType {
     #[inline]
+    #[must_use]
     pub fn get_cx(&self) -> i64 {
         self.cx.get_value()
     }
@@ -26,6 +36,7 @@ impl PositiveSize2DType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cy(&self) -> i64 {
         self.cy.get_value()
     }
@@ -56,11 +67,11 @@ impl PositiveSize2DType {
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let cx_str = self.cx.get_value_string();
-        attributes.push(("cx", &cx_str));
+        attributes.push(("cx", &cx_str).into());
         let cy_str = self.cy.get_value_string();
-        attributes.push(("cy", &cy_str));
+        attributes.push(("cy", &cy_str).into());
         write_start_tag(writer, tag_name, attributes, true);
     }
 }

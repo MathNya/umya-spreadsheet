@@ -1,19 +1,29 @@
 // pivotField
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::BooleanValue,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotField {
     data_field: BooleanValue,
-    show_all: BooleanValue,
+    show_all:   BooleanValue,
 }
 impl PivotField {
     #[inline]
+    #[must_use]
     pub fn get_data_field(&self) -> bool {
         self.data_field.get_value()
     }
@@ -25,6 +35,7 @@ impl PivotField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_show_all(&self) -> bool {
         self.show_all.get_value()
     }
@@ -53,8 +64,8 @@ impl PivotField {
             writer,
             "pivotField",
             vec![
-                ("dataField", self.data_field.get_value_string()),
-                ("showAll", self.show_all.get_value_string()),
+                ("dataField", self.data_field.get_value_string()).into(),
+                ("showAll", self.show_all.get_value_string()).into(),
             ],
             true,
         );

@@ -1,27 +1,46 @@
-use super::Address;
-use super::BooleanValue;
-use super::StringValue;
-use super::UInt32Value;
-use crate::helper::address::*;
-use crate::reader::driver::*;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Address,
+    BooleanValue,
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    helper::address::is_address,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node_conversion,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DefinedName {
-    name: StringValue,
-    address: ThinVec<Address>,
-    string_value: StringValue,
+    name:           StringValue,
+    address:        Vec<Address>,
+    string_value:   StringValue,
     local_sheet_id: UInt32Value,
-    hidden: BooleanValue,
+    hidden:         BooleanValue,
 }
 impl DefinedName {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -32,6 +51,7 @@ impl DefinedName {
         self
     }
 
+    #[must_use]
     pub fn get_address(&self) -> String {
         if self.string_value.has_value() {
             return self.string_value.get_value_str().to_string();
@@ -44,7 +64,7 @@ impl DefinedName {
     }
 
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let list = self.split_str(value);
+        let list = Self::split_str(value);
         for v in &list {
             if is_address(v) {
                 self.add_address(v);
@@ -67,7 +87,7 @@ impl DefinedName {
     #[allow(dead_code)]
     pub(crate) fn get_sheet_name_crate(&self) -> String {
         if self.string_value.has_value() {
-            return String::from("");
+            return String::new();
         }
         self.address
             .first()
@@ -83,7 +103,7 @@ impl DefinedName {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_address_obj_mut(&mut self) -> &mut ThinVec<Address> {
+    pub(crate) fn get_address_obj_mut(&mut self) -> &mut Vec<Address> {
         &mut self.address
     }
 
@@ -95,11 +115,13 @@ impl DefinedName {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_local_sheet_id(&self) -> bool {
         self.local_sheet_id.has_value()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_local_sheet_id(&self) -> u32 {
         self.local_sheet_id.get_value()
     }
@@ -110,6 +132,7 @@ impl DefinedName {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
@@ -119,14 +142,14 @@ impl DefinedName {
         self.hidden.set_value(value);
     }
 
-    fn split_str<S: Into<String>>(&self, value: S) -> Vec<String> {
+    fn split_str<S: Into<String>>(value: S) -> Vec<String> {
         let value = value.into();
         let char_list: Vec<char> = value.chars().collect::<Vec<char>>();
         let mut is_pass_s = false;
         let mut is_pass_d = false;
         let mut is_pass_b = 0;
         let mut result: Vec<String> = Vec::new();
-        let mut string = String::from("");
+        let mut string = String::new();
         for c in &char_list {
             match c {
                 '(' => {
@@ -182,7 +205,7 @@ impl DefinedName {
         set_string_from_xml!(self, e, local_sheet_id, "localSheetId");
         set_string_from_xml!(self, e, hidden, "hidden");
 
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
                 Event::Text(e) => {
@@ -200,15 +223,15 @@ impl DefinedName {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // definedName
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("name", self.get_name()));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("name", self.get_name()).into());
         let local_sheet_id_str = self.local_sheet_id.get_value_string();
         if self.local_sheet_id.has_value() {
-            attributes.push(("localSheetId", &local_sheet_id_str));
+            attributes.push(("localSheetId", &local_sheet_id_str).into());
         }
         let hidden_str = self.hidden.get_value_string();
         if self.hidden.has_value() {
-            attributes.push(("hidden", hidden_str));
+            attributes.push(("hidden", hidden_str).into());
         }
         write_start_tag(writer, "definedName", attributes, false);
         write_text_node_conversion(writer, self.get_address());

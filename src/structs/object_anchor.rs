@@ -1,22 +1,41 @@
-use super::BooleanValue;
-use super::FromMarker;
-use super::ToMarker;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BooleanValue,
+    FromMarker,
+    ToMarker,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ObjectAnchor {
     move_with_cells: BooleanValue,
-    from_marker: FromMarker,
-    to_marker: ToMarker,
+    from_marker:     FromMarker,
+    to_marker:       ToMarker,
 }
 
 impl ObjectAnchor {
     #[inline]
+    #[must_use]
     pub fn get_move_with_cells(&self) -> bool {
         self.move_with_cells.get_value()
     }
@@ -28,6 +47,7 @@ impl ObjectAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_from_marker(&self) -> &FromMarker {
         &self.from_marker
     }
@@ -44,6 +64,7 @@ impl ObjectAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_to_marker(&self) -> &ToMarker {
         &self.to_marker
     }
@@ -60,27 +81,27 @@ impl ObjectAnchor {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: usize) {
-        self.from_marker._adjustment_insert_row(num_rows);
-        self.to_marker._adjustment_insert_row(num_rows);
+    pub(crate) fn adjustment_insert_row(&mut self, num_rows: usize) {
+        self.from_marker.adjustment_insert_row(num_rows);
+        self.to_marker.adjustment_insert_row(num_rows);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: usize) {
-        self.from_marker._adjustment_insert_column(num_cols);
-        self.to_marker._adjustment_insert_column(num_cols);
+    pub(crate) fn adjustment_insert_column(&mut self, num_cols: usize) {
+        self.from_marker.adjustment_insert_column(num_cols);
+        self.to_marker.adjustment_insert_column(num_cols);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: usize) {
-        self.from_marker._adjustment_remove_row(num_rows);
-        self.to_marker._adjustment_remove_row(num_rows);
+    pub(crate) fn adjustment_remove_row(&mut self, num_rows: usize) {
+        self.from_marker.adjustment_remove_row(num_rows);
+        self.to_marker.adjustment_remove_row(num_rows);
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: usize) {
-        self.from_marker._adjustment_remove_column(num_cols);
-        self.to_marker._adjustment_remove_column(num_cols);
+    pub(crate) fn adjustment_remove_column(&mut self, num_cols: usize) {
+        self.from_marker.adjustment_remove_column(num_cols);
+        self.to_marker.adjustment_remove_column(num_cols);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -94,16 +115,10 @@ impl ObjectAnchor {
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner() {
-                    b"from" => {
+                    b"from" | b"xdr:from" => {
                         self.from_marker.set_attributes(reader, e);
                     }
-                    b"xdr:from" => {
-                        self.from_marker.set_attributes(reader, e);
-                    }
-                    b"to" => {
-                        self.to_marker.set_attributes(reader, e);
-                    }
-                    b"xdr:to" => {
+                    b"to" | b"xdr:to" => {
                         self.to_marker.set_attributes(reader, e);
                     }
                     _ => (),
@@ -120,9 +135,9 @@ impl ObjectAnchor {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // anchor
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.move_with_cells.has_value() {
-            attributes.push(("moveWithCells", self.move_with_cells.get_value_string()));
+            attributes.push(("moveWithCells", self.move_with_cells.get_value_string()).into());
         }
         write_start_tag(writer, "anchor", attributes, false);
 

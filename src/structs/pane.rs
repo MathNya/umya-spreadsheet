@@ -1,26 +1,38 @@
-use super::Coordinate;
-use super::DoubleValue;
-use super::EnumValue;
-use super::PaneStateValues;
-use super::PaneValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    Coordinate,
+    DoubleValue,
+    EnumValue,
+    PaneStateValues,
+    PaneValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Pane {
     horizontal_split: DoubleValue,
-    vertical_split: DoubleValue,
-    top_left_cell: Coordinate,
-    active_pane: EnumValue<PaneValues>,
-    state: EnumValue<PaneStateValues>,
+    vertical_split:   DoubleValue,
+    top_left_cell:    Coordinate,
+    active_pane:      EnumValue<PaneValues>,
+    state:            EnumValue<PaneStateValues>,
 }
 
 impl Pane {
     #[inline]
+    #[must_use]
     pub fn get_horizontal_split(&self) -> f64 {
         self.horizontal_split.get_value()
     }
@@ -32,6 +44,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_split(&self) -> f64 {
         self.vertical_split.get_value()
     }
@@ -43,6 +56,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_left_cell(&self) -> &Coordinate {
         &self.top_left_cell
     }
@@ -59,6 +73,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_active_pane(&self) -> &PaneValues {
         self.active_pane.get_value()
     }
@@ -70,6 +85,7 @@ impl Pane {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_state(&self) -> &PaneStateValues {
         self.state.get_value()
     }
@@ -97,19 +113,19 @@ impl Pane {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pane
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let coordinate = self.top_left_cell.to_string();
         let horizontal_split = self.horizontal_split.get_value_string();
         if self.horizontal_split.has_value() {
-            attributes.push(("xSplit", &horizontal_split));
+            attributes.push(("xSplit", &horizontal_split).into());
         }
         let vertical_split = self.vertical_split.get_value_string();
         if self.vertical_split.has_value() {
-            attributes.push(("ySplit", &vertical_split));
+            attributes.push(("ySplit", &vertical_split).into());
         }
-        attributes.push(("topLeftCell", coordinate.as_str()));
-        attributes.push(("activePane", self.active_pane.get_value_string()));
-        attributes.push(("state", self.state.get_value_string()));
+        attributes.push(("topLeftCell", coordinate.as_str()).into());
+        attributes.push(("activePane", self.active_pane.get_value_string()).into());
+        attributes.push(("state", self.state.get_value_string()).into());
         write_start_tag(writer, "pane", attributes, true);
     }
 }

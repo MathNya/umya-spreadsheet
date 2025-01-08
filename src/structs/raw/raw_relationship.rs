@@ -1,21 +1,31 @@
-use crate::reader::driver::*;
-use crate::structs::raw::RawFile;
-use crate::structs::StringValue;
-use crate::structs::WriterManager;
-use crate::structs::XlsxError;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io;
-use std::io::Cursor;
+use std::{
+    io,
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::get_attribute,
+    structs::{
+        StringValue,
+        WriterManager,
+        XlsxError,
+        raw::RawFile,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationship {
-    id: StringValue,
-    r_type: StringValue,
-    target: StringValue,
-    raw_file: RawFile,
+    id:          StringValue,
+    r_type:      StringValue,
+    target:      StringValue,
+    raw_file:    RawFile,
     target_mode: StringValue,
 }
 
@@ -64,7 +74,7 @@ impl RawRelationship {
     }
 
     #[inline]
-    pub(crate) fn _set_raw_file(&mut self, value: RawFile) -> &mut Self {
+    pub(crate) fn set_raw_file(&mut self, value: RawFile) -> &mut Self {
         self.raw_file = value;
         self
     }
@@ -80,7 +90,7 @@ impl RawRelationship {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead, A: io::Read + io::Seek>(
+    pub(crate) fn set_attributes<R: io::BufRead, A: io::Read + io::Seek>(
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
@@ -101,12 +111,12 @@ impl RawRelationship {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
-        attributes.push(("Id", self.get_id()));
-        attributes.push(("Type", self.get_type()));
-        attributes.push(("Target", self.get_target()));
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        attributes.push(("Id", self.get_id()).into());
+        attributes.push(("Type", self.get_type()).into());
+        attributes.push(("Target", self.get_target()).into());
         if self.get_target_mode() != "" {
-            attributes.push(("TargetMode", self.get_target_mode()));
+            attributes.push(("TargetMode", self.get_target_mode()).into());
         }
         write_start_tag(writer, "Relationship", attributes, true);
     }

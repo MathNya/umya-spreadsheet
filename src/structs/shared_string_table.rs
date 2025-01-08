@@ -1,21 +1,36 @@
 // sst
-use super::CellValue;
-use super::SharedStringItem;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
-use thin_vec::ThinVec;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    CellValue,
+    SharedStringItem,
+};
+use crate::{
+    helper::const_str::SHEET_MAIN_NS,
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringTable {
-    shared_string_item: ThinVec<SharedStringItem>,
-    map: HashMap<u64, usize>,
-    regist_count: usize,
+    shared_string_item: Vec<SharedStringItem>,
+    map:                HashMap<u64, usize>,
+    regist_count:       usize,
 }
 
 impl SharedStringTable {
@@ -26,7 +41,7 @@ impl SharedStringTable {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut ThinVec<SharedStringItem> {
+    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
         &mut self.shared_string_item
     }
 
@@ -54,14 +69,13 @@ impl SharedStringTable {
         }
 
         let hash_code = shared_string_item.get_hash_u64();
-        let n = match self.map.get(&hash_code) {
-            Some(v) => v.to_owned(),
-            None => {
-                let n = self.shared_string_item.len();
-                self.map.insert(hash_code, n);
-                self.set_shared_string_item(shared_string_item);
-                n
-            }
+        let n = if let Some(v) = self.map.get(&hash_code) {
+            v.to_owned()
+        } else {
+            let n = self.shared_string_item.len();
+            self.map.insert(hash_code, n);
+            self.set_shared_string_item(shared_string_item);
+            n
         };
         n
     }
@@ -101,12 +115,13 @@ impl SharedStringTable {
             writer,
             "sst",
             vec![
-                ("xmlns", SHEET_MAIN_NS),
-                ("count", self.regist_count.to_string().as_str()),
+                ("xmlns", SHEET_MAIN_NS).into(),
+                ("count", self.regist_count.to_string()).into(),
                 (
                     "uniqueCount",
                     self.shared_string_item.len().to_string().as_str(),
-                ),
+                )
+                    .into(),
             ],
             false,
         );

@@ -1,29 +1,40 @@
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::structs::EnumValue;
-use crate::structs::OrientationValues;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        EnumValue,
+        OrientationValues,
+        UInt32Value,
+        raw::RawRelationships,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PageSetup {
-    paper_size: UInt32Value,
-    orientation: EnumValue<OrientationValues>,
-    scale: UInt32Value,
-    fit_to_height: UInt32Value,
-    fit_to_width: UInt32Value,
+    paper_size:     UInt32Value,
+    orientation:    EnumValue<OrientationValues>,
+    scale:          UInt32Value,
+    fit_to_height:  UInt32Value,
+    fit_to_width:   UInt32Value,
     horizontal_dpi: UInt32Value,
-    vertical_dpi: UInt32Value,
-    object_data: Option<ThinVec<u8>>,
+    vertical_dpi:   UInt32Value,
+    object_data:    Option<Vec<u8>>,
 }
 
 impl PageSetup {
     #[inline]
+    #[must_use]
     pub fn get_paper_size(&self) -> u32 {
         self.paper_size.get_value()
     }
@@ -35,6 +46,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_orientation(&self) -> &OrientationValues {
         self.orientation.get_value()
     }
@@ -46,6 +58,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scale(&self) -> u32 {
         self.scale.get_value()
     }
@@ -57,6 +70,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fit_to_height(&self) -> u32 {
         self.fit_to_height.get_value()
     }
@@ -68,6 +82,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fit_to_width(&self) -> u32 {
         self.fit_to_width.get_value()
     }
@@ -79,6 +94,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_horizontal_dpi(&self) -> u32 {
         self.horizontal_dpi.get_value()
     }
@@ -90,6 +106,7 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_dpi(&self) -> u32 {
         self.vertical_dpi.get_value()
     }
@@ -101,17 +118,18 @@ impl PageSetup {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_object_data(&self) -> Option<&[u8]> {
         self.object_data.as_deref()
     }
 
     #[inline]
-    pub fn get_object_data_mut(&mut self) -> Option<&mut ThinVec<u8>> {
+    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
         self.object_data.as_mut()
     }
 
     #[inline]
-    pub fn set_object_data(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+    pub fn set_object_data(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
         self.object_data = Some(value.into());
         self
     }
@@ -154,38 +172,38 @@ impl PageSetup {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: &mut usize) {
         if self.has_param() {
             // pageSetup
-            let r_id_str = format!("rId{}", r_id);
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let r_id_str = format!("rId{r_id}");
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             let paper_size = self.paper_size.get_value_string();
             if self.paper_size.has_value() {
-                attributes.push(("paperSize", &paper_size));
+                attributes.push(("paperSize", &paper_size).into());
             }
             let scale = self.scale.get_value_string();
             if self.scale.has_value() {
-                attributes.push(("scale", &scale));
+                attributes.push(("scale", &scale).into());
             }
             let orientation = self.orientation.get_value_string();
             if self.orientation.has_value() {
-                attributes.push(("orientation", orientation));
+                attributes.push(("orientation", orientation).into());
             }
             let fit_to_height = self.fit_to_height.get_value_string();
             if self.fit_to_height.has_value() {
-                attributes.push(("fitToHeight", &fit_to_height));
+                attributes.push(("fitToHeight", &fit_to_height).into());
             }
             let fit_to_width = self.fit_to_width.get_value_string();
             if self.fit_to_width.has_value() {
-                attributes.push(("fitToWidth", &fit_to_width));
+                attributes.push(("fitToWidth", &fit_to_width).into());
             }
             let horizontal_dpi = self.horizontal_dpi.get_value_string();
             if self.horizontal_dpi.has_value() {
-                attributes.push(("horizontalDpi", &horizontal_dpi));
+                attributes.push(("horizontalDpi", &horizontal_dpi).into());
             }
             let vertical_dpi = self.vertical_dpi.get_value_string();
             if self.vertical_dpi.has_value() {
-                attributes.push(("verticalDpi", &vertical_dpi));
+                attributes.push(("verticalDpi", &vertical_dpi).into());
             }
             if self.object_data.is_some() {
-                attributes.push(("r:id", r_id_str.as_str()));
+                attributes.push(("r:id", r_id_str.as_str()).into());
                 *r_id += 1;
             }
             write_start_tag(writer, "pageSetup", attributes, true);

@@ -1,12 +1,24 @@
 // c:yVal
-use super::NumberReference;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::NumberReference;
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct YValues {
@@ -14,6 +26,7 @@ pub struct YValues {
 }
 
 impl YValues {
+    #[must_use]
     pub fn get_number_reference(&self) -> &NumberReference {
         &self.number_reference
     }
@@ -48,12 +61,12 @@ impl YValues {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:yVal
         write_start_tag(writer, "c:yVal", vec![], false);
 
         // c:numRef
-        self.number_reference.write_to(writer, spreadsheet);
+        self.number_reference.write_to(writer, wb);
 
         write_end_tag(writer, "c:yVal");
     }

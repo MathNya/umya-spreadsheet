@@ -1,26 +1,41 @@
 // xdr:cxnSp
-use super::super::super::Anchor;
-use super::NonVisualConnectionShapeProperties;
-use super::ShapeProperties;
-use super::ShapeStyle;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::super::Anchor,
+    NonVisualConnectionShapeProperties,
+    ShapeProperties,
+    ShapeStyle,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ConnectionShape {
-    anchor: Anchor,
+    anchor:                                 Anchor,
     non_visual_connection_shape_properties: NonVisualConnectionShapeProperties,
-    shape_properties: ShapeProperties,
-    shape_style: ShapeStyle,
+    shape_properties:                       ShapeProperties,
+    shape_style:                            ShapeStyle,
 }
 
 impl ConnectionShape {
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
@@ -36,6 +51,7 @@ impl ConnectionShape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_non_visual_connection_shape_properties(
         &self,
     ) -> &NonVisualConnectionShapeProperties {
@@ -58,6 +74,7 @@ impl ConnectionShape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
@@ -73,6 +90,7 @@ impl ConnectionShape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_style(&self) -> &ShapeStyle {
         &self.shape_style
     }
@@ -125,7 +143,7 @@ impl ConnectionShape {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:cxnSp
-        write_start_tag(writer, "xdr:cxnSp", vec![("macro", "")], false);
+        write_start_tag(writer, "xdr:cxnSp", vec![("macro", "").into()], false);
 
         // xdr:nvCxnSpPr
         self.non_visual_connection_shape_properties.write_to(writer);

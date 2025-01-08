@@ -1,11 +1,29 @@
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Worksheet;
-use crate::structs::WriterManager;
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
+
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+        write_text_node,
+    },
+};
+use crate::{
+    helper::const_str::SHEET_MAIN_NS,
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
@@ -30,7 +48,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "comments",
-        vec![("xmlns", SHEET_MAIN_NS)],
+        vec![("xmlns", SHEET_MAIN_NS).into()],
         false,
     );
 
@@ -53,7 +71,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "comment",
-            vec![("ref", &coordinate), ("authorId", author_id.as_str())],
+            vec![
+                ("ref", &coordinate).into(),
+                ("authorId", author_id.as_str()).into(),
+            ],
             false,
         );
 

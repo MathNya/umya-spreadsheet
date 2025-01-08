@@ -1,17 +1,24 @@
 // c:lang
-use super::super::super::StringValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::super::super::StringValue;
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct EditingLanguage {
     val: StringValue,
 }
 impl EditingLanguage {
+    #[must_use]
     pub fn get_val(&self) -> &str {
         self.val.get_value_str()
     }
@@ -34,7 +41,7 @@ impl EditingLanguage {
         write_start_tag(
             writer,
             "c:lang",
-            vec![("val", self.val.get_value_str())],
+            vec![("val", self.val.get_value_str()).into()],
             true,
         );
     }

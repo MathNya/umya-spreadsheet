@@ -1,34 +1,49 @@
 // c:manualLayout
-use super::Height;
-use super::HeightMode;
-use super::LayoutTarget;
-use super::Left;
-use super::LeftMode;
-use super::Top;
-use super::TopMode;
-use super::Width;
-use super::WidthMode;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Height,
+    HeightMode,
+    LayoutTarget,
+    Left,
+    LeftMode,
+    Top,
+    TopMode,
+    Width,
+    WidthMode,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ManualLayout {
-    height: Option<Height>,
-    height_mode: Option<HeightMode>,
+    height:        Option<Height>,
+    height_mode:   Option<HeightMode>,
     layout_target: Option<LayoutTarget>,
-    left: Option<Left>,
-    left_mode: Option<LeftMode>,
-    top: Option<Top>,
-    top_mode: Option<TopMode>,
-    width: Option<Width>,
-    width_mode: Option<WidthMode>,
+    left:          Option<Left>,
+    left_mode:     Option<LeftMode>,
+    top:           Option<Top>,
+    top_mode:      Option<TopMode>,
+    width:         Option<Width>,
+    width_mode:    Option<WidthMode>,
 }
 
 impl ManualLayout {
+    #[must_use]
     pub fn get_height(&self) -> Option<&Height> {
         self.height.as_ref()
     }
@@ -42,6 +57,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_height_mode(&self) -> Option<&HeightMode> {
         self.height_mode.as_ref()
     }
@@ -55,6 +71,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_layout_target(&self) -> Option<&LayoutTarget> {
         self.layout_target.as_ref()
     }
@@ -68,6 +85,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_left(&self) -> Option<&Left> {
         self.left.as_ref()
     }
@@ -81,6 +99,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_left_mode(&self) -> Option<&LeftMode> {
         self.left_mode.as_ref()
     }
@@ -94,6 +113,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_top(&self) -> Option<&Top> {
         self.top.as_ref()
     }
@@ -107,6 +127,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_top_mode(&self) -> Option<&TopMode> {
         self.top_mode.as_ref()
     }
@@ -120,6 +141,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_width(&self) -> Option<&Width> {
         self.width.as_ref()
     }
@@ -133,6 +155,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn get_width_mode(&self) -> Option<&WidthMode> {
         self.width_mode.as_ref()
     }
@@ -146,6 +169,7 @@ impl ManualLayout {
         self
     }
 
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.height.is_none()
             && self.height_mode.is_none()

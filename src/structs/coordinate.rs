@@ -1,15 +1,24 @@
 use std::fmt;
 
-use super::ColumnReference;
-use super::RowReference;
-use crate::helper::coordinate::*;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentValue;
+use super::{
+    ColumnReference,
+    RowReference,
+};
+use crate::{
+    helper::coordinate::{
+        coordinate_from_index_with_lock,
+        index_from_coordinate,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentValue,
+    },
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Coordinate {
     column: ColumnReference,
-    row: RowReference,
+    row:    RowReference,
 }
 
 impl fmt::Display for Coordinate {
@@ -30,6 +39,7 @@ impl fmt::Display for Coordinate {
 
 impl Coordinate {
     #[inline]
+    #[must_use]
     pub fn get_col_num(&self) -> u32 {
         self.column.get_num()
     }
@@ -47,6 +57,7 @@ impl Coordinate {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row_num(&self) -> u32 {
         self.row.get_num()
     }
@@ -64,6 +75,7 @@ impl Coordinate {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_is_lock_col(&self) -> bool {
         self.column.get_is_lock()
     }
@@ -75,6 +87,7 @@ impl Coordinate {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_is_lock_row(&self) -> bool {
         self.row.get_is_lock()
     }
@@ -100,6 +113,7 @@ impl Coordinate {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         coordinate_from_index_with_lock(
             self.column.get_num(),

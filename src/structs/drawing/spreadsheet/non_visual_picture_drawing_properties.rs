@@ -1,21 +1,38 @@
-//xdr:cNvPicPr
-use super::super::PictureLocks;
-use crate::reader::driver::*;
-use crate::structs::BooleanValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
+// xdr:cNvPicPr
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::PictureLocks;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::BooleanValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualPictureDrawingProperties {
     prefer_relative_resize: BooleanValue,
-    picture_locks: Option<PictureLocks>,
+    picture_locks:          Option<PictureLocks>,
 }
 
 impl NonVisualPictureDrawingProperties {
     #[inline]
+    #[must_use]
     pub fn get_prefer_relative_resize(&self) -> bool {
         self.prefer_relative_resize.get_value()
     }
@@ -26,6 +43,7 @@ impl NonVisualPictureDrawingProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
         self.picture_locks.as_ref()
     }
@@ -72,12 +90,15 @@ impl NonVisualPictureDrawingProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:cNvPicPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.prefer_relative_resize.has_value() {
-            attributes.push((
-                "preferRelativeResize",
-                self.prefer_relative_resize.get_value_string(),
-            ));
+            attributes.push(
+                (
+                    "preferRelativeResize",
+                    self.prefer_relative_resize.get_value_string(),
+                )
+                    .into(),
+            );
         }
 
         match &self.picture_locks {

@@ -1,15 +1,26 @@
-use crate::helper::const_str::*;
-use crate::structs::raw::RawFile;
-use crate::structs::raw::RawRelationships;
-use crate::structs::WriterManager;
-use crate::structs::XlsxError;
 use std::io;
-use thin_vec::ThinVec;
+
+use crate::{
+    helper::const_str::{
+        PKG_DRAWINGS_RELS,
+        PKG_SHEET,
+        PKG_SHEET_RELS,
+        PKG_VML_DRAWING_RELS,
+    },
+    structs::{
+        WriterManager,
+        XlsxError,
+        raw::{
+            RawFile,
+            RawRelationships,
+        },
+    },
+};
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {
-    worksheet_file: RawFile,
-    relationships_list: ThinVec<RawRelationships>,
+    worksheet_file:     RawFile,
+    relationships_list: Vec<RawRelationships>,
 }
 impl RawWorksheet {
     #[inline]
@@ -28,7 +39,7 @@ impl RawWorksheet {
     }
 
     #[inline]
-    pub(crate) fn _get_relationships_list_mut(&mut self) -> &mut ThinVec<RawRelationships> {
+    pub(crate) fn get_relationships_list_mut(&mut self) -> &mut Vec<RawRelationships> {
         &mut self.relationships_list
     }
 
@@ -97,7 +108,7 @@ impl RawWorksheet {
         writer_mng: &mut WriterManager<W>,
     ) -> Result<(), XlsxError> {
         // Add worksheet
-        let target = format!("{PKG_SHEET}{}.xml", sheet_no);
+        let target = format!("{PKG_SHEET}{sheet_no}.xml");
         writer_mng.add_bin(&target, self.get_worksheet_file().get_file_data())?;
 
         // Add worksheet rels

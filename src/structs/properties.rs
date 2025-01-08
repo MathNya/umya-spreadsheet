@@ -1,30 +1,52 @@
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::custom_properties::Properties as CustomProperties;
-use crate::structs::StringValue;
-use crate::structs::Worksheet;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::const_str::{
+        COREPROPS_NS,
+        DCMITYPE_NS,
+        DCORE_NS,
+        DCTERMS_NS,
+        VTYPES_NS,
+        XPROPS_NS,
+        XSI_NS,
+    },
+    reader::driver::xml_read_loop,
+    structs::{
+        StringValue,
+        Worksheet,
+        custom_properties::Properties as CustomProperties,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Debug)]
 pub struct Properties {
-    creator: StringValue,
-    last_modified_by: StringValue,
-    created: StringValue,
-    modified: StringValue,
-    title: StringValue,
-    description: StringValue,
-    subject: StringValue,
-    keywords: StringValue,
-    category: StringValue,
-    manager: StringValue,
-    company: StringValue,
-    revision: StringValue,
-    version: StringValue,
+    creator:           StringValue,
+    last_modified_by:  StringValue,
+    created:           StringValue,
+    modified:          StringValue,
+    title:             StringValue,
+    description:       StringValue,
+    subject:           StringValue,
+    keywords:          StringValue,
+    category:          StringValue,
+    manager:           StringValue,
+    company:           StringValue,
+    revision:          StringValue,
+    version:           StringValue,
     custom_properties: CustomProperties,
 }
 impl Default for Properties {
@@ -54,6 +76,7 @@ impl Default for Properties {
 }
 impl Properties {
     #[inline]
+    #[must_use]
     pub fn get_creator(&self) -> &str {
         self.creator.get_value_str()
     }
@@ -65,6 +88,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_last_modified_by(&self) -> &str {
         self.last_modified_by.get_value_str()
     }
@@ -76,6 +100,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_created(&self) -> &str {
         self.created.get_value_str()
     }
@@ -87,6 +112,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_modified(&self) -> &str {
         self.modified.get_value_str()
     }
@@ -98,6 +124,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_title(&self) -> &str {
         self.title.get_value_str()
     }
@@ -109,6 +136,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_description(&self) -> &str {
         self.description.get_value_str()
     }
@@ -120,6 +148,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_subject(&self) -> &str {
         self.subject.get_value_str()
     }
@@ -131,6 +160,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_keywords(&self) -> &str {
         self.keywords.get_value_str()
     }
@@ -142,6 +172,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_revision(&self) -> &str {
         self.revision.get_value_str()
     }
@@ -153,6 +184,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_category(&self) -> &str {
         self.category.get_value_str()
     }
@@ -164,6 +196,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_version(&self) -> &str {
         self.version.get_value_str()
     }
@@ -175,6 +208,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_manager(&self) -> &str {
         self.manager.get_value_str()
     }
@@ -186,6 +220,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_company(&self) -> &str {
         self.company.get_value_str()
     }
@@ -197,6 +232,7 @@ impl Properties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_custom_properties(&self) -> &CustomProperties {
         &self.custom_properties
     }
@@ -217,7 +253,7 @@ impl Properties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Text(e) => {
@@ -248,13 +284,12 @@ impl Properties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner(){
-                    b"Manager" => {value = String::from("");},
-                    b"Company" => {value = String::from("");},
+                    b"Manager"| b"Company" => {value = String::new();},
                     _ => {}
                 }
             },
@@ -287,11 +322,11 @@ impl Properties {
             writer,
             "cp:coreProperties",
             vec![
-                ("xmlns:cp", COREPROPS_NS),
-                ("xmlns:dc", DCORE_NS),
-                ("xmlns:dcterms", DCTERMS_NS),
-                ("xmlns:dcmitype", DCMITYPE_NS),
-                ("xmlns:xsi", XSI_NS),
+                ("xmlns:cp", COREPROPS_NS).into(),
+                ("xmlns:dc", DCORE_NS).into(),
+                ("xmlns:dcterms", DCTERMS_NS).into(),
+                ("xmlns:dcmitype", DCMITYPE_NS).into(),
+                ("xmlns:xsi", XSI_NS).into(),
             ],
             false,
         );
@@ -350,7 +385,7 @@ impl Properties {
             write_start_tag(
                 writer,
                 "dcterms:created",
-                vec![("xsi:type", "dcterms:W3CDTF")],
+                vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
             write_text_node(writer, self.created.get_value_str());
@@ -362,7 +397,7 @@ impl Properties {
             write_start_tag(
                 writer,
                 "dcterms:modified",
-                vec![("xsi:type", "dcterms:W3CDTF")],
+                vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
             write_text_node(writer, self.modified.get_value_str());
@@ -397,7 +432,7 @@ impl Properties {
         write_start_tag(
             writer,
             "Properties",
-            vec![("xmlns", XPROPS_NS), ("xmlns:vt", VTYPES_NS)],
+            vec![("xmlns", XPROPS_NS).into(), ("xmlns:vt", VTYPES_NS).into()],
             false,
         );
 
@@ -423,7 +458,7 @@ impl Properties {
         write_start_tag(
             writer,
             "vt:vector",
-            vec![("size", "2"), ("baseType", "variant")],
+            vec![("size", "2").into(), ("baseType", "variant").into()],
             false,
         );
 
@@ -458,7 +493,10 @@ impl Properties {
         write_start_tag(
             writer,
             "vt:vector",
-            vec![("size", &sheet_count_str), ("baseType", "lpstr")],
+            vec![
+                ("size", &sheet_count_str).into(),
+                ("baseType", "lpstr").into(),
+            ],
             false,
         );
 

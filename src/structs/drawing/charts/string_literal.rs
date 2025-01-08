@@ -1,24 +1,36 @@
 // c:strLit
-use super::StringPoint;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::StringPoint;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct StringLiteral {
-    string_point_list: ThinVec<StringPoint>,
+    string_point_list: Vec<StringPoint>,
 }
 
 impl StringLiteral {
+    #[must_use]
     pub fn get_string_point_list(&self) -> &[StringPoint] {
         &self.string_point_list
     }
 
-    pub fn get_string_point_list_mut(&mut self) -> &mut ThinVec<StringPoint> {
+    pub fn get_string_point_list_mut(&mut self) -> &mut Vec<StringPoint> {
         &mut self.string_point_list
     }
 
@@ -56,11 +68,16 @@ impl StringLiteral {
 
         // c:ptCount
         let count = self.string_point_list.len().to_string();
-        write_start_tag(writer, "c:ptCount", vec![("val", count.as_str())], true);
+        write_start_tag(
+            writer,
+            "c:ptCount",
+            vec![("val", count.as_str()).into()],
+            true,
+        );
 
         // c:pt
         for (index, obj) in self.string_point_list.iter().enumerate() {
-            obj.write_to(writer, index as u32);
+            obj.write_to(writer, index.try_into().unwrap());
         }
 
         write_end_tag(writer, "c:strLit");

@@ -1,24 +1,43 @@
 // a:lightRig
-use super::super::EnumValue;
-use super::LightRigDirectionValues;
-use super::LightRigValues;
-use super::Rotation;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::EnumValue,
+    LightRigDirectionValues,
+    LightRigValues,
+    Rotation,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct LightRig {
-    rig: EnumValue<LightRigValues>,
+    rig:        EnumValue<LightRigValues>,
     definition: EnumValue<LightRigDirectionValues>,
-    rotation: Option<Box<Rotation>>,
+    rotation:   Option<Box<Rotation>>,
 }
 
 impl LightRig {
     #[inline]
+    #[must_use]
     pub fn get_rig(&self) -> &LightRigValues {
         self.rig.get_value()
     }
@@ -30,6 +49,7 @@ impl LightRig {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_definition(&self) -> &LightRigDirectionValues {
         self.definition.get_value()
     }
@@ -41,6 +61,7 @@ impl LightRig {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rotation(&self) -> Option<&Rotation> {
         self.rotation.as_deref()
     }
@@ -94,8 +115,8 @@ impl LightRig {
             writer,
             "a:lightRig",
             vec![
-                ("rig", self.rig.get_value_string()),
-                ("dir", self.definition.get_value_string()),
+                ("rig", self.rig.get_value_string()).into(),
+                ("dir", self.definition.get_value_string()).into(),
             ],
             !with_inner,
         );

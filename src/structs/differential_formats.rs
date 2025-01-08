@@ -1,27 +1,40 @@
 // dxfs
-use super::DifferentialFormat;
-use super::Style;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    DifferentialFormat,
+    Style,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct DifferentialFormats {
-    differential_format: ThinVec<DifferentialFormat>,
+    differential_format: Vec<DifferentialFormat>,
 }
 
 impl DifferentialFormats {
     #[inline]
-    pub(crate) fn _get_differential_format(&self) -> &[DifferentialFormat] {
+    pub(crate) fn get_differential_format(&self) -> &[DifferentialFormat] {
         &self.differential_format
     }
 
     #[inline]
-    pub(crate) fn _get_differential_format_mut(&mut self) -> &mut ThinVec<DifferentialFormat> {
+    pub(crate) fn get_differential_format_mut(&mut self) -> &mut Vec<DifferentialFormat> {
         &mut self.differential_format
     }
 
@@ -83,7 +96,7 @@ impl DifferentialFormats {
             write_start_tag(
                 writer,
                 "dxfs",
-                vec![("count", &self.differential_format.len().to_string())],
+                vec![("count", &self.differential_format.len().to_string()).into()],
                 false,
             );
 

@@ -1,23 +1,37 @@
 // c:rich
-use super::super::BodyProperties;
-use super::super::ListStyle;
-use super::super::Paragraph;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    BodyProperties,
+    ListStyle,
+    Paragraph,
+};
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct RichText {
     body_properties: BodyProperties,
-    list_style: ListStyle,
-    paragraph: ThinVec<Paragraph>,
+    list_style:      ListStyle,
+    paragraph:       Vec<Paragraph>,
 }
 
 impl RichText {
+    #[must_use]
     pub fn get_body_properties(&self) -> &BodyProperties {
         &self.body_properties
     }
@@ -30,6 +44,7 @@ impl RichText {
         self.body_properties = value;
     }
 
+    #[must_use]
     pub fn get_list_style(&self) -> &ListStyle {
         &self.list_style
     }
@@ -42,11 +57,12 @@ impl RichText {
         self.list_style = value;
     }
 
+    #[must_use]
     pub fn get_paragraph(&self) -> &[Paragraph] {
         &self.paragraph
     }
 
-    pub fn get_paragraph_mut(&mut self) -> &mut ThinVec<Paragraph> {
+    pub fn get_paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
         &mut self.paragraph
     }
 

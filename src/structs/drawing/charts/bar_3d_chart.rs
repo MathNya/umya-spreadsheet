@@ -1,35 +1,49 @@
 // c:bar3DChart
-use super::AreaChartSeries;
-use super::AreaChartSeriesList;
-use super::AxisId;
-use super::BarDirection;
-use super::DataLabels;
-use super::GapWidth;
-use super::Grouping;
-use super::Shape;
-use super::VaryColors;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    AreaChartSeries,
+    AreaChartSeriesList,
+    AxisId,
+    BarDirection,
+    DataLabels,
+    GapWidth,
+    Grouping,
+    Shape,
+    VaryColors,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Bar3DChart {
-    bar_direction: BarDirection,
-    grouping: Grouping,
-    vary_colors: VaryColors,
+    bar_direction:          BarDirection,
+    grouping:               Grouping,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    gap_width: GapWidth,
-    shape: Shape,
-    axis_id: ThinVec<AxisId>,
+    data_labels:            DataLabels,
+    gap_width:              GapWidth,
+    shape:                  Shape,
+    axis_id:                Vec<AxisId>,
 }
 
 impl Bar3DChart {
+    #[must_use]
     pub fn get_bar_direction(&self) -> &BarDirection {
         &self.bar_direction
     }
@@ -43,6 +57,7 @@ impl Bar3DChart {
         self
     }
 
+    #[must_use]
     pub fn get_grouping(&self) -> &Grouping {
         &self.grouping
     }
@@ -56,6 +71,7 @@ impl Bar3DChart {
         self
     }
 
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -69,6 +85,7 @@ impl Bar3DChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -82,6 +99,7 @@ impl Bar3DChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -95,6 +113,7 @@ impl Bar3DChart {
         self
     }
 
+    #[must_use]
     pub fn get_gap_width(&self) -> &GapWidth {
         &self.gap_width
     }
@@ -108,6 +127,7 @@ impl Bar3DChart {
         self
     }
 
+    #[must_use]
     pub fn get_shape(&self) -> &Shape {
         &self.shape
     }
@@ -121,15 +141,16 @@ impl Bar3DChart {
         self
     }
 
+    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut Bar3DChart {
+    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut Bar3DChart {
         self.axis_id = value.into();
         self
     }
@@ -194,7 +215,7 @@ impl Bar3DChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:bar3DChart
         write_start_tag(writer, "c:bar3DChart", vec![], false);
 
@@ -209,7 +230,7 @@ impl Bar3DChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

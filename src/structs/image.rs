@@ -1,23 +1,36 @@
-use crate::structs::drawing::spreadsheet::MarkerType;
-use crate::structs::drawing::spreadsheet::OneCellAnchor;
-use crate::structs::drawing::spreadsheet::Picture;
-use crate::structs::drawing::spreadsheet::TwoCellAnchor;
-use crate::structs::drawing::FillRectangle;
-use crate::structs::drawing::PresetGeometry;
-use crate::structs::drawing::Stretch;
-use crate::structs::MediaObject;
-use crate::traits::AdjustmentCoordinate;
-use base64::{engine::general_purpose::STANDARD, Engine as _};
-use quick_xml::Writer;
-use std::fs;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Cursor;
-use std::io::Read;
+use std::{
+    fs,
+    fs::File,
+    io::{
+        BufReader,
+        Cursor,
+        Read,
+    },
+};
 
-lazy_static! {
-    static ref EMPTY_VEC: Vec<u8> = Vec::new();
-}
+use base64::{
+    Engine as _,
+    engine::general_purpose::STANDARD,
+};
+use quick_xml::Writer;
+
+use crate::{
+    structs::{
+        MediaObject,
+        drawing::{
+            FillRectangle,
+            PresetGeometry,
+            Stretch,
+            spreadsheet::{
+                MarkerType,
+                OneCellAnchor,
+                Picture,
+                TwoCellAnchor,
+            },
+        },
+    },
+    traits::AdjustmentCoordinate,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Image {
@@ -34,7 +47,8 @@ pub struct Image {
 /// marker.set_coordinate("B3");
 /// let mut image = umya_spreadsheet::structs::Image::default();
 /// image.new_image("./images/sample1.png", marker);
-/// book.get_sheet_by_name_mut("Sheet1").unwrap()
+/// book.get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
 ///     .add_image(image);
 ///
 /// // Get Image by Worksheet.
@@ -51,21 +65,24 @@ pub struct Image {
 /// let images = worksheet.get_images_by_column_and_row_mut(&2, 1);
 ///
 /// // Download Image
-/// book.get_sheet_by_name("Sheet1").unwrap()
-/// .get_image_collection()
-/// .get(0)
-/// .unwrap()
-/// .download_image("./tests/result_files/bbb.png");
+/// book.get_sheet_by_name("Sheet1")
+///     .unwrap()
+///     .get_image_collection()
+///     .get(0)
+///     .unwrap()
+///     .download_image("./tests/result_files/bbb.png");
 ///
 /// // Change Image
-/// book.get_sheet_by_name_mut("Sheet1").unwrap()
-/// .get_image_collection_mut()
-/// .get_mut(0)
-/// .unwrap()
-/// .change_image("./images/sample1.png");
+/// book.get_sheet_by_name_mut("Sheet1")
+///     .unwrap()
+///     .get_image_collection_mut()
+///     .get_mut(0)
+///     .unwrap()
+///     .change_image("./images/sample1.png");
 /// ```
 impl Image {
     #[inline]
+    #[must_use]
     pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
         self.two_cell_anchor.as_deref()
     }
@@ -88,6 +105,7 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
         self.one_cell_anchor.as_deref()
     }
@@ -120,7 +138,7 @@ impl Image {
         let file = File::open(path).unwrap();
         BufReader::new(file).read_to_end(&mut buf).unwrap();
 
-        self.new_image_with_dimensions(height, width, image_name, buf, marker)
+        self.new_image_with_dimensions(height, width, image_name, buf, marker);
     }
 
     pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(
@@ -169,8 +187,10 @@ impl Image {
         one_cell_anchor.set_from_marker(marker);
         one_cell_anchor
             .get_extent_mut()
-            .set_cy(height as i64 * 9525);
-        one_cell_anchor.get_extent_mut().set_cx(width as i64 * 9525);
+            .set_cy(i64::from(height) * 9525);
+        one_cell_anchor
+            .get_extent_mut()
+            .set_cx(i64::from(width) * 9525);
         one_cell_anchor.set_picture(picture);
         self.set_one_cell_anchor(one_cell_anchor);
     }
@@ -190,11 +210,13 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn has_image(&self) -> bool {
         !self.get_media_object().is_empty()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image_name(&self) -> &str {
         match self.get_media_object().first() {
             Some(v) => v.get_image_name(),
@@ -203,34 +225,40 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image_data(&self) -> &[u8] {
         match self.get_media_object().first() {
             Some(v) => v.get_image_data(),
-            None => &EMPTY_VEC,
+            None => &[0u8; 0],
         }
     }
 
     #[inline]
+    #[must_use]
     pub fn get_image_data_base64(&self) -> String {
         STANDARD.encode(self.get_image_data())
     }
 
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> String {
         self.get_from_marker_type().get_coordinate()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_col(&self) -> u32 {
         self.get_from_marker_type().get_col()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row(&self) -> u32 {
         self.get_from_marker_type().get_row()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_from_marker_type(&self) -> &MarkerType {
         if let Some(anchor) = self.get_two_cell_anchor() {
             return anchor.get_from_marker();
@@ -242,6 +270,7 @@ impl Image {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
         self.get_two_cell_anchor()
             .as_ref()

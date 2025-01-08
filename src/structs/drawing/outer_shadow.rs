@@ -1,31 +1,49 @@
 // a:outerShdw
-use super::PresetColor;
-use super::RgbColorModelHex;
-use super::SchemeColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    PresetColor,
+    RgbColorModelHex,
+    SchemeColor,
+};
+use crate::{
+    StringValue,
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OuterShadow {
-    blur_radius: StringValue,
-    alignment: StringValue,
-    horizontal_ratio: StringValue,
-    vertical_ratio: StringValue,
-    direction: StringValue,
-    distance: StringValue,
-    rotate_with_shape: StringValue,
-    preset_color: Option<Box<PresetColor>>,
-    scheme_color: Option<Box<SchemeColor>>,
+    blur_radius:         StringValue,
+    alignment:           StringValue,
+    horizontal_ratio:    StringValue,
+    vertical_ratio:      StringValue,
+    direction:           StringValue,
+    distance:            StringValue,
+    rotate_with_shape:   StringValue,
+    preset_color:        Option<Box<PresetColor>>,
+    scheme_color:        Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 
 impl OuterShadow {
     #[inline]
+    #[must_use]
     pub fn get_blur_radius(&self) -> Option<&str> {
         self.blur_radius.get_value()
     }
@@ -37,6 +55,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_horizontal_ratio(&self) -> Option<&str> {
         self.horizontal_ratio.get_value()
     }
@@ -48,6 +67,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_ratio(&self) -> Option<&str> {
         self.vertical_ratio.get_value()
     }
@@ -59,6 +79,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> Option<&str> {
         self.alignment.get_value()
     }
@@ -70,6 +91,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_direction(&self) -> Option<&str> {
         self.direction.get_value()
     }
@@ -81,6 +103,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_distance(&self) -> Option<&str> {
         self.distance.get_value()
     }
@@ -91,6 +114,7 @@ impl OuterShadow {
         self
     }
 
+    #[must_use]
     pub fn get_rotate_with_shape(&self) -> Option<&str> {
         self.rotate_with_shape.get_value()
     }
@@ -102,6 +126,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_preset_color(&self) -> Option<&PresetColor> {
         self.preset_color.as_deref()
     }
@@ -118,6 +143,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
@@ -134,6 +160,7 @@ impl OuterShadow {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
@@ -224,27 +251,27 @@ impl OuterShadow {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:outerShdw
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if let Some(v) = self.blur_radius.get_value() {
-            attributes.push(("blurRad", v));
+            attributes.push(("blurRad", v).into());
         }
         if let Some(v) = self.distance.get_value() {
-            attributes.push(("dist", v));
+            attributes.push(("dist", v).into());
         }
         if let Some(v) = self.direction.get_value() {
-            attributes.push(("dir", v));
+            attributes.push(("dir", v).into());
         }
         if let Some(v) = self.horizontal_ratio.get_value() {
-            attributes.push(("sx", v));
+            attributes.push(("sx", v).into());
         }
         if let Some(v) = self.vertical_ratio.get_value() {
-            attributes.push(("sy", v));
+            attributes.push(("sy", v).into());
         }
         if let Some(v) = self.alignment.get_value() {
-            attributes.push(("algn", v));
+            attributes.push(("algn", v).into());
         }
         if let Some(v) = self.rotate_with_shape.get_value() {
-            attributes.push(("rotWithShape", v));
+            attributes.push(("rotWithShape", v).into());
         }
         write_start_tag(writer, "a:outerShdw", attributes, false);
 

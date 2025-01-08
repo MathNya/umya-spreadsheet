@@ -1,21 +1,36 @@
 // c:cat
-use super::StringLiteral;
-use super::StringReference;
-use crate::reader::driver::*;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    StringLiteral,
+    StringReference,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CategoryAxisData {
     string_reference: Option<StringReference>,
-    string_literal: Option<StringLiteral>,
+    string_literal:   Option<StringLiteral>,
 }
 
 impl CategoryAxisData {
+    #[must_use]
     pub fn get_string_reference(&self) -> Option<&StringReference> {
         self.string_reference.as_ref()
     }
@@ -34,6 +49,7 @@ impl CategoryAxisData {
         self
     }
 
+    #[must_use]
     pub fn get_string_literal(&self) -> Option<&StringLiteral> {
         self.string_literal.as_ref()
     }
@@ -83,13 +99,13 @@ impl CategoryAxisData {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:cat
         write_start_tag(writer, "c:cat", vec![], false);
 
         // c:strRef
         if let Some(v) = &self.string_reference {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:strLit

@@ -1,34 +1,47 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // lineChart
 use super::AreaChartSeries;
-use super::AreaChartSeriesList;
-use super::AxisId;
-use super::DataLabels;
-use super::Grouping;
-use super::ShowMarker;
-use super::Smooth;
-use super::VaryColors;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use thin_vec::ThinVec;
+use super::{
+    AreaChartSeriesList,
+    AxisId,
+    DataLabels,
+    Grouping,
+    ShowMarker,
+    Smooth,
+    VaryColors,
+};
+use crate::{
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct LineChart {
-    grouping: Grouping,
-    vary_colors: VaryColors,
+    grouping:               Grouping,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    show_marker: ShowMarker,
-    smooth: Smooth,
-    axis_id: ThinVec<AxisId>,
+    data_labels:            DataLabels,
+    show_marker:            ShowMarker,
+    smooth:                 Smooth,
+    axis_id:                Vec<AxisId>,
 }
 
 impl LineChart {
+    #[must_use]
     pub fn get_grouping(&self) -> &Grouping {
         &self.grouping
     }
@@ -42,6 +55,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -55,6 +69,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -68,6 +83,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -81,6 +97,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_show_marker(&self) -> &ShowMarker {
         &self.show_marker
     }
@@ -94,6 +111,7 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_smooth(&self) -> &Smooth {
         &self.smooth
     }
@@ -107,15 +125,16 @@ impl LineChart {
         self
     }
 
+    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut Self {
+    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut Self {
         self.axis_id = value.into();
         self
     }
@@ -173,7 +192,7 @@ impl LineChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:lineChart
         write_start_tag(writer, "c:lineChart", vec![], false);
 
@@ -185,7 +204,7 @@ impl LineChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:dLbls

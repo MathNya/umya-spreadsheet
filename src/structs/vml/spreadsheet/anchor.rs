@@ -1,26 +1,44 @@
-use crate::helper::coordinate::*;
-use crate::reader::driver::*;
-use crate::traits::AdjustmentCoordinate;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::coordinate::{
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        is_remove_coordinate,
+    },
+    reader::driver::xml_read_loop,
+    traits::AdjustmentCoordinate,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Anchor {
-    left_column: u32,
-    left_offset: u32,
-    top_row: u32,
-    top_offset: u32,
-    right_column: u32,
-    right_offset: u32,
-    bottom_row: u32,
+    left_column:   u32,
+    left_offset:   u32,
+    top_row:       u32,
+    top_offset:    u32,
+    right_column:  u32,
+    right_offset:  u32,
+    bottom_row:    u32,
     bottom_offset: u32,
 }
 
 impl Anchor {
     #[inline]
+    #[must_use]
     pub fn get_left_column(&self) -> u32 {
         self.left_column
     }
@@ -32,6 +50,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_left_offset(&self) -> u32 {
         self.left_offset
     }
@@ -43,6 +62,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_row(&self) -> u32 {
         self.top_row
     }
@@ -54,6 +74,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_top_offset(&self) -> u32 {
         self.top_offset
     }
@@ -65,6 +86,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_right_column(&self) -> u32 {
         self.right_column
     }
@@ -76,6 +98,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_right_offset(&self) -> u32 {
         self.right_offset
     }
@@ -87,6 +110,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bottom_row(&self) -> u32 {
         self.bottom_row
     }
@@ -98,6 +122,7 @@ impl Anchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bottom_offset(&self) -> u32 {
         self.bottom_offset
     }
@@ -184,7 +209,7 @@ impl Anchor {
     #[inline]
     fn get_number(value: Option<&&str>) -> u32 {
         match value {
-            Some(v) => v.to_string().trim().parse::<u32>().unwrap_or(0),
+            Some(v) => (*v).to_string().trim().parse::<u32>().unwrap_or(0),
             None => 0,
         }
     }

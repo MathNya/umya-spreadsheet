@@ -1,27 +1,48 @@
 // xdr:graphicFrame
-use super::super::super::StringValue;
-use super::super::Graphic;
-use super::NonVisualGraphicFrameProperties;
-use super::Transform;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::{
+        super::StringValue,
+        Graphic,
+    },
+    NonVisualGraphicFrameProperties,
+    Transform,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::raw::RawRelationships,
+    traits::AdjustmentCoordinateWithSheet,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GraphicFrame {
-    r#macro: StringValue,
+    r#macro:                             StringValue,
     non_visual_graphic_frame_properties: NonVisualGraphicFrameProperties,
-    transform: Transform,
-    graphic: Graphic,
+    transform:                           Transform,
+    graphic:                             Graphic,
 }
 
 impl GraphicFrame {
     #[inline]
+    #[must_use]
     pub fn get_macro(&self) -> &str {
         self.r#macro.get_value_str()
     }
@@ -33,6 +54,7 @@ impl GraphicFrame {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
         &self.non_visual_graphic_frame_properties
     }
@@ -54,6 +76,7 @@ impl GraphicFrame {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_transform(&self) -> &Transform {
         &self.transform
     }
@@ -70,6 +93,7 @@ impl GraphicFrame {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_graphic(&self) -> &Graphic {
         &self.graphic
     }
@@ -129,7 +153,7 @@ impl GraphicFrame {
         write_start_tag(
             writer,
             "xdr:graphicFrame",
-            vec![("macro", self.r#macro.get_value_str())],
+            vec![("macro", self.r#macro.get_value_str()).into()],
             false,
         );
 
@@ -140,7 +164,7 @@ impl GraphicFrame {
         self.transform.write_to(writer);
 
         // a:graphic
-        self.graphic.write_to(writer, rel_list);
+        Graphic::write_to(writer, rel_list);
 
         write_end_tag(writer, "xdr:graphicFrame");
     }

@@ -30,7 +30,7 @@ impl Int64Value {
     }
 
     #[inline]
-    pub(crate) fn _get_hash_string(&self) -> String {
+    pub(crate) fn get_hash_string(&self) -> String {
         if self.has_value() {
             return self.get_value_string();
         }

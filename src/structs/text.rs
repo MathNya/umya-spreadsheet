@@ -1,11 +1,24 @@
 // t
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub(crate) struct Text {
@@ -50,11 +63,11 @@ impl Text {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // t
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.value.starts_with(|c: char| c.is_whitespace())
             || self.value.ends_with(|c: char| c.is_whitespace())
         {
-            attributes.push(("xml:space", "preserve"));
+            attributes.push(("xml:space", "preserve").into());
         }
         write_start_tag(writer, "t", attributes, false);
         write_text_node(writer, &*self.value);

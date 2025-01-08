@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum ObjectValues {
     AuditingLine,
@@ -56,6 +57,7 @@ impl EnumTrait for ObjectValues {
 }
 impl FromStr for ObjectValues {
     type Err = ();
+
     #[inline]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {

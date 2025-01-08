@@ -1,21 +1,35 @@
 // from
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct FromMarker {
-    col: usize,
+    col:     usize,
     col_off: usize,
-    row: usize,
+    row:     usize,
     row_off: usize,
 }
 
 impl FromMarker {
     #[inline]
+    #[must_use]
     pub fn get_col(&self) -> usize {
         self.col
     }
@@ -27,6 +41,7 @@ impl FromMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_col_off(&self) -> usize {
         self.col_off
     }
@@ -38,6 +53,7 @@ impl FromMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row(&self) -> usize {
         self.row
     }
@@ -49,6 +65,7 @@ impl FromMarker {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_row_off(&self) -> usize {
         self.row_off
     }
@@ -60,17 +77,17 @@ impl FromMarker {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: usize) {
+    pub(crate) fn adjustment_insert_row(&mut self, num_rows: usize) {
         self.row += num_rows;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: usize) {
+    pub(crate) fn adjustment_insert_column(&mut self, num_cols: usize) {
         self.col += num_cols;
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: usize) {
+    pub(crate) fn adjustment_remove_row(&mut self, num_rows: usize) {
         self.row = if self.row > num_rows {
             self.row - num_rows
         } else {
@@ -79,7 +96,7 @@ impl FromMarker {
     }
 
     #[inline]
-    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: usize) {
+    pub(crate) fn adjustment_remove_column(&mut self, num_cols: usize) {
         self.col = if self.col > num_cols {
             self.col - num_cols
         } else {
@@ -92,7 +109,7 @@ impl FromMarker {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Text(e) => string_value = e.unescape().unwrap().to_string(),

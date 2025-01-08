@@ -1,22 +1,34 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // c:numRef
 use super::Formula;
 use super::NumberingCache;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::{
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberReference {
-    formula: Formula,
+    formula:         Formula,
     numbering_cache: NumberingCache,
 }
 
 impl NumberReference {
+    #[must_use]
     pub fn get_formula(&self) -> &Formula {
         &self.formula
     }
@@ -30,6 +42,7 @@ impl NumberReference {
         self
     }
 
+    #[must_use]
     pub fn get_numbering_cache(&self) -> &NumberingCache {
         &self.numbering_cache
     }
@@ -68,7 +81,7 @@ impl NumberReference {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:numRef
         write_start_tag(writer, "c:numRef", vec![], false);
 
@@ -77,7 +90,7 @@ impl NumberReference {
 
         // c:numCache
         self.numbering_cache
-            .write_to(writer, self.get_formula().get_address(), spreadsheet);
+            .write_to(writer, self.get_formula().get_address(), wb);
 
         write_end_tag(writer, "c:numRef");
     }

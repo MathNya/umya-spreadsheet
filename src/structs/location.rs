@@ -1,20 +1,32 @@
-use super::StringValue;
-use super::UInt32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::{
+    StringValue,
+    UInt32Value,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Location {
-    reference: StringValue,
+    reference:        StringValue,
     first_header_row: UInt32Value,
-    first_data_row: UInt32Value,
-    first_data_col: UInt32Value,
+    first_data_row:   UInt32Value,
+    first_data_col:   UInt32Value,
 }
 impl Location {
+    #[must_use]
     pub fn get_reference(&self) -> &str {
         self.reference.get_value_str()
     }
@@ -24,6 +36,7 @@ impl Location {
         self
     }
 
+    #[must_use]
     pub fn get_first_header_row(&self) -> u32 {
         self.first_header_row.get_value()
     }
@@ -33,6 +46,7 @@ impl Location {
         self
     }
 
+    #[must_use]
     pub fn get_first_data_row(&self) -> u32 {
         self.first_data_row.get_value()
     }
@@ -42,6 +56,7 @@ impl Location {
         self
     }
 
+    #[must_use]
     pub fn get_first_data_col(&self) -> u32 {
         self.first_data_col.get_value()
     }
@@ -69,19 +84,22 @@ impl Location {
             writer,
             "location",
             vec![
-                ("ref", self.reference.get_value_str()),
+                ("ref", self.reference.get_value_str()).into(),
                 (
                     "firstHeaderRow",
                     self.first_header_row.get_value_string().as_str(),
-                ),
+                )
+                    .into(),
                 (
                     "firstDataRow",
                     self.first_data_row.get_value_string().as_str(),
-                ),
+                )
+                    .into(),
                 (
                     "firstDataCol",
                     self.first_data_col.get_value_string().as_str(),
-                ),
+                )
+                    .into(),
             ],
             true,
         );

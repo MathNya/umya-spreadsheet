@@ -1,23 +1,35 @@
 // dataField
-use crate::reader::driver::*;
-use crate::structs::Int32Value;
-use crate::structs::StringValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        Int32Value,
+        StringValue,
+        UInt32Value,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct DataField {
-    name: StringValue,
-    fie_id: UInt32Value,
+    name:        StringValue,
+    fie_id:      UInt32Value,
     base_fie_id: Int32Value,
-    base_item: UInt32Value,
+    base_item:   UInt32Value,
 }
 impl DataField {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -30,6 +42,7 @@ impl DataField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fie_id(&self) -> u32 {
         self.fie_id.get_value()
     }
@@ -41,6 +54,7 @@ impl DataField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_base_fie_id(&self) -> i32 {
         self.base_fie_id.get_value()
     }
@@ -52,6 +66,7 @@ impl DataField {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_base_item(&self) -> u32 {
         self.base_item.get_value()
     }
@@ -82,10 +97,10 @@ impl DataField {
             writer,
             "dataField",
             vec![
-                ("name", self.name.get_value_str()),
-                ("fld", self.fie_id.get_value_string().as_str()),
-                ("baseField", self.base_fie_id.get_value_string().as_str()),
-                ("baseItem", self.base_item.get_value_string().as_str()),
+                ("name", self.name.get_value_str()).into(),
+                ("fld", self.fie_id.get_value_string().as_str()).into(),
+                ("baseField", self.base_fie_id.get_value_string().as_str()).into(),
+                ("baseItem", self.base_item.get_value_string().as_str()).into(),
             ],
             true,
         );

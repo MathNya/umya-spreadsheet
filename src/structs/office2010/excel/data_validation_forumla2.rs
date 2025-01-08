@@ -1,11 +1,25 @@
 // x14:formula2
-use crate::structs::office::excel::Formula;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
-use std::vec;
+use std::{
+    io::Cursor,
+    vec,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    structs::office::excel::Formula,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidationForumla2 {
@@ -13,6 +27,7 @@ pub struct DataValidationForumla2 {
 }
 impl DataValidationForumla2 {
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> &Formula {
         &self.value
     }

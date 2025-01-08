@@ -1,22 +1,37 @@
 // c:printSettings
-use super::HeaderFooter;
-use super::PageMargins;
-use super::PageSetup;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    HeaderFooter,
+    PageMargins,
+    PageSetup,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PrintSettings {
     header_footer: HeaderFooter,
-    page_margins: PageMargins,
-    page_setup: PageSetup,
+    page_margins:  PageMargins,
+    page_setup:    PageSetup,
 }
 
 impl PrintSettings {
+    #[must_use]
     pub fn get_header_footer(&self) -> &HeaderFooter {
         &self.header_footer
     }
@@ -30,6 +45,7 @@ impl PrintSettings {
         self
     }
 
+    #[must_use]
     pub fn get_page_margins(&self) -> &PageMargins {
         &self.page_margins
     }
@@ -43,6 +59,7 @@ impl PrintSettings {
         self
     }
 
+    #[must_use]
     pub fn get_page_setup(&self) -> &PageSetup {
         &self.page_setup
     }
@@ -66,10 +83,10 @@ impl PrintSettings {
             Event::Start(ref e) => {
                 match e.name().0 {
                 b"c:headerFooter" => {
-                    self.header_footer.set_attributes(reader, e);
+                    HeaderFooter::set_attributes(reader, e);
                 }
                 b"c:pageSetup" => {
-                    self.page_setup.set_attributes(reader, e);
+                    PageSetup::set_attributes(reader, e);
                 }
                 _ => (),
                 }
@@ -93,13 +110,13 @@ impl PrintSettings {
         write_start_tag(writer, "c:printSettings", vec![], false);
 
         // c:headerFooter
-        self.header_footer.write_to(writer);
+        HeaderFooter::write_to(writer);
 
         // c:pageMargins
         self.page_margins.write_to(writer);
 
         // c:pageSetup
-        self.page_setup.write_to(writer);
+        PageSetup::write_to(writer);
 
         write_end_tag(writer, "c:printSettings");
     }

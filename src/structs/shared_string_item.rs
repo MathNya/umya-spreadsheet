@@ -1,21 +1,38 @@
 // si
-use super::PhoneticRun;
-use super::RichText;
-use super::Text;
-use super::TextElement;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::hash::Hasher;
-use std::io::Cursor;
-extern crate ahash;
-use self::ahash::AHasher;
+use std::{
+    hash::{
+        DefaultHasher,
+        Hasher,
+    },
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    PhoneticRun,
+    RichText,
+    Text,
+    TextElement,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct SharedStringItem {
-    text: Option<Text>,
+    text:      Option<Text>,
     rich_text: Option<RichText>,
 }
 
@@ -26,7 +43,7 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _get_text_mut(&mut self) -> Option<&mut Text> {
+    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
     }
 
@@ -37,7 +54,7 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_text(&mut self) -> &mut Self {
         self.text = None;
         self
     }
@@ -60,21 +77,21 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_rich_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_rich_text(&mut self) -> &mut Self {
         self.rich_text = None;
         self
     }
 
     pub(crate) fn get_hash_u64(&self) -> u64 {
-        let mut h = AHasher::default();
+        let mut h = DefaultHasher::default();
         let content = format!(
             "{}{}",
             self.text
                 .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code()),
+                .map_or(String::from("NONE"), Text::get_hash_code),
             self.rich_text
                 .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code())
+                .map_or(String::from("NONE"), RichText::get_hash_code)
         );
         h.write(content.as_bytes());
         h.finish()
@@ -102,8 +119,7 @@ impl SharedStringItem {
                         vec_text_element.push(obj);
                     }
                     b"rPh" => {
-                        let mut obj = PhoneticRun::default();
-                        obj.set_attributes(reader, e);
+                        PhoneticRun::set_attributes(reader, e);
                     }
                     _ => (),
                 }
@@ -136,7 +152,7 @@ impl SharedStringItem {
             v.write_to_none(writer);
         }
 
-        write_start_tag(writer, "phoneticPr", vec![("fontId", "1")], true);
+        write_start_tag(writer, "phoneticPr", vec![("fontId", "1").into()], true);
 
         write_end_tag(writer, "si");
     }

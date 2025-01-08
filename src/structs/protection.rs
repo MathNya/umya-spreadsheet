@@ -1,12 +1,21 @@
 // protection
-use super::BooleanValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::BooleanValue;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Default, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Protection {
@@ -16,6 +25,7 @@ pub struct Protection {
 
 impl Protection {
     #[inline]
+    #[must_use]
     pub fn get_locked(&self) -> bool {
         self.locked.get_value()
     }
@@ -60,12 +70,12 @@ impl Protection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // protection
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.locked.has_value() {
-            attributes.push(("locked", self.locked.get_value_string()));
+            attributes.push(("locked", self.locked.get_value_string()).into());
         }
         if self.hidden.has_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()));
+            attributes.push(("hidden", self.hidden.get_value_string()).into());
         }
         write_start_tag(writer, "protection", attributes, true);
     }
