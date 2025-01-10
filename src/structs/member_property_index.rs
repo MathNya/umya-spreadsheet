@@ -1,20 +1,11 @@
 // x
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::Int32Value;
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct MemberPropertyIndex {
@@ -22,7 +13,6 @@ pub struct MemberPropertyIndex {
 }
 
 impl MemberPropertyIndex {
-    #[must_use]
     pub fn get_val(&self) -> i32 {
         self.val.get_value()
     }
@@ -43,9 +33,9 @@ impl MemberPropertyIndex {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x
         if self.val.has_value() {
-            let mut attributes: crate::structs::AttrCollection = Vec::new();
+            let mut attributes: Vec<(&str, &str)> = Vec::new();
             let val = self.val.get_value_string();
-            attributes.push(("val", &val).into());
+            attributes.push(("val", &val));
             write_start_tag(writer, "x", attributes, true);
         }
     }

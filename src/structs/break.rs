@@ -1,35 +1,23 @@
 // brk
+use crate::reader::driver::*;
+use crate::structs::BooleanValue;
+use crate::structs::UInt32Value;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    structs::{
-        BooleanValue,
-        UInt32Value,
-    },
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Break {
-    id:                UInt32Value,
-    max:               UInt32Value,
-    min:               UInt32Value,
+    id: UInt32Value,
+    max: UInt32Value,
+    min: UInt32Value,
     manual_page_break: BooleanValue,
 }
 
 impl Break {
     #[inline]
-    #[must_use]
     pub fn get_id(&self) -> u32 {
         self.id.get_value()
     }
@@ -41,7 +29,6 @@ impl Break {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_max(&self) -> u32 {
         self.max.get_value()
     }
@@ -53,7 +40,6 @@ impl Break {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_manual_page_break(&self) -> bool {
         self.manual_page_break.get_value()
     }
@@ -78,23 +64,23 @@ impl Break {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // brk
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         let id = self.id.get_value_string();
-        attributes.push(("id", &id).into());
+        attributes.push(("id", &id));
 
         let max = self.max.get_value_string();
         if self.max.has_value() {
-            attributes.push(("max", &max).into());
+            attributes.push(("max", &max));
         }
 
         let min = self.min.get_value_string();
         if self.min.has_value() {
-            attributes.push(("min", &min).into());
+            attributes.push(("min", &min));
         }
 
         let manual_page_break = self.manual_page_break.get_value_string();
         if self.manual_page_break.has_value() {
-            attributes.push(("man", manual_page_break).into());
+            attributes.push(("man", manual_page_break));
         }
         write_start_tag(writer, "brk", attributes, true);
     }

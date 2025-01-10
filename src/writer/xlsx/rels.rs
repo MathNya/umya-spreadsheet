@@ -1,42 +1,15 @@
+use quick_xml::events::{BytesDecl, Event};
+use quick_xml::Writer;
 use std::io;
 
-use quick_xml::{
-    Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
-};
-
-use super::{
-    XlsxError,
-    driver::{
-        write_end_tag,
-        write_new_line,
-        write_start_tag,
-    },
-};
-use crate::{
-    helper::const_str::{
-        ARC_APP,
-        ARC_CORE,
-        ARC_CUSTOM,
-        COREPROPS_REL,
-        CUSTOM_PROPS_REL,
-        CUSTOMUI_NS,
-        OFCDOC_NS,
-        PKG_WORKBOOK,
-        REL_NS,
-        XPROPS_REL,
-    },
-    structs::{
-        Workbook,
-        WriterManager,
-    },
-};
+use super::driver::*;
+use super::XlsxError;
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
+use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    wb: &Workbook,
+    spreadsheet: &Spreadsheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -51,12 +24,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // relationships
-    write_start_tag(
-        &mut writer,
-        "Relationships",
-        vec![("xmlns", REL_NS).into()],
-        false,
-    );
+    write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
     // relationship docProps/app.xml
     write_relationship(&mut writer, "3", XPROPS_REL, ARC_APP, "");
@@ -68,7 +36,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_relationship(&mut writer, "1", OFCDOC_NS, PKG_WORKBOOK, "");
 
     // relationship docProps/custom.xml
-    if !wb
+    if !spreadsheet
         .get_properties()
         .get_custom_properties()
         .get_custom_document_property_list()
@@ -78,12 +46,12 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // a custom UI in workbook ?
-    if wb.has_ribbon() {
+    if spreadsheet.has_ribbon() {
         write_relationship(
             &mut writer,
             "5",
             CUSTOMUI_NS,
-            "xl/todo.xml", // TODO
+            "xl/todo.xml", //TODO
             "",
         );
     }
@@ -102,13 +70,13 @@ fn write_relationship(
     p_target_mode: &str,
 ) {
     let tag_name = "Relationship";
-    let mut attributes: crate::structs::AttrCollection = Vec::new();
-    let r_id = format!("rId{p_id}");
-    attributes.push(("Id", r_id.as_str()).into());
-    attributes.push(("Type", p_type).into());
-    attributes.push(("Target", p_target).into());
+    let mut attributes: Vec<(&str, &str)> = Vec::new();
+    let r_id = format!("rId{}", p_id);
+    attributes.push(("Id", r_id.as_str()));
+    attributes.push(("Type", p_type));
+    attributes.push(("Target", p_target));
     if !p_target_mode.is_empty() {
-        attributes.push(("TargetMode", p_target_mode).into());
+        attributes.push(("TargetMode", p_target_mode));
     }
     write_start_tag(writer, tag_name, attributes, true);
 }

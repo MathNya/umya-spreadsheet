@@ -1,25 +1,13 @@
 // a:graphic
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::GraphicData;
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::raw::RawRelationships,
-    traits::AdjustmentCoordinateWithSheet,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Graphic {
@@ -28,7 +16,6 @@ pub struct Graphic {
 
 impl Graphic {
     #[inline]
-    #[must_use]
     pub fn get_graphic_data(&self) -> &GraphicData {
         &self.graphic_data
     }
@@ -68,6 +55,7 @@ impl Graphic {
     }
 
     pub(crate) fn write_to(
+        &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {
@@ -75,7 +63,7 @@ impl Graphic {
         write_start_tag(writer, "a:graphic", vec![], false);
 
         // a:graphicData
-        GraphicData::write_to(writer, rel_list);
+        self.graphic_data.write_to(writer, rel_list);
 
         write_end_tag(writer, "a:graphic");
     }

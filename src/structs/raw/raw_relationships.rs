@@ -1,48 +1,29 @@
-use std::{
-    io,
-    io::Read,
-};
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
-};
-
-use crate::{
-    helper::const_str::REL_NS,
-    reader::driver::{
-        join_paths,
-        xml_read_loop,
-    },
-    structs::{
-        StringValue,
-        WriterManager,
-        XlsxError,
-        raw::RawRelationship,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_new_line,
-        write_start_tag,
-    },
-};
+use crate::helper::const_str::*;
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationship;
+use crate::structs::StringValue;
+use crate::structs::WriterManager;
+use crate::structs::XlsxError;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesDecl, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io;
+use std::io::Read;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
-    file_target:       StringValue,
-    relationship_list: Vec<RawRelationship>,
+    file_target: StringValue,
+    relationship_list: ThinVec<RawRelationship>,
 }
 
 impl RawRelationships {
     #[inline]
-    pub(crate) fn get_file_name(&self) -> String {
+    pub(crate) fn _get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
-        (*object_name).to_string()
+        object_name.to_string()
     }
 
     #[inline]
@@ -62,7 +43,7 @@ impl RawRelationships {
     }
 
     #[inline]
-    pub(crate) fn get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
+    pub(crate) fn _get_relationship_list_mut(&mut self) -> &mut ThinVec<RawRelationship> {
         &mut self.relationship_list
     }
 
@@ -72,7 +53,7 @@ impl RawRelationships {
                 return relationship;
             }
         }
-        panic!("not found relationship as {r_id}.");
+        panic!("not found relationship as {}.", r_id);
     }
 
     #[inline]
@@ -81,7 +62,7 @@ impl RawRelationships {
         self
     }
 
-    pub(crate) fn set_attributes<R: Read + io::Seek>(
+    pub(crate) fn set_attributes<R: io::Read + io::Seek>(
         &mut self,
         arv: &mut zip::read::ZipArchive<R>,
         base_path: &str,
@@ -89,14 +70,17 @@ impl RawRelationships {
     ) -> bool {
         let data = {
             let path_str = join_paths(base_path, target);
-            let Ok(file_path) = arv.by_name(&path_str) else {
-                return false;
+            let file_path = match arv.by_name(&path_str) {
+                Ok(v) => v,
+                Err(_) => {
+                    return false;
+                }
             };
             self.set_file_target(path_str);
             let mut r = io::BufReader::new(file_path);
             let mut buf = Vec::new();
             r.read_to_end(&mut buf).unwrap();
-            io::Cursor::new(buf)
+            std::io::Cursor::new(buf)
         };
         let mut reader = Reader::from_reader(data);
         reader.config_mut().trim_text(true);
@@ -137,12 +121,7 @@ impl RawRelationships {
         write_new_line(&mut writer);
 
         // relationships
-        write_start_tag(
-            &mut writer,
-            "Relationships",
-            vec![("xmlns", REL_NS).into()],
-            false,
-        );
+        write_start_tag(&mut writer, "Relationships", vec![("xmlns", REL_NS)], false);
 
         for relationship in self.get_relationship_list() {
             relationship.write_to(&mut writer);

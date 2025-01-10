@@ -1,29 +1,15 @@
-use std::io;
-
-use quick_xml::{
-    Reader,
-    events::Event,
-};
-
-use super::{
-    XlsxError,
-    driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-};
-use crate::{
-    helper::const_str::{
-        PIVOT_CACHE_DEF_NS,
-        PKG_WORKBOOK_RELS,
-    },
-    structs::Workbook,
-};
+use super::driver::*;
+use super::XlsxError;
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use std::{io, result};
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::read::ZipArchive<R>,
-    wb: &mut Workbook,
-) -> Result<Vec<(String, String, String)>, XlsxError> {
+    spreadsheet: &mut Spreadsheet,
+) -> result::Result<Vec<(String, String, String)>, XlsxError> {
     let r = io::BufReader::new(arv.by_name(PKG_WORKBOOK_RELS)?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
@@ -39,10 +25,10 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 let target_value = get_attribute(e, b"Target").unwrap();
                 let target_value = target_value
                     .strip_prefix("/xl/")
-                    .map(ToOwned::to_owned)
+                    .map(|t| t.to_owned())
                     .unwrap_or(target_value);
                 if type_value == PIVOT_CACHE_DEF_NS {
-                    wb.update_pivot_caches(&id_value, &target_value);
+                    spreadsheet.update_pivot_caches(id_value, target_value);
                 } else {
                     result.push((id_value, type_value, target_value));
                 }

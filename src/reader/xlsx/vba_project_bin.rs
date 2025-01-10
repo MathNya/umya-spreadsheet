@@ -1,18 +1,14 @@
-use std::{
-    io,
-    io::Read,
-};
-
 use super::XlsxError;
-use crate::{
-    helper::const_str::PKG_VBA_PROJECT,
-    structs::Workbook,
-};
+use std::io::Read;
+use std::{io, result};
 
-pub(crate) fn read<R: Read + io::Seek>(
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
+
+pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    wb: &mut Workbook,
-) -> Result<(), XlsxError> {
+    spreadsheet: &mut Spreadsheet,
+) -> result::Result<(), XlsxError> {
     let mut r = io::BufReader::new(match arv.by_name(PKG_VBA_PROJECT) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
@@ -25,7 +21,7 @@ pub(crate) fn read<R: Read + io::Seek>(
     let mut buf = Vec::new();
     r.read_to_end(&mut buf)?;
 
-    wb.set_macros_code(buf);
+    spreadsheet.set_macros_code(buf);
 
     Ok(())
 }

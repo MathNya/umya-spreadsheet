@@ -1,39 +1,24 @@
 // c:view3D
+use super::Perspective;
+use super::RightAngleAxes;
+use super::RotateX;
+use super::RotateY;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Perspective,
-    RightAngleAxes,
-    RotateX,
-    RotateY,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct View3D {
-    rotate_x:         Option<RotateX>,
-    rotate_y:         Option<RotateY>,
+    rotate_x: Option<RotateX>,
+    rotate_y: Option<RotateY>,
     right_angle_axes: Option<RightAngleAxes>,
-    perspective:      Option<Perspective>,
+    perspective: Option<Perspective>,
 }
 
 impl View3D {
-    #[must_use]
     pub fn get_rotate_x(&self) -> Option<&RotateX> {
         self.rotate_x.as_ref()
     }
@@ -47,7 +32,6 @@ impl View3D {
         self
     }
 
-    #[must_use]
     pub fn get_rotate_y(&self) -> Option<&RotateY> {
         self.rotate_y.as_ref()
     }
@@ -61,7 +45,6 @@ impl View3D {
         self
     }
 
-    #[must_use]
     pub fn get_right_angle_axes(&self) -> Option<&RightAngleAxes> {
         self.right_angle_axes.as_ref()
     }
@@ -75,7 +58,6 @@ impl View3D {
         self
     }
 
-    #[must_use]
     pub fn get_perspective(&self) -> Option<&Perspective> {
         self.perspective.as_ref()
     }

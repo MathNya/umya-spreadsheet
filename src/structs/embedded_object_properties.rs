@@ -1,49 +1,28 @@
+use super::BooleanValue;
+use super::ObjectAnchor;
+use super::StringValue;
+use super::UInt32Value;
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::structs::MediaObject;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    BooleanValue,
-    ObjectAnchor,
-    StringValue,
-    UInt32Value,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    structs::{
-        MediaObject,
-        raw::RawRelationships,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct EmbeddedObjectProperties {
-    prog_id:       StringValue,
-    shape_id:      UInt32Value,
-    image:         MediaObject,
-    default_size:  BooleanValue,
-    auto_pict:     BooleanValue,
+    prog_id: StringValue,
+    shape_id: UInt32Value,
+    image: MediaObject,
+    default_size: BooleanValue,
+    auto_pict: BooleanValue,
     object_anchor: ObjectAnchor,
 }
 
 impl EmbeddedObjectProperties {
     #[inline]
-    #[must_use]
     pub fn get_prog_id(&self) -> &str {
         self.prog_id.get_value_str()
     }
@@ -55,7 +34,6 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_shape_id(&self) -> u32 {
         self.shape_id.get_value()
     }
@@ -67,7 +45,6 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
@@ -83,7 +60,6 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_default_size(&self) -> bool {
         self.default_size.get_value()
     }
@@ -95,7 +71,6 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_auto_pict(&self) -> bool {
         self.auto_pict.get_value()
     }
@@ -107,7 +82,6 @@ impl EmbeddedObjectProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_object_anchor(&self) -> &ObjectAnchor {
         &self.object_anchor
     }
@@ -158,15 +132,15 @@ impl EmbeddedObjectProperties {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, r_id: usize) {
         // objectPr
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.default_size.has_value() {
-            attributes.push(("defaultSize", self.default_size.get_value_string()).into());
+            attributes.push(("defaultSize", self.default_size.get_value_string()));
         }
         if self.auto_pict.has_value() {
-            attributes.push(("autoPict", self.auto_pict.get_value_string()).into());
+            attributes.push(("autoPict", self.auto_pict.get_value_string()));
         }
-        let r_id_str = format!("rId{r_id}");
-        attributes.push(("r:id", r_id_str.as_str()).into());
+        let r_id_str = format!("rId{}", r_id);
+        attributes.push(("r:id", r_id_str.as_str()));
         write_start_tag(writer, "objectPr", attributes, false);
 
         // anchor

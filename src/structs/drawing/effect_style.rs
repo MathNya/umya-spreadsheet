@@ -1,40 +1,23 @@
-use std::{
-    io::Cursor,
-    vec,
-};
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    EffectList,
-    Scene3DType,
-    Shape3DType,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use super::EffectList;
+use super::Scene3DType;
+use super::Shape3DType;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use std::vec;
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectStyle {
-    effect_list:   Option<Box<EffectList>>,
+    effect_list: Option<Box<EffectList>>,
     scene_3d_type: Option<Box<Scene3DType>>,
     shape_3d_type: Option<Box<Shape3DType>>,
 }
 
 impl EffectStyle {
     #[inline]
-    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
@@ -51,7 +34,6 @@ impl EffectStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
         self.scene_3d_type.as_deref()
     }
@@ -68,7 +50,6 @@ impl EffectStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
         self.shape_3d_type.as_deref()
     }

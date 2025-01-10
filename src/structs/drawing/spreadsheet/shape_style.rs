@@ -1,35 +1,22 @@
 // xdr:style
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::super::StyleMatrixReferenceType;
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeStyle {
-    line_reference:   Option<Box<StyleMatrixReferenceType>>,
-    fill_reference:   Option<Box<StyleMatrixReferenceType>>,
+    line_reference: Option<Box<StyleMatrixReferenceType>>,
+    fill_reference: Option<Box<StyleMatrixReferenceType>>,
     effect_reference: Option<Box<StyleMatrixReferenceType>>,
-    font_reference:   Option<Box<StyleMatrixReferenceType>>,
+    font_reference: Option<Box<StyleMatrixReferenceType>>,
 }
 
 impl ShapeStyle {
     #[inline]
-    #[must_use]
     pub fn get_line_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.line_reference.as_deref()
     }
@@ -40,7 +27,6 @@ impl ShapeStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_fill_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.fill_reference.as_deref()
     }
@@ -51,7 +37,6 @@ impl ShapeStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_effect_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.effect_reference.as_deref()
     }
@@ -62,7 +47,6 @@ impl ShapeStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.font_reference.as_deref()
     }

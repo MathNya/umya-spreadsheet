@@ -1,45 +1,33 @@
 // a:gsLst
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::GradientStop;
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientStopList {
-    gradient_stop: Vec<GradientStop>,
+    gradient_stop: ThinVec<GradientStop>,
 }
 
 impl GradientStopList {
     #[inline]
-    #[must_use]
     pub fn get_gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
 
     #[inline]
-    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+    pub fn get_gradient_stop_mut(&mut self) -> &mut ThinVec<GradientStop> {
         &mut self.gradient_stop
     }
 
     #[inline]
     pub fn set_gradient_stop(
         &mut self,
-        value: impl Into<Vec<GradientStop>>,
+        value: impl Into<ThinVec<GradientStop>>,
     ) -> &mut GradientStopList {
         self.gradient_stop = value.into();
         self

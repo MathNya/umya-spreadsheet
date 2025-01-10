@@ -1,48 +1,30 @@
 // a:schemeClr
+use super::super::EnumValue;
+use super::PercentageType;
+use super::PositiveFixedPercentageType;
+use super::SchemeColorValues;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    super::EnumValue,
-    PercentageType,
-    PositiveFixedPercentageType,
-    SchemeColorValues,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct SchemeColor {
-    val:                   EnumValue<SchemeColorValues>,
-    luminance:             Option<PercentageType>,
-    luminance_modulation:  Option<PercentageType>,
-    luminance_offset:      Option<PercentageType>,
-    saturation:            Option<PercentageType>,
+    val: EnumValue<SchemeColorValues>,
+    luminance: Option<PercentageType>,
+    luminance_modulation: Option<PercentageType>,
+    luminance_offset: Option<PercentageType>,
+    saturation: Option<PercentageType>,
     saturation_modulation: Option<PercentageType>,
-    shade:                 Option<PositiveFixedPercentageType>,
-    alpha:                 Option<PositiveFixedPercentageType>,
-    tint:                  Option<PositiveFixedPercentageType>,
+    shade: Option<PositiveFixedPercentageType>,
+    alpha: Option<PositiveFixedPercentageType>,
+    tint: Option<PositiveFixedPercentageType>,
 }
 
 impl SchemeColor {
     #[inline]
-    #[must_use]
     pub fn get_val(&self) -> &SchemeColorValues {
         self.val.get_value()
     }
@@ -54,7 +36,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_luminance(&self) -> Option<&PercentageType> {
         self.luminance.as_ref()
     }
@@ -70,7 +51,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_luminance_modulation(&self) -> Option<&PercentageType> {
         self.luminance_modulation.as_ref()
     }
@@ -86,7 +66,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_luminance_offset(&self) -> Option<&PercentageType> {
         self.luminance_offset.as_ref()
     }
@@ -102,7 +81,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_saturation(&self) -> Option<&PercentageType> {
         self.saturation.as_ref()
     }
@@ -118,7 +96,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_saturation_modulation(&self) -> Option<&PercentageType> {
         self.saturation_modulation.as_ref()
     }
@@ -134,7 +111,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_shade(&self) -> Option<&PositiveFixedPercentageType> {
         self.shade.as_ref()
     }
@@ -150,7 +126,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_alpha(&self) -> Option<&PositiveFixedPercentageType> {
         self.alpha.as_ref()
     }
@@ -166,7 +141,6 @@ impl SchemeColor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_tint(&self) -> Option<&PositiveFixedPercentageType> {
         self.tint.as_ref()
     }
@@ -267,7 +241,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", self.val.get_value_string()).into()],
+                vec![("val", (self.val.get_value_string()))],
                 false,
             );
 
@@ -316,7 +290,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", self.val.get_value_string()).into()],
+                vec![("val", (self.val.get_value_string()))],
                 true,
             );
         }

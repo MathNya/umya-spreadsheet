@@ -1,21 +1,15 @@
-use std::io;
-
-use quick_xml::{
-    Reader,
-    events::Event,
-};
-
 use super::XlsxError;
-use crate::{
-    structs::drawing::Theme,
-    xml_read_loop,
-};
+use crate::structs::drawing::Theme;
+use crate::xml_read_loop;
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use std::{io, result};
 
 pub fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
     target: &str,
-) -> Result<Theme, XlsxError> {
-    let r = io::BufReader::new(arv.by_name(&format!("xl/{target}"))?);
+) -> result::Result<Theme, XlsxError> {
+    let r = io::BufReader::new(arv.by_name(&format!("xl/{}", target))?);
     let mut reader = Reader::from_reader(r);
     reader.config_mut().trim_text(true);
 

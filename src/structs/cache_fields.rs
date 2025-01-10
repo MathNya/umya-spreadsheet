@@ -1,30 +1,17 @@
 // cacheFields
+use crate::reader::driver::*;
+use crate::structs::CacheField;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::CacheField,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct CacheFields {
     list: Vec<CacheField>,
 }
 impl CacheFields {
-    #[must_use]
     pub fn get_list(&self) -> &Vec<CacheField> {
         &self.list
     }
@@ -68,7 +55,7 @@ impl CacheFields {
         write_start_tag(
             writer,
             "cacheFields",
-            vec![("count", self.list.len().to_string()).into()],
+            vec![("count", self.list.len().to_string().as_str())],
             false,
         );
 

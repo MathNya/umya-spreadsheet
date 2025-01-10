@@ -1,35 +1,20 @@
 // c:marker
+use super::ShapeProperties;
+use super::Thickness;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    ShapeProperties,
-    Thickness,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Floor {
-    thickness:        Option<Thickness>,
+    thickness: Option<Thickness>,
     shape_properties: Option<Box<ShapeProperties>>,
 }
 
 impl Floor {
-    #[must_use]
     pub fn get_thickness(&self) -> Option<&Thickness> {
         self.thickness.as_ref()
     }
@@ -43,7 +28,6 @@ impl Floor {
         self
     }
 
-    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_deref()
     }

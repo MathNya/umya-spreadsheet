@@ -1,30 +1,17 @@
 // fills
+use super::Fill;
+use super::Style;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Fill,
-    Style,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fills {
-    fill: Vec<Fill>,
+    fill: ThinVec<Fill>,
 }
 
 impl Fills {
@@ -35,7 +22,7 @@ impl Fills {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_fill_mut(&mut self) -> &mut Vec<Fill> {
+    pub(crate) fn get_fill_mut(&mut self) -> &mut ThinVec<Fill> {
         &mut self.fill
     }
 
@@ -92,7 +79,7 @@ impl Fills {
             write_start_tag(
                 writer,
                 "fills",
-                vec![("count", &self.fill.len().to_string()).into()],
+                vec![("count", &self.fill.len().to_string())],
                 false,
             );
 

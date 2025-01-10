@@ -1,17 +1,11 @@
 // sz
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::DoubleValue;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct FontSize {
@@ -20,7 +14,6 @@ pub struct FontSize {
 
 impl FontSize {
     #[inline]
-    #[must_use]
     pub fn get_val(&self) -> f64 {
         self.val.get_value()
     }
@@ -47,7 +40,7 @@ impl FontSize {
             write_start_tag(
                 writer,
                 "sz",
-                vec![("val", &self.val.get_value_string()).into()],
+                vec![("val", &self.val.get_value_string())],
                 true,
             );
         }

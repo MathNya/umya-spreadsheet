@@ -1,17 +1,11 @@
 // a:softEdge
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::super::super::Int64Value;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct SoftEdge {
@@ -19,7 +13,6 @@ pub struct SoftEdge {
 }
 impl SoftEdge {
     #[inline]
-    #[must_use]
     pub fn get_radius(&self) -> i64 {
         self.radius.get_value()
     }
@@ -45,7 +38,7 @@ impl SoftEdge {
         write_start_tag(
             writer,
             "a:softEdge",
-            vec![("rad", &self.radius.get_value_string()).into()],
+            vec![("rad", &self.radius.get_value_string())],
             true,
         );
     }

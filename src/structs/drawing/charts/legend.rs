@@ -1,40 +1,26 @@
+use crate::xml_read_loop;
+
+use super::Layout;
+use super::LegendPosition;
+use super::Overlay;
+use super::ShapeProperties;
+use super::TextProperties;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Layout,
-    LegendPosition,
-    Overlay,
-    ShapeProperties,
-    TextProperties,
-};
-use crate::{
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-    xml_read_loop,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Legend {
-    legend_position:  LegendPosition,
-    layout:           Option<Box<Layout>>,
-    overlay:          Overlay,
+    legend_position: LegendPosition,
+    layout: Option<Box<Layout>>,
+    overlay: Overlay,
     shape_properties: Option<Box<ShapeProperties>>,
-    text_properties:  Option<Box<TextProperties>>,
+    text_properties: Option<Box<TextProperties>>,
 }
 
 impl Legend {
-    #[must_use]
     pub fn get_legend_position(&self) -> &LegendPosition {
         &self.legend_position
     }
@@ -48,7 +34,6 @@ impl Legend {
         self
     }
 
-    #[must_use]
     pub fn get_layout(&self) -> Option<&Layout> {
         self.layout.as_deref()
     }
@@ -62,7 +47,6 @@ impl Legend {
         self
     }
 
-    #[must_use]
     pub fn get_overlay(&self) -> &Overlay {
         &self.overlay
     }
@@ -76,7 +60,6 @@ impl Legend {
         self
     }
 
-    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_deref()
     }
@@ -90,7 +73,6 @@ impl Legend {
         self
     }
 
-    #[must_use]
     pub fn get_text_properties(&self) -> Option<&TextProperties> {
         self.text_properties.as_deref()
     }

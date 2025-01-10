@@ -1,39 +1,15 @@
+use quick_xml::events::{BytesDecl, Event};
+use quick_xml::Writer;
 use std::io;
 
-use quick_xml::{
-    Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
-};
-
-use super::{
-    XlsxError,
-    driver::{
-        make_file_from_writer,
-        write_end_tag,
-        write_new_line,
-        write_start_tag,
-    },
-};
-use crate::{
-    helper::const_str::{
-        CONTENT_TYPES,
-        CONTYPES_NS,
-        PRNTR_SETTINGS_TYPE,
-        REL_TYPE,
-        VML_DRAWING_TYPE,
-        WORKBOOK,
-    },
-    structs::{
-        Workbook,
-        WriterManager,
-    },
-};
+use super::driver::*;
+use super::XlsxError;
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
+use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    wb: &Workbook,
+    spreadsheet: &Spreadsheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let is_light = writer_mng.get_is_light();
@@ -49,21 +25,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // Types
-    write_start_tag(
-        &mut writer,
-        "Types",
-        vec![("xmlns", CONTYPES_NS).into()],
-        false,
-    );
+    write_start_tag(&mut writer, "Types", vec![("xmlns", CONTYPES_NS)], false);
 
     // Default rels
     write_start_tag(
         &mut writer,
         "Default",
-        vec![
-            ("Extension", "rels").into(),
-            ("ContentType", REL_TYPE).into(),
-        ],
+        vec![("Extension", "rels"), ("ContentType", REL_TYPE)],
         true,
     );
 
@@ -71,10 +39,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "Default",
-        vec![
-            ("Extension", "xml").into(),
-            ("ContentType", "application/xml").into(),
-        ],
+        vec![("Extension", "xml"), ("ContentType", "application/xml")],
         true,
     );
 
@@ -83,10 +48,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "bin").into(),
-                ("ContentType", PRNTR_SETTINGS_TYPE).into(),
-            ],
+            vec![("Extension", "bin"), ("ContentType", PRNTR_SETTINGS_TYPE)],
             true,
         );
     }
@@ -96,10 +58,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "vml").into(),
-                ("ContentType", VML_DRAWING_TYPE).into(),
-            ],
+            vec![("Extension", "vml"), ("ContentType", VML_DRAWING_TYPE)],
             true,
         );
     }
@@ -109,10 +68,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "png").into(),
-                ("ContentType", "image/png").into(),
-            ],
+            vec![("Extension", "png"), ("ContentType", "image/png")],
             true,
         );
     }
@@ -122,10 +78,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "jpg").into(),
-                ("ContentType", "image/jpeg").into(),
-            ],
+            vec![("Extension", "jpg"), ("ContentType", "image/jpeg")],
             true,
         );
     }
@@ -135,10 +88,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "jpeg").into(),
-                ("ContentType", "image/jpeg").into(),
-            ],
+            vec![("Extension", "jpeg"), ("ContentType", "image/jpeg")],
             true,
         );
     }
@@ -148,10 +98,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "tiff").into(),
-                ("ContentType", "image/tiff").into(),
-            ],
+            vec![("Extension", "tiff"), ("ContentType", "image/tiff")],
             true,
         );
     }
@@ -161,10 +108,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "emf").into(),
-                ("ContentType", "image/x-emf").into(),
-            ],
+            vec![("Extension", "emf"), ("ContentType", "image/x-emf")],
             true,
         );
     }
@@ -174,23 +118,17 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![
-                ("Extension", "xlsx").into(),
-                ("ContentType", WORKBOOK).into(),
-            ],
+            vec![("Extension", "xlsx"), ("ContentType", WORKBOOK)],
             true,
         );
     }
 
     // Override
-    for (part_name, content_type) in writer_mng.make_context_type_override(wb) {
+    for (part_name, content_type) in writer_mng.make_context_type_override(spreadsheet) {
         write_start_tag(
             &mut writer,
             "Override",
-            vec![
-                ("PartName", &part_name).into(),
-                ("ContentType", &content_type).into(),
-            ],
+            vec![("PartName", &part_name), ("ContentType", &content_type)],
             true,
         );
     }

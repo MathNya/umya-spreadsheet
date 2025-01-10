@@ -1,16 +1,10 @@
 // a:picLocks
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct PictureLocks {
@@ -19,7 +13,6 @@ pub struct PictureLocks {
 
 impl PictureLocks {
     #[inline]
-    #[must_use]
     pub fn get_no_change_aspect(&self) -> bool {
         self.no_change_aspect
     }
@@ -49,7 +42,7 @@ impl PictureLocks {
         write_start_tag(
             writer,
             "a:picLocks",
-            vec![("noChangeAspect", no_change_aspect).into()],
+            vec![("noChangeAspect", no_change_aspect)],
             true,
         );
     }

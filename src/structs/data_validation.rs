@@ -1,51 +1,33 @@
 // dataValidation
-use std::{
-    io::Cursor,
-    vec,
-};
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    BooleanValue,
-    DataValidationOperatorValues,
-    DataValidationValues,
-    EnumValue,
-    SequenceOfReferences,
-    StringValue,
-};
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
-};
+use super::BooleanValue;
+use super::DataValidationOperatorValues;
+use super::DataValidationValues;
+use super::EnumValue;
+use super::SequenceOfReferences;
+use super::StringValue;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use std::vec;
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type:                 EnumValue<DataValidationValues>,
-    operator:               EnumValue<DataValidationOperatorValues>,
-    allow_blank:            BooleanValue,
-    show_input_message:     BooleanValue,
-    show_error_message:     BooleanValue,
-    prompt_title:           StringValue,
-    prompt:                 StringValue,
+    r#type: EnumValue<DataValidationValues>,
+    operator: EnumValue<DataValidationOperatorValues>,
+    allow_blank: BooleanValue,
+    show_input_message: BooleanValue,
+    show_error_message: BooleanValue,
+    prompt_title: StringValue,
+    prompt: StringValue,
     sequence_of_references: SequenceOfReferences,
-    formula1:               StringValue,
-    formula2:               StringValue,
+    formula1: StringValue,
+    formula2: StringValue,
 }
 impl DataValidation {
     #[inline]
-    #[must_use]
     pub fn get_type(&self) -> &DataValidationValues {
         self.r#type.get_value()
     }
@@ -57,7 +39,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
         self.operator.get_value()
     }
@@ -69,7 +50,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_allow_blank(&self) -> bool {
         self.allow_blank.get_value()
     }
@@ -81,7 +61,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_input_message(&self) -> bool {
         self.show_input_message.get_value()
     }
@@ -93,7 +72,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_error_message(&self) -> bool {
         self.show_error_message.get_value()
     }
@@ -105,7 +83,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_prompt_title(&self) -> &str {
         self.prompt_title.get_value_str()
     }
@@ -117,7 +94,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_prompt(&self) -> &str {
         self.prompt.get_value_str()
     }
@@ -129,7 +105,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
@@ -146,7 +121,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula1(&self) -> &str {
         self.formula1.get_value_str()
     }
@@ -158,7 +132,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula2(&self) -> &str {
         self.formula2.get_value_str()
     }
@@ -228,9 +201,7 @@ impl DataValidation {
                     b"dataValidation" => return,
                     _ => {}
                 },
-                Ok(Event::Eof) => {
-                    panic!("Error: Could not find {} end element", "dataValidation")
-                }
+                Ok(Event::Eof) => panic!("Error: Could not find {} end element", "dataValidation"),
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 _ => {}
             }
@@ -242,51 +213,45 @@ impl DataValidation {
         let is_inner = self.formula1.has_value() || self.formula2.has_value();
 
         // dataValidation
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
 
         if self.r#type.has_value() {
-            attributes.push(("type", self.r#type.get_value_string()).into());
+            attributes.push(("type", self.r#type.get_value_string()));
         }
 
         if self.allow_blank.has_value() {
-            attributes.push(("allowBlank", self.allow_blank.get_value_string()).into());
+            attributes.push(("allowBlank", self.allow_blank.get_value_string()));
         }
 
         if self.show_input_message.has_value() {
-            attributes.push(
-                (
-                    "showInputMessage",
-                    self.show_input_message.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "showInputMessage",
+                self.show_input_message.get_value_string(),
+            ));
         }
 
         if self.operator.has_value() {
-            attributes.push(("operator", self.operator.get_value_string()).into());
+            attributes.push(("operator", self.operator.get_value_string()));
         }
 
         if self.show_error_message.has_value() {
-            attributes.push(
-                (
-                    "showErrorMessage",
-                    self.show_error_message.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "showErrorMessage",
+                self.show_error_message.get_value_string(),
+            ));
         }
 
         if self.prompt_title.has_value() {
-            attributes.push(("promptTitle", self.prompt_title.get_value_str()).into());
+            attributes.push(("promptTitle", self.prompt_title.get_value_str()));
         }
 
         if self.prompt.has_value() {
-            attributes.push(("prompt", self.prompt.get_value_str()).into());
+            attributes.push(("prompt", self.prompt.get_value_str()));
         }
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
         if !sequence_of_references.is_empty() {
-            attributes.push(("sqref", sequence_of_references).into());
+            attributes.push(("sqref", sequence_of_references));
         }
 
         write_start_tag(writer, "dataValidation", attributes, !is_inner);

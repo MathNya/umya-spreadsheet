@@ -1,16 +1,9 @@
-use crate::{
-    helper::coordinate::{
-        adjustment_insert_coordinate,
-        adjustment_remove_coordinate,
-        is_remove_coordinate,
-        string_from_column_index,
-    },
-    traits::AdjustmentValue,
-};
+use crate::helper::coordinate::*;
+use crate::traits::AdjustmentValue;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct ColumnReference {
-    num:     u32,
+    num: u32,
     is_lock: bool,
 }
 
@@ -18,7 +11,7 @@ impl Default for ColumnReference {
     #[inline]
     fn default() -> Self {
         Self {
-            num:     1,
+            num: 1,
             is_lock: false,
         }
     }
@@ -26,7 +19,6 @@ impl Default for ColumnReference {
 
 impl ColumnReference {
     #[inline]
-    #[must_use]
     pub fn get_num(&self) -> u32 {
         self.num
     }
@@ -40,10 +32,10 @@ impl ColumnReference {
     #[inline]
     pub(crate) fn offset_num(&mut self, value: i32) -> &mut Self {
         if value > 0 {
-            self.plus_num(value.try_into().unwrap());
+            self.plus_num(value as u32);
         }
         if value < 0 {
-            self.minus_num((-value).try_into().unwrap());
+            self.minus_num(-value as u32);
         }
         self
     }
@@ -61,7 +53,6 @@ impl ColumnReference {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_is_lock(&self) -> bool {
         self.is_lock
     }

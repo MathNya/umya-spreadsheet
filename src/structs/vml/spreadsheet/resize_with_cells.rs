@@ -1,23 +1,10 @@
+use crate::reader::driver::*;
+use crate::structs::TrueFalseBlankValue;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::TrueFalseBlankValue,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct ResizeWithCells {
@@ -26,7 +13,6 @@ pub struct ResizeWithCells {
 
 impl ResizeWithCells {
     #[inline]
-    #[must_use]
     pub fn get_value(&self) -> Option<bool> {
         self.value.get_value()
     }

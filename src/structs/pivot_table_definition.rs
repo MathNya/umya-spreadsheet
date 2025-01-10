@@ -1,77 +1,54 @@
 // pivotTableDefinition
+use crate::helper::const_str::*;
+use crate::reader::driver::*;
+use crate::structs::BooleanValue;
+use crate::structs::ByteValue;
+use crate::structs::ColumnFields;
+use crate::structs::ColumnItems;
+use crate::structs::DataFields;
+use crate::structs::Location;
+use crate::structs::PivotFields;
+use crate::structs::PivotTableStyle;
+use crate::structs::RowItems;
+use crate::structs::StringValue;
+use crate::structs::UInt32Value;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    helper::const_str::{
-        MC_NS,
-        SHEET_MAIN_NS,
-        SHEET_MS_REVISION_NS,
-    },
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    structs::{
-        BooleanValue,
-        ByteValue,
-        ColumnFields,
-        ColumnItems,
-        DataFields,
-        Location,
-        PivotFields,
-        PivotTableStyle,
-        RowItems,
-        StringValue,
-        UInt32Value,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotTableDefinition {
-    apply_number_formats:       BooleanValue,
-    apply_border_formats:       BooleanValue,
-    apply_font_formats:         BooleanValue,
-    apply_pattern_formats:      BooleanValue,
-    apply_alignment_formats:    BooleanValue,
+    apply_number_formats: BooleanValue,
+    apply_border_formats: BooleanValue,
+    apply_font_formats: BooleanValue,
+    apply_pattern_formats: BooleanValue,
+    apply_alignment_formats: BooleanValue,
     apply_width_height_formats: BooleanValue,
-    use_auto_formatting:        BooleanValue,
-    item_print_titles:          BooleanValue,
-    outline:                    BooleanValue,
-    outline_data:               BooleanValue,
-    multiple_field_filters:     BooleanValue,
-    name:                       StringValue,
-    cache_id:                   UInt32Value,
-    indent:                     UInt32Value,
-    local_name:                 StringValue,
-    data_caption:               StringValue,
-    updated_version:            ByteValue,
-    min_refreshable_version:    ByteValue,
-    created_version:            ByteValue,
-    location:                   Location,
-    pivot_fields:               PivotFields,
-    row_items:                  RowItems,
-    column_fields:              ColumnFields,
-    column_items:               ColumnItems,
-    data_fields:                DataFields,
-    pivot_table_style:          PivotTableStyle,
+    use_auto_formatting: BooleanValue,
+    item_print_titles: BooleanValue,
+    outline: BooleanValue,
+    outline_data: BooleanValue,
+    multiple_field_filters: BooleanValue,
+    name: StringValue,
+    cache_id: UInt32Value,
+    indent: UInt32Value,
+    local_name: StringValue,
+    data_caption: StringValue,
+    updated_version: ByteValue,
+    min_refreshable_version: ByteValue,
+    created_version: ByteValue,
+    location: Location,
+    pivot_fields: PivotFields,
+    row_items: RowItems,
+    column_fields: ColumnFields,
+    column_items: ColumnItems,
+    data_fields: DataFields,
+    pivot_table_style: PivotTableStyle,
 }
 impl PivotTableDefinition {
     #[inline]
-    #[must_use]
     pub fn get_apply_number_formats(&self) -> bool {
         self.apply_number_formats.get_value()
     }
@@ -83,7 +60,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_apply_border_formats(&self) -> bool {
         self.apply_border_formats.get_value()
     }
@@ -95,7 +71,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_apply_font_formats(&self) -> bool {
         self.apply_font_formats.get_value()
     }
@@ -107,7 +82,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_apply_pattern_formats(&self) -> bool {
         self.apply_pattern_formats.get_value()
     }
@@ -119,7 +93,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_apply_alignment_formats(&self) -> bool {
         self.apply_alignment_formats.get_value()
     }
@@ -131,7 +104,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_apply_width_height_formats(&self) -> bool {
         self.apply_width_height_formats.get_value()
     }
@@ -143,7 +115,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_use_auto_formatting(&self) -> bool {
         self.use_auto_formatting.get_value()
     }
@@ -155,7 +126,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_item_print_titles(&self) -> bool {
         self.item_print_titles.get_value()
     }
@@ -167,7 +137,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_outline(&self) -> bool {
         self.outline.get_value()
     }
@@ -179,7 +148,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_outline_data(&self) -> bool {
         self.outline_data.get_value()
     }
@@ -191,7 +159,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_multiple_field_filters(&self) -> bool {
         self.multiple_field_filters.get_value()
     }
@@ -203,7 +170,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -215,7 +181,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_cache_id(&self) -> u32 {
         self.cache_id.get_value()
     }
@@ -227,7 +192,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_indent(&self) -> u32 {
         self.indent.get_value()
     }
@@ -239,7 +203,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_local_name(&self) -> &str {
         self.local_name.get_value_str()
     }
@@ -251,7 +214,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_data_caption(&self) -> &str {
         self.data_caption.get_value_str()
     }
@@ -263,7 +225,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_updated_version(&self) -> u8 {
         self.updated_version.get_value()
     }
@@ -275,7 +236,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.get_value()
     }
@@ -287,7 +247,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_created_version(&self) -> u8 {
         self.created_version.get_value()
     }
@@ -299,7 +258,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_location(&self) -> &Location {
         &self.location
     }
@@ -316,7 +274,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_pivot_fields(&self) -> &PivotFields {
         &self.pivot_fields
     }
@@ -333,7 +290,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_row_items(&self) -> &RowItems {
         &self.row_items
     }
@@ -350,7 +306,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_column_fields(&self) -> &ColumnFields {
         &self.column_fields
     }
@@ -367,7 +322,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_column_items(&self) -> &ColumnItems {
         &self.column_items
     }
@@ -384,7 +338,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_data_fields(&self) -> &DataFields {
         &self.data_fields
     }
@@ -401,7 +354,6 @@ impl PivotTableDefinition {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_pivot_table_style(&self) -> &PivotTableStyle {
         &self.pivot_table_style
     }
@@ -501,125 +453,98 @@ impl PivotTableDefinition {
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pivotTableDefinition
-        let mut attributes: crate::structs::AttrCollection = vec![
-            ("xmlns", SHEET_MAIN_NS).into(),
-            ("xmlns:mc", MC_NS).into(),
-            ("mc:Ignorable", "xr").into(),
-            ("xmlns:xr", SHEET_MS_REVISION_NS).into(),
+        let mut attributes = vec![
+            ("xmlns", SHEET_MAIN_NS),
+            ("xmlns:mc", MC_NS),
+            ("mc:Ignorable", "xr"),
+            ("xmlns:xr", SHEET_MS_REVISION_NS),
         ];
 
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()).into());
+            attributes.push(("name", self.name.get_value_str()));
         }
         let cache_id_str = self.cache_id.get_value_string();
         if self.cache_id.has_value() {
-            attributes.push(("cacheId", cache_id_str.as_str()).into());
+            attributes.push(("cacheId", cache_id_str.as_str()));
         }
         if self.apply_number_formats.has_value() {
-            attributes.push(
-                (
-                    "applyNumberFormats",
-                    self.apply_number_formats.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "applyNumberFormats",
+                self.apply_number_formats.get_value_string(),
+            ));
         }
         if self.apply_border_formats.has_value() {
-            attributes.push(
-                (
-                    "applyBorderFormats",
-                    self.apply_border_formats.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "applyBorderFormats",
+                self.apply_border_formats.get_value_string(),
+            ));
         }
         if self.apply_font_formats.has_value() {
-            attributes.push(
-                (
-                    "applyFontFormats",
-                    self.apply_font_formats.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "applyFontFormats",
+                self.apply_font_formats.get_value_string(),
+            ));
         }
         if self.apply_pattern_formats.has_value() {
-            attributes.push(
-                (
-                    "applyPatternFormats",
-                    self.apply_pattern_formats.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "applyPatternFormats",
+                self.apply_pattern_formats.get_value_string(),
+            ));
         }
         if self.apply_alignment_formats.has_value() {
-            attributes.push(
-                (
-                    "applyAlignmentFormats",
-                    self.apply_alignment_formats.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "applyAlignmentFormats",
+                self.apply_alignment_formats.get_value_string(),
+            ));
         }
         if self.apply_width_height_formats.has_value() {
-            attributes.push(
-                (
-                    "applyWidthHeightFormats",
-                    self.apply_width_height_formats.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "applyWidthHeightFormats",
+                self.apply_width_height_formats.get_value_string(),
+            ));
         }
         if self.data_caption.has_value() {
-            attributes.push(("dataCaption", self.data_caption.get_value_str()).into());
+            attributes.push(("dataCaption", self.data_caption.get_value_str()));
         }
         let updated_version_str = self.updated_version.get_value_string();
         if self.updated_version.has_value() {
-            attributes.push(("updatedVersion", updated_version_str.as_str()).into());
+            attributes.push(("updatedVersion", updated_version_str.as_str()));
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push(
-                (
-                    "minRefreshableVersion",
-                    min_refreshable_version_str.as_str(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "minRefreshableVersion",
+                min_refreshable_version_str.as_str(),
+            ));
         }
         if self.use_auto_formatting.has_value() {
-            attributes.push(
-                (
-                    "useAutoFormatting",
-                    self.use_auto_formatting.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "useAutoFormatting",
+                self.use_auto_formatting.get_value_string(),
+            ));
         }
         if self.item_print_titles.has_value() {
-            attributes.push(("itemPrintTitles", self.item_print_titles.get_value_string()).into());
+            attributes.push(("itemPrintTitles", self.item_print_titles.get_value_string()));
         }
         let created_version_str = self.created_version.get_value_string();
         if self.created_version.has_value() {
-            attributes.push(("createdVersion", created_version_str.as_str()).into());
+            attributes.push(("createdVersion", created_version_str.as_str()));
         }
         let indent_str = self.indent.get_value_string();
         if self.indent.has_value() {
-            attributes.push(("indent", indent_str.as_str()).into());
+            attributes.push(("indent", indent_str.as_str()));
         }
         if self.outline.has_value() {
-            attributes.push(("outline", self.outline.get_value_string()).into());
+            attributes.push(("outline", self.outline.get_value_string()));
         }
         if self.outline_data.has_value() {
-            attributes.push(("outlineData", self.outline_data.get_value_string()).into());
+            attributes.push(("outlineData", self.outline_data.get_value_string()));
         }
         if self.multiple_field_filters.has_value() {
-            attributes.push(
-                (
-                    "multipleFieldFilters",
-                    self.multiple_field_filters.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "multipleFieldFilters",
+                self.multiple_field_filters.get_value_string(),
+            ));
         }
         write_start_tag(writer, "pivotTableDefinition", attributes, false);
 

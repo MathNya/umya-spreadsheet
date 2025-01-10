@@ -1,42 +1,33 @@
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::EffectStyle;
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectStyleList {
-    effect_style_collection: Vec<EffectStyle>,
+    effect_style_collection: ThinVec<EffectStyle>,
 }
 
 impl EffectStyleList {
     #[inline]
-    #[must_use]
     pub fn get_effect_style_collection(&self) -> &[EffectStyle] {
         &self.effect_style_collection
     }
 
     #[inline]
-    pub fn get_effect_style_collection_mut(&mut self) -> &mut Vec<EffectStyle> {
+    pub fn get_effect_style_collection_mut(&mut self) -> &mut ThinVec<EffectStyle> {
         &mut self.effect_style_collection
     }
 
     #[inline]
-    pub fn set_effect_style_collection(&mut self, value: impl Into<Vec<EffectStyle>>) -> &mut Self {
+    pub fn set_effect_style_collection(
+        &mut self,
+        value: impl Into<ThinVec<EffectStyle>>,
+    ) -> &mut Self {
         self.effect_style_collection = value.into();
         self
     }

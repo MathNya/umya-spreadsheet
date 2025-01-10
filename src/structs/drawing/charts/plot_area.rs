@@ -1,72 +1,58 @@
 // c:plotArea
+use super::Area3DChart;
+use super::AreaChart;
+use super::AreaChartSeriesList;
+use super::Bar3DChart;
+use super::BarChart;
+use super::BubbleChart;
+use super::CategoryAxis;
+use super::DoughnutChart;
+use super::Formula;
+use super::GroupingValues;
+use super::Layout;
+use super::Line3DChart;
+use super::LineChart;
+use super::OfPieChart;
+use super::Pie3DChart;
+use super::PieChart;
+use super::RadarChart;
+use super::ScatterChart;
+use super::SeriesAxis;
+use super::ShapeProperties;
+use super::ValueAxis;
+use crate::structs::Spreadsheet;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
+use crate::xml_read_loop;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Area3DChart,
-    AreaChart,
-    AreaChartSeriesList,
-    Bar3DChart,
-    BarChart,
-    BubbleChart,
-    CategoryAxis,
-    DoughnutChart,
-    Formula,
-    GroupingValues,
-    Layout,
-    Line3DChart,
-    LineChart,
-    OfPieChart,
-    Pie3DChart,
-    PieChart,
-    RadarChart,
-    ScatterChart,
-    SeriesAxis,
-    ShapeProperties,
-    ValueAxis,
-};
-use crate::{
-    structs::Workbook,
-    traits::AdjustmentCoordinateWithSheet,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-    xml_read_loop,
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct PlotArea {
-    layout:           Layout,
-    line_chart:       Option<LineChart>,
-    line_3d_chart:    Option<Line3DChart>,
-    pie_chart:        Option<PieChart>,
-    pie_3d_chart:     Option<Pie3DChart>,
-    doughnut_chart:   Option<DoughnutChart>,
-    scatter_chart:    Option<ScatterChart>,
-    bar_chart:        Option<BarChart>,
-    bar_3d_chart:     Option<Bar3DChart>,
-    radar_chart:      Option<RadarChart>,
-    bubble_chart:     Option<BubbleChart>,
-    area_chart:       Option<AreaChart>,
-    area_3d_chart:    Option<Area3DChart>,
-    of_pie_chart:     Option<OfPieChart>,
-    category_axis:    Vec<CategoryAxis>,
-    value_axis:       Vec<ValueAxis>,
-    series_axis:      Vec<SeriesAxis>,
+    layout: Layout,
+    line_chart: Option<LineChart>,
+    line_3d_chart: Option<Line3DChart>,
+    pie_chart: Option<PieChart>,
+    pie_3d_chart: Option<Pie3DChart>,
+    doughnut_chart: Option<DoughnutChart>,
+    scatter_chart: Option<ScatterChart>,
+    bar_chart: Option<BarChart>,
+    bar_3d_chart: Option<Bar3DChart>,
+    radar_chart: Option<RadarChart>,
+    bubble_chart: Option<BubbleChart>,
+    area_chart: Option<AreaChart>,
+    area_3d_chart: Option<Area3DChart>,
+    of_pie_chart: Option<OfPieChart>,
+    category_axis: ThinVec<CategoryAxis>,
+    value_axis: ThinVec<ValueAxis>,
+    series_axis: ThinVec<SeriesAxis>,
     shape_properties: Option<ShapeProperties>,
 }
 
 impl PlotArea {
-    #[must_use]
     pub fn get_layout(&self) -> &Layout {
         &self.layout
     }
@@ -80,7 +66,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_line_chart(&self) -> Option<&LineChart> {
         self.line_chart.as_ref()
     }
@@ -94,7 +79,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_line_3d_chart(&self) -> Option<&Line3DChart> {
         self.line_3d_chart.as_ref()
     }
@@ -108,7 +92,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_pie_chart(&self) -> Option<&PieChart> {
         self.pie_chart.as_ref()
     }
@@ -122,7 +105,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_pie_3d_chart(&self) -> Option<&Pie3DChart> {
         self.pie_3d_chart.as_ref()
     }
@@ -136,7 +118,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_doughnut_chart(&self) -> Option<&DoughnutChart> {
         self.doughnut_chart.as_ref()
     }
@@ -150,7 +131,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_scatter_chart(&self) -> Option<&ScatterChart> {
         self.scatter_chart.as_ref()
     }
@@ -164,7 +144,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_bar_chart(&self) -> Option<&BarChart> {
         self.bar_chart.as_ref()
     }
@@ -178,7 +157,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_bar_3d_chart(&self) -> Option<&Bar3DChart> {
         self.bar_3d_chart.as_ref()
     }
@@ -192,7 +170,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_radar_chart(&self) -> Option<&RadarChart> {
         self.radar_chart.as_ref()
     }
@@ -206,7 +183,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_bubble_chart(&self) -> Option<&BubbleChart> {
         self.bubble_chart.as_ref()
     }
@@ -220,7 +196,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_area_chart(&self) -> Option<&AreaChart> {
         self.area_chart.as_ref()
     }
@@ -234,7 +209,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_area_3d_chart(&self) -> Option<&Area3DChart> {
         self.area_3d_chart.as_ref()
     }
@@ -248,7 +222,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_of_pie_chart(&self) -> Option<&OfPieChart> {
         self.of_pie_chart.as_ref()
     }
@@ -262,16 +235,15 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_category_axis(&self) -> &[CategoryAxis] {
         &self.category_axis
     }
 
-    pub fn get_category_axis_mut(&mut self) -> &mut Vec<CategoryAxis> {
+    pub fn get_category_axis_mut(&mut self) -> &mut ThinVec<CategoryAxis> {
         &mut self.category_axis
     }
 
-    pub fn set_category_axis(&mut self, value: impl Into<Vec<CategoryAxis>>) -> &mut Self {
+    pub fn set_category_axis(&mut self, value: impl Into<ThinVec<CategoryAxis>>) -> &mut Self {
         self.category_axis = value.into();
         self
     }
@@ -281,16 +253,15 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_value_axis(&self) -> &[ValueAxis] {
         &self.value_axis
     }
 
-    pub fn get_value_axis_mut(&mut self) -> &mut Vec<ValueAxis> {
+    pub fn get_value_axis_mut(&mut self) -> &mut ThinVec<ValueAxis> {
         &mut self.value_axis
     }
 
-    pub fn set_value_axis(&mut self, value: impl Into<Vec<ValueAxis>>) -> &mut Self {
+    pub fn set_value_axis(&mut self, value: impl Into<ThinVec<ValueAxis>>) -> &mut Self {
         self.value_axis = value.into();
         self
     }
@@ -300,16 +271,15 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_series_axis(&self) -> &[SeriesAxis] {
         &self.series_axis
     }
 
-    pub fn get_series_axis_mut(&mut self) -> &mut Vec<SeriesAxis> {
+    pub fn get_series_axis_mut(&mut self) -> &mut ThinVec<SeriesAxis> {
         &mut self.series_axis
     }
 
-    pub fn set_series_axis(&mut self, value: impl Into<Vec<SeriesAxis>>) -> &mut Self {
+    pub fn set_series_axis(&mut self, value: impl Into<ThinVec<SeriesAxis>>) -> &mut Self {
         self.series_axis = value.into();
         self
     }
@@ -319,7 +289,6 @@ impl PlotArea {
         self
     }
 
-    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -662,7 +631,7 @@ impl PlotArea {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:plotArea
         write_start_tag(writer, "c:plotArea", vec![], false);
 
@@ -671,67 +640,67 @@ impl PlotArea {
 
         // c:lineChart
         if let Some(v) = &self.line_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:line3DChart
         if let Some(v) = &self.line_3d_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:pieChart
         if let Some(v) = &self.pie_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:pie3DChart
         if let Some(v) = &self.pie_3d_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:doughnutChart
         if let Some(v) = &self.doughnut_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:scatterChart
         if let Some(v) = &self.scatter_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:barChart
         if let Some(v) = &self.bar_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:bar3DChart
         if let Some(v) = &self.bar_3d_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:radarChart
         if let Some(v) = &self.radar_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:bubbleChart
         if let Some(v) = &self.bubble_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:areaChart
         if let Some(v) = &self.area_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:area3DChart
         if let Some(v) = &self.area_3d_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:ofPieChart
         if let Some(v) = &self.of_pie_chart {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:catAx

@@ -1,35 +1,23 @@
+use super::Coordinate;
+use super::EnumValue;
+use super::PaneValues;
+use super::SequenceOfReferences;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use super::{
-    Coordinate,
-    EnumValue,
-    PaneValues,
-    SequenceOfReferences,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Selection {
-    pane:                   EnumValue<PaneValues>,
-    active_cell:            Option<Coordinate>,
+    pane: EnumValue<PaneValues>,
+    active_cell: Option<Coordinate>,
     sequence_of_references: SequenceOfReferences,
 }
 
 impl Selection {
     #[inline]
-    #[must_use]
     pub fn get_pane(&self) -> &PaneValues {
         self.pane.get_value()
     }
@@ -41,7 +29,6 @@ impl Selection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_active_cell(&self) -> Option<&Coordinate> {
         self.active_cell.as_ref()
     }
@@ -58,7 +45,6 @@ impl Selection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
@@ -94,7 +80,7 @@ impl Selection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // selection
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
 
         let mut active_cell_id = 0;
         if let Some(active_cell) = &self.active_cell {
@@ -108,25 +94,25 @@ impl Selection {
         }
 
         if self.pane.has_value() {
-            attributes.push(("pane", self.pane.get_value_string()).into());
+            attributes.push(("pane", self.pane.get_value_string()));
         }
 
         let active_cell_str = match &self.active_cell {
             Some(active_cell) => active_cell.to_string(),
-            None => String::new(),
+            None => String::from(""),
         };
         if !active_cell_str.is_empty() {
-            attributes.push(("activeCell", active_cell_str.as_str()).into());
+            attributes.push(("activeCell", active_cell_str.as_str()));
         }
 
         let active_cell_id_str = active_cell_id.to_string();
         if active_cell_id > 0 {
-            attributes.push(("activeCellId", active_cell_id_str.as_str()).into());
+            attributes.push(("activeCellId", active_cell_id_str.as_str()));
         }
 
         let sqref = self.sequence_of_references.get_sqref();
         if !sqref.is_empty() {
-            attributes.push(("sqref", sqref.as_str()).into());
+            attributes.push(("sqref", sqref.as_str()));
         }
 
         write_start_tag(writer, "selection", attributes, true);

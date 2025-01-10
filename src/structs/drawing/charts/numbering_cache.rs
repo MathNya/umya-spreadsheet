@@ -1,28 +1,13 @@
 // c:numCache
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::FormatCode;
-use crate::{
-    structs::{
-        Address,
-        Workbook,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
-    xml_read_loop,
-};
+use crate::structs::Address;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
+use crate::xml_read_loop;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct NumberingCache {
@@ -30,7 +15,6 @@ pub struct NumberingCache {
 }
 
 impl NumberingCache {
-    #[must_use]
     pub fn get_format_code(&self) -> &FormatCode {
         &self.format_code
     }
@@ -69,9 +53,9 @@ impl NumberingCache {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         address: &Address,
-        wb: &Workbook,
+        spreadsheet: &Spreadsheet,
     ) {
-        let cell_value_list = wb.get_cell_value_by_address_crate(address);
+        let cell_value_list = spreadsheet.get_cell_value_by_address_crate(address);
         let coll_value_count = cell_value_list.len().to_string();
         // c:numCache
         write_start_tag(writer, "c:numCache", vec![], false);
@@ -83,13 +67,18 @@ impl NumberingCache {
         write_start_tag(
             writer,
             "c:ptCount",
-            vec![("val", coll_value_count.as_str()).into()],
+            vec![("val", coll_value_count.as_str())],
             true,
         );
 
         for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
-            write_start_tag(writer, "c:pt", vec![("idx", idx.to_string()).into()], false);
+            write_start_tag(
+                writer,
+                "c:pt",
+                vec![("idx", idx.to_string().as_str())],
+                false,
+            );
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);

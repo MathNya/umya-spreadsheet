@@ -1,40 +1,24 @@
+use super::ConditionalFormattingRule;
+use super::DifferentialFormats;
+use super::SequenceOfReferences;
+use crate::reader::driver::*;
+use crate::traits::AdjustmentCoordinate;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    ConditionalFormattingRule,
-    DifferentialFormats,
-    SequenceOfReferences,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    traits::AdjustmentCoordinate,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Default, Debug, Clone)]
 pub struct ConditionalFormatting {
     sequence_of_references: SequenceOfReferences,
-    conditional_collection: Vec<ConditionalFormattingRule>,
+    conditional_collection: ThinVec<ConditionalFormattingRule>,
 }
 
 impl ConditionalFormatting {
     #[inline]
-    #[must_use]
     pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
@@ -51,20 +35,19 @@ impl ConditionalFormatting {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
         &self.conditional_collection
     }
 
     #[inline]
-    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
+    pub fn get_conditional_collection_mut(&mut self) -> &mut ThinVec<ConditionalFormattingRule> {
         &mut self.conditional_collection
     }
 
     #[inline]
     pub fn set_conditional_collection(
         &mut self,
-        value: impl Into<Vec<ConditionalFormattingRule>>,
+        value: impl Into<ThinVec<ConditionalFormattingRule>>,
     ) -> &mut Self {
         self.conditional_collection = value.into();
         self
@@ -119,10 +102,10 @@ impl ConditionalFormatting {
         let is_inner = !self.conditional_collection.is_empty();
 
         // conditionalFormatting
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
-        attributes.push(("sqref", sequence_of_references).into());
+        attributes.push(("sqref", sequence_of_references));
 
         write_start_tag(writer, "conditionalFormatting", attributes, !is_inner);
 

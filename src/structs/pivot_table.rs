@@ -1,7 +1,5 @@
-use crate::structs::{
-    PivotCacheDefinition,
-    PivotTableDefinition,
-};
+use crate::structs::PivotCacheDefinition;
+use crate::structs::PivotTableDefinition;
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotTable {
@@ -11,7 +9,6 @@ pub struct PivotTable {
 
 impl PivotTable {
     #[inline]
-    #[must_use]
     pub fn get_pivot_table_definition(&self) -> &PivotTableDefinition {
         &self.pivot_table_definition
     }
@@ -28,7 +25,6 @@ impl PivotTable {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_pivot_cache_definition(&self) -> &PivotCacheDefinition {
         &self.pivot_cache_definition
     }

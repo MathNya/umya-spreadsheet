@@ -1,48 +1,30 @@
 // xf
+use super::Alignment;
+use super::BooleanValue;
+use super::Protection;
+use super::UInt32Value;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Alignment,
-    BooleanValue,
-    Protection,
-    UInt32Value,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormat {
-    number_format_id:    UInt32Value,
-    font_id:             UInt32Value,
-    fill_id:             UInt32Value,
-    border_id:           UInt32Value,
-    format_id:           UInt32Value,
+    number_format_id: UInt32Value,
+    font_id: UInt32Value,
+    fill_id: UInt32Value,
+    border_id: UInt32Value,
+    format_id: UInt32Value,
     apply_number_format: BooleanValue,
-    apply_fill:          BooleanValue,
-    apply_border:        BooleanValue,
-    apply_font:          BooleanValue,
-    apply_alignment:     BooleanValue,
-    apply_protection:    BooleanValue,
-    alignment:           Option<Alignment>,
-    protection:          Option<Protection>,
+    apply_fill: BooleanValue,
+    apply_border: BooleanValue,
+    apply_font: BooleanValue,
+    apply_alignment: BooleanValue,
+    apply_protection: BooleanValue,
+    alignment: Option<Alignment>,
+    protection: Option<Protection>,
 }
 
 impl CellFormat {
@@ -203,7 +185,7 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_alignment_mut(&mut self) -> Option<&mut Alignment> {
+    pub(crate) fn _get_alignment_mut(&mut self) -> Option<&mut Alignment> {
         self.alignment.as_mut()
     }
 
@@ -219,7 +201,7 @@ impl CellFormat {
     }
 
     #[inline]
-    pub(crate) fn get_protection_mut(&mut self) -> Option<&mut Protection> {
+    pub(crate) fn _get_protection_mut(&mut self) -> Option<&mut Protection> {
         self.protection.as_mut()
     }
 
@@ -280,43 +262,40 @@ impl CellFormat {
         let empty_flag = self.alignment.is_none() && self.protection.is_none();
 
         // xf
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         let number_format_id = self.number_format_id.get_value_string();
-        attributes.push(("numFmtId", &number_format_id).into());
+        attributes.push(("numFmtId", &number_format_id));
         let font_id = self.font_id.get_value_string();
-        attributes.push(("fontId", &font_id).into());
+        attributes.push(("fontId", &font_id));
         let fill_id = self.fill_id.get_value_string();
-        attributes.push(("fillId", &fill_id).into());
+        attributes.push(("fillId", &fill_id));
         let border_id = self.border_id.get_value_string();
-        attributes.push(("borderId", &border_id).into());
+        attributes.push(("borderId", &border_id));
 
         let format_id = self.format_id.get_value_string();
         if is_cell_xfs {
-            attributes.push(("xfId", &format_id).into());
+            attributes.push(("xfId", &format_id));
         }
         if self.apply_font.has_value() {
-            attributes.push(("applyFont", self.apply_font.get_value_string()).into());
+            attributes.push(("applyFont", self.apply_font.get_value_string()));
         }
         if self.apply_number_format.has_value() {
-            attributes.push(
-                (
-                    "applyNumberFormat",
-                    self.apply_number_format.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "applyNumberFormat",
+                self.apply_number_format.get_value_string(),
+            ));
         }
         if self.apply_fill.has_value() {
-            attributes.push(("applyFill", self.apply_fill.get_value_string()).into());
+            attributes.push(("applyFill", self.apply_fill.get_value_string()));
         }
         if self.apply_border.has_value() {
-            attributes.push(("applyBorder", self.apply_border.get_value_string()).into());
+            attributes.push(("applyBorder", self.apply_border.get_value_string()));
         }
         if self.apply_alignment.has_value() {
-            attributes.push(("applyAlignment", self.apply_alignment.get_value_string()).into());
+            attributes.push(("applyAlignment", self.apply_alignment.get_value_string()));
         }
         if self.apply_protection.has_value() {
-            attributes.push(("applyProtection", self.apply_protection.get_value_string()).into());
+            attributes.push(("applyProtection", self.apply_protection.get_value_string()));
         }
         write_start_tag(writer, "xf", attributes, empty_flag);
 

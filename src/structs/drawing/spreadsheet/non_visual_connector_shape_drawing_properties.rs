@@ -1,36 +1,21 @@
 // xdr:cNvCxnSpPr
+use super::super::EndConnection;
+use super::super::StartConnection;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::super::{
-    EndConnection,
-    StartConnection,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualConnectorShapeDrawingProperties {
     start_connection: Option<Box<StartConnection>>,
-    end_connection:   Option<Box<EndConnection>>,
+    end_connection: Option<Box<EndConnection>>,
 }
 
 impl NonVisualConnectorShapeDrawingProperties {
     #[inline]
-    #[must_use]
     pub fn get_start_connection(&self) -> Option<&StartConnection> {
         self.start_connection.as_deref()
     }
@@ -46,7 +31,6 @@ impl NonVisualConnectorShapeDrawingProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_end_connection(&self) -> Option<&EndConnection> {
         self.end_connection.as_deref()
     }

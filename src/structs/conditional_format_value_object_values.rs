@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use super::EnumTrait;
+use std::str::FromStr;
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum ConditionalFormatValueObjectValues {
     Formula,

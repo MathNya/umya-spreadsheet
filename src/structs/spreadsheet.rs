@@ -1,54 +1,44 @@
-use std::sync::{
-    Arc,
-    RwLock,
-};
+use crate::helper::address::*;
+use crate::helper::coordinate::*;
+use crate::reader::xlsx::*;
+use crate::structs::drawing::Theme;
+use crate::structs::Address;
+use crate::structs::CellValue;
+use crate::structs::Cells;
+use crate::structs::DefinedName;
+use crate::structs::Properties;
+use crate::structs::SharedStringTable;
+use crate::structs::Stylesheet;
+use crate::structs::WorkbookProtection;
+use crate::structs::WorkbookView;
+use crate::structs::Worksheet;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::StringValue;
+use std::sync::Arc;
+use std::sync::RwLock;
+use thin_vec::ThinVec;
 
-use crate::{
-    StringValue,
-    helper::{
-        address::split_address,
-        coordinate::column_index_from_string,
-    },
-    reader::xlsx::raw_to_deserialize_by_worksheet,
-    structs::{
-        Address,
-        CellValue,
-        Cells,
-        DefinedName,
-        Properties,
-        SharedStringTable,
-        Stylesheet,
-        WorkbookProtection,
-        WorkbookView,
-        Worksheet,
-        drawing::Theme,
-    },
-    traits::{
-        AdjustmentCoordinate,
-        AdjustmentCoordinateWithSheet,
-    },
-};
-
-/// A Workbook Object.
+/// A Spreadsheet Object.
 /// The starting point of all struct.
 #[derive(Clone, Default, Debug)]
-pub struct Workbook {
-    properties:            Properties,
-    work_sheet_collection: Vec<Worksheet>,
-    macros_code:           Option<Vec<u8>>,
-    code_name:             StringValue,
-    ribbon_xml_data:       StringValue,
-    theme:                 Theme,
-    stylesheet:            Stylesheet,
-    shared_string_table:   Arc<RwLock<SharedStringTable>>,
-    workbook_view:         WorkbookView,
-    backup_context_types:  Vec<(Box<str>, Box<str>)>,
-    pivot_caches:          Vec<(Box<str>, Box<str>, Box<str>)>,
-    workbook_protection:   Option<Box<WorkbookProtection>>,
-    defined_names:         Vec<DefinedName>,
+pub struct Spreadsheet {
+    properties: Properties,
+    work_sheet_collection: ThinVec<Worksheet>,
+    macros_code: Option<ThinVec<u8>>,
+    code_name: StringValue,
+    ribbon_xml_data: StringValue,
+    theme: Theme,
+    stylesheet: Stylesheet,
+    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    workbook_view: WorkbookView,
+    backup_context_types: ThinVec<(Box<str>, Box<str>)>,
+    pivot_caches: ThinVec<(Box<str>, Box<str>, Box<str>)>,
+    workbook_protection: Option<Box<WorkbookProtection>>,
+    defined_names: ThinVec<DefinedName>,
 }
 
-impl Workbook {
+impl Spreadsheet {
     // ************************
     // update Coordinate
     // ************************
@@ -160,14 +150,13 @@ impl Workbook {
     /// # Arguments
     /// * `address` - address. ex) "Sheet1!A1:C5"
     /// # Return value
-    /// *`Vec<&CellValue>` - `CellValue` List.
+    /// *`Vec<&CellValue>` - CellValue List.
     /// # Examples
     /// ```
     /// let mut book = umya_spreadsheet::new_file();
     /// let mut cell_value_List = book.get_cell_value_by_address("Sheet1!A1:C5");
     /// ```
     #[inline]
-    #[must_use]
     pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
         self.get_sheet_by_name(sheet_name)
@@ -180,7 +169,7 @@ impl Workbook {
     /// # Arguments
     /// * `address` - Address Object
     /// # Return value
-    /// *`Vec<&CellValue>` - `CellValue` List.
+    /// *`Vec<&CellValue>` - CellValue List.
     #[inline]
     pub(crate) fn get_cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
         self.get_sheet_by_name(address.get_sheet_name())
@@ -190,7 +179,6 @@ impl Workbook {
 
     /// Get Theme.
     #[inline]
-    #[must_use]
     pub fn get_theme(&self) -> &Theme {
         &self.theme
     }
@@ -212,7 +200,6 @@ impl Workbook {
 
     /// Get Properties.
     #[inline]
-    #[must_use]
     pub fn get_properties(&self) -> &Properties {
         &self.properties
     }
@@ -236,7 +223,6 @@ impl Workbook {
     /// # Return value
     /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
     #[inline]
-    #[must_use]
     pub fn get_macros_code(&self) -> Option<&[u8]> {
         self.macros_code.as_deref()
     }
@@ -245,7 +231,7 @@ impl Workbook {
     /// # Arguments
     /// * `value` - Macros Code Raw Data.
     #[inline]
-    pub fn set_macros_code(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
+    pub fn set_macros_code(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
         self.macros_code = Some(value.into());
         self
     }
@@ -259,7 +245,6 @@ impl Workbook {
 
     /// Has Macros Code
     #[inline]
-    #[must_use]
     pub fn get_has_macros(&self) -> bool {
         self.macros_code.is_some()
     }
@@ -281,10 +266,8 @@ impl Workbook {
     /// Get codeName property of workbook
     ///
     /// Must to be the same in workbook with VBA/macros code from this workbook
-    /// for that code in Workbook object to work out of the box without
-    /// adjustments
+    /// for that code in Workbook object to work out of the box without adjustments
     #[inline]
-    #[must_use]
     pub fn get_code_name(&self) -> Option<&str> {
         self.code_name.get_value()
     }
@@ -309,7 +292,7 @@ impl Workbook {
     /// (This method is crate only.)
     /// Set Default Value Stylesheet.
     #[inline]
-    pub(crate) fn set_stylesheet_default_value(&mut self) -> &mut Self {
+    pub(crate) fn set_stylesheet_defalut_value(&mut self) -> &mut Self {
         self.stylesheet.set_defalut_value();
         self
     }
@@ -332,14 +315,9 @@ impl Workbook {
     }
 
     /// Get Work Sheet List.
-    #[must_use]
     pub fn get_sheet_collection(&self) -> &[Worksheet] {
         for worksheet in &self.work_sheet_collection {
-            assert!(
-                worksheet.is_deserialized(),
-                "This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: \
-                 usize);"
-            );
+            assert!(worksheet.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
         }
         &self.work_sheet_collection
     }
@@ -347,14 +325,13 @@ impl Workbook {
     /// Get Work Sheet List.
     /// No check deserialized.
     #[inline]
-    #[must_use]
     pub fn get_sheet_collection_no_check(&self) -> &[Worksheet] {
         &self.work_sheet_collection
     }
 
     /// Get Work Sheet List in mutable.
     #[inline]
-    pub fn get_sheet_collection_mut(&mut self) -> &mut [Worksheet] {
+    pub fn get_sheet_collection_mut(&mut self) -> &mut ThinVec<Worksheet> {
         self.read_sheet_collection();
         &mut self.work_sheet_collection
     }
@@ -363,7 +340,6 @@ impl Workbook {
     /// # Return value
     /// * `usize` - Work Sheet Count.
     #[inline]
-    #[must_use]
     pub fn get_sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
     }
@@ -374,7 +350,7 @@ impl Workbook {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
+            raw_to_deserialize_by_worksheet(worksheet, shared_string_table.clone(), &stylesheet);
         }
         self
     }
@@ -385,7 +361,7 @@ impl Workbook {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
+        raw_to_deserialize_by_worksheet(worksheet, shared_string_table, &stylesheet);
         self
     }
 
@@ -409,24 +385,20 @@ impl Workbook {
     /// # Return value
     /// * `Option<&Worksheet>`.
     #[inline]
-    #[must_use]
     pub fn get_sheet(&self, index: usize) -> Option<&Worksheet> {
-        self.work_sheet_collection.get(index).inspect(|v| {
-            assert!(
-                v.is_deserialized(),
-                "This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: \
-                 usize);"
-            );
-        })
+        self.work_sheet_collection
+            .get(index)
+            .inspect(|v| {
+                assert!(v.is_deserialized(),"This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize);");
+            })
     }
 
     /// Get Work Sheet.
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Option<&Worksheet>`.
+    /// * `Option<&Worksheet>.
     #[inline]
-    #[must_use]
     pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
             .and_then(|index| self.get_sheet(index))
@@ -437,7 +409,10 @@ impl Workbook {
         self.work_sheet_collection
             .get(index)
             .map(|v| {
-                v.get_cells_stream(&shared_string_table.read().unwrap(), self.get_stylesheet())
+                v.get_cell_collection_stream(
+                    &shared_string_table.read().unwrap(),
+                    self.get_stylesheet(),
+                )
             })
             .ok_or("Not found.")
     }
@@ -452,7 +427,7 @@ impl Workbook {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         self.work_sheet_collection.get_mut(index).map(|v| {
-            raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
+            raw_to_deserialize_by_worksheet(v, shared_string_table, &stylesheet);
             v
         })
     }
@@ -478,7 +453,6 @@ impl Workbook {
     /// # Return value
     /// * `&Worksheet` - Work sheet.
     #[inline]
-    #[must_use]
     pub fn get_active_sheet(&self) -> &Worksheet {
         let index = self.get_workbook_view().get_active_tab();
         self.get_sheet(index as usize).unwrap()
@@ -497,12 +471,11 @@ impl Workbook {
     /// # Arguments
     /// * `value` - Work Sheet
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet.
-    ///   Err:Error.
+    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet. Err:Error.
     #[inline]
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
         let title = value.get_name();
-        Workbook::check_sheet_name(self, title)?;
+        Spreadsheet::check_sheet_name(self, title)?;
         self.work_sheet_collection.push(value);
         Ok(self.work_sheet_collection.last_mut().unwrap())
     }
@@ -541,17 +514,16 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_title` - sheet title
     /// # Return value
-    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet.
-    ///   Err:Error.
+    /// * `Result<&mut Worksheet, &'static str>` - OK:added work sheet. Err:Error.
     #[inline]
     pub fn new_sheet<S: Into<String>>(
         &mut self,
         sheet_title: S,
     ) -> Result<&mut Worksheet, &'static str> {
         let v = sheet_title.into();
-        Workbook::check_sheet_name(self, &v)?;
+        Spreadsheet::check_sheet_name(self, &v)?;
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
-        Ok(Workbook::add_new_sheet_crate(self, sheet_id, v))
+        Ok(Spreadsheet::add_new_sheet_crate(self, sheet_id, v))
     }
 
     /// (This method is crate only.)
@@ -588,7 +560,7 @@ impl Workbook {
         sheet_name: S,
     ) -> Result<(), &'static str> {
         let sheet_name_str = sheet_name.into();
-        Workbook::check_sheet_name(self, sheet_name_str.as_ref())?;
+        Spreadsheet::check_sheet_name(self, sheet_name_str.as_ref())?;
         self.work_sheet_collection
             .get_mut(index)
             .map(|sheet| {
@@ -600,14 +572,13 @@ impl Workbook {
     /// (This method is crate only.)
     /// Check for duplicate sheet name.
     pub(crate) fn check_sheet_name(&self, value: &str) -> Result<(), &'static str> {
-        if self
+        match self
             .work_sheet_collection
             .iter()
             .any(|work_sheet| value == work_sheet.get_name())
         {
-            Err("name duplicate.")
-        } else {
-            Ok(())
+            true => Err("name duplicate."),
+            false => Ok(()),
         }
     }
 
@@ -620,7 +591,6 @@ impl Workbook {
 
     /// Get Workbook View.
     #[inline]
-    #[must_use]
     pub fn get_workbook_view(&self) -> &WorkbookView {
         &self.workbook_view
     }
@@ -633,7 +603,7 @@ impl Workbook {
 
     /// Set Workbook View.
     /// # Arguments
-    /// * `value` - `WorkbookView`
+    /// * `value` - WorkbookView
     #[inline]
     pub fn set_workbook_view(&mut self, value: WorkbookView) -> &mut Self {
         self.workbook_view = value;
@@ -649,7 +619,7 @@ impl Workbook {
         }
         self.get_sheet_collection_no_check()
             .iter()
-            .any(Worksheet::has_defined_names)
+            .any(|sheet| sheet.has_defined_names())
     }
 
     #[inline]
@@ -660,7 +630,7 @@ impl Workbook {
     #[inline]
     pub(crate) fn set_backup_context_types(
         &mut self,
-        value: impl Into<Vec<(String, String)>>,
+        value: impl Into<ThinVec<(String, String)>>,
     ) -> &mut Self {
         self.backup_context_types = value
             .into()
@@ -698,17 +668,16 @@ impl Workbook {
     }
 
     #[inline]
-    pub(crate) fn update_pivot_caches(&mut self, key: &str, value: &str) -> &mut Self {
+    pub(crate) fn update_pivot_caches(&mut self, key: String, value: String) -> &mut Self {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
-            if &**val1 == key {
-                *val3 = value.to_owned().into_boxed_str();
+            if **val1 == key {
+                *val3 = value.clone().into_boxed_str()
             };
         });
         self
     }
 
     #[inline]
-    #[must_use]
     pub fn get_workbook_protection(&self) -> Option<&WorkbookProtection> {
         self.workbook_protection.as_deref()
     }
@@ -733,14 +702,13 @@ impl Workbook {
 
     /// Get Defined Name (Vec).
     #[inline]
-    #[must_use]
     pub fn get_defined_names(&self) -> &[DefinedName] {
         &self.defined_names
     }
 
     /// Get Defined Name (Vec) in mutable.
     #[inline]
-    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+    pub fn get_defined_names_mut(&mut self) -> &mut ThinVec<DefinedName> {
         &mut self.defined_names
     }
 
@@ -748,19 +716,19 @@ impl Workbook {
     /// # Arguments
     /// * `value` - Vec<DefinedName>.
     #[inline]
-    pub fn set_defined_names(&mut self, value: impl Into<Vec<DefinedName>>) {
+    pub fn set_defined_names(&mut self, value: impl Into<ThinVec<DefinedName>>) {
         self.defined_names = value.into();
     }
 
     /// Add Defined Name.
     /// # Arguments
-    /// * `value` - `DefinedName`.
+    /// * `value` - DefinedName.
     #[inline]
     pub fn add_defined_names(&mut self, value: DefinedName) {
         self.defined_names.push(value);
     }
 }
-impl AdjustmentCoordinateWithSheet for Workbook {
+impl AdjustmentCoordinateWithSheet for Spreadsheet {
     fn adjustment_insert_coordinate_with_sheet(
         &mut self,
         sheet_name: &str,

@@ -1,17 +1,11 @@
 // c:style
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::super::super::ByteValue;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Default, Debug)]
 pub struct Style {
@@ -19,7 +13,6 @@ pub struct Style {
 }
 
 impl Style {
-    #[must_use]
     pub fn get_val(&self) -> u8 {
         self.val.get_value()
     }
@@ -29,7 +22,7 @@ impl Style {
         self
     }
 
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
+    pub(crate) fn _set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
         e: &BytesStart,
@@ -37,12 +30,12 @@ impl Style {
         self.val.set_value_string(get_attribute(e, b"val").unwrap());
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:style
         write_start_tag(
             writer,
             "c:style",
-            vec![("val", &self.val.get_value_string()).into()],
+            vec![("val", &self.val.get_value_string())],
             true,
         );
     }

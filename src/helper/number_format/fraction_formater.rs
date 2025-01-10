@@ -8,7 +8,7 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
         .parse::<f64>()
         .unwrap();
     let decimal_length = decimal_part.to_string().len();
-    let decimal_divisor = 10f64.powi(num_traits::cast(decimal_length).unwrap());
+    let decimal_divisor = 10f64.powi(decimal_length as i32);
 
     let gcd = gcd(decimal_part, decimal_divisor);
 
@@ -42,7 +42,7 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
     if check_format == "? ?" {
         let mut integer_part_str = integer_part.to_string();
         if integer_part == 0f64 {
-            integer_part_str = String::new();
+            integer_part_str = String::from("");
         }
         result = format!(
             "{}{} {}/{}",
@@ -61,5 +61,9 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
 
 #[inline]
 fn gcd(a: f64, b: f64) -> f64 {
-    if b == 0f64 { a } else { gcd(b, a % b) }
+    if b == 0f64 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
 }

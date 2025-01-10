@@ -1,34 +1,22 @@
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
+use crate::xml_read_loop;
 
 // c:strRef
 use super::Formula;
 use super::StringCache;
-use crate::{
-    structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-    xml_read_loop,
-};
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct StringReference {
-    formula:      Formula,
+    formula: Formula,
     string_cache: StringCache,
 }
 
 impl StringReference {
-    #[must_use]
     pub fn get_formula(&self) -> &Formula {
         &self.formula
     }
@@ -42,7 +30,6 @@ impl StringReference {
         self
     }
 
-    #[must_use]
     pub fn get_string_cache(&self) -> &StringCache {
         &self.string_cache
     }
@@ -68,7 +55,7 @@ impl StringReference {
                     self.formula.set_attributes(reader, e);
                 }
                 b"c:strCache" => {
-                    StringCache::set_attributes(reader, e);
+                    self.string_cache.set_attributes(reader, e);
                 }
                 _ => (),
             },
@@ -81,7 +68,7 @@ impl StringReference {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:strRef
         write_start_tag(writer, "c:strRef", vec![], false);
 
@@ -89,7 +76,8 @@ impl StringReference {
         self.formula.write_to(writer);
 
         // c:strCache
-        StringCache::write_to(writer, self.get_formula().get_address(), wb);
+        self.string_cache
+            .write_to(writer, self.get_formula().get_address(), spreadsheet);
 
         write_end_tag(writer, "c:strRef");
     }

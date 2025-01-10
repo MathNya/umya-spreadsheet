@@ -1,75 +1,57 @@
 // styleSheet
+use super::BordersCrate;
+use super::CellFormat;
+use super::CellFormats;
+use super::CellStyleFormats;
+use super::CellStyles;
+use super::Colors;
+use super::DifferentialFormats;
+use super::Fills;
+use super::Fonts;
+use super::NumberingFormats;
+use super::Style;
+use crate::helper::const_str::*;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    BordersCrate,
-    CellFormat,
-    CellFormats,
-    CellStyleFormats,
-    CellStyles,
-    Colors,
-    DifferentialFormats,
-    Fills,
-    Fonts,
-    NumberingFormats,
-    Style,
-};
-use crate::{
-    helper::const_str::{
-        MC_NS,
-        SHEET_MAIN_NS,
-        SHEET_MS_MAIN_NS,
-        SHEETML_AC_NS,
-    },
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Stylesheet {
-    numbering_formats:    NumberingFormats,
-    fonts:                Fonts,
-    fills:                Fills,
-    borders:              BordersCrate,
-    cell_style_formats:   CellStyleFormats,
-    cell_formats:         CellFormats,
-    cell_styles:          CellStyles,
+    numbering_formats: NumberingFormats,
+    fonts: Fonts,
+    fills: Fills,
+    borders: BordersCrate,
+    cell_style_formats: CellStyleFormats,
+    cell_formats: CellFormats,
+    cell_styles: CellStyles,
     differential_formats: DifferentialFormats,
-    colors:               Colors,
-    maked_style_list:     Vec<Style>,
+    colors: Colors,
+    maked_style_list: ThinVec<Style>,
 }
 
 impl Stylesheet {
     #[inline]
-    pub(crate) fn get_numbering_formats(&self) -> &NumberingFormats {
+    pub(crate) fn _get_numbering_formats(&self) -> &NumberingFormats {
         &self.numbering_formats
     }
 
     #[inline]
-    pub(crate) fn get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
+    pub(crate) fn _get_numbering_formats_mut(&mut self) -> &mut NumberingFormats {
         &mut self.numbering_formats
     }
 
     #[inline]
-    pub(crate) fn set_numbering_formats(&mut self, value: NumberingFormats) -> &mut Self {
+    pub(crate) fn _set_numbering_formats(&mut self, value: NumberingFormats) -> &mut Self {
         self.numbering_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_fonts(&self) -> &Fonts {
+    pub(crate) fn _get_fonts(&self) -> &Fonts {
         &self.fonts
     }
 
@@ -80,13 +62,13 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn set_fonts(&mut self, value: Fonts) -> &mut Self {
+    pub(crate) fn _set_fonts(&mut self, value: Fonts) -> &mut Self {
         self.fonts = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_fills(&self) -> &Fills {
+    pub(crate) fn _get_fills(&self) -> &Fills {
         &self.fills
     }
 
@@ -97,13 +79,13 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn set_fills(&mut self, value: Fills) -> &mut Self {
+    pub(crate) fn _set_fills(&mut self, value: Fills) -> &mut Self {
         self.fills = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_borders(&self) -> &BordersCrate {
+    pub(crate) fn _get_borders(&self) -> &BordersCrate {
         &self.borders
     }
 
@@ -114,55 +96,55 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn set_borders(&mut self, value: BordersCrate) -> &mut Self {
+    pub(crate) fn _set_borders(&mut self, value: BordersCrate) -> &mut Self {
         self.borders = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_cell_style_formats(&self) -> &CellStyleFormats {
+    pub(crate) fn _get_cell_style_formats(&self) -> &CellStyleFormats {
         &self.cell_style_formats
     }
 
     #[inline]
-    pub(crate) fn get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
+    pub(crate) fn _get_cell_style_formats_mut(&mut self) -> &mut CellStyleFormats {
         &mut self.cell_style_formats
     }
 
     #[inline]
-    pub(crate) fn set_cell_style_formats(&mut self, value: CellStyleFormats) -> &mut Self {
+    pub(crate) fn _set_cell_style_formats(&mut self, value: CellStyleFormats) -> &mut Self {
         self.cell_style_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_cell_formats(&self) -> &CellFormats {
+    pub(crate) fn _get_cell_formats(&self) -> &CellFormats {
         &self.cell_formats
     }
 
     #[inline]
-    pub(crate) fn get_cell_formats_mut(&mut self) -> &mut CellFormats {
+    pub(crate) fn _get_cell_formats_mut(&mut self) -> &mut CellFormats {
         &mut self.cell_formats
     }
 
     #[inline]
-    pub(crate) fn set_cell_formats(&mut self, value: CellFormats) -> &mut Self {
+    pub(crate) fn _set_cell_formats(&mut self, value: CellFormats) -> &mut Self {
         self.cell_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_cell_styles(&self) -> &CellStyles {
+    pub(crate) fn _get_cell_styles(&self) -> &CellStyles {
         &self.cell_styles
     }
 
     #[inline]
-    pub(crate) fn get_cell_styles_mut(&mut self) -> &mut CellStyles {
+    pub(crate) fn _get_cell_styles_mut(&mut self) -> &mut CellStyles {
         &mut self.cell_styles
     }
 
     #[inline]
-    pub(crate) fn set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
+    pub(crate) fn _set_cell_styles(&mut self, value: CellStyles) -> &mut Self {
         self.cell_styles = value;
         self
     }
@@ -178,23 +160,23 @@ impl Stylesheet {
     }
 
     #[inline]
-    pub(crate) fn set_differential_formats(&mut self, value: DifferentialFormats) -> &mut Self {
+    pub(crate) fn _set_differential_formats(&mut self, value: DifferentialFormats) -> &mut Self {
         self.differential_formats = value;
         self
     }
 
     #[inline]
-    pub(crate) fn get_colors(&self) -> &Colors {
+    pub(crate) fn _get_colors(&self) -> &Colors {
         &self.colors
     }
 
     #[inline]
-    pub(crate) fn get_colors_mut(&mut self) -> &mut Colors {
+    pub(crate) fn _get_colors_mut(&mut self) -> &mut Colors {
         &mut self.colors
     }
 
     #[inline]
-    pub(crate) fn set_colors(&mut self, value: Colors) -> &mut Self {
+    pub(crate) fn _set_colors(&mut self, value: Colors) -> &mut Self {
         self.colors = value;
         self
     }
@@ -445,10 +427,10 @@ impl Stylesheet {
             writer,
             "styleSheet",
             vec![
-                ("xmlns", SHEET_MAIN_NS).into(),
-                ("xmlns:mc", MC_NS).into(),
-                ("mc:Ignorable", "x14ac").into(),
-                ("xmlns:x14ac", SHEETML_AC_NS).into(),
+                ("xmlns", SHEET_MAIN_NS),
+                ("xmlns:mc", MC_NS),
+                ("mc:Ignorable", "x14ac"),
+                ("xmlns:x14ac", SHEETML_AC_NS),
             ],
             false,
         );
@@ -485,9 +467,9 @@ impl Stylesheet {
             writer,
             "tableStyles",
             vec![
-                ("count", "0").into(),
-                ("defaultTableStyle", "TableStyleMedium2").into(),
-                ("defaultPivotStyle", "PivotStyleMedium9").into(),
+                ("count", "0"),
+                ("defaultTableStyle", "TableStyleMedium2"),
+                ("defaultPivotStyle", "PivotStyleMedium9"),
             ],
             true,
         );
@@ -500,8 +482,8 @@ impl Stylesheet {
             writer,
             "ext",
             vec![
-                ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}").into(),
-                ("xmlns:x14", SHEET_MS_MAIN_NS).into(),
+                ("uri", "{EB79DEF2-80B8-43e5-95BD-54CBDDF9020C}"),
+                ("xmlns:x14", SHEET_MS_MAIN_NS),
             ],
             false,
         );
@@ -510,7 +492,7 @@ impl Stylesheet {
         write_start_tag(
             writer,
             "x14:slicerStyles",
-            vec![("defaultSlicerStyle", "SlicerStyleLight1").into()],
+            vec![("defaultSlicerStyle", "SlicerStyleLight1")],
             true,
         );
 

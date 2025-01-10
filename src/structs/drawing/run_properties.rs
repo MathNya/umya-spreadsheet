@@ -1,63 +1,43 @@
+use super::super::EnumValue;
+use super::super::Int32Value;
+use super::EffectList;
+use super::GradientFill;
+use super::NoFill;
+use super::Outline;
+use super::SolidFill;
+use super::TextCapsValues;
+use super::TextFontType;
+use crate::reader::driver::*;
+use crate::structs::StringValue;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    super::{
-        EnumValue,
-        Int32Value,
-    },
-    EffectList,
-    GradientFill,
-    NoFill,
-    Outline,
-    SolidFill,
-    TextCapsValues,
-    TextFontType,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    structs::StringValue,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct RunProperties {
-    text:                 Box<str>,
-    kumimoji:             StringValue,
-    language:             StringValue,
+    text: Box<str>,
+    kumimoji: StringValue,
+    language: StringValue,
     alternative_language: StringValue,
-    bold:                 StringValue,
-    sz:                   StringValue,
-    italic:               StringValue,
-    capital:              EnumValue<TextCapsValues>,
-    spacing:              Int32Value,
-    strike:               StringValue,
-    outline:              Option<Box<Outline>>,
-    solid_fill:           Option<Box<SolidFill>>,
-    latin_font:           Option<Box<TextFontType>>,
-    east_asian_font:      Option<Box<TextFontType>>,
-    gradient_fill:        Option<Box<GradientFill>>,
-    no_fill:              Option<NoFill>,
-    effect_list:          Option<Box<EffectList>>,
+    bold: StringValue,
+    sz: StringValue,
+    italic: StringValue,
+    capital: EnumValue<TextCapsValues>,
+    spacing: Int32Value,
+    strike: StringValue,
+    outline: Option<Box<Outline>>,
+    solid_fill: Option<Box<SolidFill>>,
+    latin_font: Option<Box<TextFontType>>,
+    east_asian_font: Option<Box<TextFontType>>,
+    gradient_fill: Option<Box<GradientFill>>,
+    no_fill: Option<NoFill>,
+    effect_list: Option<Box<EffectList>>,
 }
 
 impl RunProperties {
     #[inline]
-    #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }
@@ -69,7 +49,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_kumimoji(&self) -> &str {
         self.kumimoji.get_value_str()
     }
@@ -81,7 +60,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_language(&self) -> &str {
         self.language.get_value_str()
     }
@@ -93,7 +71,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_alternative_language(&self) -> &str {
         self.alternative_language.get_value_str()
     }
@@ -105,7 +82,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_bold(&self) -> &str {
         self.bold.get_value_str()
     }
@@ -117,7 +93,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_sz(&self) -> &str {
         self.sz.get_value_str()
     }
@@ -129,7 +104,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_italic(&self) -> &str {
         self.italic.get_value_str()
     }
@@ -141,7 +115,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_capital(&self) -> &TextCapsValues {
         self.capital.get_value()
     }
@@ -153,7 +126,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_spacing(&self) -> i32 {
         self.spacing.get_value()
     }
@@ -165,7 +137,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_strike(&self) -> &str {
         self.strike.get_value_str()
     }
@@ -177,7 +148,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
@@ -194,7 +164,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
@@ -211,7 +180,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_latin_font(&self) -> Option<&TextFontType> {
         self.latin_font.as_deref()
     }
@@ -228,7 +196,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
         self.east_asian_font.as_deref()
     }
@@ -245,7 +212,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
@@ -262,7 +228,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
@@ -279,7 +244,6 @@ impl RunProperties {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
@@ -373,8 +337,8 @@ impl RunProperties {
                     self.set_east_asian_font(obj);
                 }
                 b"a:noFill" => {
-                    let obj = NoFill::default();
-                    NoFill::set_attributes(reader, e);
+                    let mut obj = NoFill::default();
+                    obj.set_attributes(reader, e);
                     self.set_no_fill(obj);
                 }
                 b"a:effectLst" => {
@@ -387,8 +351,10 @@ impl RunProperties {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"a:rPr" | b"a:endParaRPr" | b"a:defRPr" => return,
-                    _ => (),
+                b"a:rPr" => return,
+                b"a:endParaRPr" => return,
+                b"a:defRPr" => return,
+                _ => (),
                 }
             },
             Event::Eof => panic!(
@@ -400,48 +366,48 @@ impl RunProperties {
 
     #[inline]
     pub(crate) fn write_to_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:rPr");
+        self.write_to(writer, "a:rPr")
     }
 
     #[inline]
     pub(crate) fn write_to_end_para_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:endParaRPr");
+        self.write_to(writer, "a:endParaRPr")
     }
 
     #[inline]
     pub(crate) fn write_to_def_rpr(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:defRPr");
+        self.write_to(writer, "a:defRPr")
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.kumimoji.has_value() {
-            attributes.push(("kumimoji", self.kumimoji.get_value_str()).into());
+            attributes.push(("kumimoji", self.kumimoji.get_value_str()))
         }
         if self.language.has_value() {
-            attributes.push(("lang", self.language.get_value_str()).into());
+            attributes.push(("lang", self.language.get_value_str()))
         }
         if self.alternative_language.has_value() {
-            attributes.push(("altLang", self.alternative_language.get_value_str()).into());
+            attributes.push(("altLang", self.alternative_language.get_value_str()))
         }
         if self.sz.has_value() {
-            attributes.push(("sz", self.sz.get_value_str()).into());
+            attributes.push(("sz", self.sz.get_value_str()))
         }
         if self.bold.has_value() {
-            attributes.push(("b", self.bold.get_value_str()).into());
+            attributes.push(("b", self.bold.get_value_str()))
         }
         if self.italic.has_value() {
-            attributes.push(("i", self.italic.get_value_str()).into());
+            attributes.push(("i", self.italic.get_value_str()))
         }
         if self.capital.has_value() {
-            attributes.push(("cap", self.capital.get_value_string()).into());
+            attributes.push(("cap", self.capital.get_value_string()));
         }
         let spc = self.spacing.get_value_string();
         if self.spacing.has_value() {
-            attributes.push(("spc", &spc).into());
+            attributes.push(("spc", &spc));
         }
         if self.strike.has_value() {
-            attributes.push(("strike", self.strike.get_value_str()).into());
+            attributes.push(("strike", self.strike.get_value_str()));
         }
         if self.solid_fill.is_some()
             || self.outline.is_some()
@@ -478,8 +444,8 @@ impl RunProperties {
             }
 
             // a:noFill
-            if self.no_fill.is_some() {
-                NoFill::write_to(writer);
+            if let Some(v) = &self.no_fill {
+                v.write_to(writer);
             }
 
             // a:effectLst

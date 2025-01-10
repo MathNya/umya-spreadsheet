@@ -1,14 +1,12 @@
-use crate::structs::{
-    Alignment,
-    Borders,
-    Color,
-    Fill,
-    Font,
-    NumberingFormat,
-    PatternValues,
-    Protection,
-    UInt32Value,
-};
+use crate::structs::Alignment;
+use crate::structs::Borders;
+use crate::structs::Color;
+use crate::structs::Fill;
+use crate::structs::Font;
+use crate::structs::NumberingFormat;
+use crate::structs::PatternValues;
+use crate::structs::Protection;
+use crate::structs::UInt32Value;
 
 /// # Examples
 /// ## add border
@@ -16,31 +14,16 @@ use crate::structs::{
 /// ```rust
 /// use umya_spreadsheet::*;
 /// let mut book = new_file();
-/// let mut style = book
-///     .get_sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .get_style_mut("D2");
+/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("D2");
 ///
 /// // add bottom border
-/// style
-///     .get_borders_mut()
-///     .get_bottom_mut()
-///     .set_border_style(Border::BORDER_MEDIUM);
+/// style.get_borders_mut().get_bottom_mut().set_border_style(Border::BORDER_MEDIUM);
 /// // add top border
-/// style
-///     .get_borders_mut()
-///     .get_top_mut()
-///     .set_border_style(Border::BORDER_MEDIUM);
+/// style.get_borders_mut().get_top_mut().set_border_style(Border::BORDER_MEDIUM);
 /// // add left border
-/// style
-///     .get_borders_mut()
-///     .get_left_mut()
-///     .set_border_style(Border::BORDER_MEDIUM);
+/// style.get_borders_mut().get_left_mut().set_border_style(Border::BORDER_MEDIUM);
 /// // add right border
-/// style
-///     .get_borders_mut()
-///     .get_right_mut()
-///     .set_border_style(Border::BORDER_MEDIUM);
+/// style.get_borders_mut().get_right_mut().set_border_style(Border::BORDER_MEDIUM);
 /// ```
 ///
 /// ## change cell color
@@ -49,10 +32,7 @@ use crate::structs::{
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book
-///     .get_sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .get_style_mut("A1");
+/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
 ///
 /// // fill color on red.
 /// style.set_background_color(Color::COLOR_RED);
@@ -64,30 +44,23 @@ use crate::structs::{
 /// use umya_spreadsheet::*;
 ///
 /// let mut book = new_file();
-/// let mut style = book
-///     .get_sheet_by_name_mut("Sheet1")
-///     .unwrap()
-///     .get_style_mut("A1");
+/// let mut style = book.get_sheet_by_name_mut("Sheet1").unwrap().get_style_mut("A1");
 ///
 /// // font color on red.
-/// style
-///     .get_font_mut()
-///     .get_color_mut()
-///     .set_argb(Color::COLOR_RED);
+/// style.get_font_mut().get_color_mut().set_argb(Color::COLOR_RED);
 /// ```
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Style {
-    font:             Option<Box<Font>>,
-    fill:             Option<Box<Fill>>,
-    borders:          Option<Box<Borders>>,
-    alignment:        Option<Alignment>,
+    font: Option<Box<Font>>,
+    fill: Option<Box<Fill>>,
+    borders: Option<Box<Borders>>,
+    alignment: Option<Alignment>,
     numbering_format: Option<Box<NumberingFormat>>,
-    format_id:        UInt32Value,
-    protection:       Option<Protection>,
+    format_id: UInt32Value,
+    protection: Option<Protection>,
 }
 impl Style {
     #[inline]
-    #[must_use]
     pub fn get_font(&self) -> Option<&Font> {
         self.font.as_deref()
     }
@@ -116,7 +89,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_fill(&self) -> Option<&Fill> {
         self.fill.as_deref()
     }
@@ -133,29 +105,28 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.get_fill()
             .and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
     }
 
     #[inline]
-    pub fn set_background_color<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
+    pub fn set_background_color<S: Into<String>>(&mut self, color: S) -> &mut Self {
         self.set_background_color_solid(color);
         self
     }
 
-    pub fn set_background_color_solid<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
+    pub fn set_background_color_solid<S: Into<String>>(&mut self, color: S) -> &mut Self {
         self.get_fill_mut()
             .get_pattern_fill_mut()
             .set_pattern_type(PatternValues::Solid)
             .remove_background_color()
             .get_foreground_color_mut()
-            .set_argb_str(color);
+            .set_argb(color);
         self
     }
 
-    pub fn set_background_color_with_pattern<S: AsRef<str>>(
+    pub fn set_background_color_with_pattern<S: Into<String>>(
         &mut self,
         color1: S,
         color2: S,
@@ -165,11 +136,11 @@ impl Style {
             .get_pattern_fill_mut()
             .set_pattern_type(pattern)
             .get_background_color_mut()
-            .set_argb_str(color1);
+            .set_argb(color1);
         self.get_fill_mut()
             .get_pattern_fill_mut()
             .get_foreground_color_mut()
-            .set_argb_str(color2);
+            .set_argb(color2);
         self
     }
 
@@ -186,7 +157,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_borders(&self) -> Option<&Borders> {
         self.borders.as_deref()
     }
@@ -216,7 +186,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_alignment(&self) -> Option<&Alignment> {
         self.alignment.as_ref()
     }
@@ -245,7 +214,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_numbering_format(&self) -> Option<&NumberingFormat> {
         self.numbering_format.as_deref()
     }
@@ -269,7 +237,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_number_format(&self) -> Option<&NumberingFormat> {
         self.get_numbering_format()
     }
@@ -290,7 +257,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_format_id(&self) -> u32 {
         self.format_id.get_value()
     }
@@ -302,7 +268,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_protection(&self) -> Option<&Protection> {
         self.protection.as_ref()
     }
@@ -352,7 +317,6 @@ impl Style {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());

@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use super::EnumTrait;
+use std::str::FromStr;
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub enum HorizontalAlignmentValues {
     Center,

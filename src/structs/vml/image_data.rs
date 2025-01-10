@@ -1,23 +1,12 @@
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::structs::MediaObject;
+use crate::structs::StringValue;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    structs::{
-        MediaObject,
-        StringValue,
-        raw::RawRelationships,
-    },
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct ImageData {
@@ -27,7 +16,6 @@ pub struct ImageData {
 
 impl ImageData {
     #[inline]
-    #[must_use]
     pub fn get_image(&self) -> &MediaObject {
         &self.image
     }
@@ -43,7 +31,6 @@ impl ImageData {
         self
     }
 
-    #[must_use]
     pub fn get_title(&self) -> &str {
         self.title.get_value_str()
     }
@@ -78,12 +65,13 @@ impl ImageData {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // v:imagedata
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut _r_id_str = String::from("");
         let r_id = &self.image.get_rid(rel_list);
-        let r_id_str = format!("rId{r_id}");
-        attributes.push(("o:relid", r_id_str.as_str()).into());
+        _r_id_str = format!("rId{}", r_id);
+        attributes.push(("o:relid", _r_id_str.as_str()));
         if self.title.has_value() {
-            attributes.push(("o:title", self.title.get_value_str()).into());
+            attributes.push(("o:title", self.title.get_value_str()));
         }
 
         write_start_tag(writer, "v:imagedata", attributes, true);

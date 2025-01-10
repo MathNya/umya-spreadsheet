@@ -1,51 +1,32 @@
 // a:clrScheme
+use super::super::StringValue;
+use super::Color2Type;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    super::StringValue,
-    Color2Type,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct ColorScheme {
-    name:      StringValue,
-    accent1:   Color2Type,
-    accent2:   Color2Type,
-    accent3:   Color2Type,
-    accent4:   Color2Type,
-    accent5:   Color2Type,
-    accent6:   Color2Type,
-    dk1:       Color2Type,
-    dk2:       Color2Type,
+    name: StringValue,
+    accent1: Color2Type,
+    accent2: Color2Type,
+    accent3: Color2Type,
+    accent4: Color2Type,
+    accent5: Color2Type,
+    accent6: Color2Type,
+    dk1: Color2Type,
+    dk2: Color2Type,
     fol_hlink: Color2Type,
-    hlink:     Color2Type,
-    lt1:       Color2Type,
-    lt2:       Color2Type,
+    hlink: Color2Type,
+    lt1: Color2Type,
+    lt2: Color2Type,
 }
 
 impl ColorScheme {
     #[inline]
-    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -62,7 +43,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_accent1(&self) -> &Color2Type {
         &self.accent1
     }
@@ -78,7 +58,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_accent2(&self) -> &Color2Type {
         &self.accent2
     }
@@ -94,7 +73,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_accent3(&self) -> &Color2Type {
         &self.accent3
     }
@@ -110,7 +88,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_accent4(&self) -> &Color2Type {
         &self.accent4
     }
@@ -126,7 +103,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_accent5(&self) -> &Color2Type {
         &self.accent5
     }
@@ -142,7 +118,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_accent6(&self) -> &Color2Type {
         &self.accent6
     }
@@ -158,7 +133,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_dk1(&self) -> &Color2Type {
         &self.dk1
     }
@@ -174,7 +148,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_dk2(&self) -> &Color2Type {
         &self.dk2
     }
@@ -190,7 +163,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_fol_hlink(&self) -> &Color2Type {
         &self.fol_hlink
     }
@@ -206,7 +178,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_hlink(&self) -> &Color2Type {
         &self.hlink
     }
@@ -222,7 +193,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_lt1(&self) -> &Color2Type {
         &self.lt1
     }
@@ -238,7 +208,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_lt2(&self) -> &Color2Type {
         &self.lt2
     }
@@ -249,7 +218,6 @@ impl ColorScheme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_color_map(&self) -> Vec<String> {
         vec![
             self.lt1.get_val(),
@@ -328,9 +296,9 @@ impl ColorScheme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:clrScheme
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()).into());
+            attributes.push(("name", self.name.get_value_str()));
         }
         write_start_tag(writer, "a:clrScheme", attributes, false);
 

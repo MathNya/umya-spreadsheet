@@ -1,35 +1,22 @@
+use super::Color;
+use super::ConditionalFormatValueObject;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Color,
-    ConditionalFormatValueObject,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct IconSet {
-    cfvo_collection:  Vec<ConditionalFormatValueObject>,
-    color_collection: Vec<Color>,
+    cfvo_collection: ThinVec<ConditionalFormatValueObject>,
+    color_collection: ThinVec<Color>,
 }
 
 impl IconSet {
     #[inline]
-    #[must_use]
     pub fn get_cfvo_collection(&self) -> &[ConditionalFormatValueObject] {
         &self.cfvo_collection
     }
@@ -37,7 +24,7 @@ impl IconSet {
     #[inline]
     pub fn set_cfvo_collection(
         &mut self,
-        value: impl Into<Vec<ConditionalFormatValueObject>>,
+        value: impl Into<ThinVec<ConditionalFormatValueObject>>,
     ) -> &mut Self {
         self.cfvo_collection = value.into();
         self
@@ -50,13 +37,12 @@ impl IconSet {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_color_collection(&self) -> &[Color] {
         &self.color_collection
     }
 
     #[inline]
-    pub fn set_color_collection(&mut self, value: impl Into<Vec<Color>>) -> &mut Self {
+    pub fn set_color_collection(&mut self, value: impl Into<ThinVec<Color>>) -> &mut Self {
         self.color_collection = value.into();
         self
     }

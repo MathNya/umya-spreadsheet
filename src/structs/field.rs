@@ -1,27 +1,17 @@
 // field
+use crate::reader::driver::*;
+use crate::structs::Int32Value;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    structs::Int32Value,
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Field {
     x: Int32Value,
 }
 impl Field {
-    #[must_use]
     pub fn get_data_field(&self) -> i32 {
         self.x.get_value()
     }
@@ -44,7 +34,7 @@ impl Field {
         write_start_tag(
             writer,
             "field",
-            vec![("x", self.x.get_value_string().as_str()).into()],
+            vec![("x", self.x.get_value_string().as_str())],
             true,
         );
     }

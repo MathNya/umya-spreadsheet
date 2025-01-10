@@ -1,13 +1,9 @@
 use std::io;
 
 use super::XlsxError;
-use crate::{
-    helper::const_str::PKG_MEDIA,
-    structs::{
-        Worksheet,
-        WriterManager,
-    },
-};
+use crate::helper::const_str::*;
+use crate::structs::Worksheet;
+use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,

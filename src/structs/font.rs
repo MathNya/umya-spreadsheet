@@ -1,84 +1,70 @@
 // front
-use std::{
-    io::Cursor,
-    str::FromStr,
-};
-
+use super::Bold;
+use super::Color;
+use super::FontCharSet;
+use super::FontFamilyNumbering;
+use super::FontName;
+use super::FontScheme;
+use super::FontSchemeValues;
+use super::FontSize;
+use super::Italic;
+use super::Strike;
+use super::Underline;
+use super::UnderlineValues;
+use super::VerticalTextAlignment;
+use crate::writer::driver::*;
 use md5::Digest;
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Bold,
-    Color,
-    FontCharSet,
-    FontFamilyNumbering,
-    FontName,
-    FontScheme,
-    FontSchemeValues,
-    FontSize,
-    Italic,
-    Strike,
-    Underline,
-    UnderlineValues,
-    VerticalTextAlignment,
-};
-use crate::writer::driver::{
-    write_end_tag,
-    write_start_tag,
-};
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use std::str::FromStr;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Font {
-    font_name:               FontName,
-    font_size:               FontSize,
-    font_family_numbering:   FontFamilyNumbering,
-    font_bold:               Bold,
-    font_italic:             Italic,
-    font_underline:          Underline,
-    font_strike:             Strike,
-    color:                   Color,
-    font_char_set:           FontCharSet,
-    font_scheme:             FontScheme,
+    font_name: FontName,
+    font_size: FontSize,
+    font_family_numbering: FontFamilyNumbering,
+    font_bold: Bold,
+    font_italic: Italic,
+    font_underline: Underline,
+    font_strike: Strike,
+    color: Color,
+    font_char_set: FontCharSet,
+    font_scheme: FontScheme,
     vertical_text_alignment: VerticalTextAlignment,
 }
 impl Font {
     // Charset
     pub const CHARSET_ANSI: i32 = 0;
-    pub const CHARSET_ARABIC: i32 = 178;
-    pub const CHARSET_BALTIC: i32 = 186;
-    pub const CHARSET_CHINESEBIG5: i32 = 136;
     pub const CHARSET_DEFAULT: i32 = 1;
-    pub const CHARSET_EASTEUROPE: i32 = 238;
-    pub const CHARSET_GB2312: i32 = 134;
-    pub const CHARSET_GREEK: i32 = 161;
+    pub const CHARSET_SYMBOL: i32 = 2;
+    pub const CHARSET_SHIFTJIS: i32 = 128;
     pub const CHARSET_HANGEUL: i32 = 129;
     pub const CHARSET_HANGUL: i32 = 129;
-    pub const CHARSET_HEBREW: i32 = 177;
-    pub const CHARSET_JOHAB: i32 = 130;
-    pub const CHARSET_MAC: i32 = 77;
+    pub const CHARSET_GB2312: i32 = 134;
+    pub const CHARSET_CHINESEBIG5: i32 = 136;
     pub const CHARSET_OEM: i32 = 255;
-    pub const CHARSET_RUSSIAN: i32 = 204;
-    pub const CHARSET_SHIFTJIS: i32 = 128;
-    pub const CHARSET_SYMBOL: i32 = 2;
-    pub const CHARSET_THAI: i32 = 222;
+    pub const CHARSET_JOHAB: i32 = 130;
+    pub const CHARSET_HEBREW: i32 = 177;
+    pub const CHARSET_ARABIC: i32 = 178;
+    pub const CHARSET_GREEK: i32 = 161;
     pub const CHARSET_TURKISH: i32 = 162;
     pub const CHARSET_VIETNAMESE: i32 = 163;
-    pub const UNDERLINE_DOUBLE: &'static str = "double";
-    pub const UNDERLINE_DOUBLEACCOUNTING: &'static str = "doubleAccounting";
+    pub const CHARSET_THAI: i32 = 222;
+    pub const CHARSET_EASTEUROPE: i32 = 238;
+    pub const CHARSET_RUSSIAN: i32 = 204;
+    pub const CHARSET_MAC: i32 = 77;
+    pub const CHARSET_BALTIC: i32 = 186;
+
     // Underline types
     pub const UNDERLINE_NONE: &'static str = "none";
+    pub const UNDERLINE_DOUBLE: &'static str = "double";
+    pub const UNDERLINE_DOUBLEACCOUNTING: &'static str = "doubleAccounting";
     pub const UNDERLINE_SINGLE: &'static str = "single";
     pub const UNDERLINE_SINGLEACCOUNTING: &'static str = "singleAccounting";
 
     #[inline]
-    #[must_use]
     pub fn get_font_name(&self) -> &FontName {
         &self.font_name
     }
@@ -95,7 +81,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_name(&self) -> &str {
         self.font_name.get_val()
     }
@@ -115,7 +100,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_size(&self) -> &FontSize {
         &self.font_size
     }
@@ -132,7 +116,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_size(&self) -> f64 {
         self.font_size.get_val()
     }
@@ -144,7 +127,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_family_numbering(&self) -> &FontFamilyNumbering {
         &self.font_family_numbering
     }
@@ -161,7 +143,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_family(&self) -> i32 {
         self.font_family_numbering.get_val()
     }
@@ -173,7 +154,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_bold(&self) -> &Bold {
         &self.font_bold
     }
@@ -190,7 +170,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_bold(&self) -> bool {
         self.font_bold.get_val()
     }
@@ -202,7 +181,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_italic(&self) -> &Italic {
         &self.font_italic
     }
@@ -219,7 +197,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_italic(&self) -> bool {
         self.font_italic.get_val()
     }
@@ -231,7 +208,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_underline(&self) -> &Underline {
         &self.font_underline
     }
@@ -248,7 +224,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_underline(&self) -> &str {
         self.font_underline.val.get_value_string()
     }
@@ -262,7 +237,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_strike(&self) -> &Strike {
         &self.font_strike
     }
@@ -279,7 +253,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_strikethrough(&self) -> bool {
         self.font_strike.get_val()
     }
@@ -291,7 +264,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_color(&self) -> &Color {
         &self.color
     }
@@ -308,7 +280,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_char_set(&self) -> &FontCharSet {
         &self.font_char_set
     }
@@ -325,7 +296,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_charset(&self) -> i32 {
         self.font_char_set.get_val()
     }
@@ -337,7 +307,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_font_scheme(&self) -> &FontScheme {
         &self.font_scheme
     }
@@ -354,7 +323,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_scheme(&self) -> &str {
         self.font_scheme.val.get_value_string()
     }
@@ -368,7 +336,6 @@ impl Font {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_vertical_text_alignment(&self) -> &VerticalTextAlignment {
         &self.vertical_text_alignment
     }
@@ -426,7 +393,10 @@ impl Font {
                     b"name" => {
                         self.font_name.set_attributes(reader, e);
                     }
-                    b"rFont" | b"sz" => {
+                    b"rFont" => {
+                        self.font_name.set_attributes(reader, e);
+                    }
+                    b"sz" => {
                         self.font_size.set_attributes(reader, e);
                     }
                     b"family" => {
@@ -459,7 +429,8 @@ impl Font {
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"font" | b"rPr" => return,
+                    b"font" => return,
+                    b"rPr" => return,
                     _ => (),
                 },
                 Ok(Event::Eof) => panic!("Error: Could not find {} end element", "font, rPr"),

@@ -1,47 +1,30 @@
 // a:srgbClr
+use super::super::StringValue;
+use super::PercentageType;
+use super::PositiveFixedPercentageType;
+
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    super::StringValue,
-    PercentageType,
-    PositiveFixedPercentageType,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct RgbColorModelHex {
-    val:                   StringValue,
-    luminance:             Option<PercentageType>,
-    luminance_modulation:  Option<PercentageType>,
-    luminance_offset:      Option<PercentageType>,
-    saturation:            Option<PercentageType>,
+    val: StringValue,
+    luminance: Option<PercentageType>,
+    luminance_modulation: Option<PercentageType>,
+    luminance_offset: Option<PercentageType>,
+    saturation: Option<PercentageType>,
     saturation_modulation: Option<PercentageType>,
-    shade:                 Option<PositiveFixedPercentageType>,
-    alpha:                 Option<PositiveFixedPercentageType>,
-    tint:                  Option<PositiveFixedPercentageType>,
+    shade: Option<PositiveFixedPercentageType>,
+    alpha: Option<PositiveFixedPercentageType>,
+    tint: Option<PositiveFixedPercentageType>,
 }
 
 impl RgbColorModelHex {
     #[inline]
-    #[must_use]
     pub fn get_val(&self) -> &str {
         self.val.get_value_str()
     }
@@ -53,7 +36,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_luminance(&self) -> Option<&PercentageType> {
         self.luminance.as_ref()
     }
@@ -69,7 +51,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_luminance_modulation(&self) -> Option<&PercentageType> {
         self.luminance_modulation.as_ref()
     }
@@ -85,7 +66,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_luminance_offset(&self) -> Option<&PercentageType> {
         self.luminance_offset.as_ref()
     }
@@ -101,7 +81,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_saturation(&self) -> Option<&PercentageType> {
         self.saturation.as_ref()
     }
@@ -117,7 +96,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_saturation_modulation(&self) -> Option<&PercentageType> {
         self.saturation_modulation.as_ref()
     }
@@ -133,7 +111,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_shade(&self) -> Option<&PositiveFixedPercentageType> {
         self.shade.as_ref()
     }
@@ -149,7 +126,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_alpha(&self) -> Option<&PositiveFixedPercentageType> {
         self.alpha.as_ref()
     }
@@ -165,7 +141,6 @@ impl RgbColorModelHex {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_tint(&self) -> Option<&PositiveFixedPercentageType> {
         self.tint.as_ref()
     }
@@ -266,7 +241,7 @@ impl RgbColorModelHex {
             write_start_tag(
                 writer,
                 "a:srgbClr",
-                vec![("val", self.val.get_value_str()).into()],
+                vec![("val", (self.val.get_value_str()))],
                 false,
             );
 
@@ -315,7 +290,7 @@ impl RgbColorModelHex {
             write_start_tag(
                 writer,
                 "a:srgbClr",
-                vec![("val", self.val.get_value_str()).into()],
+                vec![("val", (self.val.get_value_str()))],
                 true,
             );
         }

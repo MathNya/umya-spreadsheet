@@ -1,65 +1,47 @@
-use std::{
-    collections::HashMap,
-    io::Cursor,
-};
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    BooleanValue,
-    Cell,
-    Cells,
-    DoubleValue,
-    SharedStringTable,
-    Style,
-    Stylesheet,
-    UInt32Value,
-};
-use crate::{
-    helper::formula::FormulaToken,
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    traits::AdjustmentValue,
-    writer::driver::write_start_tag,
-};
+use super::BooleanValue;
+use super::Cell;
+use super::Cells;
+use super::DoubleValue;
+use super::SharedStringTable;
+use super::Style;
+use super::Stylesheet;
+use super::UInt32Value;
+use crate::helper::formula::*;
+use crate::reader::driver::*;
+use crate::traits::AdjustmentValue;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::collections::HashMap;
+use std::io::Cursor;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct Row {
-    row_num:       UInt32Value,
-    height:        DoubleValue,
-    descent:       DoubleValue,
-    thick_bot:     BooleanValue,
+    row_num: UInt32Value,
+    height: DoubleValue,
+    descent: DoubleValue,
+    thick_bot: BooleanValue,
     custom_height: BooleanValue,
-    hidden:        BooleanValue,
-    style:         Box<Style>,
+    hidden: BooleanValue,
+    style: Box<Style>,
 }
 impl Default for Row {
     #[inline]
     fn default() -> Self {
         Self {
-            row_num:       UInt32Value::default(),
-            height:        DoubleValue::default(),
-            descent:       DoubleValue::default(),
-            thick_bot:     BooleanValue::default(),
+            row_num: UInt32Value::default(),
+            height: DoubleValue::default(),
+            descent: DoubleValue::default(),
+            thick_bot: BooleanValue::default(),
             custom_height: BooleanValue::default(),
-            hidden:        BooleanValue::default(),
-            style:         Box::new(Style::default()),
+            hidden: BooleanValue::default(),
+            style: Box::new(Style::default()),
         }
     }
 }
 impl Row {
     #[inline]
-    #[must_use]
     pub fn get_row_num(&self) -> u32 {
         self.row_num.get_value()
     }
@@ -71,7 +53,6 @@ impl Row {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_height(&self) -> f64 {
         self.height.get_value()
     }
@@ -84,7 +65,6 @@ impl Row {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_descent(&self) -> f64 {
         self.descent.get_value()
     }
@@ -96,7 +76,6 @@ impl Row {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_thick_bot(&self) -> bool {
         self.thick_bot.get_value()
     }
@@ -108,7 +87,6 @@ impl Row {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_custom_height(&self) -> bool {
         self.custom_height.get_value()
     }
@@ -120,7 +98,6 @@ impl Row {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_hidden(&self) -> bool {
         self.hidden.get_value()
     }
@@ -132,7 +109,6 @@ impl Row {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
@@ -190,28 +166,14 @@ impl Row {
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"c" {
                     let mut obj = Cell::default();
-                    obj.set_attributes(
-                        reader,
-                        e,
-                        shared_string_table,
-                        stylesheet,
-                        true,
-                        formula_shared_list
-                    );
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, true, formula_shared_list);
                     cells.set_fast(obj);
                 }
             },
             Event::Start(ref e) => {
                 if e.name().into_inner() == b"c" {
                     let mut obj = Cell::default();
-                    obj.set_attributes(
-                        reader,
-                        e,
-                        shared_string_table,
-                        stylesheet,
-                        false,
-                        formula_shared_list
-                    );
+                    obj.set_attributes(reader, e, shared_string_table, stylesheet, false, formula_shared_list);
                     cells.set_fast(obj);
                 }
             },
@@ -228,43 +190,43 @@ impl Row {
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
         stylesheet: &mut Stylesheet,
-        spans: &str,
+        spans: String,
         empty_flag: bool,
     ) {
         let xf_index_str: String;
         let xf_index = stylesheet.set_style(self.get_style());
 
         // row
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         let row_num = self.row_num.get_value_string();
-        attributes.push(("r", &row_num).into());
+        attributes.push(("r", &row_num));
         if !empty_flag {
-            attributes.push(("spans", spans).into());
+            attributes.push(("spans", &spans));
         }
         let height = self.height.get_value_string();
         if self.height.get_value() != 0f64 {
-            attributes.push(("ht", &height).into());
+            attributes.push(("ht", &height));
         }
         if self.thick_bot.get_value() {
-            attributes.push(("thickBot", self.thick_bot.get_value_string()).into());
+            attributes.push(("thickBot", self.thick_bot.get_value_string()));
         }
         if self.custom_height.get_value() {
-            attributes.push(("customHeight", self.custom_height.get_value_string()).into());
+            attributes.push(("customHeight", self.custom_height.get_value_string()));
         }
         if xf_index > 0 {
-            attributes.push(("customFormat", "1").into());
+            attributes.push(("customFormat", "1"));
         }
         if self.hidden.get_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()).into());
+            attributes.push(("hidden", self.hidden.get_value_string()));
         }
         let descent = self.descent.get_value_string();
         if self.descent.has_value() {
-            attributes.push(("x14ac:dyDescent", &descent).into());
+            attributes.push(("x14ac:dyDescent", &descent));
         }
 
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
-            attributes.push(("s", &xf_index_str).into());
+            attributes.push(("s", &xf_index_str));
         }
 
         write_start_tag(writer, "row", attributes, empty_flag);

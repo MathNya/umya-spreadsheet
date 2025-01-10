@@ -1,41 +1,27 @@
 // xdr:grpSp
+use super::GroupShapeProperties;
+use super::NonVisualGroupShapeProperties;
+use super::Picture;
+use super::Shape;
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    GroupShapeProperties,
-    NonVisualGroupShapeProperties,
-    Picture,
-    Shape,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::raw::RawRelationships,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct GroupShape {
     non_visual_group_shape_properties: NonVisualGroupShapeProperties,
-    group_shape_properties:            GroupShapeProperties,
-    picture_collection:                Vec<Picture>,
-    shape_collection:                  Vec<Shape>,
+    group_shape_properties: GroupShapeProperties,
+    picture_collection: ThinVec<Picture>,
+    shape_collection: ThinVec<Shape>,
 }
 
 impl GroupShape {
     #[inline]
-    #[must_use]
     pub fn get_non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
         &self.non_visual_group_shape_properties
     }
@@ -53,7 +39,6 @@ impl GroupShape {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_group_shape_properties(&self) -> &GroupShapeProperties {
         &self.group_shape_properties
     }
@@ -69,13 +54,12 @@ impl GroupShape {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_picture_collection(&self) -> &[Picture] {
         &self.picture_collection
     }
 
     #[inline]
-    pub fn get_picture_collection_mut(&mut self) -> &mut Vec<Picture> {
+    pub fn get_picture_collection_mut(&mut self) -> &mut ThinVec<Picture> {
         &mut self.picture_collection
     }
 
@@ -85,13 +69,12 @@ impl GroupShape {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_shape_collection(&self) -> &[Shape] {
         &self.shape_collection
     }
 
     #[inline]
-    pub fn get_shape_collection_mut(&mut self) -> &mut Vec<Shape> {
+    pub fn get_shape_collection_mut(&mut self) -> &mut ThinVec<Shape> {
         &mut self.shape_collection
     }
 

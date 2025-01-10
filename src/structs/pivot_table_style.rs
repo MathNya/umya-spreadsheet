@@ -1,36 +1,24 @@
 // pivotTableStyleInfo
+use crate::reader::driver::*;
+use crate::structs::BooleanValue;
+use crate::structs::StringValue;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    structs::{
-        BooleanValue,
-        StringValue,
-    },
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotTableStyle {
-    name:                StringValue,
-    show_row_headers:    BooleanValue,
+    name: StringValue,
+    show_row_headers: BooleanValue,
     show_column_headers: BooleanValue,
-    show_row_stripes:    BooleanValue,
+    show_row_stripes: BooleanValue,
     show_column_stripes: BooleanValue,
-    show_last_column:    BooleanValue,
+    show_last_column: BooleanValue,
 }
 impl PivotTableStyle {
     #[inline]
-    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -43,7 +31,6 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_row_headers(&self) -> bool {
         self.show_row_headers.get_value()
     }
@@ -55,7 +42,6 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_column_headers(&self) -> bool {
         self.show_column_headers.get_value()
     }
@@ -67,7 +53,6 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_row_stripes(&self) -> bool {
         self.show_row_stripes.get_value()
     }
@@ -79,7 +64,6 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_column_stripes(&self) -> bool {
         self.show_column_stripes.get_value()
     }
@@ -91,7 +75,6 @@ impl PivotTableStyle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_last_column(&self) -> bool {
         self.show_last_column.get_value()
     }
@@ -123,12 +106,12 @@ impl PivotTableStyle {
             writer,
             "pivotTableStyleInfo",
             vec![
-                ("dataField", self.name.get_value_str()).into(),
-                ("showAll", self.show_row_headers.get_value_string()).into(),
-                ("showAll", self.show_column_headers.get_value_string()).into(),
-                ("showAll", self.show_row_stripes.get_value_string()).into(),
-                ("showAll", self.show_column_stripes.get_value_string()).into(),
-                ("showAll", self.show_last_column.get_value_string()).into(),
+                ("dataField", self.name.get_value_str()),
+                ("showAll", self.show_row_headers.get_value_string()),
+                ("showAll", self.show_column_headers.get_value_string()),
+                ("showAll", self.show_row_stripes.get_value_string()),
+                ("showAll", self.show_column_stripes.get_value_string()),
+                ("showAll", self.show_last_column.get_value_string()),
             ],
             true,
         );

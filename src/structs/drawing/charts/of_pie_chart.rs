@@ -1,47 +1,32 @@
 // c:ofPieChart
+use super::AreaChartSeries;
+use super::AreaChartSeriesList;
+use super::DataLabels;
+use super::GapWidth;
+use super::OfPieType;
+use super::SecondPieSize;
+use super::SeriesLines;
+use super::VaryColors;
+use crate::reader::driver::*;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    AreaChartSeries,
-    AreaChartSeriesList,
-    DataLabels,
-    GapWidth,
-    OfPieType,
-    SecondPieSize,
-    SeriesLines,
-    VaryColors,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct OfPieChart {
-    of_pie_type:            OfPieType,
-    vary_colors:            VaryColors,
+    of_pie_type: OfPieType,
+    vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels:            DataLabels,
-    gap_width:              GapWidth,
-    second_pie_size:        SecondPieSize,
-    series_lines:           SeriesLines,
+    data_labels: DataLabels,
+    gap_width: GapWidth,
+    second_pie_size: SecondPieSize,
+    series_lines: SeriesLines,
 }
 
 impl OfPieChart {
-    #[must_use]
     pub fn get_of_pie_type(&self) -> &OfPieType {
         &self.of_pie_type
     }
@@ -55,7 +40,6 @@ impl OfPieChart {
         self
     }
 
-    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -69,7 +53,6 @@ impl OfPieChart {
         self
     }
 
-    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -83,7 +66,6 @@ impl OfPieChart {
         self
     }
 
-    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -97,7 +79,6 @@ impl OfPieChart {
         self
     }
 
-    #[must_use]
     pub fn get_gap_width(&self) -> &GapWidth {
         &self.gap_width
     }
@@ -111,7 +92,6 @@ impl OfPieChart {
         self
     }
 
-    #[must_use]
     pub fn get_second_pie_size(&self) -> &SecondPieSize {
         &self.second_pie_size
     }
@@ -125,7 +105,6 @@ impl OfPieChart {
         self
     }
 
-    #[must_use]
     pub fn get_series_lines(&self) -> &SeriesLines {
         &self.series_lines
     }
@@ -158,7 +137,7 @@ impl OfPieChart {
                         self.data_labels.set_attributes(reader, e);
                     }
                     b"c:serLines" => {
-                        SeriesLines::set_attributes(reader, e);
+                        self.series_lines.set_attributes(reader, e);
                     }
                     _ => (),
                 }
@@ -189,7 +168,7 @@ impl OfPieChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:ofPieChart
         write_start_tag(writer, "c:ofPieChart", vec![], false);
 
@@ -201,7 +180,7 @@ impl OfPieChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:dLbls
@@ -214,7 +193,7 @@ impl OfPieChart {
         self.second_pie_size.write_to(writer);
 
         // c:serLines
-        SeriesLines::write_to(writer);
+        self.series_lines.write_to(writer);
 
         write_end_tag(writer, "c:ofPieChart");
     }

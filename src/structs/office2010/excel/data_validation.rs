@@ -1,51 +1,34 @@
 // x14:dataValidation
+use crate::reader::driver::*;
+use crate::structs::office::excel::ReferenceSequence;
+use crate::structs::office2010::excel::DataValidationForumla1;
+use crate::structs::office2010::excel::DataValidationForumla2;
+use crate::structs::BooleanValue;
+use crate::structs::DataValidationOperatorValues;
+use crate::structs::DataValidationValues;
+use crate::structs::EnumValue;
+use crate::structs::StringValue;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    reader::driver::get_attribute,
-    structs::{
-        BooleanValue,
-        DataValidationOperatorValues,
-        DataValidationValues,
-        EnumValue,
-        StringValue,
-        office::excel::ReferenceSequence,
-        office2010::excel::{
-            DataValidationForumla1,
-            DataValidationForumla2,
-        },
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type:             EnumValue<DataValidationValues>,
-    operator:           EnumValue<DataValidationOperatorValues>,
-    allow_blank:        BooleanValue,
+    r#type: EnumValue<DataValidationValues>,
+    operator: EnumValue<DataValidationOperatorValues>,
+    allow_blank: BooleanValue,
     show_input_message: BooleanValue,
     show_error_message: BooleanValue,
-    prompt_title:       StringValue,
-    prompt:             StringValue,
+    prompt_title: StringValue,
+    prompt: StringValue,
     reference_sequence: ReferenceSequence,
-    formula1:           Option<Box<DataValidationForumla1>>,
-    formula2:           Option<Box<DataValidationForumla2>>,
+    formula1: Option<Box<DataValidationForumla1>>,
+    formula2: Option<Box<DataValidationForumla2>>,
 }
 impl DataValidation {
     #[inline]
-    #[must_use]
     pub fn get_type(&self) -> &DataValidationValues {
         self.r#type.get_value()
     }
@@ -57,7 +40,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
         self.operator.get_value()
     }
@@ -69,7 +51,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_allow_blank(&self) -> bool {
         self.allow_blank.get_value()
     }
@@ -81,7 +62,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_input_message(&self) -> bool {
         self.show_input_message.get_value()
     }
@@ -93,7 +73,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_show_error_message(&self) -> bool {
         self.show_error_message.get_value()
     }
@@ -105,7 +84,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_prompt_title(&self) -> &str {
         self.prompt_title.get_value_str()
     }
@@ -117,7 +95,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_prompt(&self) -> &str {
         self.prompt.get_value_str()
     }
@@ -129,7 +106,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_reference_sequence(&self) -> &ReferenceSequence {
         &self.reference_sequence
     }
@@ -146,7 +122,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula1(&self) -> Option<&DataValidationForumla1> {
         self.formula1.as_deref()
     }
@@ -169,7 +144,6 @@ impl DataValidation {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula2(&self) -> Option<&DataValidationForumla2> {
         self.formula2.as_deref()
     }
@@ -267,54 +241,48 @@ impl DataValidation {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x14:dataValidation
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
 
         if self.r#type.has_value() {
-            attributes.push(("type", self.r#type.get_value_string()).into());
+            attributes.push(("type", self.r#type.get_value_string()));
         }
 
         if self.allow_blank.has_value() {
-            attributes.push(("allowBlank", self.allow_blank.get_value_string()).into());
+            attributes.push(("allowBlank", self.allow_blank.get_value_string()));
         }
 
         if self.show_input_message.has_value() {
-            attributes.push(
-                (
-                    "showInputMessage",
-                    self.show_input_message.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "showInputMessage",
+                self.show_input_message.get_value_string(),
+            ));
         }
 
         if self.operator.has_value() {
-            attributes.push(("operator", self.operator.get_value_string()).into());
+            attributes.push(("operator", self.operator.get_value_string()));
         }
 
         if self.show_error_message.has_value() {
-            attributes.push(
-                (
-                    "showErrorMessage",
-                    self.show_error_message.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "showErrorMessage",
+                self.show_error_message.get_value_string(),
+            ));
         }
 
         if self.prompt_title.has_value() {
-            attributes.push(("promptTitle", self.prompt_title.get_value_str()).into());
+            attributes.push(("promptTitle", self.prompt_title.get_value_str()));
         }
 
         if self.prompt.has_value() {
-            attributes.push(("prompt", self.prompt.get_value_str()).into());
+            attributes.push(("prompt", self.prompt.get_value_str()));
         }
 
         write_start_tag(writer, "x14:dataValidation", attributes, false);
         if let Some(v) = &self.formula1 {
-            v.write_to(writer);
+            v.write_to(writer)
         }
         if let Some(v) = &self.formula2 {
-            v.write_to(writer);
+            v.write_to(writer)
         }
         self.reference_sequence.write_to(writer);
         write_end_tag(writer, "x14:dataValidation");

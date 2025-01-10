@@ -1,30 +1,15 @@
 // a:prstGeom
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::adjust_value_list::AdjustValueList;
-use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetGeometry {
-    geometry:          Box<str>,
+    geometry: Box<str>,
     adjust_value_list: AdjustValueList,
 }
 
@@ -219,7 +204,6 @@ impl PresetGeometry {
     pub const GEOMETRY_WEDGEROUNDRECTCALLOUT: &'static str = "wedgeRoundRectCallout";
 
     #[inline]
-    #[must_use]
     pub fn get_geometry(&self) -> &str {
         &self.geometry
     }
@@ -230,7 +214,6 @@ impl PresetGeometry {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_adjust_value_list(&self) -> &AdjustValueList {
         &self.adjust_value_list
     }
@@ -270,12 +253,7 @@ impl PresetGeometry {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:prstGeom
-        write_start_tag(
-            writer,
-            "a:prstGeom",
-            vec![("prst", &self.geometry).into()],
-            false,
-        );
+        write_start_tag(writer, "a:prstGeom", vec![("prst", &self.geometry)], false);
 
         // a:avLst
         self.adjust_value_list.write_to(writer);

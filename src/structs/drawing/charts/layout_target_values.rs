@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use super::super::super::EnumTrait;
+use std::str::FromStr;
 #[derive(Clone, Debug)]
 pub enum LayoutTargetValues {
     Inner,
@@ -21,7 +20,6 @@ impl EnumTrait for LayoutTargetValues {
 }
 impl FromStr for LayoutTargetValues {
     type Err = ();
-
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "inner" => Ok(Self::Inner),

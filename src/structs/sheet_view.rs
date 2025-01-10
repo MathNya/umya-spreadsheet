@@ -1,54 +1,36 @@
 // sheetView
+use super::BooleanValue;
+use super::EnumValue;
+use super::Pane;
+use super::Selection;
+use super::SheetViewValues;
+use super::StringValue;
+use super::UInt32Value;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    BooleanValue,
-    EnumValue,
-    Pane,
-    Selection,
-    SheetViewValues,
-    StringValue,
-    UInt32Value,
-};
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct SheetView {
-    show_grid_lines:              BooleanValue,
-    tab_selected:                 BooleanValue,
-    workbook_view_id:             UInt32Value,
-    pane:                         Option<Box<Pane>>,
-    view:                         EnumValue<SheetViewValues>,
-    zoom_scale:                   UInt32Value,
-    zoom_scale_normal:            UInt32Value,
-    zoom_scale_page_layout_view:  UInt32Value,
+    show_grid_lines: BooleanValue,
+    tab_selected: BooleanValue,
+    workbook_view_id: UInt32Value,
+    pane: Option<Box<Pane>>,
+    view: EnumValue<SheetViewValues>,
+    zoom_scale: UInt32Value,
+    zoom_scale_normal: UInt32Value,
+    zoom_scale_page_layout_view: UInt32Value,
     zoom_scale_sheet_layout_view: UInt32Value,
-    top_left_cell:                StringValue,
-    selection:                    Vec<Selection>,
+    top_left_cell: StringValue,
+    selection: ThinVec<Selection>,
 }
 
 impl SheetView {
     #[inline]
-    #[must_use]
     pub fn get_show_grid_lines(&self) -> bool {
         self.show_grid_lines.get_value()
     }
@@ -60,7 +42,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_tab_selected(&self) -> bool {
         self.tab_selected.get_value()
     }
@@ -72,7 +53,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_workbook_view_id(&self) -> u32 {
         self.workbook_view_id.get_value()
     }
@@ -84,7 +64,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_pane(&self) -> Option<&Pane> {
         self.pane.as_deref()
     }
@@ -101,7 +80,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_view(&self) -> &SheetViewValues {
         self.view.get_value()
     }
@@ -113,7 +91,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_zoom_scale(&self) -> u32 {
         self.zoom_scale.get_value()
     }
@@ -125,7 +102,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_zoom_scale_normal(&self) -> u32 {
         self.zoom_scale_normal.get_value()
     }
@@ -137,7 +113,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_zoom_scale_page_layout_view(&self) -> u32 {
         self.zoom_scale_page_layout_view.get_value()
     }
@@ -149,7 +124,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_zoom_scale_sheet_layout_view(&self) -> u32 {
         self.zoom_scale_sheet_layout_view.get_value()
     }
@@ -161,7 +135,6 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_top_left_cell(&self) -> &str {
         self.top_left_cell.get_value_str()
     }
@@ -173,13 +146,12 @@ impl SheetView {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_selection(&self) -> &[Selection] {
         &self.selection
     }
 
     #[inline]
-    pub fn get_selection_mut(&mut self) -> &mut Vec<Selection> {
+    pub fn get_selection_mut(&mut self) -> &mut ThinVec<Selection> {
         &mut self.selection
     }
 
@@ -249,38 +221,38 @@ impl SheetView {
         let empty_flag = self.pane.is_none() && self.selection.is_empty();
 
         // sheetView
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.show_grid_lines.has_value() {
-            attributes.push(("showGridLines", self.show_grid_lines.get_value_string()).into());
+            attributes.push(("showGridLines", self.show_grid_lines.get_value_string()));
         }
         if self.tab_selected.get_value() {
-            attributes.push(("tabSelected", self.tab_selected.get_value_string()).into());
+            attributes.push(("tabSelected", self.tab_selected.get_value_string()));
         }
         if self.view.has_value() {
-            attributes.push(("view", self.view.get_value_string()).into());
+            attributes.push(("view", self.view.get_value_string()));
         }
         let zoom_scale = self.zoom_scale.get_value_string();
         if self.zoom_scale.has_value() {
-            attributes.push(("zoomScale", &zoom_scale).into());
+            attributes.push(("zoomScale", &zoom_scale));
         }
         let zoom_scale_normal = self.zoom_scale_normal.get_value_string();
         if self.zoom_scale_normal.has_value() {
-            attributes.push(("zoomScaleNormal", &zoom_scale_normal).into());
+            attributes.push(("zoomScaleNormal", &zoom_scale_normal));
         }
         let zoom_scale_page_layout_view = self.zoom_scale_page_layout_view.get_value_string();
         if self.zoom_scale_page_layout_view.has_value() {
-            attributes.push(("zoomScalePageLayoutView", &zoom_scale_page_layout_view).into());
+            attributes.push(("zoomScalePageLayoutView", &zoom_scale_page_layout_view));
         }
         let zoom_scale_sheet_layout_view = self.zoom_scale_sheet_layout_view.get_value_string();
         if self.zoom_scale_sheet_layout_view.has_value() {
-            attributes.push(("zoomScaleSheetLayoutView", &zoom_scale_sheet_layout_view).into());
+            attributes.push(("zoomScaleSheetLayoutView", &zoom_scale_sheet_layout_view));
         }
         let top_left_cell = self.top_left_cell.get_value_str();
         if self.top_left_cell.has_value() {
-            attributes.push(("topLeftCell", top_left_cell).into());
+            attributes.push(("topLeftCell", top_left_cell));
         }
         let workbook_view_id = self.workbook_view_id.get_value_string();
-        attributes.push(("workbookViewId", &workbook_view_id).into());
+        attributes.push(("workbookViewId", &workbook_view_id));
 
         write_start_tag(writer, "sheetView", attributes, empty_flag);
 
@@ -289,7 +261,7 @@ impl SheetView {
         }
         // pane
         if let Some(v) = &self.pane {
-            v.write_to(writer);
+            v.write_to(writer)
         }
         // selection
         for obj in &self.selection {

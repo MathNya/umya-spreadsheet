@@ -1,43 +1,29 @@
 // c:scatterChart
+use super::AreaChartSeries;
+use super::AreaChartSeriesList;
+use super::AxisId;
+use super::DataLabels;
+use super::ScatterStyle;
+use super::VaryColors;
+use crate::reader::driver::*;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    AreaChartSeries,
-    AreaChartSeriesList,
-    AxisId,
-    DataLabels,
-    ScatterStyle,
-    VaryColors,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct ScatterChart {
-    scatter_style:          ScatterStyle,
-    vary_colors:            VaryColors,
+    scatter_style: ScatterStyle,
+    vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels:            DataLabels,
-    axis_id:                Vec<AxisId>,
+    data_labels: DataLabels,
+    axis_id: ThinVec<AxisId>,
 }
 
 impl ScatterChart {
-    #[must_use]
     pub fn get_scatter_style(&self) -> &ScatterStyle {
         &self.scatter_style
     }
@@ -51,7 +37,6 @@ impl ScatterChart {
         self
     }
 
-    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -65,7 +50,6 @@ impl ScatterChart {
         self
     }
 
-    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -79,7 +63,6 @@ impl ScatterChart {
         self
     }
 
-    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -93,16 +76,15 @@ impl ScatterChart {
         self
     }
 
-    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut ScatterChart {
+    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut ScatterChart {
         self.axis_id = value.into();
         self
     }
@@ -158,7 +140,7 @@ impl ScatterChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:scatterChart
         write_start_tag(writer, "c:scatterChart", vec![], false);
 
@@ -170,7 +152,7 @@ impl ScatterChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:dLbls

@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use super::super::super::EnumTrait;
+use std::str::FromStr;
 #[derive(Clone, Debug)]
 pub enum ScatterStyleValues {
     Line,
@@ -27,7 +26,6 @@ impl EnumTrait for ScatterStyleValues {
 }
 impl FromStr for ScatterStyleValues {
     type Err = ();
-
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "line" => Ok(Self::Line),

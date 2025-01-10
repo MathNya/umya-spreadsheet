@@ -1,23 +1,11 @@
 // c:formatCode
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
 
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
-    xml_read_loop,
-};
+use crate::xml_read_loop;
 
 #[derive(Clone, Default, Debug)]
 pub struct FormatCode {
@@ -25,7 +13,6 @@ pub struct FormatCode {
 }
 
 impl FormatCode {
-    #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }

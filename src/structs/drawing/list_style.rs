@@ -1,39 +1,22 @@
 // a:lstStyle
-use std::{
-    collections::HashMap,
-    io::Cursor,
-};
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    EffectList,
-    TextParagraphPropertiesType,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use super::EffectList;
+use super::TextParagraphPropertiesType;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::collections::HashMap;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct ListStyle {
-    effect_list:                    Option<Box<EffectList>>,
+    effect_list: Option<Box<EffectList>>,
     text_paragraph_properties_type: HashMap<Box<str>, Box<TextParagraphPropertiesType>>,
 }
 
 impl ListStyle {
     #[inline]
-    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }

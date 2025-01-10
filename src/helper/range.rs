@@ -1,11 +1,10 @@
-use crate::helper::coordinate::index_from_coordinate;
+use crate::helper::coordinate::*;
 
 /// `(col, row)`
 pub type BasicCellIndex = (u32, u32);
 
 /// # Returns
 /// `Vec<(col, row)>`
-#[must_use]
 pub fn get_coordinate_list(range_str: &str) -> Vec<BasicCellIndex> {
     let (row_start, row_end, col_start, col_end) = get_start_and_end_point(range_str);
 
@@ -14,7 +13,6 @@ pub fn get_coordinate_list(range_str: &str) -> Vec<BasicCellIndex> {
         .collect()
 }
 
-#[must_use]
 pub fn get_start_and_end_point(range_str: &str) -> (u32, u32, u32, u32) {
     let coordinate_collection: Vec<&str> = range_str.split(':').collect();
 
@@ -67,13 +65,11 @@ pub fn get_start_and_end_point(range_str: &str) -> (u32, u32, u32, u32) {
 }
 
 #[inline]
-#[must_use]
 pub fn get_split_range(range: &str) -> Vec<&str> {
     range.split(':').collect()
 }
 
 #[inline]
-#[must_use]
 pub fn get_join_range(coordinate_list: &[String]) -> String {
     coordinate_list.join(":")
 }

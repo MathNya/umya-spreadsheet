@@ -1,29 +1,23 @@
+use crate::structs::DoubleValue;
+
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    reader::driver::get_attribute,
-    structs::DoubleValue,
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct PageMargins {
-    left:   DoubleValue,
-    right:  DoubleValue,
-    top:    DoubleValue,
+    left: DoubleValue,
+    right: DoubleValue,
+    top: DoubleValue,
     bottom: DoubleValue,
     header: DoubleValue,
     footer: DoubleValue,
 }
 impl PageMargins {
     #[inline]
-    #[must_use]
     pub fn get_left(&self) -> f64 {
         self.left.get_value()
     }
@@ -35,7 +29,6 @@ impl PageMargins {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_right(&self) -> f64 {
         self.right.get_value()
     }
@@ -47,7 +40,6 @@ impl PageMargins {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_top(&self) -> f64 {
         self.top.get_value()
     }
@@ -59,7 +51,6 @@ impl PageMargins {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_bottom(&self) -> f64 {
         self.bottom.get_value()
     }
@@ -71,7 +62,6 @@ impl PageMargins {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_header(&self) -> f64 {
         self.header.get_value()
     }
@@ -83,7 +73,6 @@ impl PageMargins {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_footer(&self) -> f64 {
         self.footer.get_value()
     }
@@ -114,19 +103,19 @@ impl PageMargins {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pageMargins
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         let left = self.left.get_value_string();
-        attributes.push(("left", &left).into());
+        attributes.push(("left", &left));
         let right = self.right.get_value_string();
-        attributes.push(("right", &right).into());
+        attributes.push(("right", &right));
         let top = self.top.get_value_string();
-        attributes.push(("top", &top).into());
+        attributes.push(("top", &top));
         let bottom = self.bottom.get_value_string();
-        attributes.push(("bottom", &bottom).into());
+        attributes.push(("bottom", &bottom));
         let header = self.header.get_value_string();
-        attributes.push(("header", &header).into());
+        attributes.push(("header", &header));
         let footer = self.footer.get_value_string();
-        attributes.push(("footer", &footer).into());
+        attributes.push(("footer", &footer));
         write_start_tag(writer, "pageMargins", attributes, true);
     }
 }

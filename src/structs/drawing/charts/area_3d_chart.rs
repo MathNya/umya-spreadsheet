@@ -1,43 +1,29 @@
 // c:area3DChart
+use super::AreaChartSeries;
+use super::AreaChartSeriesList;
+use super::AxisId;
+use super::DataLabels;
+use super::Grouping;
+use super::VaryColors;
+use crate::reader::driver::*;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    AreaChartSeries,
-    AreaChartSeriesList,
-    AxisId,
-    DataLabels,
-    Grouping,
-    VaryColors,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct Area3DChart {
-    grouping:               Grouping,
-    vary_colors:            VaryColors,
+    grouping: Grouping,
+    vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels:            Option<Box<DataLabels>>,
-    axis_id:                Vec<AxisId>,
+    data_labels: Option<Box<DataLabels>>,
+    axis_id: ThinVec<AxisId>,
 }
 
 impl Area3DChart {
-    #[must_use]
     pub fn get_grouping(&self) -> &Grouping {
         &self.grouping
     }
@@ -51,7 +37,6 @@ impl Area3DChart {
         self
     }
 
-    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -65,7 +50,6 @@ impl Area3DChart {
         self
     }
 
-    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -79,7 +63,6 @@ impl Area3DChart {
         self
     }
 
-    #[must_use]
     pub fn get_data_labels(&self) -> Option<&DataLabels> {
         self.data_labels.as_deref()
     }
@@ -93,16 +76,15 @@ impl Area3DChart {
         self
     }
 
-    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut Self {
+    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut Self {
         self.axis_id = value.into();
         self
     }
@@ -160,7 +142,7 @@ impl Area3DChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:area3DChart
         write_start_tag(writer, "c:area3DChart", vec![], false);
 
@@ -172,7 +154,7 @@ impl Area3DChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:dLbls
