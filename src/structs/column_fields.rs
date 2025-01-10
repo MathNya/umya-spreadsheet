@@ -1,37 +1,25 @@
 // colFields
+use crate::reader::driver::*;
+use crate::structs::Field;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::Field,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct ColumnFields {
-    list: Vec<Field>,
+    list: ThinVec<Field>,
 }
 impl ColumnFields {
     #[inline]
-    #[must_use]
     pub fn get_list(&self) -> &[Field] {
         &self.list
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut Vec<Field> {
+    pub fn get_list_mut(&mut self) -> &mut ThinVec<Field> {
         &mut self.list
     }
 
@@ -73,7 +61,7 @@ impl ColumnFields {
         write_start_tag(
             writer,
             "colFields",
-            vec![("count", self.list.len().to_string()).into()],
+            vec![("count", self.list.len().to_string().as_str())],
             false,
         );
 

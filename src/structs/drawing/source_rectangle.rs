@@ -1,17 +1,11 @@
 // a:srcRect
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use crate::StringValue;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    StringValue,
-    reader::driver::get_attribute_value,
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct SourceRectangle {
@@ -27,7 +21,6 @@ impl SourceRectangle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_t(&self) -> Option<&str> {
         self.t.get_value()
     }
@@ -38,7 +31,6 @@ impl SourceRectangle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_l(&self) -> Option<&str> {
         self.l.get_value()
     }
@@ -49,7 +41,6 @@ impl SourceRectangle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_r(&self) -> Option<&str> {
         self.r.get_value()
     }
@@ -60,7 +51,6 @@ impl SourceRectangle {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_b(&self) -> Option<&str> {
         self.b.get_value()
     }
@@ -83,19 +73,19 @@ impl SourceRectangle {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srcRect
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
 
         if let Some(v) = self.t.get_value() {
-            attributes.push(("t", v).into());
+            attributes.push(("t", v))
         }
         if let Some(v) = self.l.get_value() {
-            attributes.push(("l", v).into());
+            attributes.push(("l", v))
         }
         if let Some(v) = self.r.get_value() {
-            attributes.push(("r", v).into());
+            attributes.push(("r", v))
         }
         if let Some(v) = self.b.get_value() {
-            attributes.push(("b", v).into());
+            attributes.push(("b", v))
         }
         write_start_tag(writer, "a:srcRect", attributes, true);
     }

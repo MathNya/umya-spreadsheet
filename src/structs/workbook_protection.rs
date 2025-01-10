@@ -1,48 +1,33 @@
 // workbookProtection
+use super::BooleanValue;
+use super::StringValue;
+use super::UInt32Value;
+use crate::helper::crypt::*;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use super::{
-    BooleanValue,
-    StringValue,
-    UInt32Value,
-};
-use crate::{
-    helper::crypt::{
-        encrypt_revisions_protection,
-        encrypt_workbook_protection,
-    },
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    writer::driver::write_start_tag,
-};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct WorkbookProtection {
-    workbook_algorithm_name:  StringValue,
-    workbook_hash_value:      StringValue,
-    workbook_salt_value:      StringValue,
-    workbook_spin_count:      UInt32Value,
-    workbook_password:        StringValue,
+    workbook_algorithm_name: StringValue,
+    workbook_hash_value: StringValue,
+    workbook_salt_value: StringValue,
+    workbook_spin_count: UInt32Value,
+    workbook_password: StringValue,
     revisions_algorithm_name: StringValue,
-    revisions_hash_value:     StringValue,
-    revisions_salt_value:     StringValue,
-    revisions_spin_count:     UInt32Value,
-    revisions_password:       StringValue,
-    lock_revision:            BooleanValue,
-    lock_structure:           BooleanValue,
-    lock_windows:             BooleanValue,
+    revisions_hash_value: StringValue,
+    revisions_salt_value: StringValue,
+    revisions_spin_count: UInt32Value,
+    revisions_password: StringValue,
+    lock_revision: BooleanValue,
+    lock_structure: BooleanValue,
+    lock_windows: BooleanValue,
 }
 impl WorkbookProtection {
     #[inline]
-    #[must_use]
     pub fn get_workbook_algorithm_name(&self) -> &str {
         self.workbook_algorithm_name.get_value_str()
     }
@@ -54,7 +39,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_workbook_hash_value(&self) -> &str {
         self.workbook_hash_value.get_value_str()
     }
@@ -66,7 +50,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_workbook_salt_value(&self) -> &str {
         self.workbook_salt_value.get_value_str()
     }
@@ -78,7 +61,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_workbook_spin_count(&self) -> u32 {
         self.workbook_spin_count.get_value()
     }
@@ -90,7 +72,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_workbook_password_raw(&self) -> &str {
         self.workbook_password.get_value_str()
     }
@@ -108,7 +89,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_revisions_algorithm_name(&self) -> &str {
         self.revisions_algorithm_name.get_value_str()
     }
@@ -120,7 +100,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_revisions_hash_value(&self) -> &str {
         self.revisions_hash_value.get_value_str()
     }
@@ -132,7 +111,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_revisions_salt_value(&self) -> &str {
         self.revisions_salt_value.get_value_str()
     }
@@ -144,7 +122,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_revisions_spin_count(&self) -> u32 {
         self.revisions_spin_count.get_value()
     }
@@ -156,7 +133,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_revisions_password_raw(&self) -> &str {
         self.revisions_password.get_value_str()
     }
@@ -174,7 +150,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_lock_revision(&self) -> bool {
         self.lock_revision.get_value()
     }
@@ -186,7 +161,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_lock_structure(&self) -> bool {
         self.lock_structure.get_value()
     }
@@ -198,7 +172,6 @@ impl WorkbookProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_lock_windows(&self) -> bool {
         self.lock_windows.get_value()
     }
@@ -243,83 +216,65 @@ impl WorkbookProtection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // workbookProtection
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.workbook_algorithm_name.has_value() {
-            attributes.push(
-                (
-                    "workbookAlgorithmName",
-                    self.workbook_algorithm_name.get_value_str(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "workbookAlgorithmName",
+                self.workbook_algorithm_name.get_value_str(),
+            ));
         }
         if self.workbook_hash_value.has_value() {
-            attributes.push(
-                (
-                    "workbookHashValue",
-                    self.workbook_hash_value.get_value_str(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "workbookHashValue",
+                self.workbook_hash_value.get_value_str(),
+            ));
         }
         if self.workbook_salt_value.has_value() {
-            attributes.push(
-                (
-                    "workbookSaltValue",
-                    self.workbook_salt_value.get_value_str(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "workbookSaltValue",
+                self.workbook_salt_value.get_value_str(),
+            ));
         }
         let workbook_spin_count = self.workbook_spin_count.get_value_string();
         if self.workbook_spin_count.has_value() {
-            attributes.push(("workbookSpinCount", &workbook_spin_count).into());
+            attributes.push(("workbookSpinCount", &workbook_spin_count));
         }
         if self.workbook_password.has_value() {
-            attributes.push(("workbookPassword", self.workbook_password.get_value_str()).into());
+            attributes.push(("workbookPassword", self.workbook_password.get_value_str()));
         }
         if self.revisions_algorithm_name.has_value() {
-            attributes.push(
-                (
-                    "revisionsAlgorithmName",
-                    self.revisions_algorithm_name.get_value_str(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "revisionsAlgorithmName",
+                self.revisions_algorithm_name.get_value_str(),
+            ));
         }
         if self.revisions_hash_value.has_value() {
-            attributes.push(
-                (
-                    "revisionsHashValue",
-                    self.revisions_hash_value.get_value_str(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "revisionsHashValue",
+                self.revisions_hash_value.get_value_str(),
+            ));
         }
         if self.revisions_salt_value.has_value() {
-            attributes.push(
-                (
-                    "revisionsSaltValue",
-                    self.revisions_salt_value.get_value_str(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "revisionsSaltValue",
+                self.revisions_salt_value.get_value_str(),
+            ));
         }
         let revisions_spin_count = self.revisions_spin_count.get_value_string();
         if self.revisions_spin_count.has_value() {
-            attributes.push(("revisionsSpinCount", &revisions_spin_count).into());
+            attributes.push(("revisionsSpinCount", &revisions_spin_count));
         }
         if self.revisions_password.has_value() {
-            attributes.push(("revisionsPassword", self.revisions_password.get_value_str()).into());
+            attributes.push(("revisionsPassword", self.revisions_password.get_value_str()));
         }
         if self.lock_revision.has_value() {
-            attributes.push(("lockRevision", self.lock_revision.get_value_string()).into());
+            attributes.push(("lockRevision", self.lock_revision.get_value_string()));
         }
         if self.lock_structure.has_value() {
-            attributes.push(("lockStructure", self.lock_structure.get_value_string()).into());
+            attributes.push(("lockStructure", self.lock_structure.get_value_string()));
         }
         if self.lock_windows.has_value() {
-            attributes.push(("lockWindows", self.lock_windows.get_value_string()).into());
+            attributes.push(("lockWindows", self.lock_windows.get_value_string()));
         }
 
         write_start_tag(writer, "workbookProtection", attributes, true);

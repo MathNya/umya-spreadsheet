@@ -1,30 +1,17 @@
 // fronts
+use crate::reader::driver::*;
+use crate::structs::Font;
+use crate::structs::Style;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::{
-        Font,
-        Style,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Fonts {
-    font: Vec<Font>,
+    font: ThinVec<Font>,
 }
 
 impl Fonts {
@@ -35,7 +22,7 @@ impl Fonts {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_font_mut(&mut self) -> &mut Vec<Font> {
+    pub(crate) fn get_font_mut(&mut self) -> &mut ThinVec<Font> {
         &mut self.font
     }
 
@@ -99,8 +86,8 @@ impl Fonts {
                 writer,
                 "fonts",
                 vec![
-                    ("count", &self.font.len().to_string()).into(),
-                    ("x14ac:knownFonts", "1").into(),
+                    ("count", &self.font.len().to_string()),
+                    ("x14ac:knownFonts", "1"),
                 ],
                 false,
             );

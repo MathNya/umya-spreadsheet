@@ -1,62 +1,41 @@
 // xdr:wsDr
+use super::ConnectionShape;
+use super::GraphicFrame;
+use super::OneCellAnchor;
+use super::Picture;
+use super::Shape;
+use super::TwoCellAnchor;
+use crate::helper::const_str::*;
+use crate::reader::driver::*;
+use crate::structs::raw::RawRelationships;
+use crate::structs::Chart;
+use crate::structs::Image;
+use crate::structs::OleObjects;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    ConnectionShape,
-    GraphicFrame,
-    OneCellAnchor,
-    Picture,
-    Shape,
-    TwoCellAnchor,
-};
-use crate::{
-    helper::const_str::{
-        DRAWINGML_MAIN_NS,
-        SHEET_DRAWING_NS,
-    },
-    reader::driver::xml_read_loop,
-    structs::{
-        Chart,
-        Image,
-        OleObjects,
-        raw::RawRelationships,
-    },
-    traits::{
-        AdjustmentCoordinate,
-        AdjustmentCoordinateWithSheet,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetDrawing {
-    image_collection:           Vec<Image>,
-    chart_collection:           Vec<Chart>,
-    one_cell_anchor_collection: Vec<OneCellAnchor>,
-    two_cell_anchor_collection: Vec<TwoCellAnchor>,
+    image_collection: ThinVec<Image>,
+    chart_collection: ThinVec<Chart>,
+    one_cell_anchor_collection: ThinVec<OneCellAnchor>,
+    two_cell_anchor_collection: ThinVec<TwoCellAnchor>,
 }
 
 impl WorksheetDrawing {
     #[inline]
-    #[must_use]
     pub fn get_image_collection(&self) -> &[Image] {
         &self.image_collection
     }
 
     #[inline]
-    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+    pub fn get_image_collection_mut(&mut self) -> &mut ThinVec<Image> {
         &mut self.image_collection
     }
 
@@ -67,7 +46,6 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_image(&self, col: u32, row: u32) -> Option<&Image> {
         self.image_collection
             .iter()
@@ -81,7 +59,6 @@ impl WorksheetDrawing {
             .find(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
     }
 
-    #[must_use]
     pub fn get_images(&self, col: u32, row: u32) -> Vec<&Image> {
         let mut result: Vec<&Image> = Vec::new();
         for image in &self.image_collection {
@@ -103,13 +80,12 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_chart_collection(&self) -> &[Chart] {
         &self.chart_collection
     }
 
     #[inline]
-    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+    pub fn get_chart_collection_mut(&mut self) -> &mut ThinVec<Chart> {
         &mut self.chart_collection
     }
 
@@ -120,7 +96,6 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_chart(&self, col: u32, row: u32) -> Option<&Chart> {
         self.chart_collection
             .iter()
@@ -134,7 +109,6 @@ impl WorksheetDrawing {
             .find(|chart| chart.get_col() == col - 1 && chart.get_row() == row - 1)
     }
 
-    #[must_use]
     pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
         let mut result: Vec<&Chart> = Vec::new();
         for chart in &self.chart_collection {
@@ -156,13 +130,12 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
         &self.one_cell_anchor_collection
     }
 
     #[inline]
-    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
+    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<OneCellAnchor> {
         &mut self.one_cell_anchor_collection
     }
 
@@ -173,13 +146,12 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
         &self.two_cell_anchor_collection
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
+    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut ThinVec<TwoCellAnchor> {
         &mut self.two_cell_anchor_collection
     }
 
@@ -190,7 +162,6 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    #[must_use]
     pub fn has_drawing_object(&self) -> bool {
         !self.chart_collection.is_empty()
             || !self.image_collection.is_empty()
@@ -198,7 +169,6 @@ impl WorksheetDrawing {
             || !self.two_cell_anchor_collection.is_empty()
     }
 
-    #[must_use]
     pub fn get_graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
         let mut result: Vec<&GraphicFrame> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
@@ -219,7 +189,6 @@ impl WorksheetDrawing {
         result
     }
 
-    #[must_use]
     pub fn get_shape_collection(&self) -> Vec<&Shape> {
         let mut result: Vec<&Shape> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
@@ -240,7 +209,6 @@ impl WorksheetDrawing {
         result
     }
 
-    #[must_use]
     pub fn get_connection_shape_collection(&self) -> Vec<&ConnectionShape> {
         let mut result: Vec<&ConnectionShape> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
@@ -261,7 +229,6 @@ impl WorksheetDrawing {
         result
     }
 
-    #[must_use]
     pub fn get_picture_collection(&self) -> Vec<&Picture> {
         let mut result: Vec<&Picture> = Vec::new();
         for two_cell_anchor in &self.two_cell_anchor_collection {
@@ -402,8 +369,8 @@ impl WorksheetDrawing {
             writer,
             "xdr:wsDr",
             vec![
-                ("xmlns:xdr", SHEET_DRAWING_NS).into(),
-                ("xmlns:a", DRAWINGML_MAIN_NS).into(),
+                ("xmlns:xdr", SHEET_DRAWING_NS),
+                ("xmlns:a", DRAWINGML_MAIN_NS),
             ],
             false,
         );

@@ -1,53 +1,41 @@
 // sheetProtection
+use super::BooleanValue;
+use super::StringValue;
+use super::UInt32Value;
+use crate::helper::crypt::*;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use super::{
-    BooleanValue,
-    StringValue,
-    UInt32Value,
-};
-use crate::{
-    helper::crypt::encrypt_sheet_protection,
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    writer::driver::write_start_tag,
-};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct SheetProtection {
-    algorithm_name:        StringValue,
-    hash_value:            StringValue,
-    salt_value:            StringValue,
-    spin_count:            UInt32Value,
-    password:              StringValue,
-    sheet:                 BooleanValue,
-    objects:               BooleanValue,
-    delete_rows:           BooleanValue,
-    insert_columns:        BooleanValue,
-    delete_columns:        BooleanValue,
-    insert_hyperlinks:     BooleanValue,
-    auto_filter:           BooleanValue,
-    scenarios:             BooleanValue,
-    format_cells:          BooleanValue,
-    format_columns:        BooleanValue,
-    insert_rows:           BooleanValue,
-    format_rows:           BooleanValue,
-    pivot_tables:          BooleanValue,
-    select_locked_cells:   BooleanValue,
+    algorithm_name: StringValue,
+    hash_value: StringValue,
+    salt_value: StringValue,
+    spin_count: UInt32Value,
+    password: StringValue,
+    sheet: BooleanValue,
+    objects: BooleanValue,
+    delete_rows: BooleanValue,
+    insert_columns: BooleanValue,
+    delete_columns: BooleanValue,
+    insert_hyperlinks: BooleanValue,
+    auto_filter: BooleanValue,
+    scenarios: BooleanValue,
+    format_cells: BooleanValue,
+    format_columns: BooleanValue,
+    insert_rows: BooleanValue,
+    format_rows: BooleanValue,
+    pivot_tables: BooleanValue,
+    select_locked_cells: BooleanValue,
     select_unlocked_cells: BooleanValue,
-    sort:                  BooleanValue,
+    sort: BooleanValue,
 }
 impl SheetProtection {
     #[inline]
-    #[must_use]
     pub fn get_algorithm_name(&self) -> &str {
         self.algorithm_name.get_value_str()
     }
@@ -59,7 +47,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_hash_value(&self) -> &str {
         self.hash_value.get_value_str()
     }
@@ -71,7 +58,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_salt_value(&self) -> &str {
         self.salt_value.get_value_str()
     }
@@ -83,7 +69,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_spin_count(&self) -> u32 {
         self.spin_count.get_value()
     }
@@ -95,7 +80,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_password_raw(&self) -> &str {
         self.password.get_value_str()
     }
@@ -113,7 +97,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_sheet(&self) -> bool {
         self.sheet.get_value()
     }
@@ -125,7 +108,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_objects(&self) -> bool {
         self.objects.get_value()
     }
@@ -137,7 +119,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_delete_rows(&self) -> bool {
         self.delete_rows.get_value()
     }
@@ -149,7 +130,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_insert_columns(&self) -> bool {
         self.insert_columns.get_value()
     }
@@ -161,7 +141,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_delete_columns(&self) -> bool {
         self.delete_columns.get_value()
     }
@@ -173,7 +152,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_insert_hyperlinks(&self) -> bool {
         self.insert_hyperlinks.get_value()
     }
@@ -185,7 +163,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_auto_filter(&self) -> bool {
         self.auto_filter.get_value()
     }
@@ -197,7 +174,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_scenarios(&self) -> bool {
         self.scenarios.get_value()
     }
@@ -209,7 +185,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_format_cells(&self) -> bool {
         self.format_cells.get_value()
     }
@@ -221,7 +196,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_format_columns(&self) -> bool {
         self.format_columns.get_value()
     }
@@ -233,7 +207,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_insert_rows(&self) -> bool {
         self.insert_rows.get_value()
     }
@@ -245,7 +218,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_format_rows(&self) -> bool {
         self.format_rows.get_value()
     }
@@ -257,7 +229,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_pivot_tables(&self) -> bool {
         self.pivot_tables.get_value()
     }
@@ -269,7 +240,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_select_locked_cells(&self) -> bool {
         self.select_locked_cells.get_value()
     }
@@ -281,7 +251,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_select_unlocked_cells(&self) -> bool {
         self.select_unlocked_cells.get_value()
     }
@@ -293,7 +262,6 @@ impl SheetProtection {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_sort(&self) -> bool {
         self.sort.get_value()
     }
@@ -340,88 +308,79 @@ impl SheetProtection {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sheetProtection
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.algorithm_name.has_value() {
-            attributes.push(("algorithmName", self.algorithm_name.get_value_str()).into());
+            attributes.push(("algorithmName", self.algorithm_name.get_value_str()));
         }
         if self.hash_value.has_value() {
-            attributes.push(("hashValue", self.hash_value.get_value_str()).into());
+            attributes.push(("hashValue", self.hash_value.get_value_str()));
         }
         if self.salt_value.has_value() {
-            attributes.push(("saltValue", self.salt_value.get_value_str()).into());
+            attributes.push(("saltValue", self.salt_value.get_value_str()));
         }
         let spin_count = self.spin_count.get_value_string();
         if self.spin_count.has_value() {
-            attributes.push(("spinCount", &spin_count).into());
+            attributes.push(("spinCount", &spin_count));
         }
         if self.password.has_value() {
-            attributes.push(("password", self.password.get_value_str()).into());
+            attributes.push(("password", self.password.get_value_str()));
         }
         if self.sheet.has_value() {
-            attributes.push(("sheet", self.sheet.get_value_string()).into());
+            attributes.push(("sheet", self.sheet.get_value_string()));
         }
         if self.objects.has_value() {
-            attributes.push(("objects", self.objects.get_value_string()).into());
+            attributes.push(("objects", self.objects.get_value_string()));
         }
         if self.delete_rows.has_value() {
-            attributes.push(("deleteRows", self.delete_rows.get_value_string()).into());
+            attributes.push(("deleteRows", self.delete_rows.get_value_string()));
         }
         if self.insert_columns.has_value() {
-            attributes.push(("insertColumns", self.insert_columns.get_value_string()).into());
+            attributes.push(("insertColumns", self.insert_columns.get_value_string()));
         }
         if self.delete_columns.has_value() {
-            attributes.push(("deleteColumns", self.delete_columns.get_value_string()).into());
+            attributes.push(("deleteColumns", self.delete_columns.get_value_string()));
         }
         if self.insert_hyperlinks.has_value() {
-            attributes.push(
-                (
-                    "insertHyperlinks",
-                    self.insert_hyperlinks.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "insertHyperlinks",
+                self.insert_hyperlinks.get_value_string(),
+            ));
         }
         if self.auto_filter.has_value() {
-            attributes.push(("autoFilter", self.auto_filter.get_value_string()).into());
+            attributes.push(("autoFilter", self.auto_filter.get_value_string()));
         }
         if self.scenarios.has_value() {
-            attributes.push(("scenarios", self.scenarios.get_value_string()).into());
+            attributes.push(("scenarios", self.scenarios.get_value_string()));
         }
         if self.format_cells.has_value() {
-            attributes.push(("formatCells", self.format_cells.get_value_string()).into());
+            attributes.push(("formatCells", self.format_cells.get_value_string()));
         }
         if self.format_columns.has_value() {
-            attributes.push(("formatColumns", self.format_columns.get_value_string()).into());
+            attributes.push(("formatColumns", self.format_columns.get_value_string()));
         }
         if self.insert_rows.has_value() {
-            attributes.push(("insertRows", self.insert_rows.get_value_string()).into());
+            attributes.push(("insertRows", self.insert_rows.get_value_string()));
         }
         if self.format_rows.has_value() {
-            attributes.push(("formatRows", self.format_rows.get_value_string()).into());
+            attributes.push(("formatRows", self.format_rows.get_value_string()));
         }
         if self.pivot_tables.has_value() {
-            attributes.push(("pivotTables", self.pivot_tables.get_value_string()).into());
+            attributes.push(("pivotTables", self.pivot_tables.get_value_string()));
         }
         if self.select_locked_cells.has_value() {
-            attributes.push(
-                (
-                    "selectLockedCells",
-                    self.select_locked_cells.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "selectLockedCells",
+                self.select_locked_cells.get_value_string(),
+            ));
         }
         if self.select_unlocked_cells.has_value() {
-            attributes.push(
-                (
-                    "selectUnlockedCells",
-                    self.select_unlocked_cells.get_value_string(),
-                )
-                    .into(),
-            );
+            attributes.push((
+                "selectUnlockedCells",
+                self.select_unlocked_cells.get_value_string(),
+            ));
         }
         if self.sort.has_value() {
-            attributes.push(("sort", self.sort.get_value_string()).into());
+            attributes.push(("sort", self.sort.get_value_string()));
         }
 
         write_start_tag(writer, "sheetProtection", attributes, true);

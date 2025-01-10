@@ -1,21 +1,15 @@
-use super::{
-    ColumnReference,
-    RowReference,
-};
-use crate::{
-    helper::coordinate::index_from_coordinate,
-    traits::{
-        AdjustmentCoordinate,
-        AdjustmentValue,
-    },
-};
+use super::ColumnReference;
+use super::RowReference;
+use crate::helper::coordinate::*;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentValue;
 
 #[derive(Clone, Default, Debug)]
 pub struct Range {
     start_col: Option<ColumnReference>,
     start_row: Option<RowReference>,
-    end_col:   Option<ColumnReference>,
-    end_row:   Option<RowReference>,
+    end_col: Option<ColumnReference>,
+    end_row: Option<RowReference>,
 }
 
 impl Range {
@@ -71,7 +65,6 @@ impl Range {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_range(&self) -> String {
         let mut result = self.get_coordinate_start();
         if self.end_col.is_some() || self.end_row.is_some() {
@@ -81,7 +74,6 @@ impl Range {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_coordinate_start_col(&self) -> Option<&ColumnReference> {
         self.start_col.as_ref()
     }
@@ -92,7 +84,6 @@ impl Range {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_coordinate_start_row(&self) -> Option<&RowReference> {
         self.start_row.as_ref()
     }
@@ -103,7 +94,6 @@ impl Range {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_coordinate_end_col(&self) -> Option<&ColumnReference> {
         self.end_col.as_ref()
     }
@@ -114,7 +104,6 @@ impl Range {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_coordinate_end_row(&self) -> Option<&RowReference> {
         self.end_row.as_ref()
     }
@@ -125,7 +114,7 @@ impl Range {
     }
 
     pub(crate) fn get_coordinate_start(&self) -> String {
-        let mut coordinate_str = String::new();
+        let mut coordinate_str = "".into();
         if let Some(v) = &self.start_col {
             coordinate_str = v.get_coordinate();
         };
@@ -136,7 +125,7 @@ impl Range {
     }
 
     pub(crate) fn get_coordinate_end(&self) -> String {
-        let mut coordinate_str = String::new();
+        let mut coordinate_str = "".into();
         if let Some(v) = &self.end_col {
             coordinate_str = v.get_coordinate();
         };

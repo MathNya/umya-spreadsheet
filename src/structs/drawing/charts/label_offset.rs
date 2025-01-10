@@ -1,24 +1,17 @@
 // c:lblOffset
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::super::super::UInt16Value;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct LabelOffset {
     val: UInt16Value,
 }
 impl LabelOffset {
-    #[must_use]
     pub fn get_val(&self) -> u16 {
         self.val.get_value()
     }
@@ -41,7 +34,7 @@ impl LabelOffset {
         write_start_tag(
             writer,
             "c:lblOffset",
-            vec![("val", &self.val.get_value_string()).into()],
+            vec![("val", &self.val.get_value_string())],
             true,
         );
     }

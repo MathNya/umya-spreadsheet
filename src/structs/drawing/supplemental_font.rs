@@ -1,30 +1,20 @@
 // a:font
+use crate::reader::driver::*;
+use crate::structs::StringValue;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
-use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    structs::StringValue,
-    writer::driver::write_start_tag,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct SupplementalFont {
-    script:   StringValue,
+    script: StringValue,
     typeface: StringValue,
 }
 
 impl SupplementalFont {
     #[inline]
-    #[must_use]
     pub fn get_script(&self) -> &str {
         self.script.get_value_str()
     }
@@ -36,7 +26,6 @@ impl SupplementalFont {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_typeface(&self) -> &str {
         self.typeface.get_value_str()
     }
@@ -63,8 +52,8 @@ impl SupplementalFont {
             writer,
             "a:font",
             vec![
-                ("script", self.script.get_value_str()).into(),
-                ("typeface", self.typeface.get_value_str()).into(),
+                ("script", self.script.get_value_str()),
+                ("typeface", self.typeface.get_value_str()),
             ],
             true,
         );

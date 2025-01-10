@@ -1,58 +1,40 @@
+use super::super::StringValue;
+use super::EffectList;
+use super::EffectStyle;
+use super::GradientFill;
+use super::GradientStop;
+use super::LinearGradientFill;
+use super::Miter;
+use super::OuterShadow;
+use super::Outline;
+use super::PenAlignmentValues;
+use super::PercentageType;
+use super::PositiveFixedPercentageType;
+use super::PresetDash;
+use super::PresetLineDashValues;
+use super::RgbColorModelHex;
+use super::SchemeColor;
+use super::SchemeColorValues;
+use super::SolidFill;
+use super::SystemColor;
+use super::SystemColorValues;
+use super::ThemeElements;
+use crate::helper::const_str::*;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    super::StringValue,
-    EffectList,
-    EffectStyle,
-    GradientFill,
-    GradientStop,
-    LinearGradientFill,
-    Miter,
-    OuterShadow,
-    Outline,
-    PenAlignmentValues,
-    PercentageType,
-    PositiveFixedPercentageType,
-    PresetDash,
-    PresetLineDashValues,
-    RgbColorModelHex,
-    SchemeColor,
-    SchemeColorValues,
-    SolidFill,
-    SystemColor,
-    SystemColorValues,
-    ThemeElements,
-};
-use crate::{
-    helper::const_str::DRAWINGML_MAIN_NS,
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Theme {
-    name:           StringValue,
+    name: StringValue,
     theme_elements: ThemeElements,
 }
 
 impl Theme {
     #[inline]
-    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -64,7 +46,6 @@ impl Theme {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_theme_elements(&self) -> &ThemeElements {
         &self.theme_elements
     }
@@ -212,13 +193,13 @@ impl Theme {
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut lum_mod = PercentageType::default();
-        lum_mod.set_val(110_000);
+        lum_mod.set_val(110000);
         scheme_color.set_luminance_modulation(lum_mod);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(105_000);
+        sat_mod.set_val(105000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut tint = PositiveFixedPercentageType::default();
-        tint.set_val(67_000);
+        tint.set_val(67000);
         scheme_color.set_tint(tint);
         gradient_stop.set_scheme_color(scheme_color);
         gradient_fill
@@ -226,14 +207,14 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
-        gradient_stop.set_position(50_000);
+        gradient_stop.set_position(50000);
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut lum_mod = PercentageType::default();
-        lum_mod.set_val(105_000);
+        lum_mod.set_val(105000);
         scheme_color.set_luminance_modulation(lum_mod);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(103_000);
+        sat_mod.set_val(103000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut tint = PositiveFixedPercentageType::default();
         tint.set_val(73000);
@@ -244,14 +225,14 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
-        gradient_stop.set_position(100_000);
+        gradient_stop.set_position(100000);
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut lum_mod = PercentageType::default();
-        lum_mod.set_val(105_000);
+        lum_mod.set_val(105000);
         scheme_color.set_luminance_modulation(lum_mod);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(109_000);
+        sat_mod.set_val(109000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut tint = PositiveFixedPercentageType::default();
         tint.set_val(81000);
@@ -262,7 +243,7 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
-        linear_gradient_fill.set_angle(5_400_000);
+        linear_gradient_fill.set_angle(5400000);
         linear_gradient_fill.set_scaled(false);
         gradient_fill.set_linear_gradient_fill(linear_gradient_fill);
         //
@@ -282,10 +263,10 @@ impl Theme {
         tint.set_val(94000);
         scheme_color.set_tint(tint);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(103_000);
+        sat_mod.set_val(103000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut lum_mod = PercentageType::default();
-        lum_mod.set_val(102_000);
+        lum_mod.set_val(102000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
         gradient_fill
@@ -293,17 +274,17 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
-        gradient_stop.set_position(50_000);
+        gradient_stop.set_position(50000);
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(110_000);
+        sat_mod.set_val(110000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut shade = PositiveFixedPercentageType::default();
-        shade.set_val(100_000);
+        shade.set_val(100000);
         scheme_color.set_shade(shade);
         let mut lum_mod = PercentageType::default();
-        lum_mod.set_val(100_000);
+        lum_mod.set_val(100000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
         gradient_fill
@@ -311,14 +292,14 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
-        gradient_stop.set_position(100_000);
+        gradient_stop.set_position(100000);
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut shade = PositiveFixedPercentageType::default();
-        shade.set_val(78_000);
+        shade.set_val(78000);
         scheme_color.set_shade(shade);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(120_000);
+        sat_mod.set_val(120000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut lum_mod = PercentageType::default();
         lum_mod.set_val(99000);
@@ -329,7 +310,7 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
-        linear_gradient_fill.set_angle(5_400_000);
+        linear_gradient_fill.set_angle(5400000);
         linear_gradient_fill.set_scaled(false);
         gradient_fill.set_linear_gradient_fill(linear_gradient_fill);
         //
@@ -355,7 +336,7 @@ impl Theme {
         outline.set_preset_dash(preset_dash);
         //
         let mut miter = Miter::default();
-        miter.set_limit(800_000);
+        miter.set_limit(800000);
         outline.set_miter(miter);
         //
         def.get_theme_elements_mut()
@@ -380,7 +361,7 @@ impl Theme {
         outline.set_preset_dash(preset_dash);
         //
         let mut miter = Miter::default();
-        miter.set_limit(800_000);
+        miter.set_limit(800000);
         outline.set_miter(miter);
         //
         def.get_theme_elements_mut()
@@ -405,7 +386,7 @@ impl Theme {
         outline.set_preset_dash(preset_dash);
         //
         let mut miter = Miter::default();
-        miter.set_limit(800_000);
+        miter.set_limit(800000);
         outline.set_miter(miter);
         //
         def.get_theme_elements_mut()
@@ -434,7 +415,7 @@ impl Theme {
         let mut outer_shadow = OuterShadow::default();
         outer_shadow.set_blur_radius("57150");
         outer_shadow.set_distance("19050");
-        outer_shadow.set_direction("5_400_000");
+        outer_shadow.set_direction("5400000");
         outer_shadow.set_alignment("ctr");
         outer_shadow.set_rotate_with_shape("0");
         let mut srgb_clr = RgbColorModelHex::default();
@@ -463,7 +444,7 @@ impl Theme {
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(170_000);
+        sat_mod.set_val(170000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut tint = PositiveFixedPercentageType::default();
         tint.set_val(95000);
@@ -485,13 +466,13 @@ impl Theme {
         tint.set_val(93000);
         scheme_color.set_tint(tint);
         let mut shade = PositiveFixedPercentageType::default();
-        shade.set_val(98_000);
+        shade.set_val(98000);
         scheme_color.set_shade(shade);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(150_000);
+        sat_mod.set_val(150000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut lum_mod = PercentageType::default();
-        lum_mod.set_val(102_000);
+        lum_mod.set_val(102000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
         gradient_fill
@@ -499,20 +480,20 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
-        gradient_stop.set_position(50_000);
+        gradient_stop.set_position(50000);
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut tint = PositiveFixedPercentageType::default();
-        tint.set_val(98_000);
+        tint.set_val(98000);
         scheme_color.set_tint(tint);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(130_000);
+        sat_mod.set_val(130000);
         scheme_color.set_saturation_modulation(sat_mod);
         let mut shade = PositiveFixedPercentageType::default();
-        shade.set_val(90_000);
+        shade.set_val(90000);
         scheme_color.set_shade(shade);
         let mut lum_mod = PercentageType::default();
-        lum_mod.set_val(103_000);
+        lum_mod.set_val(103000);
         scheme_color.set_luminance_modulation(lum_mod);
         gradient_stop.set_scheme_color(scheme_color);
         gradient_fill
@@ -520,14 +501,14 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut gradient_stop = GradientStop::default();
-        gradient_stop.set_position(100_000);
+        gradient_stop.set_position(100000);
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         let mut shade = PositiveFixedPercentageType::default();
         shade.set_val(63000);
         scheme_color.set_shade(shade);
         let mut sat_mod = PercentageType::default();
-        sat_mod.set_val(120_000);
+        sat_mod.set_val(120000);
         scheme_color.set_saturation_modulation(sat_mod);
         gradient_stop.set_scheme_color(scheme_color);
         gradient_fill
@@ -535,7 +516,7 @@ impl Theme {
             .add_gradient_stop(gradient_stop);
         //
         let mut linear_gradient_fill = LinearGradientFill::default();
-        linear_gradient_fill.set_angle(5_400_000);
+        linear_gradient_fill.set_angle(5400000);
         linear_gradient_fill.set_scaled(false);
         gradient_fill.set_linear_gradient_fill(linear_gradient_fill);
         //
@@ -574,10 +555,10 @@ impl Theme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:theme
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
-        attributes.push(("xmlns:a", DRAWINGML_MAIN_NS).into());
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        attributes.push(("xmlns:a", DRAWINGML_MAIN_NS));
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()).into());
+            attributes.push(("name", self.name.get_value_str()));
         }
         write_start_tag(writer, "a:theme", attributes, false);
 

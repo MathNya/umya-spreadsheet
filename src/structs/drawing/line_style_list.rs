@@ -1,42 +1,30 @@
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::Outline;
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct LineStyleList {
-    outline_collection: Vec<Outline>,
+    outline_collection: ThinVec<Outline>,
 }
 
 impl LineStyleList {
     #[inline]
-    #[must_use]
     pub fn get_outline_collection(&self) -> &[Outline] {
         &self.outline_collection
     }
 
     #[inline]
-    pub fn get_outline_collection_mut(&mut self) -> &mut Vec<Outline> {
+    pub fn get_outline_collection_mut(&mut self) -> &mut ThinVec<Outline> {
         &mut self.outline_collection
     }
 
     #[inline]
-    pub fn set_outline_collection(&mut self, value: impl Into<Vec<Outline>>) -> &mut Self {
+    pub fn set_outline_collection(&mut self, value: impl Into<ThinVec<Outline>>) -> &mut Self {
         self.outline_collection = value.into();
         self
     }

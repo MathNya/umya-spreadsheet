@@ -1,30 +1,18 @@
+use quick_xml::events::{BytesDecl, Event};
+use quick_xml::Writer;
 use std::io;
 
-use quick_xml::{
-    Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
-};
-
-use super::{
-    XlsxError,
-    driver::write_new_line,
-};
-use crate::{
-    helper::const_str::ARC_CUSTOM,
-    structs::{
-        Workbook,
-        WriterManager,
-    },
-};
+use super::driver::*;
+use super::XlsxError;
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
+use crate::structs::WriterManager;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    wb: &Workbook,
+    spreadsheet: &Spreadsheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
-    if wb
+    if spreadsheet
         .get_properties()
         .get_custom_properties()
         .get_custom_document_property_list()
@@ -45,7 +33,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // Properties
-    wb.get_properties().write_to_custom(&mut writer);
+    spreadsheet.get_properties().write_to_custom(&mut writer);
 
     writer_mng.add_writer(ARC_CUSTOM, writer)
 }

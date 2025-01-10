@@ -77,17 +77,17 @@ let mut book = umya_spreadsheet::new_file();
 ### Write file
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _unused =  umya_spreadsheet::writer::xlsx::write(&book, path);
+let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 ```
 ### Write file with password
 ```rust
 let path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _unused =  umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
+let _ = umya_spreadsheet::writer::xlsx::write_with_password(&book, path, "password");
 ```
 ```rust
 let from_path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 let to_path = std::path::Path::new("./tests/result_files/bbb.xlsx");
-let _unused =  umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
+let _ = umya_spreadsheet::writer::xlsx::set_password(&from_path, &to_path, "password");
 ```
 ### Read Value
 ```rust
@@ -142,15 +142,15 @@ book.get_sheet_by_name_mut("Sheet1").unwrap()
 
 ### Struct 
 
-Pass the book as a ```Workbook``` to modify it in other functions. 
+Pass the book as a ```Spreadsheet``` to modify it in other functions. 
 
 ```rust
 
 let mut book = umya_spreadsheet::new_file();
-let _unused =  book.new_sheet("Sheet2");
+let _ = book.new_sheet("Sheet2");
 update_excel(&mut book);
 
-fn update_excel(book:  &mut Workbook) {
+fn update_excel(book: &mut Spreadsheet) {
    book.get_sheet_by_name_mut("Sheet2").unwrap().get_cell_mut("A1").set_value("Test"); 
 }
 ```

@@ -1,39 +1,24 @@
+use super::driver::*;
+use super::XlsxError;
+use quick_xml::events::Event;
+use quick_xml::Reader;
 use std::collections::HashMap;
 
-use quick_xml::{
-    Reader,
-    events::Event,
-};
-
-use super::{
-    XlsxError,
-    driver::{
-        get_attribute,
-        get_attribute_value,
-        xml_read_loop,
-    },
-};
-use crate::{
-    helper::formula::FormulaToken,
-    structs::{
-        Cells,
-        Columns,
-        ConditionalFormatting,
-        DataValidations,
-        Hyperlink,
-        OleObjects,
-        Row,
-        SharedStringTable,
-        SheetProtection,
-        Stylesheet,
-        Worksheet,
-        office2010::excel::DataValidations as DataValidations2010,
-        raw::{
-            RawRelationships,
-            RawWorksheet,
-        },
-    },
-};
+use crate::helper::formula::*;
+use crate::structs::office2010::excel::DataValidations as DataValidations2010;
+use crate::structs::raw::RawRelationships;
+use crate::structs::raw::RawWorksheet;
+use crate::structs::Cells;
+use crate::structs::Columns;
+use crate::structs::ConditionalFormatting;
+use crate::structs::DataValidations;
+use crate::structs::Hyperlink;
+use crate::structs::OleObjects;
+use crate::structs::Row;
+use crate::structs::SharedStringTable;
+use crate::structs::SheetProtection;
+use crate::structs::Stylesheet;
+use crate::structs::Worksheet;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,
@@ -54,7 +39,8 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"codeName" => {
                             worksheet.set_code_name(get_attribute_value(attr)?);
                         }
-                        Ok(_) | Err(_) => {}
+                        Ok(_) => {}
+                        Err(_) => {}
                     }
                 }
             }
@@ -74,7 +60,8 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"activeCell" => {
                             worksheet.set_active_cell(get_attribute_value(attr)?);
                         }
-                        Ok(_) | Err(_) => {}
+                        Ok(_) => {}
+                        Err(_) => {}
                     }
                 }
             }
@@ -83,7 +70,7 @@ pub(crate) fn read(
                 obj.set_attributes(
                     &mut reader,
                     e,
-                    worksheet.get_cells_crate_mut(),
+                    worksheet.get_cell_collection_crate_mut(),
                     shared_string_table,
                     stylesheet,
                     &mut formula_shared_list,
@@ -152,7 +139,8 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"codeName" => {
                             worksheet.set_code_name(get_attribute_value(attr)?);
                         }
-                        Ok(_) | Err(_) => {}
+                        Ok(_) => {}
+                        Err(_) => {}
                     }
                 }
             }
@@ -172,7 +160,8 @@ pub(crate) fn read(
                         Ok(ref attr) if attr.key.0 == b"activeCell" => {
                             worksheet.set_active_cell(get_attribute_value(attr)?);
                         }
-                        Ok(_) | Err(_) => {}
+                        Ok(_) => {}
+                        Err(_) => {}
                     }
                 }
             }
@@ -181,7 +170,7 @@ pub(crate) fn read(
                 obj.set_attributes(
                     &mut reader,
                     e,
-                    worksheet.get_cells_crate_mut(),
+                    worksheet.get_cell_collection_crate_mut(),
                     shared_string_table,
                     stylesheet,
                     &mut formula_shared_list,
@@ -198,10 +187,7 @@ pub(crate) fn read(
                     .set_attributes(&mut reader, e);
             }
             b"hyperlink" => {
-                let (coor, hyperlink) = get_hyperlink(
-                    e,
-                    raw_data_of_worksheet.get_worksheet_relationships()
-                );
+                let (coor, hyperlink) = get_hyperlink(e, raw_data_of_worksheet.get_worksheet_relationships());
                 worksheet.get_cell_mut(coor).set_hyperlink(hyperlink);
             }
             b"printOptions" => {
@@ -236,7 +222,7 @@ pub(crate) fn read_lite(
     raw_data_of_worksheet: &RawWorksheet,
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
-) -> Cells {
+) -> Result<Cells, XlsxError> {
     let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
@@ -276,7 +262,7 @@ pub(crate) fn read_lite(
         Event::Eof => break,
     );
 
-    cells
+    Ok(cells)
 }
 
 fn get_hyperlink(

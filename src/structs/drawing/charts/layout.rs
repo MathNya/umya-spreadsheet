@@ -1,23 +1,11 @@
 // c:layout
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::ManualLayout;
-use crate::{
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-    xml_read_loop,
-};
+use crate::writer::driver::*;
+use crate::xml_read_loop;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Layout {
@@ -25,7 +13,6 @@ pub struct Layout {
 }
 
 impl Layout {
-    #[must_use]
     pub fn get_manual_layout(&self) -> Option<&ManualLayout> {
         self.manual_layout.as_ref()
     }
@@ -39,7 +26,6 @@ impl Layout {
         self
     }
 
-    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.manual_layout.is_none()
     }

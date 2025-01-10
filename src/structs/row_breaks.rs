@@ -1,38 +1,26 @@
 // rowBreaks
+use crate::reader::driver::*;
+use crate::structs::Break;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::Break,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct RowBreaks {
-    break_list: Vec<Break>,
+    break_list: ThinVec<Break>,
 }
 
 impl RowBreaks {
     #[inline]
-    #[must_use]
     pub fn get_break_list(&self) -> &[Break] {
         &self.break_list
     }
 
     #[inline]
-    pub fn get_break_list_mut(&mut self) -> &mut Vec<Break> {
+    pub fn get_break_list_mut(&mut self) -> &mut ThinVec<Break> {
         &mut self.break_list
     }
 
@@ -87,8 +75,8 @@ impl RowBreaks {
             writer,
             "rowBreaks",
             vec![
-                ("count", count.to_string()).into(),
-                ("manualBreakCount", manual_count.to_string()).into(),
+                ("count", count.to_string().as_str()),
+                ("manualBreakCount", manual_count.to_string().as_str()),
             ],
             false,
         );

@@ -1,20 +1,14 @@
 // tabColor
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
+use super::DoubleValue;
+use super::StringValue;
+use super::Theme;
+use super::UInt32Value;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
 use reader::driver::*;
+use std::io::Cursor;
 use writer::driver::*;
-
-use super::{
-    DoubleValue,
-    StringValue,
-    Theme,
-    UInt32Value,
-};
 
 const INDEXED_COLORS: &'static [&'static str] = &[
     "FF000000", //  System Colour #1 - Black
@@ -77,26 +71,27 @@ const INDEXED_COLORS: &'static [&'static str] = &[
 
 #[derive(Default, Debug, Clone)]
 pub struct TabColor {
-    indexed:     UInt32Value,
+    indexed: UInt32Value,
     theme_index: UInt32Value,
-    argb:        StringValue,
-    tint:        DoubleValue,
+    argb: StringValue,
+    tint: DoubleValue,
 }
 impl TabColor {
-    // Colors
-    pub const COLOR_BLACK: &'static str = "FF000000";
-    pub const COLOR_BLUE: &'static str = "FF0000FF";
-    pub const COLOR_DARKBLUE: &'static str = "FF000080";
-    pub const COLOR_DARKGREEN: &'static str = "FF008000";
-    pub const COLOR_DARKRED: &'static str = "FF800000";
-    pub const COLOR_DARKYELLOW: &'static str = "FF808000";
-    pub const COLOR_GREEN: &'static str = "FF00FF00";
-    pub const COLOR_RED: &'static str = "FFFF0000";
-    pub const COLOR_WHITE: &'static str = "FFFFFFFF";
-    pub const COLOR_YELLOW: &'static str = "FFFFFF00";
     pub const NAMED_COLORS: &'static [&'static str] = &[
         "Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan",
     ];
+
+    // Colors
+    pub const COLOR_BLACK: &'static str = "FF000000";
+    pub const COLOR_WHITE: &'static str = "FFFFFFFF";
+    pub const COLOR_RED: &'static str = "FFFF0000";
+    pub const COLOR_DARKRED: &'static str = "FF800000";
+    pub const COLOR_BLUE: &'static str = "FF0000FF";
+    pub const COLOR_DARKBLUE: &'static str = "FF000080";
+    pub const COLOR_GREEN: &'static str = "FF00FF00";
+    pub const COLOR_DARKGREEN: &'static str = "FF008000";
+    pub const COLOR_YELLOW: &'static str = "FFFFFF00";
+    pub const COLOR_DARKYELLOW: &'static str = "FF808000";
 
     #[inline]
     pub fn get_argb(&self) -> &str {
@@ -219,16 +214,16 @@ impl TabColor {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // tabColor
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         if self.theme_index.has_value() {
-            attributes.push(("theme", self.theme_index.get_value_string()).into());
+            attributes.push(("theme", self.theme_index.get_value_string()));
         } else if self.indexed.has_value() {
-            attributes.push(("indexed", self.indexed.get_value_string()).into());
+            attributes.push(("indexed", self.indexed.get_value_string()));
         } else if self.argb.has_value() {
-            attributes.push(("rgb", self.argb.get_value_string()).into());
+            attributes.push(("rgb", self.argb.get_value_string()));
         }
         if self.tint.has_value() {
-            attributes.push(("tint", self.tint.get_value_string()).into());
+            attributes.push(("tint", self.tint.get_value_string()));
         }
 
         if attributes.len() > 0 {

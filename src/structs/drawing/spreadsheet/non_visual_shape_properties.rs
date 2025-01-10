@@ -1,23 +1,11 @@
 // xdr:nvSpPr
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::NonVisualDrawingProperties;
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualShapeProperties {
@@ -26,7 +14,6 @@ pub struct NonVisualShapeProperties {
 
 impl NonVisualShapeProperties {
     #[inline]
-    #[must_use]
     pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }

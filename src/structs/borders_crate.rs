@@ -1,30 +1,17 @@
 // borders
+use super::Borders;
+use super::Style;
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    Borders,
-    Style,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct BordersCrate {
-    borders: Vec<Borders>,
+    borders: ThinVec<Borders>,
 }
 
 impl BordersCrate {
@@ -35,7 +22,7 @@ impl BordersCrate {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_borders_mut(&mut self) -> &mut Vec<Borders> {
+    pub(crate) fn get_borders_mut(&mut self) -> &mut ThinVec<Borders> {
         &mut self.borders
     }
 
@@ -98,7 +85,7 @@ impl BordersCrate {
             write_start_tag(
                 writer,
                 "borders",
-                vec![("count", &self.borders.len().to_string()).into()],
+                vec![("count", &self.borders.len().to_string())],
                 false,
             );
 

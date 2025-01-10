@@ -1,42 +1,38 @@
-use std::{
-    fmt::Write,
-    fs,
-    io,
-    path::Path,
-};
+use std::fs;
+use std::io;
+use std::path::Path;
 
-use crate::structs::{
-    CsvEncodeValues,
-    CsvWriterOption,
-    Workbook,
-    XlsxError,
-};
+use crate::structs::CsvEncodeValues;
+use crate::structs::CsvWriterOption;
+use crate::structs::Spreadsheet;
+use crate::structs::XlsxError;
+use std::fmt::Write;
 
 /// write spreadsheet file to arbitrary writer.
 /// # Arguments
-/// * `wb` - Workbook structs object.
+/// * `spreadsheet` - Spreadsheet structs object.
 /// * `writer` - writer to write to.
 /// # Return value
 /// * `Result` - OK is void. Err is error message.
 pub fn write_writer<W: io::Seek + io::Write>(
-    wb: &Workbook,
+    spreadsheet: &Spreadsheet,
     writer: &mut W,
     option: &CsvWriterOption,
 ) -> Result<(), XlsxError> {
     // get worksheet.
-    let worksheet = wb.get_active_sheet();
+    let worksheet = spreadsheet.get_active_sheet();
 
     // get max column and row.
     let (max_column, max_row) = worksheet.get_highest_column_and_row();
 
-    let mut data = String::new();
+    let mut data = String::from("");
     for row in 0u32..max_row {
         let mut row_vec: Vec<String> = Vec::new();
         for column in 0u32..max_column {
             // get value.
             let mut value = match worksheet.get_cell((column + 1, row + 1)) {
                 Some(cell) => cell.get_cell_value().get_value().into(),
-                None => String::new(),
+                None => String::from(""),
             };
             // do trim.
             if option.get_do_trim() {
@@ -63,7 +59,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
         CsvEncodeValues::Big5 => encoding_rs::BIG5.encode(&data).0.into_owned(),
         CsvEncodeValues::Utf16Le => encoding_rs::UTF_16LE.encode(&data).0.into_owned(),
         CsvEncodeValues::Utf16Be => encoding_rs::UTF_16BE.encode(&data).0.into_owned(),
-        CsvEncodeValues::Utf8 => data.into_bytes(),
+        _ => data.into_bytes(),
     };
 
     // output.
@@ -73,7 +69,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
 
 /// write spreadsheet file.
 /// # Arguments
-/// * `wb` - Workbook structs object.
+/// * `spreadsheet` - Spreadsheet structs object.
 /// * `path` - file path to save.
 /// * `option` - options.
 /// # Return value
@@ -87,10 +83,10 @@ pub fn write_writer<W: io::Seek + io::Write>(
 /// option.set_csv_encode_value(structs::CsvEncodeValues::ShiftJis);
 /// option.set_do_trim(true);
 /// option.set_wrap_with_char("\"");
-/// let _unused = writer::csv::write(&book, path, Some(&option));
+/// let _ = writer::csv::write(&book, path, Some(&option));
 /// ```
 pub fn write<P: AsRef<Path>>(
-    wb: &Workbook,
+    spreadsheet: &Spreadsheet,
     path: P,
     option: Option<&CsvWriterOption>,
 ) -> Result<(), XlsxError> {
@@ -104,8 +100,8 @@ pub fn write<P: AsRef<Path>>(
         None => &def_option,
     };
     if let Err(v) = write_writer(
-        wb,
-        &mut io::BufWriter::new(fs::File::create::<&Path>(path_tmp.as_ref())?),
+        spreadsheet,
+        &mut io::BufWriter::new(fs::File::create(path_tmp.as_ref() as &Path)?),
         option,
     ) {
         fs::remove_file(path_tmp)?;

@@ -1,17 +1,11 @@
 // a:ext
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::super::super::Int64Value;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Extents {
@@ -20,7 +14,6 @@ pub struct Extents {
 }
 impl Extents {
     #[inline]
-    #[must_use]
     pub fn get_cx(&self) -> i64 {
         self.cx.get_value()
     }
@@ -32,7 +25,6 @@ impl Extents {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_cy(&self) -> i64 {
         self.cy.get_value()
     }
@@ -59,8 +51,8 @@ impl Extents {
             writer,
             "a:ext",
             vec![
-                ("cx", self.cx.get_value_string()).into(),
-                ("cy", self.cy.get_value_string()).into(),
+                ("cx", &self.cx.get_value_string()),
+                ("cy", &self.cy.get_value_string()),
             ],
             true,
         );

@@ -1,37 +1,25 @@
 // rowItems
+use crate::reader::driver::*;
+use crate::structs::RowItem;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::RowItem,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct RowItems {
-    list: Vec<RowItem>,
+    list: ThinVec<RowItem>,
 }
 impl RowItems {
     #[inline]
-    #[must_use]
     pub fn get_list(&self) -> &[RowItem] {
         &self.list
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut Vec<RowItem> {
+    pub fn get_list_mut(&mut self) -> &mut ThinVec<RowItem> {
         &mut self.list
     }
 
@@ -79,7 +67,7 @@ impl RowItems {
         write_start_tag(
             writer,
             "rowItems",
-            vec![("count", self.list.len().to_string()).into()],
+            vec![("count", self.list.len().to_string().as_str())],
             false,
         );
 

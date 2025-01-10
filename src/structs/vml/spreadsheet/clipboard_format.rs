@@ -1,24 +1,11 @@
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::ClipboardFormatValues;
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::EnumValue,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
-};
+use crate::reader::driver::*;
+use crate::structs::EnumValue;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct ClipboardFormat {
@@ -27,7 +14,6 @@ pub struct ClipboardFormat {
 
 impl ClipboardFormat {
     #[inline]
-    #[must_use]
     pub fn get_value(&self) -> &ClipboardFormatValues {
         self.value.get_value()
     }

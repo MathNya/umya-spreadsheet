@@ -1,75 +1,41 @@
-use std::{
-    borrow::Cow,
-    collections::HashMap,
-    io::Cursor,
-    sync::{
-        Arc,
-        RwLock,
-    },
-};
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use crate::{
-    helper::{
-        coordinate::CellCoordinates,
-        formula::{
-            FormulaToken,
-            adjustment_formula_coordinate,
-            parse_to_tokens,
-            render,
-        },
-        number_format::to_formatted_string,
-    },
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    structs::{
-        CellFormula,
-        CellFormulaValues,
-        CellRawValue,
-        CellValue,
-        Coordinate,
-        Hyperlink,
-        NumberingFormat,
-        RichText,
-        SharedStringItem,
-        SharedStringTable,
-        Style,
-        Stylesheet,
-        UInt32Value,
-    },
-    traits::{
-        AdjustmentCoordinate,
-        AdjustmentCoordinateWith2Sheet,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-        write_text_node_conversion,
-    },
-};
+use crate::helper::coordinate::*;
+use crate::helper::formula::*;
+use crate::helper::number_format::*;
+use crate::reader::driver::*;
+use crate::structs::CellFormula;
+use crate::structs::CellFormulaValues;
+use crate::structs::CellRawValue;
+use crate::structs::CellValue;
+use crate::structs::Coordinate;
+use crate::structs::Hyperlink;
+use crate::structs::NumberingFormat;
+use crate::structs::RichText;
+use crate::structs::SharedStringItem;
+use crate::structs::SharedStringTable;
+use crate::structs::Style;
+use crate::structs::Stylesheet;
+use crate::structs::UInt32Value;
+use crate::traits::AdjustmentCoordinate;
+use crate::traits::AdjustmentCoordinateWith2Sheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::borrow::Cow;
+use std::collections::HashMap;
+use std::io::Cursor;
+use std::sync::{Arc, RwLock};
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct Cell {
-    coordinate:            Coordinate,
+    coordinate: Coordinate,
     pub(crate) cell_value: Box<CellValue>,
-    style:                 Box<Style>,
-    hyperlink:             Option<Box<Hyperlink>>,
-    cell_meta_index:       UInt32Value,
+    style: Box<Style>,
+    hyperlink: Option<Box<Hyperlink>>,
+    cell_meta_index: UInt32Value,
 }
 impl Cell {
     #[inline]
-    #[must_use]
     pub fn get_cell_value(&self) -> &CellValue {
         &self.cell_value
     }
@@ -86,7 +52,6 @@ impl Cell {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
@@ -103,7 +68,6 @@ impl Cell {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
@@ -125,11 +89,9 @@ impl Cell {
         if !formula.is_empty() {
             let org_col_num = self.coordinate.get_col_num();
             let org_row_num = self.coordinate.get_row_num();
-            let offset_col_num: i32 = num_traits::cast::<_, i32>(col).unwrap()
-                - num_traits::cast::<_, i32>(org_col_num).unwrap();
-            let offset_row_num: i32 = num_traits::cast::<_, i32>(row).unwrap()
-                - num_traits::cast::<_, i32>(org_row_num).unwrap();
-            let mut tokens = parse_to_tokens(format!("={formula}"));
+            let offset_col_num = col as i32 - org_col_num as i32;
+            let offset_row_num = row as i32 - org_row_num as i32;
+            let mut tokens = parse_to_tokens(format!("={}", formula));
             adjustment_formula_coordinate(&mut tokens, offset_col_num, offset_row_num);
             let result_formula = render(tokens.as_ref());
             self.cell_value.set_formula(result_formula);
@@ -140,7 +102,6 @@ impl Cell {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
         self.hyperlink.as_deref()
     }
@@ -161,7 +122,6 @@ impl Cell {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_cell_meta_index(&self) -> u32 {
         self.cell_meta_index.get_value()
     }
@@ -173,13 +133,11 @@ impl Cell {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.cell_value.get_value()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_value_number(&self) -> Option<f64> {
         self.cell_value.get_value_number()
     }
@@ -189,15 +147,13 @@ impl Cell {
         self.cell_value.get_value_lazy()
     }
 
-    /// Set the cell's value after trying to convert `value` into one of the
-    /// supported data types. <br />
+    /// Set the cell's value after trying to convert `value` into one of the supported data types.
+    /// <br />
     /// Types that `value` may be converted to:
     /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
-    /// - `Error` - if the string was either
-    ///   `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#
-    ///   DATA!"` or `"#DIV/0!"`
+    /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
     #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -281,19 +237,17 @@ impl Cell {
     }
 
     #[inline]
-    pub(crate) fn set_shared_string_item(&mut self, value: &SharedStringItem) -> &mut Self {
+    pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
         self.cell_value.set_shared_string_item(value);
         self
     }
 
     #[inline]
-    #[must_use]
     pub fn get_data_type(&self) -> &str {
         self.cell_value.get_data_type()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_raw_value(&self) -> &CellRawValue {
         self.cell_value.get_raw_value()
     }
@@ -304,25 +258,21 @@ impl Cell {
     }
 
     #[inline]
-    #[must_use]
     pub fn is_formula(&self) -> bool {
         self.cell_value.is_formula()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula(&self) -> &str {
         self.cell_value.get_formula()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
         self.cell_value.get_formula_obj()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula_shared_index(&self) -> Option<u32> {
         if let Some(v) = self.get_formula_obj() {
             if v.get_formula_type() == &CellFormulaValues::Shared {
@@ -365,7 +315,6 @@ impl Cell {
         })
     }
 
-    #[must_use]
     pub fn get_formatted_value(&self) -> String {
         let value = self.get_value();
 
@@ -402,8 +351,8 @@ impl Cell {
         empty_flag: bool,
         formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
     ) {
-        let mut type_value: String = String::new();
-        let mut cell_reference: String = String::new();
+        let mut type_value: String = String::from("");
+        let mut cell_reference: String = String::from("");
 
         if let Some(v) = get_attribute(e, b"r") {
             cell_reference = v;
@@ -425,7 +374,7 @@ impl Cell {
             return;
         }
 
-        let mut string_value: String = String::new();
+        let mut string_value: String = String::from("");
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
@@ -465,7 +414,7 @@ impl Cell {
                                 .get_shared_string_item()
                                 .get(index)
                                 .unwrap();
-                            self.set_shared_string_item(shared_string_item);
+                            self.set_shared_string_item(shared_string_item.clone());
                         }
                         "b" => {
                             let prm = string_value == "1";
@@ -512,27 +461,27 @@ impl Cell {
         }
 
         // c
-        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         let coordinate = self.coordinate.to_string();
-        attributes.push(("r", &coordinate).into());
+        attributes.push(("r", &coordinate));
         if self.get_data_type_crate() == "s"
             || self.get_data_type_crate() == "b"
             || self.get_data_type_crate() == "str"
             || self.get_data_type_crate() == "e"
         {
-            attributes.push(("t", self.get_data_type_crate()).into());
+            attributes.push(("t", self.get_data_type_crate()));
         }
         let xf_index_str: String;
         let xf_index = stylesheet.set_style(self.get_style());
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
-            attributes.push(("s", &xf_index_str).into());
+            attributes.push(("s", &xf_index_str));
         }
 
         // NOT SUPPORTED
         // let cell_meta_index_str = self.cell_meta_index.get_value_string();
         // if self.cell_meta_index.has_value() {
-        //    attributes.push(("cm", &cell_meta_index_str).into());
+        //     attributes.push(("cm", &cell_meta_index_str));
         // }
 
         if empty_flag_value {
@@ -552,7 +501,7 @@ impl Cell {
         } else {
             write_start_tag(writer, "v", vec![], false);
 
-            // todo use typed value
+            //todo use typed value
             match self.get_data_type_crate() {
                 "s" => {
                     let val_index = shared_string_table

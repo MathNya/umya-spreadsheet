@@ -1,28 +1,22 @@
-use std::{
-    io,
-    io::Read,
-};
-
-use crate::{
-    XlsxError,
-    reader::driver::join_paths,
-    structs::{
-        StringValue,
-        WriterManager,
-    },
-};
+use crate::reader::driver::*;
+use crate::structs::StringValue;
+use crate::structs::WriterManager;
+use crate::XlsxError;
+use std::io;
+use std::io::Read;
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {
     file_target: StringValue,
-    file_data:   Vec<u8>,
+    file_data: ThinVec<u8>,
 }
 impl RawFile {
     #[inline]
     pub(crate) fn get_file_name(&self) -> String {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
-        (*object_name).to_string()
+        object_name.to_string()
     }
 
     #[inline]
@@ -62,7 +56,7 @@ impl RawFile {
     }
 
     #[inline]
-    pub(crate) fn get_file_data_mut(&mut self) -> &mut Vec<u8> {
+    pub(crate) fn _get_file_data_mut(&mut self) -> &mut ThinVec<u8> {
         &mut self.file_data
     }
 
@@ -72,7 +66,7 @@ impl RawFile {
         self
     }
 
-    pub(crate) fn set_attributes<R: Read + io::Seek>(
+    pub(crate) fn set_attributes<R: io::Read + io::Seek>(
         &mut self,
         arv: &mut zip::read::ZipArchive<R>,
         base_path: &str,

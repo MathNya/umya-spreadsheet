@@ -1,18 +1,17 @@
 #[derive(Default, Debug, Clone)]
 pub struct Anchor {
-    left_column:   u32,
-    left_offset:   u32,
-    top_row:       u32,
-    top_offset:    u32,
-    right_column:  u32,
-    right_offset:  u32,
-    bottom_row:    u32,
+    left_column: u32,
+    left_offset: u32,
+    top_row: u32,
+    top_offset: u32,
+    right_column: u32,
+    right_offset: u32,
+    bottom_row: u32,
     bottom_offset: u32,
 }
 
 impl Anchor {
     #[inline]
-    #[must_use]
     pub fn get_left_column(&self) -> u32 {
         self.left_column
     }
@@ -23,7 +22,6 @@ impl Anchor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_left_offset(&self) -> u32 {
         self.left_offset
     }
@@ -34,7 +32,6 @@ impl Anchor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_top_row(&self) -> u32 {
         self.top_row
     }
@@ -45,7 +42,6 @@ impl Anchor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_top_offset(&self) -> u32 {
         self.top_offset
     }
@@ -56,7 +52,6 @@ impl Anchor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_right_column(&self) -> u32 {
         self.right_column
     }
@@ -67,7 +62,6 @@ impl Anchor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_right_offset(&self) -> u32 {
         self.right_offset
     }
@@ -78,7 +72,6 @@ impl Anchor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_bottom_row(&self) -> u32 {
         self.bottom_row
     }
@@ -89,7 +82,6 @@ impl Anchor {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_bottom_offset(&self) -> u32 {
         self.bottom_offset
     }
@@ -100,25 +92,25 @@ impl Anchor {
     }
 
     #[inline]
-    pub(crate) fn adjustment_insert_row(&mut self, num_rows: u32) {
+    pub(crate) fn _adjustment_insert_row(&mut self, num_rows: u32) {
         self.top_row += num_rows;
         self.bottom_row += num_rows;
     }
 
     #[inline]
-    pub(crate) fn adjustment_insert_column(&mut self, num_cols: u32) {
+    pub(crate) fn _adjustment_insert_column(&mut self, num_cols: u32) {
         self.left_column += num_cols;
         self.right_column += num_cols;
     }
 
     #[inline]
-    pub(crate) fn adjustment_remove_row(&mut self, num_rows: u32) {
+    pub(crate) fn _adjustment_remove_row(&mut self, num_rows: u32) {
         self.top_row = self.top_row.saturating_sub(num_rows).max(1);
         self.bottom_row = self.bottom_row.saturating_sub(num_rows).max(1);
     }
 
     #[inline]
-    pub(crate) fn adjustment_remove_column(&mut self, num_cols: u32) {
+    pub(crate) fn _adjustment_remove_column(&mut self, num_cols: u32) {
         self.left_column = self.left_column.saturating_sub(num_cols).max(1);
         self.right_column = self.right_column.saturating_sub(num_cols).max(1);
     }

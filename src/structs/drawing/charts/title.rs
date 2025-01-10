@@ -1,37 +1,22 @@
 // c:title
+use super::ChartText;
+use super::Layout;
+use super::Overlay;
+use crate::writer::driver::*;
+use crate::xml_read_loop;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    ChartText,
-    Layout,
-    Overlay,
-};
-use crate::{
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-    xml_read_loop,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Title {
     chart_text: Option<ChartText>,
-    layout:     Option<Layout>,
-    overlay:    Overlay,
+    layout: Option<Layout>,
+    overlay: Overlay,
 }
 
 impl Title {
-    #[must_use]
     pub fn get_chart_text(&self) -> Option<&ChartText> {
         self.chart_text.as_ref()
     }
@@ -45,7 +30,6 @@ impl Title {
         self
     }
 
-    #[must_use]
     pub fn get_layout(&self) -> Option<&Layout> {
         self.layout.as_ref()
     }
@@ -59,7 +43,6 @@ impl Title {
         self
     }
 
-    #[must_use]
     pub fn get_overlay(&self) -> &Overlay {
         &self.overlay
     }

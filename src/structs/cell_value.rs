@@ -1,36 +1,25 @@
-use std::{
-    borrow::Cow,
-    str::FromStr,
-};
-
-use super::{
-    RichText,
-    SharedStringItem,
-    Text,
-};
-use crate::{
-    CellErrorType,
-    structs::{
-        CellFormula,
-        CellRawValue,
-    },
-    traits::AdjustmentCoordinateWith2Sheet,
-};
+use super::RichText;
+use super::SharedStringItem;
+use super::Text;
+use crate::structs::CellFormula;
+use crate::structs::CellRawValue;
+use crate::traits::AdjustmentCoordinateWith2Sheet;
+use crate::CellErrorType;
+use std::borrow::Cow;
+use std::str::FromStr;
 
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd)]
 pub struct CellValue {
     pub(crate) raw_value: CellRawValue,
-    pub(crate) formula:   Option<Box<CellFormula>>,
+    pub(crate) formula: Option<Box<CellFormula>>,
 }
 impl CellValue {
     #[inline]
-    #[must_use]
     pub fn get_data_type(&self) -> &str {
         self.raw_value.get_data_type()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_raw_value(&self) -> &CellRawValue {
         &self.raw_value
     }
@@ -44,13 +33,11 @@ impl CellValue {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.raw_value.to_string().into()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_value_number(&self) -> Option<f64> {
         self.raw_value.get_number()
     }
@@ -74,15 +61,13 @@ impl CellValue {
         self.raw_value.get_rich_text()
     }
 
-    /// Set the raw value after trying to convert `value` into one of the
-    /// supported data types. <br />
+    /// Set the raw value after trying to convert `value` into one of the supported data types.
+    /// <br />
     /// Types that `value` may be converted to:
     /// - `Empty` - if the string was `""`
     /// - `Numeric` - if the string can be parsed to an `f64`
     /// - `Bool` - if the string was either `"TRUE"` or `"FALSE"`
-    /// - `Error` - if the string was either
-    ///   `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#
-    ///   DATA!"` or `"#DIV/0!"`
+    /// - `Error` - if the string was either `"#VALUE!"`,`"#REF!"`,`"#NUM!"`,`"#NULL!"`,`"#NAME?"`,`"#N/A"`,`"#DATA!"` or `"#DIV/0!"`
     /// - `String` - if the string does not fulfill any of the other conditions
     #[inline]
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -154,13 +139,11 @@ impl CellValue {
     }
 
     #[inline]
-    #[must_use]
     pub fn is_formula(&self) -> bool {
         self.formula.is_some()
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula(&self) -> &str {
         match &self.formula {
             Some(v) => v.get_text(),
@@ -169,7 +152,6 @@ impl CellValue {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
         self.formula.as_deref()
     }
@@ -207,13 +189,12 @@ impl CellValue {
     }
 
     #[inline]
-    #[must_use]
     pub fn is_error(&self) -> bool {
         self.raw_value.is_error()
     }
 
     #[inline]
-    pub(crate) fn set_shared_string_item(&mut self, value: &SharedStringItem) -> &mut Self {
+    pub(crate) fn set_shared_string_item(&mut self, value: SharedStringItem) -> &mut Self {
         if let Some(v) = value.get_text() {
             self.set_value_string(v.get_value());
         }
@@ -244,7 +225,6 @@ impl CellValue {
     }
 
     #[inline]
-    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.is_value_empty() && self.is_formula_empty()
     }

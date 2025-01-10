@@ -1,25 +1,18 @@
-use quick_xml::{
-    Reader,
-    events::Event,
-};
-
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::{
-        Worksheet,
-        drawing::spreadsheet::WorksheetDrawing,
-        raw::{
-            RawFile,
-            RawRelationships,
-        },
-    },
-};
+use super::XlsxError;
+use crate::reader::driver::xml_read_loop;
+use crate::structs::drawing::spreadsheet::WorksheetDrawing;
+use crate::structs::raw::RawFile;
+use crate::structs::raw::RawRelationships;
+use crate::structs::Worksheet;
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use std::result;
 
 pub(crate) fn read(
     worksheet: &mut Worksheet,
     drawing_file: &RawFile,
     drawing_relationships: Option<&RawRelationships>,
-) {
+) -> result::Result<(), XlsxError> {
     let data = std::io::Cursor::new(drawing_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
@@ -40,4 +33,6 @@ pub(crate) fn read(
         },
         Event::Eof => break
     );
+
+    Ok(())
 }

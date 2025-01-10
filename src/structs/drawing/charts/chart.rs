@@ -1,50 +1,36 @@
+use super::AutoTitleDeleted;
+use super::BackWall;
+use super::DisplayBlanksAs;
+use super::Floor;
+use super::Formula;
+use super::Legend;
+use super::PlotArea;
+use super::PlotVisibleOnly;
+use super::ShowDataLabelsOverMaximum;
+use super::SideWall;
+use super::Title;
+use super::View3D;
+use crate::structs::Spreadsheet;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
+use crate::xml_read_loop;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    AutoTitleDeleted,
-    BackWall,
-    DisplayBlanksAs,
-    Floor,
-    Formula,
-    Legend,
-    PlotArea,
-    PlotVisibleOnly,
-    ShowDataLabelsOverMaximum,
-    SideWall,
-    Title,
-    View3D,
-};
-use crate::{
-    structs::Workbook,
-    traits::AdjustmentCoordinateWithSheet,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-    xml_read_loop,
-};
 
 #[derive(Clone, Default, Debug)]
 pub struct Chart {
-    title:                         Option<Title>,
-    auto_title_deleted:            AutoTitleDeleted,
-    view_3d:                       Option<View3D>,
-    floor:                         Option<Floor>,
-    side_wall:                     Option<SideWall>,
-    back_wall:                     Option<BackWall>,
-    plot_area:                     PlotArea,
-    legend:                        Legend,
-    plot_visible_only:             PlotVisibleOnly,
-    display_blanks_as:             DisplayBlanksAs,
+    title: Option<Title>,
+    auto_title_deleted: AutoTitleDeleted,
+    view_3d: Option<View3D>,
+    floor: Option<Floor>,
+    side_wall: Option<SideWall>,
+    back_wall: Option<BackWall>,
+    plot_area: PlotArea,
+    legend: Legend,
+    plot_visible_only: PlotVisibleOnly,
+    display_blanks_as: DisplayBlanksAs,
     show_data_labels_over_maximum: ShowDataLabelsOverMaximum,
 }
 
@@ -52,7 +38,6 @@ impl Chart {
     pub const LANG_EN_GB: &'static str = "en_GB";
     pub const LANG_JA_JP: &'static str = "ja-JP";
 
-    #[must_use]
     pub fn get_title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
@@ -66,7 +51,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_auto_title_deleted(&self) -> &AutoTitleDeleted {
         &self.auto_title_deleted
     }
@@ -80,7 +64,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_view_3d(&self) -> Option<&View3D> {
         self.view_3d.as_ref()
     }
@@ -94,7 +77,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_floor(&self) -> Option<&Floor> {
         self.floor.as_ref()
     }
@@ -108,7 +90,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_side_wall(&self) -> Option<&SideWall> {
         self.side_wall.as_ref()
     }
@@ -122,7 +103,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_back_wall(&self) -> Option<&BackWall> {
         self.back_wall.as_ref()
     }
@@ -136,7 +116,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_plot_area(&self) -> &PlotArea {
         &self.plot_area
     }
@@ -150,7 +129,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_legend(&self) -> &Legend {
         &self.legend
     }
@@ -164,7 +142,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_plot_visible_only(&self) -> &PlotVisibleOnly {
         &self.plot_visible_only
     }
@@ -178,7 +155,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_display_blanks_as(&self) -> &DisplayBlanksAs {
         &self.display_blanks_as
     }
@@ -192,7 +168,6 @@ impl Chart {
         self
     }
 
-    #[must_use]
     pub fn get_show_data_labels_over_maximum(&self) -> &ShowDataLabelsOverMaximum {
         &self.show_data_labels_over_maximum
     }
@@ -278,7 +253,7 @@ impl Chart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:chart
         write_start_tag(writer, "c:chart", vec![], false);
 
@@ -311,7 +286,7 @@ impl Chart {
         }
 
         // c:plotArea
-        self.plot_area.write_to(writer, wb);
+        self.plot_area.write_to(writer, spreadsheet);
 
         // c:legend
         self.legend.write_to(writer);

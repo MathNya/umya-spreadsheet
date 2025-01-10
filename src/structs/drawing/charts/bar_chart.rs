@@ -1,49 +1,35 @@
 // c:barChart
+use super::AreaChartSeries;
+use super::AreaChartSeriesList;
+use super::AxisId;
+use super::BarDirection;
+use super::DataLabels;
+use super::GapWidth;
+use super::Grouping;
+use super::Overlap;
+use super::VaryColors;
+use crate::reader::driver::*;
+use crate::structs::Spreadsheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    AreaChartSeries,
-    AreaChartSeriesList,
-    AxisId,
-    BarDirection,
-    DataLabels,
-    GapWidth,
-    Grouping,
-    Overlap,
-    VaryColors,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct BarChart {
-    bar_direction:          BarDirection,
-    grouping:               Grouping,
-    vary_colors:            VaryColors,
+    bar_direction: BarDirection,
+    grouping: Grouping,
+    vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels:            DataLabels,
-    gap_width:              GapWidth,
-    overlap:                Overlap,
-    axis_id:                Vec<AxisId>,
+    data_labels: DataLabels,
+    gap_width: GapWidth,
+    overlap: Overlap,
+    axis_id: ThinVec<AxisId>,
 }
 
 impl BarChart {
-    #[must_use]
     pub fn get_bar_direction(&self) -> &BarDirection {
         &self.bar_direction
     }
@@ -57,7 +43,6 @@ impl BarChart {
         self
     }
 
-    #[must_use]
     pub fn get_grouping(&self) -> &Grouping {
         &self.grouping
     }
@@ -71,7 +56,6 @@ impl BarChart {
         self
     }
 
-    #[must_use]
     pub fn get_vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
@@ -85,7 +69,6 @@ impl BarChart {
         self
     }
 
-    #[must_use]
     pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
@@ -99,7 +82,6 @@ impl BarChart {
         self
     }
 
-    #[must_use]
     pub fn get_data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
@@ -113,7 +95,6 @@ impl BarChart {
         self
     }
 
-    #[must_use]
     pub fn get_gap_width(&self) -> &GapWidth {
         &self.gap_width
     }
@@ -127,7 +108,6 @@ impl BarChart {
         self
     }
 
-    #[must_use]
     pub fn get_overlap(&self) -> &Overlap {
         &self.overlap
     }
@@ -141,16 +121,15 @@ impl BarChart {
         self
     }
 
-    #[must_use]
     pub fn get_axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+    pub fn get_axis_id_mut(&mut self) -> &mut ThinVec<AxisId> {
         &mut self.axis_id
     }
 
-    pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut BarChart {
+    pub fn set_axis_id(&mut self, value: impl Into<ThinVec<AxisId>>) -> &mut BarChart {
         self.axis_id = value.into();
         self
     }
@@ -215,7 +194,7 @@ impl BarChart {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:barChart
         write_start_tag(writer, "c:barChart", vec![], false);
 
@@ -230,7 +209,7 @@ impl BarChart {
 
         // c:ser
         for v in self.area_chart_series_list.get_area_chart_series() {
-            v.write_to(writer, wb);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:dLbls

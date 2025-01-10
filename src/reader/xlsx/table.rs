@@ -1,30 +1,23 @@
-use quick_xml::{
-    Reader,
-    events::Event,
-};
+use super::driver::*;
+use super::XlsxError;
+use crate::structs::raw::RawFile;
+use crate::structs::Worksheet;
+use crate::structs::{Table, TableColumn, TableStyleInfo};
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use std::result;
 
-use super::{
-    XlsxError,
-    driver::get_attribute_value,
-};
-use crate::structs::{
-    ShowColumn,
-    ShowStripes,
-    Table,
-    TableColumn,
-    TableStyleInfo,
-    Worksheet,
-    raw::RawFile,
-};
-
-pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<(), XlsxError> {
+pub(crate) fn read(
+    worksheet: &mut Worksheet,
+    table_file: &RawFile,
+) -> result::Result<(), XlsxError> {
     let data = std::io::Cursor::new(table_file.get_file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
     let mut buf = Vec::new();
     let mut table = Table::default();
     let mut table_column = TableColumn::default();
-    let mut string_value = String::new();
+    let mut string_value = String::from("");
     loop {
         match reader.read_event_into(&mut buf) {
             Ok(Event::Empty(ref e)) => match e.name().into_inner() {
@@ -55,10 +48,10 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                 }
                 b"tableStyleInfo" => {
                     let mut name = String::new();
-                    let mut show_first_col = ShowColumn::Hide;
-                    let mut show_last_col = ShowColumn::Hide;
-                    let mut show_row_stripes = ShowStripes::Hide;
-                    let mut show_col_stripes = ShowStripes::Hide;
+                    let mut show_first_col = false;
+                    let mut show_last_col = false;
+                    let mut show_row_stripes = false;
+                    let mut show_col_stripes = false;
                     for attr in e.attributes().with_checks(false).flatten() {
                         let attr_val = get_attribute_value(&attr)?;
                         match attr.key.0 {
@@ -66,43 +59,27 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
                                 name = attr_val;
                             }
                             b"showFirstColumn" => {
-                                if attr_val == "1" {
-                                    show_first_col = ShowColumn::Show;
-                                }
+                                show_first_col = attr_val == "1";
                             }
                             b"showLastColumn" => {
-                                if attr_val == "1" {
-                                    show_last_col = ShowColumn::Show;
-                                }
+                                show_last_col = attr_val == "1";
                             }
                             b"showRowStripes" => {
-                                if attr_val == "1" {
-                                    show_row_stripes = ShowStripes::Show;
-                                }
+                                show_row_stripes = attr_val == "1";
                             }
                             b"showColumnStripes" => {
-                                if attr_val == "1" {
-                                    show_col_stripes = ShowStripes::Show;
-                                }
+                                show_col_stripes = attr_val == "1";
                             }
                             _ => {}
                         }
                     }
-                    if name.is_empty() {
+                    if !name.is_empty() {
                         table.set_style_info(Some(TableStyleInfo::new(
                             &name,
                             show_first_col,
                             show_last_col,
                             show_row_stripes,
                             show_col_stripes,
-                        )));
-                    } else {
-                        table.set_style_info(Some(TableStyleInfo::new(
-                            &name,
-                            ShowColumn::Hide,
-                            ShowColumn::Hide,
-                            ShowStripes::Hide,
-                            ShowStripes::Hide,
                         )));
                     }
                 }
@@ -161,7 +138,7 @@ pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<()
             Ok(Event::End(ref e)) => match e.name().into_inner() {
                 b"calculatedColumnFormula" => {
                     table_column.set_calculated_column_formula(string_value);
-                    string_value = String::new();
+                    string_value = String::from("");
                 }
                 b"tableColumn" => {
                     // add column to table (if it has a name)

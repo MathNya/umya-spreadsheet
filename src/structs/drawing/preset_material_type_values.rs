@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use super::super::super::EnumTrait;
+use std::str::FromStr;
 #[derive(Clone, Debug)]
 pub enum PresetMaterialTypeValues {
     Clear,

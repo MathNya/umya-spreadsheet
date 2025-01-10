@@ -1,54 +1,34 @@
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
+use crate::xml_read_loop;
 
 // c:chartSpace
 use super::Chart;
-use super::{
-    Date1904,
-    EditingLanguage,
-    PrintSettings,
-    RoundedCorners,
-    ShapeProperties,
-};
-use crate::{
-    helper::const_str::{
-        DRAWINGML_CHART_NS,
-        DRAWINGML_MAIN_NS,
-        REL_OFC_NS,
-    },
-    structs::{
-        Workbook,
-        office2010::drawing::charts::Style,
-    },
-    traits::AdjustmentCoordinateWithSheet,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-    xml_read_loop,
-};
+use super::Date1904;
+use super::EditingLanguage;
+use super::PrintSettings;
+use super::RoundedCorners;
+use super::ShapeProperties;
+use crate::helper::const_str::*;
+use crate::structs::office2010::drawing::charts::Style;
+use crate::structs::Spreadsheet;
+use crate::traits::AdjustmentCoordinateWithSheet;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartSpace {
-    date1904:         Date1904,
+    date1904: Date1904,
     editing_language: EditingLanguage,
-    rounded_corners:  RoundedCorners,
-    style:            Style,
-    chart:            Chart,
+    rounded_corners: RoundedCorners,
+    style: Style,
+    chart: Chart,
     shape_properties: Option<ShapeProperties>,
-    print_settings:   Option<PrintSettings>,
+    print_settings: Option<PrintSettings>,
 }
 
 impl ChartSpace {
-    #[must_use]
     pub fn get_date1904(&self) -> &Date1904 {
         &self.date1904
     }
@@ -62,7 +42,6 @@ impl ChartSpace {
         self
     }
 
-    #[must_use]
     pub fn get_editing_language(&self) -> &EditingLanguage {
         &self.editing_language
     }
@@ -76,7 +55,6 @@ impl ChartSpace {
         self
     }
 
-    #[must_use]
     pub fn get_rounded_corners(&self) -> &RoundedCorners {
         &self.rounded_corners
     }
@@ -90,7 +68,6 @@ impl ChartSpace {
         self
     }
 
-    #[must_use]
     pub fn get_style(&self) -> &Style {
         &self.style
     }
@@ -104,7 +81,6 @@ impl ChartSpace {
         self
     }
 
-    #[must_use]
     pub fn get_chart(&self) -> &Chart {
         &self.chart
     }
@@ -118,7 +94,6 @@ impl ChartSpace {
         self
     }
 
-    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -132,7 +107,6 @@ impl ChartSpace {
         self
     }
 
-    #[must_use]
     pub fn get_print_settings(&self) -> Option<&PrintSettings> {
         self.print_settings.as_ref()
     }
@@ -155,8 +129,8 @@ impl ChartSpace {
             reader,
             Event::Start(ref e) => match e.name().into_inner() {
                 b"mc:AlternateContent" => {
-                    let obj = Style::default();
-                    Style::set_attributes(reader, e);
+                    let mut obj = Style::default();
+                    obj.set_attributes(reader, e);
                     self.set_style(obj);
                 }
                 b"c:chart" => {
@@ -195,15 +169,15 @@ impl ChartSpace {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:chartSpace
         write_start_tag(
             writer,
             "c:chartSpace",
             vec![
-                ("xmlns:c", DRAWINGML_CHART_NS).into(),
-                ("xmlns:a", DRAWINGML_MAIN_NS).into(),
-                ("xmlns:r", REL_OFC_NS).into(),
+                ("xmlns:c", DRAWINGML_CHART_NS),
+                ("xmlns:a", DRAWINGML_MAIN_NS),
+                ("xmlns:r", REL_OFC_NS),
             ],
             false,
         );
@@ -218,10 +192,10 @@ impl ChartSpace {
         self.rounded_corners.write_to(writer);
 
         // mc:AlternateContent
-        Style::write_to(writer);
+        self.style.write_to(writer);
 
         // c:chart
-        self.chart.write_to(writer, wb);
+        self.chart.write_to(writer, spreadsheet);
 
         // c:spPr
         if let Some(v) = &self.shape_properties {

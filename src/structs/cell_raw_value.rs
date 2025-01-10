@@ -1,10 +1,7 @@
-use std::fmt;
-
-use super::{
-    RichText,
-    Text,
-};
+use super::RichText;
+use super::Text;
 use crate::CellErrorType;
+use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Default)]
 pub enum CellRawValue {
@@ -33,10 +30,10 @@ impl fmt::Display for CellRawValue {
 
 impl CellRawValue {
     #[inline]
-    #[must_use]
     pub fn get_data_type(&self) -> &str {
         match self {
-            Self::String(_) | Self::RichText(_) => "s",
+            Self::String(_) => "s",
+            Self::RichText(_) => "s",
             Self::Numeric(_) => "n",
             Self::Bool(_) => "b",
             Self::Error(_) => "e",
@@ -67,7 +64,6 @@ impl CellRawValue {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_rich_text(&self) -> Option<RichText> {
         match self {
             Self::RichText(v) => Some(v.clone()),
@@ -76,13 +72,11 @@ impl CellRawValue {
     }
 
     #[inline]
-    #[must_use]
     pub fn is_error(&self) -> bool {
         matches!(*self, CellRawValue::Error(_))
     }
 
     #[inline]
-    #[must_use]
     pub fn is_empty(&self) -> bool {
         matches!(*self, CellRawValue::Empty)
     }

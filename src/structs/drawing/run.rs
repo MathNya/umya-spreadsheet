@@ -1,33 +1,19 @@
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::run_properties::RunProperties;
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Run {
-    text:           Box<str>,
+    text: Box<str>,
     run_properties: RunProperties,
 }
 
 impl Run {
     #[inline]
-    #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }
@@ -38,7 +24,6 @@ impl Run {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_run_properties(&self) -> &RunProperties {
         &self.run_properties
     }

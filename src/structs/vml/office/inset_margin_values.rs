@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use super::super::super::EnumTrait;
+use std::str::FromStr;
 #[derive(Clone, Debug)]
 pub enum InsetMarginValues {
     Auto,
@@ -21,7 +20,6 @@ impl EnumTrait for InsetMarginValues {
 }
 impl FromStr for InsetMarginValues {
     type Err = ();
-
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "auto" => Ok(Self::Auto),

@@ -1,29 +1,22 @@
 // c:pageMargins
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::super::super::DoubleValue;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct PageMargins {
     bottom: DoubleValue,
-    left:   DoubleValue,
-    right:  DoubleValue,
-    top:    DoubleValue,
+    left: DoubleValue,
+    right: DoubleValue,
+    top: DoubleValue,
     header: DoubleValue,
     footer: DoubleValue,
 }
 impl PageMargins {
-    #[must_use]
     pub fn get_bottom(&self) -> f64 {
         self.bottom.get_value()
     }
@@ -33,7 +26,6 @@ impl PageMargins {
         self
     }
 
-    #[must_use]
     pub fn get_left(&self) -> f64 {
         self.left.get_value()
     }
@@ -43,7 +35,6 @@ impl PageMargins {
         self
     }
 
-    #[must_use]
     pub fn get_right(&self) -> f64 {
         self.right.get_value()
     }
@@ -53,7 +44,6 @@ impl PageMargins {
         self
     }
 
-    #[must_use]
     pub fn get_top(&self) -> f64 {
         self.top.get_value()
     }
@@ -63,7 +53,6 @@ impl PageMargins {
         self
     }
 
-    #[must_use]
     pub fn get_header(&self) -> f64 {
         self.header.get_value()
     }
@@ -73,7 +62,6 @@ impl PageMargins {
         self
     }
 
-    #[must_use]
     pub fn get_footer(&self) -> f64 {
         self.footer.get_value()
     }
@@ -105,12 +93,12 @@ impl PageMargins {
             writer,
             "c:pageMargins",
             vec![
-                ("b", self.bottom.get_value_string()).into(),
-                ("l", self.left.get_value_string()).into(),
-                ("r", self.right.get_value_string()).into(),
-                ("t", self.top.get_value_string()).into(),
-                ("header", self.header.get_value_string()).into(),
-                ("footer", self.footer.get_value_string()).into(),
+                ("b", &self.bottom.get_value_string()),
+                ("l", &self.left.get_value_string()),
+                ("r", &self.right.get_value_string()),
+                ("t", &self.top.get_value_string()),
+                ("header", &self.header.get_value_string()),
+                ("footer", &self.footer.get_value_string()),
             ],
             true,
         );

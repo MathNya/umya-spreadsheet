@@ -1,23 +1,11 @@
 // colors
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
 use super::MruColors;
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct Colors {
@@ -26,17 +14,17 @@ pub(crate) struct Colors {
 
 impl Colors {
     #[inline]
-    pub(crate) fn get_mru_colors(&self) -> &MruColors {
+    pub(crate) fn _get_mru_colors(&self) -> &MruColors {
         &self.mru_colors
     }
 
     #[inline]
-    pub(crate) fn get_mru_colors_mut(&mut self) -> &mut MruColors {
+    pub(crate) fn _get_mru_colors_mut(&mut self) -> &mut MruColors {
         &mut self.mru_colors
     }
 
     #[inline]
-    pub(crate) fn set_mru_colors(&mut self, value: MruColors) -> &mut Self {
+    pub(crate) fn _set_mru_colors(&mut self, value: MruColors) -> &mut Self {
         self.mru_colors = value;
         self
     }

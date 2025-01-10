@@ -1,17 +1,11 @@
 // a:off
-use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
-
 use super::super::super::Int64Value;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::reader::driver::*;
+use crate::writer::driver::*;
+use quick_xml::events::BytesStart;
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Offset {
@@ -20,7 +14,6 @@ pub struct Offset {
 }
 impl Offset {
     #[inline]
-    #[must_use]
     pub fn get_x(&self) -> i64 {
         self.x.get_value()
     }
@@ -31,7 +24,6 @@ impl Offset {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_y(&self) -> i64 {
         self.y.get_value()
     }
@@ -57,8 +49,8 @@ impl Offset {
             writer,
             "a:off",
             vec![
-                ("x", self.x.get_value_string()).into(),
-                ("y", self.y.get_value_string()).into(),
+                ("x", &self.x.get_value_string()),
+                ("y", &self.y.get_value_string()),
             ],
             true,
         );

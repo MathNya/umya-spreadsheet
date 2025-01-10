@@ -1,35 +1,23 @@
 // a:majorFont
 // a:minorFont
+use super::SupplementalFont;
+use super::TextFontType;
+use crate::writer::driver::*;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
 use std::io::Cursor;
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    SupplementalFont,
-    TextFontType,
-};
-use crate::writer::driver::{
-    write_end_tag,
-    write_start_tag,
-};
+use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct FontCollectionType {
-    latin_font:             TextFontType,
-    east_asian_font:        TextFontType,
-    complex_script_font:    TextFontType,
-    supplemental_font_list: Vec<SupplementalFont>,
+    latin_font: TextFontType,
+    east_asian_font: TextFontType,
+    complex_script_font: TextFontType,
+    supplemental_font_list: ThinVec<SupplementalFont>,
 }
 impl FontCollectionType {
     #[inline]
-    #[must_use]
     pub fn get_latin_font(&self) -> &TextFontType {
         &self.latin_font
     }
@@ -46,7 +34,6 @@ impl FontCollectionType {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_east_asian_font(&self) -> &TextFontType {
         &self.east_asian_font
     }
@@ -63,7 +50,6 @@ impl FontCollectionType {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_complex_script_font(&self) -> &TextFontType {
         &self.complex_script_font
     }
@@ -80,20 +66,19 @@ impl FontCollectionType {
     }
 
     #[inline]
-    #[must_use]
     pub fn get_supplemental_font_list(&self) -> &[SupplementalFont] {
         &self.supplemental_font_list
     }
 
     #[inline]
-    pub fn get_supplemental_font_list_mut(&mut self) -> &mut Vec<SupplementalFont> {
+    pub fn get_supplemental_font_list_mut(&mut self) -> &mut ThinVec<SupplementalFont> {
         &mut self.supplemental_font_list
     }
 
     #[inline]
     pub fn set_supplemental_font_list(
         &mut self,
-        value: impl Into<Vec<SupplementalFont>>,
+        value: impl Into<ThinVec<SupplementalFont>>,
     ) -> &mut Self {
         self.supplemental_font_list = value.into();
         self
@@ -110,7 +95,7 @@ impl FontCollectionType {
         self.latin_font.set_panose("020F0302020204030204");
         self.east_asian_font.set_typeface("");
         self.complex_script_font.set_typeface("");
-        for (font_script, typeface) in MAJOR_FONTS {
+        for (font_script, typeface) in self::MAJOR_FONTS {
             let mut obj = SupplementalFont::default();
             obj.set_script(*font_script).set_typeface(*typeface);
             self.supplemental_font_list.push(obj);
@@ -123,7 +108,7 @@ impl FontCollectionType {
         self.latin_font.set_panose("020F0502020204030204");
         self.east_asian_font.set_typeface("");
         self.complex_script_font.set_typeface("");
-        for (font_script, typeface) in MINOR_FONTS {
+        for (font_script, typeface) in self::MINOR_FONTS {
             let mut obj = SupplementalFont::default();
             obj.set_script(*font_script).set_typeface(*typeface);
             self.supplemental_font_list.push(obj);
@@ -157,7 +142,12 @@ impl FontCollectionType {
                     _ => (),
                 },
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
-                    b"a:majorFont" | b"a:minorFont" => return,
+                    b"a:majorFont" => {
+                        return;
+                    }
+                    b"a:minorFont" => {
+                        return;
+                    }
                     _ => (),
                 },
                 Ok(Event::Eof) => {
