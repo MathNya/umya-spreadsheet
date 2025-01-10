@@ -1,27 +1,39 @@
 // oleObjects
-use super::OleObject;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::OleObject;
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OleObjects {
-    ole_object: ThinVec<OleObject>,
+    ole_object: Vec<OleObject>,
 }
 
 impl OleObjects {
     #[inline]
+    #[must_use]
     pub fn get_ole_object(&self) -> &[OleObject] {
         &self.ole_object
     }
 
     #[inline]
-    pub fn get_ole_object_mut(&mut self) -> &mut ThinVec<OleObject> {
+    pub fn get_ole_object_mut(&mut self) -> &mut Vec<OleObject> {
         &mut self.ole_object
     }
 

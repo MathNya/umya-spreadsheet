@@ -1,20 +1,36 @@
 // a:lnRef
-use super::SchemeColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::SchemeColor;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct StyleMatrixReferenceType {
-    index: Box<str>,
+    index:        Box<str>,
     scheme_color: Option<Box<SchemeColor>>,
 }
 
 impl StyleMatrixReferenceType {
     #[inline]
+    #[must_use]
     pub fn get_index(&self) -> &str {
         &self.index
     }
@@ -25,6 +41,7 @@ impl StyleMatrixReferenceType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
@@ -64,18 +81,10 @@ impl StyleMatrixReferenceType {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"a:lnRef" => {
-                        return;
-                    }
-                    b"a:fillRef" => {
-                        return;
-                    }
-                    b"a:effectRef" => {
-                        return;
-                    }
-                    b"a:fontRef" => {
-                        return;
-                    }
+                    b"a:lnRef"     |
+                    b"a:fillRef"   |
+                    b"a:effectRef" |
+                    b"a:fontRef" => return,
                     _ => (),
                 }
             },
@@ -85,12 +94,12 @@ impl StyleMatrixReferenceType {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         if let Some(color) = &self.scheme_color {
-            write_start_tag(writer, tag_name, vec![("idx", &self.index)], false);
+            write_start_tag(writer, tag_name, vec![("idx", &self.index).into()], false);
             // a:schemeClr
             color.write_to(writer);
             write_end_tag(writer, tag_name);
         } else {
-            write_start_tag(writer, tag_name, vec![("idx", &self.index)], true);
+            write_start_tag(writer, tag_name, vec![("idx", &self.index).into()], true);
         }
     }
 }

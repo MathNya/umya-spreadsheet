@@ -1,5 +1,9 @@
+use std::{
+    fmt,
+    str::FromStr,
+};
+
 use crate::from_err;
-use std::{fmt, str::FromStr};
 
 // https://msdn.microsoft.com/en-us/library/office/ff839168.aspx
 /// An enum to represent all different errors that can appear as
@@ -80,12 +84,18 @@ from_err!(std::string::FromUtf8Error, XlsxError, Uft8);
 impl fmt::Display for XlsxError {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use self::XlsxError::*;
+        use self::XlsxError::{
+            CellError,
+            Io,
+            Uft8,
+            Xml,
+            Zip,
+        };
         match self {
-            Io(i) => write!(f, "IoError: {}", i),
-            Xml(s) => write!(f, "XmlError: {}", s),
-            Zip(s) => write!(f, "ZipError: {}", s),
-            Uft8(s) => write!(f, "Uft8Error: {}", s),
+            Io(i) => write!(f, "IoError: {i}"),
+            Xml(s) => write!(f, "XmlError: {s}"),
+            Zip(s) => write!(f, "ZipError: {s}"),
+            Uft8(s) => write!(f, "Uft8Error: {s}"),
             CellError(e) => write!(f, "Unsupported cell error value '{e}'"),
         }
     }

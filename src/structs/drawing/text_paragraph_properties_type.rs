@@ -1,29 +1,50 @@
 // a:lvl1pPr
-use super::super::BooleanValue;
-use super::super::EnumValue;
-use super::RunProperties;
-use super::SpaceAfter;
-use super::SpaceBefore;
-use super::TextAlignmentTypeValues;
-use super::TextFontAlignmentValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::{
+        BooleanValue,
+        EnumValue,
+    },
+    RunProperties,
+    SpaceAfter,
+    SpaceBefore,
+    TextAlignmentTypeValues,
+    TextFontAlignmentValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TextParagraphPropertiesType {
-    right_to_left: BooleanValue,
-    alignment: EnumValue<TextAlignmentTypeValues>,
-    font_alignment: EnumValue<TextFontAlignmentValues>,
-    space_before: Option<SpaceBefore>,
-    space_after: Option<SpaceAfter>,
+    right_to_left:          BooleanValue,
+    alignment:              EnumValue<TextAlignmentTypeValues>,
+    font_alignment:         EnumValue<TextFontAlignmentValues>,
+    space_before:           Option<SpaceBefore>,
+    space_after:            Option<SpaceAfter>,
     default_run_properties: Option<Box<RunProperties>>,
 }
 impl TextParagraphPropertiesType {
     #[inline]
+    #[must_use]
     pub fn get_right_to_left(&self) -> bool {
         self.right_to_left.get_value()
     }
@@ -35,6 +56,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
         self.alignment.get_value()
     }
@@ -46,6 +68,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_font_alignment(&self) -> &TextFontAlignmentValues {
         self.font_alignment.get_value()
     }
@@ -57,6 +80,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_space_before(&self) -> Option<&SpaceBefore> {
         self.space_before.as_ref()
     }
@@ -73,6 +97,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_space_after(&self) -> Option<&SpaceAfter> {
         self.space_after.as_ref()
     }
@@ -89,6 +114,7 @@ impl TextParagraphPropertiesType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
         self.default_run_properties.as_deref()
     }
@@ -144,15 +170,15 @@ impl TextParagraphPropertiesType {
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"a:defPPr"  => return,
-                    b"a:lvl1pPr" => return,
-                    b"a:lvl2pPr" => return,
-                    b"a:lvl3pPr" => return,
-                    b"a:lvl4pPr" => return,
-                    b"a:lvl5pPr" => return,
-                    b"a:lvl6pPr" => return,
-                    b"a:lvl7pPr" => return,
-                    b"a:lvl8pPr" => return,
+                    b"a:defPPr"  |
+                    b"a:lvl1pPr" |
+                    b"a:lvl2pPr" |
+                    b"a:lvl3pPr" |
+                    b"a:lvl4pPr" |
+                    b"a:lvl5pPr" |
+                    b"a:lvl6pPr" |
+                    b"a:lvl7pPr" |
+                    b"a:lvl8pPr" |
                     b"a:lvl9pPr" => return,
                     _ =>()
                 }
@@ -163,65 +189,65 @@ impl TextParagraphPropertiesType {
 
     #[inline]
     pub(crate) fn write_to_default(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:defPPr")
+        self.write_to(writer, "a:defPPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl1(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl1pPr")
+        self.write_to(writer, "a:lvl1pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl2(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl2pPr")
+        self.write_to(writer, "a:lvl2pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl3(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl3pPr")
+        self.write_to(writer, "a:lvl3pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl4(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl4pPr")
+        self.write_to(writer, "a:lvl4pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl5(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl5pPr")
+        self.write_to(writer, "a:lvl5pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl6(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl6pPr")
+        self.write_to(writer, "a:lvl6pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl7(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl7pPr")
+        self.write_to(writer, "a:lvl7pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl8(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl8pPr")
+        self.write_to(writer, "a:lvl8pPr");
     }
 
     #[inline]
     pub(crate) fn write_to_lvl9(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        self.write_to(writer, "a:lvl9pPr")
+        self.write_to(writer, "a:lvl9pPr");
     }
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         // a:lvl1pPr
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.right_to_left.has_value() {
-            attributes.push(("rtl", self.right_to_left.get_value_string()));
+            attributes.push(("rtl", self.right_to_left.get_value_string()).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", self.alignment.get_value_string()));
+            attributes.push(("algn", self.alignment.get_value_string()).into());
         }
         if self.font_alignment.has_value() {
-            attributes.push(("fontAlgn", self.font_alignment.get_value_string()));
+            attributes.push(("fontAlgn", self.font_alignment.get_value_string()).into());
         }
         write_start_tag(writer, tag_name, attributes, false);
 

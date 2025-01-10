@@ -1,24 +1,43 @@
 // i
-use crate::reader::driver::*;
-use crate::structs::EnumValue;
-use crate::structs::ItemValues;
-use crate::structs::MemberPropertyIndex;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        ItemValues,
+        MemberPropertyIndex,
+        UInt32Value,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct RowItem {
-    index: UInt32Value,
-    item_type: EnumValue<ItemValues>,
-    repeated_item_count: UInt32Value,
+    index:                 UInt32Value,
+    item_type:             EnumValue<ItemValues>,
+    repeated_item_count:   UInt32Value,
     member_property_index: Option<MemberPropertyIndex>,
 }
 impl RowItem {
     #[inline]
+    #[must_use]
     pub fn get_index(&self) -> u32 {
         self.index.get_value()
     }
@@ -30,6 +49,7 @@ impl RowItem {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_item_type(&self) -> &ItemValues {
         self.item_type.get_value()
     }
@@ -41,6 +61,7 @@ impl RowItem {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_repeated_item_count(&self) -> u32 {
         self.repeated_item_count.get_value()
     }
@@ -52,6 +73,7 @@ impl RowItem {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_member_property_index(&self) -> Option<&MemberPropertyIndex> {
         self.member_property_index.as_ref()
     }
@@ -104,17 +126,18 @@ impl RowItem {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         let empty_flg = self.member_property_index.is_some();
         // i
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let index_str = self.index.get_value_string();
         if self.index.has_value() {
-            attributes.push(("i", index_str.as_str()));
+            attributes.push(("i", index_str.as_str()).into());
         }
+        let item_type_str = self.item_type.get_value_string();
         if self.item_type.has_value() {
-            attributes.push(("t", self.item_type.get_value_string()));
+            attributes.push(("t", item_type_str).into());
         }
         let repeated_item_count_str = self.repeated_item_count.get_value_string();
         if self.repeated_item_count.has_value() {
-            attributes.push(("r", repeated_item_count_str.as_str()));
+            attributes.push(("r", repeated_item_count_str.as_str()).into());
         }
         write_start_tag(writer, "i", attributes, empty_flg);
         if !empty_flg {

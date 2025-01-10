@@ -1,39 +1,60 @@
-use super::Anchor;
-use super::AutoFill;
-use super::AutoSizePicture;
-use super::ClipboardFormat;
-use super::CommentColumnTarget;
-use super::CommentRowTarget;
-use super::MoveWithCells;
-use super::ObjectValues;
-use super::ResizeWithCells;
-use super::Visible;
-use crate::reader::driver::*;
-use crate::structs::EnumValue;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Anchor,
+    AutoFill,
+    AutoSizePicture,
+    ClipboardFormat,
+    CommentColumnTarget,
+    CommentRowTarget,
+    MoveWithCells,
+    ObjectValues,
+    ResizeWithCells,
+    Visible,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::EnumValue,
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentValue,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ClientData {
-    object_type: EnumValue<ObjectValues>,
-    move_with_cells: Option<MoveWithCells>,
-    resize_with_cells: Option<ResizeWithCells>,
-    anchor: Anchor,
-    auto_fill: Option<AutoFill>,
-    comment_row_target: Option<CommentRowTarget>,
+    object_type:           EnumValue<ObjectValues>,
+    move_with_cells:       Option<MoveWithCells>,
+    resize_with_cells:     Option<ResizeWithCells>,
+    anchor:                Anchor,
+    auto_fill:             Option<AutoFill>,
+    comment_row_target:    Option<CommentRowTarget>,
     comment_column_target: Option<CommentColumnTarget>,
-    visible: Option<Visible>,
-    clipboard_format: Option<ClipboardFormat>,
-    auto_size_picture: Option<AutoSizePicture>,
+    visible:               Option<Visible>,
+    clipboard_format:      Option<ClipboardFormat>,
+    auto_size_picture:     Option<AutoSizePicture>,
 }
 
 impl ClientData {
     #[inline]
+    #[must_use]
     pub fn get_object_type(&self) -> &ObjectValues {
         self.object_type.get_value()
     }
@@ -45,6 +66,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_move_with_cells(&self) -> Option<&MoveWithCells> {
         self.move_with_cells.as_ref()
     }
@@ -61,6 +83,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_resize_with_cells(&self) -> Option<&ResizeWithCells> {
         self.resize_with_cells.as_ref()
     }
@@ -77,6 +100,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
@@ -93,6 +117,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_fill(&self) -> Option<&AutoFill> {
         self.auto_fill.as_ref()
     }
@@ -109,6 +134,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_comment_row_target(&self) -> Option<&CommentRowTarget> {
         self.comment_row_target.as_ref()
     }
@@ -125,6 +151,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_comment_column_target(&self) -> Option<&CommentColumnTarget> {
         self.comment_column_target.as_ref()
     }
@@ -141,6 +168,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_visible(&self) -> Option<&Visible> {
         self.visible.as_ref()
     }
@@ -157,6 +185,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_clipboard_format(&self) -> Option<&ClipboardFormat> {
         self.clipboard_format.as_ref()
     }
@@ -173,6 +202,7 @@ impl ClientData {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_auto_size_picture(&self) -> Option<&AutoSizePicture> {
         self.auto_size_picture.as_ref()
     }
@@ -293,7 +323,7 @@ impl ClientData {
         write_start_tag(
             writer,
             "x:ClientData",
-            vec![("ObjectType", self.object_type.get_value_string())],
+            vec![("ObjectType", self.object_type.get_value_string()).into()],
             false,
         );
 

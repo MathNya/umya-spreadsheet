@@ -1,11 +1,20 @@
 // family
-use super::Int32Value;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::Int32Value;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FontCharSet {
@@ -14,6 +23,7 @@ pub struct FontCharSet {
 
 impl FontCharSet {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> i32 {
         self.val.get_value()
     }
@@ -37,9 +47,9 @@ impl FontCharSet {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // charset
         if self.val.has_value() {
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             let val = self.val.get_value_string();
-            attributes.push(("val", &val));
+            attributes.push(("val", &val).into());
             write_start_tag(writer, "charset", attributes, true);
         }
     }

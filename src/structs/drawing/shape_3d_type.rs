@@ -1,24 +1,43 @@
 // a:sp3d
-use super::super::EnumValue;
-use super::BevelBottom;
-use super::BevelTop;
-use super::PresetMaterialTypeValues;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::EnumValue,
+    BevelBottom,
+    BevelTop,
+    PresetMaterialTypeValues,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape3DType {
     preset_material: EnumValue<PresetMaterialTypeValues>,
-    bevel_top: Option<Box<BevelTop>>,
-    bevel_bottom: Option<Box<BevelBottom>>,
+    bevel_top:       Option<Box<BevelTop>>,
+    bevel_bottom:    Option<Box<BevelBottom>>,
 }
 
 impl Shape3DType {
     #[inline]
+    #[must_use]
     pub fn get_preset_material(&self) -> &PresetMaterialTypeValues {
         self.preset_material.get_value()
     }
@@ -30,6 +49,7 @@ impl Shape3DType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bevel_top(&self) -> Option<&BevelTop> {
         self.bevel_top.as_deref()
     }
@@ -45,6 +65,7 @@ impl Shape3DType {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bevel_bottom(&self) -> Option<&BevelBottom> {
         self.bevel_bottom.as_deref()
     }
@@ -94,21 +115,21 @@ impl Shape3DType {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:sp3d
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let preset_material = self.preset_material.get_value_string();
         if self.preset_material.has_value() {
-            attributes.push(("prstMaterial", preset_material));
+            attributes.push(("prstMaterial", preset_material).into());
         }
         write_start_tag(writer, "a:sp3d", attributes, false);
 
         // a:bevelT
         if let Some(v) = &self.bevel_top {
-            v.write_to(writer)
+            v.write_to(writer);
         }
 
         // a:bevelB
         if let Some(v) = &self.bevel_bottom {
-            v.write_to(writer)
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:sp3d");

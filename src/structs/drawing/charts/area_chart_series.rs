@@ -1,48 +1,63 @@
 // c:ser
-use super::Bubble3D;
-use super::BubbleSize;
-use super::CategoryAxisData;
-use super::DataLabels;
-use super::Explosion;
-use super::Formula;
-use super::Index;
-use super::InvertIfNegative;
-use super::Marker;
-use super::Order;
-use super::SeriesText;
-use super::ShapeProperties;
-use super::Smooth;
-use super::Values;
-use super::XValues;
-use super::YValues;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Bubble3D,
+    BubbleSize,
+    CategoryAxisData,
+    DataLabels,
+    Explosion,
+    Formula,
+    Index,
+    InvertIfNegative,
+    Marker,
+    Order,
+    SeriesText,
+    ShapeProperties,
+    Smooth,
+    Values,
+    XValues,
+    YValues,
+};
+use crate::{
+    structs::Workbook,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct AreaChartSeries {
-    index: Index,
-    order: Order,
-    series_text: Option<SeriesText>,
-    explosion: Option<Explosion>,
+    index:              Index,
+    order:              Order,
+    series_text:        Option<SeriesText>,
+    explosion:          Option<Explosion>,
     invert_if_negative: Option<InvertIfNegative>,
-    marker: Option<Marker>,
-    shape_properties: Option<ShapeProperties>,
+    marker:             Option<Marker>,
+    shape_properties:   Option<ShapeProperties>,
     category_axis_data: Option<CategoryAxisData>,
-    values: Option<Values>,
-    x_values: Option<XValues>,
-    y_values: Option<YValues>,
-    bubble_size: Option<BubbleSize>,
-    bubble_3d: Option<Bubble3D>,
-    smooth: Option<Smooth>,
-    data_labels: Option<DataLabels>,
+    values:             Option<Values>,
+    x_values:           Option<XValues>,
+    y_values:           Option<YValues>,
+    bubble_size:        Option<BubbleSize>,
+    bubble_3d:          Option<Bubble3D>,
+    smooth:             Option<Smooth>,
+    data_labels:        Option<DataLabels>,
 }
 
 impl AreaChartSeries {
+    #[must_use]
     pub fn get_index(&self) -> &Index {
         &self.index
     }
@@ -56,6 +71,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_order(&self) -> &Order {
         &self.order
     }
@@ -69,6 +85,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_series_text(&self) -> Option<&SeriesText> {
         self.series_text.as_ref()
     }
@@ -82,6 +99,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_explosion(&self) -> Option<&Explosion> {
         self.explosion.as_ref()
     }
@@ -95,6 +113,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_invert_if_negative(&self) -> Option<&InvertIfNegative> {
         self.invert_if_negative.as_ref()
     }
@@ -108,6 +127,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_marker(&self) -> Option<&Marker> {
         self.marker.as_ref()
     }
@@ -121,6 +141,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -134,6 +155,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_category_axis_data(&self) -> Option<&CategoryAxisData> {
         self.category_axis_data.as_ref()
     }
@@ -147,6 +169,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_values(&self) -> Option<&Values> {
         self.values.as_ref()
     }
@@ -160,6 +183,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_x_values(&self) -> Option<&XValues> {
         self.x_values.as_ref()
     }
@@ -173,6 +197,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_y_values(&self) -> Option<&YValues> {
         self.y_values.as_ref()
     }
@@ -186,6 +211,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_bubble_size(&self) -> Option<&BubbleSize> {
         self.bubble_size.as_ref()
     }
@@ -199,6 +225,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_bubble_3d(&self) -> Option<&Bubble3D> {
         self.bubble_3d.as_ref()
     }
@@ -212,6 +239,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_smooth(&self) -> Option<&Smooth> {
         self.smooth.as_ref()
     }
@@ -225,6 +253,7 @@ impl AreaChartSeries {
         self
     }
 
+    #[must_use]
     pub fn get_data_labels(&self) -> Option<&DataLabels> {
         self.data_labels.as_ref()
     }
@@ -354,7 +383,7 @@ impl AreaChartSeries {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:ser
         write_start_tag(writer, "c:ser", vec![], false);
 
@@ -396,27 +425,27 @@ impl AreaChartSeries {
 
         // c:cat
         if let Some(v) = &self.category_axis_data {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:val
         if let Some(v) = &self.values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:xVal
         if let Some(v) = &self.x_values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:yVal
         if let Some(v) = &self.y_values {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bubbleSize
         if let Some(v) = &self.bubble_size {
-            v.write_to(writer, spreadsheet);
+            v.write_to(writer, wb);
         }
 
         // c:bubble3D

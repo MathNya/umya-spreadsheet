@@ -1,22 +1,40 @@
 // a:fontScheme
-use super::super::StringValue;
-use super::FontCollectionType;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::StringValue,
+    FontCollectionType,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct FontScheme {
-    name: StringValue,
+    name:       StringValue,
     major_font: FontCollectionType,
     minor_font: FontCollectionType,
 }
 
 impl FontScheme {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -28,6 +46,7 @@ impl FontScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_major_font(&self) -> &FontCollectionType {
         &self.major_font
     }
@@ -44,6 +63,7 @@ impl FontScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_minor_font(&self) -> &FontCollectionType {
         &self.minor_font
     }
@@ -92,9 +112,9 @@ impl FontScheme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:fontScheme
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.get_value_str()).into());
         }
         write_start_tag(writer, "a:fontScheme", attributes, false);
 

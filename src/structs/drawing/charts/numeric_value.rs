@@ -1,10 +1,23 @@
 // c:v
-use crate::writer::driver::*;
-use crate::xml_read_loop;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct NumericValue {
@@ -12,6 +25,7 @@ pub struct NumericValue {
 }
 
 impl NumericValue {
+    #[must_use]
     pub fn get_text(&self) -> &str {
         &self.text
     }
@@ -21,7 +35,7 @@ impl NumericValue {
         self
     }
 
-    pub(crate) fn _set_attributes<R: std::io::BufRead>(
+    pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
         _e: &BytesStart,
@@ -40,7 +54,7 @@ impl NumericValue {
         );
     }
 
-    pub(crate) fn _write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:v
         write_start_tag(writer, "c:v", vec![], false);
         write_text_node(writer, &*self.text);

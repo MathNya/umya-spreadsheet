@@ -1,36 +1,48 @@
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::custom_properties::CustomDocumentProperty;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    helper::const_str::{
+        CUSTOM_PROPS_NS,
+        VTYPES_NS,
+    },
+    reader::driver::xml_read_loop,
+    structs::custom_properties::CustomDocumentProperty,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct Properties {
-    custom_document_property_list: ThinVec<CustomDocumentProperty>,
+    custom_document_property_list: Vec<CustomDocumentProperty>,
 }
 
 impl Properties {
     #[inline]
+    #[must_use]
     pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
         &self.custom_document_property_list
     }
 
     #[inline]
-    pub fn get_custom_document_property_list_mut(
-        &mut self,
-    ) -> &mut ThinVec<CustomDocumentProperty> {
+    pub fn get_custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
         &mut self.custom_document_property_list
     }
 
     #[inline]
     pub fn set_custom_document_property_list(
         &mut self,
-        value: impl Into<ThinVec<CustomDocumentProperty>>,
+        value: impl Into<Vec<CustomDocumentProperty>>,
     ) -> &mut Self {
         self.custom_document_property_list = value.into();
         self
@@ -88,7 +100,10 @@ impl Properties {
         write_start_tag(
             writer,
             "Properties",
-            vec![("xmlns", CUSTOM_PROPS_NS), ("xmlns:vt", VTYPES_NS)],
+            vec![
+                ("xmlns", CUSTOM_PROPS_NS).into(),
+                ("xmlns:vt", VTYPES_NS).into(),
+            ],
             false,
         );
         let mut pid = 2;

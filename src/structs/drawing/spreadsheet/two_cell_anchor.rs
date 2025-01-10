@@ -1,40 +1,65 @@
 // xdr:twoCellAnchor
-use super::super::super::EnumValue;
-use super::ConnectionShape;
-use super::EditAsValues;
-use super::GraphicFrame;
-use super::GroupShape;
-use super::MarkerType;
-use super::Picture;
-use super::Shape;
-use crate::helper::const_str::MC_NS;
-use crate::helper::const_str::*;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::structs::BooleanValue;
-use crate::traits::AdjustmentCoordinate;
-use crate::traits::AdjustmentCoordinateWithSheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::super::EnumValue,
+    ConnectionShape,
+    EditAsValues,
+    GraphicFrame,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
+};
+use crate::{
+    helper::const_str::{
+        DRAWING_MAIN_NS,
+        MC_NS,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        BooleanValue,
+        raw::RawRelationships,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {
-    edit_as: EnumValue<EditAsValues>,
-    from_marker: MarkerType,
-    to_marker: MarkerType,
-    group_shape: Option<Box<GroupShape>>,
-    graphic_frame: Option<Box<GraphicFrame>>,
-    shape: Option<Box<Shape>>,
-    connection_shape: Option<Box<ConnectionShape>>,
-    picture: Option<Box<Picture>>,
+    edit_as:              EnumValue<EditAsValues>,
+    from_marker:          MarkerType,
+    to_marker:            MarkerType,
+    group_shape:          Option<Box<GroupShape>>,
+    graphic_frame:        Option<Box<GraphicFrame>>,
+    shape:                Option<Box<Shape>>,
+    connection_shape:     Option<Box<ConnectionShape>>,
+    picture:              Option<Box<Picture>>,
     is_alternate_content: BooleanValue,
 }
 
 impl TwoCellAnchor {
     #[inline]
+    #[must_use]
     pub fn get_edit_as(&self) -> &EditAsValues {
         self.edit_as.get_value()
     }
@@ -46,6 +71,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
@@ -62,6 +88,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_to_marker(&self) -> &MarkerType {
         &self.to_marker
     }
@@ -78,6 +105,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
@@ -94,6 +122,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
         self.graphic_frame.as_deref()
     }
@@ -110,6 +139,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
@@ -126,6 +156,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
         self.connection_shape.as_deref()
     }
@@ -142,6 +173,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
@@ -158,6 +190,7 @@ impl TwoCellAnchor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_is_alternate_content(&self) -> bool {
         self.is_alternate_content.get_value()
     }
@@ -170,14 +203,16 @@ impl TwoCellAnchor {
 
     #[inline]
     pub(crate) fn is_support(&self) -> bool {
-        self.graphic_frame.as_ref().map_or(true, |v| {
-            v.get_graphic()
+        match self.graphic_frame.as_ref() {
+            Some(v) => v
+                .get_graphic()
                 .get_graphic_data()
                 .get_chart_space()
                 .get_chart()
                 .get_plot_area()
-                .is_support()
-        })
+                .is_support(),
+            None => true,
+        }
     }
 
     #[inline]
@@ -256,7 +291,7 @@ impl TwoCellAnchor {
             write_start_tag(
                 writer,
                 "mc:AlternateContent",
-                vec![("xmlns:mc", MC_NS)],
+                vec![("xmlns:mc", MC_NS).into()],
                 false,
             );
 
@@ -264,15 +299,18 @@ impl TwoCellAnchor {
             write_start_tag(
                 writer,
                 "mc:Choice",
-                vec![("xmlns:a14", DRAWING_MAIN_NS), ("Requires", "a14")],
+                vec![
+                    ("xmlns:a14", DRAWING_MAIN_NS).into(),
+                    ("Requires", "a14").into(),
+                ],
                 false,
             );
         }
 
         // xdr:twoCellAnchor
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.edit_as.has_value() {
-            attributes.push(("editAs", self.edit_as.get_value_string()));
+            attributes.push(("editAs", self.edit_as.get_value_string()).into());
         }
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 
@@ -299,7 +337,7 @@ impl TwoCellAnchor {
 
         // xdr:cxnSp
         if let Some(v) = &self.connection_shape {
-            v.write_to(writer, rel_list)
+            v.write_to(writer, rel_list);
         }
 
         // xdr:pic

@@ -1,15 +1,35 @@
-use quick_xml::events::{BytesDecl, Event};
-use quick_xml::Writer;
 use std::io;
 
-use super::driver::*;
-use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::Spreadsheet;
-use crate::structs::WriterManager;
+use quick_xml::{
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
+};
+use crate::{
+    helper::const_str::{
+        PKG_WORKBOOK,
+        REL_OFC_NS,
+        SHEET_MAIN_NS,
+    },
+    structs::{
+        Workbook,
+        WriterManager,
+    },
+};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    spreadsheet: &Spreadsheet,
+    wb: &Workbook,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));
@@ -27,7 +47,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "workbook",
-        vec![("xmlns", SHEET_MAIN_NS), ("xmlns:r", REL_OFC_NS)],
+        vec![
+            ("xmlns", SHEET_MAIN_NS).into(),
+            ("xmlns:r", REL_OFC_NS).into(),
+        ],
         false,
     );
 
@@ -36,28 +59,25 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         &mut writer,
         "fileVersion",
         vec![
-            ("appName", "xl"),
-            ("lastEdited", "5"),
-            ("lowestEdited", "4"),
-            ("rupBuild", "9302"),
+            ("appName", "xl").into(),
+            ("lastEdited", "5").into(),
+            ("lowestEdited", "4").into(),
+            ("rupBuild", "9302").into(),
         ],
         true,
     );
 
     // workbookPr
-    let mut attributes: Vec<(&str, &str)> = Vec::new();
-    attributes.push(("filterPrivacy", "1"));
-    //attributes.push(("defaultThemeVersion", "124226"));
-    if spreadsheet.get_has_macros() {
-        attributes.push((
-            "codeName",
-            spreadsheet.get_code_name().unwrap_or("ThisWorkbook"),
-        ));
+    let mut attributes: crate::structs::AttrCollection = Vec::new();
+    attributes.push(("filterPrivacy", "1").into());
+    // attributes.push(("defaultThemeVersion", "124226").into());
+    if wb.get_has_macros() {
+        attributes.push(("codeName", wb.get_code_name().unwrap_or("ThisWorkbook")).into());
     }
     write_start_tag(&mut writer, "workbookPr", attributes, true);
 
     // workbookProtection
-    if let Some(v) = spreadsheet.get_workbook_protection() {
+    if let Some(v) = wb.get_workbook_protection() {
         v.write_to(&mut writer);
     }
 
@@ -65,7 +85,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "bookViews", vec![], false);
 
     // workbookView
-    spreadsheet.get_workbook_view().write_to(&mut writer);
+    wb.get_workbook_view().write_to(&mut writer);
 
     write_end_tag(&mut writer, "bookViews");
 
@@ -73,15 +93,15 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "sheets", vec![], false);
 
     let mut index = 1;
-    for worksheet in spreadsheet.get_sheet_collection_no_check() {
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+    for worksheet in wb.get_sheet_collection_no_check() {
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let id = index.to_string();
-        let r_id = format!("rId{}", index);
-        attributes.push(("name", worksheet.get_name()));
-        attributes.push(("sheetId", &id));
-        attributes.push(("r:id", &r_id));
+        let r_id = format!("rId{index}");
+        attributes.push(("name", worksheet.get_name()).into());
+        attributes.push(("sheetId", &id).into());
+        attributes.push(("r:id", &r_id).into());
         if worksheet.has_state() {
-            attributes.push(("state", worksheet.get_state_str()));
+            attributes.push(("state", worksheet.get_state_str()).into());
         }
 
         // sheet
@@ -92,13 +112,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_end_tag(&mut writer, "sheets");
 
     // definedNames
-    if spreadsheet.has_defined_names() {
+    if wb.has_defined_names() {
         write_start_tag(&mut writer, "definedNames", vec![], false);
 
-        for defined_name in spreadsheet.get_defined_names() {
+        for defined_name in wb.get_defined_names() {
             defined_name.write_to(&mut writer);
         }
-        for sheet in spreadsheet.get_sheet_collection_no_check() {
+        for sheet in wb.get_sheet_collection_no_check() {
             for defined_name in sheet.get_defined_names() {
                 defined_name.write_to(&mut writer);
             }
@@ -112,7 +132,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         &mut writer,
         "calcPr",
         vec![
-            ("calcId", "122211"),
+            ("calcId", "122211").into(),
             //("calcId", "999999"),
             //("calcMode", "auto"),
             //("calcCompleted", if recalc_required {"1"} else {"0"}),
@@ -123,15 +143,15 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     );
 
     // pivotCaches
-    let pivot_cache_definition_collection = spreadsheet.get_pivot_caches();
+    let pivot_cache_definition_collection = wb.get_pivot_caches();
     if !pivot_cache_definition_collection.is_empty() {
         write_start_tag(&mut writer, "pivotCaches", vec![], false);
         for (_, val2, _) in pivot_cache_definition_collection {
-            let r_id = format!("rId{}", index);
+            let r_id = format!("rId{index}");
             write_start_tag(
                 &mut writer,
                 "pivotCache",
-                vec![("cacheId", &val2), ("r:id", &r_id)],
+                vec![("cacheId", &val2).into(), ("r:id", &r_id).into()],
                 true,
             );
             index += 1;

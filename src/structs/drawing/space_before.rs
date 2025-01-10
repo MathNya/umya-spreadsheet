@@ -1,11 +1,23 @@
 // a:spcBef
-use super::SpacingPercent;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::SpacingPercent;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SpaceBefore {
@@ -14,6 +26,7 @@ pub struct SpaceBefore {
 
 impl SpaceBefore {
     #[inline]
+    #[must_use]
     pub fn get_spacing_percent(&self) -> Option<&SpacingPercent> {
         self.spacing_percent.as_ref()
     }

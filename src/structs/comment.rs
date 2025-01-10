@@ -1,34 +1,48 @@
-use crate::xml_read_loop;
+use quick_xml::{
+    Reader,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
-use super::vml::office::InsetMarginValues;
-use super::vml::spreadsheet::Anchor;
-use super::vml::spreadsheet::CommentColumnTarget;
-use super::vml::spreadsheet::CommentRowTarget;
-use super::vml::spreadsheet::MoveWithCells;
-use super::vml::spreadsheet::ResizeWithCells;
-use super::vml::Fill as VmlFill;
-use super::vml::Path;
-use super::vml::Shadow;
-use super::vml::TextBox;
-use super::Coordinate;
-use super::RichText;
-use crate::helper::coordinate::*;
-use crate::reader::driver::*;
-use crate::structs::vml::Shape;
-use crate::traits::AdjustmentCoordinate;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
+use super::{
+    Coordinate,
+    RichText,
+    vml::{
+        Fill as VmlFill,
+        Path,
+        Shadow,
+        TextBox,
+        office::InsetMarginValues,
+        spreadsheet::{
+            Anchor,
+            CommentColumnTarget,
+            CommentRowTarget,
+            MoveWithCells,
+            ResizeWithCells,
+        },
+    },
+};
+use crate::{
+    helper::coordinate::CellCoordinates,
+    reader::driver::get_attribute,
+    structs::vml::Shape,
+    traits::AdjustmentCoordinate,
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
     coordinate: Coordinate,
-    author: Box<str>,
-    text: RichText,
-    shape: Shape,
+    author:     Box<str>,
+    text:       RichText,
+    shape:      Shape,
 }
 
 impl Comment {
     #[inline]
+    #[must_use]
     pub fn get_coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
@@ -39,6 +53,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_author(&self) -> &str {
         &self.author
     }
@@ -50,6 +65,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_text(&self) -> &RichText {
         &self.text
     }
@@ -72,6 +88,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         self.shape.get_client_data().get_anchor()
     }
@@ -88,6 +105,7 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape(&self) -> &Shape {
         &self.shape
     }
@@ -113,7 +131,10 @@ impl Comment {
 
         self.get_shape_mut()
             .set_type("#_x0000_t202")
-            .set_style("position:absolute;margin-left:275.25pt;margin-top:61.5pt;width:207.75pt;height:145.5pt;z-index:1;visibility:hidden;mso-wrap-style:tight")
+            .set_style(
+                "position:absolute;margin-left:275.25pt;margin-top:61.5pt;width:207.75pt;height:\
+                 145.5pt;z-index:1;visibility:hidden;mso-wrap-style:tight",
+            )
             .set_fill_color("infoBackground [80]")
             .set_inset_mode(InsetMarginValues::Auto);
 

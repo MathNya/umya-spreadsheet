@@ -1,51 +1,40 @@
 // left right top bottom
-use super::BorderStyleValues;
-use super::Color;
-use super::EnumValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    BorderStyleValues,
+    Color,
+    EnumValue,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)]
 pub struct Border {
-    color: Color,
+    color: Option<Box<Color>>,
     style: EnumValue<BorderStyleValues>,
 }
 
 impl Border {
-    #[inline]
-    pub fn get_color(&self) -> &Color {
-        &self.color
-    }
-
-    #[inline]
-    pub fn get_color_mut(&mut self) -> &mut Color {
-        &mut self.color
-    }
-
-    #[inline]
-    pub fn set_color(&mut self, value: Color) -> &mut Self {
-        self.color = value;
-        self
-    }
-
-    #[inline]
-    pub fn get_style(&self) -> &BorderStyleValues {
-        self.style.get_value()
-    }
-
-    #[inline]
-    pub fn set_style(&mut self, value: BorderStyleValues) -> &mut Self {
-        self.style.set_value(value);
-        self
-    }
-
-    // Border style
-    pub const BORDER_NONE: &'static str = "none";
     pub const BORDER_DASHDOT: &'static str = "dashDot";
     pub const BORDER_DASHDOTDOT: &'static str = "dashDotDot";
     pub const BORDER_DASHED: &'static str = "dashed";
@@ -56,14 +45,42 @@ impl Border {
     pub const BORDER_MEDIUMDASHDOT: &'static str = "mediumDashDot";
     pub const BORDER_MEDIUMDASHDOTDOT: &'static str = "mediumDashDotDot";
     pub const BORDER_MEDIUMDASHED: &'static str = "mediumDashed";
+    // Border style
+    pub const BORDER_NONE: &'static str = "none";
     pub const BORDER_SLANTDASHDOT: &'static str = "slantDashDot";
     pub const BORDER_THICK: &'static str = "thick";
     pub const BORDER_THIN: &'static str = "thin";
 
     #[inline]
+    #[must_use]
+    pub fn get_color(&self) -> Option<Color> {
+        self.color.as_ref().map(|v| *v.clone())
+    }
+
+    #[inline]
+    pub fn set_color(&mut self, value: Color) -> &mut Self {
+        self.color = Some(Box::new(value));
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn get_style(&self) -> &BorderStyleValues {
+        self.style.get_value()
+    }
+
+    #[inline]
+    pub fn set_style(&mut self, value: BorderStyleValues) -> &mut Self {
+        self.style.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn get_border_style(&self) -> &str {
         self.style.get_value_string()
     }
+
     #[inline]
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
@@ -75,7 +92,7 @@ impl Border {
             md5::Md5::digest(format!(
                 "{}{}",
                 &self.style.get_value_string(),
-                &self.get_color().get_hash_code()
+                &self.get_color().unwrap_or_default().get_argb_str()
             ))
         )
     }
@@ -102,17 +119,17 @@ impl Border {
             reader,
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"color" {
-                    self.color.set_attributes(reader, e, true);
+                    self.color.clone().unwrap_or_default().set_attributes(reader, e, true);
                 }
             },
             Event::End(ref e) => {
                 match e.name().into_inner() {
-                    b"left" => return,
-                    b"right" => return,
-                    b"top" => return,
-                    b"bottom" => return,
-                    b"diagonal" => return,
-                    b"vertical" => return,
+                    b"left"     |
+                    b"right"    |
+                    b"top"      |
+                    b"bottom"   |
+                    b"diagonal" |
+                    b"vertical" |
                     b"horizontal" => return,
                     _ => (),
                 }
@@ -161,17 +178,20 @@ impl Border {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         // left,right,top,bottom,diagonal,vertical,horizontal
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection<'_> = Vec::new();
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_string()));
+            attributes.push(("style", self.style.get_value_string()).into());
         }
 
-        let empty_flag = !self.color.has_value();
+        let empty_flag = self.color.is_none();
         write_start_tag(writer, tag_name, attributes, empty_flag);
 
         if !empty_flag {
             // color
-            self.color.write_to_color(writer);
+            self.color
+                .clone()
+                .unwrap_or_default()
+                .write_to_color(writer);
 
             write_end_tag(writer, tag_name);
         }

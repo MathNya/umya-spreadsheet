@@ -1,12 +1,25 @@
 // oddHeader
-use crate::reader::driver::*;
-use crate::structs::StringValue;
-use crate::writer::driver::*;
-use md5::Digest;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use md5::Digest;
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::StringValue,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct OddHeader {
@@ -15,6 +28,7 @@ pub struct OddHeader {
 
 impl OddHeader {
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> &str {
         self.value.get_value_str()
     }
@@ -26,7 +40,7 @@ impl OddHeader {
     }
 
     #[inline]
-    pub(crate) fn _get_hash_code(&self) -> String {
+    pub(crate) fn get_hash_code(&self) -> String {
         format!("{:x}", md5::Md5::digest(self.get_value()))
     }
 

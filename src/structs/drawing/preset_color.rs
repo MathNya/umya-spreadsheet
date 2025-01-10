@@ -1,20 +1,36 @@
 // a:prstClr
-use super::alpha::Alpha;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::alpha::Alpha;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetColor {
-    val: Box<str>,
+    val:   Box<str>,
     alpha: Option<Alpha>,
 }
 
 impl PresetColor {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> &str {
         &self.val
     }
@@ -25,6 +41,7 @@ impl PresetColor {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alpha(&self) -> Option<&Alpha> {
         self.alpha.as_ref()
     }
@@ -66,11 +83,11 @@ impl PresetColor {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:prstClr
-        write_start_tag(writer, "a:prstClr", vec![("val", &self.val)], false);
+        write_start_tag(writer, "a:prstClr", vec![("val", &self.val).into()], false);
 
         // a:alpha
         if let Some(v) = &self.alpha {
-            v.write_to(writer)
+            v.write_to(writer);
         }
 
         write_end_tag(writer, "a:prstClr");

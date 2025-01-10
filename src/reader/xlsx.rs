@@ -1,18 +1,32 @@
-use std::fs::File;
-use std::io;
-use std::path::Path;
-use std::sync::Arc;
-use std::sync::RwLock;
+use std::{
+    fs::File,
+    io,
+    path::Path,
+    sync::{
+        Arc,
+        RwLock,
+    },
+};
 
 use super::driver;
-use crate::helper::const_str::*;
-use crate::structs::drawing::Theme;
-use crate::structs::raw::RawWorksheet;
-use crate::structs::SharedStringTable;
-use crate::structs::Spreadsheet;
-use crate::structs::Stylesheet;
-use crate::structs::Worksheet;
-use crate::XlsxError;
+use crate::{
+    XlsxError,
+    helper::const_str::{
+        COMMENTS_NS,
+        DRAWINGS_NS,
+        TABLE_NS,
+        THEME_NS,
+        VML_DRAWING_NS,
+    },
+    structs::{
+        SharedStringTable,
+        Stylesheet,
+        Workbook,
+        Worksheet,
+        drawing::Theme,
+        raw::RawWorksheet,
+    },
+};
 
 pub(crate) mod chart;
 pub(crate) mod comment;
@@ -37,11 +51,11 @@ pub(crate) mod worksheet;
 /// # Arguments
 /// * `reader` - reader to read from.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is `Workbook`. Err is error message.
 pub fn read_reader<R: io::Read + io::Seek>(
     reader: R,
     with_sheet_read: bool,
-) -> Result<Spreadsheet, XlsxError> {
+) -> Result<Workbook, XlsxError> {
     let mut arv = zip::read::ZipArchive::new(reader)?;
 
     let mut book = workbook::read(&mut arv)?;
@@ -85,39 +99,39 @@ pub fn read_reader<R: io::Read + io::Seek>(
 /// # Arguments
 /// * `path` - file path to read.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is Workbook. Err is error message.
 /// # Examples
 /// ```
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
 /// ```
 #[inline]
-pub fn read<P: AsRef<Path>>(path: P) -> Result<Spreadsheet, XlsxError> {
+pub fn read<P: AsRef<Path>>(path: P) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, true)
 }
 
 /// lazy read spreadsheet file.
 /// Delays the loading of the worksheet until it is needed.
-/// When loading a file with a large amount of data, response improvement can be expected.
-/// # Arguments
+/// When loading a file with a large amount of data, response improvement can be
+/// expected. # Arguments
 /// * `path` - file path to read.
 /// # Return value
-/// * `Result` - OK is Spreadsheet. Err is error message.
+/// * `Result` - OK is Workbook. Err is error message.
 /// # Examples
 /// ```
 /// let path = std::path::Path::new("./tests/test_files/aaa.xlsx");
 /// let mut book = umya_spreadsheet::reader::xlsx::lazy_read(path).unwrap();
 /// ```
 #[inline]
-pub fn lazy_read(path: &Path) -> Result<Spreadsheet, XlsxError> {
+pub fn lazy_read(path: &Path) -> Result<Workbook, XlsxError> {
     let file = File::open(path)?;
     read_reader(file, false)
 }
 
 pub(crate) fn raw_to_deserialize_by_worksheet(
     worksheet: &mut Worksheet,
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &Arc<RwLock<SharedStringTable>>,
     stylesheet: &Stylesheet,
 ) {
     if worksheet.is_deserialized() {
@@ -143,12 +157,11 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                         worksheet,
                         relationship.get_raw_file(),
                         raw_data_of_worksheet.get_drawing_relationships(),
-                    )
-                    .unwrap();
+                    );
                 }
                 // comment
                 COMMENTS_NS => {
-                    comment::read(worksheet, relationship.get_raw_file()).unwrap();
+                    comment::read(worksheet, relationship.get_raw_file());
                 }
                 // table
                 TABLE_NS => {
@@ -164,8 +177,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                     worksheet,
                     relationship.get_raw_file(),
                     raw_data_of_worksheet.get_vml_drawing_relationships(),
-                )
-                .unwrap();
+                );
             }
         }
     }

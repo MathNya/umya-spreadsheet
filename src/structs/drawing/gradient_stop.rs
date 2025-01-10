@@ -1,22 +1,40 @@
 // a:gs
-use super::RgbColorModelHex;
-use super::SchemeColor;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    RgbColorModelHex,
+    SchemeColor,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientStop {
-    position: i32,
-    scheme_color: Option<Box<SchemeColor>>,
+    position:            i32,
+    scheme_color:        Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 
 impl GradientStop {
     #[inline]
+    #[must_use]
     pub fn get_position(&self) -> i32 {
         self.position
     }
@@ -28,6 +46,7 @@ impl GradientStop {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
@@ -44,6 +63,7 @@ impl GradientStop {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
@@ -114,7 +134,7 @@ impl GradientStop {
         write_start_tag(
             writer,
             "a:gs",
-            vec![("pos", &self.position.to_string())],
+            vec![("pos", &self.position.to_string()).into()],
             false,
         );
 

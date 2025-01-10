@@ -1,23 +1,44 @@
-use crate::reader::driver::*;
-use crate::structs::custom_properties::CustomDocumentPropertyValue;
-use crate::structs::StringValue;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::borrow::Cow;
-use std::io::Cursor;
+use std::{
+    borrow::Cow,
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        StringValue,
+        custom_properties::CustomDocumentPropertyValue,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Default, Debug, Clone)]
 pub struct CustomDocumentProperty {
-    name: StringValue,
-    link_target: StringValue,
+    name:                           StringValue,
+    link_target:                    StringValue,
     custom_document_property_value: CustomDocumentPropertyValue,
 }
 
 impl CustomDocumentProperty {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -29,6 +50,7 @@ impl CustomDocumentProperty {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_link_target(&self) -> &str {
         self.link_target.get_value_str()
     }
@@ -40,16 +62,19 @@ impl CustomDocumentProperty {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_value(&self) -> Cow<'static, str> {
         self.custom_document_property_value.to_string().into()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_value_number(&self) -> Option<i32> {
         self.custom_document_property_value.get_number()
     }
 
     #[inline]
+    #[must_use]
     pub fn get_value_bool(&self) -> Option<bool> {
         self.custom_document_property_value.get_bool()
     }
@@ -72,7 +97,7 @@ impl CustomDocumentProperty {
 
     #[inline]
     pub fn set_value_date(&mut self, year: i32, month: i32, day: i32) -> &mut Self {
-        let value = format!("{:>04}-{:>02}-{:>02}T10:00:00Z", year, month, day);
+        let value = format!("{year:>04}-{month:>02}-{day:>02}T10:00:00Z");
         self.custom_document_property_value =
             CustomDocumentPropertyValue::Date(value.into_boxed_str());
         self
@@ -104,7 +129,7 @@ impl CustomDocumentProperty {
             return;
         }
 
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Text(e) => {
@@ -128,19 +153,19 @@ impl CustomDocumentProperty {
         let is_inner = self.custom_document_property_value.get_tag().is_some();
 
         // property
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        attributes.push(("fmtid", r#"{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"#));
+        attributes.push(("fmtid", r"{D5CDD505-2E9C-101B-9397-08002B2CF9AE}").into());
 
         let pid_str = pid.to_string();
-        attributes.push(("pid", &pid_str));
+        attributes.push(("pid", &pid_str).into());
 
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.get_value_str()).into());
         }
 
         if self.link_target.has_value() {
-            attributes.push(("linkTarget", self.link_target.get_value_str()));
+            attributes.push(("linkTarget", self.link_target.get_value_str()).into());
         }
 
         write_start_tag(writer, "property", attributes, !is_inner);

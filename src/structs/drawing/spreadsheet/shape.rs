@@ -1,28 +1,43 @@
 // xdr:sp
-use super::super::super::Anchor;
-use super::NonVisualShapeProperties;
-use super::ShapeProperties;
-use super::ShapeStyle;
-use super::TextBody;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::super::Anchor,
+    NonVisualShapeProperties,
+    ShapeProperties,
+    ShapeStyle,
+    TextBody,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
-    anchor: Anchor,
+    anchor:                      Anchor,
     non_visual_shape_properties: NonVisualShapeProperties,
-    shape_properties: ShapeProperties,
-    shape_style: Option<Box<ShapeStyle>>,
-    text_body: Option<Box<TextBody>>,
+    shape_properties:            ShapeProperties,
+    shape_style:                 Option<Box<ShapeStyle>>,
+    text_body:                   Option<Box<TextBody>>,
 }
 
 impl Shape {
     #[inline]
+    #[must_use]
     pub fn get_anchor(&self) -> &Anchor {
         &self.anchor
     }
@@ -38,6 +53,7 @@ impl Shape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
         &self.non_visual_shape_properties
     }
@@ -52,6 +68,7 @@ impl Shape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
@@ -66,6 +83,7 @@ impl Shape {
         self.shape_properties = value;
     }
 
+    #[must_use]
     pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
         self.shape_style.as_deref()
     }
@@ -81,6 +99,7 @@ impl Shape {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_text_body(&self) -> Option<&TextBody> {
         self.text_body.as_deref()
     }
@@ -143,7 +162,7 @@ impl Shape {
         write_start_tag(
             writer,
             "xdr:sp",
-            vec![("macro", ""), ("textlink", "")],
+            vec![("macro", "").into(), ("textlink", "").into()],
             false,
         );
 

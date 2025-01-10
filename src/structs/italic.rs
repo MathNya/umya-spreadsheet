@@ -1,11 +1,20 @@
 // i
-use super::BooleanValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::BooleanValue;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Italic {
@@ -14,6 +23,7 @@ pub struct Italic {
 
 impl Italic {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> bool {
         self.val.get_value()
     }

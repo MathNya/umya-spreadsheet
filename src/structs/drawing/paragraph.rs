@@ -1,24 +1,38 @@
 // a:p
-use super::ParagraphProperties;
-use super::Run;
-use super::RunProperties;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    ParagraphProperties,
+    Run,
+    RunProperties,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
-    paragraph_properties: ParagraphProperties,
-    run: ThinVec<Run>,
+    paragraph_properties:    ParagraphProperties,
+    run:                     Vec<Run>,
     end_para_run_properties: Option<Box<RunProperties>>,
 }
 
 impl Paragraph {
     #[inline]
+    #[must_use]
     pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
         &self.paragraph_properties
     }
@@ -35,6 +49,7 @@ impl Paragraph {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_run(&self) -> &[Run] {
         &self.run
     }
@@ -45,6 +60,7 @@ impl Paragraph {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
         self.end_para_run_properties.as_deref()
     }

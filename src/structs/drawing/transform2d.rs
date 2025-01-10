@@ -1,27 +1,45 @@
 // a:xfrm
-use crate::reader::driver::*;
-use crate::structs::drawing::Point2DType;
-use crate::structs::drawing::PositiveSize2DType;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    StringValue,
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    structs::drawing::{
+        Point2DType,
+        PositiveSize2DType,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform2D {
-    offset: Point2DType,
-    extents: PositiveSize2DType,
-    child_offset: Option<Box<Point2DType>>,
+    offset:        Point2DType,
+    extents:       PositiveSize2DType,
+    child_offset:  Option<Box<Point2DType>>,
     child_extents: Option<Box<PositiveSize2DType>>,
-    rot: StringValue,
-    flip_v: StringValue,
-    flip_h: StringValue,
+    rot:           StringValue,
+    flip_v:        StringValue,
+    flip_h:        StringValue,
 }
 
 impl Transform2D {
     #[inline]
+    #[must_use]
     pub fn get_offset(&self) -> &Point2DType {
         &self.offset
     }
@@ -37,6 +55,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_extents(&self) -> &PositiveSize2DType {
         &self.extents
     }
@@ -52,6 +71,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_child_offset(&self) -> Option<&Point2DType> {
         self.child_offset.as_deref()
     }
@@ -67,6 +87,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_child_extents(&self) -> Option<&PositiveSize2DType> {
         self.child_extents.as_deref()
     }
@@ -82,6 +103,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rot(&self) -> Option<&str> {
         self.rot.get_value()
     }
@@ -92,6 +114,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_flip_v(&self) -> Option<&str> {
         self.flip_v.get_value()
     }
@@ -102,6 +125,7 @@ impl Transform2D {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_flip_h(&self) -> Option<&str> {
         self.flip_h.get_value()
     }
@@ -162,15 +186,15 @@ impl Transform2D {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:xfrm
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if let Some(v) = self.rot.get_value() {
-            attributes.push(("rot", v))
+            attributes.push(("rot", v).into());
         }
         if let Some(v) = self.flip_h.get_value() {
-            attributes.push(("flipH", v))
+            attributes.push(("flipH", v).into());
         }
         if let Some(v) = self.flip_v.get_value() {
-            attributes.push(("flipV", v))
+            attributes.push(("flipV", v).into());
         }
         write_start_tag(writer, "a:xfrm", attributes, false);
 

@@ -1,19 +1,29 @@
-use super::BooleanValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::BooleanValue;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PrintOptions {
     horizontal_centered: BooleanValue,
-    vertical_centered: BooleanValue,
+    vertical_centered:   BooleanValue,
 }
 
 impl PrintOptions {
     #[inline]
+    #[must_use]
     pub fn get_horizontal_centered(&self) -> bool {
         self.horizontal_centered.get_value()
     }
@@ -25,6 +35,7 @@ impl PrintOptions {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_centered(&self) -> bool {
         self.vertical_centered.get_value()
     }
@@ -53,18 +64,24 @@ impl PrintOptions {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if self.has_param() {
             // printOptions
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             if self.horizontal_centered.has_value() {
-                attributes.push((
-                    "horizontalCentered",
-                    self.horizontal_centered.get_value_string(),
-                ));
+                attributes.push(
+                    (
+                        "horizontalCentered",
+                        self.horizontal_centered.get_value_string(),
+                    )
+                        .into(),
+                );
             }
             if self.vertical_centered.has_value() {
-                attributes.push((
-                    "verticalCentered",
-                    self.vertical_centered.get_value_string(),
-                ));
+                attributes.push(
+                    (
+                        "verticalCentered",
+                        self.vertical_centered.get_value_string(),
+                    )
+                        .into(),
+                );
             }
             write_start_tag(writer, "printOptions", attributes, true);
         }

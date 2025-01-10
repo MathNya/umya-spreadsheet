@@ -1,13 +1,29 @@
 // numFmts
-use super::NumberingFormat;
-use super::Style;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::collections::HashMap;
-use std::io::Cursor;
+use std::{
+    collections::HashMap,
+    io::Cursor,
+};
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    NumberingFormat,
+    Style,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct NumberingFormats {
@@ -21,7 +37,7 @@ impl NumberingFormats {
     }
 
     #[inline]
-    pub(crate) fn _get_numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
+    pub(crate) fn get_numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
         &mut self.numbering_format
     }
 
@@ -33,16 +49,16 @@ impl NumberingFormats {
     }
 
     #[inline]
-    pub(crate) fn _init_setup(&mut self) -> &mut Self {
+    pub(crate) fn init_setup(&mut self) -> &mut Self {
         self.get_build_in_formats();
         self
     }
 
     pub(crate) fn get_build_in_formats(&mut self) {
-        for (index, code) in super::numbering_format::FILL_BUILT_IN_FORMAT_CODES.iter() {
+        for (index, code) in super::numbering_format::FILL_BUILT_IN_FORMAT_CODES.entries() {
             let mut obj = NumberingFormat::default();
             obj.set_number_format_id_crate(*index)
-                .set_format_code_crate(code.clone());
+                .set_format_code_crate(code.to_owned());
             self.set_numbering_format(obj);
         }
     }
@@ -110,13 +126,11 @@ impl NumberingFormats {
 
         let cnt = formats_to_write.len();
         let cnt_str = cnt.to_string();
-        write_start_tag(writer, "numFmts", vec![("count", &cnt_str)], false);
+        write_start_tag(writer, "numFmts", vec![("count", &cnt_str).into()], false);
 
-        formats_to_write
-            .into_iter()
-            .for_each(|(index, numbering_format)| {
-                numbering_format.write_to(writer, *index);
-            });
+        for (index, numbering_format) in formats_to_write {
+            numbering_format.write_to(writer, *index);
+        }
 
         write_end_tag(writer, "numFmts");
     }

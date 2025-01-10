@@ -1,24 +1,45 @@
 // xdr:xfrm
-use super::super::{Extents, Offset};
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use crate::{BooleanValue, Int32Value};
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    Extents,
+    Offset,
+};
+use crate::{
+    BooleanValue,
+    Int32Value,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform {
-    offset: Offset,
-    extents: Extents,
-    rotation: Int32Value,
-    vertical_flip: BooleanValue,
+    offset:          Offset,
+    extents:         Extents,
+    rotation:        Int32Value,
+    vertical_flip:   BooleanValue,
     horizontal_flip: BooleanValue,
 }
 
 impl Transform {
     #[inline]
+    #[must_use]
     pub fn get_offset(&self) -> &Offset {
         &self.offset
     }
@@ -35,6 +56,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_extents(&self) -> &Extents {
         &self.extents
     }
@@ -51,6 +73,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_rotation(&self) -> i32 {
         self.rotation.get_value()
     }
@@ -61,6 +84,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_vertical_flip(&self) -> bool {
         self.vertical_flip.get_value()
     }
@@ -71,6 +95,7 @@ impl Transform {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_horizontal_flip(&self) -> bool {
         self.horizontal_flip.get_value()
     }
@@ -113,16 +138,16 @@ impl Transform {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:xfrm
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let rot = self.rotation.get_value_string();
         if self.rotation.has_value() {
-            attributes.push(("rot", &rot));
+            attributes.push(("rot", &rot).into());
         }
         if self.horizontal_flip.has_value() {
-            attributes.push(("flipH", self.horizontal_flip.get_value_string()));
+            attributes.push(("flipH", self.horizontal_flip.get_value_string()).into());
         }
         if self.vertical_flip.has_value() {
-            attributes.push(("flipV", self.vertical_flip.get_value_string()));
+            attributes.push(("flipV", self.vertical_flip.get_value_string()).into());
         }
         write_start_tag(writer, "xdr:xfrm", attributes, false);
 

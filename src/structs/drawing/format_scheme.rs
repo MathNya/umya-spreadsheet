@@ -1,27 +1,45 @@
 // a:fontScheme
-use super::super::StringValue;
-use super::BackgroundFillStyleList;
-use super::EffectStyleList;
-use super::FillStyleList;
-use super::LineStyleList;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    super::StringValue,
+    BackgroundFillStyleList,
+    EffectStyleList,
+    FillStyleList,
+    LineStyleList,
+};
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct FormatScheme {
-    name: StringValue,
-    fill_style_list: FillStyleList,
-    line_style_list: LineStyleList,
-    effect_style_list: EffectStyleList,
+    name:                       StringValue,
+    fill_style_list:            FillStyleList,
+    line_style_list:            LineStyleList,
+    effect_style_list:          EffectStyleList,
     background_fill_style_list: BackgroundFillStyleList,
 }
 
 impl FormatScheme {
     #[inline]
+    #[must_use]
     pub fn get_name(&self) -> &str {
         self.name.get_value_str()
     }
@@ -33,6 +51,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_fill_style_list(&self) -> &FillStyleList {
         &self.fill_style_list
     }
@@ -48,6 +67,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_line_style_list(&self) -> &LineStyleList {
         &self.line_style_list
     }
@@ -63,6 +83,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_effect_style_list(&self) -> &EffectStyleList {
         &self.effect_style_list
     }
@@ -78,6 +99,7 @@ impl FormatScheme {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_background_fill_style_list(&self) -> &BackgroundFillStyleList {
         &self.background_fill_style_list
     }
@@ -139,9 +161,9 @@ impl FormatScheme {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:fmtScheme
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()));
+            attributes.push(("name", self.name.get_value_str()).into());
         }
         write_start_tag(writer, "a:fmtScheme", attributes, false);
 

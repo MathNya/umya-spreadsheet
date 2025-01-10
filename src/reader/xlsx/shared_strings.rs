@@ -1,17 +1,24 @@
-use crate::xml_read_loop;
+use std::io;
+
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
 use super::XlsxError;
-use crate::helper::const_str::*;
-use crate::structs::SharedStringTable;
-use crate::structs::Spreadsheet;
-use quick_xml::events::Event;
-use quick_xml::Reader;
-use std::{io, result};
+use crate::{
+    helper::const_str::PKG_SHARED_STRINGS,
+    structs::{
+        SharedStringTable,
+        Workbook,
+    },
+    xml_read_loop,
+};
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,
-    spreadsheet: &mut Spreadsheet,
-) -> result::Result<(), XlsxError> {
+    wb: &mut Workbook,
+) -> Result<(), XlsxError> {
     let r = io::BufReader::new(match arv.by_name(PKG_SHARED_STRINGS) {
         Ok(v) => v,
         Err(zip::result::ZipError::FileNotFound) => {
@@ -30,7 +37,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
             if e.name().into_inner() == b"sst" {
                 let mut obj = SharedStringTable::default();
                 obj.set_attributes(&mut reader, e);
-                spreadsheet.set_shared_string_table(obj);
+                wb.set_shared_string_table(obj);
             }
         },
         Event::Eof => break,

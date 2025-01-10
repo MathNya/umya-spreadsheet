@@ -1,25 +1,25 @@
 use super::Range;
 use crate::traits::AdjustmentCoordinate;
-use thin_vec::ThinVec;
 
 #[derive(Default, Debug, Clone)]
 pub struct SequenceOfReferences {
-    range_collection: ThinVec<Range>,
+    range_collection: Vec<Range>,
 }
 
 impl SequenceOfReferences {
     #[inline]
+    #[must_use]
     pub fn get_range_collection(&self) -> &[Range] {
         &self.range_collection
     }
 
     #[inline]
-    pub fn get_range_collection_mut(&mut self) -> &mut ThinVec<Range> {
+    pub fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
         &mut self.range_collection
     }
 
     #[inline]
-    pub fn set_range_collection(&mut self, value: impl Into<ThinVec<Range>>) -> &mut Self {
+    pub fn set_range_collection(&mut self, value: impl Into<Vec<Range>>) -> &mut Self {
         self.range_collection = value.into();
         self
     }
@@ -46,10 +46,11 @@ impl SequenceOfReferences {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_sqref(&self) -> String {
         self.range_collection
             .iter()
-            .map(|range| range.get_range())
+            .map(Range::get_range)
             .collect::<Vec<String>>()
             .join(" ")
     }

@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug)]
 pub enum LayoutModeValues {
     Edge,
@@ -20,6 +21,7 @@ impl EnumTrait for LayoutModeValues {
 }
 impl FromStr for LayoutModeValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         match input {
             "edge" => Ok(Self::Edge),

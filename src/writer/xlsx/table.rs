@@ -1,11 +1,28 @@
 use std::io;
 
-use super::{driver::*, XlsxError};
-use crate::helper::const_str::*;
-use crate::structs::{Worksheet, WriterManager};
 use quick_xml::{
-    events::{BytesDecl, Event},
     Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
+};
+
+use super::{
+    XlsxError,
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+        write_text_node,
+    },
+};
+use crate::{
+    helper::const_str::SHEET_MAIN_NS,
+    structs::{
+        Worksheet,
+        WriterManager,
+    },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
@@ -13,7 +30,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     writer_mng: &mut WriterManager<W>,
 ) -> Result<Vec<String>, XlsxError> {
     let mut table_no_list = Vec::<String>::new();
-    for table in worksheet.get_tables().iter() {
+    for table in worksheet.get_tables() {
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
         // XML header
@@ -33,42 +50,42 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         // table start
         let table_no = writer_mng.next_table_no();
         let table_no_str = table_no.to_string();
-        let mut attributes = vec![
-            ("xmlns", SHEET_MAIN_NS),
-            ("id", &table_no_str),
-            ("name", table.get_name()),
-            ("displayName", table.get_display_name()),
-            ("ref", &area),
+        let mut attributes: crate::structs::AttrCollection = vec![
+            ("xmlns", SHEET_MAIN_NS).into(),
+            ("id", &table_no_str).into(),
+            ("name", table.get_name()).into(),
+            ("displayName", table.get_display_name()).into(),
+            ("ref", &area).into(),
         ];
 
         if table.has_totals_row_shown() {
-            attributes.push(("totalsRowShown", table.get_totals_row_shown_str()));
+            attributes.push(("totalsRowShown", table.get_totals_row_shown_str()).into());
         }
         let totals_row_count_str = table.get_totals_row_count_str();
         if table.has_totals_row_count() {
-            attributes.push(("totalsRowCount", &totals_row_count_str));
+            attributes.push(("totalsRowCount", totals_row_count_str).into());
         }
         write_start_tag(&mut writer, "table", attributes, false);
 
         // autoFilter
-        write_start_tag(&mut writer, "autoFilter", vec![("ref", &area)], true);
+        write_start_tag(&mut writer, "autoFilter", vec![("ref", &area).into()], true);
 
         // tableColumns
         let cols = table.get_columns();
         write_start_tag(
             &mut writer,
             "tableColumns",
-            vec![("count", &cols.len().to_string())],
+            vec![("count", &cols.len().to_string()).into()],
             false,
         );
         let mut col_id = 1;
-        for col in cols.iter() {
-            let mut attributes: Vec<(&str, &str)> = Vec::new();
+        for col in cols {
+            let mut attributes: crate::structs::AttrCollection = Vec::new();
             let col_id_str = col_id.to_string();
-            attributes.push(("id", &col_id_str));
-            attributes.push(("name", col.get_name()));
-            attributes.push(("totalsRowLabel", col.get_totals_row_label_str()));
-            attributes.push(("totalsRowFunction", col.get_totals_row_function_str()));
+            attributes.push(("id", &col_id_str).into());
+            attributes.push(("name", col.get_name()).into());
+            attributes.push(("totalsRowLabel", col.get_totals_row_label_str()).into());
+            attributes.push(("totalsRowFunction", col.get_totals_row_function_str()).into());
             match col.get_calculated_column_formula() {
                 Some(v) => {
                     write_start_tag(&mut writer, "tableColumn", attributes, false);
@@ -93,23 +110,27 @@ pub(crate) fn write<W: io::Seek + io::Write>(
                 &mut writer,
                 "tableStyleInfo",
                 vec![
-                    ("name", style_info.get_name()),
+                    ("name", style_info.get_name()).into(),
                     (
                         "showFirstColumn",
-                        &(style_info.is_show_first_col() as i32).to_string(),
-                    ),
+                        &i32::from(style_info.is_show_first_col()).to_string(),
+                    )
+                        .into(),
                     (
                         "showLastColumn",
-                        &(style_info.is_show_last_col() as i32).to_string(),
-                    ),
+                        &i32::from(style_info.is_show_last_col()).to_string(),
+                    )
+                        .into(),
                     (
                         "showRowStripes",
-                        &(style_info.is_show_row_stripes() as i32).to_string(),
-                    ),
+                        &i32::from(style_info.is_show_row_stripes()).to_string(),
+                    )
+                        .into(),
                     (
                         "showColumnStripes",
-                        &(style_info.is_show_col_stripes() as i32).to_string(),
-                    ),
+                        &i32::from(style_info.is_show_col_stripes()).to_string(),
+                    )
+                        .into(),
                 ],
                 true,
             );

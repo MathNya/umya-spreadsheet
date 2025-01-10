@@ -1,6 +1,6 @@
 #[derive(Clone, Default, Debug)]
 pub struct TrueFalseValue {
-    value: Option<bool>,
+    value:         Option<bool>,
     value_default: bool,
 }
 impl TrueFalseValue {
@@ -11,10 +11,7 @@ impl TrueFalseValue {
 
     #[inline]
     pub(crate) fn get_value_string(&self) -> &str {
-        match self.get_value() {
-            true => "t",
-            false => "f",
-        }
+        if self.get_value() { "t" } else { "f" }
     }
 
     #[inline]
@@ -35,7 +32,7 @@ impl TrueFalseValue {
     }
 
     #[inline]
-    pub(crate) fn _get_hash_string(&self) -> &str {
+    pub(crate) fn get_hash_string(&self) -> &str {
         if self.has_value() {
             return self.get_value_string();
         }

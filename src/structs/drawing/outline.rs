@@ -1,41 +1,62 @@
 // a:ln
-use super::Bevel;
-use super::GradientFill;
-use super::Miter;
-use super::NoFill;
-use super::PenAlignmentValues;
-use super::PresetDash;
-use super::Round;
-use super::SolidFill;
-use super::TailEnd;
-use crate::reader::driver::*;
-use crate::structs::EnumValue;
-use crate::structs::UInt32Value;
-use crate::writer::driver::*;
-use crate::StringValue;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    Bevel,
+    GradientFill,
+    Miter,
+    NoFill,
+    PenAlignmentValues,
+    PresetDash,
+    Round,
+    SolidFill,
+    TailEnd,
+};
+use crate::{
+    StringValue,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        UInt32Value,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Outline {
-    width: UInt32Value,
-    cap_type: StringValue,
+    width:              UInt32Value,
+    cap_type:           StringValue,
     compound_line_type: StringValue,
-    solid_fill: Option<Box<SolidFill>>,
-    gradient_fill: Option<Box<GradientFill>>,
-    tail_end: Option<Box<TailEnd>>,
-    no_fill: Option<NoFill>,
-    bevel: Option<Box<Bevel>>,
-    preset_dash: Option<PresetDash>,
-    miter: Option<Miter>,
-    round: Option<Round>,
-    alignment: EnumValue<PenAlignmentValues>,
+    solid_fill:         Option<Box<SolidFill>>,
+    gradient_fill:      Option<Box<GradientFill>>,
+    tail_end:           Option<Box<TailEnd>>,
+    no_fill:            Option<NoFill>,
+    bevel:              Option<Box<Bevel>>,
+    preset_dash:        Option<PresetDash>,
+    miter:              Option<Miter>,
+    round:              Option<Round>,
+    alignment:          EnumValue<PenAlignmentValues>,
 }
 
 impl Outline {
     #[inline]
+    #[must_use]
     pub fn get_width(&self) -> u32 {
         self.width.get_value()
     }
@@ -47,6 +68,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_cap_type(&self) -> Option<&str> {
         self.cap_type.get_value()
     }
@@ -58,6 +80,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_compound_line_type(&self) -> Option<&str> {
         self.compound_line_type.get_value()
     }
@@ -69,6 +92,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
@@ -85,6 +109,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
@@ -101,6 +126,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_tail_end(&self) -> Option<&TailEnd> {
         self.tail_end.as_deref()
     }
@@ -117,6 +143,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
@@ -133,6 +160,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_bevel(&self) -> Option<&Bevel> {
         self.bevel.as_deref()
     }
@@ -149,6 +177,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_preset_dash(&self) -> Option<&PresetDash> {
         self.preset_dash.as_ref()
     }
@@ -165,6 +194,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_miter(&self) -> Option<&Miter> {
         self.miter.as_ref()
     }
@@ -181,6 +211,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_round(&self) -> Option<&Round> {
         self.round.as_ref()
     }
@@ -197,6 +228,7 @@ impl Outline {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_alignment(&self) -> &PenAlignmentValues {
         self.alignment.get_value()
     }
@@ -250,13 +282,13 @@ impl Outline {
                         self.set_tail_end(obj);
                     }
                     b"a:noFill" => {
-                        let mut obj = NoFill::default();
-                        obj.set_attributes(reader, e);
+                        let obj = NoFill::default();
+                        NoFill::set_attributes(reader, e);
                         self.set_no_fill(obj);
                     }
                     b"a:bevel" => {
-                        let mut obj = Bevel::default();
-                        obj.set_attributes(reader, e);
+                        let obj = Bevel::default();
+                        Bevel::set_attributes(reader, e);
                         self.set_bevel(obj);
                     }
                     b"a:miter" => {
@@ -270,8 +302,8 @@ impl Outline {
                         self.set_preset_dash(obj);
                     }
                     b"a:round" => {
-                        let mut obj = Round::default();
-                        obj.set_attributes(reader, e);
+                        let obj = Round::default();
+                        Round::set_attributes(reader, e);
                         self.set_round(obj);
                     }
                     _ => (),
@@ -288,19 +320,19 @@ impl Outline {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:ln
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let width = self.width.get_value_string();
         if self.width.has_value() {
-            attributes.push(("w", &width));
+            attributes.push(("w", &width).into());
         }
         if let Some(v) = self.cap_type.get_value() {
-            attributes.push(("cap", v));
+            attributes.push(("cap", v).into());
         }
         if let Some(v) = self.compound_line_type.get_value() {
-            attributes.push(("cmpd", v));
+            attributes.push(("cmpd", v).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", (self.alignment.get_value_string())));
+            attributes.push(("algn", (self.alignment.get_value_string())).into());
         }
         write_start_tag(writer, "a:ln", attributes, false);
 
@@ -315,8 +347,8 @@ impl Outline {
         }
 
         // a:round
-        if let Some(v) = &self.round {
-            v.write_to(writer);
+        if self.round.is_some() {
+            Round::write_to(writer);
         }
 
         // a:tailEnd
@@ -325,13 +357,13 @@ impl Outline {
         }
 
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:bevel
-        if let Some(v) = &self.bevel {
-            v.write_to(writer);
+        if self.bevel.is_some() {
+            Bevel::write_to(writer);
         }
 
         // a:prstDash

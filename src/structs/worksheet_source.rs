@@ -1,11 +1,17 @@
 // worksheetSource
-use crate::reader::driver::*;
-use crate::structs::Address;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::get_attribute,
+    structs::Address,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct WorksheetSource {
@@ -13,6 +19,7 @@ pub struct WorksheetSource {
 }
 
 impl WorksheetSource {
+    #[must_use]
     pub fn get_address(&self) -> &Address {
         &self.address
     }
@@ -43,11 +50,11 @@ impl WorksheetSource {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // worksheetSource
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let ref_str = self.address.get_range().get_range();
-        attributes.push(("ref", ref_str.as_str()));
+        attributes.push(("ref", ref_str.as_str()).into());
         if self.address.get_sheet_name() != "" {
-            attributes.push(("sheet", self.address.get_sheet_name()));
+            attributes.push(("sheet", self.address.get_sheet_name()).into());
         }
         write_start_tag(writer, "worksheetSource", attributes, true);
     }

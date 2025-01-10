@@ -1,12 +1,23 @@
-use crate::xml_read_loop;
+use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
 
 // c:pt
 use super::NumericValue;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
-use std::io::Cursor;
+use crate::{
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+    xml_read_loop,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct StringPoint {
@@ -14,6 +25,7 @@ pub struct StringPoint {
 }
 
 impl StringPoint {
+    #[must_use]
     pub fn get_numeric_value(&self) -> &NumericValue {
         &self.numeric_value
     }
@@ -36,7 +48,7 @@ impl StringPoint {
             reader,
             Event::Start(ref e) => {
                 if e.name().0 == b"c:v" {
-                    self.numeric_value._set_attributes(reader, e);
+                    self.numeric_value.set_attributes(reader, e);
                 }
             },
             Event::End(ref e) => {
@@ -51,10 +63,15 @@ impl StringPoint {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, index: u32) {
         // c:pt
         let index_str = index.to_string();
-        write_start_tag(writer, "c:pt", vec![("idx", index_str.as_str())], false);
+        write_start_tag(
+            writer,
+            "c:pt",
+            vec![("idx", index_str.as_str()).into()],
+            false,
+        );
 
         // c:v
-        self.numeric_value._write_to(writer);
+        self.numeric_value.write_to(writer);
 
         write_end_tag(writer, "c:pt");
     }

@@ -1,22 +1,33 @@
 // c:strCache
-use crate::reader::driver::*;
-use crate::structs::Address;
-use crate::structs::Spreadsheet;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::{
+        Address,
+        Workbook,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct StringCache {}
 
 impl StringCache {
-    pub(crate) fn set_attributes<R: std::io::BufRead>(
-        &mut self,
-        reader: &mut Reader<R>,
-        _e: &BytesStart,
-    ) {
+    pub(crate) fn set_attributes<R: std::io::BufRead>(reader: &mut Reader<R>, _e: &BytesStart) {
         xml_read_loop!(
             reader,
             Event::End(ref e) => {
@@ -28,13 +39,8 @@ impl StringCache {
         );
     }
 
-    pub(crate) fn write_to(
-        &self,
-        writer: &mut Writer<Cursor<Vec<u8>>>,
-        address: &Address,
-        spreadsheet: &Spreadsheet,
-    ) {
-        let cell_value_list = spreadsheet.get_cell_value_by_address_crate(address);
+    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>, address: &Address, wb: &Workbook) {
+        let cell_value_list = wb.get_cell_value_by_address_crate(address);
         let coll_value_count = cell_value_list.len().to_string();
         // c:strCache
         write_start_tag(writer, "c:strCache", vec![], false);
@@ -43,18 +49,13 @@ impl StringCache {
         write_start_tag(
             writer,
             "c:ptCount",
-            vec![("val", coll_value_count.as_str())],
+            vec![("val", coll_value_count.as_str()).into()],
             true,
         );
 
         for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
-            write_start_tag(
-                writer,
-                "c:pt",
-                vec![("idx", idx.to_string().as_str())],
-                false,
-            );
+            write_start_tag(writer, "c:pt", vec![("idx", idx.to_string()).into()], false);
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);

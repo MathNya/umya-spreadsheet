@@ -1,8 +1,11 @@
 use std::borrow::Cow;
 
-use crate::helper::date::*;
 use fancy_regex::Captures;
-use fancy_regex::Regex;
+
+use crate::helper::{
+    date::excel_to_date_time_object,
+    utils::compile_regex,
+};
 
 const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     // first remove escapes related to non-format characters
@@ -60,12 +63,12 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
     // general syntax: [$<Currency string>-<language info>]
     // language info is in hexadecimal
     // strip off chinese part like [DBNum1][$-804]
-    let re = Regex::new(r"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])").unwrap();
-    let format = re.replace_all(&format, r#""#);
+    let re = compile_regex!(r"^(\[[0-9A-Za-z]*\])*(\[\$[A-Z]*-[0-9A-F]*\])");
+    let format = re.replace_all(&format, r"");
 
-    // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to lower-case;
-    //    but we don't want to change any quoted strings
-    let re = Regex::new(r#"(?:^|")([^"]*)(?:$|")"#).unwrap();
+    // OpenOffice.org uses upper-case number formats, e.g. 'YYYY', convert to
+    // lower-case;    but we don't want to change any quoted strings
+    let re = compile_regex!(r#"(?:^|")([^"]*)(?:$|")"#);
     let mut format = re.replace_all(&format, |caps: &Captures| {
         let caps_string = caps.get(0).unwrap().as_str();
         caps_string.to_lowercase()
@@ -81,20 +84,20 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
             for (before, after) in DATE_FORMAT_REPLACEMENTS {
                 block = block.replace(before, after);
             }
-            if !block.contains("%P") {
+            if block.contains("%P") {
+                for (before, after) in DATE_FORMAT_REPLACEMENTS_12 {
+                    block = block.replace(before, after);
+                }
+            } else {
                 // 24-hour time format
                 // when [h]:mm format, the [h] should replace to the hours of the value * 24
                 if block.contains("[h]") {
                     let hours = value * 24f64;
-                    block = block.replace("[h]", hours.to_string().as_str());
+                    block = block.replace("[h]", &hours.to_string());
                     converted_blocks.push(block);
                     continue;
                 }
                 for (before, after) in DATE_FORMAT_REPLACEMENTS_24 {
-                    block = block.replace(before, after);
-                }
-            } else {
-                for (before, after) in DATE_FORMAT_REPLACEMENTS_12 {
                     block = block.replace(before, after);
                 }
             }
@@ -102,10 +105,11 @@ pub(crate) fn format_as_date(value: f64, format: &str) -> Cow<str> {
         converted_blocks.push(block);
         i += 1;
     }
-    format = Cow::Owned(converted_blocks.join(r#""#));
+    format = Cow::Owned(converted_blocks.join(r""));
 
-    // escape any quoted characters so that DateTime format() will render them correctly
-    let re = Regex::new(r#""(.*)""#).unwrap();
+    // escape any quoted characters so that DateTime format() will render them
+    // correctly
+    let re = compile_regex!(r#""(.*)""#);
     let format = re.replace_all(&format, |caps: &Captures| {
         let caps_string = caps.get(0).unwrap().as_str();
         caps_string.to_lowercase()

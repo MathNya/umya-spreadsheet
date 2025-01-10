@@ -1,11 +1,20 @@
 // strike
-use super::BooleanValue;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use super::BooleanValue;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Strike {
@@ -14,6 +23,7 @@ pub struct Strike {
 
 impl Strike {
     #[inline]
+    #[must_use]
     pub fn get_val(&self) -> bool {
         self.val.get_value()
     }
@@ -40,9 +50,9 @@ impl Strike {
             return;
         }
 
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if !self.val.get_value() {
-            attributes.push(("val", self.val.get_value_string()));
+            attributes.push(("val", self.val.get_value_string()).into());
         }
         write_start_tag(writer, "strike", attributes, true);
     }

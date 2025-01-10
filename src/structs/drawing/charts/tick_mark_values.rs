@@ -1,5 +1,6 @@
-use super::super::super::EnumTrait;
 use std::str::FromStr;
+
+use super::super::super::EnumTrait;
 #[derive(Clone, Debug, Default)]
 pub enum TickMarkValues {
     #[default]
@@ -21,6 +22,7 @@ impl EnumTrait for TickMarkValues {
 }
 impl FromStr for TickMarkValues {
     type Err = ();
+
     fn from_str(input: &str) -> Result<TickMarkValues, Self::Err> {
         match input {
             "cross" => Ok(Self::Cross),

@@ -1,16 +1,27 @@
 // cellXfs
-use super::CellFormat;
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::CellFormat;
+use crate::{
+    reader::driver::xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct CellFormats {
-    cell_format: ThinVec<CellFormat>,
+    cell_format: Vec<CellFormat>,
 }
 
 impl CellFormats {
@@ -20,7 +31,7 @@ impl CellFormats {
     }
 
     #[inline]
-    pub(crate) fn _get_cell_format_mut(&mut self) -> &mut ThinVec<CellFormat> {
+    pub(crate) fn get_cell_format_mut(&mut self) -> &mut Vec<CellFormat> {
         &mut self.cell_format
     }
 
@@ -66,7 +77,7 @@ impl CellFormats {
             write_start_tag(
                 writer,
                 "cellXfs",
-                vec![("count", &self.cell_format.len().to_string())],
+                vec![("count", &self.cell_format.len().to_string()).into()],
                 false,
             );
 

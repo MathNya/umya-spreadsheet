@@ -1,17 +1,30 @@
 // mergeCell
-use super::Range;
-
-use crate::reader::driver::*;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::Range;
+use crate::{
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct MergeCells {
-    range: ThinVec<Range>,
+    range: Vec<Range>,
 }
 
 impl MergeCells {
@@ -21,7 +34,7 @@ impl MergeCells {
     }
 
     #[inline]
-    pub(crate) fn get_range_collection_mut(&mut self) -> &mut ThinVec<Range> {
+    pub(crate) fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
         &mut self.range
     }
 
@@ -33,26 +46,34 @@ impl MergeCells {
         self
     }
 
-    pub(crate) fn _has_vertical(&self, row_num: u32) -> bool {
+    pub(crate) fn has_vertical(&self, row_num: u32) -> bool {
         self.get_range_collection().iter().any(|range| {
-            let start_num = range
-                .get_coordinate_start_row()
-                .map_or(true, |v| v.get_num() <= row_num);
-            let end_num = range
-                .get_coordinate_end_row()
-                .map_or(true, |v| v.get_num() >= row_num);
+            let start_num = match range.get_coordinate_start_row() {
+                Some(v) => v.get_num() <= row_num,
+                None => true,
+            };
+
+            let end_num = match range.get_coordinate_end_row() {
+                Some(v) => v.get_num() >= row_num,
+                None => true,
+            };
+
             start_num && end_num && start_num != end_num
         })
     }
 
     pub(crate) fn has_horizontal(&self, col_num: u32) -> bool {
         self.get_range_collection().iter().any(|range| {
-            let start_num = range
-                .get_coordinate_start_col()
-                .map_or(true, |v| v.get_num() <= col_num);
-            let end_num = range
-                .get_coordinate_end_col()
-                .map_or(true, |v| v.get_num() >= col_num);
+            let start_num = match range.get_coordinate_start_col() {
+                Some(v) => v.get_num() <= col_num,
+                None => true,
+            };
+
+            let end_num = match range.get_coordinate_end_col() {
+                Some(v) => v.get_num() >= col_num,
+                None => true,
+            };
+
             start_num && end_num && start_num != end_num
         })
     }
@@ -84,10 +105,13 @@ impl MergeCells {
             write_start_tag(
                 writer,
                 "mergeCells",
-                vec![(
-                    "count",
-                    self.get_range_collection().len().to_string().as_str(),
-                )],
+                vec![
+                    (
+                        "count",
+                        self.get_range_collection().len().to_string().as_str(),
+                    )
+                        .into(),
+                ],
                 false,
             );
 
@@ -96,7 +120,7 @@ impl MergeCells {
                 write_start_tag(
                     writer,
                     "mergeCell",
-                    vec![("ref", merge_cell.get_range().as_str())],
+                    vec![("ref", merge_cell.get_range().as_str()).into()],
                     true,
                 );
             }

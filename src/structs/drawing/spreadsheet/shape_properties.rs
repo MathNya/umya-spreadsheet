@@ -1,33 +1,48 @@
 // xdr:spPr
-use super::super::BlipFill;
-use super::super::EffectList;
-use super::super::ExtensionList;
-use super::super::NoFill;
-use super::super::Outline;
-use super::super::PresetGeometry;
-use super::super::SolidFill;
-use super::super::Transform2D;
-use crate::reader::driver::*;
-use crate::structs::raw::RawRelationships;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::super::{
+    BlipFill,
+    EffectList,
+    ExtensionList,
+    NoFill,
+    Outline,
+    PresetGeometry,
+    SolidFill,
+    Transform2D,
+};
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::raw::RawRelationships,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    transform2d: Option<Box<Transform2D>>,
+    transform2d:     Option<Box<Transform2D>>,
     preset_geometry: PresetGeometry,
-    blip_fill: Option<Box<BlipFill>>,
-    solid_fill: Option<Box<SolidFill>>,
-    outline: Option<Box<Outline>>,
-    effect_list: Option<Box<EffectList>>,
-    no_fill: Option<NoFill>,
-    extension_list: Option<ExtensionList>,
+    blip_fill:       Option<Box<BlipFill>>,
+    solid_fill:      Option<Box<SolidFill>>,
+    outline:         Option<Box<Outline>>,
+    effect_list:     Option<Box<EffectList>>,
+    no_fill:         Option<NoFill>,
+    extension_list:  Option<ExtensionList>,
 }
 impl ShapeProperties {
     #[inline]
+    #[must_use]
     pub fn get_transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_deref()
     }
@@ -44,6 +59,7 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_geometry(&self) -> &PresetGeometry {
         &self.preset_geometry
     }
@@ -60,6 +76,7 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_blip_fill(&self) -> Option<&BlipFill> {
         self.blip_fill.as_deref()
     }
@@ -76,6 +93,7 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
@@ -92,6 +110,7 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
@@ -108,6 +127,7 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
@@ -124,6 +144,7 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
@@ -140,6 +161,7 @@ impl ShapeProperties {
     }
 
     #[inline]
+    #[must_use]
     pub fn get_extension_list(&self) -> Option<&ExtensionList> {
         self.extension_list.as_ref()
     }
@@ -194,8 +216,8 @@ impl ShapeProperties {
                         self.set_effect_list(effect_list);
                     }
                     b"a:extLst" => {
-                        let mut obj = ExtensionList::default();
-                        obj.set_attributes(reader, e);
+                        let obj = ExtensionList::default();
+                        ExtensionList::set_attributes(reader, e);
                         self.set_extension_list(obj);
                     }
                     _ => (),
@@ -203,8 +225,8 @@ impl ShapeProperties {
             },
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"a:noFill" {
-                    let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e);
+                    let obj = NoFill::default();
+                    NoFill::set_attributes(reader, e);
                     self.set_no_fill(obj);
                 }
             },
@@ -244,8 +266,8 @@ impl ShapeProperties {
         }
 
         // a:noFill
-        if let Some(v) = &self.no_fill {
-            v.write_to(writer);
+        if self.no_fill.is_some() {
+            NoFill::write_to(writer);
         }
 
         // a:ln

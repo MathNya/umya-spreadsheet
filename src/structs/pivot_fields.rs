@@ -1,25 +1,37 @@
 // pivotFields
-use crate::reader::driver::*;
-use crate::structs::PivotField;
-use crate::writer::driver::*;
-use quick_xml::events::{BytesStart, Event};
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
-use thin_vec::ThinVec;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use crate::{
+    reader::driver::xml_read_loop,
+    structs::PivotField,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PivotFields {
-    list: ThinVec<PivotField>,
+    list: Vec<PivotField>,
 }
 impl PivotFields {
     #[inline]
+    #[must_use]
     pub fn get_list(&self) -> &[PivotField] {
         &self.list
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut ThinVec<PivotField> {
+    pub fn get_list_mut(&mut self) -> &mut Vec<PivotField> {
         &mut self.list
     }
 
@@ -61,7 +73,7 @@ impl PivotFields {
         write_start_tag(
             writer,
             "pivotFields",
-            vec![("count", self.list.len().to_string().as_str())],
+            vec![("count", self.list.len().to_string()).into()],
             false,
         );
 

@@ -1,19 +1,31 @@
-use crate::reader::driver::*;
-use crate::structs::StringValue;
-use crate::structs::TrueFalseValue;
-use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
-use quick_xml::Reader;
-use quick_xml::Writer;
 use std::io::Cursor;
+
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
+
+use crate::{
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        StringValue,
+        TrueFalseValue,
+    },
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Shadow {
-    on: TrueFalseValue,
-    color: StringValue,
+    on:       TrueFalseValue,
+    color:    StringValue,
     obscured: TrueFalseValue,
 }
 impl Shadow {
+    #[must_use]
     pub fn get_on(&self) -> bool {
         self.on.get_value()
     }
@@ -23,6 +35,7 @@ impl Shadow {
         self
     }
 
+    #[must_use]
     pub fn get_color(&self) -> &str {
         self.color.get_value_str()
     }
@@ -32,6 +45,7 @@ impl Shadow {
         self
     }
 
+    #[must_use]
     pub fn get_obscured(&self) -> bool {
         self.obscured.get_value()
     }
@@ -53,15 +67,15 @@ impl Shadow {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // v:shadow
-        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.on.has_value() {
-            attributes.push(("on", self.on.get_value_string()));
+            attributes.push(("on", self.on.get_value_string()).into());
         }
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_str()));
+            attributes.push(("color", self.color.get_value_str()).into());
         }
         if self.obscured.has_value() {
-            attributes.push(("obscured", self.obscured.get_value_string()));
+            attributes.push(("obscured", self.obscured.get_value_string()).into());
         }
         write_start_tag(writer, "v:shadow", attributes, true);
     }

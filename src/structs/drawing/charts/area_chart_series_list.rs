@@ -1,11 +1,11 @@
 use super::AreaChartSeries;
-use thin_vec::ThinVec;
 
 #[derive(Clone, Default, Debug)]
 pub struct AreaChartSeriesList {
-    area_chart_series: ThinVec<AreaChartSeries>,
+    area_chart_series: Vec<AreaChartSeries>,
 }
 impl AreaChartSeriesList {
+    #[must_use]
     pub fn get_area_chart_series(&self) -> &[AreaChartSeries] {
         &self.area_chart_series
     }
@@ -14,10 +14,7 @@ impl AreaChartSeriesList {
         &mut self.area_chart_series
     }
 
-    pub fn set_area_chart_series(
-        &mut self,
-        value: impl Into<ThinVec<AreaChartSeries>>,
-    ) -> &mut Self {
+    pub fn set_area_chart_series(&mut self, value: impl Into<Vec<AreaChartSeries>>) -> &mut Self {
         self.area_chart_series = value.into();
         self
     }
