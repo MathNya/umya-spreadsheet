@@ -2,29 +2,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    NonVisualDrawingProperties,
-    NonVisualGroupShapeDrawingProperties,
-};
+use super::{NonVisualDrawingProperties, NonVisualGroupShapeDrawingProperties};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualGroupShapeProperties {
-    non_visual_drawing_properties:             NonVisualDrawingProperties,
+    non_visual_drawing_properties: NonVisualDrawingProperties,
     non_visual_group_shape_drawing_properties: NonVisualGroupShapeDrawingProperties,
 }
 

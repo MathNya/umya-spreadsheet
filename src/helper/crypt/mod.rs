@@ -31,27 +31,18 @@
 //! - Base64 encoding for binary data storage
 //! - Secure password hashing
 
-use std::{
-    io::Write,
-    path::Path,
-};
+use std::{io::Write, path::Path};
 
 use rand::Rng;
 
-use crate::structs::{
-    SheetProtection,
-    WorkbookProtection,
-};
+use crate::structs::{SheetProtection, WorkbookProtection};
 
 pub(crate) mod algo;
 pub(crate) mod constants;
 pub(crate) mod key;
 pub(crate) mod utils;
 
-use base64::{
-    Engine as _,
-    engine::general_purpose::STANDARD,
-};
+use base64::{engine::general_purpose::STANDARD, Engine as _};
 use utils::generate_random_bytes;
 
 /// Encrypts the sheet protection using the provided password.
@@ -298,17 +289,10 @@ mod tests {
     use std::fs;
 
     use hex_literal::hex;
-    use sha2::{
-        Digest,
-        Sha256,
-    };
+    use sha2::{Digest, Sha256};
 
     use super::*;
-    use crate::helper::utils::{
-        assert_sha256,
-        print_hex,
-        print_sha256_hex,
-    };
+    use crate::helper::utils::{assert_sha256, print_hex, print_sha256_hex};
 
     #[test]
     fn test_encrypt_package() {

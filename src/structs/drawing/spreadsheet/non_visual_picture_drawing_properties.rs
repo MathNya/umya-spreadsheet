@@ -2,32 +2,21 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::super::PictureLocks;
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
+    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
     structs::BooleanValue,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualPictureDrawingProperties {
     prefer_relative_resize: BooleanValue,
-    picture_locks:          Option<PictureLocks>,
+    picture_locks: Option<PictureLocks>,
 }
 
 impl NonVisualPictureDrawingProperties {

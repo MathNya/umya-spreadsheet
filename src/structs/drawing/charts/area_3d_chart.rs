@@ -2,38 +2,24 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    AreaChartSeries,
-    AreaChartSeriesList,
-    AxisId,
-    DataLabels,
-    Grouping,
-    VaryColors,
-};
+use super::{AreaChartSeries, AreaChartSeriesList, AxisId, DataLabels, Grouping, VaryColors};
 use crate::{
     reader::driver::xml_read_loop,
     structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Area3DChart {
-    grouping:               Grouping,
-    vary_colors:            VaryColors,
+    grouping: Grouping,
+    vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels:            Option<Box<DataLabels>>,
-    axis_id:                Vec<AxisId>,
+    data_labels: Option<Box<DataLabels>>,
+    axis_id: Vec<AxisId>,
 }
 
 impl Area3DChart {

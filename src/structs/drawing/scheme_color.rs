@@ -2,42 +2,27 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    super::EnumValue,
-    PercentageType,
-    PositiveFixedPercentageType,
-    SchemeColorValues,
-};
+use super::{super::EnumValue, PercentageType, PositiveFixedPercentageType, SchemeColorValues};
 use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    reader::driver::{get_attribute, xml_read_loop},
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct SchemeColor {
-    val:                   EnumValue<SchemeColorValues>,
-    luminance:             Option<PercentageType>,
-    luminance_modulation:  Option<PercentageType>,
-    luminance_offset:      Option<PercentageType>,
-    saturation:            Option<PercentageType>,
+    val: EnumValue<SchemeColorValues>,
+    luminance: Option<PercentageType>,
+    luminance_modulation: Option<PercentageType>,
+    luminance_offset: Option<PercentageType>,
+    saturation: Option<PercentageType>,
     saturation_modulation: Option<PercentageType>,
-    shade:                 Option<PositiveFixedPercentageType>,
-    alpha:                 Option<PositiveFixedPercentageType>,
-    tint:                  Option<PositiveFixedPercentageType>,
+    shade: Option<PositiveFixedPercentageType>,
+    alpha: Option<PositiveFixedPercentageType>,
+    tint: Option<PositiveFixedPercentageType>,
 }
 
 impl SchemeColor {

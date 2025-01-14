@@ -2,31 +2,20 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    ParagraphProperties,
-    Run,
-    RunProperties,
-};
+use super::{ParagraphProperties, Run, RunProperties};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Paragraph {
-    paragraph_properties:    ParagraphProperties,
-    run:                     Vec<Run>,
+    paragraph_properties: ParagraphProperties,
+    run: Vec<Run>,
     end_para_run_properties: Option<Box<RunProperties>>,
 }
 

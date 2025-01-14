@@ -1,30 +1,20 @@
 // a:sysClr
 use std::io::Cursor;
 
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
+use quick_xml::{events::BytesStart, Reader, Writer};
 
 use super::{
-    super::super::{
-        EnumValue,
-        StringValue,
-    },
+    super::super::{EnumValue, StringValue},
     SystemColorValues,
 };
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
+    reader::driver::{get_attribute, set_string_from_xml},
     writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct SystemColor {
-    val:        EnumValue<SystemColorValues>,
+    val: EnumValue<SystemColorValues>,
     last_color: StringValue,
 }
 

@@ -1,20 +1,10 @@
 // c:orientation
 use std::io::Cursor;
 
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
+use quick_xml::{events::BytesStart, Reader, Writer};
 
-use super::{
-    super::super::EnumValue,
-    OrientationValues,
-};
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use super::{super::super::EnumValue, OrientationValues};
+use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
 
 #[derive(Clone, Default, Debug)]
 pub struct Orientation {

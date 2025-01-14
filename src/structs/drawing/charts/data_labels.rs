@@ -2,42 +2,29 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::{
-    ShowBubbleSize,
-    ShowCategoryName,
-    ShowLeaderLines,
-    ShowLegendKey,
-    ShowPercent,
-    ShowSeriesName,
-    ShowValue,
-    TextProperties,
+    ShowBubbleSize, ShowCategoryName, ShowLeaderLines, ShowLegendKey, ShowPercent, ShowSeriesName,
+    ShowValue, TextProperties,
 };
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct DataLabels {
-    show_legend_key:    ShowLegendKey,
-    show_value:         ShowValue,
+    show_legend_key: ShowLegendKey,
+    show_value: ShowValue,
     show_category_name: ShowCategoryName,
-    show_series_name:   ShowSeriesName,
-    show_percent:       ShowPercent,
-    show_bubble_size:   ShowBubbleSize,
-    show_leader_lines:  Option<ShowLeaderLines>,
-    text_properties:    Option<TextProperties>,
+    show_series_name: ShowSeriesName,
+    show_percent: ShowPercent,
+    show_bubble_size: ShowBubbleSize,
+    show_leader_lines: Option<ShowLeaderLines>,
+    text_properties: Option<TextProperties>,
 }
 
 impl DataLabels {

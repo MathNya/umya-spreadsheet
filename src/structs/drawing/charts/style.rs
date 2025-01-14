@@ -1,17 +1,10 @@
 // c:style
 use std::io::Cursor;
 
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
+use quick_xml::{events::BytesStart, Reader, Writer};
 
 use super::super::super::ByteValue;
-use crate::{
-    reader::driver::get_attribute,
-    writer::driver::write_start_tag,
-};
+use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
 
 #[derive(Default, Debug)]
 pub struct Style {

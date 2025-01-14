@@ -2,29 +2,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    rgb_color_model_hex::RgbColorModelHex,
-    scheme_color::SchemeColor,
-};
+use super::{rgb_color_model_hex::RgbColorModelHex, scheme_color::SchemeColor};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct SolidFill {
-    scheme_color:        Option<Box<SchemeColor>>,
+    scheme_color: Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 

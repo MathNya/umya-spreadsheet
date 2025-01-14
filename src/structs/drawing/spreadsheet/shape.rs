@@ -2,37 +2,26 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::{
-    super::super::Anchor,
-    NonVisualShapeProperties,
-    ShapeProperties,
-    ShapeStyle,
-    TextBody,
+    super::super::Anchor, NonVisualShapeProperties, ShapeProperties, ShapeStyle, TextBody,
 };
 use crate::{
     reader::driver::xml_read_loop,
     structs::raw::RawRelationships,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
-    anchor:                      Anchor,
+    anchor: Anchor,
     non_visual_shape_properties: NonVisualShapeProperties,
-    shape_properties:            ShapeProperties,
-    shape_style:                 Option<Box<ShapeStyle>>,
-    text_body:                   Option<Box<TextBody>>,
+    shape_properties: ShapeProperties,
+    shape_style: Option<Box<ShapeStyle>>,
+    text_body: Option<Box<TextBody>>,
 }
 
 impl Shape {

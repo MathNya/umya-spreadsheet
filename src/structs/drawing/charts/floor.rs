@@ -2,29 +2,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    ShapeProperties,
-    Thickness,
-};
+use super::{ShapeProperties, Thickness};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Floor {
-    thickness:        Option<Thickness>,
+    thickness: Option<Thickness>,
     shape_properties: Option<Box<ShapeProperties>>,
 }
 

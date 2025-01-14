@@ -1,30 +1,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
+    reader::driver::{get_attribute, set_string_from_xml},
     structs::StringValue,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node_no_escape,
-    },
+    writer::driver::{write_end_tag, write_start_tag, write_text_node_no_escape},
 };
 
 #[derive(Clone, Debug)]
 pub struct TextBox {
-    style:  StringValue,
+    style: StringValue,
     innder: StringValue,
 }
 

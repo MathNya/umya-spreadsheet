@@ -56,10 +56,7 @@
 //! This module is intended for internal use within the crate, as indicated
 //! by the `pub(crate)` visibility modifiers.
 
-use sha2::{
-    Digest,
-    Sha512,
-};
+use sha2::{Digest, Sha512};
 
 /// A macro that generates an array of random bytes.
 ///

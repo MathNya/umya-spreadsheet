@@ -2,39 +2,23 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    super::super::BooleanValue,
-    Blip,
-    SourceRectangle,
-    Stretch,
-};
+use super::{super::super::BooleanValue, Blip, SourceRectangle, Stretch};
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
+    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
     structs::raw::RawRelationships,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct BlipFill {
     rotate_with_shape: BooleanValue,
-    blip:              Blip,
-    source_rectangle:  Option<Box<SourceRectangle>>,
-    stretch:           Stretch,
+    blip: Blip,
+    source_rectangle: Option<Box<SourceRectangle>>,
+    stretch: Stretch,
 }
 
 impl BlipFill {

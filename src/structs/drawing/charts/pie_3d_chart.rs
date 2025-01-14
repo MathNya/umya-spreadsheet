@@ -2,34 +2,22 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    AreaChartSeries,
-    AreaChartSeriesList,
-    DataLabels,
-    VaryColors,
-};
+use super::{AreaChartSeries, AreaChartSeriesList, DataLabels, VaryColors};
 use crate::{
     reader::driver::xml_read_loop,
     structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Pie3DChart {
-    vary_colors:            VaryColors,
+    vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels:            DataLabels,
+    data_labels: DataLabels,
 }
 
 impl Pie3DChart {

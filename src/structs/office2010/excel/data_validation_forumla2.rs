@@ -1,24 +1,14 @@
 // x14:formula2
-use std::{
-    io::Cursor,
-    vec,
-};
+use std::{io::Cursor, vec};
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
     structs::office::excel::Formula,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Default, Debug, Clone)]

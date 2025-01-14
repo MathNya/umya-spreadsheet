@@ -1,61 +1,38 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::{
-    Fill,
-    ImageData,
-    Path,
-    Shadow,
-    Stroke,
+    office::InsetMarginValues, spreadsheet::ClientData, Fill, ImageData, Path, Shadow, Stroke,
     TextBox,
-    office::InsetMarginValues,
-    spreadsheet::ClientData,
 };
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    structs::{
-        EnumValue,
-        Int32Value,
-        StringValue,
-        TrueFalseValue,
-        raw::RawRelationships,
-    },
+    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
+    structs::{raw::RawRelationships, EnumValue, Int32Value, StringValue, TrueFalseValue},
     traits::AdjustmentCoordinate,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
-    style:           StringValue,
-    r_type:          StringValue,
-    filled:          TrueFalseValue,
-    fill_color:      StringValue,
-    stroked:         TrueFalseValue,
-    stroke_color:    StringValue,
-    stroke_weight:   StringValue,
-    inset_mode:      EnumValue<InsetMarginValues>,
-    fill:            Option<Box<Fill>>,
-    image_data:      Option<Box<ImageData>>,
-    stroke:          Option<Box<Stroke>>,
-    shadow:          Option<Box<Shadow>>,
-    path:            Option<Box<Path>>,
-    text_box:        Option<Box<TextBox>>,
-    client_data:     ClientData,
+    style: StringValue,
+    r_type: StringValue,
+    filled: TrueFalseValue,
+    fill_color: StringValue,
+    stroked: TrueFalseValue,
+    stroke_color: StringValue,
+    stroke_weight: StringValue,
+    inset_mode: EnumValue<InsetMarginValues>,
+    fill: Option<Box<Fill>>,
+    image_data: Option<Box<ImageData>>,
+    stroke: Option<Box<Stroke>>,
+    shadow: Option<Box<Shadow>>,
+    path: Option<Box<Path>>,
+    text_box: Option<Box<TextBox>>,
+    client_data: ClientData,
     optional_number: Int32Value,
     coordinate_size: StringValue,
 }

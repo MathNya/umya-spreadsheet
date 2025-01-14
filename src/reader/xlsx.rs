@@ -2,30 +2,16 @@ use std::{
     fs::File,
     io,
     path::Path,
-    sync::{
-        Arc,
-        RwLock,
-    },
+    sync::{Arc, RwLock},
 };
 
 use super::driver;
 use crate::{
-    XlsxError,
-    helper::const_str::{
-        COMMENTS_NS,
-        DRAWINGS_NS,
-        TABLE_NS,
-        THEME_NS,
-        VML_DRAWING_NS,
-    },
+    helper::const_str::{COMMENTS_NS, DRAWINGS_NS, TABLE_NS, THEME_NS, VML_DRAWING_NS},
     structs::{
-        SharedStringTable,
-        Stylesheet,
-        Workbook,
-        Worksheet,
-        drawing::Theme,
-        raw::RawWorksheet,
+        drawing::Theme, raw::RawWorksheet, SharedStringTable, Stylesheet, Workbook, Worksheet,
     },
+    XlsxError,
 };
 
 pub(crate) mod chart;

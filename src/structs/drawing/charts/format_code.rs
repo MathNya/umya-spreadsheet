@@ -2,20 +2,12 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
+    writer::driver::{write_end_tag, write_start_tag, write_text_node},
     xml_read_loop,
 };
 

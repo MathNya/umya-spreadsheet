@@ -1,38 +1,20 @@
-use std::{
-    borrow::Cow,
-    io::Cursor,
-};
+use std::{borrow::Cow, io::Cursor};
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    structs::{
-        StringValue,
-        custom_properties::CustomDocumentPropertyValue,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
+    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
+    structs::{custom_properties::CustomDocumentPropertyValue, StringValue},
+    writer::driver::{write_end_tag, write_start_tag, write_text_node},
 };
 
 #[derive(Default, Debug, Clone)]
 pub struct CustomDocumentProperty {
-    name:                           StringValue,
-    link_target:                    StringValue,
+    name: StringValue,
+    link_target: StringValue,
     custom_document_property_value: CustomDocumentPropertyValue,
 }
 

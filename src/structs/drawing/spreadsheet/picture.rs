@@ -2,33 +2,22 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    BlipFill,
-    NonVisualPictureProperties,
-    ShapeProperties,
-};
+use super::{BlipFill, NonVisualPictureProperties, ShapeProperties};
 use crate::{
     reader::driver::xml_read_loop,
     structs::raw::RawRelationships,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Picture {
     non_visual_picture_properties: NonVisualPictureProperties,
-    blip_fill:                     BlipFill,
-    shape_properties:              ShapeProperties,
+    blip_fill: BlipFill,
+    shape_properties: ShapeProperties,
 }
 
 impl Picture {

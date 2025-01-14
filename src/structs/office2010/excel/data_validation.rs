@@ -2,46 +2,32 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
     reader::driver::get_attribute,
     structs::{
-        BooleanValue,
-        DataValidationOperatorValues,
-        DataValidationValues,
-        EnumValue,
-        StringValue,
         office::excel::ReferenceSequence,
-        office2010::excel::{
-            DataValidationForumla1,
-            DataValidationForumla2,
-        },
+        office2010::excel::{DataValidationForumla1, DataValidationForumla2},
+        BooleanValue, DataValidationOperatorValues, DataValidationValues, EnumValue, StringValue,
     },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type:             EnumValue<DataValidationValues>,
-    operator:           EnumValue<DataValidationOperatorValues>,
-    allow_blank:        BooleanValue,
+    r#type: EnumValue<DataValidationValues>,
+    operator: EnumValue<DataValidationOperatorValues>,
+    allow_blank: BooleanValue,
     show_input_message: BooleanValue,
     show_error_message: BooleanValue,
-    prompt_title:       StringValue,
-    prompt:             StringValue,
+    prompt_title: StringValue,
+    prompt: StringValue,
     reference_sequence: ReferenceSequence,
-    formula1:           Option<Box<DataValidationForumla1>>,
-    formula2:           Option<Box<DataValidationForumla2>>,
+    formula1: Option<Box<DataValidationForumla1>>,
+    formula2: Option<Box<DataValidationForumla2>>,
 }
 impl DataValidation {
     #[inline]

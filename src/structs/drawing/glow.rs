@@ -2,32 +2,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    super::super::Int64Value,
-    SchemeColor,
-};
+use super::{super::super::Int64Value, SchemeColor};
 use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    reader::driver::{get_attribute, xml_read_loop},
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Glow {
-    radius:       Int64Value,
+    radius: Int64Value,
     scheme_color: Option<Box<SchemeColor>>,
 }
 

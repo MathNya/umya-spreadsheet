@@ -2,32 +2,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    BackgroundColor,
-    ForegroundColor,
-};
+use super::{BackgroundColor, ForegroundColor};
 use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    reader::driver::{get_attribute, xml_read_loop},
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Debug)]
 pub struct PatternFill {
-    preset:           Box<str>,
+    preset: Box<str>,
     foreground_color: ForegroundColor,
     background_color: BackgroundColor,
 }
@@ -36,7 +23,7 @@ impl Default for PatternFill {
     #[inline]
     fn default() -> Self {
         Self {
-            preset:           "pct5".into(),
+            preset: "pct5".into(),
             foreground_color: ForegroundColor::default(),
             background_color: BackgroundColor::default(),
         }

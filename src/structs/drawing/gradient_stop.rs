@@ -2,33 +2,20 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    RgbColorModelHex,
-    SchemeColor,
-};
+use super::{RgbColorModelHex, SchemeColor};
 use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    reader::driver::{get_attribute, xml_read_loop},
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientStop {
-    position:            i32,
-    scheme_color:        Option<Box<SchemeColor>>,
+    position: i32,
+    scheme_color: Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 

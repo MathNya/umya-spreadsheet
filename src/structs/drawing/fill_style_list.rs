@@ -1,29 +1,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    GradientFill,
-    SolidFill,
-};
+use super::{GradientFill, SolidFill};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct FillStyleList {
-    solid_fill:               Vec<SolidFill>,
+    solid_fill: Vec<SolidFill>,
     gradient_fill_collection: Vec<GradientFill>,
 }
 

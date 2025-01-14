@@ -1,58 +1,39 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::{
-    super::{
-        EnumValue,
-        Int32Value,
-    },
-    EffectList,
-    GradientFill,
-    NoFill,
-    Outline,
-    SolidFill,
-    TextCapsValues,
-    TextFontType,
+    super::{EnumValue, Int32Value},
+    EffectList, GradientFill, NoFill, Outline, SolidFill, TextCapsValues, TextFontType,
 };
 use crate::{
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
+    reader::driver::{get_attribute, xml_read_loop},
     structs::StringValue,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct RunProperties {
-    text:                 Box<str>,
-    kumimoji:             StringValue,
-    language:             StringValue,
+    text: Box<str>,
+    kumimoji: StringValue,
+    language: StringValue,
     alternative_language: StringValue,
-    bold:                 StringValue,
-    sz:                   StringValue,
-    italic:               StringValue,
-    capital:              EnumValue<TextCapsValues>,
-    spacing:              Int32Value,
-    strike:               StringValue,
-    outline:              Option<Box<Outline>>,
-    solid_fill:           Option<Box<SolidFill>>,
-    latin_font:           Option<Box<TextFontType>>,
-    east_asian_font:      Option<Box<TextFontType>>,
-    gradient_fill:        Option<Box<GradientFill>>,
-    no_fill:              Option<NoFill>,
-    effect_list:          Option<Box<EffectList>>,
+    bold: StringValue,
+    sz: StringValue,
+    italic: StringValue,
+    capital: EnumValue<TextCapsValues>,
+    spacing: Int32Value,
+    strike: StringValue,
+    outline: Option<Box<Outline>>,
+    solid_fill: Option<Box<SolidFill>>,
+    latin_font: Option<Box<TextFontType>>,
+    east_asian_font: Option<Box<TextFontType>>,
+    gradient_fill: Option<Box<GradientFill>>,
+    no_fill: Option<NoFill>,
+    effect_list: Option<Box<EffectList>>,
 }
 
 impl RunProperties {

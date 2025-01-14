@@ -1,18 +1,11 @@
 // xdr:ext
 use std::io::Cursor;
 
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
+use quick_xml::{events::BytesStart, Reader, Writer};
 
 use super::super::super::Int64Value;
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
+    reader::driver::{get_attribute, set_string_from_xml},
     writer::driver::write_start_tag,
 };
 

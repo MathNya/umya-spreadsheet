@@ -1,22 +1,13 @@
 use std::io;
 
-use quick_xml::{
-    Reader,
-    events::Event,
-};
+use quick_xml::{events::Event, Reader};
 
 use super::{
+    driver::{get_attribute, xml_read_loop},
     XlsxError,
-    driver::{
-        get_attribute,
-        xml_read_loop,
-    },
 };
 use crate::{
-    helper::const_str::{
-        PIVOT_CACHE_DEF_NS,
-        PKG_WORKBOOK_RELS,
-    },
+    helper::const_str::{PIVOT_CACHE_DEF_NS, PKG_WORKBOOK_RELS},
     structs::Workbook,
 };
 

@@ -1,25 +1,15 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
-    helper::const_str::{
-        CUSTOM_PROPS_NS,
-        VTYPES_NS,
-    },
+    helper::const_str::{CUSTOM_PROPS_NS, VTYPES_NS},
     reader::driver::xml_read_loop,
     structs::custom_properties::CustomDocumentProperty,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Default, Debug, Clone)]

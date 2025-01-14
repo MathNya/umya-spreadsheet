@@ -2,31 +2,20 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    ColorScheme,
-    FontScheme,
-    FormatScheme,
-};
+use super::{ColorScheme, FontScheme, FormatScheme};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ThemeElements {
-    color_scheme:  ColorScheme,
-    font_scheme:   FontScheme,
+    color_scheme: ColorScheme,
+    font_scheme: FontScheme,
     format_scheme: FormatScheme,
 }
 

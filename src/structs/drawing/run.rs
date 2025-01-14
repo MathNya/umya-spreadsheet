@@ -1,27 +1,19 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::run_properties::RunProperties;
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
+    writer::driver::{write_end_tag, write_start_tag, write_text_node},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Run {
-    text:           Box<str>,
+    text: Box<str>,
     run_properties: RunProperties,
 }
 

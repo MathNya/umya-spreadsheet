@@ -1,22 +1,12 @@
 use std::io;
 
 use quick_xml::{
+    events::{BytesDecl, Event},
     Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
 };
 
-use super::{
-    XlsxError,
-    driver::write_new_line,
-};
-use crate::structs::{
-    Workbook,
-    WriterManager,
-    drawing::charts::ChartSpace,
-};
+use super::{driver::write_new_line, XlsxError};
+use crate::structs::{drawing::charts::ChartSpace, Workbook, WriterManager};
 
 pub(crate) fn write<W: io::Seek + io::Write>(
     chart_space: &ChartSpace,

@@ -1,36 +1,23 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    Layout,
-    LegendPosition,
-    Overlay,
-    ShapeProperties,
-    TextProperties,
-};
+use super::{Layout, LegendPosition, Overlay, ShapeProperties, TextProperties};
 use crate::{
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
     xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Legend {
-    legend_position:  LegendPosition,
-    layout:           Option<Box<Layout>>,
-    overlay:          Overlay,
+    legend_position: LegendPosition,
+    layout: Option<Box<Layout>>,
+    overlay: Overlay,
     shape_properties: Option<Box<ShapeProperties>>,
-    text_properties:  Option<Box<TextProperties>>,
+    text_properties: Option<Box<TextProperties>>,
 }
 
 impl Legend {

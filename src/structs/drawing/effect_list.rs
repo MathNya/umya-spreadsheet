@@ -2,32 +2,21 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    Glow,
-    OuterShadow,
-    SoftEdge,
-};
+use super::{Glow, OuterShadow, SoftEdge};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectList {
-    glow:         Option<Box<Glow>>,
+    glow: Option<Box<Glow>>,
     outer_shadow: Option<Box<OuterShadow>>,
-    soft_edge:    Option<Box<SoftEdge>>,
+    soft_edge: Option<Box<SoftEdge>>,
 }
 
 impl EffectList {

@@ -1,7 +1,4 @@
-use chrono::{
-    Duration,
-    NaiveDateTime,
-};
+use chrono::{Duration, NaiveDateTime};
 use num_traits::cast;
 
 pub const CALENDAR_WINDOWS_1900: &str = "1900";

@@ -2,25 +2,15 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
-    helper::const_str::{
-        EXCEL_MAIN_NS,
-        SHEET_MS_MAIN_NS,
-    },
+    helper::const_str::{EXCEL_MAIN_NS, SHEET_MS_MAIN_NS},
     reader::driver::xml_read_loop,
     structs::office2010::excel::DataValidation,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Default, Debug, Clone)]

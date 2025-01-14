@@ -1,46 +1,25 @@
 use std::{
     collections::HashMap,
     io,
-    sync::{
-        Arc,
-        RwLock,
-    },
+    sync::{Arc, RwLock},
 };
 
 use quick_xml::{
+    events::{BytesDecl, Event},
     Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
 };
 
 use super::{
+    driver::{write_end_tag, write_new_line, write_start_tag},
     XlsxError,
-    driver::{
-        write_end_tag,
-        write_new_line,
-        write_start_tag,
-    },
 };
 use crate::{
-    Row,
     helper::const_str::{
-        MC_NS,
-        PKG_SHEET,
-        REL_OFC_NS,
-        SHEET_DRAWING_NS,
-        SHEET_MAIN_NS,
+        MC_NS, PKG_SHEET, REL_OFC_NS, SHEETML_AC_NS, SHEET_DRAWING_NS, SHEET_MAIN_NS,
         SHEET_MS_MAIN_NS,
-        SHEETML_AC_NS,
     },
-    structs::{
-        Cell,
-        SharedStringTable,
-        Stylesheet,
-        Worksheet,
-        WriterManager,
-    },
+    structs::{Cell, SharedStringTable, Stylesheet, Worksheet, WriterManager},
+    Row,
 };
 
 type InternalWriter = Writer<io::Cursor<Vec<u8>>>;

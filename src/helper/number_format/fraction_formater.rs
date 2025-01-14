@@ -61,5 +61,9 @@ pub(crate) fn format_as_fraction(value: f64, format: &str) -> String {
 
 #[inline]
 fn gcd(a: f64, b: f64) -> f64 {
-    if b == 0f64 { a } else { gcd(b, a % b) }
+    if b == 0f64 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
 }

@@ -1,16 +1,10 @@
-use quick_xml::{
-    Reader,
-    events::Event,
-};
+use quick_xml::{events::Event, Reader};
 
 use crate::{
     structs::{
-        Worksheet,
-        raw::{
-            RawFile,
-            RawRelationships,
-        },
+        raw::{RawFile, RawRelationships},
         vml::Shape,
+        Worksheet,
     },
     xml_read_loop,
 };

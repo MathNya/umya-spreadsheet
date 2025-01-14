@@ -1,25 +1,16 @@
 use std::io;
 
 use crate::{
-    helper::const_str::{
-        PKG_DRAWINGS_RELS,
-        PKG_SHEET,
-        PKG_SHEET_RELS,
-        PKG_VML_DRAWING_RELS,
-    },
+    helper::const_str::{PKG_DRAWINGS_RELS, PKG_SHEET, PKG_SHEET_RELS, PKG_VML_DRAWING_RELS},
     structs::{
-        WriterManager,
-        XlsxError,
-        raw::{
-            RawFile,
-            RawRelationships,
-        },
+        raw::{RawFile, RawRelationships},
+        WriterManager, XlsxError,
     },
 };
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawWorksheet {
-    worksheet_file:     RawFile,
+    worksheet_file: RawFile,
     relationships_list: Vec<RawRelationships>,
 }
 impl RawWorksheet {

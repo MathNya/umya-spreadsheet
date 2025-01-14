@@ -2,39 +2,26 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
+    reader::driver::{get_attribute, xml_read_loop},
+    structs::drawing::{Point2DType, PositiveSize2DType},
+    writer::driver::{write_end_tag, write_start_tag},
     StringValue,
-    reader::driver::{
-        get_attribute,
-        xml_read_loop,
-    },
-    structs::drawing::{
-        Point2DType,
-        PositiveSize2DType,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform2D {
-    offset:        Point2DType,
-    extents:       PositiveSize2DType,
-    child_offset:  Option<Box<Point2DType>>,
+    offset: Point2DType,
+    extents: PositiveSize2DType,
+    child_offset: Option<Box<Point2DType>>,
     child_extents: Option<Box<PositiveSize2DType>>,
-    rot:           StringValue,
-    flip_v:        StringValue,
-    flip_h:        StringValue,
+    rot: StringValue,
+    flip_v: StringValue,
+    flip_h: StringValue,
 }
 
 impl Transform2D {

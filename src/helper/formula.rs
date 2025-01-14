@@ -1,19 +1,11 @@
 use crate::{
     helper::{
-        address::{
-            join_address,
-            split_address,
-        },
+        address::{join_address, split_address},
         coordinate::{
-            adjustment_insert_coordinate,
-            adjustment_remove_coordinate,
-            coordinate_from_index_with_lock,
-            index_from_coordinate,
+            adjustment_insert_coordinate, adjustment_remove_coordinate,
+            coordinate_from_index_with_lock, index_from_coordinate,
         },
-        range::{
-            get_join_range,
-            get_split_range,
-        },
+        range::{get_join_range, get_split_range},
         utils::compile_regex,
     },
     structs::StringValue,
@@ -56,16 +48,16 @@ pub enum FormulaTokenSubTypes {
 
 #[derive(Clone, Debug)]
 pub struct FormulaToken {
-    value:          StringValue,
-    token_type:     FormulaTokenTypes,
+    value: StringValue,
+    token_type: FormulaTokenTypes,
     token_sub_type: FormulaTokenSubTypes,
 }
 impl Default for FormulaToken {
     #[inline]
     fn default() -> Self {
         Self {
-            value:          StringValue::default(),
-            token_type:     FormulaTokenTypes::Unknown,
+            value: StringValue::default(),
+            token_type: FormulaTokenTypes::Unknown,
             token_sub_type: FormulaTokenSubTypes::Nothing,
         }
     }

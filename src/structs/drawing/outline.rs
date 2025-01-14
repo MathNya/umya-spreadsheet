@@ -2,56 +2,34 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::{
-    Bevel,
-    GradientFill,
-    Miter,
-    NoFill,
-    PenAlignmentValues,
-    PresetDash,
-    Round,
-    SolidFill,
-    TailEnd,
+    Bevel, GradientFill, Miter, NoFill, PenAlignmentValues, PresetDash, Round, SolidFill, TailEnd,
 };
 use crate::{
+    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
+    structs::{EnumValue, UInt32Value},
+    writer::driver::{write_end_tag, write_start_tag},
     StringValue,
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-        xml_read_loop,
-    },
-    structs::{
-        EnumValue,
-        UInt32Value,
-    },
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Outline {
-    width:              UInt32Value,
-    cap_type:           StringValue,
+    width: UInt32Value,
+    cap_type: StringValue,
     compound_line_type: StringValue,
-    solid_fill:         Option<Box<SolidFill>>,
-    gradient_fill:      Option<Box<GradientFill>>,
-    tail_end:           Option<Box<TailEnd>>,
-    no_fill:            Option<NoFill>,
-    bevel:              Option<Box<Bevel>>,
-    preset_dash:        Option<PresetDash>,
-    miter:              Option<Miter>,
-    round:              Option<Round>,
-    alignment:          EnumValue<PenAlignmentValues>,
+    solid_fill: Option<Box<SolidFill>>,
+    gradient_fill: Option<Box<GradientFill>>,
+    tail_end: Option<Box<TailEnd>>,
+    no_fill: Option<NoFill>,
+    bevel: Option<Box<Bevel>>,
+    preset_dash: Option<PresetDash>,
+    miter: Option<Miter>,
+    round: Option<Round>,
+    alignment: EnumValue<PenAlignmentValues>,
 }
 
 impl Outline {

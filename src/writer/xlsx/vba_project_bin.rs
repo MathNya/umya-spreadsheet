@@ -3,10 +3,7 @@ use std::io;
 use super::XlsxError;
 use crate::{
     helper::const_str::PKG_VBA_PROJECT,
-    structs::{
-        Workbook,
-        WriterManager,
-    },
+    structs::{Workbook, WriterManager},
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(

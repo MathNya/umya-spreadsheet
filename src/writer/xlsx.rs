@@ -1,19 +1,10 @@
-use std::{
-    fs,
-    fs::File,
-    io,
-    io::Read,
-    path::Path,
-};
+use std::{fs, fs::File, io, io::Read, path::Path};
 
 use super::driver;
 use crate::{
-    XlsxError,
     helper::crypt::encrypt,
-    structs::{
-        Workbook,
-        WriterManager,
-    },
+    structs::{Workbook, WriterManager},
+    XlsxError,
 };
 
 mod chart;

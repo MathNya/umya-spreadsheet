@@ -1,25 +1,14 @@
 // xm:sqref
-use std::{
-    io::Cursor,
-    vec,
-};
+use std::{io::Cursor, vec};
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use crate::{
     structs::Range,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-        write_text_node,
-    },
+    writer::driver::{write_end_tag, write_start_tag, write_text_node},
 };
 
 #[derive(Default, Debug, Clone)]

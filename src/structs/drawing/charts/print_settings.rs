@@ -2,32 +2,21 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    HeaderFooter,
-    PageMargins,
-    PageSetup,
-};
+use super::{HeaderFooter, PageMargins, PageSetup};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct PrintSettings {
     header_footer: HeaderFooter,
-    page_margins:  PageMargins,
-    page_setup:    PageSetup,
+    page_margins: PageMargins,
+    page_setup: PageSetup,
 }
 
 impl PrintSettings {

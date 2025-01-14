@@ -1,17 +1,10 @@
 use std::io::Cursor;
 
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
+use quick_xml::{events::BytesStart, Reader, Writer};
 
 use super::office::ConnectValues;
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
+    reader::driver::{get_attribute, set_string_from_xml},
     structs::EnumValue,
     writer::driver::write_start_tag,
 };

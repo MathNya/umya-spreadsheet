@@ -170,71 +170,71 @@ impl Color {
         g: 0x00,
         b: 0x00,
     };
-    pub const COLOR_BLACK_STR: &str = "FF000000";
+    pub const COLOR_BLACK_STR: &'static str = "FF000000";
     pub const COLOR_BLUE: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0x00,
         g: 0x00,
         b: 0xFF,
     };
-    pub const COLOR_BLUE_STR: &str = "FF0000FF";
+    pub const COLOR_BLUE_STR: &'static str = "FF0000FF";
     pub const COLOR_DARKBLUE: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0x00,
         g: 0x00,
         b: 0x80,
     };
-    pub const COLOR_DARKBLUE_STR: &str = "FF000080";
+    pub const COLOR_DARKBLUE_STR: &'static str = "FF000080";
     pub const COLOR_DARKGREEN: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0x00,
         g: 0x80,
         b: 0x00,
     };
-    pub const COLOR_DARKGREEN_STR: &str = "FF008000";
+    pub const COLOR_DARKGREEN_STR: &'static str = "FF008000";
     pub const COLOR_DARKRED: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0x80,
         g: 0x00,
         b: 0x00,
     };
-    pub const COLOR_DARKRED_STR: &str = "FF800000";
+    pub const COLOR_DARKRED_STR: &'static str = "FF800000";
     pub const COLOR_DARKYELLOW: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0x80,
         g: 0x80,
         b: 0x00,
     };
-    pub const COLOR_DARKYELLOW_STR: &str = "FF808000";
+    pub const COLOR_DARKYELLOW_STR: &'static str = "FF808000";
     pub const COLOR_GREEN: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0x00,
         g: 0xFF,
         b: 0x00,
     };
-    pub const COLOR_GREEN_STR: &str = "FF00FF00";
+    pub const COLOR_GREEN_STR: &'static str = "FF00FF00";
     pub const COLOR_RED: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0xFF,
         g: 0x00,
         b: 0x00,
     };
-    pub const COLOR_RED_STR: &str = "FFFF0000";
+    pub const COLOR_RED_STR: &'static str = "FFFF0000";
     pub const COLOR_WHITE: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0xFF,
         g: 0xFF,
         b: 0xFF,
     };
-    pub const COLOR_WHITE_STR: &str = "FFFFFFFF";
+    pub const COLOR_WHITE_STR: &'static str = "FFFFFFFF";
     pub const COLOR_YELLOW: ARGB8 = ARGB8 {
         a: 0xFF,
         r: 0xFF,
         g: 0xFF,
         b: 0x00,
     };
-    pub const COLOR_YELLOW_STR: &str = "FFFFFF00";
-    pub const NAMED_COLORS: &[&str] = &[
+    pub const COLOR_YELLOW_STR: &'static str = "FFFFFF00";
+    pub const NAMED_COLORS: [&'static str; 8] = [
         "Black", "White", "Red", "Green", "Blue", "Yellow", "Magenta", "Cyan",
     ];
 

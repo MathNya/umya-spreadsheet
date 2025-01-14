@@ -1,50 +1,33 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::{
-    AutoTitleDeleted,
-    BackWall,
-    DisplayBlanksAs,
-    Floor,
-    Formula,
-    Legend,
-    PlotArea,
-    PlotVisibleOnly,
-    ShowDataLabelsOverMaximum,
-    SideWall,
-    Title,
-    View3D,
+    AutoTitleDeleted, BackWall, DisplayBlanksAs, Floor, Formula, Legend, PlotArea, PlotVisibleOnly,
+    ShowDataLabelsOverMaximum, SideWall, Title, View3D,
 };
 use crate::{
     structs::Workbook,
     traits::AdjustmentCoordinateWithSheet,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
     xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Chart {
-    title:                         Option<Title>,
-    auto_title_deleted:            AutoTitleDeleted,
-    view_3d:                       Option<View3D>,
-    floor:                         Option<Floor>,
-    side_wall:                     Option<SideWall>,
-    back_wall:                     Option<BackWall>,
-    plot_area:                     PlotArea,
-    legend:                        Legend,
-    plot_visible_only:             PlotVisibleOnly,
-    display_blanks_as:             DisplayBlanksAs,
+    title: Option<Title>,
+    auto_title_deleted: AutoTitleDeleted,
+    view_3d: Option<View3D>,
+    floor: Option<Floor>,
+    side_wall: Option<SideWall>,
+    back_wall: Option<BackWall>,
+    plot_area: PlotArea,
+    legend: Legend,
+    plot_visible_only: PlotVisibleOnly,
+    display_blanks_as: DisplayBlanksAs,
     show_data_labels_over_maximum: ShowDataLabelsOverMaximum,
 }
 

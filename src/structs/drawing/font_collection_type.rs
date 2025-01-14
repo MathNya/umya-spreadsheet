@@ -3,28 +3,18 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    SupplementalFont,
-    TextFontType,
-};
-use crate::writer::driver::{
-    write_end_tag,
-    write_start_tag,
-};
+use super::{SupplementalFont, TextFontType};
+use crate::writer::driver::{write_end_tag, write_start_tag};
 
 #[derive(Clone, Default, Debug)]
 pub struct FontCollectionType {
-    latin_font:             TextFontType,
-    east_asian_font:        TextFontType,
-    complex_script_font:    TextFontType,
+    latin_font: TextFontType,
+    east_asian_font: TextFontType,
+    complex_script_font: TextFontType,
     supplemental_font_list: Vec<SupplementalFont>,
 }
 impl FontCollectionType {

@@ -2,58 +2,37 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
 use super::{
-    Bubble3D,
-    BubbleSize,
-    CategoryAxisData,
-    DataLabels,
-    Explosion,
-    Formula,
-    Index,
-    InvertIfNegative,
-    Marker,
-    Order,
-    SeriesText,
-    ShapeProperties,
-    Smooth,
-    Values,
-    XValues,
-    YValues,
+    Bubble3D, BubbleSize, CategoryAxisData, DataLabels, Explosion, Formula, Index,
+    InvertIfNegative, Marker, Order, SeriesText, ShapeProperties, Smooth, Values, XValues, YValues,
 };
 use crate::{
     structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
     xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct AreaChartSeries {
-    index:              Index,
-    order:              Order,
-    series_text:        Option<SeriesText>,
-    explosion:          Option<Explosion>,
+    index: Index,
+    order: Order,
+    series_text: Option<SeriesText>,
+    explosion: Option<Explosion>,
     invert_if_negative: Option<InvertIfNegative>,
-    marker:             Option<Marker>,
-    shape_properties:   Option<ShapeProperties>,
+    marker: Option<Marker>,
+    shape_properties: Option<ShapeProperties>,
     category_axis_data: Option<CategoryAxisData>,
-    values:             Option<Values>,
-    x_values:           Option<XValues>,
-    y_values:           Option<YValues>,
-    bubble_size:        Option<BubbleSize>,
-    bubble_3d:          Option<Bubble3D>,
-    smooth:             Option<Smooth>,
-    data_labels:        Option<DataLabels>,
+    values: Option<Values>,
+    x_values: Option<XValues>,
+    y_values: Option<YValues>,
+    bubble_size: Option<BubbleSize>,
+    bubble_3d: Option<Bubble3D>,
+    smooth: Option<Smooth>,
+    data_labels: Option<DataLabels>,
 }
 
 impl AreaChartSeries {

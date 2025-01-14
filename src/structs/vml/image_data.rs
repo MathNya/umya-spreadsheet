@@ -1,21 +1,10 @@
 use std::io::Cursor;
 
-use quick_xml::{
-    Reader,
-    Writer,
-    events::BytesStart,
-};
+use quick_xml::{events::BytesStart, Reader, Writer};
 
 use crate::{
-    reader::driver::{
-        get_attribute,
-        set_string_from_xml,
-    },
-    structs::{
-        MediaObject,
-        StringValue,
-        raw::RawRelationships,
-    },
+    reader::driver::{get_attribute, set_string_from_xml},
+    structs::{raw::RawRelationships, MediaObject, StringValue},
     writer::driver::write_start_tag,
 };
 

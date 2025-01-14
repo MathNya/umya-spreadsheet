@@ -1,29 +1,17 @@
 use std::{
     io,
-    sync::{
-        Arc,
-        RwLock,
-    },
+    sync::{Arc, RwLock},
 };
 
 use quick_xml::{
+    events::{BytesDecl, Event},
     Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
 };
 
-use super::{
-    XlsxError,
-    driver::write_new_line,
-};
+use super::{driver::write_new_line, XlsxError};
 use crate::{
     helper::const_str::PKG_SHARED_STRINGS,
-    structs::{
-        SharedStringTable,
-        WriterManager,
-    },
+    structs::{SharedStringTable, WriterManager},
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(

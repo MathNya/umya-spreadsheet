@@ -2,38 +2,24 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
+    events::{BytesStart, Event},
+    Reader, Writer,
 };
 
-use super::{
-    AreaChartSeries,
-    AreaChartSeriesList,
-    AxisId,
-    DataLabels,
-    ScatterStyle,
-    VaryColors,
-};
+use super::{AreaChartSeries, AreaChartSeriesList, AxisId, DataLabels, ScatterStyle, VaryColors};
 use crate::{
     reader::driver::xml_read_loop,
     structs::Workbook,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
+    writer::driver::{write_end_tag, write_start_tag},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ScatterChart {
-    scatter_style:          ScatterStyle,
-    vary_colors:            VaryColors,
+    scatter_style: ScatterStyle,
+    vary_colors: VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels:            DataLabels,
-    axis_id:                Vec<AxisId>,
+    data_labels: DataLabels,
+    axis_id: Vec<AxisId>,
 }
 
 impl ScatterChart {

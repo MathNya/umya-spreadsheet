@@ -1,39 +1,20 @@
 use std::io;
 
 use quick_xml::{
+    events::{BytesDecl, Event},
     Writer,
-    events::{
-        BytesDecl,
-        Event,
-    },
 };
 
 use super::{
+    driver::{write_end_tag, write_new_line, write_start_tag},
     XlsxError,
-    driver::{
-        write_end_tag,
-        write_new_line,
-        write_start_tag,
-    },
 };
 use crate::{
     helper::const_str::{
-        COMMENTS_NS,
-        DRAWINGS_NS,
-        HYPERLINK_NS,
-        IMAGE_NS,
-        OLE_OBJECT_NS,
-        PACKAGE_NS,
-        PKG_SHEET_RELS,
-        PRINTER_SETTINGS_NS,
-        REL_NS,
-        TABLE_NS,
-        VML_DRAWING_NS,
+        COMMENTS_NS, DRAWINGS_NS, HYPERLINK_NS, IMAGE_NS, OLE_OBJECT_NS, PACKAGE_NS,
+        PKG_SHEET_RELS, PRINTER_SETTINGS_NS, REL_NS, TABLE_NS, VML_DRAWING_NS,
     },
-    structs::{
-        Worksheet,
-        WriterManager,
-    },
+    structs::{Worksheet, WriterManager},
 };
 
 #[allow(clippy::too_many_arguments)]
