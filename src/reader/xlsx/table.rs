@@ -1,8 +1,8 @@
-use quick_xml::{events::Event, Reader};
+use quick_xml::{Reader, events::Event};
 
-use super::{driver::get_attribute_value, XlsxError};
+use super::{XlsxError, driver::get_attribute_value};
 use crate::structs::{
-    raw::RawFile, ShowColumn, ShowStripes, Table, TableColumn, TableStyleInfo, Worksheet,
+    ShowColumn, ShowStripes, Table, TableColumn, TableStyleInfo, Worksheet, raw::RawFile,
 };
 
 pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<(), XlsxError> {

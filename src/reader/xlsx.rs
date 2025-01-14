@@ -7,11 +7,11 @@ use std::{
 
 use super::driver;
 use crate::{
+    XlsxError,
     helper::const_str::{COMMENTS_NS, DRAWINGS_NS, TABLE_NS, THEME_NS, VML_DRAWING_NS},
     structs::{
-        drawing::Theme, raw::RawWorksheet, SharedStringTable, Stylesheet, Workbook, Worksheet,
+        SharedStringTable, Stylesheet, Workbook, Worksheet, drawing::Theme, raw::RawWorksheet,
     },
-    XlsxError,
 };
 
 pub(crate) mod chart;

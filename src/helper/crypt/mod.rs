@@ -42,7 +42,7 @@ pub(crate) mod constants;
 pub(crate) mod key;
 pub(crate) mod utils;
 
-use base64::{engine::general_purpose::STANDARD, Engine as _};
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use utils::generate_random_bytes;
 
 /// Encrypts the sheet protection using the provided password.
@@ -64,7 +64,7 @@ pub fn encrypt_sheet_protection(password: &str, sheet_protection: &mut SheetProt
 
     // Encode the salt and hash value in base64
     let salt_value_str = STANDARD.encode(salt);
-    let hash_value_str = STANDARD.encode(&key);
+    let hash_value_str = STANDARD.encode(key);
 
     // Update the sheet_protection object
     sheet_protection.set_algorithm_name(constants::KEY_HASH_ALGORITHM);
@@ -93,7 +93,7 @@ pub fn encrypt_workbook_protection(password: &str, workbook_protection: &mut Wor
 
     // Encode the salt and hash value in base64
     let salt_value_str = STANDARD.encode(salt);
-    let hash_value_str = STANDARD.encode(&key);
+    let hash_value_str = STANDARD.encode(key);
 
     // Update the workbook_protection object
     workbook_protection.set_workbook_algorithm_name(constants::KEY_HASH_ALGORITHM);
@@ -123,7 +123,7 @@ pub fn encrypt_revisions_protection(password: &str, workbook_protection: &mut Wo
 
     // Encode the salt and hash value in base64
     let salt_value_str = STANDARD.encode(salt);
-    let hash_value_str = STANDARD.encode(&key);
+    let hash_value_str = STANDARD.encode(key);
 
     // Update the workbook_protection object
     workbook_protection.set_revisions_algorithm_name(constants::KEY_HASH_ALGORITHM);

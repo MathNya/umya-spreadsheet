@@ -1,18 +1,18 @@
 use std::collections::HashMap;
 
-use quick_xml::{events::Event, Reader};
+use quick_xml::{Reader, events::Event};
 
 use super::{
-    driver::{get_attribute, get_attribute_value, xml_read_loop},
     XlsxError,
+    driver::{get_attribute, get_attribute_value, xml_read_loop},
 };
 use crate::{
     helper::formula::FormulaToken,
     structs::{
-        office2010::excel::DataValidations as DataValidations2010,
-        raw::{RawRelationships, RawWorksheet},
         Cells, Columns, ConditionalFormatting, DataValidations, Hyperlink, OleObjects, Row,
         SharedStringTable, SheetProtection, Stylesheet, Worksheet,
+        office2010::excel::DataValidations as DataValidations2010,
+        raw::{RawRelationships, RawWorksheet},
     },
 };
 

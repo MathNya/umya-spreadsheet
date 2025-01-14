@@ -1,17 +1,17 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{
-    office::InsetMarginValues, spreadsheet::ClientData, Fill, ImageData, Path, Shadow, Stroke,
-    TextBox,
+    Fill, ImageData, Path, Shadow, Stroke, TextBox, office::InsetMarginValues,
+    spreadsheet::ClientData,
 };
 use crate::{
     reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    structs::{raw::RawRelationships, EnumValue, Int32Value, StringValue, TrueFalseValue},
+    structs::{EnumValue, Int32Value, StringValue, TrueFalseValue, raw::RawRelationships},
     traits::AdjustmentCoordinate,
     writer::driver::{write_end_tag, write_start_tag},
 };

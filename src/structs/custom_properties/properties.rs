@@ -1,8 +1,8 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use crate::{
@@ -48,10 +48,7 @@ impl Properties {
     }
 
     #[inline]
-    pub fn remove_custom_document_property_list(
-        &mut self,
-        _value: CustomDocumentProperty,
-    ) -> &mut Self {
+    pub fn remove_custom_document_property_list(&mut self) -> &mut Self {
         self.custom_document_property_list.clear();
         self
     }

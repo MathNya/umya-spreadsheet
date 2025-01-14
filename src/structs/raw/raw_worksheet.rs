@@ -3,8 +3,8 @@ use std::io;
 use crate::{
     helper::const_str::{PKG_DRAWINGS_RELS, PKG_SHEET, PKG_SHEET_RELS, PKG_VML_DRAWING_RELS},
     structs::{
-        raw::{RawFile, RawRelationships},
         WriterManager, XlsxError,
+        raw::{RawFile, RawRelationships},
     },
 };
 

@@ -2,8 +2,8 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{rgb_color_model_hex::RgbColorModelHex, scheme_color::SchemeColor};

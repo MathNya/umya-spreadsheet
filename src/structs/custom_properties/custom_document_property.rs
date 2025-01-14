@@ -1,13 +1,13 @@
 use std::{borrow::Cow, io::Cursor};
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use crate::{
     reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    structs::{custom_properties::CustomDocumentPropertyValue, StringValue},
+    structs::{StringValue, custom_properties::CustomDocumentPropertyValue},
     writer::driver::{write_end_tag, write_start_tag, write_text_node},
 };
 

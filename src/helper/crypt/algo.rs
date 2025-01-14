@@ -53,15 +53,15 @@
 use std::io;
 
 use aes::{
-    cipher::{block_padding::NoPadding, BlockDecryptMut, BlockEncryptMut, KeyIvInit},
     Aes256,
+    cipher::{BlockDecryptMut, BlockEncryptMut, KeyIvInit, block_padding::NoPadding},
 };
-use base64::{engine::general_purpose::STANDARD, Engine as _};
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use byteorder::{ByteOrder, LittleEndian};
 use cbc::{Decryptor, Encryptor};
 use quick_xml::{
-    events::{BytesDecl, Event},
     Writer,
+    events::{BytesDecl, Event},
 };
 
 type Aes256CbcEnc = Encryptor<Aes256>;

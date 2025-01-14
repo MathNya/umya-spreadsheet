@@ -1,6 +1,6 @@
 use std::io;
 
-use quick_xml::{events::Event, Reader};
+use quick_xml::{Reader, events::Event};
 
 use super::XlsxError;
 use crate::{helper::const_str::ARC_APP, structs::Workbook};

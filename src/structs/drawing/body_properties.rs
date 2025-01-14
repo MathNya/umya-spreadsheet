@@ -2,8 +2,8 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{
@@ -11,9 +11,9 @@ use super::{
     ShapeAutoFit, TextWrappingValues,
 };
 use crate::{
+    StringValue,
     reader::driver::{get_attribute_value, xml_read_loop},
     writer::driver::{write_end_tag, write_start_tag},
-    StringValue,
 };
 
 #[derive(Clone, Default, Debug)]

@@ -1,8 +1,8 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 // c:chartSpace
@@ -10,7 +10,7 @@ use super::Chart;
 use super::{Date1904, EditingLanguage, PrintSettings, RoundedCorners, ShapeProperties};
 use crate::{
     helper::const_str::{DRAWINGML_CHART_NS, DRAWINGML_MAIN_NS, REL_OFC_NS},
-    structs::{office2010::drawing::charts::Style, Workbook},
+    structs::{Workbook, office2010::drawing::charts::Style},
     traits::AdjustmentCoordinateWithSheet,
     writer::driver::{write_end_tag, write_start_tag},
     xml_read_loop,

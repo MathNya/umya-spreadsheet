@@ -4,11 +4,11 @@ use std::{
 };
 
 use quick_xml::{
-    events::{BytesDecl, Event},
     Writer,
+    events::{BytesDecl, Event},
 };
 
-use super::{driver::write_new_line, XlsxError};
+use super::{XlsxError, driver::write_new_line};
 use crate::{
     helper::const_str::PKG_SHARED_STRINGS,
     structs::{SharedStringTable, WriterManager},

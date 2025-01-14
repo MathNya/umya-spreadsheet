@@ -785,7 +785,7 @@ fn cleanup_tokens(tokens1: &[FormulaToken], tokens2: &mut Vec<FormulaToken>) {
     }
 }
 
-#[allow(clippy::ref_option)]
+#[allow(clippy::ref_option_ref)]
 fn should_token_be_math(previous_token: &Option<FormulaToken>) -> bool {
     if previous_token.is_none() {
         return false;

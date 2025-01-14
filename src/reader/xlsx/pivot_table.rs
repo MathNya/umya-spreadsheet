@@ -1,6 +1,6 @@
-use quick_xml::{events::Event, Reader};
+use quick_xml::{Reader, events::Event};
 
-use crate::structs::{raw::RawFile, PivotTable, PivotTableDefinition, Worksheet};
+use crate::structs::{PivotTable, PivotTableDefinition, Worksheet, raw::RawFile};
 
 #[allow(dead_code)]
 pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) {

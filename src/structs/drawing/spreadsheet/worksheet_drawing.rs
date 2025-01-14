@@ -2,15 +2,15 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{ConnectionShape, GraphicFrame, OneCellAnchor, Picture, Shape, TwoCellAnchor};
 use crate::{
     helper::const_str::{DRAWINGML_MAIN_NS, SHEET_DRAWING_NS},
     reader::driver::xml_read_loop,
-    structs::{raw::RawRelationships, Chart, Image, OleObjects},
+    structs::{Chart, Image, OleObjects, raw::RawRelationships},
     traits::{AdjustmentCoordinate, AdjustmentCoordinateWithSheet},
     writer::driver::{write_end_tag, write_start_tag},
 };

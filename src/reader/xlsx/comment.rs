@@ -1,7 +1,7 @@
-use quick_xml::{events::Event, Reader};
+use quick_xml::{Reader, events::Event};
 
 use crate::{
-    structs::{raw::RawFile, Comment, Worksheet},
+    structs::{Comment, Worksheet, raw::RawFile},
     xml_read_loop,
 };
 

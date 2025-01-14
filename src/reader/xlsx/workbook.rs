@@ -1,8 +1,8 @@
 use std::io;
 
-use quick_xml::{escape, events::Event, Reader};
+use quick_xml::{Reader, escape, events::Event};
 
-use super::{driver::get_attribute, XlsxError};
+use super::{XlsxError, driver::get_attribute};
 use crate::{
     helper::const_str::PKG_WORKBOOK,
     structs::{DefinedName, Workbook, WorkbookProtection, WorkbookView, Worksheet},

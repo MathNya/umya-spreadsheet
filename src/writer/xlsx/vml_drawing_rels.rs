@@ -1,13 +1,13 @@
 use std::io;
 
 use quick_xml::{
-    events::{BytesDecl, Event},
     Writer,
+    events::{BytesDecl, Event},
 };
 
 use super::{
-    driver::{write_end_tag, write_new_line, write_start_tag},
     XlsxError,
+    driver::{write_end_tag, write_new_line, write_start_tag},
 };
 use crate::{
     helper::const_str::{IMAGE_NS, PKG_VML_DRAWING_RELS, REL_NS},

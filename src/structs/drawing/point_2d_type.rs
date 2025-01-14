@@ -2,7 +2,7 @@
 // a:chOff
 use std::io::Cursor;
 
-use quick_xml::{events::BytesStart, Reader, Writer};
+use quick_xml::{Reader, Writer, events::BytesStart};
 
 use crate::{
     reader::driver::{get_attribute, set_string_from_xml},

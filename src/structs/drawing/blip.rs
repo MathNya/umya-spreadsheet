@@ -2,14 +2,14 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use crate::{
     helper::const_str::{DRAWING_MAIN_NS, REL_OFC_NS},
     reader::driver::{get_attribute, xml_read_loop},
-    structs::{raw::RawRelationships, MediaObject},
+    structs::{MediaObject, raw::RawRelationships},
     writer::driver::{write_end_tag, write_start_tag},
 };
 

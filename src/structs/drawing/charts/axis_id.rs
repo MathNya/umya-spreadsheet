@@ -1,7 +1,7 @@
 // c:axId
 use std::io::Cursor;
 
-use quick_xml::{events::BytesStart, Reader, Writer};
+use quick_xml::{Reader, Writer, events::BytesStart};
 
 use super::super::super::UInt32Value;
 use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};

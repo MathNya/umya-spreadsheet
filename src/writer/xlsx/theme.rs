@@ -1,14 +1,14 @@
 use std::io;
 
 use quick_xml::{
-    events::{BytesDecl, Event},
     Writer,
+    events::{BytesDecl, Event},
 };
 
-use super::{driver::write_new_line, XlsxError};
+use super::{XlsxError, driver::write_new_line};
 use crate::{
     helper::const_str::PKG_THEME,
-    structs::{drawing::Theme, WriterManager},
+    structs::{WriterManager, drawing::Theme},
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(

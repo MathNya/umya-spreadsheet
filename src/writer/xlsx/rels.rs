@@ -1,17 +1,17 @@
 use std::io;
 
 use quick_xml::{
-    events::{BytesDecl, Event},
     Writer,
+    events::{BytesDecl, Event},
 };
 
 use super::{
-    driver::{write_end_tag, write_new_line, write_start_tag},
     XlsxError,
+    driver::{write_end_tag, write_new_line, write_start_tag},
 };
 use crate::{
     helper::const_str::{
-        ARC_APP, ARC_CORE, ARC_CUSTOM, COREPROPS_REL, CUSTOMUI_NS, CUSTOM_PROPS_REL, OFCDOC_NS,
+        ARC_APP, ARC_CORE, ARC_CUSTOM, COREPROPS_REL, CUSTOM_PROPS_REL, CUSTOMUI_NS, OFCDOC_NS,
         PKG_WORKBOOK, REL_NS, XPROPS_REL,
     },
     structs::{Workbook, WriterManager},

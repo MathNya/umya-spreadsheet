@@ -2,15 +2,15 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use crate::{
+    StringValue,
     reader::driver::{get_attribute, xml_read_loop},
     structs::drawing::{Point2DType, PositiveSize2DType},
     writer::driver::{write_end_tag, write_start_tag},
-    StringValue,
 };
 
 #[derive(Clone, Default, Debug)]

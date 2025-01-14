@@ -2,15 +2,15 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{super::EnumValue, LineSpacing, RunProperties, TextAlignmentTypeValues};
 use crate::{
+    StringValue,
     reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
     writer::driver::{write_end_tag, write_start_tag},
-    StringValue,
 };
 
 #[derive(Clone, Default, Debug)]

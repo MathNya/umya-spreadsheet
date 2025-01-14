@@ -2,8 +2,8 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{Height, HeightMode, LayoutTarget, Left, LeftMode, Top, TopMode, Width, WidthMode};

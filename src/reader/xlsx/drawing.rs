@@ -1,11 +1,11 @@
-use quick_xml::{events::Event, Reader};
+use quick_xml::{Reader, events::Event};
 
 use crate::{
     reader::driver::xml_read_loop,
     structs::{
+        Worksheet,
         drawing::spreadsheet::WorksheetDrawing,
         raw::{RawFile, RawRelationships},
-        Worksheet,
     },
 };
 

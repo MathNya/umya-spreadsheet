@@ -2,16 +2,16 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use crate::{
     reader::driver::get_attribute,
     structs::{
+        BooleanValue, DataValidationOperatorValues, DataValidationValues, EnumValue, StringValue,
         office::excel::ReferenceSequence,
         office2010::excel::{DataValidationForumla1, DataValidationForumla2},
-        BooleanValue, DataValidationOperatorValues, DataValidationValues, EnumValue, StringValue,
     },
     writer::driver::{write_end_tag, write_start_tag},
 };

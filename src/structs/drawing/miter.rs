@@ -1,12 +1,12 @@
 // a:miter
 use std::io::Cursor;
 
-use quick_xml::{events::BytesStart, Reader, Writer};
+use quick_xml::{Reader, Writer, events::BytesStart};
 
 use crate::{
+    Int32Value,
     reader::driver::{get_attribute, set_string_from_xml},
     writer::driver::write_start_tag,
-    Int32Value,
 };
 
 #[derive(Clone, Default, Debug)]

@@ -2,15 +2,15 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{PresetColor, RgbColorModelHex, SchemeColor};
 use crate::{
+    StringValue,
     reader::driver::{get_attribute, xml_read_loop},
     writer::driver::{write_end_tag, write_start_tag},
-    StringValue,
 };
 
 #[derive(Clone, Default, Debug)]

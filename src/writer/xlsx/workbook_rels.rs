@@ -1,13 +1,13 @@
 use std::io;
 
 use quick_xml::{
-    events::{BytesDecl, Event},
     Writer,
+    events::{BytesDecl, Event},
 };
 
 use super::{
-    driver::{make_file_from_writer, write_end_tag, write_new_line, write_start_tag},
     XlsxError,
+    driver::{make_file_from_writer, write_end_tag, write_new_line, write_start_tag},
 };
 use crate::{
     helper::const_str::{

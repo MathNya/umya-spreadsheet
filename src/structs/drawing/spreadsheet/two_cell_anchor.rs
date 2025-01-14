@@ -2,8 +2,8 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{
@@ -13,7 +13,7 @@ use super::{
 use crate::{
     helper::const_str::{DRAWING_MAIN_NS, MC_NS},
     reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    structs::{raw::RawRelationships, BooleanValue},
+    structs::{BooleanValue, raw::RawRelationships},
     traits::{AdjustmentCoordinate, AdjustmentCoordinateWithSheet},
     writer::driver::{write_end_tag, write_start_tag},
 };

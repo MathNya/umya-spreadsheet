@@ -5,9 +5,9 @@ use std::{
 };
 
 use quick_xml::{
+    Writer,
     escape::partial_escape,
     events::{BytesEnd, BytesStart, BytesText, Event},
-    Writer,
 };
 
 pub(crate) fn write_start_tag<'a, S>(

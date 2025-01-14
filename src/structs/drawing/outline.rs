@@ -2,18 +2,18 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    events::{BytesStart, Event},
     Reader, Writer,
+    events::{BytesStart, Event},
 };
 
 use super::{
     Bevel, GradientFill, Miter, NoFill, PenAlignmentValues, PresetDash, Round, SolidFill, TailEnd,
 };
 use crate::{
+    StringValue,
     reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
     structs::{EnumValue, UInt32Value},
     writer::driver::{write_end_tag, write_start_tag},
-    StringValue,
 };
 
 #[derive(Clone, Default, Debug)]

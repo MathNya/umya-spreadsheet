@@ -1,14 +1,14 @@
 use std::{io, io::Read};
 
 use quick_xml::{
-    events::{BytesDecl, Event},
     Reader, Writer,
+    events::{BytesDecl, Event},
 };
 
 use crate::{
     helper::const_str::REL_NS,
     reader::driver::{join_paths, xml_read_loop},
-    structs::{raw::RawRelationship, StringValue, WriterManager, XlsxError},
+    structs::{StringValue, WriterManager, XlsxError, raw::RawRelationship},
     writer::driver::{write_end_tag, write_new_line, write_start_tag},
 };
 

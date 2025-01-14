@@ -1,9 +1,9 @@
 use std::{io, io::Read};
 
 use crate::{
+    XlsxError,
     reader::driver::join_paths,
     structs::{StringValue, WriterManager},
-    XlsxError,
 };
 
 #[derive(Clone, Default, Debug)]
