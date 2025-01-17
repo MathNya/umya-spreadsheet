@@ -16,7 +16,8 @@ pub fn get_coordinate_list(range_str: &str) -> Vec<BasicCellIndex> {
 }
 
 pub fn get_start_and_end_point(range_str: &str) -> (u32, u32, u32, u32) {
-    let coordinate_collection: Vec<&str> = range_str.split(':').collect();
+    let upper_rng_str = range_str.to_uppercase();
+    let coordinate_collection: Vec<&str> = upper_rng_str.split(':').collect();
 
     assert!(
         matches!(coordinate_collection.len(), 1 | 2),

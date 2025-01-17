@@ -138,7 +138,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
     let mut next_token: Option<FormulaToken> = None;
 
     let mut index = 1;
-    let mut value = String::from("");
+    let mut value = String::new();
 
     while index < formula_length {
         // double-quoted strings
@@ -158,7 +158,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                     obj.set_token_type(FormulaTokenTypes::Operand);
                     obj.set_token_sub_type(FormulaTokenSubTypes::Text);
                     tokens1.push(obj);
-                    value = String::from("");
+                    value = String::new();
                 }
             } else {
                 value = format!("{}{}", value, formula.chars().nth(index).unwrap());
@@ -214,7 +214,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 obj.set_token_sub_type(FormulaTokenSubTypes::Error);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             continue;
@@ -245,7 +245,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             in_string = true;
             index += 1;
@@ -260,7 +260,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             in_string = true;
             index += 1;
@@ -283,7 +283,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             in_error = true;
             value = format!("{}{}", value, self::ERROR_START);
@@ -300,7 +300,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Unknown);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = FormulaToken::default();
@@ -328,7 +328,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap();
@@ -359,7 +359,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap().clone();
@@ -384,7 +384,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             let mut obj = FormulaToken::default();
             obj.set_value("");
@@ -411,7 +411,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                     obj.set_value(value);
                     obj.set_token_type(FormulaTokenTypes::Operand);
                     tokens1.push(obj);
-                    value = String::from("");
+                    value = String::new();
                 }
                 let mut obj = FormulaToken::default();
                 obj.set_value(formula.chars().skip(index).take(2).collect::<String>());
@@ -431,7 +431,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             let mut obj = FormulaToken::default();
             obj.set_value(formula.chars().nth(index).unwrap());
@@ -449,7 +449,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
             let mut obj = FormulaToken::default();
             obj.set_value(formula.chars().nth(index).unwrap());
@@ -469,7 +469,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_token_sub_type(FormulaTokenSubTypes::Start);
                 tokens1.push(obj.clone());
                 stack.push(obj);
-                value = String::from("");
+                value = String::new();
             } else {
                 let mut obj = FormulaToken::default();
                 obj.set_value("");
@@ -490,7 +490,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap();
@@ -522,7 +522,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 obj.set_value(value);
                 obj.set_token_type(FormulaTokenTypes::Operand);
                 tokens1.push(obj);
-                value = String::from("");
+                value = String::new();
             }
 
             let mut obj = stack.pop().unwrap();
@@ -618,7 +618,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         obj.set_token_type(FormulaTokenTypes::OperatorInfix);
         obj.set_token_sub_type(FormulaTokenSubTypes::Intersection);
         tokens2.push(obj);
-        value = String::from("");
+        value = String::new();
     }
 
     // move tokens to final list, switching infix "-" operators to prefix when appropriate, switching infix "+" operators
@@ -742,7 +742,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
 }
 
 pub(crate) fn render(formula_token_list: &[FormulaToken]) -> String {
-    let mut result = String::from("");
+    let mut result = String::new();
     for token in formula_token_list {
         if token.get_token_type() == &FormulaTokenTypes::Function
             && token.get_token_sub_type() == &FormulaTokenSubTypes::Start

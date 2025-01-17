@@ -218,7 +218,7 @@ impl Properties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Text(e) => {
@@ -249,13 +249,13 @@ impl Properties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
                 match e.name().into_inner(){
-                    b"Manager" => {value = String::from("");},
-                    b"Company" => {value = String::from("");},
+                    b"Manager" => {value = String::new();},
+                    b"Company" => {value = String::new();},
                     _ => {}
                 }
             },

@@ -46,7 +46,7 @@ impl GradientFill {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        let mut value = String::from("");
+        let mut value = String::new();
         for stop in &self.gradient_stop {
             write!(value, "{}", stop.get_hash_code().as_str()).unwrap();
         }

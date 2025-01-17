@@ -30,6 +30,7 @@ where
 
     alpha
         .as_ref()
+        .to_uppercase()
         .chars()
         .rev()
         .enumerate()

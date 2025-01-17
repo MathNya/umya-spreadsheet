@@ -92,7 +92,7 @@ impl FromMarker {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Text(e) => string_value = e.unescape().unwrap().to_string(),

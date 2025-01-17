@@ -351,8 +351,8 @@ impl Cell {
         empty_flag: bool,
         formula_shared_list: &mut HashMap<u32, (String, Vec<FormulaToken>)>,
     ) {
-        let mut type_value: String = String::from("");
-        let mut cell_reference: String = String::from("");
+        let mut type_value: String = String::new();
+        let mut cell_reference: String = String::new();
 
         if let Some(v) = get_attribute(e, b"r") {
             cell_reference = v;
@@ -374,7 +374,7 @@ impl Cell {
             return;
         }
 
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {

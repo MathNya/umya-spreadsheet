@@ -16,12 +16,12 @@ pub(crate) fn read(
     reader.config_mut().trim_text(false);
 
     let mut authors: Vec<String> = Vec::new();
-    let mut value: String = String::from("");
+    let mut value: String = String::new();
     xml_read_loop!(
         reader,
         Event::Empty(ref e) => {
             if e.name().into_inner() == b"author" {
-                authors.push(String::from(""));
+                authors.push(String::new());
             }
         },
         Event::Start(ref e) => {

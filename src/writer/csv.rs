@@ -26,14 +26,14 @@ pub fn write_writer<W: io::Seek + io::Write>(
     // get max column and row.
     let (max_column, max_row) = worksheet.get_highest_column_and_row();
 
-    let mut data = String::from("");
+    let mut data = String::new();
     for row in 0u32..max_row {
         let mut row_vec: Vec<String> = Vec::new();
         for column in 0u32..max_column {
             // get value.
             let mut value = match worksheet.get_cell((column + 1, row + 1)) {
                 Some(cell) => cell.get_cell_value().get_value().into(),
-                None => String::from(""),
+                None => String::new(),
             };
             // do trim.
             if *option.get_do_trim() {

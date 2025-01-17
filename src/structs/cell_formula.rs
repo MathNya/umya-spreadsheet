@@ -285,7 +285,7 @@ impl CellFormula {
             attributes.push(("r2", self.r2.get_value_str()));
         }
 
-        let mut reference_str = String::from("");
+        let mut reference_str = String::new();
         match formula_shared_list.get(self.shared_index.get_value()) {
             Some((start_col, end_col)) => {
                 if coordinate == start_col {

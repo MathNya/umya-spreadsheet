@@ -99,7 +99,7 @@ impl Selection {
 
         let active_cell_str = match &self.active_cell {
             Some(active_cell) => active_cell.to_string(),
-            None => String::from(""),
+            None => String::new(),
         };
         if !active_cell_str.is_empty() {
             attributes.push(("activeCell", active_cell_str.as_str()));

@@ -66,7 +66,7 @@ impl DefinedName {
 
     pub(crate) fn get_sheet_name_crate(&self) -> String {
         if self.string_value.has_value() {
-            return String::from("");
+            return String::new();
         }
         self.address
             .first()
@@ -124,7 +124,7 @@ impl DefinedName {
         let mut is_pass_d = false;
         let mut is_pass_b = 0;
         let mut result: Vec<String> = Vec::new();
-        let mut string = String::from("");
+        let mut string = String::new();
         for c in &char_list {
             match c {
                 '(' => {
@@ -180,7 +180,7 @@ impl DefinedName {
         set_string_from_xml!(self, e, local_sheet_id, "localSheetId");
         set_string_from_xml!(self, e, hidden, "hidden");
 
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
                 Event::Text(e) => {

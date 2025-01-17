@@ -60,7 +60,7 @@ impl Properties {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Empty(ref e) => {

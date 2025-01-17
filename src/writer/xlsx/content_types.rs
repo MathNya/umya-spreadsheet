@@ -25,100 +25,39 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // Types
     write_start_tag(&mut writer, "Types", vec![("xmlns", CONTYPES_NS)], false);
 
-    // Default rels
-    write_start_tag(
-        &mut writer,
-        "Default",
-        vec![("Extension", "rels"), ("ContentType", REL_TYPE)],
-        true,
-    );
+    // Write default content types
+    let default_content_types = [("rels", REL_TYPE), ("xml", "application/xml")];
 
-    // Default xml
-    write_start_tag(
-        &mut writer,
-        "Default",
-        vec![("Extension", "xml"), ("ContentType", "application/xml")],
-        true,
-    );
-
-    // Default bin
-    if writer_mng.has_extension("bin") {
+    for (extension, content_type) in &default_content_types {
         write_start_tag(
             &mut writer,
             "Default",
-            vec![("Extension", "bin"), ("ContentType", PRNTR_SETTINGS_TYPE)],
+            vec![("Extension", extension), ("ContentType", content_type)],
             true,
         );
     }
 
-    // Default vml
-    if writer_mng.has_extension("vml") {
-        write_start_tag(
-            &mut writer,
-            "Default",
-            vec![("Extension", "vml"), ("ContentType", VML_DRAWING_TYPE)],
-            true,
-        );
-    }
+    // Write additional content types based on extensions
+    let optional_extensions = [
+        ("bin", PRNTR_SETTINGS_TYPE),
+        ("vml", VML_DRAWING_TYPE),
+        ("png", "image/png"),
+        ("jpg", "image/jpeg"),
+        ("jpeg", "image/jpeg"),
+        ("tiff", "image/tiff"),
+        ("emf", "image/x-emf"),
+        ("xlsx", WORKBOOK),
+    ];
 
-    // Default png
-    if writer_mng.has_extension("png") {
-        write_start_tag(
-            &mut writer,
-            "Default",
-            vec![("Extension", "png"), ("ContentType", "image/png")],
-            true,
-        );
-    }
-
-    // Default jpg
-    if writer_mng.has_extension("jpg") {
-        write_start_tag(
-            &mut writer,
-            "Default",
-            vec![("Extension", "jpg"), ("ContentType", "image/jpeg")],
-            true,
-        );
-    }
-
-    // Default jpeg
-    if writer_mng.has_extension("jpeg") {
-        write_start_tag(
-            &mut writer,
-            "Default",
-            vec![("Extension", "jpeg"), ("ContentType", "image/jpeg")],
-            true,
-        );
-    }
-
-    // Default tiff
-    if writer_mng.has_extension("tiff") {
-        write_start_tag(
-            &mut writer,
-            "Default",
-            vec![("Extension", "tiff"), ("ContentType", "image/tiff")],
-            true,
-        );
-    }
-
-    // Default emf
-    if writer_mng.has_extension("emf") {
-        write_start_tag(
-            &mut writer,
-            "Default",
-            vec![("Extension", "emf"), ("ContentType", "image/x-emf")],
-            true,
-        );
-    }
-
-    // Default xlsx
-    if writer_mng.has_extension("xlsx") {
-        write_start_tag(
-            &mut writer,
-            "Default",
-            vec![("Extension", "xlsx"), ("ContentType", WORKBOOK)],
-            true,
-        );
+    for (extension, content_type) in &optional_extensions {
+        if writer_mng.has_extension(extension) {
+            write_start_tag(
+                &mut writer,
+                "Default",
+                vec![("Extension", extension), ("ContentType", content_type)],
+                true,
+            );
+        }
     }
 
     // Override

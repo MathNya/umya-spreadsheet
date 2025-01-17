@@ -52,7 +52,7 @@ impl Color2Type {
         if let Some(v) = &self.system_color {
             return v.get_last_color().to_string();
         }
-        String::from("")
+        String::new()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

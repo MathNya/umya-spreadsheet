@@ -131,7 +131,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
         // Add printer_settings
         let printer_settings_no = match worksheet.get_page_setup().get_object_data() {
             Some(_) => printer_settings::write(worksheet, &mut writer_manager)?,
-            None => String::from(""),
+            None => String::new(),
         };
 
         // Add tables

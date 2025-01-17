@@ -34,7 +34,7 @@ impl Formula {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
@@ -46,7 +46,7 @@ impl Formula {
                         let mut obj = Address::default();
                         obj.set_address(value);
                         self.value = obj;
-                        value = String::from("");
+                        value = String::new();
                         return;
                     }
                     _ => (),

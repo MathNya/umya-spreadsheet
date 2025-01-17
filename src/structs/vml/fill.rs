@@ -123,7 +123,7 @@ impl Fill {
         if self.focus_size.has_value() {
             attributes.push(("focussize", self.focus_size.get_value_str()));
         }
-        let mut r_id_str = String::from("");
+        let mut r_id_str = String::new();
         if let Some(image) = &self.image {
             let r_id = image.get_rid(rel_list);
             r_id_str = format!("rId{}", r_id);

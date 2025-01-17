@@ -12,7 +12,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 ) -> Result<(String, Vec<(String, String)>), XlsxError> {
     let mut rel_list: Vec<(String, String)> = Vec::new();
     if !worksheet.has_legacy_drawing() {
-        return Ok((String::from(""), rel_list));
+        return Ok((String::new(), rel_list));
     }
 
     let mut writer = Writer::new(io::Cursor::new(Vec::new()));

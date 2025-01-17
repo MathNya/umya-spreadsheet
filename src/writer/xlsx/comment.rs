@@ -5,6 +5,7 @@ use crate::structs::Worksheet;
 use crate::structs::WriterManager;
 use quick_xml::events::{BytesDecl, Event};
 use quick_xml::Writer;
+use std::collections::HashSet;
 use std::io;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
@@ -68,20 +69,13 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 }
 
 fn get_authors(worksheet: &Worksheet) -> Vec<String> {
-    let mut authors: Vec<String> = Vec::new();
-    for comment in worksheet.get_comments() {
-        let mut is_match = false;
-        for author in &authors {
-            if comment.get_author() == author {
-                is_match = true;
-                break;
-            }
-        }
-        if !is_match {
-            authors.push(comment.get_author().to_string());
-        }
-    }
-    authors
+    worksheet
+        .get_comments()
+        .into_iter()
+        .map(|comment| comment.get_author().to_string())
+        .collect::<HashSet<_>>()
+        .into_iter()
+        .collect()
 }
 
 #[inline]
