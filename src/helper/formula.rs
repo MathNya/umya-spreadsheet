@@ -246,7 +246,7 @@ fn finalize_tokens(tokens_in: &[FormulaToken]) -> Vec<FormulaToken> {
         if token.get_token_type() == &FormulaTokenTypes::OperatorInfix && token.get_value() == "-" {
             if i == 0 {
                 token.set_token_type(FormulaTokenTypes::OperatorPrefix);
-            } else if should_token_be_math(&previous_token) {
+            } else if should_token_be_math(previous_token) {
                 token.set_token_sub_type(FormulaTokenSubTypes::Math);
             } else {
                 token.set_token_type(FormulaTokenTypes::OperatorPrefix);
@@ -260,7 +260,7 @@ fn finalize_tokens(tokens_in: &[FormulaToken]) -> Vec<FormulaToken> {
             if i == 0 {
                 // skip
                 continue;
-            } else if should_token_be_math(&previous_token) {
+            } else if should_token_be_math(previous_token) {
                 token.set_token_sub_type(FormulaTokenSubTypes::Math);
             } else {
                 // skip
@@ -786,11 +786,11 @@ fn cleanup_tokens(tokens1: &[FormulaToken], tokens2: &mut Vec<FormulaToken>) {
 }
 
 #[allow(clippy::ref_option_ref)]
-fn should_token_be_math(previous_token: &Option<FormulaToken>) -> bool {
+fn should_token_be_math(previous_token: Option<FormulaToken>) -> bool {
     if previous_token.is_none() {
         return false;
     }
-    let t = previous_token.as_ref().unwrap();
+    let t = previous_token.unwrap();
     if (t.get_token_type() == &FormulaTokenTypes::Function
         && t.get_token_sub_type() == &FormulaTokenSubTypes::Stop)
         || (t.get_token_type() == &FormulaTokenTypes::Subexpression

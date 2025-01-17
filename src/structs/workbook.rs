@@ -447,7 +447,7 @@ impl Workbook {
     /// * `index` - sheet index
     /// # Return value
     /// * `Option<&mut Worksheet>`.
-    #[allow(clippy::manual_assert)]
+    #[allow(clippy::manual_inspect)]
     pub fn get_sheet_mut(&mut self, index: usize) -> Option<&mut Worksheet> {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
