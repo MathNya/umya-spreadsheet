@@ -79,9 +79,7 @@ impl Workbook {
     /// ```
     #[inline]
     pub fn insert_new_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
-        let column_upper = column.to_uppercase();
-        let column_index = column_index_from_string(column_upper);
-        self.insert_new_column_by_index(sheet_name, column_index, num_columns);
+        self.insert_new_column_by_index(sheet_name, column_index_from_string(column), num_columns);
     }
 
     /// Insert new columns.
@@ -131,9 +129,7 @@ impl Workbook {
     /// ```
     #[inline]
     pub fn remove_column(&mut self, sheet_name: &str, column: &str, num_columns: u32) {
-        let column_upper = column.to_uppercase();
-        let column_index = column_index_from_string(column_upper);
-        self.remove_column_by_index(sheet_name, column_index, num_columns);
+        self.remove_column_by_index(sheet_name, column_index_from_string(column), num_columns);
     }
 
     /// Remove columns.

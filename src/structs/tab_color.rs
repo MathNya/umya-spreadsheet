@@ -122,7 +122,7 @@ impl TabColor {
         self.argb
             .set_value(match INDEXED_COLORS.get(index as usize - 1) {
                 Some(v) => v.to_string(),
-                None => String::from(""),
+                None => String::new(),
             });
         self
     }
@@ -148,7 +148,7 @@ impl TabColor {
                     .get(self.theme_index.get_value().clone() as usize)
                 {
                     Some(v) => v.to_string(),
-                    None => String::from(""),
+                    None => String::new(),
                 },
             );
         }

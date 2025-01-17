@@ -140,20 +140,9 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     let color_re = compile_regex!(r"\[(Black|White|Red|Green|Blue|Yellow|Magenta|Cyan)\]");
     let cond_re = compile_regex!(r"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]");
 
-    let mut colors = [
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-    ];
-    let mut condops = [
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-    ];
+    let mut colors = [const { String::new() }; 5];
+    let mut condops = [const { String::new() }; 5];
+
     let mut condvals = [
         String::from("0"),
         String::from("0"),
