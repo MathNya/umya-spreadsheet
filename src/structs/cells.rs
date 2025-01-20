@@ -214,7 +214,7 @@ impl Cells {
     #[must_use]
     pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
         let mut result: Vec<Option<&Cell>> = Vec::new();
-        let coordinate_list = get_coordinate_list(&range);
+        let coordinate_list = get_coordinate_list(range);
         for (col_num, row_num) in coordinate_list {
             result.push(self.get((col_num, row_num)));
         }
@@ -224,7 +224,7 @@ impl Cells {
     #[must_use]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         let mut result: Vec<&CellValue> = Vec::new();
-        let coordinate_list = get_coordinate_list(&range);
+        let coordinate_list = get_coordinate_list(range);
         for (col_num, row_num) in coordinate_list {
             result.push(self.get_cell_value((col_num, row_num)));
         }

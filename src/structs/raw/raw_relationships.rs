@@ -51,7 +51,7 @@ impl RawRelationships {
         self.get_relationship_list()
             .iter()
             .find(|relationship| relationship.get_id() == r_id)
-            .expect(&format!("Not found relationship with ID: {}.", r_id))
+            .unwrap_or_else(|| panic!("Not found relationship with ID: {r_id}."))
     }
 
     #[inline]

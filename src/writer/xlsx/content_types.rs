@@ -47,7 +47,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "Default",
-            vec![("Extension", extension).into(), ("ContentType", content_type).into()],
+            vec![
+                ("Extension", extension).into(),
+                ("ContentType", content_type).into(),
+            ],
             true,
         );
     }
@@ -69,7 +72,10 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             write_start_tag(
                 &mut writer,
                 "Default",
-                vec![("Extension", extension).into(), ("ContentType", content_type).into()],
+                vec![
+                    ("Extension", extension).into(),
+                    ("ContentType", content_type).into(),
+                ],
                 true,
             );
         }

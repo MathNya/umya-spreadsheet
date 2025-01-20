@@ -1,5 +1,5 @@
-use std::io;
 use std::collections::HashSet;
+use std::io;
 
 use quick_xml::{
     Writer,
@@ -83,7 +83,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 fn get_authors(worksheet: &Worksheet) -> Vec<String> {
     worksheet
         .get_comments()
-        .into_iter()
+        .iter()
         .map(|comment| comment.get_author().to_string())
         .collect::<HashSet<_>>()
         .into_iter()
