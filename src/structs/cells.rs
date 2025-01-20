@@ -89,17 +89,11 @@ impl Cells {
     }
 
     pub fn get_highest_column_and_row(&self) -> (u32, u32) {
-        let mut col_max: u32 = 0;
-        let mut row_max: u32 = 0;
-        for key in self.map.keys() {
-            if key.1 > col_max {
-                col_max = key.1;
-            }
-            if key.0 > row_max {
-                row_max = key.0;
-            }
-        }
-        (col_max, row_max)
+        self.map
+            .keys()
+            .fold((0, 0), |(row_max, col_max), &(row, col)| {
+                (row.max(row_max), col.max(col_max))
+            })
     }
 
     /// Has Hyperlink
@@ -205,8 +199,7 @@ impl Cells {
 
     pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
         let mut result: Vec<Option<&Cell>> = Vec::new();
-        let range_upper = range.to_uppercase();
-        let coordinate_list = get_coordinate_list(&range_upper);
+        let coordinate_list = get_coordinate_list(&range);
         for (col_num, row_num) in coordinate_list {
             result.push(self.get((&col_num, &row_num)));
         }
@@ -215,8 +208,7 @@ impl Cells {
 
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         let mut result: Vec<&CellValue> = Vec::new();
-        let range_upper = range.to_uppercase();
-        let coordinate_list = get_coordinate_list(&range_upper);
+        let coordinate_list = get_coordinate_list(&range);
         for (col_num, row_num) in coordinate_list {
             result.push(self.get_cell_value((&col_num, &row_num)));
         }

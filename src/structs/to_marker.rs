@@ -82,7 +82,7 @@ impl ToMarker {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut string_value: String = String::from("");
+        let mut string_value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {

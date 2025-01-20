@@ -49,7 +49,7 @@ impl TextBox {
         set_string_from_xml!(self, e, style, "style");
 
         let mut buf = Vec::new();
-        let mut inner_text = String::from("");
+        let mut inner_text = String::new();
         reader.config_mut().check_end_names = false;
         loop {
             match reader.read_event_into(&mut buf) {

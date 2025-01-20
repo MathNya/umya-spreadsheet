@@ -115,7 +115,7 @@ impl Worksheet {
         let CellCoordinates { col, row } = coordinate.into();
         self.get_cell((col, row))
             .map(|v| v.get_value().into())
-            .unwrap_or("".into())
+            .unwrap_or_default()
     }
 
     /// Get value number.
@@ -449,8 +449,7 @@ impl Worksheet {
     /// worksheet.set_style_by_range("A1:A3", style);
     /// ```
     pub fn set_style_by_range(&mut self, range: &str, style: Style) -> &mut Self {
-        let range_upper = range.to_uppercase();
-        let coordinate_list = get_coordinate_list(&range_upper);
+        let coordinate_list = get_coordinate_list(&range);
 
         let (col_num_start, row_num_start) = coordinate_list[0];
         if col_num_start == 0 {
@@ -689,9 +688,7 @@ impl Worksheet {
     /// * `column` - Column Char. ex) "A"
     #[inline]
     pub fn get_column_dimension(&self, column: &str) -> Option<&Column> {
-        let column_upper = column.to_uppercase();
-        let col = column_index_from_string(column_upper);
-        self.get_column_dimension_by_number(&col)
+        self.get_column_dimension_by_number(&column_index_from_string(column))
     }
 
     /// Get Column Dimension in mutable.
@@ -699,9 +696,7 @@ impl Worksheet {
     /// * `column` - Column Char. ex) "A"
     #[inline]
     pub fn get_column_dimension_mut(&mut self, column: &str) -> &mut Column {
-        let column_upper = column.to_uppercase();
-        let col = column_index_from_string(column_upper);
-        self.get_column_dimension_by_number_mut(&col)
+        self.get_column_dimension_by_number_mut(&column_index_from_string(column))
     }
 
     /// Get Column Dimension.
@@ -880,9 +875,7 @@ impl Worksheet {
     /// ```
     #[inline]
     pub fn insert_new_column(&mut self, column: &str, num_columns: &u32) {
-        let column_upper = column.to_uppercase();
-        let column_index = column_index_from_string(column_upper);
-        self.insert_new_column_by_index(&column_index, num_columns);
+        self.insert_new_column_by_index(&column_index_from_string(column), num_columns);
     }
 
     /// Adjust for references to other sheets.
@@ -893,9 +886,11 @@ impl Worksheet {
         column: &str,
         num_columns: &u32,
     ) {
-        let column_upper = column.to_uppercase();
-        let column_index = column_index_from_string(column_upper);
-        self.insert_new_column_by_index_from_other_sheet(sheet_name, &column_index, num_columns);
+        self.insert_new_column_by_index_from_other_sheet(
+            sheet_name,
+            &column_index_from_string(column),
+            num_columns,
+        );
     }
 
     /// Insert new columns.
@@ -969,9 +964,7 @@ impl Worksheet {
     /// ```
     #[inline]
     pub fn remove_column(&mut self, column: &str, num_columns: &u32) {
-        let column_upper = column.to_uppercase();
-        let column_index = column_index_from_string(column_upper);
-        self.remove_column_by_index(&column_index, num_columns);
+        self.remove_column_by_index(&column_index_from_string(column), num_columns);
     }
 
     /// Adjust for references to other sheets.
@@ -982,9 +975,11 @@ impl Worksheet {
         column: &str,
         num_columns: &u32,
     ) {
-        let column_upper = column.to_uppercase();
-        let column_index = column_index_from_string(column_upper);
-        self.remove_column_by_index_from_other_sheet(sheet_name, &column_index, num_columns);
+        self.remove_column_by_index_from_other_sheet(
+            sheet_name,
+            &column_index_from_string(column),
+            num_columns,
+        );
     }
 
     /// Remove columns.
@@ -1794,18 +1789,13 @@ impl Worksheet {
     ) -> &mut Self {
         // Check to ensure coordinates to move are within range (eg: moving A1 cells to the left is
         // impossible)
-        let range_upper = range.to_uppercase();
-        let (row_start, row_end, col_start, col_end) = get_start_and_end_point(&range_upper);
-        if (col_start as i32 + column) < 1 {
-            panic!("Out of Range.");
-        }
-        if (row_start as i32 + row) < 1 {
-            panic!("Out of Range.");
-        }
-        if (col_end as i32 + column) > 16384 {
-            panic!("Out of Range.");
-        }
-        if (row_end as i32 + row) > 1048576 {
+
+        let (row_start, row_end, col_start, col_end) = get_start_and_end_point(&range);
+        if (col_start as i32 + column) < 1
+            || (row_start as i32 + row) < 1
+            || (col_end as i32 + column) > 16384
+            || (row_end as i32 + row) > 1048576
+        {
             panic!("Out of Range.");
         }
 
@@ -1819,7 +1809,7 @@ impl Worksheet {
 
         // Delete cell information as iterating through in move mode
         if is_move {
-            get_coordinate_list(&range_upper)
+            get_coordinate_list(&range)
                 .iter()
                 .for_each(|(col_num, row_num)| {
                     self.cell_collection.remove(col_num, row_num);

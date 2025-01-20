@@ -104,7 +104,7 @@ impl CustomDocumentProperty {
             return;
         }
 
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         xml_read_loop!(
             reader,
             Event::Text(e) => {

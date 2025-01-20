@@ -270,7 +270,7 @@ fn get_hyperlink(
     raw_relationships: Option<&RawRelationships>,
 ) -> (String, Hyperlink) {
     let mut hyperlink = Hyperlink::default();
-    let mut rid = String::from("");
+    let mut rid = String::new();
 
     let coordition = get_attribute(e, b"ref").unwrap_or_default();
     if let Some(v) = get_attribute(e, b"location") {

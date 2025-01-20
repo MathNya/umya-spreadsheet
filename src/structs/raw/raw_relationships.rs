@@ -48,12 +48,10 @@ impl RawRelationships {
     }
 
     pub(crate) fn get_relationship_by_rid(&self, r_id: &str) -> &RawRelationship {
-        for relationship in self.get_relationship_list() {
-            if relationship.get_id() == r_id {
-                return relationship;
-            }
-        }
-        panic!("not found relationship as {}.", r_id);
+        self.get_relationship_list()
+            .iter()
+            .find(|relationship| relationship.get_id() == r_id)
+            .expect(&format!("Not found relationship with ID: {}.", r_id))
     }
 
     #[inline]

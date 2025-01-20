@@ -130,20 +130,9 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     let color_re = Regex::new(&color_regex).unwrap();
     let cond_re = Regex::new(cond_regex).unwrap();
 
-    let mut colors = [
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
-    ];
-    let mut condops = [
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
-        String::from(""),
-    ];
+    let mut colors = [const { String::new() }; 5];
+    let mut condops = [const { String::new() }; 5];
+
     let mut condvals = [
         String::from("0"),
         String::from("0"),

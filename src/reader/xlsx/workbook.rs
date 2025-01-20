@@ -55,7 +55,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 b"pivotCache" => {
                     let cache_id = get_attribute(e, b"cacheId").unwrap();
                     let r_id = get_attribute(e, b"r:id").unwrap();
-                    spreadsheet.add_pivot_caches((r_id, cache_id, String::from("")));
+                    spreadsheet.add_pivot_caches((r_id, cache_id, String::new()));
                 }
                 _ => (),
             }

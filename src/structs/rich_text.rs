@@ -18,7 +18,7 @@ pub struct RichText {
 impl RichText {
     #[inline]
     pub fn get_text(&self) -> Cow<'static, str> {
-        let mut text = String::from("");
+        let mut text = String::new();
         for rich_text_elements in &self.rich_text_elements {
             text = format!("{}{}", text, rich_text_elements.get_text());
         }
@@ -57,7 +57,7 @@ impl RichText {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        let mut value = String::from("");
+        let mut value = String::new();
         for ele in &self.rich_text_elements {
             write!(value, "{}", ele.get_hash_code());
         }

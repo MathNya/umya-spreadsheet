@@ -73,7 +73,7 @@ impl GraphicData {
         );
 
         // c:chart
-        rel_list.push((String::from("CHART"), String::from("")));
+        rel_list.push((String::from("CHART"), String::new()));
         write_start_tag(
             writer,
             "c:chart",

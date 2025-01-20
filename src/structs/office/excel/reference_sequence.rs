@@ -66,7 +66,7 @@ impl ReferenceSequence {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        let mut value: String = String::from("");
+        let mut value: String = String::new();
         let mut buf = Vec::new();
         loop {
             match reader.read_event_into(&mut buf) {
@@ -76,7 +76,7 @@ impl ReferenceSequence {
                 Ok(Event::End(ref e)) => match e.name().into_inner() {
                     b"xm:sqref" => {
                         self.set_sqref(value);
-                        value = String::from("");
+                        value = String::new();
                         return;
                     }
                     _ => (),

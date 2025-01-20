@@ -52,7 +52,7 @@ pub(crate) fn format_as_fraction(value: &f64, format: &str) -> String {
     if check_format == "? ?" {
         let mut integer_part_str = integer_part.to_string();
         if integer_part == 0f64 {
-            integer_part_str = String::from("");
+            integer_part_str = String::new();
         }
         result = format!(
             "{}{} {}/{}",
