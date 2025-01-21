@@ -27,7 +27,7 @@ pub(crate) fn read(
                     &mut reader,
                     e,
                     drawing_relationships,
-                    worksheet.get_ole_objects_mut(),
+                    worksheet.ole_objects_mut(),
                 );
                 worksheet.set_worksheet_drawing(obj);
             }

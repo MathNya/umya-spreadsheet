@@ -51,7 +51,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // relationship docProps/custom.xml
     if !wb
-        .get_properties()
+        .properties()
         .get_custom_properties()
         .get_custom_document_property_list()
         .is_empty()

@@ -19,7 +19,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<String, XlsxError> {
-    if worksheet.get_comments().is_empty() {
+    if worksheet.comments().is_empty() {
         return Ok(String::new());
     }
 
@@ -54,7 +54,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
     // commentList
     write_start_tag(&mut writer, "commentList", vec![], false);
-    for comment in worksheet.get_comments() {
+    for comment in worksheet.comments() {
         // comment
         let coordinate = comment.get_coordinate().to_string();
         let author_id = get_author_id(&authors, comment.get_author());
@@ -82,7 +82,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
 fn get_authors(worksheet: &Worksheet) -> Vec<String> {
     worksheet
-        .get_comments()
+        .comments()
         .iter()
         .map(|comment| comment.get_author().to_string())
         .collect::<HashSet<_>>()

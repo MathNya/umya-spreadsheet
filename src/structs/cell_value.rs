@@ -343,33 +343,33 @@ mod tests {
     fn error_checking() {
         let path = std::path::Path::new("./tests/test_files/pr_204.xlsx");
         let book = crate::reader::xlsx::read(path).unwrap();
-        let sheet = book.get_sheet(0).unwrap();
+        let sheet = book.sheet(0).unwrap();
 
-        let cell = sheet.get_cell_value("A1");
+        let cell = sheet.cell_value("A1");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Div0));
 
-        let cell = sheet.get_cell_value("A2");
+        let cell = sheet.cell_value("A2");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Name));
 
-        let cell = sheet.get_cell_value("A3");
+        let cell = sheet.cell_value("A3");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Ref));
 
-        let cell = sheet.get_cell_value("A4");
+        let cell = sheet.cell_value("A4");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Value));
 
-        let cell = sheet.get_cell_value("A5");
+        let cell = sheet.cell_value("A5");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::NA));
 
-        let cell = sheet.get_cell_value("A6");
+        let cell = sheet.cell_value("A6");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Num));
 
-        let cell = sheet.get_cell_value("A7");
+        let cell = sheet.cell_value("A7");
         assert!(cell.raw_value.is_error());
         assert_eq!(cell.raw_value, CellRawValue::Error(CellErrorType::Null));
     }

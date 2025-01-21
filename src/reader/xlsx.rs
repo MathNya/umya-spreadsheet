@@ -63,9 +63,9 @@ pub fn read_reader<R: io::Read + io::Seek>(
     shared_strings::read(&mut arv, &mut book)?;
     styles::read(&mut arv, &mut book)?;
 
-    for sheet in book.get_sheet_collection_mut() {
+    for sheet in book.sheet_collection_mut() {
         for (rel_id, _, rel_target) in &workbook_rel {
-            if sheet.get_r_id() != rel_id {
+            if sheet.r_id() != rel_id {
                 continue;
             }
             let mut raw_worksheet = RawWorksheet::default();
@@ -124,7 +124,7 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
         return;
     }
 
-    let raw_data_of_worksheet = worksheet.get_raw_data_of_worksheet().clone();
+    let raw_data_of_worksheet = worksheet.raw_data_of_worksheet().clone();
     let shared_string_table = &*shared_string_table.read().unwrap();
     worksheet::read(
         worksheet,

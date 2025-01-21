@@ -41,12 +41,12 @@ pub(crate) fn read(
             }
             b"sheetViews" => {
                 worksheet
-                    .get_sheet_views_mut()
+                    .sheet_views_mut()
                     .set_attributes(&mut reader, e);
             }
             b"sheetFormatPr" => {
                 worksheet
-                    .get_sheet_format_properties_mut()
+                    .sheet_format_properties_mut()
                     .set_attributes(&mut reader, e);
             }
             b"selection" => {
@@ -64,7 +64,7 @@ pub(crate) fn read(
                 obj.set_attributes(
                     &mut reader,
                     e,
-                    worksheet.get_cells_crate_mut(),
+                    worksheet.cells_crate_mut(),
                     shared_string_table,
                     stylesheet,
                     &mut formula_shared_list,
@@ -82,7 +82,7 @@ pub(crate) fn read(
             }
             b"mergeCells" => {
                 worksheet
-                    .get_merge_cells_crate_mut()
+                    .merge_cells_crate_mut()
                     .set_attributes(&mut reader, e);
             }
             b"conditionalFormatting" => {
@@ -111,17 +111,17 @@ pub(crate) fn read(
             }
             b"headerFooter" => {
                 worksheet
-                    .get_header_footer_mut()
+                    .header_footer_mut()
                     .set_attributes(&mut reader, e);
             }
             b"rowBreaks" => {
                 worksheet
-                    .get_row_breaks_mut()
+                    .row_breaks_mut()
                     .set_attributes(&mut reader, e);
             }
             b"colBreaks" => {
                 worksheet
-                    .get_column_breaks_mut()
+                    .column_breaks_mut()
                     .set_attributes(&mut reader, e);
             }
             _ => (),
@@ -139,12 +139,12 @@ pub(crate) fn read(
             }
             b"tabColor" => {
                 worksheet
-                    .get_tab_color_mut()
+                    .tab_color_mut()
                     .set_attributes(&mut reader, e, true);
             }
             b"sheetFormatPr" => {
                 worksheet
-                    .get_sheet_format_properties_mut()
+                    .sheet_format_properties_mut()
                     .set_attributes(&mut reader, e);
             }
             b"selection" => {
@@ -162,7 +162,7 @@ pub(crate) fn read(
                 obj.set_attributes(
                     &mut reader,
                     e,
-                    worksheet.get_cells_crate_mut(),
+                    worksheet.cells_crate_mut(),
                     shared_string_table,
                     stylesheet,
                     &mut formula_shared_list,
@@ -175,7 +175,7 @@ pub(crate) fn read(
             }
             b"pageMargins" => {
                 worksheet
-                    .get_page_margins_mut()
+                    .page_margins_mut()
                     .set_attributes(&mut reader, e);
             }
             b"hyperlink" => {
@@ -183,15 +183,15 @@ pub(crate) fn read(
                     e,
                     raw_data_of_worksheet.get_worksheet_relationships()
                 );
-                worksheet.get_cell_mut(coor).set_hyperlink(hyperlink);
+                worksheet.cell_mut(coor).set_hyperlink(hyperlink);
             }
             b"printOptions" => {
                 worksheet
-                    .get_print_options_mut()
+                    .print_options_mut()
                     .set_attributes(&mut reader, e);
             }
             b"pageSetup" => {
-                worksheet.get_page_setup_mut().set_attributes(
+                worksheet.page_setup_mut().set_attributes(
                     &mut reader,
                     e,
                     raw_data_of_worksheet.get_worksheet_relationships(),

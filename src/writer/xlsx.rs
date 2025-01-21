@@ -43,13 +43,13 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
     doc_props_custom::write(wb, &mut writer_manager)?;
     vba_project_bin::write(wb, &mut writer_manager)?;
     rels::write(wb, &mut writer_manager)?;
-    theme::write(wb.get_theme(), &mut writer_manager)?;
+    theme::write(wb.theme(), &mut writer_manager)?;
 
-    let shared_string_table = wb.get_shared_string_table();
-    let mut stylesheet = wb.get_stylesheet().clone();
+    let shared_string_table = wb.shared_string_table();
+    let mut stylesheet = wb.stylesheet().clone();
 
     // Process each worksheet
-    wb.get_sheet_collection_no_check()
+    wb.sheet_collection_no_check()
         .iter()
         .enumerate()
         .try_for_each(|(index, worksheet)| {
@@ -60,18 +60,18 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
                     worksheet,
                     &shared_string_table,
                     &mut stylesheet,
-                    wb.get_has_macros(),
+                    wb.has_macros(),
                     &mut writer_manager,
                 )
             } else {
                 worksheet
-                    .get_raw_data_of_worksheet()
+                    .raw_data_of_worksheet()
                     .write(worksheet_no.try_into().unwrap(), &mut writer_manager)
             }
         })?;
 
     // Process objects associated with worksheets
-    wb.get_sheet_collection_no_check()
+    wb.sheet_collection_no_check()
         .iter()
         .enumerate()
         .try_for_each(|(index, worksheet)| {
@@ -82,7 +82,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
 
             // Add charts
             let chart_no_list: Result<Vec<String>, XlsxError> = worksheet
-                .get_worksheet_drawing()
+                .worksheet_drawing()
                 .get_chart_collection()
                 .iter()
                 .map(|chart| chart::write(chart.get_chart_space(), wb, &mut writer_manager))
@@ -116,7 +116,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
 
             // Add printer settings
             let printer_settings_no = worksheet
-                .get_page_setup()
+                .page_setup()
                 .get_object_data()
                 .map_or_else(String::new, |_| {
                     printer_settings::write(worksheet, &mut writer_manager).unwrap_or_default()

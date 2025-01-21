@@ -27,7 +27,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // cp:coreProperties
-    wb.get_properties().write_to_core(&mut writer);
+    wb.properties().write_to_core(&mut writer);
 
     writer_mng.add_writer(ARC_CORE, writer)
 }

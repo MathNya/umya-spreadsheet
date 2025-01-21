@@ -42,14 +42,14 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let mut index = 1;
 
     // relationships worksheet
-    for _ in wb.get_sheet_collection_no_check() {
+    for _ in wb.sheet_collection_no_check() {
         let path_str = format!("worksheets/sheet{index}.xml");
         write_relationship(&mut writer, &index.to_string(), WORKSHEET_NS, &path_str, "");
         index += 1;
     }
 
     // relationships pivot_cache_definition
-    for (_, _, pivot_cache_definition) in wb.get_pivot_caches() {
+    for (_, _, pivot_cache_definition) in wb.pivot_caches() {
         write_relationship(
             &mut writer,
             &index.to_string(),
@@ -87,7 +87,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // relationships for vbaProject if needed
-    if wb.get_has_macros() {
+    if wb.has_macros() {
         write_relationship(
             &mut writer,
             &index.to_string(),

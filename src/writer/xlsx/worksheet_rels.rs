@@ -54,7 +54,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     let mut r_id: i32 = 1;
 
     // Write hyperlink relationships
-    for (_, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
+    for (_, hyperlink) in worksheet.hyperlink_collection_to_hashmap() {
         if !hyperlink.get_location() {
             is_write = write_relationship(
                 &mut writer,
@@ -68,7 +68,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // write pageSetup
-    if worksheet.get_page_setup().get_object_data().is_some() {
+    if worksheet.page_setup().get_object_data().is_some() {
         let object_name = format!("printerSettings{printer_settings_no}.bin");
         is_write = write_relationship(
             &mut writer,
@@ -123,7 +123,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // Write ole_objects
     let mut excel_no_list = excel_no_list.iter();
     let mut ole_object_no_list = ole_object_no_list.iter();
-    for ole_object in worksheet.get_ole_objects().get_ole_object() {
+    for ole_object in worksheet.ole_objects().get_ole_object() {
         if ole_object.is_xlsx() {
             let excel_no = excel_no_list.next().unwrap();
             let object_name = format!("Microsoft_Excel_Worksheet{excel_no}.xlsx");
@@ -164,7 +164,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Write comments relationship
-    if !worksheet.get_comments().is_empty() {
+    if !worksheet.comments().is_empty() {
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),

@@ -27,8 +27,8 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // Properties
-    wb.get_properties()
-        .write_to_app(&mut writer, wb.get_sheet_collection_no_check());
+    wb.properties()
+        .write_to_app(&mut writer, wb.sheet_collection_no_check());
 
     writer_mng.add_writer(ARC_APP, writer)
 }

@@ -109,14 +109,14 @@ fn write_worksheet_properties(
     let mut attributes: crate::structs::AttrCollection = Vec::new();
     if has_macros {
         let code_name = if worksheet.has_code_name() {
-            worksheet.get_code_name().as_ref().unwrap()
+            worksheet.code_name().as_ref().unwrap()
         } else {
-            worksheet.get_name()
+            worksheet.name()
         };
         attributes.push(("codeName", code_name).into());
     }
 
-    match worksheet.get_tab_color() {
+    match worksheet.tab_color() {
         Some(v) => {
             write_start_tag(writer, "sheetPr", attributes, false);
             v.write_to_tab_color(writer);
@@ -144,8 +144,8 @@ fn write_dimension_and_views(writer: &mut InternalWriter, worksheet: &Worksheet)
         true,
     );
 
-    worksheet.get_sheets_views().write_to(writer);
-    worksheet.get_sheet_format_properties().write_to(writer);
+    worksheet.sheets_views().write_to(writer);
+    worksheet.sheet_format_properties().write_to(writer);
 }
 
 /// Writes column definitions and row data including cell contents.
@@ -162,11 +162,9 @@ fn write_columns_and_rows(
     shared_string_table: &Arc<RwLock<SharedStringTable>>,
     stylesheet: &mut Stylesheet,
 ) {
-    let mut column_dimensions = worksheet.get_column_dimensions_crate().clone();
-    column_dimensions.calculation_auto_width(
-        worksheet.get_cells_crate(),
-        worksheet.get_merge_cells_crate(),
-    );
+    let mut column_dimensions = worksheet.column_dimensions_crate().clone();
+    column_dimensions
+        .calculation_auto_width(worksheet.cells_crate(), worksheet.merge_cells_crate());
     column_dimensions.write_to(writer, stylesheet);
 
     write_sheet_data(writer, worksheet, shared_string_table, stylesheet);
@@ -189,9 +187,9 @@ fn write_sheet_data(
     let has_sheet_data = worksheet.has_sheet_data();
     write_start_tag(writer, "sheetData", vec![], !has_sheet_data);
 
-    let mut row_dimensions = worksheet.get_row_dimensions();
+    let mut row_dimensions = worksheet.row_dimensions();
     row_dimensions.sort_by_key(|a| a.get_row_num());
-    let cells = worksheet.get_cells_sorted();
+    let cells = worksheet.cells_sorted();
     let formula_shared_list = build_formula_shared_list(&cells);
     write_rows_and_cells(
         writer,
@@ -253,11 +251,11 @@ fn write_worksheet_features(
     worksheet: &Worksheet,
     stylesheet: &mut Stylesheet,
 ) {
-    if let Some(v) = worksheet.get_sheet_protection() {
+    if let Some(v) = worksheet.sheet_protection() {
         v.write_to(writer);
     }
 
-    if let Some(v) = worksheet.get_auto_filter() {
+    if let Some(v) = worksheet.auto_filter() {
         write_start_tag(
             writer,
             "autoFilter",
@@ -266,14 +264,14 @@ fn write_worksheet_features(
         );
     }
 
-    worksheet.get_merge_cells_crate().write_to(writer);
+    worksheet.merge_cells_crate().write_to(writer);
     write_start_tag(writer, "phoneticPr", vec![("fontId", "1").into()], true);
 
-    for conditional_formatting in worksheet.get_conditional_formatting_collection() {
+    for conditional_formatting in worksheet.conditional_formatting_collection() {
         conditional_formatting.write_to(writer, stylesheet.get_differential_formats_mut());
     }
 
-    if let Some(v) = worksheet.get_data_validations() {
+    if let Some(v) = worksheet.data_validations() {
         v.write_to(writer);
     }
 }
@@ -291,9 +289,9 @@ fn write_worksheet_extensions(writer: &mut InternalWriter, worksheet: &Worksheet
     r_id = write_drawings(writer, worksheet, r_id);
     write_tables_and_objects(writer, worksheet, r_id);
 
-    if worksheet.get_data_validations_2010().is_some() {
+    if worksheet.data_validations_2010().is_some() {
         write_start_tag(writer, "extLst", vec![], false);
-        if let Some(v) = worksheet.get_data_validations_2010() {
+        if let Some(v) = worksheet.data_validations_2010() {
             v.write_to(writer);
         }
         write_end_tag(writer, "extLst");
@@ -395,7 +393,7 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
     if worksheet.has_hyperlink() {
         write_start_tag(writer, "hyperlinks", vec![], false);
 
-        for (coordition, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
+        for (coordition, hyperlink) in worksheet.hyperlink_collection_to_hashmap() {
             let r_id_str = format!("rId{}", &r_id);
             let mut attributes: crate::structs::AttrCollection = Vec::new();
             attributes.push(("ref", &coordition).into());
@@ -426,18 +424,18 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
 ///
 /// The next available relationship ID
 fn write_print_settings(writer: &mut InternalWriter, worksheet: &Worksheet, r_id: i32) -> i32 {
-    worksheet.get_print_options().write_to(writer);
-    worksheet.get_page_margins().write_to(writer);
+    worksheet.print_options().write_to(writer);
+    worksheet.page_margins().write_to(writer);
 
-    if worksheet.get_page_setup().has_param() {
+    if worksheet.page_setup().has_param() {
         worksheet
-            .get_page_setup()
+            .page_setup()
             .write_to(writer, &mut num_traits::cast(r_id).unwrap());
     }
 
-    worksheet.get_header_footer().write_to(writer);
-    worksheet.get_row_breaks().write_to(writer);
-    worksheet.get_column_breaks().write_to(writer);
+    worksheet.header_footer().write_to(writer);
+    worksheet.row_breaks().write_to(writer);
+    worksheet.column_breaks().write_to(writer);
 
     r_id
 }
@@ -488,14 +486,14 @@ fn write_drawings(writer: &mut InternalWriter, worksheet: &Worksheet, mut r_id: 
 /// * `r_id` - The current relationship ID
 fn write_tables_and_objects(writer: &mut InternalWriter, worksheet: &Worksheet, mut r_id: i32) {
     if worksheet.has_table() {
-        let tables = worksheet.get_tables();
+        let tables = worksheet.tables();
         write_start_tag(
             writer,
             "tableParts",
             vec![("count", &tables.len().to_string()).into()],
             false,
         );
-        for _table in worksheet.get_tables() {
+        for _table in worksheet.tables() {
             let r_id_str = format!("rId{}", &r_id);
             write_start_tag(
                 writer,
@@ -510,7 +508,7 @@ fn write_tables_and_objects(writer: &mut InternalWriter, worksheet: &Worksheet, 
 
     let ole_id = 1000 + 25;
     worksheet
-        .get_ole_objects()
+        .ole_objects()
         .write_to(writer, num_traits::cast(r_id).unwrap(), ole_id);
 }
 

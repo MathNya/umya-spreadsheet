@@ -29,7 +29,7 @@ impl StringCache {
     }
 
     pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>, address: &Address, wb: &Workbook) {
-        let cell_value_list = wb.get_cell_value_by_address_crate(address);
+        let cell_value_list = wb.cell_value_by_address_crate(address);
         let coll_value_count = cell_value_list.len().to_string();
         // c:strCache
         write_start_tag(writer, "c:strCache", vec![], false);

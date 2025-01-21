@@ -68,12 +68,12 @@ pub(crate) fn read<R: io::Read + io::Seek>(
     for defined_name in &defined_names {
         if defined_name.has_local_sheet_id() {
             let local_sheet_id = defined_name.get_local_sheet_id() as usize;
-            wb.get_sheet_mut(local_sheet_id)
+            wb.sheet_mut(local_sheet_id)
                 .unwrap()
                 .add_defined_names(defined_name.clone());
         } else {
             if let Some(v) = defined_name.get_address_obj().first() {
-                if let Some(s) = wb.get_sheet_by_name_mut(v.get_sheet_name()) {
+                if let Some(s) = wb.sheet_by_name_mut(v.get_sheet_name()) {
                     s.add_defined_names(defined_name.clone());
                     continue;
                 }

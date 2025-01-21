@@ -60,7 +60,7 @@ impl NumberingCache {
         address: &Address,
         wb: &Workbook,
     ) {
-        let cell_value_list = wb.get_cell_value_by_address_crate(address);
+        let cell_value_list = wb.cell_value_by_address_crate(address);
         let coll_value_count = cell_value_list.len().to_string();
         // c:numCache
         write_start_tag(writer, "c:numCache", vec![], false);

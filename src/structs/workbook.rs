@@ -164,11 +164,18 @@ impl Workbook {
     /// ```
     #[inline]
     #[must_use]
-    pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
+    pub fn cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
         let (sheet_name, range) = split_address(address);
-        self.get_sheet_by_name(sheet_name)
+        self.sheet_by_name(sheet_name)
             .unwrap()
-            .get_cell_value_by_range(range)
+            .cell_value_by_range(range)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cell_value_by_address()")]
+    pub fn get_cell_value_by_address(&self, address: &str) -> Vec<&CellValue> {
+        self.cell_value_by_address(address)
     }
 
     /// (This method is crate only.)
@@ -178,23 +185,42 @@ impl Workbook {
     /// # Return value
     /// *`Vec<&CellValue>` - `CellValue` List.
     #[inline]
-    pub(crate) fn get_cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
-        self.get_sheet_by_name(address.get_sheet_name())
+    pub(crate) fn cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
+        self.sheet_by_name(address.get_sheet_name())
             .unwrap()
-            .get_cell_value_by_range(&address.get_range().get_range())
+            .cell_value_by_range(&address.get_range().get_range())
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_value_by_address_crate()")]
+    pub(crate) fn get_cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
+        self.cell_value_by_address_crate(address)
     }
 
     /// Get Theme.
     #[inline]
     #[must_use]
-    pub fn get_theme(&self) -> &Theme {
+    pub fn theme(&self) -> &Theme {
         &self.theme
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use theme()")]
+    pub fn get_theme(&self) -> &Theme {
+        self.theme()
     }
 
     /// Get Theme in mutable.
     #[inline]
-    pub fn get_theme_mut(&mut self) -> &mut Theme {
+    pub fn theme_mut(&mut self) -> &mut Theme {
         &mut self.theme
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use theme_mut()")]
+    pub fn get_theme_mut(&mut self) -> &mut Theme {
+        self.theme_mut()
     }
 
     /// Set Theme.
@@ -209,14 +235,27 @@ impl Workbook {
     /// Get Properties.
     #[inline]
     #[must_use]
-    pub fn get_properties(&self) -> &Properties {
+    pub fn properties(&self) -> &Properties {
         &self.properties
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use properties()")]
+    pub fn get_properties(&self) -> &Properties {
+        self.properties()
     }
 
     /// Get Properties in mutable.
     #[inline]
-    pub fn get_properties_mut(&mut self) -> &mut Properties {
+    pub fn properties_mut(&mut self) -> &mut Properties {
         &mut self.properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use properties_mut()")]
+    pub fn get_properties_mut(&mut self) -> &mut Properties {
+        self.properties_mut()
     }
 
     /// Set Properties.
@@ -233,8 +272,15 @@ impl Workbook {
     /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
     #[inline]
     #[must_use]
-    pub fn get_macros_code(&self) -> Option<&[u8]> {
+    pub fn macros_code(&self) -> Option<&[u8]> {
         self.macros_code.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use macros_code()")]
+    pub fn get_macros_code(&self) -> Option<&[u8]> {
+        self.macros_code()
     }
 
     /// Set Macros Code.
@@ -256,8 +302,15 @@ impl Workbook {
     /// Has Macros Code
     #[inline]
     #[must_use]
-    pub fn get_has_macros(&self) -> bool {
+    pub fn has_macros(&self) -> bool {
         self.macros_code.is_some()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use has_macros()")]
+    pub fn get_has_macros(&self) -> bool {
+        self.has_macros()
     }
 
     /// Set codeName property of workbook
@@ -281,15 +334,28 @@ impl Workbook {
     /// adjustments
     #[inline]
     #[must_use]
-    pub fn get_code_name(&self) -> Option<&str> {
+    pub fn code_name(&self) -> Option<&str> {
         self.code_name.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use code_name()")]
+    pub fn get_code_name(&self) -> Option<&str> {
+        self.code_name()
     }
 
     /// (This method is crate only.)
     /// Get Stylesheet.
     #[inline]
-    pub(crate) fn get_stylesheet(&self) -> &Stylesheet {
+    pub(crate) fn stylesheet(&self) -> &Stylesheet {
         &self.stylesheet
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use stylesheet()")]
+    pub(crate) fn get_stylesheet(&self) -> &Stylesheet {
+        self.stylesheet()
     }
 
     /// (This method is crate only.)
@@ -313,8 +379,14 @@ impl Workbook {
     /// (This method is crate only.)
     /// Get Shared String Table.
     #[inline]
-    pub(crate) fn get_shared_string_table(&self) -> Arc<RwLock<SharedStringTable>> {
+    pub(crate) fn shared_string_table(&self) -> Arc<RwLock<SharedStringTable>> {
         self.shared_string_table.clone()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shared_string_table()")]
+    pub(crate) fn get_shared_string_table(&self) -> Arc<RwLock<SharedStringTable>> {
+        self.shared_string_table()
     }
 
     /// (This method is crate only.)
@@ -329,7 +401,7 @@ impl Workbook {
 
     /// Get Work Sheet List.
     #[must_use]
-    pub fn get_sheet_collection(&self) -> &[Worksheet] {
+    pub fn sheet_collection(&self) -> &[Worksheet] {
         for worksheet in &self.work_sheet_collection {
             assert!(
                 worksheet.is_deserialized(),
@@ -340,19 +412,38 @@ impl Workbook {
         &self.work_sheet_collection
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet_collection()")]
+    pub fn get_sheet_collection(&self) -> &[Worksheet] {
+        self.sheet_collection()
+    }
+
     /// Get Work Sheet List.
     /// No check deserialized.
     #[inline]
     #[must_use]
-    pub fn get_sheet_collection_no_check(&self) -> &[Worksheet] {
+    pub fn sheet_collection_no_check(&self) -> &[Worksheet] {
         &self.work_sheet_collection
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet_collection_no_check()")]
+    pub fn get_sheet_collection_no_check(&self) -> &[Worksheet] {
+        self.sheet_collection_no_check()
     }
 
     /// Get Work Sheet List in mutable.
     #[inline]
-    pub fn get_sheet_collection_mut(&mut self) -> &mut [Worksheet] {
+    pub fn sheet_collection_mut(&mut self) -> &mut [Worksheet] {
         self.read_sheet_collection();
         &mut self.work_sheet_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sheet_collection_mut()")]
+    pub fn get_sheet_collection_mut(&mut self) -> &mut [Worksheet] {
+        self.sheet_collection_mut()
     }
 
     /// Get Work Sheet Count.
@@ -360,15 +451,22 @@ impl Workbook {
     /// * `usize` - Work Sheet Count.
     #[inline]
     #[must_use]
-    pub fn get_sheet_count(&self) -> usize {
+    pub fn sheet_count(&self) -> usize {
         self.work_sheet_collection.len()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet_count()")]
+    pub fn get_sheet_count(&self) -> usize {
+        self.sheet_count()
     }
 
     /// deserialize by all worksheet.
     #[inline]
     pub fn read_sheet_collection(&mut self) -> &mut Self {
-        let shared_string_table = self.get_shared_string_table();
-        let stylesheet = self.get_stylesheet().clone();
+        let shared_string_table = self.shared_string_table();
+        let stylesheet = self.stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
             raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
         }
@@ -378,8 +476,8 @@ impl Workbook {
     /// deserialize a worksheet.
     #[inline]
     pub fn read_sheet(&mut self, index: usize) -> &mut Self {
-        let shared_string_table = self.get_shared_string_table();
-        let stylesheet = self.get_stylesheet().clone();
+        let shared_string_table = self.shared_string_table();
+        let stylesheet = self.stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
         raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
         self
@@ -396,7 +494,7 @@ impl Workbook {
     pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Option<usize> {
         self.work_sheet_collection
             .iter()
-            .position(|sheet| sheet.get_name() == sheet_name)
+            .position(|sheet| sheet.name() == sheet_name)
     }
 
     /// Get Work Sheet.
@@ -406,7 +504,7 @@ impl Workbook {
     /// * `Option<&Worksheet>`.
     #[inline]
     #[must_use]
-    pub fn get_sheet(&self, index: usize) -> Option<&Worksheet> {
+    pub fn sheet(&self, index: usize) -> Option<&Worksheet> {
         self.work_sheet_collection.get(index).inspect(|v| {
             assert!(
                 v.is_deserialized(),
@@ -416,6 +514,13 @@ impl Workbook {
         })
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet()")]
+    pub fn get_sheet(&self, index: usize) -> Option<&Worksheet> {
+        self.sheet(index)
+    }
+
     /// Get Work Sheet.
     /// # Arguments
     /// * `sheet_name` - sheet name
@@ -423,19 +528,31 @@ impl Workbook {
     /// * `Option<&Worksheet>`.
     #[inline]
     #[must_use]
-    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
+    pub fn sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
-            .and_then(|index| self.get_sheet(index))
+            .and_then(|index| self.sheet(index))
     }
 
-    pub fn get_lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, &'static str> {
-        let shared_string_table = self.get_shared_string_table();
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet_by_name()")]
+    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
+        self.sheet_by_name(sheet_name)
+    }
+
+    pub fn lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, &'static str> {
+        let shared_string_table = self.shared_string_table();
         self.work_sheet_collection
             .get(index)
             .map(|v| {
-                v.get_cells_stream(&shared_string_table.read().unwrap(), self.get_stylesheet())
+                v.cells_stream(&shared_string_table.read().unwrap(), self.stylesheet())
             })
             .ok_or("Not found.")
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use lazy_read_sheet_cells()")]
+    pub fn get_lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, &'static str> {
+        self.lazy_read_sheet_cells(index)
     }
 
     /// Get Work Sheet in mutable.
@@ -444,13 +561,18 @@ impl Workbook {
     /// # Return value
     /// * `Option<&mut Worksheet>`.
     #[allow(clippy::manual_inspect)]
-    pub fn get_sheet_mut(&mut self, index: usize) -> Option<&mut Worksheet> {
-        let shared_string_table = self.get_shared_string_table();
-        let stylesheet = self.get_stylesheet().clone();
+    pub fn sheet_mut(&mut self, index: usize) -> Option<&mut Worksheet> {
+        let shared_string_table = self.shared_string_table();
+        let stylesheet = self.stylesheet().clone();
         self.work_sheet_collection.get_mut(index).map(|v| {
             raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
             v
         })
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use sheet_mut()")]
+    pub fn get_sheet_mut(&mut self, index: usize) -> Option<&mut Worksheet> {
+        self.sheet_mut(index)
     }
 
     /// Get Work Sheet in mutable.
@@ -459,14 +581,20 @@ impl Workbook {
     /// # Return value
     /// * `Option<&mut Worksheet>`.
     #[inline]
-    pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
+    pub fn sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
         self.find_sheet_index_by_name(sheet_name)
-            .and_then(move |index| self.get_sheet_mut(index))
+            .and_then(move |index| self.sheet_mut(index))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sheet_by_name_mut()")]
+    pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
+        self.sheet_by_name_mut(sheet_name)
     }
 
     #[inline]
     pub fn set_active_sheet(&mut self, index: u32) -> &mut Self {
-        self.get_workbook_view_mut().set_active_tab(index);
+        self.workbook_view_mut().set_active_tab(index);
         self
     }
 
@@ -475,18 +603,31 @@ impl Workbook {
     /// * `&Worksheet` - Work sheet.
     #[inline]
     #[must_use]
+    pub fn active_sheet(&self) -> &Worksheet {
+        let index = self.workbook_view().get_active_tab();
+        self.sheet(index as usize).unwrap()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use active_sheet()")]
     pub fn get_active_sheet(&self) -> &Worksheet {
-        let index = self.get_workbook_view().get_active_tab();
-        self.get_sheet(index as usize).unwrap()
+        self.active_sheet()
     }
 
     /// Get Active Work Sheet in mutable.
     /// # Return value
     /// * `&mut Worksheet` - Work sheet.
     #[inline]
+    pub fn active_sheet_mut(&mut self) -> &mut Worksheet {
+        let index = self.workbook_view().get_active_tab();
+        self.sheet_mut(index as usize).unwrap()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use active_sheet_mut()")]
     pub fn get_active_sheet_mut(&mut self) -> &mut Worksheet {
-        let index = self.get_workbook_view().get_active_tab();
-        self.get_sheet_mut(index as usize).unwrap()
+        self.active_sheet_mut()
     }
 
     /// Add Work Sheet.
@@ -497,7 +638,7 @@ impl Workbook {
     ///   Err:Error.
     #[inline]
     pub fn add_sheet(&mut self, value: Worksheet) -> Result<&mut Worksheet, &'static str> {
-        let title = value.get_name();
+        let title = value.name();
         Workbook::check_sheet_name(self, title)?;
         self.work_sheet_collection.push(value);
         Ok(self.work_sheet_collection.last_mut().unwrap())
@@ -525,7 +666,7 @@ impl Workbook {
     pub fn remove_sheet_by_name(&mut self, sheet_name: &str) -> Result<(), &'static str> {
         let cnt_before = self.work_sheet_collection.len();
         self.work_sheet_collection
-            .retain(|x| x.get_name() != sheet_name);
+            .retain(|x| x.name() != sheet_name);
         let cnt_after = self.work_sheet_collection.len();
         if cnt_before == cnt_after {
             return Err("out of index.");
@@ -566,7 +707,7 @@ impl Workbook {
         worksheet.set_sheet_id(sheet_id);
         worksheet.set_name(sheet_title.into());
         worksheet
-            .get_sheet_format_properties_mut()
+            .sheet_format_properties_mut()
             .set_defalut_value();
         self.work_sheet_collection.push(worksheet);
         self.work_sheet_collection.last_mut().unwrap()
@@ -599,7 +740,7 @@ impl Workbook {
         if self
             .work_sheet_collection
             .iter()
-            .any(|work_sheet| value == work_sheet.get_name())
+            .any(|work_sheet| value == work_sheet.name())
         {
             Err("name duplicate.")
         } else {
@@ -617,14 +758,27 @@ impl Workbook {
     /// Get Workbook View.
     #[inline]
     #[must_use]
-    pub fn get_workbook_view(&self) -> &WorkbookView {
+    pub fn workbook_view(&self) -> &WorkbookView {
         &self.workbook_view
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_view()")]
+    pub fn get_workbook_view(&self) -> &WorkbookView {
+        self.workbook_view()
     }
 
     /// Get Workbook View in mutable.
     #[inline]
-    pub fn get_workbook_view_mut(&mut self) -> &mut WorkbookView {
+    pub fn workbook_view_mut(&mut self) -> &mut WorkbookView {
         &mut self.workbook_view
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use workbook_view_mut()")]
+    pub fn get_workbook_view_mut(&mut self) -> &mut WorkbookView {
+        self.workbook_view_mut()
     }
 
     /// Set Workbook View.
@@ -643,14 +797,20 @@ impl Workbook {
         if !self.defined_names.is_empty() {
             return true;
         }
-        self.get_sheet_collection_no_check()
+        self.sheet_collection_no_check()
             .iter()
             .any(Worksheet::has_defined_names)
     }
 
     #[inline]
-    pub(crate) fn get_backup_context_types(&self) -> &[(Box<str>, Box<str>)] {
+    pub(crate) fn backup_context_types(&self) -> &[(Box<str>, Box<str>)] {
         &self.backup_context_types
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use backup_context_types()")]
+    pub(crate) fn get_backup_context_types(&self) -> &[(Box<str>, Box<str>)] {
+        self.backup_context_types()
     }
 
     #[inline]
@@ -666,12 +826,12 @@ impl Workbook {
         self
     }
 
-    pub(crate) fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
+    pub(crate) fn pivot_caches(&self) -> Vec<(String, String, String)> {
         let mut result: Vec<(String, String, String)> = Vec::new();
         for (val1, val2, val3) in &self.pivot_caches {
             let val3_up = format!("xl/{}", &val3);
-            for worksheet in self.get_sheet_collection_no_check() {
-                for pivot_cache_definition in worksheet.get_pivot_cache_definition_collection() {
+            for worksheet in self.sheet_collection_no_check() {
+                for pivot_cache_definition in worksheet.pivot_cache_definition_collection() {
                     if val3_up.as_str() == pivot_cache_definition
                         && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3)
                     {
@@ -681,6 +841,11 @@ impl Workbook {
             }
         }
         result
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use pivot_caches()")]
+    pub(crate) fn get_pivot_caches(&self) -> Vec<(String, String, String)> {
+        self.pivot_caches()
     }
 
     #[inline]
@@ -705,14 +870,27 @@ impl Workbook {
 
     #[inline]
     #[must_use]
-    pub fn get_workbook_protection(&self) -> Option<&WorkbookProtection> {
+    pub fn workbook_protection(&self) -> Option<&WorkbookProtection> {
         self.workbook_protection.as_deref()
     }
 
     #[inline]
-    pub fn get_workbook_protection_mut(&mut self) -> &mut WorkbookProtection {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_protection()")]
+    pub fn get_workbook_protection(&self) -> Option<&WorkbookProtection> {
+        self.workbook_protection()
+    }
+
+    #[inline]
+    pub fn workbook_protection_mut(&mut self) -> &mut WorkbookProtection {
         self.workbook_protection
             .get_or_insert(Box::new(WorkbookProtection::default()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use workbook_protection_mut()")]
+    pub fn get_workbook_protection_mut(&mut self) -> &mut WorkbookProtection {
+        self.workbook_protection_mut()
     }
 
     #[inline]
@@ -730,14 +908,27 @@ impl Workbook {
     /// Get Defined Name (Vec).
     #[inline]
     #[must_use]
-    pub fn get_defined_names(&self) -> &[DefinedName] {
+    pub fn defined_names(&self) -> &[DefinedName] {
         &self.defined_names
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use defined_names()")]
+    pub fn get_defined_names(&self) -> &[DefinedName] {
+        self.defined_names()
     }
 
     /// Get Defined Name (Vec) in mutable.
     #[inline]
-    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+    pub fn defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
         &mut self.defined_names
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use defined_names_mut()")]
+    pub fn get_defined_names_mut(&mut self) -> &mut Vec<DefinedName> {
+        self.defined_names_mut()
     }
 
     /// Set Defined Name (Vec).

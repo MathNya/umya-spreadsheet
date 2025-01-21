@@ -16,7 +16,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     if wb
-        .get_properties()
+        .properties()
         .get_custom_properties()
         .get_custom_document_property_list()
         .is_empty()
@@ -36,7 +36,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_new_line(&mut writer);
 
     // Properties
-    wb.get_properties().write_to_custom(&mut writer);
+    wb.properties().write_to_custom(&mut writer);
 
     writer_mng.add_writer(ARC_CUSTOM, writer)
 }

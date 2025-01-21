@@ -503,7 +503,7 @@ impl Properties {
         for workseet in work_sheet_collection {
             // vt:lpstr
             write_start_tag(writer, "vt:lpstr", vec![], false);
-            write_text_node(writer, workseet.get_name());
+            write_text_node(writer, workseet.name());
             write_end_tag(writer, "vt:lpstr");
         }
 

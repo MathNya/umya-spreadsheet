@@ -29,11 +29,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         .unwrap();
     write_new_line(&mut writer);
 
-    worksheet.get_worksheet_drawing().write_to(
-        &mut writer,
-        worksheet.get_ole_objects(),
-        &mut rel_list,
-    );
+    worksheet
+        .worksheet_drawing()
+        .write_to(&mut writer, worksheet.ole_objects(), &mut rel_list);
 
     let file_no = writer_mng.add_file_at_drawing(writer)?;
     Ok((file_no.to_string(), rel_list))

@@ -241,7 +241,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
             // Override workbook
             if file.starts_with("/xl/workbook.xml") {
-                content_type = if wb.get_has_macros() {
+                content_type = if wb.has_macros() {
                     WORKBOOK_MACRO_TYPE
                 } else {
                     WORKBOOK_TYPE
@@ -315,7 +315,7 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
 
             // Override Unsupported
             if content_type.is_empty() {
-                for (old_part_name, old_content_type) in wb.get_backup_context_types() {
+                for (old_part_name, old_content_type) in wb.backup_context_types() {
                     if **old_part_name == file {
                         content_type = old_content_type;
                     }

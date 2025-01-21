@@ -25,7 +25,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
         match reader.read_event_into(&mut buf) {
             Ok(Event::Start(ref e)) => {
                 if e.name().into_inner() == b"Properties" {
-                    wb.get_properties_mut().set_attributes_app(&mut reader, e);
+                    wb.properties_mut().set_attributes_app(&mut reader, e);
                 }
             }
             Ok(Event::Eof) => break,

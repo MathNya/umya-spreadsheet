@@ -19,7 +19,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     writer_mng: &mut WriterManager<W>,
 ) -> Result<Vec<String>, XlsxError> {
     let mut table_no_list = Vec::<String>::new();
-    for table in worksheet.get_tables() {
+    for table in worksheet.tables() {
         let mut writer = Writer::new(io::Cursor::new(Vec::new()));
 
         // XML header
