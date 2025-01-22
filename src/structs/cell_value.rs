@@ -25,18 +25,32 @@ pub struct CellValue {
 impl CellValue {
     #[inline]
     #[must_use]
-    pub fn get_data_type(&self) -> &str {
+    pub fn data_type(&self) -> &str {
         self.raw_value.get_data_type()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_raw_value(&self) -> &CellRawValue {
+    #[deprecated(since = "3.0.0", note = "Use data_type()")]
+    pub fn get_data_type(&self) -> &str {
+        self.data_type()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn raw_value(&self) -> &CellRawValue {
         &self.raw_value
     }
 
     #[inline]
-    pub(crate) fn get_data_type_crate(&self) -> &str {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use raw_value()")]
+    pub fn get_raw_value(&self) -> &CellRawValue {
+        self.raw_value()
+    }
+
+    #[inline]
+    pub(crate) fn data_type_crate(&self) -> &str {
         match &self.formula {
             Some(_) => "str",
             None => self.raw_value.get_data_type(),
@@ -44,19 +58,39 @@ impl CellValue {
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use data_type_crate()")]
+    pub(crate) fn get_data_type_crate(&self) -> &str {
+        self.data_type_crate()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_value(&self) -> Cow<'static, str> {
+    pub fn value(&self) -> Cow<'static, str> {
         self.raw_value.to_string().into()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_value_number(&self) -> Option<f64> {
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> Cow<'static, str> {
+        self.value()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn value_number(&self) -> Option<f64> {
         self.raw_value.get_number()
     }
 
     #[inline]
-    pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value_number()")]
+    pub fn get_value_number(&self) -> Option<f64> {
+        self.value_number()
+    }
+
+    #[inline]
+    pub fn value_lazy(&mut self) -> Cow<'static, str> {
         if let CellRawValue::Lazy(v) = &self.raw_value {
             self.raw_value = Self::guess_typed_data(v);
         }
@@ -65,13 +99,31 @@ impl CellValue {
     }
 
     #[inline]
-    pub(crate) fn get_text(&self) -> Option<Text> {
+    #[deprecated(since = "3.0.0", note = "Use value_lazy()")]
+    pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
+        self.value_lazy()
+    }
+
+    #[inline]
+    pub(crate) fn text(&self) -> Option<Text> {
         self.raw_value.get_text()
     }
 
     #[inline]
-    pub(crate) fn get_rich_text(&self) -> Option<RichText> {
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub(crate) fn get_text(&self) -> Option<Text> {
+        self.text()
+    }
+
+    #[inline]
+    pub(crate) fn rich_text(&self) -> Option<RichText> {
         self.raw_value.get_rich_text()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub(crate) fn get_rich_text(&self) -> Option<RichText> {
+        self.rich_text()
     }
 
     /// Set the raw value after trying to convert `value` into one of the
@@ -161,7 +213,7 @@ impl CellValue {
 
     #[inline]
     #[must_use]
-    pub fn get_formula(&self) -> &str {
+    pub fn formula(&self) -> &str {
         match &self.formula {
             Some(v) => v.get_text(),
             None => "",
@@ -170,8 +222,22 @@ impl CellValue {
 
     #[inline]
     #[must_use]
-    pub fn get_formula_obj(&self) -> Option<&CellFormula> {
+    #[deprecated(since = "3.0.0", note = "Use formula()")]
+    pub fn get_formula(&self) -> &str {
+        self.formula()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn formula_obj(&self) -> Option<&CellFormula> {
         self.formula.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula_obj()")]
+    pub fn get_formula_obj(&self) -> Option<&CellFormula> {
+        self.formula_obj()
     }
 
     #[inline]
@@ -262,7 +328,7 @@ impl CellValue {
     // When opened in software such as Excel, it is visually blank.
     #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
-        self.get_value() == "" && self.is_formula_empty()
+        self.value() == "" && self.is_formula_empty()
     }
 }
 impl AdjustmentCoordinateWith2Sheet for CellValue {
@@ -320,23 +386,23 @@ mod tests {
         let mut obj = CellValue::default();
 
         obj.set_value_string(String::from("TEST"));
-        assert_eq!(obj.get_value(), "TEST");
-        assert!(obj.get_value_number().is_none());
+        assert_eq!(obj.value(), "TEST");
+        assert!(obj.value_number().is_none());
 
         obj.set_value_string("TEST");
-        assert_eq!(obj.get_value(), "TEST");
+        assert_eq!(obj.value(), "TEST");
 
         obj.set_value_bool(true);
-        assert_eq!(obj.get_value(), "TRUE");
+        assert_eq!(obj.value(), "TRUE");
 
         obj.set_value_number(1);
-        assert_eq!(obj.get_value(), "1");
+        assert_eq!(obj.value(), "1");
 
         obj.set_blank();
-        assert_eq!(obj.get_value(), "");
+        assert_eq!(obj.value(), "");
 
         obj.set_error("#NUM!");
-        assert_eq!(obj.get_value(), "#NUM!");
+        assert_eq!(obj.value(), "#NUM!");
     }
 
     #[test]

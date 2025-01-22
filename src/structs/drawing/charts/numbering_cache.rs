@@ -82,7 +82,7 @@ impl NumberingCache {
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);
-            write_text_node(writer, cell_value.get_value());
+            write_text_node(writer, cell_value.value());
             write_end_tag(writer, "c:v");
 
             write_end_tag(writer, "c:pt");

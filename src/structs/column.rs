@@ -152,14 +152,14 @@ impl Column {
             None => 11f64,
         };
 
-        let mut cell_list = cells.get_collection_by_column(self.get_col_num());
+        let mut cell_list = cells.collection_by_column(self.get_col_num());
         cell_list.sort_by(|a, b| {
-            a.get_coordinate()
+            a.coordinate()
                 .get_row_num()
-                .cmp(&b.get_coordinate().get_row_num())
+                .cmp(&b.coordinate().get_row_num())
         });
         for cell in cell_list {
-            let column_width = cell.get_width_point(column_font_size);
+            let column_width = cell.width_point(column_font_size);
 
             if column_width > column_width_max {
                 column_width_max = column_width;

@@ -70,13 +70,26 @@ pub struct Cell {
 impl Cell {
     #[inline]
     #[must_use]
-    pub fn get_cell_value(&self) -> &CellValue {
+    pub fn cell_value(&self) -> &CellValue {
         &self.cell_value
     }
 
     #[inline]
-    pub fn get_cell_value_mut(&mut self) -> &mut CellValue {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cell_value()")]
+    pub fn get_cell_value(&self) -> &CellValue {
+        self.cell_value()
+    }
+
+    #[inline]
+    pub fn cell_value_mut(&mut self) -> &mut CellValue {
         &mut self.cell_value
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_value_mut()")]
+    pub fn get_cell_value_mut(&mut self) -> &mut CellValue {
+        self.cell_value_mut()
     }
 
     #[inline]
@@ -87,13 +100,26 @@ impl Cell {
 
     #[inline]
     #[must_use]
-    pub fn get_style(&self) -> &Style {
+    pub fn style(&self) -> &Style {
         &self.style
     }
 
     #[inline]
-    pub fn get_style_mut(&mut self) -> &mut Style {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &Style {
+        self.style()
+    }
+
+    #[inline]
+    pub fn style_mut(&mut self) -> &mut Style {
         &mut self.style
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style_mut()")]
+    pub fn get_style_mut(&mut self) -> &mut Style {
+        self.style_mut()
     }
 
     #[inline]
@@ -104,13 +130,26 @@ impl Cell {
 
     #[inline]
     #[must_use]
-    pub fn get_coordinate(&self) -> &Coordinate {
+    pub fn coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
 
     #[inline]
-    pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate()")]
+    pub fn get_coordinate(&self) -> &Coordinate {
+        self.coordinate()
+    }
+
+    #[inline]
+    pub fn coordinate_mut(&mut self) -> &mut Coordinate {
         &mut self.coordinate
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_mut()")]
+    pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
+        self.coordinate_mut()
     }
 
     /// Change the coordinate.
@@ -121,7 +160,7 @@ impl Cell {
     {
         let CellCoordinates { col, row } = coordinate.into();
 
-        let formula = self.cell_value.get_formula();
+        let formula = self.cell_value.formula();
         if !formula.is_empty() {
             let org_col_num = self.coordinate.get_col_num();
             let org_row_num = self.coordinate.get_row_num();
@@ -141,17 +180,30 @@ impl Cell {
 
     #[inline]
     #[must_use]
-    pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
+    pub fn hyperlink(&self) -> Option<&Hyperlink> {
         self.hyperlink.as_deref()
     }
 
     #[inline]
-    pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hyperlink()")]
+    pub fn get_hyperlink(&self) -> Option<&Hyperlink> {
+        self.hyperlink()
+    }
+
+    #[inline]
+    pub fn hyperlink_mut(&mut self) -> &mut Hyperlink {
         if self.hyperlink.is_some() {
             return self.hyperlink.as_mut().unwrap();
         }
         self.set_hyperlink(Hyperlink::default());
         self.hyperlink.as_mut().unwrap()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hyperlink_mut()")]
+    pub fn get_hyperlink_mut(&mut self) -> &mut Hyperlink {
+        self.hyperlink_mut()
     }
 
     #[inline]
@@ -162,8 +214,15 @@ impl Cell {
 
     #[inline]
     #[must_use]
-    pub fn get_cell_meta_index(&self) -> u32 {
+    pub fn cell_meta_index(&self) -> u32 {
         self.cell_meta_index.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cell_meta_index()")]
+    pub fn get_cell_meta_index(&self) -> u32 {
+        self.cell_meta_index()
     }
 
     #[inline]
@@ -174,19 +233,39 @@ impl Cell {
 
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> Cow<'static, str> {
-        self.cell_value.get_value()
+    pub fn value(&self) -> Cow<'static, str> {
+        self.cell_value.value()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_value_number(&self) -> Option<f64> {
-        self.cell_value.get_value_number()
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> Cow<'static, str> {
+        self.value()
     }
 
     #[inline]
+    #[must_use]
+    pub fn value_number(&self) -> Option<f64> {
+        self.cell_value.value_number()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value_number()")]
+    pub fn get_value_number(&self) -> Option<f64> {
+        self.value_number()
+    }
+
+    #[inline]
+    pub fn value_lazy(&mut self) -> Cow<'static, str> {
+        self.cell_value.value_lazy()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_lazy()")]
     pub fn get_value_lazy(&mut self) -> Cow<'static, str> {
-        self.cell_value.get_value_lazy()
+        self.value_lazy()
     }
 
     /// Set the cell's value after trying to convert `value` into one of the
@@ -288,19 +367,39 @@ impl Cell {
 
     #[inline]
     #[must_use]
-    pub fn get_data_type(&self) -> &str {
-        self.cell_value.get_data_type()
+    pub fn data_type(&self) -> &str {
+        self.cell_value.data_type()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_raw_value(&self) -> &CellRawValue {
-        self.cell_value.get_raw_value()
+    #[deprecated(since = "3.0.0", note = "Use data_type()")]
+    pub fn get_data_type(&self) -> &str {
+        self.data_type()
     }
 
     #[inline]
+    #[must_use]
+    pub fn raw_value(&self) -> &CellRawValue {
+        self.cell_value.raw_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use raw_value()")]
+    pub fn get_raw_value(&self) -> &CellRawValue {
+        self.raw_value()
+    }
+
+    #[inline]
+    pub(crate) fn data_type_crate(&self) -> &str {
+        self.cell_value.data_type_crate()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use data_type_crate()")]
     pub(crate) fn get_data_type_crate(&self) -> &str {
-        self.cell_value.get_data_type_crate()
+        self.data_type_crate()
     }
 
     #[inline]
@@ -311,20 +410,34 @@ impl Cell {
 
     #[inline]
     #[must_use]
+    pub fn formula(&self) -> &str {
+        self.cell_value.formula()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula()")]
     pub fn get_formula(&self) -> &str {
-        self.cell_value.get_formula()
+        self.formula()
     }
 
     #[inline]
     #[must_use]
+    pub fn formula_obj(&self) -> Option<&CellFormula> {
+        self.cell_value.formula_obj()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula_obj()")]
     pub fn get_formula_obj(&self) -> Option<&CellFormula> {
-        self.cell_value.get_formula_obj()
+        self.formula_obj()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_formula_shared_index(&self) -> Option<u32> {
-        if let Some(v) = self.get_formula_obj() {
+    pub fn formula_shared_index(&self) -> Option<u32> {
+        if let Some(v) = self.formula_obj() {
             if v.get_formula_type() == &CellFormulaValues::Shared {
                 return Some(v.get_shared_index());
             }
@@ -332,12 +445,19 @@ impl Cell {
         None
     }
 
-    pub(crate) fn get_width_point(&self, column_font_size: f64) -> f64 {
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula_shared_index()")]
+    pub fn get_formula_shared_index(&self) -> Option<u32> {
+        self.formula_shared_index()
+    }
+
+    pub(crate) fn width_point(&self, column_font_size: f64) -> f64 {
         // get cell value len.
-        let char_cnt = self.get_width_point_cell();
+        let char_cnt = self.width_point_cell();
 
         // get font size.
-        let font_size = match self.get_style().get_font() {
+        let font_size = match self.style().get_font() {
             Some(font) => font.get_font_size().get_val(),
             None => column_font_size,
         };
@@ -348,8 +468,13 @@ impl Cell {
         column_width
     }
 
-    pub(crate) fn get_width_point_cell(&self) -> f64 {
-        let value = self.get_formatted_value();
+    #[deprecated(since = "3.0.0", note = "Use width_point()")]
+    pub(crate) fn get_width_point(&self, column_font_size: f64) -> f64 {
+        self.width_point(column_font_size)
+    }
+
+    pub(crate) fn width_point_cell(&self) -> f64 {
+        let value = self.formatted_value();
 
         value.split('\n').fold(0f64, |mut acc, value| {
             let mut point = 0f64;
@@ -365,16 +490,27 @@ impl Cell {
         })
     }
 
+    #[deprecated(since = "3.0.0", note = "Use width_point_cell()")]
+    pub(crate) fn get_width_point_cell(&self) -> f64 {
+        self.width_point_cell()
+    }
+
     #[must_use]
-    pub fn get_formatted_value(&self) -> String {
-        let value = self.get_value();
+    pub fn formatted_value(&self) -> String {
+        let value = self.value();
 
         // convert value
-        let result = match self.get_style().get_number_format() {
+        let result = match self.style().get_number_format() {
             Some(nmuber_format) => to_formatted_string(&value, nmuber_format.get_format_code()),
             None => to_formatted_string(&value, NumberingFormat::FORMAT_GENERAL),
         };
         result
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formatted_value()")]
+    pub fn get_formatted_value(&self) -> String {
+        self.formatted_value()
     }
 
     // When opened in software such as Excel, it is visually blank.
@@ -515,15 +651,15 @@ impl Cell {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         let coordinate = self.coordinate.to_string();
         attributes.push(("r", &coordinate).into());
-        if self.get_data_type_crate() == "s"
-            || self.get_data_type_crate() == "b"
-            || self.get_data_type_crate() == "str"
-            || self.get_data_type_crate() == "e"
+        if self.data_type_crate() == "s"
+            || self.data_type_crate() == "b"
+            || self.data_type_crate() == "str"
+            || self.data_type_crate() == "e"
         {
-            attributes.push(("t", self.get_data_type_crate()).into());
+            attributes.push(("t", self.data_type_crate()).into());
         }
         let xf_index_str: String;
-        let xf_index = stylesheet.set_style(self.get_style());
+        let xf_index = stylesheet.set_style(self.style());
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
             attributes.push(("s", &xf_index_str).into());
@@ -553,19 +689,19 @@ impl Cell {
             write_start_tag(writer, "v", vec![], false);
 
             // todo use typed value
-            match self.get_data_type_crate() {
+            match self.data_type_crate() {
                 "s" => {
                     let val_index = shared_string_table
                         .write()
                         .unwrap()
-                        .set_cell(self.get_cell_value());
+                        .set_cell(self.cell_value());
                     write_text_node(writer, val_index.to_string());
                 }
                 "str" => {
-                    write_text_node_conversion(writer, self.get_value());
+                    write_text_node_conversion(writer, self.value());
                 }
                 "b" => {
-                    let upper_value = self.get_value().to_uppercase();
+                    let upper_value = self.value().to_uppercase();
                     let prm = if upper_value == "TRUE" { "1" } else { "0" };
                     write_text_node(writer, prm);
                 }
@@ -573,7 +709,7 @@ impl Cell {
                     let prm = "#VALUE!";
                     write_text_node(writer, prm);
                 }
-                _ => write_text_node_conversion(writer, self.get_value()),
+                _ => write_text_node_conversion(writer, self.value()),
             }
             write_end_tag(writer, "v");
         }

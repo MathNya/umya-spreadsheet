@@ -28,58 +28,98 @@ pub struct Cells {
 }
 impl Cells {
     #[inline]
-    pub fn get_collection(&self) -> Vec<&Cell> {
+    pub fn collection(&self) -> Vec<&Cell> {
         self.map.values().map(Box::as_ref).collect()
     }
 
+    #[inline]
     #[must_use]
-    pub fn get_collection_sorted(&self) -> Vec<&Cell> {
-        let mut cells = self.get_collection();
+    #[deprecated(since = "3.0.0", note = "Use collection()")]
+    pub fn get_collection(&self) -> Vec<&Cell> {
+        self.collection()
+    }
+
+    #[must_use]
+    pub fn collection_sorted(&self) -> Vec<&Cell> {
+        let mut cells = self.collection();
         cells.sort_by(|a, b| {
             (
-                a.get_coordinate().get_row_num(),
-                a.get_coordinate().get_col_num(),
+                a.coordinate().get_row_num(),
+                a.coordinate().get_col_num(),
             )
                 .cmp(&(
-                    b.get_coordinate().get_row_num(),
-                    b.get_coordinate().get_col_num(),
+                    b.coordinate().get_row_num(),
+                    b.coordinate().get_col_num(),
                 ))
         });
         cells
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use collection_sorted()")]
+    pub fn get_collection_sorted(&self) -> Vec<&Cell> {
+        self.collection_sorted()
+    }
+
     #[inline]
-    pub(crate) fn get_collection_mut(&mut self) -> Vec<&mut Cell> {
+    pub(crate) fn collection_mut(&mut self) -> Vec<&mut Cell> {
         self.map.values_mut().map(Box::as_mut).collect()
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use collection_mut()")]
+    pub(crate) fn get_collection_mut(&mut self) -> Vec<&mut Cell> {
+        self.collection_mut()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
+    pub fn collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
         &self.map
     }
 
     #[inline]
-    pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.map
-            .values()
-            .filter(|k| k.get_coordinate().get_col_num() == column_num)
-            .map(Box::as_ref)
-            .collect()
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use collection_to_hashmap()")]
+    pub fn get_collection_to_hashmap(&self) -> &HashMap<(u32, u32), Box<Cell>> {
+        self.collection_to_hashmap()
     }
 
     #[inline]
-    pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
+    pub fn collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
         self.map
             .values()
-            .filter(|k| k.get_coordinate().get_row_num() == row_num)
+            .filter(|k| k.coordinate().get_col_num() == column_num)
             .map(Box::as_ref)
             .collect()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
+    #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
+    pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
+        self.collection_by_column(column_num)
+    }
+
+    #[inline]
+    pub fn collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
+        self.map
+            .values()
+            .filter(|k| k.coordinate().get_row_num() == row_num)
+            .map(Box::as_ref)
+            .collect()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
+    pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
+        self.collection_by_row(row_num)
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
         self.map
             .iter()
             .filter(|(k, _v)| k.1 == column_num)
@@ -89,7 +129,14 @@ impl Cells {
 
     #[inline]
     #[must_use]
-    pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
+    #[deprecated(since = "3.0.0", note = "Use collection_by_column_to_hashmap()")]
+    pub fn get_collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
+        self.collection_by_column_to_hashmap(column_num)
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
         self.map
             .iter()
             .filter(|(k, _v)| k.0 == row_num)
@@ -98,12 +145,25 @@ impl Cells {
     }
 
     #[inline]
-    pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Box<Cell>> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use collection_by_row_to_hashmap()")]
+    pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
+        self.collection_by_row_to_hashmap(row_num)
+    }
+
+    #[inline]
+    pub(crate) fn collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Box<Cell>> {
         &mut self.map
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use collection_to_hashmap_mut()")]
+    pub(crate) fn get_collection_to_hashmap_mut(&mut self) -> &mut HashMap<(u32, u32), Box<Cell>> {
+        self.collection_to_hashmap_mut()
+    }
+
     #[must_use]
-    pub fn get_highest_column_and_row(&self) -> (u32, u32) {
+    pub fn highest_column_and_row(&self) -> (u32, u32) {
         self.map
             .keys()
             .fold((0, 0), |(col_max, row_max), &(col, row)| {
@@ -111,11 +171,17 @@ impl Cells {
             })
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use highest_column_and_row()")]
+    pub fn get_highest_column_and_row(&self) -> (u32, u32) {
+        self.highest_column_and_row()
+    }
+
     /// Has Hyperlink
     #[inline]
     #[must_use]
     pub fn has_hyperlink(&self) -> bool {
-        self.map.values().any(|c| c.get_hyperlink().is_some())
+        self.map.values().any(|c| c.hyperlink().is_some())
     }
 
     #[inline]
@@ -143,8 +209,8 @@ impl Cells {
             .entry((row.to_owned(), col.to_owned()))
             .or_insert_with(|| {
                 let mut c = Cell::default();
-                c.get_coordinate_mut().set_col_num(col);
-                c.get_coordinate_mut().set_row_num(row);
+                c.coordinate_mut().set_col_num(col);
+                c.coordinate_mut().set_row_num(row);
                 if col_dimenshon.has_style() {
                     c.set_style(col_dimenshon.get_style().clone());
                 }
@@ -156,25 +222,43 @@ impl Cells {
     }
 
     #[inline]
+    pub fn cell_value<T>(&self, coordinate: T) -> &CellValue
+    where
+        T: Into<CellCoordinates>,
+    {
+        let CellCoordinates { col, row } = coordinate.into();
+        self.map
+            .get(&(row.to_owned(), col.to_owned()))
+            .map_or(&self.default_cell_value, |c| c.cell_value())
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_value()")]
     pub fn get_cell_value<T>(&self, coordinate: T) -> &CellValue
     where
         T: Into<CellCoordinates>,
     {
-        let CellCoordinates { col, row } = coordinate.into();
-        self.map
-            .get(&(row.to_owned(), col.to_owned()))
-            .map_or(&self.default_cell_value, |c| c.get_cell_value())
+        self.cell_value(coordinate)
     }
 
     #[inline]
-    pub fn get_style<T>(&self, coordinate: T) -> &Style
+    pub fn style<T>(&self, coordinate: T) -> &Style
     where
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.map
             .get(&(row.to_owned(), col.to_owned()))
-            .map_or(&self.default_style, |c| c.get_style())
+            .map_or(&self.default_style, |c| c.style())
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style<T>(&self, coordinate: T) -> &Style
+    where
+        T: Into<CellCoordinates>,
+    {
+        self.style(coordinate)
     }
 
     #[inline]
@@ -184,8 +268,8 @@ impl Cells {
         row_dimenshon: &Row,
         col_dimenshon: &Column,
     ) -> &mut Self {
-        let col_num = cell.get_coordinate().get_col_num();
-        let row_num = cell.get_coordinate().get_row_num();
+        let col_num = cell.coordinate().get_col_num();
+        let row_num = cell.coordinate().get_row_num();
         let target_cell = self.get_mut((col_num, row_num), row_dimenshon, col_dimenshon);
         target_cell.set_obj(cell);
         self
@@ -199,8 +283,8 @@ impl Cells {
 
     #[inline]
     pub(crate) fn add(&mut self, cell: Cell) {
-        let col_num = cell.get_coordinate().get_col_num();
-        let row_num = cell.get_coordinate().get_row_num();
+        let col_num = cell.coordinate().get_col_num();
+        let row_num = cell.coordinate().get_row_num();
         let k = (row_num.to_owned(), col_num.to_owned());
         self.map.insert(k, Box::new(cell));
     }
@@ -212,7 +296,7 @@ impl Cells {
     }
 
     #[must_use]
-    pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
+    pub fn cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
         let mut result: Vec<Option<&Cell>> = Vec::new();
         let coordinate_list = get_coordinate_list(range);
         for (col_num, row_num) in coordinate_list {
@@ -222,33 +306,52 @@ impl Cells {
     }
 
     #[must_use]
-    pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
+        self.cell_by_range(range)
+    }
+
+    #[must_use]
+    pub fn cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         let mut result: Vec<&CellValue> = Vec::new();
         let coordinate_list = get_coordinate_list(range);
         for (col_num, row_num) in coordinate_list {
-            result.push(self.get_cell_value((col_num, row_num)));
+            result.push(self.cell_value((col_num, row_num)));
         }
         result
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cell_value_by_range()")]
+    pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
+        self.cell_value_by_range(range)
+    }
+
     #[inline]
     #[must_use]
-    pub fn get_formatted_value_by_column_and_row(&self, col_num: u32, row_num: u32) -> String {
+    pub fn formatted_value_by_column_and_row(&self, col_num: u32, row_num: u32) -> String {
         match self.get((col_num, row_num)) {
-            Some(v) => v.get_formatted_value(),
+            Some(v) => v.formatted_value(),
             None => String::new(),
         }
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formatted_value_by_column_and_row()")]
+    pub fn get_formatted_value_by_column_and_row(&self, col_num: u32, row_num: u32) -> String {
+        self.formatted_value_by_column_and_row(col_num, row_num)
+    }
+
     pub(crate) fn rebuild_map(&mut self) {
         self.map = self
-            .get_collection_to_hashmap_mut()
+            .collection_to_hashmap_mut()
             .iter_mut()
             .map(|(_, cell)| {
                 (
                     (
-                        cell.get_coordinate().get_row_num(),
-                        cell.get_coordinate().get_col_num(),
+                        cell.coordinate().get_row_num(),
+                        cell.coordinate().get_col_num(),
                     ),
                     std::mem::take(cell),
                 )
@@ -266,7 +369,7 @@ impl AdjustmentCoordinate for Cells {
         offset_row_num: u32,
     ) {
         // update cell
-        for ((..), cell) in self.get_collection_to_hashmap_mut() {
+        for ((..), cell) in self.collection_to_hashmap_mut() {
             cell.adjustment_insert_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -287,14 +390,14 @@ impl AdjustmentCoordinate for Cells {
     ) {
         // update cell
         self.map.retain(|_, x| {
-            !(x.get_coordinate().is_remove_coordinate(
+            !(x.coordinate().is_remove_coordinate(
                 root_col_num,
                 offset_col_num,
                 root_row_num,
                 offset_row_num,
             ))
         });
-        for cell in self.get_collection_mut() {
+        for cell in self.collection_mut() {
             cell.adjustment_remove_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -316,7 +419,7 @@ impl AdjustmentCoordinateWith2Sheet for Cells {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        for ((..), cell) in self.get_collection_to_hashmap_mut() {
+        for ((..), cell) in self.collection_to_hashmap_mut() {
             cell.adjustment_insert_coordinate_with_2sheet(
                 self_sheet_name,
                 sheet_name,
@@ -338,7 +441,7 @@ impl AdjustmentCoordinateWith2Sheet for Cells {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        for ((..), cell) in self.get_collection_to_hashmap_mut() {
+        for ((..), cell) in self.collection_to_hashmap_mut() {
             cell.adjustment_remove_coordinate_with_2sheet(
                 self_sheet_name,
                 sheet_name,

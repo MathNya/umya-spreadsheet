@@ -61,10 +61,10 @@ impl SharedStringTable {
 
         let mut shared_string_item = SharedStringItem::default();
 
-        if let Some(v) = value.get_text() {
+        if let Some(v) = value.text() {
             shared_string_item.set_text(v);
         }
-        if let Some(v) = value.get_rich_text() {
+        if let Some(v) = value.rich_text() {
             shared_string_item.set_rich_text(v);
         }
 
