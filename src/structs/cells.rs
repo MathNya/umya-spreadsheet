@@ -91,8 +91,8 @@ impl Cells {
     pub fn get_highest_column_and_row(&self) -> (u32, u32) {
         self.map
             .keys()
-            .fold((0, 0), |(row_max, col_max), &(row, col)| {
-                (row.max(row_max), col.max(col_max))
+            .fold((0, 0), |(col_max, row_max), &(col, row)| {
+                (col.max(col_max), row.max(row_max))
             })
     }
 
