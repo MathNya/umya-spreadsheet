@@ -29,8 +29,15 @@ pub struct CellStyle {
 impl CellStyle {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.get_value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -41,8 +48,15 @@ impl CellStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_builtin_id(&self) -> u32 {
+    pub fn builtin_id(&self) -> u32 {
         self.builtin_id.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use builtin_id()")]
+    pub fn get_builtin_id(&self) -> u32 {
+        self.builtin_id()
     }
 
     #[inline]
@@ -53,8 +67,15 @@ impl CellStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_format_id(&self) -> u32 {
+    pub fn format_id(&self) -> u32 {
         self.format_id.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_id()")]
+    pub fn get_format_id(&self) -> u32 {
+        self.format_id()
     }
 
     #[inline]

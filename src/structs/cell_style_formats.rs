@@ -26,13 +26,25 @@ pub(crate) struct CellStyleFormats {
 
 impl CellStyleFormats {
     #[inline]
-    pub(crate) fn get_cell_format(&self) -> &[CellFormat] {
+    pub(crate) fn cell_format(&self) -> &[CellFormat] {
         &self.cell_format
     }
 
     #[inline]
-    pub(crate) fn get_cell_format_mut(&mut self) -> &mut Vec<CellFormat> {
+    #[deprecated(since = "3.0.0", note = "Use cell_format()")]
+    pub(crate) fn get_cell_format(&self) -> &[CellFormat] {
+        self.cell_format()
+    }
+
+    #[inline]
+    pub(crate) fn cell_format_mut(&mut self) -> &mut Vec<CellFormat> {
         &mut self.cell_format
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_format_mut()")]
+    pub(crate) fn get_cell_format_mut(&mut self) -> &mut Vec<CellFormat> {
+        self.cell_format_mut()
     }
 
     #[inline]
@@ -41,6 +53,7 @@ impl CellStyleFormats {
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -71,6 +84,7 @@ impl CellStyleFormats {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         if !self.cell_format.is_empty() {
             // cellStyleXfs

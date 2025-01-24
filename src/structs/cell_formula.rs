@@ -60,8 +60,15 @@ pub struct CellFormula {
 impl CellFormula {
     #[inline]
     #[must_use]
-    pub fn get_bx(&self) -> bool {
+    pub fn bx(&self) -> bool {
         self.bx.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bx()")]
+    pub fn get_bx(&self) -> bool {
+        self.bx()
     }
 
     #[inline]
@@ -72,8 +79,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_data_table_2d(&self) -> bool {
+    pub fn data_table_2d(&self) -> bool {
         self.data_table_2d.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bx()")]
+    pub fn get_data_table_2d(&self) -> bool {
+        self.data_table_2d()
     }
 
     #[inline]
@@ -84,8 +98,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_data_table_row(&self) -> bool {
+    pub fn data_table_row(&self) -> bool {
         self.data_table_row.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_table_row()")]
+    pub fn get_data_table_row(&self) -> bool {
+        self.data_table_row()
     }
 
     #[inline]
@@ -96,8 +117,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_formula_type(&self) -> &CellFormulaValues {
+    pub fn formula_type(&self) -> &CellFormulaValues {
         self.formula_type.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula_type()")]
+    pub fn get_formula_type(&self) -> &CellFormulaValues {
+        self.formula_type()
     }
 
     #[inline]
@@ -107,8 +135,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_input_1deleted(&self) -> bool {
+    pub fn input_1deleted(&self) -> bool {
         self.input_1deleted.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use input_1deleted()")]
+    pub fn get_input_1deleted(&self) -> bool {
+        self.input_1deleted()
     }
 
     #[inline]
@@ -119,8 +154,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_input_2deleted(&self) -> bool {
+    pub fn input_2deleted(&self) -> bool {
         self.input_2deleted.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use input_2deleted()")]
+    pub fn get_input_2deleted(&self) -> bool {
+        self.input_2deleted()
     }
 
     #[inline]
@@ -131,8 +173,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_r1(&self) -> &str {
+    pub fn r1(&self) -> &str {
         self.r1.get_value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use r1()")]
+    pub fn get_r1(&self) -> &str {
+        self.r1()
     }
 
     #[inline]
@@ -143,10 +192,17 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_r2(&self) -> &str {
+    pub fn r2(&self) -> &str {
         self.r2.get_value_str()
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use r2()")]
+    pub fn get_r2(&self) -> &str {
+        self.r2()
+    }
+    
     #[inline]
     pub fn set_r2<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.r2.set_value(value);
@@ -155,8 +211,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_reference(&self) -> &str {
+    pub fn reference(&self) -> &str {
         self.reference.get_value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use reference()")]
+    pub fn get_reference(&self) -> &str {
+        self.reference()
     }
 
     #[inline]
@@ -167,8 +230,15 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_shared_index(&self) -> u32 {
+    pub fn shared_index(&self) -> u32 {
         self.shared_index.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shared_index()")]
+    pub fn get_shared_index(&self) -> u32 {
+        self.shared_index()
     }
 
     #[inline]
@@ -179,11 +249,18 @@ impl CellFormula {
 
     #[inline]
     #[must_use]
-    pub fn get_text(&self) -> &str {
+    pub fn text(&self) -> &str {
         if self.text_view.has_value() {
             return self.text_view.get_value_str();
         }
         self.text.get_value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> &str {
+        self.text()
     }
 
     #[inline]
@@ -198,6 +275,7 @@ impl CellFormula {
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -274,6 +352,7 @@ impl CellFormula {
         }
     }
 
+    #[inline]
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
@@ -349,6 +428,7 @@ impl CellFormula {
     }
 }
 impl AdjustmentCoordinateWith2Sheet for CellFormula {
+    #[inline]
     fn adjustment_insert_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,
@@ -386,6 +466,7 @@ impl AdjustmentCoordinateWith2Sheet for CellFormula {
         }
     }
 
+    #[inline]
     fn adjustment_remove_coordinate_with_2sheet(
         &mut self,
         self_sheet_name: &str,

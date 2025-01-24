@@ -26,13 +26,25 @@ pub struct CellStyles {
 
 impl CellStyles {
     #[inline]
-    pub fn get_cell_style(&self) -> &[CellStyle] {
+    pub fn cell_style(&self) -> &[CellStyle] {
         &self.cell_style
     }
 
     #[inline]
-    pub fn get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
+    #[deprecated(since = "3.0.0", note = "Use cell_style()")]
+    pub fn get_cell_style(&self) -> &[CellStyle] {
+        self.cell_style()
+    }
+
+    #[inline]
+    pub fn cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
         &mut self.cell_style
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cell_style()")]
+    pub fn get_cell_style_mut(&mut self) -> &mut Vec<CellStyle> {
+        self.cell_style_mut()
     }
 
     #[inline]

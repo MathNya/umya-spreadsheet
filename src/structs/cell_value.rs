@@ -215,7 +215,7 @@ impl CellValue {
     #[must_use]
     pub fn formula(&self) -> &str {
         match &self.formula {
-            Some(v) => v.get_text(),
+            Some(v) => v.text(),
             None => "",
         }
     }

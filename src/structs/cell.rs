@@ -438,8 +438,8 @@ impl Cell {
     #[must_use]
     pub fn formula_shared_index(&self) -> Option<u32> {
         if let Some(v) = self.formula_obj() {
-            if v.get_formula_type() == &CellFormulaValues::Shared {
-                return Some(v.get_shared_index());
+            if v.formula_type() == &CellFormulaValues::Shared {
+                return Some(v.shared_index());
             }
         }
         None
