@@ -48,7 +48,7 @@ impl Formula {
         if self.string_value.has_value() {
             return self.string_value.value_str().to_string();
         }
-        self.address.get_address()
+        self.address.address()
     }
 
     #[inline]

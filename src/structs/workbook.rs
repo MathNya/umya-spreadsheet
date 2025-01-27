@@ -186,9 +186,9 @@ impl Workbook {
     /// *`Vec<&CellValue>` - `CellValue` List.
     #[inline]
     pub(crate) fn cell_value_by_address_crate(&self, address: &Address) -> Vec<&CellValue> {
-        self.sheet_by_name(address.get_sheet_name())
+        self.sheet_by_name(address.sheet_name())
             .unwrap()
-            .cell_value_by_range(&address.get_range().get_range())
+            .cell_value_by_range(&address.range().range())
     }
 
     #[inline]

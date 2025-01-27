@@ -59,7 +59,7 @@ impl ReferenceSequence {
     pub fn get_sqref(&self) -> String {
         self.value
             .iter()
-            .map(Range::get_range)
+            .map(Range::range)
             .collect::<Vec<String>>()
             .join(" ")
     }

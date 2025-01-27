@@ -50,7 +50,7 @@ impl SequenceOfReferences {
     pub fn get_sqref(&self) -> String {
         self.range_collection
             .iter()
-            .map(Range::get_range)
+            .map(Range::range)
             .collect::<Vec<String>>()
             .join(" ")
     }

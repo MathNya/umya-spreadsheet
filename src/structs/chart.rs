@@ -109,16 +109,16 @@ use crate::{
 ///     to_marker,
 ///     area_chart_series_list,
 /// );
-/// book.get_sheet_by_name_mut("Sheet1")
+/// book.sheet_by_name_mut("Sheet1")
 ///     .unwrap()
 ///     .add_chart(chart);
 ///
 /// // Get Chart by Worksheet.
-/// let mut worksheet = book.get_sheet_by_name_mut("Sheet1").unwrap();
-/// let chart = worksheet.get_chart("C1");
-/// let chart = worksheet.get_chart_by_column_and_row(&3, 1);
-/// let chart = worksheet.get_chart_mut("C1");
-/// let chart = worksheet.get_chart_by_column_and_row_mut(&3, 1);
+/// let mut worksheet = book.sheet_by_name_mut("Sheet1").unwrap();
+/// let chart = worksheet.chart("C1");
+/// let chart = worksheet.chart_by_column_and_row(&3, 1);
+/// let chart = worksheet.chart_mut("C1");
+/// let chart = worksheet.chart_by_column_and_row_mut(&3, 1);
 ///
 /// // Use this if there are multiple Charts in a given cell.
 /// let charts = worksheet.get_charts("C1");
@@ -128,9 +128,9 @@ use crate::{
 ///
 /// // Set Chart Title, Series Title, Horizonal Title and Vertical Title.
 /// let mut chart = book
-///     .get_sheet_by_name_mut("Sheet1")
+///     .sheet_by_name_mut("Sheet1")
 ///     .unwrap()
-///     .get_chart_mut("C1")
+///     .chart_mut("C1")
 ///     .unwrap();
 /// chart
 ///     .set_series_title(vec!["Line1", "Line2"])
@@ -162,19 +162,19 @@ impl Chart {
     #[inline]
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
-        self.get_chart_space_mut().get_chart_mut().set_title(title);
+        self.chart_space_mut().get_chart_mut().set_title(title);
         self
     }
 
     #[inline]
     pub fn set_grouping(&mut self, value: GroupingValues) -> &mut Self {
-        self.get_plot_area_mut().set_grouping(value);
+        self.plot_area_mut().set_grouping(value);
         self
     }
 
     pub fn set_vertical_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
-        let plot_area = self.get_plot_area_mut();
+        let plot_area = self.plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
             1 => {
                 if let Some(v) = plot_area.get_value_axis_mut().get_mut(0) {
@@ -193,7 +193,7 @@ impl Chart {
 
     pub fn set_horizontal_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
-        let plot_area = self.get_plot_area_mut();
+        let plot_area = self.plot_area_mut();
         match plot_area.get_value_axis_mut().len() {
             1 => {
                 if let Some(v) = plot_area.get_category_axis_mut().get_mut(0) {
@@ -213,7 +213,7 @@ impl Chart {
     pub fn set_series_title<S: Into<String>>(&mut self, value: Vec<S>) -> &mut Self {
         let mut value_iter = value.into_iter().map(Into::into);
         for series in self
-            .get_area_chart_series_list_mut()
+            .area_chart_series_list_mut()
             .get_area_chart_series_mut()
         {
             let value_raw = value_iter.next();
@@ -234,7 +234,7 @@ impl Chart {
             string_literal.add_string_point_list(string_point);
         }
         for series in self
-            .get_area_chart_series_list_mut()
+            .area_chart_series_list_mut()
             .get_area_chart_series_mut()
         {
             if let Some(v) = series.get_category_axis_data_mut() {
@@ -250,29 +250,54 @@ impl Chart {
     }
 
     #[inline]
-    pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
-        self.get_chart_space_mut()
+    pub fn plot_area_mut(&mut self) -> &mut PlotArea {
+        self.chart_space_mut()
             .get_chart_mut()
             .get_plot_area_mut()
     }
 
     #[inline]
-    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
-        self.get_chart_space_mut()
+    #[deprecated(since = "3.0.0", note = "Use plot_area_mut()")]
+    pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
+        self.plot_area_mut()
+    }
+
+    #[inline]
+    pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.chart_space_mut()
             .get_chart_mut()
             .get_plot_area_mut()
             .get_area_chart_series_list_mut()
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list_mut()")]
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.area_chart_series_list_mut()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
+    pub fn two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor()")]
+    pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
+        self.two_cell_anchor()
+    }
+
+    #[inline]
+    pub fn two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
         &mut self.two_cell_anchor
+    }
+    
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_mut()")]
+    pub fn get_two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
+        self.two_cell_anchor_mut()
     }
 
     #[inline]
@@ -287,8 +312,9 @@ impl Chart {
         self
     }
 
+    #[inline]
     #[must_use]
-    pub fn get_chart_space(&self) -> &ChartSpace {
+    pub fn chart_space(&self) -> &ChartSpace {
         self.two_cell_anchor
             .get_graphic_frame()
             .expect("Non-ChartSpace.")
@@ -297,13 +323,27 @@ impl Chart {
             .get_chart_space()
     }
 
-    pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart_space()")]
+    pub fn get_chart_space(&self) -> &ChartSpace {
+        self.chart_space()
+    }
+
+    #[inline]
+    pub fn chart_space_mut(&mut self) -> &mut ChartSpace {
         self.two_cell_anchor
             .get_graphic_frame_mut()
             .expect("Non-ChartSpace.")
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use chart_space_mut()")]
+    pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
+        self.chart_space_mut()
     }
 
     pub fn new_chart(
@@ -363,20 +403,40 @@ impl Chart {
 
     #[inline]
     #[must_use]
-    pub fn get_coordinate(&self) -> String {
+    pub fn coordinate(&self) -> String {
         self.two_cell_anchor.get_from_marker().get_coordinate()
     }
 
     #[inline]
-    pub(crate) fn get_col(&self) -> u32 {
-        self.two_cell_anchor.get_from_marker().get_col()
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate()")]
+    pub fn get_coordinate(&self) -> String {
+        self.coordinate()
     }
 
     #[inline]
-    pub(crate) fn get_row(&self) -> u32 {
+    pub(crate) fn col(&self) -> u32 {
+        self.two_cell_anchor.get_from_marker().get_col()
+    }
+    
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use col()")]
+    pub(crate) fn get_col(&self) -> u32 {
+        self.col()
+    }
+
+    #[inline]
+    pub(crate) fn row(&self) -> u32 {
         self.two_cell_anchor.get_from_marker().get_row()
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use row()")]
+    pub(crate) fn get_row(&self) -> u32 {
+        self.row()
+    }
+    
+    #[inline]
     fn convert_series(area_chart_series_list: Vec<&str>, smooth: bool) -> AreaChartSeriesList {
         let mut acsl_obj = AreaChartSeriesList::default();
         area_chart_series_list

@@ -26,8 +26,15 @@ impl Default for RowReference {
 impl RowReference {
     #[inline]
     #[must_use]
-    pub fn get_num(&self) -> u32 {
+    pub fn num(&self) -> u32 {
         self.num
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use num()")]
+    pub fn get_num(&self) -> u32 {
+        self.num()
     }
 
     #[inline]
@@ -61,8 +68,15 @@ impl RowReference {
 
     #[inline]
     #[must_use]
-    pub fn get_is_lock(&self) -> bool {
+    pub fn is_lock(&self) -> bool {
         self.is_lock
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_lock()")]
+    pub fn get_is_lock(&self) -> bool {
+        self.is_lock()
     }
 
     #[inline]
@@ -79,8 +93,15 @@ impl RowReference {
 
     #[inline]
     #[must_use]
-    pub fn get_coordinate(&self) -> String {
+    pub fn coordinate(&self) -> String {
         format!("{}{}", if self.is_lock { "$" } else { "" }, self.num)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate()")]
+    pub fn get_coordinate(&self) -> String {
+        self.coordinate()
     }
 }
 impl AdjustmentValue for RowReference {

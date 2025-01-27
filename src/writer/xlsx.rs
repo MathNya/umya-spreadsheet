@@ -85,7 +85,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
                 .worksheet_drawing()
                 .get_chart_collection()
                 .iter()
-                .map(|chart| chart::write(chart.get_chart_space(), wb, &mut writer_manager))
+                .map(|chart| chart::write(chart.chart_space(), wb, &mut writer_manager))
                 .collect();
 
             let chart_no_list = chart_no_list?;

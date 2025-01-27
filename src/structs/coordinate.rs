@@ -28,10 +28,10 @@ impl fmt::Display for Coordinate {
             f,
             "{}",
             coordinate_from_index_with_lock(
-                self.column.get_num(),
-                self.row.get_num(),
-                self.column.get_is_lock(),
-                self.row.get_is_lock(),
+                self.column.num(),
+                self.row.num(),
+                self.column.is_lock(),
+                self.row.is_lock(),
             )
         )
     }
@@ -41,7 +41,7 @@ impl Coordinate {
     #[inline]
     #[must_use]
     pub fn get_col_num(&self) -> u32 {
-        self.column.get_num()
+        self.column.num()
     }
 
     #[inline]
@@ -59,7 +59,7 @@ impl Coordinate {
     #[inline]
     #[must_use]
     pub fn get_row_num(&self) -> u32 {
-        self.row.get_num()
+        self.row.num()
     }
 
     #[inline]
@@ -77,7 +77,7 @@ impl Coordinate {
     #[inline]
     #[must_use]
     pub fn get_is_lock_col(&self) -> bool {
-        self.column.get_is_lock()
+        self.column.is_lock()
     }
 
     #[inline]
@@ -89,7 +89,7 @@ impl Coordinate {
     #[inline]
     #[must_use]
     pub fn get_is_lock_row(&self) -> bool {
-        self.row.get_is_lock()
+        self.row.is_lock()
     }
 
     #[inline]
@@ -116,10 +116,10 @@ impl Coordinate {
     #[must_use]
     pub fn get_coordinate(&self) -> String {
         coordinate_from_index_with_lock(
-            self.column.get_num(),
-            self.row.get_num(),
-            self.column.get_is_lock(),
-            self.row.get_is_lock(),
+            self.column.num(),
+            self.row.num(),
+            self.column.is_lock(),
+            self.row.is_lock(),
         )
     }
 }

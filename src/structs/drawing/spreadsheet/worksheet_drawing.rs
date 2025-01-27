@@ -99,21 +99,21 @@ impl WorksheetDrawing {
     pub fn get_chart(&self, col: u32, row: u32) -> Option<&Chart> {
         self.chart_collection
             .iter()
-            .find(|&chart| chart.get_col() == col - 1 && chart.get_row() == row - 1)
+            .find(|&chart| chart.col() == col - 1 && chart.row() == row - 1)
     }
 
     #[inline]
     pub fn get_chart_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
         self.chart_collection
             .iter_mut()
-            .find(|chart| chart.get_col() == col - 1 && chart.get_row() == row - 1)
+            .find(|chart| chart.col() == col - 1 && chart.row() == row - 1)
     }
 
     #[must_use]
     pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
         let mut result: Vec<&Chart> = Vec::new();
         for chart in &self.chart_collection {
-            if chart.get_col() == col - 1 && chart.get_row() == row - 1 {
+            if chart.col() == col - 1 && chart.row() == row - 1 {
                 result.push(chart);
             }
         }
@@ -123,7 +123,7 @@ impl WorksheetDrawing {
     pub fn get_charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
         let mut result: Vec<&mut Chart> = Vec::new();
         for chart in &mut self.chart_collection {
-            if chart.get_col() == col - 1 && chart.get_row() == row - 1 {
+            if chart.col() == col - 1 && chart.row() == row - 1 {
                 result.push(chart);
             }
         }
@@ -266,7 +266,7 @@ impl WorksheetDrawing {
             result.push(anchor);
         }
         for chart in &mut self.chart_collection {
-            let anchor = chart.get_two_cell_anchor_mut();
+            let anchor = chart.two_cell_anchor_mut();
             result.push(anchor);
         }
         for image in &mut self.image_collection {
@@ -385,7 +385,7 @@ impl WorksheetDrawing {
 
         // xdr:twoCellAnchor
         for chart in &self.chart_collection {
-            chart.get_two_cell_anchor().write_to(writer, rel_list, 0);
+            chart.two_cell_anchor().write_to(writer, rel_list, 0);
         }
         for image in &self.image_collection {
             image.write_to(writer, rel_list);

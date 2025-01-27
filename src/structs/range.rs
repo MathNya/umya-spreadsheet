@@ -72,78 +72,151 @@ impl Range {
 
     #[inline]
     #[must_use]
-    pub fn get_range(&self) -> String {
-        let mut result = self.get_coordinate_start();
+    pub fn range(&self) -> String {
+        let mut result = self.coordinate_start();
         if self.end_col.is_some() || self.end_row.is_some() {
-            result = format!("{}:{}", result, &self.get_coordinate_end());
+            result = format!("{}:{}", result, &self.coordinate_end());
         }
         result
     }
 
     #[inline]
     #[must_use]
-    pub fn get_coordinate_start_col(&self) -> Option<&ColumnReference> {
+    #[deprecated(since = "3.0.0", note = "Use range()")]
+    pub fn get_range(&self) -> String {
+        self.range()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn coordinate_start_col(&self) -> Option<&ColumnReference> {
         self.start_col.as_ref()
     }
 
     #[inline]
-    pub fn get_coordinate_start_col_mut(&mut self) -> Option<&mut ColumnReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_start_col()")]
+    pub fn get_coordinate_start_col(&self) -> Option<&ColumnReference> {
+        self.coordinate_start_col()
+    }
+
+    #[inline]
+    pub fn coordinate_start_col_mut(&mut self) -> Option<&mut ColumnReference> {
         self.start_col.as_mut()
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_start_col_mut()")]
+    pub fn get_coordinate_start_col_mut(&mut self) -> Option<&mut ColumnReference> {
+        self.coordinate_start_col_mut()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_coordinate_start_row(&self) -> Option<&RowReference> {
+    pub fn coordinate_start_row(&self) -> Option<&RowReference> {
         self.start_row.as_ref()
     }
 
     #[inline]
-    pub fn get_coordinate_start_row_mut(&mut self) -> Option<&mut RowReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_start_row()")]
+    pub fn get_coordinate_start_row(&self) -> Option<&RowReference> {
+        self.coordinate_start_row()
+    }
+
+    #[inline]
+    pub fn coordinate_start_row_mut(&mut self) -> Option<&mut RowReference> {
         self.start_row.as_mut()
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_start_row_mut()")]
+    pub fn get_coordinate_start_row_mut(&mut self) -> Option<&mut RowReference> {
+        self.coordinate_start_row_mut()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_coordinate_end_col(&self) -> Option<&ColumnReference> {
+    pub fn coordinate_end_col(&self) -> Option<&ColumnReference> {
         self.end_col.as_ref()
     }
 
     #[inline]
-    pub fn get_coordinate_end_col_mut(&mut self) -> Option<&mut ColumnReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_end_col()")]
+    pub fn get_coordinate_end_col(&self) -> Option<&ColumnReference> {
+        self.coordinate_end_col()
+    }
+
+    #[inline]
+    pub fn coordinate_end_col_mut(&mut self) -> Option<&mut ColumnReference> {
         self.end_col.as_mut()
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_end_col_mut()")]
+    pub fn get_coordinate_end_col_mut(&mut self) -> Option<&mut ColumnReference> {
+        self.coordinate_end_col_mut()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_coordinate_end_row(&self) -> Option<&RowReference> {
+    pub fn coordinate_end_row(&self) -> Option<&RowReference> {
         self.end_row.as_ref()
     }
 
     #[inline]
-    pub fn get_coordinate_end_row_mut(&mut self) -> Option<&mut RowReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_end_row()")]
+    pub fn get_coordinate_end_row(&self) -> Option<&RowReference> {
+        self.coordinate_end_row()
+    }
+
+    #[inline]
+    pub fn coordinate_end_row_mut(&mut self) -> Option<&mut RowReference> {
         self.end_row.as_mut()
     }
 
-    pub(crate) fn get_coordinate_start(&self) -> String {
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_end_row_mut()")]
+    pub fn get_coordinate_end_row_mut(&mut self) -> Option<&mut RowReference> {
+        self.coordinate_end_row_mut()
+    }
+
+    #[inline]
+    pub(crate) fn coordinate_start(&self) -> String {
         let mut coordinate_str = String::new();
         if let Some(v) = &self.start_col {
-            coordinate_str = v.get_coordinate();
+            coordinate_str = v.coordinate();
         };
         if let Some(v) = &self.start_row {
-            coordinate_str = format!("{}{}", coordinate_str, v.get_coordinate());
+            coordinate_str = format!("{}{}", coordinate_str, v.coordinate());
         };
         coordinate_str
     }
 
-    pub(crate) fn get_coordinate_end(&self) -> String {
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sheet_name()")]
+    pub(crate) fn get_coordinate_start(&self) -> String {
+        self.coordinate_start()
+    }
+
+    #[inline]
+    pub(crate) fn coordinate_end(&self) -> String {
         let mut coordinate_str = String::new();
         if let Some(v) = &self.end_col {
-            coordinate_str = v.get_coordinate();
+            coordinate_str = v.coordinate();
         };
         if let Some(v) = &self.end_row {
-            coordinate_str = format!("{}{}", coordinate_str, v.get_coordinate());
+            coordinate_str = format!("{}{}", coordinate_str, v.coordinate());
         };
         coordinate_str
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_end()")]
+    pub(crate) fn get_coordinate_end(&self) -> String {
+        self.coordinate_end()
     }
 }
 impl AdjustmentCoordinate for Range {

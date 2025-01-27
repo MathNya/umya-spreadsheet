@@ -99,7 +99,7 @@ impl Selection {
         let mut active_cell_id = 0;
         if let Some(active_cell) = &self.active_cell {
             for range in self.sequence_of_references.get_range_collection() {
-                let range_str = range.get_range();
+                let range_str = range.range();
                 if range_str.contains(active_cell.to_string().as_str()) {
                     break;
                 }

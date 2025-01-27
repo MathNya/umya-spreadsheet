@@ -40,7 +40,7 @@ impl WorksheetSource {
     ) {
         let mut address = Address::default();
         if let Some(v) = get_attribute(e, b"ref") {
-            address.get_range_mut().set_range(v);
+            address.range_mut().set_range(v);
         }
         if let Some(v) = get_attribute(e, b"sheet") {
             address.set_sheet_name(v);
@@ -51,10 +51,10 @@ impl WorksheetSource {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // worksheetSource
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let ref_str = self.address.get_range().get_range();
+        let ref_str = self.address.range().range();
         attributes.push(("ref", ref_str.as_str()).into());
-        if self.address.get_sheet_name() != "" {
-            attributes.push(("sheet", self.address.get_sheet_name()).into());
+        if self.address.sheet_name() != "" {
+            attributes.push(("sheet", self.address.sheet_name()).into());
         }
         write_start_tag(writer, "worksheetSource", attributes, true);
     }

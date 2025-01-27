@@ -20,8 +20,15 @@ pub struct Address {
 impl Address {
     #[inline]
     #[must_use]
-    pub fn get_sheet_name(&self) -> &str {
+    pub fn sheet_name(&self) -> &str {
         &self.sheet_name
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet_name()")]
+    pub fn get_sheet_name(&self) -> &str {
+        self.sheet_name()
     }
 
     #[inline]
@@ -32,13 +39,26 @@ impl Address {
 
     #[inline]
     #[must_use]
-    pub fn get_range(&self) -> &Range {
+    pub fn range(&self) -> &Range {
         &self.range
     }
 
     #[inline]
-    pub fn get_range_mut(&mut self) -> &mut Range {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use range()")]
+    pub fn get_range(&self) -> &Range {
+        self.range()
+    }
+
+    #[inline]
+    pub fn range_mut(&mut self) -> &mut Range {
         &mut self.range
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use range_mut()")]
+    pub fn get_range_mut(&mut self) -> &mut Range {
+        self.range_mut()
     }
 
     #[inline]
@@ -59,17 +79,30 @@ impl Address {
 
     #[inline]
     #[must_use]
-    pub fn get_address(&self) -> String {
-        self.get_address_crate(false)
+    pub fn address(&self) -> String {
+        self.address_crate(false)
     }
 
     #[inline]
-    pub(crate) fn get_address_ptn2(&self) -> String {
-        self.get_address_crate(true)
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address()")]
+    pub fn get_address(&self) -> String {
+        self.address()
     }
 
-    pub(crate) fn get_address_crate(&self, is_ptn2: bool) -> String {
-        let range = self.range.get_range();
+    #[inline]
+    pub(crate) fn address_ptn2(&self) -> String {
+        self.address_crate(true)
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use address_ptn2()")]
+    pub(crate) fn get_address_ptn2(&self) -> String {
+        self.address_ptn2()
+    }
+
+    pub(crate) fn address_crate(&self, is_ptn2: bool) -> String {
+        let range = self.range.range();
         if self.sheet_name.is_empty() {
             return range;
         }
@@ -106,6 +139,11 @@ impl Address {
             "{}{}{}!{}",
             &with_space_char, sheet_name, &with_space_char, range
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use address_crate()")]
+    pub(crate) fn get_address_crate(&self, is_ptn2: bool) -> String {
+        self.address_crate(is_ptn2)
     }
 }
 impl AdjustmentCoordinateWithSheet for Address {

@@ -48,13 +48,13 @@ impl MergeCells {
 
     pub(crate) fn has_vertical(&self, row_num: u32) -> bool {
         self.get_range_collection().iter().any(|range| {
-            let start_num = match range.get_coordinate_start_row() {
-                Some(v) => v.get_num() <= row_num,
+            let start_num = match range.coordinate_start_row() {
+                Some(v) => v.num() <= row_num,
                 None => true,
             };
 
-            let end_num = match range.get_coordinate_end_row() {
-                Some(v) => v.get_num() >= row_num,
+            let end_num = match range.coordinate_end_row() {
+                Some(v) => v.num() >= row_num,
                 None => true,
             };
 
@@ -64,13 +64,13 @@ impl MergeCells {
 
     pub(crate) fn has_horizontal(&self, col_num: u32) -> bool {
         self.get_range_collection().iter().any(|range| {
-            let start_num = match range.get_coordinate_start_col() {
-                Some(v) => v.get_num() <= col_num,
+            let start_num = match range.coordinate_start_col() {
+                Some(v) => v.num() <= col_num,
                 None => true,
             };
 
-            let end_num = match range.get_coordinate_end_col() {
-                Some(v) => v.get_num() >= col_num,
+            let end_num = match range.coordinate_end_col() {
+                Some(v) => v.num() >= col_num,
                 None => true,
             };
 
@@ -120,7 +120,7 @@ impl MergeCells {
                 write_start_tag(
                     writer,
                     "mergeCell",
-                    vec![("ref", merge_cell.get_range().as_str()).into()],
+                    vec![("ref", merge_cell.range().as_str()).into()],
                     true,
                 );
             }

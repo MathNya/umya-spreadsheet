@@ -36,7 +36,7 @@ impl Formula {
         if self.string_value.has_value() {
             return self.string_value.value_str().to_string();
         }
-        self.address.get_address()
+        self.address.address()
     }
 
     pub fn set_address(&mut self, value: Address) -> &mut Self {

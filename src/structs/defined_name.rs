@@ -58,7 +58,7 @@ impl DefinedName {
         }
         let mut result: Vec<String> = Vec::new();
         for row in &self.address {
-            result.push(row.get_address_ptn2());
+            result.push(row.address_ptn2());
         }
         result.join(",")
     }
@@ -92,7 +92,7 @@ impl DefinedName {
         self.address
             .first()
             .unwrap_or(&Address::default())
-            .get_sheet_name()
+            .sheet_name()
             .to_string()
     }
 

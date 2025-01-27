@@ -256,7 +256,7 @@ fn write_worksheet_features(
         write_start_tag(
             writer,
             "autoFilter",
-            vec![("ref", &v.get_range().get_range()).into()],
+            vec![("ref", &v.get_range().range()).into()],
             true,
         );
     }
