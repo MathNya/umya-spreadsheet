@@ -36,7 +36,7 @@ impl Outline {
     #[inline]
     #[must_use]
     pub fn get_width(&self) -> u32 {
-        self.width.get_value()
+        self.width.value()
     }
 
     #[inline]
@@ -48,7 +48,7 @@ impl Outline {
     #[inline]
     #[must_use]
     pub fn get_cap_type(&self) -> Option<&str> {
-        self.cap_type.get_value()
+        self.cap_type.value()
     }
 
     #[inline]
@@ -60,7 +60,7 @@ impl Outline {
     #[inline]
     #[must_use]
     pub fn get_compound_line_type(&self) -> Option<&str> {
-        self.compound_line_type.get_value()
+        self.compound_line_type.value()
     }
 
     #[inline]
@@ -299,14 +299,14 @@ impl Outline {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:ln
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let width = self.width.get_value_string();
+        let width = self.width.value_string();
         if self.width.has_value() {
             attributes.push(("w", &width).into());
         }
-        if let Some(v) = self.cap_type.get_value() {
+        if let Some(v) = self.cap_type.value() {
             attributes.push(("cap", v).into());
         }
-        if let Some(v) = self.compound_line_type.get_value() {
+        if let Some(v) = self.compound_line_type.value() {
             attributes.push(("cmpd", v).into());
         }
         if self.alignment.has_value() {

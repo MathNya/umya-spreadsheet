@@ -28,7 +28,7 @@ pub struct Location {
 impl Location {
     #[must_use]
     pub fn get_reference(&self) -> &str {
-        self.reference.get_value_str()
+        self.reference.value_str()
     }
 
     pub fn set_reference<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -38,7 +38,7 @@ impl Location {
 
     #[must_use]
     pub fn get_first_header_row(&self) -> u32 {
-        self.first_header_row.get_value()
+        self.first_header_row.value()
     }
 
     pub fn set_first_header_row(&mut self, value: u32) -> &mut Self {
@@ -48,7 +48,7 @@ impl Location {
 
     #[must_use]
     pub fn get_first_data_row(&self) -> u32 {
-        self.first_data_row.get_value()
+        self.first_data_row.value()
     }
 
     pub fn set_first_data_row(&mut self, value: u32) -> &mut Self {
@@ -58,7 +58,7 @@ impl Location {
 
     #[must_use]
     pub fn get_first_data_col(&self) -> u32 {
-        self.first_data_col.get_value()
+        self.first_data_col.value()
     }
 
     pub fn set_first_data_col(&mut self, value: u32) -> &mut Self {
@@ -84,20 +84,20 @@ impl Location {
             writer,
             "location",
             vec![
-                ("ref", self.reference.get_value_str()).into(),
+                ("ref", self.reference.value_str()).into(),
                 (
                     "firstHeaderRow",
-                    self.first_header_row.get_value_string().as_str(),
+                    self.first_header_row.value_string().as_str(),
                 )
                     .into(),
                 (
                     "firstDataRow",
-                    self.first_data_row.get_value_string().as_str(),
+                    self.first_data_row.value_string().as_str(),
                 )
                     .into(),
                 (
                     "firstDataCol",
-                    self.first_data_col.get_value_string().as_str(),
+                    self.first_data_col.value_string().as_str(),
                 )
                     .into(),
             ],

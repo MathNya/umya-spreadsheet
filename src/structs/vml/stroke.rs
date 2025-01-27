@@ -18,7 +18,7 @@ pub struct Stroke {
 impl Stroke {
     #[must_use]
     pub fn get_color(&self) -> &str {
-        self.color.get_value_str()
+        self.color.value_str()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -28,7 +28,7 @@ impl Stroke {
 
     #[must_use]
     pub fn get_color_2(&self) -> &str {
-        self.color_2.get_value_str()
+        self.color_2.value_str()
     }
 
     pub fn set_color_2<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -38,7 +38,7 @@ impl Stroke {
 
     #[must_use]
     pub fn get_dash_style(&self) -> &str {
-        self.dash_style.get_value_str()
+        self.dash_style.value_str()
     }
 
     pub fn set_dash_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -60,13 +60,13 @@ impl Stroke {
         // v:stroke
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_str()).into());
+            attributes.push(("color", self.color.value_str()).into());
         }
         if self.color_2.has_value() {
-            attributes.push(("color2", self.color_2.get_value_str()).into());
+            attributes.push(("color2", self.color_2.value_str()).into());
         }
         if self.dash_style.has_value() {
-            attributes.push(("dashstyle", self.dash_style.get_value_str()).into());
+            attributes.push(("dashstyle", self.dash_style.value_str()).into());
         }
         write_start_tag(writer, "v:stroke", attributes, true);
     }

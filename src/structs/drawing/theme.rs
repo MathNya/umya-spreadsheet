@@ -27,7 +27,7 @@ impl Theme {
     #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name.value_str()
     }
 
     #[inline]
@@ -550,7 +550,7 @@ impl Theme {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         attributes.push(("xmlns:a", DRAWINGML_MAIN_NS).into());
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()).into());
+            attributes.push(("name", self.name.value_str()).into());
         }
         write_start_tag(writer, "a:theme", attributes, false);
 

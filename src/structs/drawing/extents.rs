@@ -15,7 +15,7 @@ impl Extents {
     #[inline]
     #[must_use]
     pub fn get_cx(&self) -> i64 {
-        self.cx.get_value()
+        self.cx.value()
     }
 
     #[inline]
@@ -27,7 +27,7 @@ impl Extents {
     #[inline]
     #[must_use]
     pub fn get_cy(&self) -> i64 {
-        self.cy.get_value()
+        self.cy.value()
     }
 
     #[inline]
@@ -52,8 +52,8 @@ impl Extents {
             writer,
             "a:ext",
             vec![
-                ("cx", self.cx.get_value_string()).into(),
-                ("cy", self.cy.get_value_string()).into(),
+                ("cx", self.cx.value_string()).into(),
+                ("cy", self.cy.value_string()).into(),
             ],
             true,
         );

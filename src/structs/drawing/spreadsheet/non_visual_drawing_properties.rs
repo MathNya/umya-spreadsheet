@@ -23,7 +23,7 @@ impl NonVisualDrawingProperties {
     #[inline]
     #[must_use]
     pub fn get_id(&self) -> u32 {
-        self.id.get_value()
+        self.id.value()
     }
 
     #[inline]
@@ -35,7 +35,7 @@ impl NonVisualDrawingProperties {
     #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name.value_str()
     }
 
     #[inline]
@@ -86,9 +86,9 @@ impl NonVisualDrawingProperties {
         let with_inner = ole_id > 0;
         // xdr:cNvPr
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let id = self.id.get_value_string();
+        let id = self.id.value_string();
         attributes.push(("id", &id).into());
-        attributes.push(("name", self.name.get_value_str()).into());
+        attributes.push(("name", self.name.value_str()).into());
         if self.hidden.has_value() {
             attributes.push(("hidden", self.hidden.get_value_string()).into());
         }

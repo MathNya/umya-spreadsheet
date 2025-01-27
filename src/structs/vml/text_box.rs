@@ -30,7 +30,7 @@ impl Default for TextBox {
 impl TextBox {
     #[must_use]
     pub fn get_style(&self) -> &str {
-        self.style.get_value_str()
+        self.style.value_str()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -40,7 +40,7 @@ impl TextBox {
 
     #[must_use]
     pub fn get_innder(&self) -> &str {
-        self.innder.get_value_str()
+        self.innder.value_str()
     }
 
     pub fn set_innder<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -125,10 +125,10 @@ impl TextBox {
         // v:textbox
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_str()).into());
+            attributes.push(("style", self.style.value_str()).into());
         }
         write_start_tag(writer, "v:textbox", attributes, false);
-        write_text_node_no_escape(writer, self.innder.get_value_str());
+        write_text_node_no_escape(writer, self.innder.value_str());
         write_end_tag(writer, "v:textbox");
     }
 }

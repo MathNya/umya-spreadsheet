@@ -20,7 +20,7 @@ impl PositiveSize2DType {
     #[inline]
     #[must_use]
     pub fn get_cx(&self) -> i64 {
-        self.cx.get_value()
+        self.cx.value()
     }
 
     #[inline]
@@ -31,7 +31,7 @@ impl PositiveSize2DType {
     #[inline]
     #[must_use]
     pub fn get_cy(&self) -> i64 {
-        self.cy.get_value()
+        self.cy.value()
     }
 
     #[inline]
@@ -61,9 +61,9 @@ impl PositiveSize2DType {
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let cx_str = self.cx.get_value_string();
+        let cx_str = self.cx.value_string();
         attributes.push(("cx", &cx_str).into());
-        let cy_str = self.cy.get_value_string();
+        let cy_str = self.cy.value_string();
         attributes.push(("cy", &cy_str).into());
         write_start_tag(writer, tag_name, attributes, true);
     }

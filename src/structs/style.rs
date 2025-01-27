@@ -292,7 +292,7 @@ impl Style {
     #[inline]
     #[must_use]
     pub fn get_format_id(&self) -> u32 {
-        self.format_id.get_value()
+        self.format_id.value()
     }
 
     #[inline]

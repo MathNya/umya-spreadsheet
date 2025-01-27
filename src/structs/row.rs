@@ -61,7 +61,7 @@ impl Row {
     #[inline]
     #[must_use]
     pub fn get_row_num(&self) -> u32 {
-        self.row_num.get_value()
+        self.row_num.value()
     }
 
     #[inline]
@@ -236,7 +236,7 @@ impl Row {
 
         // row
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let row_num = self.row_num.get_value_string();
+        let row_num = self.row_num.value_string();
         attributes.push(("r", &row_num).into());
         if !empty_flag {
             attributes.push(("spans", spans).into());
@@ -273,22 +273,22 @@ impl Row {
 impl AdjustmentValue for Row {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
-        if self.row_num.get_value() >= root_num {
+        if self.row_num.value() >= root_num {
             self.row_num
-                .set_value(self.row_num.get_value() + offset_num);
+                .set_value(self.row_num.value() + offset_num);
         }
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
-        if self.row_num.get_value() >= root_num {
+        if self.row_num.value() >= root_num {
             self.row_num
-                .set_value(self.row_num.get_value() - offset_num);
+                .set_value(self.row_num.value() - offset_num);
         }
     }
 
     #[inline]
     fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
-        self.row_num.get_value() >= root_num && self.row_num.get_value() < root_num + offset_num
+        self.row_num.value() >= root_num && self.row_num.value() < root_num + offset_num
     }
 }

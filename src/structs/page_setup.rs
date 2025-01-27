@@ -36,7 +36,7 @@ impl PageSetup {
     #[inline]
     #[must_use]
     pub fn get_paper_size(&self) -> u32 {
-        self.paper_size.get_value()
+        self.paper_size.value()
     }
 
     #[inline]
@@ -60,7 +60,7 @@ impl PageSetup {
     #[inline]
     #[must_use]
     pub fn get_scale(&self) -> u32 {
-        self.scale.get_value()
+        self.scale.value()
     }
 
     #[inline]
@@ -72,7 +72,7 @@ impl PageSetup {
     #[inline]
     #[must_use]
     pub fn get_fit_to_height(&self) -> u32 {
-        self.fit_to_height.get_value()
+        self.fit_to_height.value()
     }
 
     #[inline]
@@ -84,7 +84,7 @@ impl PageSetup {
     #[inline]
     #[must_use]
     pub fn get_fit_to_width(&self) -> u32 {
-        self.fit_to_width.get_value()
+        self.fit_to_width.value()
     }
 
     #[inline]
@@ -96,7 +96,7 @@ impl PageSetup {
     #[inline]
     #[must_use]
     pub fn get_horizontal_dpi(&self) -> u32 {
-        self.horizontal_dpi.get_value()
+        self.horizontal_dpi.value()
     }
 
     #[inline]
@@ -108,7 +108,7 @@ impl PageSetup {
     #[inline]
     #[must_use]
     pub fn get_vertical_dpi(&self) -> u32 {
-        self.vertical_dpi.get_value()
+        self.vertical_dpi.value()
     }
 
     #[inline]
@@ -174,11 +174,11 @@ impl PageSetup {
             // pageSetup
             let r_id_str = format!("rId{r_id}");
             let mut attributes: crate::structs::AttrCollection = Vec::new();
-            let paper_size = self.paper_size.get_value_string();
+            let paper_size = self.paper_size.value_string();
             if self.paper_size.has_value() {
                 attributes.push(("paperSize", &paper_size).into());
             }
-            let scale = self.scale.get_value_string();
+            let scale = self.scale.value_string();
             if self.scale.has_value() {
                 attributes.push(("scale", &scale).into());
             }
@@ -186,19 +186,19 @@ impl PageSetup {
             if self.orientation.has_value() {
                 attributes.push(("orientation", orientation).into());
             }
-            let fit_to_height = self.fit_to_height.get_value_string();
+            let fit_to_height = self.fit_to_height.value_string();
             if self.fit_to_height.has_value() {
                 attributes.push(("fitToHeight", &fit_to_height).into());
             }
-            let fit_to_width = self.fit_to_width.get_value_string();
+            let fit_to_width = self.fit_to_width.value_string();
             if self.fit_to_width.has_value() {
                 attributes.push(("fitToWidth", &fit_to_width).into());
             }
-            let horizontal_dpi = self.horizontal_dpi.get_value_string();
+            let horizontal_dpi = self.horizontal_dpi.value_string();
             if self.horizontal_dpi.has_value() {
                 attributes.push(("horizontalDpi", &horizontal_dpi).into());
             }
-            let vertical_dpi = self.vertical_dpi.get_value_string();
+            let vertical_dpi = self.vertical_dpi.value_string();
             if self.vertical_dpi.has_value() {
                 attributes.push(("verticalDpi", &vertical_dpi).into());
             }

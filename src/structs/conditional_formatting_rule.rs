@@ -86,7 +86,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_text(&self) -> &str {
-        self.text.get_value_str()
+        self.text.value_str()
     }
 
     #[inline]
@@ -98,7 +98,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_priority(&self) -> i32 {
-        self.priority.get_value()
+        self.priority.value()
     }
 
     #[inline]
@@ -134,7 +134,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_rank(&self) -> u32 {
-        self.rank.get_value()
+        self.rank.value()
     }
 
     #[inline]
@@ -158,7 +158,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_std_dev(&self) -> i32 {
-        self.std_dev.get_value()
+        self.std_dev.value()
     }
 
     #[inline]
@@ -389,7 +389,7 @@ impl ConditionalFormattingRule {
             attributes.push(("dxfId", &dxf_id_str).into());
         }
 
-        let priority = self.priority.get_value_string();
+        let priority = self.priority.value_string();
         if self.priority.has_value() {
             attributes.push(("priority", &priority).into());
         }
@@ -404,7 +404,7 @@ impl ConditionalFormattingRule {
             attributes.push(("bottom", bottom).into());
         }
 
-        let rank = self.rank.get_value_string();
+        let rank = self.rank.value_string();
         if self.rank.has_value() {
             attributes.push(("rank", &rank).into());
         }
@@ -414,7 +414,7 @@ impl ConditionalFormattingRule {
             attributes.push(("stopIfTrue", stop_if_true).into());
         }
 
-        let std_dev = self.std_dev.get_value_string();
+        let std_dev = self.std_dev.value_string();
         if self.std_dev.has_value() {
             attributes.push(("stdDev", &std_dev).into());
         }

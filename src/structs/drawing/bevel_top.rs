@@ -23,7 +23,7 @@ impl BevelTop {
     #[inline]
     #[must_use]
     pub fn get_width(&self) -> i64 {
-        self.width.get_value()
+        self.width.value()
     }
 
     #[inline]
@@ -35,7 +35,7 @@ impl BevelTop {
     #[inline]
     #[must_use]
     pub fn get_height(&self) -> i64 {
-        self.height.get_value()
+        self.height.value()
     }
 
     #[inline]
@@ -70,11 +70,11 @@ impl BevelTop {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:bevelT
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let width = self.width.get_value_string();
+        let width = self.width.value_string();
         if self.width.has_value() {
             attributes.push(("w", &width).into());
         }
-        let height = self.height.get_value_string();
+        let height = self.height.value_string();
         if self.height.has_value() {
             attributes.push(("h", &height).into());
         }

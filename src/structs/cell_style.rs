@@ -30,7 +30,7 @@ impl CellStyle {
     #[inline]
     #[must_use]
     pub fn name(&self) -> &str {
-        self.name.get_value_str()
+        self.name.value_str()
     }
 
     #[inline]
@@ -49,7 +49,7 @@ impl CellStyle {
     #[inline]
     #[must_use]
     pub fn builtin_id(&self) -> u32 {
-        self.builtin_id.get_value()
+        self.builtin_id.value()
     }
 
     #[inline]
@@ -68,7 +68,7 @@ impl CellStyle {
     #[inline]
     #[must_use]
     pub fn format_id(&self) -> u32 {
-        self.format_id.get_value()
+        self.format_id.value()
     }
 
     #[inline]
@@ -99,10 +99,10 @@ impl CellStyle {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cellStyle
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        attributes.push(("name", self.name.get_value_str()).into());
-        let format_id = self.format_id.get_value_string();
+        attributes.push(("name", self.name.value_str()).into());
+        let format_id = self.format_id.value_string();
         attributes.push(("xfId", &format_id).into());
-        let builtin_id = self.builtin_id.get_value_string();
+        let builtin_id = self.builtin_id.value_string();
         attributes.push(("builtinId", &builtin_id).into());
         write_start_tag(writer, "cellStyle", attributes, true);
     }

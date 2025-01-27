@@ -22,7 +22,7 @@ impl FontName {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> &str {
-        self.val.get_value_str()
+        self.val.value_str()
     }
 
     #[inline]
@@ -47,7 +47,7 @@ impl FontName {
             write_start_tag(
                 writer,
                 tag_name,
-                vec![("val", self.val.get_value_str()).into()],
+                vec![("val", self.val.value_str()).into()],
                 true,
             );
         }

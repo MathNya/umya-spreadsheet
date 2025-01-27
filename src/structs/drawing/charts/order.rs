@@ -13,7 +13,7 @@ pub struct Order {
 impl Order {
     #[must_use]
     pub fn get_val(&self) -> u32 {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: u32) -> &mut Order {
@@ -34,7 +34,7 @@ impl Order {
         write_start_tag(
             writer,
             "c:order",
-            vec![("val", &self.val.get_value_string()).into()],
+            vec![("val", &self.val.value_string()).into()],
             true,
         );
     }

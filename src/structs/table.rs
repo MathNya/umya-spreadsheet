@@ -155,12 +155,12 @@ impl Table {
     #[inline]
     #[must_use]
     pub fn get_totals_row_count(&self) -> u32 {
-        self.totals_row_count.get_value()
+        self.totals_row_count.value()
     }
 
     #[inline]
     pub(crate) fn get_totals_row_count_str(&self) -> String {
-        self.totals_row_count.get_value_string()
+        self.totals_row_count.value_string()
     }
 
     #[inline]
@@ -225,12 +225,12 @@ impl TableColumn {
     #[inline]
     #[must_use]
     pub fn get_totals_row_label(&self) -> Option<&str> {
-        self.totals_row_label.get_value()
+        self.totals_row_label.value()
     }
 
     #[inline]
     pub(crate) fn get_totals_row_label_str(&self) -> &str {
-        self.totals_row_label.get_value_str()
+        self.totals_row_label.value_str()
     }
 
     #[inline]

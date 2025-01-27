@@ -4,13 +4,25 @@ pub struct StringValue {
 }
 impl StringValue {
     #[inline]
-    pub(crate) fn get_value_str(&self) -> &str {
+    pub(crate) fn value_str(&self) -> &str {
         self.value.as_deref().unwrap_or("")
     }
 
     #[inline]
-    pub(crate) fn get_value(&self) -> Option<&str> {
+    #[deprecated(since = "3.0.0", note = "Use value_str()")]
+    pub(crate) fn get_value_str(&self) -> &str {
+        self.value_str()
+    }
+
+    #[inline]
+    pub(crate) fn value(&self) -> Option<&str> {
         self.value.as_deref()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> Option<&str> {
+        self.value()
     }
 
     #[inline]
@@ -38,10 +50,16 @@ impl StringValue {
     }
 
     #[inline]
-    pub(crate) fn get_hash_string(&self) -> &str {
+    pub(crate) fn hash_string(&self) -> &str {
         if self.has_value() {
-            return self.get_value_str();
+            return self.value_str();
         }
         "empty!!"
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_string()")]
+    pub(crate) fn get_hash_string(&self) -> &str {
+        self.hash_string()
     }
 }

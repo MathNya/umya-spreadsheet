@@ -20,7 +20,7 @@ pub(crate) struct RawRelationship {
 impl RawRelationship {
     #[inline]
     pub(crate) fn get_id(&self) -> &str {
-        self.id.get_value_str()
+        self.id.value_str()
     }
 
     #[inline]
@@ -31,7 +31,7 @@ impl RawRelationship {
 
     #[inline]
     pub(crate) fn get_target(&self) -> &str {
-        self.target.get_value_str()
+        self.target.value_str()
     }
 
     #[inline]
@@ -42,7 +42,7 @@ impl RawRelationship {
 
     #[inline]
     pub(crate) fn get_type(&self) -> &str {
-        self.r_type.get_value_str()
+        self.r_type.value_str()
     }
 
     #[inline]
@@ -69,7 +69,7 @@ impl RawRelationship {
 
     #[inline]
     pub(crate) fn get_target_mode(&self) -> &str {
-        self.target_mode.get_value_str()
+        self.target_mode.value_str()
     }
 
     #[inline]

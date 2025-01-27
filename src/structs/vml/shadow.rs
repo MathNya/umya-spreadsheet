@@ -27,7 +27,7 @@ impl Shadow {
 
     #[must_use]
     pub fn get_color(&self) -> &str {
-        self.color.get_value_str()
+        self.color.value_str()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -62,7 +62,7 @@ impl Shadow {
             attributes.push(("on", self.on.get_value_string()).into());
         }
         if self.color.has_value() {
-            attributes.push(("color", self.color.get_value_str()).into());
+            attributes.push(("color", self.color.value_str()).into());
         }
         if self.obscured.has_value() {
             attributes.push(("obscured", self.obscured.get_value_string()).into());

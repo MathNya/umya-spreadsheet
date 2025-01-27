@@ -4,13 +4,25 @@ pub struct Int64Value {
 }
 impl Int64Value {
     #[inline]
-    pub(crate) fn get_value(&self) -> i64 {
+    pub(crate) fn value(&self) -> i64 {
         self.value.unwrap_or(0)
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> i64 {
+        self.value()
+    }
+
+    #[inline]
+    pub(crate) fn value_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
     pub(crate) fn get_value_string(&self) -> String {
-        self.get_value().to_string()
+        self.value_string()
     }
 
     #[inline]
@@ -30,10 +42,16 @@ impl Int64Value {
     }
 
     #[inline]
-    pub(crate) fn get_hash_string(&self) -> String {
+    pub(crate) fn hash_string(&self) -> String {
         if self.has_value() {
-            return self.get_value_string();
+            return self.value_string();
         }
         String::from("empty!!")
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_string()")]
+    pub(crate) fn get_hash_string(&self) -> String {
+        self.hash_string()
     }
 }

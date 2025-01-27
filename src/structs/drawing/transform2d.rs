@@ -92,7 +92,7 @@ impl Transform2D {
     #[inline]
     #[must_use]
     pub fn get_rot(&self) -> Option<&str> {
-        self.rot.get_value()
+        self.rot.value()
     }
 
     #[inline]
@@ -103,7 +103,7 @@ impl Transform2D {
     #[inline]
     #[must_use]
     pub fn get_flip_v(&self) -> Option<&str> {
-        self.flip_v.get_value()
+        self.flip_v.value()
     }
 
     #[inline]
@@ -114,7 +114,7 @@ impl Transform2D {
     #[inline]
     #[must_use]
     pub fn get_flip_h(&self) -> Option<&str> {
-        self.flip_h.get_value()
+        self.flip_h.value()
     }
 
     #[inline]
@@ -174,13 +174,13 @@ impl Transform2D {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:xfrm
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        if let Some(v) = self.rot.get_value() {
+        if let Some(v) = self.rot.value() {
             attributes.push(("rot", v).into());
         }
-        if let Some(v) = self.flip_h.get_value() {
+        if let Some(v) = self.flip_h.value() {
             attributes.push(("flipH", v).into());
         }
-        if let Some(v) = self.flip_v.get_value() {
+        if let Some(v) = self.flip_v.value() {
             attributes.push(("flipV", v).into());
         }
         write_start_tag(writer, "a:xfrm", attributes, false);

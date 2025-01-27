@@ -19,7 +19,7 @@ impl LinearGradientFill {
     #[inline]
     #[must_use]
     pub fn get_angle(&self) -> i32 {
-        self.angle.get_value()
+        self.angle.value()
     }
 
     #[inline]
@@ -53,7 +53,7 @@ impl LinearGradientFill {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:lin
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let ang = self.angle.get_value_string();
+        let ang = self.angle.value_string();
         if self.angle.has_value() {
             attributes.push(("ang", &ang).into());
         }

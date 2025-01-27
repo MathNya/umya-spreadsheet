@@ -31,7 +31,7 @@ impl DataField {
     #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name.value_str()
     }
 
     #[inline]
@@ -44,7 +44,7 @@ impl DataField {
     #[inline]
     #[must_use]
     pub fn get_fie_id(&self) -> u32 {
-        self.fie_id.get_value()
+        self.fie_id.value()
     }
 
     #[inline]
@@ -56,7 +56,7 @@ impl DataField {
     #[inline]
     #[must_use]
     pub fn get_base_fie_id(&self) -> i32 {
-        self.base_fie_id.get_value()
+        self.base_fie_id.value()
     }
 
     #[inline]
@@ -68,7 +68,7 @@ impl DataField {
     #[inline]
     #[must_use]
     pub fn get_base_item(&self) -> u32 {
-        self.base_item.get_value()
+        self.base_item.value()
     }
 
     #[inline]
@@ -97,10 +97,10 @@ impl DataField {
             writer,
             "dataField",
             vec![
-                ("name", self.name.get_value_str()).into(),
-                ("fld", self.fie_id.get_value_string().as_str()).into(),
-                ("baseField", self.base_fie_id.get_value_string().as_str()).into(),
-                ("baseItem", self.base_item.get_value_string().as_str()).into(),
+                ("name", self.name.value_str()).into(),
+                ("fld", self.fie_id.value_string().as_str()).into(),
+                ("baseField", self.base_fie_id.value_string().as_str()).into(),
+                ("baseItem", self.base_item.value_string().as_str()).into(),
             ],
             true,
         );

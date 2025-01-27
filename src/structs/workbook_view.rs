@@ -24,7 +24,7 @@ impl WorkbookView {
     #[inline]
     #[must_use]
     pub fn get_active_tab(&self) -> u32 {
-        self.active_tab.get_value()
+        self.active_tab.value()
     }
 
     #[inline]
@@ -50,7 +50,7 @@ impl WorkbookView {
             ("windowWidth", "14805").into(),
             ("windowHeight", "8010").into(),
         ];
-        let active_tab = self.active_tab.get_value_string();
+        let active_tab = self.active_tab.value_string();
         if self.active_tab.has_value() {
             attributes.push(("activeTab", &active_tab).into());
         }

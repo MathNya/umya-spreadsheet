@@ -107,7 +107,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_prompt_title(&self) -> &str {
-        self.prompt_title.get_value_str()
+        self.prompt_title.value_str()
     }
 
     #[inline]
@@ -119,7 +119,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_prompt(&self) -> &str {
-        self.prompt.get_value_str()
+        self.prompt.value_str()
     }
 
     #[inline]
@@ -148,7 +148,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_formula1(&self) -> &str {
-        self.formula1.get_value_str()
+        self.formula1.value_str()
     }
 
     #[inline]
@@ -160,7 +160,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_formula2(&self) -> &str {
-        self.formula2.get_value_str()
+        self.formula2.value_str()
     }
 
     #[inline]
@@ -277,11 +277,11 @@ impl DataValidation {
         }
 
         if self.prompt_title.has_value() {
-            attributes.push(("promptTitle", self.prompt_title.get_value_str()).into());
+            attributes.push(("promptTitle", self.prompt_title.value_str()).into());
         }
 
         if self.prompt.has_value() {
-            attributes.push(("prompt", self.prompt.get_value_str()).into());
+            attributes.push(("prompt", self.prompt.value_str()).into());
         }
 
         let sequence_of_references = &self.sequence_of_references.get_sqref();
@@ -293,12 +293,12 @@ impl DataValidation {
         if is_inner {
             if self.formula1.has_value() {
                 write_start_tag(writer, "formula1", vec![], false);
-                write_text_node(writer, self.formula1.get_value_str());
+                write_text_node(writer, self.formula1.value_str());
                 write_end_tag(writer, "formula1");
             }
             if self.formula2.has_value() {
                 write_start_tag(writer, "formula2", vec![], false);
-                write_text_node(writer, self.formula2.get_value_str());
+                write_text_node(writer, self.formula2.value_str());
                 write_end_tag(writer, "formula2");
             }
             write_end_tag(writer, "dataValidation");

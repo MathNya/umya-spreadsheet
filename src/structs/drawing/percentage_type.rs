@@ -17,7 +17,7 @@ impl PercentageType {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> i32 {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[inline]
@@ -63,7 +63,7 @@ impl PercentageType {
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tab_name: &str) {
         if self.val.has_value() {
             let mut attributes: crate::structs::AttrCollection = Vec::new();
-            let val = self.val.get_value_string();
+            let val = self.val.value_string();
             attributes.push(("val", &val).into());
             write_start_tag(writer, tab_name, attributes, true);
         }

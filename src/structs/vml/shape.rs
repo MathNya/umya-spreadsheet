@@ -40,7 +40,7 @@ pub struct Shape {
 impl Shape {
     #[must_use]
     pub fn get_style(&self) -> &str {
-        self.style.get_value_str()
+        self.style.value_str()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -50,7 +50,7 @@ impl Shape {
 
     #[must_use]
     pub fn get_type(&self) -> &str {
-        self.r_type.get_value_str()
+        self.r_type.value_str()
     }
 
     pub fn set_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -70,7 +70,7 @@ impl Shape {
 
     #[must_use]
     pub fn get_fill_color(&self) -> &str {
-        self.fill_color.get_value_str()
+        self.fill_color.value_str()
     }
 
     pub fn set_fill_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -90,7 +90,7 @@ impl Shape {
 
     #[must_use]
     pub fn get_stroke_color(&self) -> &str {
-        self.stroke_color.get_value_str()
+        self.stroke_color.value_str()
     }
 
     pub fn set_stroke_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -100,7 +100,7 @@ impl Shape {
 
     #[must_use]
     pub fn get_stroke_weight(&self) -> &str {
-        self.stroke_weight.get_value_str()
+        self.stroke_weight.value_str()
     }
 
     pub fn set_stroke_weight<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -218,7 +218,7 @@ impl Shape {
 
     #[must_use]
     pub fn get_optional_number(&self) -> i32 {
-        self.optional_number.get_value()
+        self.optional_number.value()
     }
 
     pub fn set_optional_number(&mut self, value: i32) -> &mut Self {
@@ -228,7 +228,7 @@ impl Shape {
 
     #[must_use]
     pub fn get_coordinate_size(&self) -> &str {
-        self.coordinate_size.get_value_str()
+        self.coordinate_size.value_str()
     }
 
     pub fn set_coordinate_size<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -320,35 +320,35 @@ impl Shape {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         attributes.push(("id", &id_str).into());
         if self.r_type.has_value() {
-            attributes.push(("type", self.r_type.get_value_str()).into());
+            attributes.push(("type", self.r_type.value_str()).into());
         }
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_str()).into());
+            attributes.push(("style", self.style.value_str()).into());
         }
         if self.filled.has_value() {
             attributes.push(("filled", self.filled.get_value_string()).into());
         }
         if self.fill_color.has_value() {
-            attributes.push(("fillcolor", self.fill_color.get_value_str()).into());
+            attributes.push(("fillcolor", self.fill_color.value_str()).into());
         }
         if self.stroked.has_value() {
             attributes.push(("stroked", self.stroked.get_value_string()).into());
         }
         if self.stroke_color.has_value() {
-            attributes.push(("strokecolor", self.stroke_color.get_value_str()).into());
+            attributes.push(("strokecolor", self.stroke_color.value_str()).into());
         }
         if self.stroke_weight.has_value() {
-            attributes.push(("strokeweight", self.stroke_weight.get_value_str()).into());
+            attributes.push(("strokeweight", self.stroke_weight.value_str()).into());
         }
         if self.inset_mode.has_value() {
             attributes.push(("o:insetmode", self.inset_mode.get_value_string()).into());
         }
-        let optional_number_str = self.optional_number.get_value_string();
+        let optional_number_str = self.optional_number.value_string();
         if self.optional_number.has_value() {
             attributes.push(("o:spt", &optional_number_str).into());
         }
         if self.coordinate_size.has_value() {
-            attributes.push(("coordsize", self.coordinate_size.get_value_str()).into());
+            attributes.push(("coordsize", self.coordinate_size.value_str()).into());
         }
         write_start_tag(writer, "v:shape", attributes, false);
 

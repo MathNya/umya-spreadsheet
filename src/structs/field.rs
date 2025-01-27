@@ -23,7 +23,7 @@ pub struct Field {
 impl Field {
     #[must_use]
     pub fn get_data_field(&self) -> i32 {
-        self.x.get_value()
+        self.x.value()
     }
 
     pub fn set_data_field(&mut self, value: i32) -> &mut Self {
@@ -44,7 +44,7 @@ impl Field {
         write_start_tag(
             writer,
             "field",
-            vec![("x", self.x.get_value_string().as_str()).into()],
+            vec![("x", self.x.value_string().as_str()).into()],
             true,
         );
     }

@@ -49,7 +49,7 @@ impl SheetProtection {
     #[inline]
     #[must_use]
     pub fn get_algorithm_name(&self) -> &str {
-        self.algorithm_name.get_value_str()
+        self.algorithm_name.value_str()
     }
 
     #[inline]
@@ -61,7 +61,7 @@ impl SheetProtection {
     #[inline]
     #[must_use]
     pub fn get_hash_value(&self) -> &str {
-        self.hash_value.get_value_str()
+        self.hash_value.value_str()
     }
 
     #[inline]
@@ -73,7 +73,7 @@ impl SheetProtection {
     #[inline]
     #[must_use]
     pub fn get_salt_value(&self) -> &str {
-        self.salt_value.get_value_str()
+        self.salt_value.value_str()
     }
 
     #[inline]
@@ -85,7 +85,7 @@ impl SheetProtection {
     #[inline]
     #[must_use]
     pub fn get_spin_count(&self) -> u32 {
-        self.spin_count.get_value()
+        self.spin_count.value()
     }
 
     #[inline]
@@ -97,7 +97,7 @@ impl SheetProtection {
     #[inline]
     #[must_use]
     pub fn get_password_raw(&self) -> &str {
-        self.password.get_value_str()
+        self.password.value_str()
     }
 
     #[inline]
@@ -342,20 +342,20 @@ impl SheetProtection {
         // sheetProtection
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.algorithm_name.has_value() {
-            attributes.push(("algorithmName", self.algorithm_name.get_value_str()).into());
+            attributes.push(("algorithmName", self.algorithm_name.value_str()).into());
         }
         if self.hash_value.has_value() {
-            attributes.push(("hashValue", self.hash_value.get_value_str()).into());
+            attributes.push(("hashValue", self.hash_value.value_str()).into());
         }
         if self.salt_value.has_value() {
-            attributes.push(("saltValue", self.salt_value.get_value_str()).into());
+            attributes.push(("saltValue", self.salt_value.value_str()).into());
         }
-        let spin_count = self.spin_count.get_value_string();
+        let spin_count = self.spin_count.value_string();
         if self.spin_count.has_value() {
             attributes.push(("spinCount", &spin_count).into());
         }
         if self.password.has_value() {
-            attributes.push(("password", self.password.get_value_str()).into());
+            attributes.push(("password", self.password.value_str()).into());
         }
         if self.sheet.has_value() {
             attributes.push(("sheet", self.sheet.get_value_string()).into());

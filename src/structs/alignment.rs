@@ -68,7 +68,7 @@ impl Alignment {
     #[inline]
     #[must_use]
     pub fn get_text_rotation(&self) -> u32 {
-        self.text_rotation.get_value()
+        self.text_rotation.value()
     }
 
     #[inline]
@@ -84,7 +84,7 @@ impl Alignment {
                 &self.horizontal.get_hash_string(),
                 &self.vertical.get_hash_string(),
                 &self.wrap_text.get_hash_string(),
-                &self.text_rotation.get_hash_string(),
+                &self.text_rotation.hash_string(),
             ))
         )
     }
@@ -113,7 +113,7 @@ impl Alignment {
         if self.wrap_text.has_value() {
             attributes.push(("wrapText", self.wrap_text.get_value_string()).into());
         }
-        let text_rotation = self.text_rotation.get_value_string();
+        let text_rotation = self.text_rotation.value_string();
         if self.text_rotation.has_value() {
             attributes.push(("textRotation", text_rotation).into());
         }

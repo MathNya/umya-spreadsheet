@@ -14,7 +14,7 @@ pub struct Style {
 impl Style {
     #[must_use]
     pub fn get_val(&self) -> u8 {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: u8) -> &mut Style {
@@ -35,7 +35,7 @@ impl Style {
         write_start_tag(
             writer,
             "c:style",
-            vec![("val", &self.val.get_value_string()).into()],
+            vec![("val", &self.val.value_string()).into()],
             true,
         );
     }

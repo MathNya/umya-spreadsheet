@@ -21,7 +21,7 @@ impl SourceRectangle {
     #[inline]
     #[must_use]
     pub fn get_t(&self) -> Option<&str> {
-        self.t.get_value()
+        self.t.value()
     }
 
     #[inline]
@@ -32,7 +32,7 @@ impl SourceRectangle {
     #[inline]
     #[must_use]
     pub fn get_l(&self) -> Option<&str> {
-        self.l.get_value()
+        self.l.value()
     }
 
     #[inline]
@@ -43,7 +43,7 @@ impl SourceRectangle {
     #[inline]
     #[must_use]
     pub fn get_r(&self) -> Option<&str> {
-        self.r.get_value()
+        self.r.value()
     }
 
     #[inline]
@@ -54,7 +54,7 @@ impl SourceRectangle {
     #[inline]
     #[must_use]
     pub fn get_b(&self) -> Option<&str> {
-        self.b.get_value()
+        self.b.value()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -77,16 +77,16 @@ impl SourceRectangle {
         // a:srcRect
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        if let Some(v) = self.t.get_value() {
+        if let Some(v) = self.t.value() {
             attributes.push(("t", v).into());
         }
-        if let Some(v) = self.l.get_value() {
+        if let Some(v) = self.l.value() {
             attributes.push(("l", v).into());
         }
-        if let Some(v) = self.r.get_value() {
+        if let Some(v) = self.r.value() {
             attributes.push(("r", v).into());
         }
-        if let Some(v) = self.b.get_value() {
+        if let Some(v) = self.b.value() {
             attributes.push(("b", v).into());
         }
         write_start_tag(writer, "a:srcRect", attributes, true);

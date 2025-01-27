@@ -60,7 +60,7 @@ impl Transform {
     #[inline]
     #[must_use]
     pub fn get_rotation(&self) -> i32 {
-        self.rotation.get_value()
+        self.rotation.value()
     }
 
     #[inline]
@@ -124,7 +124,7 @@ impl Transform {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // xdr:xfrm
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let rot = self.rotation.get_value_string();
+        let rot = self.rotation.value_string();
         if self.rotation.has_value() {
             attributes.push(("rot", &rot).into());
         }

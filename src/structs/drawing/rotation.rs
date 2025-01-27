@@ -20,7 +20,7 @@ impl Rotation {
     #[inline]
     #[must_use]
     pub fn get_latitude(&self) -> i32 {
-        self.latitude.get_value()
+        self.latitude.value()
     }
 
     #[inline]
@@ -32,7 +32,7 @@ impl Rotation {
     #[inline]
     #[must_use]
     pub fn get_longitude(&self) -> i32 {
-        self.longitude.get_value()
+        self.longitude.value()
     }
 
     #[inline]
@@ -44,7 +44,7 @@ impl Rotation {
     #[inline]
     #[must_use]
     pub fn get_revolution(&self) -> i32 {
-        self.revolution.get_value()
+        self.revolution.value()
     }
 
     #[inline]
@@ -66,15 +66,15 @@ impl Rotation {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let latitude = self.latitude.get_value_string();
+        let latitude = self.latitude.value_string();
         if self.latitude.has_value() {
             attributes.push(("lat", &latitude).into());
         }
-        let longitude = self.longitude.get_value_string();
+        let longitude = self.longitude.value_string();
         if self.longitude.has_value() {
             attributes.push(("lon", &longitude).into());
         }
-        let revolution = self.revolution.get_value_string();
+        let revolution = self.revolution.value_string();
         if self.latitude.has_value() {
             attributes.push(("rev", &revolution).into());
         }

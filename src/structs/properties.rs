@@ -78,7 +78,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_creator(&self) -> &str {
-        self.creator.get_value_str()
+        self.creator.value_str()
     }
 
     #[inline]
@@ -90,7 +90,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_last_modified_by(&self) -> &str {
-        self.last_modified_by.get_value_str()
+        self.last_modified_by.value_str()
     }
 
     #[inline]
@@ -102,7 +102,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_created(&self) -> &str {
-        self.created.get_value_str()
+        self.created.value_str()
     }
 
     #[inline]
@@ -114,7 +114,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_modified(&self) -> &str {
-        self.modified.get_value_str()
+        self.modified.value_str()
     }
 
     #[inline]
@@ -126,7 +126,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_title(&self) -> &str {
-        self.title.get_value_str()
+        self.title.value_str()
     }
 
     #[inline]
@@ -138,7 +138,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_description(&self) -> &str {
-        self.description.get_value_str()
+        self.description.value_str()
     }
 
     #[inline]
@@ -150,7 +150,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_subject(&self) -> &str {
-        self.subject.get_value_str()
+        self.subject.value_str()
     }
 
     #[inline]
@@ -162,7 +162,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_keywords(&self) -> &str {
-        self.keywords.get_value_str()
+        self.keywords.value_str()
     }
 
     #[inline]
@@ -174,7 +174,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_revision(&self) -> &str {
-        self.revision.get_value_str()
+        self.revision.value_str()
     }
 
     #[inline]
@@ -186,7 +186,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_category(&self) -> &str {
-        self.category.get_value_str()
+        self.category.value_str()
     }
 
     #[inline]
@@ -198,7 +198,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_version(&self) -> &str {
-        self.version.get_value_str()
+        self.version.value_str()
     }
 
     #[inline]
@@ -210,7 +210,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_manager(&self) -> &str {
-        self.manager.get_value_str()
+        self.manager.value_str()
     }
 
     #[inline]
@@ -222,7 +222,7 @@ impl Properties {
     #[inline]
     #[must_use]
     pub fn get_company(&self) -> &str {
-        self.company.get_value_str()
+        self.company.value_str()
     }
 
     #[inline]
@@ -334,49 +334,49 @@ impl Properties {
         // dc:title
         if self.title.has_value() {
             write_start_tag(writer, "dc:title", vec![], false);
-            write_text_node(writer, self.title.get_value_str());
+            write_text_node(writer, self.title.value_str());
             write_end_tag(writer, "dc:title");
         }
 
         // dc:subject
         if self.subject.has_value() {
             write_start_tag(writer, "dc:subject", vec![], false);
-            write_text_node(writer, self.subject.get_value_str());
+            write_text_node(writer, self.subject.value_str());
             write_end_tag(writer, "dc:subject");
         }
 
         // dc:creator
         if self.creator.has_value() {
             write_start_tag(writer, "dc:creator", vec![], false);
-            write_text_node(writer, self.creator.get_value_str());
+            write_text_node(writer, self.creator.value_str());
             write_end_tag(writer, "dc:creator");
         }
 
         // cp:keywords
         if self.keywords.has_value() {
             write_start_tag(writer, "cp:keywords", vec![], false);
-            write_text_node(writer, self.keywords.get_value_str());
+            write_text_node(writer, self.keywords.value_str());
             write_end_tag(writer, "cp:keywords");
         }
 
         // dc:description
         if self.description.has_value() {
             write_start_tag(writer, "dc:description", vec![], false);
-            write_text_node(writer, self.description.get_value_str());
+            write_text_node(writer, self.description.value_str());
             write_end_tag(writer, "dc:description");
         }
 
         // cp:lastModifiedBy
         if self.last_modified_by.has_value() {
             write_start_tag(writer, "cp:lastModifiedBy", vec![], false);
-            write_text_node(writer, self.last_modified_by.get_value_str());
+            write_text_node(writer, self.last_modified_by.value_str());
             write_end_tag(writer, "cp:lastModifiedBy");
         }
 
         // cp:revision
         if self.revision.has_value() {
             write_start_tag(writer, "cp:revision", vec![], false);
-            write_text_node(writer, self.revision.get_value_str());
+            write_text_node(writer, self.revision.value_str());
             write_end_tag(writer, "cp:revision");
         }
 
@@ -388,7 +388,7 @@ impl Properties {
                 vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
-            write_text_node(writer, self.created.get_value_str());
+            write_text_node(writer, self.created.value_str());
             write_end_tag(writer, "dcterms:created");
         }
 
@@ -400,21 +400,21 @@ impl Properties {
                 vec![("xsi:type", "dcterms:W3CDTF").into()],
                 false,
             );
-            write_text_node(writer, self.modified.get_value_str());
+            write_text_node(writer, self.modified.value_str());
             write_end_tag(writer, "dcterms:modified");
         }
 
         // cp:category
         if self.category.has_value() {
             write_start_tag(writer, "cp:category", vec![], false);
-            write_text_node(writer, self.category.get_value_str());
+            write_text_node(writer, self.category.value_str());
             write_end_tag(writer, "cp:category");
         }
 
         // cp:version
         if self.version.has_value() {
             write_start_tag(writer, "cp:version", vec![], false);
-            write_text_node(writer, self.version.get_value_str());
+            write_text_node(writer, self.version.value_str());
             write_end_tag(writer, "cp:version");
         }
 

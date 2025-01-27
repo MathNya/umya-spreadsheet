@@ -53,7 +53,7 @@ impl PivotCacheDefinition {
     #[inline]
     #[must_use]
     pub fn get_id(&self) -> &str {
-        self.id.get_value_str()
+        self.id.value_str()
     }
 
     #[inline]
@@ -65,7 +65,7 @@ impl PivotCacheDefinition {
     #[inline]
     #[must_use]
     pub fn get_refreshed_by(&self) -> &str {
-        self.refreshed_by.get_value_str()
+        self.refreshed_by.value_str()
     }
 
     #[inline]
@@ -89,7 +89,7 @@ impl PivotCacheDefinition {
     #[inline]
     #[must_use]
     pub fn get_created_version(&self) -> u8 {
-        self.created_version.get_value()
+        self.created_version.value()
     }
 
     #[inline]
@@ -101,7 +101,7 @@ impl PivotCacheDefinition {
     #[inline]
     #[must_use]
     pub fn get_refreshed_version(&self) -> u8 {
-        self.refreshed_version.get_value()
+        self.refreshed_version.value()
     }
 
     #[inline]
@@ -113,7 +113,7 @@ impl PivotCacheDefinition {
     #[inline]
     #[must_use]
     pub fn get_min_refreshable_version(&self) -> u8 {
-        self.min_refreshable_version.get_value()
+        self.min_refreshable_version.value()
     }
 
     #[inline]
@@ -125,7 +125,7 @@ impl PivotCacheDefinition {
     #[inline]
     #[must_use]
     pub fn get_record_count(&self) -> u32 {
-        self.record_count.get_value()
+        self.record_count.value()
     }
 
     #[inline]
@@ -226,24 +226,24 @@ impl PivotCacheDefinition {
         ];
 
         if self.id.has_value() {
-            attributes.push(("r:id", self.id.get_value_str()).into());
+            attributes.push(("r:id", self.id.value_str()).into());
         }
         if self.refreshed_by.has_value() {
-            attributes.push(("refreshedBy", self.refreshed_by.get_value_str()).into());
+            attributes.push(("refreshedBy", self.refreshed_by.value_str()).into());
         }
         let refreshed_date_str = self.refreshed_date.get_value_string();
         if self.refreshed_date.has_value() {
             attributes.push(("refreshedDate", refreshed_date_str.as_str()).into());
         }
-        let created_version_str = self.created_version.get_value_string();
+        let created_version_str = self.created_version.value_string();
         if self.created_version.has_value() {
             attributes.push(("createdVersion", created_version_str.as_str()).into());
         }
-        let refreshed_version_str = self.refreshed_version.get_value_string();
+        let refreshed_version_str = self.refreshed_version.value_string();
         if self.refreshed_version.has_value() {
             attributes.push(("refreshedVersion", refreshed_version_str.as_str()).into());
         }
-        let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
+        let min_refreshable_version_str = self.min_refreshable_version.value_string();
         if self.min_refreshable_version.has_value() {
             attributes.push(
                 (
@@ -253,7 +253,7 @@ impl PivotCacheDefinition {
                     .into(),
             );
         }
-        let record_count_str = self.record_count.get_value_string();
+        let record_count_str = self.record_count.value_string();
         if self.record_count.has_value() {
             attributes.push(("recordCount", record_count_str.as_str()).into());
         }

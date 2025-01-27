@@ -66,7 +66,7 @@ impl FormulaToken {
     #[inline]
     #[must_use]
     pub fn get_value(&self) -> &str {
-        self.value.get_value_str()
+        self.value.value_str()
     }
 
     #[inline]

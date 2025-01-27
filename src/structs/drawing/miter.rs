@@ -18,7 +18,7 @@ impl Miter {
     #[inline]
     #[must_use]
     pub fn get_limit(&self) -> i32 {
-        self.limit.get_value()
+        self.limit.value()
     }
 
     #[inline]
@@ -39,7 +39,7 @@ impl Miter {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:miter
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let lim = self.limit.get_value_string();
+        let lim = self.limit.value_string();
         if self.limit.has_value() {
             attributes.push(("lim", &lim).into());
         }

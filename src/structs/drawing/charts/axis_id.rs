@@ -13,7 +13,7 @@ pub struct AxisId {
 impl AxisId {
     #[must_use]
     pub fn get_val(&self) -> u32 {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: u32) -> &mut AxisId {
@@ -34,7 +34,7 @@ impl AxisId {
         write_start_tag(
             writer,
             "c:axId",
-            vec![("val", &self.val.get_value_string()).into()],
+            vec![("val", &self.val.value_string()).into()],
             true,
         );
     }

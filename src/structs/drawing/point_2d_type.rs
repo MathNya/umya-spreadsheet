@@ -20,7 +20,7 @@ impl Point2DType {
     #[inline]
     #[must_use]
     pub fn get_x(&self) -> i64 {
-        self.x.get_value()
+        self.x.value()
     }
 
     #[inline]
@@ -31,7 +31,7 @@ impl Point2DType {
     #[inline]
     #[must_use]
     pub fn get_y(&self) -> i64 {
-        self.y.get_value()
+        self.y.value()
     }
 
     #[inline]
@@ -61,9 +61,9 @@ impl Point2DType {
 
     fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let x_str = self.x.get_value_string();
+        let x_str = self.x.value_string();
         attributes.push(("x", &x_str).into());
-        let y_str = self.y.get_value_string();
+        let y_str = self.y.value_string();
         attributes.push(("y", &y_str).into());
         write_start_tag(writer, tag_name, attributes, true);
     }

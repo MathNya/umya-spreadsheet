@@ -38,7 +38,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_base_column_width(&self) -> u32 {
-        self.base_column_width.get_value()
+        self.base_column_width.value()
     }
 
     #[inline]
@@ -98,7 +98,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_outline_level_column(&self) -> u8 {
-        self.outline_level_column.get_value()
+        self.outline_level_column.value()
     }
 
     #[inline]
@@ -110,7 +110,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_outline_level_row(&self) -> u8 {
-        self.outline_level_row.get_value()
+        self.outline_level_row.value()
     }
 
     #[inline]
@@ -169,7 +169,7 @@ impl SheetFormatProperties {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // sheetFormatPr
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let str_base_column_width = self.base_column_width.get_value_string();
+        let str_base_column_width = self.base_column_width.value_string();
         if self.base_column_width.has_value() {
             attributes.push(("baseColWidth", &str_base_column_width).into());
         }
@@ -194,12 +194,12 @@ impl SheetFormatProperties {
             attributes.push(("x14ac:dyDescent", &str_dy_descent).into());
         }
 
-        let str_outline_level_column = self.outline_level_column.get_value_string();
+        let str_outline_level_column = self.outline_level_column.value_string();
         if self.outline_level_column.has_value() {
             attributes.push(("outlineLevelCol", &str_outline_level_column).into());
         }
 
-        let str_outline_level_row = self.outline_level_row.get_value_string();
+        let str_outline_level_row = self.outline_level_row.value_string();
         if self.outline_level_row.has_value() {
             attributes.push(("outlineLevelRow", &str_outline_level_row).into());
         }

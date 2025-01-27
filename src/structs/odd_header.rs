@@ -30,7 +30,7 @@ impl OddHeader {
     #[inline]
     #[must_use]
     pub fn get_value(&self) -> &str {
-        self.value.get_value_str()
+        self.value.value_str()
     }
 
     #[inline]
@@ -73,7 +73,7 @@ impl OddHeader {
         if self.has_param() {
             // oddHeader
             write_start_tag(writer, "oddHeader", vec![], false);
-            write_text_node(writer, self.value.get_value_str());
+            write_text_node(writer, self.value.value_str());
             write_end_tag(writer, "oddHeader");
         }
     }

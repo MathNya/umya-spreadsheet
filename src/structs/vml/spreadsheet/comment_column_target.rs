@@ -24,7 +24,7 @@ impl CommentColumnTarget {
     #[inline]
     #[must_use]
     pub fn get_value(&self) -> u32 {
-        self.value.get_value()
+        self.value.value()
     }
 
     #[inline]
@@ -57,7 +57,7 @@ impl CommentColumnTarget {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x:Column
         write_start_tag(writer, "x:Column", vec![], false);
-        write_text_node(writer, self.value.get_value_string());
+        write_text_node(writer, self.value.value_string());
         write_end_tag(writer, "x:Column");
     }
 }
@@ -65,19 +65,19 @@ impl AdjustmentValue for CommentColumnTarget {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
         self.value.set_value(
-            adjustment_insert_coordinate(self.value.get_value() + 1, root_num, offset_num) - 1,
+            adjustment_insert_coordinate(self.value.value() + 1, root_num, offset_num) - 1,
         );
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
         self.value.set_value(
-            adjustment_remove_coordinate(self.value.get_value() + 1, root_num, offset_num) - 1,
+            adjustment_remove_coordinate(self.value.value() + 1, root_num, offset_num) - 1,
         );
     }
 
     #[inline]
     fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
-        is_remove_coordinate(self.value.get_value() + 1, root_num, offset_num)
+        is_remove_coordinate(self.value.value() + 1, root_num, offset_num)
     }
 }

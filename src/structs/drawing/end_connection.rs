@@ -15,7 +15,7 @@ impl EndConnection {
     #[inline]
     #[must_use]
     pub fn get_id(&self) -> u32 {
-        self.id.get_value()
+        self.id.value()
     }
 
     #[inline]
@@ -26,7 +26,7 @@ impl EndConnection {
     #[inline]
     #[must_use]
     pub fn get_index(&self) -> u32 {
-        self.index.get_value()
+        self.index.value()
     }
 
     #[inline]
@@ -51,8 +51,8 @@ impl EndConnection {
             writer,
             "a:endCxn",
             vec![
-                ("id", self.id.get_value_string()).into(),
-                ("idx", self.index.get_value_string()).into(),
+                ("id", self.id.value_string()).into(),
+                ("idx", self.index.value_string()).into(),
             ],
             true,
         );

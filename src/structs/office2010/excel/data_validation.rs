@@ -93,7 +93,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_prompt_title(&self) -> &str {
-        self.prompt_title.get_value_str()
+        self.prompt_title.value_str()
     }
 
     #[inline]
@@ -105,7 +105,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_prompt(&self) -> &str {
-        self.prompt.get_value_str()
+        self.prompt.value_str()
     }
 
     #[inline]
@@ -288,11 +288,11 @@ impl DataValidation {
         }
 
         if self.prompt_title.has_value() {
-            attributes.push(("promptTitle", self.prompt_title.get_value_str()).into());
+            attributes.push(("promptTitle", self.prompt_title.value_str()).into());
         }
 
         if self.prompt.has_value() {
-            attributes.push(("prompt", self.prompt.get_value_str()).into());
+            attributes.push(("prompt", self.prompt.value_str()).into());
         }
 
         write_start_tag(writer, "x14:dataValidation", attributes, false);

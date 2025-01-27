@@ -335,7 +335,7 @@ impl Workbook {
     #[inline]
     #[must_use]
     pub fn code_name(&self) -> Option<&str> {
-        self.code_name.get_value()
+        self.code_name.value()
     }
 
     #[inline]

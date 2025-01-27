@@ -22,7 +22,7 @@ impl Glow {
     #[inline]
     #[must_use]
     pub fn get_radius(&self) -> i64 {
-        self.radius.get_value()
+        self.radius.value()
     }
 
     #[inline]
@@ -73,7 +73,7 @@ impl Glow {
         write_start_tag(
             writer,
             "a:glow",
-            vec![("rad", &self.radius.get_value_string()).into()],
+            vec![("rad", &self.radius.value_string()).into()],
             false,
         );
 

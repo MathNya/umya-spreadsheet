@@ -45,7 +45,7 @@ impl EmbeddedObjectProperties {
     #[inline]
     #[must_use]
     pub fn get_prog_id(&self) -> &str {
-        self.prog_id.get_value_str()
+        self.prog_id.value_str()
     }
 
     #[inline]
@@ -57,7 +57,7 @@ impl EmbeddedObjectProperties {
     #[inline]
     #[must_use]
     pub fn get_shape_id(&self) -> u32 {
-        self.shape_id.get_value()
+        self.shape_id.value()
     }
 
     #[inline]

@@ -46,7 +46,7 @@ impl Formula {
     #[must_use]
     pub fn get_address_str(&self) -> String {
         if self.string_value.has_value() {
-            return self.string_value.get_value_str().to_string();
+            return self.string_value.value_str().to_string();
         }
         self.address.get_address()
     }

@@ -77,7 +77,7 @@ impl ColumnBreaks {
             let mut manual_count = 0;
             for obj in self.get_break_list() {
                 count += 1;
-                if obj.get_manual_page_break() {
+                if obj.manual_page_break() {
                     manual_count += 1;
                 }
             }

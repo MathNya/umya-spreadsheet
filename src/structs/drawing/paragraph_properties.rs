@@ -25,7 +25,7 @@ impl ParagraphProperties {
     #[inline]
     #[must_use]
     pub fn get_right_to_left(&self) -> Option<&str> {
-        self.right_to_left.get_value()
+        self.right_to_left.value()
     }
 
     #[inline]
@@ -131,7 +131,7 @@ impl ParagraphProperties {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:pPr
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        if let Some(v) = self.right_to_left.get_value() {
+        if let Some(v) = self.right_to_left.value() {
             attributes.push(("rtl", v).into());
         }
         if self.alignment.has_value() {

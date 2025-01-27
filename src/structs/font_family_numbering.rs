@@ -25,7 +25,7 @@ impl FontFamilyNumbering {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> i32 {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[inline]
@@ -50,7 +50,7 @@ impl FontFamilyNumbering {
             write_start_tag(
                 writer,
                 "family",
-                vec![("val", self.val.get_value_string()).into()],
+                vec![("val", self.val.value_string()).into()],
                 true,
             );
         }

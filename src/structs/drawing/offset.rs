@@ -15,7 +15,7 @@ impl Offset {
     #[inline]
     #[must_use]
     pub fn get_x(&self) -> i64 {
-        self.x.get_value()
+        self.x.value()
     }
 
     #[inline]
@@ -26,7 +26,7 @@ impl Offset {
     #[inline]
     #[must_use]
     pub fn get_y(&self) -> i64 {
-        self.y.get_value()
+        self.y.value()
     }
 
     #[inline]
@@ -50,8 +50,8 @@ impl Offset {
             writer,
             "a:off",
             vec![
-                ("x", self.x.get_value_string()).into(),
-                ("y", self.y.get_value_string()).into(),
+                ("x", self.x.value_string()).into(),
+                ("y", self.y.value_string()).into(),
             ],
             true,
         );

@@ -19,7 +19,7 @@ impl SupplementalFont {
     #[inline]
     #[must_use]
     pub fn get_script(&self) -> &str {
-        self.script.get_value_str()
+        self.script.value_str()
     }
 
     #[inline]
@@ -31,7 +31,7 @@ impl SupplementalFont {
     #[inline]
     #[must_use]
     pub fn get_typeface(&self) -> &str {
-        self.typeface.get_value_str()
+        self.typeface.value_str()
     }
 
     #[inline]
@@ -56,8 +56,8 @@ impl SupplementalFont {
             writer,
             "a:font",
             vec![
-                ("script", self.script.get_value_str()).into(),
-                ("typeface", self.typeface.get_value_str()).into(),
+                ("script", self.script.value_str()).into(),
+                ("typeface", self.typeface.value_str()).into(),
             ],
             true,
         );

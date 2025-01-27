@@ -30,8 +30,15 @@ pub struct Break {
 impl Break {
     #[inline]
     #[must_use]
+    pub fn id(&self) -> u32 {
+        self.id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
     pub fn get_id(&self) -> u32 {
-        self.id.get_value()
+        self.id()
     }
 
     #[inline]
@@ -42,8 +49,15 @@ impl Break {
 
     #[inline]
     #[must_use]
+    pub fn max(&self) -> u32 {
+        self.max.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use max()")]
     pub fn get_max(&self) -> u32 {
-        self.max.get_value()
+        self.max()
     }
 
     #[inline]
@@ -54,8 +68,15 @@ impl Break {
 
     #[inline]
     #[must_use]
-    pub fn get_manual_page_break(&self) -> bool {
+    pub fn manual_page_break(&self) -> bool {
         self.manual_page_break.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use manual_page_break()")]
+    pub fn get_manual_page_break(&self) -> bool {
+        self.manual_page_break()
     }
 
     #[inline]
@@ -76,18 +97,19 @@ impl Break {
         set_string_from_xml!(self, e, manual_page_break, "man");
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // brk
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let id = self.id.get_value_string();
+        let id = self.id.value_string();
         attributes.push(("id", &id).into());
 
-        let max = self.max.get_value_string();
+        let max = self.max.value_string();
         if self.max.has_value() {
             attributes.push(("max", &max).into());
         }
 
-        let min = self.min.get_value_string();
+        let min = self.min.value_string();
         if self.min.has_value() {
             attributes.push(("min", &min).into());
         }

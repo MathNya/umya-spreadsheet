@@ -48,7 +48,7 @@ pub(crate) struct CellFormat {
 impl CellFormat {
     #[inline]
     pub(crate) fn number_format_id(&self) -> u32 {
-        self.number_format_id.get_value()
+        self.number_format_id.value()
     }
 
     #[inline]
@@ -65,7 +65,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn font_id(&self) -> u32 {
-        self.font_id.get_value()
+        self.font_id.value()
     }
 
     #[inline]
@@ -82,7 +82,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn fill_id(&self) -> u32 {
-        self.fill_id.get_value()
+        self.fill_id.value()
     }
 
     #[inline]
@@ -99,7 +99,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn border_id(&self) -> u32 {
-        self.border_id.get_value()
+        self.border_id.value()
     }
 
     #[inline]
@@ -116,7 +116,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn format_id(&self) -> u32 {
-        self.format_id.get_value()
+        self.format_id.value()
     }
 
     #[inline]
@@ -373,16 +373,16 @@ impl CellFormat {
 
         // xf
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let number_format_id = self.number_format_id.get_value_string();
+        let number_format_id = self.number_format_id.value_string();
         attributes.push(("numFmtId", &number_format_id).into());
-        let font_id = self.font_id.get_value_string();
+        let font_id = self.font_id.value_string();
         attributes.push(("fontId", &font_id).into());
-        let fill_id = self.fill_id.get_value_string();
+        let fill_id = self.fill_id.value_string();
         attributes.push(("fillId", &fill_id).into());
-        let border_id = self.border_id.get_value_string();
+        let border_id = self.border_id.value_string();
         attributes.push(("borderId", &border_id).into());
 
-        let format_id = self.format_id.get_value_string();
+        let format_id = self.format_id.value_string();
         if is_cell_xfs {
             attributes.push(("xfId", &format_id).into());
         }

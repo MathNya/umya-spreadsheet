@@ -65,7 +65,7 @@ impl Column {
     #[inline]
     #[must_use]
     pub fn get_col_num(&self) -> u32 {
-        self.col_num.get_value()
+        self.col_num.value()
     }
 
     #[inline]
@@ -212,22 +212,22 @@ impl Column {
 impl AdjustmentValue for Column {
     #[inline]
     fn adjustment_insert_value(&mut self, root_num: u32, offset_num: u32) {
-        if self.col_num.get_value() >= root_num {
+        if self.col_num.value() >= root_num {
             self.col_num
-                .set_value(self.col_num.get_value() + offset_num);
+                .set_value(self.col_num.value() + offset_num);
         }
     }
 
     #[inline]
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
-        if self.col_num.get_value() >= root_num {
+        if self.col_num.value() >= root_num {
             self.col_num
-                .set_value(self.col_num.get_value() - offset_num);
+                .set_value(self.col_num.value() - offset_num);
         }
     }
 
     #[inline]
     fn is_remove_value(&self, root_num: u32, offset_num: u32) -> bool {
-        self.col_num.get_value() >= root_num && self.col_num.get_value() < root_num + offset_num
+        self.col_num.value() >= root_num && self.col_num.value() < root_num + offset_num
     }
 }

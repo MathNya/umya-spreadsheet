@@ -39,7 +39,7 @@ impl RowItem {
     #[inline]
     #[must_use]
     pub fn get_index(&self) -> u32 {
-        self.index.get_value()
+        self.index.value()
     }
 
     #[inline]
@@ -63,7 +63,7 @@ impl RowItem {
     #[inline]
     #[must_use]
     pub fn get_repeated_item_count(&self) -> u32 {
-        self.repeated_item_count.get_value()
+        self.repeated_item_count.value()
     }
 
     #[inline]
@@ -127,7 +127,7 @@ impl RowItem {
         let empty_flg = self.member_property_index.is_some();
         // i
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let index_str = self.index.get_value_string();
+        let index_str = self.index.value_string();
         if self.index.has_value() {
             attributes.push(("i", index_str.as_str()).into());
         }
@@ -135,7 +135,7 @@ impl RowItem {
         if self.item_type.has_value() {
             attributes.push(("t", item_type_str).into());
         }
-        let repeated_item_count_str = self.repeated_item_count.get_value_string();
+        let repeated_item_count_str = self.repeated_item_count.value_string();
         if self.repeated_item_count.has_value() {
             attributes.push(("r", repeated_item_count_str.as_str()).into());
         }

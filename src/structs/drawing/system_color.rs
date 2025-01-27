@@ -34,7 +34,7 @@ impl SystemColor {
     #[inline]
     #[must_use]
     pub fn get_last_color(&self) -> &str {
-        self.last_color.get_value_str()
+        self.last_color.value_str()
     }
 
     #[inline]
@@ -59,7 +59,7 @@ impl SystemColor {
         if self.val.has_value() {
             attributes.push(("val", val).into());
         }
-        let last_color = self.last_color.get_value_str();
+        let last_color = self.last_color.value_str();
         if self.last_color.has_value() {
             attributes.push(("lastClr", last_color).into());
         }

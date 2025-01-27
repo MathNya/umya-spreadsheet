@@ -34,7 +34,7 @@ impl ImageData {
 
     #[must_use]
     pub fn get_title(&self) -> &str {
-        self.title.get_value_str()
+        self.title.value_str()
     }
 
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -72,7 +72,7 @@ impl ImageData {
         let r_id_str = format!("rId{r_id}");
         attributes.push(("o:relid", r_id_str.as_str()).into());
         if self.title.has_value() {
-            attributes.push(("o:title", self.title.get_value_str()).into());
+            attributes.push(("o:title", self.title.value_str()).into());
         }
 
         write_start_tag(writer, "v:imagedata", attributes, true);

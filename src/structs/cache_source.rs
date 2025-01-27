@@ -34,30 +34,56 @@ pub struct CacheSource {
 }
 
 impl CacheSource {
+    #[inline]
     #[must_use]
-    pub fn get_type(&self) -> &SourceValues {
+    pub fn r#type(&self) -> &SourceValues {
         self.r#type.get_value()
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use type()")]
+    pub fn get_type(&self) -> &SourceValues {
+        self.r#type()
+    }
+
+    #[inline]
     pub fn set_type(&mut self, value: SourceValues) -> &mut Self {
         self.r#type.set_value(value);
         self
     }
 
+    #[inline]
     #[must_use]
-    pub fn get_worksheet_source(&self) -> Option<&WorksheetSource> {
+    pub fn worksheet_source(&self) -> Option<&WorksheetSource> {
         self.worksheet_source.as_ref()
     }
 
-    pub fn get_worksheet_source_mut(&mut self) -> Option<&mut WorksheetSource> {
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use worksheet_source()")]
+    pub fn get_worksheet_source(&self) -> Option<&WorksheetSource> {
+        self.worksheet_source()
+    }
+
+    #[inline]
+    pub fn worksheet_source_mut(&mut self) -> Option<&mut WorksheetSource> {
         self.worksheet_source.as_mut()
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use worksheet_source_mut()")]
+    pub fn get_worksheet_source_mut(&mut self) -> Option<&mut WorksheetSource> {
+        self.worksheet_source_mut()
+    }
+
+    #[inline]
     pub fn set_worksheet_source_mut(&mut self, value: WorksheetSource) -> &mut Self {
         self.worksheet_source = Some(value);
         self
     }
 
+    #[inline]
     #[allow(dead_code)]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
@@ -89,6 +115,7 @@ impl CacheSource {
         );
     }
 
+    #[inline]
     #[allow(dead_code)]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cacheSource

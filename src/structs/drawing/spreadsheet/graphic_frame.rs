@@ -29,7 +29,7 @@ impl GraphicFrame {
     #[inline]
     #[must_use]
     pub fn get_macro(&self) -> &str {
-        self.r#macro.get_value_str()
+        self.r#macro.value_str()
     }
 
     #[inline]
@@ -138,7 +138,7 @@ impl GraphicFrame {
         write_start_tag(
             writer,
             "xdr:graphicFrame",
-            vec![("macro", self.r#macro.get_value_str()).into()],
+            vec![("macro", self.r#macro.value_str()).into()],
             false,
         );
 

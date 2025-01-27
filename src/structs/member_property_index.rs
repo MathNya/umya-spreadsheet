@@ -22,16 +22,26 @@ pub struct MemberPropertyIndex {
 }
 
 impl MemberPropertyIndex {
+    #[inline]
     #[must_use]
-    pub fn get_val(&self) -> i32 {
-        self.val.get_value()
+    pub fn val(&self) -> i32 {
+        self.val.value()
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> i32 {
+        self.val()
+    }
+
+    #[inline]
     pub fn set_val(&mut self, value: i32) -> &mut Self {
         self.val.set_value(value);
         self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         _reader: &mut Reader<R>,
@@ -40,11 +50,12 @@ impl MemberPropertyIndex {
         set_string_from_xml!(self, e, val, "val");
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x
         if self.val.has_value() {
             let mut attributes: crate::structs::AttrCollection = Vec::new();
-            let val = self.val.get_value_string();
+            let val = self.val.value_string();
             attributes.push(("val", &val).into());
             write_start_tag(writer, "x", attributes, true);
         }

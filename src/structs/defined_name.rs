@@ -42,7 +42,7 @@ impl DefinedName {
     #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name.value_str()
     }
 
     #[inline]
@@ -54,7 +54,7 @@ impl DefinedName {
     #[must_use]
     pub fn get_address(&self) -> String {
         if self.string_value.has_value() {
-            return self.string_value.get_value_str().to_string();
+            return self.string_value.value_str().to_string();
         }
         let mut result: Vec<String> = Vec::new();
         for row in &self.address {
@@ -123,7 +123,7 @@ impl DefinedName {
     #[inline]
     #[must_use]
     pub fn get_local_sheet_id(&self) -> u32 {
-        self.local_sheet_id.get_value()
+        self.local_sheet_id.value()
     }
 
     #[inline]
@@ -225,7 +225,7 @@ impl DefinedName {
         // definedName
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         attributes.push(("name", self.get_name()).into());
-        let local_sheet_id_str = self.local_sheet_id.get_value_string();
+        let local_sheet_id_str = self.local_sheet_id.value_string();
         if self.local_sheet_id.has_value() {
             attributes.push(("localSheetId", &local_sheet_id_str).into());
         }

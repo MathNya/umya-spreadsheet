@@ -27,7 +27,7 @@ impl FormatScheme {
     #[inline]
     #[must_use]
     pub fn get_name(&self) -> &str {
-        self.name.get_value_str()
+        self.name.value_str()
     }
 
     #[inline]
@@ -149,7 +149,7 @@ impl FormatScheme {
         // a:fmtScheme
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.name.has_value() {
-            attributes.push(("name", self.name.get_value_str()).into());
+            attributes.push(("name", self.name.value_str()).into());
         }
         write_start_tag(writer, "a:fmtScheme", attributes, false);
 
