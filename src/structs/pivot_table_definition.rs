@@ -73,7 +73,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_apply_number_formats(&self) -> bool {
-        self.apply_number_formats.get_value()
+        self.apply_number_formats.value()
     }
 
     #[inline]
@@ -85,7 +85,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_apply_border_formats(&self) -> bool {
-        self.apply_border_formats.get_value()
+        self.apply_border_formats.value()
     }
 
     #[inline]
@@ -97,7 +97,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_apply_font_formats(&self) -> bool {
-        self.apply_font_formats.get_value()
+        self.apply_font_formats.value()
     }
 
     #[inline]
@@ -109,7 +109,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_apply_pattern_formats(&self) -> bool {
-        self.apply_pattern_formats.get_value()
+        self.apply_pattern_formats.value()
     }
 
     #[inline]
@@ -121,7 +121,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_apply_alignment_formats(&self) -> bool {
-        self.apply_alignment_formats.get_value()
+        self.apply_alignment_formats.value()
     }
 
     #[inline]
@@ -133,7 +133,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_apply_width_height_formats(&self) -> bool {
-        self.apply_width_height_formats.get_value()
+        self.apply_width_height_formats.value()
     }
 
     #[inline]
@@ -145,7 +145,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_use_auto_formatting(&self) -> bool {
-        self.use_auto_formatting.get_value()
+        self.use_auto_formatting.value()
     }
 
     #[inline]
@@ -157,7 +157,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_item_print_titles(&self) -> bool {
-        self.item_print_titles.get_value()
+        self.item_print_titles.value()
     }
 
     #[inline]
@@ -169,7 +169,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_outline(&self) -> bool {
-        self.outline.get_value()
+        self.outline.value()
     }
 
     #[inline]
@@ -181,7 +181,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_outline_data(&self) -> bool {
-        self.outline_data.get_value()
+        self.outline_data.value()
     }
 
     #[inline]
@@ -193,7 +193,7 @@ impl PivotTableDefinition {
     #[inline]
     #[must_use]
     pub fn get_multiple_field_filters(&self) -> bool {
-        self.multiple_field_filters.get_value()
+        self.multiple_field_filters.value()
     }
 
     #[inline]
@@ -519,7 +519,7 @@ impl PivotTableDefinition {
             attributes.push(
                 (
                     "applyNumberFormats",
-                    self.apply_number_formats.get_value_string(),
+                    self.apply_number_formats.value_string(),
                 )
                     .into(),
             );
@@ -528,7 +528,7 @@ impl PivotTableDefinition {
             attributes.push(
                 (
                     "applyBorderFormats",
-                    self.apply_border_formats.get_value_string(),
+                    self.apply_border_formats.value_string(),
                 )
                     .into(),
             );
@@ -537,7 +537,7 @@ impl PivotTableDefinition {
             attributes.push(
                 (
                     "applyFontFormats",
-                    self.apply_font_formats.get_value_string(),
+                    self.apply_font_formats.value_string(),
                 )
                     .into(),
             );
@@ -546,7 +546,7 @@ impl PivotTableDefinition {
             attributes.push(
                 (
                     "applyPatternFormats",
-                    self.apply_pattern_formats.get_value_string(),
+                    self.apply_pattern_formats.value_string(),
                 )
                     .into(),
             );
@@ -555,7 +555,7 @@ impl PivotTableDefinition {
             attributes.push(
                 (
                     "applyAlignmentFormats",
-                    self.apply_alignment_formats.get_value_string(),
+                    self.apply_alignment_formats.value_string(),
                 )
                     .into(),
             );
@@ -564,7 +564,7 @@ impl PivotTableDefinition {
             attributes.push(
                 (
                     "applyWidthHeightFormats",
-                    self.apply_width_height_formats.get_value_string(),
+                    self.apply_width_height_formats.value_string(),
                 )
                     .into(),
             );
@@ -590,13 +590,13 @@ impl PivotTableDefinition {
             attributes.push(
                 (
                     "useAutoFormatting",
-                    self.use_auto_formatting.get_value_string(),
+                    self.use_auto_formatting.value_string(),
                 )
                     .into(),
             );
         }
         if self.item_print_titles.has_value() {
-            attributes.push(("itemPrintTitles", self.item_print_titles.get_value_string()).into());
+            attributes.push(("itemPrintTitles", self.item_print_titles.value_string()).into());
         }
         let created_version_str = self.created_version.value_string();
         if self.created_version.has_value() {
@@ -607,16 +607,16 @@ impl PivotTableDefinition {
             attributes.push(("indent", indent_str.as_str()).into());
         }
         if self.outline.has_value() {
-            attributes.push(("outline", self.outline.get_value_string()).into());
+            attributes.push(("outline", self.outline.value_string()).into());
         }
         if self.outline_data.has_value() {
-            attributes.push(("outlineData", self.outline_data.get_value_string()).into());
+            attributes.push(("outlineData", self.outline_data.value_string()).into());
         }
         if self.multiple_field_filters.has_value() {
             attributes.push(
                 (
                     "multipleFieldFilters",
-                    self.multiple_field_filters.get_value_string(),
+                    self.multiple_field_filters.value_string(),
                 )
                     .into(),
             );

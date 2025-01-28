@@ -24,7 +24,7 @@ impl NumberingFormat {
 
     #[must_use]
     pub fn get_source_linked(&self) -> bool {
-        self.source_linked.get_value()
+        self.source_linked.value()
     }
 
     pub fn set_source_linked(&mut self, value: bool) -> &mut NumberingFormat {
@@ -50,7 +50,7 @@ impl NumberingFormat {
             "c:numFmt",
             vec![
                 ("formatCode", self.format_code.value_str()).into(),
-                ("sourceLinked", self.source_linked.get_value_string()).into(),
+                ("sourceLinked", self.source_linked.value_string()).into(),
             ],
             true,
         );

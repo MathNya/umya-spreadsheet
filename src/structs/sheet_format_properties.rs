@@ -50,7 +50,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_custom_height(&self) -> bool {
-        self.custom_height.get_value()
+        self.custom_height.value()
     }
 
     #[inline]
@@ -122,7 +122,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_thick_bottom(&self) -> bool {
-        self.thick_bottom.get_value()
+        self.thick_bottom.value()
     }
 
     #[inline]
@@ -134,7 +134,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_thick_top(&self) -> bool {
-        self.thick_top.get_value()
+        self.thick_top.value()
     }
 
     #[inline]
@@ -174,7 +174,7 @@ impl SheetFormatProperties {
             attributes.push(("baseColWidth", &str_base_column_width).into());
         }
 
-        let str_custom_height = self.custom_height.get_value_string();
+        let str_custom_height = self.custom_height.value_string();
         if self.custom_height.has_value() {
             attributes.push(("customHeight", str_custom_height).into());
         }
@@ -204,12 +204,12 @@ impl SheetFormatProperties {
             attributes.push(("outlineLevelRow", &str_outline_level_row).into());
         }
 
-        let str_thick_bottom = self.thick_bottom.get_value_string();
+        let str_thick_bottom = self.thick_bottom.value_string();
         if self.thick_bottom.has_value() {
             attributes.push(("thickBottom", str_thick_bottom).into());
         }
 
-        let str_thick_top = self.thick_top.get_value_string();
+        let str_thick_top = self.thick_top.value_string();
         if self.thick_top.has_value() {
             attributes.push(("thickTop", str_thick_top).into());
         }

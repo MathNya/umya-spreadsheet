@@ -13,7 +13,7 @@ pub struct Bubble3D {
 impl Bubble3D {
     #[must_use]
     pub fn get_val(&self) -> bool {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut Bubble3D {
@@ -34,7 +34,7 @@ impl Bubble3D {
         write_start_tag(
             writer,
             "c:bubble3D",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

@@ -133,7 +133,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn apply_number_format(&self) -> bool {
-        self.apply_number_format.get_value()
+        self.apply_number_format.value()
     }
 
     #[inline]
@@ -155,7 +155,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn apply_fill(&self) -> bool {
-        self.apply_fill.get_value()
+        self.apply_fill.value()
     }
 
     #[inline]
@@ -177,7 +177,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn apply_border(&self) -> bool {
-        self.apply_border.get_value()
+        self.apply_border.value()
     }
 
     #[inline]
@@ -199,7 +199,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn apply_font(&self) -> bool {
-        self.apply_font.get_value()
+        self.apply_font.value()
     }
 
     #[inline]
@@ -221,7 +221,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn apply_alignment(&self) -> bool {
-        self.apply_alignment.get_value()
+        self.apply_alignment.value()
     }
 
     #[inline]
@@ -243,7 +243,7 @@ impl CellFormat {
 
     #[inline]
     pub(crate) fn apply_protection(&self) -> bool {
-        self.apply_protection.get_value()
+        self.apply_protection.value()
     }
 
     #[inline]
@@ -387,28 +387,28 @@ impl CellFormat {
             attributes.push(("xfId", &format_id).into());
         }
         if self.apply_font.has_value() {
-            attributes.push(("applyFont", self.apply_font.get_value_string()).into());
+            attributes.push(("applyFont", self.apply_font.value_string()).into());
         }
         if self.apply_number_format.has_value() {
             attributes.push(
                 (
                     "applyNumberFormat",
-                    self.apply_number_format.get_value_string(),
+                    self.apply_number_format.value_string(),
                 )
                     .into(),
             );
         }
         if self.apply_fill.has_value() {
-            attributes.push(("applyFill", self.apply_fill.get_value_string()).into());
+            attributes.push(("applyFill", self.apply_fill.value_string()).into());
         }
         if self.apply_border.has_value() {
-            attributes.push(("applyBorder", self.apply_border.get_value_string()).into());
+            attributes.push(("applyBorder", self.apply_border.value_string()).into());
         }
         if self.apply_alignment.has_value() {
-            attributes.push(("applyAlignment", self.apply_alignment.get_value_string()).into());
+            attributes.push(("applyAlignment", self.apply_alignment.value_string()).into());
         }
         if self.apply_protection.has_value() {
-            attributes.push(("applyProtection", self.apply_protection.get_value_string()).into());
+            attributes.push(("applyProtection", self.apply_protection.value_string()).into());
         }
         write_start_tag(writer, "xf", attributes, empty_flag);
 

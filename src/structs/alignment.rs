@@ -34,8 +34,15 @@ pub struct Alignment {
 impl Alignment {
     #[inline]
     #[must_use]
-    pub fn get_horizontal(&self) -> &HorizontalAlignmentValues {
+    pub fn horizontal(&self) -> &HorizontalAlignmentValues {
         self.horizontal.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horizontal()")]
+    pub fn get_horizontal(&self) -> &HorizontalAlignmentValues {
+        self.horizontal()
     }
 
     #[inline]
@@ -45,8 +52,15 @@ impl Alignment {
 
     #[inline]
     #[must_use]
-    pub fn get_vertical(&self) -> &VerticalAlignmentValues {
+    pub fn vertical(&self) -> &VerticalAlignmentValues {
         self.vertical.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical()")]
+    pub fn get_vertical(&self) -> &VerticalAlignmentValues {
+        self.vertical()
     }
 
     #[inline]
@@ -56,8 +70,15 @@ impl Alignment {
 
     #[inline]
     #[must_use]
+    pub fn wrap_text(&self) -> bool {
+        self.wrap_text.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use wrap_text()")]
     pub fn get_wrap_text(&self) -> bool {
-        self.wrap_text.get_value()
+        self.wrap_text()
     }
 
     #[inline]
@@ -67,8 +88,15 @@ impl Alignment {
 
     #[inline]
     #[must_use]
-    pub fn get_text_rotation(&self) -> u32 {
+    pub fn text_rotation(&self) -> u32 {
         self.text_rotation.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text_rotation()")]
+    pub fn get_text_rotation(&self) -> u32 {
+        self.text_rotation()
     }
 
     #[inline]
@@ -76,17 +104,22 @@ impl Alignment {
         self.text_rotation.set_value(value);
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}",
                 &self.horizontal.get_hash_string(),
                 &self.vertical.get_hash_string(),
-                &self.wrap_text.get_hash_string(),
+                &self.wrap_text.hash_string(),
                 &self.text_rotation.hash_string(),
             ))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     #[inline]
@@ -111,7 +144,7 @@ impl Alignment {
             attributes.push(("vertical", self.vertical.get_value_string()).into());
         }
         if self.wrap_text.has_value() {
-            attributes.push(("wrapText", self.wrap_text.get_value_string()).into());
+            attributes.push(("wrapText", self.wrap_text.value_string()).into());
         }
         let text_rotation = self.text_rotation.value_string();
         if self.text_rotation.has_value() {

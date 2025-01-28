@@ -25,7 +25,7 @@ impl PrintOptions {
     #[inline]
     #[must_use]
     pub fn get_horizontal_centered(&self) -> bool {
-        self.horizontal_centered.get_value()
+        self.horizontal_centered.value()
     }
 
     #[inline]
@@ -37,7 +37,7 @@ impl PrintOptions {
     #[inline]
     #[must_use]
     pub fn get_vertical_centered(&self) -> bool {
-        self.vertical_centered.get_value()
+        self.vertical_centered.value()
     }
 
     #[inline]
@@ -69,7 +69,7 @@ impl PrintOptions {
                 attributes.push(
                     (
                         "horizontalCentered",
-                        self.horizontal_centered.get_value_string(),
+                        self.horizontal_centered.value_string(),
                     )
                         .into(),
                 );
@@ -78,7 +78,7 @@ impl PrintOptions {
                 attributes.push(
                     (
                         "verticalCentered",
-                        self.vertical_centered.get_value_string(),
+                        self.vertical_centered.value_string(),
                     )
                         .into(),
                 );

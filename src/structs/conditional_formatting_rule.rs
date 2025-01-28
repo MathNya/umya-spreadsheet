@@ -110,7 +110,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_percent(&self) -> bool {
-        self.percent.get_value()
+        self.percent.value()
     }
 
     #[inline]
@@ -122,7 +122,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_bottom(&self) -> bool {
-        self.bottom.get_value()
+        self.bottom.value()
     }
 
     #[inline]
@@ -146,7 +146,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_stop_if_true(&self) -> bool {
-        self.stop_if_true.get_value()
+        self.stop_if_true.value()
     }
 
     #[inline]
@@ -170,7 +170,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_above_average(&self) -> bool {
-        self.above_average.get_value()
+        self.above_average.value()
     }
 
     #[inline]
@@ -182,7 +182,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn get_equal_average(&self) -> bool {
-        self.equal_average.get_value()
+        self.equal_average.value()
     }
 
     #[inline]
@@ -394,12 +394,12 @@ impl ConditionalFormattingRule {
             attributes.push(("priority", &priority).into());
         }
 
-        let percent = self.percent.get_value_string();
+        let percent = self.percent.value_string();
         if self.percent.has_value() {
             attributes.push(("percent", percent).into());
         }
 
-        let bottom = self.bottom.get_value_string();
+        let bottom = self.bottom.value_string();
         if self.bottom.has_value() {
             attributes.push(("bottom", bottom).into());
         }
@@ -409,7 +409,7 @@ impl ConditionalFormattingRule {
             attributes.push(("rank", &rank).into());
         }
 
-        let stop_if_true = self.stop_if_true.get_value_string();
+        let stop_if_true = self.stop_if_true.value_string();
         if self.stop_if_true.has_value() {
             attributes.push(("stopIfTrue", stop_if_true).into());
         }
@@ -424,12 +424,12 @@ impl ConditionalFormattingRule {
             attributes.push(("timePeriod", time_period).into());
         }
 
-        let above_average = self.above_average.get_value_string();
+        let above_average = self.above_average.value_string();
         if self.above_average.has_value() {
             attributes.push(("aboveAverage", above_average).into());
         }
 
-        let equal_average = self.equal_average.get_value_string();
+        let equal_average = self.equal_average.value_string();
         if self.equal_average.has_value() {
             attributes.push(("equalAverage", equal_average).into());
         }

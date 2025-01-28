@@ -31,7 +31,7 @@ impl LinearGradientFill {
     #[inline]
     #[must_use]
     pub fn get_scaled(&self) -> bool {
-        self.scaled.get_value()
+        self.scaled.value()
     }
 
     #[inline]
@@ -58,7 +58,7 @@ impl LinearGradientFill {
             attributes.push(("ang", &ang).into());
         }
         if self.scaled.has_value() {
-            attributes.push(("scaled", self.scaled.get_value_string()).into());
+            attributes.push(("scaled", self.scaled.value_string()).into());
         }
         write_start_tag(writer, "a:lin", attributes, true);
     }

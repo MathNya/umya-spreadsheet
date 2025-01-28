@@ -24,7 +24,7 @@ impl GroupShapeLocks {
     #[inline]
     #[must_use]
     pub fn get_no_change_aspect(&self) -> bool {
-        self.no_change_aspect.get_value()
+        self.no_change_aspect.value()
     }
 
     #[inline]
@@ -50,37 +50,37 @@ impl GroupShapeLocks {
         // a:grpSpLocks
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        let no_change_aspect_str = self.no_change_aspect.get_value_string();
+        let no_change_aspect_str = self.no_change_aspect.value_string();
         if self.no_change_aspect.has_value() {
             attributes.push(("noChangeAspect", no_change_aspect_str).into());
         }
 
-        let no_grouping_str = self.no_grouping.get_value_string();
+        let no_grouping_str = self.no_grouping.value_string();
         if self.no_grouping.has_value() {
             attributes.push(("noGrp", no_grouping_str).into());
         }
 
-        let no_move_str = self.no_move.get_value_string();
+        let no_move_str = self.no_move.value_string();
         if self.no_move.has_value() {
             attributes.push(("noMove", no_move_str).into());
         }
 
-        let no_resize_str = self.no_resize.get_value_string();
+        let no_resize_str = self.no_resize.value_string();
         if self.no_resize.has_value() {
             attributes.push(("noResize", no_resize_str).into());
         }
 
-        let no_rotation_str = self.no_rotation.get_value_string();
+        let no_rotation_str = self.no_rotation.value_string();
         if self.no_rotation.has_value() {
             attributes.push(("noRot", no_rotation_str).into());
         }
 
-        let no_selection_str = self.no_selection.get_value_string();
+        let no_selection_str = self.no_selection.value_string();
         if self.no_selection.has_value() {
             attributes.push(("noSelect", no_selection_str).into());
         }
 
-        let no_ungrouping_str = self.no_ungrouping.get_value_string();
+        let no_ungrouping_str = self.no_ungrouping.value_string();
         if self.no_ungrouping.has_value() {
             attributes.push(("noUngrp", no_ungrouping_str).into());
         }

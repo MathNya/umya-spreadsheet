@@ -13,7 +13,7 @@ pub struct ShowDataLabelsOverMaximum {
 impl ShowDataLabelsOverMaximum {
     #[must_use]
     pub fn get_val(&self) -> bool {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut ShowDataLabelsOverMaximum {
@@ -34,7 +34,7 @@ impl ShowDataLabelsOverMaximum {
         write_start_tag(
             writer,
             "c:showDLblsOverMax",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

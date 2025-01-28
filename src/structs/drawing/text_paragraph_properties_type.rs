@@ -28,7 +28,7 @@ impl TextParagraphPropertiesType {
     #[inline]
     #[must_use]
     pub fn get_right_to_left(&self) -> bool {
-        self.right_to_left.get_value()
+        self.right_to_left.value()
     }
 
     #[inline]
@@ -223,7 +223,7 @@ impl TextParagraphPropertiesType {
         // a:lvl1pPr
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.right_to_left.has_value() {
-            attributes.push(("rtl", self.right_to_left.get_value_string()).into());
+            attributes.push(("rtl", self.right_to_left.value_string()).into());
         }
         if self.alignment.has_value() {
             attributes.push(("algn", self.alignment.get_value_string()).into());

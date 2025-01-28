@@ -37,7 +37,7 @@ impl ObjectAnchor {
     #[inline]
     #[must_use]
     pub fn get_move_with_cells(&self) -> bool {
-        self.move_with_cells.get_value()
+        self.move_with_cells.value()
     }
 
     #[inline]
@@ -137,7 +137,7 @@ impl ObjectAnchor {
         // anchor
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.move_with_cells.has_value() {
-            attributes.push(("moveWithCells", self.move_with_cells.get_value_string()).into());
+            attributes.push(("moveWithCells", self.move_with_cells.value_string()).into());
         }
         write_start_tag(writer, "anchor", attributes, false);
 

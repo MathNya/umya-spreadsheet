@@ -25,7 +25,7 @@ impl PivotField {
     #[inline]
     #[must_use]
     pub fn get_data_field(&self) -> bool {
-        self.data_field.get_value()
+        self.data_field.value()
     }
 
     #[inline]
@@ -37,7 +37,7 @@ impl PivotField {
     #[inline]
     #[must_use]
     pub fn get_show_all(&self) -> bool {
-        self.show_all.get_value()
+        self.show_all.value()
     }
 
     #[inline]
@@ -64,8 +64,8 @@ impl PivotField {
             writer,
             "pivotField",
             vec![
-                ("dataField", self.data_field.get_value_string()).into(),
-                ("showAll", self.show_all.get_value_string()).into(),
+                ("dataField", self.data_field.value_string()).into(),
+                ("showAll", self.show_all.value_string()).into(),
             ],
             true,
         );

@@ -71,7 +71,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_allow_blank(&self) -> bool {
-        self.allow_blank.get_value()
+        self.allow_blank.value()
     }
 
     #[inline]
@@ -83,7 +83,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_show_input_message(&self) -> bool {
-        self.show_input_message.get_value()
+        self.show_input_message.value()
     }
 
     #[inline]
@@ -95,7 +95,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_show_error_message(&self) -> bool {
-        self.show_error_message.get_value()
+        self.show_error_message.value()
     }
 
     #[inline]
@@ -249,14 +249,14 @@ impl DataValidation {
         }
 
         if self.allow_blank.has_value() {
-            attributes.push(("allowBlank", self.allow_blank.get_value_string()).into());
+            attributes.push(("allowBlank", self.allow_blank.value_string()).into());
         }
 
         if self.show_input_message.has_value() {
             attributes.push(
                 (
                     "showInputMessage",
-                    self.show_input_message.get_value_string(),
+                    self.show_input_message.value_string(),
                 )
                     .into(),
             );
@@ -270,7 +270,7 @@ impl DataValidation {
             attributes.push(
                 (
                     "showErrorMessage",
-                    self.show_error_message.get_value_string(),
+                    self.show_error_message.value_string(),
                 )
                     .into(),
             );

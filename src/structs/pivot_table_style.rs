@@ -45,7 +45,7 @@ impl PivotTableStyle {
     #[inline]
     #[must_use]
     pub fn get_show_row_headers(&self) -> bool {
-        self.show_row_headers.get_value()
+        self.show_row_headers.value()
     }
 
     #[inline]
@@ -57,7 +57,7 @@ impl PivotTableStyle {
     #[inline]
     #[must_use]
     pub fn get_show_column_headers(&self) -> bool {
-        self.show_column_headers.get_value()
+        self.show_column_headers.value()
     }
 
     #[inline]
@@ -69,7 +69,7 @@ impl PivotTableStyle {
     #[inline]
     #[must_use]
     pub fn get_show_row_stripes(&self) -> bool {
-        self.show_row_stripes.get_value()
+        self.show_row_stripes.value()
     }
 
     #[inline]
@@ -81,7 +81,7 @@ impl PivotTableStyle {
     #[inline]
     #[must_use]
     pub fn get_show_column_stripes(&self) -> bool {
-        self.show_column_stripes.get_value()
+        self.show_column_stripes.value()
     }
 
     #[inline]
@@ -93,7 +93,7 @@ impl PivotTableStyle {
     #[inline]
     #[must_use]
     pub fn get_show_last_column(&self) -> bool {
-        self.show_last_column.get_value()
+        self.show_last_column.value()
     }
 
     #[inline]
@@ -124,11 +124,11 @@ impl PivotTableStyle {
             "pivotTableStyleInfo",
             vec![
                 ("dataField", self.name.value_str()).into(),
-                ("showAll", self.show_row_headers.get_value_string()).into(),
-                ("showAll", self.show_column_headers.get_value_string()).into(),
-                ("showAll", self.show_row_stripes.get_value_string()).into(),
-                ("showAll", self.show_column_stripes.get_value_string()).into(),
-                ("showAll", self.show_last_column.get_value_string()).into(),
+                ("showAll", self.show_row_headers.value_string()).into(),
+                ("showAll", self.show_column_headers.value_string()).into(),
+                ("showAll", self.show_row_stripes.value_string()).into(),
+                ("showAll", self.show_column_stripes.value_string()).into(),
+                ("showAll", self.show_last_column.value_string()).into(),
             ],
             true,
         );

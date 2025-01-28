@@ -98,7 +98,7 @@ impl Row {
     #[inline]
     #[must_use]
     pub fn get_thick_bot(&self) -> bool {
-        self.thick_bot.get_value()
+        self.thick_bot.value()
     }
 
     #[inline]
@@ -110,7 +110,7 @@ impl Row {
     #[inline]
     #[must_use]
     pub fn get_custom_height(&self) -> bool {
-        self.custom_height.get_value()
+        self.custom_height.value()
     }
 
     #[inline]
@@ -122,7 +122,7 @@ impl Row {
     #[inline]
     #[must_use]
     pub fn get_hidden(&self) -> bool {
-        self.hidden.get_value()
+        self.hidden.value()
     }
 
     #[inline]
@@ -245,17 +245,17 @@ impl Row {
         if self.height.get_value() != 0f64 {
             attributes.push(("ht", &height).into());
         }
-        if self.thick_bot.get_value() {
-            attributes.push(("thickBot", self.thick_bot.get_value_string()).into());
+        if self.thick_bot.value() {
+            attributes.push(("thickBot", self.thick_bot.value_string()).into());
         }
-        if self.custom_height.get_value() {
-            attributes.push(("customHeight", self.custom_height.get_value_string()).into());
+        if self.custom_height.value() {
+            attributes.push(("customHeight", self.custom_height.value_string()).into());
         }
         if xf_index > 0 {
             attributes.push(("customFormat", "1").into());
         }
-        if self.hidden.get_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()).into());
+        if self.hidden.value() {
+            attributes.push(("hidden", self.hidden.value_string()).into());
         }
         let descent = self.descent.get_value_string();
         if self.descent.has_value() {

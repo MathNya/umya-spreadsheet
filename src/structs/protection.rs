@@ -27,7 +27,7 @@ impl Protection {
     #[inline]
     #[must_use]
     pub fn get_locked(&self) -> bool {
-        self.locked.get_value()
+        self.locked.value()
     }
 
     #[inline]
@@ -37,7 +37,7 @@ impl Protection {
 
     #[inline]
     pub fn get_hidden(&mut self) -> bool {
-        self.hidden.get_value()
+        self.hidden.value()
     }
 
     #[inline]
@@ -52,8 +52,8 @@ impl Protection {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.locked.get_hash_string(),
-                &self.hidden.get_hash_string()
+                &self.locked.hash_string(),
+                &self.hidden.hash_string()
             ))
         )
     }
@@ -72,10 +72,10 @@ impl Protection {
         // protection
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.locked.has_value() {
-            attributes.push(("locked", self.locked.get_value_string()).into());
+            attributes.push(("locked", self.locked.value_string()).into());
         }
         if self.hidden.has_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()).into());
+            attributes.push(("hidden", self.hidden.value_string()).into());
         }
         write_start_tag(writer, "protection", attributes, true);
     }

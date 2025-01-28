@@ -61,7 +61,7 @@ impl CellFormula {
     #[inline]
     #[must_use]
     pub fn bx(&self) -> bool {
-        self.bx.get_value()
+        self.bx.value()
     }
 
     #[inline]
@@ -80,7 +80,7 @@ impl CellFormula {
     #[inline]
     #[must_use]
     pub fn data_table_2d(&self) -> bool {
-        self.data_table_2d.get_value()
+        self.data_table_2d.value()
     }
 
     #[inline]
@@ -99,7 +99,7 @@ impl CellFormula {
     #[inline]
     #[must_use]
     pub fn data_table_row(&self) -> bool {
-        self.data_table_row.get_value()
+        self.data_table_row.value()
     }
 
     #[inline]
@@ -136,7 +136,7 @@ impl CellFormula {
     #[inline]
     #[must_use]
     pub fn input_1deleted(&self) -> bool {
-        self.input_1deleted.get_value()
+        self.input_1deleted.value()
     }
 
     #[inline]
@@ -155,7 +155,7 @@ impl CellFormula {
     #[inline]
     #[must_use]
     pub fn input_2deleted(&self) -> bool {
-        self.input_2deleted.get_value()
+        self.input_2deleted.value()
     }
 
     #[inline]
@@ -361,17 +361,17 @@ impl CellFormula {
     ) {
         // f
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let bx_str = self.bx.get_value_string();
+        let bx_str = self.bx.value_string();
         if self.bx.has_value() {
             attributes.push(("bx", bx_str).into());
         }
 
-        let data_table_2d_str = self.data_table_2d.get_value_string();
+        let data_table_2d_str = self.data_table_2d.value_string();
         if self.data_table_2d.has_value() {
             attributes.push(("dt2D", data_table_2d_str).into());
         }
 
-        let data_table_row_str = self.data_table_row.get_value_string();
+        let data_table_row_str = self.data_table_row.value_string();
         if self.data_table_row.has_value() {
             attributes.push(("dtr", data_table_row_str).into());
         }
@@ -384,12 +384,12 @@ impl CellFormula {
             }
         }
 
-        let input_1deleted_str = self.input_1deleted.get_value_string();
+        let input_1deleted_str = self.input_1deleted.value_string();
         if self.input_1deleted.has_value() {
             attributes.push(("del1", input_1deleted_str).into());
         }
 
-        let input_2deleted_str = self.input_2deleted.get_value_string();
+        let input_2deleted_str = self.input_2deleted.value_string();
         if self.input_2deleted.has_value() {
             attributes.push(("del2", input_2deleted_str).into());
         }

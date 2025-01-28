@@ -176,7 +176,7 @@ impl WorkbookProtection {
     #[inline]
     #[must_use]
     pub fn get_lock_revision(&self) -> bool {
-        self.lock_revision.get_value()
+        self.lock_revision.value()
     }
 
     #[inline]
@@ -188,7 +188,7 @@ impl WorkbookProtection {
     #[inline]
     #[must_use]
     pub fn get_lock_structure(&self) -> bool {
-        self.lock_structure.get_value()
+        self.lock_structure.value()
     }
 
     #[inline]
@@ -200,7 +200,7 @@ impl WorkbookProtection {
     #[inline]
     #[must_use]
     pub fn get_lock_windows(&self) -> bool {
-        self.lock_windows.get_value()
+        self.lock_windows.value()
     }
 
     #[inline]
@@ -313,13 +313,13 @@ impl WorkbookProtection {
             attributes.push(("revisionsPassword", self.revisions_password.value_str()).into());
         }
         if self.lock_revision.has_value() {
-            attributes.push(("lockRevision", self.lock_revision.get_value_string()).into());
+            attributes.push(("lockRevision", self.lock_revision.value_string()).into());
         }
         if self.lock_structure.has_value() {
-            attributes.push(("lockStructure", self.lock_structure.get_value_string()).into());
+            attributes.push(("lockStructure", self.lock_structure.value_string()).into());
         }
         if self.lock_windows.has_value() {
-            attributes.push(("lockWindows", self.lock_windows.get_value_string()).into());
+            attributes.push(("lockWindows", self.lock_windows.value_string()).into());
         }
 
         write_start_tag(writer, "workbookProtection", attributes, true);

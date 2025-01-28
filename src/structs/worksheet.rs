@@ -2926,7 +2926,7 @@ impl AdjustmentCoordinate for Worksheet {
 
         // auto filter
         let is_remove = match self.auto_filter() {
-            Some(v) => v.get_range().is_remove_coordinate(
+            Some(v) => v.range().is_remove_coordinate(
                 root_col_num,
                 offset_col_num,
                 root_row_num,

@@ -13,8 +13,15 @@ pub struct Anchor {
 impl Anchor {
     #[inline]
     #[must_use]
-    pub fn get_left_column(&self) -> u32 {
+    pub fn left_column(&self) -> u32 {
         self.left_column
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left_column()")]
+    pub fn get_left_column(&self) -> u32 {
+        self.left_column()
     }
 
     #[inline]
@@ -24,8 +31,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_left_offset(&self) -> u32 {
+    pub fn left_offset(&self) -> u32 {
         self.left_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left_offset()")]
+    pub fn get_left_offset(&self) -> u32 {
+        self.left_offset()
     }
 
     #[inline]
@@ -35,8 +49,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_top_row(&self) -> u32 {
+    pub fn top_row(&self) -> u32 {
         self.top_row
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_row()")]
+    pub fn get_top_row(&self) -> u32 {
+        self.top_row()
     }
 
     #[inline]
@@ -46,8 +67,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_top_offset(&self) -> u32 {
+    pub fn top_offset(&self) -> u32 {
         self.top_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_offset()")]
+    pub fn get_top_offset(&self) -> u32 {
+        self.top_offset()
     }
 
     #[inline]
@@ -57,10 +85,17 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_right_column(&self) -> u32 {
+    pub fn right_column(&self) -> u32 {
         self.right_column
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_column()")]
+    pub fn get_right_column(&self) -> u32 {
+        self.right_column()
+    }
+    
     #[inline]
     pub fn set_right_column(&mut self, value: u32) {
         self.right_column = value;
@@ -68,8 +103,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_right_offset(&self) -> u32 {
+    pub fn right_offset(&self) -> u32 {
         self.right_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_offset()")]
+    pub fn get_right_offset(&self) -> u32 {
+        self.right_offset()
     }
 
     #[inline]
@@ -79,8 +121,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_bottom_row(&self) -> u32 {
+    pub fn bottom_row(&self) -> u32 {
         self.bottom_row
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom_row()")]
+    pub fn get_bottom_row(&self) -> u32 {
+        self.bottom_row()
     }
 
     #[inline]
@@ -90,8 +139,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_bottom_offset(&self) -> u32 {
+    pub fn bottom_offset(&self) -> u32 {
         self.bottom_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom_offset()")]
+    pub fn get_bottom_offset(&self) -> u32 {
+        self.bottom_offset()
     }
 
     #[inline]

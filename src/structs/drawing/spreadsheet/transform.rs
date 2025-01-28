@@ -71,7 +71,7 @@ impl Transform {
     #[inline]
     #[must_use]
     pub fn get_vertical_flip(&self) -> bool {
-        self.vertical_flip.get_value()
+        self.vertical_flip.value()
     }
 
     #[inline]
@@ -82,7 +82,7 @@ impl Transform {
     #[inline]
     #[must_use]
     pub fn get_horizontal_flip(&self) -> bool {
-        self.horizontal_flip.get_value()
+        self.horizontal_flip.value()
     }
 
     #[inline]
@@ -129,10 +129,10 @@ impl Transform {
             attributes.push(("rot", &rot).into());
         }
         if self.horizontal_flip.has_value() {
-            attributes.push(("flipH", self.horizontal_flip.get_value_string()).into());
+            attributes.push(("flipH", self.horizontal_flip.value_string()).into());
         }
         if self.vertical_flip.has_value() {
-            attributes.push(("flipV", self.vertical_flip.get_value_string()).into());
+            attributes.push(("flipV", self.vertical_flip.value_string()).into());
         }
         write_start_tag(writer, "xdr:xfrm", attributes, false);
 

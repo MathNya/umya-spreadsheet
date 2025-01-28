@@ -89,7 +89,7 @@ impl Column {
     #[inline]
     #[must_use]
     pub fn get_hidden(&self) -> bool {
-        self.hidden.get_value()
+        self.hidden.value()
     }
 
     #[inline]
@@ -101,7 +101,7 @@ impl Column {
     #[inline]
     #[must_use]
     pub fn get_best_fit(&self) -> bool {
-        self.best_fit.get_value()
+        self.best_fit.value()
     }
 
     #[inline]
@@ -130,7 +130,7 @@ impl Column {
     #[inline]
     #[must_use]
     pub fn get_auto_width(&self) -> bool {
-        self.auto_width.get_value()
+        self.auto_width.value()
     }
 
     #[inline]
@@ -187,8 +187,8 @@ impl Column {
             md5::Md5::digest(format!(
                 "{}{}{}",
                 &self.width.get_value_string(),
-                &self.hidden.get_value_string(),
-                &self.best_fit.get_value_string(),
+                &self.hidden.value_string(),
+                &self.best_fit.value_string(),
             ))
         )
     }

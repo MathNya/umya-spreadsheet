@@ -23,7 +23,7 @@ impl NonVisualPictureDrawingProperties {
     #[inline]
     #[must_use]
     pub fn get_prefer_relative_resize(&self) -> bool {
-        self.prefer_relative_resize.get_value()
+        self.prefer_relative_resize.value()
     }
 
     #[inline]
@@ -84,7 +84,7 @@ impl NonVisualPictureDrawingProperties {
             attributes.push(
                 (
                     "preferRelativeResize",
-                    self.prefer_relative_resize.get_value_string(),
+                    self.prefer_relative_resize.value_string(),
                 )
                     .into(),
             );

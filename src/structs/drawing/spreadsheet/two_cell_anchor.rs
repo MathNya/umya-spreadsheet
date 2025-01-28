@@ -166,7 +166,7 @@ impl TwoCellAnchor {
     #[inline]
     #[must_use]
     pub fn get_is_alternate_content(&self) -> bool {
-        self.is_alternate_content.get_value()
+        self.is_alternate_content.value()
     }
 
     #[inline]

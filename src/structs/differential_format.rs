@@ -148,7 +148,7 @@ impl DifferentialFormat {
                 },
                 match &self.alignment {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()

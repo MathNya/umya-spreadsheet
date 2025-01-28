@@ -175,11 +175,11 @@ impl Columns {
         attributes.push(("max", max_str).into());
         let width = column.width.get_value_string();
         attributes.push(("width", &width).into());
-        if column.hidden.get_value() {
-            attributes.push(("hidden", column.hidden.get_value_string()).into());
+        if column.hidden.value() {
+            attributes.push(("hidden", column.hidden.value_string()).into());
         }
-        if column.best_fit.get_value() {
-            attributes.push(("bestFit", column.best_fit.get_value_string()).into());
+        if column.best_fit.value() {
+            attributes.push(("bestFit", column.best_fit.value_string()).into());
         }
         attributes.push(("customWidth", "1").into());
         let xf_index_str: String;

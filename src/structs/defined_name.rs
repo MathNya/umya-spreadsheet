@@ -134,7 +134,7 @@ impl DefinedName {
     #[inline]
     #[must_use]
     pub fn get_hidden(&self) -> bool {
-        self.hidden.get_value()
+        self.hidden.value()
     }
 
     #[inline]
@@ -229,7 +229,7 @@ impl DefinedName {
         if self.local_sheet_id.has_value() {
             attributes.push(("localSheetId", &local_sheet_id_str).into());
         }
-        let hidden_str = self.hidden.get_value_string();
+        let hidden_str = self.hidden.value_string();
         if self.hidden.has_value() {
             attributes.push(("hidden", hidden_str).into());
         }

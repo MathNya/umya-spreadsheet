@@ -85,7 +85,7 @@ impl EmbeddedObjectProperties {
     #[inline]
     #[must_use]
     pub fn get_default_size(&self) -> bool {
-        self.default_size.get_value()
+        self.default_size.value()
     }
 
     #[inline]
@@ -97,7 +97,7 @@ impl EmbeddedObjectProperties {
     #[inline]
     #[must_use]
     pub fn get_auto_pict(&self) -> bool {
-        self.auto_pict.get_value()
+        self.auto_pict.value()
     }
 
     #[inline]
@@ -160,10 +160,10 @@ impl EmbeddedObjectProperties {
         // objectPr
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.default_size.has_value() {
-            attributes.push(("defaultSize", self.default_size.get_value_string()).into());
+            attributes.push(("defaultSize", self.default_size.value_string()).into());
         }
         if self.auto_pict.has_value() {
-            attributes.push(("autoPict", self.auto_pict.get_value_string()).into());
+            attributes.push(("autoPict", self.auto_pict.value_string()).into());
         }
         let r_id_str = format!("rId{r_id}");
         attributes.push(("r:id", r_id_str.as_str()).into());

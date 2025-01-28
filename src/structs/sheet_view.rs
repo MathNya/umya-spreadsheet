@@ -50,7 +50,7 @@ impl SheetView {
     #[inline]
     #[must_use]
     pub fn get_show_grid_lines(&self) -> bool {
-        self.show_grid_lines.get_value()
+        self.show_grid_lines.value()
     }
 
     #[inline]
@@ -62,7 +62,7 @@ impl SheetView {
     #[inline]
     #[must_use]
     pub fn get_tab_selected(&self) -> bool {
-        self.tab_selected.get_value()
+        self.tab_selected.value()
     }
 
     #[inline]
@@ -251,10 +251,10 @@ impl SheetView {
         // sheetView
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.show_grid_lines.has_value() {
-            attributes.push(("showGridLines", self.show_grid_lines.get_value_string()).into());
+            attributes.push(("showGridLines", self.show_grid_lines.value_string()).into());
         }
-        if self.tab_selected.get_value() {
-            attributes.push(("tabSelected", self.tab_selected.get_value_string()).into());
+        if self.tab_selected.value() {
+            attributes.push(("tabSelected", self.tab_selected.value_string()).into());
         }
         if self.view.has_value() {
             attributes.push(("view", self.view.get_value_string()).into());

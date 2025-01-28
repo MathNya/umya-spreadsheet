@@ -25,7 +25,7 @@ impl BlipFill {
     #[inline]
     #[must_use]
     pub fn get_rotate_with_shape(&self) -> bool {
-        self.rotate_with_shape.get_value()
+        self.rotate_with_shape.value()
     }
 
     #[inline]
@@ -138,7 +138,7 @@ impl BlipFill {
         // a:blipFill
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.rotate_with_shape.has_value() {
-            attributes.push(("rotWithShape", self.rotate_with_shape.get_value_string()).into());
+            attributes.push(("rotWithShape", self.rotate_with_shape.value_string()).into());
         }
         write_start_tag(writer, "a:blipFill", attributes, false);
 

@@ -47,7 +47,7 @@ impl NonVisualDrawingProperties {
     #[inline]
     #[must_use]
     pub fn get_hidden(&self) -> bool {
-        self.hidden.get_value()
+        self.hidden.value()
     }
 
     #[inline]
@@ -90,7 +90,7 @@ impl NonVisualDrawingProperties {
         attributes.push(("id", &id).into());
         attributes.push(("name", self.name.value_str()).into());
         if self.hidden.has_value() {
-            attributes.push(("hidden", self.hidden.get_value_string()).into());
+            attributes.push(("hidden", self.hidden.value_string()).into());
         }
         write_start_tag(writer, "xdr:cNvPr", attributes, !with_inner);
 

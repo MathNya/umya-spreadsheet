@@ -31,7 +31,7 @@ pub struct SharedItems {
 impl SharedItems {
     #[must_use]
     pub fn get_contains_semi_mixed_types(&self) -> bool {
-        self.contains_semi_mixed_types.get_value()
+        self.contains_semi_mixed_types.value()
     }
 
     pub fn set_contains_semi_mixed_types(&mut self, value: bool) -> &mut Self {
@@ -41,7 +41,7 @@ impl SharedItems {
 
     #[must_use]
     pub fn get_contains_string(&self) -> bool {
-        self.contains_string.get_value()
+        self.contains_string.value()
     }
 
     pub fn set_contains_string(&mut self, value: bool) -> &mut Self {
@@ -51,7 +51,7 @@ impl SharedItems {
 
     #[must_use]
     pub fn get_contains_number(&self) -> bool {
-        self.contains_number.get_value()
+        self.contains_number.value()
     }
 
     pub fn set_contains_number(&mut self, value: bool) -> &mut Self {
@@ -61,7 +61,7 @@ impl SharedItems {
 
     #[must_use]
     pub fn get_contains_integer(&self) -> bool {
-        self.contains_integer.get_value()
+        self.contains_integer.value()
     }
 
     pub fn set_contains_integer(&mut self, value: bool) -> &mut Self {
@@ -110,12 +110,12 @@ impl SharedItems {
             vec![
                 (
                     "containsSemiMixedTypes",
-                    self.contains_semi_mixed_types.get_value_string(),
+                    self.contains_semi_mixed_types.value_string(),
                 )
                     .into(),
-                ("containsString", self.contains_string.get_value_string()).into(),
-                ("containsNumber", self.contains_number.get_value_string()).into(),
-                ("containsInteger", self.contains_integer.get_value_string()).into(),
+                ("containsString", self.contains_string.value_string()).into(),
+                ("containsNumber", self.contains_number.value_string()).into(),
+                ("containsInteger", self.contains_integer.value_string()).into(),
                 ("minValue", self.min_value.get_value_string().as_str()).into(),
                 ("maxValue", self.max_value.get_value_string().as_str()).into(),
             ],

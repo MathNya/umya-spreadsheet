@@ -129,12 +129,12 @@ impl Table {
     #[inline]
     #[must_use]
     pub fn get_totals_row_shown(&self) -> bool {
-        self.totals_row_shown.get_value()
+        self.totals_row_shown.value()
     }
 
     #[inline]
     pub(crate) fn get_totals_row_shown_str(&self) -> &str {
-        self.totals_row_shown.get_value_string()
+        self.totals_row_shown.value_string()
     }
 
     #[inline]

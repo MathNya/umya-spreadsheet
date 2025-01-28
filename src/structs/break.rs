@@ -69,7 +69,7 @@ impl Break {
     #[inline]
     #[must_use]
     pub fn manual_page_break(&self) -> bool {
-        self.manual_page_break.get_value()
+        self.manual_page_break.value()
     }
 
     #[inline]
@@ -114,7 +114,7 @@ impl Break {
             attributes.push(("min", &min).into());
         }
 
-        let manual_page_break = self.manual_page_break.get_value_string();
+        let manual_page_break = self.manual_page_break.value_string();
         if self.manual_page_break.has_value() {
             attributes.push(("man", manual_page_break).into());
         }

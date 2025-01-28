@@ -192,7 +192,7 @@ impl Font {
     #[inline]
     #[must_use]
     pub fn get_bold(&self) -> bool {
-        self.font_bold.get_val()
+        self.font_bold.val()
     }
 
     #[inline]
@@ -402,10 +402,10 @@ impl Font {
                 &self.font_name.val.hash_string(),
                 &self.font_size.val.get_hash_string(),
                 &self.font_family_numbering.val.hash_string(),
-                &self.font_bold.val.get_hash_string(),
-                &self.font_italic.val.get_hash_string(),
+                &self.font_bold.val.hash_string(),
+                &self.font_italic.val.hash_string(),
                 &self.font_underline.val.get_hash_string(),
-                &self.font_strike.val.get_hash_string(),
+                &self.font_strike.val.hash_string(),
                 &self.color.get_hash_code(),
                 &self.font_char_set.val.hash_string(),
                 &self.font_scheme.val.get_hash_string(),
