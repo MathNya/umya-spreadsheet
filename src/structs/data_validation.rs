@@ -22,6 +22,8 @@ pub struct DataValidation {
     show_error_message: BooleanValue,
     prompt_title: StringValue,
     prompt: StringValue,
+    error_title: StringValue,
+    error_messsage: StringValue,
     sequence_of_references: SequenceOfReferences,
     formula1: StringValue,
     formula2: StringValue,
@@ -90,6 +92,28 @@ impl DataValidation {
     #[inline]
     pub fn set_prompt_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.prompt_title.set_value(value);
+        self
+    }
+
+    #[inline]
+    pub fn get_error_title(&self) -> &str {
+        self.error_title.get_value_str()
+    }
+
+    #[inline]
+    pub fn set_error_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.error_title.set_value(value);
+        self
+    }
+
+    #[inline]
+    pub fn get_error_message(&self) -> &str {
+        self.error_messsage.get_value_str()
+    }
+
+    #[inline]
+    pub fn set_error_message<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.error_messsage.set_value(value);
         self
     }
 
@@ -168,6 +192,14 @@ impl DataValidation {
             self.show_error_message.set_value_string(v);
         }
 
+        if let Some(v) = get_attribute(e, b"errorTitle") {
+            self.error_title.set_value_string(v);
+        }
+
+        if let Some(v) = get_attribute(e, b"error") {
+            self.error_messsage.set_value_string(v);
+        }
+
         if let Some(v) = get_attribute(e, b"promptTitle") {
             self.prompt_title.set_value_string(v);
         }
@@ -239,6 +271,14 @@ impl DataValidation {
                 "showErrorMessage",
                 self.show_error_message.get_value_string(),
             ));
+        }
+
+        if self.error_title.has_value() {
+            attributes.push(("errorTitle", self.error_title.get_value_str()));
+        }
+
+        if self.error_messsage.has_value() {
+            attributes.push(("error", self.error_messsage.get_value_str()));
         }
 
         if self.prompt_title.has_value() {
