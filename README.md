@@ -16,35 +16,7 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.2.1
-#### * Gridlines setting values can now be changed.
-```rust
-let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let mut sheet = book.get_sheet_mut(&0).unwrap();
-sheet.get_sheet_views_mut().get_sheet_view_list_mut().get_mut(0).unwrap().set_show_grid_lines(false);
-```
-### ver 2.2.0
-#### * Increased processing speed and reduced memory consumption.(Thank you. [schungx](https://github.com/schungx),[mxsrm](https://github.com/mxsrm))
-The return type has been changed in some functions.
-Please be aware of this.
-
-#### * copy_row_styling(),copy_col_styling() is now available.
-Copies the style of the specified column or row.
-```rust
-let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.get_sheet_mut(&0).unwrap();
-sheet.copy_row_styling(&3, &5, None, None);
-sheet.copy_col_styling(&3, &5, None, None);
-```
-#### * The function to create a new comment has been implemented.
-```rust
-let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
-let sheet = book.get_sheet_mut(&0).unwrap();
-let mut comment = Comment::default();
-comment.new_comment("B2");
-comment.set_text_string("TEST");
-sheet.add_comments(comment);
-```
+### ver 2.2.2
 #### * Minor bug fixes
 
 ## Usage
@@ -52,13 +24,13 @@ sheet.add_comments(comment);
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.2.1"
+umya-spreadsheet = "2.2.2"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.2.1", features = ["js"] }
+umya-spreadsheet = { version = "2.2.2", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "2.2.1", features = ["image/png"] }
+umya-spreadsheet = { version = "2.2.2", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
