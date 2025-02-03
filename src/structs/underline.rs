@@ -55,7 +55,7 @@ impl Underline {
         // u
         if self.val.has_value() {
             let mut attributes: crate::structs::AttrCollection = Vec::new();
-            if self.val.get_value_string() != UnderlineValues::Single.get_value_string() {
+            if self.val.get_value_string() != UnderlineValues::Single.value_string() {
                 attributes.push(("val", self.val.get_value_string()).into());
             }
             write_start_tag(writer, "u", attributes, true);

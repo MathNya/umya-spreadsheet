@@ -13,7 +13,7 @@ impl Default for GroupingValues {
     }
 }
 impl EnumTrait for GroupingValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::PercentStacked => "percentStacked",
             Self::Stacked => "stacked",

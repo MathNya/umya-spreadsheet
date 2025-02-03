@@ -14,7 +14,7 @@ impl Default for ConnectValues {
     }
 }
 impl EnumTrait for ConnectValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Custom => "custom",
             Self::None => "none",

@@ -74,7 +74,7 @@ impl Default for PresetCameraValues {
 }
 impl EnumTrait for PresetCameraValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::IsometricBottomDown => "isometricBottomDown",
             Self::IsometricBottomUp => "isometricBottomUp",

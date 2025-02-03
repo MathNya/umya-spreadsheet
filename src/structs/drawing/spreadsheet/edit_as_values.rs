@@ -15,7 +15,7 @@ impl Default for EditAsValues {
 }
 impl EnumTrait for EditAsValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Absolute => "absolute",
             Self::OneCell => "oneCell",

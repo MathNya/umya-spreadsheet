@@ -12,7 +12,7 @@ impl Default for InsetMarginValues {
     }
 }
 impl EnumTrait for InsetMarginValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Auto => "auto",
             Self::Custom => "custom",

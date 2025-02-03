@@ -15,7 +15,7 @@ impl Default for LegendPositionValues {
     }
 }
 impl EnumTrait for LegendPositionValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bottom => "b",
             Self::Left => "l",

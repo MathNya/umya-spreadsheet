@@ -15,7 +15,7 @@ impl Default for PaneStateValues {
 }
 impl EnumTrait for PaneStateValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Frozen => "frozen",
             Self::FrozenSplit => "frozenSplit",

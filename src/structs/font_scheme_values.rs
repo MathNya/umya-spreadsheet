@@ -18,7 +18,7 @@ impl Default for FontSchemeValues {
 
 impl EnumTrait for FontSchemeValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Major => "major",
             Self::Minor => "minor",

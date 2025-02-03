@@ -61,8 +61,15 @@ pub struct ConditionalFormattingRule {
 impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
-    pub fn get_type(&self) -> &ConditionalFormatValues {
+    pub fn r#type(&self) -> &ConditionalFormatValues {
         self.r#type.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use type()")]
+    pub fn get_type(&self) -> &ConditionalFormatValues {
+        self.r#type()
     }
 
     #[inline]
@@ -73,8 +80,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_operator(&self) -> &ConditionalFormattingOperatorValues {
+    pub fn operator(&self) -> &ConditionalFormattingOperatorValues {
         self.operator.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use operator()")]
+    pub fn get_operator(&self) -> &ConditionalFormattingOperatorValues {
+        self.operator()
     }
 
     #[inline]
@@ -85,8 +99,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_text(&self) -> &str {
+    pub fn text(&self) -> &str {
         self.text.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> &str {
+        self.text()
     }
 
     #[inline]
@@ -97,8 +118,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_priority(&self) -> i32 {
+    pub fn priority(&self) -> i32 {
         self.priority.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use priority()")]
+    pub fn get_priority(&self) -> i32 {
+        self.priority()
     }
 
     #[inline]
@@ -109,8 +137,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_percent(&self) -> bool {
+    pub fn percent(&self) -> bool {
         self.percent.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use percent()")]
+    pub fn get_percent(&self) -> bool {
+        self.percent()
     }
 
     #[inline]
@@ -121,8 +156,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_bottom(&self) -> bool {
+    pub fn bottom(&self) -> bool {
         self.bottom.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom()")]
+    pub fn get_bottom(&self) -> bool {
+        self.bottom()
     }
 
     #[inline]
@@ -133,8 +175,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_rank(&self) -> u32 {
+    pub fn rank(&self) -> u32 {
         self.rank.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rank()")]
+    pub fn get_rank(&self) -> u32 {
+        self.rank()
     }
 
     #[inline]
@@ -145,8 +194,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_stop_if_true(&self) -> bool {
+    pub fn stop_if_true(&self) -> bool {
         self.stop_if_true.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stop_if_true()")]
+    pub fn get_stop_if_true(&self) -> bool {
+        self.stop_if_true()
     }
 
     #[inline]
@@ -157,8 +213,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_std_dev(&self) -> i32 {
+    pub fn std_dev(&self) -> i32 {
         self.std_dev.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use std_dev()")]
+    pub fn get_std_dev(&self) -> i32 {
+        self.std_dev()
     }
 
     #[inline]
@@ -169,8 +232,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_above_average(&self) -> bool {
+    pub fn above_average(&self) -> bool {
         self.above_average.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use above_average()")]
+    pub fn get_above_average(&self) -> bool {
+        self.above_average()
     }
 
     #[inline]
@@ -181,8 +251,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_equal_average(&self) -> bool {
+    pub fn equal_average(&self) -> bool {
         self.equal_average.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use equal_average()")]
+    pub fn get_equal_average(&self) -> bool {
+        self.equal_average()
     }
 
     #[inline]
@@ -193,8 +270,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_time_period(&self) -> &TimePeriodValues {
+    pub fn time_period(&self) -> &TimePeriodValues {
         self.time_period.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use time_period()")]
+    pub fn get_time_period(&self) -> &TimePeriodValues {
+        self.time_period()
     }
 
     #[inline]
@@ -205,8 +289,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_style(&self) -> Option<&Style> {
+    pub fn style(&self) -> Option<&Style> {
         self.style.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> Option<&Style> {
+        self.style()
     }
 
     #[inline]
@@ -223,8 +314,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_color_scale(&self) -> Option<&ColorScale> {
+    pub fn color_scale(&self) -> Option<&ColorScale> {
         self.color_scale.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color_scale()")]
+    pub fn get_color_scale(&self) -> Option<&ColorScale> {
+        self.color_scale()
     }
 
     #[inline]
@@ -241,8 +339,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_data_bar(&self) -> Option<&DataBar> {
+    pub fn data_bar(&self) -> Option<&DataBar> {
         self.data_bar.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_bar()")]
+    pub fn get_data_bar(&self) -> Option<&DataBar> {
+        self.data_bar()
     }
 
     #[inline]
@@ -259,8 +364,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_icon_set(&self) -> Option<&IconSet> {
+    pub fn icon_set(&self) -> Option<&IconSet> {
         self.icon_set.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use icon_set()")]
+    pub fn get_icon_set(&self) -> Option<&IconSet> {
+        self.icon_set()
     }
 
     #[inline]
@@ -277,8 +389,15 @@ impl ConditionalFormattingRule {
 
     #[inline]
     #[must_use]
-    pub fn get_formula(&self) -> Option<&Formula> {
+    pub fn formula(&self) -> Option<&Formula> {
         self.formula.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula()")]
+    pub fn get_formula(&self) -> Option<&Formula> {
+        self.formula()
     }
 
     #[inline]

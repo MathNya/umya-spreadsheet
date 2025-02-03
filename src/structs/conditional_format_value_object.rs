@@ -32,8 +32,15 @@ pub struct ConditionalFormatValueObject {
 impl ConditionalFormatValueObject {
     #[inline]
     #[must_use]
-    pub fn get_type(&self) -> &ConditionalFormatValueObjectValues {
+    pub fn r#type(&self) -> &ConditionalFormatValueObjectValues {
         self.r#type.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use type()")]
+    pub fn get_type(&self) -> &ConditionalFormatValueObjectValues {
+        self.r#type()
     }
 
     #[inline]
@@ -44,8 +51,15 @@ impl ConditionalFormatValueObject {
 
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &str {
+    pub fn val(&self) -> &str {
         self.val.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &str {
+        self.val()
     }
 
     #[inline]

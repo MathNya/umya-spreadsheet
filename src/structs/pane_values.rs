@@ -16,7 +16,7 @@ impl Default for PaneValues {
 }
 impl EnumTrait for PaneValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::BottomLeft => "bottomLeft",
             Self::BottomRight => "bottomRight",

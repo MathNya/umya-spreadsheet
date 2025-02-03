@@ -17,7 +17,7 @@ impl Default for TextFontAlignmentValues {
 }
 impl EnumTrait for TextFontAlignmentValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Automatic => "auto",
             Self::Baseline => "base",

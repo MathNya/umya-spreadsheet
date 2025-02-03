@@ -14,7 +14,7 @@ impl Default for SourceValues {
     }
 }
 impl EnumTrait for SourceValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Consolidation => "consolidation",
             Self::External => "external",

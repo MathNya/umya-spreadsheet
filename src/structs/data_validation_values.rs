@@ -20,7 +20,7 @@ impl Default for DataValidationValues {
 }
 impl EnumTrait for DataValidationValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Custom => "custom",
             Self::Date => "date",

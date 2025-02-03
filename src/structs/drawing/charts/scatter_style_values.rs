@@ -15,7 +15,7 @@ impl Default for ScatterStyleValues {
     }
 }
 impl EnumTrait for ScatterStyleValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Line => "line",
             Self::LineMarker => "lineMarker",

@@ -15,7 +15,7 @@ impl Default for SheetViewValues {
 }
 impl EnumTrait for SheetViewValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Normal => "normal",
             Self::PageBreakPreview => "pageBreakPreview",

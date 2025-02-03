@@ -13,7 +13,7 @@ impl Default for DisplayBlanksAsValues {
     }
 }
 impl EnumTrait for DisplayBlanksAsValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Gap => "gap",
             Self::Span => "span",

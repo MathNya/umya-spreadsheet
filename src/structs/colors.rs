@@ -26,13 +26,25 @@ pub(crate) struct Colors {
 
 impl Colors {
     #[inline]
-    pub(crate) fn get_mru_colors(&self) -> &MruColors {
+    pub(crate) fn mru_colors(&self) -> &MruColors {
         &self.mru_colors
     }
 
     #[inline]
-    pub(crate) fn get_mru_colors_mut(&mut self) -> &mut MruColors {
+    #[deprecated(since = "3.0.0", note = "Use mru_colors()")]
+    pub(crate) fn get_mru_colors(&self) -> &MruColors {
+        self.mru_colors()
+    }
+
+    #[inline]
+    pub(crate) fn mru_colors_mut(&mut self) -> &mut MruColors {
         &mut self.mru_colors
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use mru_colors_mut()")]
+    pub(crate) fn get_mru_colors_mut(&mut self) -> &mut MruColors {
+        self.mru_colors_mut()
     }
 
     #[inline]

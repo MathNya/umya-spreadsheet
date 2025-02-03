@@ -22,7 +22,7 @@ impl Default for CsvEncodeValues {
 }
 impl EnumTrait for CsvEncodeValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Utf8 => "utf_8",
             Self::ShiftJis => "shift_jis",

@@ -43,19 +43,39 @@ pub struct Comment {
 impl Comment {
     #[inline]
     #[must_use]
-    pub fn get_coordinate(&self) -> &Coordinate {
+    pub fn coordinate(&self) -> &Coordinate {
         &self.coordinate
     }
 
     #[inline]
-    pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate()")]
+    pub fn get_coordinate(&self) -> &Coordinate {
+        self.coordinate()
+    }
+
+    #[inline]
+    pub fn coordinate_mut(&mut self) -> &mut Coordinate {
         &mut self.coordinate
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_mut()")]
+    pub fn get_coordinate_mut(&mut self) -> &mut Coordinate {
+        self.coordinate_mut()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_author(&self) -> &str {
+    pub fn author(&self) -> &str {
         &self.author
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use author()")]
+    pub fn get_author(&self) -> &str {
+        self.author()
     }
 
     #[inline]
@@ -66,13 +86,26 @@ impl Comment {
 
     #[inline]
     #[must_use]
-    pub fn get_text(&self) -> &RichText {
+    pub fn text(&self) -> &RichText {
         &self.text
     }
 
     #[inline]
-    pub fn get_text_mut(&mut self) -> &mut RichText {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> &RichText {
+        self.text()
+    }
+
+    #[inline]
+    pub fn text_mut(&mut self) -> &mut RichText {
         &mut self.text
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use text_mut()")]
+    pub fn get_text_mut(&mut self) -> &mut RichText {
+        self.text_mut()
     }
 
     #[inline]
@@ -89,13 +122,26 @@ impl Comment {
 
     #[inline]
     #[must_use]
-    pub fn get_anchor(&self) -> &Anchor {
+    pub fn anchor(&self) -> &Anchor {
         self.shape.get_client_data().get_anchor()
     }
 
     #[inline]
-    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
+    pub fn get_anchor(&self) -> &Anchor {
+        self.anchor()
+    }
+
+    #[inline]
+    pub fn anchor_mut(&mut self) -> &mut Anchor {
         self.shape.get_client_data_mut().get_anchor_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use anchor_mut()")]
+    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+        self.anchor_mut()
     }
 
     #[inline]
@@ -106,13 +152,26 @@ impl Comment {
 
     #[inline]
     #[must_use]
-    pub fn get_shape(&self) -> &Shape {
+    pub fn shape(&self) -> &Shape {
         &self.shape
     }
 
     #[inline]
-    pub fn get_shape_mut(&mut self) -> &mut Shape {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape()")]
+    pub fn get_shape(&self) -> &Shape {
+        self.shape()
+    }
+
+    #[inline]
+    pub fn shape_mut(&mut self) -> &mut Shape {
         &mut self.shape
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_mut()")]
+    pub fn get_shape_mut(&mut self) -> &mut Shape {
+        self.shape_mut()
     }
 
     #[inline]
@@ -127,9 +186,9 @@ impl Comment {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.get_coordinate_mut().set_col_num(col).set_row_num(row);
+        self.coordinate_mut().set_col_num(col).set_row_num(row);
 
-        self.get_shape_mut()
+        self.shape_mut()
             .set_type("#_x0000_t202")
             .set_style(
                 "position:absolute;margin-left:275.25pt;margin-top:61.5pt;width:207.75pt;height:\
@@ -140,33 +199,33 @@ impl Comment {
 
         let mut fill = VmlFill::default();
         fill.set_color_2("infoBackground [80]");
-        self.get_shape_mut().set_fill(fill);
+        self.shape_mut().set_fill(fill);
 
         let mut shadow = Shadow::default();
         shadow.set_color("none [81]").set_obscured(true);
-        self.get_shape_mut().set_shadow(shadow);
+        self.shape_mut().set_shadow(shadow);
 
         let mut path = Path::default();
         path.set_connection_point_type(super::vml::office::ConnectValues::None);
-        self.get_shape_mut().set_path(path);
+        self.shape_mut().set_path(path);
 
         let mut textbox = TextBox::default();
         textbox
             .set_style("mso-direction-alt:auto")
             .set_innder("<div style='text-align:left'></div>");
-        self.get_shape_mut().set_text_box(textbox);
+        self.shape_mut().set_text_box(textbox);
 
         let movewithcells = MoveWithCells::default();
-        self.get_shape_mut()
+        self.shape_mut()
             .get_client_data_mut()
             .set_move_with_cells(movewithcells);
 
         let resizewithcells = ResizeWithCells::default();
-        self.get_shape_mut()
+        self.shape_mut()
             .get_client_data_mut()
             .set_resize_with_cells(resizewithcells);
 
-        self.get_shape_mut()
+        self.shape_mut()
             .get_client_data_mut()
             .get_anchor_mut()
             .set_left_column(col)
@@ -182,7 +241,7 @@ impl Comment {
         comment_col.set_value(col - 1);
         let mut comment_row = CommentRowTarget::default();
         comment_row.set_value(row - 1);
-        self.get_shape_mut()
+        self.shape_mut()
             .get_client_data_mut()
             .set_comment_column_target(comment_col)
             .set_comment_row_target(comment_row);
@@ -198,7 +257,7 @@ impl Comment {
         authors: &[String],
     ) {
         let coordinate = get_attribute(e, b"ref").unwrap();
-        self.get_coordinate_mut().set_coordinate(coordinate);
+        self.coordinate_mut().set_coordinate(coordinate);
 
         let author_id = get_attribute(e, b"authorId")
             .unwrap()
@@ -211,7 +270,7 @@ impl Comment {
             reader,
             Event::Start(ref e) => {
                 if e.name().into_inner() == b"text" {
-                    self.get_text_mut().set_attributes_text(reader, e);
+                    self.text_mut().set_attributes_text(reader, e);
                 }
             },
             Event::End(ref e) => {

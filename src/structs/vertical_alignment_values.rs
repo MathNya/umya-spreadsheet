@@ -17,7 +17,7 @@ impl Default for VerticalAlignmentValues {
 }
 impl EnumTrait for VerticalAlignmentValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bottom => "bottom",
             Self::Center => "center",

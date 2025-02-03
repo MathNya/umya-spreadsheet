@@ -18,7 +18,7 @@ impl Default for ConditionalFormatValueObjectValues {
 }
 impl EnumTrait for ConditionalFormatValueObjectValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Formula => "formula",
             Self::Max => "max",

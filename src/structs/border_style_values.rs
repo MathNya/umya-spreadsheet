@@ -26,7 +26,7 @@ impl Default for BorderStyleValues {
 }
 impl EnumTrait for BorderStyleValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::DashDot => "dashDot",
             Self::DashDotDot => "dashDotDot",

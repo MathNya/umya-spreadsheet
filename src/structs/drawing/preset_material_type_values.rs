@@ -27,7 +27,7 @@ impl Default for PresetMaterialTypeValues {
 }
 impl EnumTrait for PresetMaterialTypeValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Clear => "clear",
             Self::DarkEdge => "dkEdge",

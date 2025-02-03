@@ -45,12 +45,12 @@ impl Table {
     pub fn is_ok(&self) -> bool {
         !(self.name.is_empty()
             || self.display_name.is_empty()
-            || self.area.0.get_col_num() == 0
-            || self.area.0.get_row_num() == 0
-            || self.area.1.get_col_num() == 0
-            || self.area.1.get_row_num() == 0
-            || self.area.0.get_col_num() > self.area.1.get_col_num()
-            || self.area.0.get_row_num() > self.area.1.get_row_num())
+            || self.area.0.col_num() == 0
+            || self.area.0.row_num() == 0
+            || self.area.1.col_num() == 0
+            || self.area.1.row_num() == 0
+            || self.area.0.col_num() > self.area.1.col_num()
+            || self.area.0.row_num() > self.area.1.row_num())
     }
 
     #[inline]

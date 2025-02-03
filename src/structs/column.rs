@@ -203,8 +203,8 @@ impl Column {
         let mut cell_list = cells.collection_by_column(self.col_num());
         cell_list.sort_by(|a, b| {
             a.coordinate()
-                .get_row_num()
-                .cmp(&b.coordinate().get_row_num())
+                .row_num()
+                .cmp(&b.coordinate().row_num())
         });
         for cell in cell_list {
             let column_width = cell.width_point(column_font_size);

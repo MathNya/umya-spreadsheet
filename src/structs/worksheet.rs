@@ -443,10 +443,10 @@ impl Worksheet {
     /// * `cell` - Cell
     pub fn set_cell(&mut self, cell: Cell) -> &mut Self {
         let row_dimension = self
-            .row_dimension_mut(cell.coordinate().get_row_num())
+            .row_dimension_mut(cell.coordinate().row_num())
             .clone();
         let col_dimension = self
-            .column_dimension_by_number_mut(cell.coordinate().get_col_num())
+            .column_dimension_by_number_mut(cell.coordinate().col_num())
             .clone();
         self.cells.set(cell, &row_dimension, &col_dimension);
         self
@@ -706,7 +706,7 @@ impl Worksheet {
     pub fn comments_to_hashmap(&self) -> HashMap<String, &Comment> {
         let mut result = HashMap::default();
         for comment in &self.comments {
-            let coordinate = comment.get_coordinate().to_string();
+            let coordinate = comment.coordinate().to_string();
             result.insert(coordinate, comment);
         }
         result
@@ -788,8 +788,8 @@ impl Worksheet {
         for cell in self.cells.collection() {
             if let Some(hyperlink) = cell.hyperlink() {
                 let coordition = coordinate_from_index(
-                    cell.coordinate().get_col_num(),
-                    cell.coordinate().get_row_num(),
+                    cell.coordinate().col_num(),
+                    cell.coordinate().row_num(),
                 );
                 result.insert(coordition, hyperlink);
             }
@@ -2458,7 +2458,7 @@ impl Worksheet {
             }
         }
         for comment in self.comments() {
-            if let Some(fill) = comment.get_shape().get_fill() {
+            if let Some(fill) = comment.shape().get_fill() {
                 if let Some(media_object) = fill.get_image() {
                     let is_new = !list
                         .iter()
@@ -2669,8 +2669,8 @@ impl Worksheet {
                             return;
                         }
                         indexes.push((
-                            cell.coordinate().get_row_num(),
-                            cell.coordinate().get_col_num(),
+                            cell.coordinate().row_num(),
+                            cell.coordinate().col_num(),
                         ));
                     }
                 }

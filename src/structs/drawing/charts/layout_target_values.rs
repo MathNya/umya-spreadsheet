@@ -12,7 +12,7 @@ impl Default for LayoutTargetValues {
     }
 }
 impl EnumTrait for LayoutTargetValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Inner => "inner",
             Self::Outer => "outer",

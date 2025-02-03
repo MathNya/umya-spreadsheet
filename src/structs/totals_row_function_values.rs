@@ -22,7 +22,7 @@ impl Default for TotalsRowFunctionValues {
 }
 impl EnumTrait for TotalsRowFunctionValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Average => "average",
             Self::Count => "count",

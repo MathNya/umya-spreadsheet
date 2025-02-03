@@ -14,7 +14,7 @@ impl Default for TextWrappingValues {
 }
 impl EnumTrait for TextWrappingValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::None => "none",
             Self::Square => "square",

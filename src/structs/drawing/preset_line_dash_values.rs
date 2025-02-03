@@ -23,7 +23,7 @@ impl Default for PresetLineDashValues {
 }
 impl EnumTrait for PresetLineDashValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Dash => "dash",
             Self::DashDot => "dashDot",

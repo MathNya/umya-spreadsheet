@@ -11,7 +11,7 @@ pub enum TickMarkValues {
 }
 
 impl EnumTrait for TickMarkValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Cross => "cross",
             Self::Inside => "in",

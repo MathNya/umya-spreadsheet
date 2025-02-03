@@ -44,12 +44,12 @@ impl Cells {
         let mut cells = self.collection();
         cells.sort_by(|a, b| {
             (
-                a.coordinate().get_row_num(),
-                a.coordinate().get_col_num(),
+                a.coordinate().row_num(),
+                a.coordinate().col_num(),
             )
                 .cmp(&(
-                    b.coordinate().get_row_num(),
-                    b.coordinate().get_col_num(),
+                    b.coordinate().row_num(),
+                    b.coordinate().col_num(),
                 ))
         });
         cells
@@ -89,7 +89,7 @@ impl Cells {
     pub fn collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
         self.map
             .values()
-            .filter(|k| k.coordinate().get_col_num() == column_num)
+            .filter(|k| k.coordinate().col_num() == column_num)
             .map(Box::as_ref)
             .collect()
     }
@@ -105,7 +105,7 @@ impl Cells {
     pub fn collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
         self.map
             .values()
-            .filter(|k| k.coordinate().get_row_num() == row_num)
+            .filter(|k| k.coordinate().row_num() == row_num)
             .map(Box::as_ref)
             .collect()
     }
@@ -268,8 +268,8 @@ impl Cells {
         row_dimenshon: &Row,
         col_dimenshon: &Column,
     ) -> &mut Self {
-        let col_num = cell.coordinate().get_col_num();
-        let row_num = cell.coordinate().get_row_num();
+        let col_num = cell.coordinate().col_num();
+        let row_num = cell.coordinate().row_num();
         let target_cell = self.get_mut((col_num, row_num), row_dimenshon, col_dimenshon);
         target_cell.set_obj(cell);
         self
@@ -283,8 +283,8 @@ impl Cells {
 
     #[inline]
     pub(crate) fn add(&mut self, cell: Cell) {
-        let col_num = cell.coordinate().get_col_num();
-        let row_num = cell.coordinate().get_row_num();
+        let col_num = cell.coordinate().col_num();
+        let row_num = cell.coordinate().row_num();
         let k = (row_num.to_owned(), col_num.to_owned());
         self.map.insert(k, Box::new(cell));
     }
@@ -350,8 +350,8 @@ impl Cells {
             .map(|(_, cell)| {
                 (
                     (
-                        cell.coordinate().get_row_num(),
-                        cell.coordinate().get_col_num(),
+                        cell.coordinate().row_num(),
+                        cell.coordinate().col_num(),
                     ),
                     std::mem::take(cell),
                 )

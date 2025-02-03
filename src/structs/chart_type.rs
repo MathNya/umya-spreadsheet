@@ -24,7 +24,7 @@ impl Default for ChartType {
 }
 impl EnumTrait for ChartType {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::LineChart => "line_chart",
             Self::Line3DChart => "line_3d_chart",

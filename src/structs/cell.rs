@@ -162,8 +162,8 @@ impl Cell {
 
         let formula = self.cell_value.formula();
         if !formula.is_empty() {
-            let org_col_num = self.coordinate.get_col_num();
-            let org_row_num = self.coordinate.get_row_num();
+            let org_col_num = self.coordinate.col_num();
+            let org_row_num = self.coordinate.row_num();
             let offset_col_num: i32 = num_traits::cast::<_, i32>(col).unwrap()
                 - num_traits::cast::<_, i32>(org_col_num).unwrap();
             let offset_row_num: i32 = num_traits::cast::<_, i32>(row).unwrap()

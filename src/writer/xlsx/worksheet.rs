@@ -319,7 +319,7 @@ fn write_rows_and_cells(
         let mut cells_in_row: Vec<&Cell> = Vec::new();
 
         while let Some(cell) = cells_iter.peek() {
-            if row.get_row_num() != cell.coordinate().get_row_num() {
+            if row.get_row_num() != cell.coordinate().row_num() {
                 break;
             }
             cells_in_row.push(cells_iter.next().unwrap());
@@ -359,8 +359,8 @@ fn write_row_with_cells(
         row.write_to(writer, stylesheet, spans, true);
     } else {
         let (first_num, last_num) = (
-            cells_in_row.first().unwrap().coordinate().get_col_num(),
-            cells_in_row.last().unwrap().coordinate().get_col_num(),
+            cells_in_row.first().unwrap().coordinate().col_num(),
+            cells_in_row.last().unwrap().coordinate().col_num(),
         );
         let spans = format!("{first_num}:{last_num}");
 

@@ -1712,8 +1712,8 @@ fn issue_210() {
     let sheet = book.get_sheet(0).unwrap();
     for cell in sheet.get_cells() {
         if let Some(varA) = cell.get_style().get_alignment() {
-            let horizontal = varA.get_horizontal().get_value_string();
-            let vertical = varA.get_vertical().get_value_string();
+            let horizontal = varA.get_horizontal().value_string();
+            let vertical = varA.get_vertical().value_string();
             let rot = varA.get_text_rotation();
             let wrap = varA.get_wrap_text();
             // dbg!(vec![

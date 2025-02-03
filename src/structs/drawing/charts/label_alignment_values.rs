@@ -13,7 +13,7 @@ impl Default for LabelAlignmentValues {
     }
 }
 impl EnumTrait for LabelAlignmentValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Center => "ctr",
             Self::Left => "l",

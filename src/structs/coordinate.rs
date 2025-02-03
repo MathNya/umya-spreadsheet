@@ -40,8 +40,15 @@ impl fmt::Display for Coordinate {
 impl Coordinate {
     #[inline]
     #[must_use]
-    pub fn get_col_num(&self) -> u32 {
+    pub fn col_num(&self) -> u32 {
         self.column.num()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col_num()")]
+    pub fn get_col_num(&self) -> u32 {
+        self.col_num()
     }
 
     #[inline]
@@ -58,8 +65,15 @@ impl Coordinate {
 
     #[inline]
     #[must_use]
-    pub fn get_row_num(&self) -> u32 {
+    pub fn row_num(&self) -> u32 {
         self.row.num()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row_num()")]
+    pub fn get_row_num(&self) -> u32 {
+        self.row_num()
     }
 
     #[inline]
@@ -76,8 +90,15 @@ impl Coordinate {
 
     #[inline]
     #[must_use]
-    pub fn get_is_lock_col(&self) -> bool {
+    pub fn is_lock_col(&self) -> bool {
         self.column.is_lock()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_lock_col()")]
+    pub fn get_is_lock_col(&self) -> bool {
+        self.is_lock_col()
     }
 
     #[inline]
@@ -88,8 +109,15 @@ impl Coordinate {
 
     #[inline]
     #[must_use]
-    pub fn get_is_lock_row(&self) -> bool {
+    pub fn is_lock_row(&self) -> bool {
         self.row.is_lock()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_lock_row()")]
+    pub fn get_is_lock_row(&self) -> bool {
+        self.is_lock_row()
     }
 
     #[inline]

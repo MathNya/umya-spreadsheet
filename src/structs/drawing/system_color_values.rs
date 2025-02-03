@@ -42,7 +42,7 @@ impl Default for SystemColorValues {
 }
 impl EnumTrait for SystemColorValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::ActiveBorder => "activeBorder",
             Self::ActiveCaption => "activeCaption",

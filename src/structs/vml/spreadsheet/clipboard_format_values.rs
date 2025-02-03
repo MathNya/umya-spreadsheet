@@ -17,7 +17,7 @@ impl Default for ClipboardFormatValues {
 }
 impl EnumTrait for ClipboardFormatValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bitmap => "Bitmap",
             Self::Picture => "Pict",

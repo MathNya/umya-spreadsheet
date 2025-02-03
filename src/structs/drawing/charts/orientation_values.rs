@@ -12,7 +12,7 @@ impl Default for OrientationValues {
     }
 }
 impl EnumTrait for OrientationValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::MaxMin => "maxMin",
             Self::MinMax => "minMax",

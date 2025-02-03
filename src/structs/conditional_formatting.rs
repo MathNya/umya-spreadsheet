@@ -35,13 +35,26 @@ pub struct ConditionalFormatting {
 impl ConditionalFormatting {
     #[inline]
     #[must_use]
-    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+    pub fn sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
     #[inline]
-    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references()")]
+    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+        self.sequence_of_references()
+    }
+
+    #[inline]
+    pub fn sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references_mut()")]
+    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+        self.sequence_of_references_mut()
     }
 
     #[inline]
@@ -52,13 +65,26 @@ impl ConditionalFormatting {
 
     #[inline]
     #[must_use]
-    pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
+    pub fn conditional_collection(&self) -> &[ConditionalFormattingRule] {
         &self.conditional_collection
     }
 
     #[inline]
-    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use conditional_collection()")]
+    pub fn get_conditional_collection(&self) -> &[ConditionalFormattingRule] {
+        self.conditional_collection()
+    }
+
+    #[inline]
+    pub fn conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
         &mut self.conditional_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use conditional_collection_mut()")]
+    pub fn get_conditional_collection_mut(&mut self) -> &mut Vec<ConditionalFormattingRule> {
+        self.conditional_collection_mut()
     }
 
     #[inline]

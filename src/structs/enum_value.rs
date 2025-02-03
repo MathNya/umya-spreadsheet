@@ -19,7 +19,7 @@ impl<T: EnumTrait + FromStr> EnumValue<T> {
 
     #[inline]
     pub(crate) fn get_value_string(&self) -> &str {
-        self.get_value().get_value_string()
+        self.get_value().value_string()
     }
 
     #[inline]

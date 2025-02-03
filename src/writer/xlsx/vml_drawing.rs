@@ -209,7 +209,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         for comment in worksheet.comments() {
             // v:shape
-            comment.get_shape().write_to(&mut writer, id, &mut rel_list);
+            comment.shape().write_to(&mut writer, id, &mut rel_list);
             id += 1;
         }
     }

@@ -12,7 +12,7 @@ impl Default for LayoutModeValues {
     }
 }
 impl EnumTrait for LayoutModeValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Edge => "edge",
             Self::Factor => "factor",

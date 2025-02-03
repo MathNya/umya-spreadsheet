@@ -27,7 +27,7 @@ impl Default for ItemValues {
 }
 impl EnumTrait for ItemValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Average => "avg",
             Self::Blank => "blank",

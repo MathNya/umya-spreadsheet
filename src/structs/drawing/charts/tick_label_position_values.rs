@@ -14,7 +14,7 @@ impl Default for TickLabelPositionValues {
     }
 }
 impl EnumTrait for TickLabelPositionValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::High => "high",
             Self::Low => "low",

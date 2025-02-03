@@ -17,7 +17,7 @@ impl Default for UnderlineValues {
 }
 impl EnumTrait for UnderlineValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Double => "double",
             Self::DoubleAccounting => "doubleAccounting",

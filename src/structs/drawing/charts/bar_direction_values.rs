@@ -12,7 +12,7 @@ impl Default for BarDirectionValues {
     }
 }
 impl EnumTrait for BarDirectionValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Bar => "bar",
             Self::Column => "col",

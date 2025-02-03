@@ -13,7 +13,7 @@ impl Default for RadarStyleValues {
     }
 }
 impl EnumTrait for RadarStyleValues {
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Filled => "filled",
             Self::Marker => "marker",

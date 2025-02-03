@@ -22,7 +22,7 @@ impl Default for TimePeriodValues {
 }
 impl EnumTrait for TimePeriodValues {
     #[inline]
-    fn get_value_string(&self) -> &str {
+    fn value_string(&self) -> &str {
         match &self {
             Self::Last7Days => "last7Days",
             Self::LastMonth => "lastMonth",
