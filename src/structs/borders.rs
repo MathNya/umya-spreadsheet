@@ -118,44 +118,75 @@ border_accessors! {
 }
 
 impl Borders {
-    pub fn get_diagonal_down(&self) -> bool {
+    #[inline]
+    pub fn diagonal_down(&self) -> bool {
         self.diagonal_down.value()
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use diagonal_down()")]
+    pub fn get_diagonal_down(&self) -> bool {
+        self.diagonal_down()
+    }
+
+    #[inline]
     pub fn set_diagonal_down(&mut self, value: bool) {
         self.diagonal_down.set_value(value);
     }
 
-    pub fn get_diagonal_up(&self) -> bool {
+    #[inline]
+    pub fn diagonal_up(&self) -> bool {
         self.diagonal_up.value()
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use diagonal_up()")]
+    pub fn get_diagonal_up(&self) -> bool {
+        self.diagonal_up()
+    }
+
+    #[inline]
     pub fn set_diagonal_up(&mut self, value: bool) {
         self.diagonal_up.set_value(value);
     }
 
+    #[inline]
+    pub(crate) fn default_value() -> Self {
+        Self::default()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use default_value()")]
     pub(crate) fn get_default_value() -> Self {
         Self::default()
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    #[inline]
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}{}{}{}{}{}",
-                &self.get_left_border().get_hash_code(),
-                &self.get_right_border().get_hash_code(),
-                &self.get_top_border().get_hash_code(),
-                &self.get_bottom_border().get_hash_code(),
-                &self.get_diagonal_border().get_hash_code(),
-                &self.get_vertical_border().get_hash_code(),
-                &self.get_horizontal_border().get_hash_code(),
+                &self.get_left_border().hash_code(),
+                &self.get_right_border().hash_code(),
+                &self.get_top_border().hash_code(),
+                &self.get_bottom_border().hash_code(),
+                &self.get_diagonal_border().hash_code(),
+                &self.get_vertical_border().hash_code(),
+                &self.get_horizontal_border().hash_code(),
                 &self.diagonal_down.value_string(),
                 &self.diagonal_up.value_string()
             ))
         )
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
+    }
+
+    #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
         self.data[BordersIndex::Left as usize].is_visually_empty()
             || self.data[BordersIndex::Right as usize].is_visually_empty()
@@ -166,6 +197,7 @@ impl Borders {
             || self.data[BordersIndex::Horizontal as usize].is_visually_empty()
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -237,6 +269,7 @@ impl Borders {
         );
     }
 
+    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // border
         let mut attributes: crate::structs::AttrCollection = Vec::new();
@@ -264,14 +297,14 @@ impl Borders {
         self.data[BordersIndex::Diagonal as usize].write_to_diagonal(writer);
 
         // vertical
-        if self.data[BordersIndex::Vertical as usize].get_hash_code()
-            != Border::default().get_hash_code()
+        if self.data[BordersIndex::Vertical as usize].hash_code()
+            != Border::default().hash_code()
         {
             self.data[BordersIndex::Vertical as usize].write_to_vertical(writer);
         }
 
         // horizontal
-        if self.data[BordersIndex::Horizontal as usize].get_hash_code() != Border::default().get_hash_code() {
+        if self.data[BordersIndex::Horizontal as usize].hash_code() != Border::default().hash_code() {
             self.data[BordersIndex::Horizontal as usize].write_to_horizontal(writer);
         }
 

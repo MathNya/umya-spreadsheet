@@ -35,34 +35,59 @@ pub(crate) struct Columns {
 
 impl Columns {
     #[inline]
-    pub(crate) fn get_column_collection(&self) -> &[Column] {
+    pub(crate) fn column_collection(&self) -> &[Column] {
         &self.column
     }
 
     #[inline]
-    pub(crate) fn get_column_collection_mut(&mut self) -> &mut Vec<Column> {
+    #[deprecated(since = "3.0.0", note = "Use column_collection()")]
+    pub(crate) fn get_column_collection(&self) -> &[Column] {
+        self.column_collection()
+    }
+
+    #[inline]
+    pub(crate) fn column_collection_mut(&mut self) -> &mut Vec<Column> {
         &mut self.column
     }
 
     #[inline]
-    pub(crate) fn get_column(&self, value: u32) -> Option<&Column> {
-        self.column
-            .iter()
-            .find(|&column| value == column.get_col_num())
+    #[deprecated(since = "3.0.0", note = "Use column_collection_mut()")]
+    pub(crate) fn get_column_collection_mut(&mut self) -> &mut Vec<Column> {
+        self.column_collection_mut()
     }
 
-    pub(crate) fn get_column_mut(&mut self, value: u32) -> &mut Column {
-        if self.get_column(value).is_none() {
+    #[inline]
+    pub(crate) fn column(&self, value: u32) -> Option<&Column> {
+        self.column
+            .iter()
+            .find(|&column| value == column.col_num())
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use column()")]
+    pub(crate) fn get_column(&self, value: u32) -> Option<&Column> {
+        self.column(value)
+    }
+
+    #[inline]
+    pub(crate) fn column_mut(&mut self, value: u32) -> &mut Column {
+        if self.column(value).is_none() {
             let mut obj = Column::default();
             obj.set_col_num(value);
             self.set_column(obj);
         }
-        for column in self.get_column_collection_mut() {
-            if value == column.get_col_num() {
+        for column in self.column_collection_mut() {
+            if value == column.col_num() {
                 return column;
             }
         }
         panic!("Column not found.");
+    }
+    
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use column_mut()")]
+    pub(crate) fn get_column_mut(&mut self, value: u32) -> &mut Column {
+        self.column_mut(value)
     }
 
     #[inline]
@@ -76,8 +101,8 @@ impl Columns {
         cells: &Cells,
         merge_cells: &MergeCells,
     ) -> &mut Self {
-        for column in self.get_column_collection_mut() {
-            let has_horizontal = merge_cells.has_horizontal(column.get_col_num());
+        for column in self.column_collection_mut() {
+            let has_horizontal = merge_cells.has_horizontal(column.col_num());
             if has_horizontal {
                 continue;
             }
@@ -130,25 +155,25 @@ impl Columns {
         // col
 
         let mut column_copy = self.column.clone();
-        column_copy.sort_by_key(Column::get_col_num);
+        column_copy.sort_by_key(Column::col_num);
         let mut column_iter = column_copy.iter();
         let mut column_raw = column_iter.next();
         let mut obj = column_raw.unwrap();
-        let mut min = obj.get_col_num();
+        let mut min = obj.col_num();
         let mut max = min;
 
         loop {
             column_raw = column_iter.next();
             if let Some(column) = column_raw {
-                if column.get_col_num() == max + 1
-                    && column.get_hash_code() == obj.get_hash_code()
-                    && column.get_style() == obj.get_style()
+                if column.col_num() == max + 1
+                    && column.hash_code() == obj.hash_code()
+                    && column.style() == obj.style()
                 {
                     max += 1;
                 } else {
                     Self::write_to_column(writer, min, max, obj, stylesheet);
                     obj = column;
-                    min = obj.get_col_num();
+                    min = obj.col_num();
                     max = min;
                 }
             } else {
@@ -183,7 +208,7 @@ impl Columns {
         }
         attributes.push(("customWidth", "1").into());
         let xf_index_str: String;
-        let xf_index = stylesheet.set_style(column.get_style());
+        let xf_index = stylesheet.set_style(column.style());
         if xf_index > 0 {
             xf_index_str = xf_index.to_string();
             attributes.push(("style", &xf_index_str).into());
@@ -199,7 +224,7 @@ impl AdjustmentValue for Columns {
     }
 
     fn adjustment_remove_value(&mut self, root_num: u32, offset_num: u32) {
-        self.get_column_collection_mut()
+        self.column_collection_mut()
             .retain(|x| !(x.is_remove_value(root_num, offset_num)));
         for column_dimension in &mut self.column {
             column_dimension.adjustment_remove_value(root_num, offset_num);

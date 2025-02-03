@@ -26,7 +26,7 @@ impl CellValue {
     #[inline]
     #[must_use]
     pub fn data_type(&self) -> &str {
-        self.raw_value.get_data_type()
+        self.raw_value.data_type()
     }
 
     #[inline]
@@ -53,7 +53,7 @@ impl CellValue {
     pub(crate) fn data_type_crate(&self) -> &str {
         match &self.formula {
             Some(_) => "str",
-            None => self.raw_value.get_data_type(),
+            None => self.raw_value.data_type(),
         }
     }
 
@@ -79,7 +79,7 @@ impl CellValue {
     #[inline]
     #[must_use]
     pub fn value_number(&self) -> Option<f64> {
-        self.raw_value.get_number()
+        self.raw_value.number()
     }
 
     #[inline]
@@ -106,7 +106,7 @@ impl CellValue {
 
     #[inline]
     pub(crate) fn text(&self) -> Option<Text> {
-        self.raw_value.get_text()
+        self.raw_value.text()
     }
 
     #[inline]
@@ -117,7 +117,7 @@ impl CellValue {
 
     #[inline]
     pub(crate) fn rich_text(&self) -> Option<RichText> {
-        self.raw_value.get_rich_text()
+        self.raw_value.rich_text()
     }
 
     #[inline]

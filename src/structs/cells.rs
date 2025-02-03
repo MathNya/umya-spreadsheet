@@ -212,7 +212,7 @@ impl Cells {
                 c.coordinate_mut().set_col_num(col);
                 c.coordinate_mut().set_row_num(row);
                 if col_dimenshon.has_style() {
-                    c.set_style(col_dimenshon.get_style().clone());
+                    c.set_style(col_dimenshon.style().clone());
                 }
                 if row_dimenshon.has_style() {
                     c.set_style(row_dimenshon.get_style().clone());

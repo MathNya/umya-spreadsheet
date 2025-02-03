@@ -34,7 +34,7 @@ impl fmt::Display for CellRawValue {
 impl CellRawValue {
     #[inline]
     #[must_use]
-    pub fn get_data_type(&self) -> &str {
+    pub fn data_type(&self) -> &str {
         match self {
             Self::String(_) | Self::RichText(_) => "s",
             Self::Numeric(_) => "n",
@@ -45,7 +45,14 @@ impl CellRawValue {
     }
 
     #[inline]
-    pub(crate) fn get_text(&self) -> Option<Text> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_type()")]
+    pub fn get_data_type(&self) -> &str {
+        self.data_type()
+    }
+
+    #[inline]
+    pub(crate) fn text(&self) -> Option<Text> {
         match self {
             Self::String(_) | // _
             Self::Numeric(_) | // _
@@ -59,7 +66,13 @@ impl CellRawValue {
     }
 
     #[inline]
-    pub(crate) fn get_number(&self) -> Option<f64> {
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub(crate) fn get_text(&self) -> Option<Text> {
+        self.text()
+    }
+
+    #[inline]
+    pub(crate) fn number(&self) -> Option<f64> {
         match self {
             Self::Numeric(number) => Some(*number),
             _ => None,
@@ -67,12 +80,25 @@ impl CellRawValue {
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use number()")]
+    pub(crate) fn get_number(&self) -> Option<f64> {
+        self.number()
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_rich_text(&self) -> Option<RichText> {
+    pub fn rich_text(&self) -> Option<RichText> {
         match self {
             Self::RichText(v) => Some(v.clone()),
             _ => None,
         }
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub fn get_rich_text(&self) -> Option<RichText> {
+        self.rich_text()
     }
 
     #[inline]

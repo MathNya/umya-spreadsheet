@@ -298,18 +298,30 @@ impl Color {
     }
 
     #[must_use]
-    pub fn get_argb_str(&self) -> String {
-        Self::argb8_to_hex(self.get_argb())
+    pub fn argb_str(&self) -> String {
+        Self::argb8_to_hex(self.argb())
     }
 
     #[must_use]
-    pub fn get_argb(&self) -> ARGB8 {
+    #[deprecated(since = "3.0.0", note = "Use argb_str()")]
+    pub fn get_argb_str(&self) -> String {
+        Self::argb8_to_hex(self.argb())
+    }
+
+    #[must_use]
+    pub fn argb(&self) -> ARGB8 {
         if let Some(idx) = self.indexed {
             if let Some(v) = INDEX_TO_COLOR.get(&idx) {
                 return *v;
             }
         }
         self.argb.unwrap_or_default()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use argb()")]
+    pub fn get_argb(&self) -> ARGB8 {
+        self.argb()
     }
 
     /// Get Argb.
@@ -320,9 +332,9 @@ impl Color {
     /// let theme = book.get_theme();
     /// ```
     #[must_use]
-    pub fn get_argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {
+    pub fn argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {
         if self.indexed.is_some() {
-            return self.get_argb_str().into();
+            return self.argb_str().into();
         }
         if let Some(key) = self.theme_index {
             if let Some(v) = theme
@@ -337,7 +349,13 @@ impl Color {
                 return v.to_string().into();
             }
         }
-        self.get_argb_str().to_string().into()
+        self.argb_str().to_string().into()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use argb_with_theme()")]
+    pub fn get_argb_with_theme(&self, theme: &Theme) -> Cow<'static, str> {
+        self.argb_with_theme(theme)
     }
 
     pub fn set_argb<S: Into<ARGB8>>(&mut self, value: S) -> &mut Self {
@@ -372,8 +390,15 @@ impl Color {
 
     #[inline]
     #[must_use]
-    pub fn get_indexed(&self) -> u32 {
+    pub fn indexed(&self) -> u32 {
         self.indexed.unwrap_or(0)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use indexed()")]
+    pub fn get_indexed(&self) -> u32 {
+        self.indexed()
     }
 
     #[inline]
@@ -386,8 +411,15 @@ impl Color {
 
     #[inline]
     #[must_use]
-    pub fn get_theme_index(&self) -> u32 {
+    pub fn theme_index(&self) -> u32 {
         self.theme_index.unwrap_or(0)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use theme_index()")]
+    pub fn get_theme_index(&self) -> u32 {
+        self.theme_index()
     }
 
     #[inline]
@@ -400,8 +432,15 @@ impl Color {
 
     #[inline]
     #[must_use]
-    pub fn get_tint(&self) -> f64 {
+    pub fn tint(&self) -> f64 {
         self.tint.unwrap_or(0.0)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tint()")]
+    pub fn get_tint(&self) -> f64 {
+        self.tint()
     }
 
     #[inline]
@@ -558,16 +597,16 @@ mod tests {
     fn set_value() {
         let mut obj = Color::default();
         obj.set_argb_str("F34F8080");
-        assert_eq!(obj.get_argb_str(), "F34F8080");
+        assert_eq!(obj.argb_str(), "F34F8080");
 
         let mut obj = Color::default();
         obj.set_argb_str("FFFF8080");
-        assert_eq!(obj.get_indexed(), 21);
-        assert_eq!(obj.get_argb_str(), "FFFF8080");
+        assert_eq!(obj.indexed(), 21);
+        assert_eq!(obj.argb_str(), "FFFF8080");
 
         let mut obj = Color::default();
         let theme = Theme::get_default_value();
         obj.set_theme_index(1);
-        assert_eq!(obj.get_argb_with_theme(&theme), "000000");
+        assert_eq!(obj.argb_with_theme(&theme), "000000");
     }
 }

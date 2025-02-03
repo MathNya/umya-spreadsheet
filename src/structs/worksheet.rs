@@ -937,7 +937,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn column_dimensions(&self) -> &[Column] {
-        self.columns.get_column_collection()
+        self.columns.column_collection()
     }
 
     #[inline]
@@ -950,7 +950,7 @@ impl Worksheet {
     /// Get Column Dimension List in mutable.
     #[inline]
     pub fn column_dimensions_mut(&mut self) -> &mut Vec<Column> {
-        self.columns.get_column_collection_mut()
+        self.columns.column_collection_mut()
     }
 
     #[inline]
@@ -1005,7 +1005,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn column_dimension_by_number(&self, col: u32) -> Option<&Column> {
-        self.column_dimensions_crate().get_column(col)
+        self.column_dimensions_crate().column(col)
     }
 
     #[inline]
@@ -1020,7 +1020,7 @@ impl Worksheet {
     /// * `col` - Column Number.
     #[inline]
     pub fn column_dimension_by_number_mut(&mut self, col: u32) -> &mut Column {
-        self.column_dimensions_crate_mut().get_column_mut(col)
+        self.column_dimensions_crate_mut().column_mut(col)
     }
 
     #[inline]

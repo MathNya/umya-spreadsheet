@@ -53,8 +53,15 @@ impl Border {
 
     #[inline]
     #[must_use]
-    pub fn get_color(&self) -> Option<Color> {
+    pub fn color(&self) -> Option<Color> {
         self.color.as_ref().map(|v| *v.clone())
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> Option<Color> {
+        self.color()
     }
 
     #[inline]
@@ -65,8 +72,15 @@ impl Border {
 
     #[inline]
     #[must_use]
-    pub fn get_style(&self) -> &BorderStyleValues {
+    pub fn style(&self) -> &BorderStyleValues {
         self.style.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &BorderStyleValues {
+        self.style()
     }
 
     #[inline]
@@ -77,26 +91,38 @@ impl Border {
 
     #[inline]
     #[must_use]
-    pub fn get_border_style(&self) -> &str {
+    pub fn border_style(&self) -> &str {
         self.style.get_value_string()
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use border_style()")]
+    pub fn get_border_style(&self) -> &str {
+        self.border_style()
+    }
+    
     #[inline]
     pub fn set_border_style<S: Into<String>>(&mut self, value: S) {
         self.style.set_value_string(value);
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
                 &self.style.get_value_string(),
-                &self.get_color().unwrap_or_default().get_argb_str()
+                &self.color().unwrap_or_default().argb_str()
             ))
         )
     }
 
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
+    }
+    
     // When opened in software such as Excel, it is visually blank.
     #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {

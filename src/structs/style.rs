@@ -194,7 +194,7 @@ impl Style {
     #[inline]
     pub fn get_borders_mut(&mut self) -> &mut Borders {
         self.borders
-            .get_or_insert(Box::new(Borders::get_default_value()))
+            .get_or_insert(Box::new(Borders::default_value()))
     }
 
     #[inline]
@@ -356,7 +356,7 @@ impl Style {
     pub fn get_default_value() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());
-        def.set_borders(Borders::get_default_value());
+        def.set_borders(Borders::default_value());
         def.set_fill(Fill::get_default_value());
         def
     }
@@ -365,7 +365,7 @@ impl Style {
     pub(crate) fn get_default_value_2() -> Self {
         let mut def = Self::default();
         def.set_font(Font::get_default_value());
-        def.set_borders(Borders::get_default_value());
+        def.set_borders(Borders::default_value());
         def.set_fill(Fill::get_default_value_2());
         def
     }

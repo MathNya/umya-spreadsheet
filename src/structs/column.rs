@@ -64,8 +64,15 @@ impl Default for Column {
 impl Column {
     #[inline]
     #[must_use]
-    pub fn get_col_num(&self) -> u32 {
+    pub fn col_num(&self) -> u32 {
         self.col_num.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col_num()")]
+    pub fn get_col_num(&self) -> u32 {
+        self.col_num()
     }
 
     #[inline]
@@ -76,8 +83,15 @@ impl Column {
 
     #[inline]
     #[must_use]
-    pub fn get_width(&self) -> f64 {
+    pub fn width(&self) -> f64 {
         self.width.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width()")]
+    pub fn get_width(&self) -> f64 {
+        self.width()
     }
 
     #[inline]
@@ -88,8 +102,15 @@ impl Column {
 
     #[inline]
     #[must_use]
-    pub fn get_hidden(&self) -> bool {
+    pub fn hidden(&self) -> bool {
         self.hidden.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hidden()")]
+    pub fn get_hidden(&self) -> bool {
+        self.hidden()
     }
 
     #[inline]
@@ -100,8 +121,15 @@ impl Column {
 
     #[inline]
     #[must_use]
-    pub fn get_best_fit(&self) -> bool {
+    pub fn best_fit(&self) -> bool {
         self.best_fit.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use best_fit()")]
+    pub fn get_best_fit(&self) -> bool {
+        self.best_fit()
     }
 
     #[inline]
@@ -112,13 +140,26 @@ impl Column {
 
     #[inline]
     #[must_use]
-    pub fn get_style(&self) -> &Style {
+    pub fn style(&self) -> &Style {
         &self.style
     }
 
     #[inline]
-    pub fn get_style_mut(&mut self) -> &mut Style {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &Style {
+        self.style()
+    }
+
+    #[inline]
+    pub fn style_mut(&mut self) -> &mut Style {
         &mut self.style
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style_mut(&mut self) -> &mut Style {
+        self.style_mut()
     }
 
     #[inline]
@@ -129,8 +170,15 @@ impl Column {
 
     #[inline]
     #[must_use]
-    pub fn get_auto_width(&self) -> bool {
+    pub fn auto_width(&self) -> bool {
         self.auto_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_width()")]
+    pub fn get_auto_width(&self) -> bool {
+        self.auto_width()
     }
 
     #[inline]
@@ -140,19 +188,19 @@ impl Column {
     }
 
     pub(crate) fn calculation_auto_width(&mut self, cells: &Cells) -> &mut Self {
-        if !self.get_auto_width() {
+        if !self.auto_width() {
             return self;
         }
 
         let mut column_width_max = 0f64;
 
         // default font size len.
-        let column_font_size = match self.get_style().get_font() {
+        let column_font_size = match self.style().get_font() {
             Some(font) => font.get_font_size().get_val(),
             None => 11f64,
         };
 
-        let mut cell_list = cells.collection_by_column(self.get_col_num());
+        let mut cell_list = cells.collection_by_column(self.col_num());
         cell_list.sort_by(|a, b| {
             a.coordinate()
                 .get_row_num()
@@ -181,7 +229,7 @@ impl Column {
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -191,6 +239,12 @@ impl Column {
                 &self.best_fit.value_string(),
             ))
         )
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

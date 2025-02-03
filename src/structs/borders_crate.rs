@@ -48,10 +48,10 @@ impl BordersCrate {
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_borders() {
             Some(v) => {
-                let hash_code = v.get_hash_code();
+                let hash_code = v.hash_code();
                 let mut id = 0;
                 for borders in &self.borders {
-                    if borders.get_hash_code() == hash_code {
+                    if borders.hash_code() == hash_code {
                         return id;
                     }
                     id += 1;
