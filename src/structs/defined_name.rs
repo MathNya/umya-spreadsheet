@@ -41,8 +41,15 @@ pub struct DefinedName {
 impl DefinedName {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -52,7 +59,7 @@ impl DefinedName {
     }
 
     #[must_use]
-    pub fn get_address(&self) -> String {
+    pub fn address(&self) -> String {
         if self.string_value.has_value() {
             return self.string_value.value_str().to_string();
         }
@@ -61,6 +68,12 @@ impl DefinedName {
             result.push(row.address_ptn2());
         }
         result.join(",")
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address()")]
+    pub fn get_address(&self) -> String {
+        self.address()
     }
 
     pub fn set_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -84,27 +97,15 @@ impl DefinedName {
         self
     }
 
-    #[allow(dead_code)]
-    pub(crate) fn get_sheet_name_crate(&self) -> String {
-        if self.string_value.has_value() {
-            return String::new();
-        }
-        self.address
-            .first()
-            .unwrap_or(&Address::default())
-            .sheet_name()
-            .to_string()
-    }
-
     #[inline]
-    pub(crate) fn get_address_obj(&self) -> &[Address] {
+    pub(crate) fn address_obj(&self) -> &[Address] {
         &self.address
     }
 
     #[inline]
-    #[allow(dead_code)]
-    pub(crate) fn get_address_obj_mut(&mut self) -> &mut Vec<Address> {
-        &mut self.address
+    #[deprecated(since = "3.0.0", note = "Use address_obj()")]
+    pub(crate) fn get_address_obj(&self) -> &[Address] {
+        self.address_obj()
     }
 
     #[inline]
@@ -122,8 +123,15 @@ impl DefinedName {
 
     #[inline]
     #[must_use]
-    pub fn get_local_sheet_id(&self) -> u32 {
+    pub fn local_sheet_id(&self) -> u32 {
         self.local_sheet_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use local_sheet_id()")]
+    pub fn get_local_sheet_id(&self) -> u32 {
+        self.local_sheet_id()
     }
 
     #[inline]
@@ -133,8 +141,15 @@ impl DefinedName {
 
     #[inline]
     #[must_use]
-    pub fn get_hidden(&self) -> bool {
+    pub fn hidden(&self) -> bool {
         self.hidden.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hidden()")]
+    pub fn get_hidden(&self) -> bool {
+        self.hidden()
     }
 
     #[inline]
@@ -224,7 +239,7 @@ impl DefinedName {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // definedName
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        attributes.push(("name", self.get_name()).into());
+        attributes.push(("name", self.name()).into());
         let local_sheet_id_str = self.local_sheet_id.value_string();
         if self.local_sheet_id.has_value() {
             attributes.push(("localSheetId", &local_sheet_id_str).into());
@@ -234,7 +249,7 @@ impl DefinedName {
             attributes.push(("hidden", hidden_str).into());
         }
         write_start_tag(writer, "definedName", attributes, false);
-        write_text_node_conversion(writer, self.get_address());
+        write_text_node_conversion(writer, self.address());
         write_end_tag(writer, "definedName");
     }
 }

@@ -10,8 +10,15 @@ pub struct CsvWriterOption {
 impl CsvWriterOption {
     #[inline]
     #[must_use]
-    pub fn get_csv_encode_value(&self) -> &CsvEncodeValues {
+    pub fn csv_encode_value(&self) -> &CsvEncodeValues {
         self.csv_encode_values.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use csv_encode_value()")]
+    pub fn get_csv_encode_value(&self) -> &CsvEncodeValues {
+        self.csv_encode_value()
     }
 
     #[inline]
@@ -22,8 +29,15 @@ impl CsvWriterOption {
 
     #[inline]
     #[must_use]
-    pub fn get_wrap_with_char(&self) -> &str {
+    pub fn wrap_with_char(&self) -> &str {
         &self.wrap_with_char
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use wrap_with_char()")]
+    pub fn get_wrap_with_char(&self) -> &str {
+        self.wrap_with_char()
     }
 
     #[inline]
@@ -34,8 +48,15 @@ impl CsvWriterOption {
 
     #[inline]
     #[must_use]
-    pub fn get_do_trim(&self) -> bool {
+    pub fn do_trim(&self) -> bool {
         self.do_trim
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use do_trim()")]
+    pub fn get_do_trim(&self) -> bool {
+        self.do_trim()
     }
 
     #[inline]

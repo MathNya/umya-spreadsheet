@@ -30,8 +30,15 @@ pub struct DataField {
 impl DataField {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -43,8 +50,15 @@ impl DataField {
 
     #[inline]
     #[must_use]
-    pub fn get_fie_id(&self) -> u32 {
+    pub fn fie_id(&self) -> u32 {
         self.fie_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fie_id()")]
+    pub fn get_fie_id(&self) -> u32 {
+        self.fie_id()
     }
 
     #[inline]
@@ -55,8 +69,15 @@ impl DataField {
 
     #[inline]
     #[must_use]
-    pub fn get_base_fie_id(&self) -> i32 {
+    pub fn base_fie_id(&self) -> i32 {
         self.base_fie_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use base_fie_id()")]
+    pub fn get_base_fie_id(&self) -> i32 {
+        self.base_fie_id()
     }
 
     #[inline]
@@ -67,8 +88,15 @@ impl DataField {
 
     #[inline]
     #[must_use]
-    pub fn get_base_item(&self) -> u32 {
+    pub fn base_item(&self) -> u32 {
         self.base_item.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use base_item()")]
+    pub fn get_base_item(&self) -> u32 {
+        self.base_item()
     }
 
     #[inline]

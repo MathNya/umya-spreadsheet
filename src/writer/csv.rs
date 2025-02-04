@@ -29,12 +29,12 @@ pub fn write_writer<W: io::Seek + io::Write>(
                 None => String::new(),
             };
             // do trim.
-            if option.get_do_trim() {
+            if option.do_trim() {
                 value = value.trim().to_string();
             }
             // wrap_with_char.
-            if option.get_wrap_with_char() != "" {
-                value = format! {"{}{}{}", option.get_wrap_with_char(), value, option.get_wrap_with_char()};
+            if option.wrap_with_char() != "" {
+                value = format! {"{}{}{}", option.wrap_with_char(), value, option.wrap_with_char()};
             }
             row_vec.push(value);
         }
@@ -43,7 +43,7 @@ pub fn write_writer<W: io::Seek + io::Write>(
     }
 
     // encoding.
-    let data_bytes = match *option.get_csv_encode_value() {
+    let data_bytes = match *option.csv_encode_value() {
         CsvEncodeValues::ShiftJis => encoding_rs::SHIFT_JIS.encode(&data).0.into_owned(),
         CsvEncodeValues::Koi8u => encoding_rs::KOI8_U.encode(&data).0.into_owned(),
         CsvEncodeValues::Koi8r => encoding_rs::KOI8_R.encode(&data).0.into_owned(),

@@ -424,7 +424,7 @@ impl ConditionalFormattingRule {
 
         if let Some(v) = get_attribute(e, b"dxfId") {
             let dxf_id = v.parse::<usize>().unwrap();
-            let style = differential_formats.get_style(dxf_id);
+            let style = differential_formats.style(dxf_id);
             self.set_style(style);
         }
 
