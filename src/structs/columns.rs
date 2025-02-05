@@ -198,7 +198,7 @@ impl Columns {
         let max_str = max.to_string();
         attributes.push(("min", min_str).into());
         attributes.push(("max", max_str).into());
-        let width = column.width.get_value_string();
+        let width = column.width.value_string();
         attributes.push(("width", &width).into());
         if column.hidden.value() {
             attributes.push(("hidden", column.hidden.value_string()).into());

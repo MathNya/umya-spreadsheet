@@ -73,7 +73,7 @@ impl Row {
     #[inline]
     #[must_use]
     pub fn get_height(&self) -> f64 {
-        self.height.get_value()
+        self.height.value()
     }
 
     #[inline]
@@ -86,7 +86,7 @@ impl Row {
     #[inline]
     #[must_use]
     pub fn get_descent(&self) -> f64 {
-        self.descent.get_value()
+        self.descent.value()
     }
 
     #[inline]
@@ -241,8 +241,8 @@ impl Row {
         if !empty_flag {
             attributes.push(("spans", spans).into());
         }
-        let height = self.height.get_value_string();
-        if self.height.get_value() != 0f64 {
+        let height = self.height.value_string();
+        if self.height.value() != 0f64 {
             attributes.push(("ht", &height).into());
         }
         if self.thick_bot.value() {
@@ -257,7 +257,7 @@ impl Row {
         if self.hidden.value() {
             attributes.push(("hidden", self.hidden.value_string()).into());
         }
-        let descent = self.descent.get_value_string();
+        let descent = self.descent.value_string();
         if self.descent.has_value() {
             attributes.push(("x14ac:dyDescent", &descent).into());
         }

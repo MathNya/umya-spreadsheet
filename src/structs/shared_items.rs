@@ -71,7 +71,7 @@ impl SharedItems {
 
     #[must_use]
     pub fn get_min_value(&self) -> f64 {
-        self.min_value.get_value()
+        self.min_value.value()
     }
 
     pub fn set_min_value(&mut self, value: f64) -> &mut Self {
@@ -81,7 +81,7 @@ impl SharedItems {
 
     #[must_use]
     pub fn get_max_value(&self) -> f64 {
-        self.max_value.get_value()
+        self.max_value.value()
     }
 
     pub fn set_max_value(&mut self, value: f64) -> &mut Self {
@@ -116,8 +116,8 @@ impl SharedItems {
                 ("containsString", self.contains_string.value_string()).into(),
                 ("containsNumber", self.contains_number.value_string()).into(),
                 ("containsInteger", self.contains_integer.value_string()).into(),
-                ("minValue", self.min_value.get_value_string().as_str()).into(),
-                ("maxValue", self.max_value.get_value_string().as_str()).into(),
+                ("minValue", self.min_value.value_string().as_str()).into(),
+                ("maxValue", self.max_value.value_string().as_str()).into(),
             ],
             true,
         );

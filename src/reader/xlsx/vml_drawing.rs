@@ -27,7 +27,7 @@ pub(crate) fn read(
                 if e.name().into_inner() == b"v:shape" {
                     let mut obj = Shape::default();
                     obj.set_attributes(&mut reader, e, drawing_relationships);
-                    if obj.get_client_data().get_comment_column_target().is_some() {
+                    if obj.get_client_data().comment_column_target().is_some() {
                         worksheet
                             .comments_mut()
                             .get_mut(comment_index)

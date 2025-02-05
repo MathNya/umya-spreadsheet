@@ -22,7 +22,7 @@ impl FontSize {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> f64 {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[inline]
@@ -47,7 +47,7 @@ impl FontSize {
             write_start_tag(
                 writer,
                 "sz",
-                vec![("val", &self.val.get_value_string()).into()],
+                vec![("val", &self.val.value_string()).into()],
                 true,
             );
         }

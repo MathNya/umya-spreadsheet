@@ -18,7 +18,7 @@ pub struct PageMargins {
 impl PageMargins {
     #[must_use]
     pub fn get_bottom(&self) -> f64 {
-        self.bottom.get_value()
+        self.bottom.value()
     }
 
     pub fn set_bottom(&mut self, value: f64) -> &mut Self {
@@ -28,7 +28,7 @@ impl PageMargins {
 
     #[must_use]
     pub fn get_left(&self) -> f64 {
-        self.left.get_value()
+        self.left.value()
     }
 
     pub fn set_left(&mut self, value: f64) -> &mut Self {
@@ -38,7 +38,7 @@ impl PageMargins {
 
     #[must_use]
     pub fn get_right(&self) -> f64 {
-        self.right.get_value()
+        self.right.value()
     }
 
     pub fn set_right(&mut self, value: f64) -> &mut Self {
@@ -48,7 +48,7 @@ impl PageMargins {
 
     #[must_use]
     pub fn get_top(&self) -> f64 {
-        self.top.get_value()
+        self.top.value()
     }
 
     pub fn set_top(&mut self, value: f64) -> &mut Self {
@@ -58,7 +58,7 @@ impl PageMargins {
 
     #[must_use]
     pub fn get_header(&self) -> f64 {
-        self.header.get_value()
+        self.header.value()
     }
 
     pub fn set_header(&mut self, value: f64) -> &mut Self {
@@ -68,7 +68,7 @@ impl PageMargins {
 
     #[must_use]
     pub fn get_footer(&self) -> f64 {
-        self.footer.get_value()
+        self.footer.value()
     }
 
     pub fn set_footer(&mut self, value: f64) -> &mut Self {
@@ -98,12 +98,12 @@ impl PageMargins {
             writer,
             "c:pageMargins",
             vec![
-                ("b", self.bottom.get_value_string()).into(),
-                ("l", self.left.get_value_string()).into(),
-                ("r", self.right.get_value_string()).into(),
-                ("t", self.top.get_value_string()).into(),
-                ("header", self.header.get_value_string()).into(),
-                ("footer", self.footer.get_value_string()).into(),
+                ("b", self.bottom.value_string()).into(),
+                ("l", self.left.value_string()).into(),
+                ("r", self.right.value_string()).into(),
+                ("t", self.top.value_string()).into(),
+                ("header", self.header.value_string()).into(),
+                ("footer", self.footer.value_string()).into(),
             ],
             true,
         );

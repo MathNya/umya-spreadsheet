@@ -400,7 +400,7 @@ impl Font {
             md5::Md5::digest(format!(
                 "{}{}{}{}{}{}{}{}{}{}{}",
                 &self.font_name.val.hash_string(),
-                &self.font_size.val.get_hash_string(),
+                &self.font_size.val.hash_string(),
                 &self.font_family_numbering.val.hash_string(),
                 &self.font_bold.val.hash_string(),
                 &self.font_italic.val.hash_string(),

@@ -33,8 +33,15 @@ pub struct ClientData {
 impl ClientData {
     #[inline]
     #[must_use]
-    pub fn get_object_type(&self) -> &ObjectValues {
+    pub fn object_type(&self) -> &ObjectValues {
         self.object_type.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use object_type()")]
+    pub fn get_object_type(&self) -> &ObjectValues {
+        self.object_type()
     }
 
     #[inline]
@@ -45,13 +52,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_move_with_cells(&self) -> Option<&MoveWithCells> {
+    pub fn move_with_cells(&self) -> Option<&MoveWithCells> {
         self.move_with_cells.as_ref()
     }
 
     #[inline]
-    pub fn get_move_with_cells_mut(&mut self) -> Option<&mut MoveWithCells> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use move_with_cells()")]
+    pub fn get_move_with_cells(&self) -> Option<&MoveWithCells> {
+        self.move_with_cells()
+    }
+
+    #[inline]
+    pub fn move_with_cells_mut(&mut self) -> Option<&mut MoveWithCells> {
         self.move_with_cells.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use move_with_cells_mut()")]
+    pub fn get_move_with_cells_mut(&mut self) -> Option<&mut MoveWithCells> {
+        self.move_with_cells_mut()
     }
 
     #[inline]
@@ -62,13 +82,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_resize_with_cells(&self) -> Option<&ResizeWithCells> {
+    pub fn resize_with_cells(&self) -> Option<&ResizeWithCells> {
         self.resize_with_cells.as_ref()
     }
 
     #[inline]
-    pub fn get_resize_with_cells_mut(&mut self) -> Option<&mut ResizeWithCells> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use resize_with_cells()")]
+    pub fn get_resize_with_cells(&self) -> Option<&ResizeWithCells> {
+        self.resize_with_cells()
+    }
+
+    #[inline]
+    pub fn resize_with_cells_mut(&mut self) -> Option<&mut ResizeWithCells> {
         self.resize_with_cells.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use resize_with_cells_mut()")]
+    pub fn get_resize_with_cells_mut(&mut self) -> Option<&mut ResizeWithCells> {
+        self.resize_with_cells_mut()
     }
 
     #[inline]
@@ -79,13 +112,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_anchor(&self) -> &Anchor {
+    pub fn anchor(&self) -> &Anchor {
         &self.anchor
     }
 
     #[inline]
-    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
+    pub fn get_anchor(&self) -> &Anchor {
+        self.anchor()
+    }
+
+    #[inline]
+    pub fn anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use anchor_mut()")]
+    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+        self.anchor_mut()
     }
 
     #[inline]
@@ -96,13 +142,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_auto_fill(&self) -> Option<&AutoFill> {
+    pub fn auto_fill(&self) -> Option<&AutoFill> {
         self.auto_fill.as_ref()
     }
 
     #[inline]
-    pub fn get_auto_fill_mut(&mut self) -> Option<&mut AutoFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_fill()")]
+    pub fn get_auto_fill(&self) -> Option<&AutoFill> {
+        self.auto_fill()
+    }
+
+    #[inline]
+    pub fn auto_fill_mut(&mut self) -> Option<&mut AutoFill> {
         self.auto_fill.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use auto_fill_mut()")]
+    pub fn get_auto_fill_mut(&mut self) -> Option<&mut AutoFill> {
+        self.auto_fill_mut()
     }
 
     #[inline]
@@ -113,13 +172,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_comment_row_target(&self) -> Option<&CommentRowTarget> {
+    pub fn comment_row_target(&self) -> Option<&CommentRowTarget> {
         self.comment_row_target.as_ref()
     }
 
     #[inline]
-    pub fn get_comment_row_target_mut(&mut self) -> Option<&mut CommentRowTarget> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_comment_row_target(&self) -> Option<&CommentRowTarget> {
+        self.comment_row_target()
+    }
+
+    #[inline]
+    pub fn comment_row_target_mut(&mut self) -> Option<&mut CommentRowTarget> {
         self.comment_row_target.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use comment_row_target_mut()")]
+    pub fn get_comment_row_target_mut(&mut self) -> Option<&mut CommentRowTarget> {
+        self.comment_row_target_mut()
     }
 
     #[inline]
@@ -130,13 +202,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_comment_column_target(&self) -> Option<&CommentColumnTarget> {
+    pub fn comment_column_target(&self) -> Option<&CommentColumnTarget> {
         self.comment_column_target.as_ref()
     }
 
     #[inline]
-    pub fn get_comment_column_target_mut(&mut self) -> Option<&mut CommentColumnTarget> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use comment_column_target()")]
+    pub fn get_comment_column_target(&self) -> Option<&CommentColumnTarget> {
+        self.comment_column_target()
+    }
+
+    #[inline]
+    pub fn comment_column_target_mut(&mut self) -> Option<&mut CommentColumnTarget> {
         self.comment_column_target.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use comment_column_target_mut()")]
+    pub fn get_comment_column_target_mut(&mut self) -> Option<&mut CommentColumnTarget> {
+        self.comment_column_target_mut()
     }
 
     #[inline]
@@ -147,13 +232,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_visible(&self) -> Option<&Visible> {
+    pub fn visible(&self) -> Option<&Visible> {
         self.visible.as_ref()
     }
 
     #[inline]
-    pub fn get_visible_mut(&mut self) -> Option<&mut Visible> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use visible()")]
+    pub fn get_visible(&self) -> Option<&Visible> {
+        self.visible()
+    }
+
+    #[inline]
+    pub fn visible_mut(&mut self) -> Option<&mut Visible> {
         self.visible.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use visible_mut()")]
+    pub fn get_visible_mut(&mut self) -> Option<&mut Visible> {
+        self.visible_mut()
     }
 
     #[inline]
@@ -164,13 +262,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_clipboard_format(&self) -> Option<&ClipboardFormat> {
+    pub fn clipboard_format(&self) -> Option<&ClipboardFormat> {
         self.clipboard_format.as_ref()
     }
 
     #[inline]
-    pub fn get_clipboard_format_mut(&mut self) -> Option<&mut ClipboardFormat> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use clipboard_format()")]
+    pub fn get_clipboard_format(&self) -> Option<&ClipboardFormat> {
+        self.clipboard_format()
+    }
+
+    #[inline]
+    pub fn clipboard_format_mut(&mut self) -> Option<&mut ClipboardFormat> {
         self.clipboard_format.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use clipboard_format_mut()")]
+    pub fn get_clipboard_format_mut(&mut self) -> Option<&mut ClipboardFormat> {
+        self.clipboard_format_mut()
     }
 
     #[inline]
@@ -181,13 +292,26 @@ impl ClientData {
 
     #[inline]
     #[must_use]
-    pub fn get_auto_size_picture(&self) -> Option<&AutoSizePicture> {
+    pub fn auto_size_picture(&self) -> Option<&AutoSizePicture> {
         self.auto_size_picture.as_ref()
     }
 
     #[inline]
-    pub fn get_auto_size_picture_mut(&mut self) -> Option<&mut AutoSizePicture> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_size_picture()")]
+    pub fn get_auto_size_picture(&self) -> Option<&AutoSizePicture> {
+        self.auto_size_picture()
+    }
+
+    #[inline]
+    pub fn auto_size_picture_mut(&mut self) -> Option<&mut AutoSizePicture> {
         self.auto_size_picture.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use auto_size_picture_mut()")]
+    pub fn get_auto_size_picture_mut(&mut self) -> Option<&mut AutoSizePicture> {
+        self.auto_size_picture_mut()
     }
 
     #[inline]

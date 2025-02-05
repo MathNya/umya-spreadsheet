@@ -19,8 +19,15 @@ pub struct ResizeWithCells {
 impl ResizeWithCells {
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> Option<bool> {
+    pub fn value(&self) -> Option<bool> {
         self.value.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> Option<bool> {
+        self.value()
     }
 
     #[inline]

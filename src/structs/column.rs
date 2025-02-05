@@ -84,7 +84,7 @@ impl Column {
     #[inline]
     #[must_use]
     pub fn width(&self) -> f64 {
-        self.width.get_value()
+        self.width.value()
     }
 
     #[inline]
@@ -234,7 +234,7 @@ impl Column {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}",
-                &self.width.get_value_string(),
+                &self.width.value_string(),
                 &self.hidden.value_string(),
                 &self.best_fit.value_string(),
             ))

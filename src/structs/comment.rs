@@ -123,7 +123,7 @@ impl Comment {
     #[inline]
     #[must_use]
     pub fn anchor(&self) -> &Anchor {
-        self.shape.get_client_data().get_anchor()
+        self.shape.get_client_data().anchor()
     }
 
     #[inline]
@@ -135,7 +135,7 @@ impl Comment {
 
     #[inline]
     pub fn anchor_mut(&mut self) -> &mut Anchor {
-        self.shape.get_client_data_mut().get_anchor_mut()
+        self.shape.get_client_data_mut().anchor_mut()
     }
 
     #[inline]
@@ -227,7 +227,7 @@ impl Comment {
 
         self.shape_mut()
             .get_client_data_mut()
-            .get_anchor_mut()
+            .anchor_mut()
             .set_left_column(col)
             .set_left_offset(15)
             .set_top_row(if row > 1 { row - 1 } else { 1 })

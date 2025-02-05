@@ -77,7 +77,7 @@ impl PivotCacheDefinition {
     #[inline]
     #[must_use]
     pub fn get_refreshed_date(&self) -> f64 {
-        self.refreshed_date.get_value()
+        self.refreshed_date.value()
     }
 
     #[inline]
@@ -231,7 +231,7 @@ impl PivotCacheDefinition {
         if self.refreshed_by.has_value() {
             attributes.push(("refreshedBy", self.refreshed_by.value_str()).into());
         }
-        let refreshed_date_str = self.refreshed_date.get_value_string();
+        let refreshed_date_str = self.refreshed_date.value_string();
         if self.refreshed_date.has_value() {
             attributes.push(("refreshedDate", refreshed_date_str.as_str()).into());
         }

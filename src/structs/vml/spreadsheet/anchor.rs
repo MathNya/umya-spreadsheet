@@ -29,8 +29,15 @@ pub struct Anchor {
 impl Anchor {
     #[inline]
     #[must_use]
-    pub fn get_left_column(&self) -> u32 {
+    pub fn left_column(&self) -> u32 {
         self.left_column
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left_column()")]
+    pub fn get_left_column(&self) -> u32 {
+        self.left_column()
     }
 
     #[inline]
@@ -41,8 +48,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_left_offset(&self) -> u32 {
+    pub fn left_offset(&self) -> u32 {
         self.left_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left_offset()")]
+    pub fn get_left_offset(&self) -> u32 {
+        self.left_offset()
     }
 
     #[inline]
@@ -53,8 +67,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_top_row(&self) -> u32 {
+    pub fn top_row(&self) -> u32 {
         self.top_row
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_row()")]
+    pub fn get_top_row(&self) -> u32 {
+        self.top_row()
     }
 
     #[inline]
@@ -65,8 +86,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_top_offset(&self) -> u32 {
+    pub fn top_offset(&self) -> u32 {
         self.top_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_offset()")]
+    pub fn get_top_offset(&self) -> u32 {
+        self.top_offset()
     }
 
     #[inline]
@@ -77,8 +105,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_right_column(&self) -> u32 {
+    pub fn right_column(&self) -> u32 {
         self.right_column
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_column()")]
+    pub fn get_right_column(&self) -> u32 {
+        self.right_column()
     }
 
     #[inline]
@@ -89,8 +124,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_right_offset(&self) -> u32 {
+    pub fn right_offset(&self) -> u32 {
         self.right_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_offset()")]
+    pub fn get_right_offset(&self) -> u32 {
+        self.right_offset()
     }
 
     #[inline]
@@ -101,8 +143,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_bottom_row(&self) -> u32 {
+    pub fn bottom_row(&self) -> u32 {
         self.bottom_row
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom_row()")]
+    pub fn get_bottom_row(&self) -> u32 {
+        self.bottom_row()
     }
 
     #[inline]
@@ -113,8 +162,15 @@ impl Anchor {
 
     #[inline]
     #[must_use]
-    pub fn get_bottom_offset(&self) -> u32 {
+    pub fn bottom_offset(&self) -> u32 {
         self.bottom_offset
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom_offset()")]
+    pub fn get_bottom_offset(&self) -> u32 {
+        self.bottom_offset()
     }
 
     #[inline]
@@ -168,6 +224,20 @@ impl Anchor {
     }
 
     #[inline]
+    fn number(value: Option<&&str>) -> u32 {
+        match value {
+            Some(v) => (*v).to_string().trim().parse::<u32>().unwrap_or(0),
+            None => 0,
+        }
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use number()")]
+    fn get_number(value: Option<&&str>) -> u32 {
+        Self::number(value)
+    }
+
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -178,14 +248,14 @@ impl Anchor {
             Event::Text(e) => {
                 let text = e.unescape().unwrap();
                 let split_str: Vec<&str> = text.split(',').collect();
-                self.set_left_column(Self::get_number(split_str.first()));
-                self.set_left_offset(Self::get_number(split_str.get(1)));
-                self.set_top_row(Self::get_number(split_str.get(2)));
-                self.set_top_offset(Self::get_number(split_str.get(3)));
-                self.set_right_column(Self::get_number(split_str.get(4)));
-                self.set_right_offset(Self::get_number(split_str.get(5)));
-                self.set_bottom_row(Self::get_number(split_str.get(6)));
-                self.set_bottom_offset(Self::get_number(split_str.get(7)));
+                self.set_left_column(Self::number(split_str.first()));
+                self.set_left_offset(Self::number(split_str.get(1)));
+                self.set_top_row(Self::number(split_str.get(2)));
+                self.set_top_offset(Self::number(split_str.get(3)));
+                self.set_right_column(Self::number(split_str.get(4)));
+                self.set_right_offset(Self::number(split_str.get(5)));
+                self.set_bottom_row(Self::number(split_str.get(6)));
+                self.set_bottom_offset(Self::number(split_str.get(7)));
             },
             Event::End(ref e) => {
                 if e.name().0 == b"x:Anchor" {
@@ -197,26 +267,18 @@ impl Anchor {
     }
 
     #[inline]
-    fn get_number(value: Option<&&str>) -> u32 {
-        match value {
-            Some(v) => (*v).to_string().trim().parse::<u32>().unwrap_or(0),
-            None => 0,
-        }
-    }
-
-    #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // x:Anchor
         let anchor = format!(
             "{}, {}, {}, {}, {}, {}, {}, {}",
-            self.get_left_column(),
-            self.get_left_offset(),
-            self.get_top_row(),
-            self.get_top_offset(),
-            self.get_right_column(),
-            self.get_right_offset(),
-            self.get_bottom_row(),
-            self.get_bottom_offset()
+            self.left_column(),
+            self.left_offset(),
+            self.top_row(),
+            self.top_offset(),
+            self.right_column(),
+            self.right_offset(),
+            self.bottom_row(),
+            self.bottom_offset()
         );
         write_start_tag(writer, "x:Anchor", vec![], false);
         write_text_node(writer, &anchor);

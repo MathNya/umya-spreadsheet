@@ -34,7 +34,7 @@ impl Pane {
     #[inline]
     #[must_use]
     pub fn get_horizontal_split(&self) -> f64 {
-        self.horizontal_split.get_value()
+        self.horizontal_split.value()
     }
 
     #[inline]
@@ -46,7 +46,7 @@ impl Pane {
     #[inline]
     #[must_use]
     pub fn get_vertical_split(&self) -> f64 {
-        self.vertical_split.get_value()
+        self.vertical_split.value()
     }
 
     #[inline]
@@ -115,11 +115,11 @@ impl Pane {
         // pane
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         let coordinate = self.top_left_cell.to_string();
-        let horizontal_split = self.horizontal_split.get_value_string();
+        let horizontal_split = self.horizontal_split.value_string();
         if self.horizontal_split.has_value() {
             attributes.push(("xSplit", &horizontal_split).into());
         }
-        let vertical_split = self.vertical_split.get_value_string();
+        let vertical_split = self.vertical_split.value_string();
         if self.vertical_split.has_value() {
             attributes.push(("ySplit", &vertical_split).into());
         }

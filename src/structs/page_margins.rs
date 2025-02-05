@@ -25,7 +25,7 @@ impl PageMargins {
     #[inline]
     #[must_use]
     pub fn get_left(&self) -> f64 {
-        self.left.get_value()
+        self.left.value()
     }
 
     #[inline]
@@ -37,7 +37,7 @@ impl PageMargins {
     #[inline]
     #[must_use]
     pub fn get_right(&self) -> f64 {
-        self.right.get_value()
+        self.right.value()
     }
 
     #[inline]
@@ -49,7 +49,7 @@ impl PageMargins {
     #[inline]
     #[must_use]
     pub fn get_top(&self) -> f64 {
-        self.top.get_value()
+        self.top.value()
     }
 
     #[inline]
@@ -61,7 +61,7 @@ impl PageMargins {
     #[inline]
     #[must_use]
     pub fn get_bottom(&self) -> f64 {
-        self.bottom.get_value()
+        self.bottom.value()
     }
 
     #[inline]
@@ -73,7 +73,7 @@ impl PageMargins {
     #[inline]
     #[must_use]
     pub fn get_header(&self) -> f64 {
-        self.header.get_value()
+        self.header.value()
     }
 
     #[inline]
@@ -85,7 +85,7 @@ impl PageMargins {
     #[inline]
     #[must_use]
     pub fn get_footer(&self) -> f64 {
-        self.footer.get_value()
+        self.footer.value()
     }
 
     #[inline]
@@ -115,17 +115,17 @@ impl PageMargins {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // pageMargins
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let left = self.left.get_value_string();
+        let left = self.left.value_string();
         attributes.push(("left", &left).into());
-        let right = self.right.get_value_string();
+        let right = self.right.value_string();
         attributes.push(("right", &right).into());
-        let top = self.top.get_value_string();
+        let top = self.top.value_string();
         attributes.push(("top", &top).into());
-        let bottom = self.bottom.get_value_string();
+        let bottom = self.bottom.value_string();
         attributes.push(("bottom", &bottom).into());
-        let header = self.header.get_value_string();
+        let header = self.header.value_string();
         attributes.push(("header", &header).into());
-        let footer = self.footer.get_value_string();
+        let footer = self.footer.value_string();
         attributes.push(("footer", &footer).into());
         write_start_tag(writer, "pageMargins", attributes, true);
     }

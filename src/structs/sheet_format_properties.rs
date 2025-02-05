@@ -62,7 +62,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_default_column_width(&self) -> f64 {
-        self.default_column_width.get_value()
+        self.default_column_width.value()
     }
 
     #[inline]
@@ -74,7 +74,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_default_row_height(&self) -> f64 {
-        self.default_row_height.get_value()
+        self.default_row_height.value()
     }
 
     #[inline]
@@ -86,7 +86,7 @@ impl SheetFormatProperties {
     #[inline]
     #[must_use]
     pub fn get_dy_descent(&self) -> f64 {
-        self.dy_descent.get_value()
+        self.dy_descent.value()
     }
 
     #[inline]
@@ -179,17 +179,17 @@ impl SheetFormatProperties {
             attributes.push(("customHeight", str_custom_height).into());
         }
 
-        let str_default_column_width = self.default_column_width.get_value_string();
+        let str_default_column_width = self.default_column_width.value_string();
         if self.default_column_width.has_value() {
             attributes.push(("defaultColWidth", &str_default_column_width).into());
         }
 
-        let str_default_row_height = self.default_row_height.get_value_string();
+        let str_default_row_height = self.default_row_height.value_string();
         if self.default_row_height.has_value() {
             attributes.push(("defaultRowHeight", &str_default_row_height).into());
         }
 
-        let str_dy_descent = self.dy_descent.get_value_string();
+        let str_dy_descent = self.dy_descent.value_string();
         if self.dy_descent.has_value() {
             attributes.push(("x14ac:dyDescent", &str_dy_descent).into());
         }

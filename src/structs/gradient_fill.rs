@@ -40,7 +40,7 @@ impl GradientFill {
     #[inline]
     #[must_use]
     pub fn get_degree(&self) -> f64 {
-        self.degree.get_value()
+        self.degree.value()
     }
 
     #[inline]
@@ -73,7 +73,7 @@ impl GradientFill {
         }
         format!(
             "{:x}",
-            md5::Md5::digest(format!("{}{}", &self.degree.get_value_string(), value,))
+            md5::Md5::digest(format!("{}{}", &self.degree.value_string(), value,))
         )
     }
 
@@ -107,7 +107,7 @@ impl GradientFill {
         write_start_tag(
             writer,
             "gradientFill",
-            vec![("degree", &self.degree.get_value_string()).into()],
+            vec![("degree", &self.degree.value_string()).into()],
             false,
         );
 

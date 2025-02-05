@@ -23,8 +23,15 @@ pub struct CommentRowTarget {
 impl CommentRowTarget {
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> u32 {
+    pub fn value(&self) -> u32 {
         self.value.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> u32 {
+        self.value()
     }
 
     #[inline]

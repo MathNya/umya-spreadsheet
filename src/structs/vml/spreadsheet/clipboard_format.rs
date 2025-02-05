@@ -20,8 +20,15 @@ pub struct ClipboardFormat {
 impl ClipboardFormat {
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> &ClipboardFormatValues {
+    pub fn value(&self) -> &ClipboardFormatValues {
         self.value.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &ClipboardFormatValues {
+        self.value()
     }
 
     #[inline]

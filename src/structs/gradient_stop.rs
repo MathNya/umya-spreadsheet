@@ -37,7 +37,7 @@ impl GradientStop {
     #[inline]
     #[must_use]
     pub fn get_position(&self) -> f64 {
-        self.position.get_value()
+        self.position.value()
     }
 
     #[inline]
@@ -69,7 +69,7 @@ impl GradientStop {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.position.get_value_string(),
+                &self.position.value_string(),
                 &self.color.get_hash_code(),
             ))
         )
@@ -105,7 +105,7 @@ impl GradientStop {
         write_start_tag(
             writer,
             "stop",
-            vec![("position", &self.position.get_value_string()).into()],
+            vec![("position", &self.position.value_string()).into()],
             false,
         );
 
