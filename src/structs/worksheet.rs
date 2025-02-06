@@ -1887,6 +1887,11 @@ impl Worksheet {
     ) {
         let mut start_no = start_col.unwrap_or(&1).clone();
         let mut end_no = end_col.unwrap_or(&self.get_highest_column()).clone();
+
+        if let Some(row_style) = self._get_row_dimensions_crate().get_row_dimension(source_row_no).map(Row::get_style).cloned() {
+	        self.get_row_dimensions_crate_mut().get_row_dimension_mut(target_row_no).set_style(row_style);
+        }
+
         for col_no in start_no..=end_no {
             self.copy_cell_styling((&col_no, source_row_no), (&col_no, target_row_no));
         }
@@ -1908,6 +1913,11 @@ impl Worksheet {
     ) {
         let mut start_no = start_row.unwrap_or(&1).clone();
         let mut end_no = end_row.unwrap_or(&self.get_highest_row()).clone();
+
+        if let Some(col_style) = self.get_column_dimensions_crate().get_column(source_col_no).map(Column::get_style).cloned() {
+	        self.get_column_dimensions_crate_mut().get_column_mut(target_col_no).set_style(col_style);
+        }
+
         for row_no in start_no..=end_no {
             self.copy_cell_styling((source_col_no, &row_no), (target_col_no, &row_no));
         }
