@@ -1888,7 +1888,7 @@ impl Worksheet {
         let mut start_no = start_col.unwrap_or(&1).clone();
         let mut end_no = end_col.unwrap_or(&self.get_highest_column()).clone();
 
-	if let Some(row_style) = self
+        if let Some(row_style) = self
             ._get_row_dimensions_crate()
             .get_row_dimension(source_row_no)
             .map(Row::get_style)
@@ -1932,7 +1932,7 @@ impl Worksheet {
                 .set_style(col_style);
         }
 	
-	for row_no in start_no..=end_no {
+        for row_no in start_no..=end_no {
             self.copy_cell_styling((source_col_no, &row_no), (target_col_no, &row_no));
         }
     }
