@@ -1931,7 +1931,7 @@ impl Worksheet {
                 .get_column_mut(target_col_no)
                 .set_style(col_style);
         }
-	
+
         for row_no in start_no..=end_no {
             self.copy_cell_styling((source_col_no, &row_no), (target_col_no, &row_no));
         }
