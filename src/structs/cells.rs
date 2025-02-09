@@ -166,7 +166,7 @@ impl Cells {
     pub fn highest_column_and_row(&self) -> (u32, u32) {
         self.map
             .keys()
-            .fold((0, 0), |(col_max, row_max), &(col, row)| {
+            .fold((0, 0), |(col_max, row_max), &(row, col)| {
                 (col.max(col_max), row.max(row_max))
             })
     }
