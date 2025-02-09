@@ -16,21 +16,21 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.2.2
-#### * Minor bug fixes
+### ver 2.2.3
+#### Fixed bug in get_highest_column_and_row()
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.2.2"
+umya-spreadsheet = "2.2.3"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.2.2", features = ["js"] }
+umya-spreadsheet = { version = "2.2.3", features = ["js"] }
 
 # Use only png for image processing
-umya-spreadsheet = { version = "2.2.2", features = ["image/png"] }
+umya-spreadsheet = { version = "2.2.3", features = ["image/png"] }
 ```
 
 Add the following code to main.rs
