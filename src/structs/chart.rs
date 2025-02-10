@@ -214,7 +214,7 @@ impl Chart {
         let mut value_iter = value.into_iter().map(Into::into);
         for series in self
             .area_chart_series_list_mut()
-            .get_area_chart_series_mut()
+            .area_chart_series_mut()
         {
             let value_raw = value_iter.next();
             if let Some(v) = value_raw {
@@ -235,9 +235,9 @@ impl Chart {
         }
         for series in self
             .area_chart_series_list_mut()
-            .get_area_chart_series_mut()
+            .area_chart_series_mut()
         {
-            if let Some(v) = series.get_category_axis_data_mut() {
+            if let Some(v) = series.category_axis_data_mut() {
                 v.remove_string_reference();
                 v.set_string_literal(string_literal.clone());
             } else {
@@ -456,10 +456,10 @@ impl Chart {
 
                 let mut acs_object = AreaChartSeries::default();
                 acs_object
-                    .get_index_mut()
+                    .index_mut()
                     .set_val(u32::try_from(idx).unwrap());
                 acs_object
-                    .get_order_mut()
+                    .order_mut()
                     .set_val(u32::try_from(idx).unwrap());
                 acs_object.set_values(values);
                 if smooth {
@@ -983,8 +983,8 @@ impl Chart {
                     .set_text("General");
                 acs_object.set_values(values);
 
-                acs_object.get_index_mut().set_val(idx);
-                acs_object.get_order_mut().set_val(idx);
+                acs_object.index_mut().set_val(idx);
+                acs_object.order_mut().set_val(idx);
                 acsl_obj.add_area_chart_series(acs_object);
 
                 acs_object = AreaChartSeries::default();
@@ -1207,7 +1207,7 @@ impl Chart {
 
         let mut area_3d_chart = Area3DChart::default();
         area_3d_chart
-            .get_grouping_mut()
+            .grouping_mut()
             .set_val(GroupingValues::Standard);
         area_3d_chart.set_area_chart_series_list(acsl_obj);
         area_3d_chart.add_axis_id(axis_id1);
@@ -1745,8 +1745,8 @@ impl Chart {
 
                 let bubble_3d = Bubble3D::default();
 
-                acs_object.get_index_mut().set_val(idx);
-                acs_object.get_order_mut().set_val(idx);
+                acs_object.index_mut().set_val(idx);
+                acs_object.order_mut().set_val(idx);
                 acs_object.set_invert_if_negative(invert_if_negative);
                 acs_object.set_bubble_3d(bubble_3d);
                 acsl_obj.add_area_chart_series(acs_object);
@@ -2087,8 +2087,8 @@ impl Chart {
                 let mut invert_if_negative = InvertIfNegative::default();
                 invert_if_negative.set_val(0f64);
 
-                acs_object.get_index_mut().set_val(idx);
-                acs_object.get_order_mut().set_val(idx);
+                acs_object.index_mut().set_val(idx);
+                acs_object.order_mut().set_val(idx);
                 acs_object.set_invert_if_negative(invert_if_negative);
                 acsl_obj.add_area_chart_series(acs_object);
 

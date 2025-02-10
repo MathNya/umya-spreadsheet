@@ -21,8 +21,15 @@ pub struct CustomDocumentProperty {
 impl CustomDocumentProperty {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -33,8 +40,15 @@ impl CustomDocumentProperty {
 
     #[inline]
     #[must_use]
-    pub fn get_link_target(&self) -> &str {
+    pub fn link_target(&self) -> &str {
         self.link_target.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use link_target()")]
+    pub fn get_link_target(&self) -> &str {
+        self.link_target()
     }
 
     #[inline]
@@ -45,20 +59,41 @@ impl CustomDocumentProperty {
 
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> Cow<'static, str> {
+    pub fn value(&self) -> Cow<'static, str> {
         self.custom_document_property_value.to_string().into()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_value_number(&self) -> Option<i32> {
-        self.custom_document_property_value.get_number()
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> Cow<'static, str> {
+        self.value()
     }
 
     #[inline]
     #[must_use]
+    pub fn value_number(&self) -> Option<i32> {
+        self.custom_document_property_value.number()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value_number()")]
+    pub fn get_value_number(&self) -> Option<i32> {
+        self.value_number()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn value_bool(&self) -> Option<bool> {
+        self.custom_document_property_value.bool()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value_bool()")]
     pub fn get_value_bool(&self) -> Option<bool> {
-        self.custom_document_property_value.get_bool()
+        self.value_bool()
     }
 
     #[inline]
@@ -132,7 +167,7 @@ impl CustomDocumentProperty {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, pid: i32) {
-        let is_inner = self.custom_document_property_value.get_tag().is_some();
+        let is_inner = self.custom_document_property_value.tag().is_some();
 
         // property
         let mut attributes: crate::structs::AttrCollection = Vec::new();
@@ -153,7 +188,7 @@ impl CustomDocumentProperty {
         write_start_tag(writer, "property", attributes, !is_inner);
 
         if is_inner {
-            let tag = self.custom_document_property_value.get_tag().unwrap();
+            let tag = self.custom_document_property_value.tag().unwrap();
             let value_str = self.custom_document_property_value.to_string();
             write_start_tag(writer, tag, vec![], !is_inner);
             write_text_node(writer, &value_str);

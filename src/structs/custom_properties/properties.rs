@@ -20,13 +20,26 @@ pub struct Properties {
 impl Properties {
     #[inline]
     #[must_use]
-    pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
+    pub fn custom_document_property_list(&self) -> &[CustomDocumentProperty] {
         &self.custom_document_property_list
     }
 
     #[inline]
-    pub fn get_custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use custom_document_property_list()")]
+    pub fn get_custom_document_property_list(&self) -> &[CustomDocumentProperty] {
+        self.custom_document_property_list()
+    }
+
+    #[inline]
+    pub fn custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
         &mut self.custom_document_property_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use custom_document_property_list_mut()")]
+    pub fn get_custom_document_property_list_mut(&mut self) -> &mut Vec<CustomDocumentProperty> {
+        self.custom_document_property_list_mut()
     }
 
     #[inline]
