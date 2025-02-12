@@ -1767,13 +1767,13 @@ impl Chart {
         axis_id2.set_val(169_590_080);
 
         let mut bubble_chart = BubbleChart::default();
-        bubble_chart.get_vary_colors_mut().set_val(false);
+        bubble_chart.vary_colors_mut().set_val(false);
         bubble_chart.set_area_chart_series_list(acsl_obj);
-        bubble_chart.get_bubble_scale_mut().set_val(100);
+        bubble_chart.bubble_scale_mut().set_val(100);
         bubble_chart.add_axis_id(axis_id1);
         bubble_chart.add_axis_id(axis_id2);
         bubble_chart
-            .get_data_labels_mut()
+            .data_labels_mut()
             .set_show_leader_lines(show_leader_lines);
 
         let mut value_axis_1 = ValueAxis::default();

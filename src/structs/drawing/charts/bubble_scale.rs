@@ -12,8 +12,14 @@ pub struct BubbleScale {
 }
 impl BubbleScale {
     #[must_use]
-    pub fn get_val(&self) -> u32 {
+    pub fn val(&self) -> u32 {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> u32 {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: u32) -> &mut BubbleScale {

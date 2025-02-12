@@ -2011,3 +2011,62 @@ fn issue_248() {
     let path = std::path::Path::new("./tests/result_files/issue_248.xlsx");
     let _unused = writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_265() {
+    let mut book = new_file();
+    let mut sheet = book.get_sheet_mut(0).unwrap();
+    sheet
+        .get_cell_mut("A1")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_BLACK_STR);
+    sheet.get_cell_mut("A1").set_value("COLOR_BLACK");
+    sheet
+        .get_cell_mut("A2")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_WHITE_STR);
+    sheet.get_cell_mut("A2").set_value("COLOR_WHITE");
+    sheet
+        .get_cell_mut("A3")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_RED_STR);
+    sheet.get_cell_mut("A3").set_value("COLOR_RED");
+    sheet
+        .get_cell_mut("A4")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_DARKRED_STR);
+    sheet.get_cell_mut("A4").set_value("COLOR_DARKRED");
+    sheet
+        .get_cell_mut("A5")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_BLUE_STR);
+    sheet.get_cell_mut("A5").set_value("COLOR_BLUE");
+    sheet
+        .get_cell_mut("A6")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_DARKBLUE_STR);
+    sheet.get_cell_mut("A6").set_value("COLOR_DARKBLUE");
+    sheet
+        .get_cell_mut("A7")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_GREEN_STR);
+    sheet.get_cell_mut("A7").set_value("COLOR_GREEN");
+    sheet
+        .get_cell_mut("A8")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_DARKGREEN_STR);
+    sheet.get_cell_mut("A8").set_value("COLOR_DARKGREEN");
+    sheet
+        .get_cell_mut("A9")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_YELLOW_STR);
+    sheet.get_cell_mut("A9").set_value("COLOR_YELLOW");
+    sheet
+        .get_cell_mut("A10")
+        .get_style_mut()
+        .set_background_color(umya_spreadsheet::Color::COLOR_DARKYELLOW_STR);
+    sheet.get_cell_mut("A10").set_value("COLOR_DARKYELLOW");
+
+    let path = std::path::Path::new("./tests/result_files/issue_265.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
