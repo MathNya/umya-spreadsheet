@@ -22,6 +22,14 @@ const INDEXED_COLORS: &[&str] = &[
     "FFFFFF00", //  System Colour #6 - Yellow
     "FFFF00FF", //  System Colour #7- Magenta
     "FF00FFFF", //  System Colour #8- Cyan
+    "FF000000", //  System Colour #1 - Black
+    "FFFFFFFF", //  System Colour #2 - White
+    "FFFF0000", //  System Colour #3 - Red
+    "FF00FF00", //  System Colour #4 - Green
+    "FF0000FF", //  System Colour #5 - Blue
+    "FFFFFF00", //  System Colour #6 - Yellow
+    "FFFF00FF", //  System Colour #7- Magenta
+    "FF00FFFF", //  System Colour #8- Cyan
     "FF800000", //  Standard Colour #9
     "FF008000", //  Standard Colour #10
     "FF000080", //  Standard Colour #11
@@ -336,7 +344,7 @@ mod tests {
 
         let mut obj = Color::default();
         obj.set_argb("FFFF8080");
-        assert_eq!(obj.get_indexed(), &21);
+        assert_eq!(obj.get_indexed(), &29);
         assert_eq!(obj.get_argb(), "FFFF8080");
 
         let mut obj = Color::default();
