@@ -936,11 +936,11 @@ pub fn adjustment_insert_formula_coordinate(
                 let coordinate_list = get_split_range(range);
                 for coordinate in &coordinate_list {
                     let cell = index_from_coordinate(coordinate);
-                    if cell.0.is_some() {
+                    if cell.0.is_some() && cell.1.is_some() {
                         let mut col_num = cell.0.unwrap();
                         let mut row_num = cell.1.unwrap();
-                        let is_lock_col = cell.2.unwrap();
-                        let is_lock_row = cell.3.unwrap();
+                        let is_lock_col = cell.2.unwrap_or(false);
+                        let is_lock_row = cell.3.unwrap_or(false);
                         if !is_lock_col {
                             col_num =
                                 adjustment_insert_coordinate(col_num, root_col_num, offset_col_num);
