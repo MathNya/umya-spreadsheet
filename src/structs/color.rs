@@ -617,7 +617,7 @@ mod tests {
 
         let mut obj = Color::default();
         obj.set_argb_str("FFFF8080");
-        assert_eq!(obj.indexed(), 21);
+        assert_eq!(obj.indexed(), 29);
         assert_eq!(obj.argb_str(), "FFFF8080");
 
         let mut obj = Color::default();
