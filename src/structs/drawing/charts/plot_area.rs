@@ -318,15 +318,15 @@ impl PlotArea {
             return self;
         }
         if let Some(chart) = &mut self.bar_chart {
-            chart.get_grouping_mut().set_val(value);
+            chart.grouping_mut().set_val(value);
             return self;
         }
         if let Some(chart) = &mut self.bar_3d_chart {
-            chart.get_grouping_mut().set_val(value);
+            chart.grouping_mut().set_val(value);
             return self;
         }
         if let Some(chart) = &mut self.area_chart {
-            chart.get_grouping_mut().set_val(value);
+            chart.grouping_mut().set_val(value);
             return self;
         }
         if let Some(chart) = &mut self.area_3d_chart {
@@ -356,10 +356,10 @@ impl PlotArea {
             return chart.get_area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.bar_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.bar_3d_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.radar_chart {
             return chart.get_area_chart_series_list_mut();
@@ -368,7 +368,7 @@ impl PlotArea {
             return chart.get_area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.area_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.area_3d_chart {
             return chart.area_chart_series_list_mut();
@@ -424,14 +424,14 @@ impl PlotArea {
             }
         }
         if let Some(v) = &mut self.bar_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.bar_3d_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }
@@ -452,7 +452,7 @@ impl PlotArea {
             }
         }
         if let Some(v) = &mut self.area_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }

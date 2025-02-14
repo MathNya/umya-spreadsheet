@@ -429,7 +429,7 @@ impl AreaChartSeries {
             result.push(v.get_number_reference_mut().get_formula_mut());
         }
         if let Some(v) = &mut self.bubble_size {
-            result.push(v.get_number_reference_mut().get_formula_mut());
+            result.push(v.number_reference_mut().get_formula_mut());
         }
         result
     }

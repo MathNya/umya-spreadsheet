@@ -12,8 +12,14 @@ pub struct AxisPosition {
 }
 impl AxisPosition {
     #[must_use]
-    pub fn get_val(&self) -> &AxisPositionValues {
+    pub fn val(&self) -> &AxisPositionValues {
         self.val.get_value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &AxisPositionValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: AxisPositionValues) -> &mut AxisPosition {

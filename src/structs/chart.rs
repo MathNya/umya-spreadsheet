@@ -1068,7 +1068,7 @@ impl Chart {
 
         let mut area_chart = AreaChart::default();
         area_chart
-            .get_grouping_mut()
+            .grouping_mut()
             .set_val(GroupingValues::Standard);
         area_chart.set_area_chart_series_list(acsl_obj);
         area_chart.add_axis_id(axis_id1);
@@ -1341,14 +1341,14 @@ impl Chart {
 
         let mut bar_chart = BarChart::default();
         bar_chart
-            .get_bar_direction_mut()
+            .bar_direction_mut()
             .set_val(BarDirectionValues::Column);
         bar_chart
-            .get_grouping_mut()
+            .grouping_mut()
             .set_val(GroupingValues::Stacked);
         bar_chart.set_area_chart_series_list(acsl_obj);
-        bar_chart.get_gap_width_mut().set_val(150);
-        bar_chart.get_overlap_mut().set_val(100);
+        bar_chart.gap_width_mut().set_val(150);
+        bar_chart.overlap_mut().set_val(100);
         bar_chart.add_axis_id(axis_id1);
         bar_chart.add_axis_id(axis_id2);
 
@@ -1485,14 +1485,14 @@ impl Chart {
 
         let mut bar_3d_chart = Bar3DChart::default();
         bar_3d_chart
-            .get_bar_direction_mut()
+            .bar_direction_mut()
             .set_val(BarDirectionValues::Column);
         bar_3d_chart
-            .get_grouping_mut()
+            .grouping_mut()
             .set_val(GroupingValues::Stacked);
         bar_3d_chart.set_area_chart_series_list(acsl_obj);
-        bar_3d_chart.get_gap_width_mut().set_val(150);
-        bar_3d_chart.get_shape_mut().set_val(ShapeValues::Box);
+        bar_3d_chart.gap_width_mut().set_val(150);
+        bar_3d_chart.shape_mut().set_val(ShapeValues::Box);
         bar_3d_chart.add_axis_id(axis_id1);
         bar_3d_chart.add_axis_id(axis_id2);
 
@@ -1730,11 +1730,11 @@ impl Chart {
             } else if ptn == 2 {
                 let mut bubble_size = BubbleSize::default();
                 bubble_size
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .get_formula_mut()
                     .set_address_str(area_chart_series);
                 bubble_size
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .get_numbering_cache_mut()
                     .get_format_code_mut()
                     .set_text("General");
