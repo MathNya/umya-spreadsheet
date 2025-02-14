@@ -162,7 +162,7 @@ impl BubbleChart {
     pub fn get_axis_id(&self) -> &[AxisId] {
         self.axis_id()
     }
-    
+
     pub fn axis_id_mut(&mut self) -> &mut Vec<AxisId> {
         &mut self.axis_id
     }
