@@ -1,10 +1,20 @@
 // c:hMode
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::super::EnumValue, LayoutModeValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::super::EnumValue,
+    LayoutModeValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct HeightMode {
@@ -13,7 +23,7 @@ pub struct HeightMode {
 impl HeightMode {
     #[must_use]
     pub fn get_val(&self) -> &LayoutModeValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: LayoutModeValues) -> &mut HeightMode {
@@ -34,7 +44,7 @@ impl HeightMode {
         write_start_tag(
             writer,
             "c:hMode",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

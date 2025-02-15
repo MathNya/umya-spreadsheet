@@ -1,15 +1,21 @@
-use std::{io, io::Read};
+use std::{
+    io,
+    io::Read,
+};
 
 use crate::{
     XlsxError,
     reader::driver::join_paths,
-    structs::{StringValue, WriterManager},
+    structs::{
+        StringValue,
+        WriterManager,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub(crate) struct RawFile {
     file_target: StringValue,
-    file_data: Vec<u8>,
+    file_data:   Vec<u8>,
 }
 impl RawFile {
     #[inline]

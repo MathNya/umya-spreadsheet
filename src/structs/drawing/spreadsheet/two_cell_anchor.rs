@@ -2,32 +2,58 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    super::super::EnumValue, ConnectionShape, EditAsValues, GraphicFrame, GroupShape, MarkerType,
-    Picture, Shape,
+    super::super::EnumValue,
+    ConnectionShape,
+    EditAsValues,
+    GraphicFrame,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
 };
 use crate::{
-    helper::const_str::{DRAWING_MAIN_NS, MC_NS},
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    structs::{BooleanValue, raw::RawRelationships},
-    traits::{AdjustmentCoordinate, AdjustmentCoordinateWithSheet},
-    writer::driver::{write_end_tag, write_start_tag},
+    helper::const_str::{
+        DRAWING_MAIN_NS,
+        MC_NS,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        BooleanValue,
+        raw::RawRelationships,
+    },
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentCoordinateWithSheet,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct TwoCellAnchor {
-    edit_as: EnumValue<EditAsValues>,
-    from_marker: MarkerType,
-    to_marker: MarkerType,
-    group_shape: Option<Box<GroupShape>>,
-    graphic_frame: Option<Box<GraphicFrame>>,
-    shape: Option<Box<Shape>>,
-    connection_shape: Option<Box<ConnectionShape>>,
-    picture: Option<Box<Picture>>,
+    edit_as:              EnumValue<EditAsValues>,
+    from_marker:          MarkerType,
+    to_marker:            MarkerType,
+    group_shape:          Option<Box<GroupShape>>,
+    graphic_frame:        Option<Box<GraphicFrame>>,
+    shape:                Option<Box<Shape>>,
+    connection_shape:     Option<Box<ConnectionShape>>,
+    picture:              Option<Box<Picture>>,
     is_alternate_content: BooleanValue,
 }
 
@@ -35,7 +61,7 @@ impl TwoCellAnchor {
     #[inline]
     #[must_use]
     pub fn get_edit_as(&self) -> &EditAsValues {
-        self.edit_as.get_value()
+        self.edit_as.value()
     }
 
     #[inline]
@@ -284,7 +310,7 @@ impl TwoCellAnchor {
         // xdr:twoCellAnchor
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.edit_as.has_value() {
-            attributes.push(("editAs", self.edit_as.get_value_string()).into());
+            attributes.push(("editAs", self.edit_as.value_string()).into());
         }
         write_start_tag(writer, "xdr:twoCellAnchor", attributes, false);
 

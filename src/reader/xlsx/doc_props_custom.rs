@@ -1,9 +1,15 @@
 use std::io;
 
-use quick_xml::{Reader, events::Event};
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
 use super::XlsxError;
-use crate::{helper::const_str::ARC_CUSTOM, structs::Workbook};
+use crate::{
+    helper::const_str::ARC_CUSTOM,
+    structs::Workbook,
+};
 
 pub(crate) fn read<R: io::Read + io::Seek>(
     arv: &mut zip::ZipArchive<R>,

@@ -2,33 +2,50 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    super::{super::EnumValue, BooleanValue},
-    GradientStopList, LinearGradientFill, TileFlipValues, TileRectangle,
+    super::{
+        super::EnumValue,
+        BooleanValue,
+    },
+    GradientStopList,
+    LinearGradientFill,
+    TileFlipValues,
+    TileRectangle,
 };
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct GradientFill {
-    flip: EnumValue<TileFlipValues>,
-    rotate_with_shape: BooleanValue,
-    gradient_stop_list: GradientStopList,
+    flip:                 EnumValue<TileFlipValues>,
+    rotate_with_shape:    BooleanValue,
+    gradient_stop_list:   GradientStopList,
     linear_gradient_fill: Option<Box<LinearGradientFill>>,
-    tile_rectangle: Option<Box<TileRectangle>>,
+    tile_rectangle:       Option<Box<TileRectangle>>,
 }
 
 impl GradientFill {
     #[inline]
     #[must_use]
     pub fn get_flip(&self) -> &TileFlipValues {
-        self.flip.get_value()
+        self.flip.value()
     }
 
     #[inline]
@@ -143,7 +160,7 @@ impl GradientFill {
         // a:gradFill
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.flip.has_value() {
-            attributes.push(("flip", self.flip.get_value_string()).into());
+            attributes.push(("flip", self.flip.value_string()).into());
         }
         if self.rotate_with_shape.has_value() {
             attributes.push(("rotWithShape", self.rotate_with_shape.value_string()).into());

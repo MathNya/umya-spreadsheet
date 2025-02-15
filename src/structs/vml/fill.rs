@@ -1,20 +1,32 @@
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml},
-    structs::{MediaObject, StringValue, TrueFalseValue, raw::RawRelationships},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        MediaObject,
+        StringValue,
+        TrueFalseValue,
+        raw::RawRelationships,
+    },
     writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Fill {
-    color: StringValue,
-    color_2: StringValue,
-    on: TrueFalseValue,
+    color:      StringValue,
+    color_2:    StringValue,
+    on:         TrueFalseValue,
     focus_size: StringValue,
-    image: Option<MediaObject>,
+    image:      Option<MediaObject>,
 }
 
 impl Fill {

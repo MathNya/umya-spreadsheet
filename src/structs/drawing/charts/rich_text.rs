@@ -2,21 +2,32 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::super::{BodyProperties, ListStyle, Paragraph};
+use super::super::{
+    BodyProperties,
+    ListStyle,
+    Paragraph,
+};
 use crate::{
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
     xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct RichText {
     body_properties: BodyProperties,
-    list_style: ListStyle,
-    paragraph: Vec<Paragraph>,
+    list_style:      ListStyle,
+    paragraph:       Vec<Paragraph>,
 }
 
 impl RichText {

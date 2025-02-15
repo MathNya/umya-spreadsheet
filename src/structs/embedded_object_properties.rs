@@ -44,8 +44,15 @@ pub struct EmbeddedObjectProperties {
 impl EmbeddedObjectProperties {
     #[inline]
     #[must_use]
-    pub fn get_prog_id(&self) -> &str {
+    pub fn prog_id(&self) -> &str {
         self.prog_id.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prog_id()")]
+    pub fn get_prog_id(&self) -> &str {
+        self.prog_id()
     }
 
     #[inline]
@@ -56,8 +63,15 @@ impl EmbeddedObjectProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_id(&self) -> u32 {
+    pub fn shape_id(&self) -> u32 {
         self.shape_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_id()")]
+    pub fn get_shape_id(&self) -> u32 {
+        self.shape_id()
     }
 
     #[inline]
@@ -68,13 +82,26 @@ impl EmbeddedObjectProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_image(&self) -> &MediaObject {
+    pub fn image(&self) -> &MediaObject {
         &self.image
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image()")]
+    pub fn get_image(&self) -> &MediaObject {
+        self.image()
+    }
+
+    #[inline]
+    pub fn image_mut(&mut self) -> &mut MediaObject {
         &mut self.image
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_mut()")]
+    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+        self.image_mut()
     }
 
     #[inline]
@@ -84,8 +111,15 @@ impl EmbeddedObjectProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_default_size(&self) -> bool {
+    pub fn default_size(&self) -> bool {
         self.default_size.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_size()")]
+    pub fn get_default_size(&self) -> bool {
+        self.default_size()
     }
 
     #[inline]
@@ -96,8 +130,15 @@ impl EmbeddedObjectProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_auto_pict(&self) -> bool {
+    pub fn auto_pict(&self) -> bool {
         self.auto_pict.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_pict()")]
+    pub fn get_auto_pict(&self) -> bool {
+        self.auto_pict()
     }
 
     #[inline]
@@ -108,13 +149,26 @@ impl EmbeddedObjectProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_object_anchor(&self) -> &ObjectAnchor {
+    pub fn object_anchor(&self) -> &ObjectAnchor {
         &self.object_anchor
     }
 
     #[inline]
-    pub fn get_object_anchor_mut(&mut self) -> &mut ObjectAnchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use object_anchor()")]
+    pub fn get_object_anchor(&self) -> &ObjectAnchor {
+        self.object_anchor()
+    }
+
+    #[inline]
+    pub fn object_anchor_mut(&mut self) -> &mut ObjectAnchor {
         &mut self.object_anchor
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use object_anchor_mut()")]
+    pub fn get_object_anchor_mut(&mut self) -> &mut ObjectAnchor {
+        self.object_anchor_mut()
     }
 
     #[inline]
@@ -132,9 +186,9 @@ impl EmbeddedObjectProperties {
         let r_id = get_attribute(e, b"r:id").unwrap();
         let attached_file = relationships.get_relationship_by_rid(&r_id).get_raw_file();
 
-        self.get_image_mut()
+        self.image_mut()
             .set_image_name(attached_file.get_file_name());
-        self.get_image_mut()
+        self.image_mut()
             .set_image_data(attached_file.get_file_data());
 
         set_string_from_xml!(self, e, default_size, "defaultSize");

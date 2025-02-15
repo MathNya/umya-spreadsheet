@@ -2,34 +2,49 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{super::EnumValue, PercentageType, PositiveFixedPercentageType, SchemeColorValues};
+use super::{
+    super::EnumValue,
+    PercentageType,
+    PositiveFixedPercentageType,
+    SchemeColorValues,
+};
 use crate::{
-    reader::driver::{get_attribute, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct SchemeColor {
-    val: EnumValue<SchemeColorValues>,
-    luminance: Option<PercentageType>,
-    luminance_modulation: Option<PercentageType>,
-    luminance_offset: Option<PercentageType>,
-    saturation: Option<PercentageType>,
+    val:                   EnumValue<SchemeColorValues>,
+    luminance:             Option<PercentageType>,
+    luminance_modulation:  Option<PercentageType>,
+    luminance_offset:      Option<PercentageType>,
+    saturation:            Option<PercentageType>,
     saturation_modulation: Option<PercentageType>,
-    shade: Option<PositiveFixedPercentageType>,
-    alpha: Option<PositiveFixedPercentageType>,
-    tint: Option<PositiveFixedPercentageType>,
+    shade:                 Option<PositiveFixedPercentageType>,
+    alpha:                 Option<PositiveFixedPercentageType>,
+    tint:                  Option<PositiveFixedPercentageType>,
 }
 
 impl SchemeColor {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> &SchemeColorValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[inline]
@@ -252,7 +267,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", self.val.get_value_string()).into()],
+                vec![("val", self.val.value_string()).into()],
                 false,
             );
 
@@ -301,7 +316,7 @@ impl SchemeColor {
             write_start_tag(
                 writer,
                 "a:schemeClr",
-                vec![("val", self.val.get_value_string()).into()],
+                vec![("val", self.val.value_string()).into()],
                 true,
             );
         }

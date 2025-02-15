@@ -1,41 +1,61 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 // c:catAx
 use super::AutoLabeled;
 use super::{
-    AxisId, AxisPosition, Crosses, CrossingAxis, Delete, LabelAlignment, LabelOffset,
-    MajorGridlines, MajorTickMark, MinorTickMark, NoMultiLevelLabels, Scaling, ShapeProperties,
-    TextProperties, TickLabelPosition, Title,
+    AxisId,
+    AxisPosition,
+    Crosses,
+    CrossingAxis,
+    Delete,
+    LabelAlignment,
+    LabelOffset,
+    MajorGridlines,
+    MajorTickMark,
+    MinorTickMark,
+    NoMultiLevelLabels,
+    Scaling,
+    ShapeProperties,
+    TextProperties,
+    TickLabelPosition,
+    Title,
 };
 use crate::{
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
     xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct CategoryAxis {
-    axis_id: AxisId,
-    scaling: Scaling,
-    delete: Delete,
-    axis_position: AxisPosition,
-    title: Option<Title>,
-    major_gridlines: Option<MajorGridlines>,
-    major_tick_mark: MajorTickMark,
-    minor_tick_mark: MinorTickMark,
-    tick_label_position: TickLabelPosition,
-    crossing_axis: CrossingAxis,
-    crosses: Crosses,
-    auto_labeled: AutoLabeled,
-    label_alignment: LabelAlignment,
-    label_offset: LabelOffset,
+    axis_id:               AxisId,
+    scaling:               Scaling,
+    delete:                Delete,
+    axis_position:         AxisPosition,
+    title:                 Option<Title>,
+    major_gridlines:       Option<MajorGridlines>,
+    major_tick_mark:       MajorTickMark,
+    minor_tick_mark:       MinorTickMark,
+    tick_label_position:   TickLabelPosition,
+    crossing_axis:         CrossingAxis,
+    crosses:               Crosses,
+    auto_labeled:          AutoLabeled,
+    label_alignment:       LabelAlignment,
+    label_offset:          LabelOffset,
     no_multi_level_labels: NoMultiLevelLabels,
-    shape_properties: Option<ShapeProperties>,
-    text_properties: Option<TextProperties>,
+    shape_properties:      Option<ShapeProperties>,
+    text_properties:       Option<TextProperties>,
 }
 
 impl CategoryAxis {

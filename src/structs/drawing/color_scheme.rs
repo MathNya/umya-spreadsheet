@@ -2,31 +2,45 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{super::StringValue, Color2Type};
+use super::{
+    super::StringValue,
+    Color2Type,
+};
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ColorScheme {
-    name: StringValue,
-    accent1: Color2Type,
-    accent2: Color2Type,
-    accent3: Color2Type,
-    accent4: Color2Type,
-    accent5: Color2Type,
-    accent6: Color2Type,
-    dk1: Color2Type,
-    dk2: Color2Type,
+    name:      StringValue,
+    accent1:   Color2Type,
+    accent2:   Color2Type,
+    accent3:   Color2Type,
+    accent4:   Color2Type,
+    accent5:   Color2Type,
+    accent6:   Color2Type,
+    dk1:       Color2Type,
+    dk2:       Color2Type,
     fol_hlink: Color2Type,
-    hlink: Color2Type,
-    lt1: Color2Type,
-    lt2: Color2Type,
+    hlink:     Color2Type,
+    lt1:       Color2Type,
+    lt2:       Color2Type,
 }
 
 impl ColorScheme {

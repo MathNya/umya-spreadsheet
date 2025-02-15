@@ -35,7 +35,7 @@ impl Alignment {
     #[inline]
     #[must_use]
     pub fn horizontal(&self) -> &HorizontalAlignmentValues {
-        self.horizontal.get_value()
+        self.horizontal.value()
     }
 
     #[inline]
@@ -53,7 +53,7 @@ impl Alignment {
     #[inline]
     #[must_use]
     pub fn vertical(&self) -> &VerticalAlignmentValues {
-        self.vertical.get_value()
+        self.vertical.value()
     }
 
     #[inline]
@@ -109,8 +109,8 @@ impl Alignment {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}{}{}",
-                &self.horizontal.get_hash_string(),
-                &self.vertical.get_hash_string(),
+                &self.horizontal.hash_string(),
+                &self.vertical.hash_string(),
                 &self.wrap_text.hash_string(),
                 &self.text_rotation.hash_string(),
             ))
@@ -138,10 +138,10 @@ impl Alignment {
         // alignment
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.horizontal.has_value() {
-            attributes.push(("horizontal", self.horizontal.get_value_string()).into());
+            attributes.push(("horizontal", self.horizontal.value_string()).into());
         }
         if self.vertical.has_value() {
-            attributes.push(("vertical", self.vertical.get_value_string()).into());
+            attributes.push(("vertical", self.vertical.value_string()).into());
         }
         if self.wrap_text.has_value() {
             attributes.push(("wrapText", self.wrap_text.value_string()).into());

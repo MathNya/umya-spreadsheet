@@ -2,13 +2,22 @@ use std::io;
 
 use quick_xml::{
     Writer,
-    events::{BytesDecl, Event},
+    events::{
+        BytesDecl,
+        Event,
+    },
 };
 
-use super::{XlsxError, driver::write_new_line};
+use super::{
+    XlsxError,
+    driver::write_new_line,
+};
 use crate::{
     helper::const_str::PKG_STYLES,
-    structs::{Stylesheet, WriterManager},
+    structs::{
+        Stylesheet,
+        WriterManager,
+    },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(

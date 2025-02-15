@@ -11,7 +11,7 @@ impl CsvWriterOption {
     #[inline]
     #[must_use]
     pub fn csv_encode_value(&self) -> &CsvEncodeValues {
-        self.csv_encode_values.get_value()
+        self.csv_encode_values.value()
     }
 
     #[inline]

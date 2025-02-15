@@ -1,11 +1,17 @@
 use std::io;
 
-use quick_xml::{Reader, events::Event};
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
 use super::XlsxError;
 use crate::{
     helper::const_str::PKG_SHARED_STRINGS,
-    structs::{SharedStringTable, Workbook},
+    structs::{
+        SharedStringTable,
+        Workbook,
+    },
     xml_read_loop,
 };
 

@@ -62,7 +62,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn r#type(&self) -> &ConditionalFormatValues {
-        self.r#type.get_value()
+        self.r#type.value()
     }
 
     #[inline]
@@ -81,7 +81,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn operator(&self) -> &ConditionalFormattingOperatorValues {
-        self.operator.get_value()
+        self.operator.value()
     }
 
     #[inline]
@@ -271,7 +271,7 @@ impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
     pub fn time_period(&self) -> &TimePeriodValues {
-        self.time_period.get_value()
+        self.time_period.value()
     }
 
     #[inline]
@@ -491,12 +491,12 @@ impl ConditionalFormattingRule {
         // cfRule
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
-        let r#type = self.r#type.get_value_string();
+        let r#type = self.r#type.value_string();
         if self.r#type.has_value() {
             attributes.push(("type", r#type).into());
         }
 
-        let operator = self.operator.get_value_string();
+        let operator = self.operator.value_string();
         if self.operator.has_value() {
             attributes.push(("operator", operator).into());
         }
@@ -538,7 +538,7 @@ impl ConditionalFormattingRule {
             attributes.push(("stdDev", &std_dev).into());
         }
 
-        let time_period = self.time_period.get_value_string();
+        let time_period = self.time_period.value_string();
         if self.time_period.has_value() {
             attributes.push(("timePeriod", time_period).into());
         }

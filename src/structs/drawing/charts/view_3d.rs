@@ -2,22 +2,34 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{Perspective, RightAngleAxes, RotateX, RotateY};
+use super::{
+    Perspective,
+    RightAngleAxes,
+    RotateX,
+    RotateY,
+};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct View3D {
-    rotate_x: Option<RotateX>,
-    rotate_y: Option<RotateY>,
+    rotate_x:         Option<RotateX>,
+    rotate_y:         Option<RotateY>,
     right_angle_axes: Option<RightAngleAxes>,
-    perspective: Option<Perspective>,
+    perspective:      Option<Perspective>,
 }
 
 impl View3D {

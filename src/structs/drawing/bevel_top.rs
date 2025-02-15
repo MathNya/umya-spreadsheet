@@ -1,20 +1,30 @@
 // a:bevelT
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use super::{
-    super::{EnumValue, Int64Value},
+    super::{
+        EnumValue,
+        Int64Value,
+    },
     BevelPresetValues,
 };
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
     writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct BevelTop {
-    width: Int64Value,
+    width:  Int64Value,
     height: Int64Value,
     preset: EnumValue<BevelPresetValues>,
 }
@@ -47,7 +57,7 @@ impl BevelTop {
     #[inline]
     #[must_use]
     pub fn get_preset(&self) -> &BevelPresetValues {
-        self.preset.get_value()
+        self.preset.value()
     }
 
     #[inline]
@@ -79,7 +89,7 @@ impl BevelTop {
             attributes.push(("h", &height).into());
         }
         if self.preset.has_value() {
-            attributes.push(("prst", self.preset.get_value_string()).into());
+            attributes.push(("prst", self.preset.value_string()).into());
         }
 
         write_start_tag(writer, "a:bevelT", attributes, true);

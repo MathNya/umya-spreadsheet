@@ -2,21 +2,31 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{StringLiteral, StringReference};
+use super::{
+    StringLiteral,
+    StringReference,
+};
 use crate::{
     reader::driver::xml_read_loop,
     structs::Workbook,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct CategoryAxisData {
     string_reference: Option<StringReference>,
-    string_literal: Option<StringLiteral>,
+    string_literal:   Option<StringLiteral>,
 }
 
 impl CategoryAxisData {

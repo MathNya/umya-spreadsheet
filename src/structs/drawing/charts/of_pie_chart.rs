@@ -2,29 +2,42 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    AreaChartSeries, AreaChartSeriesList, DataLabels, GapWidth, OfPieType, SecondPieSize,
-    SeriesLines, VaryColors,
+    AreaChartSeries,
+    AreaChartSeriesList,
+    DataLabels,
+    GapWidth,
+    OfPieType,
+    SecondPieSize,
+    SeriesLines,
+    VaryColors,
 };
 use crate::{
     reader::driver::xml_read_loop,
     structs::Workbook,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct OfPieChart {
-    of_pie_type: OfPieType,
-    vary_colors: VaryColors,
+    of_pie_type:            OfPieType,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    gap_width: GapWidth,
-    second_pie_size: SecondPieSize,
-    series_lines: SeriesLines,
+    data_labels:            DataLabels,
+    gap_width:              GapWidth,
+    second_pie_size:        SecondPieSize,
+    series_lines:           SeriesLines,
 }
 
 impl OfPieChart {

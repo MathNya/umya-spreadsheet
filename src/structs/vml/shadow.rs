@@ -1,17 +1,27 @@
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml},
-    structs::{StringValue, TrueFalseValue},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
+    structs::{
+        StringValue,
+        TrueFalseValue,
+    },
     writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Shadow {
-    on: TrueFalseValue,
-    color: StringValue,
+    on:       TrueFalseValue,
+    color:    StringValue,
     obscured: TrueFalseValue,
 }
 impl Shadow {

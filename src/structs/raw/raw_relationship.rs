@@ -1,19 +1,31 @@
-use std::{io, io::Cursor};
+use std::{
+    io,
+    io::Cursor,
+};
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use crate::{
     reader::driver::get_attribute,
-    structs::{StringValue, WriterManager, XlsxError, raw::RawFile},
+    structs::{
+        StringValue,
+        WriterManager,
+        XlsxError,
+        raw::RawFile,
+    },
     writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationship {
-    id: StringValue,
-    r_type: StringValue,
-    target: StringValue,
-    raw_file: RawFile,
+    id:          StringValue,
+    r_type:      StringValue,
+    target:      StringValue,
+    raw_file:    RawFile,
     target_mode: StringValue,
 }
 

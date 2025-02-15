@@ -2,29 +2,43 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::super::{
-    BlipFill, EffectList, ExtensionList, NoFill, Outline, PresetGeometry, SolidFill, Transform2D,
+    BlipFill,
+    EffectList,
+    ExtensionList,
+    NoFill,
+    Outline,
+    PresetGeometry,
+    SolidFill,
+    Transform2D,
 };
 use crate::{
     reader::driver::xml_read_loop,
     structs::raw::RawRelationships,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    transform2d: Option<Box<Transform2D>>,
+    transform2d:     Option<Box<Transform2D>>,
     preset_geometry: PresetGeometry,
-    blip_fill: Option<Box<BlipFill>>,
-    solid_fill: Option<Box<SolidFill>>,
-    outline: Option<Box<Outline>>,
-    effect_list: Option<Box<EffectList>>,
-    no_fill: Option<NoFill>,
-    extension_list: Option<ExtensionList>,
+    blip_fill:       Option<Box<BlipFill>>,
+    solid_fill:      Option<Box<SolidFill>>,
+    outline:         Option<Box<Outline>>,
+    effect_list:     Option<Box<EffectList>>,
+    no_fill:         Option<NoFill>,
+    extension_list:  Option<ExtensionList>,
 }
 impl ShapeProperties {
     #[inline]

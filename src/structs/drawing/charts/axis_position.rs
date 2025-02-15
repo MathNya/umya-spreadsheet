@@ -1,10 +1,20 @@
 // c:axPos
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::super::EnumValue, AxisPositionValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::super::EnumValue,
+    AxisPositionValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct AxisPosition {
@@ -13,7 +23,7 @@ pub struct AxisPosition {
 impl AxisPosition {
     #[must_use]
     pub fn val(&self) -> &AxisPositionValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[must_use]
@@ -40,7 +50,7 @@ impl AxisPosition {
         write_start_tag(
             writer,
             "c:axPos",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

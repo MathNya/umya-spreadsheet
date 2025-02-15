@@ -1,5 +1,9 @@
 use std::{
-    path::{Component, Path, PathBuf},
+    path::{
+        Component,
+        Path,
+        PathBuf,
+    },
     string::FromUtf8Error,
 };
 

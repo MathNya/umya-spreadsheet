@@ -1,20 +1,33 @@
 // a:lstStyle
-use std::{collections::HashMap, io::Cursor};
-
-use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+use std::{
+    collections::HashMap,
+    io::Cursor,
 };
 
-use super::{EffectList, TextParagraphPropertiesType};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    EffectList,
+    TextParagraphPropertiesType,
+};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ListStyle {
-    effect_list: Option<Box<EffectList>>,
+    effect_list:                    Option<Box<EffectList>>,
     text_paragraph_properties_type: HashMap<Box<str>, Box<TextParagraphPropertiesType>>,
 }
 

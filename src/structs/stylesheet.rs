@@ -280,7 +280,7 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.border_id() as usize;
-            let obj = self.borders.get_borders().get(id).unwrap();
+            let obj = self.borders.borders().get(id).unwrap();
             style.set_borders(obj.clone());
         }
 

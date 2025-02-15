@@ -1,4 +1,7 @@
-use std::{fs, path::Path};
+use std::{
+    fs,
+    path::Path,
+};
 
 use crate::structs::MediaObject;
 

@@ -1,10 +1,20 @@
 // c:crossBetween
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::super::EnumValue, CrossBetweenValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::super::EnumValue,
+    CrossBetweenValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct CrossBetween {
@@ -13,7 +23,7 @@ pub struct CrossBetween {
 impl CrossBetween {
     #[must_use]
     pub fn get_val(&self) -> &CrossBetweenValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: CrossBetweenValues) -> &mut CrossBetween {
@@ -34,7 +44,7 @@ impl CrossBetween {
         write_start_tag(
             writer,
             "c:crossBetween",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

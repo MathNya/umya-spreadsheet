@@ -1,11 +1,24 @@
 use std::io;
 
-use quick_xml::{Reader, escape, events::Event};
+use quick_xml::{
+    Reader,
+    escape,
+    events::Event,
+};
 
-use super::{XlsxError, driver::get_attribute};
+use super::{
+    XlsxError,
+    driver::get_attribute,
+};
 use crate::{
     helper::const_str::PKG_WORKBOOK,
-    structs::{DefinedName, Workbook, WorkbookProtection, WorkbookView, Worksheet},
+    structs::{
+        DefinedName,
+        Workbook,
+        WorkbookProtection,
+        WorkbookView,
+        Worksheet,
+    },
     xml_read_loop,
 };
 

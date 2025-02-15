@@ -2,20 +2,30 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::super::{EndConnection, StartConnection};
+use super::super::{
+    EndConnection,
+    StartConnection,
+};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct NonVisualConnectorShapeDrawingProperties {
     start_connection: Option<Box<StartConnection>>,
-    end_connection: Option<Box<EndConnection>>,
+    end_connection:   Option<Box<EndConnection>>,
 }
 
 impl NonVisualConnectorShapeDrawingProperties {

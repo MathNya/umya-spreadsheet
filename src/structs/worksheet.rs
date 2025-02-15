@@ -1666,7 +1666,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn state(&self) -> &SheetStateValues {
-        self.state.get_value()
+        self.state.value()
     }
 
     #[inline]
@@ -1678,7 +1678,7 @@ impl Worksheet {
 
     #[inline]
     pub(crate) fn state_str(&self) -> &str {
-        self.state.get_value_string()
+        self.state.value_string()
     }
 
     #[inline]
@@ -2437,7 +2437,7 @@ impl Worksheet {
             }
         }
         for ole_objects in self.ole_objects().get_ole_object() {
-            let media_object = ole_objects.get_embedded_object_properties().get_image();
+            let media_object = ole_objects.get_embedded_object_properties().image();
             let is_new = !list
                 .iter()
                 .any(|v| v.get_image_name() == media_object.get_image_name());

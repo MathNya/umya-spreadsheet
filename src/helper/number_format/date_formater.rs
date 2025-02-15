@@ -2,7 +2,10 @@ use std::borrow::Cow;
 
 use fancy_regex::Captures;
 
-use crate::helper::{date::excel_to_date_time_object, utils::compile_regex};
+use crate::helper::{
+    date::excel_to_date_time_object,
+    utils::compile_regex,
+};
 
 const DATE_FORMAT_REPLACEMENTS: &[(&str, &str)] = &[
     // first remove escapes related to non-format characters

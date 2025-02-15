@@ -1,20 +1,30 @@
 // a:sysClr
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use super::{
-    super::super::{EnumValue, StringValue},
+    super::super::{
+        EnumValue,
+        StringValue,
+    },
     SystemColorValues,
 };
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
     writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct SystemColor {
-    val: EnumValue<SystemColorValues>,
+    val:        EnumValue<SystemColorValues>,
     last_color: StringValue,
 }
 
@@ -22,7 +32,7 @@ impl SystemColor {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> &SystemColorValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[inline]
@@ -55,7 +65,7 @@ impl SystemColor {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:srgbClr
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let val = self.val.get_value_string();
+        let val = self.val.value_string();
         if self.val.has_value() {
             attributes.push(("val", val).into());
         }

@@ -2,25 +2,38 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{Extent, GroupShape, MarkerType, Picture, Shape};
+use super::{
+    Extent,
+    GroupShape,
+    MarkerType,
+    Picture,
+    Shape,
+};
 use crate::{
     reader::driver::xml_read_loop,
     structs::raw::RawRelationships,
     traits::AdjustmentCoordinate,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct OneCellAnchor {
     from_marker: MarkerType,
-    extent: Extent,
+    extent:      Extent,
     group_shape: Option<Box<GroupShape>>,
-    shape: Option<Box<Shape>>,
-    picture: Option<Box<Picture>>,
+    shape:       Option<Box<Shape>>,
+    picture:     Option<Box<Picture>>,
 }
 
 impl OneCellAnchor {

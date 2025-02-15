@@ -29,14 +29,27 @@ pub(crate) struct BordersCrate {
 
 impl BordersCrate {
     #[inline]
-    pub(crate) fn get_borders(&self) -> &[Borders] {
+    pub(crate) fn borders(&self) -> &[Borders] {
         &self.borders
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use borders()")]
+    pub(crate) fn get_borders(&self) -> &[Borders] {
+        self.borders()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_borders_mut(&mut self) -> &mut Vec<Borders> {
+    pub(crate) fn borders_mut(&mut self) -> &mut Vec<Borders> {
         &mut self.borders
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use borders_mut()")]
+    pub(crate) fn get_borders_mut(&mut self) -> &mut Vec<Borders> {
+        self.borders_mut()
     }
 
     #[inline]

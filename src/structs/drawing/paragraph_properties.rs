@@ -2,23 +2,39 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{super::EnumValue, LineSpacing, RunProperties, TextAlignmentTypeValues};
+use super::{
+    super::EnumValue,
+    LineSpacing,
+    RunProperties,
+    TextAlignmentTypeValues,
+};
 use crate::{
     StringValue,
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ParagraphProperties {
-    right_to_left: StringValue,
-    alignment: EnumValue<TextAlignmentTypeValues>,
+    right_to_left:          StringValue,
+    alignment:              EnumValue<TextAlignmentTypeValues>,
     default_run_properties: Option<Box<RunProperties>>,
-    line_spacing: Option<LineSpacing>,
+    line_spacing:           Option<LineSpacing>,
 }
 
 impl ParagraphProperties {
@@ -37,7 +53,7 @@ impl ParagraphProperties {
     #[inline]
     #[must_use]
     pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
-        self.alignment.get_value()
+        self.alignment.value()
     }
 
     #[inline]
@@ -135,7 +151,7 @@ impl ParagraphProperties {
             attributes.push(("rtl", v).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", self.alignment.get_value_string()).into());
+            attributes.push(("algn", self.alignment.value_string()).into());
         }
 
         let empty_flag = self.default_run_properties.is_none() && self.line_spacing.is_none();

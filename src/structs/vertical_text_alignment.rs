@@ -28,7 +28,7 @@ impl VerticalTextAlignment {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> &VerticalAlignmentRunValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[inline]
@@ -52,7 +52,7 @@ impl VerticalTextAlignment {
             write_start_tag(
                 writer,
                 "vertAlign",
-                vec![("val", self.val.get_value_string()).into()],
+                vec![("val", self.val.value_string()).into()],
                 true,
             );
         }

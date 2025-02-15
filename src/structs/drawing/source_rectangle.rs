@@ -1,9 +1,17 @@
 // a:srcRect
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use crate::{StringValue, reader::driver::get_attribute_value, writer::driver::write_start_tag};
+use crate::{
+    StringValue,
+    reader::driver::get_attribute_value,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct SourceRectangle {

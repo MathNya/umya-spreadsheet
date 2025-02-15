@@ -1,19 +1,33 @@
-use std::{io::Cursor, vec};
-
-use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+use std::{
+    io::Cursor,
+    vec,
 };
 
-use super::{EffectList, Scene3DType, Shape3DType};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
+};
+
+use super::{
+    EffectList,
+    Scene3DType,
+    Shape3DType,
+};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct EffectStyle {
-    effect_list: Option<Box<EffectList>>,
+    effect_list:   Option<Box<EffectList>>,
     scene_3d_type: Option<Box<Scene3DType>>,
     shape_3d_type: Option<Box<Shape3DType>>,
 }

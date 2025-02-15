@@ -2,25 +2,35 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    super::super::Anchor, NonVisualConnectionShapeProperties, ShapeProperties, ShapeStyle,
+    super::super::Anchor,
+    NonVisualConnectionShapeProperties,
+    ShapeProperties,
+    ShapeStyle,
 };
 use crate::{
     reader::driver::xml_read_loop,
     structs::raw::RawRelationships,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ConnectionShape {
-    anchor: Anchor,
+    anchor:                                 Anchor,
     non_visual_connection_shape_properties: NonVisualConnectionShapeProperties,
-    shape_properties: ShapeProperties,
-    shape_style: ShapeStyle,
+    shape_properties:                       ShapeProperties,
+    shape_style:                            ShapeStyle,
 }
 
 impl ConnectionShape {

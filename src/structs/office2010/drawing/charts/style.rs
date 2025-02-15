@@ -2,14 +2,24 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
-    helper::const_str::{DRAWING_CHART_NS, MC_NS},
+    helper::const_str::{
+        DRAWING_CHART_NS,
+        MC_NS,
+    },
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]

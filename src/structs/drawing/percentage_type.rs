@@ -1,10 +1,17 @@
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use super::super::Int32Value;
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
     writer::driver::write_start_tag,
 };
 

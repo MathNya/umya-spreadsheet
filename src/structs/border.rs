@@ -73,7 +73,7 @@ impl Border {
     #[inline]
     #[must_use]
     pub fn style(&self) -> &BorderStyleValues {
-        self.style.get_value()
+        self.style.value()
     }
 
     #[inline]
@@ -92,7 +92,7 @@ impl Border {
     #[inline]
     #[must_use]
     pub fn border_style(&self) -> &str {
-        self.style.get_value_string()
+        self.style.value_string()
     }
 
     #[inline]
@@ -112,7 +112,7 @@ impl Border {
             "{:x}",
             md5::Md5::digest(format!(
                 "{}{}",
-                &self.style.get_value_string(),
+                &self.style.value_string(),
                 &self.color().unwrap_or_default().argb_str()
             ))
         )
@@ -126,7 +126,7 @@ impl Border {
     // When opened in software such as Excel, it is visually blank.
     #[inline]
     pub(crate) fn is_visually_empty(&self) -> bool {
-        self.style.get_value() == &BorderStyleValues::None
+        self.style.value() == &BorderStyleValues::None
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -206,7 +206,7 @@ impl Border {
         // left,right,top,bottom,diagonal,vertical,horizontal
         let mut attributes: crate::structs::AttrCollection<'_> = Vec::new();
         if self.style.has_value() {
-            attributes.push(("style", self.style.get_value_string()).into());
+            attributes.push(("style", self.style.value_string()).into());
         }
 
         let empty_flag = self.color.is_none();

@@ -118,7 +118,7 @@ impl CellFormula {
     #[inline]
     #[must_use]
     pub fn formula_type(&self) -> &CellFormulaValues {
-        self.formula_type.get_value()
+        self.formula_type.value()
     }
 
     #[inline]
@@ -311,7 +311,7 @@ impl CellFormula {
         }
 
         // Shared
-        if self.formula_type.get_value() == &CellFormulaValues::Shared {
+        if self.formula_type.value() == &CellFormulaValues::Shared {
             match formula_shared_list.get(&self.shared_index.value()) {
                 Some((parent_cell_reference_str, token)) => {
                     let parent_cell = index_from_coordinate(parent_cell_reference_str);
@@ -376,10 +376,10 @@ impl CellFormula {
             attributes.push(("dtr", data_table_row_str).into());
         }
 
-        let formula_type_str = self.formula_type.get_value_string();
+        let formula_type_str = self.formula_type.value_string();
         if self.formula_type.has_value() {
             // Not SUPPORT Array
-            if self.formula_type.get_value() != &CellFormulaValues::Array {
+            if self.formula_type.value() != &CellFormulaValues::Array {
                 attributes.push(("t", formula_type_str).into());
             }
         }

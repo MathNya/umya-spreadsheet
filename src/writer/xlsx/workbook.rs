@@ -2,16 +2,30 @@ use std::io;
 
 use quick_xml::{
     Writer,
-    events::{BytesDecl, Event},
+    events::{
+        BytesDecl,
+        Event,
+    },
 };
 
 use super::{
     XlsxError,
-    driver::{write_end_tag, write_new_line, write_start_tag},
+    driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
 };
 use crate::{
-    helper::const_str::{PKG_WORKBOOK, REL_OFC_NS, SHEET_MAIN_NS},
-    structs::{Workbook, WriterManager},
+    helper::const_str::{
+        PKG_WORKBOOK,
+        REL_OFC_NS,
+        SHEET_MAIN_NS,
+    },
+    structs::{
+        Workbook,
+        WriterManager,
+    },
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(

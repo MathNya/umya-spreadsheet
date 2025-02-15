@@ -1,10 +1,20 @@
 // c:lblAlgn
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::super::EnumValue, LabelAlignmentValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::super::EnumValue,
+    LabelAlignmentValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct LabelAlignment {
@@ -13,7 +23,7 @@ pub struct LabelAlignment {
 impl LabelAlignment {
     #[must_use]
     pub fn get_val(&self) -> &LabelAlignmentValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: LabelAlignmentValues) -> &mut LabelAlignment {
@@ -34,7 +44,7 @@ impl LabelAlignment {
         write_start_tag(
             writer,
             "c:lblAlgn",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

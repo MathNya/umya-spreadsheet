@@ -1,6 +1,16 @@
-use std::{fmt::Write, fs, io, path::Path};
+use std::{
+    fmt::Write,
+    fs,
+    io,
+    path::Path,
+};
 
-use crate::structs::{CsvEncodeValues, CsvWriterOption, Workbook, XlsxError};
+use crate::structs::{
+    CsvEncodeValues,
+    CsvWriterOption,
+    Workbook,
+    XlsxError,
+};
 
 /// write spreadsheet file to arbitrary writer.
 /// # Arguments

@@ -56,8 +56,14 @@
 
 use std::cmp::Ordering;
 
-use hmac::{Hmac, Mac};
-use sha2::{Digest, Sha512};
+use hmac::{
+    Hmac,
+    Mac,
+};
+use sha2::{
+    Digest,
+    Sha512,
+};
 
 use super::utils::hash_concatenated;
 

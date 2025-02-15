@@ -2,28 +2,44 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{super::EnumValue, BevelBottom, BevelTop, PresetMaterialTypeValues};
+use super::{
+    super::EnumValue,
+    BevelBottom,
+    BevelTop,
+    PresetMaterialTypeValues,
+};
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape3DType {
     preset_material: EnumValue<PresetMaterialTypeValues>,
-    bevel_top: Option<Box<BevelTop>>,
-    bevel_bottom: Option<Box<BevelBottom>>,
+    bevel_top:       Option<Box<BevelTop>>,
+    bevel_bottom:    Option<Box<BevelBottom>>,
 }
 
 impl Shape3DType {
     #[inline]
     #[must_use]
     pub fn get_preset_material(&self) -> &PresetMaterialTypeValues {
-        self.preset_material.get_value()
+        self.preset_material.value()
     }
 
     #[inline]
@@ -100,7 +116,7 @@ impl Shape3DType {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // a:sp3d
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let preset_material = self.preset_material.get_value_string();
+        let preset_material = self.preset_material.value_string();
         if self.preset_material.has_value() {
             attributes.push(("prstMaterial", preset_material).into());
         }

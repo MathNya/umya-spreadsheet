@@ -1,25 +1,52 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    super::StringValue, EffectList, EffectStyle, GradientFill, GradientStop, LinearGradientFill,
-    Miter, OuterShadow, Outline, PenAlignmentValues, PercentageType, PositiveFixedPercentageType,
-    PresetDash, PresetLineDashValues, RgbColorModelHex, SchemeColor, SchemeColorValues, SolidFill,
-    SystemColor, SystemColorValues, ThemeElements,
+    super::StringValue,
+    EffectList,
+    EffectStyle,
+    GradientFill,
+    GradientStop,
+    LinearGradientFill,
+    Miter,
+    OuterShadow,
+    Outline,
+    PenAlignmentValues,
+    PercentageType,
+    PositiveFixedPercentageType,
+    PresetDash,
+    PresetLineDashValues,
+    RgbColorModelHex,
+    SchemeColor,
+    SchemeColorValues,
+    SolidFill,
+    SystemColor,
+    SystemColorValues,
+    ThemeElements,
 };
 use crate::{
     helper::const_str::DRAWINGML_MAIN_NS,
-    reader::driver::{get_attribute, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Theme {
-    name: StringValue,
+    name:           StringValue,
     theme_elements: ThemeElements,
 }
 

@@ -1,20 +1,39 @@
-use std::{io, io::Read};
+use std::{
+    io,
+    io::Read,
+};
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesDecl, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesDecl,
+        Event,
+    },
 };
 
 use crate::{
     helper::const_str::REL_NS,
-    reader::driver::{join_paths, xml_read_loop},
-    structs::{StringValue, WriterManager, XlsxError, raw::RawRelationship},
-    writer::driver::{write_end_tag, write_new_line, write_start_tag},
+    reader::driver::{
+        join_paths,
+        xml_read_loop,
+    },
+    structs::{
+        StringValue,
+        WriterManager,
+        XlsxError,
+        raw::RawRelationship,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_new_line,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RawRelationships {
-    file_target: StringValue,
+    file_target:       StringValue,
     relationship_list: Vec<RawRelationship>,
 }
 

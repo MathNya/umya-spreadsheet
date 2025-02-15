@@ -1,40 +1,62 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    Anchor, AutoFill, AutoSizePicture, ClipboardFormat, CommentColumnTarget, CommentRowTarget,
-    MoveWithCells, ObjectValues, ResizeWithCells, Visible,
+    Anchor,
+    AutoFill,
+    AutoSizePicture,
+    ClipboardFormat,
+    CommentColumnTarget,
+    CommentRowTarget,
+    MoveWithCells,
+    ObjectValues,
+    ResizeWithCells,
+    Visible,
 };
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
     structs::EnumValue,
-    traits::{AdjustmentCoordinate, AdjustmentValue},
-    writer::driver::{write_end_tag, write_start_tag},
+    traits::{
+        AdjustmentCoordinate,
+        AdjustmentValue,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ClientData {
-    object_type: EnumValue<ObjectValues>,
-    move_with_cells: Option<MoveWithCells>,
-    resize_with_cells: Option<ResizeWithCells>,
-    anchor: Anchor,
-    auto_fill: Option<AutoFill>,
-    comment_row_target: Option<CommentRowTarget>,
+    object_type:           EnumValue<ObjectValues>,
+    move_with_cells:       Option<MoveWithCells>,
+    resize_with_cells:     Option<ResizeWithCells>,
+    anchor:                Anchor,
+    auto_fill:             Option<AutoFill>,
+    comment_row_target:    Option<CommentRowTarget>,
     comment_column_target: Option<CommentColumnTarget>,
-    visible: Option<Visible>,
-    clipboard_format: Option<ClipboardFormat>,
-    auto_size_picture: Option<AutoSizePicture>,
+    visible:               Option<Visible>,
+    clipboard_format:      Option<ClipboardFormat>,
+    auto_size_picture:     Option<AutoSizePicture>,
 }
 
 impl ClientData {
     #[inline]
     #[must_use]
     pub fn object_type(&self) -> &ObjectValues {
-        self.object_type.get_value()
+        self.object_type.value()
     }
 
     #[inline]
@@ -425,7 +447,7 @@ impl ClientData {
         write_start_tag(
             writer,
             "x:ClientData",
-            vec![("ObjectType", self.object_type.get_value_string()).into()],
+            vec![("ObjectType", self.object_type.value_string()).into()],
             false,
         );
 

@@ -1,28 +1,43 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 // lineChart
 use super::AreaChartSeries;
-use super::{AreaChartSeriesList, AxisId, DataLabels, Grouping, ShowMarker, Smooth, VaryColors};
+use super::{
+    AreaChartSeriesList,
+    AxisId,
+    DataLabels,
+    Grouping,
+    ShowMarker,
+    Smooth,
+    VaryColors,
+};
 use crate::{
     structs::Workbook,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
     xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct LineChart {
-    grouping: Grouping,
-    vary_colors: VaryColors,
+    grouping:               Grouping,
+    vary_colors:            VaryColors,
     area_chart_series_list: AreaChartSeriesList,
-    data_labels: DataLabels,
-    show_marker: ShowMarker,
-    smooth: Smooth,
-    axis_id: Vec<AxisId>,
+    data_labels:            DataLabels,
+    show_marker:            ShowMarker,
+    smooth:                 Smooth,
+    axis_id:                Vec<AxisId>,
 }
 
 impl LineChart {

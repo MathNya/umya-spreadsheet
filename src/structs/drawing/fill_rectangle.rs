@@ -1,16 +1,20 @@
 // a:fillRect
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use crate::writer::driver::write_start_tag;
 
 #[derive(Clone, Default, Debug)]
 pub struct FillRectangle {
     bottom: usize,
-    left: usize,
-    right: usize,
-    top: usize,
+    left:   usize,
+    right:  usize,
+    top:    usize,
 }
 impl FillRectangle {
     #[inline]

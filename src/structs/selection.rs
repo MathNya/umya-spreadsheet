@@ -31,7 +31,7 @@ impl Selection {
     #[inline]
     #[must_use]
     pub fn get_pane(&self) -> &PaneValues {
-        self.pane.get_value()
+        self.pane.value()
     }
 
     #[inline]
@@ -108,7 +108,7 @@ impl Selection {
         }
 
         if self.pane.has_value() {
-            attributes.push(("pane", self.pane.get_value_string()).into());
+            attributes.push(("pane", self.pane.value_string()).into());
         }
 
         let active_cell_str = match &self.active_cell {

@@ -1,38 +1,61 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    Fill, ImageData, Path, Shadow, Stroke, TextBox, office::InsetMarginValues,
+    Fill,
+    ImageData,
+    Path,
+    Shadow,
+    Stroke,
+    TextBox,
+    office::InsetMarginValues,
     spreadsheet::ClientData,
 };
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    structs::{EnumValue, Int32Value, StringValue, TrueFalseValue, raw::RawRelationships},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        Int32Value,
+        StringValue,
+        TrueFalseValue,
+        raw::RawRelationships,
+    },
     traits::AdjustmentCoordinate,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Shape {
-    style: StringValue,
-    r_type: StringValue,
-    filled: TrueFalseValue,
-    fill_color: StringValue,
-    stroked: TrueFalseValue,
-    stroke_color: StringValue,
-    stroke_weight: StringValue,
-    inset_mode: EnumValue<InsetMarginValues>,
-    fill: Option<Box<Fill>>,
-    image_data: Option<Box<ImageData>>,
-    stroke: Option<Box<Stroke>>,
-    shadow: Option<Box<Shadow>>,
-    path: Option<Box<Path>>,
-    text_box: Option<Box<TextBox>>,
-    client_data: ClientData,
+    style:           StringValue,
+    r_type:          StringValue,
+    filled:          TrueFalseValue,
+    fill_color:      StringValue,
+    stroked:         TrueFalseValue,
+    stroke_color:    StringValue,
+    stroke_weight:   StringValue,
+    inset_mode:      EnumValue<InsetMarginValues>,
+    fill:            Option<Box<Fill>>,
+    image_data:      Option<Box<ImageData>>,
+    stroke:          Option<Box<Stroke>>,
+    shadow:          Option<Box<Shadow>>,
+    path:            Option<Box<Path>>,
+    text_box:        Option<Box<TextBox>>,
+    client_data:     ClientData,
     optional_number: Int32Value,
     coordinate_size: StringValue,
 }
@@ -110,7 +133,7 @@ impl Shape {
 
     #[must_use]
     pub fn get_inset_mode(&self) -> &InsetMarginValues {
-        self.inset_mode.get_value()
+        self.inset_mode.value()
     }
 
     pub fn set_inset_mode(&mut self, value: InsetMarginValues) -> &mut Self {
@@ -341,7 +364,7 @@ impl Shape {
             attributes.push(("strokeweight", self.stroke_weight.value_str()).into());
         }
         if self.inset_mode.has_value() {
-            attributes.push(("o:insetmode", self.inset_mode.get_value_string()).into());
+            attributes.push(("o:insetmode", self.inset_mode.value_string()).into());
         }
         let optional_number_str = self.optional_number.value_string();
         if self.optional_number.has_value() {

@@ -2,28 +2,42 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{PresetColor, RgbColorModelHex, SchemeColor};
+use super::{
+    PresetColor,
+    RgbColorModelHex,
+    SchemeColor,
+};
 use crate::{
     StringValue,
-    reader::driver::{get_attribute, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct OuterShadow {
-    blur_radius: StringValue,
-    alignment: StringValue,
-    horizontal_ratio: StringValue,
-    vertical_ratio: StringValue,
-    direction: StringValue,
-    distance: StringValue,
-    rotate_with_shape: StringValue,
-    preset_color: Option<Box<PresetColor>>,
-    scheme_color: Option<Box<SchemeColor>>,
+    blur_radius:         StringValue,
+    alignment:           StringValue,
+    horizontal_ratio:    StringValue,
+    vertical_ratio:      StringValue,
+    direction:           StringValue,
+    distance:            StringValue,
+    rotate_with_shape:   StringValue,
+    preset_color:        Option<Box<PresetColor>>,
+    scheme_color:        Option<Box<SchemeColor>>,
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
 }
 

@@ -1,10 +1,17 @@
 // a:grpSpLocks
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    },
     structs::BooleanValue,
     writer::driver::write_start_tag,
 };
@@ -12,12 +19,12 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct GroupShapeLocks {
     no_change_aspect: BooleanValue,
-    no_grouping: BooleanValue,
-    no_move: BooleanValue,
-    no_resize: BooleanValue,
-    no_rotation: BooleanValue,
-    no_selection: BooleanValue,
-    no_ungrouping: BooleanValue,
+    no_grouping:      BooleanValue,
+    no_move:          BooleanValue,
+    no_resize:        BooleanValue,
+    no_rotation:      BooleanValue,
+    no_selection:     BooleanValue,
+    no_ungrouping:    BooleanValue,
 }
 
 impl GroupShapeLocks {

@@ -1,10 +1,20 @@
 // a:prstDash
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::EnumValue, PresetLineDashValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::EnumValue,
+    PresetLineDashValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct PresetDash {
@@ -14,7 +24,7 @@ impl PresetDash {
     #[inline]
     #[must_use]
     pub fn get_val(&self) -> &PresetLineDashValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[inline]
@@ -37,7 +47,7 @@ impl PresetDash {
         write_start_tag(
             writer,
             "a:prstDash",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

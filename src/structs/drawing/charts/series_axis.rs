@@ -2,32 +2,48 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    AxisId, AxisPosition, Crosses, CrossingAxis, Delete, MajorGridlines, MajorTickMark,
-    MinorTickMark, Scaling, TickLabelPosition, Title,
+    AxisId,
+    AxisPosition,
+    Crosses,
+    CrossingAxis,
+    Delete,
+    MajorGridlines,
+    MajorTickMark,
+    MinorTickMark,
+    Scaling,
+    TickLabelPosition,
+    Title,
 };
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct SeriesAxis {
-    axis_id: AxisId,
-    scaling: Scaling,
-    delete: Delete,
-    axis_position: AxisPosition,
-    major_gridlines: Option<Box<MajorGridlines>>,
-    title: Option<Title>,
-    major_tick_mark: MajorTickMark,
-    minor_tick_mark: MinorTickMark,
+    axis_id:             AxisId,
+    scaling:             Scaling,
+    delete:              Delete,
+    axis_position:       AxisPosition,
+    major_gridlines:     Option<Box<MajorGridlines>>,
+    title:               Option<Title>,
+    major_tick_mark:     MajorTickMark,
+    minor_tick_mark:     MinorTickMark,
     tick_label_position: TickLabelPosition,
-    crossing_axis: CrossingAxis,
-    crosses: Crosses,
+    crossing_axis:       CrossingAxis,
+    crosses:             Crosses,
 }
 
 impl SeriesAxis {

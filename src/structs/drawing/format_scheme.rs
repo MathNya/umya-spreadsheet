@@ -2,24 +2,38 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    super::StringValue, BackgroundFillStyleList, EffectStyleList, FillStyleList, LineStyleList,
+    super::StringValue,
+    BackgroundFillStyleList,
+    EffectStyleList,
+    FillStyleList,
+    LineStyleList,
 };
 use crate::{
-    reader::driver::{get_attribute, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct FormatScheme {
-    name: StringValue,
-    fill_style_list: FillStyleList,
-    line_style_list: LineStyleList,
-    effect_style_list: EffectStyleList,
+    name:                       StringValue,
+    fill_style_list:            FillStyleList,
+    line_style_list:            LineStyleList,
+    effect_style_list:          EffectStyleList,
     background_fill_style_list: BackgroundFillStyleList,
 }
 

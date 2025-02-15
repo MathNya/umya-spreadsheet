@@ -54,25 +54,50 @@ use std::io;
 
 use aes::{
     Aes256,
-    cipher::{BlockDecryptMut, BlockEncryptMut, KeyIvInit, block_padding::NoPadding},
+    cipher::{
+        BlockDecryptMut,
+        BlockEncryptMut,
+        KeyIvInit,
+        block_padding::NoPadding,
+    },
 };
-use base64::{Engine as _, engine::general_purpose::STANDARD};
-use byteorder::{ByteOrder, LittleEndian};
-use cbc::{Decryptor, Encryptor};
+use base64::{
+    Engine as _,
+    engine::general_purpose::STANDARD,
+};
+use byteorder::{
+    ByteOrder,
+    LittleEndian,
+};
+use cbc::{
+    Decryptor,
+    Encryptor,
+};
 use quick_xml::{
     Writer,
-    events::{BytesDecl, Event},
+    events::{
+        BytesDecl,
+        Event,
+    },
 };
 
 type Aes256CbcEnc = Encryptor<Aes256>;
 type Aes256CbcDec = Decryptor<Aes256>;
 
 use super::{
-    super::const_str::{CERTIFICATE_NS, ENCRYPTION_NS, PASSWORD_NS},
+    super::const_str::{
+        CERTIFICATE_NS,
+        ENCRYPTION_NS,
+        PASSWORD_NS,
+    },
     constants,
     key::create_iv,
 };
-use crate::writer::driver::{write_end_tag, write_new_line, write_start_tag};
+use crate::writer::driver::{
+    write_end_tag,
+    write_new_line,
+    write_start_tag,
+};
 
 /// Encrypts or decrypts package data using AES-256 in CBC mode.
 ///

@@ -75,7 +75,7 @@ impl Pane {
     #[inline]
     #[must_use]
     pub fn get_active_pane(&self) -> &PaneValues {
-        self.active_pane.get_value()
+        self.active_pane.value()
     }
 
     #[inline]
@@ -87,7 +87,7 @@ impl Pane {
     #[inline]
     #[must_use]
     pub fn get_state(&self) -> &PaneStateValues {
-        self.state.get_value()
+        self.state.value()
     }
 
     #[inline]
@@ -124,8 +124,8 @@ impl Pane {
             attributes.push(("ySplit", &vertical_split).into());
         }
         attributes.push(("topLeftCell", coordinate.as_str()).into());
-        attributes.push(("activePane", self.active_pane.get_value_string()).into());
-        attributes.push(("state", self.state.get_value_string()).into());
+        attributes.push(("activePane", self.active_pane.value_string()).into());
+        attributes.push(("state", self.state.value_string()).into());
         write_start_tag(writer, "pane", attributes, true);
     }
 }

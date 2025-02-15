@@ -252,12 +252,12 @@ impl TableColumn {
     #[inline]
     #[must_use]
     pub fn get_totals_row_function(&self) -> &TotalsRowFunctionValues {
-        self.totals_row_function.get_value()
+        self.totals_row_function.value()
     }
 
     #[inline]
     pub(crate) fn get_totals_row_function_str(&self) -> &str {
-        self.totals_row_function.get_value_string()
+        self.totals_row_function.value_string()
     }
 
     #[inline]

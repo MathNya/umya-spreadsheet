@@ -1,20 +1,30 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{RgbColorModelHex, SystemColor};
+use super::{
+    RgbColorModelHex,
+    SystemColor,
+};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Color2Type {
     rgb_color_model_hex: Option<Box<RgbColorModelHex>>,
-    system_color: Option<Box<SystemColor>>,
+    system_color:        Option<Box<SystemColor>>,
 }
 
 impl Color2Type {

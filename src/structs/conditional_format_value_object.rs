@@ -33,7 +33,7 @@ impl ConditionalFormatValueObject {
     #[inline]
     #[must_use]
     pub fn r#type(&self) -> &ConditionalFormatValueObjectValues {
-        self.r#type.get_value()
+        self.r#type.value()
     }
 
     #[inline]
@@ -95,7 +95,7 @@ impl ConditionalFormatValueObject {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // cfvo
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let ctype = self.r#type.get_value_string();
+        let ctype = self.r#type.value_string();
         if self.r#type.has_value() {
             attributes.push(("type", ctype).into());
         }

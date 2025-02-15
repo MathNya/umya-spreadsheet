@@ -2,24 +2,35 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
     helper::coordinate::{
-        adjustment_insert_coordinate, adjustment_remove_coordinate, coordinate_from_index,
-        index_from_coordinate, is_remove_coordinate,
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        coordinate_from_index,
+        index_from_coordinate,
+        is_remove_coordinate,
     },
     traits::AdjustmentCoordinate,
-    writer::driver::{write_end_tag, write_start_tag, write_text_node},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct MarkerType {
-    col: u32,
+    col:     u32,
     col_off: i32,
-    row: u32,
+    row:     u32,
     row_off: i32,
 }
 impl MarkerType {

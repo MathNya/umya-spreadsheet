@@ -1,10 +1,20 @@
 // c:grouping
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::super::EnumValue, GroupingValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::super::EnumValue,
+    GroupingValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Grouping {
@@ -13,7 +23,7 @@ pub struct Grouping {
 impl Grouping {
     #[must_use]
     pub fn get_val(&self) -> &GroupingValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: GroupingValues) -> &mut Grouping {
@@ -34,7 +44,7 @@ impl Grouping {
         write_start_tag(
             writer,
             "c:grouping",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

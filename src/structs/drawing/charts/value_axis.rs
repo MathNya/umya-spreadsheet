@@ -2,37 +2,56 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    AxisId, AxisPosition, CrossBetween, Crosses, CrossingAxis, Delete, MajorGridlines,
-    MajorTickMark, MinorTickMark, NumberingFormat, Scaling, ShapeProperties, TextProperties,
-    TickLabelPosition, Title,
+    AxisId,
+    AxisPosition,
+    CrossBetween,
+    Crosses,
+    CrossingAxis,
+    Delete,
+    MajorGridlines,
+    MajorTickMark,
+    MinorTickMark,
+    NumberingFormat,
+    Scaling,
+    ShapeProperties,
+    TextProperties,
+    TickLabelPosition,
+    Title,
 };
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct ValueAxis {
-    axis_id: AxisId,
-    scaling: Scaling,
-    delete: Delete,
-    axis_position: AxisPosition,
-    major_gridlines: Option<MajorGridlines>,
-    title: Option<Title>,
-    numbering_format: NumberingFormat,
-    major_tick_mark: MajorTickMark,
-    minor_tick_mark: MinorTickMark,
+    axis_id:             AxisId,
+    scaling:             Scaling,
+    delete:              Delete,
+    axis_position:       AxisPosition,
+    major_gridlines:     Option<MajorGridlines>,
+    title:               Option<Title>,
+    numbering_format:    NumberingFormat,
+    major_tick_mark:     MajorTickMark,
+    minor_tick_mark:     MinorTickMark,
     tick_label_position: TickLabelPosition,
-    crossing_axis: CrossingAxis,
-    crosses: Crosses,
-    cross_between: CrossBetween,
-    shape_properties: Option<ShapeProperties>,
-    text_properties: Option<TextProperties>,
+    crossing_axis:       CrossingAxis,
+    crosses:             Crosses,
+    cross_between:       CrossBetween,
+    shape_properties:    Option<ShapeProperties>,
+    text_properties:     Option<TextProperties>,
 }
 
 impl ValueAxis {

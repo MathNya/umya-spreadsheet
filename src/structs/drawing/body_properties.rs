@@ -2,31 +2,45 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    super::{EnumValue, Int32Value},
-    ShapeAutoFit, TextWrappingValues,
+    super::{
+        EnumValue,
+        Int32Value,
+    },
+    ShapeAutoFit,
+    TextWrappingValues,
 };
 use crate::{
     StringValue,
-    reader::driver::{get_attribute_value, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute_value,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct BodyProperties {
-    vert_overflow: StringValue,
-    horz_overflow: StringValue,
-    rtl_col: StringValue,
-    anchor: StringValue,
-    wrap: EnumValue<TextWrappingValues>,
-    left_inset: Int32Value,
-    top_inset: Int32Value,
-    right_inset: Int32Value,
-    bottom_inset: Int32Value,
+    vert_overflow:  StringValue,
+    horz_overflow:  StringValue,
+    rtl_col:        StringValue,
+    anchor:         StringValue,
+    wrap:           EnumValue<TextWrappingValues>,
+    left_inset:     Int32Value,
+    top_inset:      Int32Value,
+    right_inset:    Int32Value,
+    bottom_inset:   Int32Value,
     shape_auto_fit: Option<ShapeAutoFit>,
 }
 
@@ -82,7 +96,7 @@ impl BodyProperties {
     #[inline]
     #[must_use]
     pub fn get_wrap(&self) -> &TextWrappingValues {
-        self.wrap.get_value()
+        self.wrap.value()
     }
 
     #[inline]
@@ -228,7 +242,7 @@ impl BodyProperties {
             attributes.push(("anchor", v).into());
         }
         if self.wrap.has_value() {
-            attributes.push(("wrap", self.wrap.get_value_string()).into());
+            attributes.push(("wrap", self.wrap.value_string()).into());
         }
         let l_ins = self.left_inset.value_string();
         if self.left_inset.has_value() {

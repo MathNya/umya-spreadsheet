@@ -51,7 +51,7 @@ impl RowItem {
     #[inline]
     #[must_use]
     pub fn get_item_type(&self) -> &ItemValues {
-        self.item_type.get_value()
+        self.item_type.value()
     }
 
     #[inline]
@@ -131,7 +131,7 @@ impl RowItem {
         if self.index.has_value() {
             attributes.push(("i", index_str.as_str()).into());
         }
-        let item_type_str = self.item_type.get_value_string();
+        let item_type_str = self.item_type.value_string();
         if self.item_type.has_value() {
             attributes.push(("t", item_type_str).into());
         }

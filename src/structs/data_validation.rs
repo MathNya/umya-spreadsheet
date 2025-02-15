@@ -49,7 +49,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn r#type(&self) -> &DataValidationValues {
-        self.r#type.get_value()
+        self.r#type.value()
     }
 
     #[inline]
@@ -68,7 +68,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn operator(&self) -> &DataValidationOperatorValues {
-        self.operator.get_value()
+        self.operator.value()
     }
 
     #[inline]
@@ -369,7 +369,7 @@ impl DataValidation {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         if self.r#type.has_value() {
-            attributes.push(("type", self.r#type.get_value_string()).into());
+            attributes.push(("type", self.r#type.value_string()).into());
         }
 
         if self.allow_blank.has_value() {
@@ -387,7 +387,7 @@ impl DataValidation {
         }
 
         if self.operator.has_value() {
-            attributes.push(("operator", self.operator.get_value_string()).into());
+            attributes.push(("operator", self.operator.value_string()).into());
         }
 
         if self.show_error_message.has_value() {

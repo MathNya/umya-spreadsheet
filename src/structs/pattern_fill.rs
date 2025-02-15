@@ -39,7 +39,7 @@ impl PatternFill {
     #[inline]
     #[must_use]
     pub fn get_pattern_type(&self) -> &PatternValues {
-        self.pattern_type.get_value()
+        self.pattern_type.value()
     }
 
     #[inline]
@@ -109,7 +109,7 @@ impl PatternFill {
     }
 
     pub(crate) fn get_hash_code(&self) -> String {
-        let pattern_type = self.pattern_type.get_value_string();
+        let pattern_type = self.pattern_type.value_string();
         let foreground_color = self
             .foreground_color
             .as_ref()
@@ -128,7 +128,7 @@ impl PatternFill {
 
     // When opened in software such as Excel, it is visually blank.
     pub(crate) fn is_visually_empty(&self) -> bool {
-        !(self.pattern_type.get_value() != &PatternValues::None
+        !(self.pattern_type.value() != &PatternValues::None
             || self
                 .foreground_color
                 .as_ref()
@@ -183,7 +183,7 @@ impl PatternFill {
         // patternFill
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         if self.pattern_type.has_value() {
-            attributes.push(("patternType", self.pattern_type.get_value_string()).into());
+            attributes.push(("patternType", self.pattern_type.value_string()).into());
         }
         write_start_tag(writer, "patternFill", attributes, empty_flag);
 

@@ -1,8 +1,12 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 // c:strRef
@@ -10,13 +14,16 @@ use super::Formula;
 use super::StringCache;
 use crate::{
     structs::Workbook,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
     xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct StringReference {
-    formula: Formula,
+    formula:      Formula,
     string_cache: StringCache,
 }
 

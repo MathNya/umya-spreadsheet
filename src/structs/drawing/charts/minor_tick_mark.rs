@@ -1,10 +1,20 @@
 // c:minorTickMark
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::super::EnumValue, TickMarkValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::super::EnumValue,
+    TickMarkValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct MinorTickMark {
@@ -13,7 +23,7 @@ pub struct MinorTickMark {
 impl MinorTickMark {
     #[must_use]
     pub fn get_val(&self) -> &TickMarkValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: TickMarkValues) -> &mut MinorTickMark {
@@ -34,7 +44,7 @@ impl MinorTickMark {
         write_start_tag(
             writer,
             "c:minorTickMark",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

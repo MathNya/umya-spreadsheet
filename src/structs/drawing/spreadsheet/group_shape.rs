@@ -2,23 +2,35 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::{GroupShapeProperties, NonVisualGroupShapeProperties, Picture, Shape};
+use super::{
+    GroupShapeProperties,
+    NonVisualGroupShapeProperties,
+    Picture,
+    Shape,
+};
 use crate::{
     reader::driver::xml_read_loop,
     structs::raw::RawRelationships,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct GroupShape {
     non_visual_group_shape_properties: NonVisualGroupShapeProperties,
-    group_shape_properties: GroupShapeProperties,
-    picture_collection: Vec<Picture>,
-    shape_collection: Vec<Shape>,
+    group_shape_properties:            GroupShapeProperties,
+    picture_collection:                Vec<Picture>,
+    shape_collection:                  Vec<Shape>,
 }
 
 impl GroupShape {

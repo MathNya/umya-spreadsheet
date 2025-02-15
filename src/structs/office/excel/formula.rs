@@ -1,14 +1,25 @@
 // xm:f
-use std::{io::Cursor, vec};
+use std::{
+    io::Cursor,
+    vec,
+};
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
     structs::Address,
-    writer::driver::{write_end_tag, write_start_tag, write_text_node},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
 };
 
 #[derive(Default, Debug, Clone)]

@@ -1,16 +1,23 @@
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use super::super::StringValue;
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TextFontType {
-    typeface: StringValue,
+    typeface:     StringValue,
     pitch_family: StringValue,
-    charset: StringValue,
-    panose: StringValue,
+    charset:      StringValue,
+    panose:       StringValue,
 }
 
 impl TextFontType {

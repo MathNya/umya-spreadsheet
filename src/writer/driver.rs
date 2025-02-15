@@ -1,13 +1,21 @@
 use std::{
     borrow::Cow,
     io,
-    io::{Cursor, Write},
+    io::{
+        Cursor,
+        Write,
+    },
 };
 
 use quick_xml::{
     Writer,
     escape::partial_escape,
-    events::{BytesEnd, BytesStart, BytesText, Event},
+    events::{
+        BytesEnd,
+        BytesStart,
+        BytesText,
+        Event,
+    },
 };
 
 pub(crate) fn write_start_tag<'a, S>(

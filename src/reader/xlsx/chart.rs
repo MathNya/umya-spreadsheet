@@ -1,7 +1,13 @@
-use quick_xml::{Reader, events::Event};
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
 use crate::{
-    structs::{drawing::charts::ChartSpace, raw::RawFile},
+    structs::{
+        drawing::charts::ChartSpace,
+        raw::RawFile,
+    },
     xml_read_loop,
 };
 

@@ -5,13 +5,19 @@ mod percentage_formater;
 
 use std::borrow::Cow;
 
-use fancy_regex::{Matches, Regex};
+use fancy_regex::{
+    Matches,
+    Regex,
+};
 
-use crate::{helper::utils::compile_regex, structs::NumberingFormat};
+use crate::{
+    helper::utils::compile_regex,
+    structs::NumberingFormat,
+};
 
 pub struct Split<'r, 't> {
     finder: Matches<'r, 't>,
-    last: usize,
+    last:   usize,
 }
 
 #[inline]
@@ -19,7 +25,7 @@ pub struct Split<'r, 't> {
 pub fn split<'r, 't>(regex: &'r Regex, text: &'t str) -> Split<'r, 't> {
     Split {
         finder: regex.find_iter(text),
-        last: 0,
+        last:   0,
     }
 }
 

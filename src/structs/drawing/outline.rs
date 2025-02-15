@@ -2,34 +2,56 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    Bevel, GradientFill, Miter, NoFill, PenAlignmentValues, PresetDash, Round, SolidFill, TailEnd,
+    Bevel,
+    GradientFill,
+    Miter,
+    NoFill,
+    PenAlignmentValues,
+    PresetDash,
+    Round,
+    SolidFill,
+    TailEnd,
 };
 use crate::{
     StringValue,
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    structs::{EnumValue, UInt32Value},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    structs::{
+        EnumValue,
+        UInt32Value,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Outline {
-    width: UInt32Value,
-    cap_type: StringValue,
+    width:              UInt32Value,
+    cap_type:           StringValue,
     compound_line_type: StringValue,
-    solid_fill: Option<Box<SolidFill>>,
-    gradient_fill: Option<Box<GradientFill>>,
-    tail_end: Option<Box<TailEnd>>,
-    no_fill: Option<NoFill>,
-    bevel: Option<Box<Bevel>>,
-    preset_dash: Option<PresetDash>,
-    miter: Option<Miter>,
-    round: Option<Round>,
-    alignment: EnumValue<PenAlignmentValues>,
+    solid_fill:         Option<Box<SolidFill>>,
+    gradient_fill:      Option<Box<GradientFill>>,
+    tail_end:           Option<Box<TailEnd>>,
+    no_fill:            Option<NoFill>,
+    bevel:              Option<Box<Bevel>>,
+    preset_dash:        Option<PresetDash>,
+    miter:              Option<Miter>,
+    round:              Option<Round>,
+    alignment:          EnumValue<PenAlignmentValues>,
 }
 
 impl Outline {
@@ -208,7 +230,7 @@ impl Outline {
     #[inline]
     #[must_use]
     pub fn get_alignment(&self) -> &PenAlignmentValues {
-        self.alignment.get_value()
+        self.alignment.value()
     }
 
     #[inline]
@@ -310,7 +332,7 @@ impl Outline {
             attributes.push(("cmpd", v).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", (self.alignment.get_value_string())).into());
+            attributes.push(("algn", (self.alignment.value_string())).into());
         }
         write_start_tag(writer, "a:ln", attributes, false);
 

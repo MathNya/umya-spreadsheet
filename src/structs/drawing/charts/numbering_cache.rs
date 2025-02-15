@@ -2,14 +2,25 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::FormatCode;
 use crate::{
-    structs::{Address, Workbook},
-    writer::driver::{write_end_tag, write_start_tag, write_text_node},
+    structs::{
+        Address,
+        Workbook,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
     xml_read_loop,
 };
 

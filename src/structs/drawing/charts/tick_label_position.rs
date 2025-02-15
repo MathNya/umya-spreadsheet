@@ -1,10 +1,20 @@
 // c:tickLblPos
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
-use super::{super::super::EnumValue, TickLabelPositionValues};
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use super::{
+    super::super::EnumValue,
+    TickLabelPositionValues,
+};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct TickLabelPosition {
@@ -13,7 +23,7 @@ pub struct TickLabelPosition {
 impl TickLabelPosition {
     #[must_use]
     pub fn get_val(&self) -> &TickLabelPositionValues {
-        self.val.get_value()
+        self.val.value()
     }
 
     pub fn set_val(&mut self, value: TickLabelPositionValues) -> &mut TickLabelPosition {
@@ -34,7 +44,7 @@ impl TickLabelPosition {
         write_start_tag(
             writer,
             "c:tickLblPos",
-            vec![("val", self.val.get_value_string()).into()],
+            vec![("val", self.val.value_string()).into()],
             true,
         );
     }

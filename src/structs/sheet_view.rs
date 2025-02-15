@@ -103,7 +103,7 @@ impl SheetView {
     #[inline]
     #[must_use]
     pub fn get_view(&self) -> &SheetViewValues {
-        self.view.get_value()
+        self.view.value()
     }
 
     #[inline]
@@ -257,7 +257,7 @@ impl SheetView {
             attributes.push(("tabSelected", self.tab_selected.value_string()).into());
         }
         if self.view.has_value() {
-            attributes.push(("view", self.view.get_value_string()).into());
+            attributes.push(("view", self.view.value_string()).into());
         }
         let zoom_scale = self.zoom_scale.value_string();
         if self.zoom_scale.has_value() {

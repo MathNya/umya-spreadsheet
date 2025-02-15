@@ -2,23 +2,38 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::super::{Extents, Offset};
+use super::super::{
+    Extents,
+    Offset,
+};
 use crate::{
-    BooleanValue, Int32Value,
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    BooleanValue,
+    Int32Value,
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Transform {
-    offset: Offset,
-    extents: Extents,
-    rotation: Int32Value,
-    vertical_flip: BooleanValue,
+    offset:          Offset,
+    extents:         Extents,
+    rotation:        Int32Value,
+    vertical_flip:   BooleanValue,
     horizontal_flip: BooleanValue,
 }
 

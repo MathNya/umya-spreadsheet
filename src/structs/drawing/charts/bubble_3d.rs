@@ -1,10 +1,17 @@
 // c:bubble3D
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use super::super::super::BooleanValue;
-use crate::{reader::driver::get_attribute, writer::driver::write_start_tag};
+use crate::{
+    reader::driver::get_attribute,
+    writer::driver::write_start_tag,
+};
 
 #[derive(Clone, Default, Debug)]
 pub struct Bubble3D {

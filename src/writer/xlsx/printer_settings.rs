@@ -1,7 +1,10 @@
 use std::io;
 
 use super::XlsxError;
-use crate::structs::{Worksheet, WriterManager};
+use crate::structs::{
+    Worksheet,
+    WriterManager,
+};
 
 #[inline]
 pub(crate) fn write<W: io::Seek + io::Write>(

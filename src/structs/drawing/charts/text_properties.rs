@@ -2,21 +2,32 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
-use super::super::{BodyProperties, ListStyle, Paragraph};
+use super::super::{
+    BodyProperties,
+    ListStyle,
+    Paragraph,
+};
 use crate::{
     reader::driver::xml_read_loop,
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct TextProperties {
     body_properties: BodyProperties,
-    list_style: ListStyle,
-    paragraph: Vec<Paragraph>,
+    list_style:      ListStyle,
+    paragraph:       Vec<Paragraph>,
 }
 
 impl TextProperties {

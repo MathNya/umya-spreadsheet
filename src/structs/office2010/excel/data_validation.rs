@@ -2,38 +2,52 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
     reader::driver::get_attribute,
     structs::{
-        BooleanValue, DataValidationOperatorValues, DataValidationValues, EnumValue, StringValue,
+        BooleanValue,
+        DataValidationOperatorValues,
+        DataValidationValues,
+        EnumValue,
+        StringValue,
         office::excel::ReferenceSequence,
-        office2010::excel::{DataValidationForumla1, DataValidationForumla2},
+        office2010::excel::{
+            DataValidationForumla1,
+            DataValidationForumla2,
+        },
     },
-    writer::driver::{write_end_tag, write_start_tag},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Default, Debug, Clone)]
 pub struct DataValidation {
-    r#type: EnumValue<DataValidationValues>,
-    operator: EnumValue<DataValidationOperatorValues>,
-    allow_blank: BooleanValue,
+    r#type:             EnumValue<DataValidationValues>,
+    operator:           EnumValue<DataValidationOperatorValues>,
+    allow_blank:        BooleanValue,
     show_input_message: BooleanValue,
     show_error_message: BooleanValue,
-    prompt_title: StringValue,
-    prompt: StringValue,
+    prompt_title:       StringValue,
+    prompt:             StringValue,
     reference_sequence: ReferenceSequence,
-    formula1: Option<Box<DataValidationForumla1>>,
-    formula2: Option<Box<DataValidationForumla2>>,
+    formula1:           Option<Box<DataValidationForumla1>>,
+    formula2:           Option<Box<DataValidationForumla2>>,
 }
 impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_type(&self) -> &DataValidationValues {
-        self.r#type.get_value()
+        self.r#type.value()
     }
 
     #[inline]
@@ -45,7 +59,7 @@ impl DataValidation {
     #[inline]
     #[must_use]
     pub fn get_operator(&self) -> &DataValidationOperatorValues {
-        self.operator.get_value()
+        self.operator.value()
     }
 
     #[inline]
@@ -256,7 +270,7 @@ impl DataValidation {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
 
         if self.r#type.has_value() {
-            attributes.push(("type", self.r#type.get_value_string()).into());
+            attributes.push(("type", self.r#type.value_string()).into());
         }
 
         if self.allow_blank.has_value() {
@@ -268,7 +282,7 @@ impl DataValidation {
         }
 
         if self.operator.has_value() {
-            attributes.push(("operator", self.operator.get_value_string()).into());
+            attributes.push(("operator", self.operator.value_string()).into());
         }
 
         if self.show_error_message.has_value() {

@@ -250,7 +250,7 @@ impl Font {
     #[inline]
     #[must_use]
     pub fn get_underline(&self) -> &str {
-        self.font_underline.val.get_value_string()
+        self.font_underline.val.value_string()
     }
 
     #[inline]
@@ -356,7 +356,7 @@ impl Font {
     #[inline]
     #[must_use]
     pub fn get_scheme(&self) -> &str {
-        self.font_scheme.val.get_value_string()
+        self.font_scheme.val.value_string()
     }
 
     #[inline]
@@ -404,12 +404,12 @@ impl Font {
                 &self.font_family_numbering.val.hash_string(),
                 &self.font_bold.val.hash_string(),
                 &self.font_italic.val.hash_string(),
-                &self.font_underline.val.get_hash_string(),
+                &self.font_underline.val.hash_string(),
                 &self.font_strike.val.hash_string(),
                 &self.color.get_hash_code(),
                 &self.font_char_set.val.hash_string(),
-                &self.font_scheme.val.get_hash_string(),
-                &self.vertical_text_alignment.val.get_hash_string(),
+                &self.font_scheme.val.hash_string(),
+                &self.vertical_text_alignment.val.hash_string(),
             ))
         )
     }

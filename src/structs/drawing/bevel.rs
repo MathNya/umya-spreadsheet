@@ -1,7 +1,11 @@
 // a:bevel
 use std::io::Cursor;
 
-use quick_xml::{Reader, Writer, events::BytesStart};
+use quick_xml::{
+    Reader,
+    Writer,
+    events::BytesStart,
+};
 
 use crate::writer::driver::write_start_tag;
 

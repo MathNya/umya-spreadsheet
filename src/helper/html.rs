@@ -1,10 +1,18 @@
 use std::collections::HashMap;
 
-use html_parser::{Dom, Node};
+use html_parser::{
+    Dom,
+    Node,
+};
 use phf::phf_map;
 
 use crate::structs::{
-    Color, Font, RichText, TextElement, UnderlineValues, VerticalAlignmentRunValues,
+    Color,
+    Font,
+    RichText,
+    TextElement,
+    UnderlineValues,
+    VerticalAlignmentRunValues,
 };
 
 /// Generate rich text from html.
@@ -171,15 +179,15 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
 
 #[derive(Clone, Default, Debug)]
 pub struct HtmlFlatData {
-    text: String,
+    text:    String,
     element: Vec<HfdElement>,
 }
 
 #[derive(Clone, Default, Debug)]
 pub struct HfdElement {
-    name: String,
+    name:       String,
     attributes: HashMap<String, String>,
-    classes: Vec<String>,
+    classes:    Vec<String>,
 }
 impl HfdElement {
     #[inline]

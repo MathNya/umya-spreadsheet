@@ -2,26 +2,44 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::{
-    super::{BooleanValue, EnumValue},
-    RunProperties, SpaceAfter, SpaceBefore, TextAlignmentTypeValues, TextFontAlignmentValues,
+    super::{
+        BooleanValue,
+        EnumValue,
+    },
+    RunProperties,
+    SpaceAfter,
+    SpaceBefore,
+    TextAlignmentTypeValues,
+    TextFontAlignmentValues,
 };
 use crate::{
-    reader::driver::{get_attribute, set_string_from_xml, xml_read_loop},
-    writer::driver::{write_end_tag, write_start_tag},
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct TextParagraphPropertiesType {
-    right_to_left: BooleanValue,
-    alignment: EnumValue<TextAlignmentTypeValues>,
-    font_alignment: EnumValue<TextFontAlignmentValues>,
-    space_before: Option<SpaceBefore>,
-    space_after: Option<SpaceAfter>,
+    right_to_left:          BooleanValue,
+    alignment:              EnumValue<TextAlignmentTypeValues>,
+    font_alignment:         EnumValue<TextFontAlignmentValues>,
+    space_before:           Option<SpaceBefore>,
+    space_after:            Option<SpaceAfter>,
     default_run_properties: Option<Box<RunProperties>>,
 }
 impl TextParagraphPropertiesType {
@@ -40,7 +58,7 @@ impl TextParagraphPropertiesType {
     #[inline]
     #[must_use]
     pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
-        self.alignment.get_value()
+        self.alignment.value()
     }
 
     #[inline]
@@ -52,7 +70,7 @@ impl TextParagraphPropertiesType {
     #[inline]
     #[must_use]
     pub fn get_font_alignment(&self) -> &TextFontAlignmentValues {
-        self.font_alignment.get_value()
+        self.font_alignment.value()
     }
 
     #[inline]
@@ -226,10 +244,10 @@ impl TextParagraphPropertiesType {
             attributes.push(("rtl", self.right_to_left.value_string()).into());
         }
         if self.alignment.has_value() {
-            attributes.push(("algn", self.alignment.get_value_string()).into());
+            attributes.push(("algn", self.alignment.value_string()).into());
         }
         if self.font_alignment.has_value() {
-            attributes.push(("fontAlgn", self.font_alignment.get_value_string()).into());
+            attributes.push(("fontAlgn", self.font_alignment.value_string()).into());
         }
         write_start_tag(writer, tag_name, attributes, false);
 

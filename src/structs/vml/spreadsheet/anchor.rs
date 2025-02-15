@@ -1,28 +1,38 @@
 use std::io::Cursor;
 
 use quick_xml::{
-    Reader, Writer,
-    events::{BytesStart, Event},
+    Reader,
+    Writer,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
     helper::coordinate::{
-        adjustment_insert_coordinate, adjustment_remove_coordinate, is_remove_coordinate,
+        adjustment_insert_coordinate,
+        adjustment_remove_coordinate,
+        is_remove_coordinate,
     },
     reader::driver::xml_read_loop,
     traits::AdjustmentCoordinate,
-    writer::driver::{write_end_tag, write_start_tag, write_text_node},
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+        write_text_node,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Anchor {
-    left_column: u32,
-    left_offset: u32,
-    top_row: u32,
-    top_offset: u32,
-    right_column: u32,
-    right_offset: u32,
-    bottom_row: u32,
+    left_column:   u32,
+    left_offset:   u32,
+    top_row:       u32,
+    top_offset:    u32,
+    right_column:  u32,
+    right_offset:  u32,
+    bottom_row:    u32,
     bottom_offset: u32,
 }
 

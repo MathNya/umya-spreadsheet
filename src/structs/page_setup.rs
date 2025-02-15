@@ -48,7 +48,7 @@ impl PageSetup {
     #[inline]
     #[must_use]
     pub fn get_orientation(&self) -> &OrientationValues {
-        self.orientation.get_value()
+        self.orientation.value()
     }
 
     #[inline]
@@ -182,7 +182,7 @@ impl PageSetup {
             if self.scale.has_value() {
                 attributes.push(("scale", &scale).into());
             }
-            let orientation = self.orientation.get_value_string();
+            let orientation = self.orientation.value_string();
             if self.orientation.has_value() {
                 attributes.push(("orientation", orientation).into());
             }

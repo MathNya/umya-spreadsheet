@@ -1,11 +1,17 @@
 use std::io;
 
-use quick_xml::{Reader, events::Event};
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 
 use super::XlsxError;
 use crate::{
     helper::const_str::PKG_STYLES,
-    structs::{Stylesheet, Workbook},
+    structs::{
+        Stylesheet,
+        Workbook,
+    },
     xml_read_loop,
 };
 
