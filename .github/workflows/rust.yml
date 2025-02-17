@@ -15,11 +15,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@nightly
 
     - name: Install Rust
       run: rustup component add rustfmt clippy
-
-    - uses: dtolnay/rust-toolchain@nightly
 
     - name: Run Lint & Tests
       run: |
