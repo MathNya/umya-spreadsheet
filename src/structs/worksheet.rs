@@ -2846,7 +2846,7 @@ impl AdjustmentCoordinate for Worksheet {
                 root_row_num,
                 offset_row_num,
             );
-        };
+        }
     }
 
     fn adjustment_remove_coordinate(
@@ -2968,7 +2968,7 @@ impl AdjustmentCoordinate for Worksheet {
                 root_row_num,
                 offset_row_num,
             );
-        };
+        }
     }
 }
 impl AdjustmentCoordinateWithSheet for Worksheet {

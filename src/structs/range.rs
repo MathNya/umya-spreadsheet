@@ -39,7 +39,7 @@ impl Range {
             coordinate_start_col.set_num(v);
             coordinate_start_col.set_is_lock(is_lock_col.unwrap());
             self.start_col = Some(coordinate_start_col);
-        };
+        }
         if let Some(v) = col {
             let mut coordinate_start_row = RowReference::default();
             coordinate_start_row.set_num(v);
@@ -59,7 +59,7 @@ impl Range {
                 coordinate_end_col.set_num(v);
                 coordinate_end_col.set_is_lock(is_lock_col.unwrap());
                 self.end_col = Some(coordinate_end_col);
-            };
+            }
             if let Some(v) = col {
                 let mut coordinate_end_row = RowReference::default();
                 coordinate_end_row.set_num(v);
@@ -188,10 +188,10 @@ impl Range {
         let mut coordinate_str = String::new();
         if let Some(v) = &self.start_col {
             coordinate_str = v.coordinate();
-        };
+        }
         if let Some(v) = &self.start_row {
             coordinate_str = format!("{}{}", coordinate_str, v.coordinate());
-        };
+        }
         coordinate_str
     }
 
@@ -206,10 +206,10 @@ impl Range {
         let mut coordinate_str = String::new();
         if let Some(v) = &self.end_col {
             coordinate_str = v.coordinate();
-        };
+        }
         if let Some(v) = &self.end_row {
             coordinate_str = format!("{}{}", coordinate_str, v.coordinate());
-        };
+        }
         coordinate_str
     }
 

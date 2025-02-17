@@ -52,7 +52,7 @@ pub fn get_start_and_end_point(range_str: &str) -> (u32, u32, u32, u32) {
             None => {
                 assert!(is_col_select, "Non-standard range.");
             }
-        };
+        }
 
         match row {
             Some(v) => {

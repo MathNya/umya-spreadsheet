@@ -863,7 +863,7 @@ impl Workbook {
         self.pivot_caches.iter_mut().for_each(|(val1, _, val3)| {
             if &**val1 == key {
                 *val3 = value.to_owned().into_boxed_str();
-            };
+            }
         });
         self
     }
