@@ -29,14 +29,27 @@ pub(crate) struct Fills {
 
 impl Fills {
     #[inline]
-    pub(crate) fn get_fill(&self) -> &[Fill] {
+    pub(crate) fn fill(&self) -> &[Fill] {
         &self.fill
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fill()")]
+    pub(crate) fn get_fill(&self) -> &[Fill] {
+        self.fill()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_fill_mut(&mut self) -> &mut Vec<Fill> {
+    pub(crate) fn fill_mut(&mut self) -> &mut Vec<Fill> {
         &mut self.fill
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use fill_mut()")]
+    pub(crate) fn get_fill_mut(&mut self) -> &mut Vec<Fill> {
+        self.fill_mut()
     }
 
     #[inline]
@@ -48,10 +61,10 @@ impl Fills {
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_fill() {
             Some(v) => {
-                let hash_code = v.get_hash_code();
+                let hash_code = v.hash_code();
                 let mut id = 0;
                 for fill in &self.fill {
-                    if fill.get_hash_code() == hash_code {
+                    if fill.hash_code() == hash_code {
                         return id;
                     }
                     id += 1;

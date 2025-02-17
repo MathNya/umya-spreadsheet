@@ -178,7 +178,7 @@ impl DifferentialFormat {
                 "{}{}{}{}",
                 match &self.font {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()
@@ -186,7 +186,7 @@ impl DifferentialFormat {
                 },
                 match &self.fill {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()

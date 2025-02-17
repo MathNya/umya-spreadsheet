@@ -94,7 +94,7 @@ impl Style {
 
     #[inline]
     pub fn get_font_mut(&mut self) -> &mut Font {
-        self.font.get_or_insert(Box::new(Font::get_default_value()))
+        self.font.get_or_insert(Box::new(Font::default_value()))
     }
 
     #[inline]
@@ -123,7 +123,7 @@ impl Style {
 
     #[inline]
     pub fn get_fill_mut(&mut self) -> &mut Fill {
-        self.fill.get_or_insert(Box::new(Fill::get_default_value()))
+        self.fill.get_or_insert(Box::new(Fill::default_value()))
     }
 
     #[inline]
@@ -136,7 +136,7 @@ impl Style {
     #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.get_fill()
-            .and_then(|fill| fill.get_pattern_fill()?.get_foreground_color())
+            .and_then(|fill| fill.pattern_fill()?.get_foreground_color())
     }
 
     #[inline]
@@ -147,7 +147,7 @@ impl Style {
 
     pub fn set_background_color_solid<S: AsRef<str>>(&mut self, color: S) -> &mut Self {
         self.get_fill_mut()
-            .get_pattern_fill_mut()
+            .pattern_fill_mut()
             .set_pattern_type(PatternValues::Solid)
             .remove_background_color()
             .get_foreground_color_mut()
@@ -162,12 +162,12 @@ impl Style {
         pattern: PatternValues,
     ) -> &mut Self {
         self.get_fill_mut()
-            .get_pattern_fill_mut()
+            .pattern_fill_mut()
             .set_pattern_type(pattern)
             .get_background_color_mut()
             .set_argb_str(color1);
         self.get_fill_mut()
-            .get_pattern_fill_mut()
+            .pattern_fill_mut()
             .get_foreground_color_mut()
             .set_argb_str(color2);
         self
@@ -355,18 +355,18 @@ impl Style {
     #[must_use]
     pub fn get_default_value() -> Self {
         let mut def = Self::default();
-        def.set_font(Font::get_default_value());
+        def.set_font(Font::default_value());
         def.set_borders(Borders::default_value());
-        def.set_fill(Fill::get_default_value());
+        def.set_fill(Fill::default_value());
         def
     }
 
     #[inline]
     pub(crate) fn get_default_value_2() -> Self {
         let mut def = Self::default();
-        def.set_font(Font::get_default_value());
+        def.set_font(Font::default_value());
         def.set_borders(Borders::default_value());
-        def.set_fill(Fill::get_default_value_2());
+        def.set_fill(Fill::default_value_2());
         def
     }
 }

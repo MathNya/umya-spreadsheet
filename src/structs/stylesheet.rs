@@ -252,7 +252,7 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.font_id() as usize;
-            let obj = self.fonts.get_font().get(id).unwrap();
+            let obj = self.fonts.font().get(id).unwrap();
             style.set_font(obj.clone());
         }
 
@@ -266,7 +266,7 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.fill_id() as usize;
-            let obj = self.fills.get_fill().get(id).unwrap();
+            let obj = self.fills.fill().get(id).unwrap();
             style.set_fill(obj.clone());
         }
 

@@ -458,7 +458,7 @@ impl Cell {
 
         // get font size.
         let font_size = match self.style().get_font() {
-            Some(font) => font.get_font_size().get_val(),
+            Some(font) => font.font_size().val(),
             None => column_font_size,
         };
 

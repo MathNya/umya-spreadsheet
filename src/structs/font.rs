@@ -79,13 +79,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_name(&self) -> &FontName {
+    pub fn font_name(&self) -> &FontName {
         &self.font_name
     }
 
     #[inline]
-    pub fn get_font_name_mut(&mut self) -> &mut FontName {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_name()")]
+    pub fn get_font_name(&self) -> &FontName {
+        self.font_name()
+    }
+
+    #[inline]
+    pub fn font_name_mut(&mut self) -> &mut FontName {
         &mut self.font_name
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_name_mut()")]
+    pub fn get_font_name_mut(&mut self) -> &mut FontName {
+        self.font_name_mut()
     }
 
     #[inline]
@@ -96,8 +109,15 @@ impl Font {
 
     #[inline]
     #[must_use]
+    pub fn name(&self) -> &str {
+        self.font_name.val()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
     pub fn get_name(&self) -> &str {
-        self.font_name.get_val()
+        self.name()
     }
 
     #[inline]
@@ -116,13 +136,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_size(&self) -> &FontSize {
+    pub fn font_size(&self) -> &FontSize {
         &self.font_size
     }
 
     #[inline]
-    pub fn get_font_size_mut(&mut self) -> &mut FontSize {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_size()")]
+    pub fn get_font_size(&self) -> &FontSize {
+        self.font_size()
+    }
+
+    #[inline]
+    pub fn font_size_mut(&mut self) -> &mut FontSize {
         &mut self.font_size
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_size_mut()")]
+    pub fn get_font_size_mut(&mut self) -> &mut FontSize {
+        self.font_size_mut()
     }
 
     #[inline]
@@ -133,8 +166,15 @@ impl Font {
 
     #[inline]
     #[must_use]
+    pub fn size(&self) -> f64 {
+        self.font_size.val()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use size()")]
     pub fn get_size(&self) -> f64 {
-        self.font_size.get_val()
+        self.size()
     }
 
     #[inline]
@@ -145,13 +185,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_family_numbering(&self) -> &FontFamilyNumbering {
+    pub fn font_family_numbering(&self) -> &FontFamilyNumbering {
         &self.font_family_numbering
     }
 
     #[inline]
-    pub fn get_font_family_numbering_mut(&mut self) -> &mut FontFamilyNumbering {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_family_numbering()")]
+    pub fn get_font_family_numbering(&self) -> &FontFamilyNumbering {
+        self.font_family_numbering()
+    }
+
+    #[inline]
+    pub fn font_family_numbering_mut(&mut self) -> &mut FontFamilyNumbering {
         &mut self.font_family_numbering
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_family_numbering_mut()")]
+    pub fn get_font_family_numbering_mut(&mut self) -> &mut FontFamilyNumbering {
+        self.font_family_numbering_mut()
     }
 
     #[inline]
@@ -162,8 +215,15 @@ impl Font {
 
     #[inline]
     #[must_use]
+    pub fn family(&self) -> i32 {
+        self.font_family_numbering.val()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use family()")]
     pub fn get_family(&self) -> i32 {
-        self.font_family_numbering.get_val()
+        self.family()
     }
 
     #[inline]
@@ -174,13 +234,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_bold(&self) -> &Bold {
+    pub fn font_bold(&self) -> &Bold {
         &self.font_bold
     }
 
     #[inline]
-    pub fn get_font_bold_mut(&mut self) -> &mut Bold {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_bold()")]
+    pub fn get_font_bold(&self) -> &Bold {
+        self.font_bold()
+    }
+
+    #[inline]
+    pub fn font_bold_mut(&mut self) -> &mut Bold {
         &mut self.font_bold
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_bold_mut()")]
+    pub fn get_font_bold_mut(&mut self) -> &mut Bold {
+        self.font_bold_mut()
     }
 
     #[inline]
@@ -191,8 +264,15 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_bold(&self) -> bool {
+    pub fn bold(&self) -> bool {
         self.font_bold.val()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bold()")]
+    pub fn get_bold(&self) -> bool {
+        self.bold()
     }
 
     #[inline]
@@ -203,13 +283,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_italic(&self) -> &Italic {
+    pub fn font_italic(&self) -> &Italic {
         &self.font_italic
     }
 
     #[inline]
-    pub fn get_font_italic_mut(&mut self) -> &mut Italic {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_italic()")]
+    pub fn get_font_italic(&self) -> &Italic {
+        self.font_italic()
+    }
+
+    #[inline]
+    pub fn font_italic_mut(&mut self) -> &mut Italic {
         &mut self.font_italic
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_italic_mut()")]
+    pub fn get_font_italic_mut(&mut self) -> &mut Italic {
+        self.font_italic_mut()
     }
 
     #[inline]
@@ -220,8 +313,15 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_italic(&self) -> bool {
+    pub fn italic(&self) -> bool {
         self.font_italic.get_val()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use italic()")]
+    pub fn get_italic(&self) -> bool {
+        self.italic()
     }
 
     #[inline]
@@ -232,13 +332,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_underline(&self) -> &Underline {
+    pub fn font_underline(&self) -> &Underline {
         &self.font_underline
     }
 
     #[inline]
-    pub fn get_font_underline_mut(&mut self) -> &mut Underline {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_underline()")]
+    pub fn get_font_underline(&self) -> &Underline {
+        self.font_underline()
+    }
+
+    #[inline]
+    pub fn font_underline_mut(&mut self) -> &mut Underline {
         &mut self.font_underline
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_underline_mut()")]
+    pub fn get_font_underline_mut(&mut self) -> &mut Underline {
+        self.font_underline_mut()
     }
 
     #[inline]
@@ -249,8 +362,15 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_underline(&self) -> &str {
+    pub fn underline(&self) -> &str {
         self.font_underline.val.value_string()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use underline()")]
+    pub fn get_underline(&self) -> &str {
+        self.underline()
     }
 
     #[inline]
@@ -263,13 +383,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_strike(&self) -> &Strike {
+    pub fn font_strike(&self) -> &Strike {
         &self.font_strike
     }
 
     #[inline]
-    pub fn get_font_strike_mut(&mut self) -> &mut Strike {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_strike()")]
+    pub fn get_font_strike(&self) -> &Strike {
+        self.font_strike()
+    }
+
+    #[inline]
+    pub fn font_strike_mut(&mut self) -> &mut Strike {
         &mut self.font_strike
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_strike_mut()")]
+    pub fn get_font_strike_mut(&mut self) -> &mut Strike {
+        self.font_strike_mut()
     }
 
     #[inline]
@@ -280,8 +413,15 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_strikethrough(&self) -> bool {
+    pub fn strikethrough(&self) -> bool {
         self.font_strike.get_val()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use strikethrough()")]
+    pub fn get_strikethrough(&self) -> bool {
+        self.strikethrough()
     }
 
     #[inline]
@@ -292,13 +432,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_color(&self) -> &Color {
+    pub fn color(&self) -> &Color {
         &self.color
     }
 
     #[inline]
-    pub fn get_color_mut(&mut self) -> &mut Color {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> &Color {
+        self.color()
+    }
+
+    #[inline]
+    pub fn color_mut(&mut self) -> &mut Color {
         &mut self.color
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use color_mut()")]
+    pub fn get_color_mut(&mut self) -> &mut Color {
+        self.color_mut()
     }
 
     #[inline]
@@ -309,13 +462,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_char_set(&self) -> &FontCharSet {
+    pub fn font_char_set(&self) -> &FontCharSet {
         &self.font_char_set
     }
 
     #[inline]
-    pub fn get_font_char_set_mut(&mut self) -> &mut FontCharSet {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_char_set()")]
+    pub fn get_font_char_set(&self) -> &FontCharSet {
+        self.font_char_set()
+    }
+
+    #[inline]
+    pub fn font_char_set_mut(&mut self) -> &mut FontCharSet {
         &mut self.font_char_set
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_char_set_mut()")]
+    pub fn get_font_char_set_mut(&mut self) -> &mut FontCharSet {
+        self.font_char_set_mut()
     }
 
     #[inline]
@@ -326,8 +492,15 @@ impl Font {
 
     #[inline]
     #[must_use]
+    pub fn charset(&self) -> i32 {
+        self.font_char_set.val()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use charset()")]
     pub fn get_charset(&self) -> i32 {
-        self.font_char_set.get_val()
+        self.charset()
     }
 
     #[inline]
@@ -338,13 +511,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_font_scheme(&self) -> &FontScheme {
+    pub fn font_scheme(&self) -> &FontScheme {
         &self.font_scheme
     }
 
     #[inline]
-    pub fn get_font_scheme_mut(&mut self) -> &mut FontScheme {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_scheme()")]
+    pub fn get_font_scheme(&self) -> &FontScheme {
+        self.font_scheme()
+    }
+
+    #[inline]
+    pub fn font_scheme_mut(&mut self) -> &mut FontScheme {
         &mut self.font_scheme
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font_scheme_mut()")]
+    pub fn get_font_scheme_mut(&mut self) -> &mut FontScheme {
+        self.font_scheme_mut()
     }
 
     #[inline]
@@ -355,8 +541,15 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_scheme(&self) -> &str {
+    pub fn scheme(&self) -> &str {
         self.font_scheme.val.value_string()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme()")]
+    pub fn get_scheme(&self) -> &str {
+        self.scheme()
     }
 
     #[inline]
@@ -369,13 +562,26 @@ impl Font {
 
     #[inline]
     #[must_use]
-    pub fn get_vertical_text_alignment(&self) -> &VerticalTextAlignment {
+    pub fn vertical_text_alignment(&self) -> &VerticalTextAlignment {
         &self.vertical_text_alignment
     }
 
     #[inline]
-    pub fn get_vertical_text_alignment_mut(&mut self) -> &mut VerticalTextAlignment {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical_text_alignment()")]
+    pub fn get_vertical_text_alignment(&self) -> &VerticalTextAlignment {
+        self.vertical_text_alignment()
+    }
+
+    #[inline]
+    pub fn vertical_text_alignment_mut(&mut self) -> &mut VerticalTextAlignment {
         &mut self.vertical_text_alignment
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use vertical_text_alignment_mut()")]
+    pub fn get_vertical_text_alignment_mut(&mut self) -> &mut VerticalTextAlignment {
+        self.vertical_text_alignment_mut()
     }
 
     #[inline]
@@ -385,16 +591,27 @@ impl Font {
     }
 
     #[inline]
-    pub(crate) fn get_default_value() -> Self {
+    pub(crate) fn default_value() -> Self {
         let mut def = Self::default();
         def.set_size(11.0);
         def.set_name_with_scheme("Calibri", "minor");
-        def.get_color_mut().set_theme_index(1);
+        def.color_mut().set_theme_index(1);
         def.set_family(2);
         def
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use default_value()")]
+    pub(crate) fn get_default_value() -> Self {
+        let mut def = Self::default();
+        def.set_size(11.0);
+        def.set_name_with_scheme("Calibri", "minor");
+        def.color_mut().set_theme_index(1);
+        def.set_family(2);
+        def
+    }
+
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -412,6 +629,11 @@ impl Font {
                 &self.vertical_text_alignment.val.hash_string(),
             ))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

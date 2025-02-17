@@ -21,8 +21,15 @@ pub struct FontSize {
 impl FontSize {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> f64 {
+    pub fn val(&self) -> f64 {
         self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> f64 {
+        self.val()
     }
 
     #[inline]

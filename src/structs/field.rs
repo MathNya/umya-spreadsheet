@@ -22,8 +22,14 @@ pub struct Field {
 }
 impl Field {
     #[must_use]
-    pub fn get_data_field(&self) -> i32 {
+    pub fn data_field(&self) -> i32 {
         self.x.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_field()")]
+    pub fn get_data_field(&self) -> i32 {
+        self.data_field()
     }
 
     pub fn set_data_field(&mut self, value: i32) -> &mut Self {

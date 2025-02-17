@@ -21,8 +21,15 @@ pub struct FontName {
 impl FontName {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &str {
+    pub fn val(&self) -> &str {
         self.val.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &str {
+        self.val()
     }
 
     #[inline]

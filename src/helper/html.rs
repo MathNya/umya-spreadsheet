@@ -155,15 +155,14 @@ fn make_rich_text(html_flat_data_list: &[HtmlFlatData], method: &dyn AnalysisMet
             font.set_italic(is_italic);
         }
         if is_underline {
-            font.get_font_underline_mut()
-                .set_val(UnderlineValues::Single);
+            font.font_underline_mut().set_val(UnderlineValues::Single);
         }
         if is_superscript {
-            font.get_vertical_text_alignment_mut()
+            font.vertical_text_alignment_mut()
                 .set_val(VerticalAlignmentRunValues::Superscript);
         }
         if is_subscript {
-            font.get_vertical_text_alignment_mut()
+            font.vertical_text_alignment_mut()
                 .set_val(VerticalAlignmentRunValues::Subscript);
         }
         if is_strikethrough {

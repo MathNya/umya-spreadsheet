@@ -53,7 +53,7 @@ impl TextElement {
         if self.run_properties.is_some() {
             return self.run_properties.as_mut().unwrap();
         }
-        self.set_run_properties(Font::get_default_value());
+        self.set_run_properties(Font::default_value());
         self.run_properties.as_mut().unwrap()
     }
 
@@ -93,7 +93,7 @@ impl TextElement {
                 &self.text.get_value(),
                 match &self.run_properties {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "None".into()

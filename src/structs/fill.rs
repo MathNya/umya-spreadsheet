@@ -32,17 +32,30 @@ pub struct Fill {
 impl Fill {
     #[inline]
     #[must_use]
-    pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
+    pub fn pattern_fill(&self) -> Option<&PatternFill> {
         self.pattern_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pattern_fill()")]
+    pub fn get_pattern_fill(&self) -> Option<&PatternFill> {
+        self.pattern_fill()
+    }
+
+    #[inline]
+    pub fn pattern_fill_mut(&mut self) -> &mut PatternFill {
         if self.pattern_fill.is_some() {
             return self.pattern_fill.as_mut().unwrap();
         }
         self.set_pattern_fill(PatternFill::default());
         self.pattern_fill.as_mut().unwrap()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use pattern_fill_mut()")]
+    pub fn get_pattern_fill_mut(&mut self) -> &mut PatternFill {
+        self.pattern_fill_mut()
     }
 
     #[inline]
@@ -54,17 +67,30 @@ impl Fill {
 
     #[inline]
     #[must_use]
-    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+    pub fn gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill()")]
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill()
+    }
+
+    #[inline]
+    pub fn gradient_fill_mut(&mut self) -> &mut GradientFill {
         if self.gradient_fill.is_some() {
             return self.gradient_fill.as_mut().unwrap();
         }
         self.set_gradient_fill(GradientFill::default());
         self.gradient_fill.as_mut().unwrap()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_mut()")]
+    pub fn get_gradient_fill_mut(&mut self) -> &mut GradientFill {
+        self.gradient_fill_mut()
     }
 
     #[inline]
@@ -75,6 +101,16 @@ impl Fill {
     }
 
     #[inline]
+    pub(crate) fn default_value() -> Self {
+        let mut def = Self::default();
+        let mut pfill = PatternFill::default();
+        pfill.set_pattern_type(PatternValues::None);
+        def.set_pattern_fill(pfill);
+        def
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use default_value()")]
     pub(crate) fn get_default_value() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
@@ -84,6 +120,16 @@ impl Fill {
     }
 
     #[inline]
+    pub(crate) fn default_value_2() -> Self {
+        let mut def = Self::default();
+        let mut pfill = PatternFill::default();
+        pfill.set_pattern_type(PatternValues::Gray125);
+        def.set_pattern_fill(pfill);
+        def
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use default_value_2()")]
     pub(crate) fn get_default_value_2() -> Self {
         let mut def = Self::default();
         let mut pfill = PatternFill::default();
@@ -92,7 +138,7 @@ impl Fill {
         def
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -115,6 +161,11 @@ impl Fill {
                 },
             ))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     // When opened in software such as Excel, it is visually blank.

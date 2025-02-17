@@ -29,14 +29,27 @@ pub(crate) struct Fonts {
 
 impl Fonts {
     #[inline]
-    pub(crate) fn get_font(&self) -> &[Font] {
+    pub(crate) fn font(&self) -> &[Font] {
         &self.font
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use font()")]
+    pub(crate) fn get_font(&self) -> &[Font] {
+        self.font()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_font_mut(&mut self) -> &mut Vec<Font> {
+    pub(crate) fn font_mut(&mut self) -> &mut Vec<Font> {
         &mut self.font
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use font_mut()")]
+    pub(crate) fn get_font_mut(&mut self) -> &mut Vec<Font> {
+        self.font_mut()
     }
 
     #[inline]
@@ -48,10 +61,10 @@ impl Fonts {
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_font() {
             Some(v) => {
-                let hash_code = v.get_hash_code();
+                let hash_code = v.hash_code();
                 let mut id = 0;
                 for font in &self.font {
-                    if font.get_hash_code() == hash_code {
+                    if font.hash_code() == hash_code {
                         return id;
                     }
                     id += 1;

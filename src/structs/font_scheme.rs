@@ -24,8 +24,15 @@ pub struct FontScheme {
 impl FontScheme {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &FontSchemeValues {
+    pub fn val(&self) -> &FontSchemeValues {
         self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &FontSchemeValues {
+        self.val()
     }
 
     #[inline]
