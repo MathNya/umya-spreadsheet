@@ -24,8 +24,15 @@ pub struct Italic {
 impl Italic {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> bool {
+    pub fn val(&self) -> bool {
         self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> bool {
+        self.val()
     }
 
     #[inline]

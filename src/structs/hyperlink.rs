@@ -7,8 +7,15 @@ pub struct Hyperlink {
 impl Hyperlink {
     #[inline]
     #[must_use]
-    pub fn get_url(&self) -> &str {
+    pub fn url(&self) -> &str {
         &self.url
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use url()")]
+    pub fn get_url(&self) -> &str {
+        self.url()
     }
 
     #[inline]
@@ -19,8 +26,15 @@ impl Hyperlink {
 
     #[inline]
     #[must_use]
-    pub fn get_tooltip(&self) -> &str {
+    pub fn tooltip(&self) -> &str {
         &self.tooltip
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tooltip()")]
+    pub fn get_tooltip(&self) -> &str {
+        self.tooltip()
     }
 
     #[inline]
@@ -31,8 +45,15 @@ impl Hyperlink {
 
     #[inline]
     #[must_use]
-    pub fn get_location(&self) -> bool {
+    pub fn location(&self) -> bool {
         self.location
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use location()")]
+    pub fn get_location(&self) -> bool {
+        self.location()
     }
 
     #[inline]

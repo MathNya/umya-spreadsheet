@@ -415,8 +415,8 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
             let r_id_str = format!("rId{}", &r_id);
             let mut attributes: crate::structs::AttrCollection = Vec::new();
             attributes.push(("ref", &coordition).into());
-            if hyperlink.get_location() {
-                attributes.push(("location", hyperlink.get_url()).into());
+            if hyperlink.location() {
+                attributes.push(("location", hyperlink.url()).into());
             } else {
                 attributes.push(("r:id", r_id_str.as_str()).into());
                 r_id += 1;

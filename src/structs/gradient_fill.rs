@@ -39,8 +39,15 @@ pub struct GradientFill {
 impl GradientFill {
     #[inline]
     #[must_use]
-    pub fn get_degree(&self) -> f64 {
+    pub fn degree(&self) -> f64 {
         self.degree.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use degree()")]
+    pub fn get_degree(&self) -> f64 {
+        self.degree()
     }
 
     #[inline]
@@ -51,13 +58,26 @@ impl GradientFill {
 
     #[inline]
     #[must_use]
-    pub fn get_gradient_stop(&self) -> &[GradientStop] {
+    pub fn gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
 
     #[inline]
-    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop()")]
+    pub fn get_gradient_stop(&self) -> &[GradientStop] {
+        self.gradient_stop()
+    }
+
+    #[inline]
+    pub fn gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
         &mut self.gradient_stop
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop_mut()")]
+    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+        self.gradient_stop_mut()
     }
 
     #[inline]
@@ -66,15 +86,20 @@ impl GradientFill {
         self
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         let mut value = String::new();
         for stop in &self.gradient_stop {
-            write!(value, "{}", stop.get_hash_code().as_str()).unwrap();
+            write!(value, "{}", stop.hash_code().as_str()).unwrap();
         }
         format!(
             "{:x}",
             md5::Md5::digest(format!("{}{}", &self.degree.value_string(), value,))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

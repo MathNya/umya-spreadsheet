@@ -278,7 +278,7 @@ impl WorksheetDrawing {
             result.push(anchor);
         }
         for image in &mut self.image_collection {
-            if let Some(anchor) = image.get_one_cell_anchor_mut() {
+            if let Some(anchor) = image.one_cell_anchor_mut() {
                 result.push(anchor);
             }
         }
@@ -295,7 +295,7 @@ impl WorksheetDrawing {
             result.push(anchor);
         }
         for image in &mut self.image_collection {
-            if let Some(anchor) = image.get_two_cell_anchor_mut() {
+            if let Some(anchor) = image.two_cell_anchor_mut() {
                 result.push(anchor);
             }
         }

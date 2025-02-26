@@ -36,8 +36,15 @@ pub struct GradientStop {
 impl GradientStop {
     #[inline]
     #[must_use]
-    pub fn get_position(&self) -> f64 {
+    pub fn position(&self) -> f64 {
         self.position.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use position()")]
+    pub fn get_position(&self) -> f64 {
+        self.position()
     }
 
     #[inline]
@@ -48,13 +55,26 @@ impl GradientStop {
 
     #[inline]
     #[must_use]
-    pub fn get_color(&self) -> &Color {
+    pub fn color(&self) -> &Color {
         &self.color
     }
 
     #[inline]
-    pub fn get_color_mut(&mut self) -> &mut Color {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> &Color {
+        self.color()
+    }
+
+    #[inline]
+    pub fn color_mut(&mut self) -> &mut Color {
         &mut self.color
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use color_mut()")]
+    pub fn get_color_mut(&mut self) -> &mut Color {
+        self.color_mut()
     }
 
     #[inline]
@@ -64,7 +84,7 @@ impl GradientStop {
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -73,6 +93,12 @@ impl GradientStop {
                 &self.color.get_hash_code(),
             ))
         )
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

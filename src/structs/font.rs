@@ -314,7 +314,7 @@ impl Font {
     #[inline]
     #[must_use]
     pub fn italic(&self) -> bool {
-        self.font_italic.get_val()
+        self.font_italic.val()
     }
 
     #[inline]

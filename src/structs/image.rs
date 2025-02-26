@@ -83,13 +83,26 @@ pub struct Image {
 impl Image {
     #[inline]
     #[must_use]
-    pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
+    pub fn two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
         self.two_cell_anchor.as_deref()
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_mut(&mut self) -> Option<&mut TwoCellAnchor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor()")]
+    pub fn get_two_cell_anchor(&self) -> Option<&TwoCellAnchor> {
+        self.two_cell_anchor()
+    }
+
+    #[inline]
+    pub fn two_cell_anchor_mut(&mut self) -> Option<&mut TwoCellAnchor> {
         self.two_cell_anchor.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_mut()")]
+    pub fn get_two_cell_anchor_mut(&mut self) -> Option<&mut TwoCellAnchor> {
+        self.two_cell_anchor_mut()
     }
 
     #[inline]
@@ -106,13 +119,26 @@ impl Image {
 
     #[inline]
     #[must_use]
-    pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
+    pub fn one_cell_anchor(&self) -> Option<&OneCellAnchor> {
         self.one_cell_anchor.as_deref()
     }
 
     #[inline]
-    pub fn get_one_cell_anchor_mut(&mut self) -> Option<&mut OneCellAnchor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor()")]
+    pub fn get_one_cell_anchor(&self) -> Option<&OneCellAnchor> {
+        self.one_cell_anchor()
+    }
+
+    #[inline]
+    pub fn one_cell_anchor_mut(&mut self) -> Option<&mut OneCellAnchor> {
         self.one_cell_anchor.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor_mut()")]
+    pub fn get_one_cell_anchor_mut(&mut self) -> Option<&mut OneCellAnchor> {
+        self.one_cell_anchor_mut()
     }
 
     #[inline]
@@ -260,10 +286,10 @@ impl Image {
     #[inline]
     #[must_use]
     pub fn get_from_marker_type(&self) -> &MarkerType {
-        if let Some(anchor) = self.get_two_cell_anchor() {
+        if let Some(anchor) = self.two_cell_anchor() {
             return anchor.get_from_marker();
         }
-        if let Some(anchor) = self.get_one_cell_anchor() {
+        if let Some(anchor) = self.one_cell_anchor() {
             return anchor.get_from_marker();
         }
         panic!("Not Found MediaObject");
@@ -272,14 +298,14 @@ impl Image {
     #[inline]
     #[must_use]
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
-        self.get_two_cell_anchor()
+        self.two_cell_anchor()
             .as_ref()
             .map(|anchor| anchor.get_to_marker())
     }
 
     pub(crate) fn get_media_object(&self) -> Vec<&MediaObject> {
         let mut result: Vec<&MediaObject> = Vec::new();
-        if let Some(anchor) = self.get_two_cell_anchor() {
+        if let Some(anchor) = self.two_cell_anchor() {
             if let Some(v) = anchor.get_picture() {
                 result.push(v.get_blip_fill().get_blip().get_image());
             }
@@ -304,7 +330,7 @@ impl Image {
                 }
             }
         }
-        if let Some(anchor) = self.get_one_cell_anchor() {
+        if let Some(anchor) = self.one_cell_anchor() {
             if let Some(v) = anchor.get_picture() {
                 result.push(v.get_blip_fill().get_blip().get_image());
             }
@@ -333,10 +359,10 @@ impl Image {
         writer: &mut Writer<Cursor<Vec<u8>>>,
         rel_list: &mut Vec<(String, String)>,
     ) {
-        if let Some(anchor) = self.get_two_cell_anchor() {
+        if let Some(anchor) = self.two_cell_anchor() {
             anchor.write_to(writer, rel_list, 0);
         }
-        if let Some(anchor) = self.get_one_cell_anchor() {
+        if let Some(anchor) = self.one_cell_anchor() {
             anchor.write_to(writer, rel_list);
         }
     }

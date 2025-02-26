@@ -153,7 +153,7 @@ impl Fill {
                 },
                 match &self.gradient_fill {
                     Some(v) => {
-                        v.get_hash_code()
+                        v.hash_code()
                     }
                     None => {
                         "NONE".to_string()

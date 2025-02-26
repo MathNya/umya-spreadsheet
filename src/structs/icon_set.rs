@@ -30,8 +30,15 @@ pub struct IconSet {
 impl IconSet {
     #[inline]
     #[must_use]
-    pub fn get_cfvo_collection(&self) -> &[ConditionalFormatValueObject] {
+    pub fn cfvo_collection(&self) -> &[ConditionalFormatValueObject] {
         &self.cfvo_collection
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cfvo_collection()")]
+    pub fn get_cfvo_collection(&self) -> &[ConditionalFormatValueObject] {
+        self.cfvo_collection()
     }
 
     #[inline]
@@ -51,8 +58,15 @@ impl IconSet {
 
     #[inline]
     #[must_use]
-    pub fn get_color_collection(&self) -> &[Color] {
+    pub fn color_collection(&self) -> &[Color] {
         &self.color_collection
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color_collection()")]
+    pub fn get_color_collection(&self) -> &[Color] {
+        self.color_collection()
     }
 
     #[inline]
