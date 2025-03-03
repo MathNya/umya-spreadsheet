@@ -75,8 +75,15 @@ impl NumberingFormat {
 
     #[inline]
     #[must_use]
-    pub fn get_number_format_id(&self) -> u32 {
+    pub fn number_format_id(&self) -> u32 {
         self.number_format_id
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use number_format_id()")]
+    pub fn get_number_format_id(&self) -> u32 {
+        self.number_format_id()
     }
 
     pub fn set_number_format_id(&mut self, value: u32) -> &mut Self {
@@ -137,18 +144,37 @@ impl NumberingFormat {
 
     #[inline]
     #[must_use]
-    pub fn get_format_code(&self) -> &str {
+    pub fn format_code(&self) -> &str {
         &self.format_code
     }
 
     #[inline]
-    pub(crate) fn get_is_build_in(&self) -> bool {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_code()")]
+    pub fn get_format_code(&self) -> &str {
+        self.format_code()
+    }
+
+    #[inline]
+    pub(crate) fn is_build_in(&self) -> bool {
         self.is_build_in
     }
 
     #[inline]
-    pub(crate) fn get_hash_code(&self) -> String {
+    #[deprecated(since = "3.0.0", note = "Use is_build_in()")]
+    pub(crate) fn get_is_build_in(&self) -> bool {
+        self.is_build_in()
+    }
+
+    #[inline]
+    pub(crate) fn hash_code(&self) -> String {
         format!("{:x}", md5::Md5::digest(&*self.format_code))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -258,9 +284,9 @@ mod tests {
         let mut obj = NumberingFormat::default();
 
         obj.set_number_format_id(0);
-        assert_eq!(obj.get_format_code(), "General");
+        assert_eq!(obj.format_code(), "General");
 
         obj.set_number_format_id(1);
-        assert_eq!(obj.get_format_code(), "0");
+        assert_eq!(obj.format_code(), "0");
     }
 }

@@ -27,8 +27,14 @@ pub struct Location {
 }
 impl Location {
     #[must_use]
-    pub fn get_reference(&self) -> &str {
+    pub fn reference(&self) -> &str {
         self.reference.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use reference()")]
+    pub fn get_reference(&self) -> &str {
+        self.reference()
     }
 
     pub fn set_reference<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -37,8 +43,14 @@ impl Location {
     }
 
     #[must_use]
-    pub fn get_first_header_row(&self) -> u32 {
+    pub fn first_header_row(&self) -> u32 {
         self.first_header_row.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use first_header_row()")]
+    pub fn get_first_header_row(&self) -> u32 {
+        self.first_header_row()
     }
 
     pub fn set_first_header_row(&mut self, value: u32) -> &mut Self {
@@ -47,8 +59,14 @@ impl Location {
     }
 
     #[must_use]
-    pub fn get_first_data_row(&self) -> u32 {
+    pub fn first_data_row(&self) -> u32 {
         self.first_data_row.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use first_data_row()")]
+    pub fn get_first_data_row(&self) -> u32 {
+        self.first_data_row()
     }
 
     pub fn set_first_data_row(&mut self, value: u32) -> &mut Self {
@@ -57,8 +75,14 @@ impl Location {
     }
 
     #[must_use]
-    pub fn get_first_data_col(&self) -> u32 {
+    pub fn first_data_col(&self) -> u32 {
         self.first_data_col.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use first_data_col()")]
+    pub fn get_first_data_col(&self) -> u32 {
+        self.first_data_col()
     }
 
     pub fn set_first_data_col(&mut self, value: u32) -> &mut Self {

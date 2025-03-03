@@ -145,9 +145,9 @@ impl Fill {
         }
         let mut r_id_str = String::new();
         if let Some(image) = &self.image {
-            let r_id = image.get_rid(rel_list);
+            let r_id = image.rid(rel_list);
             r_id_str = format!("rId{r_id}");
-            attributes.push(("o:title", image.get_image_title()).into());
+            attributes.push(("o:title", image.image_title()).into());
             attributes.push(("o:relid", r_id_str.as_str()).into());
             attributes.push(("recolor", "t").into());
             attributes.push(("rotate", "t").into());

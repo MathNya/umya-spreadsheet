@@ -237,7 +237,7 @@ impl Stylesheet {
         }
         if apply {
             let id = cell_format.number_format_id();
-            if let Some(obj) = self.numbering_formats.get_numbering_format().get(&id) {
+            if let Some(obj) = self.numbering_formats.numbering_format().get(&id) {
                 style.set_numbering_format(obj.clone());
             }
         }
@@ -394,7 +394,7 @@ impl Stylesheet {
         reader: &mut Reader<R>,
         _e: &BytesStart,
     ) {
-        self.numbering_formats.get_build_in_formats();
+        self.numbering_formats.build_in_formats();
 
         xml_read_loop!(
             reader,

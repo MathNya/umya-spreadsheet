@@ -6,8 +6,14 @@ pub struct MediaObject {
 }
 impl MediaObject {
     #[inline]
-    pub fn get_image_title(&self) -> &str {
+    pub fn image_title(&self) -> &str {
         &self.title
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_title()")]
+    pub fn get_image_title(&self) -> &str {
+        self.image_title()
     }
 
     #[inline]
@@ -17,8 +23,14 @@ impl MediaObject {
     }
 
     #[inline]
-    pub fn get_image_name(&self) -> &str {
+    pub fn image_name(&self) -> &str {
         &self.name
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_name()")]
+    pub fn get_image_name(&self) -> &str {
+        self.image_name()
     }
 
     #[inline]
@@ -28,8 +40,14 @@ impl MediaObject {
     }
 
     #[inline]
-    pub fn get_image_data(&self) -> &[u8] {
+    pub fn image_data(&self) -> &[u8] {
         &self.data
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_data()")]
+    pub fn get_image_data(&self) -> &[u8] {
+        self.image_data()
     }
 
     #[inline]
@@ -38,7 +56,7 @@ impl MediaObject {
         self
     }
 
-    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
+    pub(crate) fn rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
         let find = rel_list
             .iter()
             .position(|(k, v)| k == "IMAGE" && v == &*self.name);
@@ -48,5 +66,10 @@ impl MediaObject {
             rel_list.push((String::from("IMAGE"), self.name.to_string()));
             rel_list.len().try_into().unwrap()
         }
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use rid()")]
+    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
+        self.rid(rel_list)
     }
 }

@@ -245,7 +245,7 @@ impl Image {
     #[must_use]
     pub fn get_image_name(&self) -> &str {
         match self.get_media_object().first() {
-            Some(v) => v.get_image_name(),
+            Some(v) => v.image_name(),
             None => "",
         }
     }
@@ -254,7 +254,7 @@ impl Image {
     #[must_use]
     pub fn get_image_data(&self) -> &[u8] {
         match self.get_media_object().first() {
-            Some(v) => v.get_image_data(),
+            Some(v) => v.image_data(),
             None => &[0u8; 0],
         }
     }

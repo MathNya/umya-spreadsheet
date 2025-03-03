@@ -501,7 +501,7 @@ impl Cell {
 
         // convert value
         let result = match self.style().get_number_format() {
-            Some(nmuber_format) => to_formatted_string(&value, nmuber_format.get_format_code()),
+            Some(nmuber_format) => to_formatted_string(&value, nmuber_format.format_code()),
             None => to_formatted_string(&value, NumberingFormat::FORMAT_GENERAL),
         };
         result

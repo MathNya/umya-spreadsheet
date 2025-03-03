@@ -171,7 +171,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let image_name = ole_object
             .get_embedded_object_properties()
             .image()
-            .get_image_name();
+            .image_name();
         is_write = write_relationship(
             &mut writer,
             r_id.to_string().as_str(),

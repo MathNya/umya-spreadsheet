@@ -32,29 +32,41 @@ pub(crate) struct NumberingFormats {
 
 impl NumberingFormats {
     #[inline]
-    pub(crate) fn get_numbering_format(&self) -> &HashMap<u32, NumberingFormat> {
+    pub(crate) fn numbering_format(&self) -> &HashMap<u32, NumberingFormat> {
         &self.numbering_format
     }
 
     #[inline]
-    pub(crate) fn get_numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
+    #[deprecated(since = "3.0.0", note = "Use numbering_format()")]
+    pub(crate) fn get_numbering_format(&self) -> &HashMap<u32, NumberingFormat> {
+        self.numbering_format()
+    }
+
+    #[inline]
+    pub(crate) fn numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
         &mut self.numbering_format
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use numbering_format_mut()")]
+    pub(crate) fn get_numbering_format_mut(&mut self) -> &mut HashMap<u32, NumberingFormat> {
+        self.numbering_format_mut()
+    }
+
+    #[inline]
     pub(crate) fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
-        let number_format_id = value.get_number_format_id();
+        let number_format_id = value.number_format_id();
         self.numbering_format.insert(number_format_id, value);
         self
     }
 
     #[inline]
     pub(crate) fn init_setup(&mut self) -> &mut Self {
-        self.get_build_in_formats();
+        self.build_in_formats();
         self
     }
 
-    pub(crate) fn get_build_in_formats(&mut self) {
+    pub(crate) fn build_in_formats(&mut self) {
         for (index, code) in super::numbering_format::FILL_BUILT_IN_FORMAT_CODES.entries() {
             let mut obj = NumberingFormat::default();
             obj.set_number_format_id_crate(*index)
@@ -63,18 +75,23 @@ impl NumberingFormats {
         }
     }
 
+    #[deprecated(since = "3.0.0", note = "Use build_in_formats()")]
+    pub(crate) fn get_build_in_formats(&mut self) {
+        self.build_in_formats()
+    }
+
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
         match style.get_numbering_format() {
             Some(v) => {
-                if v.get_is_build_in() {
-                    return v.get_number_format_id();
+                if v.is_build_in() {
+                    return v.number_format_id();
                 }
 
-                let hash_code = v.get_hash_code();
+                let hash_code = v.hash_code();
 
                 let mut id = 175;
                 for (index, numbering_format) in &self.numbering_format {
-                    if numbering_format.get_hash_code() == hash_code {
+                    if numbering_format.hash_code() == hash_code {
                         return *index;
                     }
                     if &id < index {
@@ -118,7 +135,7 @@ impl NumberingFormats {
         let formats_to_write: HashMap<_, _> = self
             .numbering_format
             .iter()
-            .filter(|(_, v)| !v.get_is_build_in())
+            .filter(|(_, v)| !v.is_build_in())
             .collect();
         if formats_to_write.is_empty() {
             return;

@@ -816,7 +816,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn merge_cells(&self) -> &[Range] {
-        self.merge_cells.get_range_collection()
+        self.merge_cells.range_collection()
     }
 
     #[inline]
@@ -829,7 +829,7 @@ impl Worksheet {
     // Get Merge Cells in mutable.
     #[inline]
     pub fn merge_cells_mut(&mut self) -> &mut Vec<Range> {
-        self.merge_cells.get_range_collection_mut()
+        self.merge_cells.range_collection_mut()
     }
 
     #[inline]
@@ -2430,7 +2430,7 @@ impl Worksheet {
             for media_object in image.get_media_object() {
                 let is_new = !list
                     .iter()
-                    .any(|v| v.get_image_name() == media_object.get_image_name());
+                    .any(|v| v.image_name() == media_object.image_name());
                 if is_new {
                     list.push(media_object);
                 }
@@ -2440,7 +2440,7 @@ impl Worksheet {
             let media_object = ole_objects.get_embedded_object_properties().image();
             let is_new = !list
                 .iter()
-                .any(|v| v.get_image_name() == media_object.get_image_name());
+                .any(|v| v.image_name() == media_object.image_name());
             if is_new {
                 list.push(media_object);
             }
@@ -2450,7 +2450,7 @@ impl Worksheet {
                 if let Some(media_object) = fill.get_image() {
                     let is_new = !list
                         .iter()
-                        .any(|v| v.get_image_name() == media_object.get_image_name());
+                        .any(|v| v.image_name() == media_object.image_name());
                     if is_new {
                         list.push(media_object);
                     }
@@ -2462,7 +2462,7 @@ impl Worksheet {
                 if let Some(media_object) = fill.get_image() {
                     let is_new = !list
                         .iter()
-                        .any(|v| v.get_image_name() == media_object.get_image_name());
+                        .any(|v| v.image_name() == media_object.image_name());
                     if is_new {
                         list.push(media_object);
                     }

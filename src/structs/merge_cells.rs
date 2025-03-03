@@ -29,13 +29,25 @@ pub(crate) struct MergeCells {
 
 impl MergeCells {
     #[inline]
-    pub(crate) fn get_range_collection(&self) -> &[Range] {
+    pub(crate) fn range_collection(&self) -> &[Range] {
         &self.range
     }
 
     #[inline]
-    pub(crate) fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
+    #[deprecated(since = "3.0.0", note = "Use range_collection()")]
+    pub(crate) fn get_range_collection(&self) -> &[Range] {
+        self.range_collection()
+    }
+
+    #[inline]
+    pub(crate) fn range_collection_mut(&mut self) -> &mut Vec<Range> {
         &mut self.range
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use range_collection_mut()")]
+    pub(crate) fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
+        self.range_collection_mut()
     }
 
     #[inline]
@@ -47,7 +59,7 @@ impl MergeCells {
     }
 
     pub(crate) fn has_vertical(&self, row_num: u32) -> bool {
-        self.get_range_collection().iter().any(|range| {
+        self.range_collection().iter().any(|range| {
             let start_num = match range.coordinate_start_row() {
                 Some(v) => v.num() <= row_num,
                 None => true,
@@ -63,7 +75,7 @@ impl MergeCells {
     }
 
     pub(crate) fn has_horizontal(&self, col_num: u32) -> bool {
-        self.get_range_collection().iter().any(|range| {
+        self.range_collection().iter().any(|range| {
             let start_num = match range.coordinate_start_col() {
                 Some(v) => v.num() <= col_num,
                 None => true,
@@ -100,7 +112,7 @@ impl MergeCells {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if !self.get_range_collection().is_empty() {
+        if !self.range_collection().is_empty() {
             // mergeCells
             write_start_tag(
                 writer,
@@ -108,7 +120,7 @@ impl MergeCells {
                 vec![
                     (
                         "count",
-                        self.get_range_collection().len().to_string().as_str(),
+                        self.range_collection().len().to_string().as_str(),
                     )
                         .into(),
                 ],
@@ -116,7 +128,7 @@ impl MergeCells {
             );
 
             // mergeCell
-            for merge_cell in self.get_range_collection() {
+            for merge_cell in self.range_collection() {
                 write_start_tag(
                     writer,
                     "mergeCell",

@@ -79,7 +79,7 @@ impl ImageData {
     ) {
         // v:imagedata
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let r_id = &self.image.get_rid(rel_list);
+        let r_id = &self.image.rid(rel_list);
         let r_id_str = format!("rId{r_id}");
         attributes.push(("o:relid", r_id_str.as_str()).into());
         if self.title.has_value() {

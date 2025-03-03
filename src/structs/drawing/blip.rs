@@ -104,7 +104,7 @@ impl Blip {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // a:blip
-        let r_id = self.image.get_rid(rel_list);
+        let r_id = self.image.rid(rel_list);
         let r_id_str = format!("rId{r_id}");
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         attributes.push(("xmlns:r", REL_OFC_NS).into());

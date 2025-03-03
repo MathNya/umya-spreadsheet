@@ -75,7 +75,7 @@ impl Colors {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        if self.mru_colors.get_color().is_empty() {
+        if self.mru_colors.color().is_empty() {
             return;
         }
         // colors
