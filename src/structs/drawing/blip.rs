@@ -59,7 +59,7 @@ impl Blip {
         self.get_image_mut()
             .set_image_name(relationship.get_raw_file().get_file_name());
         self.get_image_mut()
-            .set_image_data(relationship.get_raw_file().get_file_data().clone());
+            .set_image_data(relationship.get_raw_file().get_file_data());
 
         if empty_flag {
             return;

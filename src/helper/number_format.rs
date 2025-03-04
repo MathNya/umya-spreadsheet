@@ -143,18 +143,18 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
         if color_re.find(section).ok().flatten().is_some() {
-            let mut item: Vec<String> = Vec::new();
+            let mut item: Vec<&str> = Vec::new();
             for ite in color_re.captures(section).ok().flatten().unwrap().iter() {
-                item.push(ite.unwrap().as_str().to_string());
+                item.push(ite.unwrap().as_str());
             }
             std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
             converted_section = color_re.replace_all(section, "").to_string();
         }
         if cond_re.find(section).ok().flatten().is_some() {
-            let mut item: Vec<String> = Vec::new();
+            let mut item: Vec<&str> = Vec::new();
             for ite in cond_re.captures(section).ok().flatten().unwrap().iter() {
                 match ite {
-                    Some(v) => item.push(v.as_str().to_string()),
+                    Some(v) => item.push(v.as_str()),
                     None => {}
                 }
             }

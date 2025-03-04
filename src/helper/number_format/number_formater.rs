@@ -41,9 +41,9 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
     let mut scale: f64 = 1f64; // same as no scale
 
     if SCALE_REGEX.is_match(&format).unwrap_or(false) {
-        let mut matches: Vec<String> = Vec::new();
+        let mut matches: Vec<&str> = Vec::new();
         for ite in SCALE_REGEX.captures(&format).ok().flatten().unwrap().iter() {
-            matches.push(ite.unwrap().as_str().to_string());
+            matches.push(ite.unwrap().as_str());
         }
         scale = 1000i32.pow(matches[2].len() as u32) as f64;
 
@@ -88,10 +88,14 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
 
     let re = Regex::new(r"\$[^0-9]*").unwrap();
     if re.find(&format).ok().flatten().is_some() {
-        let mut item: Vec<String> = Vec::new();
-        for ite in re.captures(&format).ok().flatten().unwrap().iter() {
-            item.push(ite.unwrap().as_str().to_string());
-        }
+        let mut item: Vec<&str> = re
+            .captures(&format)
+            .ok()
+            .flatten()
+            .unwrap()
+            .iter()
+            .map(|ite| ite.unwrap().as_str())
+            .collect();
         value = format!("{}{}", item.get(0).unwrap(), value);
         //    //  Currency or Accounting
         //    let currency_code = item.get(1).unwrap().to_string();
@@ -170,10 +174,10 @@ fn format_straight_numeric_value(
 
 fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Vec<String> {
     let mut decimal_count = numbers[1].len();
-    let mut post_decimal_masks: Vec<String> = Vec::new();
+    let mut post_decimal_masks: Vec<&str> = Vec::new();
 
     for mask in masks.iter().rev() {
-        post_decimal_masks.push(mask.to_string());
+        post_decimal_masks.push(mask);
         decimal_count -= mask.to_string().len();
         if decimal_count == 0 {
             break;
@@ -186,24 +190,21 @@ fn merge_complex_number_format_masks(numbers: &[String], masks: &[String]) -> Ve
 
 fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     let mut result = number.to_string();
-    let mut mask = mask.to_string();
     let re = Regex::new(r#"0+"#).unwrap();
-    let mut masking_blocks: Vec<(String, usize)> = Vec::new();
-    let mut masking_str: Vec<String> = Vec::new();
+    let mut masking_blocks: Vec<(&str, usize)> = Vec::new();
+    let mut masking_str: Vec<&str> = Vec::new();
     let mut masking_beg: Vec<usize> = Vec::new();
     for ite in re.captures(&mask).ok().flatten().unwrap().iter() {
-        masking_str.push(ite.unwrap().as_str().to_string());
+        masking_str.push(ite.unwrap().as_str());
     }
     for pos in re.captures(&mask).ok().flatten().unwrap().iter() {
         let beg = pos.unwrap().start();
         masking_beg.push(beg);
     }
     for i in 0..masking_str.len() {
-        masking_blocks.push((
-            masking_str.get(i).unwrap().clone(),
-            *masking_beg.get(i).unwrap(),
-        ));
+        masking_blocks.push((masking_str.get(i).unwrap(), *masking_beg.get(i).unwrap()));
     }
+    let mut mask = mask.to_string();
 
     if masking_blocks.len() > 1 {
         let mut number = *number;
