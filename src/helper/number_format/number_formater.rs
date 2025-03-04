@@ -88,7 +88,7 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
 
     let re = Regex::new(r"\$[^0-9]*").unwrap();
     if re.find(&format).ok().flatten().is_some() {
-        let mut item: Vec<&str> = re
+        let item: Vec<&str> = re
             .captures(&format)
             .ok()
             .flatten()
@@ -96,7 +96,7 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
             .iter()
             .map(|ite| ite.unwrap().as_str())
             .collect();
-        value = format!("{}{}", item.get(0).unwrap(), value);
+        value = format!("{}{}", item[0], value);
         //    //  Currency or Accounting
         //    let currency_code = item.get(1).unwrap().to_string();
         //    value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value, currency_code.as_str()).to_string();
@@ -194,10 +194,10 @@ fn process_complex_number_format_mask(number: &f64, mask: &str) -> String {
     let mut masking_blocks: Vec<(&str, usize)> = Vec::new();
     let mut masking_str: Vec<&str> = Vec::new();
     let mut masking_beg: Vec<usize> = Vec::new();
-    for ite in re.captures(&mask).ok().flatten().unwrap().iter() {
+    for ite in re.captures(mask).ok().flatten().unwrap().iter() {
         masking_str.push(ite.unwrap().as_str());
     }
-    for pos in re.captures(&mask).ok().flatten().unwrap().iter() {
+    for pos in re.captures(mask).ok().flatten().unwrap().iter() {
         let beg = pos.unwrap().start();
         masking_beg.push(beg);
     }

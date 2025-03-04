@@ -13,10 +13,10 @@ pub(crate) struct RawFile {
 }
 impl RawFile {
     #[inline]
-    pub(crate) fn get_file_name(&self) -> String {
+    pub(crate) fn get_file_name(&self) -> &str {
         let v: Vec<&str> = self.get_file_target().split('/').collect();
         let object_name = v.last().unwrap();
-        object_name.to_string()
+        *object_name
     }
 
     #[inline]

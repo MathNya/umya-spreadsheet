@@ -67,7 +67,7 @@ impl Formula {
         xml_read_loop!(
             reader,
             Event::Text(e) => {
-                self.set_address_str(e.unescape().unwrap().to_string());
+                self.set_address_str(e.unescape().unwrap());
             },
             Event::End(ref e) => {
                 if e.name().into_inner() == b"formula" {

@@ -40,16 +40,14 @@ impl MediaObject {
         self
     }
 
-    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
-        let find = rel_list
+    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> u32 {
+        rel_list
             .iter()
-            .position(|(k, v)| k == "IMAGE" && v == &*self.image_name);
-        match find {
-            Some(v) => return (v + 1) as i32,
-            None => {
+            .position(|(k, v)| k == "IMAGE" && v == &*self.image_name)
+            .map(|index| (index + 1) as u32)
+            .unwrap_or_else(|| {
                 rel_list.push((String::from("IMAGE"), self.image_name.to_string()));
-                return rel_list.len() as i32;
-            }
-        }
+                rel_list.len() as u32
+            })
     }
 }

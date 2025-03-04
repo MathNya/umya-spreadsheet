@@ -98,8 +98,8 @@ impl SharedItems {
                 ("containsString", self.contains_string.get_value_string()),
                 ("containsNumber", self.contains_number.get_value_string()),
                 ("containsInteger", self.contains_integer.get_value_string()),
-                ("minValue", self.min_value.get_value_string().as_str()),
-                ("maxValue", self.max_value.get_value_string().as_str()),
+                ("minValue", &self.min_value.get_value_string()),
+                ("maxValue", &self.max_value.get_value_string()),
             ],
             true,
         );

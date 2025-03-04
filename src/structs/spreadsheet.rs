@@ -346,7 +346,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         for worksheet in &mut self.work_sheet_collection {
-            raw_to_deserialize_by_worksheet(worksheet, shared_string_table.clone(), &stylesheet);
+            raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
         }
         self
     }
@@ -357,7 +357,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         let worksheet = self.work_sheet_collection.get_mut(index).unwrap();
-        raw_to_deserialize_by_worksheet(worksheet, shared_string_table, &stylesheet);
+        raw_to_deserialize_by_worksheet(worksheet, &shared_string_table, &stylesheet);
         self
     }
 
@@ -423,7 +423,7 @@ impl Spreadsheet {
         let shared_string_table = self.get_shared_string_table();
         let stylesheet = self.get_stylesheet().clone();
         self.work_sheet_collection.get_mut(*index).map(|v| {
-            raw_to_deserialize_by_worksheet(v, shared_string_table, &stylesheet);
+            raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
             v
         })
     }
@@ -642,7 +642,7 @@ impl Spreadsheet {
             let val3_up = format!("xl/{}", &val3);
             for worksheet in self.get_sheet_collection_no_check() {
                 for pivot_cache_definition in worksheet.get_pivot_cache_definition_collection() {
-                    if val3_up.as_str() == pivot_cache_definition
+                    if &val3_up == pivot_cache_definition
                         && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3)
                     {
                         result.push((val1.to_string(), val2.to_string(), val3.to_string()));

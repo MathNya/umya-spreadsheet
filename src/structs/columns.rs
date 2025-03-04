@@ -159,8 +159,8 @@ impl Columns {
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let min_str = min.to_string();
         let max_str = max.to_string();
-        attributes.push(("min", min_str.as_str()));
-        attributes.push(("max", max_str.as_str()));
+        attributes.push(("min", &min_str));
+        attributes.push(("max", &max_str));
         let width = column.width.get_value_string();
         attributes.push(("width", &width));
         if *column.hidden.get_value() {

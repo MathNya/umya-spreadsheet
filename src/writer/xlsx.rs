@@ -69,7 +69,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
             worksheet::write(
                 &worksheet_no,
                 worksheet,
-                shared_string_table.clone(),
+                &shared_string_table,
                 &mut stylesheet,
                 spreadsheet.get_has_macros(),
                 &mut writer_manager,
@@ -156,7 +156,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
     writer_manager.file_list_sort();
 
     // Add SharedStrings
-    shared_strings::write(shared_string_table.clone(), &mut writer_manager)?;
+    shared_strings::write(&shared_string_table, &mut writer_manager)?;
 
     // Add Styles
     styles::write(&stylesheet, &mut writer_manager)?;

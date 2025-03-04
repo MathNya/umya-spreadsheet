@@ -57,7 +57,7 @@ impl CacheFields {
         write_start_tag(
             writer,
             "cacheFields",
-            vec![("count", self.list.len().to_string().as_str())],
+            vec![("count", &self.list.len().to_string())],
             false,
         );
 

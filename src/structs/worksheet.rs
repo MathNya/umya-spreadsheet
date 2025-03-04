@@ -495,8 +495,7 @@ impl Worksheet {
     pub fn get_comments_to_hashmap(&self) -> HashMap<String, &Comment> {
         let mut result = HashMap::default();
         for comment in &self.comments {
-            let coordinate = comment.get_coordinate().to_string();
-            result.insert(coordinate, comment);
+            result.insert(comment.get_coordinate().to_string(), comment);
         }
         result
     }
@@ -1971,22 +1970,20 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // cell
-        self.get_cell_collection_crate_mut()
-            .adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
+        self.cell_collection.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
 
         // worksheet_drawing
-        self.get_worksheet_drawing_mut()
-            .adjustment_insert_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
+        self.worksheet_drawing.adjustment_insert_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
 
         // comments
         for comment in &mut self.comments {
@@ -2043,7 +2040,7 @@ impl AdjustmentCoordinate for Worksheet {
         }
         if offset_row_num != &0 {
             // row dimensions
-            self.get_row_dimensions_crate_mut()
+            self.row_dimensions
                 .adjustment_remove_value(root_row_num, offset_row_num);
         }
         if (offset_col_num == &0 && offset_row_num == &0) {
@@ -2073,13 +2070,12 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // cell
-        self.get_cell_collection_crate_mut()
-            .adjustment_remove_coordinate(
-                root_col_num,
-                offset_col_num,
-                root_row_num,
-                offset_row_num,
-            );
+        self.cell_collection.adjustment_remove_coordinate(
+            root_col_num,
+            offset_col_num,
+            root_row_num,
+            offset_row_num,
+        );
 
         // worksheet_drawing
         self.get_worksheet_drawing_mut()

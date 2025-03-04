@@ -75,8 +75,8 @@ impl RowBreaks {
             writer,
             "rowBreaks",
             vec![
-                ("count", count.to_string().as_str()),
-                ("manualBreakCount", manual_count.to_string().as_str()),
+                ("count", &count.to_string()),
+                ("manualBreakCount", &manual_count.to_string()),
             ],
             false,
         );

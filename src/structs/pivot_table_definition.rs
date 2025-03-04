@@ -462,7 +462,7 @@ impl PivotTableDefinition {
         }
         let cache_id_str = self.cache_id.get_value_string();
         if self.cache_id.has_value() {
-            attributes.push(("cacheId", cache_id_str.as_str()));
+            attributes.push(("cacheId", &cache_id_str));
         }
         if self.apply_number_formats.has_value() {
             attributes.push((
@@ -505,14 +505,11 @@ impl PivotTableDefinition {
         }
         let updated_version_str = self.updated_version.get_value_string();
         if self.updated_version.has_value() {
-            attributes.push(("updatedVersion", updated_version_str.as_str()));
+            attributes.push(("updatedVersion", &updated_version_str));
         }
         let min_refreshable_version_str = self.min_refreshable_version.get_value_string();
         if self.min_refreshable_version.has_value() {
-            attributes.push((
-                "minRefreshableVersion",
-                min_refreshable_version_str.as_str(),
-            ));
+            attributes.push(("minRefreshableVersion", &min_refreshable_version_str));
         }
         if self.use_auto_formatting.has_value() {
             attributes.push((
@@ -525,11 +522,11 @@ impl PivotTableDefinition {
         }
         let created_version_str = self.created_version.get_value_string();
         if self.created_version.has_value() {
-            attributes.push(("createdVersion", created_version_str.as_str()));
+            attributes.push(("createdVersion", &created_version_str));
         }
         let indent_str = self.indent.get_value_string();
         if self.indent.has_value() {
-            attributes.push(("indent", indent_str.as_str()));
+            attributes.push(("indent", &indent_str));
         }
         if self.outline.has_value() {
             attributes.push(("outline", self.outline.get_value_string()));
