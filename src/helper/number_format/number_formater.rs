@@ -75,7 +75,9 @@ pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
         value = format!("{}{}", item.get(0).unwrap(), value);
         //    //  Currency or Accounting
         //    let currency_code = item.get(1).unwrap().to_string();
-        //    value = Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value, currency_code.as_str()).to_string();
+        //    value =
+        // Regex::new(r#"\[\$([^\]]*)\]"#).unwrap().replace_all(&value,
+        // currency_code.as_str()).to_string();
     }
 
     Cow::Owned(value)
