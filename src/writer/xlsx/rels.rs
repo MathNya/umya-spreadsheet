@@ -71,7 +71,7 @@ fn write_relationship(
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     let r_id = format!("rId{}", p_id);
-    attributes.push(("Id", r_id.as_str()));
+    attributes.push(("Id", &r_id));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));
     if !p_target_mode.is_empty() {

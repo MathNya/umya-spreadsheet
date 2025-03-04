@@ -107,7 +107,7 @@ impl Pane {
         if self.vertical_split.has_value() {
             attributes.push(("ySplit", &vertical_split));
         }
-        attributes.push(("topLeftCell", coordinate.as_str()));
+        attributes.push(("topLeftCell", &coordinate));
         attributes.push(("activePane", self.active_pane.get_value_string()));
         attributes.push(("state", self.state.get_value_string()));
         write_start_tag(writer, "pane", attributes, true);

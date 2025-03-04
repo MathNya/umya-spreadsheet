@@ -16,7 +16,7 @@ use std::sync::RwLock;
 pub(crate) fn write<W: io::Seek + io::Write>(
     sheet_no: &i32,
     worksheet: &Worksheet,
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &RwLock<SharedStringTable>,
     stylesheet: &mut Stylesheet,
     has_macros: bool,
     writer_mng: &mut WriterManager<W>,
@@ -81,7 +81,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(
         &mut writer,
         "dimension",
-        vec![("ref", worksheet.calculate_worksheet_dimension().as_str())],
+        vec![("ref", &worksheet.calculate_worksheet_dimension())],
         true,
     );
 
@@ -150,7 +150,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
 
         // row
         if cells_in_row.is_empty() {
-            let spans = "0:0".to_string();
+            let spans = "0:0";
             row.write_to(&mut writer, stylesheet, spans, true);
         } else {
             let (first_num, last_num) = (
@@ -159,7 +159,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             );
             let spans = format!("{first_num}:{last_num}");
 
-            row.write_to(&mut writer, stylesheet, spans, false);
+            row.write_to(&mut writer, stylesheet, &spans, false);
             // c
             for cell in cells_in_row {
                 cell.write_to(
@@ -223,7 +223,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             if *hyperlink.get_location() {
                 attributes.push(("location", hyperlink.get_url()));
             } else {
-                attributes.push(("r:id", r_id_str.as_str()));
+                attributes.push(("r:id", &r_id_str));
                 r_id += 1;
             }
             write_start_tag(&mut writer, "hyperlink", attributes, true);
@@ -255,12 +255,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if worksheet.has_drawing_object() {
         // drawing
         let r_id_str = format!("rId{}", &r_id);
-        write_start_tag(
-            &mut writer,
-            "drawing",
-            vec![("r:id", r_id_str.as_str())],
-            true,
-        );
+        write_start_tag(&mut writer, "drawing", vec![("r:id", &r_id_str)], true);
         r_id += 1;
     }
 
@@ -270,7 +265,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "legacyDrawing",
-            vec![("r:id", r_id_str.as_str())],
+            vec![("r:id", &r_id_str)],
             true,
         );
         r_id += 1;
@@ -287,12 +282,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         );
         for table in worksheet.get_tables().iter() {
             let r_id_str = format!("rId{}", &r_id);
-            write_start_tag(
-                &mut writer,
-                "tablePart",
-                vec![("r:id", r_id_str.as_str())],
-                true,
-            );
+            write_start_tag(&mut writer, "tablePart", vec![("r:id", &r_id_str)], true);
             r_id += 1;
         }
         write_end_tag(&mut writer, "tableParts");

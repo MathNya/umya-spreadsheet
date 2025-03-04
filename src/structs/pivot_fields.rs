@@ -63,7 +63,7 @@ impl PivotFields {
         write_start_tag(
             writer,
             "pivotFields",
-            vec![("count", self.list.len().to_string().as_str())],
+            vec![("count", &self.list.len().to_string())],
             false,
         );
 

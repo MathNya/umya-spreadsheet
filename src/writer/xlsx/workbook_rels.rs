@@ -43,7 +43,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &mut writer,
             &index.to_string(),
             PIVOT_CACHE_DEF_NS,
-            pivot_cache_definition.as_str(),
+            &pivot_cache_definition,
             "",
         );
         index += 1;
@@ -107,7 +107,7 @@ fn write_relationship(
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     let r_id = format!("rId{}", p_id);
-    attributes.push(("Id", r_id.as_str()));
+    attributes.push(("Id", &r_id));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));
     if !p_target_mode.is_empty() {

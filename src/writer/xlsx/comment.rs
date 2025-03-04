@@ -52,7 +52,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(
             &mut writer,
             "comment",
-            vec![("ref", &coordinate), ("authorId", author_id.as_str())],
+            vec![("ref", &coordinate), ("authorId", &author_id)],
             false,
         );
 

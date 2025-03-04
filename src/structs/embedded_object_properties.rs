@@ -140,7 +140,7 @@ impl EmbeddedObjectProperties {
             attributes.push(("autoPict", self.auto_pict.get_value_string()));
         }
         let r_id_str = format!("rId{}", r_id);
-        attributes.push(("r:id", r_id_str.as_str()));
+        attributes.push(("r:id", &r_id_str));
         write_start_tag(writer, "objectPr", attributes, false);
 
         // anchor

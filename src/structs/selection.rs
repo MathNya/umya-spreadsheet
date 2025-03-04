@@ -86,7 +86,7 @@ impl Selection {
         if let Some(active_cell) = &self.active_cell {
             for range in self.sequence_of_references.get_range_collection() {
                 let range_str = range.get_range();
-                if range_str.contains(active_cell.to_string().as_str()) {
+                if range_str.contains(&active_cell.to_string()) {
                     break;
                 }
                 active_cell_id += 1;
@@ -102,17 +102,17 @@ impl Selection {
             None => String::new(),
         };
         if !active_cell_str.is_empty() {
-            attributes.push(("activeCell", active_cell_str.as_str()));
+            attributes.push(("activeCell", &active_cell_str));
         }
 
         let active_cell_id_str = active_cell_id.to_string();
         if active_cell_id > 0 {
-            attributes.push(("activeCellId", active_cell_id_str.as_str()));
+            attributes.push(("activeCellId", &active_cell_id_str));
         }
 
         let sqref = self.sequence_of_references.get_sqref();
         if !sqref.is_empty() {
-            attributes.push(("sqref", sqref.as_str()));
+            attributes.push(("sqref", &sqref));
         }
 
         write_start_tag(writer, "selection", attributes, true);

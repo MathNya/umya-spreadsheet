@@ -168,7 +168,7 @@ impl NumberingFormat {
             writer,
             "numFmt",
             vec![
-                ("numFmtId", number_format_id.to_string().as_str()),
+                ("numFmtId", &number_format_id.to_string()),
                 ("formatCode", &self.format_code),
             ],
             true,

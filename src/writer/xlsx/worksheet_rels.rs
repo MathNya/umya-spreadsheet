@@ -42,7 +42,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         if !*hyperlink.get_location() {
             is_write = write_relationship(
                 &mut writer,
-                r_id.to_string().as_str(),
+                &r_id.to_string(),
                 HYPERLINK_NS,
                 hyperlink.get_url(),
                 "External",
@@ -56,7 +56,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let object_name = format!("printerSettings{}.bin", printer_settings_no);
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             PRINTER_SETTINGS_NS,
             format!("../printerSettings/{}", object_name).as_str(),
             "",
@@ -68,9 +68,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if worksheet.has_drawing_object() {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             DRAWINGS_NS,
-            format!("../drawings/drawing{}.xml", drawing_no.to_string().as_str()).as_str(),
+            format!("../drawings/drawing{}.xml", drawing_no).as_str(),
             "",
         );
         r_id += 1;
@@ -80,13 +80,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if worksheet.has_legacy_drawing() {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             VML_DRAWING_NS,
-            format!(
-                "../drawings/vmlDrawing{}.vml",
-                vml_drawing_no.to_string().as_str()
-            )
-            .as_str(),
+            format!("../drawings/vmlDrawing{}.vml", vml_drawing_no).as_str(),
             "",
         );
         r_id += 1;
@@ -96,9 +92,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     for table_no in table_no_list.iter() {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             TABLE_NS,
-            format!("../tables/table{}.xml", table_no.to_string().as_str()).as_str(),
+            format!("../tables/table{}.xml", table_no).as_str(),
             "",
         );
         r_id += 1;
@@ -113,7 +109,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             let object_name = format!("Microsoft_Excel_Worksheet{}.xlsx", excel_no);
             write_relationship(
                 &mut writer,
-                r_id.to_string().as_str(),
+                &r_id.to_string(),
                 PACKAGE_NS,
                 format!("../embeddings/{}", object_name).as_str(),
                 "",
@@ -125,7 +121,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             let object_name = format!("oleObject{}.bin", ole_object_no);
             write_relationship(
                 &mut writer,
-                r_id.to_string().as_str(),
+                &r_id.to_string(),
                 OLE_OBJECT_NS,
                 format!("../embeddings/{}", object_name).as_str(),
                 "",
@@ -139,7 +135,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             .get_image_name();
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             IMAGE_NS,
             format!("../media/{}", image_name).as_str(),
             "",
@@ -151,9 +147,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if !worksheet.get_comments().is_empty() {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             COMMENTS_NS,
-            format!("../comments{}.xml", comment_no.to_string().as_str()).as_str(),
+            format!("../comments{}.xml", comment_no).as_str(),
             "",
         );
     }
@@ -177,7 +173,7 @@ fn write_relationship(
     let tag_name = "Relationship";
     let mut attributes: Vec<(&str, &str)> = Vec::new();
     let r_id = format!("rId{}", p_id);
-    attributes.push(("Id", r_id.as_str()));
+    attributes.push(("Id", &r_id));
     attributes.push(("Type", p_type));
     attributes.push(("Target", p_target));
     if !p_target_mode.is_empty() {
