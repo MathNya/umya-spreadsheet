@@ -645,10 +645,10 @@ impl Font {
         loop {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
-                    b"name" => {
+                    b"rFont" | b"name" => {
                         self.font_name.set_attributes(reader, e);
                     }
-                    b"rFont" | b"sz" => {
+                    b"sz" => {
                         self.font_size.set_attributes(reader, e);
                     }
                     b"family" => {

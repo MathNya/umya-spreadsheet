@@ -442,6 +442,7 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
 ///
 /// The next available relationship ID
 fn write_print_settings(writer: &mut InternalWriter, worksheet: &Worksheet, r_id: i32) -> i32 {
+    let mut r_id = r_id;
     worksheet.print_options().write_to(writer);
     worksheet.page_margins().write_to(writer);
 
@@ -449,6 +450,7 @@ fn write_print_settings(writer: &mut InternalWriter, worksheet: &Worksheet, r_id
         worksheet
             .page_setup()
             .write_to(writer, &mut num_traits::cast(r_id).unwrap());
+        r_id += 1;
     }
 
     worksheet.header_footer().write_to(writer);
