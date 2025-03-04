@@ -1243,9 +1243,9 @@ impl Worksheet {
     /// ```
     #[inline]
     pub fn insert_new_row(&mut self, row_index: u32, num_rows: u32) {
-        let title = &*self.title.clone();
+        let title = self.title.clone();
         self.adjustment_insert_coordinate(0, 0, row_index, num_rows);
-        self.adjustment_insert_coordinate_with_sheet(title, 0, 0, row_index, num_rows);
+        self.adjustment_insert_coordinate_with_sheet(&title, 0, 0, row_index, num_rows);
     }
 
     /// Adjust for references to other sheets.
@@ -1302,9 +1302,9 @@ impl Worksheet {
     /// ```
     #[inline]
     pub fn insert_new_column_by_index(&mut self, column_index: u32, num_columns: u32) {
-        let title = &*self.title.clone();
+        let title = self.title.clone();
         self.adjustment_insert_coordinate(column_index, num_columns, 0, 0);
-        self.adjustment_insert_coordinate_with_sheet(title, column_index, num_columns, 0, 0);
+        self.adjustment_insert_coordinate_with_sheet(&title, column_index, num_columns, 0, 0);
     }
 
     /// Adjust for references to other sheets.
@@ -1331,9 +1331,9 @@ impl Worksheet {
     /// ```
     #[inline]
     pub fn remove_row(&mut self, row_index: u32, num_rows: u32) {
-        let title = &*self.title.clone();
+        let title = self.title.clone();
         self.adjustment_remove_coordinate(0, 0, row_index, num_rows);
-        self.adjustment_remove_coordinate_with_sheet(title, 0, 0, row_index, num_rows);
+        self.adjustment_remove_coordinate_with_sheet(&title, 0, 0, row_index, num_rows);
     }
 
     /// Adjust for references to other sheets.
@@ -1386,9 +1386,9 @@ impl Worksheet {
     /// ```
     #[inline]
     pub fn remove_column_by_index(&mut self, column_index: u32, num_columns: u32) {
-        let title = &*self.title.clone();
+        let title = self.title.clone();
         self.adjustment_remove_coordinate(column_index, num_columns, 0, 0);
-        self.adjustment_remove_coordinate_with_sheet(title, column_index, num_columns, 0, 0);
+        self.adjustment_remove_coordinate_with_sheet(&title, column_index, num_columns, 0, 0);
     }
 
     /// Adjust for references to other sheets.

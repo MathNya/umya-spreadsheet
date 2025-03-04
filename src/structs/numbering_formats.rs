@@ -77,7 +77,7 @@ impl NumberingFormats {
 
     #[deprecated(since = "3.0.0", note = "Use build_in_formats()")]
     pub(crate) fn get_build_in_formats(&mut self) {
-        self.build_in_formats()
+        self.build_in_formats();
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {

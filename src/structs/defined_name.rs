@@ -63,7 +63,7 @@ impl DefinedName {
         if self.string_value.has_value() {
             return self.string_value.value_str().to_string();
         }
-        let mut result: Vec<String> = Vec::new();
+        let mut result: Vec<String> = Vec::with_capacity(self.address.len());
         for row in &self.address {
             result.push(row.address_ptn2());
         }
@@ -89,10 +89,8 @@ impl DefinedName {
     }
 
     pub fn add_address<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        let mut value = value.into();
-        value = value.replace("''", "'");
         let mut obj = Address::default();
-        obj.set_address(value);
+        obj.set_address(value.into().replace("''", "'"));
         self.address.push(obj);
         self
     }

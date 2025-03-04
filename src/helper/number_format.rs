@@ -162,13 +162,13 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
 
         // Process color matching
         if let Some(captures) = color_re.captures(section).ok().flatten() {
-            let items: Vec<String> = captures
+            let items: Vec<&str> = captures
                 .iter()
-                .filter_map(|cap| cap.map(|c| c.as_str().to_string()))
+                .filter_map(|cap| cap.map(|c| c.as_str()))
                 .collect();
 
             if let Some(first_item) = items.first() {
-                colors[idx].clone_from(first_item);
+                colors[idx].clone_from(&first_item.to_string());
             }
 
             converted_section = color_re.replace_all(section, "").to_string();
@@ -176,16 +176,16 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
 
         // Process conditional matching
         if let Some(captures) = cond_re.captures(section).ok().flatten() {
-            let items: Vec<String> = captures
+            let items: Vec<&str> = captures
                 .iter()
-                .filter_map(|cap| cap.map(|c| c.as_str().to_string()))
+                .filter_map(|cap| cap.map(|c| c.as_str()))
                 .collect();
 
             if let Some(v) = items.get(1) {
-                condops[idx].clone_from(v);
+                condops[idx].clone_from(&v.to_string());
             }
             if let Some(v) = items.get(2) {
-                condvals[idx].clone_from(v);
+                condvals[idx].clone_from(&v.to_string());
             }
 
             converted_section = cond_re.replace_all(section, "").to_string();

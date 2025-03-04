@@ -389,7 +389,7 @@ fn handle_in_error(
 ) {
     value.push(formula.chars().nth(*index).unwrap());
     *index += 1;
-    if ERRORS.iter().any(|&x| x == value.as_str()) {
+    if ERRORS.contains(&value.as_str()) {
         *in_error = false;
         let mut obj = FormulaToken::default();
         obj.set_value(value.clone());

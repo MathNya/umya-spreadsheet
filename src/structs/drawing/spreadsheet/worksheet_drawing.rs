@@ -81,25 +81,21 @@ impl WorksheetDrawing {
             .find(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
     }
 
+    #[inline]
     #[must_use]
     pub fn get_images(&self, col: u32, row: u32) -> Vec<&Image> {
-        let mut result: Vec<&Image> = Vec::new();
-        for image in &self.image_collection {
-            if image.get_col() == col - 1 && image.get_row() == row - 1 {
-                result.push(image);
-            }
-        }
-        result
+        self.image_collection
+            .iter()
+            .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
+            .collect()
     }
 
+    #[inline]
     pub fn get_images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
-        let mut result: Vec<&mut Image> = Vec::new();
-        for image in &mut self.image_collection {
-            if image.get_col() == col - 1 && image.get_row() == row - 1 {
-                result.push(image);
-            }
-        }
-        result
+        self.image_collection
+            .iter_mut()
+            .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
+            .collect()
     }
 
     #[inline]
@@ -134,25 +130,18 @@ impl WorksheetDrawing {
             .find(|chart| chart.col() == col - 1 && chart.row() == row - 1)
     }
 
-    #[must_use]
     pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
-        let mut result: Vec<&Chart> = Vec::new();
-        for chart in &self.chart_collection {
-            if chart.col() == col - 1 && chart.row() == row - 1 {
-                result.push(chart);
-            }
-        }
-        result
+        self.chart_collection
+            .iter()
+            .filter(|chart| chart.col() == col - 1 && chart.row() == row - 1)
+            .collect()
     }
 
     pub fn get_charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
-        let mut result: Vec<&mut Chart> = Vec::new();
-        for chart in &mut self.chart_collection {
-            if chart.col() == col - 1 && chart.row() == row - 1 {
-                result.push(chart);
-            }
-        }
-        result
+        self.chart_collection
+            .iter_mut()
+            .filter(|chart| chart.col() == col - 1 && chart.row() == row - 1)
+            .collect()
     }
 
     #[inline]
@@ -200,116 +189,89 @@ impl WorksheetDrawing {
 
     #[must_use]
     pub fn get_graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
-        let mut result: Vec<&GraphicFrame> = Vec::new();
-        for two_cell_anchor in &self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_graphic_frame() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_graphic_frame())
+            .collect()
     }
 
     pub fn get_graphic_frame_collection_mut(&mut self) -> Vec<&mut GraphicFrame> {
-        let mut result: Vec<&mut GraphicFrame> = Vec::new();
-        for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_graphic_frame_mut() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_graphic_frame_mut())
+            .collect()
     }
 
     #[must_use]
     pub fn get_shape_collection(&self) -> Vec<&Shape> {
-        let mut result: Vec<&Shape> = Vec::new();
-        for two_cell_anchor in &self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_shape() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_shape())
+            .collect()
     }
 
     pub fn get_shape_collection_mut(&mut self) -> Vec<&mut Shape> {
-        let mut result: Vec<&mut Shape> = Vec::new();
-        for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_shape_mut() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_shape_mut())
+            .collect()
     }
 
     #[must_use]
     pub fn get_connection_shape_collection(&self) -> Vec<&ConnectionShape> {
-        let mut result: Vec<&ConnectionShape> = Vec::new();
-        for two_cell_anchor in &self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_connection_shape() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_connection_shape())
+            .collect()
     }
 
     pub fn get_connection_shape_collection_mut(&mut self) -> Vec<&mut ConnectionShape> {
-        let mut result: Vec<&mut ConnectionShape> = Vec::new();
-        for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_connection_shape_mut() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_connection_shape_mut())
+            .collect()
     }
 
     #[must_use]
     pub fn get_picture_collection(&self) -> Vec<&Picture> {
-        let mut result: Vec<&Picture> = Vec::new();
-        for two_cell_anchor in &self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_picture() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_picture())
+            .collect()
     }
 
     pub fn get_one_cell_anchor_all_list(&mut self) -> Vec<&mut OneCellAnchor> {
-        let mut result: Vec<&mut OneCellAnchor> = Vec::new();
-        for anchor in &mut self.one_cell_anchor_collection {
-            result.push(anchor);
-        }
-        for image in &mut self.image_collection {
-            if let Some(anchor) = image.one_cell_anchor_mut() {
-                result.push(anchor);
-            }
-        }
-        result
+        self.one_cell_anchor_collection
+            .iter_mut()
+            .chain(
+                self.image_collection
+                    .iter_mut()
+                    .filter_map(|image| image.get_one_cell_anchor_mut()),
+            )
+            .collect()
     }
 
     pub fn get_two_cell_anchor_all_list(&mut self) -> Vec<&mut TwoCellAnchor> {
-        let mut result: Vec<&mut TwoCellAnchor> = Vec::new();
-        for anchor in &mut self.two_cell_anchor_collection {
-            result.push(anchor);
-        }
-        for chart in &mut self.chart_collection {
-            let anchor = chart.two_cell_anchor_mut();
-            result.push(anchor);
-        }
-        for image in &mut self.image_collection {
-            if let Some(anchor) = image.two_cell_anchor_mut() {
-                result.push(anchor);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter_mut()
+            .chain(
+                self.chart_collection
+                    .iter_mut()
+                    .map(|chart| chart.get_two_cell_anchor_mut()),
+            )
+            .chain(
+                self.image_collection
+                    .iter_mut()
+                    .filter_map(|image| image.get_two_cell_anchor_mut()),
+            )
+            .collect()
     }
 
     pub fn get_picture_collection_mut(&mut self) -> Vec<&mut Picture> {
-        let mut result: Vec<&mut Picture> = Vec::new();
-        for two_cell_anchor in &mut self.two_cell_anchor_collection {
-            if let Some(v) = two_cell_anchor.get_picture_mut() {
-                result.push(v);
-            }
-        }
-        result
+        self.two_cell_anchor_collection
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.get_picture_mut())
+            .collect()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
