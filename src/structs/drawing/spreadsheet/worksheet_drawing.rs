@@ -130,6 +130,7 @@ impl WorksheetDrawing {
             .find(|chart| chart.col() == col - 1 && chart.row() == row - 1)
     }
 
+    #[must_use]
     pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
         self.chart_collection
             .iter()
@@ -246,7 +247,7 @@ impl WorksheetDrawing {
             .chain(
                 self.image_collection
                     .iter_mut()
-                    .filter_map(|image| image.get_one_cell_anchor_mut()),
+                    .filter_map(|image| image.one_cell_anchor_mut()),
             )
             .collect()
     }
@@ -257,12 +258,12 @@ impl WorksheetDrawing {
             .chain(
                 self.chart_collection
                     .iter_mut()
-                    .map(|chart| chart.get_two_cell_anchor_mut()),
+                    .map(Chart::two_cell_anchor_mut),
             )
             .chain(
                 self.image_collection
                     .iter_mut()
-                    .filter_map(|image| image.get_two_cell_anchor_mut()),
+                    .filter_map(|image| image.two_cell_anchor_mut()),
             )
             .collect()
     }

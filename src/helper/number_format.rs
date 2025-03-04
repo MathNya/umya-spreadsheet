@@ -168,7 +168,7 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
                 .collect();
 
             if let Some(first_item) = items.first() {
-                colors[idx].clone_from(&first_item.to_string());
+                colors[idx].clone_from(&(*first_item).to_string());
             }
 
             converted_section = color_re.replace_all(section, "").to_string();
@@ -182,10 +182,10 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
                 .collect();
 
             if let Some(v) = items.get(1) {
-                condops[idx].clone_from(&v.to_string());
+                condops[idx].clone_from(&(*v).to_string());
             }
             if let Some(v) = items.get(2) {
-                condvals[idx].clone_from(&v.to_string());
+                condvals[idx].clone_from(&(*v).to_string());
             }
 
             converted_section = cond_re.replace_all(section, "").to_string();
