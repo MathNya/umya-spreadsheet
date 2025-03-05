@@ -121,7 +121,7 @@ fn format_straight_numeric_value(
         value = value.parse::<f64>().unwrap().separate_with_commas();
     }
     let blocks: Vec<&str> = value.split('.').collect();
-    let left_value = blocks.first().unwrap().to_string();
+    let left_value = blocks[0].to_string();
     let mut right_value = match blocks.get(1) {
         Some(v) => v.to_string(),
         None => String::from("0"),

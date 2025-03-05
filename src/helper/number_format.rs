@@ -141,7 +141,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             for ite in color_re.captures(section).ok().flatten().unwrap().iter() {
                 item.push(ite.unwrap().as_str());
             }
-            std::mem::replace(&mut colors[idx], item.first().unwrap());
+            std::mem::replace(&mut colors[idx], item[0]);
             converted_section = color_re.replace_all(section, "").to_string();
         }
         if cond_re.find(section).ok().flatten().is_some() {
