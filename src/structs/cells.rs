@@ -108,9 +108,7 @@ impl Cells {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.map
-            .get(&(row.to_owned(), col.to_owned()))
-            .map(Box::as_ref)
+        self.map.get(&(row, col)).map(Box::as_ref)
     }
 
     pub(crate) fn get_mut<T>(
@@ -123,20 +121,18 @@ impl Cells {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.map
-            .entry((row.to_owned(), col.to_owned()))
-            .or_insert_with(|| {
-                let mut c = Cell::default();
-                c.get_coordinate_mut().set_col_num(col);
-                c.get_coordinate_mut().set_row_num(row);
-                if col_dimenshon.has_style() {
-                    c.set_style(col_dimenshon.get_style().clone());
-                }
-                if row_dimenshon.has_style() {
-                    c.set_style(row_dimenshon.get_style().clone());
-                }
-                Box::new(c)
-            })
+        self.map.entry((row, col)).or_insert_with(|| {
+            let mut c = Cell::default();
+            c.get_coordinate_mut().set_col_num(col);
+            c.get_coordinate_mut().set_row_num(row);
+            if col_dimenshon.has_style() {
+                c.set_style(col_dimenshon.get_style().clone());
+            }
+            if row_dimenshon.has_style() {
+                c.set_style(row_dimenshon.get_style().clone());
+            }
+            Box::new(c)
+        })
     }
 
     #[inline]
@@ -146,7 +142,7 @@ impl Cells {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.map
-            .get(&(row.to_owned(), col.to_owned()))
+            .get(&(row, col))
             .map(|c| c.get_cell_value())
             .unwrap_or(&self.default_cell_value)
     }
@@ -158,7 +154,7 @@ impl Cells {
     {
         let CellCoordinates { col, row } = coordinate.into();
         self.map
-            .get(&(row.to_owned(), col.to_owned()))
+            .get(&(row, col))
             .map(|c| c.get_style())
             .unwrap_or(&self.default_style)
     }
@@ -187,8 +183,7 @@ impl Cells {
     pub(crate) fn add(&mut self, cell: Cell) {
         let col_num = cell.get_coordinate().get_col_num();
         let row_num = cell.get_coordinate().get_row_num();
-        let k = (row_num.to_owned(), col_num.to_owned());
-        self.map.insert(k, Box::new(cell));
+        self.map.insert((*row_num, *col_num), Box::new(cell));
     }
 
     #[inline]

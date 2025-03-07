@@ -40,21 +40,11 @@ impl StringCache {
         write_start_tag(writer, "c:strCache", vec![], false);
 
         // c:ptCount
-        write_start_tag(
-            writer,
-            "c:ptCount",
-            vec![("val", coll_value_count.as_str())],
-            true,
-        );
+        write_start_tag(writer, "c:ptCount", vec![("val", &coll_value_count)], true);
 
         for (idx, cell_value) in cell_value_list.into_iter().enumerate() {
             // c:pt
-            write_start_tag(
-                writer,
-                "c:pt",
-                vec![("idx", idx.to_string().as_str())],
-                false,
-            );
+            write_start_tag(writer, "c:pt", vec![("idx", &idx.to_string())], false);
 
             // c:v
             write_start_tag(writer, "c:v", vec![], false);

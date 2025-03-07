@@ -46,7 +46,7 @@ impl WorksheetSource {
         // worksheetSource
         let mut attributes: Vec<(&str, &str)> = Vec::new();
         let ref_str = self.address.get_range().get_range();
-        attributes.push(("ref", ref_str.as_str()));
+        attributes.push(("ref", &ref_str));
         if self.address.get_sheet_name() != "" {
             attributes.push(("sheet", self.address.get_sheet_name()));
         }

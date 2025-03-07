@@ -11,7 +11,7 @@ use std::sync::Arc;
 use std::sync::RwLock;
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    shared_string_table: Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &RwLock<SharedStringTable>,
     writer_mng: &mut WriterManager<W>,
 ) -> result::Result<(), XlsxError> {
     if shared_string_table

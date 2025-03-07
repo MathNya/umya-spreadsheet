@@ -125,21 +125,15 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
     //   3 sections:  [POSITIVE/TEXT] [NEGATIVE] [ZERO]
     //   4 sections:  [POSITIVE] [NEGATIVE] [ZERO] [TEXT]
     let cnt: usize = sections.len();
-    let color_regex: String = format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
+    let color_regex = format!("{}{}{}", "\\[(", Color::NAMED_COLORS.join("|"), ")\\]");
     let cond_regex = r"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]";
     let color_re = Regex::new(&color_regex).unwrap();
     let cond_re = Regex::new(cond_regex).unwrap();
 
-    let mut colors = [const { String::new() }; 5];
-    let mut condops = [const { String::new() }; 5];
+    let mut colors = [""; 5];
+    let mut condops = [""; 5];
 
-    let mut condvals = [
-        String::from("0"),
-        String::from("0"),
-        String::from("0"),
-        String::from("0"),
-        String::from("0"),
-    ];
+    let mut condvals = ["0"; 5];
     sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
         if color_re.find(section).ok().flatten().is_some() {
@@ -147,7 +141,7 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             for ite in color_re.captures(section).ok().flatten().unwrap().iter() {
                 item.push(ite.unwrap().as_str());
             }
-            std::mem::replace(&mut colors[idx], item.get(0).unwrap().to_string());
+            std::mem::replace(&mut colors[idx], item[0]);
             converted_section = color_re.replace_all(section, "").to_string();
         }
         if cond_re.find(section).ok().flatten().is_some() {
@@ -160,13 +154,13 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
             }
             match item.get(1) {
                 Some(v) => {
-                    std::mem::replace(&mut condops[idx], v.to_string());
+                    std::mem::replace(&mut condops[idx], v);
                 }
                 None => {}
             }
             match item.get(2) {
                 Some(v) => {
-                    std::mem::replace(&mut condvals[idx], v.to_string());
+                    std::mem::replace(&mut condvals[idx], v);
                 }
                 None => {}
             }
@@ -175,8 +169,8 @@ fn split_format(sections: Vec<&str>, value: &f64) -> (String, String, String) {
         converted_sections.insert(idx, converted_section);
     });
 
-    let mut color = &colors[0];
-    let mut format: &str = &converted_sections[0];
+    let mut color = colors[0];
+    let mut format = &converted_sections[0];
     let mut absval = *value;
     match cnt {
         2 => {

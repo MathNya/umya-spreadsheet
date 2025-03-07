@@ -207,7 +207,7 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
         if in_error {
             value = format!("{}{}", value, formula.chars().nth(index).unwrap());
             index += 1;
-            if self::ERRORS.iter().any(|&x| x == value.as_str()) {
+            if self::ERRORS.iter().any(|&x| x == &value) {
                 in_error = false;
                 let mut obj = FormulaToken::default();
                 obj.set_value(value);
@@ -362,12 +362,12 @@ pub(crate) fn parse_to_tokens<S: Into<String>>(formula: S) -> Vec<FormulaToken> 
                 value = String::new();
             }
 
-            let mut obj = stack.pop().unwrap().clone();
+            let mut obj = stack.pop().unwrap();
             obj.set_value("");
             obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
             tokens1.push(obj);
 
-            let mut obj = stack.pop().unwrap().clone();
+            let mut obj = stack.pop().unwrap();
             obj.set_value("");
             obj.set_token_sub_type(FormulaTokenSubTypes::Stop);
             tokens1.push(obj);

@@ -56,7 +56,7 @@ impl SharedStringTable {
 
         let hash_code = shared_string_item.get_hash_u64();
         let n = match self.map.get(&hash_code) {
-            Some(v) => v.to_owned(),
+            Some(v) => *v,
             None => {
                 let n = self.shared_string_item.len();
                 self.map.insert(hash_code, n);
@@ -103,11 +103,8 @@ impl SharedStringTable {
             "sst",
             vec![
                 ("xmlns", SHEET_MAIN_NS),
-                ("count", self.regist_count.to_string().as_str()),
-                (
-                    "uniqueCount",
-                    self.shared_string_item.len().to_string().as_str(),
-                ),
+                ("count", &self.regist_count.to_string()),
+                ("uniqueCount", &self.shared_string_item.len().to_string()),
             ],
             false,
         );

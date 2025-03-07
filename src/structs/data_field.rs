@@ -83,9 +83,9 @@ impl DataField {
             "dataField",
             vec![
                 ("name", self.name.get_value_str()),
-                ("fld", self.fie_id.get_value_string().as_str()),
-                ("baseField", self.base_fie_id.get_value_string().as_str()),
-                ("baseItem", self.base_item.get_value_string().as_str()),
+                ("fld", &self.fie_id.get_value_string()),
+                ("baseField", &self.base_fie_id.get_value_string()),
+                ("baseItem", &self.base_item.get_value_string()),
             ],
             true,
         );

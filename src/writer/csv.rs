@@ -50,7 +50,6 @@ pub fn write_writer<W: io::Seek + io::Write>(
     }
 
     // encoding.
-    let res_into: Vec<u8>;
     let data_bytes = match *option.get_csv_encode_value() {
         CsvEncodeValues::ShiftJis => encoding_rs::SHIFT_JIS.encode(&data).0.into_owned(),
         CsvEncodeValues::Koi8u => encoding_rs::KOI8_U.encode(&data).0.into_owned(),
