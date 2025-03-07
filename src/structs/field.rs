@@ -50,7 +50,7 @@ impl Field {
         write_start_tag(
             writer,
             "field",
-            vec![("x", self.x.value_string().as_str()).into()],
+            vec![("x", &self.x.value_string()).into()],
             true,
         );
     }

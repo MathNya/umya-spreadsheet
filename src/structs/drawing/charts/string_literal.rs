@@ -68,12 +68,7 @@ impl StringLiteral {
 
         // c:ptCount
         let count = self.string_point_list.len().to_string();
-        write_start_tag(
-            writer,
-            "c:ptCount",
-            vec![("val", count.as_str()).into()],
-            true,
-        );
+        write_start_tag(writer, "c:ptCount", vec![("val", &count).into()], true);
 
         // c:pt
         for (index, obj) in self.string_point_list.iter().enumerate() {

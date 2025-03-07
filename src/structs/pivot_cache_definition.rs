@@ -233,29 +233,29 @@ impl PivotCacheDefinition {
         }
         let refreshed_date_str = self.refreshed_date.value_string();
         if self.refreshed_date.has_value() {
-            attributes.push(("refreshedDate", refreshed_date_str.as_str()).into());
+            attributes.push(("refreshedDate", &refreshed_date_str).into());
         }
         let created_version_str = self.created_version.value_string();
         if self.created_version.has_value() {
-            attributes.push(("createdVersion", created_version_str.as_str()).into());
+            attributes.push(("createdVersion", &created_version_str).into());
         }
         let refreshed_version_str = self.refreshed_version.value_string();
         if self.refreshed_version.has_value() {
-            attributes.push(("refreshedVersion", refreshed_version_str.as_str()).into());
+            attributes.push(("refreshedVersion", &refreshed_version_str).into());
         }
         let min_refreshable_version_str = self.min_refreshable_version.value_string();
         if self.min_refreshable_version.has_value() {
             attributes.push(
                 (
                     "minRefreshableVersion",
-                    min_refreshable_version_str.as_str(),
+                    &min_refreshable_version_str,
                 )
                     .into(),
             );
         }
         let record_count_str = self.record_count.value_string();
         if self.record_count.has_value() {
-            attributes.push(("recordCount", record_count_str.as_str()).into());
+            attributes.push(("recordCount", &record_count_str).into());
         }
 
         write_start_tag(writer, "pivotTableDefinition", attributes, false);

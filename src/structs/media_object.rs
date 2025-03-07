@@ -56,20 +56,19 @@ impl MediaObject {
         self
     }
 
-    pub(crate) fn rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
-        let find = rel_list
+    #[allow(clippy::cast_possible_truncation)]
+    pub(crate) fn rid(&self, rel_list: &mut Vec<(String, String)>) -> u32 {
+        rel_list
             .iter()
-            .position(|(k, v)| k == "IMAGE" && v == &*self.name);
-        if let Some(v) = find {
-            (v + 1).try_into().unwrap()
-        } else {
-            rel_list.push((String::from("IMAGE"), self.name.to_string()));
-            rel_list.len().try_into().unwrap()
-        }
+            .position(|(k, v)| k == "IMAGE" && v == &*self.name)
+            .map_or_else(|| {
+                rel_list.push((String::from("IMAGE"), self.name.to_string()));
+                rel_list.len() as u32
+            }, |index| (index + 1) as u32)
     }
 
     #[deprecated(since = "3.0.0", note = "Use rid()")]
-    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> i32 {
+    pub(crate) fn get_rid(&self, rel_list: &mut Vec<(String, String)>) -> u32 {
         self.rid(rel_list)
     }
 }

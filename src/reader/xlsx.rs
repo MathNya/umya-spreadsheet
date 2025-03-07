@@ -2,10 +2,7 @@ use std::{
     fs::File,
     io,
     path::Path,
-    sync::{
-        Arc,
-        RwLock,
-    },
+    sync::RwLock,
 };
 
 use super::driver;
@@ -131,7 +128,7 @@ pub fn lazy_read(path: &Path) -> Result<Workbook, XlsxError> {
 
 pub(crate) fn raw_to_deserialize_by_worksheet(
     worksheet: &mut Worksheet,
-    shared_string_table: &Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &RwLock<SharedStringTable>,
     stylesheet: &Stylesheet,
 ) {
     if worksheet.is_deserialized() {

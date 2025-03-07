@@ -146,17 +146,10 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
     let color_re = compile_regex!(r"\[(Black|White|Red|Green|Blue|Yellow|Magenta|Cyan)\]");
     let cond_re = compile_regex!(r"\[(>|>=|<|<=|=|<>)([+-]?\d+([.]\d+)?)\]");
 
-    let mut colors = [const { String::new() }; 5];
-    let mut condops = [const { String::new() }; 5];
+    let mut colors = [""; 5];
+    let mut condops = [""; 5];
 
-    let mut condvals = [
-        String::from("0"),
-        String::from("0"),
-        String::from("0"),
-        String::from("0"),
-        String::from("0"),
-    ];
-
+    let mut condvals = ["0"; 5];
     sections.into_iter().enumerate().for_each(|(idx, section)| {
         let mut converted_section = section.to_string();
 
@@ -168,7 +161,7 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
                 .collect();
 
             if let Some(first_item) = items.first() {
-                colors[idx].clone_from(&(*first_item).to_string());
+                colors[idx].clone_from(first_item);
             }
 
             converted_section = color_re.replace_all(section, "").to_string();
@@ -182,10 +175,10 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
                 .collect();
 
             if let Some(v) = items.get(1) {
-                condops[idx].clone_from(&(*v).to_string());
+                condops[idx].clone_from(v);
             }
             if let Some(v) = items.get(2) {
-                condvals[idx].clone_from(&(*v).to_string());
+                condvals[idx].clone_from(v);
             }
 
             converted_section = cond_re.replace_all(section, "").to_string();
@@ -194,15 +187,15 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
         converted_sections.insert(idx, converted_section);
     });
 
-    let mut color = &colors[0];
-    let mut format: &str = &converted_sections[0];
+    let mut color = colors[0];
+    let mut format = &converted_sections[0];
     let mut absval = value;
     match cnt {
         2 => {
             absval = absval.abs();
             let condval_one = condvals[0].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">=", 0f64) {
-                color = &colors[1];
+            if !split_format_compare(value, condops[0], condval_one, ">=", 0f64) {
+                color = colors[1];
                 format = &converted_sections[1];
             }
         }
@@ -210,12 +203,12 @@ fn split_format(sections: Vec<&str>, value: f64) -> (String, String, String) {
             absval = absval.abs();
             let condval_one = condvals[0].parse::<f64>().unwrap();
             let condval_two = condvals[1].parse::<f64>().unwrap();
-            if !split_format_compare(value, &condops[0], condval_one, ">", 0f64) {
-                if split_format_compare(value, &condops[1], condval_two, "<", 0f64) {
-                    color = &colors[1];
+            if !split_format_compare(value, condops[0], condval_one, ">", 0f64) {
+                if split_format_compare(value, condops[1], condval_two, "<", 0f64) {
+                    color = colors[1];
                     format = &converted_sections[1];
                 } else {
-                    color = &colors[2];
+                    color = colors[2];
                     format = &converted_sections[2];
                 }
             }

@@ -706,8 +706,7 @@ impl Worksheet {
     pub fn comments_to_hashmap(&self) -> HashMap<String, &Comment> {
         let mut result = HashMap::default();
         for comment in &self.comments {
-            let coordinate = comment.coordinate().to_string();
-            result.insert(coordinate, comment);
+            result.insert(comment.coordinate().to_string(), comment);
         }
         result
     }
@@ -2792,7 +2791,7 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // cell
-        self.cells_crate_mut().adjustment_insert_coordinate(
+        self.cells.adjustment_insert_coordinate(
             root_col_num,
             offset_col_num,
             root_row_num,
@@ -2800,7 +2799,7 @@ impl AdjustmentCoordinate for Worksheet {
         );
 
         // worksheet_drawing
-        self.worksheet_drawing_mut()
+        self.worksheet_drawing
             .adjustment_insert_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -2863,7 +2862,7 @@ impl AdjustmentCoordinate for Worksheet {
         }
         if offset_row_num != 0 {
             // row dimensions
-            self.row_dimensions_crate_mut()
+            self.rows
                 .adjustment_remove_value(root_row_num, offset_row_num);
         }
         if offset_col_num == 0 && offset_row_num == 0 {
@@ -2893,7 +2892,7 @@ impl AdjustmentCoordinate for Worksheet {
         }
 
         // cell
-        self.cells_crate_mut().adjustment_remove_coordinate(
+        self.cells.adjustment_remove_coordinate(
             root_col_num,
             offset_col_num,
             root_row_num,

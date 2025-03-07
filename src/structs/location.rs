@@ -109,21 +109,9 @@ impl Location {
             "location",
             vec![
                 ("ref", self.reference.value_str()).into(),
-                (
-                    "firstHeaderRow",
-                    self.first_header_row.value_string().as_str(),
-                )
-                    .into(),
-                (
-                    "firstDataRow",
-                    self.first_data_row.value_string().as_str(),
-                )
-                    .into(),
-                (
-                    "firstDataCol",
-                    self.first_data_col.value_string().as_str(),
-                )
-                    .into(),
+                ("firstHeaderRow", &self.first_header_row.value_string()).into(),
+                ("firstDataRow", &self.first_data_row.value_string()).into(),
+                ("firstDataCol", &self.first_data_col.value_string()).into(),
             ],
             true,
         );

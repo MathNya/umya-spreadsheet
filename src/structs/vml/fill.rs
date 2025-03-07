@@ -148,7 +148,7 @@ impl Fill {
             let r_id = image.rid(rel_list);
             r_id_str = format!("rId{r_id}");
             attributes.push(("o:title", image.image_title()).into());
-            attributes.push(("o:relid", r_id_str.as_str()).into());
+            attributes.push(("o:relid", &r_id_str).into());
             attributes.push(("recolor", "t").into());
             attributes.push(("rotate", "t").into());
             attributes.push(("type", "frame").into());

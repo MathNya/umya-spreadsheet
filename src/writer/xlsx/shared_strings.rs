@@ -1,9 +1,6 @@
 use std::{
     io,
-    sync::{
-        Arc,
-        RwLock,
-    },
+    sync::RwLock,
 };
 
 use quick_xml::{
@@ -27,7 +24,7 @@ use crate::{
 };
 
 pub(crate) fn write<W: io::Seek + io::Write>(
-    shared_string_table: &Arc<RwLock<SharedStringTable>>,
+    shared_string_table: &RwLock<SharedStringTable>,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<(), XlsxError> {
     if shared_string_table

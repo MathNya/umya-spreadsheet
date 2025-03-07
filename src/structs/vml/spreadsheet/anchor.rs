@@ -236,7 +236,7 @@ impl Anchor {
     #[inline]
     fn number(value: Option<&&str>) -> u32 {
         match value {
-            Some(v) => (*v).to_string().trim().parse::<u32>().unwrap_or(0),
+            Some(v) => (*v).trim().parse::<u32>().unwrap_or(0),
             None => 0,
         }
     }

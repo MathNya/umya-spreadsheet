@@ -89,7 +89,7 @@ impl GradientFill {
     pub(crate) fn hash_code(&self) -> String {
         let mut value = String::new();
         for stop in &self.gradient_stop {
-            write!(value, "{}", stop.hash_code().as_str()).unwrap();
+            write!(value, "{}", stop.hash_code()).unwrap();
         }
         format!(
             "{:x}",

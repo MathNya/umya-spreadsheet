@@ -142,7 +142,7 @@ impl CacheField {
                 ("name", self.name.value_str()).into(),
                 (
                     "numFmtId",
-                    self.number_format_id.value_string().as_str(),
+                    &self.number_format_id.value_string(),
                 )
                     .into(),
             ],

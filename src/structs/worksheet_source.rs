@@ -52,7 +52,7 @@ impl WorksheetSource {
         // worksheetSource
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         let ref_str = self.address.range().range();
-        attributes.push(("ref", ref_str.as_str()).into());
+        attributes.push(("ref", &ref_str).into());
         if self.address.sheet_name() != "" {
             attributes.push(("sheet", self.address.sheet_name()).into());
         }

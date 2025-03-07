@@ -83,7 +83,7 @@ impl NumberingCache {
         write_start_tag(
             writer,
             "c:ptCount",
-            vec![("val", coll_value_count.as_str()).into()],
+            vec![("val", &coll_value_count).into()],
             true,
         );
 

@@ -231,8 +231,8 @@ impl OleObject {
         let shape_id_str = format!("{ole_id}");
         let attributes = vec![
             ("progId", self.prog_id.value_str()).into(),
-            ("shapeId", shape_id_str.as_str()).into(),
-            ("r:id", r_id_str.as_str()).into(),
+            ("shapeId", &shape_id_str).into(),
+            ("r:id", &r_id_str).into(),
         ];
         write_start_tag(writer, "oleObject", attributes, false);
 
@@ -250,8 +250,8 @@ impl OleObject {
         let r_id_str = format!("rId{r_id}");
         let attributes = vec![
             ("progId", self.prog_id.value_str()).into(),
-            ("shapeId", shape_id_str.as_str()).into(),
-            ("r:id", r_id_str.as_str()).into(),
+            ("shapeId", &shape_id_str).into(),
+            ("r:id", &r_id_str).into(),
         ];
         write_start_tag(writer, "oleObject", attributes, true);
 

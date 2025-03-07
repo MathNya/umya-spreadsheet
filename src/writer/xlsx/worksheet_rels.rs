@@ -77,7 +77,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         if !hyperlink.location() {
             is_write = write_relationship(
                 &mut writer,
-                r_id.to_string().as_str(),
+                &r_id.to_string(),
                 HYPERLINK_NS,
                 hyperlink.url(),
                 "External",
@@ -91,7 +91,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         let object_name = format!("printerSettings{printer_settings_no}.bin");
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             PRINTER_SETTINGS_NS,
             format!("../printerSettings/{object_name}").as_str(),
             "",
@@ -103,7 +103,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if worksheet.has_drawing_object() {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             DRAWINGS_NS,
             format!("../drawings/drawing{drawing_no}.xml").as_str(),
             "",
@@ -115,13 +115,9 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if worksheet.has_legacy_drawing() {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             VML_DRAWING_NS,
-            format!(
-                "../drawings/vmlDrawing{}.vml",
-                vml_drawing_no.to_string().as_str()
-            )
-            .as_str(),
+            format!("../drawings/vmlDrawing{vml_drawing_no}.vml").as_str(),
             "",
         );
         r_id += 1;
@@ -131,7 +127,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     for table_no in table_no_list {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             TABLE_NS,
             format!("../tables/table{table_no}.xml").as_str(),
             "",
@@ -148,7 +144,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             let object_name = format!("Microsoft_Excel_Worksheet{excel_no}.xlsx");
             write_relationship(
                 &mut writer,
-                r_id.to_string().as_str(),
+                &r_id.to_string(),
                 PACKAGE_NS,
                 format!("../embeddings/{object_name}").as_str(),
                 "",
@@ -160,7 +156,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             let object_name = format!("oleObject{ole_object_no}.bin");
             write_relationship(
                 &mut writer,
-                r_id.to_string().as_str(),
+                &r_id.to_string(),
                 OLE_OBJECT_NS,
                 format!("../embeddings/{object_name}").as_str(),
                 "",
@@ -174,7 +170,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             .image_name();
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             IMAGE_NS,
             format!("../media/{image_name}").as_str(),
             "",
@@ -186,7 +182,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if !worksheet.comments().is_empty() {
         is_write = write_relationship(
             &mut writer,
-            r_id.to_string().as_str(),
+            &r_id.to_string(),
             COMMENTS_NS,
             format!("../comments{comment_no}.xml").as_str(),
             "",
@@ -212,7 +208,7 @@ fn write_relationship(
     let tag_name = "Relationship";
     let mut attributes: crate::structs::AttrCollection = Vec::new();
     let r_id = format!("rId{p_id}");
-    attributes.push(("Id", r_id.as_str()).into());
+    attributes.push(("Id", &r_id).into());
     attributes.push(("Type", p_type).into());
     attributes.push(("Target", p_target).into());
     if !p_target_mode.is_empty() {

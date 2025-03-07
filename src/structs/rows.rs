@@ -47,7 +47,7 @@ impl Rows {
     /// Get Row Dimension in mutable.
     #[inline]
     pub(crate) fn get_row_dimension_mut(&mut self, row: u32) -> &mut Row {
-        self.rows.entry(row.to_owned()).or_insert_with(|| {
+        self.rows.entry(row).or_insert_with(|| {
             let mut obj = Row::default();
             obj.set_row_num(row);
             Box::new(obj)
@@ -59,7 +59,7 @@ impl Rows {
     #[inline]
     pub(crate) fn set_row_dimension(&mut self, value: Row) -> &mut Self {
         let row = value.get_row_num();
-        self.rows.insert(row.to_owned(), Box::new(value));
+        self.rows.insert(row, Box::new(value));
         self
     }
 

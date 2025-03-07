@@ -77,9 +77,7 @@ pub(crate) fn write_text_node_conversion<'a, S>(writer: &mut Writer<Cursor<Vec<u
 where
     S: Into<Cow<'a, str>>,
 {
-    let data = data.into().to_string();
-    let data = partial_escape(&data);
-    write_text_node_no_escape(writer, data);
+    write_text_node_no_escape(writer, partial_escape(data.into()));
 }
 
 #[inline]

@@ -120,7 +120,7 @@ impl MergeCells {
                 vec![
                     (
                         "count",
-                        self.range_collection().len().to_string().as_str(),
+                        &self.range_collection().len().to_string(),
                     )
                         .into(),
                 ],
@@ -132,7 +132,7 @@ impl MergeCells {
                 write_start_tag(
                     writer,
                     "mergeCell",
-                    vec![("ref", merge_cell.range().as_str()).into()],
+                    vec![("ref", &merge_cell.range()).into()],
                     true,
                 );
             }

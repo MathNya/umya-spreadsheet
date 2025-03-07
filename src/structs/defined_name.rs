@@ -226,7 +226,7 @@ impl DefinedName {
                 },
                 Event::End(ref e) => {
                     if e.name().into_inner() == b"definedName" {
-                        self.set_address(value.clone());
+                        self.set_address(value);
                         return
                     }
                 },

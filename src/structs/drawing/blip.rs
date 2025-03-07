@@ -108,7 +108,7 @@ impl Blip {
         let r_id_str = format!("rId{r_id}");
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         attributes.push(("xmlns:r", REL_OFC_NS).into());
-        attributes.push(("r:embed", r_id_str.as_str()).into());
+        attributes.push(("r:embed", &r_id_str).into());
         if !&self.cstate.is_empty() {
             attributes.push(("cstate", &self.cstate).into());
         }

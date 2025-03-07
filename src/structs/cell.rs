@@ -2,10 +2,7 @@ use std::{
     borrow::Cow,
     collections::HashMap,
     io::Cursor,
-    sync::{
-        Arc,
-        RwLock,
-    },
+    sync::RwLock,
 };
 
 use quick_xml::{
@@ -637,7 +634,7 @@ impl Cell {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        shared_string_table: &Arc<RwLock<SharedStringTable>>,
+        shared_string_table: &RwLock<SharedStringTable>,
         stylesheet: &mut Stylesheet,
         formula_shared_list: &HashMap<u32, (String, Option<String>)>,
     ) {

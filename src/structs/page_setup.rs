@@ -203,7 +203,7 @@ impl PageSetup {
                 attributes.push(("verticalDpi", &vertical_dpi).into());
             }
             if self.object_data.is_some() {
-                attributes.push(("r:id", r_id_str.as_str()).into());
+                attributes.push(("r:id", &r_id_str).into());
                 *r_id += 1;
             }
             write_start_tag(writer, "pageSetup", attributes, true);

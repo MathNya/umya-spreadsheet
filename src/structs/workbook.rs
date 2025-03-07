@@ -832,7 +832,7 @@ impl Workbook {
             let val3_up = format!("xl/{}", &val3);
             for worksheet in self.sheet_collection_no_check() {
                 for pivot_cache_definition in worksheet.pivot_cache_definition_collection() {
-                    if val3_up.as_str() == pivot_cache_definition
+                    if val3_up == pivot_cache_definition
                         && !result.iter().any(|(_, _, r_val3)| r_val3 == &**val3)
                     {
                         result.push((val1.to_string(), val2.to_string(), val3.to_string()));

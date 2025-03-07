@@ -70,7 +70,7 @@ impl SharedStringTable {
 
         let hash_code = shared_string_item.get_hash_u64();
         let n = if let Some(v) = self.map.get(&hash_code) {
-            v.to_owned()
+            *v
         } else {
             let n = self.shared_string_item.len();
             self.map.insert(hash_code, n);
@@ -119,7 +119,7 @@ impl SharedStringTable {
                 ("count", self.regist_count.to_string()).into(),
                 (
                     "uniqueCount",
-                    self.shared_string_item.len().to_string().as_str(),
+                    &self.shared_string_item.len().to_string(),
                 )
                     .into(),
             ],

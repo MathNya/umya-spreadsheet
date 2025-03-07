@@ -129,7 +129,7 @@ impl RowItem {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
         let index_str = self.index.value_string();
         if self.index.has_value() {
-            attributes.push(("i", index_str.as_str()).into());
+            attributes.push(("i", &index_str).into());
         }
         let item_type_str = self.item_type.value_string();
         if self.item_type.has_value() {
@@ -137,7 +137,7 @@ impl RowItem {
         }
         let repeated_item_count_str = self.repeated_item_count.value_string();
         if self.repeated_item_count.has_value() {
-            attributes.push(("r", repeated_item_count_str.as_str()).into());
+            attributes.push(("r", &repeated_item_count_str).into());
         }
         write_start_tag(writer, "i", attributes, empty_flg);
         if !empty_flg {

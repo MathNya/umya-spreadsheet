@@ -118,12 +118,7 @@ impl NonVisualDrawingProperties {
                 vec![("uri", "{63B3BB69-23CF-44E3-9099-C40C66FF867C}").into()],
                 false,
             );
-            write_start_tag(
-                writer,
-                "a14:compatExt",
-                vec![("spid", spid.as_str()).into()],
-                true,
-            );
+            write_start_tag(writer, "a14:compatExt", vec![("spid", &spid).into()], true);
 
             write_end_tag(writer, "a:ext");
             write_end_tag(writer, "a:extLst");
