@@ -26,12 +26,23 @@ pub struct ChartText {
 
 impl ChartText {
     #[must_use]
-    pub fn get_rich_text(&self) -> &RichText {
+    pub fn rich_text(&self) -> &RichText {
         &self.rich_text
     }
 
-    pub fn get_rich_text_mut(&mut self) -> &mut RichText {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub fn get_rich_text(&self) -> &RichText {
+        self.rich_text()
+    }
+
+    pub fn rich_text_mut(&mut self) -> &mut RichText {
         &mut self.rich_text
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use rich_text_mut()")]
+    pub fn get_rich_text_mut(&mut self) -> &mut RichText {
+        self.rich_text_mut()
     }
 
     pub fn set_rich_text(&mut self, value: RichText) -> &mut ChartText {

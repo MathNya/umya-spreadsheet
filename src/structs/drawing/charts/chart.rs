@@ -53,12 +53,23 @@ impl Chart {
     pub const LANG_JA_JP: &'static str = "ja-JP";
 
     #[must_use]
-    pub fn get_title(&self) -> Option<&Title> {
+    pub fn title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
 
-    pub fn get_title_mut(&mut self) -> Option<&mut Title> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use title()")]
+    pub fn get_title(&self) -> Option<&Title> {
+        self.title()
+    }
+
+    pub fn title_mut(&mut self) -> Option<&mut Title> {
         self.title.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use title_mut()")]
+    pub fn get_title_mut(&mut self) -> Option<&mut Title> {
+        self.title_mut()
     }
 
     pub fn set_title(&mut self, value: Title) -> &mut Self {
@@ -67,12 +78,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_auto_title_deleted(&self) -> &AutoTitleDeleted {
+    pub fn auto_title_deleted(&self) -> &AutoTitleDeleted {
         &self.auto_title_deleted
     }
 
-    pub fn get_auto_title_deleted_mut(&mut self) -> &mut AutoTitleDeleted {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_title_deleted()")]
+    pub fn get_auto_title_deleted(&self) -> &AutoTitleDeleted {
+        self.auto_title_deleted()
+    }
+
+    pub fn auto_title_deleted_mut(&mut self) -> &mut AutoTitleDeleted {
         &mut self.auto_title_deleted
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use auto_title_deleted_mut()")]
+    pub fn get_auto_title_deleted_mut(&mut self) -> &mut AutoTitleDeleted {
+        self.auto_title_deleted_mut()
     }
 
     pub fn set_auto_title_deleted(&mut self, value: AutoTitleDeleted) -> &mut Self {
@@ -81,12 +103,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_view_3d(&self) -> Option<&View3D> {
+    pub fn view_3d(&self) -> Option<&View3D> {
         self.view_3d.as_ref()
     }
 
-    pub fn get_view_3d_mut(&mut self) -> Option<&mut View3D> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use view_3d()")]
+    pub fn get_view_3d(&self) -> Option<&View3D> {
+        self.view_3d()
+    }
+
+    pub fn view_3d_mut(&mut self) -> Option<&mut View3D> {
         self.view_3d.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use view_3d_mut()")]
+    pub fn get_view_3d_mut(&mut self) -> Option<&mut View3D> {
+        self.view_3d_mut()
     }
 
     pub fn set_view_3d(&mut self, value: View3D) -> &mut Self {
@@ -95,12 +128,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_floor(&self) -> Option<&Floor> {
+    pub fn floor(&self) -> Option<&Floor> {
         self.floor.as_ref()
     }
 
-    pub fn get_floor_mut(&mut self) -> Option<&mut Floor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use floor()")]
+    pub fn get_floor(&self) -> Option<&Floor> {
+        self.floor()
+    }
+
+    pub fn floor_mut(&mut self) -> Option<&mut Floor> {
         self.floor.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use floor_mut()")]
+    pub fn get_floor_mut(&mut self) -> Option<&mut Floor> {
+        self.floor_mut()
     }
 
     pub fn set_floor(&mut self, value: Floor) -> &mut Self {
@@ -109,12 +153,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_side_wall(&self) -> Option<&SideWall> {
+    pub fn side_wall(&self) -> Option<&SideWall> {
         self.side_wall.as_ref()
     }
 
-    pub fn get_side_wall_mut(&mut self) -> Option<&mut SideWall> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use side_wall()")]
+    pub fn get_side_wall(&self) -> Option<&SideWall> {
+        self.side_wall()
+    }
+
+    pub fn side_wall_mut(&mut self) -> Option<&mut SideWall> {
         self.side_wall.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use side_wall_mut()")]
+    pub fn get_side_wall_mut(&mut self) -> Option<&mut SideWall> {
+        self.side_wall_mut()
     }
 
     pub fn set_side_wall(&mut self, value: SideWall) -> &mut Self {
@@ -123,12 +178,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_back_wall(&self) -> Option<&BackWall> {
+    pub fn back_wall(&self) -> Option<&BackWall> {
         self.back_wall.as_ref()
     }
 
-    pub fn get_back_wall_mut(&mut self) -> Option<&mut BackWall> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use back_wall()")]
+    pub fn get_back_wall(&self) -> Option<&BackWall> {
+        self.back_wall()
+    }
+
+    pub fn back_wall_mut(&mut self) -> Option<&mut BackWall> {
         self.back_wall.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use back_wall_mut()")]
+    pub fn get_back_wall_mut(&mut self) -> Option<&mut BackWall> {
+        self.back_wall_mut()
     }
 
     pub fn set_back_wall(&mut self, value: BackWall) -> &mut Self {
@@ -137,12 +203,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_plot_area(&self) -> &PlotArea {
+    pub fn plot_area(&self) -> &PlotArea {
         &self.plot_area
     }
 
-    pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use plot_area()")]
+    pub fn get_plot_area(&self) -> &PlotArea {
+        self.plot_area()
+    }
+
+    pub fn plot_area_mut(&mut self) -> &mut PlotArea {
         &mut self.plot_area
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use plot_area_mut()")]
+    pub fn get_plot_area_mut(&mut self) -> &mut PlotArea {
+        self.plot_area_mut()
     }
 
     pub fn set_plot_area(&mut self, value: PlotArea) -> &mut Self {
@@ -151,12 +228,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_legend(&self) -> &Legend {
+    pub fn legend(&self) -> &Legend {
         &self.legend
     }
 
-    pub fn get_legend_mut(&mut self) -> &mut Legend {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use legend()")]
+    pub fn get_legend(&self) -> &Legend {
+        self.legend()
+    }
+
+    pub fn legend_mut(&mut self) -> &mut Legend {
         &mut self.legend
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use legend_mut()")]
+    pub fn get_legend_mut(&mut self) -> &mut Legend {
+        self.legend_mut()
     }
 
     pub fn set_legend(&mut self, value: Legend) -> &mut Self {
@@ -165,12 +253,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_plot_visible_only(&self) -> &PlotVisibleOnly {
+    pub fn plot_visible_only(&self) -> &PlotVisibleOnly {
         &self.plot_visible_only
     }
 
-    pub fn get_plot_visible_only_mut(&mut self) -> &mut PlotVisibleOnly {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use plot_visible_only()")]
+    pub fn get_plot_visible_only(&self) -> &PlotVisibleOnly {
+        self.plot_visible_only()
+    }
+
+    pub fn plot_visible_only_mut(&mut self) -> &mut PlotVisibleOnly {
         &mut self.plot_visible_only
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use plot_visible_only_mut()")]
+    pub fn get_plot_visible_only_mut(&mut self) -> &mut PlotVisibleOnly {
+        self.plot_visible_only_mut()
     }
 
     pub fn set_plot_visible_only(&mut self, value: PlotVisibleOnly) -> &mut Self {
@@ -179,12 +278,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_display_blanks_as(&self) -> &DisplayBlanksAs {
+    pub fn display_blanks_as(&self) -> &DisplayBlanksAs {
         &self.display_blanks_as
     }
 
-    pub fn get_display_blanks_as_mut(&mut self) -> &mut DisplayBlanksAs {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use display_blanks_as()")]
+    pub fn get_display_blanks_as(&self) -> &DisplayBlanksAs {
+        self.display_blanks_as()
+    }
+
+    pub fn display_blanks_as_mut(&mut self) -> &mut DisplayBlanksAs {
         &mut self.display_blanks_as
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use display_blanks_as_mut()")]
+    pub fn get_display_blanks_as_mut(&mut self) -> &mut DisplayBlanksAs {
+        self.display_blanks_as_mut()
     }
 
     pub fn set_display_blanks_as(&mut self, value: DisplayBlanksAs) -> &mut Self {
@@ -193,12 +303,23 @@ impl Chart {
     }
 
     #[must_use]
-    pub fn get_show_data_labels_over_maximum(&self) -> &ShowDataLabelsOverMaximum {
+    pub fn show_data_labels_over_maximum(&self) -> &ShowDataLabelsOverMaximum {
         &self.show_data_labels_over_maximum
     }
 
-    pub fn get_show_data_labels_over_maximum_mut(&mut self) -> &mut ShowDataLabelsOverMaximum {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_data_labels_over_maximum()")]
+    pub fn get_show_data_labels_over_maximum(&self) -> &ShowDataLabelsOverMaximum {
+        self.show_data_labels_over_maximum()
+    }
+
+    pub fn show_data_labels_over_maximum_mut(&mut self) -> &mut ShowDataLabelsOverMaximum {
         &mut self.show_data_labels_over_maximum
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use show_data_labels_over_maximum_mut()")]
+    pub fn get_show_data_labels_over_maximum_mut(&mut self) -> &mut ShowDataLabelsOverMaximum {
+        self.show_data_labels_over_maximum_mut()
     }
 
     pub fn set_show_data_labels_over_maximum(
@@ -209,8 +330,13 @@ impl Chart {
         self
     }
 
+    pub fn formula_mut(&mut self) -> Vec<&mut Formula> {
+        self.plot_area_mut().get_formula_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use formula_mut()")]
     pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
-        self.get_plot_area_mut().get_formula_mut()
+        self.formula_mut()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

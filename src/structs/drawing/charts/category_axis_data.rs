@@ -31,12 +31,23 @@ pub struct CategoryAxisData {
 
 impl CategoryAxisData {
     #[must_use]
-    pub fn get_string_reference(&self) -> Option<&StringReference> {
+    pub fn string_reference(&self) -> Option<&StringReference> {
         self.string_reference.as_ref()
     }
 
-    pub fn get_string_reference_mut(&mut self) -> Option<&mut StringReference> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use string_reference()")]
+    pub fn get_string_reference(&self) -> Option<&StringReference> {
+        self.string_reference()
+    }
+
+    pub fn string_reference_mut(&mut self) -> Option<&mut StringReference> {
         self.string_reference.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use get_string_reference_mut()")]
+    pub fn get_string_reference_mut(&mut self) -> Option<&mut StringReference> {
+        self.string_reference_mut()
     }
 
     pub fn set_string_reference(&mut self, value: StringReference) -> &mut Self {
@@ -50,12 +61,23 @@ impl CategoryAxisData {
     }
 
     #[must_use]
-    pub fn get_string_literal(&self) -> Option<&StringLiteral> {
+    pub fn string_literal(&self) -> Option<&StringLiteral> {
         self.string_literal.as_ref()
     }
 
-    pub fn get_string_literal_mut(&mut self) -> Option<&mut StringLiteral> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use string_literal()")]
+    pub fn get_string_literal(&self) -> Option<&StringLiteral> {
+        self.string_literal()
+    }
+
+    pub fn string_literal_mut(&mut self) -> Option<&mut StringLiteral> {
         self.string_literal.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use string_literal_mut()")]
+    pub fn get_string_literal_mut(&mut self) -> Option<&mut StringLiteral> {
+        self.string_literal_mut()
     }
 
     pub fn set_string_literal(&mut self, value: StringLiteral) -> &mut Self {

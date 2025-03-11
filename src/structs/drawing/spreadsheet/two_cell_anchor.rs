@@ -208,8 +208,8 @@ impl TwoCellAnchor {
                 .get_graphic()
                 .get_graphic_data()
                 .get_chart_space()
-                .get_chart()
-                .get_plot_area()
+                .chart()
+                .plot_area()
                 .is_support(),
             None => true,
         }

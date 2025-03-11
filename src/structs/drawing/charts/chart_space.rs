@@ -49,12 +49,23 @@ pub struct ChartSpace {
 
 impl ChartSpace {
     #[must_use]
-    pub fn get_date1904(&self) -> &Date1904 {
+    pub fn date1904(&self) -> &Date1904 {
         &self.date1904
     }
 
-    pub fn get_date1904_mut(&mut self) -> &mut Date1904 {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use date1904()")]
+    pub fn get_date1904(&self) -> &Date1904 {
+        self.date1904()
+    }
+
+    pub fn date1904_mut(&mut self) -> &mut Date1904 {
         &mut self.date1904
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use date1904_mut()")]
+    pub fn get_date1904_mut(&mut self) -> &mut Date1904 {
+        self.date1904_mut()
     }
 
     pub fn set_date1904(&mut self, value: Date1904) -> &mut Self {
@@ -63,12 +74,23 @@ impl ChartSpace {
     }
 
     #[must_use]
-    pub fn get_editing_language(&self) -> &EditingLanguage {
+    pub fn editing_language(&self) -> &EditingLanguage {
         &self.editing_language
     }
 
-    pub fn get_editing_language_mut(&mut self) -> &mut EditingLanguage {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use editing_language()")]
+    pub fn get_editing_language(&self) -> &EditingLanguage {
+        self.editing_language()
+    }
+
+    pub fn editing_language_mut(&mut self) -> &mut EditingLanguage {
         &mut self.editing_language
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use editing_language_mut()")]
+    pub fn get_editing_language_mut(&mut self) -> &mut EditingLanguage {
+        self.editing_language_mut()
     }
 
     pub fn set_editing_language(&mut self, value: EditingLanguage) -> &mut Self {
@@ -77,12 +99,23 @@ impl ChartSpace {
     }
 
     #[must_use]
-    pub fn get_rounded_corners(&self) -> &RoundedCorners {
+    pub fn rounded_corners(&self) -> &RoundedCorners {
         &self.rounded_corners
     }
 
-    pub fn get_rounded_corners_mut(&mut self) -> &mut RoundedCorners {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rounded_corners()")]
+    pub fn get_rounded_corners(&self) -> &RoundedCorners {
+        self.rounded_corners()
+    }
+
+    pub fn rounded_corners_mut(&mut self) -> &mut RoundedCorners {
         &mut self.rounded_corners
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use rounded_corners_mut()")]
+    pub fn get_rounded_corners_mut(&mut self) -> &mut RoundedCorners {
+        self.rounded_corners_mut()
     }
 
     pub fn set_rounded_corners(&mut self, value: RoundedCorners) -> &mut Self {
@@ -91,12 +124,23 @@ impl ChartSpace {
     }
 
     #[must_use]
-    pub fn get_style(&self) -> &Style {
+    pub fn style(&self) -> &Style {
         &self.style
     }
 
-    pub fn get_style_mut(&mut self) -> &mut Style {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &Style {
+        self.style()
+    }
+
+    pub fn style_mut(&mut self) -> &mut Style {
         &mut self.style
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use style_mut()")]
+    pub fn get_style_mut(&mut self) -> &mut Style {
+        self.style_mut()
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
@@ -105,12 +149,23 @@ impl ChartSpace {
     }
 
     #[must_use]
-    pub fn get_chart(&self) -> &Chart {
+    pub fn chart(&self) -> &Chart {
         &self.chart
     }
 
-    pub fn get_chart_mut(&mut self) -> &mut Chart {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart()")]
+    pub fn get_chart(&self) -> &Chart {
+        self.chart()
+    }
+
+    pub fn chart_mut(&mut self) -> &mut Chart {
         &mut self.chart
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use chart_mut()")]
+    pub fn get_chart_mut(&mut self) -> &mut Chart {
+        self.chart_mut()
     }
 
     pub fn set_chart(&mut self, value: Chart) -> &mut Self {
@@ -119,12 +174,23 @@ impl ChartSpace {
     }
 
     #[must_use]
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -133,12 +199,23 @@ impl ChartSpace {
     }
 
     #[must_use]
-    pub fn get_print_settings(&self) -> Option<&PrintSettings> {
+    pub fn print_settings(&self) -> Option<&PrintSettings> {
         self.print_settings.as_ref()
     }
 
-    pub fn get_print_settings_mut(&mut self) -> Option<&mut PrintSettings> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use print_settings()")]
+    pub fn get_print_settings(&self) -> Option<&PrintSettings> {
+        self.print_settings()
+    }
+
+    pub fn print_settings_mut(&mut self) -> Option<&mut PrintSettings> {
         self.print_settings.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use print_settings_mut()")]
+    pub fn get_print_settings_mut(&mut self) -> Option<&mut PrintSettings> {
+        self.print_settings_mut()
     }
 
     pub fn set_print_settings(&mut self, value: PrintSettings) -> &mut Self {

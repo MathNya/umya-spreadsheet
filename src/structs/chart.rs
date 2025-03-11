@@ -162,7 +162,7 @@ impl Chart {
     #[inline]
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
-        self.chart_space_mut().get_chart_mut().set_title(title);
+        self.chart_space_mut().chart_mut().set_title(title);
         self
     }
 
@@ -252,8 +252,8 @@ impl Chart {
     #[inline]
     pub fn plot_area_mut(&mut self) -> &mut PlotArea {
         self.chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
     }
 
     #[inline]
@@ -265,8 +265,8 @@ impl Chart {
     #[inline]
     pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         self.chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .get_area_chart_series_list_mut()
     }
 
@@ -493,25 +493,25 @@ impl Chart {
         line_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213_468_160);
+        category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .get_orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
-        category_axis.get_auto_labeled_mut().set_val(true);
-        category_axis.get_label_offset_mut().set_val(100);
+        category_axis.auto_labeled_mut().set_val(true);
+        category_axis.label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
@@ -549,57 +549,57 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_line_chart(line_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_layout(layout);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .get_graphic_mut()
@@ -638,25 +638,25 @@ impl Chart {
         line_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213_468_160);
+        category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .get_orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
-        category_axis.get_auto_labeled_mut().set_val(true);
-        category_axis.get_label_offset_mut().set_val(100);
+        category_axis.auto_labeled_mut().set_val(true);
+        category_axis.label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
@@ -694,63 +694,63 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
+            .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_line_3d_chart(line_3d_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_layout(layout);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .get_graphic_mut()
@@ -795,50 +795,50 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_pie_chart(pie_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_layout(layout);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .get_graphic_mut()
@@ -894,56 +894,56 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
+            .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_pie_3d_chart(pie_3d_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_layout(layout);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .get_graphic_mut()
@@ -1011,43 +1011,43 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_doughnut_chart(doughnut_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_layout(layout);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .get_graphic_mut()
@@ -1075,25 +1075,25 @@ impl Chart {
         area_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213_468_160);
+        category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .get_orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         category_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
-        category_axis.get_auto_labeled_mut().set_val(true);
-        category_axis.get_label_offset_mut().set_val(100);
+        category_axis.auto_labeled_mut().set_val(true);
+        category_axis.label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
@@ -1132,50 +1132,50 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_area_chart(area_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .get_graphic_mut()
@@ -1214,25 +1214,25 @@ impl Chart {
         area_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213_468_160);
+        category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .get_orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         category_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
-        category_axis.get_auto_labeled_mut().set_val(true);
-        category_axis.get_label_offset_mut().set_val(100);
+        category_axis.auto_labeled_mut().set_val(true);
+        category_axis.label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
@@ -1271,56 +1271,56 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
+            .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_area_3d_chart(area_3d_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .get_graphic_mut()
@@ -1353,28 +1353,28 @@ impl Chart {
         bar_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213_468_160);
+        category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .get_orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Bottom);
         category_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         category_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
-        category_axis.get_auto_labeled_mut().set_val(true);
-        category_axis.get_label_offset_mut().set_val(100);
+        category_axis.auto_labeled_mut().set_val(true);
+        category_axis.label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
@@ -1410,50 +1410,50 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_bar_chart(bar_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .get_graphic_mut()
@@ -1497,28 +1497,28 @@ impl Chart {
         bar_3d_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213_468_160);
+        category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .get_orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Bottom);
         category_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         category_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
-        category_axis.get_auto_labeled_mut().set_val(true);
-        category_axis.get_label_offset_mut().set_val(100);
+        category_axis.auto_labeled_mut().set_val(true);
+        category_axis.label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
@@ -1554,56 +1554,56 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
+            .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_bar_3d_chart(bar_3d_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .get_graphic_mut()
@@ -1647,43 +1647,43 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_of_pie_chart(of_pie_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .get_graphic_mut()
@@ -1860,57 +1860,57 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_bubble_chart(bubble_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis_1);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis_2);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .get_graphic_mut()
@@ -1935,25 +1935,25 @@ impl Chart {
         radar_chart.add_axis_id(axis_id2);
 
         let mut category_axis = CategoryAxis::default();
-        category_axis.get_axis_id_mut().set_val(213_468_160);
+        category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .get_orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         category_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         category_axis
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
-        category_axis.get_auto_labeled_mut().set_val(true);
-        category_axis.get_label_offset_mut().set_val(100);
+        category_axis.auto_labeled_mut().set_val(true);
+        category_axis.label_offset_mut().set_val(100);
 
         let major_gridlines = MajorGridlines::default();
 
@@ -1991,57 +1991,57 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_radar_chart(radar_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_layout(layout);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .get_graphic_mut()
@@ -2180,57 +2180,57 @@ impl Chart {
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_editing_language_mut()
+            .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .set_scatter_chart(scatter_chart);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis_1);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_area_mut()
+            .chart_mut()
+            .plot_area_mut()
             .add_value_axis(value_axis_2);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .get_legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_legend_mut()
+            .chart_mut()
+            .legend_mut()
             .set_layout(layout);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_plot_visible_only_mut()
+            .chart_mut()
+            .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .get_graphic_mut()
             .get_graphic_data_mut()
             .get_chart_space_mut()
-            .get_chart_mut()
-            .get_display_blanks_as_mut()
+            .chart_mut()
+            .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .get_graphic_mut()
@@ -2271,7 +2271,7 @@ impl Chart {
         paragraph.add_run(run);
 
         let mut chart_text = ChartText::default();
-        chart_text.get_rich_text_mut().add_paragraph(paragraph);
+        chart_text.rich_text_mut().add_paragraph(paragraph);
 
         let mut title = Title::default();
         title.set_chart_text(chart_text);

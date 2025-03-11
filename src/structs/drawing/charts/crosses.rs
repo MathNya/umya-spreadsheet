@@ -22,8 +22,14 @@ pub struct Crosses {
 }
 impl Crosses {
     #[must_use]
-    pub fn get_val(&self) -> &CrossesValues {
+    pub fn val(&self) -> &CrossesValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &CrossesValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: CrossesValues) -> &mut Crosses {
