@@ -184,3 +184,7 @@ Contributions by way of pull requests are welcome!  Please make sure your code u
 
 * `cargo fmt` for formatting
 * [clippy](https://github.com/rust-lang/rust-clippy)
+```rust
+cargo +nightly fmt --all
+cargo clippy -- -D warnings
+```
