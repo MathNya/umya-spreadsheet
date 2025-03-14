@@ -997,12 +997,12 @@ impl Chart {
         show_leader_lines.set_val(true);
 
         let mut doughnut_chart = DoughnutChart::default();
-        doughnut_chart.get_vary_colors_mut().set_val(true);
+        doughnut_chart.vary_colors_mut().set_val(true);
         doughnut_chart.set_area_chart_series_list(acsl_obj);
         doughnut_chart
-            .get_data_labels_mut()
+            .data_labels_mut()
             .set_show_leader_lines(show_leader_lines);
-        doughnut_chart.get_hole_size_mut().set_val(50);
+        doughnut_chart.hole_size_mut().set_val(50);
 
         let layout = Layout::default();
 

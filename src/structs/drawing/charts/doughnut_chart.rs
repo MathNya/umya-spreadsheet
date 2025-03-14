@@ -38,12 +38,23 @@ pub struct DoughnutChart {
 
 impl DoughnutChart {
     #[must_use]
-    pub fn get_vary_colors(&self) -> &VaryColors {
+    pub fn vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
 
-    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vary_colors()")]
+    pub fn get_vary_colors(&self) -> &VaryColors {
+        self.vary_colors()
+    }
+
+    pub fn vary_colors_mut(&mut self) -> &mut VaryColors {
         &mut self.vary_colors
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use vary_colors_mut()")]
+    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+        self.vary_colors_mut()
     }
 
     pub fn set_vary_colors(&mut self, value: VaryColors) -> &mut DoughnutChart {
@@ -52,12 +63,23 @@ impl DoughnutChart {
     }
 
     #[must_use]
-    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+    pub fn area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vaarea_chart_series_listl()")]
+    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+        self.area_chart_series_list()
+    }
+
+    pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         &mut self.area_chart_series_list
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list_mut()")]
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.area_chart_series_list_mut()
     }
 
     pub fn set_area_chart_series_list(&mut self, value: AreaChartSeriesList) -> &mut Self {
@@ -66,12 +88,23 @@ impl DoughnutChart {
     }
 
     #[must_use]
-    pub fn get_data_labels(&self) -> &DataLabels {
+    pub fn data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_labels()")]
+    pub fn get_data_labels(&self) -> &DataLabels {
+        self.data_labels()
+    }
+
+    pub fn data_labels_mut(&mut self) -> &mut DataLabels {
         &mut self.data_labels
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use data_labels_mut()")]
+    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+        self.data_labels_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut DoughnutChart {
@@ -80,12 +113,23 @@ impl DoughnutChart {
     }
 
     #[must_use]
-    pub fn get_first_slice_angle(&self) -> &FirstSliceAngle {
+    pub fn first_slice_angle(&self) -> &FirstSliceAngle {
         &self.first_slice_angle
     }
 
-    pub fn get_first_slice_angle_mut(&mut self) -> &mut FirstSliceAngle {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use first_slice_angle()")]
+    pub fn get_first_slice_angle(&self) -> &FirstSliceAngle {
+        self.first_slice_angle()
+    }
+
+    pub fn first_slice_angle_mut(&mut self) -> &mut FirstSliceAngle {
         &mut self.first_slice_angle
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use first_slice_angle_mut()")]
+    pub fn get_first_slice_angle_mut(&mut self) -> &mut FirstSliceAngle {
+        self.first_slice_angle_mut()
     }
 
     pub fn set_first_slice_angle(&mut self, value: FirstSliceAngle) -> &mut DoughnutChart {
@@ -94,12 +138,23 @@ impl DoughnutChart {
     }
 
     #[must_use]
-    pub fn get_hole_size(&self) -> &HoleSize {
+    pub fn hole_size(&self) -> &HoleSize {
         &self.hole_size
     }
 
-    pub fn get_hole_size_mut(&mut self) -> &mut HoleSize {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hole_size()")]
+    pub fn get_hole_size(&self) -> &HoleSize {
+        self.hole_size()
+    }
+
+    pub fn hole_size_mut(&mut self) -> &mut HoleSize {
         &mut self.hole_size
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hole_size_mut()")]
+    pub fn get_hole_size_mut(&mut self) -> &mut HoleSize {
+        self.hole_size_mut()
     }
 
     pub fn set_hole_size(&mut self, value: HoleSize) -> &mut DoughnutChart {
@@ -118,7 +173,7 @@ impl DoughnutChart {
                 b"c:ser" => {
                     let mut obj = AreaChartSeries::default();
                     obj.set_attributes(reader, e);
-                    self.get_area_chart_series_list_mut()
+                    self.area_chart_series_list_mut()
                         .add_area_chart_series(obj);
                 }
                 b"c:dLbls" => {

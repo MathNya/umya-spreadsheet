@@ -375,7 +375,7 @@ impl PlotArea {
             return chart.get_area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.doughnut_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.scatter_chart {
             return chart.get_area_chart_series_list_mut();
@@ -435,7 +435,7 @@ impl PlotArea {
             }
         }
         if let Some(v) = &mut self.doughnut_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }
