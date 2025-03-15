@@ -169,12 +169,14 @@ impl Worksheet {
     /// Get Cell List.
     #[inline]
     pub fn get_cell_collection(&self) -> Vec<&Cell> {
-        self.cell_collection.get_collection()
+        self.cell_collection.iter_collection().collect()
     }
 
     #[inline]
     pub fn get_cell_collection_sorted(&self) -> Vec<&Cell> {
-        self.cell_collection.get_collection_sorted()
+        self.cell_collection
+            .iter_cells_sorted_by_row_column()
+            .collect()
     }
 
     /// Get Cell List in mutable.
@@ -272,12 +274,14 @@ impl Worksheet {
 
     #[inline]
     pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
-        self.cell_collection.get_collection_by_column(column_num)
+        self.cell_collection
+            .iter_cells_by_column(*column_num)
+            .collect()
     }
 
     #[inline]
     pub fn get_collection_by_row(&self, row_num: &u32) -> Vec<&Cell> {
-        self.cell_collection.get_collection_by_row(row_num)
+        self.cell_collection.iter_cells_by_row(*row_num).collect()
     }
 
     #[inline]
@@ -380,7 +384,9 @@ impl Worksheet {
     /// ```
     #[inline]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
-        self.cell_collection.get_cell_value_by_range(range)
+        self.cell_collection
+            .iter_all_cell_values_by_range_sorted_by_row(range)
+            .collect()
     }
 
     /// Get style.
@@ -557,7 +563,7 @@ impl Worksheet {
     /// Get Hyperlink convert to hashmap.
     pub(crate) fn get_hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
         let mut result: HashMap<String, &Hyperlink> = HashMap::new();
-        for cell in self.cell_collection.get_collection() {
+        for cell in self.cell_collection.iter_collection() {
             if let Some(hyperlink) = cell.get_hyperlink() {
                 let coordition = coordinate_from_index(
                     cell.get_coordinate().get_col_num(),
@@ -1799,9 +1805,9 @@ impl Worksheet {
         }
 
         // Iterate row by row, collecting cell information (do I copy)
-        let cells = self.cell_collection.get_cell_by_range(range);
-        let mut copy_cells: Vec<Cell> = cells
-            .into_iter()
+        let mut copy_cells: Vec<Cell> = self
+            .cell_collection
+            .iter_all_cells_by_range_sorted_by_row(range)
             .flatten()
             .map(|cell| cell.clone())
             .collect();
@@ -1839,7 +1845,7 @@ impl Worksheet {
             if self.row_dimensions.get_row_dimension(&row).is_some() {
                 let mut indexes: Vec<(u32, u32)> = Vec::new();
                 {
-                    let cells: Vec<&Cell> = self.cell_collection.get_collection_by_row(&row);
+                    let cells: Vec<&Cell> = self.cell_collection.iter_cells_by_row(row).collect();
                     for cell in cells {
                         if !cell.is_visually_empty() {
                             return;
