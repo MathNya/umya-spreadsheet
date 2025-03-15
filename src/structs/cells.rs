@@ -34,6 +34,22 @@ impl Cells {
         self.iter_collection().collect()
     }
 
+    #[inline]
+    pub fn is_row_empty(&self, row_num: u32) -> bool {
+        self.row_column_index
+            .range((row_num, 0)..=(row_num, u32::MAX))
+            .next()
+            .is_none()
+    }
+
+    #[inline]
+    pub fn is_col_empty(&self, col_num: u32) -> bool {
+        self.column_row_index
+            .range((col_num, 0)..=(col_num, u32::MAX))
+            .next()
+            .is_none()
+    }
+
     /// Iterates all cell coordinates, sorted by row then by column.
     /// Coordinate returned is (column, row).
     #[inline(always)]
