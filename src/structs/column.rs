@@ -136,13 +136,7 @@ impl Column {
             None => 11f64,
         };
 
-        let mut cell_list: Vec<_> = cells.iter_cells_by_column(*self.get_col_num()).collect();
-        cell_list.sort_by(|a, b| {
-            a.get_coordinate()
-                .get_row_num()
-                .cmp(b.get_coordinate().get_row_num())
-        });
-        for cell in cell_list {
+        for cell in cells.iter_cells_by_column(*self.get_col_num()) {
             let column_width = cell.get_width_point(&column_font_size);
 
             if column_width > column_width_max {
