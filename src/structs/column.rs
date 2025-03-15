@@ -136,7 +136,7 @@ impl Column {
             None => 11f64,
         };
 
-        let mut cell_list = cells.get_collection_by_column(self.get_col_num());
+        let mut cell_list: Vec<_> = cells.iter_cells_by_column(*self.get_col_num()).collect();
         cell_list.sort_by(|a, b| {
             a.get_coordinate()
                 .get_row_num()
