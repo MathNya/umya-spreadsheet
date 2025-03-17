@@ -200,13 +200,7 @@ impl Column {
             None => 11f64,
         };
 
-        let mut cell_list = cells.collection_by_column(self.col_num());
-        cell_list.sort_by(|a, b| {
-            a.coordinate()
-                .row_num()
-                .cmp(&b.coordinate().row_num())
-        });
-        for cell in cell_list {
+        for cell in cells.iter_cells_by_column(self.col_num()) {
             let column_width = cell.width_point(column_font_size);
 
             if column_width > column_width_max {

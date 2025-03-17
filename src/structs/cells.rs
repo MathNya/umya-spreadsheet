@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 
 use super::{
     Cell,
@@ -8,7 +8,7 @@ use super::{
 use crate::{
     helper::{
         coordinate::CellCoordinates,
-        range::get_coordinate_list,
+        range::get_start_and_end_point,
     },
     structs::{
         Column,
@@ -23,42 +23,93 @@ use crate::{
 #[derive(Clone, Default, Debug)]
 pub struct Cells {
     map:                HashMap<(u32, u32), Box<Cell>>,
+    row_column_index: BTreeSet<(u32, u32)>,
+    column_row_index: BTreeSet<(u32, u32)>,
     default_cell_value: CellValue,
     default_style:      Style,
 }
 impl Cells {
+    /// Iterates all [`Cell`]s in arbitrary order (not sorted).
     #[inline]
+    pub fn iter_collection(&self) -> impl Iterator<Item = &Cell> {
+        self.map.values().map(Box::as_ref)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "2.2.4", note = "Please use iter_collection().collect::<Vec<_>>() instead")]
     pub fn collection(&self) -> Vec<&Cell> {
-        self.map.values().map(Box::as_ref).collect()
+        self.iter_collection().collect()
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection()")]
     pub fn get_collection(&self) -> Vec<&Cell> {
-        self.collection()
+        self.iter_collection().collect()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn is_row_empty(&self, row_num: u32) -> bool {
+        self.row_column_index
+            .range((row_num, 0)..=(row_num, u32::MAX))
+            .next()
+            .is_none()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn is_col_empty(&self, col_num: u32) -> bool {
+        self.column_row_index
+            .range((col_num, 0)..=(col_num, u32::MAX))
+            .next()
+            .is_none()
+    }
+
+    /// Iterates all cell coordinates, sorted by row then by column.
+    /// Coordinate returned is (column, row).
+    #[inline]
+    pub fn iter_coordinates_sorted_by_row_column(&self) -> impl Iterator<Item = (u32, u32)> + '_ {
+        self.row_column_index
+            .iter()
+            .copied()
+            .map(|(row, col)| (col, row))
+    }
+
+    /// Iterates all [`Cell`]s, sorted by row then by column.
+    /// Coordinate returned is (column, row).
+    #[inline]
+    pub fn iter_cells_sorted_by_row_column(&self) -> impl Iterator<Item = &Cell> {
+        self.iter_coordinates_sorted_by_row_column()
+            .map(|(col, row)| self.map.get(&(row, col)).unwrap().as_ref())
+    }
+
+    /// Iterates all cell coordinates, sorted by column then by row.
+    /// Coordinate returned is (column, row).
+    #[inline]
+    pub fn iter_coordinates_sorted_by_column_row(&self) -> impl Iterator<Item = (u32, u32)> + '_ {
+        self.column_row_index.iter().copied()
+    }
+
+    /// Iterates all [`Cell`]s, sorted by column then by row.
+    /// Coordinate returned is (column, row).
+    #[inline]
+    pub fn iter_cells_sorted_by_column_row(&self) -> impl Iterator<Item = &Cell> {
+        self.iter_coordinates_sorted_by_column_row()
+            .map(|(col, row)| self.map.get(&(row, col)).unwrap().as_ref())
     }
 
     #[must_use]
+    #[deprecated(since = "2.2.4", note = "Please use iter_cells_sorted_by_row_column().collect::<Vec<_>>() instead")]
     pub fn collection_sorted(&self) -> Vec<&Cell> {
-        let mut cells = self.collection();
-        cells.sort_by(|a, b| {
-            (
-                a.coordinate().row_num(),
-                a.coordinate().col_num(),
-            )
-                .cmp(&(
-                    b.coordinate().row_num(),
-                    b.coordinate().col_num(),
-                ))
-        });
-        cells
+        self.iter_cells_sorted_by_row_column().collect()
     }
 
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_sorted()")]
     pub fn get_collection_sorted(&self) -> Vec<&Cell> {
-        self.collection_sorted()
+        self.iter_cells_sorted_by_row_column().collect()
     }
 
     #[inline]
@@ -85,45 +136,134 @@ impl Cells {
         self.collection_to_hashmap()
     }
 
+    /// Iterates all rows cells in a given column, sorted by the row index.
     #[inline]
+    pub fn iter_rows_with_cells_by_column(
+        &self,
+        column_num: u32,
+    ) -> impl Iterator<Item = u32> + '_ {
+        self.column_row_index
+            .range((column_num, 0)..=(column_num, u32::MAX))
+            .copied()
+            .map(|(_, row)| row)
+    }
+
+    /// Iterates all [`Cell`]s in a given column, sorted by the row index.
+    #[inline]
+    pub fn iter_cells_by_column(&self, column_num: u32) -> impl Iterator<Item = &Cell> {
+        self.iter_rows_with_cells_by_column(column_num)
+            .map(move |row| self.map.get(&(row, column_num)).unwrap().as_ref())
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "2.2.4", note = "Please use iter_cells_by_column(column_num).collect::<Vec<_>>() instead")]
     pub fn collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.map
-            .values()
-            .filter(|k| k.coordinate().col_num() == column_num)
-            .map(Box::as_ref)
-            .collect()
+        self.iter_cells_by_column(column_num).collect()
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
     pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.collection_by_column(column_num)
+        self.iter_cells_by_column(column_num).collect()
+    }
+
+    /// Iterates all column cells in a given column, sorted by the column index.
+    #[inline]
+    pub fn iter_columns_with_cells_by_row(&self, row_num: u32) -> impl Iterator<Item = u32> + '_ {
+        self.row_column_index
+            .range((row_num, 0)..=(row_num, u32::MAX))
+            .copied()
+            .map(|(_, col)| col)
+    }
+
+    /// Iterates all [`Cell`]s in a given column, sorted by the column index.
+    #[inline]
+    pub fn iter_cells_by_row(&self, row_num: u32) -> impl Iterator<Item = &Cell> {
+        self.iter_columns_with_cells_by_row(row_num)
+            .map(move |col| self.map.get(&(row_num, col)).unwrap().as_ref())
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "2.2.4", note = "Please use iter_cells_by_row(row_num).collect::<Vec<_>>() instead")]
     pub fn collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
-        self.map
-            .values()
-            .filter(|k| k.coordinate().row_num() == row_num)
-            .map(Box::as_ref)
-            .collect()
+        self.iter_cells_by_row(row_num).collect()
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
     pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
-        self.collection_by_row(row_num)
+        self.iter_cells_by_row(row_num).collect()
+    }
+
+    /// Iterates all coordinates in a range, sorted by row then by column.
+    /// Coordinate returned is (column, row).
+    #[inline]
+    pub fn iter_coordinates_by_range_sorted_by_row(
+        &self,
+        row_start: u32,
+        row_end: u32,
+        col_start: u32,
+        col_end: u32,
+    ) -> impl Iterator<Item = (u32, u32)> + '_ {
+        self.row_column_index
+            .range((row_start, col_start)..=(row_end, col_end))
+            .copied()
+            .filter(move |(_, col)| (col_start..=col_end).contains(col))
+            .map(|(row, col)| (col, row))
+    }
+
+    /// Iterates all [`Cell`]s in a range, sorted by row then by column.
+    #[inline]
+    pub fn iter_cells_by_range_sorted_by_row(
+        &self,
+        row_start: u32,
+        row_end: u32,
+        col_start: u32,
+        col_end: u32,
+    ) -> impl Iterator<Item = &Cell> {
+        self.iter_coordinates_by_range_sorted_by_row(row_start, row_end, col_start, col_end)
+            .map(move |(col, row)| self.map.get(&(row, col)).unwrap().as_ref())
+    }
+
+    /// Iterates all coordinates in a range, sorted by column then by row.
+    /// Coordinate returned is (column, row).
+    #[inline]
+    pub fn iter_coordinates_by_range_sorted_by_column(
+        &self,
+        col_start: u32,
+        col_end: u32,
+        row_start: u32,
+        row_end: u32,
+    ) -> impl Iterator<Item = (u32, u32)> + '_ {
+        self.column_row_index
+            .range((col_start, row_start)..=(col_end, row_end))
+            .copied()
+            .filter(move |(_, row)| (row_start..=row_end).contains(row))
+    }
+
+    /// Iterates all [`Cell`]s in a range, sorted by column then by row.
+    /// Coordinate returned is (column, row).
+    #[inline]
+    pub fn iter_cells_by_range_sorted_by_column(
+        &self,
+        col_start: u32,
+        col_end: u32,
+        row_start: u32,
+        row_end: u32,
+    ) -> impl Iterator<Item = &Cell> {
+        self.iter_coordinates_by_range_sorted_by_column(col_start, col_end, row_start, row_end)
+            .map(move |(col, row)| self.map.get(&(row, col)).unwrap().as_ref())
     }
 
     #[inline]
     #[must_use]
     pub fn collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
-        self.map
-            .iter()
-            .filter(|(k, _v)| k.1 == column_num)
-            .map(|(k, v)| (k.0, v.as_ref()))
+        self.iter_cells_by_column(column_num)
+            .map(|cell| (cell.coordinate().row_num(), cell))
             .collect()
     }
 
@@ -137,10 +277,8 @@ impl Cells {
     #[inline]
     #[must_use]
     pub fn collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
-        self.map
-            .iter()
-            .filter(|(k, _v)| k.0 == row_num)
-            .map(|(k, v)| (k.1, v.as_ref()))
+        self.iter_cells_by_row(row_num)
+            .map(|cell| (cell.coordinate().col_num(), cell))
             .collect()
     }
 
@@ -164,11 +302,10 @@ impl Cells {
 
     #[must_use]
     pub fn highest_column_and_row(&self) -> (u32, u32) {
-        self.map
-            .keys()
-            .fold((0, 0), |(col_max, row_max), &(row, col)| {
-                (col.max(col_max), row.max(row_max))
-            })
+        (
+            self.column_row_index.last().copied().unwrap_or((0, 0)).0,
+            self.row_column_index.last().copied().unwrap_or((0, 0)).0,
+        )
     }
 
     #[must_use]
@@ -181,7 +318,7 @@ impl Cells {
     #[inline]
     #[must_use]
     pub fn has_hyperlink(&self) -> bool {
-        self.map.values().any(|c| c.hyperlink().is_some())
+        self.map.values().find_map(|c| c.hyperlink()).is_some()
     }
 
     #[inline]
@@ -196,8 +333,8 @@ impl Cells {
     pub(crate) fn get_mut<T>(
         &mut self,
         coordinate: T,
-        row_dimenshon: &Row,
-        col_dimenshon: &Column,
+        row_dimension: &Row,
+        col_dimension: &Column,
     ) -> &mut Cell
     where
         T: Into<CellCoordinates>,
@@ -207,12 +344,16 @@ impl Cells {
             let mut c = Cell::default();
             c.coordinate_mut().set_col_num(col);
             c.coordinate_mut().set_row_num(row);
-            if col_dimenshon.has_style() {
-                c.set_style(col_dimenshon.style().clone());
+            if col_dimension.has_style() {
+                c.set_style(col_dimension.style().clone());
             }
-            if row_dimenshon.has_style() {
-                c.set_style(row_dimenshon.get_style().clone());
+            if row_dimension.has_style() {
+                c.set_style(row_dimension.get_style().clone());
             }
+
+            self.row_column_index.insert((row, col));
+            self.column_row_index.insert((col, row));
+
             Box::new(c)
         })
     }
@@ -261,12 +402,12 @@ impl Cells {
     pub(crate) fn set(
         &mut self,
         cell: Cell,
-        row_dimenshon: &Row,
-        col_dimenshon: &Column,
+        row_dimension: &Row,
+        col_dimension: &Column,
     ) -> &mut Self {
         let col_num = cell.coordinate().col_num();
         let row_num = cell.coordinate().row_num();
-        let target_cell = self.get_mut((col_num, row_num), row_dimenshon, col_dimenshon);
+        let target_cell = self.get_mut((col_num, row_num), row_dimension, col_dimension);
         target_cell.set_obj(cell);
         self
     }
@@ -282,44 +423,141 @@ impl Cells {
         let col_num = cell.coordinate().col_num();
         let row_num = cell.coordinate().row_num();
         self.map.insert((row_num, col_num), Box::new(cell));
+        self.row_column_index.insert((row_num, col_num));
+        self.column_row_index.insert((col_num, row_num));
     }
 
     #[inline]
     pub(crate) fn remove(&mut self, col_num: u32, row_num: u32) -> bool {
         let k = (row_num, col_num);
-        self.map.remove(&k).is_some()
+        let r = self.map.remove(&k).is_some();
+        if r {
+            self.row_column_index.remove(&k);
+            self.column_row_index.remove(&(k.1, k.0));
+        }
+        r
+    }
+
+    pub fn iter_all_coordinates_by_range_sorted_by_row(
+        &self,
+        range: &str,
+    ) -> impl Iterator<Item = Option<(u32, u32)>> + '_ {
+        let (row_start, row_end, col_start, col_end) = get_start_and_end_point(range);
+
+        let mut iter =
+            self.iter_coordinates_by_range_sorted_by_row(row_start, row_end, col_start, col_end);
+
+        let mut current = iter.next();
+
+        (row_start..=row_end)
+            .flat_map(move |row| (col_start..=col_end).map(move |col| (row, col)))
+            .map(move |x| {
+                if let Some((cur_col, cur_row)) = current {
+                    if x < (cur_row, cur_col) {
+                        None
+                    } else {
+                        current = iter.next();
+                        Some((x.1, x.0))
+                    }
+                } else {
+                    None
+                }
+            })
+    }
+
+    pub fn iter_all_cells_by_range_sorted_by_row(
+        &self,
+        range: &str,
+    ) -> impl Iterator<Item = Option<&Cell>> + '_ {
+        self.iter_all_coordinates_by_range_sorted_by_row(range)
+            .map(move |coordinate| {
+                coordinate.map(move |(col, row)| self.map.get(&(row, col)).unwrap().as_ref())
+            })
+    }
+
+    #[inline]
+    pub fn iter_all_cell_values_by_range_sorted_by_row(
+        &self,
+        range: &str,
+    ) -> impl Iterator<Item = &CellValue> + '_ {
+        self.iter_all_coordinates_by_range_sorted_by_row(range)
+            .map(|coordinate| {
+                coordinate.map_or(&self.default_cell_value, |c| self.cell_value(c))
+            })
+    }
+
+    pub fn iter_all_coordinates_by_range_sorted_by_column(
+        &self,
+        range: &str,
+    ) -> impl Iterator<Item = Option<(u32, u32)>> + '_ {
+        let (row_start, row_end, col_start, col_end) = get_start_and_end_point(range);
+
+        let mut iter =
+            self.iter_coordinates_by_range_sorted_by_column(col_start, col_end, row_start, row_end);
+
+        let mut current = iter.next();
+
+        (col_start..=col_end)
+            .flat_map(move |col| (row_start..=row_end).map(move |row| (col, row)))
+            .map(move |coordinate| {
+                if let Some(cur) = current {
+                    if coordinate < cur {
+                        None
+                    } else {
+                        current = iter.next();
+                        Some(coordinate)
+                    }
+                } else {
+                    None
+                }
+            })
+    }
+
+    pub fn iter_all_cells_by_range_sorted_by_column(
+        &self,
+        range: &str,
+    ) -> impl Iterator<Item = Option<&Cell>> + '_ {
+        self.iter_all_coordinates_by_range_sorted_by_column(range)
+            .map(move |coordinate| {
+                coordinate.map(move |(col, row)| self.map.get(&(row, col)).unwrap().as_ref())
+            })
+    }
+
+    #[inline]
+    pub fn iter_all_cell_values_by_range_sorted_by_column(
+        &self,
+        range: &str,
+    ) -> impl Iterator<Item = &CellValue> + '_ {
+        self.iter_all_coordinates_by_range_sorted_by_column(range)
+            .map(|coordinate| {
+                coordinate.map_or(&self.default_cell_value, |c| self.cell_value(c))
+            })
     }
 
     #[must_use]
+    #[deprecated(since = "2.2.4", note = "Please use iter_all_cells_by_range_sorted_by_row(range).collect::<Vec<_>>() instead")]
     pub fn cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
-        let mut result: Vec<Option<&Cell>> = Vec::new();
-        let coordinate_list = get_coordinate_list(range);
-        for (col_num, row_num) in coordinate_list {
-            result.push(self.get((col_num, row_num)));
-        }
-        result
+        self.iter_all_cells_by_range_sorted_by_row(range).collect()
     }
 
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use style()")]
     pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
-        self.cell_by_range(range)
+        self.iter_all_cells_by_range_sorted_by_row(range).collect()
     }
 
     #[must_use]
+    #[deprecated(since = "2.2.4", note = "Please use iter_all_cell_values_by_range_sorted_by_row(range).collect::<Vec<_>>() instead")]
     pub fn cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
-        let mut result: Vec<&CellValue> = Vec::new();
-        let coordinate_list = get_coordinate_list(range);
-        for (col_num, row_num) in coordinate_list {
-            result.push(self.cell_value((col_num, row_num)));
-        }
-        result
+        self.iter_all_cell_values_by_range_sorted_by_row(range)
+            .collect::<Vec<_>>()
     }
 
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use cell_value_by_range()")]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
-        self.cell_value_by_range(range)
+        self.iter_all_cell_values_by_range_sorted_by_row(range)
+            .collect::<Vec<_>>()
     }
 
     #[inline]
@@ -338,7 +576,7 @@ impl Cells {
         self.formatted_value_by_column_and_row(col_num, row_num)
     }
 
-    pub(crate) fn rebuild_map(&mut self) {
+    pub(crate) fn rebuild_map_and_indices(&mut self) {
         self.map = self
             .collection_to_hashmap_mut()
             .iter_mut()
@@ -352,6 +590,15 @@ impl Cells {
                 )
             })
             .collect();
+
+            self.row_column_index = self.map.keys().copied().collect();
+
+            self.column_row_index = self
+                .map
+                .keys()
+                .copied()
+                .map(|(col, row)| (row, col))
+                .collect();
     }
 }
 impl AdjustmentCoordinate for Cells {
@@ -364,7 +611,7 @@ impl AdjustmentCoordinate for Cells {
         offset_row_num: u32,
     ) {
         // update cell
-        for ((..), cell) in self.collection_to_hashmap_mut() {
+        for cell in self.collection_to_hashmap_mut().values_mut() {
             cell.adjustment_insert_coordinate(
                 root_col_num,
                 offset_col_num,
@@ -372,7 +619,7 @@ impl AdjustmentCoordinate for Cells {
                 offset_row_num,
             );
         }
-        self.rebuild_map();
+        self.rebuild_map_and_indices();
     }
 
     #[inline]
@@ -400,7 +647,7 @@ impl AdjustmentCoordinate for Cells {
                 offset_row_num,
             );
         }
-        self.rebuild_map();
+        self.rebuild_map_and_indices();
     }
 }
 impl AdjustmentCoordinateWith2Sheet for Cells {
@@ -414,7 +661,7 @@ impl AdjustmentCoordinateWith2Sheet for Cells {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        for ((..), cell) in self.collection_to_hashmap_mut() {
+        for cell in self.collection_to_hashmap_mut().values_mut() {
             cell.adjustment_insert_coordinate_with_2sheet(
                 self_sheet_name,
                 sheet_name,

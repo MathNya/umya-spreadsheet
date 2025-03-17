@@ -211,7 +211,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn cells(&self) -> Vec<&Cell> {
-        self.cells.collection()
+        self.cells.iter_collection().collect()
     }
 
     #[inline]
@@ -224,7 +224,9 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn cells_sorted(&self) -> Vec<&Cell> {
-        self.cells.collection_sorted()
+        self.cells
+            .iter_cells_sorted_by_row_column()
+            .collect()
     }
 
     #[inline]
@@ -389,7 +391,9 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.cells.collection_by_column(column_num)
+        self.cells
+            .iter_cells_by_column(column_num)
+            .collect()
     }
 
     #[inline]
@@ -402,7 +406,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
-        self.cells.collection_by_row(row_num)
+        self.cells.iter_cells_by_row(row_num).collect()
     }
 
     #[inline]
@@ -547,7 +551,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
-        self.cells.cell_value_by_range(range)
+        self.cells.iter_all_cell_values_by_range_sorted_by_row(range).collect()
     }
 
     #[inline]
@@ -784,7 +788,7 @@ impl Worksheet {
     /// Get Hyperlink convert to hashmap.
     pub(crate) fn hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
         let mut result: HashMap<String, &Hyperlink> = HashMap::new();
-        for cell in self.cells.collection() {
+        for cell in self.cells.iter_collection() {
             if let Some(hyperlink) = cell.hyperlink() {
                 let coordition = coordinate_from_index(
                     cell.coordinate().col_num(),
@@ -2628,8 +2632,11 @@ impl Worksheet {
         }
 
         // Iterate row by row, collecting cell information (do I copy)
-        let cells = self.cells.cell_by_range(range);
-        let mut copy_cells: Vec<Cell> = cells.into_iter().flatten().cloned().collect();
+        let mut copy_cells: Vec<Cell> = self
+            .cells
+            .iter_all_cells_by_range_sorted_by_row(range)
+            .flatten().cloned()
+            .collect();
 
         // Delete cell information as iterating through in move mode
         if is_move {
@@ -2662,7 +2669,7 @@ impl Worksheet {
             if self.rows.get_row_dimension(row).is_some() {
                 let mut indexes: Vec<(u32, u32)> = Vec::new();
                 {
-                    let cells: Vec<&Cell> = self.cells.collection_by_row(row);
+                    let cells: Vec<&Cell> = self.cells.iter_cells_by_row(row).collect();
                     for cell in cells {
                         if !cell.is_visually_empty() {
                             return;
