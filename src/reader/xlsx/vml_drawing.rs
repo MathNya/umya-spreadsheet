@@ -42,7 +42,7 @@ pub(crate) fn read(
                     } else {
                         worksheet
                             .ole_objects_mut()
-                            .get_ole_object_mut()
+                            .ole_object_mut()
                             .get_mut(ole_index)
                             .map(|ole_obj| ole_obj.set_shape(obj));
                         ole_index += 1;

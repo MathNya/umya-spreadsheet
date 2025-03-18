@@ -28,13 +28,26 @@ pub struct OleObjects {
 impl OleObjects {
     #[inline]
     #[must_use]
-    pub fn get_ole_object(&self) -> &[OleObject] {
+    pub fn ole_object(&self) -> &[OleObject] {
         &self.ole_object
     }
 
     #[inline]
-    pub fn get_ole_object_mut(&mut self) -> &mut Vec<OleObject> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use ole_object()")]
+    pub fn get_ole_object(&self) -> &[OleObject] {
+        self.ole_object()
+    }
+
+    #[inline]
+    pub fn ole_object_mut(&mut self) -> &mut Vec<OleObject> {
         &mut self.ole_object
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use ole_object_mut()")]
+    pub fn get_ole_object_mut(&mut self) -> &mut Vec<OleObject> {
+        self.ole_object_mut()
     }
 
     #[inline]

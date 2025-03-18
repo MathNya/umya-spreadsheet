@@ -45,8 +45,15 @@ pub struct OleObject {
 impl OleObject {
     #[inline]
     #[must_use]
-    pub fn get_requires(&self) -> &str {
+    pub fn requires(&self) -> &str {
         self.requires.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use requires()")]
+    pub fn get_requires(&self) -> &str {
+        self.requires()
     }
 
     #[inline]
@@ -57,8 +64,15 @@ impl OleObject {
 
     #[inline]
     #[must_use]
-    pub fn get_prog_id(&self) -> &str {
+    pub fn prog_id(&self) -> &str {
         self.prog_id.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prog_id()")]
+    pub fn get_prog_id(&self) -> &str {
+        self.prog_id()
     }
 
     #[inline]
@@ -69,8 +83,15 @@ impl OleObject {
 
     #[inline]
     #[must_use]
-    pub fn get_object_extension(&self) -> &str {
+    pub fn object_extension(&self) -> &str {
         &self.object_extension
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use object_extension()")]
+    pub fn get_object_extension(&self) -> &str {
+        self.object_extension()
     }
 
     #[inline]
@@ -80,13 +101,26 @@ impl OleObject {
 
     #[inline]
     #[must_use]
-    pub fn get_object_data(&self) -> Option<&[u8]> {
+    pub fn object_data(&self) -> Option<&[u8]> {
         self.object_data.as_deref()
     }
 
     #[inline]
-    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use object_data()")]
+    pub fn get_object_data(&self) -> Option<&[u8]> {
+        self.object_data()
+    }
+
+    #[inline]
+    pub fn object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
         self.object_data.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use object_data_mut()")]
+    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+        self.object_data_mut()
     }
 
     #[inline]
@@ -97,13 +131,26 @@ impl OleObject {
 
     #[inline]
     #[must_use]
-    pub fn get_embedded_object_properties(&self) -> &EmbeddedObjectProperties {
+    pub fn embedded_object_properties(&self) -> &EmbeddedObjectProperties {
         &self.embedded_object_properties
     }
 
     #[inline]
-    pub fn get_embedded_object_properties_mut(&mut self) -> &mut EmbeddedObjectProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use embedded_object_properties()")]
+    pub fn get_embedded_object_properties(&self) -> &EmbeddedObjectProperties {
+        self.embedded_object_properties()
+    }
+
+    #[inline]
+    pub fn embedded_object_properties_mut(&mut self) -> &mut EmbeddedObjectProperties {
         &mut self.embedded_object_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use embedded_object_properties_mut()")]
+    pub fn get_embedded_object_properties_mut(&mut self) -> &mut EmbeddedObjectProperties {
+        self.embedded_object_properties_mut()
     }
 
     #[inline]
@@ -114,13 +161,26 @@ impl OleObject {
 
     #[inline]
     #[must_use]
-    pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
+    pub fn two_cell_anchor(&self) -> &TwoCellAnchor {
         &self.two_cell_anchor
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor()")]
+    pub fn get_two_cell_anchor(&self) -> &TwoCellAnchor {
+        self.two_cell_anchor()
+    }
+
+    #[inline]
+    pub fn two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
         &mut self.two_cell_anchor
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_mut()")]
+    pub fn get_two_cell_anchor_mut(&mut self) -> &mut TwoCellAnchor {
+        self.two_cell_anchor_mut()
     }
 
     #[inline]
@@ -131,13 +191,26 @@ impl OleObject {
 
     #[inline]
     #[must_use]
-    pub fn get_shape(&self) -> &Shape {
+    pub fn shape(&self) -> &Shape {
         &self.shape
     }
 
     #[inline]
-    pub fn get_shape_mut(&mut self) -> &mut Shape {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape()")]
+    pub fn get_shape(&self) -> &Shape {
+        self.shape()
+    }
+
+    #[inline]
+    pub fn shape_mut(&mut self) -> &mut Shape {
         &mut self.shape
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_mut()")]
+    pub fn get_shape_mut(&mut self) -> &mut Shape {
+        self.shape_mut()
     }
 
     #[inline]

@@ -36,8 +36,15 @@ pub struct ObjectAnchor {
 impl ObjectAnchor {
     #[inline]
     #[must_use]
-    pub fn get_move_with_cells(&self) -> bool {
+    pub fn move_with_cells(&self) -> bool {
         self.move_with_cells.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use move_with_cells()")]
+    pub fn get_move_with_cells(&self) -> bool {
+        self.move_with_cells()
     }
 
     #[inline]
@@ -48,13 +55,26 @@ impl ObjectAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_from_marker(&self) -> &FromMarker {
+    pub fn from_marker(&self) -> &FromMarker {
         &self.from_marker
     }
 
     #[inline]
-    pub fn get_from_marker_mut(&mut self) -> &mut FromMarker {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use from_marker()")]
+    pub fn get_from_marker(&self) -> &FromMarker {
+        self.from_marker()
+    }
+
+    #[inline]
+    pub fn from_marker_mut(&mut self) -> &mut FromMarker {
         &mut self.from_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use from_marker_mut()")]
+    pub fn get_from_marker_mut(&mut self) -> &mut FromMarker {
+        self.from_marker_mut()
     }
 
     #[inline]
@@ -65,13 +85,26 @@ impl ObjectAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_to_marker(&self) -> &ToMarker {
+    pub fn to_marker(&self) -> &ToMarker {
         &self.to_marker
     }
 
     #[inline]
-    pub fn get_to_marker_mut(&mut self) -> &mut ToMarker {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use to_marker()")]
+    pub fn get_to_marker(&self) -> &ToMarker {
+        self.to_marker()
+    }
+
+    #[inline]
+    pub fn to_marker_mut(&mut self) -> &mut ToMarker {
         &mut self.to_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use to_marker_mut()")]
+    pub fn get_to_marker_mut(&mut self) -> &mut ToMarker {
+        self.to_marker_mut()
     }
 
     #[inline]

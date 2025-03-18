@@ -29,8 +29,15 @@ pub struct OddFooter {
 impl OddFooter {
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> &str {
+    pub fn value(&self) -> &str {
         self.value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &str {
+        self.value()
     }
 
     #[inline]
@@ -40,8 +47,14 @@ impl OddFooter {
     }
 
     #[inline]
+    pub(crate) fn hash_code(&self) -> String {
+        format!("{:x}", md5::Md5::digest(self.value()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
     pub(crate) fn get_hash_code(&self) -> String {
-        format!("{:x}", md5::Md5::digest(self.get_value()))
+        self.hash_code()
     }
 
     #[inline]

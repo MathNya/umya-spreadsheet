@@ -138,7 +138,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     // Write ole_objects
     let mut excel_no_list = excel_no_list.iter();
     let mut ole_object_no_list = ole_object_no_list.iter();
-    for ole_object in worksheet.ole_objects().get_ole_object() {
+    for ole_object in worksheet.ole_objects().ole_object() {
         if ole_object.is_xlsx() {
             let excel_no = excel_no_list.next().unwrap();
             let object_name = format!("Microsoft_Excel_Worksheet{excel_no}.xlsx");
@@ -164,10 +164,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             r_id += 1;
         }
 
-        let image_name = ole_object
-            .get_embedded_object_properties()
-            .image()
-            .image_name();
+        let image_name = ole_object.embedded_object_properties().image().image_name();
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),

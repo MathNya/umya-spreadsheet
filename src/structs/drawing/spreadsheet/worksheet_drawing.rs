@@ -307,12 +307,12 @@ impl WorksheetDrawing {
                         }
                     }
                     b"xdr:twoCellAnchor" => {
-                        let os = ole_objects.get_ole_object_mut();
+                        let os = ole_objects.ole_object_mut();
                         if is_alternate_content && !os.is_empty() {
                             os[ole_index]
-                                .get_two_cell_anchor_mut()
+                                .two_cell_anchor_mut()
                                 .set_is_alternate_content(true);
-                            os[ole_index].get_two_cell_anchor_mut().set_attributes(
+                            os[ole_index].two_cell_anchor_mut().set_attributes(
                                 reader,
                                 e,
                                 drawing_relationships,
@@ -389,10 +389,8 @@ impl WorksheetDrawing {
 
         // mc:AlternateContent
         //        let mut ole_id = 1000 + 25;
-        for ole_object in ole_objects.get_ole_object() {
-            ole_object
-                .get_two_cell_anchor()
-                .write_to(writer, rel_list, 0);
+        for ole_object in ole_objects.ole_object() {
+            ole_object.two_cell_anchor().write_to(writer, rel_list, 0);
             //            ole_id += 1;
         }
 

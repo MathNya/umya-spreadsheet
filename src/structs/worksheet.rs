@@ -2439,8 +2439,8 @@ impl Worksheet {
                 }
             }
         }
-        for ole_objects in self.ole_objects().get_ole_object() {
-            let media_object = ole_objects.get_embedded_object_properties().image();
+        for ole_objects in self.ole_objects().ole_object() {
+            let media_object = ole_objects.embedded_object_properties().image();
             let is_new = !list
                 .iter()
                 .any(|v| v.image_name() == media_object.image_name());
@@ -2448,8 +2448,8 @@ impl Worksheet {
                 list.push(media_object);
             }
         }
-        for ole_objects in self.ole_objects().get_ole_object() {
-            if let Some(fill) = ole_objects.get_shape().get_fill() {
+        for ole_objects in self.ole_objects().ole_object() {
+            if let Some(fill) = ole_objects.shape().get_fill() {
                 if let Some(media_object) = fill.get_image() {
                     let is_new = !list
                         .iter()
@@ -2578,7 +2578,7 @@ impl Worksheet {
     /// Has Ole Objects.
     #[inline]
     pub(crate) fn has_ole_objects(&self) -> bool {
-        !self.ole_objects.get_ole_object().is_empty()
+        !self.ole_objects.ole_object().is_empty()
     }
 
     /// (This method is crate only.)
