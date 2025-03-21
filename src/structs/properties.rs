@@ -77,8 +77,15 @@ impl Default for Properties {
 impl Properties {
     #[inline]
     #[must_use]
-    pub fn get_creator(&self) -> &str {
+    pub fn creator(&self) -> &str {
         self.creator.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use creator()")]
+    pub fn get_creator(&self) -> &str {
+        self.creator()
     }
 
     #[inline]
@@ -89,8 +96,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_last_modified_by(&self) -> &str {
+    pub fn last_modified_by(&self) -> &str {
         self.last_modified_by.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use last_modified_by()")]
+    pub fn get_last_modified_by(&self) -> &str {
+        self.last_modified_by()
     }
 
     #[inline]
@@ -101,8 +115,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_created(&self) -> &str {
+    pub fn created(&self) -> &str {
         self.created.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use created()")]
+    pub fn get_created(&self) -> &str {
+        self.created()
     }
 
     #[inline]
@@ -113,8 +134,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_modified(&self) -> &str {
+    pub fn modified(&self) -> &str {
         self.modified.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use modified()")]
+    pub fn get_modified(&self) -> &str {
+        self.modified()
     }
 
     #[inline]
@@ -125,8 +153,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_title(&self) -> &str {
+    pub fn title(&self) -> &str {
         self.title.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use title()")]
+    pub fn get_title(&self) -> &str {
+        self.title()
     }
 
     #[inline]
@@ -137,8 +172,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_description(&self) -> &str {
+    pub fn description(&self) -> &str {
         self.description.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use description()")]
+    pub fn get_description(&self) -> &str {
+        self.description()
     }
 
     #[inline]
@@ -149,8 +191,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_subject(&self) -> &str {
+    pub fn subject(&self) -> &str {
         self.subject.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use subject()")]
+    pub fn get_subject(&self) -> &str {
+        self.subject()
     }
 
     #[inline]
@@ -161,8 +210,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_keywords(&self) -> &str {
+    pub fn keywords(&self) -> &str {
         self.keywords.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use keywords()")]
+    pub fn get_keywords(&self) -> &str {
+        self.keywords()
     }
 
     #[inline]
@@ -173,8 +229,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_revision(&self) -> &str {
+    pub fn revision(&self) -> &str {
         self.revision.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revision()")]
+    pub fn get_revision(&self) -> &str {
+        self.revision()
     }
 
     #[inline]
@@ -185,8 +248,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_category(&self) -> &str {
+    pub fn category(&self) -> &str {
         self.category.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use category()")]
+    pub fn get_category(&self) -> &str {
+        self.category()
     }
 
     #[inline]
@@ -197,8 +267,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_version(&self) -> &str {
+    pub fn version(&self) -> &str {
         self.version.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use version()")]
+    pub fn get_version(&self) -> &str {
+        self.version()
     }
 
     #[inline]
@@ -209,8 +286,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_manager(&self) -> &str {
+    pub fn manager(&self) -> &str {
         self.manager.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use manager()")]
+    pub fn get_manager(&self) -> &str {
+        self.manager()
     }
 
     #[inline]
@@ -221,8 +305,15 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_company(&self) -> &str {
+    pub fn company(&self) -> &str {
         self.company.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use company()")]
+    pub fn get_company(&self) -> &str {
+        self.company()
     }
 
     #[inline]
@@ -233,13 +324,26 @@ impl Properties {
 
     #[inline]
     #[must_use]
-    pub fn get_custom_properties(&self) -> &CustomProperties {
+    pub fn custom_properties(&self) -> &CustomProperties {
         &self.custom_properties
     }
 
     #[inline]
-    pub fn get_custom_properties_mut(&mut self) -> &mut CustomProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use custom_properties()")]
+    pub fn get_custom_properties(&self) -> &CustomProperties {
+        self.custom_properties()
+    }
+
+    #[inline]
+    pub fn custom_properties_mut(&mut self) -> &mut CustomProperties {
         &mut self.custom_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use custom_properties_mut()")]
+    pub fn get_custom_properties_mut(&mut self) -> &mut CustomProperties {
+        self.custom_properties_mut()
     }
 
     #[inline]
@@ -513,12 +617,12 @@ impl Properties {
 
         // Manager
         write_start_tag(writer, "Manager", vec![], false);
-        write_text_node(writer, self.get_manager());
+        write_text_node(writer, self.manager());
         write_end_tag(writer, "Manager");
 
         // Company
         write_start_tag(writer, "Company", vec![], false);
-        write_text_node(writer, self.get_company());
+        write_text_node(writer, self.company());
         write_end_tag(writer, "Company");
 
         // LinksUpToDate

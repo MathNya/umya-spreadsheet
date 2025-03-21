@@ -136,7 +136,7 @@ impl Style {
     #[must_use]
     pub fn get_background_color(&self) -> Option<&Color> {
         self.get_fill()
-            .and_then(|fill| fill.pattern_fill()?.get_foreground_color())
+            .and_then(|fill| fill.pattern_fill()?.foreground_color())
     }
 
     #[inline]
@@ -150,7 +150,7 @@ impl Style {
             .pattern_fill_mut()
             .set_pattern_type(PatternValues::Solid)
             .remove_background_color()
-            .get_foreground_color_mut()
+            .foreground_color_mut()
             .set_argb_str(color);
         self
     }
@@ -164,11 +164,11 @@ impl Style {
         self.get_fill_mut()
             .pattern_fill_mut()
             .set_pattern_type(pattern)
-            .get_background_color_mut()
+            .background_color_mut()
             .set_argb_str(color1);
         self.get_fill_mut()
             .pattern_fill_mut()
-            .get_foreground_color_mut()
+            .foreground_color_mut()
             .set_argb_str(color2);
         self
     }

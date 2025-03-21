@@ -24,8 +24,15 @@ pub struct PivotField {
 impl PivotField {
     #[inline]
     #[must_use]
-    pub fn get_data_field(&self) -> bool {
+    pub fn data_field(&self) -> bool {
         self.data_field.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_field()")]
+    pub fn get_data_field(&self) -> bool {
+        self.data_field()
     }
 
     #[inline]
@@ -36,8 +43,15 @@ impl PivotField {
 
     #[inline]
     #[must_use]
-    pub fn get_show_all(&self) -> bool {
+    pub fn show_all(&self) -> bool {
         self.show_all.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_all()")]
+    pub fn get_show_all(&self) -> bool {
+        self.show_all()
     }
 
     #[inline]

@@ -35,8 +35,15 @@ pub struct PageSetup {
 impl PageSetup {
     #[inline]
     #[must_use]
-    pub fn get_paper_size(&self) -> u32 {
+    pub fn paper_size(&self) -> u32 {
         self.paper_size.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use paper_size()")]
+    pub fn get_paper_size(&self) -> u32 {
+        self.paper_size()
     }
 
     #[inline]
@@ -47,8 +54,15 @@ impl PageSetup {
 
     #[inline]
     #[must_use]
-    pub fn get_orientation(&self) -> &OrientationValues {
+    pub fn orientation(&self) -> &OrientationValues {
         self.orientation.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use orientation()")]
+    pub fn get_orientation(&self) -> &OrientationValues {
+        self.orientation()
     }
 
     #[inline]
@@ -59,8 +73,15 @@ impl PageSetup {
 
     #[inline]
     #[must_use]
-    pub fn get_scale(&self) -> u32 {
+    pub fn scale(&self) -> u32 {
         self.scale.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scale()")]
+    pub fn get_scale(&self) -> u32 {
+        self.scale()
     }
 
     #[inline]
@@ -71,8 +92,15 @@ impl PageSetup {
 
     #[inline]
     #[must_use]
-    pub fn get_fit_to_height(&self) -> u32 {
+    pub fn fit_to_height(&self) -> u32 {
         self.fit_to_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fit_to_height()")]
+    pub fn get_fit_to_height(&self) -> u32 {
+        self.fit_to_height()
     }
 
     #[inline]
@@ -83,8 +111,15 @@ impl PageSetup {
 
     #[inline]
     #[must_use]
-    pub fn get_fit_to_width(&self) -> u32 {
+    pub fn fit_to_width(&self) -> u32 {
         self.fit_to_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fit_to_width()")]
+    pub fn get_fit_to_width(&self) -> u32 {
+        self.fit_to_width()
     }
 
     #[inline]
@@ -95,8 +130,15 @@ impl PageSetup {
 
     #[inline]
     #[must_use]
-    pub fn get_horizontal_dpi(&self) -> u32 {
+    pub fn horizontal_dpi(&self) -> u32 {
         self.horizontal_dpi.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horizontal_dpi()")]
+    pub fn get_horizontal_dpi(&self) -> u32 {
+        self.horizontal_dpi()
     }
 
     #[inline]
@@ -107,8 +149,15 @@ impl PageSetup {
 
     #[inline]
     #[must_use]
-    pub fn get_vertical_dpi(&self) -> u32 {
+    pub fn vertical_dpi(&self) -> u32 {
         self.vertical_dpi.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical_dpi()")]
+    pub fn get_vertical_dpi(&self) -> u32 {
+        self.vertical_dpi()
     }
 
     #[inline]
@@ -119,13 +168,26 @@ impl PageSetup {
 
     #[inline]
     #[must_use]
-    pub fn get_object_data(&self) -> Option<&[u8]> {
+    pub fn object_data(&self) -> Option<&[u8]> {
         self.object_data.as_deref()
     }
 
     #[inline]
-    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use object_data()")]
+    pub fn get_object_data(&self) -> Option<&[u8]> {
+        self.object_data()
+    }
+
+    #[inline]
+    pub fn object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
         self.object_data.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use object_data_mut()")]
+    pub fn get_object_data_mut(&mut self) -> Option<&mut Vec<u8>> {
+        self.object_data_mut()
     }
 
     #[inline]

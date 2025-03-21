@@ -52,8 +52,15 @@ pub struct PivotCacheDefinition {
 impl PivotCacheDefinition {
     #[inline]
     #[must_use]
-    pub fn get_id(&self) -> &str {
+    pub fn id(&self) -> &str {
         self.id.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
+    pub fn get_id(&self) -> &str {
+        self.id()
     }
 
     #[inline]
@@ -64,8 +71,15 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_refreshed_by(&self) -> &str {
+    pub fn refreshed_by(&self) -> &str {
         self.refreshed_by.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use refreshed_by()")]
+    pub fn get_refreshed_by(&self) -> &str {
+        self.refreshed_by()
     }
 
     #[inline]
@@ -76,8 +90,15 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_refreshed_date(&self) -> f64 {
+    pub fn refreshed_date(&self) -> f64 {
         self.refreshed_date.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use refreshed_date()")]
+    pub fn get_refreshed_date(&self) -> f64 {
+        self.refreshed_date()
     }
 
     #[inline]
@@ -88,8 +109,15 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_created_version(&self) -> u8 {
+    pub fn created_version(&self) -> u8 {
         self.created_version.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use created_version()")]
+    pub fn get_created_version(&self) -> u8 {
+        self.created_version()
     }
 
     #[inline]
@@ -100,8 +128,15 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_refreshed_version(&self) -> u8 {
+    pub fn refreshed_version(&self) -> u8 {
         self.refreshed_version.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use refreshed_version()")]
+    pub fn get_refreshed_version(&self) -> u8 {
+        self.refreshed_version()
     }
 
     #[inline]
@@ -112,8 +147,15 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_min_refreshable_version(&self) -> u8 {
+    pub fn min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use min_refreshable_version()")]
+    pub fn get_min_refreshable_version(&self) -> u8 {
+        self.min_refreshable_version()
     }
 
     #[inline]
@@ -124,8 +166,15 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_record_count(&self) -> u32 {
+    pub fn record_count(&self) -> u32 {
         self.record_count.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use record_count()")]
+    pub fn get_record_count(&self) -> u32 {
+        self.record_count()
     }
 
     #[inline]
@@ -136,13 +185,26 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_cache_source(&self) -> &CacheSource {
+    pub fn cache_source(&self) -> &CacheSource {
         &self.cache_source
     }
 
     #[inline]
-    pub fn get_cache_source_mut(&mut self) -> &mut CacheSource {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cache_source()")]
+    pub fn get_cache_source(&self) -> &CacheSource {
+        self.cache_source()
+    }
+
+    #[inline]
+    pub fn cache_source_mut(&mut self) -> &mut CacheSource {
         &mut self.cache_source
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cache_source_mut()")]
+    pub fn get_cache_source_mut(&mut self) -> &mut CacheSource {
+        self.cache_source_mut()
     }
 
     #[inline]
@@ -153,13 +215,26 @@ impl PivotCacheDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_cache_fields(&self) -> &CacheFields {
+    pub fn cache_fields(&self) -> &CacheFields {
         &self.cache_fields
     }
 
     #[inline]
-    pub fn get_cache_fields_mut(&mut self) -> &mut CacheFields {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cache_fields()")]
+    pub fn get_cache_fields(&self) -> &CacheFields {
+        self.cache_fields()
+    }
+
+    #[inline]
+    pub fn cache_fields_mut(&mut self) -> &mut CacheFields {
         &mut self.cache_fields
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use cache_fields_mut()")]
+    pub fn get_cache_fields_mut(&mut self) -> &mut CacheFields {
+        self.cache_fields_mut()
     }
 
     #[inline]

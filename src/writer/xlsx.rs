@@ -126,7 +126,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
             // Add printer settings
             let printer_settings_no = worksheet
                 .page_setup()
-                .get_object_data()
+                .object_data()
                 .map_or_else(String::new, |_| {
                     printer_settings::write(worksheet, &mut writer_manager).unwrap_or_default()
                 });

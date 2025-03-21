@@ -33,8 +33,15 @@ pub struct Pane {
 impl Pane {
     #[inline]
     #[must_use]
-    pub fn get_horizontal_split(&self) -> f64 {
+    pub fn horizontal_split(&self) -> f64 {
         self.horizontal_split.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horizontal_split()")]
+    pub fn get_horizontal_split(&self) -> f64 {
+        self.horizontal_split()
     }
 
     #[inline]
@@ -45,8 +52,15 @@ impl Pane {
 
     #[inline]
     #[must_use]
-    pub fn get_vertical_split(&self) -> f64 {
+    pub fn vertical_split(&self) -> f64 {
         self.vertical_split.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical_split()")]
+    pub fn get_vertical_split(&self) -> f64 {
+        self.vertical_split()
     }
 
     #[inline]
@@ -57,13 +71,26 @@ impl Pane {
 
     #[inline]
     #[must_use]
-    pub fn get_top_left_cell(&self) -> &Coordinate {
+    pub fn top_left_cell(&self) -> &Coordinate {
         &self.top_left_cell
     }
 
     #[inline]
-    pub fn get_top_left_cell_mut(&mut self) -> &mut Coordinate {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_left_cell()")]
+    pub fn get_top_left_cell(&self) -> &Coordinate {
+        self.top_left_cell()
+    }
+
+    #[inline]
+    pub fn top_left_cell_mut(&mut self) -> &mut Coordinate {
         &mut self.top_left_cell
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use top_left_cell_mut()")]
+    pub fn get_top_left_cell_mut(&mut self) -> &mut Coordinate {
+        self.top_left_cell_mut()
     }
 
     #[inline]
@@ -74,8 +101,15 @@ impl Pane {
 
     #[inline]
     #[must_use]
-    pub fn get_active_pane(&self) -> &PaneValues {
+    pub fn active_pane(&self) -> &PaneValues {
         self.active_pane.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use active_pane()")]
+    pub fn get_active_pane(&self) -> &PaneValues {
+        self.active_pane()
     }
 
     #[inline]
@@ -86,8 +120,15 @@ impl Pane {
 
     #[inline]
     #[must_use]
-    pub fn get_state(&self) -> &PaneStateValues {
+    pub fn state(&self) -> &PaneStateValues {
         self.state.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use state()")]
+    pub fn get_state(&self) -> &PaneStateValues {
+        self.state()
     }
 
     #[inline]

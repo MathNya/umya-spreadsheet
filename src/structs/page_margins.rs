@@ -24,8 +24,15 @@ pub struct PageMargins {
 impl PageMargins {
     #[inline]
     #[must_use]
-    pub fn get_left(&self) -> f64 {
+    pub fn left(&self) -> f64 {
         self.left.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left()")]
+    pub fn get_left(&self) -> f64 {
+        self.left()
     }
 
     #[inline]
@@ -36,8 +43,15 @@ impl PageMargins {
 
     #[inline]
     #[must_use]
-    pub fn get_right(&self) -> f64 {
+    pub fn right(&self) -> f64 {
         self.right.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right()")]
+    pub fn get_right(&self) -> f64 {
+        self.right()
     }
 
     #[inline]
@@ -48,8 +62,15 @@ impl PageMargins {
 
     #[inline]
     #[must_use]
-    pub fn get_top(&self) -> f64 {
+    pub fn top(&self) -> f64 {
         self.top.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top()")]
+    pub fn get_top(&self) -> f64 {
+        self.top()
     }
 
     #[inline]
@@ -60,8 +81,15 @@ impl PageMargins {
 
     #[inline]
     #[must_use]
-    pub fn get_bottom(&self) -> f64 {
+    pub fn bottom(&self) -> f64 {
         self.bottom.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom()")]
+    pub fn get_bottom(&self) -> f64 {
+        self.bottom()
     }
 
     #[inline]
@@ -72,8 +100,15 @@ impl PageMargins {
 
     #[inline]
     #[must_use]
-    pub fn get_header(&self) -> f64 {
+    pub fn header(&self) -> f64 {
         self.header.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use header()")]
+    pub fn get_header(&self) -> f64 {
+        self.header()
     }
 
     #[inline]
@@ -84,8 +119,15 @@ impl PageMargins {
 
     #[inline]
     #[must_use]
-    pub fn get_footer(&self) -> f64 {
+    pub fn footer(&self) -> f64 {
         self.footer.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use footer()")]
+    pub fn get_footer(&self) -> f64 {
+        self.footer()
     }
 
     #[inline]

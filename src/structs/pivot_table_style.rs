@@ -31,8 +31,15 @@ pub struct PivotTableStyle {
 impl PivotTableStyle {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -44,8 +51,15 @@ impl PivotTableStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_show_row_headers(&self) -> bool {
+    pub fn show_row_headers(&self) -> bool {
         self.show_row_headers.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_row_headers()")]
+    pub fn get_show_row_headers(&self) -> bool {
+        self.show_row_headers()
     }
 
     #[inline]
@@ -56,8 +70,15 @@ impl PivotTableStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_show_column_headers(&self) -> bool {
+    pub fn show_column_headers(&self) -> bool {
         self.show_column_headers.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_column_headers()")]
+    pub fn get_show_column_headers(&self) -> bool {
+        self.show_column_headers()
     }
 
     #[inline]
@@ -68,8 +89,15 @@ impl PivotTableStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_show_row_stripes(&self) -> bool {
+    pub fn show_row_stripes(&self) -> bool {
         self.show_row_stripes.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_row_stripes()")]
+    pub fn get_show_row_stripes(&self) -> bool {
+        self.show_row_stripes()
     }
 
     #[inline]
@@ -80,8 +108,15 @@ impl PivotTableStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_show_column_stripes(&self) -> bool {
+    pub fn show_column_stripes(&self) -> bool {
         self.show_column_stripes.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_column_stripes()")]
+    pub fn get_show_column_stripes(&self) -> bool {
+        self.show_column_stripes()
     }
 
     #[inline]
@@ -92,8 +127,15 @@ impl PivotTableStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_show_last_column(&self) -> bool {
+    pub fn show_last_column(&self) -> bool {
         self.show_last_column.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_last_column()")]
+    pub fn get_show_last_column(&self) -> bool {
+        self.show_last_column()
     }
 
     #[inline]

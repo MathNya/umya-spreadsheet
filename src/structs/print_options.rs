@@ -24,8 +24,15 @@ pub struct PrintOptions {
 impl PrintOptions {
     #[inline]
     #[must_use]
-    pub fn get_horizontal_centered(&self) -> bool {
+    pub fn horizontal_centered(&self) -> bool {
         self.horizontal_centered.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horizontal_centered()")]
+    pub fn get_horizontal_centered(&self) -> bool {
+        self.horizontal_centered()
     }
 
     #[inline]
@@ -36,8 +43,15 @@ impl PrintOptions {
 
     #[inline]
     #[must_use]
-    pub fn get_vertical_centered(&self) -> bool {
+    pub fn vertical_centered(&self) -> bool {
         self.vertical_centered.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical_centered()")]
+    pub fn get_vertical_centered(&self) -> bool {
+        self.vertical_centered()
     }
 
     #[inline]

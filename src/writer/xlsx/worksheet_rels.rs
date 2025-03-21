@@ -87,7 +87,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // write pageSetup
-    if worksheet.page_setup().get_object_data().is_some() {
+    if worksheet.page_setup().object_data().is_some() {
         let object_name = format!("printerSettings{printer_settings_no}.bin");
         is_write = write_relationship(
             &mut writer,

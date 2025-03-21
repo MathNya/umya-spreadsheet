@@ -38,8 +38,15 @@ pub struct PatternFill {
 impl PatternFill {
     #[inline]
     #[must_use]
-    pub fn get_pattern_type(&self) -> &PatternValues {
+    pub fn pattern_type(&self) -> &PatternValues {
         self.pattern_type.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pattern_type()")]
+    pub fn get_pattern_type(&self) -> &PatternValues {
+        self.pattern_type()
     }
 
     #[inline]
@@ -49,11 +56,11 @@ impl PatternFill {
     }
 
     fn auto_set_pattern_type(&mut self) -> &mut Self {
-        if self.get_pattern_type() == &PatternValues::None {
-            if self.get_foreground_color().is_some() {
+        if self.pattern_type() == &PatternValues::None {
+            if self.foreground_color().is_some() {
                 self.set_pattern_type(PatternValues::Solid);
             }
-        } else if self.get_foreground_color().is_none() {
+        } else if self.foreground_color().is_none() {
             self.set_pattern_type(PatternValues::None);
         }
         self
@@ -61,14 +68,27 @@ impl PatternFill {
 
     #[inline]
     #[must_use]
-    pub fn get_foreground_color(&self) -> Option<&Color> {
+    pub fn foreground_color(&self) -> Option<&Color> {
         self.foreground_color.as_deref()
     }
 
     #[inline]
-    pub fn get_foreground_color_mut(&mut self) -> &mut Color {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use foreground_color()")]
+    pub fn get_foreground_color(&self) -> Option<&Color> {
+        self.foreground_color()
+    }
+
+    #[inline]
+    pub fn foreground_color_mut(&mut self) -> &mut Color {
         self.foreground_color
             .get_or_insert(Box::new(Color::default()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use foreground_color_mut()")]
+    pub fn get_foreground_color_mut(&mut self) -> &mut Color {
+        self.foreground_color_mut()
     }
 
     #[inline]
@@ -86,14 +106,27 @@ impl PatternFill {
 
     #[inline]
     #[must_use]
-    pub fn get_background_color(&self) -> Option<&Color> {
+    pub fn background_color(&self) -> Option<&Color> {
         self.background_color.as_deref()
     }
 
     #[inline]
-    pub fn get_background_color_mut(&mut self) -> &mut Color {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use background_color()")]
+    pub fn get_background_color(&self) -> Option<&Color> {
+        self.background_color()
+    }
+
+    #[inline]
+    pub fn background_color_mut(&mut self) -> &mut Color {
         self.background_color
             .get_or_insert(Box::new(Color::default()))
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use background_color_mut()")]
+    pub fn get_background_color_mut(&mut self) -> &mut Color {
+        self.background_color_mut()
     }
 
     #[inline]
@@ -108,7 +141,7 @@ impl PatternFill {
         self
     }
 
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         let pattern_type = self.pattern_type.value_string();
         let foreground_color = self
             .foreground_color
@@ -124,6 +157,11 @@ impl PatternFill {
                 "{pattern_type}{foreground_color}{background_color}"
             ))
         )
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     // When opened in software such as Excel, it is visually blank.

@@ -26,8 +26,15 @@ pub struct Protection {
 impl Protection {
     #[inline]
     #[must_use]
-    pub fn get_locked(&self) -> bool {
+    pub fn locked(&self) -> bool {
         self.locked.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use locked()")]
+    pub fn get_locked(&self) -> bool {
+        self.locked()
     }
 
     #[inline]
@@ -36,8 +43,14 @@ impl Protection {
     }
 
     #[inline]
-    pub fn get_hidden(&mut self) -> bool {
+    pub fn hidden(&mut self) -> bool {
         self.hidden.value()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use hidden()")]
+    pub fn get_hidden(&mut self) -> bool {
+        self.hidden()
     }
 
     #[inline]
@@ -47,7 +60,7 @@ impl Protection {
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_hash_code(&self) -> String {
+    pub(crate) fn hash_code(&self) -> String {
         format!(
             "{:x}",
             md5::Md5::digest(format!(
@@ -56,6 +69,13 @@ impl Protection {
                 &self.hidden.hash_string()
             ))
         )
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use hash_code()")]
+    pub(crate) fn get_hash_code(&self) -> String {
+        self.hash_code()
     }
 
     #[inline]

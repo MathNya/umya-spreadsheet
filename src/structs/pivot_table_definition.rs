@@ -72,8 +72,15 @@ pub struct PivotTableDefinition {
 impl PivotTableDefinition {
     #[inline]
     #[must_use]
-    pub fn get_apply_number_formats(&self) -> bool {
+    pub fn apply_number_formats(&self) -> bool {
         self.apply_number_formats.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use apply_number_formats()")]
+    pub fn get_apply_number_formats(&self) -> bool {
+        self.apply_number_formats()
     }
 
     #[inline]
@@ -84,8 +91,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_apply_border_formats(&self) -> bool {
+    pub fn apply_border_formats(&self) -> bool {
         self.apply_border_formats.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use apply_border_formats()")]
+    pub fn get_apply_border_formats(&self) -> bool {
+        self.apply_border_formats()
     }
 
     #[inline]
@@ -96,8 +110,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_apply_font_formats(&self) -> bool {
+    pub fn apply_font_formats(&self) -> bool {
         self.apply_font_formats.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use apply_font_formats()")]
+    pub fn get_apply_font_formats(&self) -> bool {
+        self.apply_font_formats()
     }
 
     #[inline]
@@ -108,8 +129,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_apply_pattern_formats(&self) -> bool {
+    pub fn apply_pattern_formats(&self) -> bool {
         self.apply_pattern_formats.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use apply_pattern_formats()")]
+    pub fn get_apply_pattern_formats(&self) -> bool {
+        self.apply_pattern_formats()
     }
 
     #[inline]
@@ -120,8 +148,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_apply_alignment_formats(&self) -> bool {
+    pub fn apply_alignment_formats(&self) -> bool {
         self.apply_alignment_formats.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use apply_alignment_formats()")]
+    pub fn get_apply_alignment_formats(&self) -> bool {
+        self.apply_alignment_formats()
     }
 
     #[inline]
@@ -132,8 +167,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_apply_width_height_formats(&self) -> bool {
+    pub fn apply_width_height_formats(&self) -> bool {
         self.apply_width_height_formats.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use apply_width_height_formats()")]
+    pub fn get_apply_width_height_formats(&self) -> bool {
+        self.apply_width_height_formats()
     }
 
     #[inline]
@@ -144,10 +186,17 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_use_auto_formatting(&self) -> bool {
+    pub fn use_auto_formatting(&self) -> bool {
         self.use_auto_formatting.value()
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use use_auto_formatting()")]
+    pub fn get_use_auto_formatting(&self) -> bool {
+        self.use_auto_formatting()
+    }
+    
     #[inline]
     pub fn set_use_auto_formatting(&mut self, value: bool) -> &mut Self {
         self.use_auto_formatting.set_value(value);
@@ -156,8 +205,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_item_print_titles(&self) -> bool {
+    pub fn item_print_titles(&self) -> bool {
         self.item_print_titles.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use item_print_titles()")]
+    pub fn get_item_print_titles(&self) -> bool {
+        self.item_print_titles()
     }
 
     #[inline]
@@ -168,10 +224,17 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_outline(&self) -> bool {
+    pub fn outline(&self) -> bool {
         self.outline.value()
     }
 
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline()")]
+    pub fn get_outline(&self) -> bool {
+        self.outline()
+    }
+    
     #[inline]
     pub fn set_outline(&mut self, value: bool) -> &mut Self {
         self.outline.set_value(value);
@@ -180,8 +243,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_outline_data(&self) -> bool {
+    pub fn outline_data(&self) -> bool {
         self.outline_data.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline_data()")]
+    pub fn get_outline_data(&self) -> bool {
+        self.outline_data()
     }
 
     #[inline]
@@ -192,8 +262,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_multiple_field_filters(&self) -> bool {
+    pub fn multiple_field_filters(&self) -> bool {
         self.multiple_field_filters.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use multiple_field_filters()")]
+    pub fn get_multiple_field_filters(&self) -> bool {
+        self.multiple_field_filters()
     }
 
     #[inline]
@@ -204,8 +281,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -216,8 +300,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_cache_id(&self) -> u32 {
+    pub fn cache_id(&self) -> u32 {
         self.cache_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cache_id()")]
+    pub fn get_cache_id(&self) -> u32 {
+        self.cache_id()
     }
 
     #[inline]
@@ -228,8 +319,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_indent(&self) -> u32 {
+    pub fn indent(&self) -> u32 {
         self.indent.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use indent()")]
+    pub fn get_indent(&self) -> u32 {
+        self.indent()
     }
 
     #[inline]
@@ -240,8 +338,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_local_name(&self) -> &str {
+    pub fn local_name(&self) -> &str {
         self.local_name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use local_name()")]
+    pub fn get_local_name(&self) -> &str {
+        self.local_name()
     }
 
     #[inline]
@@ -252,8 +357,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_data_caption(&self) -> &str {
+    pub fn data_caption(&self) -> &str {
         self.data_caption.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_caption()")]
+    pub fn get_data_caption(&self) -> &str {
+        self.data_caption()
     }
 
     #[inline]
@@ -264,8 +376,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_updated_version(&self) -> u8 {
+    pub fn updated_version(&self) -> u8 {
         self.updated_version.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use updated_version()")]
+    pub fn get_updated_version(&self) -> u8 {
+        self.updated_version()
     }
 
     #[inline]
@@ -276,8 +395,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_min_refreshable_version(&self) -> u8 {
+    pub fn min_refreshable_version(&self) -> u8 {
         self.min_refreshable_version.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use min_refreshable_version()")]
+    pub fn get_min_refreshable_version(&self) -> u8 {
+        self.min_refreshable_version()
     }
 
     #[inline]
@@ -288,8 +414,15 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_created_version(&self) -> u8 {
+    pub fn created_version(&self) -> u8 {
         self.created_version.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use created_version()")]
+    pub fn get_created_version(&self) -> u8 {
+        self.created_version()
     }
 
     #[inline]
@@ -300,13 +433,26 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_location(&self) -> &Location {
+    pub fn location(&self) -> &Location {
         &self.location
     }
 
     #[inline]
-    pub fn get_location_mut(&mut self) -> &mut Location {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use location()")]
+    pub fn get_location(&self) -> &Location {
+        self.location()
+    }
+
+    #[inline]
+    pub fn location_mut(&mut self) -> &mut Location {
         &mut self.location
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use location_mut()")]
+    pub fn get_location_mut(&mut self) -> &mut Location {
+        self.location_mut()
     }
 
     #[inline]
@@ -317,13 +463,26 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_pivot_fields(&self) -> &PivotFields {
+    pub fn pivot_fields(&self) -> &PivotFields {
         &self.pivot_fields
     }
 
     #[inline]
-    pub fn get_pivot_fields_mut(&mut self) -> &mut PivotFields {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pivot_fields()")]
+    pub fn get_pivot_fields(&self) -> &PivotFields {
+        self.pivot_fields()
+    }
+
+    #[inline]
+    pub fn pivot_fields_mut(&mut self) -> &mut PivotFields {
         &mut self.pivot_fields
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use pivot_fields_mut()")]
+    pub fn get_pivot_fields_mut(&mut self) -> &mut PivotFields {
+        self.pivot_fields_mut()
     }
 
     #[inline]
@@ -334,13 +493,26 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_row_items(&self) -> &RowItems {
+    pub fn row_items(&self) -> &RowItems {
         &self.row_items
     }
 
     #[inline]
-    pub fn get_row_items_mut(&mut self) -> &mut RowItems {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row_items()")]
+    pub fn get_row_items(&self) -> &RowItems {
+        self.row_items()
+    }
+
+    #[inline]
+    pub fn row_items_mut(&mut self) -> &mut RowItems {
         &mut self.row_items
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use row_items_mut()")]
+    pub fn get_row_items_mut(&mut self) -> &mut RowItems {
+        self.row_items_mut()
     }
 
     #[inline]
@@ -351,13 +523,26 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_column_fields(&self) -> &ColumnFields {
+    pub fn column_fields(&self) -> &ColumnFields {
         &self.column_fields
     }
 
     #[inline]
-    pub fn get_column_fields_mut(&mut self) -> &mut ColumnFields {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use column_fields()")]
+    pub fn get_column_fields(&self) -> &ColumnFields {
+        self.column_fields()
+    }
+
+    #[inline]
+    pub fn column_fields_mut(&mut self) -> &mut ColumnFields {
         &mut self.column_fields
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use column_fields_mut()")]
+    pub fn get_column_fields_mut(&mut self) -> &mut ColumnFields {
+        self.column_fields_mut()
     }
 
     #[inline]
@@ -368,13 +553,26 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_column_items(&self) -> &ColumnItems {
+    pub fn column_items(&self) -> &ColumnItems {
         &self.column_items
     }
 
     #[inline]
-    pub fn get_column_items_mut(&mut self) -> &mut ColumnItems {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use column_items()")]
+    pub fn get_column_items(&self) -> &ColumnItems {
+        self.column_items()
+    }
+
+    #[inline]
+    pub fn column_items_mut(&mut self) -> &mut ColumnItems {
         &mut self.column_items
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use column_items_mut()")]
+    pub fn get_column_items_mut(&mut self) -> &mut ColumnItems {
+        self.column_items_mut()
     }
 
     #[inline]
@@ -385,13 +583,26 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_data_fields(&self) -> &DataFields {
+    pub fn data_fields(&self) -> &DataFields {
         &self.data_fields
     }
 
     #[inline]
-    pub fn get_data_fields_mut(&mut self) -> &mut DataFields {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_fields()")]
+    pub fn get_data_fields(&self) -> &DataFields {
+        self.data_fields()
+    }
+
+    #[inline]
+    pub fn data_fields_mut(&mut self) -> &mut DataFields {
         &mut self.data_fields
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use data_fields_mut()")]
+    pub fn get_data_fields_mut(&mut self) -> &mut DataFields {
+        self.data_fields_mut()
     }
 
     #[inline]
@@ -402,13 +613,26 @@ impl PivotTableDefinition {
 
     #[inline]
     #[must_use]
-    pub fn get_pivot_table_style(&self) -> &PivotTableStyle {
+    pub fn pivot_table_style(&self) -> &PivotTableStyle {
         &self.pivot_table_style
     }
 
     #[inline]
-    pub fn get_pivot_table_style_mut(&mut self) -> &mut PivotTableStyle {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pivot_table_style()")]
+    pub fn get_pivot_table_style(&self) -> &PivotTableStyle {
+        self.pivot_table_style()
+    }
+
+    #[inline]
+    pub fn pivot_table_style_mut(&mut self) -> &mut PivotTableStyle {
         &mut self.pivot_table_style
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use pivot_table_style_mut()")]
+    pub fn get_pivot_table_style_mut(&mut self) -> &mut PivotTableStyle {
+        self.pivot_table_style_mut()
     }
 
     #[inline]
