@@ -86,7 +86,7 @@ pub(crate) fn read<R: io::Read + io::Seek>(
                 .add_defined_names(defined_name.clone());
         } else {
             if let Some(v) = defined_name.address_obj().first() {
-                if let Some(s) = wb.sheet_by_name_mut(v.sheet_name()) {
+                if let Ok(s) = wb.sheet_by_name_mut(v.sheet_name()) {
                     s.add_defined_names(defined_name.clone());
                     continue;
                 }

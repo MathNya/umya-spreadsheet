@@ -491,33 +491,37 @@ impl Workbook {
     }
 
     #[inline]
-    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Option<usize> {
+    pub(crate) fn find_sheet_index_by_name(&self, sheet_name: &str) -> Result<usize, &'static str> {
         self.work_sheet_collection
             .iter()
             .position(|sheet| sheet.name() == sheet_name)
+            .ok_or("Not found.")
     }
 
     /// Get Work Sheet.
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
-    /// * `Option<&Worksheet>`.
+    /// * `Result<&Worksheet, &'static str>`.
     #[inline]
-    #[must_use]
-    pub fn sheet(&self, index: usize) -> Option<&Worksheet> {
-        self.work_sheet_collection.get(index).inspect(|v| {
-            assert!(
-                v.is_deserialized(),
-                "This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: \
-                 usize);"
-            );
-        })
+    pub fn sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
+        match self.work_sheet_collection.get(index) {
+            Some(v) => {
+                if v.is_deserialized() {
+                    Ok(v)
+                 } else {
+                    Err("This Worksheet is Not Deserialized. Please exec to read_sheet(&mut self, index: usize")
+                 }
+            },
+            None => {
+                Err("Not found.")
+            }
+        }
     }
 
     #[inline]
-    #[must_use]
     #[deprecated(since = "3.0.0", note = "Use sheet()")]
-    pub fn get_sheet(&self, index: usize) -> Option<&Worksheet> {
+    pub fn get_sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
         self.sheet(index)
     }
 
@@ -525,18 +529,16 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Option<&Worksheet>`.
+    /// * `Result<&Worksheet, &'static str>`.
     #[inline]
-    #[must_use]
-    pub fn sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
+    pub fn sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
         self.find_sheet_index_by_name(sheet_name)
             .and_then(|index| self.sheet(index))
     }
 
     #[inline]
-    #[must_use]
     #[deprecated(since = "3.0.0", note = "Use sheet_by_name()")]
-    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Option<&Worksheet> {
+    pub fn get_sheet_by_name(&self, sheet_name: &str) -> Result<&Worksheet, &'static str> {
         self.sheet_by_name(sheet_name)
     }
 
@@ -559,19 +561,20 @@ impl Workbook {
     /// # Arguments
     /// * `index` - sheet index
     /// # Return value
-    /// * `Option<&mut Worksheet>`.
+    /// * `Result<&mut Worksheet, &'static str>`.
     #[allow(clippy::manual_inspect)]
-    pub fn sheet_mut(&mut self, index: usize) -> Option<&mut Worksheet> {
+    pub fn sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, &'static str> {
         let shared_string_table = self.shared_string_table();
         let stylesheet = self.stylesheet().clone();
         self.work_sheet_collection.get_mut(index).map(|v| {
             raw_to_deserialize_by_worksheet(v, &shared_string_table, &stylesheet);
             v
         })
+        .ok_or("Not found.")
     }
 
     #[deprecated(since = "3.0.0", note = "Use sheet_mut()")]
-    pub fn get_sheet_mut(&mut self, index: usize) -> Option<&mut Worksheet> {
+    pub fn get_sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, &'static str> {
         self.sheet_mut(index)
     }
 
@@ -579,16 +582,16 @@ impl Workbook {
     /// # Arguments
     /// * `sheet_name` - sheet name
     /// # Return value
-    /// * `Option<&mut Worksheet>`.
+    /// * `Result<&mut Worksheet, &'static str>`.
     #[inline]
-    pub fn sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
+    pub fn sheet_by_name_mut(&mut self, sheet_name: &str) -> Result<&mut Worksheet, &'static str> {
         self.find_sheet_index_by_name(sheet_name)
             .and_then(move |index| self.sheet_mut(index))
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use sheet_by_name_mut()")]
-    pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Option<&mut Worksheet> {
+    pub fn get_sheet_by_name_mut(&mut self, sheet_name: &str) -> Result<&mut Worksheet, &'static str> {
         self.sheet_by_name_mut(sheet_name)
     }
 
