@@ -37,7 +37,6 @@ impl Cells {
 
     #[inline]
     #[must_use]
-    #[deprecated(since = "2.2.4", note = "Please use iter_collection().collect::<Vec<_>>() instead")]
     pub fn collection(&self) -> Vec<&Cell> {
         self.iter_collection().collect()
     }
@@ -46,7 +45,7 @@ impl Cells {
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection()")]
     pub fn get_collection(&self) -> Vec<&Cell> {
-        self.iter_collection().collect()
+        self.collection()
     }
 
     #[inline]
@@ -101,7 +100,6 @@ impl Cells {
     }
 
     #[must_use]
-    #[deprecated(since = "2.2.4", note = "Please use iter_cells_sorted_by_row_column().collect::<Vec<_>>() instead")]
     pub fn collection_sorted(&self) -> Vec<&Cell> {
         self.iter_cells_sorted_by_row_column().collect()
     }
@@ -109,7 +107,7 @@ impl Cells {
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_sorted()")]
     pub fn get_collection_sorted(&self) -> Vec<&Cell> {
-        self.iter_cells_sorted_by_row_column().collect()
+        self.collection_sorted()
     }
 
     #[inline]
@@ -157,7 +155,6 @@ impl Cells {
 
     #[inline]
     #[must_use]
-    #[deprecated(since = "2.2.4", note = "Please use iter_cells_by_column(column_num).collect::<Vec<_>>() instead")]
     pub fn collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
         self.iter_cells_by_column(column_num).collect()
     }
@@ -166,7 +163,7 @@ impl Cells {
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
     pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.iter_cells_by_column(column_num).collect()
+        self.collection_by_column(column_num)
     }
 
     /// Iterates all column cells in a given column, sorted by the column index.
@@ -187,7 +184,6 @@ impl Cells {
 
     #[inline]
     #[must_use]
-    #[deprecated(since = "2.2.4", note = "Please use iter_cells_by_row(row_num).collect::<Vec<_>>() instead")]
     pub fn collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
         self.iter_cells_by_row(row_num).collect()
     }
@@ -196,7 +192,7 @@ impl Cells {
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
     pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
-        self.iter_cells_by_row(row_num).collect()
+        self.collection_by_row(row_num)
     }
 
     /// Iterates all coordinates in a range, sorted by row then by column.
@@ -535,7 +531,6 @@ impl Cells {
     }
 
     #[must_use]
-    #[deprecated(since = "2.2.4", note = "Please use iter_all_cells_by_range_sorted_by_row(range).collect::<Vec<_>>() instead")]
     pub fn cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
         self.iter_all_cells_by_range_sorted_by_row(range).collect()
     }
@@ -543,11 +538,10 @@ impl Cells {
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use style()")]
     pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
-        self.iter_all_cells_by_range_sorted_by_row(range).collect()
+        self.cell_by_range(range)
     }
 
     #[must_use]
-    #[deprecated(since = "2.2.4", note = "Please use iter_all_cell_values_by_range_sorted_by_row(range).collect::<Vec<_>>() instead")]
     pub fn cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         self.iter_all_cell_values_by_range_sorted_by_row(range)
             .collect::<Vec<_>>()
@@ -556,8 +550,7 @@ impl Cells {
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use cell_value_by_range()")]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
-        self.iter_all_cell_values_by_range_sorted_by_row(range)
-            .collect::<Vec<_>>()
+        self.cell_value_by_range(range)
     }
 
     #[inline]
