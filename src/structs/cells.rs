@@ -25,10 +25,6 @@ impl Cells {
         self.map.values().map(Box::as_ref)
     }
 
-    #[deprecated(
-        since = "2.2.4",
-        note = "Please use iter_collection().collect::<Vec<_>>() instead"
-    )]
     #[inline(always)]
     pub fn get_collection(&self) -> Vec<&Cell> {
         self.iter_collection().collect()
@@ -83,10 +79,6 @@ impl Cells {
             .map(|(col, row)| self.map.get(&(row, col)).unwrap().as_ref())
     }
 
-    #[deprecated(
-        since = "2.2.4",
-        note = "Please use iter_cells_sorted_by_row_column().collect::<Vec<_>>() instead"
-    )]
     #[inline(always)]
     pub fn get_collection_sorted(&self) -> Vec<&Cell> {
         self.iter_cells_sorted_by_row_column().collect()
@@ -121,10 +113,6 @@ impl Cells {
             .map(move |row| self.map.get(&(row, column_num)).unwrap().as_ref())
     }
 
-    #[deprecated(
-        since = "2.2.4",
-        note = "Please use iter_cells_by_column(column_num).collect::<Vec<_>>() instead"
-    )]
     #[inline(always)]
     pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
         self.iter_cells_by_column(*column_num).collect()
@@ -146,10 +134,6 @@ impl Cells {
             .map(move |col| self.map.get(&(row_num, col)).unwrap().as_ref())
     }
 
-    #[deprecated(
-        since = "2.2.4",
-        note = "Please use iter_cells_by_row(row_num).collect::<Vec<_>>() instead"
-    )]
     #[inline(always)]
     pub fn get_collection_by_row(&self, row_num: &u32) -> Vec<&Cell> {
         self.iter_cells_by_row(*row_num).collect()
@@ -444,19 +428,11 @@ impl Cells {
             })
     }
 
-    #[deprecated(
-        since = "2.2.4",
-        note = "Please use iter_all_cells_by_range_sorted_by_row(range).collect::<Vec<_>>() instead"
-    )]
     #[inline(always)]
     pub fn get_cell_by_range(&self, range: &str) -> Vec<Option<&Cell>> {
         self.iter_all_cells_by_range_sorted_by_row(range).collect()
     }
 
-    #[deprecated(
-        since = "2.2.4",
-        note = "Please use iter_all_cell_values_by_range_sorted_by_row(range).collect::<Vec<_>>() instead"
-    )]
     #[inline(always)]
     pub fn get_cell_value_by_range(&self, range: &str) -> Vec<&CellValue> {
         self.iter_all_cell_values_by_range_sorted_by_row(range)
