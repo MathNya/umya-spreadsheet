@@ -335,11 +335,11 @@ impl PlotArea {
 
     pub fn set_grouping(&mut self, value: GroupingValues) -> &mut Self {
         if let Some(chart) = &mut self.line_chart {
-            chart.get_grouping_mut().set_val(value);
+            chart.grouping_mut().set_val(value);
             return self;
         }
         if let Some(chart) = &mut self.line_3d_chart {
-            chart.get_grouping_mut().set_val(value);
+            chart.grouping_mut().set_val(value);
             return self;
         }
         if let Some(chart) = &mut self.bar_chart {
@@ -363,10 +363,10 @@ impl PlotArea {
 
     pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         if let Some(chart) = &mut self.line_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.line_3d_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.pie_chart {
             return chart.get_area_chart_series_list_mut();
@@ -407,14 +407,14 @@ impl PlotArea {
     pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
         if let Some(v) = &mut self.line_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.line_3d_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }

@@ -38,12 +38,23 @@ pub struct Line3DChart {
 
 impl Line3DChart {
     #[must_use]
-    pub fn get_grouping(&self) -> &Grouping {
+    pub fn grouping(&self) -> &Grouping {
         &self.grouping
     }
 
-    pub fn get_grouping_mut(&mut self) -> &mut Grouping {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use grouping()")]
+    pub fn get_grouping(&self) -> &Grouping {
+        self.grouping()
+    }
+
+    pub fn grouping_mut(&mut self) -> &mut Grouping {
         &mut self.grouping
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use grouping_mut()")]
+    pub fn get_grouping_mut(&mut self) -> &mut Grouping {
+        self.grouping_mut()
     }
 
     pub fn set_grouping(&mut self, value: Grouping) -> &mut Line3DChart {
@@ -52,12 +63,23 @@ impl Line3DChart {
     }
 
     #[must_use]
-    pub fn get_vary_colors(&self) -> &VaryColors {
+    pub fn vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
 
-    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vary_colors()")]
+    pub fn get_vary_colors(&self) -> &VaryColors {
+        self.vary_colors()
+    }
+
+    pub fn vary_colors_mut(&mut self) -> &mut VaryColors {
         &mut self.vary_colors
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use vary_colors_mut()")]
+    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+        self.vary_colors_mut()
     }
 
     pub fn set_vary_colors(&mut self, value: VaryColors) -> &mut Line3DChart {
@@ -66,12 +88,23 @@ impl Line3DChart {
     }
 
     #[must_use]
-    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+    pub fn area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list()")]
+    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+        self.area_chart_series_list()
+    }
+
+    pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         &mut self.area_chart_series_list
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list_mut()")]
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.area_chart_series_list_mut()
     }
 
     pub fn set_area_chart_series_list(&mut self, value: AreaChartSeriesList) -> &mut Self {
@@ -80,12 +113,23 @@ impl Line3DChart {
     }
 
     #[must_use]
-    pub fn get_data_labels(&self) -> &DataLabels {
+    pub fn data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_labels()")]
+    pub fn get_data_labels(&self) -> &DataLabels {
+        self.data_labels()
+    }
+
+    pub fn data_labels_mut(&mut self) -> &mut DataLabels {
         &mut self.data_labels
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use data_labels_mut()")]
+    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+        self.data_labels_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut Line3DChart {
@@ -94,12 +138,23 @@ impl Line3DChart {
     }
 
     #[must_use]
-    pub fn get_axis_id(&self) -> &[AxisId] {
+    pub fn axis_id(&self) -> &[AxisId] {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use axis_id()")]
+    pub fn get_axis_id(&self) -> &[AxisId] {
+        self.axis_id()
+    }
+
+    pub fn axis_id_mut(&mut self) -> &mut Vec<AxisId> {
         &mut self.axis_id
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use axis_id_mut()")]
+    pub fn get_axis_id_mut(&mut self) -> &mut Vec<AxisId> {
+        self.axis_id_mut()
     }
 
     pub fn set_axis_id(&mut self, value: impl Into<Vec<AxisId>>) -> &mut Line3DChart {
@@ -124,7 +179,7 @@ impl Line3DChart {
                     b"c:ser" => {
                         let mut obj = AreaChartSeries::default();
                         obj.set_attributes(reader, e);
-                        self.get_area_chart_series_list_mut()
+                        self.area_chart_series_list_mut()
                             .add_area_chart_series(obj);
                         }
                     b"c:dLbls" => {

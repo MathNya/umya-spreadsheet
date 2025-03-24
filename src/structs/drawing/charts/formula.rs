@@ -31,20 +31,37 @@ pub struct Formula {
 
 impl Formula {
     #[must_use]
-    pub fn get_address(&self) -> &Address {
+    pub fn address(&self) -> &Address {
         &self.address
     }
 
-    pub fn get_address_mut(&mut self) -> &mut Address {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address()")]
+    pub fn get_address(&self) -> &Address {
+        self.address()
+    }
+
+    pub fn address_mut(&mut self) -> &mut Address {
         &mut self.address
     }
 
+    #[deprecated(since = "3.0.0", note = "Use address_mut()")]
+    pub fn get_address_mut(&mut self) -> &mut Address {
+        self.address_mut()
+    }
+
     #[must_use]
-    pub fn get_address_str(&self) -> String {
+    pub fn address_str(&self) -> String {
         if self.string_value.has_value() {
             return self.string_value.value_str().to_string();
         }
         self.address.address()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use address_str()")]
+    pub fn get_address_str(&self) -> String {
+        self.address_str()
     }
 
     pub fn set_address(&mut self, value: Address) -> &mut Self {
@@ -91,7 +108,7 @@ impl Formula {
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // c:f
         write_start_tag(writer, "c:f", vec![], false);
-        write_text_node_no_escape(writer, self.get_address_str());
+        write_text_node_no_escape(writer, self.address_str());
         write_end_tag(writer, "c:f");
     }
 }

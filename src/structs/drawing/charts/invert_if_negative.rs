@@ -19,6 +19,12 @@ pub struct InvertIfNegative {
 }
 impl InvertIfNegative {
     #[must_use]
+    pub fn val(&self) -> f64 {
+        self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
     pub fn get_val(&self) -> f64 {
         self.val.value()
     }

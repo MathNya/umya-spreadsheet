@@ -90,7 +90,7 @@ impl NumberReference {
 
         // c:numCache
         self.numbering_cache
-            .write_to(writer, self.get_formula().get_address(), wb);
+            .write_to(writer, self.get_formula().address(), wb);
 
         write_end_tag(writer, "c:numRef");
     }

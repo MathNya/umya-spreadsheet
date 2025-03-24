@@ -22,8 +22,14 @@ pub struct Grouping {
 }
 impl Grouping {
     #[must_use]
-    pub fn get_val(&self) -> &GroupingValues {
+    pub fn val(&self) -> &GroupingValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &GroupingValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: GroupingValues) -> &mut Grouping {

@@ -22,8 +22,14 @@ pub struct LegendPosition {
 }
 impl LegendPosition {
     #[must_use]
-    pub fn get_val(&self) -> &LegendPositionValues {
+    pub fn val(&self) -> &LegendPositionValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &LegendPositionValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: LegendPositionValues) -> &mut LegendPosition {

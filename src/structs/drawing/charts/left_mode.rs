@@ -22,8 +22,14 @@ pub struct LeftMode {
 }
 impl LeftMode {
     #[must_use]
-    pub fn get_val(&self) -> &LayoutModeValues {
+    pub fn val(&self) -> &LayoutModeValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &LayoutModeValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: LayoutModeValues) -> &mut LeftMode {

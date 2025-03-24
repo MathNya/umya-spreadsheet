@@ -19,8 +19,14 @@ pub struct EditingLanguage {
 }
 impl EditingLanguage {
     #[must_use]
-    pub fn get_val(&self) -> &str {
+    pub fn val(&self) -> &str {
         self.val.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &str {
+        self.val()
     }
 
     pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut EditingLanguage {

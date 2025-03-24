@@ -22,8 +22,14 @@ pub struct LayoutTarget {
 }
 impl LayoutTarget {
     #[must_use]
-    pub fn get_val(&self) -> &LayoutTargetValues {
+    pub fn val(&self) -> &LayoutTargetValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &LayoutTargetValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: LayoutTargetValues) -> &mut LayoutTarget {

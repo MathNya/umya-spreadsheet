@@ -30,12 +30,23 @@ pub struct Floor {
 
 impl Floor {
     #[must_use]
-    pub fn get_thickness(&self) -> Option<&Thickness> {
+    pub fn thickness(&self) -> Option<&Thickness> {
         self.thickness.as_ref()
     }
 
-    pub fn get_thickness_mut(&mut self) -> Option<&mut Thickness> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thickness()")]
+    pub fn get_thickness(&self) -> Option<&Thickness> {
+        self.thickness()
+    }
+
+    pub fn thickness_mut(&mut self) -> Option<&mut Thickness> {
         self.thickness.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use thickness_mut()")]
+    pub fn get_thickness_mut(&mut self) -> Option<&mut Thickness> {
+        self.thickness_mut()
     }
 
     pub fn set_thickness(&mut self, value: Thickness) -> &mut Floor {
@@ -44,12 +55,23 @@ impl Floor {
     }
 
     #[must_use]
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_deref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {

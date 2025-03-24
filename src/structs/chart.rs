@@ -485,10 +485,10 @@ impl Chart {
 
         let mut line_chart = LineChart::default();
         line_chart
-            .get_grouping_mut()
+            .grouping_mut()
             .set_val(GroupingValues::Stacked);
         line_chart.set_area_chart_series_list(acsl_obj);
-        line_chart.get_show_marker_mut().set_val(true);
+        line_chart.show_marker_mut().set_val(true);
         line_chart.add_axis_id(axis_id1);
         line_chart.add_axis_id(axis_id2);
 
@@ -578,7 +578,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -631,7 +631,7 @@ impl Chart {
 
         let mut line_3d_chart = Line3DChart::default();
         line_3d_chart
-            .get_grouping_mut()
+            .grouping_mut()
             .set_val(GroupingValues::Stacked);
         line_3d_chart.set_area_chart_series_list(acsl_obj);
         line_3d_chart.add_axis_id(axis_id1);
@@ -729,7 +729,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -810,7 +810,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -915,7 +915,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -1026,7 +1026,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -1161,7 +1161,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -1306,7 +1306,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -1439,7 +1439,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -1589,7 +1589,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -1662,7 +1662,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -1889,7 +1889,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -2020,7 +2020,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()
@@ -2209,7 +2209,7 @@ impl Chart {
             .get_chart_space_mut()
             .chart_mut()
             .legend_mut()
-            .get_legend_position_mut()
+            .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .get_graphic_mut()

@@ -19,8 +19,14 @@ pub struct FirstSliceAngle {
 }
 impl FirstSliceAngle {
     #[must_use]
-    pub fn get_val(&self) -> u16 {
+    pub fn val(&self) -> u16 {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> u16 {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: u16) -> &mut FirstSliceAngle {

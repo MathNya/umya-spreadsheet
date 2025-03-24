@@ -26,12 +26,23 @@ pub struct Layout {
 
 impl Layout {
     #[must_use]
-    pub fn get_manual_layout(&self) -> Option<&ManualLayout> {
+    pub fn manual_layout(&self) -> Option<&ManualLayout> {
         self.manual_layout.as_ref()
     }
 
-    pub fn get_manual_layout_mut(&mut self) -> Option<&mut ManualLayout> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use manual_layout()")]
+    pub fn get_manual_layout(&self) -> Option<&ManualLayout> {
+        self.manual_layout()
+    }
+
+    pub fn manual_layout_mut(&mut self) -> Option<&mut ManualLayout> {
         self.manual_layout.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use manual_layout_mut()")]
+    pub fn get_manual_layout_mut(&mut self) -> Option<&mut ManualLayout> {
+        self.manual_layout_mut()
     }
 
     pub fn set_manual_layout(&mut self, value: ManualLayout) -> &mut Layout {

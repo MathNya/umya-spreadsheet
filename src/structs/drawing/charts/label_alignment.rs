@@ -22,8 +22,14 @@ pub struct LabelAlignment {
 }
 impl LabelAlignment {
     #[must_use]
-    pub fn get_val(&self) -> &LabelAlignmentValues {
+    pub fn val(&self) -> &LabelAlignmentValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &LabelAlignmentValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: LabelAlignmentValues) -> &mut LabelAlignment {

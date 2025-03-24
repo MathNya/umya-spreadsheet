@@ -26,8 +26,14 @@ pub struct FormatCode {
 
 impl FormatCode {
     #[must_use]
-    pub fn get_text(&self) -> &str {
+    pub fn text(&self) -> &str {
         &self.text
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> &str {
+        self.text()
     }
 
     pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut FormatCode {
