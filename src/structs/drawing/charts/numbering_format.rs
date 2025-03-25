@@ -23,8 +23,14 @@ pub struct NumberingFormat {
 }
 impl NumberingFormat {
     #[must_use]
-    pub fn get_format_code(&self) -> &str {
+    pub fn format_code(&self) -> &str {
         self.format_code.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_code()")]
+    pub fn get_format_code(&self) -> &str {
+        self.format_code()
     }
 
     pub fn set_format_code<S: Into<String>>(&mut self, value: S) -> &mut NumberingFormat {
@@ -33,8 +39,14 @@ impl NumberingFormat {
     }
 
     #[must_use]
-    pub fn get_source_linked(&self) -> bool {
+    pub fn source_linked(&self) -> bool {
         self.source_linked.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use source_linked()")]
+    pub fn get_source_linked(&self) -> bool {
+        self.source_linked()
     }
 
     pub fn set_source_linked(&mut self, value: bool) -> &mut NumberingFormat {

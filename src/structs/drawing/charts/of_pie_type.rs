@@ -22,8 +22,14 @@ pub struct OfPieType {
 }
 impl OfPieType {
     #[must_use]
-    pub fn get_val(&self) -> &OfPieValues {
+    pub fn val(&self) -> &OfPieValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &OfPieValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: OfPieValues) -> &mut OfPieType {

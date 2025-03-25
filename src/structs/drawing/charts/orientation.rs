@@ -22,8 +22,14 @@ pub struct Orientation {
 }
 impl Orientation {
     #[must_use]
-    pub fn get_val(&self) -> &OrientationValues {
+    pub fn val(&self) -> &OrientationValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &OrientationValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: OrientationValues) -> &mut Orientation {

@@ -26,12 +26,23 @@ pub struct Marker {
 
 impl Marker {
     #[must_use]
-    pub fn get_symbol(&self) -> Option<&Symbol> {
+    pub fn symbol(&self) -> Option<&Symbol> {
         self.symbol.as_ref()
     }
 
-    pub fn get_symbol_mut(&mut self) -> Option<&mut Symbol> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use symbol()")]
+    pub fn get_symbol(&self) -> Option<&Symbol> {
+        self.symbol()
+    }
+
+    pub fn symbol_mut(&mut self) -> Option<&mut Symbol> {
         self.symbol.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use symbol_mut()")]
+    pub fn get_symbol_mut(&mut self) -> Option<&mut Symbol> {
+        self.symbol_mut()
     }
 
     pub fn set_symbol(&mut self, value: Symbol) -> &mut Marker {

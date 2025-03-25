@@ -31,12 +31,23 @@ pub struct NumberingCache {
 
 impl NumberingCache {
     #[must_use]
-    pub fn get_format_code(&self) -> &FormatCode {
+    pub fn format_code(&self) -> &FormatCode {
         &self.format_code
     }
 
-    pub fn get_format_code_mut(&mut self) -> &mut FormatCode {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_code()")]
+    pub fn get_format_code(&self) -> &FormatCode {
+        self.format_code()
+    }
+
+    pub fn format_code_mut(&mut self) -> &mut FormatCode {
         &mut self.format_code
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use format_code_mut()")]
+    pub fn get_format_code_mut(&mut self) -> &mut FormatCode {
+        self.format_code_mut()
     }
 
     pub fn set_format_code(&mut self, value: FormatCode) -> &mut NumberingCache {

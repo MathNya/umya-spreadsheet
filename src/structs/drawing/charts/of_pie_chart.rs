@@ -42,12 +42,23 @@ pub struct OfPieChart {
 
 impl OfPieChart {
     #[must_use]
-    pub fn get_of_pie_type(&self) -> &OfPieType {
+    pub fn of_pie_type(&self) -> &OfPieType {
         &self.of_pie_type
     }
 
-    pub fn get_of_pie_type_mut(&mut self) -> &mut OfPieType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use of_pie_type()")]
+    pub fn get_of_pie_type(&self) -> &OfPieType {
+        self.of_pie_type()
+    }
+
+    pub fn of_pie_type_mut(&mut self) -> &mut OfPieType {
         &mut self.of_pie_type
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use of_pie_type_mut()")]
+    pub fn get_of_pie_type_mut(&mut self) -> &mut OfPieType {
+        self.of_pie_type_mut()
     }
 
     pub fn set_of_pie_type(&mut self, value: OfPieType) -> &mut OfPieChart {
@@ -56,12 +67,23 @@ impl OfPieChart {
     }
 
     #[must_use]
-    pub fn get_vary_colors(&self) -> &VaryColors {
+    pub fn vary_colors(&self) -> &VaryColors {
         &self.vary_colors
     }
 
-    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vary_colors()")]
+    pub fn get_vary_colors(&self) -> &VaryColors {
+        self.vary_colors()
+    }
+
+    pub fn vary_colors_mut(&mut self) -> &mut VaryColors {
         &mut self.vary_colors
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use vary_colors_mut()")]
+    pub fn get_vary_colors_mut(&mut self) -> &mut VaryColors {
+        self.vary_colors_mut()
     }
 
     pub fn set_vary_colors(&mut self, value: VaryColors) -> &mut OfPieChart {
@@ -70,12 +92,23 @@ impl OfPieChart {
     }
 
     #[must_use]
-    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+    pub fn area_chart_series_list(&self) -> &AreaChartSeriesList {
         &self.area_chart_series_list
     }
 
-    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list()")]
+    pub fn get_area_chart_series_list(&self) -> &AreaChartSeriesList {
+        self.area_chart_series_list()
+    }
+
+    pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         &mut self.area_chart_series_list
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list_mut()")]
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.area_chart_series_list_mut()
     }
 
     pub fn set_area_chart_series_list(&mut self, value: AreaChartSeriesList) -> &mut Self {
@@ -84,12 +117,23 @@ impl OfPieChart {
     }
 
     #[must_use]
-    pub fn get_data_labels(&self) -> &DataLabels {
+    pub fn data_labels(&self) -> &DataLabels {
         &self.data_labels
     }
 
-    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_labels()")]
+    pub fn get_data_labels(&self) -> &DataLabels {
+        self.data_labels()
+    }
+
+    pub fn data_labels_mut(&mut self) -> &mut DataLabels {
         &mut self.data_labels
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use data_labels_mut()")]
+    pub fn get_data_labels_mut(&mut self) -> &mut DataLabels {
+        self.data_labels_mut()
     }
 
     pub fn set_data_labels(&mut self, value: DataLabels) -> &mut OfPieChart {
@@ -98,12 +142,23 @@ impl OfPieChart {
     }
 
     #[must_use]
-    pub fn get_gap_width(&self) -> &GapWidth {
+    pub fn gap_width(&self) -> &GapWidth {
         &self.gap_width
     }
 
-    pub fn get_gap_width_mut(&mut self) -> &mut GapWidth {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gap_width()")]
+    pub fn get_gap_width(&self) -> &GapWidth {
+        self.gap_width()
+    }
+
+    pub fn gap_width_mut(&mut self) -> &mut GapWidth {
         &mut self.gap_width
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use gap_width_mut()")]
+    pub fn get_gap_width_mut(&mut self) -> &mut GapWidth {
+        self.gap_width_mut()
     }
 
     pub fn set_gap_width(&mut self, value: GapWidth) -> &mut OfPieChart {
@@ -112,12 +167,23 @@ impl OfPieChart {
     }
 
     #[must_use]
-    pub fn get_second_pie_size(&self) -> &SecondPieSize {
+    pub fn second_pie_size(&self) -> &SecondPieSize {
         &self.second_pie_size
     }
 
-    pub fn get_second_pie_size_mut(&mut self) -> &mut SecondPieSize {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use second_pie_size()")]
+    pub fn get_second_pie_size(&self) -> &SecondPieSize {
+        self.second_pie_size()
+    }
+
+    pub fn second_pie_size_mut(&mut self) -> &mut SecondPieSize {
         &mut self.second_pie_size
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use second_pie_size_mut()")]
+    pub fn get_second_pie_size_mut(&mut self) -> &mut SecondPieSize {
+        self.second_pie_size_mut()
     }
 
     pub fn set_second_pie_size(&mut self, value: SecondPieSize) -> &mut OfPieChart {
@@ -126,12 +192,23 @@ impl OfPieChart {
     }
 
     #[must_use]
-    pub fn get_series_lines(&self) -> &SeriesLines {
+    pub fn series_lines(&self) -> &SeriesLines {
         &self.series_lines
     }
 
-    pub fn get_series_lines_mut(&mut self) -> &mut SeriesLines {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use series_lines()")]
+    pub fn get_series_lines(&self) -> &SeriesLines {
+        self.series_lines()
+    }
+
+    pub fn series_lines_mut(&mut self) -> &mut SeriesLines {
         &mut self.series_lines
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use series_lines_mut()")]
+    pub fn get_series_lines_mut(&mut self) -> &mut SeriesLines {
+        self.series_lines_mut()
     }
 
     pub fn set_series_lines(&mut self, value: SeriesLines) -> &mut OfPieChart {
@@ -151,7 +228,7 @@ impl OfPieChart {
                     b"c:ser" => {
                         let mut obj = AreaChartSeries::default();
                         obj.set_attributes(reader, e);
-                        self.get_area_chart_series_list_mut()
+                        self.area_chart_series_list_mut()
                             .add_area_chart_series(obj);
                         }
                     b"c:dLbls" => {

@@ -29,12 +29,23 @@ pub struct NumberReference {
 
 impl NumberReference {
     #[must_use]
-    pub fn get_formula(&self) -> &Formula {
+    pub fn formula(&self) -> &Formula {
         &self.formula
     }
 
-    pub fn get_formula_mut(&mut self) -> &mut Formula {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula()")]
+    pub fn get_formula(&self) -> &Formula {
+        self.formula()
+    }
+
+    pub fn formula_mut(&mut self) -> &mut Formula {
         &mut self.formula
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use formula_mut()")]
+    pub fn get_formula_mut(&mut self) -> &mut Formula {
+        self.formula_mut()
     }
 
     pub fn set_formula(&mut self, value: Formula) -> &mut NumberReference {
@@ -43,12 +54,23 @@ impl NumberReference {
     }
 
     #[must_use]
-    pub fn get_numbering_cache(&self) -> &NumberingCache {
+    pub fn numbering_cache(&self) -> &NumberingCache {
         &self.numbering_cache
     }
 
-    pub fn get_numbering_cache_mut(&mut self) -> &mut NumberingCache {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use numbering_cache()")]
+    pub fn get_numbering_cache(&self) -> &NumberingCache {
+        self.numbering_cache()
+    }
+
+    pub fn numbering_cache_mut(&mut self) -> &mut NumberingCache {
         &mut self.numbering_cache
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use numbering_cache_mut()")]
+    pub fn get_numbering_cache_mut(&mut self) -> &mut NumberingCache {
+        self.numbering_cache_mut()
     }
 
     pub fn set_numbering_cache(&mut self, value: NumberingCache) -> &mut NumberReference {
@@ -90,7 +112,7 @@ impl NumberReference {
 
         // c:numCache
         self.numbering_cache
-            .write_to(writer, self.get_formula().address(), wb);
+            .write_to(writer, self.formula().address(), wb);
 
         write_end_tag(writer, "c:numRef");
     }

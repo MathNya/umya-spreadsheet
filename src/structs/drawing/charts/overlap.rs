@@ -19,8 +19,14 @@ pub struct Overlap {
 }
 impl Overlap {
     #[must_use]
-    pub fn get_val(&self) -> i8 {
+    pub fn val(&self) -> i8 {
         self.val.get_value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> i8 {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: i8) -> &mut Overlap {

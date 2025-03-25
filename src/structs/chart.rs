@@ -446,12 +446,12 @@ impl Chart {
                 let mut values = Values::default();
                 values
                     .get_number_reference_mut()
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
                 values
                     .get_number_reference_mut()
-                    .get_numbering_cache_mut()
-                    .get_format_code_mut()
+                    .numbering_cache_mut()
+                    .format_code_mut()
                     .set_text("General");
 
                 let mut acs_object = AreaChartSeries::default();
@@ -974,12 +974,12 @@ impl Chart {
                 let mut values = Values::default();
                 values
                     .get_number_reference_mut()
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
                 values
                     .get_number_reference_mut()
-                    .get_numbering_cache_mut()
-                    .get_format_code_mut()
+                    .numbering_cache_mut()
+                    .format_code_mut()
                     .set_text("General");
                 acs_object.set_values(values);
 
@@ -1620,11 +1620,11 @@ impl Chart {
         show_leader_lines.set_val(true);
 
         let mut of_pie_chart = OfPieChart::default();
-        of_pie_chart.get_of_pie_type_mut().set_val(OfPieValues::Bar);
-        of_pie_chart.get_vary_colors_mut().set_val(true);
+        of_pie_chart.of_pie_type_mut().set_val(OfPieValues::Bar);
+        of_pie_chart.vary_colors_mut().set_val(true);
         of_pie_chart.set_area_chart_series_list(acsl_obj);
         of_pie_chart
-            .get_data_labels_mut()
+            .data_labels_mut()
             .set_show_leader_lines(show_leader_lines);
 
         let default_run_properties = RunProperties::default();
@@ -1703,12 +1703,12 @@ impl Chart {
                 let mut x_values = XValues::default();
                 x_values
                     .get_number_reference_mut()
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
                 x_values
                     .get_number_reference_mut()
-                    .get_numbering_cache_mut()
-                    .get_format_code_mut()
+                    .numbering_cache_mut()
+                    .format_code_mut()
                     .set_text("General");
                 acs_object.set_x_values(x_values);
 
@@ -1717,12 +1717,12 @@ impl Chart {
                 let mut y_values = YValues::default();
                 y_values
                     .get_number_reference_mut()
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
                 y_values
                     .get_number_reference_mut()
-                    .get_numbering_cache_mut()
-                    .get_format_code_mut()
+                    .numbering_cache_mut()
+                    .format_code_mut()
                     .set_text("General");
                 acs_object.set_y_values(y_values);
 
@@ -1731,12 +1731,12 @@ impl Chart {
                 let mut bubble_size = BubbleSize::default();
                 bubble_size
                     .number_reference_mut()
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
                 bubble_size
                     .number_reference_mut()
-                    .get_numbering_cache_mut()
-                    .get_format_code_mut()
+                    .numbering_cache_mut()
+                    .format_code_mut()
                     .set_text("General");
                 acs_object.set_bubble_size(bubble_size);
 
@@ -2061,12 +2061,12 @@ impl Chart {
                 let mut x_values = XValues::default();
                 x_values
                     .get_number_reference_mut()
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
                 x_values
                     .get_number_reference_mut()
-                    .get_numbering_cache_mut()
-                    .get_format_code_mut()
+                    .numbering_cache_mut()
+                    .format_code_mut()
                     .set_text("General");
                 acs_object.set_x_values(x_values);
 
@@ -2075,12 +2075,12 @@ impl Chart {
                 let mut y_values = YValues::default();
                 y_values
                     .get_number_reference_mut()
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
                 y_values
                     .get_number_reference_mut()
-                    .get_numbering_cache_mut()
-                    .get_format_code_mut()
+                    .numbering_cache_mut()
+                    .format_code_mut()
                     .set_text("General");
                 acs_object.set_y_values(y_values);
 

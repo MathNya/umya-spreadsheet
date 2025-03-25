@@ -22,8 +22,14 @@ pub struct MinorTickMark {
 }
 impl MinorTickMark {
     #[must_use]
-    pub fn get_val(&self) -> &TickMarkValues {
+    pub fn val(&self) -> &TickMarkValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &TickMarkValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: TickMarkValues) -> &mut MinorTickMark {
