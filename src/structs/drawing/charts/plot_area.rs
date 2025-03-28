@@ -67,12 +67,23 @@ pub struct PlotArea {
 
 impl PlotArea {
     #[must_use]
-    pub fn get_layout(&self) -> &Layout {
+    pub fn layout(&self) -> &Layout {
         &self.layout
     }
 
-    pub fn get_layout_mut(&mut self) -> &mut Layout {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use layout()")]
+    pub fn get_layout(&self) -> &Layout {
+        self.layout()
+    }
+
+    pub fn layout_mut(&mut self) -> &mut Layout {
         &mut self.layout
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use layout_mut()")]
+    pub fn get_layout_mut(&mut self) -> &mut Layout {
+        self.layout_mut()
     }
 
     pub fn set_layout(&mut self, value: Layout) -> &mut Self {
@@ -81,12 +92,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_line_chart(&self) -> Option<&LineChart> {
+    pub fn line_chart(&self) -> Option<&LineChart> {
         self.line_chart.as_ref()
     }
 
-    pub fn get_line_chart_mut(&mut self) -> Option<&mut LineChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use line_chart()")]
+    pub fn get_line_chart(&self) -> Option<&LineChart> {
+        self.line_chart()
+    }
+
+    pub fn line_chart_mut(&mut self) -> Option<&mut LineChart> {
         self.line_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use line_chart_mut()")]
+    pub fn get_line_chart_mut(&mut self) -> Option<&mut LineChart> {
+        self.line_chart_mut()
     }
 
     pub fn set_line_chart(&mut self, value: LineChart) -> &mut Self {
@@ -95,12 +117,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_line_3d_chart(&self) -> Option<&Line3DChart> {
+    pub fn line_3d_chart(&self) -> Option<&Line3DChart> {
         self.line_3d_chart.as_ref()
     }
 
-    pub fn get_line_3d_chart_mut(&mut self) -> Option<&mut Line3DChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use line_3d_chart()")]
+    pub fn get_line_3d_chart(&self) -> Option<&Line3DChart> {
+        self.line_3d_chart()
+    }
+
+    pub fn line_3d_chart_mut(&mut self) -> Option<&mut Line3DChart> {
         self.line_3d_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use line_3d_chart_mut()")]
+    pub fn get_line_3d_chart_mut(&mut self) -> Option<&mut Line3DChart> {
+        self.line_3d_chart_mut()
     }
 
     pub fn set_line_3d_chart(&mut self, value: Line3DChart) -> &mut Self {
@@ -109,12 +142,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_pie_chart(&self) -> Option<&PieChart> {
+    pub fn pie_chart(&self) -> Option<&PieChart> {
         self.pie_chart.as_ref()
     }
 
-    pub fn get_pie_chart_mut(&mut self) -> Option<&mut PieChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pie_chart()")]
+    pub fn get_pie_chart(&self) -> Option<&PieChart> {
+        self.pie_chart()
+    }
+
+    pub fn pie_chart_mut(&mut self) -> Option<&mut PieChart> {
         self.pie_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use pie_chart_mut()")]
+    pub fn get_pie_chart_mut(&mut self) -> Option<&mut PieChart> {
+        self.pie_chart_mut()
     }
 
     pub fn set_pie_chart(&mut self, value: PieChart) -> &mut Self {
@@ -123,12 +167,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_pie_3d_chart(&self) -> Option<&Pie3DChart> {
+    pub fn pie_3d_chart(&self) -> Option<&Pie3DChart> {
         self.pie_3d_chart.as_ref()
     }
 
-    pub fn get_pie_3d_chart_mut(&mut self) -> Option<&mut Pie3DChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pie_3d_chart()")]
+    pub fn get_pie_3d_chart(&self) -> Option<&Pie3DChart> {
+        self.pie_3d_chart()
+    }
+
+    pub fn pie_3d_chart_mut(&mut self) -> Option<&mut Pie3DChart> {
         self.pie_3d_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use pie_3d_chart_mut()")]
+    pub fn get_pie_3d_chart_mut(&mut self) -> Option<&mut Pie3DChart> {
+        self.pie_3d_chart_mut()
     }
 
     pub fn set_pie_3d_chart(&mut self, value: Pie3DChart) -> &mut Self {
@@ -137,12 +192,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_doughnut_chart(&self) -> Option<&DoughnutChart> {
+    pub fn doughnut_chart(&self) -> Option<&DoughnutChart> {
         self.doughnut_chart.as_ref()
     }
 
-    pub fn get_doughnut_chart_mut(&mut self) -> Option<&mut DoughnutChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use doughnut_chart()")]
+    pub fn get_doughnut_chart(&self) -> Option<&DoughnutChart> {
+        self.doughnut_chart()
+    }
+
+    pub fn doughnut_chart_mut(&mut self) -> Option<&mut DoughnutChart> {
         self.doughnut_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use doughnut_chart_mut()")]
+    pub fn get_doughnut_chart_mut(&mut self) -> Option<&mut DoughnutChart> {
+        self.doughnut_chart_mut()
     }
 
     pub fn set_doughnut_chart(&mut self, value: DoughnutChart) -> &mut Self {
@@ -151,12 +217,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_scatter_chart(&self) -> Option<&ScatterChart> {
+    pub fn scatter_chart(&self) -> Option<&ScatterChart> {
         self.scatter_chart.as_ref()
     }
 
-    pub fn get_scatter_chart_mut(&mut self) -> Option<&mut ScatterChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scatter_chart()")]
+    pub fn get_scatter_chart(&self) -> Option<&ScatterChart> {
+        self.scatter_chart()
+    }
+
+    pub fn scatter_chart_mut(&mut self) -> Option<&mut ScatterChart> {
         self.scatter_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use scatter_chart_mut()")]
+    pub fn get_scatter_chart_mut(&mut self) -> Option<&mut ScatterChart> {
+        self.scatter_chart_mut()
     }
 
     pub fn set_scatter_chart(&mut self, value: ScatterChart) -> &mut Self {
@@ -165,12 +242,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_bar_chart(&self) -> Option<&BarChart> {
+    pub fn bar_chart(&self) -> Option<&BarChart> {
         self.bar_chart.as_ref()
     }
 
-    pub fn get_bar_chart_mut(&mut self) -> Option<&mut BarChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bar_chart()")]
+    pub fn get_bar_chart(&self) -> Option<&BarChart> {
+        self.bar_chart()
+    }
+
+    pub fn bar_chart_mut(&mut self) -> Option<&mut BarChart> {
         self.bar_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use bar_chart_mut()")]
+    pub fn get_bar_chart_mut(&mut self) -> Option<&mut BarChart> {
+        self.bar_chart_mut()
     }
 
     pub fn set_bar_chart(&mut self, value: BarChart) -> &mut Self {
@@ -179,12 +267,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_bar_3d_chart(&self) -> Option<&Bar3DChart> {
+    pub fn bar_3d_chart(&self) -> Option<&Bar3DChart> {
         self.bar_3d_chart.as_ref()
     }
 
-    pub fn get_bar_3d_chart_mut(&mut self) -> Option<&mut Bar3DChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bar_3d_chart()")]
+    pub fn get_bar_3d_chart(&self) -> Option<&Bar3DChart> {
+        self.bar_3d_chart()
+    }
+
+    pub fn bar_3d_chart_mut(&mut self) -> Option<&mut Bar3DChart> {
         self.bar_3d_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use bar_3d_chart_mut()")]
+    pub fn get_bar_3d_chart_mut(&mut self) -> Option<&mut Bar3DChart> {
+        self.bar_3d_chart_mut()
     }
 
     pub fn set_bar_3d_chart(&mut self, value: Bar3DChart) -> &mut Self {
@@ -193,12 +292,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_radar_chart(&self) -> Option<&RadarChart> {
+    pub fn radar_chart(&self) -> Option<&RadarChart> {
         self.radar_chart.as_ref()
     }
 
-    pub fn get_radar_chart_mut(&mut self) -> Option<&mut RadarChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use radar_chart()")]
+    pub fn get_radar_chart(&self) -> Option<&RadarChart> {
+        self.radar_chart()
+    }
+
+    pub fn radar_chart_mut(&mut self) -> Option<&mut RadarChart> {
         self.radar_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use radar_chart_mut()")]
+    pub fn get_radar_chart_mut(&mut self) -> Option<&mut RadarChart> {
+        self.radar_chart_mut()
     }
 
     pub fn set_radar_chart(&mut self, value: RadarChart) -> &mut Self {
@@ -207,12 +317,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_bubble_chart(&self) -> Option<&BubbleChart> {
+    pub fn bubble_chart(&self) -> Option<&BubbleChart> {
         self.bubble_chart.as_ref()
     }
 
-    pub fn get_bubble_chart_mut(&mut self) -> Option<&mut BubbleChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bubble_chart()")]
+    pub fn get_bubble_chart(&self) -> Option<&BubbleChart> {
+        self.bubble_chart()
+    }
+
+    pub fn bubble_chart_mut(&mut self) -> Option<&mut BubbleChart> {
         self.bubble_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use bubble_chart_mut()")]
+    pub fn get_bubble_chart_mut(&mut self) -> Option<&mut BubbleChart> {
+        self.bubble_chart_mut()
     }
 
     pub fn set_bubble_chart(&mut self, value: BubbleChart) -> &mut Self {
@@ -221,12 +342,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_area_chart(&self) -> Option<&AreaChart> {
+    pub fn area_chart(&self) -> Option<&AreaChart> {
         self.area_chart.as_ref()
     }
 
-    pub fn get_area_chart_mut(&mut self) -> Option<&mut AreaChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area_chart()")]
+    pub fn get_area_chart(&self) -> Option<&AreaChart> {
+        self.area_chart()
+    }
+
+    pub fn area_chart_mut(&mut self) -> Option<&mut AreaChart> {
         self.area_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use area_chart_mut()")]
+    pub fn get_area_chart_mut(&mut self) -> Option<&mut AreaChart> {
+        self.area_chart_mut()
     }
 
     pub fn set_area_chart(&mut self, value: AreaChart) -> &mut Self {
@@ -235,12 +367,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_area_3d_chart(&self) -> Option<&Area3DChart> {
+    pub fn area_3d_chart(&self) -> Option<&Area3DChart> {
         self.area_3d_chart.as_ref()
     }
 
-    pub fn get_area_3d_chart_mut(&mut self) -> Option<&mut Area3DChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use area_3d_chart()")]
+    pub fn get_area_3d_chart(&self) -> Option<&Area3DChart> {
+        self.area_3d_chart()
+    }
+
+    pub fn area_3d_chart_mut(&mut self) -> Option<&mut Area3DChart> {
         self.area_3d_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use area_3d_chart_mut()")]
+    pub fn get_area_3d_chart_mut(&mut self) -> Option<&mut Area3DChart> {
+        self.area_3d_chart_mut()
     }
 
     pub fn set_area_3d_chart(&mut self, value: Area3DChart) -> &mut Self {
@@ -249,12 +392,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_of_pie_chart(&self) -> Option<&OfPieChart> {
+    pub fn of_pie_chart(&self) -> Option<&OfPieChart> {
         self.of_pie_chart.as_ref()
     }
 
-    pub fn get_of_pie_chart_mut(&mut self) -> Option<&mut OfPieChart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use of_pie_chart()")]
+    pub fn get_of_pie_chart(&self) -> Option<&OfPieChart> {
+        self.of_pie_chart()
+    }
+
+    pub fn of_pie_chart_mut(&mut self) -> Option<&mut OfPieChart> {
         self.of_pie_chart.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use of_pie_chart_mut()")]
+    pub fn get_of_pie_chart_mut(&mut self) -> Option<&mut OfPieChart> {
+        self.of_pie_chart_mut()
     }
 
     pub fn set_of_pie_chart(&mut self, value: OfPieChart) -> &mut Self {
@@ -263,12 +417,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_category_axis(&self) -> &[CategoryAxis] {
+    pub fn category_axis(&self) -> &[CategoryAxis] {
         &self.category_axis
     }
 
-    pub fn get_category_axis_mut(&mut self) -> &mut Vec<CategoryAxis> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use category_axis()")]
+    pub fn get_category_axis(&self) -> &[CategoryAxis] {
+        self.category_axis()
+    }
+
+    pub fn category_axis_mut(&mut self) -> &mut Vec<CategoryAxis> {
         &mut self.category_axis
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use category_axis_mut()")]
+    pub fn get_category_axis_mut(&mut self) -> &mut Vec<CategoryAxis> {
+        self.category_axis_mut()
     }
 
     pub fn set_category_axis(&mut self, value: impl Into<Vec<CategoryAxis>>) -> &mut Self {
@@ -282,12 +447,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_value_axis(&self) -> &[ValueAxis] {
+    pub fn value_axis(&self) -> &[ValueAxis] {
         &self.value_axis
     }
 
-    pub fn get_value_axis_mut(&mut self) -> &mut Vec<ValueAxis> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value_axis()")]
+    pub fn get_value_axis(&self) -> &[ValueAxis] {
+        self.value_axis()
+    }
+
+    pub fn value_axis_mut(&mut self) -> &mut Vec<ValueAxis> {
         &mut self.value_axis
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use value_axis_mut()")]
+    pub fn get_value_axis_mut(&mut self) -> &mut Vec<ValueAxis> {
+        self.value_axis_mut()
     }
 
     pub fn set_value_axis(&mut self, value: impl Into<Vec<ValueAxis>>) -> &mut Self {
@@ -301,12 +477,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_series_axis(&self) -> &[SeriesAxis] {
+    pub fn series_axis(&self) -> &[SeriesAxis] {
         &self.series_axis
     }
 
-    pub fn get_series_axis_mut(&mut self) -> &mut Vec<SeriesAxis> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use series_axis()")]
+    pub fn get_series_axis(&self) -> &[SeriesAxis] {
+        self.series_axis()
+    }
+
+    pub fn series_axis_mut(&mut self) -> &mut Vec<SeriesAxis> {
         &mut self.series_axis
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use series_axis_mut()")]
+    pub fn get_series_axis_mut(&mut self) -> &mut Vec<SeriesAxis> {
+        self.series_axis_mut()
     }
 
     pub fn set_series_axis(&mut self, value: impl Into<Vec<SeriesAxis>>) -> &mut Self {
@@ -320,12 +507,23 @@ impl PlotArea {
     }
 
     #[must_use]
-    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
 
-    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
     }
 
     pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
@@ -361,7 +559,7 @@ impl PlotArea {
         panic! {"Non-Grouping."};
     }
 
-    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+    pub fn area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
         if let Some(chart) = &mut self.line_chart {
             return chart.area_chart_series_list_mut();
         }
@@ -369,10 +567,10 @@ impl PlotArea {
             return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.pie_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.pie_3d_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.doughnut_chart {
             return chart.area_chart_series_list_mut();
@@ -404,7 +602,12 @@ impl PlotArea {
         panic! {"Non-ChartSeriesList."};
     }
 
-    pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
+    #[deprecated(since = "3.0.0", note = "Use area_chart_series_list_mut()")]
+    pub fn get_area_chart_series_list_mut(&mut self) -> &mut AreaChartSeriesList {
+        self.area_chart_series_list_mut()
+    }
+
+    pub fn formula_mut(&mut self) -> Vec<&mut Formula> {
         let mut result: Vec<&mut Formula> = Vec::default();
         if let Some(v) = &mut self.line_chart {
             for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
@@ -421,14 +624,14 @@ impl PlotArea {
             }
         }
         if let Some(v) = &mut self.pie_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }
             }
         }
         if let Some(v) = &mut self.pie_3d_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }
@@ -498,6 +701,11 @@ impl PlotArea {
             }
         }
         result
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use formula_mut()")]
+    pub fn get_formula_mut(&mut self) -> Vec<&mut Formula> {
+        self.formula_mut()
     }
 
     pub(crate) fn is_support(&self) -> bool {
@@ -727,7 +935,7 @@ impl AdjustmentCoordinateWithSheet for PlotArea {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        for formula in self.get_formula_mut() {
+        for formula in self.formula_mut() {
             formula.adjustment_insert_coordinate_with_sheet(
                 sheet_name,
                 root_col_num,
@@ -746,7 +954,7 @@ impl AdjustmentCoordinateWithSheet for PlotArea {
         root_row_num: u32,
         offset_row_num: u32,
     ) {
-        for formula in self.get_formula_mut() {
+        for formula in self.formula_mut() {
             formula.adjustment_remove_coordinate_with_sheet(
                 sheet_name,
                 root_col_num,

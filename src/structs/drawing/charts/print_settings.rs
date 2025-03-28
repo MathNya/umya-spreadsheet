@@ -32,12 +32,23 @@ pub struct PrintSettings {
 
 impl PrintSettings {
     #[must_use]
-    pub fn get_header_footer(&self) -> &HeaderFooter {
+    pub fn header_footer(&self) -> &HeaderFooter {
         &self.header_footer
     }
 
-    pub fn get_header_footer_mut(&mut self) -> &mut HeaderFooter {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use header_footer()")]
+    pub fn get_header_footer(&self) -> &HeaderFooter {
+        self.header_footer()
+    }
+
+    pub fn header_footer_mut(&mut self) -> &mut HeaderFooter {
         &mut self.header_footer
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use header_footer_mut()")]
+    pub fn get_header_footer_mut(&mut self) -> &mut HeaderFooter {
+        self.header_footer_mut()
     }
 
     pub fn set_header_footer(&mut self, value: HeaderFooter) -> &mut Self {
@@ -46,12 +57,23 @@ impl PrintSettings {
     }
 
     #[must_use]
-    pub fn get_page_margins(&self) -> &PageMargins {
+    pub fn page_margins(&self) -> &PageMargins {
         &self.page_margins
     }
 
-    pub fn get_page_margins_mut(&mut self) -> &mut PageMargins {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use page_margins()")]
+    pub fn get_page_margins(&self) -> &PageMargins {
+        self.page_margins()
+    }
+
+    pub fn page_margins_mut(&mut self) -> &mut PageMargins {
         &mut self.page_margins
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use page_margins_mut()")]
+    pub fn get_page_margins_mut(&mut self) -> &mut PageMargins {
+        self.page_margins_mut()
     }
 
     pub fn set_page_margins(&mut self, value: PageMargins) -> &mut Self {
@@ -60,12 +82,23 @@ impl PrintSettings {
     }
 
     #[must_use]
-    pub fn get_page_setup(&self) -> &PageSetup {
+    pub fn page_setup(&self) -> &PageSetup {
         &self.page_setup
     }
 
-    pub fn get_page_setup_mut(&mut self) -> &mut PageSetup {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use page_setup()")]
+    pub fn get_page_setup(&self) -> &PageSetup {
+        self.page_setup()
+    }
+
+    pub fn page_setup_mut(&mut self) -> &mut PageSetup {
         &mut self.page_setup
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use page_setup_mut()")]
+    pub fn get_page_setup_mut(&mut self) -> &mut PageSetup {
+        self.page_setup_mut()
     }
 
     pub fn set_page_setup(&mut self, value: PageSetup) -> &mut Self {

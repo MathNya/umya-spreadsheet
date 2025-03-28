@@ -331,7 +331,7 @@ impl Chart {
     }
 
     pub fn formula_mut(&mut self) -> Vec<&mut Formula> {
-        self.plot_area_mut().get_formula_mut()
+        self.plot_area_mut().formula_mut()
     }
 
     #[deprecated(since = "3.0.0", note = "Use formula_mut()")]

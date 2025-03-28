@@ -121,10 +121,10 @@ use crate::{
 /// let chart = worksheet.chart_by_column_and_row_mut(&3, 1);
 ///
 /// // Use this if there are multiple Charts in a given cell.
-/// let charts = worksheet.get_charts("C1");
-/// let charts = worksheet.get_charts_by_column_and_row(&3, 1);
-/// let charts = worksheet.get_charts_mut("C1");
-/// let charts = worksheet.get_charts_by_column_and_row_mut(&3, 1);
+/// let charts = worksheet.charts("C1");
+/// let charts = worksheet.charts_by_column_and_row(&3, 1);
+/// let charts = worksheet.charts_mut("C1");
+/// let charts = worksheet.charts_by_column_and_row_mut(&3, 1);
 ///
 /// // Set Chart Title, Series Title, Horizonal Title and Vertical Title.
 /// let mut chart = book
@@ -175,14 +175,14 @@ impl Chart {
     pub fn set_vertical_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
         let plot_area = self.plot_area_mut();
-        match plot_area.get_value_axis_mut().len() {
+        match plot_area.value_axis_mut().len() {
             1 => {
-                if let Some(v) = plot_area.get_value_axis_mut().get_mut(0) {
+                if let Some(v) = plot_area.value_axis_mut().get_mut(0) {
                     v.set_title(title);
                 }
             }
             2 => {
-                if let Some(v) = plot_area.get_value_axis_mut().get_mut(1) {
+                if let Some(v) = plot_area.value_axis_mut().get_mut(1) {
                     v.set_title(title);
                 }
             }
@@ -194,14 +194,14 @@ impl Chart {
     pub fn set_horizontal_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let title = self.make_title(value);
         let plot_area = self.plot_area_mut();
-        match plot_area.get_value_axis_mut().len() {
+        match plot_area.value_axis_mut().len() {
             1 => {
-                if let Some(v) = plot_area.get_category_axis_mut().get_mut(0) {
+                if let Some(v) = plot_area.category_axis_mut().get_mut(0) {
                     v.set_title(title);
                 }
             }
             2 => {
-                if let Some(v) = plot_area.get_value_axis_mut().get_mut(0) {
+                if let Some(v) = plot_area.value_axis_mut().get_mut(0) {
                     v.set_title(title);
                 }
             }
@@ -267,7 +267,7 @@ impl Chart {
         self.chart_space_mut()
             .chart_mut()
             .plot_area_mut()
-            .get_area_chart_series_list_mut()
+            .area_chart_series_list_mut()
     }
 
     #[inline]
@@ -767,10 +767,10 @@ impl Chart {
         show_leader_lines.set_val(true);
 
         let mut pie_chart = PieChart::default();
-        pie_chart.get_vary_colors_mut().set_val(true);
+        pie_chart.vary_colors_mut().set_val(true);
         pie_chart.set_area_chart_series_list(acsl_obj);
         pie_chart
-            .get_data_labels_mut()
+            .data_labels_mut()
             .set_show_leader_lines(show_leader_lines);
 
         let layout = Layout::default();
@@ -866,10 +866,10 @@ impl Chart {
         show_leader_lines.set_val(true);
 
         let mut pie_3d_chart = Pie3DChart::default();
-        pie_3d_chart.get_vary_colors_mut().set_val(true);
+        pie_3d_chart.vary_colors_mut().set_val(true);
         pie_3d_chart.set_area_chart_series_list(acsl_obj);
         pie_3d_chart
-            .get_data_labels_mut()
+            .data_labels_mut()
             .set_show_leader_lines(show_leader_lines);
 
         let layout = Layout::default();
@@ -2243,7 +2243,7 @@ impl Chart {
     #[inline]
     pub(crate) fn make_print_settings() -> PrintSettings {
         let mut obj = PrintSettings::default();
-        obj.get_page_margins_mut()
+        obj.page_margins_mut()
             .set_bottom(0.75)
             .set_left(0.7)
             .set_right(0.7)

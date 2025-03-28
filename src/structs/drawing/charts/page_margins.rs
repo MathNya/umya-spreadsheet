@@ -24,8 +24,14 @@ pub struct PageMargins {
 }
 impl PageMargins {
     #[must_use]
-    pub fn get_bottom(&self) -> f64 {
+    pub fn bottom(&self) -> f64 {
         self.bottom.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom()")]
+    pub fn get_bottom(&self) -> f64 {
+        self.bottom()
     }
 
     pub fn set_bottom(&mut self, value: f64) -> &mut Self {
@@ -34,8 +40,14 @@ impl PageMargins {
     }
 
     #[must_use]
-    pub fn get_left(&self) -> f64 {
+    pub fn left(&self) -> f64 {
         self.left.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left()")]
+    pub fn get_left(&self) -> f64 {
+        self.left()
     }
 
     pub fn set_left(&mut self, value: f64) -> &mut Self {
@@ -44,8 +56,14 @@ impl PageMargins {
     }
 
     #[must_use]
-    pub fn get_right(&self) -> f64 {
+    pub fn right(&self) -> f64 {
         self.right.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right()")]
+    pub fn get_right(&self) -> f64 {
+        self.right()
     }
 
     pub fn set_right(&mut self, value: f64) -> &mut Self {
@@ -54,8 +72,14 @@ impl PageMargins {
     }
 
     #[must_use]
-    pub fn get_top(&self) -> f64 {
+    pub fn top(&self) -> f64 {
         self.top.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top()")]
+    pub fn get_top(&self) -> f64 {
+        self.top()
     }
 
     pub fn set_top(&mut self, value: f64) -> &mut Self {
@@ -64,8 +88,14 @@ impl PageMargins {
     }
 
     #[must_use]
-    pub fn get_header(&self) -> f64 {
+    pub fn header(&self) -> f64 {
         self.header.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use header()")]
+    pub fn get_header(&self) -> f64 {
+        self.header()
     }
 
     pub fn set_header(&mut self, value: f64) -> &mut Self {
@@ -74,8 +104,14 @@ impl PageMargins {
     }
 
     #[must_use]
-    pub fn get_footer(&self) -> f64 {
+    pub fn footer(&self) -> f64 {
         self.footer.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use footer()")]
+    pub fn get_footer(&self) -> f64 {
+        self.footer()
     }
 
     pub fn set_footer(&mut self, value: f64) -> &mut Self {
