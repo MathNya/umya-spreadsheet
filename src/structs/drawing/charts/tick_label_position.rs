@@ -22,8 +22,14 @@ pub struct TickLabelPosition {
 }
 impl TickLabelPosition {
     #[must_use]
-    pub fn get_val(&self) -> &TickLabelPositionValues {
+    pub fn val(&self) -> &TickLabelPositionValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &TickLabelPositionValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: TickLabelPositionValues) -> &mut TickLabelPosition {

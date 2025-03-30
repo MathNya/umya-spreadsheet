@@ -26,12 +26,23 @@ pub struct StringPoint {
 
 impl StringPoint {
     #[must_use]
-    pub fn get_numeric_value(&self) -> &NumericValue {
+    pub fn numeric_value(&self) -> &NumericValue {
         &self.numeric_value
     }
 
-    pub fn get_numeric_value_mut(&mut self) -> &mut NumericValue {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use numeric_value()")]
+    pub fn get_numeric_value(&self) -> &NumericValue {
+        self.numeric_value()
+    }
+
+    pub fn numeric_value_mut(&mut self) -> &mut NumericValue {
         &mut self.numeric_value
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use numeric_value_mut()")]
+    pub fn get_numeric_value_mut(&mut self) -> &mut NumericValue {
+        self.numeric_value_mut()
     }
 
     pub fn set_numeric_value(&mut self, value: NumericValue) -> &mut Self {

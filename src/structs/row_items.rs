@@ -26,13 +26,26 @@ pub struct RowItems {
 impl RowItems {
     #[inline]
     #[must_use]
-    pub fn get_list(&self) -> &[RowItem] {
+    pub fn list(&self) -> &[RowItem] {
         &self.list
     }
 
     #[inline]
-    pub fn get_list_mut(&mut self) -> &mut Vec<RowItem> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use list()")]
+    pub fn get_list(&self) -> &[RowItem] {
+        self.list()
+    }
+
+    #[inline]
+    pub fn list_mut(&mut self) -> &mut Vec<RowItem> {
         &mut self.list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use list_mut()")]
+    pub fn get_list_mut(&mut self) -> &mut Vec<RowItem> {
+        self.list_mut()
     }
 
     #[inline]

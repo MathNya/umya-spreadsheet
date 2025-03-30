@@ -22,8 +22,14 @@ pub struct Shape {
 }
 impl Shape {
     #[must_use]
-    pub fn get_val(&self) -> &ShapeValues {
+    pub fn val(&self) -> &ShapeValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &ShapeValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: ShapeValues) -> &mut Shape {

@@ -162,8 +162,8 @@ impl Cells {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
-    pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.collection_by_column(column_num)
+    pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
+        self.collection_by_column(*column_num)
     }
 
     /// Iterates all column cells in a given column, sorted by the column index.
@@ -191,8 +191,8 @@ impl Cells {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
-    pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
-        self.collection_by_row(row_num)
+    pub fn get_collection_by_row(&self, row_num: &u32) -> Vec<&Cell> {
+        self.collection_by_row(*row_num)
     }
 
     /// Iterates all coordinates in a range, sorted by row then by column.
@@ -266,8 +266,8 @@ impl Cells {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column_to_hashmap()")]
-    pub fn get_collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
-        self.collection_by_column_to_hashmap(column_num)
+    pub fn get_collection_by_column_to_hashmap(&self, column_num: &u32) -> HashMap<u32, &Cell> {
+        self.collection_by_column_to_hashmap(*column_num)
     }
 
     #[inline]
@@ -281,8 +281,8 @@ impl Cells {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_row_to_hashmap()")]
-    pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
-        self.collection_by_row_to_hashmap(row_num)
+    pub fn get_collection_by_row_to_hashmap(&self, row_num: &u32) -> HashMap<u32, &Cell> {
+        self.collection_by_row_to_hashmap(*row_num)
     }
 
     #[inline]
@@ -344,7 +344,7 @@ impl Cells {
                 c.set_style(col_dimension.style().clone());
             }
             if row_dimension.has_style() {
-                c.set_style(row_dimension.get_style().clone());
+                c.set_style(row_dimension.style().clone());
             }
 
             self.row_column_index.insert((row, col));
@@ -565,8 +565,8 @@ impl Cells {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use formatted_value_by_column_and_row()")]
-    pub fn get_formatted_value_by_column_and_row(&self, col_num: u32, row_num: u32) -> String {
-        self.formatted_value_by_column_and_row(col_num, row_num)
+    pub fn get_formatted_value_by_column_and_row(&self, col_num: &u32, row_num: &u32) -> String {
+        self.formatted_value_by_column_and_row(*col_num, *row_num)
     }
 
     pub(crate) fn rebuild_map_and_indices(&mut self) {

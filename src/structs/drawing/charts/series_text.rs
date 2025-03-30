@@ -27,8 +27,14 @@ pub struct SeriesText {
 
 impl SeriesText {
     #[must_use]
-    pub fn get_value(&self) -> &str {
+    pub fn value(&self) -> &str {
         self.value.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &str {
+        self.value()
     }
 
     pub fn set_value<S: Into<String>>(&mut self, value: S) -> &mut Self {

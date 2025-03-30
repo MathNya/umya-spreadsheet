@@ -27,13 +27,26 @@ pub struct RowBreaks {
 impl RowBreaks {
     #[inline]
     #[must_use]
-    pub fn get_break_list(&self) -> &[Break] {
+    pub fn break_list(&self) -> &[Break] {
         &self.break_list
     }
 
     #[inline]
-    pub fn get_break_list_mut(&mut self) -> &mut Vec<Break> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use break_list()")]
+    pub fn get_break_list(&self) -> &[Break] {
+        self.break_list()
+    }
+
+    #[inline]
+    pub fn break_list_mut(&mut self) -> &mut Vec<Break> {
         &mut self.break_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use break_list_mut()")]
+    pub fn get_break_list_mut(&mut self) -> &mut Vec<Break> {
+        self.break_list_mut()
     }
 
     #[inline]
@@ -77,7 +90,7 @@ impl RowBreaks {
         // rowBreaks
         let mut count = 0;
         let mut manual_count = 0;
-        for obj in self.get_break_list() {
+        for obj in self.break_list() {
             count += 1;
             if obj.manual_page_break() {
                 manual_count += 1;
@@ -94,7 +107,7 @@ impl RowBreaks {
         );
 
         // brk
-        for obj in self.get_break_list() {
+        for obj in self.break_list() {
             obj.write_to(writer);
         }
 

@@ -60,8 +60,15 @@ impl Default for Row {
 impl Row {
     #[inline]
     #[must_use]
-    pub fn get_row_num(&self) -> u32 {
+    pub fn row_num(&self) -> u32 {
         self.row_num.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row_num()")]
+    pub fn get_row_num(&self) -> u32 {
+        self.row_num()
     }
 
     #[inline]
@@ -72,8 +79,15 @@ impl Row {
 
     #[inline]
     #[must_use]
-    pub fn get_height(&self) -> f64 {
+    pub fn height(&self) -> f64 {
         self.height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use height()")]
+    pub fn get_height(&self) -> f64 {
+        self.height()
     }
 
     #[inline]
@@ -85,8 +99,15 @@ impl Row {
 
     #[inline]
     #[must_use]
-    pub fn get_descent(&self) -> f64 {
+    pub fn descent(&self) -> f64 {
         self.descent.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use descent()")]
+    pub fn get_descent(&self) -> f64 {
+        self.descent()
     }
 
     #[inline]
@@ -97,8 +118,15 @@ impl Row {
 
     #[inline]
     #[must_use]
-    pub fn get_thick_bot(&self) -> bool {
+    pub fn thick_bot(&self) -> bool {
         self.thick_bot.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thick_bot()")]
+    pub fn get_thick_bot(&self) -> bool {
+        self.thick_bot()
     }
 
     #[inline]
@@ -109,8 +137,15 @@ impl Row {
 
     #[inline]
     #[must_use]
-    pub fn get_custom_height(&self) -> bool {
+    pub fn custom_height(&self) -> bool {
         self.custom_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use custom_height()")]
+    pub fn get_custom_height(&self) -> bool {
+        self.custom_height()
     }
 
     #[inline]
@@ -121,8 +156,15 @@ impl Row {
 
     #[inline]
     #[must_use]
-    pub fn get_hidden(&self) -> bool {
+    pub fn hidden(&self) -> bool {
         self.hidden.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hidden()")]
+    pub fn get_hidden(&self) -> bool {
+        self.hidden()
     }
 
     #[inline]
@@ -133,13 +175,26 @@ impl Row {
 
     #[inline]
     #[must_use]
-    pub fn get_style(&self) -> &Style {
+    pub fn style(&self) -> &Style {
         &self.style
     }
 
     #[inline]
-    pub fn get_style_mut(&mut self) -> &mut Style {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &Style {
+        self.style()
+    }
+
+    #[inline]
+    pub fn style_mut(&mut self) -> &mut Style {
         &mut self.style
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use style_mut()")]
+    pub fn get_style_mut(&mut self) -> &mut Style {
+        self.style_mut()
     }
 
     #[inline]
@@ -232,7 +287,7 @@ impl Row {
         empty_flag: bool,
     ) {
         let xf_index_str: String;
-        let xf_index = stylesheet.set_style(self.get_style());
+        let xf_index = stylesheet.set_style(self.style());
 
         // row
         let mut attributes: crate::structs::AttrCollection = Vec::new();

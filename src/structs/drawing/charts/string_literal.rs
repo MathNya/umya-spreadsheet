@@ -26,12 +26,23 @@ pub struct StringLiteral {
 
 impl StringLiteral {
     #[must_use]
-    pub fn get_string_point_list(&self) -> &[StringPoint] {
+    pub fn string_point_list(&self) -> &[StringPoint] {
         &self.string_point_list
     }
 
-    pub fn get_string_point_list_mut(&mut self) -> &mut Vec<StringPoint> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use string_point_list()")]
+    pub fn get_string_point_list(&self) -> &[StringPoint] {
+        self.string_point_list()
+    }
+
+    pub fn string_point_list_mut(&mut self) -> &mut Vec<StringPoint> {
         &mut self.string_point_list
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use string_point_list_mut()")]
+    pub fn get_string_point_list_mut(&mut self) -> &mut Vec<StringPoint> {
+        self.string_point_list_mut()
     }
 
     pub fn add_string_point_list(&mut self, value: StringPoint) -> &mut Self {

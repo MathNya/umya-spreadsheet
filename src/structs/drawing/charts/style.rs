@@ -20,8 +20,14 @@ pub struct Style {
 
 impl Style {
     #[must_use]
-    pub fn get_val(&self) -> u8 {
+    pub fn val(&self) -> u8 {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> u8 {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: u8) -> &mut Style {

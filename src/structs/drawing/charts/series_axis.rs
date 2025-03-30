@@ -48,12 +48,23 @@ pub struct SeriesAxis {
 
 impl SeriesAxis {
     #[must_use]
-    pub fn get_axis_id(&self) -> &AxisId {
+    pub fn axis_id(&self) -> &AxisId {
         &self.axis_id
     }
 
-    pub fn get_axis_id_mut(&mut self) -> &mut AxisId {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use axis_id()")]
+    pub fn get_axis_id(&self) -> &AxisId {
+        self.axis_id()
+    }
+
+    pub fn axis_id_mut(&mut self) -> &mut AxisId {
         &mut self.axis_id
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use axis_id_mut()")]
+    pub fn get_axis_id_mut(&mut self) -> &mut AxisId {
+        self.axis_id_mut()
     }
 
     pub fn set_axis_id(&mut self, value: AxisId) -> &mut SeriesAxis {
@@ -62,12 +73,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_scaling(&self) -> &Scaling {
+    pub fn scaling(&self) -> &Scaling {
         &self.scaling
     }
 
-    pub fn get_scaling_mut(&mut self) -> &mut Scaling {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scaling()")]
+    pub fn get_scaling(&self) -> &Scaling {
+        self.scaling()
+    }
+
+    pub fn scaling_mut(&mut self) -> &mut Scaling {
         &mut self.scaling
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use scaling_mut()")]
+    pub fn get_scaling_mut(&mut self) -> &mut Scaling {
+        self.scaling_mut()
     }
 
     pub fn set_scaling(&mut self, value: Scaling) -> &mut SeriesAxis {
@@ -76,12 +98,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_delete(&self) -> &Delete {
+    pub fn delete(&self) -> &Delete {
         &self.delete
     }
 
-    pub fn get_delete_mut(&mut self) -> &mut Delete {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use delete()")]
+    pub fn get_delete(&self) -> &Delete {
+        self.delete()
+    }
+
+    pub fn delete_mut(&mut self) -> &mut Delete {
         &mut self.delete
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use delete_mut()")]
+    pub fn get_delete_mut(&mut self) -> &mut Delete {
+        self.delete_mut()
     }
 
     pub fn set_delete(&mut self, value: Delete) -> &mut SeriesAxis {
@@ -90,12 +123,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_axis_position(&self) -> &AxisPosition {
+    pub fn axis_position(&self) -> &AxisPosition {
         &self.axis_position
     }
 
-    pub fn get_axis_position_mut(&mut self) -> &mut AxisPosition {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use axis_position()")]
+    pub fn get_axis_position(&self) -> &AxisPosition {
+        self.axis_position()
+    }
+
+    pub fn axis_position_mut(&mut self) -> &mut AxisPosition {
         &mut self.axis_position
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use axis_position_mut()")]
+    pub fn get_axis_position_mut(&mut self) -> &mut AxisPosition {
+        self.axis_position_mut()
     }
 
     pub fn set_axis_position(&mut self, value: AxisPosition) -> &mut SeriesAxis {
@@ -104,12 +148,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
+    pub fn major_gridlines(&self) -> Option<&MajorGridlines> {
         self.major_gridlines.as_deref()
     }
 
-    pub fn get_major_gridlines_mut(&mut self) -> Option<&mut MajorGridlines> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use major_gridlines()")]
+    pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
+        self.major_gridlines()
+    }
+
+    pub fn major_gridlines_mut(&mut self) -> Option<&mut MajorGridlines> {
         self.major_gridlines.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use major_gridlines_mut()")]
+    pub fn get_major_gridlines_mut(&mut self) -> Option<&mut MajorGridlines> {
+        self.major_gridlines_mut()
     }
 
     pub fn set_major_gridlines(&mut self, value: MajorGridlines) -> &mut SeriesAxis {
@@ -118,12 +173,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_title(&self) -> Option<&Title> {
+    pub fn title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
 
-    pub fn get_title_mut(&mut self) -> Option<&mut Title> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use title()")]
+    pub fn get_title(&self) -> Option<&Title> {
+        self.title()
+    }
+
+    pub fn title_mut(&mut self) -> Option<&mut Title> {
         self.title.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use title_mut()")]
+    pub fn get_title_mut(&mut self) -> Option<&mut Title> {
+        self.title_mut()
     }
 
     pub fn set_title(&mut self, value: Title) -> &mut SeriesAxis {
@@ -132,12 +198,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_major_tick_mark(&self) -> &MajorTickMark {
+    pub fn major_tick_mark(&self) -> &MajorTickMark {
         &self.major_tick_mark
     }
 
-    pub fn get_major_tick_mark_mut(&mut self) -> &mut MajorTickMark {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use major_tick_mark()")]
+    pub fn get_major_tick_mark(&self) -> &MajorTickMark {
+        self.major_tick_mark()
+    }
+
+    pub fn major_tick_mark_mut(&mut self) -> &mut MajorTickMark {
         &mut self.major_tick_mark
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use major_tick_mark_mut()")]
+    pub fn get_major_tick_mark_mut(&mut self) -> &mut MajorTickMark {
+        self.major_tick_mark_mut()
     }
 
     pub fn set_major_tick_mark(&mut self, value: MajorTickMark) -> &mut SeriesAxis {
@@ -146,12 +223,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_minor_tick_mark(&self) -> &MinorTickMark {
+    pub fn minor_tick_mark(&self) -> &MinorTickMark {
         &self.minor_tick_mark
     }
 
-    pub fn get_minor_tick_mark_mut(&mut self) -> &mut MinorTickMark {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use minor_tick_mark()")]
+    pub fn get_minor_tick_mark(&self) -> &MinorTickMark {
+        self.minor_tick_mark()
+    }
+
+    pub fn minor_tick_mark_mut(&mut self) -> &mut MinorTickMark {
         &mut self.minor_tick_mark
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use minor_tick_mark_mut()")]
+    pub fn get_minor_tick_mark_mut(&mut self) -> &mut MinorTickMark {
+        self.minor_tick_mark_mut()
     }
 
     pub fn set_minor_tick_mark(&mut self, value: MinorTickMark) -> &mut SeriesAxis {
@@ -160,12 +248,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_tick_label_position(&self) -> &TickLabelPosition {
+    pub fn tick_label_position(&self) -> &TickLabelPosition {
         &self.tick_label_position
     }
 
-    pub fn get_tick_label_position_mut(&mut self) -> &mut TickLabelPosition {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tick_label_position()")]
+    pub fn get_tick_label_position(&self) -> &TickLabelPosition {
+        self.tick_label_position()
+    }
+
+    pub fn tick_label_position_mut(&mut self) -> &mut TickLabelPosition {
         &mut self.tick_label_position
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use tick_label_position_mut()")]
+    pub fn get_tick_label_position_mut(&mut self) -> &mut TickLabelPosition {
+        self.tick_label_position_mut()
     }
 
     pub fn set_tick_label_position(&mut self, value: TickLabelPosition) -> &mut SeriesAxis {
@@ -174,12 +273,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_tick_crossing_axis(&self) -> &CrossingAxis {
+    pub fn tick_crossing_axis(&self) -> &CrossingAxis {
         &self.crossing_axis
     }
 
-    pub fn get_tick_crossing_axis_mut(&mut self) -> &mut CrossingAxis {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tick_crossing_axis()")]
+    pub fn get_tick_crossing_axis(&self) -> &CrossingAxis {
+        self.tick_crossing_axis()
+    }
+
+    pub fn tick_crossing_axis_mut(&mut self) -> &mut CrossingAxis {
         &mut self.crossing_axis
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use tick_crossing_axis_mut()")]
+    pub fn get_tick_crossing_axis_mut(&mut self) -> &mut CrossingAxis {
+        self.tick_crossing_axis_mut()
     }
 
     pub fn set_tick_crossing_axis(&mut self, value: CrossingAxis) -> &mut SeriesAxis {
@@ -188,12 +298,23 @@ impl SeriesAxis {
     }
 
     #[must_use]
-    pub fn get_crosses(&self) -> &Crosses {
+    pub fn crosses(&self) -> &Crosses {
         &self.crosses
     }
 
-    pub fn get_crosses_mut(&mut self) -> &mut Crosses {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use crosses()")]
+    pub fn get_crosses(&self) -> &Crosses {
+        self.crosses()
+    }
+
+    pub fn crosses_mut(&mut self) -> &mut Crosses {
         &mut self.crosses
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use crosses_mut()")]
+    pub fn get_crosses_mut(&mut self) -> &mut Crosses {
+        self.crosses_mut()
     }
 
     pub fn set_crosses(&mut self, value: Crosses) -> &mut SeriesAxis {

@@ -206,7 +206,7 @@ fn write_sheet_data(
     write_start_tag(writer, "sheetData", vec![], !has_sheet_data);
 
     let mut row_dimensions = worksheet.row_dimensions();
-    row_dimensions.sort_by_key(|a| a.get_row_num());
+    row_dimensions.sort_by_key(|a| a.row_num());
     let cells = worksheet.cells_sorted();
     let formula_shared_list = build_formula_shared_list(&cells);
     write_rows_and_cells(
@@ -337,7 +337,7 @@ fn write_rows_and_cells(
         let mut cells_in_row: Vec<&Cell> = Vec::new();
 
         while let Some(cell) = cells_iter.peek() {
-            if row.get_row_num() != cell.coordinate().row_num() {
+            if row.row_num() != cell.coordinate().row_num() {
                 break;
             }
             cells_in_row.push(cells_iter.next().unwrap());

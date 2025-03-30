@@ -29,12 +29,23 @@ pub struct StringReference {
 
 impl StringReference {
     #[must_use]
-    pub fn get_formula(&self) -> &Formula {
+    pub fn formula(&self) -> &Formula {
         &self.formula
     }
 
-    pub fn get_formula_mut(&mut self) -> &mut Formula {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula()")]
+    pub fn get_formula(&self) -> &Formula {
+        self.formula()
+    }
+
+    pub fn formula_mut(&mut self) -> &mut Formula {
         &mut self.formula
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use formula_mut()")]
+    pub fn get_formula_mut(&mut self) -> &mut Formula {
+        self.formula_mut()
     }
 
     pub fn set_formula(&mut self, value: Formula) -> &mut StringReference {
@@ -43,12 +54,23 @@ impl StringReference {
     }
 
     #[must_use]
-    pub fn get_string_cache(&self) -> &StringCache {
+    pub fn string_cache(&self) -> &StringCache {
         &self.string_cache
     }
 
-    pub fn get_string_cache_mut(&mut self) -> &mut StringCache {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use string_cache()")]
+    pub fn get_string_cache(&self) -> &StringCache {
+        self.string_cache()
+    }
+
+    pub fn string_cache_mut(&mut self) -> &mut StringCache {
         &mut self.string_cache
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use string_cache_mut()")]
+    pub fn get_string_cache_mut(&mut self) -> &mut StringCache {
+        self.string_cache_mut()
     }
 
     pub fn set_string_cache(&mut self, value: StringCache) -> &mut StringReference {
@@ -89,7 +111,7 @@ impl StringReference {
         self.formula.write_to(writer);
 
         // c:strCache
-        StringCache::write_to(writer, self.get_formula().address(), wb);
+        StringCache::write_to(writer, self.formula().address(), wb);
 
         write_end_tag(writer, "c:strRef");
     }

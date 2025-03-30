@@ -521,8 +521,8 @@ impl Workbook {
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use sheet()")]
-    pub fn get_sheet(&self, index: usize) -> Result<&Worksheet, &'static str> {
-        self.sheet(index)
+    pub fn get_sheet(&self, index: &usize) -> Result<&Worksheet, &'static str> {
+        self.sheet(*index)
     }
 
     /// Get Work Sheet.
@@ -553,8 +553,8 @@ impl Workbook {
     }
 
     #[deprecated(since = "3.0.0", note = "Use lazy_read_sheet_cells()")]
-    pub fn get_lazy_read_sheet_cells(&self, index: usize) -> Result<Cells, &'static str> {
-        self.lazy_read_sheet_cells(index)
+    pub fn get_lazy_read_sheet_cells(&self, index: &usize) -> Result<Cells, &'static str> {
+        self.lazy_read_sheet_cells(*index)
     }
 
     /// Get Work Sheet in mutable.
@@ -574,8 +574,8 @@ impl Workbook {
     }
 
     #[deprecated(since = "3.0.0", note = "Use sheet_mut()")]
-    pub fn get_sheet_mut(&mut self, index: usize) -> Result<&mut Worksheet, &'static str> {
-        self.sheet_mut(index)
+    pub fn get_sheet_mut(&mut self, index: &usize) -> Result<&mut Worksheet, &'static str> {
+        self.sheet_mut(*index)
     }
 
     /// Get Work Sheet in mutable.

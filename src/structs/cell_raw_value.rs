@@ -22,7 +22,7 @@ impl fmt::Display for CellRawValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::String(v) => write!(f, "{v}"),
-            Self::RichText(v) => write!(f, "{}", v.get_text()),
+            Self::RichText(v) => write!(f, "{}", v.text()),
             Self::Numeric(v) => write!(f, "{}", &v),
             Self::Bool(v) => write!(f, "{}", if *v { "TRUE" } else { "FALSE" }),
             Self::Error(e) => write!(f, "{e}"),

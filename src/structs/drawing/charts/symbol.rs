@@ -22,8 +22,14 @@ pub struct Symbol {
 }
 impl Symbol {
     #[must_use]
-    pub fn get_val(&self) -> &MarkerStyleValues {
+    pub fn val(&self) -> &MarkerStyleValues {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &MarkerStyleValues {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: MarkerStyleValues) -> &mut Symbol {

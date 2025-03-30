@@ -19,8 +19,14 @@ pub struct Top {
 }
 impl Top {
     #[must_use]
-    pub fn get_val(&self) -> f64 {
+    pub fn val(&self) -> f64 {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> f64 {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: f64) -> &mut Top {

@@ -437,7 +437,7 @@ impl AreaChartSeries {
 
         if let Some(v) = &mut self.category_axis_data {
             if let Some(h) = v.string_reference_mut() {
-                result.push(h.get_formula_mut());
+                result.push(h.formula_mut());
             }
         }
         if let Some(v) = &mut self.values {

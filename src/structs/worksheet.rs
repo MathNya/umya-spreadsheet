@@ -399,8 +399,8 @@ impl Worksheet {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column()")]
-    pub fn get_collection_by_column(&self, column_num: u32) -> Vec<&Cell> {
-        self.collection_by_column(column_num)
+    pub fn get_collection_by_column(&self, column_num: &u32) -> Vec<&Cell> {
+        self.collection_by_column(*column_num)
     }
 
     #[inline]
@@ -412,8 +412,8 @@ impl Worksheet {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_row()")]
-    pub fn get_collection_by_row(&self, row_num: u32) -> Vec<&Cell> {
-        self.collection_by_row(row_num)
+    pub fn get_collection_by_row(&self, row_num: &u32) -> Vec<&Cell> {
+        self.collection_by_row(*row_num)
     }
 
     #[inline]
@@ -425,8 +425,8 @@ impl Worksheet {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_column_to_hashmap()")]
-    pub fn get_collection_by_column_to_hashmap(&self, column_num: u32) -> HashMap<u32, &Cell> {
-        self.collection_by_column_to_hashmap(column_num)
+    pub fn get_collection_by_column_to_hashmap(&self, column_num: &u32) -> HashMap<u32, &Cell> {
+        self.collection_by_column_to_hashmap(*column_num)
     }
 
     #[inline]
@@ -438,8 +438,8 @@ impl Worksheet {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use collection_by_row_to_hashmap()")]
-    pub fn get_collection_by_row_to_hashmap(&self, row_num: u32) -> HashMap<u32, &Cell> {
-        self.collection_by_row_to_hashmap(row_num)
+    pub fn get_collection_by_row_to_hashmap(&self, row_num: &u32) -> HashMap<u32, &Cell> {
+        self.collection_by_row_to_hashmap(*row_num)
     }
 
     /// Set Cell
@@ -1014,8 +1014,8 @@ impl Worksheet {
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use column_dimension_by_number()")]
-    pub fn get_column_dimension_by_number(&self, col: u32) -> Option<&Column> {
-        self.column_dimension_by_number(col)
+    pub fn get_column_dimension_by_number(&self, col: &u32) -> Option<&Column> {
+        self.column_dimension_by_number(*col)
     }
 
     /// Get Column Dimension in mutable.
@@ -1028,8 +1028,8 @@ impl Worksheet {
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use column_dimension_by_number_mut()")]
-    pub fn get_column_dimension_by_number_mut(&mut self, col: u32) -> &mut Column {
-        self.column_dimension_by_number_mut(col)
+    pub fn get_column_dimension_by_number_mut(&mut self, col: &u32) -> &mut Column {
+        self.column_dimension_by_number_mut(*col)
     }
 
     /// (This method is crate only.)
@@ -1079,7 +1079,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn row_dimensions(&self) -> Vec<&Row> {
-        self.rows.get_row_dimensions()
+        self.rows.row_dimensions()
     }
 
     #[inline]
@@ -1092,7 +1092,7 @@ impl Worksheet {
     /// Get Row Dimension List in mutable.
     #[inline]
     pub fn row_dimensions_mut(&mut self) -> Vec<&mut Row> {
-        self.rows.get_row_dimensions_mut()
+        self.rows.row_dimensions_mut()
     }
 
     #[inline]
@@ -1105,7 +1105,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn row_dimensions_to_hashmap(&self) -> &HashMap<u32, Box<Row>> {
-        self.rows.get_row_dimensions_to_hashmap()
+        self.rows.row_dimensions_to_hashmap()
     }
 
     #[inline]
@@ -1117,7 +1117,7 @@ impl Worksheet {
 
     #[inline]
     pub fn row_dimensions_to_hashmap_mut(&mut self) -> &mut HashMap<u32, Box<Row>> {
-        self.rows.get_row_dimensions_to_hashmap_mut()
+        self.rows.row_dimensions_to_hashmap_mut()
     }
 
     #[inline]
@@ -1130,27 +1130,27 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn row_dimension(&self, row: u32) -> Option<&Row> {
-        self.rows.get_row_dimension(row)
+        self.rows.row_dimension(row)
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use row_dimension()")]
-    pub fn get_row_dimension(&self, row: u32) -> Option<&Row> {
-        self.row_dimension(row)
+    pub fn get_row_dimension(&self, row: &u32) -> Option<&Row> {
+        self.row_dimension(*row)
     }
 
     /// Get Row Dimension in mutable.
     #[inline]
     pub fn row_dimension_mut(&mut self, row: u32) -> &mut Row {
-        self.rows.get_row_dimension_mut(row)
+        self.rows.row_dimension_mut(row)
     }
 
     /// Get Row Dimension in mutable.
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use row_dimension_mut()")]
-    pub fn get_row_dimension_mut(&mut self, row: u32) -> &mut Row {
-        self.row_dimension_mut(row)
+    pub fn get_row_dimension_mut(&mut self, row: &u32) -> &mut Row {
+        self.row_dimension_mut(*row)
     }
 
     /// (This method is crate only.)
@@ -2276,8 +2276,8 @@ impl Worksheet {
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use image_by_column_and_row_mut()")]
-    pub fn get_image_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
-        self.image_by_column_and_row_mut(col, row)
+    pub fn get_image_by_column_and_row_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
+        self.image_by_column_and_row_mut(*col, *row)
     }
 
     #[inline]
@@ -2666,7 +2666,7 @@ impl Worksheet {
     pub fn cleanup(&mut self) {
         let (_, max_row) = self.highest_column_and_row();
         for row in (1..=max_row).rev() {
-            if self.rows.get_row_dimension(row).is_some() {
+            if self.rows.row_dimension(row).is_some() {
                 let mut indexes: Vec<(u32, u32)> = Vec::new();
                 {
                     let cells: Vec<&Cell> = self.cells.iter_cells_by_row(row).collect();
@@ -2681,7 +2681,7 @@ impl Worksheet {
                     }
                 }
 
-                self.rows.get_row_dimensions_to_hashmap_mut().remove(&row);
+                self.rows.row_dimensions_to_hashmap_mut().remove(&row);
                 for (i_row, i_col) in indexes {
                     self.cells.remove(i_col, i_row);
                 }
@@ -2717,12 +2717,12 @@ impl Worksheet {
 
         if let Some(row_style) = self
             .row_dimensions_crate()
-            .get_row_dimension(source_row_no)
-            .map(Row::get_style)
+            .row_dimension(source_row_no)
+            .map(Row::style)
             .cloned()
         {
             self.row_dimensions_crate_mut()
-                .get_row_dimension_mut(target_row_no)
+                .row_dimension_mut(target_row_no)
                 .set_style(row_style);
         }
 

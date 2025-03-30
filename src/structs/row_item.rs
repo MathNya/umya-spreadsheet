@@ -38,8 +38,15 @@ pub struct RowItem {
 impl RowItem {
     #[inline]
     #[must_use]
-    pub fn get_index(&self) -> u32 {
+    pub fn index(&self) -> u32 {
         self.index.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use index()")]
+    pub fn get_index(&self) -> u32 {
+        self.index()
     }
 
     #[inline]
@@ -50,8 +57,15 @@ impl RowItem {
 
     #[inline]
     #[must_use]
-    pub fn get_item_type(&self) -> &ItemValues {
+    pub fn item_type(&self) -> &ItemValues {
         self.item_type.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use item_type()")]
+    pub fn get_item_type(&self) -> &ItemValues {
+        self.item_type()
     }
 
     #[inline]
@@ -62,8 +76,15 @@ impl RowItem {
 
     #[inline]
     #[must_use]
-    pub fn get_repeated_item_count(&self) -> u32 {
+    pub fn repeated_item_count(&self) -> u32 {
         self.repeated_item_count.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use repeated_item_count()")]
+    pub fn get_repeated_item_count(&self) -> u32 {
+        self.repeated_item_count()
     }
 
     #[inline]
@@ -74,13 +95,26 @@ impl RowItem {
 
     #[inline]
     #[must_use]
-    pub fn get_member_property_index(&self) -> Option<&MemberPropertyIndex> {
+    pub fn member_property_index(&self) -> Option<&MemberPropertyIndex> {
         self.member_property_index.as_ref()
     }
 
     #[inline]
-    pub fn get_member_property_index_mut(&mut self) -> Option<&mut MemberPropertyIndex> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use member_property_index()")]
+    pub fn get_member_property_index(&self) -> Option<&MemberPropertyIndex> {
+        self.member_property_index()
+    }
+
+    #[inline]
+    pub fn member_property_index_mut(&mut self) -> Option<&mut MemberPropertyIndex> {
         self.member_property_index.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use member_property_index_mut()")]
+    pub fn get_member_property_index_mut(&mut self) -> Option<&mut MemberPropertyIndex> {
+        self.member_property_index_mut()
     }
 
     #[inline]

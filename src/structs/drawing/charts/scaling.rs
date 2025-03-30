@@ -26,12 +26,23 @@ pub struct Scaling {
 
 impl Scaling {
     #[must_use]
-    pub fn get_orientation(&self) -> &Orientation {
+    pub fn orientation(&self) -> &Orientation {
         &self.orientation
     }
 
-    pub fn get_orientation_mut(&mut self) -> &mut Orientation {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use orientation()")]
+    pub fn get_orientation(&self) -> &Orientation {
+        self.orientation()
+    }
+
+    pub fn orientation_mut(&mut self) -> &mut Orientation {
         &mut self.orientation
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use orientation_mut()")]
+    pub fn get_orientation_mut(&mut self) -> &mut Orientation {
+        self.orientation_mut()
     }
 
     pub fn set_orientation(&mut self, value: Orientation) -> &mut Self {

@@ -230,7 +230,7 @@ impl Chart {
         let mut string_literal = StringLiteral::default();
         for v in value {
             let mut string_point = StringPoint::default();
-            string_point.get_numeric_value_mut().set_text(v);
+            string_point.numeric_value_mut().set_text(v);
             string_literal.add_string_point_list(string_point);
         }
         for series in self
@@ -496,7 +496,7 @@ impl Chart {
         category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
             .scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
             .major_tick_mark_mut()
@@ -519,7 +519,7 @@ impl Chart {
         value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
             .get_axis_position_mut()
@@ -641,7 +641,7 @@ impl Chart {
         category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
             .scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
             .major_tick_mark_mut()
@@ -664,7 +664,7 @@ impl Chart {
         value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
             .get_axis_position_mut()
@@ -962,7 +962,7 @@ impl Chart {
             if ptn == 0 {
                 let mut string_reference = StringReference::default();
                 string_reference
-                    .get_formula_mut()
+                    .formula_mut()
                     .set_address_str(area_chart_series);
 
                 let mut category_axis_data = CategoryAxisData::default();
@@ -1078,7 +1078,7 @@ impl Chart {
         category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
             .scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
             .major_tick_mark_mut()
@@ -1101,7 +1101,7 @@ impl Chart {
         value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
             .get_axis_position_mut()
@@ -1217,7 +1217,7 @@ impl Chart {
         category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
             .scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
             .major_tick_mark_mut()
@@ -1240,7 +1240,7 @@ impl Chart {
         value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
             .get_axis_position_mut()
@@ -1356,7 +1356,7 @@ impl Chart {
         category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
             .scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
             .axis_position_mut()
@@ -1382,7 +1382,7 @@ impl Chart {
         value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
             .get_axis_position_mut()
@@ -1500,7 +1500,7 @@ impl Chart {
         category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
             .scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
             .axis_position_mut()
@@ -1526,7 +1526,7 @@ impl Chart {
         value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
             .get_axis_position_mut()
@@ -1780,7 +1780,7 @@ impl Chart {
         value_axis_1.get_axis_id_mut().set_val(213_468_160);
         value_axis_1
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_1
             .get_axis_position_mut()
@@ -1812,7 +1812,7 @@ impl Chart {
         value_axis_2.get_axis_id_mut().set_val(169_590_080);
         value_axis_2
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_2
             .get_axis_position_mut()
@@ -1938,7 +1938,7 @@ impl Chart {
         category_axis.axis_id_mut().set_val(213_468_160);
         category_axis
             .scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         category_axis
             .major_tick_mark_mut()
@@ -1961,7 +1961,7 @@ impl Chart {
         value_axis.get_axis_id_mut().set_val(169_590_080);
         value_axis
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
             .get_axis_position_mut()
@@ -2113,7 +2113,7 @@ impl Chart {
         value_axis_1.get_axis_id_mut().set_val(213_468_160);
         value_axis_1
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_1
             .get_axis_position_mut()
@@ -2145,7 +2145,7 @@ impl Chart {
         value_axis_2.get_axis_id_mut().set_val(169_590_080);
         value_axis_2
             .get_scaling_mut()
-            .get_orientation_mut()
+            .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_2
             .get_axis_position_mut()

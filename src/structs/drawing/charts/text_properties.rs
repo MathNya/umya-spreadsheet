@@ -32,12 +32,23 @@ pub struct TextProperties {
 
 impl TextProperties {
     #[must_use]
-    pub fn get_body_properties(&self) -> &BodyProperties {
+    pub fn body_properties(&self) -> &BodyProperties {
         &self.body_properties
     }
 
-    pub fn get_body_properties_mut(&mut self) -> &mut BodyProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use body_properties()")]
+    pub fn get_body_properties(&self) -> &BodyProperties {
+        self.body_properties()
+    }
+
+    pub fn body_properties_mut(&mut self) -> &mut BodyProperties {
         &mut self.body_properties
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use body_properties_mut()")]
+    pub fn get_body_properties_mut(&mut self) -> &mut BodyProperties {
+        self.body_properties_mut()
     }
 
     pub fn set_body_properties(&mut self, value: BodyProperties) -> &mut TextProperties {
@@ -46,12 +57,23 @@ impl TextProperties {
     }
 
     #[must_use]
-    pub fn get_list_style(&self) -> &ListStyle {
+    pub fn list_style(&self) -> &ListStyle {
         &self.list_style
     }
 
-    pub fn get_list_style_mut(&mut self) -> &mut ListStyle {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use list_style()")]
+    pub fn get_list_style(&self) -> &ListStyle {
+        self.list_style()
+    }
+
+    pub fn list_style_mut(&mut self) -> &mut ListStyle {
         &mut self.list_style
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use list_style_mut()")]
+    pub fn get_list_style_mut(&mut self) -> &mut ListStyle {
+        self.list_style_mut()
     }
 
     pub fn set_list_style(&mut self, value: ListStyle) -> &mut TextProperties {
@@ -60,12 +82,23 @@ impl TextProperties {
     }
 
     #[must_use]
-    pub fn get_paragraph(&self) -> &[Paragraph] {
+    pub fn paragraph(&self) -> &[Paragraph] {
         &self.paragraph
     }
 
-    pub fn get_paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use paragraph()")]
+    pub fn get_paragraph(&self) -> &[Paragraph] {
+        self.paragraph()
+    }
+
+    pub fn paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
         &mut self.paragraph
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use paragraph_mut()")]
+    pub fn get_paragraph_mut(&mut self) -> &mut Vec<Paragraph> {
+        self.paragraph_mut()
     }
 
     pub fn add_paragraph(&mut self, value: Paragraph) -> &mut TextProperties {

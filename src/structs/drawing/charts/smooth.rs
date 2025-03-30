@@ -19,8 +19,14 @@ pub struct Smooth {
 }
 impl Smooth {
     #[must_use]
-    pub fn get_val(&self) -> bool {
+    pub fn val(&self) -> bool {
         self.val.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> bool {
+        self.val()
     }
 
     pub fn set_val(&mut self, value: bool) -> &mut Self {

@@ -91,7 +91,7 @@ impl SharedStringItem {
                 .map_or(String::from("NONE"), Text::get_hash_code),
             self.rich_text
                 .as_ref()
-                .map_or(String::from("NONE"), RichText::get_hash_code)
+                .map_or(String::from("NONE"), RichText::hash_code)
         );
         h.write(content.as_bytes());
         h.finish()
