@@ -585,7 +585,7 @@ impl PlotArea {
             return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.radar_chart {
-            return chart.get_area_chart_series_list_mut();
+            return chart.area_chart_series_list_mut();
         }
         if let Some(chart) = &mut self.bubble_chart {
             return chart.area_chart_series_list_mut();
@@ -666,7 +666,7 @@ impl PlotArea {
             }
         }
         if let Some(v) = &mut self.radar_chart {
-            for ser in v.get_area_chart_series_list_mut().area_chart_series_mut() {
+            for ser in v.area_chart_series_list_mut().area_chart_series_mut() {
                 for formula in ser.formula_mut() {
                     result.push(formula);
                 }
