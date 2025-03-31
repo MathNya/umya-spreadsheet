@@ -27,12 +27,23 @@ pub struct YValues {
 
 impl YValues {
     #[must_use]
-    pub fn get_number_reference(&self) -> &NumberReference {
+    pub fn number_reference(&self) -> &NumberReference {
         &self.number_reference
     }
 
-    pub fn get_number_reference_mut(&mut self) -> &mut NumberReference {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use number_reference()")]
+    pub fn get_number_reference(&self) -> &NumberReference {
+        self.number_reference()
+    }
+
+    pub fn number_reference_mut(&mut self) -> &mut NumberReference {
         &mut self.number_reference
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use number_reference_mut()")]
+    pub fn get_number_reference_mut(&mut self) -> &mut NumberReference {
+        self.number_reference_mut()
     }
 
     pub fn set_number_reference(&mut self, value: NumberReference) -> &mut YValues {

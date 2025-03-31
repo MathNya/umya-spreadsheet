@@ -160,14 +160,8 @@ fn read_and_wite_method(book: &mut Workbook) {
         "2020年3月",
         book.sheet(0).unwrap().get_formatted_value("B23")
     );
-    assert_eq!(
-        "2:33 pm",
-        book.sheet(0).unwrap().get_formatted_value("B24")
-    );
-    assert_eq!(
-        "5.00%",
-        book.sheet(0).unwrap().get_formatted_value("B25")
-    );
+    assert_eq!("2:33 pm", book.sheet(0).unwrap().get_formatted_value("B24"));
+    assert_eq!("5.00%", book.sheet(0).unwrap().get_formatted_value("B25"));
     assert_eq!("1/2", book.sheet(0).unwrap().get_formatted_value("B26"));
     assert_eq!(
         "12/15/2020 14:01",
@@ -182,19 +176,13 @@ fn read_and_wite_method(book: &mut Workbook) {
         "2020年10月1日",
         book.sheet(0).unwrap().get_formatted_value("B30")
     );
-    assert_eq!(
-        "1.2345",
-        book.sheet(0).unwrap().get_formatted_value("B31")
-    );
+    assert_eq!("1.2345", book.sheet(0).unwrap().get_formatted_value("B31"));
     assert_eq!("1.2", book.sheet(0).unwrap().get_formatted_value("B32"));
     assert_eq!(
         "12,345,675,544.00",
         book.sheet(0).unwrap().get_formatted_value("B33")
     );
-    assert_eq!(
-        "1.235",
-        book.sheet(0).unwrap().get_formatted_value("B34")
-    );
+    assert_eq!("1.235", book.sheet(0).unwrap().get_formatted_value("B34"));
     assert_eq!("1", book.sheet(0).unwrap().get_formatted_value("B35"));
     assert_eq!("", book.sheet(0).unwrap().get_formatted_value("B36"));
     assert_eq!(
@@ -329,12 +317,7 @@ fn read_and_wite_xlsm_method(book: &mut Workbook) {
         .unwrap()
         .get_cell_mut((1, 1))
         .set_value("TEST1");
-    let a1_value = book
-        .sheet(0)
-        .unwrap()
-        .get_cell((1, 1))
-        .unwrap()
-        .get_value();
+    let a1_value = book.sheet(0).unwrap().get_cell((1, 1)).unwrap().get_value();
     assert_eq!("TEST1", a1_value);
 
     // copy sheet
@@ -1467,11 +1450,7 @@ fn issue_185() {
     let path = std::path::Path::new("./tests/test_files/issue_185.xlsx");
     let book = reader::xlsx::read(path).unwrap();
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("A1")
-            .unwrap()
-            .is_formula(),
+        book.sheet(0).unwrap().get_cell("A1").unwrap().is_formula(),
         true
     );
 }
@@ -1566,27 +1545,15 @@ fn issue_194() {
     book.sheet_mut(0).unwrap().insert_new_column("D", 1);
 
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("B2")
-            .unwrap()
-            .get_formula(),
+        book.sheet(0).unwrap().get_cell("B2").unwrap().get_formula(),
         "SUM(B1)"
     );
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("C2")
-            .unwrap()
-            .get_formula(),
+        book.sheet(0).unwrap().get_cell("C2").unwrap().get_formula(),
         "SUM(C1)"
     );
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("E2")
-            .unwrap()
-            .get_formula(),
+        book.sheet(0).unwrap().get_cell("E2").unwrap().get_formula(),
         "SUM(E1)"
     );
 
@@ -1665,19 +1632,11 @@ fn issue_188_4() {
     let mut book = reader::xlsx::read(path).unwrap();
 
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("H4")
-            .unwrap()
-            .get_formula(),
+        book.sheet(0).unwrap().get_cell("H4").unwrap().get_formula(),
         "SUM(B4:G4)"
     );
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("H5")
-            .unwrap()
-            .get_formula(),
+        book.sheet(0).unwrap().get_cell("H5").unwrap().get_formula(),
         "SUM(B5:G5)"
     );
 
@@ -1685,19 +1644,11 @@ fn issue_188_4() {
     book.sheet_mut(0).unwrap().remove_column("E", 1);
 
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("G4")
-            .unwrap()
-            .get_formula(),
+        book.sheet(0).unwrap().get_cell("G4").unwrap().get_formula(),
         "SUM(B4:F4)"
     );
     assert_eq!(
-        book.sheet(0)
-            .unwrap()
-            .get_cell("G5")
-            .unwrap()
-            .get_formula(),
+        book.sheet(0).unwrap().get_cell("G5").unwrap().get_formula(),
         "SUM(B5:F5)"
     );
 

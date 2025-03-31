@@ -445,11 +445,11 @@ impl Chart {
             .for_each(|(idx, area_chart_series)| {
                 let mut values = Values::default();
                 values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .formula_mut()
                     .set_address_str(area_chart_series);
                 values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .numbering_cache_mut()
                     .format_code_mut()
                     .set_text("General");
@@ -516,31 +516,31 @@ impl Chart {
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169_590_080);
+        value_axis.axis_id_mut().set_val(169_590_080);
         value_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
+        value_axis.tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
 
@@ -661,31 +661,31 @@ impl Chart {
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169_590_080);
+        value_axis.axis_id_mut().set_val(169_590_080);
         value_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
+        value_axis.tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
 
@@ -973,11 +973,11 @@ impl Chart {
             } else if ptn == 1 {
                 let mut values = Values::default();
                 values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .formula_mut()
                     .set_address_str(area_chart_series);
                 values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .numbering_cache_mut()
                     .format_code_mut()
                     .set_text("General");
@@ -1098,33 +1098,33 @@ impl Chart {
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169_590_080);
+        value_axis.axis_id_mut().set_val(169_590_080);
         value_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
+        value_axis.tick_crossing_axis_mut().set_val(213_468_160);
         value_axis
-            .get_cross_between_mut()
+            .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let mut graphic_frame = GraphicFrame::default();
@@ -1237,33 +1237,33 @@ impl Chart {
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169_590_080);
+        value_axis.axis_id_mut().set_val(169_590_080);
         value_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
+        value_axis.tick_crossing_axis_mut().set_val(213_468_160);
         value_axis
-            .get_cross_between_mut()
+            .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let mut graphic_frame = GraphicFrame::default();
@@ -1379,31 +1379,31 @@ impl Chart {
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169_590_080);
+        value_axis.axis_id_mut().set_val(169_590_080);
         value_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
+        value_axis.tick_crossing_axis_mut().set_val(213_468_160);
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1523,31 +1523,31 @@ impl Chart {
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169_590_080);
+        value_axis.axis_id_mut().set_val(169_590_080);
         value_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
+        value_axis.tick_crossing_axis_mut().set_val(213_468_160);
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1702,11 +1702,11 @@ impl Chart {
             if ptn == 0 {
                 let mut x_values = XValues::default();
                 x_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .formula_mut()
                     .set_address_str(area_chart_series);
                 x_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .numbering_cache_mut()
                     .format_code_mut()
                     .set_text("General");
@@ -1716,11 +1716,11 @@ impl Chart {
             } else if ptn == 1 {
                 let mut y_values = YValues::default();
                 y_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .formula_mut()
                     .set_address_str(area_chart_series);
                 y_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .numbering_cache_mut()
                     .format_code_mut()
                     .set_text("General");
@@ -1777,67 +1777,67 @@ impl Chart {
             .set_show_leader_lines(show_leader_lines);
 
         let mut value_axis_1 = ValueAxis::default();
-        value_axis_1.get_axis_id_mut().set_val(213_468_160);
+        value_axis_1.axis_id_mut().set_val(213_468_160);
         value_axis_1
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_1
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Bottom);
         value_axis_1
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis_1
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis_1
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis_1
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis_1
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         value_axis_1
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
         value_axis_1
-            .get_cross_between_mut()
+            .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let major_gridlines = MajorGridlines::default();
         let mut value_axis_2 = ValueAxis::default();
-        value_axis_2.get_axis_id_mut().set_val(169_590_080);
+        value_axis_2.axis_id_mut().set_val(169_590_080);
         value_axis_2
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_2
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis_2.set_major_gridlines(major_gridlines);
         value_axis_2
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis_2
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis_2
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis_2
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis_2
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         value_axis_2
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(213_468_160);
         value_axis_2
-            .get_cross_between_mut()
+            .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let default_run_properties = RunProperties::default();
@@ -1958,31 +1958,31 @@ impl Chart {
         let major_gridlines = MajorGridlines::default();
 
         let mut value_axis = ValueAxis::default();
-        value_axis.get_axis_id_mut().set_val(169_590_080);
+        value_axis.axis_id_mut().set_val(169_590_080);
         value_axis
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis.set_major_gridlines(major_gridlines);
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
-        value_axis.get_tick_crossing_axis_mut().set_val(213_468_160);
+        value_axis.tick_crossing_axis_mut().set_val(213_468_160);
 
         let layout = Layout::default();
 
@@ -2060,11 +2060,11 @@ impl Chart {
             if ptn == 0 {
                 let mut x_values = XValues::default();
                 x_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .formula_mut()
                     .set_address_str(area_chart_series);
                 x_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .numbering_cache_mut()
                     .format_code_mut()
                     .set_text("General");
@@ -2074,11 +2074,11 @@ impl Chart {
             } else if ptn == 1 {
                 let mut y_values = YValues::default();
                 y_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .formula_mut()
                     .set_address_str(area_chart_series);
                 y_values
-                    .get_number_reference_mut()
+                    .number_reference_mut()
                     .numbering_cache_mut()
                     .format_code_mut()
                     .set_text("General");
@@ -2110,67 +2110,67 @@ impl Chart {
         scatter_chart.add_axis_id(axis_id2);
 
         let mut value_axis_1 = ValueAxis::default();
-        value_axis_1.get_axis_id_mut().set_val(213_468_160);
+        value_axis_1.axis_id_mut().set_val(213_468_160);
         value_axis_1
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_1
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Bottom);
         value_axis_1
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis_1
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis_1
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis_1
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis_1
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         value_axis_1
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(169_590_080);
         value_axis_1
-            .get_cross_between_mut()
+            .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let major_gridlines = MajorGridlines::default();
         let mut value_axis_2 = ValueAxis::default();
-        value_axis_2.get_axis_id_mut().set_val(169_590_080);
+        value_axis_2.axis_id_mut().set_val(169_590_080);
         value_axis_2
-            .get_scaling_mut()
+            .scaling_mut()
             .orientation_mut()
             .set_val(OrientationValues::MinMax);
         value_axis_2
-            .get_axis_position_mut()
+            .axis_position_mut()
             .set_val(AxisPositionValues::Left);
         value_axis_2.set_major_gridlines(major_gridlines);
         value_axis_2
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_format_code("General");
         value_axis_2
-            .get_numbering_format_mut()
+            .numbering_format_mut()
             .set_source_linked(true);
         value_axis_2
-            .get_major_tick_mark_mut()
+            .major_tick_mark_mut()
             .set_val(TickMarkValues::Outside);
         value_axis_2
-            .get_minor_tick_mark_mut()
+            .minor_tick_mark_mut()
             .set_val(TickMarkValues::None);
         value_axis_2
-            .get_tick_label_position_mut()
+            .tick_label_position_mut()
             .set_val(TickLabelPositionValues::NextTo);
         value_axis_2
-            .get_tick_crossing_axis_mut()
+            .tick_crossing_axis_mut()
             .set_val(213_468_160);
         value_axis_2
-            .get_cross_between_mut()
+            .cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let layout = Layout::default();
