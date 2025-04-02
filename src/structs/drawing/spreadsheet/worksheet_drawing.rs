@@ -51,13 +51,26 @@ pub struct WorksheetDrawing {
 impl WorksheetDrawing {
     #[inline]
     #[must_use]
-    pub fn get_image_collection(&self) -> &[Image] {
+    pub fn image_collection(&self) -> &[Image] {
         &self.image_collection
     }
 
     #[inline]
-    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image_collection()")]
+    pub fn get_image_collection(&self) -> &[Image] {
+        self.image_collection()
+    }
+
+    #[inline]
+    pub fn image_collection_mut(&mut self) -> &mut Vec<Image> {
         &mut self.image_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_collection_mut()")]
+    pub fn get_image_collection_mut(&mut self) -> &mut Vec<Image> {
+        self.image_collection_mut()
     }
 
     #[inline]
@@ -68,22 +81,35 @@ impl WorksheetDrawing {
 
     #[inline]
     #[must_use]
-    pub fn get_image(&self, col: u32, row: u32) -> Option<&Image> {
+    pub fn image(&self, col: u32, row: u32) -> Option<&Image> {
         self.image_collection
             .iter()
             .find(|&image| image.get_col() == col - 1 && image.get_row() == row - 1)
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image()")]
+    pub fn get_image(&self, col: &u32, row: &u32) -> Option<&Image> {
+        self.image(*col, *row)
+    }
+
+    #[inline]
+    pub fn image_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
         self.image_collection
             .iter_mut()
             .find(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_mut()")]
+    pub fn get_image_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Image> {
+        self.image_mut(*col, *row)
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_images(&self, col: u32, row: u32) -> Vec<&Image> {
+    pub fn images(&self, col: u32, row: u32) -> Vec<&Image> {
         self.image_collection
             .iter()
             .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
@@ -91,7 +117,14 @@ impl WorksheetDrawing {
     }
 
     #[inline]
-    pub fn get_images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use images()")]
+    pub fn get_images(&self, col: &u32, row: &u32) -> Vec<&Image> {
+        self.images(*col, *row)
+    }
+
+    #[inline]
+    pub fn images_mut(&mut self, col: u32, row: u32) -> Vec<&mut Image> {
         self.image_collection
             .iter_mut()
             .filter(|image| image.get_col() == col - 1 && image.get_row() == row - 1)
@@ -99,14 +132,33 @@ impl WorksheetDrawing {
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use images_mut()")]
+    pub fn get_images_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Image> {
+        self.images_mut(*col, *row)
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_chart_collection(&self) -> &[Chart] {
+    pub fn chart_collection(&self) -> &[Chart] {
         &self.chart_collection
     }
 
     #[inline]
-    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart_collection()")]
+    pub fn get_chart_collection(&self) -> &[Chart] {
+        self.chart_collection()
+    }
+
+    #[inline]
+    pub fn chart_collection_mut(&mut self) -> &mut Vec<Chart> {
         &mut self.chart_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use chart_collection_mut()")]
+    pub fn get_chart_collection_mut(&mut self) -> &mut Vec<Chart> {
+        self.chart_collection_mut()
     }
 
     #[inline]
@@ -117,43 +169,80 @@ impl WorksheetDrawing {
 
     #[inline]
     #[must_use]
-    pub fn get_chart(&self, col: u32, row: u32) -> Option<&Chart> {
+    pub fn chart(&self, col: u32, row: u32) -> Option<&Chart> {
         self.chart_collection
             .iter()
             .find(|&chart| chart.col() == col - 1 && chart.row() == row - 1)
     }
 
     #[inline]
-    pub fn get_chart_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart()")]
+    pub fn get_chart(&self, col: &u32, row: &u32) -> Option<&Chart> {
+        self.chart(*col, *row)
+    }
+
+    #[inline]
+    pub fn chart_mut(&mut self, col: u32, row: u32) -> Option<&mut Chart> {
         self.chart_collection
             .iter_mut()
             .find(|chart| chart.col() == col - 1 && chart.row() == row - 1)
     }
 
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use chart_mut()")]
+    pub fn get_chart_mut(&mut self, col: &u32, row: &u32) -> Option<&mut Chart> {
+        self.chart_mut(*col, *row)
+    }
+
     #[must_use]
-    pub fn get_charts(&self, col: u32, row: u32) -> Vec<&Chart> {
+    pub fn charts(&self, col: u32, row: u32) -> Vec<&Chart> {
         self.chart_collection
             .iter()
             .filter(|chart| chart.col() == col - 1 && chart.row() == row - 1)
             .collect()
     }
 
-    pub fn get_charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use charts()")]
+    pub fn get_charts(&self, col: &u32, row: &u32) -> Vec<&Chart> {
+        self.charts(*col, *row)
+    }
+
+    pub fn charts_mut(&mut self, col: u32, row: u32) -> Vec<&mut Chart> {
         self.chart_collection
             .iter_mut()
             .filter(|chart| chart.col() == col - 1 && chart.row() == row - 1)
             .collect()
     }
 
+    #[deprecated(since = "3.0.0", note = "Use charts_mut()")]
+    pub fn get_charts_mut(&mut self, col: &u32, row: &u32) -> Vec<&mut Chart> {
+        self.charts_mut(*col, *row)
+    }
+
     #[inline]
     #[must_use]
-    pub fn get_one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
+    pub fn one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
         &self.one_cell_anchor_collection
     }
 
     #[inline]
-    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor_collection()")]
+    pub fn get_one_cell_anchor_collection(&self) -> &[OneCellAnchor] {
+        self.one_cell_anchor_collection()
+    }
+
+    #[inline]
+    pub fn one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
         &mut self.one_cell_anchor_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor_collection_mut()")]
+    pub fn get_one_cell_anchor_collection_mut(&mut self) -> &mut Vec<OneCellAnchor> {
+        self.one_cell_anchor_collection_mut()
     }
 
     #[inline]
@@ -164,13 +253,26 @@ impl WorksheetDrawing {
 
     #[inline]
     #[must_use]
-    pub fn get_two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
+    pub fn two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
         &self.two_cell_anchor_collection
     }
 
     #[inline]
-    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_collection()")]
+    pub fn get_two_cell_anchor_collection(&self) -> &[TwoCellAnchor] {
+        self.two_cell_anchor_collection()
+    }
+
+    #[inline]
+    pub fn two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
         &mut self.two_cell_anchor_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_collection_mut()")]
+    pub fn get_two_cell_anchor_collection_mut(&mut self) -> &mut Vec<TwoCellAnchor> {
+        self.two_cell_anchor_collection_mut()
     }
 
     #[inline]
@@ -189,59 +291,98 @@ impl WorksheetDrawing {
     }
 
     #[must_use]
+    pub fn graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
+        self.two_cell_anchor_collection
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.graphic_frame())
+            .collect()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame_collection()")]
     pub fn get_graphic_frame_collection(&self) -> Vec<&GraphicFrame> {
+        self.graphic_frame_collection()
+    }
+
+    pub fn graphic_frame_collection_mut(&mut self) -> Vec<&mut GraphicFrame> {
         self.two_cell_anchor_collection
-            .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_graphic_frame())
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.graphic_frame_mut())
             .collect()
     }
 
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame_collection_mut()")]
     pub fn get_graphic_frame_collection_mut(&mut self) -> Vec<&mut GraphicFrame> {
+        self.graphic_frame_collection_mut()
+    }
+
+    #[must_use]
+    pub fn shape_collection(&self) -> Vec<&Shape> {
         self.two_cell_anchor_collection
-            .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_graphic_frame_mut())
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.shape())
             .collect()
     }
 
     #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_collection()")]
     pub fn get_shape_collection(&self) -> Vec<&Shape> {
+        self.shape_collection()
+    }
+
+    pub fn shape_collection_mut(&mut self) -> Vec<&mut Shape> {
         self.two_cell_anchor_collection
-            .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_shape())
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.shape_mut())
             .collect()
     }
 
+    #[deprecated(since = "3.0.0", note = "Use shape_collection_mut()")]
     pub fn get_shape_collection_mut(&mut self) -> Vec<&mut Shape> {
+        self.shape_collection_mut()
+    }
+
+    #[must_use]
+    pub fn connection_shape_collection(&self) -> Vec<&ConnectionShape> {
         self.two_cell_anchor_collection
-            .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_shape_mut())
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.connection_shape())
             .collect()
     }
 
     #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use connection_shape_collection()")]
     pub fn get_connection_shape_collection(&self) -> Vec<&ConnectionShape> {
+        self.connection_shape_collection()
+    }
+
+    pub fn connection_shape_collection_mut(&mut self) -> Vec<&mut ConnectionShape> {
         self.two_cell_anchor_collection
-            .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_connection_shape())
+            .iter_mut()
+            .filter_map(|two_cell_anchor| two_cell_anchor.connection_shape_mut())
             .collect()
     }
 
+    #[deprecated(since = "3.0.0", note = "Use connection_shape_collection_mut()")]
     pub fn get_connection_shape_collection_mut(&mut self) -> Vec<&mut ConnectionShape> {
+        self.connection_shape_collection_mut()
+    }
+
+    #[must_use]
+    pub fn picture_collection(&self) -> Vec<&Picture> {
         self.two_cell_anchor_collection
-            .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_connection_shape_mut())
+            .iter()
+            .filter_map(|two_cell_anchor| two_cell_anchor.picture())
             .collect()
     }
 
     #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture_collection()")]
     pub fn get_picture_collection(&self) -> Vec<&Picture> {
-        self.two_cell_anchor_collection
-            .iter()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_picture())
-            .collect()
+        self.picture_collection()
     }
 
-    pub fn get_one_cell_anchor_all_list(&mut self) -> Vec<&mut OneCellAnchor> {
+    pub fn one_cell_anchor_all_list(&mut self) -> Vec<&mut OneCellAnchor> {
         self.one_cell_anchor_collection
             .iter_mut()
             .chain(
@@ -252,7 +393,12 @@ impl WorksheetDrawing {
             .collect()
     }
 
-    pub fn get_two_cell_anchor_all_list(&mut self) -> Vec<&mut TwoCellAnchor> {
+    #[deprecated(since = "3.0.0", note = "Use one_cell_anchor_all_list()")]
+    pub fn get_one_cell_anchor_all_list(&mut self) -> Vec<&mut OneCellAnchor> {
+        self.one_cell_anchor_all_list()
+    }
+
+    pub fn two_cell_anchor_all_list(&mut self) -> Vec<&mut TwoCellAnchor> {
         self.two_cell_anchor_collection
             .iter_mut()
             .chain(
@@ -268,11 +414,21 @@ impl WorksheetDrawing {
             .collect()
     }
 
-    pub fn get_picture_collection_mut(&mut self) -> Vec<&mut Picture> {
+    #[deprecated(since = "3.0.0", note = "Use two_cell_anchor_all_list()")]
+    pub fn get_two_cell_anchor_all_list(&mut self) -> Vec<&mut TwoCellAnchor> {
+        self.two_cell_anchor_all_list()
+    }
+
+    pub fn picture_collection_mut(&mut self) -> Vec<&mut Picture> {
         self.two_cell_anchor_collection
             .iter_mut()
-            .filter_map(|two_cell_anchor| two_cell_anchor.get_picture_mut())
+            .filter_map(|two_cell_anchor| two_cell_anchor.picture_mut())
             .collect()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use picture_collection_mut()")]
+    pub fn get_picture_collection_mut(&mut self) -> Vec<&mut Picture> {
+        self.picture_collection_mut()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

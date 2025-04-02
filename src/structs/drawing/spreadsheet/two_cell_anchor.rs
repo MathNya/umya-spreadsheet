@@ -60,8 +60,15 @@ pub struct TwoCellAnchor {
 impl TwoCellAnchor {
     #[inline]
     #[must_use]
-    pub fn get_edit_as(&self) -> &EditAsValues {
+    pub fn edit_as(&self) -> &EditAsValues {
         self.edit_as.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use edit_as()")]
+    pub fn get_edit_as(&self) -> &EditAsValues {
+        self.edit_as()
     }
 
     #[inline]
@@ -72,13 +79,26 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_from_marker(&self) -> &MarkerType {
+    pub fn from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
 
     #[inline]
-    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use from_marker()")]
+    pub fn get_from_marker(&self) -> &MarkerType {
+        self.from_marker()
+    }
+
+    #[inline]
+    pub fn from_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.from_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use from_marker_mut()")]
+    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+        self.from_marker_mut()
     }
 
     #[inline]
@@ -89,13 +109,26 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_to_marker(&self) -> &MarkerType {
+    pub fn to_marker(&self) -> &MarkerType {
         &self.to_marker
     }
 
     #[inline]
-    pub fn get_to_marker_mut(&mut self) -> &mut MarkerType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use to_marker()")]
+    pub fn get_to_marker(&self) -> &MarkerType {
+        self.to_marker()
+    }
+
+    #[inline]
+    pub fn to_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.to_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use to_marker_mut()")]
+    pub fn get_to_marker_mut(&mut self) -> &mut MarkerType {
+        self.to_marker_mut()
     }
 
     #[inline]
@@ -106,13 +139,26 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+    pub fn group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
 
     #[inline]
-    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape()")]
+    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+        self.group_shape()
+    }
+
+    #[inline]
+    pub fn group_shape_mut(&mut self) -> Option<&mut GroupShape> {
         self.group_shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_mut()")]
+    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+        self.group_shape_mut()
     }
 
     #[inline]
@@ -123,13 +169,26 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
+    pub fn graphic_frame(&self) -> Option<&GraphicFrame> {
         self.graphic_frame.as_deref()
     }
 
     #[inline]
-    pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame()")]
+    pub fn get_graphic_frame(&self) -> Option<&GraphicFrame> {
+        self.graphic_frame()
+    }
+
+    #[inline]
+    pub fn graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
         self.graphic_frame.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use graphic_frame_mut()")]
+    pub fn get_graphic_frame_mut(&mut self) -> Option<&mut GraphicFrame> {
+        self.graphic_frame_mut()
     }
 
     #[inline]
@@ -140,13 +199,26 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_shape(&self) -> Option<&Shape> {
+    pub fn shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
 
     #[inline]
-    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape()")]
+    pub fn get_shape(&self) -> Option<&Shape> {
+        self.shape()
+    }
+
+    #[inline]
+    pub fn shape_mut(&mut self) -> Option<&mut Shape> {
         self.shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_mut()")]
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape_mut()
     }
 
     #[inline]
@@ -157,13 +229,26 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
+    pub fn connection_shape(&self) -> Option<&ConnectionShape> {
         self.connection_shape.as_deref()
     }
 
     #[inline]
-    pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use connection_shape()")]
+    pub fn get_connection_shape(&self) -> Option<&ConnectionShape> {
+        self.connection_shape()
+    }
+
+    #[inline]
+    pub fn connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
         self.connection_shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use connection_shape_mut()")]
+    pub fn get_connection_shape_mut(&mut self) -> Option<&mut ConnectionShape> {
+        self.connection_shape_mut()
     }
 
     #[inline]
@@ -174,13 +259,26 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_picture(&self) -> Option<&Picture> {
+    pub fn picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
 
     #[inline]
-    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture()")]
+    pub fn get_picture(&self) -> Option<&Picture> {
+        self.picture()
+    }
+
+    #[inline]
+    pub fn picture_mut(&mut self) -> Option<&mut Picture> {
         self.picture.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_mut()")]
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture_mut()
     }
 
     #[inline]
@@ -191,8 +289,15 @@ impl TwoCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_is_alternate_content(&self) -> bool {
+    pub fn is_alternate_content(&self) -> bool {
         self.is_alternate_content.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use is_alternate_content()")]
+    pub fn get_is_alternate_content(&self) -> bool {
+        self.is_alternate_content()
     }
 
     #[inline]
@@ -205,7 +310,7 @@ impl TwoCellAnchor {
     pub(crate) fn is_support(&self) -> bool {
         match self.graphic_frame.as_ref() {
             Some(v) => v
-                .get_graphic()
+                .graphic()
                 .get_graphic_data()
                 .get_chart_space()
                 .chart()
@@ -286,7 +391,7 @@ impl TwoCellAnchor {
         rel_list: &mut Vec<(String, String)>,
         ole_id: usize,
     ) {
-        if self.get_is_alternate_content() {
+        if self.is_alternate_content() {
             // mc:AlternateContent
             write_start_tag(
                 writer,
@@ -350,7 +455,7 @@ impl TwoCellAnchor {
 
         write_end_tag(writer, "xdr:twoCellAnchor");
 
-        if self.get_is_alternate_content() {
+        if self.is_alternate_content() {
             write_end_tag(writer, "mc:Choice");
 
             // mc:Fallback

@@ -43,13 +43,26 @@ pub struct ShapeProperties {
 impl ShapeProperties {
     #[inline]
     #[must_use]
-    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+    pub fn transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_deref()
     }
 
     #[inline]
-    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use transform2d()")]
+    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+        self.transform2d()
+    }
+
+    #[inline]
+    pub fn transform2d_mut(&mut self) -> Option<&mut Transform2D> {
         self.transform2d.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use transform2d_mut()")]
+    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+        self.transform2d_mut()
     }
 
     #[inline]
@@ -60,13 +73,26 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_geometry(&self) -> &PresetGeometry {
+    pub fn geometry(&self) -> &PresetGeometry {
         &self.preset_geometry
     }
 
     #[inline]
-    pub fn get_geometry_mut(&mut self) -> &mut PresetGeometry {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use geometry()")]
+    pub fn get_geometry(&self) -> &PresetGeometry {
+        self.geometry()
+    }
+
+    #[inline]
+    pub fn geometry_mut(&mut self) -> &mut PresetGeometry {
         &mut self.preset_geometry
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use geometry_mut()")]
+    pub fn get_geometry_mut(&mut self) -> &mut PresetGeometry {
+        self.geometry_mut()
     }
 
     #[inline]
@@ -77,13 +103,26 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_blip_fill(&self) -> Option<&BlipFill> {
+    pub fn blip_fill(&self) -> Option<&BlipFill> {
         self.blip_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill()")]
+    pub fn get_blip_fill(&self) -> Option<&BlipFill> {
+        self.blip_fill()
+    }
+
+    #[inline]
+    pub fn blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
         self.blip_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill_mut()")]
+    pub fn get_blip_fill_mut(&mut self) -> Option<&mut BlipFill> {
+        self.blip_fill_mut()
     }
 
     #[inline]
@@ -94,13 +133,26 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+    pub fn solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill()")]
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill()
+    }
+
+    #[inline]
+    pub fn solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill_mut()")]
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill_mut()
     }
 
     #[inline]
@@ -111,13 +163,26 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_outline(&self) -> Option<&Outline> {
+    pub fn outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
 
     #[inline]
-    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline()")]
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline()
+    }
+
+    #[inline]
+    pub fn outline_mut(&mut self) -> Option<&mut Outline> {
         self.outline.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use outline_mut()")]
+    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+        self.outline_mut()
     }
 
     #[inline]
@@ -128,13 +193,26 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_effect_list(&self) -> Option<&EffectList> {
+    pub fn effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
     #[inline]
-    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_list()")]
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list()
+    }
+
+    #[inline]
+    pub fn effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use effect_list_mut()")]
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list_mut()
     }
 
     #[inline]
@@ -145,13 +223,26 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_no_fill(&self) -> Option<&NoFill> {
+    pub fn no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
     #[inline]
-    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_fill()")]
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill()
+    }
+
+    #[inline]
+    pub fn no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use no_fill_mut()")]
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill_mut()
     }
 
     #[inline]
@@ -162,13 +253,26 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_extension_list(&self) -> Option<&ExtensionList> {
+    pub fn extension_list(&self) -> Option<&ExtensionList> {
         self.extension_list.as_ref()
     }
 
     #[inline]
-    pub fn get_extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use extension_list()")]
+    pub fn get_extension_list(&self) -> Option<&ExtensionList> {
+        self.extension_list()
+    }
+
+    #[inline]
+    pub fn extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
         self.extension_list.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use extension_list_mut()")]
+    pub fn get_extension_list_mut(&mut self) -> Option<&mut ExtensionList> {
+        self.extension_list_mut()
     }
 
     #[inline]

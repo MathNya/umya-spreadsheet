@@ -25,8 +25,15 @@ pub struct Extent {
 impl Extent {
     #[inline]
     #[must_use]
-    pub fn get_cx(&self) -> i64 {
+    pub fn cx(&self) -> i64 {
         self.cx.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cx()")]
+    pub fn get_cx(&self) -> i64 {
+        self.cx()
     }
 
     #[inline]
@@ -37,8 +44,15 @@ impl Extent {
 
     #[inline]
     #[must_use]
-    pub fn get_cy(&self) -> i64 {
+    pub fn cy(&self) -> i64 {
         self.cy.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cy()")]
+    pub fn get_cy(&self) -> i64 {
+        self.cy()
     }
 
     #[inline]

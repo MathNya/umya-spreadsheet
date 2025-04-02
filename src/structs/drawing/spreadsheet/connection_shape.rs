@@ -36,13 +36,26 @@ pub struct ConnectionShape {
 impl ConnectionShape {
     #[inline]
     #[must_use]
-    pub fn get_anchor(&self) -> &Anchor {
+    pub fn anchor(&self) -> &Anchor {
         &self.anchor
     }
 
     #[inline]
-    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
+    pub fn get_anchor(&self) -> &Anchor {
+        self.anchor()
+    }
+
+    #[inline]
+    pub fn anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use anchor_mut()")]
+    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+        self.anchor_mut()
     }
 
     #[inline]
@@ -52,17 +65,35 @@ impl ConnectionShape {
 
     #[inline]
     #[must_use]
-    pub fn get_non_visual_connection_shape_properties(
-        &self,
-    ) -> &NonVisualConnectionShapeProperties {
+    pub fn non_visual_connection_shape_properties(&self) -> &NonVisualConnectionShapeProperties {
         &self.non_visual_connection_shape_properties
     }
 
     #[inline]
-    pub fn get_non_visual_connection_shape_properties_mut(
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_connection_shape_properties()")]
+    pub fn get_non_visual_connection_shape_properties(
+        &self,
+    ) -> &NonVisualConnectionShapeProperties {
+        self.non_visual_connection_shape_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_connection_shape_properties_mut(
         &mut self,
     ) -> &mut NonVisualConnectionShapeProperties {
         &mut self.non_visual_connection_shape_properties
+    }
+
+    #[inline]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_connection_shape_properties_mut()"
+    )]
+    pub fn get_non_visual_connection_shape_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualConnectionShapeProperties {
+        self.non_visual_connection_shape_properties_mut()
     }
 
     #[inline]
@@ -75,13 +106,26 @@ impl ConnectionShape {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_properties(&self) -> &ShapeProperties {
+    pub fn shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
     #[inline]
-    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> &ShapeProperties {
+        self.shape_properties()
+    }
+
+    #[inline]
+    pub fn shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+        self.shape_properties_mut()
     }
 
     #[inline]
@@ -91,13 +135,26 @@ impl ConnectionShape {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_style(&self) -> &ShapeStyle {
+    pub fn shape_style(&self) -> &ShapeStyle {
         &self.shape_style
     }
 
     #[inline]
-    pub fn get_shape_style_mut(&mut self) -> &mut ShapeStyle {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_style()")]
+    pub fn get_shape_style(&self) -> &ShapeStyle {
+        self.shape_style()
+    }
+
+    #[inline]
+    pub fn shape_style_mut(&mut self) -> &mut ShapeStyle {
         &mut self.shape_style
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use stretch_mut()")]
+    pub fn get_shape_style_mut(&mut self) -> &mut ShapeStyle {
+        self.shape_style_mut()
     }
 
     #[inline]

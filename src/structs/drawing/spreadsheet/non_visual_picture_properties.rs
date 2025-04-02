@@ -31,13 +31,26 @@ pub struct NonVisualPictureProperties {
 impl NonVisualPictureProperties {
     #[inline]
     #[must_use]
-    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+    pub fn non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
 
     #[inline]
-    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties()")]
+    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+        self.non_visual_drawing_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
         &mut self.non_visual_drawing_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties_mut()")]
+    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+        self.non_visual_drawing_properties_mut()
     }
 
     #[inline]
@@ -47,15 +60,33 @@ impl NonVisualPictureProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_non_visual_picture_drawing_properties(&self) -> &NonVisualPictureDrawingProperties {
+    pub fn non_visual_picture_drawing_properties(&self) -> &NonVisualPictureDrawingProperties {
         &self.non_visual_picture_drawing_properties
     }
 
     #[inline]
-    pub fn get_non_visual_picture_drawing_properties_mut(
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_picture_drawing_properties()")]
+    pub fn get_non_visual_picture_drawing_properties(&self) -> &NonVisualPictureDrawingProperties {
+        self.non_visual_picture_drawing_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_picture_drawing_properties_mut(
         &mut self,
     ) -> &mut NonVisualPictureDrawingProperties {
         &mut self.non_visual_picture_drawing_properties
+    }
+
+    #[inline]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_picture_drawing_properties_mut()"
+    )]
+    pub fn get_non_visual_picture_drawing_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualPictureDrawingProperties {
+        self.non_visual_picture_drawing_properties_mut()
     }
 
     #[inline]

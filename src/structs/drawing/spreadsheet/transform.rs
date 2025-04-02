@@ -40,13 +40,26 @@ pub struct Transform {
 impl Transform {
     #[inline]
     #[must_use]
-    pub fn get_offset(&self) -> &Offset {
+    pub fn offset(&self) -> &Offset {
         &self.offset
     }
 
     #[inline]
-    pub fn get_offset_mut(&mut self) -> &mut Offset {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use offset()")]
+    pub fn get_offset(&self) -> &Offset {
+        self.offset()
+    }
+
+    #[inline]
+    pub fn offset_mut(&mut self) -> &mut Offset {
         &mut self.offset
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use offset_mut()")]
+    pub fn get_offset_mut(&mut self) -> &mut Offset {
+        self.offset_mut()
     }
 
     #[inline]
@@ -57,13 +70,26 @@ impl Transform {
 
     #[inline]
     #[must_use]
-    pub fn get_extents(&self) -> &Extents {
+    pub fn extents(&self) -> &Extents {
         &self.extents
     }
 
     #[inline]
-    pub fn get_extents_mut(&mut self) -> &mut Extents {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use extents()")]
+    pub fn get_extents(&self) -> &Extents {
+        self.extents()
+    }
+
+    #[inline]
+    pub fn extents_mut(&mut self) -> &mut Extents {
         &mut self.extents
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use extents_mut()")]
+    pub fn get_extents_mut(&mut self) -> &mut Extents {
+        self.extents_mut()
     }
 
     #[inline]
@@ -74,8 +100,15 @@ impl Transform {
 
     #[inline]
     #[must_use]
-    pub fn get_rotation(&self) -> i32 {
+    pub fn rotation(&self) -> i32 {
         self.rotation.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotation()")]
+    pub fn get_rotation(&self) -> i32 {
+        self.rotation()
     }
 
     #[inline]
@@ -85,8 +118,15 @@ impl Transform {
 
     #[inline]
     #[must_use]
-    pub fn get_vertical_flip(&self) -> bool {
+    pub fn vertical_flip(&self) -> bool {
         self.vertical_flip.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical_flip()")]
+    pub fn get_vertical_flip(&self) -> bool {
+        self.vertical_flip()
     }
 
     #[inline]
@@ -96,8 +136,15 @@ impl Transform {
 
     #[inline]
     #[must_use]
-    pub fn get_horizontal_flip(&self) -> bool {
+    pub fn horizontal_flip(&self) -> bool {
         self.horizontal_flip.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horizontal_flip()")]
+    pub fn get_horizontal_flip(&self) -> bool {
+        self.horizontal_flip()
     }
 
     #[inline]

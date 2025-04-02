@@ -38,13 +38,26 @@ pub struct Shape {
 impl Shape {
     #[inline]
     #[must_use]
-    pub fn get_anchor(&self) -> &Anchor {
+    pub fn anchor(&self) -> &Anchor {
         &self.anchor
     }
 
     #[inline]
-    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
+    pub fn get_anchor(&self) -> &Anchor {
+        self.anchor()
+    }
+
+    #[inline]
+    pub fn anchor_mut(&mut self) -> &mut Anchor {
         &mut self.anchor
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use anchor_mut()")]
+    pub fn get_anchor_mut(&mut self) -> &mut Anchor {
+        self.anchor_mut()
     }
 
     #[inline]
@@ -54,12 +67,24 @@ impl Shape {
 
     #[inline]
     #[must_use]
-    pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
+    pub fn non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
         &self.non_visual_shape_properties
     }
 
-    pub fn get_non_visual_shape_properties_mut(&mut self) -> &mut NonVisualShapeProperties {
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_shape_properties()")]
+    pub fn get_non_visual_shape_properties(&self) -> &NonVisualShapeProperties {
+        self.non_visual_shape_properties()
+    }
+
+    pub fn non_visual_shape_properties_mut(&mut self) -> &mut NonVisualShapeProperties {
         &mut self.non_visual_shape_properties
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use non_visual_shape_properties_mut()")]
+    pub fn get_non_visual_shape_properties_mut(&mut self) -> &mut NonVisualShapeProperties {
+        self.non_visual_shape_properties_mut()
     }
 
     #[inline]
@@ -69,13 +94,26 @@ impl Shape {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_properties(&self) -> &ShapeProperties {
+    pub fn shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
     #[inline]
-    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> &ShapeProperties {
+        self.shape_properties()
+    }
+
+    #[inline]
+    pub fn shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+        self.shape_properties_mut()
     }
 
     #[inline]
@@ -84,13 +122,25 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
+    pub fn shape_style(&self) -> Option<&ShapeStyle> {
         self.shape_style.as_deref()
     }
 
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_style()")]
+    pub fn get_shape_style(&self) -> Option<&ShapeStyle> {
+        self.shape_style()
+    }
+
     #[inline]
-    pub fn get_shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
+    pub fn shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
         self.shape_style.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_style_mut()")]
+    pub fn get_shape_style_mut(&mut self) -> Option<&mut ShapeStyle> {
+        self.shape_style_mut()
     }
 
     #[inline]
@@ -100,13 +150,26 @@ impl Shape {
 
     #[inline]
     #[must_use]
-    pub fn get_text_body(&self) -> Option<&TextBody> {
+    pub fn text_body(&self) -> Option<&TextBody> {
         self.text_body.as_deref()
     }
 
     #[inline]
-    pub fn get_text_body_mut(&mut self) -> Option<&mut TextBody> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text_body()")]
+    pub fn get_text_body(&self) -> Option<&TextBody> {
+        self.text_body()
+    }
+
+    #[inline]
+    pub fn text_body_mut(&mut self) -> Option<&mut TextBody> {
         self.text_body.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use text_body_mut()")]
+    pub fn get_text_body_mut(&mut self) -> Option<&mut TextBody> {
+        self.text_body_mut()
     }
 
     #[inline]

@@ -178,8 +178,8 @@ impl Image {
         let mut picture = Picture::default();
         // filename and filedata.
         picture
-            .get_blip_fill_mut()
-            .get_blip_mut()
+            .blip_fill_mut()
+            .blip_mut()
             .set_cstate("print")
             .get_image_mut()
             .set_image_name(image_name)
@@ -187,35 +187,35 @@ impl Image {
 
         // name
         picture
-            .get_non_visual_picture_properties_mut()
-            .get_non_visual_drawing_properties_mut()
+            .non_visual_picture_properties_mut()
+            .non_visual_drawing_properties_mut()
             .set_name(image_name);
 
         // prefer_relative_resize
         picture
-            .get_non_visual_picture_properties_mut()
-            .get_non_visual_picture_drawing_properties_mut()
+            .non_visual_picture_properties_mut()
+            .non_visual_picture_drawing_properties_mut()
             .set_prefer_relative_resize(false);
 
         // stretch
         let fill_rectangle = FillRectangle::default();
         let mut stretch = Stretch::default();
         stretch.set_fill_rectangle(fill_rectangle);
-        picture.get_blip_fill_mut().set_stretch(stretch);
+        picture.blip_fill_mut().set_stretch(stretch);
 
         // geometry
         picture
-            .get_shape_properties_mut()
-            .get_geometry_mut()
+            .shape_properties_mut()
+            .geometry_mut()
             .set_geometry(PresetGeometry::GEOMETRY_RECT);
 
         let mut one_cell_anchor = OneCellAnchor::default();
         one_cell_anchor.set_from_marker(marker);
         one_cell_anchor
-            .get_extent_mut()
+            .extent_mut()
             .set_cy(i64::from(height) * 9525);
         one_cell_anchor
-            .get_extent_mut()
+            .extent_mut()
             .set_cx(i64::from(width) * 9525);
         one_cell_anchor.set_picture(picture);
         self.set_one_cell_anchor(one_cell_anchor);
@@ -268,29 +268,29 @@ impl Image {
     #[inline]
     #[must_use]
     pub fn get_coordinate(&self) -> String {
-        self.get_from_marker_type().get_coordinate()
+        self.get_from_marker_type().coordinate()
     }
 
     #[inline]
     #[must_use]
     pub fn get_col(&self) -> u32 {
-        self.get_from_marker_type().get_col()
+        self.get_from_marker_type().col()
     }
 
     #[inline]
     #[must_use]
     pub fn get_row(&self) -> u32 {
-        self.get_from_marker_type().get_row()
+        self.get_from_marker_type().row()
     }
 
     #[inline]
     #[must_use]
     pub fn get_from_marker_type(&self) -> &MarkerType {
         if let Some(anchor) = self.two_cell_anchor() {
-            return anchor.get_from_marker();
+            return anchor.from_marker();
         }
         if let Some(anchor) = self.one_cell_anchor() {
-            return anchor.get_from_marker();
+            return anchor.from_marker();
         }
         panic!("Not Found MediaObject");
     }
@@ -300,51 +300,51 @@ impl Image {
     pub fn get_to_marker_type(&self) -> Option<&MarkerType> {
         self.two_cell_anchor()
             .as_ref()
-            .map(|anchor| anchor.get_to_marker())
+            .map(|anchor| anchor.to_marker())
     }
 
     pub(crate) fn get_media_object(&self) -> Vec<&MediaObject> {
         let mut result: Vec<&MediaObject> = Vec::new();
         if let Some(anchor) = self.two_cell_anchor() {
-            if let Some(v) = anchor.get_picture() {
-                result.push(v.get_blip_fill().get_blip().get_image());
+            if let Some(v) = anchor.picture() {
+                result.push(v.blip_fill().blip().get_image());
             }
-            if let Some(v) = anchor.get_shape() {
-                if let Some(bf) = v.get_shape_properties().get_blip_fill() {
+            if let Some(v) = anchor.shape() {
+                if let Some(bf) = v.shape_properties().blip_fill() {
                     result.push(bf.get_blip().get_image());
                 }
             }
-            if let Some(v) = anchor.get_connection_shape() {
-                if let Some(bf) = v.get_shape_properties().get_blip_fill() {
+            if let Some(v) = anchor.connection_shape() {
+                if let Some(bf) = v.shape_properties().blip_fill() {
                     result.push(bf.get_blip().get_image());
                 }
             }
-            if let Some(v) = anchor.get_group_shape() {
-                for pic in v.get_picture_collection() {
-                    result.push(pic.get_blip_fill().get_blip().get_image());
+            if let Some(v) = anchor.group_shape() {
+                for pic in v.picture_collection() {
+                    result.push(pic.blip_fill().blip().get_image());
                 }
-                for shp in v.get_shape_collection() {
-                    if let Some(bf) = shp.get_shape_properties().get_blip_fill() {
+                for shp in v.shape_collection() {
+                    if let Some(bf) = shp.shape_properties().blip_fill() {
                         result.push(bf.get_blip().get_image());
                     }
                 }
             }
         }
         if let Some(anchor) = self.one_cell_anchor() {
-            if let Some(v) = anchor.get_picture() {
-                result.push(v.get_blip_fill().get_blip().get_image());
+            if let Some(v) = anchor.picture() {
+                result.push(v.blip_fill().blip().get_image());
             }
-            if let Some(v) = anchor.get_shape() {
-                if let Some(bf) = v.get_shape_properties().get_blip_fill() {
+            if let Some(v) = anchor.shape() {
+                if let Some(bf) = v.shape_properties().blip_fill() {
                     result.push(bf.get_blip().get_image());
                 }
             }
-            if let Some(v) = anchor.get_group_shape() {
-                for pic in v.get_picture_collection() {
-                    result.push(pic.get_blip_fill().get_blip().get_image());
+            if let Some(v) = anchor.group_shape() {
+                for pic in v.picture_collection() {
+                    result.push(pic.blip_fill().blip().get_image());
                 }
-                for shp in v.get_shape_collection() {
-                    if let Some(bf) = shp.get_shape_properties().get_blip_fill() {
+                for shp in v.shape_collection() {
+                    if let Some(bf) = shp.shape_properties().blip_fill() {
                         result.push(bf.get_blip().get_image());
                     }
                 }

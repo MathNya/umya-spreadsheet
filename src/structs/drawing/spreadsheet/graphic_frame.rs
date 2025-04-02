@@ -43,8 +43,15 @@ pub struct GraphicFrame {
 impl GraphicFrame {
     #[inline]
     #[must_use]
-    pub fn get_macro(&self) -> &str {
+    pub fn r#macro(&self) -> &str {
         self.r#macro.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use macro()")]
+    pub fn get_macro(&self) -> &str {
+        self.r#macro()
     }
 
     #[inline]
@@ -55,15 +62,33 @@ impl GraphicFrame {
 
     #[inline]
     #[must_use]
-    pub fn get_non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
+    pub fn non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
         &self.non_visual_graphic_frame_properties
     }
 
     #[inline]
-    pub fn get_non_visual_graphic_frame_properties_mut(
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_graphic_frame_properties()")]
+    pub fn get_non_visual_graphic_frame_properties(&self) -> &NonVisualGraphicFrameProperties {
+        self.non_visual_graphic_frame_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_graphic_frame_properties_mut(
         &mut self,
     ) -> &mut NonVisualGraphicFrameProperties {
         &mut self.non_visual_graphic_frame_properties
+    }
+
+    #[inline]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_graphic_frame_properties_mut()"
+    )]
+    pub fn get_non_visual_graphic_frame_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualGraphicFrameProperties {
+        self.non_visual_graphic_frame_properties_mut()
     }
 
     #[inline]
@@ -77,13 +102,26 @@ impl GraphicFrame {
 
     #[inline]
     #[must_use]
-    pub fn get_transform(&self) -> &Transform {
+    pub fn transform(&self) -> &Transform {
         &self.transform
     }
 
     #[inline]
-    pub fn get_transform_mut(&mut self) -> &mut Transform {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use transform()")]
+    pub fn get_transform(&self) -> &Transform {
+        self.transform()
+    }
+
+    #[inline]
+    pub fn transform_mut(&mut self) -> &mut Transform {
         &mut self.transform
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use transform_mut()")]
+    pub fn get_transform_mut(&mut self) -> &mut Transform {
+        self.transform_mut()
     }
 
     #[inline]
@@ -94,13 +132,26 @@ impl GraphicFrame {
 
     #[inline]
     #[must_use]
-    pub fn get_graphic(&self) -> &Graphic {
+    pub fn graphic(&self) -> &Graphic {
         &self.graphic
     }
 
     #[inline]
-    pub fn get_graphic_mut(&mut self) -> &mut Graphic {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic()")]
+    pub fn get_graphic(&self) -> &Graphic {
+        self.graphic()
+    }
+
+    #[inline]
+    pub fn graphic_mut(&mut self) -> &mut Graphic {
         &mut self.graphic
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use graphic_mut()")]
+    pub fn get_graphic_mut(&mut self) -> &mut Graphic {
+        self.graphic_mut()
     }
 
     #[inline]

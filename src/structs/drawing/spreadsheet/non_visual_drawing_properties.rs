@@ -37,8 +37,15 @@ pub struct NonVisualDrawingProperties {
 impl NonVisualDrawingProperties {
     #[inline]
     #[must_use]
-    pub fn get_id(&self) -> u32 {
+    pub fn id(&self) -> u32 {
         self.id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
+    pub fn get_id(&self) -> u32 {
+        self.id()
     }
 
     #[inline]
@@ -49,8 +56,15 @@ impl NonVisualDrawingProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -61,8 +75,15 @@ impl NonVisualDrawingProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_hidden(&self) -> bool {
+    pub fn hidden(&self) -> bool {
         self.hidden.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hidden()")]
+    pub fn get_hidden(&self) -> bool {
+        self.hidden()
     }
 
     #[inline]

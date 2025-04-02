@@ -27,13 +27,26 @@ pub struct NonVisualGroupShapeDrawingProperties {
 impl NonVisualGroupShapeDrawingProperties {
     #[inline]
     #[must_use]
-    pub fn get_group_shape_locks(&self) -> Option<&GroupShapeLocks> {
+    pub fn group_shape_locks(&self) -> Option<&GroupShapeLocks> {
         self.group_shape_locks.as_ref()
     }
 
     #[inline]
-    pub fn get_group_shape_locks_mut(&mut self) -> Option<&mut GroupShapeLocks> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_locks()")]
+    pub fn get_group_shape_locks(&self) -> Option<&GroupShapeLocks> {
+        self.group_shape_locks()
+    }
+
+    #[inline]
+    pub fn group_shape_locks_mut(&mut self) -> Option<&mut GroupShapeLocks> {
         self.group_shape_locks.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_locks_mut()")]
+    pub fn get_group_shape_locks_mut(&mut self) -> Option<&mut GroupShapeLocks> {
+        self.group_shape_locks_mut()
     }
 
     #[inline]

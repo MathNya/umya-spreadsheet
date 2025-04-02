@@ -92,7 +92,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
             // Add charts
             let chart_no_list: Result<Vec<String>, XlsxError> = worksheet
                 .worksheet_drawing()
-                .get_chart_collection()
+                .chart_collection()
                 .iter()
                 .map(|chart| chart::write(chart.chart_space(), wb, &mut writer_manager))
                 .collect();

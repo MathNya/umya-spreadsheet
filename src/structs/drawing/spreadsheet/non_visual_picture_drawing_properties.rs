@@ -33,8 +33,15 @@ pub struct NonVisualPictureDrawingProperties {
 impl NonVisualPictureDrawingProperties {
     #[inline]
     #[must_use]
-    pub fn get_prefer_relative_resize(&self) -> bool {
+    pub fn prefer_relative_resize(&self) -> bool {
         self.prefer_relative_resize.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prefer_relative_resize()")]
+    pub fn get_prefer_relative_resize(&self) -> bool {
+        self.prefer_relative_resize()
     }
 
     #[inline]
@@ -44,13 +51,26 @@ impl NonVisualPictureDrawingProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
+    pub fn picture_locks(&self) -> Option<&PictureLocks> {
         self.picture_locks.as_ref()
     }
 
     #[inline]
-    pub fn get_picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture_locks()")]
+    pub fn get_picture_locks(&self) -> Option<&PictureLocks> {
+        self.picture_locks()
+    }
+
+    #[inline]
+    pub fn picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
         self.picture_locks.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_locks_mut()")]
+    pub fn get_picture_locks_mut(&mut self) -> Option<&mut PictureLocks> {
+        self.picture_locks_mut()
     }
 
     #[inline]

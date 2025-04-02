@@ -31,8 +31,15 @@ pub struct NonVisualConnectorShapeDrawingProperties {
 impl NonVisualConnectorShapeDrawingProperties {
     #[inline]
     #[must_use]
-    pub fn get_start_connection(&self) -> Option<&StartConnection> {
+    pub fn start_connection(&self) -> Option<&StartConnection> {
         self.start_connection.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use start_connection()")]
+    pub fn get_start_connection(&self) -> Option<&StartConnection> {
+        self.start_connection()
     }
 
     #[inline]
@@ -47,8 +54,15 @@ impl NonVisualConnectorShapeDrawingProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_end_connection(&self) -> Option<&EndConnection> {
+    pub fn end_connection(&self) -> Option<&EndConnection> {
         self.end_connection.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use end_connection()")]
+    pub fn get_end_connection(&self) -> Option<&EndConnection> {
+        self.end_connection()
     }
 
     #[inline]

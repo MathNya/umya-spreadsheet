@@ -36,15 +36,28 @@ pub struct GroupShape {
 impl GroupShape {
     #[inline]
     #[must_use]
-    pub fn get_non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
+    pub fn non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
         &self.non_visual_group_shape_properties
     }
 
     #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_group_shape_properties()")]
+    pub fn get_non_visual_group_shape_properties(&self) -> &NonVisualGroupShapeProperties {
+        self.non_visual_group_shape_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_group_shape_properties_mut(&mut self) -> &mut NonVisualGroupShapeProperties {
+        &mut self.non_visual_group_shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_group_shape_properties_mut()")]
     pub fn get_non_visual_group_shape_properties_mut(
         &mut self,
     ) -> &mut NonVisualGroupShapeProperties {
-        &mut self.non_visual_group_shape_properties
+        self.non_visual_group_shape_properties_mut()
     }
 
     #[inline]
@@ -54,13 +67,26 @@ impl GroupShape {
 
     #[inline]
     #[must_use]
-    pub fn get_group_shape_properties(&self) -> &GroupShapeProperties {
+    pub fn group_shape_properties(&self) -> &GroupShapeProperties {
         &self.group_shape_properties
     }
 
     #[inline]
-    pub fn get_group_shape_properties_mut(&mut self) -> &mut GroupShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_properties()")]
+    pub fn get_group_shape_properties(&self) -> &GroupShapeProperties {
+        self.group_shape_properties()
+    }
+
+    #[inline]
+    pub fn group_shape_properties_mut(&mut self) -> &mut GroupShapeProperties {
         &mut self.group_shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_properties_mut()")]
+    pub fn get_group_shape_properties_mut(&mut self) -> &mut GroupShapeProperties {
+        self.group_shape_properties_mut()
     }
 
     #[inline]
@@ -70,13 +96,26 @@ impl GroupShape {
 
     #[inline]
     #[must_use]
-    pub fn get_picture_collection(&self) -> &[Picture] {
+    pub fn picture_collection(&self) -> &[Picture] {
         &self.picture_collection
     }
 
     #[inline]
-    pub fn get_picture_collection_mut(&mut self) -> &mut Vec<Picture> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture_collection()")]
+    pub fn get_picture_collection(&self) -> &[Picture] {
+        self.picture_collection()
+    }
+
+    #[inline]
+    pub fn picture_collection_mut(&mut self) -> &mut Vec<Picture> {
         &mut self.picture_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_collection_mut()")]
+    pub fn get_picture_collection_mut(&mut self) -> &mut Vec<Picture> {
+        self.picture_collection_mut()
     }
 
     #[inline]
@@ -86,13 +125,26 @@ impl GroupShape {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_collection(&self) -> &[Shape] {
+    pub fn shape_collection(&self) -> &[Shape] {
         &self.shape_collection
     }
 
     #[inline]
-    pub fn get_shape_collection_mut(&mut self) -> &mut Vec<Shape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_collection()")]
+    pub fn get_shape_collection(&self) -> &[Shape] {
+        self.shape_collection()
+    }
+
+    #[inline]
+    pub fn shape_collection_mut(&mut self) -> &mut Vec<Shape> {
         &mut self.shape_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_collection_mut()")]
+    pub fn get_shape_collection_mut(&mut self) -> &mut Vec<Shape> {
+        self.shape_collection_mut()
     }
 
     #[inline]

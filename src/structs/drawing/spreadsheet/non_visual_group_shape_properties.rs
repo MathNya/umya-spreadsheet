@@ -31,13 +31,26 @@ pub struct NonVisualGroupShapeProperties {
 impl NonVisualGroupShapeProperties {
     #[inline]
     #[must_use]
-    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+    pub fn non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
         &self.non_visual_drawing_properties
     }
 
     #[inline]
-    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties()")]
+    pub fn get_non_visual_drawing_properties(&self) -> &NonVisualDrawingProperties {
+        self.non_visual_drawing_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
         &mut self.non_visual_drawing_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_drawing_properties_mut()")]
+    pub fn get_non_visual_drawing_properties_mut(&mut self) -> &mut NonVisualDrawingProperties {
+        self.non_visual_drawing_properties_mut()
     }
 
     #[inline]
@@ -51,17 +64,40 @@ impl NonVisualGroupShapeProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_non_visual_group_shape_drawing_properties(
+    pub fn non_visual_group_shape_drawing_properties(
         &self,
     ) -> &NonVisualGroupShapeDrawingProperties {
         &self.non_visual_group_shape_drawing_properties
     }
 
     #[inline]
-    pub fn get_non_visual_group_shape_drawing_properties_mut(
+    #[must_use]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_group_shape_drawing_properties()"
+    )]
+    pub fn get_non_visual_group_shape_drawing_properties(
+        &self,
+    ) -> &NonVisualGroupShapeDrawingProperties {
+        self.non_visual_group_shape_drawing_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_group_shape_drawing_properties_mut(
         &mut self,
     ) -> &mut NonVisualGroupShapeDrawingProperties {
         &mut self.non_visual_group_shape_drawing_properties
+    }
+
+    #[inline]
+    #[deprecated(
+        since = "3.0.0",
+        note = "Use non_visual_group_shape_drawing_properties_mut()"
+    )]
+    pub fn get_non_visual_group_shape_drawing_properties_mut(
+        &mut self,
+    ) -> &mut NonVisualGroupShapeDrawingProperties {
+        self.non_visual_group_shape_drawing_properties_mut()
     }
 
     #[inline]

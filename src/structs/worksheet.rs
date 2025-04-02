@@ -2203,7 +2203,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn image_collection(&self) -> &[Image] {
-        self.worksheet_drawing().get_image_collection()
+        self.worksheet_drawing().image_collection()
     }
 
     #[inline]
@@ -2218,7 +2218,7 @@ impl Worksheet {
     /// * `&mut Vec<Image>` - Image Object List.
     #[inline]
     pub fn image_collection_mut(&mut self) -> &mut Vec<Image> {
-        self.worksheet_drawing_mut().get_image_collection_mut()
+        self.worksheet_drawing_mut().image_collection_mut()
     }
 
     #[inline]
@@ -2239,7 +2239,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing().get_image(col, row)
+        self.worksheet_drawing().image(col, row)
     }
 
     #[inline]
@@ -2257,7 +2257,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing_mut().get_image_mut(col, row)
+        self.worksheet_drawing_mut().image_mut(col, row)
     }
 
     #[inline]
@@ -2271,7 +2271,7 @@ impl Worksheet {
 
     #[inline]
     pub fn image_by_column_and_row_mut(&mut self, col: u32, row: u32) -> Option<&mut Image> {
-        self.worksheet_drawing_mut().get_image_mut(col, row)
+        self.worksheet_drawing_mut().image_mut(col, row)
     }
 
     #[inline]
@@ -2286,7 +2286,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing().get_images(col, row)
+        self.worksheet_drawing().images(col, row)
     }
 
     #[inline]
@@ -2304,7 +2304,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing_mut().get_images_mut(col, row)
+        self.worksheet_drawing_mut().images_mut(col, row)
     }
 
     #[inline]
@@ -2322,7 +2322,7 @@ impl Worksheet {
     #[inline]
     #[must_use]
     pub fn chart_collection(&self) -> &[Chart] {
-        self.worksheet_drawing().get_chart_collection()
+        self.worksheet_drawing().chart_collection()
     }
 
     #[inline]
@@ -2337,7 +2337,7 @@ impl Worksheet {
     /// * `&mut Vec<Chart>` - Chart Object List.
     #[inline]
     pub fn chart_collection_mut(&mut self) -> &mut Vec<Chart> {
-        self.worksheet_drawing_mut().get_chart_collection_mut()
+        self.worksheet_drawing_mut().chart_collection_mut()
     }
 
     #[inline]
@@ -2358,7 +2358,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing().get_chart(col, row)
+        self.worksheet_drawing().chart(col, row)
     }
 
     #[inline]
@@ -2376,7 +2376,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing_mut().get_chart_mut(col, row)
+        self.worksheet_drawing_mut().chart_mut(col, row)
     }
 
     #[inline]
@@ -2394,7 +2394,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing().get_charts(col, row)
+        self.worksheet_drawing().charts(col, row)
     }
 
     #[inline]
@@ -2412,7 +2412,7 @@ impl Worksheet {
         T: Into<CellCoordinates>,
     {
         let CellCoordinates { col, row } = coordinate.into();
-        self.worksheet_drawing_mut().get_charts_mut(col, row)
+        self.worksheet_drawing_mut().charts_mut(col, row)
     }
 
     #[inline]
@@ -2429,7 +2429,7 @@ impl Worksheet {
     /// * `Vec<&MediaObject>` - Media Object List.
     pub(crate) fn media_object_collection(&self) -> Vec<&MediaObject> {
         let mut list: Vec<&MediaObject> = Vec::new();
-        for image in self.worksheet_drawing().get_image_collection() {
+        for image in self.worksheet_drawing().image_collection() {
             for media_object in image.get_media_object() {
                 let is_new = !list
                     .iter()

@@ -27,13 +27,26 @@ pub struct GroupShapeProperties {
 impl GroupShapeProperties {
     #[inline]
     #[must_use]
-    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+    pub fn transform2d(&self) -> Option<&Transform2D> {
         self.transform2d.as_ref()
     }
 
     #[inline]
-    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use transform2d()")]
+    pub fn get_transform2d(&self) -> Option<&Transform2D> {
+        self.transform2d()
+    }
+
+    #[inline]
+    pub fn transform2d_mut(&mut self) -> Option<&mut Transform2D> {
         self.transform2d.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use transform2d_mut()")]
+    pub fn get_transform2d_mut(&mut self) -> Option<&mut Transform2D> {
+        self.transform2d_mut()
     }
 
     #[inline]

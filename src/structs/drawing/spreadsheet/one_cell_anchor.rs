@@ -39,13 +39,26 @@ pub struct OneCellAnchor {
 impl OneCellAnchor {
     #[inline]
     #[must_use]
-    pub fn get_from_marker(&self) -> &MarkerType {
+    pub fn from_marker(&self) -> &MarkerType {
         &self.from_marker
     }
 
     #[inline]
-    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use from_marker()")]
+    pub fn get_from_marker(&self) -> &MarkerType {
+        self.from_marker()
+    }
+
+    #[inline]
+    pub fn from_marker_mut(&mut self) -> &mut MarkerType {
         &mut self.from_marker
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use from_marker_mut()")]
+    pub fn get_from_marker_mut(&mut self) -> &mut MarkerType {
+        self.from_marker_mut()
     }
 
     #[inline]
@@ -56,13 +69,26 @@ impl OneCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_extent(&self) -> &Extent {
+    pub fn extent(&self) -> &Extent {
         &self.extent
     }
 
     #[inline]
-    pub fn get_extent_mut(&mut self) -> &mut Extent {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use extent()")]
+    pub fn get_extent(&self) -> &Extent {
+        self.extent()
+    }
+
+    #[inline]
+    pub fn extent_mut(&mut self) -> &mut Extent {
         &mut self.extent
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use extent_mut()")]
+    pub fn get_extent_mut(&mut self) -> &mut Extent {
+        self.extent_mut()
     }
 
     #[inline]
@@ -73,13 +99,26 @@ impl OneCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+    pub fn group_shape(&self) -> Option<&GroupShape> {
         self.group_shape.as_deref()
     }
 
     #[inline]
-    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use group_shape()")]
+    pub fn get_group_shape(&self) -> Option<&GroupShape> {
+        self.group_shape()
+    }
+
+    #[inline]
+    pub fn group_shape_mut(&mut self) -> Option<&mut GroupShape> {
         self.group_shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use group_shape_mut()")]
+    pub fn get_group_shape_mut(&mut self) -> Option<&mut GroupShape> {
+        self.group_shape_mut()
     }
 
     #[inline]
@@ -90,13 +129,26 @@ impl OneCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_shape(&self) -> Option<&Shape> {
+    pub fn shape(&self) -> Option<&Shape> {
         self.shape.as_deref()
     }
 
     #[inline]
-    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape()")]
+    pub fn get_shape(&self) -> Option<&Shape> {
+        self.shape()
+    }
+
+    #[inline]
+    pub fn shape_mut(&mut self) -> Option<&mut Shape> {
         self.shape.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_mut()")]
+    pub fn get_shape_mut(&mut self) -> Option<&mut Shape> {
+        self.shape_mut()
     }
 
     #[inline]
@@ -107,13 +159,26 @@ impl OneCellAnchor {
 
     #[inline]
     #[must_use]
-    pub fn get_picture(&self) -> Option<&Picture> {
+    pub fn picture(&self) -> Option<&Picture> {
         self.picture.as_deref()
     }
 
     #[inline]
-    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use picture()")]
+    pub fn get_picture(&self) -> Option<&Picture> {
+        self.picture()
+    }
+
+    #[inline]
+    pub fn picture_mut(&mut self) -> Option<&mut Picture> {
         self.picture.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use picture_mut()")]
+    pub fn get_picture_mut(&mut self) -> Option<&mut Picture> {
+        self.picture_mut()
     }
 
     #[inline]

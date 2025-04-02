@@ -34,13 +34,26 @@ pub struct Picture {
 impl Picture {
     #[inline]
     #[must_use]
-    pub fn get_non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
+    pub fn non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
         &self.non_visual_picture_properties
     }
 
     #[inline]
-    pub fn get_non_visual_picture_properties_mut(&mut self) -> &mut NonVisualPictureProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_picture_properties()")]
+    pub fn get_non_visual_picture_properties(&self) -> &NonVisualPictureProperties {
+        self.non_visual_picture_properties()
+    }
+
+    #[inline]
+    pub fn non_visual_picture_properties_mut(&mut self) -> &mut NonVisualPictureProperties {
         &mut self.non_visual_picture_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use non_visual_picture_properties_mut()")]
+    pub fn get_non_visual_picture_properties_mut(&mut self) -> &mut NonVisualPictureProperties {
+        self.non_visual_picture_properties_mut()
     }
 
     #[inline]
@@ -50,13 +63,26 @@ impl Picture {
 
     #[inline]
     #[must_use]
-    pub fn get_blip_fill(&self) -> &BlipFill {
+    pub fn blip_fill(&self) -> &BlipFill {
         &self.blip_fill
     }
 
     #[inline]
-    pub fn get_blip_fill_mut(&mut self) -> &mut BlipFill {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill()")]
+    pub fn get_blip_fill(&self) -> &BlipFill {
+        self.blip_fill()
+    }
+
+    #[inline]
+    pub fn blip_fill_mut(&mut self) -> &mut BlipFill {
         &mut self.blip_fill
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use blip_fill_mut()")]
+    pub fn get_blip_fill_mut(&mut self) -> &mut BlipFill {
+        self.blip_fill_mut()
     }
 
     #[inline]
@@ -66,13 +92,26 @@ impl Picture {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_properties(&self) -> &ShapeProperties {
+    pub fn shape_properties(&self) -> &ShapeProperties {
         &self.shape_properties
     }
 
     #[inline]
-    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> &ShapeProperties {
+        self.shape_properties()
+    }
+
+    #[inline]
+    pub fn shape_properties_mut(&mut self) -> &mut ShapeProperties {
         &mut self.shape_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> &mut ShapeProperties {
+        self.shape_properties_mut()
     }
 
     #[inline]

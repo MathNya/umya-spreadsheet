@@ -36,8 +36,15 @@ pub struct MarkerType {
 impl MarkerType {
     #[inline]
     #[must_use]
-    pub fn get_col(&self) -> u32 {
+    pub fn col(&self) -> u32 {
         self.col
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col()")]
+    pub fn get_col(&self) -> u32 {
+        self.col()
     }
 
     #[inline]
@@ -48,8 +55,15 @@ impl MarkerType {
 
     #[inline]
     #[must_use]
-    pub fn get_col_off(&self) -> i32 {
+    pub fn col_off(&self) -> i32 {
         self.col_off
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use col_off()")]
+    pub fn get_col_off(&self) -> i32 {
+        self.col_off()
     }
 
     #[inline]
@@ -66,8 +80,15 @@ impl MarkerType {
 
     #[inline]
     #[must_use]
-    pub fn get_row(&self) -> u32 {
+    pub fn row(&self) -> u32 {
         self.row
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row()")]
+    pub fn get_row(&self) -> u32 {
+        self.row()
     }
 
     #[inline]
@@ -78,8 +99,15 @@ impl MarkerType {
 
     #[inline]
     #[must_use]
-    pub fn get_row_off(&self) -> i32 {
+    pub fn row_off(&self) -> i32 {
         self.row_off
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use row_off()")]
+    pub fn get_row_off(&self) -> i32 {
+        self.row_off()
     }
 
     #[inline]
@@ -96,8 +124,15 @@ impl MarkerType {
 
     #[inline]
     #[must_use]
-    pub fn get_coordinate(&self) -> String {
+    pub fn coordinate(&self) -> String {
         coordinate_from_index(self.col + 1, self.row + 1)
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate()")]
+    pub fn get_coordinate(&self) -> String {
+        self.coordinate()
     }
 
     #[inline]

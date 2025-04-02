@@ -30,8 +30,15 @@ pub struct ShapeStyle {
 impl ShapeStyle {
     #[inline]
     #[must_use]
-    pub fn get_line_reference(&self) -> Option<&StyleMatrixReferenceType> {
+    pub fn line_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.line_reference.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use line_reference()")]
+    pub fn get_line_reference(&self) -> Option<&StyleMatrixReferenceType> {
+        self.line_reference()
     }
 
     #[inline]
@@ -41,8 +48,15 @@ impl ShapeStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_fill_reference(&self) -> Option<&StyleMatrixReferenceType> {
+    pub fn fill_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.fill_reference.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fill_reference()")]
+    pub fn get_fill_reference(&self) -> Option<&StyleMatrixReferenceType> {
+        self.fill_reference()
     }
 
     #[inline]
@@ -52,8 +66,15 @@ impl ShapeStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_effect_reference(&self) -> Option<&StyleMatrixReferenceType> {
+    pub fn effect_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.effect_reference.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_reference()")]
+    pub fn get_effect_reference(&self) -> Option<&StyleMatrixReferenceType> {
+        self.effect_reference()
     }
 
     #[inline]
@@ -63,8 +84,15 @@ impl ShapeStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_font_reference(&self) -> Option<&StyleMatrixReferenceType> {
+    pub fn font_reference(&self) -> Option<&StyleMatrixReferenceType> {
         self.font_reference.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_reference()")]
+    pub fn get_font_reference(&self) -> Option<&StyleMatrixReferenceType> {
+        self.font_reference()
     }
 
     #[inline]

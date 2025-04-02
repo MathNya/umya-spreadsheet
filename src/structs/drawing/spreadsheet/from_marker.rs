@@ -14,7 +14,7 @@ pub struct FromMarker {
 }
 impl FromMarker {
     #[inline]
-    pub fn get_col(&self) -> usize {
+    pub fn col(&self) -> usize {
         &self.col
     }
 
@@ -25,7 +25,7 @@ impl FromMarker {
     }
 
     #[inline]
-    pub fn get_col_off(&self) -> usize {
+    pub fn col_off(&self) -> usize {
         &self.col_off
     }
 
@@ -36,7 +36,7 @@ impl FromMarker {
     }
 
     #[inline]
-    pub fn get_row(&self) -> usize {
+    pub fn row(&self) -> usize {
         &self.row
     }
 
@@ -47,7 +47,7 @@ impl FromMarker {
     }
 
     #[inline]
-    pub fn get_row_off(&self) -> usize {
+    pub fn row_off(&self) -> usize {
         &self.row_off
     }
 

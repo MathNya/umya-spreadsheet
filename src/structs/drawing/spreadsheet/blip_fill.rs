@@ -40,8 +40,15 @@ pub struct BlipFill {
 impl BlipFill {
     #[inline]
     #[must_use]
-    pub fn get_rotate_with_shape(&self) -> bool {
+    pub fn rotate_with_shape(&self) -> bool {
         self.rotate_with_shape.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotate_with_shape()")]
+    pub fn get_rotate_with_shape(&self) -> bool {
+        self.rotate_with_shape()
     }
 
     #[inline]
@@ -52,13 +59,26 @@ impl BlipFill {
 
     #[inline]
     #[must_use]
-    pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
+    pub fn source_rectangle(&self) -> Option<&SourceRectangle> {
         self.source_rectangle.as_deref()
     }
 
     #[inline]
-    pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use source_rectangle()")]
+    pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
+        self.source_rectangle()
+    }
+
+    #[inline]
+    pub fn source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
         self.source_rectangle.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use source_rectangle_mut()")]
+    pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
+        self.source_rectangle_mut()
     }
 
     #[inline]
@@ -69,13 +89,26 @@ impl BlipFill {
 
     #[inline]
     #[must_use]
-    pub fn get_blip(&self) -> &Blip {
+    pub fn blip(&self) -> &Blip {
         &self.blip
     }
 
     #[inline]
-    pub fn get_blip_mut(&mut self) -> &mut Blip {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blip()")]
+    pub fn get_blip(&self) -> &Blip {
+        self.blip()
+    }
+
+    #[inline]
+    pub fn blip_mut(&mut self) -> &mut Blip {
         &mut self.blip
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use blip_mut()")]
+    pub fn get_blip_mut(&mut self) -> &mut Blip {
+        self.blip_mut()
     }
 
     #[inline]
@@ -86,13 +119,26 @@ impl BlipFill {
 
     #[inline]
     #[must_use]
-    pub fn get_stretch(&self) -> &Stretch {
+    pub fn stretch(&self) -> &Stretch {
         &self.stretch
     }
 
     #[inline]
-    pub fn get_stretch_mut(&mut self) -> &mut Stretch {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stretch()")]
+    pub fn get_stretch(&self) -> &Stretch {
+        self.stretch()
+    }
+
+    #[inline]
+    pub fn stretch_mut(&mut self) -> &mut Stretch {
         &mut self.stretch
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use stretch_mut()")]
+    pub fn get_stretch_mut(&mut self) -> &mut Stretch {
+        self.stretch_mut()
     }
 
     #[inline]
