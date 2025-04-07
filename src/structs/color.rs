@@ -356,7 +356,7 @@ impl Color {
             if let Some(v) = theme
                 .get_theme_elements()
                 .get_color_scheme()
-                .get_color_map()
+                .color_map()
                 .get(key as usize)
             {
                 if let Some(tint) = self.tint {

@@ -19,8 +19,15 @@ pub struct Alpha {
 impl Alpha {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &str {
+    pub fn val(&self) -> &str {
         &self.val
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &str {
+        self.val()
     }
 
     #[inline]

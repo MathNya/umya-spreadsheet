@@ -30,13 +30,26 @@ pub struct AdjustValueList {
 impl AdjustValueList {
     #[inline]
     #[must_use]
-    pub fn get_shape_guide_collection(&self) -> &[ShapeGuide] {
+    pub fn shape_guide_collection(&self) -> &[ShapeGuide] {
         &self.shape_guide_collection
     }
 
     #[inline]
-    pub fn get_shape_guide_collection_mut(&mut self) -> &mut Vec<ShapeGuide> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_guide_collection()")]
+    pub fn get_shape_guide_collection(&self) -> &[ShapeGuide] {
+        self.shape_guide_collection()
+    }
+
+    #[inline]
+    pub fn shape_guide_collection_mut(&mut self) -> &mut Vec<ShapeGuide> {
         &mut self.shape_guide_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_guide_collection_mut()")]
+    pub fn get_shape_guide_collection_mut(&mut self) -> &mut Vec<ShapeGuide> {
+        self.shape_guide_collection_mut()
     }
 
     #[inline]

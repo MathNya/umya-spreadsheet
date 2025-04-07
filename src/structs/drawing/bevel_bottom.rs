@@ -32,8 +32,15 @@ pub struct BevelBottom {
 impl BevelBottom {
     #[inline]
     #[must_use]
-    pub fn get_width(&self) -> i64 {
+    pub fn width(&self) -> i64 {
         self.width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width()")]
+    pub fn get_width(&self) -> i64 {
+        self.width()
     }
 
     #[inline]
@@ -44,8 +51,15 @@ impl BevelBottom {
 
     #[inline]
     #[must_use]
-    pub fn get_height(&self) -> i64 {
+    pub fn height(&self) -> i64 {
         self.height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use height()")]
+    pub fn get_height(&self) -> i64 {
+        self.height()
     }
 
     #[inline]
@@ -56,8 +70,15 @@ impl BevelBottom {
 
     #[inline]
     #[must_use]
-    pub fn get_preset(&self) -> &BevelPresetValues {
+    pub fn preset(&self) -> &BevelPresetValues {
         self.preset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset()")]
+    pub fn get_preset(&self) -> &BevelPresetValues {
+        self.preset()
     }
 
     #[inline]

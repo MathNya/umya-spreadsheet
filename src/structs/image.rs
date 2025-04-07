@@ -181,7 +181,7 @@ impl Image {
             .blip_fill_mut()
             .blip_mut()
             .set_cstate("print")
-            .get_image_mut()
+            .image_mut()
             .set_image_name(image_name)
             .set_image_data(bytes.into());
 
@@ -307,45 +307,45 @@ impl Image {
         let mut result: Vec<&MediaObject> = Vec::new();
         if let Some(anchor) = self.two_cell_anchor() {
             if let Some(v) = anchor.picture() {
-                result.push(v.blip_fill().blip().get_image());
+                result.push(v.blip_fill().blip().image());
             }
             if let Some(v) = anchor.shape() {
                 if let Some(bf) = v.shape_properties().blip_fill() {
-                    result.push(bf.get_blip().get_image());
+                    result.push(bf.blip().image());
                 }
             }
             if let Some(v) = anchor.connection_shape() {
                 if let Some(bf) = v.shape_properties().blip_fill() {
-                    result.push(bf.get_blip().get_image());
+                    result.push(bf.blip().image());
                 }
             }
             if let Some(v) = anchor.group_shape() {
                 for pic in v.picture_collection() {
-                    result.push(pic.blip_fill().blip().get_image());
+                    result.push(pic.blip_fill().blip().image());
                 }
                 for shp in v.shape_collection() {
                     if let Some(bf) = shp.shape_properties().blip_fill() {
-                        result.push(bf.get_blip().get_image());
+                        result.push(bf.blip().image());
                     }
                 }
             }
         }
         if let Some(anchor) = self.one_cell_anchor() {
             if let Some(v) = anchor.picture() {
-                result.push(v.blip_fill().blip().get_image());
+                result.push(v.blip_fill().blip().image());
             }
             if let Some(v) = anchor.shape() {
                 if let Some(bf) = v.shape_properties().blip_fill() {
-                    result.push(bf.get_blip().get_image());
+                    result.push(bf.blip().image());
                 }
             }
             if let Some(v) = anchor.group_shape() {
                 for pic in v.picture_collection() {
-                    result.push(pic.blip_fill().blip().get_image());
+                    result.push(pic.blip_fill().blip().image());
                 }
                 for shp in v.shape_collection() {
                     if let Some(bf) = shp.shape_properties().blip_fill() {
-                        result.push(bf.get_blip().get_image());
+                        result.push(bf.blip().image());
                     }
                 }
             }

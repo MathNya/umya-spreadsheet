@@ -38,13 +38,26 @@ pub struct Blip {
 impl Blip {
     #[inline]
     #[must_use]
-    pub fn get_image(&self) -> &MediaObject {
+    pub fn image(&self) -> &MediaObject {
         &self.image
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image()")]
+    pub fn get_image(&self) -> &MediaObject {
+        self.image()
+    }
+
+    #[inline]
+    pub fn image_mut(&mut self) -> &mut MediaObject {
         &mut self.image
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_mut()")]
+    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+        self.image_mut()
     }
 
     #[inline]
@@ -55,8 +68,15 @@ impl Blip {
 
     #[inline]
     #[must_use]
-    pub fn get_cstate(&self) -> &str {
+    pub fn cstate(&self) -> &str {
         &self.cstate
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cstate()")]
+    pub fn get_cstate(&self) -> &str {
+        self.cstate()
     }
 
     #[inline]
@@ -78,9 +98,9 @@ impl Blip {
 
         let picture_id = get_attribute(e, b"r:embed").unwrap();
         let relationship = drawing_relationships.get_relationship_by_rid(&picture_id);
-        self.get_image_mut()
+        self.image_mut()
             .set_image_name(relationship.get_raw_file().get_file_name());
-        self.get_image_mut()
+        self.image_mut()
             .set_image_data(relationship.get_raw_file().get_file_data());
 
         if empty_flag {

@@ -47,8 +47,15 @@ pub struct BodyProperties {
 impl BodyProperties {
     #[inline]
     #[must_use]
-    pub fn get_vert_overflow(&self) -> Option<&str> {
+    pub fn vert_overflow(&self) -> Option<&str> {
         self.vert_overflow.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vert_overflow()")]
+    pub fn get_vert_overflow(&self) -> Option<&str> {
+        self.vert_overflow()
     }
 
     #[inline]
@@ -59,8 +66,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_horz_overflow(&self) -> Option<&str> {
+    pub fn horz_overflow(&self) -> Option<&str> {
         self.horz_overflow.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horz_overflow()")]
+    pub fn get_horz_overflow(&self) -> Option<&str> {
+        self.horz_overflow()
     }
 
     #[inline]
@@ -71,8 +85,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_rtl_col(&self) -> Option<&str> {
+    pub fn rtl_col(&self) -> Option<&str> {
         self.rtl_col.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rtl_col()")]
+    pub fn get_rtl_col(&self) -> Option<&str> {
+        self.rtl_col()
     }
 
     #[inline]
@@ -83,8 +104,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_anchor(&self) -> Option<&str> {
+    pub fn anchor(&self) -> Option<&str> {
         self.anchor.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use anchor()")]
+    pub fn get_anchor(&self) -> Option<&str> {
+        self.anchor()
     }
 
     #[inline]
@@ -95,8 +123,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_wrap(&self) -> &TextWrappingValues {
+    pub fn wrap(&self) -> &TextWrappingValues {
         self.wrap.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use wrap()")]
+    pub fn get_wrap(&self) -> &TextWrappingValues {
+        self.wrap()
     }
 
     #[inline]
@@ -107,8 +142,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_left_inset(&self) -> i32 {
+    pub fn left_inset(&self) -> i32 {
         self.left_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left_inset()")]
+    pub fn get_left_inset(&self) -> i32 {
+        self.left_inset()
     }
 
     #[inline]
@@ -118,8 +160,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_top_inset(&self) -> i32 {
+    pub fn top_inset(&self) -> i32 {
         self.top_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_inset()")]
+    pub fn get_top_inset(&self) -> i32 {
+        self.top_inset()
     }
 
     #[inline]
@@ -129,8 +178,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_right_inset(&self) -> i32 {
+    pub fn right_inset(&self) -> i32 {
         self.right_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_inset()")]
+    pub fn get_right_inset(&self) -> i32 {
+        self.right_inset()
     }
 
     #[inline]
@@ -140,8 +196,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_bottom_inset(&self) -> i32 {
+    pub fn bottom_inset(&self) -> i32 {
         self.bottom_inset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom_inset()")]
+    pub fn get_bottom_inset(&self) -> i32 {
+        self.bottom_inset()
     }
 
     #[inline]
@@ -151,8 +214,15 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
+    pub fn shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
         self.shape_auto_fit.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_auto_fit()")]
+    pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
+        self.shape_auto_fit()
     }
 
     #[inline]

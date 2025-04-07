@@ -94,7 +94,7 @@ impl Theme {
         dk1.set_last_color("000000");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_dk1_mut()
+            .dk1_mut()
             .set_system_color(dk1); // dk1
 
         let mut lt1 = SystemColor::default();
@@ -102,77 +102,77 @@ impl Theme {
         lt1.set_last_color("FFFFFF");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_lt1_mut()
+            .lt1_mut()
             .set_system_color(lt1); // lt1
 
         let mut dk2 = RgbColorModelHex::default();
         dk2.set_val("44546A");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_dk2_mut()
+            .dk2_mut()
             .set_rgb_color_model_hex(dk2); // dk2
 
         let mut lt2 = RgbColorModelHex::default();
         lt2.set_val("E7E6E6");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_lt2_mut()
+            .lt2_mut()
             .set_rgb_color_model_hex(lt2); // lt2
 
         let mut accent1 = RgbColorModelHex::default();
         accent1.set_val("4472C4");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_accent1_mut()
+            .accent1_mut()
             .set_rgb_color_model_hex(accent1); // accent1
 
         let mut accent2 = RgbColorModelHex::default();
         accent2.set_val("ED7D31");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_accent2_mut()
+            .accent2_mut()
             .set_rgb_color_model_hex(accent2); // accent2
 
         let mut accent3 = RgbColorModelHex::default();
         accent3.set_val("A5A5A5");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_accent3_mut()
+            .accent3_mut()
             .set_rgb_color_model_hex(accent3); // accent3
 
         let mut accent4 = RgbColorModelHex::default();
         accent4.set_val("FFC000");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_accent4_mut()
+            .accent4_mut()
             .set_rgb_color_model_hex(accent4); // accent4
 
         let mut accent5 = RgbColorModelHex::default();
         accent5.set_val("5B9BD5");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_accent5_mut()
+            .accent5_mut()
             .set_rgb_color_model_hex(accent5); // accent5
 
         let mut accent6 = RgbColorModelHex::default();
         accent6.set_val("70AD47");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_accent6_mut()
+            .accent6_mut()
             .set_rgb_color_model_hex(accent6); // accent6
 
         let mut hlink = RgbColorModelHex::default();
         hlink.set_val("0563C1");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_hlink_mut()
+            .hlink_mut()
             .set_rgb_color_model_hex(hlink); // hlink
 
         let mut fol_hlink = RgbColorModelHex::default();
         fol_hlink.set_val("954F72");
         def.get_theme_elements_mut()
             .get_color_scheme_mut()
-            .get_fol_hlink_mut()
+            .fol_hlink_mut()
             .set_rgb_color_model_hex(fol_hlink); // folHlink
 
         // font_scheme

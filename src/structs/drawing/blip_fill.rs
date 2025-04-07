@@ -40,63 +40,109 @@ pub struct BlipFill {
 impl BlipFill {
     #[inline]
     #[must_use]
-    pub fn get_rotate_with_shape(&self) -> bool {
+    pub fn rotate_with_shape(&self) -> bool {
         self.rotate_with_shape.value()
     }
 
     #[inline]
-    pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut BlipFill {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotate_with_shape()")]
+    pub fn get_rotate_with_shape(&self) -> bool {
+        self.rotate_with_shape()
+    }
+
+    #[inline]
+    pub fn set_rotate_with_shape(&mut self, value: bool) -> &mut Self {
         self.rotate_with_shape.set_value(value);
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
+    pub fn source_rectangle(&self) -> Option<&SourceRectangle> {
         self.source_rectangle.as_deref()
     }
 
     #[inline]
-    pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use source_rectangle()")]
+    pub fn get_source_rectangle(&self) -> Option<&SourceRectangle> {
+        self.source_rectangle()
+    }
+
+    #[inline]
+    pub fn source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
         self.source_rectangle.as_deref_mut()
     }
 
     #[inline]
-    pub fn set_source_rectangle(&mut self, value: SourceRectangle) -> &mut BlipFill {
+    #[deprecated(since = "3.0.0", note = "Use source_rectangle_mut()")]
+    pub fn get_source_rectangle_mut(&mut self) -> Option<&mut SourceRectangle> {
+        self.source_rectangle_mut()
+    }
+
+    #[inline]
+    pub fn set_source_rectangle(&mut self, value: SourceRectangle) -> &mut Self {
         self.source_rectangle = Some(Box::new(value));
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_blip(&self) -> &Blip {
+    pub fn blip(&self) -> &Blip {
         &self.blip
     }
 
     #[inline]
-    pub fn get_blip_mut(&mut self) -> &mut Blip {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blip()")]
+    pub fn get_blip(&self) -> &Blip {
+        self.blip()
+    }
+
+    #[inline]
+    pub fn blip_mut(&mut self) -> &mut Blip {
         &mut self.blip
     }
 
     #[inline]
-    pub fn set_blip(&mut self, value: Blip) -> &mut BlipFill {
+    #[deprecated(since = "3.0.0", note = "Use blip_mut()")]
+    pub fn get_blip_mut(&mut self) -> &mut Blip {
+        self.blip_mut()
+    }
+
+    #[inline]
+    pub fn set_blip(&mut self, value: Blip) -> &mut Self {
         self.blip = value;
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_stretch(&self) -> &Stretch {
+    pub fn stretch(&self) -> &Stretch {
         &self.stretch
     }
 
     #[inline]
-    pub fn get_stretch_mut(&mut self) -> &mut Stretch {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stretch()")]
+    pub fn get_stretch(&self) -> &Stretch {
+        self.stretch()
+    }
+
+    #[inline]
+    pub fn stretch_mut(&mut self) -> &mut Stretch {
         &mut self.stretch
     }
 
     #[inline]
-    pub fn set_stretch(&mut self, value: Stretch) -> &mut BlipFill {
+    #[deprecated(since = "3.0.0", note = "Use stretch_mut()")]
+    pub fn get_stretch_mut(&mut self) -> &mut Stretch {
+        self.stretch_mut()
+    }
+
+    #[inline]
+    pub fn set_stretch(&mut self, value: Stretch) -> &mut Self {
         self.stretch = value;
         self
     }

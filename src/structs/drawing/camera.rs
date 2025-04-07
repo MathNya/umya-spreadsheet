@@ -36,8 +36,15 @@ pub struct Camera {
 impl Camera {
     #[inline]
     #[must_use]
-    pub fn get_preset(&self) -> &PresetCameraValues {
+    pub fn preset(&self) -> &PresetCameraValues {
         self.preset.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset()")]
+    pub fn get_preset(&self) -> &PresetCameraValues {
+        self.preset()
     }
 
     #[inline]
@@ -48,13 +55,26 @@ impl Camera {
 
     #[inline]
     #[must_use]
-    pub fn get_rotation(&self) -> Option<&Rotation> {
+    pub fn rotation(&self) -> Option<&Rotation> {
         self.rotation.as_deref()
     }
 
     #[inline]
-    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotation()")]
+    pub fn get_rotation(&self) -> Option<&Rotation> {
+        self.rotation()
+    }
+
+    #[inline]
+    pub fn rotation_mut(&mut self) -> Option<&mut Rotation> {
         self.rotation.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rotation_mut()")]
+    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+        self.rotation_mut()
     }
 
     #[inline]

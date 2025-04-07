@@ -29,40 +29,68 @@ pub struct Color2Type {
 
 impl Color2Type {
     #[inline]
-    pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) {
-        self.rgb_color_model_hex = Some(Box::new(value));
-    }
-
-    #[inline]
     #[must_use]
-    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+    pub fn rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex()")]
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex()
+    }
+
+    #[inline]
+    pub fn rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
     }
 
     #[inline]
-    pub fn set_system_color(&mut self, value: SystemColor) {
-        self.system_color = Some(Box::new(value));
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex_mut()")]
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex_mut()
+    }
+
+    #[inline]
+    pub fn set_rgb_color_model_hex(&mut self, value: RgbColorModelHex) -> &mut Self {
+        self.rgb_color_model_hex = Some(Box::new(value));
+        self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_system_color(&self) -> Option<&SystemColor> {
+    pub fn system_color(&self) -> Option<&SystemColor> {
         self.system_color.as_deref()
     }
 
     #[inline]
-    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use system_color()")]
+    pub fn get_system_color(&self) -> Option<&SystemColor> {
+        self.system_color()
+    }
+
+    #[inline]
+    pub fn system_color_mut(&mut self) -> Option<&mut SystemColor> {
         self.system_color.as_deref_mut()
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use system_color_mut()")]
+    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color_mut()
+    }
+
+    #[inline]
+    pub fn set_system_color(&mut self, value: SystemColor) -> &mut Self {
+        self.system_color = Some(Box::new(value));
+        self
+    }
+
+    #[inline]
     #[must_use]
-    pub fn get_val(&self) -> String {
+    pub fn val(&self) -> String {
         if let Some(v) = &self.rgb_color_model_hex {
             return v.get_val().to_string();
         }
@@ -70,6 +98,13 @@ impl Color2Type {
             return v.get_last_color().to_string();
         }
         String::new()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> String {
+        self.val()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
