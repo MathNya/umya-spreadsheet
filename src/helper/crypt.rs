@@ -480,21 +480,21 @@ fn hash(algorithm: &str, buffers: Vec<&[u8]>) -> Result<Vec<u8>, String> {
 #[inline]
 fn gen_random_16() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 16];
-    getrandom::getrandom(buf);
+    crate::random::getrandom(buf);
     buf.to_vec()
 }
 
 #[inline]
 fn gen_random_32() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 32];
-    getrandom::getrandom(buf);
+    crate::random::getrandom(buf);
     buf.to_vec()
 }
 
 #[inline]
 fn gen_random_64() -> Vec<u8> {
     let buf: &mut [u8] = &mut [0; 64];
-    getrandom::getrandom(buf);
+    crate::random::getrandom(buf);
     buf.to_vec()
 }
 
