@@ -13,7 +13,7 @@ edition = "2021"
 
 [dependencies]
 aes = "0.8.4"
-ahash = "0.8.11"
+ahash = { version = "0.8.11", default-features = false, features = ["std"] }
 base64 = "0.22.1"
 byteorder = "1.5"
 cbc = "0.1.2"
@@ -21,12 +21,12 @@ cfb = "0.10.0"
 chrono = { version = "0.4.38", default-features = false, features = ["clock"] }
 encoding_rs = "0.8.35"
 fancy-regex = "0.14.0"
-getrandom = { version = "0.2.15" }
 hmac = "0.12.1"
 html_parser = "0.7.0"
 image = { version = "0.25.5", optional = true }
 lazy_static = "1.5.0"
 md-5 = "0.10.6"
+rand = { version = "0.9.0", default-features = false, features = ["small_rng"] }
 regex = "1.11.1"
 sha2 = "0.10.8"
 thin-vec = "0.2.13"
@@ -34,9 +34,12 @@ thousands = "0.2.0"
 quick-xml = { version = "0.37.1", features = ["serialize"] }
 zip = { version = "2.2.1", default-features = false, features = ["deflate"] }
 
+getrandom = { version = "0.2.15", optional = true }
+
 [lib]
 doctest = false
 
 [features]
 js = ["getrandom/js"]
+runtime-rng = ["getrandom"]
 default = ["image"]

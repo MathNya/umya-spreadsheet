@@ -134,7 +134,6 @@ extern crate base64;
 extern crate byteorder;
 extern crate cbc;
 extern crate cfb;
-extern crate getrandom;
 extern crate hmac;
 extern crate html_parser;
 extern crate sha2;
@@ -147,6 +146,7 @@ pub mod reader;
 pub mod structs;
 pub mod traits;
 pub mod writer;
+mod random;
 
 pub use self::structs::*;
 pub use self::traits::*;
