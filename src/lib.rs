@@ -217,8 +217,7 @@
 
 extern crate chrono;
 extern crate fancy_regex;
-#[cfg(feature = "image")]
-extern crate image;
+extern crate imagesize;
 extern crate md5;
 extern crate quick_xml;
 extern crate thousands;
