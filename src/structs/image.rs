@@ -109,18 +109,17 @@ impl Image {
         self
     }
 
-    #[cfg(feature = "image")]
     pub fn new_image(&mut self, path: &str, marker: MarkerType) {
         let path = std::path::Path::new(path);
 
-        let (width, height) = image::image_dimensions(path).unwrap();
+        let size = imagesize::size(path).unwrap();
         let image_name = path.file_name().unwrap().to_str().unwrap();
         let mut buf = Vec::new();
 
         let file = File::open(path).unwrap();
         BufReader::new(file).read_to_end(&mut buf).unwrap();
 
-        self.new_image_with_dimensions(height, width, image_name, buf, marker)
+        self.new_image_with_dimensions(size.height as u32, size.width as u32, image_name, buf, marker)
     }
 
     pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(
@@ -175,7 +174,6 @@ impl Image {
         self.set_one_cell_anchor(one_cell_anchor);
     }
 
-    #[cfg(feature = "image")]
     #[inline]
     pub fn change_image(&mut self, path: &str) {
         let marker = self.get_from_marker_type().clone();
