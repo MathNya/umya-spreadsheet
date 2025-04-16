@@ -119,7 +119,13 @@ impl Image {
         let file = File::open(path).unwrap();
         BufReader::new(file).read_to_end(&mut buf).unwrap();
 
-        self.new_image_with_dimensions(size.height as u32, size.width as u32, image_name, buf, marker)
+        self.new_image_with_dimensions(
+            size.height as u32,
+            size.width as u32,
+            image_name,
+            buf,
+            marker,
+        )
     }
 
     pub fn new_image_with_dimensions<B: Into<Vec<u8>>>(
