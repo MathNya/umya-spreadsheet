@@ -182,12 +182,12 @@ impl Theme {
 
         def.get_theme_elements_mut()
             .get_font_scheme_mut()
-            .get_major_font_mut()
+            .major_font_mut()
             .set_defalut_value_major();
 
         def.get_theme_elements_mut()
             .get_font_scheme_mut()
-            .get_minor_font_mut()
+            .minor_font_mut()
             .set_defalut_value_minor();
 
         // format_scheme
@@ -201,7 +201,7 @@ impl Theme {
         solid_fill.set_scheme_color(scheme_color);
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_fill_style_list_mut()
+            .fill_style_list_mut()
             .add_solid_fill(solid_fill);
 
         let mut gradient_fill = GradientFill::default();
@@ -268,7 +268,7 @@ impl Theme {
         //
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_fill_style_list_mut()
+            .fill_style_list_mut()
             .add_gradient_fill_collection(gradient_fill);
 
         let mut gradient_fill = GradientFill::default();
@@ -335,7 +335,7 @@ impl Theme {
         //
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_fill_style_list_mut()
+            .fill_style_list_mut()
             .add_gradient_fill_collection(gradient_fill);
 
         let mut outline = Outline::default();
@@ -360,7 +360,7 @@ impl Theme {
         //
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_line_style_list_mut()
+            .line_style_list_mut()
             .add_outline_collection(outline);
 
         let mut outline = Outline::default();
@@ -385,7 +385,7 @@ impl Theme {
         //
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_line_style_list_mut()
+            .line_style_list_mut()
             .add_outline_collection(outline);
 
         let mut outline = Outline::default();
@@ -410,7 +410,7 @@ impl Theme {
         //
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_line_style_list_mut()
+            .line_style_list_mut()
             .add_outline_collection(outline);
 
         let mut effect_style = EffectStyle::default();
@@ -418,7 +418,7 @@ impl Theme {
         effect_style.set_effect_list(effect_list);
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_effect_style_list_mut()
+            .effect_style_list_mut()
             .add_effect_style_collection(effect_style);
 
         let mut effect_style = EffectStyle::default();
@@ -426,7 +426,7 @@ impl Theme {
         effect_style.set_effect_list(effect_list);
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_effect_style_list_mut()
+            .effect_style_list_mut()
             .add_effect_style_collection(effect_style);
 
         let mut effect_style = EffectStyle::default();
@@ -447,7 +447,7 @@ impl Theme {
         effect_style.set_effect_list(effect_list);
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_effect_style_list_mut()
+            .effect_style_list_mut()
             .add_effect_style_collection(effect_style);
 
         let mut solid_fill = SolidFill::default();
@@ -456,7 +456,7 @@ impl Theme {
         solid_fill.set_scheme_color(scheme_color);
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_background_fill_style_list_mut()
+            .background_fill_style_list_mut()
             .add_solid_fill(solid_fill);
         //
         let mut solid_fill = SolidFill::default();
@@ -471,7 +471,7 @@ impl Theme {
         solid_fill.set_scheme_color(scheme_color);
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_background_fill_style_list_mut()
+            .background_fill_style_list_mut()
             .add_solid_fill(solid_fill);
 
         let mut gradient_fill = GradientFill::default();
@@ -541,7 +541,7 @@ impl Theme {
         //
         def.get_theme_elements_mut()
             .get_format_scheme_mut()
-            .get_background_fill_style_list_mut()
+            .background_fill_style_list_mut()
             .add_gradient_fill_collection(gradient_fill);
 
         def

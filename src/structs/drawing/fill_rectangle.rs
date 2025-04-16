@@ -19,8 +19,15 @@ pub struct FillRectangle {
 impl FillRectangle {
     #[inline]
     #[must_use]
-    pub fn get_bottom(&self) -> usize {
+    pub fn bottom(&self) -> usize {
         self.bottom
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bottom()")]
+    pub fn get_bottom(&self) -> usize {
+        self.bottom()
     }
 
     #[inline]
@@ -30,8 +37,15 @@ impl FillRectangle {
 
     #[inline]
     #[must_use]
-    pub fn get_left(&self) -> usize {
+    pub fn left(&self) -> usize {
         self.left
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use left()")]
+    pub fn get_left(&self) -> usize {
+        self.left()
     }
 
     #[inline]
@@ -41,8 +55,15 @@ impl FillRectangle {
 
     #[inline]
     #[must_use]
-    pub fn get_right(&self) -> usize {
+    pub fn right(&self) -> usize {
         self.right
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right()")]
+    pub fn get_right(&self) -> usize {
+        self.right()
     }
 
     #[inline]
@@ -52,8 +73,15 @@ impl FillRectangle {
 
     #[inline]
     #[must_use]
-    pub fn get_top(&self) -> usize {
+    pub fn top(&self) -> usize {
         self.top
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top()")]
+    pub fn get_top(&self) -> usize {
+        self.top()
     }
 
     #[inline]

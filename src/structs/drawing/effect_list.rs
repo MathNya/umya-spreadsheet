@@ -33,13 +33,26 @@ pub struct EffectList {
 impl EffectList {
     #[inline]
     #[must_use]
-    pub fn get_glow(&self) -> Option<&Glow> {
+    pub fn glow(&self) -> Option<&Glow> {
         self.glow.as_deref()
     }
 
     #[inline]
-    pub fn get_glow_mut(&mut self) -> Option<&mut Glow> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use glow()")]
+    pub fn get_glow(&self) -> Option<&Glow> {
+        self.glow()
+    }
+
+    #[inline]
+    pub fn glow_mut(&mut self) -> Option<&mut Glow> {
         self.glow.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use glow_mut()")]
+    pub fn get_glow_mut(&mut self) -> Option<&mut Glow> {
+        self.glow_mut()
     }
 
     #[inline]
@@ -49,13 +62,26 @@ impl EffectList {
 
     #[inline]
     #[must_use]
-    pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
+    pub fn outer_shadow(&self) -> Option<&OuterShadow> {
         self.outer_shadow.as_deref()
     }
 
     #[inline]
-    pub fn get_outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outer_shadow()")]
+    pub fn get_outer_shadow(&self) -> Option<&OuterShadow> {
+        self.outer_shadow()
+    }
+
+    #[inline]
+    pub fn outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
         self.outer_shadow.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use outer_shadow_mut()")]
+    pub fn get_outer_shadow_mut(&mut self) -> Option<&mut OuterShadow> {
+        self.outer_shadow_mut()
     }
 
     #[inline]
@@ -65,13 +91,26 @@ impl EffectList {
 
     #[inline]
     #[must_use]
-    pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
+    pub fn soft_edge(&self) -> Option<&SoftEdge> {
         self.soft_edge.as_deref()
     }
 
     #[inline]
-    pub fn get_soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use soft_edge()")]
+    pub fn get_soft_edge(&self) -> Option<&SoftEdge> {
+        self.soft_edge()
+    }
+
+    #[inline]
+    pub fn soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
         self.soft_edge.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use soft_edge_mut()")]
+    pub fn get_soft_edge_mut(&mut self) -> Option<&mut SoftEdge> {
+        self.soft_edge_mut()
     }
 
     #[inline]

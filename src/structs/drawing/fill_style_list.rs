@@ -30,13 +30,26 @@ pub struct FillStyleList {
 impl FillStyleList {
     #[inline]
     #[must_use]
-    pub fn get_solid_fill(&self) -> &[SolidFill] {
+    pub fn solid_fill(&self) -> &[SolidFill] {
         &self.solid_fill
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill()")]
+    pub fn get_solid_fill(&self) -> &[SolidFill] {
+        self.solid_fill()
+    }
+
+    #[inline]
+    pub fn solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
         &mut self.solid_fill
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill_mut()")]
+    pub fn get_solid_fill_mut(&mut self) -> &mut Vec<SolidFill> {
+        self.solid_fill_mut()
     }
 
     #[inline]
@@ -53,13 +66,26 @@ impl FillStyleList {
 
     #[inline]
     #[must_use]
-    pub fn get_gradient_fill_collection(&self) -> &[GradientFill] {
+    pub fn gradient_fill_collection(&self) -> &[GradientFill] {
         &self.gradient_fill_collection
     }
 
     #[inline]
-    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut Vec<GradientFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_collection()")]
+    pub fn get_gradient_fill_collection(&self) -> &[GradientFill] {
+        self.gradient_fill_collection()
+    }
+
+    #[inline]
+    pub fn gradient_fill_collectionl_mut(&mut self) -> &mut Vec<GradientFill> {
         &mut self.gradient_fill_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_collectionl_mut()")]
+    pub fn get_gradient_fill_collectionl_mut(&mut self) -> &mut Vec<GradientFill> {
+        self.gradient_fill_collectionl_mut()
     }
 
     #[inline]

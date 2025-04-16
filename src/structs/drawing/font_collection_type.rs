@@ -30,13 +30,26 @@ pub struct FontCollectionType {
 impl FontCollectionType {
     #[inline]
     #[must_use]
-    pub fn get_latin_font(&self) -> &TextFontType {
+    pub fn latin_font(&self) -> &TextFontType {
         &self.latin_font
     }
 
     #[inline]
-    pub fn get_latin_font_mut(&mut self) -> &mut TextFontType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use latin_font()")]
+    pub fn get_latin_font(&self) -> &TextFontType {
+        self.latin_font()
+    }
+
+    #[inline]
+    pub fn latin_font_mut(&mut self) -> &mut TextFontType {
         &mut self.latin_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use latin_font_mut()")]
+    pub fn get_latin_font_mut(&mut self) -> &mut TextFontType {
+        self.latin_font_mut()
     }
 
     #[inline]
@@ -47,13 +60,26 @@ impl FontCollectionType {
 
     #[inline]
     #[must_use]
-    pub fn get_east_asian_font(&self) -> &TextFontType {
+    pub fn east_asian_font(&self) -> &TextFontType {
         &self.east_asian_font
     }
 
     #[inline]
-    pub fn get_east_asian_font_mut(&mut self) -> &mut TextFontType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use east_asian_font()")]
+    pub fn get_east_asian_font(&self) -> &TextFontType {
+        self.east_asian_font()
+    }
+
+    #[inline]
+    pub fn east_asian_font_mut(&mut self) -> &mut TextFontType {
         &mut self.east_asian_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use east_asian_font_mut()")]
+    pub fn get_east_asian_font_mut(&mut self) -> &mut TextFontType {
+        self.east_asian_font_mut()
     }
 
     #[inline]
@@ -64,13 +90,26 @@ impl FontCollectionType {
 
     #[inline]
     #[must_use]
-    pub fn get_complex_script_font(&self) -> &TextFontType {
+    pub fn complex_script_font(&self) -> &TextFontType {
         &self.complex_script_font
     }
 
     #[inline]
-    pub fn get_complex_script_font_mut(&mut self) -> &mut TextFontType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use complex_script_font()")]
+    pub fn get_complex_script_font(&self) -> &TextFontType {
+        self.complex_script_font()
+    }
+
+    #[inline]
+    pub fn complex_script_font_mut(&mut self) -> &mut TextFontType {
         &mut self.complex_script_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use complex_script_font_mut()")]
+    pub fn get_complex_script_font_mut(&mut self) -> &mut TextFontType {
+        self.complex_script_font_mut()
     }
 
     #[inline]
@@ -81,13 +120,26 @@ impl FontCollectionType {
 
     #[inline]
     #[must_use]
-    pub fn get_supplemental_font_list(&self) -> &[SupplementalFont] {
+    pub fn supplemental_font_list(&self) -> &[SupplementalFont] {
         &self.supplemental_font_list
     }
 
     #[inline]
-    pub fn get_supplemental_font_list_mut(&mut self) -> &mut Vec<SupplementalFont> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use supplemental_font_list()")]
+    pub fn get_supplemental_font_list(&self) -> &[SupplementalFont] {
+        self.supplemental_font_list()
+    }
+
+    #[inline]
+    pub fn supplemental_font_list_mut(&mut self) -> &mut Vec<SupplementalFont> {
         &mut self.supplemental_font_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use supplemental_font_list_mut()")]
+    pub fn get_supplemental_font_list_mut(&mut self) -> &mut Vec<SupplementalFont> {
+        self.supplemental_font_list_mut()
     }
 
     #[inline]

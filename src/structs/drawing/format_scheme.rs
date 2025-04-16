@@ -40,8 +40,15 @@ pub struct FormatScheme {
 impl FormatScheme {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -52,13 +59,26 @@ impl FormatScheme {
 
     #[inline]
     #[must_use]
-    pub fn get_fill_style_list(&self) -> &FillStyleList {
+    pub fn fill_style_list(&self) -> &FillStyleList {
         &self.fill_style_list
     }
 
     #[inline]
-    pub fn get_fill_style_list_mut(&mut self) -> &mut FillStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fill_style_list()")]
+    pub fn get_fill_style_list(&self) -> &FillStyleList {
+        self.fill_style_list()
+    }
+
+    #[inline]
+    pub fn fill_style_list_mut(&mut self) -> &mut FillStyleList {
         &mut self.fill_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fill_style_list_mut()")]
+    pub fn get_fill_style_list_mut(&mut self) -> &mut FillStyleList {
+        self.fill_style_list_mut()
     }
 
     #[inline]
@@ -68,13 +88,26 @@ impl FormatScheme {
 
     #[inline]
     #[must_use]
-    pub fn get_line_style_list(&self) -> &LineStyleList {
+    pub fn line_style_list(&self) -> &LineStyleList {
         &self.line_style_list
     }
 
     #[inline]
-    pub fn get_line_style_list_mut(&mut self) -> &mut LineStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use line_style_list()")]
+    pub fn get_line_style_list(&self) -> &LineStyleList {
+        self.line_style_list()
+    }
+
+    #[inline]
+    pub fn line_style_list_mut(&mut self) -> &mut LineStyleList {
         &mut self.line_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use line_style_list_mut()")]
+    pub fn get_line_style_list_mut(&mut self) -> &mut LineStyleList {
+        self.line_style_list_mut()
     }
 
     #[inline]
@@ -84,13 +117,26 @@ impl FormatScheme {
 
     #[inline]
     #[must_use]
-    pub fn get_effect_style_list(&self) -> &EffectStyleList {
+    pub fn effect_style_list(&self) -> &EffectStyleList {
         &self.effect_style_list
     }
 
     #[inline]
-    pub fn get_effect_style_list_mut(&mut self) -> &mut EffectStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_style_list()")]
+    pub fn get_effect_style_list(&self) -> &EffectStyleList {
+        self.effect_style_list()
+    }
+
+    #[inline]
+    pub fn effect_style_list_mut(&mut self) -> &mut EffectStyleList {
         &mut self.effect_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use effect_style_list_mut()")]
+    pub fn get_effect_style_list_mut(&mut self) -> &mut EffectStyleList {
+        self.effect_style_list_mut()
     }
 
     #[inline]
@@ -100,13 +146,26 @@ impl FormatScheme {
 
     #[inline]
     #[must_use]
-    pub fn get_background_fill_style_list(&self) -> &BackgroundFillStyleList {
+    pub fn background_fill_style_list(&self) -> &BackgroundFillStyleList {
         &self.background_fill_style_list
     }
 
     #[inline]
-    pub fn get_background_fill_style_list_mut(&mut self) -> &mut BackgroundFillStyleList {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use background_fill_style_list()")]
+    pub fn get_background_fill_style_list(&self) -> &BackgroundFillStyleList {
+        self.background_fill_style_list()
+    }
+
+    #[inline]
+    pub fn background_fill_style_list_mut(&mut self) -> &mut BackgroundFillStyleList {
         &mut self.background_fill_style_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use background_fill_style_list_mut()")]
+    pub fn get_background_fill_style_list_mut(&mut self) -> &mut BackgroundFillStyleList {
+        self.background_fill_style_list_mut()
     }
 
     #[inline]

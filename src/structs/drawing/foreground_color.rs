@@ -27,13 +27,26 @@ pub struct ForegroundColor {
 impl ForegroundColor {
     #[inline]
     #[must_use]
-    pub fn get_scheme_color(&self) -> &SchemeColor {
+    pub fn scheme_color(&self) -> &SchemeColor {
         &self.scheme_color
     }
 
     #[inline]
-    pub fn get_scheme_color_mut(&mut self) -> &mut SchemeColor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> &SchemeColor {
+        self.scheme_color()
+    }
+
+    #[inline]
+    pub fn scheme_color_mut(&mut self) -> &mut SchemeColor {
         &mut self.scheme_color
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color_mut()")]
+    pub fn get_scheme_color_mut(&mut self) -> &mut SchemeColor {
+        self.scheme_color_mut()
     }
 
     #[inline]

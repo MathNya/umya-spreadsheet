@@ -35,13 +35,26 @@ pub struct EffectStyle {
 impl EffectStyle {
     #[inline]
     #[must_use]
-    pub fn get_effect_list(&self) -> Option<&EffectList> {
+    pub fn effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
     #[inline]
-    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_list()")]
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list()
+    }
+
+    #[inline]
+    pub fn effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use effect_list_mut()")]
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list_mut()
     }
 
     #[inline]
@@ -52,13 +65,26 @@ impl EffectStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
+    pub fn scene_3d_type(&self) -> Option<&Scene3DType> {
         self.scene_3d_type.as_deref()
     }
 
     #[inline]
-    pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scene_3d_type()")]
+    pub fn get_scene_3d_type(&self) -> Option<&Scene3DType> {
+        self.scene_3d_type()
+    }
+
+    #[inline]
+    pub fn scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
         self.scene_3d_type.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use scene_3d_type_mut()")]
+    pub fn get_scene_3d_type_mut(&mut self) -> Option<&mut Scene3DType> {
+        self.scene_3d_type_mut()
     }
 
     #[inline]
@@ -69,13 +95,26 @@ impl EffectStyle {
 
     #[inline]
     #[must_use]
-    pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
+    pub fn shape_3d_type(&self) -> Option<&Shape3DType> {
         self.shape_3d_type.as_deref()
     }
 
     #[inline]
-    pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_3d_type()")]
+    pub fn get_shape_3d_type(&self) -> Option<&Shape3DType> {
+        self.shape_3d_type()
+    }
+
+    #[inline]
+    pub fn shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
         self.shape_3d_type.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shape_3d_type_mut()")]
+    pub fn get_shape_3d_type_mut(&mut self) -> Option<&mut Shape3DType> {
+        self.shape_3d_type_mut()
     }
 
     #[inline]

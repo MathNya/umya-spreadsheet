@@ -35,8 +35,15 @@ pub struct FontScheme {
 impl FontScheme {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -47,13 +54,26 @@ impl FontScheme {
 
     #[inline]
     #[must_use]
-    pub fn get_major_font(&self) -> &FontCollectionType {
+    pub fn major_font(&self) -> &FontCollectionType {
         &self.major_font
     }
 
     #[inline]
-    pub fn get_major_font_mut(&mut self) -> &mut FontCollectionType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use major_font()")]
+    pub fn get_major_font(&self) -> &FontCollectionType {
+        self.major_font()
+    }
+
+    #[inline]
+    pub fn major_font_mut(&mut self) -> &mut FontCollectionType {
         &mut self.major_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use major_font_mut()")]
+    pub fn get_major_font_mut(&mut self) -> &mut FontCollectionType {
+        self.major_font_mut()
     }
 
     #[inline]
@@ -64,13 +84,26 @@ impl FontScheme {
 
     #[inline]
     #[must_use]
-    pub fn get_minor_font(&self) -> &FontCollectionType {
+    pub fn minor_font(&self) -> &FontCollectionType {
         &self.minor_font
     }
 
     #[inline]
-    pub fn get_minor_font_mut(&mut self) -> &mut FontCollectionType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use minor_font()")]
+    pub fn get_minor_font(&self) -> &FontCollectionType {
+        self.minor_font()
+    }
+
+    #[inline]
+    pub fn minor_font_mut(&mut self) -> &mut FontCollectionType {
         &mut self.minor_font
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use minor_font_mut()")]
+    pub fn get_minor_font_mut(&mut self) -> &mut FontCollectionType {
+        self.minor_font_mut()
     }
 
     #[inline]
