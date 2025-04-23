@@ -16,21 +16,21 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.2.3
-#### Fixed bug in get_highest_column_and_row()
+### ver 2.3.0
+#### Fixed bugs related to color constants.(#265)
+#### Fixed bugs related to Error Title and Error Message.(#258)
+#### Images can now be inserted even when running in WebAssembly.(#275)
+#### Optimization for faster processing speeds.
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.2.3"
+umya-spreadsheet = "2.3.0"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.2.3", features = ["js"] }
-
-# Use only png for image processing
-umya-spreadsheet = { version = "2.2.3", features = ["image/png"] }
+umya-spreadsheet = { version = "2.3.0", features = ["js"] }
 ```
 
 Add the following code to main.rs
