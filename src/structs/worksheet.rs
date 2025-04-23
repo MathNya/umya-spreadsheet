@@ -561,6 +561,33 @@ impl Worksheet {
         self.cell_value_by_range(range)
     }
 
+    /// Get the upper-left corner cell of a cell inside a merged cell range (if any).
+    pub fn map_merged_cell<T>(&self, coordinate: T) -> (u32, u32)
+    where
+        T: Into<CellCoordinates>,
+    {
+        let CellCoordinates { col, row } = coordinate.into();
+        self.merge_cells
+            .range_collection()
+            .iter()
+            .find_map(|range| {
+                let start_col = range.coordinate_start_col()?;
+                let start_row = range.coordinate_start_row()?;
+                let end_col = range.coordinate_end_col()?;
+                let end_row = range.coordinate_end_row()?;
+                if col >= start_col.num()
+                    && col <= end_col.num()
+                    && row >= start_row.num()
+                    && row <= end_row.num()
+                {
+                    Some((start_col.num(), start_row.num()))
+                } else {
+                    None
+                }
+            })
+            .unwrap_or((col, row))
+    }
+
     /// Get style.
     /// # Arguments
     /// * `coordinate` - Specify the coordinates. ex) `"A1"` or `(1, 1)` or `(1,
