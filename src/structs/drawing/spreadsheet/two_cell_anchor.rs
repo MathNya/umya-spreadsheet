@@ -311,8 +311,8 @@ impl TwoCellAnchor {
         match self.graphic_frame.as_ref() {
             Some(v) => v
                 .graphic()
-                .get_graphic_data()
-                .get_chart_space()
+                .graphic_data()
+                .chart_space()
                 .chart()
                 .plot_area()
                 .is_support(),

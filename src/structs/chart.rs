@@ -319,8 +319,8 @@ impl Chart {
             .graphic_frame()
             .expect("Non-ChartSpace.")
             .graphic()
-            .get_graphic_data()
-            .get_chart_space()
+            .graphic_data()
+            .chart_space()
     }
 
     #[inline]
@@ -336,8 +336,8 @@ impl Chart {
             .graphic_frame_mut()
             .expect("Non-ChartSpace.")
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
     }
 
     #[inline]
@@ -547,64 +547,64 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_line_chart(line_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_layout(layout);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -692,70 +692,70 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_line_3d_chart(line_3d_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_layout(layout);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -793,57 +793,57 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_pie_chart(pie_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_layout(layout);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -892,63 +892,63 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_pie_3d_chart(pie_3d_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_layout(layout);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1009,50 +1009,50 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_doughnut_chart(doughnut_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_layout(layout);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1130,57 +1130,57 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_area_chart(area_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1269,63 +1269,63 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_area_3d_chart(area_3d_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1408,57 +1408,57 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_bar_chart(bar_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1552,63 +1552,63 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .set_view_3d(view_3d);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_bar_3d_chart(bar_3d_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1645,50 +1645,50 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_of_pie_chart(of_pie_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1858,64 +1858,64 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_bubble_chart(bubble_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis_1);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis_2);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_text_properties(text_properties);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Gap);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -1989,64 +1989,64 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_radar_chart(radar_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_category_axis(category_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_layout(layout);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
@@ -2178,64 +2178,64 @@ impl Chart {
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .editing_language_mut()
             .set_val(&self.default_language);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .set_scatter_chart(scatter_chart);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis_1);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_area_mut()
             .add_value_axis(value_axis_2);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .legend_position_mut()
             .set_val(LegendPositionValues::Right);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .legend_mut()
             .set_layout(layout);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .plot_visible_only_mut()
             .set_val(true);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .chart_mut()
             .display_blanks_as_mut()
             .set_val(DisplayBlanksAsValues::Zero);
         graphic_frame
             .graphic_mut()
-            .get_graphic_data_mut()
-            .get_chart_space_mut()
+            .graphic_data_mut()
+            .chart_space_mut()
             .set_print_settings(Self::make_print_settings());
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }

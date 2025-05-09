@@ -34,8 +34,15 @@ pub struct Glow {
 impl Glow {
     #[inline]
     #[must_use]
-    pub fn get_radius(&self) -> i64 {
+    pub fn radius(&self) -> i64 {
         self.radius.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use radius()")]
+    pub fn get_radius(&self) -> i64 {
+        self.radius()
     }
 
     #[inline]
@@ -46,8 +53,15 @@ impl Glow {
 
     #[inline]
     #[must_use]
-    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+    pub fn scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color()
     }
 
     #[inline]

@@ -35,8 +35,15 @@ pub struct GradientStop {
 impl GradientStop {
     #[inline]
     #[must_use]
-    pub fn get_position(&self) -> i32 {
+    pub fn position(&self) -> i32 {
         self.position
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use position()")]
+    pub fn get_position(&self) -> i32 {
+        self.position()
     }
 
     #[inline]
@@ -47,13 +54,26 @@ impl GradientStop {
 
     #[inline]
     #[must_use]
-    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+    pub fn scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
     #[inline]
-    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color()
+    }
+
+    #[inline]
+    pub fn scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
         self.scheme_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color_mut()")]
+    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+        self.scheme_color_mut()
     }
 
     #[inline]
@@ -64,13 +84,26 @@ impl GradientStop {
 
     #[inline]
     #[must_use]
-    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+    pub fn rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex()")]
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex()
+    }
+
+    #[inline]
+    pub fn rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex_mut()")]
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex_mut()
     }
 
     #[inline]

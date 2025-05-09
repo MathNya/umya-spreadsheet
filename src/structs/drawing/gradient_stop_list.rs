@@ -27,13 +27,26 @@ pub struct GradientStopList {
 impl GradientStopList {
     #[inline]
     #[must_use]
-    pub fn get_gradient_stop(&self) -> &[GradientStop] {
+    pub fn gradient_stop(&self) -> &[GradientStop] {
         &self.gradient_stop
     }
 
     #[inline]
-    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop()")]
+    pub fn get_gradient_stop(&self) -> &[GradientStop] {
+        self.gradient_stop()
+    }
+
+    #[inline]
+    pub fn gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
         &mut self.gradient_stop
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_stop_mut()")]
+    pub fn get_gradient_stop_mut(&mut self) -> &mut Vec<GradientStop> {
+        self.gradient_stop_mut()
     }
 
     #[inline]

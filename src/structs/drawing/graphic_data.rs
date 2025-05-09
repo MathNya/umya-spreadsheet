@@ -39,13 +39,26 @@ pub struct GraphicData {
 impl GraphicData {
     #[inline]
     #[must_use]
-    pub fn get_chart_space(&self) -> &ChartSpace {
+    pub fn chart_space(&self) -> &ChartSpace {
         &self.chart_space
     }
 
     #[inline]
-    pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use chart_space()")]
+    pub fn get_chart_space(&self) -> &ChartSpace {
+        self.chart_space()
+    }
+
+    #[inline]
+    pub fn chart_space_mut(&mut self) -> &mut ChartSpace {
         &mut self.chart_space
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use chart_space_mut()")]
+    pub fn get_chart_space_mut(&mut self) -> &mut ChartSpace {
+        self.chart_space_mut()
     }
 
     #[inline]

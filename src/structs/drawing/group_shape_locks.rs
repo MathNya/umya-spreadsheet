@@ -30,13 +30,86 @@ pub struct GroupShapeLocks {
 impl GroupShapeLocks {
     #[inline]
     #[must_use]
-    pub fn get_no_change_aspect(&self) -> bool {
+    pub fn no_change_aspect(&self) -> bool {
         self.no_change_aspect.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_change_aspect()")]
+    pub fn get_no_change_aspect(&self) -> bool {
+        self.no_change_aspect()
     }
 
     #[inline]
     pub fn set_no_change_aspect(&mut self, value: bool) {
         self.no_change_aspect.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn no_grouping(&self) -> bool {
+        self.no_grouping.value()
+    }
+
+    #[inline]
+    pub fn set_no_grouping(&mut self, value: bool) {
+        self.no_grouping.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn no_move(&self) -> bool {
+        self.no_move.value()
+    }
+
+    #[inline]
+    pub fn set_no_move(&mut self, value: bool) {
+        self.no_move.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn no_resize(&self) -> bool {
+        self.no_resize.value()
+    }
+
+    #[inline]
+    pub fn set_no_resize(&mut self, value: bool) {
+        self.no_resize.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn no_rotation(&self) -> bool {
+        self.no_rotation.value()
+    }
+
+    #[inline]
+    pub fn set_no_rotation(&mut self, value: bool) {
+        self.no_rotation.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn no_selection(&self) -> bool {
+        self.no_selection.value()
+    }
+
+    #[inline]
+    pub fn set_no_selection(&mut self, value: bool) {
+        self.no_selection.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn no_ungrouping(&self) -> bool {
+        self.no_ungrouping.value()
+    }
+
+    #[inline]
+    pub fn set_no_ungrouping(&mut self, value: bool) {
+        self.no_ungrouping.set_value(value);
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

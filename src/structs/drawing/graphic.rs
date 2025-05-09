@@ -29,13 +29,26 @@ pub struct Graphic {
 impl Graphic {
     #[inline]
     #[must_use]
-    pub fn get_graphic_data(&self) -> &GraphicData {
+    pub fn graphic_data(&self) -> &GraphicData {
         &self.graphic_data
     }
 
     #[inline]
-    pub fn get_graphic_data_mut(&mut self) -> &mut GraphicData {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use graphic_data()")]
+    pub fn get_graphic_data(&self) -> &GraphicData {
+        self.graphic_data()
+    }
+
+    #[inline]
+    pub fn graphic_data_mut(&mut self) -> &mut GraphicData {
         &mut self.graphic_data
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use graphic_data_mut()")]
+    pub fn get_graphic_data_mut(&mut self) -> &mut GraphicData {
+        self.graphic_data_mut()
     }
 
     #[inline]
