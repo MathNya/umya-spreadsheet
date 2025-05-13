@@ -24,8 +24,15 @@ pub struct Miter {
 impl Miter {
     #[inline]
     #[must_use]
-    pub fn get_limit(&self) -> i32 {
+    pub fn limit(&self) -> i32 {
         self.limit.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use limit()")]
+    pub fn get_limit(&self) -> i32 {
+        self.limit()
     }
 
     #[inline]

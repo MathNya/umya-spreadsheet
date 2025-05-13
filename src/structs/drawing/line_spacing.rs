@@ -27,13 +27,26 @@ pub struct LineSpacing {
 impl LineSpacing {
     #[inline]
     #[must_use]
-    pub fn get_spacing_percent(&self) -> Option<&SpacingPercent> {
+    pub fn spacing_percent(&self) -> Option<&SpacingPercent> {
         self.spacing_percent.as_ref()
     }
 
     #[inline]
-    pub fn get_spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use spacing_percent()")]
+    pub fn get_spacing_percent(&self) -> Option<&SpacingPercent> {
+        self.spacing_percent()
+    }
+
+    #[inline]
+    pub fn spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
         self.spacing_percent.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use spacing_percent_mut()")]
+    pub fn get_spacing_percent_mut(&mut self) -> Option<&mut SpacingPercent> {
+        self.spacing_percent_mut()
     }
 
     #[inline]

@@ -28,8 +28,15 @@ pub struct LinearGradientFill {
 impl LinearGradientFill {
     #[inline]
     #[must_use]
-    pub fn get_angle(&self) -> i32 {
+    pub fn angle(&self) -> i32 {
         self.angle.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use angle()")]
+    pub fn get_angle(&self) -> i32 {
+        self.angle()
     }
 
     #[inline]
@@ -40,8 +47,15 @@ impl LinearGradientFill {
 
     #[inline]
     #[must_use]
-    pub fn get_scaled(&self) -> bool {
+    pub fn scaled(&self) -> bool {
         self.scaled.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scaled()")]
+    pub fn get_scaled(&self) -> bool {
+        self.scaled()
     }
 
     #[inline]

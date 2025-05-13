@@ -40,54 +40,94 @@ pub struct ParagraphProperties {
 impl ParagraphProperties {
     #[inline]
     #[must_use]
-    pub fn get_right_to_left(&self) -> Option<&str> {
+    pub fn right_to_left(&self) -> Option<&str> {
         self.right_to_left.value()
     }
 
     #[inline]
-    pub fn set_right_to_left<S: Into<String>>(&mut self, value: S) -> &mut ParagraphProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_to_left()")]
+    pub fn get_right_to_left(&self) -> Option<&str> {
+        self.right_to_left()
+    }
+
+    #[inline]
+    pub fn set_right_to_left<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.right_to_left.set_value(value);
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
+    pub fn alignment(&self) -> &TextAlignmentTypeValues {
         self.alignment.value()
     }
 
     #[inline]
-    pub fn set_alignment(&mut self, value: TextAlignmentTypeValues) -> &mut ParagraphProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
+    pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
+        self.alignment()
+    }
+
+    #[inline]
+    pub fn set_alignment(&mut self, value: TextAlignmentTypeValues) -> &mut Self {
         self.alignment.set_value(value);
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
+    pub fn default_run_properties(&self) -> Option<&RunProperties> {
         self.default_run_properties.as_deref()
     }
 
     #[inline]
-    pub fn get_default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_run_properties()")]
+    pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
+        self.default_run_properties()
+    }
+
+    #[inline]
+    pub fn default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
         self.default_run_properties.as_deref_mut()
     }
 
     #[inline]
-    pub fn set_default_run_properties(&mut self, value: RunProperties) -> &mut ParagraphProperties {
+    #[deprecated(since = "3.0.0", note = "Use default_run_properties_mut()")]
+    pub fn get_default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+        self.default_run_properties_mut()
+    }
+
+    #[inline]
+    pub fn set_default_run_properties(&mut self, value: RunProperties) -> &mut Self {
         self.default_run_properties = Some(Box::new(value));
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_line_spacing(&self) -> Option<&LineSpacing> {
+    pub fn line_spacing(&self) -> Option<&LineSpacing> {
         self.line_spacing.as_ref()
     }
 
     #[inline]
-    pub fn get_line_spacing_mut(&mut self) -> Option<&mut LineSpacing> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use line_spacing()")]
+    pub fn get_line_spacing(&self) -> Option<&LineSpacing> {
+        self.line_spacing()
+    }
+
+    #[inline]
+    pub fn line_spacing_mut(&mut self) -> Option<&mut LineSpacing> {
         self.line_spacing.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use line_spacing_mut()")]
+    pub fn get_line_spacing_mut(&mut self) -> Option<&mut LineSpacing> {
+        self.line_spacing_mut()
     }
 
     #[inline]

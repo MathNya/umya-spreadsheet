@@ -780,10 +780,10 @@ impl Chart {
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_right_to_left("0");
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
@@ -879,10 +879,10 @@ impl Chart {
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_right_to_left("0");
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
@@ -1632,10 +1632,10 @@ impl Chart {
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_right_to_left("0");
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
@@ -1845,10 +1845,10 @@ impl Chart {
         end_paragraph_run_properties.set_language(&self.default_language);
         let mut paragraph = Paragraph::default();
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_right_to_left("0");
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
         paragraph.set_end_para_run_properties(end_paragraph_run_properties);
 
@@ -2266,7 +2266,7 @@ impl Chart {
 
         let mut paragraph = Paragraph::default();
         paragraph
-            .get_paragraph_properties_mut()
+            .paragraph_properties_mut()
             .set_default_run_properties(default_run_properties);
         paragraph.add_run(run);
 

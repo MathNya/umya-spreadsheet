@@ -38,8 +38,15 @@ pub struct LightRig {
 impl LightRig {
     #[inline]
     #[must_use]
-    pub fn get_rig(&self) -> &LightRigValues {
+    pub fn rig(&self) -> &LightRigValues {
         self.rig.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rig()")]
+    pub fn get_rig(&self) -> &LightRigValues {
+        self.rig()
     }
 
     #[inline]
@@ -50,8 +57,15 @@ impl LightRig {
 
     #[inline]
     #[must_use]
-    pub fn get_definition(&self) -> &LightRigDirectionValues {
+    pub fn definition(&self) -> &LightRigDirectionValues {
         self.definition.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use definition()")]
+    pub fn get_definition(&self) -> &LightRigDirectionValues {
+        self.definition()
     }
 
     #[inline]
@@ -62,13 +76,26 @@ impl LightRig {
 
     #[inline]
     #[must_use]
-    pub fn get_rotation(&self) -> Option<&Rotation> {
+    pub fn rotation(&self) -> Option<&Rotation> {
         self.rotation.as_deref()
     }
 
     #[inline]
-    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotation()")]
+    pub fn get_rotation(&self) -> Option<&Rotation> {
+        self.rotation()
+    }
+
+    #[inline]
+    pub fn rotation_mut(&mut self) -> Option<&mut Rotation> {
         self.rotation.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rotation_mut()")]
+    pub fn get_rotation_mut(&mut self) -> Option<&mut Rotation> {
+        self.rotation_mut()
     }
 
     #[inline]

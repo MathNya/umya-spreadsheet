@@ -20,13 +20,21 @@ pub struct PictureLocks {
 impl PictureLocks {
     #[inline]
     #[must_use]
-    pub fn get_no_change_aspect(&self) -> bool {
+    pub fn no_change_aspect(&self) -> bool {
         self.no_change_aspect
     }
 
     #[inline]
-    pub fn set_no_change_aspect(&mut self, value: bool) {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_change_aspect()")]
+    pub fn get_no_change_aspect(&self) -> bool {
+        self.no_change_aspect()
+    }
+
+    #[inline]
+    pub fn set_no_change_aspect(&mut self, value: bool) -> &mut Self {
         self.no_change_aspect = value;
+        self
     }
 
     #[inline]

@@ -26,13 +26,26 @@ pub struct LineStyleList {
 impl LineStyleList {
     #[inline]
     #[must_use]
-    pub fn get_outline_collection(&self) -> &[Outline] {
+    pub fn outline_collection(&self) -> &[Outline] {
         &self.outline_collection
     }
 
     #[inline]
-    pub fn get_outline_collection_mut(&mut self) -> &mut Vec<Outline> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline_collection()")]
+    pub fn get_outline_collection(&self) -> &[Outline] {
+        self.outline_collection()
+    }
+
+    #[inline]
+    pub fn outline_collection_mut(&mut self) -> &mut Vec<Outline> {
         &mut self.outline_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use outline_collection_mut()")]
+    pub fn get_outline_collection_mut(&mut self) -> &mut Vec<Outline> {
+        self.outline_collection_mut()
     }
 
     #[inline]

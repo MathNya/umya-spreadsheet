@@ -31,8 +31,15 @@ pub struct PresetColor {
 impl PresetColor {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &str {
+    pub fn val(&self) -> &str {
         &self.val
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &str {
+        self.val()
     }
 
     #[inline]
@@ -42,13 +49,26 @@ impl PresetColor {
 
     #[inline]
     #[must_use]
-    pub fn get_alpha(&self) -> Option<&Alpha> {
+    pub fn alpha(&self) -> Option<&Alpha> {
         self.alpha.as_ref()
     }
 
     #[inline]
-    pub fn get_alpha_mut(&mut self) -> Option<&mut Alpha> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alpha()")]
+    pub fn get_alpha(&self) -> Option<&Alpha> {
+        self.alpha()
+    }
+
+    #[inline]
+    pub fn alpha_mut(&mut self) -> Option<&mut Alpha> {
         self.alpha.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use alpha_mut()")]
+    pub fn get_alpha_mut(&mut self) -> Option<&mut Alpha> {
+        self.alpha_mut()
     }
 
     #[inline]

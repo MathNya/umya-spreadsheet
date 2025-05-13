@@ -23,8 +23,15 @@ pub struct PresetDash {
 impl PresetDash {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &PresetLineDashValues {
+    pub fn val(&self) -> &PresetLineDashValues {
         self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &PresetLineDashValues {
+        self.val()
     }
 
     #[inline]

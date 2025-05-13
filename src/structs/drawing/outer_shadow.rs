@@ -44,8 +44,15 @@ pub struct OuterShadow {
 impl OuterShadow {
     #[inline]
     #[must_use]
-    pub fn get_blur_radius(&self) -> Option<&str> {
+    pub fn blur_radius(&self) -> Option<&str> {
         self.blur_radius.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use blur_radius()")]
+    pub fn get_blur_radius(&self) -> Option<&str> {
+        self.blur_radius()
     }
 
     #[inline]
@@ -56,8 +63,15 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_horizontal_ratio(&self) -> Option<&str> {
+    pub fn horizontal_ratio(&self) -> Option<&str> {
         self.horizontal_ratio.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use horizontal_ratio()")]
+    pub fn get_horizontal_ratio(&self) -> Option<&str> {
+        self.horizontal_ratio()
     }
 
     #[inline]
@@ -68,8 +82,15 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_vertical_ratio(&self) -> Option<&str> {
+    pub fn vertical_ratio(&self) -> Option<&str> {
         self.vertical_ratio.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use vertical_ratio()")]
+    pub fn get_vertical_ratio(&self) -> Option<&str> {
+        self.vertical_ratio()
     }
 
     #[inline]
@@ -80,8 +101,15 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_alignment(&self) -> Option<&str> {
+    pub fn alignment(&self) -> Option<&str> {
         self.alignment.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
+    pub fn get_alignment(&self) -> Option<&str> {
+        self.alignment()
     }
 
     #[inline]
@@ -92,8 +120,15 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_direction(&self) -> Option<&str> {
+    pub fn direction(&self) -> Option<&str> {
         self.direction.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use direction()")]
+    pub fn get_direction(&self) -> Option<&str> {
+        self.direction()
     }
 
     #[inline]
@@ -104,8 +139,15 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_distance(&self) -> Option<&str> {
+    pub fn distance(&self) -> Option<&str> {
         self.distance.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use distance()")]
+    pub fn get_distance(&self) -> Option<&str> {
+        self.distance()
     }
 
     #[inline]
@@ -115,8 +157,14 @@ impl OuterShadow {
     }
 
     #[must_use]
-    pub fn get_rotate_with_shape(&self) -> Option<&str> {
+    pub fn rotate_with_shape(&self) -> Option<&str> {
         self.rotate_with_shape.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotate_with_shape()")]
+    pub fn get_rotate_with_shape(&self) -> Option<&str> {
+        self.rotate_with_shape()
     }
 
     #[inline]
@@ -127,13 +175,26 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_preset_color(&self) -> Option<&PresetColor> {
+    pub fn preset_color(&self) -> Option<&PresetColor> {
         self.preset_color.as_deref()
     }
 
     #[inline]
-    pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset_color()")]
+    pub fn get_preset_color(&self) -> Option<&PresetColor> {
+        self.preset_color()
+    }
+
+    #[inline]
+    pub fn preset_color_mut(&mut self) -> Option<&mut PresetColor> {
         self.preset_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use preset_color_mut()")]
+    pub fn get_preset_color_mut(&mut self) -> Option<&mut PresetColor> {
+        self.preset_color_mut()
     }
 
     #[inline]
@@ -144,13 +205,26 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+    pub fn scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
     }
 
     #[inline]
-    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color()
+    }
+
+    #[inline]
+    pub fn scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
         self.scheme_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color_mut()")]
+    pub fn get_scheme_color_mut(&mut self) -> Option<&mut SchemeColor> {
+        self.scheme_color_mut()
     }
 
     #[inline]
@@ -161,13 +235,26 @@ impl OuterShadow {
 
     #[inline]
     #[must_use]
-    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+    pub fn rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref()
     }
 
     #[inline]
-    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex()")]
+    pub fn get_rgb_color_model_hex(&self) -> Option<&RgbColorModelHex> {
+        self.rgb_color_model_hex()
+    }
+
+    #[inline]
+    pub fn rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
         self.rgb_color_model_hex.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rgb_color_model_hex_mut()")]
+    pub fn get_rgb_color_model_hex_mut(&mut self) -> Option<&mut RgbColorModelHex> {
+        self.rgb_color_model_hex_mut()
     }
 
     #[inline]

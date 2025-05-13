@@ -33,25 +33,45 @@ pub struct Paragraph {
 impl Paragraph {
     #[inline]
     #[must_use]
-    pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
+    pub fn paragraph_properties(&self) -> &ParagraphProperties {
         &self.paragraph_properties
     }
 
     #[inline]
-    pub fn get_paragraph_properties_mut(&mut self) -> &mut ParagraphProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use paragraph_properties()")]
+    pub fn get_paragraph_properties(&self) -> &ParagraphProperties {
+        self.paragraph_properties()
+    }
+
+    #[inline]
+    pub fn paragraph_properties_mut(&mut self) -> &mut ParagraphProperties {
         &mut self.paragraph_properties
     }
 
     #[inline]
-    pub fn set_paragraph_properties(&mut self, value: ParagraphProperties) -> &mut Paragraph {
+    #[deprecated(since = "3.0.0", note = "Use paragraph_properties_mut()")]
+    pub fn get_paragraph_properties_mut(&mut self) -> &mut ParagraphProperties {
+        self.paragraph_properties_mut()
+    }
+
+    #[inline]
+    pub fn set_paragraph_properties(&mut self, value: ParagraphProperties) -> &mut Self {
         self.paragraph_properties = value;
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_run(&self) -> &[Run] {
+    pub fn run(&self) -> &[Run] {
         &self.run
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use run()")]
+    pub fn get_run(&self) -> &[Run] {
+        self.run()
     }
 
     #[inline]
@@ -61,17 +81,30 @@ impl Paragraph {
 
     #[inline]
     #[must_use]
-    pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
+    pub fn end_para_run_properties(&self) -> Option<&RunProperties> {
         self.end_para_run_properties.as_deref()
     }
 
     #[inline]
-    pub fn get_end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use end_para_run_properties()")]
+    pub fn get_end_para_run_properties(&self) -> Option<&RunProperties> {
+        self.end_para_run_properties()
+    }
+
+    #[inline]
+    pub fn end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
         self.end_para_run_properties.as_deref_mut()
     }
 
     #[inline]
-    pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Paragraph {
+    #[deprecated(since = "3.0.0", note = "Use end_para_run_properties_mut()")]
+    pub fn get_end_para_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+        self.end_para_run_properties_mut()
+    }
+
+    #[inline]
+    pub fn set_end_para_run_properties(&mut self, value: RunProperties) -> &mut Self {
         self.end_para_run_properties = Some(Box::new(value));
         self
     }

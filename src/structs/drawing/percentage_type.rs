@@ -23,8 +23,15 @@ pub struct PercentageType {
 impl PercentageType {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> i32 {
+    pub fn val(&self) -> i32 {
         self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> i32 {
+        self.val()
     }
 
     #[inline]

@@ -57,8 +57,15 @@ pub struct Outline {
 impl Outline {
     #[inline]
     #[must_use]
-    pub fn get_width(&self) -> u32 {
+    pub fn width(&self) -> u32 {
         self.width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width()")]
+    pub fn get_width(&self) -> u32 {
+        self.width()
     }
 
     #[inline]
@@ -69,8 +76,15 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_cap_type(&self) -> Option<&str> {
+    pub fn cap_type(&self) -> Option<&str> {
         self.cap_type.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use cap_type()")]
+    pub fn get_cap_type(&self) -> Option<&str> {
+        self.cap_type()
     }
 
     #[inline]
@@ -81,8 +95,15 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_compound_line_type(&self) -> Option<&str> {
+    pub fn compound_line_type(&self) -> Option<&str> {
         self.compound_line_type.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use compound_line_type()")]
+    pub fn get_compound_line_type(&self) -> Option<&str> {
+        self.compound_line_type()
     }
 
     #[inline]
@@ -93,13 +114,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+    pub fn solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill()")]
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill()
+    }
+
+    #[inline]
+    pub fn solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill_mut()")]
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill_mut()
     }
 
     #[inline]
@@ -110,13 +144,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+    pub fn gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill()")]
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill()
+    }
+
+    #[inline]
+    pub fn gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
         self.gradient_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_mut()")]
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill_mut()
     }
 
     #[inline]
@@ -127,13 +174,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_tail_end(&self) -> Option<&TailEnd> {
+    pub fn tail_end(&self) -> Option<&TailEnd> {
         self.tail_end.as_deref()
     }
 
     #[inline]
-    pub fn get_tail_end_mut(&mut self) -> Option<&mut TailEnd> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tail_end()")]
+    pub fn get_tail_end(&self) -> Option<&TailEnd> {
+        self.tail_end()
+    }
+
+    #[inline]
+    pub fn tail_end_mut(&mut self) -> Option<&mut TailEnd> {
         self.tail_end.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use tail_end_mut()")]
+    pub fn get_tail_end_mut(&mut self) -> Option<&mut TailEnd> {
+        self.tail_end_mut()
     }
 
     #[inline]
@@ -144,13 +204,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_no_fill(&self) -> Option<&NoFill> {
+    pub fn no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
     #[inline]
-    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_fill()")]
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill()
+    }
+
+    #[inline]
+    pub fn no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use no_fill_mut()")]
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill_mut()
     }
 
     #[inline]
@@ -161,13 +234,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_bevel(&self) -> Option<&Bevel> {
+    pub fn bevel(&self) -> Option<&Bevel> {
         self.bevel.as_deref()
     }
 
     #[inline]
-    pub fn get_bevel_mut(&mut self) -> Option<&mut Bevel> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bevel()")]
+    pub fn get_bevel(&self) -> Option<&Bevel> {
+        self.bevel()
+    }
+
+    #[inline]
+    pub fn bevel_mut(&mut self) -> Option<&mut Bevel> {
         self.bevel.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use bevel_mut()")]
+    pub fn get_bevel_mut(&mut self) -> Option<&mut Bevel> {
+        self.bevel_mut()
     }
 
     #[inline]
@@ -178,13 +264,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_preset_dash(&self) -> Option<&PresetDash> {
+    pub fn preset_dash(&self) -> Option<&PresetDash> {
         self.preset_dash.as_ref()
     }
 
     #[inline]
-    pub fn get_preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset_dash()")]
+    pub fn get_preset_dash(&self) -> Option<&PresetDash> {
+        self.preset_dash()
+    }
+
+    #[inline]
+    pub fn preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
         self.preset_dash.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use preset_dash_mut()")]
+    pub fn get_preset_dash_mut(&mut self) -> Option<&mut PresetDash> {
+        self.preset_dash_mut()
     }
 
     #[inline]
@@ -195,13 +294,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_miter(&self) -> Option<&Miter> {
+    pub fn miter(&self) -> Option<&Miter> {
         self.miter.as_ref()
     }
 
     #[inline]
-    pub fn get_miter_mut(&mut self) -> Option<&mut Miter> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use miter()")]
+    pub fn get_miter(&self) -> Option<&Miter> {
+        self.miter()
+    }
+
+    #[inline]
+    pub fn miter_mut(&mut self) -> Option<&mut Miter> {
         self.miter.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use miter_mut()")]
+    pub fn get_miter_mut(&mut self) -> Option<&mut Miter> {
+        self.miter_mut()
     }
 
     #[inline]
@@ -212,13 +324,26 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_round(&self) -> Option<&Round> {
+    pub fn round(&self) -> Option<&Round> {
         self.round.as_ref()
     }
 
     #[inline]
-    pub fn get_round_mut(&mut self) -> Option<&mut Round> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use round()")]
+    pub fn get_round(&self) -> Option<&Round> {
+        self.round()
+    }
+
+    #[inline]
+    pub fn round_mut(&mut self) -> Option<&mut Round> {
         self.round.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use round_mut()")]
+    pub fn get_round_mut(&mut self) -> Option<&mut Round> {
+        self.round_mut()
     }
 
     #[inline]
@@ -229,8 +354,15 @@ impl Outline {
 
     #[inline]
     #[must_use]
-    pub fn get_alignment(&self) -> &PenAlignmentValues {
+    pub fn alignment(&self) -> &PenAlignmentValues {
         self.alignment.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
+    pub fn get_alignment(&self) -> &PenAlignmentValues {
+        self.alignment()
     }
 
     #[inline]

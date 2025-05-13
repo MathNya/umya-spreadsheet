@@ -46,46 +46,79 @@ impl Default for PatternFill {
 impl PatternFill {
     #[inline]
     #[must_use]
-    pub fn get_preset(&self) -> &str {
+    pub fn preset(&self) -> &str {
         &self.preset
     }
 
     #[inline]
-    pub fn set_preset(&mut self, value: String) -> &mut PatternFill {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset()")]
+    pub fn get_preset(&self) -> &str {
+        self.preset()
+    }
+
+    #[inline]
+    pub fn set_preset(&mut self, value: String) -> &mut Self {
         self.preset = value.into_boxed_str();
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_foreground_color(&self) -> &ForegroundColor {
+    pub fn foreground_color(&self) -> &ForegroundColor {
         &self.foreground_color
     }
 
     #[inline]
-    pub fn get_foreground_color_mut(&mut self) -> &mut ForegroundColor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use foreground_color()")]
+    pub fn get_foreground_color(&self) -> &ForegroundColor {
+        self.foreground_color()
+    }
+
+    #[inline]
+    pub fn foreground_color_mut(&mut self) -> &mut ForegroundColor {
         &mut self.foreground_color
     }
 
     #[inline]
-    pub fn set_foreground_color(&mut self, value: ForegroundColor) -> &mut PatternFill {
+    #[deprecated(since = "3.0.0", note = "Use foreground_color_mut()")]
+    pub fn get_foreground_color_mut(&mut self) -> &mut ForegroundColor {
+        self.foreground_color_mut()
+    }
+
+    #[inline]
+    pub fn set_foreground_color(&mut self, value: ForegroundColor) -> &mut Self {
         self.foreground_color = value;
         self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_background_color(&self) -> &BackgroundColor {
+    pub fn background_color(&self) -> &BackgroundColor {
         &self.background_color
     }
 
     #[inline]
-    pub fn get_background_color_mut(&mut self) -> &mut BackgroundColor {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use background_color()")]
+    pub fn get_background_color(&self) -> &BackgroundColor {
+        self.background_color()
+    }
+
+    #[inline]
+    pub fn background_color_mut(&mut self) -> &mut BackgroundColor {
         &mut self.background_color
     }
 
     #[inline]
-    pub fn set_background_color(&mut self, value: BackgroundColor) -> &mut PatternFill {
+    #[deprecated(since = "3.0.0", note = "Use background_color_mut()")]
+    pub fn get_background_color_mut(&mut self) -> &mut BackgroundColor {
+        self.background_color_mut()
+    }
+
+    #[inline]
+    pub fn set_background_color(&mut self, value: BackgroundColor) -> &mut Self {
         self.background_color = value;
         self
     }

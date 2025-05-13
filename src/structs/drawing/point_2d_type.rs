@@ -26,8 +26,15 @@ pub struct Point2DType {
 impl Point2DType {
     #[inline]
     #[must_use]
-    pub fn get_x(&self) -> i64 {
+    pub fn x(&self) -> i64 {
         self.x.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use x()")]
+    pub fn get_x(&self) -> i64 {
+        self.x()
     }
 
     #[inline]
@@ -37,8 +44,15 @@ impl Point2DType {
 
     #[inline]
     #[must_use]
-    pub fn get_y(&self) -> i64 {
+    pub fn y(&self) -> i64 {
         self.y.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use y()")]
+    pub fn get_y(&self) -> i64 {
+        self.y()
     }
 
     #[inline]
