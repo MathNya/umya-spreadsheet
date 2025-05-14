@@ -28,8 +28,15 @@ pub struct Run {
 impl Run {
     #[inline]
     #[must_use]
-    pub fn get_text(&self) -> &str {
+    pub fn text(&self) -> &str {
         &self.text
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> &str {
+        self.text()
     }
 
     #[inline]
@@ -39,13 +46,26 @@ impl Run {
 
     #[inline]
     #[must_use]
-    pub fn get_run_properties(&self) -> &RunProperties {
+    pub fn run_properties(&self) -> &RunProperties {
         &self.run_properties
     }
 
     #[inline]
-    pub fn get_run_properties_mut(&mut self) -> &mut RunProperties {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use run_properties()")]
+    pub fn get_run_properties(&self) -> &RunProperties {
+        self.run_properties()
+    }
+
+    #[inline]
+    pub fn run_properties_mut(&mut self) -> &mut RunProperties {
         &mut self.run_properties
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use run_properties_mut()")]
+    pub fn get_run_properties_mut(&mut self) -> &mut RunProperties {
+        self.run_properties_mut()
     }
 
     #[inline]

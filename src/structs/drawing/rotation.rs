@@ -26,8 +26,15 @@ pub struct Rotation {
 impl Rotation {
     #[inline]
     #[must_use]
-    pub fn get_latitude(&self) -> i32 {
+    pub fn latitude(&self) -> i32 {
         self.latitude.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use latitude()")]
+    pub fn get_latitude(&self) -> i32 {
+        self.latitude()
     }
 
     #[inline]
@@ -38,8 +45,15 @@ impl Rotation {
 
     #[inline]
     #[must_use]
-    pub fn get_longitude(&self) -> i32 {
+    pub fn longitude(&self) -> i32 {
         self.longitude.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use longitude()")]
+    pub fn get_longitude(&self) -> i32 {
+        self.longitude()
     }
 
     #[inline]
@@ -50,8 +64,15 @@ impl Rotation {
 
     #[inline]
     #[must_use]
-    pub fn get_revolution(&self) -> i32 {
+    pub fn revolution(&self) -> i32 {
         self.revolution.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use revolution()")]
+    pub fn get_revolution(&self) -> i32 {
+        self.revolution()
     }
 
     #[inline]

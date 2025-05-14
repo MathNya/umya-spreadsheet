@@ -58,8 +58,15 @@ pub struct RunProperties {
 impl RunProperties {
     #[inline]
     #[must_use]
-    pub fn get_text(&self) -> &str {
+    pub fn text(&self) -> &str {
         &self.text
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> &str {
+        self.text()
     }
 
     #[inline]
@@ -70,8 +77,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_kumimoji(&self) -> &str {
+    pub fn kumimoji(&self) -> &str {
         self.kumimoji.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use kumimoji()")]
+    pub fn get_kumimoji(&self) -> &str {
+        self.kumimoji()
     }
 
     #[inline]
@@ -82,8 +96,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_language(&self) -> &str {
+    pub fn language(&self) -> &str {
         self.language.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use language()")]
+    pub fn get_language(&self) -> &str {
+        self.language()
     }
 
     #[inline]
@@ -94,8 +115,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_alternative_language(&self) -> &str {
+    pub fn alternative_language(&self) -> &str {
         self.alternative_language.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alternative_language()")]
+    pub fn get_alternative_language(&self) -> &str {
+        self.alternative_language()
     }
 
     #[inline]
@@ -106,8 +134,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_bold(&self) -> &str {
+    pub fn bold(&self) -> &str {
         self.bold.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bold()")]
+    pub fn get_bold(&self) -> &str {
+        self.bold()
     }
 
     #[inline]
@@ -118,8 +153,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_sz(&self) -> &str {
+    pub fn sz(&self) -> &str {
         self.sz.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sz()")]
+    pub fn get_sz(&self) -> &str {
+        self.sz()
     }
 
     #[inline]
@@ -130,8 +172,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_italic(&self) -> &str {
+    pub fn italic(&self) -> &str {
         self.italic.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use italic()")]
+    pub fn get_italic(&self) -> &str {
+        self.italic()
     }
 
     #[inline]
@@ -142,8 +191,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_capital(&self) -> &TextCapsValues {
+    pub fn capital(&self) -> &TextCapsValues {
         self.capital.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use capital()")]
+    pub fn get_capital(&self) -> &TextCapsValues {
+        self.capital()
     }
 
     #[inline]
@@ -154,8 +210,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_spacing(&self) -> i32 {
+    pub fn spacing(&self) -> i32 {
         self.spacing.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use spacing()")]
+    pub fn get_spacing(&self) -> i32 {
+        self.spacing()
     }
 
     #[inline]
@@ -166,8 +229,15 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_strike(&self) -> &str {
+    pub fn strike(&self) -> &str {
         self.strike.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use strike()")]
+    pub fn get_strike(&self) -> &str {
+        self.strike()
     }
 
     #[inline]
@@ -178,13 +248,26 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+    pub fn solid_fill(&self) -> Option<&SolidFill> {
         self.solid_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill()")]
+    pub fn get_solid_fill(&self) -> Option<&SolidFill> {
+        self.solid_fill()
+    }
+
+    #[inline]
+    pub fn solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
         self.solid_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use solid_fill_mut()")]
+    pub fn get_solid_fill_mut(&mut self) -> Option<&mut SolidFill> {
+        self.solid_fill_mut()
     }
 
     #[inline]
@@ -195,13 +278,26 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_outline(&self) -> Option<&Outline> {
+    pub fn outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
 
     #[inline]
-    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline()")]
+    pub fn get_outline(&self) -> Option<&Outline> {
+        self.outline()
+    }
+
+    #[inline]
+    pub fn outline_mut(&mut self) -> Option<&mut Outline> {
         self.outline.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use outline_mut()")]
+    pub fn get_outline_mut(&mut self) -> Option<&mut Outline> {
+        self.outline_mut()
     }
 
     #[inline]
@@ -212,13 +308,26 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_latin_font(&self) -> Option<&TextFontType> {
+    pub fn latin_font(&self) -> Option<&TextFontType> {
         self.latin_font.as_deref()
     }
 
     #[inline]
-    pub fn get_latin_font_mut(&mut self) -> Option<&mut TextFontType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use latin_font()")]
+    pub fn get_latin_font(&self) -> Option<&TextFontType> {
+        self.latin_font()
+    }
+
+    #[inline]
+    pub fn latin_font_mut(&mut self) -> Option<&mut TextFontType> {
         self.latin_font.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use latin_font_mut()")]
+    pub fn get_latin_font_mut(&mut self) -> Option<&mut TextFontType> {
+        self.latin_font_mut()
     }
 
     #[inline]
@@ -229,13 +338,26 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
+    pub fn east_asian_font(&self) -> Option<&TextFontType> {
         self.east_asian_font.as_deref()
     }
 
     #[inline]
-    pub fn get_east_asian_font_mut(&mut self) -> Option<&mut TextFontType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use east_asian_font()")]
+    pub fn get_east_asian_font(&self) -> Option<&TextFontType> {
+        self.east_asian_font()
+    }
+
+    #[inline]
+    pub fn east_asian_font_mut(&mut self) -> Option<&mut TextFontType> {
         self.east_asian_font.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use east_asian_font_mut()")]
+    pub fn get_east_asian_font_mut(&mut self) -> Option<&mut TextFontType> {
+        self.east_asian_font_mut()
     }
 
     #[inline]
@@ -246,13 +368,26 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+    pub fn gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
 
     #[inline]
-    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill()")]
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill()
+    }
+
+    #[inline]
+    pub fn gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
         self.gradient_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_mut()")]
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill_mut()
     }
 
     #[inline]
@@ -263,13 +398,26 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_no_fill(&self) -> Option<&NoFill> {
+    pub fn no_fill(&self) -> Option<&NoFill> {
         self.no_fill.as_ref()
     }
 
     #[inline]
-    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use no_fill()")]
+    pub fn get_no_fill(&self) -> Option<&NoFill> {
+        self.no_fill()
+    }
+
+    #[inline]
+    pub fn no_fill_mut(&mut self) -> Option<&mut NoFill> {
         self.no_fill.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use no_fill_mut()")]
+    pub fn get_no_fill_mut(&mut self) -> Option<&mut NoFill> {
+        self.no_fill_mut()
     }
 
     #[inline]
@@ -280,13 +428,26 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_effect_list(&self) -> Option<&EffectList> {
+    pub fn effect_list(&self) -> Option<&EffectList> {
         self.effect_list.as_deref()
     }
 
     #[inline]
-    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use effect_list()")]
+    pub fn get_effect_list(&self) -> Option<&EffectList> {
+        self.effect_list()
+    }
+
+    #[inline]
+    pub fn effect_list_mut(&mut self) -> Option<&mut EffectList> {
         self.effect_list.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use effect_list_mut()")]
+    pub fn get_effect_list_mut(&mut self) -> Option<&mut EffectList> {
+        self.effect_list_mut()
     }
 
     #[inline]

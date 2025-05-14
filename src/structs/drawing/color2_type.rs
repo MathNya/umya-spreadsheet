@@ -92,7 +92,7 @@ impl Color2Type {
     #[must_use]
     pub fn val(&self) -> String {
         if let Some(v) = &self.rgb_color_model_hex {
-            return v.get_val().to_string();
+            return v.val().to_string();
         }
         if let Some(v) = &self.system_color {
             return v.get_last_color().to_string();
