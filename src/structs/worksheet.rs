@@ -2089,36 +2089,36 @@ impl Worksheet {
 
     #[inline]
     #[must_use]
-    pub fn has_pivot_table(&self) -> bool {
+    pub(crate) fn has_pivot_table(&self) -> bool {
         !self.pivot_tables.is_empty()
     }
 
     #[inline]
-    pub fn add_pivot_table(&mut self, pivot_table: PivotTable) {
+    pub(crate) fn add_pivot_table(&mut self, pivot_table: PivotTable) {
         self.pivot_tables.push(pivot_table);
     }
 
     #[inline]
     #[must_use]
-    pub fn pivot_tables(&self) -> &[PivotTable] {
+    pub(crate) fn pivot_tables(&self) -> &[PivotTable] {
         &self.pivot_tables
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use pivot_tables()")]
-    pub fn get_pivot_tables(&self) -> &[PivotTable] {
+    pub(crate) fn get_pivot_tables(&self) -> &[PivotTable] {
         self.pivot_tables()
     }
 
     #[inline]
-    pub fn pivot_tables_mut(&mut self) -> &mut Vec<PivotTable> {
+    pub(crate) fn pivot_tables_mut(&mut self) -> &mut Vec<PivotTable> {
         &mut self.pivot_tables
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use pivot_tables_mut()")]
-    pub fn get_pivot_tables_mut(&mut self) -> &mut Vec<PivotTable> {
+    pub(crate) fn get_pivot_tables_mut(&mut self) -> &mut Vec<PivotTable> {
         self.pivot_tables_mut()
     }
 

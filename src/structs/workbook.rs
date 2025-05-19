@@ -691,7 +691,7 @@ impl Workbook {
         let v = sheet_title.into();
         Workbook::check_sheet_name(self, &v)?;
         let sheet_id = (self.work_sheet_collection.len() + 1).to_string();
-        Ok(Workbook::add_new_sheet_crate(self, sheet_id, v))
+        Ok(Workbook::add_new_sheet_crate(self, sheet_id, v.to_string()))
     }
 
     /// (This method is crate only.)
