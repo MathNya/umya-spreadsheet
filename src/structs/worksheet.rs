@@ -1464,22 +1464,22 @@ impl Worksheet {
     }
 
     #[inline]
-    pub fn has_pivot_table(&self) -> bool {
+    pub(crate) fn has_pivot_table(&self) -> bool {
         !self.pivot_tables.is_empty()
     }
 
     #[inline]
-    pub fn add_pivot_table(&mut self, pivot_table: PivotTable) {
+    pub(crate) fn add_pivot_table(&mut self, pivot_table: PivotTable) {
         self.pivot_tables.push(pivot_table);
     }
 
     #[inline]
-    pub fn get_pivot_tables(&self) -> &[PivotTable] {
+    pub(crate) fn get_pivot_tables(&self) -> &[PivotTable] {
         &self.pivot_tables
     }
 
     #[inline]
-    pub fn get_pivot_tables_mut(&mut self) -> &mut ThinVec<PivotTable> {
+    pub(crate) fn get_pivot_tables_mut(&mut self) -> &mut ThinVec<PivotTable> {
         &mut self.pivot_tables
     }
 
