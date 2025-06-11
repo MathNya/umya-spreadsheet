@@ -34,6 +34,44 @@ pub struct Style {
 }
 
 impl Style {
+    #[inline]
+    #[must_use]
+    pub fn include_alternate_content(&self) -> bool {
+        self.include_alternate_content
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use include_alternate_content()")]
+    pub fn get_include_alternate_content(&self) -> bool {
+        self.include_alternate_content()
+    }
+
+    #[inline]
+    pub fn set_include_alternate_content(&mut self, value: bool) -> &mut Self {
+        self.include_alternate_content = value;
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn val(&self) -> &str {
+        self.val.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &str {
+        self.val()
+    }
+
+    #[inline]
+    pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.val.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
