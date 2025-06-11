@@ -15,6 +15,7 @@ use super::TextProperties;
 use super::TickLabelPosition;
 use super::Title;
 use crate::reader::driver::*;
+use crate::structs::Spreadsheet;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -316,7 +317,7 @@ impl ValueAxis {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:valAx
         write_start_tag(writer, "c:valAx", vec![], false);
 
@@ -339,7 +340,7 @@ impl ValueAxis {
 
         // c:title
         if let Some(v) = &self.title {
-            v.write_to(writer);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:numFmt

@@ -77,7 +77,7 @@ impl StringReference {
 
         // c:strCache
         self.string_cache
-            .write_to(writer, self.get_formula().get_address(), spreadsheet);
+            .write_to(writer, self.get_formula(), spreadsheet);
 
         write_end_tag(writer, "c:strRef");
     }

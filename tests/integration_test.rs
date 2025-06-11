@@ -1983,3 +1983,12 @@ fn issue_268() {
 
     println!("All sheets copied successfully!");
 }
+
+#[test]
+fn issue_281() {
+    let path = std::path::Path::new("./tests/test_files/issue_281.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/r_issue_281.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

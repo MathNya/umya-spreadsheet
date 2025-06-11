@@ -1,23 +1,23 @@
-use crate::xml_read_loop;
-
-// c:catAx
+// c:dateAx
 use super::AutoLabeled;
 use super::AxisId;
 use super::AxisPosition;
+use super::CrossBetween;
 use super::Crosses;
 use super::CrossingAxis;
 use super::Delete;
-use super::LabelAlignment;
 use super::LabelOffset;
 use super::MajorGridlines;
 use super::MajorTickMark;
 use super::MinorTickMark;
-use super::NoMultiLevelLabels;
+use super::NumberingFormat;
 use super::Scaling;
 use super::ShapeProperties;
 use super::TextProperties;
 use super::TickLabelPosition;
 use super::Title;
+use crate::drawing::charts::BaseTimeUnit;
+use crate::reader::driver::*;
 use crate::structs::Spreadsheet;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
@@ -26,27 +26,27 @@ use quick_xml::Writer;
 use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
-pub struct CategoryAxis {
+pub struct DateAxis {
     axis_id: AxisId,
     scaling: Scaling,
     delete: Delete,
     axis_position: AxisPosition,
-    title: Option<Title>,
     major_gridlines: Option<MajorGridlines>,
+    title: Option<Title>,
+    numbering_format: NumberingFormat,
     major_tick_mark: MajorTickMark,
     minor_tick_mark: MinorTickMark,
     tick_label_position: TickLabelPosition,
     crossing_axis: CrossingAxis,
     crosses: Crosses,
-    auto_labeled: AutoLabeled,
-    label_alignment: LabelAlignment,
-    label_offset: LabelOffset,
-    no_multi_level_labels: NoMultiLevelLabels,
     shape_properties: Option<ShapeProperties>,
     text_properties: Option<TextProperties>,
+    auto_labeled: AutoLabeled,
+    label_offset: LabelOffset,
+    base_time_unit: BaseTimeUnit,
 }
 
-impl CategoryAxis {
+impl DateAxis {
     pub fn get_axis_id(&self) -> &AxisId {
         &self.axis_id
     }
@@ -99,6 +99,19 @@ impl CategoryAxis {
         self
     }
 
+    pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
+        self.major_gridlines.as_ref()
+    }
+
+    pub fn get_major_gridlines_mut(&mut self) -> Option<&mut MajorGridlines> {
+        self.major_gridlines.as_mut()
+    }
+
+    pub fn set_major_gridlines(&mut self, value: MajorGridlines) -> &mut Self {
+        self.major_gridlines = Some(value);
+        self
+    }
+
     pub fn get_title(&self) -> Option<&Title> {
         self.title.as_ref()
     }
@@ -112,16 +125,16 @@ impl CategoryAxis {
         self
     }
 
-    pub fn get_major_gridlines(&self) -> Option<&MajorGridlines> {
-        self.major_gridlines.as_ref()
+    pub fn get_numbering_format(&self) -> &NumberingFormat {
+        &self.numbering_format
     }
 
-    pub fn get_major_gridlines_mut(&mut self) -> Option<&mut MajorGridlines> {
-        self.major_gridlines.as_mut()
+    pub fn get_numbering_format_mut(&mut self) -> &mut NumberingFormat {
+        &mut self.numbering_format
     }
 
-    pub fn set_major_gridlines(&mut self, value: MajorGridlines) -> &mut Self {
-        self.major_gridlines = Some(value);
+    pub fn set_numbering_format(&mut self, value: NumberingFormat) -> &mut Self {
+        self.numbering_format = value;
         self
     }
 
@@ -190,58 +203,6 @@ impl CategoryAxis {
         self
     }
 
-    pub fn get_auto_labeled(&self) -> &AutoLabeled {
-        &self.auto_labeled
-    }
-
-    pub fn get_auto_labeled_mut(&mut self) -> &mut AutoLabeled {
-        &mut self.auto_labeled
-    }
-
-    pub fn set_auto_labeled(&mut self, value: AutoLabeled) -> &mut Self {
-        self.auto_labeled = value;
-        self
-    }
-
-    pub fn get_label_alignment(&self) -> &LabelAlignment {
-        &self.label_alignment
-    }
-
-    pub fn get_label_alignment_mut(&mut self) -> &mut LabelAlignment {
-        &mut self.label_alignment
-    }
-
-    pub fn set_label_alignment(&mut self, value: LabelAlignment) -> &mut Self {
-        self.label_alignment = value;
-        self
-    }
-
-    pub fn get_label_offset(&self) -> &LabelOffset {
-        &self.label_offset
-    }
-
-    pub fn get_label_offset_mut(&mut self) -> &mut LabelOffset {
-        &mut self.label_offset
-    }
-
-    pub fn set_label_offset(&mut self, value: LabelOffset) -> &mut Self {
-        self.label_offset = value;
-        self
-    }
-
-    pub fn get_no_multi_level_labels(&self) -> &NoMultiLevelLabels {
-        &self.no_multi_level_labels
-    }
-
-    pub fn get_no_multi_level_labels_mut(&mut self) -> &mut NoMultiLevelLabels {
-        &mut self.no_multi_level_labels
-    }
-
-    pub fn set_no_multi_level_labels(&mut self, value: NoMultiLevelLabels) -> &mut Self {
-        self.no_multi_level_labels = value;
-        self
-    }
-
     pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -268,6 +229,45 @@ impl CategoryAxis {
         self
     }
 
+    pub fn get_auto_labeled(&self) -> &AutoLabeled {
+        &self.auto_labeled
+    }
+
+    pub fn get_auto_labeled_mut(&mut self) -> &mut AutoLabeled {
+        &mut self.auto_labeled
+    }
+
+    pub fn set_auto_labeled(&mut self, value: AutoLabeled) -> &mut Self {
+        self.auto_labeled = value;
+        self
+    }
+
+    pub fn get_label_offset(&self) -> &LabelOffset {
+        &self.label_offset
+    }
+
+    pub fn get_label_offset_mut(&mut self) -> &mut LabelOffset {
+        &mut self.label_offset
+    }
+
+    pub fn set_label_offset(&mut self, value: LabelOffset) -> &mut Self {
+        self.label_offset = value;
+        self
+    }
+
+    pub fn get_base_time_unit(&self) -> &BaseTimeUnit {
+        &self.base_time_unit
+    }
+
+    pub fn get_base_time_unit_mut(&mut self) -> &mut BaseTimeUnit {
+        &mut self.base_time_unit
+    }
+
+    pub fn set_base_time_unit(&mut self, value: BaseTimeUnit) -> &mut Self {
+        self.base_time_unit = value;
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -275,14 +275,14 @@ impl CategoryAxis {
     ) {
         xml_read_loop!(
             reader,
-            Event::Start(ref e) => match e.name().into_inner() {
+            Event::Start(ref e) => match e.name().0 {
+                b"c:scaling" => {
+                    self.scaling.set_attributes(reader, e);
+                }
                 b"c:title" => {
                     let mut obj = Title::default();
                     obj.set_attributes(reader, e);
                     self.set_title(obj);
-                }
-                b"c:scaling" => {
-                    self.scaling.set_attributes(reader, e);
                 }
                 b"c:spPr" => {
                     let mut obj = ShapeProperties::default();
@@ -301,7 +301,10 @@ impl CategoryAxis {
                 }
                 _ => (),
             },
-            Event::Empty(ref e) => match e.name().into_inner() {
+            Event::Empty(ref e) => match e.name().0 {
+                b"c:auto" => {
+                    self.auto_labeled.set_attributes(reader, e);
+                }
                 b"c:axId" => {
                     self.axis_id.set_attributes(reader, e);
                 }
@@ -315,6 +318,9 @@ impl CategoryAxis {
                     let mut obj = MajorGridlines::default();
                     obj.set_attributes(reader, e, true);
                     self.set_major_gridlines(obj);
+                }
+                b"c:numFmt" => {
+                    self.numbering_format.set_attributes(reader, e);
                 }
                 b"c:majorTickMark" => {
                     self.major_tick_mark.set_attributes(reader, e);
@@ -331,32 +337,26 @@ impl CategoryAxis {
                 b"c:crosses" => {
                     self.crosses.set_attributes(reader, e);
                 }
-                b"c:auto" => {
-                    self.auto_labeled.set_attributes(reader, e);
-                }
-                b"c:lblAlgn" => {
-                    self.label_alignment.set_attributes(reader, e);
-                }
                 b"c:lblOffset" => {
                     self.label_offset.set_attributes(reader, e);
                 }
-                b"c:noMultiLvlLbl" => {
-                    self.no_multi_level_labels.set_attributes(reader, e);
+                b"c:baseTimeUnit" => {
+                    self.base_time_unit.set_attributes(reader, e);
                 }
                 _ => (),
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"c:catAx" {
+                if e.name().0 == b"c:dateAx" {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "c:catAx"),
+            Event::Eof => panic!("Error: Could not find {} end element", "c:dateAx")
         );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
-        // c:catAx
-        write_start_tag(writer, "c:catAx", vec![], false);
+        // c:dateAx
+        write_start_tag(writer, "c:dateAx", vec![], false);
 
         // c:axId
         self.axis_id.write_to(writer);
@@ -370,15 +370,18 @@ impl CategoryAxis {
         // c:axPos
         self.axis_position.write_to(writer);
 
+        // c:majorGridlines
+        if let Some(v) = &self.major_gridlines {
+            v.write_to(writer);
+        }
+
         // c:title
         if let Some(v) = &self.title {
             v.write_to(writer, spreadsheet);
         }
 
-        // c:majorGridlines
-        if let Some(v) = &self.major_gridlines {
-            v.write_to(writer);
-        }
+        // c:numFmt
+        self.numbering_format.write_to(writer);
 
         // c:majorTickMark
         self.major_tick_mark.write_to(writer);
@@ -408,15 +411,12 @@ impl CategoryAxis {
         // c:auto
         self.auto_labeled.write_to(writer);
 
-        // c:lblAlgn
-        self.label_alignment.write_to(writer);
-
         // c:lblOffset
         self.label_offset.write_to(writer);
 
-        // c:noMultiLvlLbl
-        self.no_multi_level_labels.write_to(writer);
+        // c:baseTimeUnit
+        self.base_time_unit.write_to(writer);
 
-        write_end_tag(writer, "c:catAx");
+        write_end_tag(writer, "c:dateAx");
     }
 }

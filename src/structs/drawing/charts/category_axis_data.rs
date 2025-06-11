@@ -1,4 +1,5 @@
 // c:cat
+use super::NumberReference;
 use super::StringLiteral;
 use super::StringReference;
 use crate::reader::driver::*;
@@ -13,6 +14,7 @@ use std::io::Cursor;
 pub struct CategoryAxisData {
     string_reference: Option<StringReference>,
     string_literal: Option<StringLiteral>,
+    number_reference: Option<NumberReference>,
 }
 
 impl CategoryAxisData {
@@ -52,6 +54,24 @@ impl CategoryAxisData {
         self
     }
 
+    pub fn get_number_reference(&self) -> Option<&NumberReference> {
+        self.number_reference.as_ref()
+    }
+
+    pub fn get_number_reference_mut(&mut self) -> Option<&mut NumberReference> {
+        self.number_reference.as_mut()
+    }
+
+    pub fn set_number_reference(&mut self, value: NumberReference) -> &mut Self {
+        self.number_reference = Some(value);
+        self
+    }
+
+    pub fn remove_number_reference(&mut self) -> &mut Self {
+        self.number_reference = None;
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -70,6 +90,11 @@ impl CategoryAxisData {
                         let mut obj = StringLiteral::default();
                         obj.set_attributes(reader, e);
                         self.set_string_literal(obj);
+                    }
+                    b"c:numRef" => {
+                        let mut obj = NumberReference::default();
+                        obj.set_attributes(reader, e);
+                        self.set_number_reference(obj);
                     }
                     _ => (),
                 }
@@ -95,6 +120,11 @@ impl CategoryAxisData {
         // c:strLit
         if let Some(v) = &self.string_literal {
             v.write_to(writer);
+        }
+
+        // c:numRef
+        if let Some(v) = &self.number_reference {
+            v.write_to(writer, spreadsheet);
         }
 
         write_end_tag(writer, "c:cat");

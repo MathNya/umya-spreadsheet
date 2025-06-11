@@ -130,7 +130,7 @@ impl ChartSpace {
             Event::Start(ref e) => match e.name().into_inner() {
                 b"mc:AlternateContent" => {
                     let mut obj = Style::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_style(obj);
                 }
                 b"c:chart" => {
@@ -158,6 +158,9 @@ impl ChartSpace {
                 b"c:roundedCorners" => {
                     self.rounded_corners.set_attributes(reader, e);
                 }
+                b"c:style" => {
+                    self.style.set_attributes(reader, e, false);
+                }
                 _ => (),
             },
             Event::End(ref e) => {
@@ -178,6 +181,7 @@ impl ChartSpace {
                 ("xmlns:c", DRAWINGML_CHART_NS),
                 ("xmlns:a", DRAWINGML_MAIN_NS),
                 ("xmlns:r", REL_OFC_NS),
+                ("xmlns:c16r2", DRAWING_CHART_2015_NS),
             ],
             false,
         );
@@ -191,7 +195,7 @@ impl ChartSpace {
         // c:roundedCorners
         self.rounded_corners.write_to(writer);
 
-        // mc:AlternateContent
+        // c:style
         self.style.write_to(writer);
 
         // c:chart

@@ -15,6 +15,8 @@ pub(crate) const DCTERMS_NS: &str = "http://purl.org/dc/terms/";
 pub(crate) const EXCEL_MAIN_NS: &str = "http://schemas.microsoft.com/office/excel/2006/main";
 pub(crate) const DRAWING_CHART_NS: &str =
     "http://schemas.microsoft.com/office/drawing/2007/8/2/chart";
+pub(crate) const DRAWING_CHART_2015_NS: &str =
+    "http://schemas.microsoft.com/office/drawing/2015/06/chart";
 pub(crate) const DRAWING_MAIN_NS: &str = "http://schemas.microsoft.com/office/drawing/2010/main";
 pub(crate) const DRAWINGML_CHART_NS: &str =
     "http://schemas.openxmlformats.org/drawingml/2006/chart";

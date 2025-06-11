@@ -1,3 +1,5 @@
+use crate::drawing::charts::NumericValue;
+use crate::drawing::charts::RichText;
 use crate::structs::drawing::charts::Area3DChart;
 use crate::structs::drawing::charts::AreaChart;
 use crate::structs::drawing::charts::AreaChartSeries;
@@ -58,6 +60,7 @@ use crate::structs::drawing::spreadsheet::TwoCellAnchor;
 use crate::structs::drawing::Paragraph;
 use crate::structs::drawing::Run;
 use crate::structs::drawing::RunProperties;
+use crate::structs::rich_text;
 use crate::structs::ChartType;
 use crate::traits::AdjustmentCoordinate;
 use crate::traits::AdjustmentCoordinateWithSheet;
@@ -205,9 +208,11 @@ impl Chart {
         {
             let value_raw = value_iter.next();
             if let Some(v) = value_raw {
-                let mut series_text = SeriesText::default();
-                series_text.set_value(v);
-                series.set_series_text(series_text);
+                let mut chart_text = ChartText::default();
+                let mut numeric_value = NumericValue::default();
+                numeric_value.set_text(v);
+                chart_text.set_numeric_value(numeric_value);
+                series.set_chart_text(chart_text);
             }
         }
         self
@@ -2190,7 +2195,9 @@ impl Chart {
         paragraph.add_run(run);
 
         let mut chart_text = ChartText::default();
-        chart_text.get_rich_text_mut().add_paragraph(paragraph);
+        let mut rich_text = RichText::default();
+        rich_text.add_paragraph(paragraph);
+        chart_text.set_rich_text(rich_text);
 
         let mut title = Title::default();
         title.set_chart_text(chart_text);

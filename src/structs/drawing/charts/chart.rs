@@ -259,7 +259,7 @@ impl Chart {
 
         // c:title
         if let Some(v) = &self.title {
-            v.write_to(writer);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:autoTitleDeleted
