@@ -15,6 +15,28 @@ pub struct Style {
 }
 
 impl Style {
+    #[inline]
+    pub fn get_include_alternateContent(&self) -> &bool {
+        &self.include_alternateContent
+    }
+
+    #[inline]
+    pub fn set_include_alternateContent(&mut self, value: bool) -> &mut Self {
+        self.include_alternateContent = value;
+        self
+    }
+
+    #[inline]
+    pub fn get_val(&self) -> &str {
+        self.val.get_value_str()
+    }
+
+    #[inline]
+    pub fn set_val<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.val.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,

@@ -1,5 +1,6 @@
 use crate::drawing::charts::NumericValue;
 use crate::drawing::charts::RichText;
+use crate::office2010::drawing::charts::Style;
 use crate::structs::drawing::charts::Area3DChart;
 use crate::structs::drawing::charts::AreaChart;
 use crate::structs::drawing::charts::AreaChartSeries;
@@ -475,6 +476,8 @@ impl Chart {
         value_axis.get_tick_crossing_axis_mut().set_val(213468160);
 
         let layout = Layout::default();
+        let mut style = Style::default();
+        style.set_val('2');
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -538,6 +541,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -620,6 +628,8 @@ impl Chart {
         value_axis.get_tick_crossing_axis_mut().set_val(213468160);
 
         let layout = Layout::default();
+        let mut style = Style::default();
+        style.set_val('2');
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -689,6 +699,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -706,6 +721,8 @@ impl Chart {
             .set_show_leader_lines(show_leader_lines);
 
         let layout = Layout::default();
+        let mut style = Style::default();
+        style.set_val('2');
 
         let default_run_properties = RunProperties::default();
         let mut end_paragraph_run_properties = RunProperties::default();
@@ -777,6 +794,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -805,6 +827,8 @@ impl Chart {
             .set_show_leader_lines(show_leader_lines);
 
         let layout = Layout::default();
+        let mut style = Style::default();
+        style.set_val('2');
 
         let default_run_properties = RunProperties::default();
         let mut end_paragraph_run_properties = RunProperties::default();
@@ -882,6 +906,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -937,6 +966,8 @@ impl Chart {
         doughnut_chart.get_hole_size_mut().set_val(50);
 
         let layout = Layout::default();
+        let mut style = Style::default();
+        style.set_val('2');
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -986,6 +1017,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1059,6 +1095,9 @@ impl Chart {
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
+        let mut style = Style::default();
+        style.set_val('2');
+
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .get_graphic_mut()
@@ -1114,6 +1153,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1198,6 +1242,9 @@ impl Chart {
             .get_cross_between_mut()
             .set_val(CrossBetweenValues::MidpointCategory);
 
+        let mut style = Style::default();
+        style.set_val('2');
+
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .get_graphic_mut()
@@ -1259,6 +1306,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1337,6 +1389,9 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213468160);
 
+        let mut style = Style::default();
+        style.set_val('2');
+
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .get_graphic_mut()
@@ -1392,6 +1447,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1481,6 +1541,9 @@ impl Chart {
             .set_val(TickLabelPositionValues::NextTo);
         value_axis.get_tick_crossing_axis_mut().set_val(213468160);
 
+        let mut style = Style::default();
+        style.set_val('2');
+
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .get_graphic_mut()
@@ -1542,6 +1605,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1573,6 +1641,9 @@ impl Chart {
 
         let mut text_properties = TextProperties::default();
         text_properties.add_paragraph(paragraph);
+
+        let mut style = Style::default();
+        style.set_val('2');
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1622,6 +1693,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1783,6 +1859,9 @@ impl Chart {
         let mut text_properties = TextProperties::default();
         text_properties.add_paragraph(paragraph);
 
+        let mut style = Style::default();
+        style.set_val('2');
+
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
             .get_graphic_mut()
@@ -1845,6 +1924,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -1913,6 +1997,8 @@ impl Chart {
         value_axis.get_tick_crossing_axis_mut().set_val(213468160);
 
         let layout = Layout::default();
+        let mut style = Style::default();
+        style.set_val('2');
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -1976,6 +2062,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
@@ -2098,6 +2189,8 @@ impl Chart {
             .set_val(CrossBetweenValues::MidpointCategory);
 
         let layout = Layout::default();
+        let mut style = Style::default();
+        style.set_val('2');
 
         let mut graphic_frame = GraphicFrame::default();
         graphic_frame
@@ -2161,6 +2254,11 @@ impl Chart {
             .get_graphic_data_mut()
             .get_chart_space_mut()
             .set_print_settings(self.make_print_settings());
+        graphic_frame
+            .get_graphic_mut()
+            .get_graphic_data_mut()
+            .get_chart_space_mut()
+            .set_style(style);
         self.two_cell_anchor.set_graphic_frame(graphic_frame);
     }
 
