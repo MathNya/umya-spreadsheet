@@ -1,4 +1,4 @@
-// c:layoutTarget
+// c:baseTimeUnit
 use std::io::Cursor;
 
 use quick_xml::{
@@ -9,7 +9,7 @@ use quick_xml::{
 
 use super::{
     super::super::EnumValue,
-    LayoutTargetValues,
+    TimeUnitValues,
 };
 use crate::{
     reader::driver::get_attribute,
@@ -17,22 +17,25 @@ use crate::{
 };
 
 #[derive(Clone, Default, Debug)]
-pub struct LayoutTarget {
-    val: EnumValue<LayoutTargetValues>,
+pub struct BaseTimeUnit {
+    val: EnumValue<TimeUnitValues>,
 }
-impl LayoutTarget {
+impl BaseTimeUnit {
+    #[inline]
     #[must_use]
-    pub fn val(&self) -> &LayoutTargetValues {
+    pub fn val(&self) -> &TimeUnitValues {
         self.val.value()
     }
 
+    #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use val()")]
-    pub fn get_val(&self) -> &LayoutTargetValues {
+    pub fn get_val(&self) -> &TimeUnitValues {
         self.val()
     }
 
-    pub fn set_val(&mut self, value: LayoutTargetValues) -> &mut LayoutTarget {
+    #[inline]
+    pub fn set_val(&mut self, value: TimeUnitValues) -> &mut Self {
         self.val.set_value(value);
         self
     }
@@ -46,10 +49,10 @@ impl LayoutTarget {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // c:layoutTarget
+        // c:baseTimeUnit
         write_start_tag(
             writer,
-            "c:layoutTarget",
+            "c:baseTimeUnit",
             vec![("val", self.val.value_string()).into()],
             true,
         );

@@ -23,6 +23,7 @@ use super::{
 };
 use crate::{
     StringValue,
+    drawing::SystemColor,
     reader::driver::{
         get_attribute,
         set_string_from_xml,
@@ -52,6 +53,7 @@ pub struct Outline {
     miter:              Option<Miter>,
     round:              Option<Round>,
     alignment:          EnumValue<PenAlignmentValues>,
+    system_color:       Option<Box<SystemColor>>,
 }
 
 impl Outline {
@@ -370,6 +372,35 @@ impl Outline {
         self.alignment.set_value(value);
     }
 
+    #[inline]
+    #[must_use]
+    pub fn system_color(&self) -> Option<&SystemColor> {
+        self.system_color.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use system_color()")]
+    pub fn get_system_color(&self) -> Option<&SystemColor> {
+        self.system_color()
+    }
+
+    #[inline]
+    pub fn system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use system_color_mut()")]
+    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color_mut()
+    }
+
+    #[inline]
+    pub fn set_system_color(&mut self, value: SystemColor) {
+        self.system_color = Some(Box::new(value));
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -437,6 +468,11 @@ impl Outline {
                         let obj = Round::default();
                         Round::set_attributes(reader, e);
                         self.set_round(obj);
+                    }
+                    b"a:sysClr" => {
+                        let mut obj = SystemColor::default();
+                        obj.set_attributes(reader, e);
+                        self.set_system_color(obj);
                     }
                     _ => (),
                 }

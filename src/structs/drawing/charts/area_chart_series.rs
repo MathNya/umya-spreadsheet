@@ -21,7 +21,6 @@ use super::{
     InvertIfNegative,
     Marker,
     Order,
-    SeriesText,
     ShapeProperties,
     Smooth,
     Values,
@@ -29,6 +28,7 @@ use super::{
     YValues,
 };
 use crate::{
+    drawing::charts::ChartText,
     structs::Workbook,
     writer::driver::{
         write_end_tag,
@@ -41,7 +41,7 @@ use crate::{
 pub struct AreaChartSeries {
     index:              Index,
     order:              Order,
-    series_text:        Option<SeriesText>,
+    chart_text:         Option<ChartText>,
     explosion:          Option<Explosion>,
     invert_if_negative: Option<InvertIfNegative>,
     marker:             Option<Marker>,
@@ -108,27 +108,27 @@ impl AreaChartSeries {
     }
 
     #[must_use]
-    pub fn series_text(&self) -> Option<&SeriesText> {
-        self.series_text.as_ref()
+    pub fn chart_text(&self) -> Option<&ChartText> {
+        self.chart_text.as_ref()
     }
 
     #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use series_text()")]
-    pub fn get_series_text(&self) -> Option<&SeriesText> {
-        self.series_text()
+    #[deprecated(since = "3.0.0", note = "Use chart_text()")]
+    pub fn get_chart_text(&self) -> Option<&ChartText> {
+        self.chart_text()
     }
 
-    pub fn series_text_mut(&mut self) -> Option<&mut SeriesText> {
-        self.series_text.as_mut()
+    pub fn chart_text_mut(&mut self) -> Option<&mut ChartText> {
+        self.chart_text.as_mut()
     }
 
-    #[deprecated(since = "3.0.0", note = "Use series_text_mut()")]
-    pub fn get_series_text_mut(&mut self) -> Option<&mut SeriesText> {
-        self.series_text_mut()
+    #[deprecated(since = "3.0.0", note = "Use chart_text_mut()")]
+    pub fn get_chart_text_mut(&mut self) -> Option<&mut ChartText> {
+        self.chart_text_mut()
     }
 
-    pub fn set_series_text(&mut self, value: SeriesText) -> &mut Self {
-        self.series_text = Some(value);
+    pub fn set_chart_text(&mut self, value: ChartText) -> &mut Self {
+        self.chart_text = Some(value);
         self
     }
 
@@ -468,10 +468,10 @@ impl AreaChartSeries {
         xml_read_loop!(
             reader,
             Event::Start(ref e) => match e.name().into_inner() {
-                b"c:v" => {
-                    let mut obj = SeriesText::default();
+                b"c:tx" => {
+                    let mut obj = ChartText::default();
                     obj.set_attributes(reader, e);
-                    self.set_series_text(obj);
+                    self.set_chart_text(obj);
                 }
                 b"c:marker" => {
                     let mut obj = Marker::default();
@@ -563,9 +563,9 @@ impl AreaChartSeries {
         // c:order
         self.order.write_to(writer);
 
-        // c:v
-        if let Some(v) = &self.series_text {
-            v.write_to(writer);
+        // c:tx
+        if let Some(v) = &self.chart_text {
+            v.write_to(writer, wb);
         }
 
         // c:explosion

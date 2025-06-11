@@ -50,6 +50,7 @@ pub struct RunProperties {
     solid_fill:           Option<Box<SolidFill>>,
     latin_font:           Option<Box<TextFontType>>,
     east_asian_font:      Option<Box<TextFontType>>,
+    complex_script_font:  Option<Box<TextFontType>>,
     gradient_fill:        Option<Box<GradientFill>>,
     no_fill:              Option<NoFill>,
     effect_list:          Option<Box<EffectList>>,
@@ -368,6 +369,36 @@ impl RunProperties {
 
     #[inline]
     #[must_use]
+    pub fn complex_script_font(&self) -> Option<&TextFontType> {
+        self.complex_script_font.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use complex_script_font()")]
+    pub fn get_complex_script_font(&self) -> Option<&TextFontType> {
+        self.complex_script_font()
+    }
+
+    #[inline]
+    pub fn complex_script_font_mut(&mut self) -> Option<&mut TextFontType> {
+        self.complex_script_font.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use complex_script_font_mut()")]
+    pub fn get_complex_script_font_mut(&mut self) -> Option<&mut TextFontType> {
+        self.complex_script_font_mut()
+    }
+
+    #[inline]
+    pub fn set_complex_script_font(&mut self, value: TextFontType) -> &mut Self {
+        self.complex_script_font = Some(Box::new(value));
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn gradient_fill(&self) -> Option<&GradientFill> {
         self.gradient_fill.as_deref()
     }
@@ -533,6 +564,11 @@ impl RunProperties {
                     obj.set_attributes(reader, e);
                     self.set_east_asian_font(obj);
                 }
+                b"a:cs" => {
+                    let mut obj = TextFontType::default();
+                    obj.set_attributes(reader, e);
+                    self.set_complex_script_font(obj);
+                }
                 b"a:noFill" => {
                     let obj = NoFill::default();
                     NoFill::set_attributes(reader, e);
@@ -631,6 +667,11 @@ impl RunProperties {
             // a:ea
             if let Some(v) = &self.east_asian_font {
                 v.write_to_ea(writer);
+            }
+
+            // a:cs
+            if let Some(v) = &self.complex_script_font {
+                v.write_to_cs(writer);
             }
 
             // a:gradFill

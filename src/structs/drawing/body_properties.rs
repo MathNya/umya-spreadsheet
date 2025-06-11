@@ -12,6 +12,7 @@ use quick_xml::{
 
 use super::{
     super::{
+        BooleanValue,
         EnumValue,
         Int32Value,
     },
@@ -32,16 +33,18 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct BodyProperties {
-    vert_overflow:  StringValue,
-    horz_overflow:  StringValue,
-    rtl_col:        StringValue,
-    anchor:         StringValue,
-    wrap:           EnumValue<TextWrappingValues>,
-    left_inset:     Int32Value,
-    top_inset:      Int32Value,
-    right_inset:    Int32Value,
-    bottom_inset:   Int32Value,
-    shape_auto_fit: Option<ShapeAutoFit>,
+    vert_overflow:         StringValue,
+    horz_overflow:         StringValue,
+    rtl_col:               StringValue,
+    anchor:                StringValue,
+    wrap:                  EnumValue<TextWrappingValues>,
+    rotation:              Int32Value,
+    left_inset:            Int32Value,
+    top_inset:             Int32Value,
+    right_inset:           Int32Value,
+    bottom_inset:          Int32Value,
+    use_paragraph_spacing: BooleanValue,
+    shape_auto_fit:        Option<ShapeAutoFit>,
 }
 
 impl BodyProperties {
@@ -142,6 +145,24 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
+    pub fn rotation(&self) -> i32 {
+        self.rotation.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rotation()")]
+    pub fn get_rotation(&self) -> i32 {
+        self.rotation()
+    }
+
+    #[inline]
+    pub fn set_rotation(&mut self, value: i32) {
+        self.rotation.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
     pub fn left_inset(&self) -> i32 {
         self.left_inset.value()
     }
@@ -220,6 +241,24 @@ impl BodyProperties {
 
     #[inline]
     #[must_use]
+    pub fn use_paragraph_spacing(&self) -> bool {
+        self.use_paragraph_spacing.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use use_paragraph_spacing()")]
+    pub fn get_use_paragraph_spacing(&self) -> bool {
+        self.use_paragraph_spacing()
+    }
+
+    #[inline]
+    pub fn set_use_paragraph_spacing(&mut self, value: bool) {
+        self.use_paragraph_spacing.set_value(value);
+    }
+
+    #[inline]
+    #[must_use]
     #[deprecated(since = "3.0.0", note = "Use shape_auto_fit()")]
     pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
         self.shape_auto_fit()
@@ -241,6 +280,9 @@ impl BodyProperties {
             let key = attr.key.into_inner();
             let value = get_attribute_value(&attr).unwrap();
             match key {
+                b"rot" => {
+                    self.rotation.set_value_string(value);
+                }
                 b"vertOverflow" => {
                     self.set_vert_overflow(value);
                 }
@@ -267,6 +309,9 @@ impl BodyProperties {
                 }
                 b"bIns" => {
                     self.bottom_inset.set_value_string(value);
+                }
+                b"spcFirstLastPara" => {
+                    self.use_paragraph_spacing.set_value_string(value);
                 }
                 _ => {}
             }
@@ -314,6 +359,10 @@ impl BodyProperties {
         if self.wrap.has_value() {
             attributes.push(("wrap", self.wrap.value_string()).into());
         }
+        let rotation = self.rotation.value_string();
+        if self.rotation.has_value() {
+            attributes.push(("rot", &rotation).into());
+        }
         let l_ins = self.left_inset.value_string();
         if self.left_inset.has_value() {
             attributes.push(("lIns", &l_ins).into());
@@ -329,6 +378,15 @@ impl BodyProperties {
         let b_ins = self.bottom_inset.value_string();
         if self.bottom_inset.has_value() {
             attributes.push(("bIns", &b_ins).into());
+        }
+        if self.use_paragraph_spacing.has_value() {
+            attributes.push(
+                (
+                    "spcFirstLastPara",
+                    self.use_paragraph_spacing.value_string(),
+                )
+                    .into(),
+            );
         }
 
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);

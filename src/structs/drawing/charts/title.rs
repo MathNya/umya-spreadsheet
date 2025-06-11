@@ -16,6 +16,8 @@ use super::{
     Overlay,
 };
 use crate::{
+    Workbook,
+    drawing::charts::ShapeProperties,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -25,9 +27,10 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Title {
-    chart_text: Option<ChartText>,
-    layout:     Option<Layout>,
-    overlay:    Overlay,
+    chart_text:       Option<ChartText>,
+    layout:           Option<Layout>,
+    overlay:          Overlay,
+    shape_properties: Option<ShapeProperties>,
 }
 
 impl Title {
@@ -106,6 +109,31 @@ impl Title {
         self
     }
 
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
+    }
+
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
+        self.shape_properties = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -123,6 +151,11 @@ impl Title {
                     let mut obj = Layout::default();
                     obj.set_attributes(reader, e, false);
                     self.set_layout(obj);
+                }
+                b"c:spPr" => {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
                 }
                 _ => (),
             },
@@ -146,13 +179,13 @@ impl Title {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:title
         write_start_tag(writer, "c:title", vec![], false);
 
         // c:tx
         if let Some(v) = &self.chart_text {
-            v.write_to(writer);
+            v.write_to(writer, wb);
         }
 
         // c:layout
@@ -162,6 +195,11 @@ impl Title {
 
         // c:overlay
         self.overlay.write_to(writer);
+
+        // c:spPr
+        if let Some(v) = &self.shape_properties {
+            v.write_to(writer);
+        }
 
         write_end_tag(writer, "c:title");
     }

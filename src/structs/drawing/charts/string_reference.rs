@@ -111,7 +111,7 @@ impl StringReference {
         self.formula.write_to(writer);
 
         // c:strCache
-        StringCache::write_to(writer, self.formula().address(), wb);
+        StringCache::write_to(writer, self.formula(), wb);
 
         write_end_tag(writer, "c:strRef");
     }

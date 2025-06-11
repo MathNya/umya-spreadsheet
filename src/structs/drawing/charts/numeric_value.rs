@@ -36,7 +36,7 @@ impl NumericValue {
         self.text()
     }
 
-    pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut NumericValue {
+    pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.text = value.into().into_boxed_str();
         self
     }

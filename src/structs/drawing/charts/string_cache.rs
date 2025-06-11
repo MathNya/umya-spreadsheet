@@ -11,11 +11,10 @@ use quick_xml::{
 };
 
 use crate::{
+    CellValue,
+    drawing::charts::Formula,
     reader::driver::xml_read_loop,
-    structs::{
-        Address,
-        Workbook,
-    },
+    structs::Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -39,8 +38,14 @@ impl StringCache {
         );
     }
 
-    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>, address: &Address, wb: &Workbook) {
-        let cell_value_list = wb.cell_value_by_address_crate(address);
+    pub(crate) fn write_to(writer: &mut Writer<Cursor<Vec<u8>>>, formula: &Formula, wb: &Workbook) {
+        let mut cell = CellValue::default();
+        let cell_value_list = if formula.has_string_value() {
+            cell.set_value(formula.address_str());
+            vec![&cell]
+        } else {
+            wb.cell_value_by_address_crate(formula.address())
+        };
         let coll_value_count = cell_value_list.len().to_string();
         // c:strCache
         write_start_tag(writer, "c:strCache", vec![], false);

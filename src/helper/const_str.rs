@@ -24,6 +24,7 @@ declare_const_strings! {
     DCORE_NS             => "http://purl.org/dc/elements/1.1/",
     DCTERMS_NS           => "http://purl.org/dc/terms/",
     DRAWING_CHART_NS     => "http://schemas.microsoft.com/office/drawing/2007/8/2/chart",
+    DRAWING_CHART_2015_NS => "http://schemas.microsoft.com/office/drawing/2015/06/chart",
     DRAWING_MAIN_NS      => "http://schemas.microsoft.com/office/drawing/2010/main",
     DRAWING_TYPE         => "application/vnd.openxmlformats-officedocument.drawing+xml",
     DRAWINGML_CHART_NS   => "http://schemas.openxmlformats.org/drawingml/2006/chart",
@@ -75,7 +76,6 @@ declare_const_strings! {
     XPROPS_REL           => "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties",
     XPROPS_TYPE          => "application/vnd.openxmlformats-officedocument.extended-properties+xml",
     XSI_NS               => "http://www.w3.org/2001/XMLSchema-instance",
-
     PKG_CHARTS           => "xl/charts",
     PKG_DRAWINGS         => "xl/drawings",
     PKG_DRAWINGS_RELS    => "xl/drawings/_rels/drawing",

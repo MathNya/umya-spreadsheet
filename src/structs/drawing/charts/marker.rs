@@ -12,6 +12,10 @@ use quick_xml::{
 
 use super::Symbol;
 use crate::{
+    drawing::charts::{
+        ShapeProperties,
+        Size,
+    },
     reader::driver::xml_read_loop,
     writer::driver::{
         write_end_tag,
@@ -21,7 +25,9 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Marker {
-    symbol: Option<Symbol>,
+    symbol:           Option<Symbol>,
+    size:             Option<Size>,
+    shape_properties: Option<ShapeProperties>,
 }
 
 impl Marker {
@@ -50,6 +56,56 @@ impl Marker {
         self
     }
 
+    #[must_use]
+    pub fn size(&self) -> Option<&Size> {
+        self.size.as_ref()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use size()")]
+    pub fn get_size(&self) -> Option<&Size> {
+        self.size()
+    }
+
+    pub fn size_mut(&mut self) -> Option<&mut Size> {
+        self.size.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use size_mut()")]
+    pub fn get_size_mut(&mut self) -> Option<&mut Size> {
+        self.size_mut()
+    }
+
+    pub fn set_size(&mut self, value: Size) -> &mut Marker {
+        self.size = Some(value);
+        self
+    }
+
+    #[must_use]
+    pub fn shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties()")]
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties()
+    }
+
+    pub fn shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties_mut()
+    }
+
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
+        self.shape_properties = Some(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -68,6 +124,18 @@ impl Marker {
                     obj.set_attributes(reader, e);
                     self.set_symbol(obj);
                 }
+                if e.name().0 == b"c:size" {
+                    let mut obj = Size::default();
+                    obj.set_attributes(reader, e);
+                    self.set_size(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().0 == b"c:spPr" {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
+                }
             },
             Event::End(ref e) => {
                 if e.name().0 == b"c:marker" {
@@ -85,6 +153,16 @@ impl Marker {
 
             // a:symbol
             if let Some(v) = &self.symbol {
+                v.write_to(writer);
+            }
+
+            // c:size
+            if let Some(v) = &self.size {
+                v.write_to(writer);
+            }
+
+            // c:spPr
+            if let Some(v) = &self.shape_properties {
                 v.write_to(writer);
             }
 

@@ -16,6 +16,7 @@ use super::super::{
     Paragraph,
 };
 use crate::{
+    drawing::Run,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -31,6 +32,17 @@ pub struct RichText {
 }
 
 impl RichText {
+    #[inline]
+    pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.paragraph.clear();
+        let mut paragraph = Paragraph::default();
+        let mut run = Run::default();
+        run.set_text(value);
+        paragraph.add_run(run);
+        self.add_paragraph(paragraph);
+        self
+    }
+
     #[must_use]
     pub fn body_properties(&self) -> &BodyProperties {
         &self.body_properties

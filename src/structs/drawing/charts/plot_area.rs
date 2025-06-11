@@ -34,6 +34,7 @@ use super::{
     ValueAxis,
 };
 use crate::{
+    drawing::charts::DateAxis,
     structs::Workbook,
     traits::AdjustmentCoordinateWithSheet,
     writer::driver::{
@@ -60,6 +61,7 @@ pub struct PlotArea {
     area_3d_chart:    Option<Area3DChart>,
     of_pie_chart:     Option<OfPieChart>,
     category_axis:    Vec<CategoryAxis>,
+    date_axis:        Vec<DateAxis>,
     value_axis:       Vec<ValueAxis>,
     series_axis:      Vec<SeriesAxis>,
     shape_properties: Option<ShapeProperties>,
@@ -447,6 +449,36 @@ impl PlotArea {
     }
 
     #[must_use]
+    pub fn date_axis(&self) -> &[DateAxis] {
+        &self.date_axis
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use date_axis()")]
+    pub fn get_date_axis(&self) -> &[DateAxis] {
+        self.date_axis()
+    }
+
+    pub fn date_axis_mut(&mut self) -> &mut Vec<DateAxis> {
+        &mut self.date_axis
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use date_axis_mut()")]
+    pub fn get_date_axis_mut(&mut self) -> &mut Vec<DateAxis> {
+        self.date_axis_mut()
+    }
+
+    pub fn set_date_axis(&mut self, value: impl Into<Vec<DateAxis>>) -> &mut Self {
+        self.date_axis = value.into();
+        self
+    }
+
+    pub fn add_date_axis(&mut self, value: DateAxis) -> &mut Self {
+        self.date_axis.push(value);
+        self
+    }
+
+    #[must_use]
     pub fn value_axis(&self) -> &[ValueAxis] {
         &self.value_axis
     }
@@ -805,6 +837,11 @@ impl PlotArea {
                     obj.set_attributes(reader, e);
                     self.add_category_axis(obj);
                 }
+                b"c:dateAx" => {
+                    let mut obj = DateAxis::default();
+                    obj.set_attributes(reader, e);
+                    self.add_date_axis(obj);
+                }
                 b"c:valAx" => {
                     let mut obj = ValueAxis::default();
                     obj.set_attributes(reader, e);
@@ -905,17 +942,22 @@ impl PlotArea {
 
         // c:catAx
         for v in &self.category_axis {
-            v.write_to(writer);
+            v.write_to(writer, wb);
+        }
+
+        // c:dateAx
+        for v in &self.date_axis {
+            v.write_to(writer, wb);
         }
 
         // c:valAx
         for v in &self.value_axis {
-            v.write_to(writer);
+            v.write_to(writer, wb);
         }
 
         // c:serAx
         for v in &self.series_axis {
-            v.write_to(writer);
+            v.write_to(writer, wb);
         }
 
         // c:spPr

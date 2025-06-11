@@ -1,4 +1,4 @@
-// c:layoutTarget
+// c:size
 use std::io::Cursor;
 
 use quick_xml::{
@@ -7,32 +7,29 @@ use quick_xml::{
     events::BytesStart,
 };
 
-use super::{
-    super::super::EnumValue,
-    LayoutTargetValues,
-};
+use super::super::super::ByteValue;
 use crate::{
     reader::driver::get_attribute,
     writer::driver::write_start_tag,
 };
 
 #[derive(Clone, Default, Debug)]
-pub struct LayoutTarget {
-    val: EnumValue<LayoutTargetValues>,
+pub struct Size {
+    val: ByteValue,
 }
-impl LayoutTarget {
+impl Size {
     #[must_use]
-    pub fn val(&self) -> &LayoutTargetValues {
+    pub fn val(&self) -> u8 {
         self.val.value()
     }
 
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use val()")]
-    pub fn get_val(&self) -> &LayoutTargetValues {
+    pub fn get_val(&self) -> u8 {
         self.val()
     }
 
-    pub fn set_val(&mut self, value: LayoutTargetValues) -> &mut LayoutTarget {
+    pub fn set_val(&mut self, value: u8) -> &mut Self {
         self.val.set_value(value);
         self
     }
@@ -46,12 +43,8 @@ impl LayoutTarget {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // c:layoutTarget
-        write_start_tag(
-            writer,
-            "c:layoutTarget",
-            vec![("val", self.val.value_string()).into()],
-            true,
-        );
+        let val = self.val.value_string();
+        // c:size
+        write_start_tag(writer, "c:size", vec![("val", &val).into()], true);
     }
 }

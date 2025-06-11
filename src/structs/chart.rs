@@ -1,10 +1,6 @@
 use crate::{
-    structs::{
-        ChartType,
+    drawing::charts::{NumericValue, RichText}, structs::{
         drawing::{
-            Paragraph,
-            Run,
-            RunProperties,
             charts::{
                 Area3DChart,
                 AreaChart,
@@ -44,7 +40,6 @@ use crate::{
                 RotateX,
                 RotateY,
                 ScatterChart,
-                SeriesText,
                 ShapeValues,
                 ShowLeaderLines,
                 Smooth,
@@ -60,18 +55,16 @@ use crate::{
                 View3D,
                 XValues,
                 YValues,
-            },
-            spreadsheet::{
+            }, spreadsheet::{
                 GraphicFrame,
                 MarkerType,
                 TwoCellAnchor,
-            },
-        },
-    },
-    traits::{
+            }, Paragraph, Run, RunProperties
+        }, ChartType
+    }, traits::{
         AdjustmentCoordinate,
         AdjustmentCoordinateWithSheet,
-    },
+    }
 };
 
 /// ## Supported chart types
@@ -218,9 +211,11 @@ impl Chart {
         {
             let value_raw = value_iter.next();
             if let Some(v) = value_raw {
-                let mut series_text = SeriesText::default();
-                series_text.set_value(v);
-                series.set_series_text(series_text);
+                let mut chart_text = ChartText::default();
+                let mut numeric_value = NumericValue::default();
+                numeric_value.set_text(v);
+                chart_text.set_numeric_value(numeric_value);
+                series.set_chart_text(chart_text);
             }
         }
         self
@@ -2271,7 +2266,10 @@ impl Chart {
         paragraph.add_run(run);
 
         let mut chart_text = ChartText::default();
-        chart_text.rich_text_mut().add_paragraph(paragraph);
+
+        let mut rich_text = RichText::default();
+        rich_text.add_paragraph(paragraph);
+        chart_text.set_rich_text(rich_text);
 
         let mut title = Title::default();
         title.set_chart_text(chart_text);

@@ -24,6 +24,7 @@ use super::{
     Title,
 };
 use crate::{
+    Workbook,
     reader::driver::xml_read_loop,
     writer::driver::{
         write_end_tag,
@@ -390,7 +391,7 @@ impl SeriesAxis {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:serAx
         write_start_tag(writer, "c:serAx", vec![], false);
 
@@ -413,7 +414,7 @@ impl SeriesAxis {
 
         // c:title
         if let Some(v) = &self.title {
-            v.write_to(writer);
+            v.write_to(writer, wb);
         }
 
         // c:majorTickMark

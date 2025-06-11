@@ -1,4 +1,4 @@
-// c:valAx
+// c:dateAx
 use std::io::Cursor;
 
 use quick_xml::{
@@ -11,12 +11,13 @@ use quick_xml::{
 };
 
 use super::{
+    AutoLabeled,
     AxisId,
     AxisPosition,
-    CrossBetween,
     Crosses,
     CrossingAxis,
     Delete,
+    LabelOffset,
     MajorGridlines,
     MajorTickMark,
     MinorTickMark,
@@ -29,6 +30,7 @@ use super::{
 };
 use crate::{
     Workbook,
+    drawing::charts::BaseTimeUnit,
     reader::driver::xml_read_loop,
     writer::driver::{
         write_end_tag,
@@ -37,7 +39,7 @@ use crate::{
 };
 
 #[derive(Clone, Default, Debug)]
-pub struct ValueAxis {
+pub struct DateAxis {
     axis_id:             AxisId,
     scaling:             Scaling,
     delete:              Delete,
@@ -50,12 +52,14 @@ pub struct ValueAxis {
     tick_label_position: TickLabelPosition,
     crossing_axis:       CrossingAxis,
     crosses:             Crosses,
-    cross_between:       CrossBetween,
     shape_properties:    Option<ShapeProperties>,
     text_properties:     Option<TextProperties>,
+    auto_labeled:        AutoLabeled,
+    label_offset:        LabelOffset,
+    base_time_unit:      BaseTimeUnit,
 }
 
-impl ValueAxis {
+impl DateAxis {
     #[must_use]
     pub fn axis_id(&self) -> &AxisId {
         &self.axis_id
@@ -357,31 +361,6 @@ impl ValueAxis {
     }
 
     #[must_use]
-    pub fn cross_between(&self) -> &CrossBetween {
-        &self.cross_between
-    }
-
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use cross_between()")]
-    pub fn get_cross_between(&self) -> &CrossBetween {
-        self.cross_between()
-    }
-
-    pub fn cross_between_mut(&mut self) -> &mut CrossBetween {
-        &mut self.cross_between
-    }
-
-    #[deprecated(since = "3.0.0", note = "Use cross_between_mut()")]
-    pub fn get_cross_between_mut(&mut self) -> &mut CrossBetween {
-        self.cross_between_mut()
-    }
-
-    pub fn set_cross_between(&mut self, value: CrossBetween) -> &mut Self {
-        self.cross_between = value;
-        self
-    }
-
-    #[must_use]
     pub fn shape_properties(&self) -> Option<&ShapeProperties> {
         self.shape_properties.as_ref()
     }
@@ -396,7 +375,7 @@ impl ValueAxis {
         self.shape_properties.as_mut()
     }
 
-    #[deprecated(since = "3.0.0", note = "Use val()")]
+    #[deprecated(since = "3.0.0", note = "Use shape_properties_mut()")]
     pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
         self.shape_properties_mut()
     }
@@ -428,6 +407,81 @@ impl ValueAxis {
 
     pub fn set_text_properties(&mut self, value: TextProperties) -> &mut Self {
         self.text_properties = Some(value);
+        self
+    }
+
+    #[must_use]
+    pub fn auto_labeled(&self) -> &AutoLabeled {
+        &self.auto_labeled
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_labeled()")]
+    pub fn get_auto_labeled(&self) -> &AutoLabeled {
+        self.auto_labeled()
+    }
+
+    pub fn auto_labeled_mut(&mut self) -> &mut AutoLabeled {
+        &mut self.auto_labeled
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use auto_labeled_mut()")]
+    pub fn get_auto_labeled_mut(&mut self) -> &mut AutoLabeled {
+        self.auto_labeled_mut()
+    }
+
+    pub fn set_auto_labeled(&mut self, value: AutoLabeled) -> &mut Self {
+        self.auto_labeled = value;
+        self
+    }
+
+    #[must_use]
+    pub fn label_offset(&self) -> &LabelOffset {
+        &self.label_offset
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use label_offset()")]
+    pub fn get_label_offset(&self) -> &LabelOffset {
+        self.label_offset()
+    }
+
+    pub fn label_offset_mut(&mut self) -> &mut LabelOffset {
+        &mut self.label_offset
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use label_offset_mut()")]
+    pub fn get_label_offset_mut(&mut self) -> &mut LabelOffset {
+        self.label_offset_mut()
+    }
+
+    pub fn set_label_offset(&mut self, value: LabelOffset) -> &mut Self {
+        self.label_offset = value;
+        self
+    }
+
+    #[must_use]
+    pub fn base_time_unit(&self) -> &BaseTimeUnit {
+        &self.base_time_unit
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use base_time_unit()")]
+    pub fn get_base_time_unit(&self) -> &BaseTimeUnit {
+        self.base_time_unit()
+    }
+
+    pub fn base_time_unit_mut(&mut self) -> &mut BaseTimeUnit {
+        &mut self.base_time_unit
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use base_time_unit_mut()")]
+    pub fn get_base_time_unit_mut(&mut self) -> &mut BaseTimeUnit {
+        self.base_time_unit_mut()
+    }
+
+    pub fn set_base_time_unit(&mut self, value: BaseTimeUnit) -> &mut Self {
+        self.base_time_unit = value;
         self
     }
 
@@ -465,6 +519,9 @@ impl ValueAxis {
                 _ => (),
             },
             Event::Empty(ref e) => match e.name().0 {
+                b"c:auto" => {
+                    self.auto_labeled.set_attributes(reader, e);
+                }
                 b"c:axId" => {
                     self.axis_id.set_attributes(reader, e);
                 }
@@ -497,23 +554,26 @@ impl ValueAxis {
                 b"c:crosses" => {
                     self.crosses.set_attributes(reader, e);
                 }
-                b"c:crossBetween" => {
-                    self.cross_between.set_attributes(reader, e);
+                b"c:lblOffset" => {
+                    self.label_offset.set_attributes(reader, e);
+                }
+                b"c:baseTimeUnit" => {
+                    self.base_time_unit.set_attributes(reader, e);
                 }
                 _ => (),
             },
             Event::End(ref e) => {
-                if e.name().0 == b"c:valAx" {
+                if e.name().0 == b"c:dateAx" {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "c:valAx")
+            Event::Eof => panic!("Error: Could not find {} end element", "c:dateAx")
         );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
-        // c:valAx
-        write_start_tag(writer, "c:valAx", vec![], false);
+        // c:dateAx
+        write_start_tag(writer, "c:dateAx", vec![], false);
 
         // c:axId
         self.axis_id.write_to(writer);
@@ -565,9 +625,15 @@ impl ValueAxis {
         // c:crosses
         self.crosses.write_to(writer);
 
-        // c:crossBetween
-        self.cross_between.write_to(writer);
+        // c:auto
+        self.auto_labeled.write_to(writer);
 
-        write_end_tag(writer, "c:valAx");
+        // c:lblOffset
+        self.label_offset.write_to(writer);
+
+        // c:baseTimeUnit
+        self.base_time_unit.write_to(writer);
+
+        write_end_tag(writer, "c:dateAx");
     }
 }

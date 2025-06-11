@@ -20,6 +20,7 @@ use super::{
 };
 use crate::{
     helper::const_str::{
+        DRAWING_CHART_2015_NS,
         DRAWINGML_CHART_NS,
         DRAWINGML_MAIN_NS,
         REL_OFC_NS,
@@ -232,8 +233,8 @@ impl ChartSpace {
             reader,
             Event::Start(ref e) => match e.name().into_inner() {
                 b"mc:AlternateContent" => {
-                    let obj = Style::default();
-                    Style::set_attributes(reader, e);
+                    let mut obj = Style::default();
+                    obj.set_attributes(reader, e, true);
                     self.set_style(obj);
                 }
                 b"c:chart" => {
@@ -261,6 +262,9 @@ impl ChartSpace {
                 b"c:roundedCorners" => {
                     self.rounded_corners.set_attributes(reader, e);
                 }
+                b"c:style" => {
+                    self.style.set_attributes(reader, e, false);
+                }
                 _ => (),
             },
             Event::End(ref e) => {
@@ -281,6 +285,7 @@ impl ChartSpace {
                 ("xmlns:c", DRAWINGML_CHART_NS).into(),
                 ("xmlns:a", DRAWINGML_MAIN_NS).into(),
                 ("xmlns:r", REL_OFC_NS).into(),
+                ("xmlns:c16r2", DRAWING_CHART_2015_NS).into(),
             ],
             false,
         );
@@ -294,8 +299,8 @@ impl ChartSpace {
         // c:roundedCorners
         self.rounded_corners.write_to(writer);
 
-        // mc:AlternateContent
-        Style::write_to(writer);
+        // c:style
+        self.style.write_to(writer);
 
         // c:chart
         self.chart.write_to(writer, wb);

@@ -30,6 +30,7 @@ use super::{
     Title,
 };
 use crate::{
+    Workbook,
     writer::driver::{
         write_end_tag,
         write_start_tag,
@@ -570,7 +571,7 @@ impl CategoryAxis {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, wb: &Workbook) {
         // c:catAx
         write_start_tag(writer, "c:catAx", vec![], false);
 
@@ -588,7 +589,7 @@ impl CategoryAxis {
 
         // c:title
         if let Some(v) = &self.title {
-            v.write_to(writer);
+            v.write_to(writer, wb);
         }
 
         // c:majorGridlines

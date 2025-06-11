@@ -15,6 +15,7 @@ use super::{
     StringReference,
 };
 use crate::{
+    drawing::charts::NumberReference,
     reader::driver::xml_read_loop,
     structs::Workbook,
     writer::driver::{
@@ -27,6 +28,7 @@ use crate::{
 pub struct CategoryAxisData {
     string_reference: Option<StringReference>,
     string_literal:   Option<StringLiteral>,
+    number_reference: Option<NumberReference>,
 }
 
 impl CategoryAxisData {
@@ -90,6 +92,36 @@ impl CategoryAxisData {
         self
     }
 
+    #[must_use]
+    pub fn number_reference(&self) -> Option<&NumberReference> {
+        self.number_reference.as_ref()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use number_reference()")]
+    pub fn get_number_reference(&self) -> Option<&NumberReference> {
+        self.number_reference()
+    }
+
+    pub fn number_reference_mut(&mut self) -> Option<&mut NumberReference> {
+        self.number_reference.as_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use number_reference_mut()")]
+    pub fn get_number_reference_mut(&mut self) -> Option<&mut NumberReference> {
+        self.number_reference_mut()
+    }
+
+    pub fn set_number_reference(&mut self, value: NumberReference) -> &mut Self {
+        self.number_reference = Some(value);
+        self
+    }
+
+    pub fn remove_number_reference(&mut self) -> &mut Self {
+        self.number_reference = None;
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -108,6 +140,11 @@ impl CategoryAxisData {
                         let mut obj = StringLiteral::default();
                         obj.set_attributes(reader, e);
                         self.set_string_literal(obj);
+                    }
+                    b"c:numRef" => {
+                        let mut obj = NumberReference::default();
+                        obj.set_attributes(reader, e);
+                        self.set_number_reference(obj);
                     }
                     _ => (),
                 }
@@ -133,6 +170,11 @@ impl CategoryAxisData {
         // c:strLit
         if let Some(v) = &self.string_literal {
             v.write_to(writer);
+        }
+
+        // c:numRef
+        if let Some(v) = &self.number_reference {
+            v.write_to(writer, wb);
         }
 
         write_end_tag(writer, "c:cat");
