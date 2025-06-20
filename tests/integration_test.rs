@@ -2023,6 +2023,34 @@ fn issue_265() {
 }
 
 #[test]
+fn issue_268() {
+    let source_path = std::path::Path::new("./tests/test_files/issue_268.xlsx");
+    let source_book = reader::xlsx::read(source_path).unwrap();
+    let mut target_book = new_file();
+    let sheet_count = source_book.get_sheet_count();
+    for i in 0..sheet_count {
+        let sheet = source_book.get_sheet(&i).unwrap();
+        let copied_sheet = sheet.clone();
+        let _ = target_book.add_sheet(copied_sheet);
+    }
+
+    let output_path = std::path::Path::new("./tests/result_files/issue_268.xlsx");
+    writer::xlsx::write(&target_book, output_path).unwrap();
+
+    println!("All sheets copied successfully!");
+}
+
+#[test]
+fn issue_279() {
+    let mut book = new_file();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    sheet.get_cell_mut("A1").set_value("NaN");
+
+    let path = std::path::Path::new("./tests/result_files/issue_279.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn issue_281() {
     let path = std::path::Path::new("./tests/test_files/issue_281.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
