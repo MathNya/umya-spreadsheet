@@ -213,6 +213,7 @@ impl CellValue {
             "" => CellRawValue::Empty,
             "TRUE" => CellRawValue::Bool(true),
             "FALSE" => CellRawValue::Bool(false),
+            "NAN" => CellRawValue::String(value.into()),
             _ => {
                 if let Ok(error_type) = CellErrorType::from_str(&uppercase_value) {
                     CellRawValue::Error(error_type)

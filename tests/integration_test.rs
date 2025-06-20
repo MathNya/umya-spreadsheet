@@ -1985,6 +1985,16 @@ fn issue_268() {
 }
 
 #[test]
+fn issue_279() {
+    let mut book = new_file();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    sheet.get_cell_mut("A1").set_value("NaN");
+
+    let path = std::path::Path::new("./tests/result_files/issue_279.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
+
+#[test]
 fn issue_281() {
     let path = std::path::Path::new("./tests/test_files/issue_281.xlsx");
     let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
