@@ -5,7 +5,7 @@ use thousands::Separable;
 use super::fraction_formater::format_as_fraction;
 use crate::helper::utils::compile_regex;
 
-pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<str> {
+pub(crate) fn format_as_number(value: f64, format: &str) -> Cow<'_, str> {
     let thousands_sep_regex = compile_regex!(r"(#,#|0,0)");
     let scale_regex = compile_regex!(r"(#|0)(,+)");
     let trailing_comma_regex = compile_regex!("(#|0),+");
