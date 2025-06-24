@@ -31,8 +31,15 @@ pub struct Scene3DType {
 impl Scene3DType {
     #[inline]
     #[must_use]
-    pub fn get_camera(&self) -> Option<&Camera> {
+    pub fn camera(&self) -> Option<&Camera> {
         self.camera.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use camera()")]
+    pub fn get_camera(&self) -> Option<&Camera> {
+        self.camera()
     }
 
     #[inline]
@@ -43,8 +50,15 @@ impl Scene3DType {
 
     #[inline]
     #[must_use]
-    pub fn get_light_rig(&self) -> Option<&LightRig> {
+    pub fn light_rig(&self) -> Option<&LightRig> {
         self.light_rig.as_ref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use light_rig()")]
+    pub fn get_light_rig(&self) -> Option<&LightRig> {
+        self.light_rig()
     }
 
     #[inline]

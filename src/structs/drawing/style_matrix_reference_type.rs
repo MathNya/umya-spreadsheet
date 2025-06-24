@@ -31,8 +31,15 @@ pub struct StyleMatrixReferenceType {
 impl StyleMatrixReferenceType {
     #[inline]
     #[must_use]
-    pub fn get_index(&self) -> &str {
+    pub fn index(&self) -> &str {
         &self.index
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use index()")]
+    pub fn get_index(&self) -> &str {
+        self.index()
     }
 
     #[inline]
@@ -42,8 +49,15 @@ impl StyleMatrixReferenceType {
 
     #[inline]
     #[must_use]
-    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+    pub fn scheme_color(&self) -> Option<&SchemeColor> {
         self.scheme_color.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scheme_color()")]
+    pub fn get_scheme_color(&self) -> Option<&SchemeColor> {
+        self.scheme_color()
     }
 
     #[inline]

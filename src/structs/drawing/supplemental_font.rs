@@ -25,8 +25,15 @@ pub struct SupplementalFont {
 impl SupplementalFont {
     #[inline]
     #[must_use]
-    pub fn get_script(&self) -> &str {
+    pub fn script(&self) -> &str {
         self.script.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use script()")]
+    pub fn get_script(&self) -> &str {
+        self.script()
     }
 
     #[inline]
@@ -37,8 +44,15 @@ impl SupplementalFont {
 
     #[inline]
     #[must_use]
-    pub fn get_typeface(&self) -> &str {
+    pub fn typeface(&self) -> &str {
         self.typeface.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use typeface()")]
+    pub fn get_typeface(&self) -> &str {
+        self.typeface()
     }
 
     #[inline]

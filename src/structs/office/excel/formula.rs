@@ -29,13 +29,26 @@ pub struct Formula {
 impl Formula {
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> &Address {
+    pub fn value(&self) -> &Address {
         &self.value
     }
 
     #[inline]
-    pub fn get_value_mut(&mut self) -> &mut Address {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_value(&self) -> &Address {
+        self.value()
+    }
+
+    #[inline]
+    pub fn value_mut(&mut self) -> &mut Address {
         &mut self.value
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_value_mut(&mut self) -> &mut Address {
+        self.value_mut()
     }
 
     #[inline]

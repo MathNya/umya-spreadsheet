@@ -29,13 +29,26 @@ pub struct ReferenceSequence {
 impl ReferenceSequence {
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> &[Range] {
+    pub fn value(&self) -> &[Range] {
         &self.value
     }
 
     #[inline]
-    pub fn get_value_mut(&mut self) -> &mut Vec<Range> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &[Range] {
+        self.value()
+    }
+
+    #[inline]
+    pub fn value_mut(&mut self) -> &mut Vec<Range> {
         &mut self.value
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_mut()")]
+    pub fn get_value_mut(&mut self) -> &mut Vec<Range> {
+        self.value_mut()
     }
 
     #[inline]
@@ -67,12 +80,19 @@ impl ReferenceSequence {
 
     #[inline]
     #[must_use]
-    pub fn get_sqref(&self) -> String {
+    pub fn sqref(&self) -> String {
         self.value
             .iter()
             .map(Range::range)
             .collect::<Vec<String>>()
             .join(" ")
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sqref()")]
+    pub fn get_sqref(&self) -> String {
+        self.sqref()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
@@ -104,7 +124,7 @@ impl ReferenceSequence {
     #[inline]
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         write_start_tag(writer, "xm:sqref", vec![], false);
-        write_text_node(writer, self.get_sqref());
+        write_text_node(writer, self.sqref());
         write_end_tag(writer, "xm:sqref");
     }
 }

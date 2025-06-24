@@ -95,7 +95,7 @@ impl Color2Type {
             return v.val().to_string();
         }
         if let Some(v) = &self.system_color {
-            return v.get_last_color().to_string();
+            return v.last_color().to_string();
         }
         String::new()
     }

@@ -28,8 +28,15 @@ impl SourceRectangle {
 
     #[inline]
     #[must_use]
-    pub fn get_t(&self) -> Option<&str> {
+    pub fn t(&self) -> Option<&str> {
         self.t.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use t()")]
+    pub fn get_t(&self) -> Option<&str> {
+        self.t()
     }
 
     #[inline]
@@ -39,8 +46,15 @@ impl SourceRectangle {
 
     #[inline]
     #[must_use]
-    pub fn get_l(&self) -> Option<&str> {
+    pub fn l(&self) -> Option<&str> {
         self.l.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use l()")]
+    pub fn get_l(&self) -> Option<&str> {
+        self.l()
     }
 
     #[inline]
@@ -50,8 +64,15 @@ impl SourceRectangle {
 
     #[inline]
     #[must_use]
-    pub fn get_r(&self) -> Option<&str> {
+    pub fn r(&self) -> Option<&str> {
         self.r.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use r()")]
+    pub fn get_r(&self) -> Option<&str> {
+        self.r()
     }
 
     #[inline]
@@ -61,8 +82,15 @@ impl SourceRectangle {
 
     #[inline]
     #[must_use]
-    pub fn get_b(&self) -> Option<&str> {
+    pub fn b(&self) -> Option<&str> {
         self.b.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use b()")]
+    pub fn get_b(&self) -> Option<&str> {
+        self.b()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

@@ -31,8 +31,15 @@ pub struct SystemColor {
 impl SystemColor {
     #[inline]
     #[must_use]
-    pub fn get_val(&self) -> &SystemColorValues {
+    pub fn val(&self) -> &SystemColorValues {
         self.val.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use val()")]
+    pub fn get_val(&self) -> &SystemColorValues {
+        self.val()
     }
 
     #[inline]
@@ -43,8 +50,15 @@ impl SystemColor {
 
     #[inline]
     #[must_use]
-    pub fn get_last_color(&self) -> &str {
+    pub fn last_color(&self) -> &str {
         self.last_color.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use last_color()")]
+    pub fn get_last_color(&self) -> &str {
+        self.last_color()
     }
 
     #[inline]

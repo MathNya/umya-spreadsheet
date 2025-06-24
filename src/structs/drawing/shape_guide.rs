@@ -13,8 +13,15 @@ pub struct ShapeGuide {
 impl ShapeGuide {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         &self.name
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -24,8 +31,15 @@ impl ShapeGuide {
 
     #[inline]
     #[must_use]
-    pub fn get_fmla(&self) -> &str {
+    pub fn fmla(&self) -> &str {
         &self.fmla
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fmla()")]
+    pub fn get_fmla(&self) -> &str {
+        self.fmla()
     }
 
     #[inline]

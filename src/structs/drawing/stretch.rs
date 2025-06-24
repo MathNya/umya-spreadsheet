@@ -27,13 +27,26 @@ pub struct Stretch {
 impl Stretch {
     #[inline]
     #[must_use]
-    pub fn get_fill_rectangle(&self) -> Option<&FillRectangle> {
+    pub fn fill_rectangle(&self) -> Option<&FillRectangle> {
         self.fill_rectangle.as_deref()
     }
 
     #[inline]
-    pub fn get_fill_rectangle_mut(&mut self) -> Option<&mut FillRectangle> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fill_rectangle()")]
+    pub fn get_fill_rectangle(&self) -> Option<&FillRectangle> {
+        self.fill_rectangle()
+    }
+
+    #[inline]
+    pub fn fill_rectangle_mut(&mut self) -> Option<&mut FillRectangle> {
         self.fill_rectangle.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use fill_rectangle_mut()")]
+    pub fn get_fill_rectangle_mut(&mut self) -> Option<&mut FillRectangle> {
+        self.fill_rectangle_mut()
     }
 
     #[inline]

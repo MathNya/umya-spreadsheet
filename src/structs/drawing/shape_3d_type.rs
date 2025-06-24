@@ -38,8 +38,15 @@ pub struct Shape3DType {
 impl Shape3DType {
     #[inline]
     #[must_use]
-    pub fn get_preset_material(&self) -> &PresetMaterialTypeValues {
+    pub fn preset_material(&self) -> &PresetMaterialTypeValues {
         self.preset_material.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use preset_material()")]
+    pub fn get_preset_material(&self) -> &PresetMaterialTypeValues {
+        self.preset_material()
     }
 
     #[inline]
@@ -50,13 +57,26 @@ impl Shape3DType {
 
     #[inline]
     #[must_use]
-    pub fn get_bevel_top(&self) -> Option<&BevelTop> {
+    pub fn bevel_top(&self) -> Option<&BevelTop> {
         self.bevel_top.as_deref()
     }
 
     #[inline]
-    pub fn get_bevel_top_mut(&mut self) -> Option<&mut BevelTop> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bevel_top()")]
+    pub fn get_bevel_top(&self) -> Option<&BevelTop> {
+        self.bevel_top()
+    }
+
+    #[inline]
+    pub fn bevel_top_mut(&mut self) -> Option<&mut BevelTop> {
         self.bevel_top.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use bevel_top_mut()")]
+    pub fn get_bevel_top_mut(&mut self) -> Option<&mut BevelTop> {
+        self.bevel_top_mut()
     }
 
     #[inline]
@@ -66,13 +86,26 @@ impl Shape3DType {
 
     #[inline]
     #[must_use]
-    pub fn get_bevel_bottom(&self) -> Option<&BevelBottom> {
+    pub fn bevel_bottom(&self) -> Option<&BevelBottom> {
         self.bevel_bottom.as_deref()
     }
 
     #[inline]
-    pub fn get_bevel_bottom_mut(&mut self) -> Option<&mut BevelBottom> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use bevel_bottom()")]
+    pub fn get_bevel_bottom(&self) -> Option<&BevelBottom> {
+        self.bevel_bottom()
+    }
+
+    #[inline]
+    pub fn bevel_bottom_mut(&mut self) -> Option<&mut BevelBottom> {
         self.bevel_bottom.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use bevel_bottom_mut()")]
+    pub fn get_bevel_bottom_mut(&mut self) -> Option<&mut BevelBottom> {
+        self.bevel_bottom_mut()
     }
 
     #[inline]

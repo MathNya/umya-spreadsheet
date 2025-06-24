@@ -20,8 +20,15 @@ pub struct SoftEdge {
 impl SoftEdge {
     #[inline]
     #[must_use]
-    pub fn get_radius(&self) -> i64 {
+    pub fn radius(&self) -> i64 {
         self.radius.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use radius()")]
+    pub fn get_radius(&self) -> i64 {
+        self.radius()
     }
 
     #[inline]

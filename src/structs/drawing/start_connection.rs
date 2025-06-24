@@ -21,8 +21,15 @@ pub struct StartConnection {
 impl StartConnection {
     #[inline]
     #[must_use]
-    pub fn get_id(&self) -> u32 {
+    pub fn id(&self) -> u32 {
         self.id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
+    pub fn get_id(&self) -> u32 {
+        self.id()
     }
 
     #[inline]
@@ -32,8 +39,15 @@ impl StartConnection {
 
     #[inline]
     #[must_use]
-    pub fn get_index(&self) -> u32 {
+    pub fn index(&self) -> u32 {
         self.index.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use index()")]
+    pub fn get_index(&self) -> u32 {
+        self.index()
     }
 
     #[inline]
