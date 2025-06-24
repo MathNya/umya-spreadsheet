@@ -434,7 +434,7 @@ impl Theme {
         let mut outer_shadow = OuterShadow::default();
         outer_shadow.set_blur_radius("57150");
         outer_shadow.set_distance("19050");
-        outer_shadow.set_direction("5_400_000");
+        outer_shadow.set_direction("5400000");
         outer_shadow.set_alignment("ctr");
         outer_shadow.set_rotate_with_shape("0");
         let mut srgb_clr = RgbColorModelHex::default();
