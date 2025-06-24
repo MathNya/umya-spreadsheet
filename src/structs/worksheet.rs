@@ -595,16 +595,16 @@ impl Worksheet {
     // Hyperlink
     // ************************
     /// (This method is crate only.)
-    /// Get Hyperlink convert to hashmap.
-    pub(crate) fn get_hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
-        let mut result: HashMap<String, &Hyperlink> = HashMap::new();
-        for cell in self.cell_collection.iter_collection() {
+    /// Get Hyperlink convert to vec.
+    pub(crate) fn get_hyperlink_collection(&self) -> ThinVec<(String, &Hyperlink)> {
+        let mut result: ThinVec<(String, &Hyperlink)> = ThinVec::new();
+        for cell in self.cell_collection.get_collection_sorted() {
             if let Some(hyperlink) = cell.get_hyperlink() {
                 let coordition = coordinate_from_index(
                     cell.get_coordinate().get_col_num(),
                     cell.get_coordinate().get_row_num(),
                 );
-                result.insert(coordition, hyperlink);
+                result.push((coordition, hyperlink));
             }
         }
         result

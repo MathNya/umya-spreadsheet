@@ -216,7 +216,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
         write_start_tag(&mut writer, "hyperlinks", vec![], false);
 
         // hyperlink
-        for (coordition, hyperlink) in worksheet.get_hyperlink_collection_to_hashmap() {
+        for (coordition, hyperlink) in worksheet.get_hyperlink_collection() {
             let r_id_str = format!("rId{}", &r_id);
             let mut attributes: Vec<(&str, &str)> = Vec::new();
             attributes.push(("ref", &coordition));
