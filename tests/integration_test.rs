@@ -2058,3 +2058,52 @@ fn issue_281() {
     let path = std::path::Path::new("./tests/result_files/r_issue_281.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_284() {
+    let mut book = new_file();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+
+    let mut hyperlink1 = Hyperlink::default();
+    hyperlink1.set_location(false);
+    hyperlink1.set_url("http:test.com/1");
+    sheet.get_cell_mut("A1").set_hyperlink(hyperlink1);
+
+    let mut hyperlink2 = Hyperlink::default();
+    hyperlink2.set_location(false);
+    hyperlink2.set_url("http:test.com/2");
+    sheet.get_cell_mut("A2").set_hyperlink(hyperlink2);
+
+    let mut hyperlink3 = Hyperlink::default();
+    hyperlink3.set_location(false);
+    hyperlink3.set_url("http:test.com/3");
+    sheet.get_cell_mut("A3").set_hyperlink(hyperlink3);
+
+    let mut hyperlink4 = Hyperlink::default();
+    hyperlink4.set_location(false);
+    hyperlink4.set_url("http:test.com/4");
+    sheet.get_cell_mut("A4").set_hyperlink(hyperlink4);
+
+    let mut hyperlink11 = Hyperlink::default();
+    hyperlink11.set_location(false);
+    hyperlink11.set_url("http:test.com/11");
+    sheet.get_cell_mut("B1").set_hyperlink(hyperlink11);
+
+    let mut hyperlink12 = Hyperlink::default();
+    hyperlink12.set_location(false);
+    hyperlink12.set_url("http:test.com/12");
+    sheet.get_cell_mut("B2").set_hyperlink(hyperlink12);
+
+    let mut hyperlink13 = Hyperlink::default();
+    hyperlink13.set_location(false);
+    hyperlink13.set_url("http:test.com/13");
+    sheet.get_cell_mut("B3").set_hyperlink(hyperlink13);
+
+    let mut hyperlink14 = Hyperlink::default();
+    hyperlink14.set_location(false);
+    hyperlink14.set_url("http:test.com/14");
+    sheet.get_cell_mut("B4").set_hyperlink(hyperlink14);
+
+    let path = std::path::Path::new("./tests/result_files/issue_284.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

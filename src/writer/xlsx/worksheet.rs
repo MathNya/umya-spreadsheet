@@ -408,7 +408,7 @@ fn write_hyperlinks(writer: &mut InternalWriter, worksheet: &Worksheet) -> i32 {
     if worksheet.has_hyperlink() {
         write_start_tag(writer, "hyperlinks", vec![], false);
 
-        for (coordition, hyperlink) in worksheet.hyperlink_collection_to_hashmap() {
+        for (coordition, hyperlink) in worksheet.hyperlink_collection() {
             let r_id_str = format!("rId{}", &r_id);
             let mut attributes: crate::structs::AttrCollection = Vec::new();
             attributes.push(("ref", &coordition).into());

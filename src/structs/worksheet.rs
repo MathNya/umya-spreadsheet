@@ -812,24 +812,24 @@ impl Worksheet {
     // Hyperlink
     // ************************
     /// (This method is crate only.)
-    /// Get Hyperlink convert to hashmap.
-    pub(crate) fn hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
-        let mut result: HashMap<String, &Hyperlink> = HashMap::new();
-        for cell in self.cells.iter_collection() {
+    /// Get Hyperlink convert to vec.
+    pub(crate) fn hyperlink_collection(&self) -> Vec<(String, &Hyperlink)> {
+        let mut result: Vec<(String, &Hyperlink)> = Vec::new();
+        for cell in self.cells.collection_sorted() {
             if let Some(hyperlink) = cell.hyperlink() {
                 let coordition = coordinate_from_index(
                     cell.coordinate().col_num(),
                     cell.coordinate().row_num(),
                 );
-                result.insert(coordition, hyperlink);
+                result.push((coordition, hyperlink));
             }
         }
         result
     }
 
-    #[deprecated(since = "3.0.0", note = "Use hyperlink_collection_to_hashmap()")]
-    pub(crate) fn get_hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
-        self.hyperlink_collection_to_hashmap()
+    #[deprecated(since = "3.0.0", note = "Use hyperlink_collection()")]
+    pub(crate) fn get_hyperlink_collection(&self) -> Vec<(String, &Hyperlink)> {
+        self.hyperlink_collection()
     }
 
     /// (This method is crate only.)
