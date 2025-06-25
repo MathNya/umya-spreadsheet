@@ -23,8 +23,15 @@ pub struct TextFontType {
 impl TextFontType {
     #[inline]
     #[must_use]
-    pub fn get_typeface(&self) -> &str {
+    pub fn typeface(&self) -> &str {
         self.typeface.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use typeface()")]
+    pub fn get_typeface(&self) -> &str {
+        self.typeface()
     }
 
     #[inline]
@@ -35,8 +42,15 @@ impl TextFontType {
 
     #[inline]
     #[must_use]
-    pub fn get_pitch_family(&self) -> &str {
+    pub fn pitch_family(&self) -> &str {
         self.pitch_family.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pitch_family()")]
+    pub fn get_pitch_family(&self) -> &str {
+        self.pitch_family()
     }
 
     #[inline]
@@ -47,8 +61,15 @@ impl TextFontType {
 
     #[inline]
     #[must_use]
-    pub fn get_charset(&self) -> &str {
+    pub fn charset(&self) -> &str {
         self.charset.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use charset()")]
+    pub fn get_charset(&self) -> &str {
+        self.charset()
     }
 
     #[inline]
@@ -59,8 +80,15 @@ impl TextFontType {
 
     #[inline]
     #[must_use]
-    pub fn get_panose(&self) -> &str {
+    pub fn panose(&self) -> &str {
         self.panose.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use panose()")]
+    pub fn get_panose(&self) -> &str {
+        self.panose()
     }
 
     #[inline]

@@ -40,13 +40,26 @@ pub struct Transform2D {
 impl Transform2D {
     #[inline]
     #[must_use]
-    pub fn get_offset(&self) -> &Point2DType {
+    pub fn offset(&self) -> &Point2DType {
         &self.offset
     }
 
     #[inline]
-    pub fn get_offset_mut(&mut self) -> &mut Point2DType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use offset()")]
+    pub fn get_offset(&self) -> &Point2DType {
+        self.offset()
+    }
+
+    #[inline]
+    pub fn offset_mut(&mut self) -> &mut Point2DType {
         &mut self.offset
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use offset_mut()")]
+    pub fn get_offset_mut(&mut self) -> &mut Point2DType {
+        self.offset_mut()
     }
 
     #[inline]
@@ -56,13 +69,26 @@ impl Transform2D {
 
     #[inline]
     #[must_use]
-    pub fn get_extents(&self) -> &PositiveSize2DType {
+    pub fn extents(&self) -> &PositiveSize2DType {
         &self.extents
     }
 
     #[inline]
-    pub fn get_extents_mut(&mut self) -> &mut PositiveSize2DType {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use extents()")]
+    pub fn get_extents(&self) -> &PositiveSize2DType {
+        self.extents()
+    }
+
+    #[inline]
+    pub fn extents_mut(&mut self) -> &mut PositiveSize2DType {
         &mut self.extents
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use extents_mut()")]
+    pub fn get_extents_mut(&mut self) -> &mut PositiveSize2DType {
+        self.extents_mut()
     }
 
     #[inline]
@@ -72,13 +98,26 @@ impl Transform2D {
 
     #[inline]
     #[must_use]
-    pub fn get_child_offset(&self) -> Option<&Point2DType> {
+    pub fn child_offset(&self) -> Option<&Point2DType> {
         self.child_offset.as_deref()
     }
 
     #[inline]
-    pub fn get_child_offset_mut(&mut self) -> Option<&mut Point2DType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use child_offset()")]
+    pub fn get_child_offset(&self) -> Option<&Point2DType> {
+        self.child_offset()
+    }
+
+    #[inline]
+    pub fn child_offset_mut(&mut self) -> Option<&mut Point2DType> {
         self.child_offset.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use child_offset_mut()")]
+    pub fn get_child_offset_mut(&mut self) -> Option<&mut Point2DType> {
+        self.child_offset_mut()
     }
 
     #[inline]
@@ -88,13 +127,26 @@ impl Transform2D {
 
     #[inline]
     #[must_use]
-    pub fn get_child_extents(&self) -> Option<&PositiveSize2DType> {
+    pub fn child_extents(&self) -> Option<&PositiveSize2DType> {
         self.child_extents.as_deref()
     }
 
     #[inline]
-    pub fn get_child_extents_mut(&mut self) -> Option<&mut PositiveSize2DType> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use child_extents()")]
+    pub fn get_child_extents(&self) -> Option<&PositiveSize2DType> {
+        self.child_extents()
+    }
+
+    #[inline]
+    pub fn child_extents_mut(&mut self) -> Option<&mut PositiveSize2DType> {
         self.child_extents.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use child_extents_mut()")]
+    pub fn get_child_extents_mut(&mut self) -> Option<&mut PositiveSize2DType> {
+        self.child_extents_mut()
     }
 
     #[inline]
@@ -104,8 +156,15 @@ impl Transform2D {
 
     #[inline]
     #[must_use]
-    pub fn get_rot(&self) -> Option<&str> {
+    pub fn rot(&self) -> Option<&str> {
         self.rot.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rot()")]
+    pub fn get_rot(&self) -> Option<&str> {
+        self.rot()
     }
 
     #[inline]
@@ -115,8 +174,15 @@ impl Transform2D {
 
     #[inline]
     #[must_use]
-    pub fn get_flip_v(&self) -> Option<&str> {
+    pub fn flip_v(&self) -> Option<&str> {
         self.flip_v.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use flip_v()")]
+    pub fn get_flip_v(&self) -> Option<&str> {
+        self.flip_v()
     }
 
     #[inline]
@@ -126,8 +192,15 @@ impl Transform2D {
 
     #[inline]
     #[must_use]
-    pub fn get_flip_h(&self) -> Option<&str> {
+    pub fn flip_h(&self) -> Option<&str> {
         self.flip_h.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use flip_h()")]
+    pub fn get_flip_h(&self) -> Option<&str> {
+        self.flip_h()
     }
 
     #[inline]

@@ -39,15 +39,27 @@ pub(crate) struct RawRelationships {
 
 impl RawRelationships {
     #[inline]
-    pub(crate) fn get_file_name(&self) -> String {
-        let v: Vec<&str> = self.get_file_target().split('/').collect();
+    pub(crate) fn file_name(&self) -> String {
+        let v: Vec<&str> = self.file_target().split('/').collect();
         let object_name = v.last().unwrap();
         (*object_name).to_string()
     }
 
     #[inline]
-    pub(crate) fn get_file_target(&self) -> &str {
+    #[deprecated(since = "3.0.0", note = "Use file_name()")]
+    pub(crate) fn get_file_name(&self) -> String {
+        self.file_name()
+    }
+
+    #[inline]
+    pub(crate) fn file_target(&self) -> &str {
         self.file_target.value_str()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use file_target()")]
+    pub(crate) fn get_file_target(&self) -> &str {
+        self.file_target()
     }
 
     #[inline]
@@ -57,20 +69,37 @@ impl RawRelationships {
     }
 
     #[inline]
-    pub(crate) fn get_relationship_list(&self) -> &[RawRelationship] {
+    pub(crate) fn relationship_list(&self) -> &[RawRelationship] {
         &self.relationship_list
     }
 
     #[inline]
-    pub(crate) fn get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
+    #[deprecated(since = "3.0.0", note = "Use relationship_list()")]
+    pub(crate) fn get_relationship_list(&self) -> &[RawRelationship] {
+        self.relationship_list()
+    }
+
+    #[inline]
+    pub(crate) fn relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
         &mut self.relationship_list
     }
 
-    pub(crate) fn get_relationship_by_rid(&self, r_id: &str) -> &RawRelationship {
-        self.get_relationship_list()
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use relationship_list_mut()")]
+    pub(crate) fn get_relationship_list_mut(&mut self) -> &mut Vec<RawRelationship> {
+        self.relationship_list_mut()
+    }
+
+    pub(crate) fn relationship_by_rid(&self, r_id: &str) -> &RawRelationship {
+        self.relationship_list()
             .iter()
-            .find(|relationship| relationship.get_id() == r_id)
+            .find(|relationship| relationship.id() == r_id)
             .unwrap_or_else(|| panic!("Not found relationship with ID: {r_id}."))
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use relationship_by_rid()")]
+    pub(crate) fn get_relationship_by_rid(&self, r_id: &str) -> &RawRelationship {
+        self.relationship_by_rid(r_id)
     }
 
     #[inline]
@@ -119,7 +148,7 @@ impl RawRelationships {
         writer_mng: &mut WriterManager<W>,
         ather_target: Option<&str>,
     ) -> Result<(), XlsxError> {
-        if self.get_relationship_list().is_empty() {
+        if self.relationship_list().is_empty() {
             return Ok(());
         }
 
@@ -142,7 +171,7 @@ impl RawRelationships {
             false,
         );
 
-        for relationship in self.get_relationship_list() {
+        for relationship in self.relationship_list() {
             relationship.write_to(&mut writer);
         }
 
@@ -150,11 +179,11 @@ impl RawRelationships {
 
         let target = match ather_target {
             Some(v) => v,
-            None => self.get_file_target(),
+            None => self.file_target(),
         };
         writer_mng.add_writer(target, writer)?;
 
-        for relationship in self.get_relationship_list() {
+        for relationship in self.relationship_list() {
             relationship.write_to_bin(writer_mng)?;
         }
 

@@ -225,9 +225,9 @@ impl PageSetup {
         if let Some(r_id) = get_attribute(e, b"r:id") {
             let attached_file = relationships
                 .unwrap()
-                .get_relationship_by_rid(&r_id)
-                .get_raw_file();
-            self.set_object_data(attached_file.get_file_data());
+                .relationship_by_rid(&r_id)
+                .raw_file();
+            self.set_object_data(attached_file.file_data());
         }
     }
 

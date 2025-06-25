@@ -28,30 +28,47 @@ impl TailEnd {
     }
 
     #[inline]
-    pub fn set_type<S: Into<String>>(&mut self, value: S) {
+    pub fn set_type<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.t_type.set_value(value.into());
+        self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_width(&self) -> &str {
+    pub fn width(&self) -> &str {
         self.width.value_str()
     }
 
     #[inline]
-    pub fn set_width<S: Into<String>>(&mut self, value: S) {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use width()")]
+    pub fn get_width(&self) -> &str {
+        self.width()
+    }
+
+    #[inline]
+    pub fn set_width<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.width.set_value(value.into());
+        self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_length(&self) -> &str {
+    pub fn length(&self) -> &str {
         self.length.value_str()
     }
 
     #[inline]
-    pub fn set_length<S: Into<String>>(&mut self, value: S) {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use length()")]
+    pub fn get_length(&self) -> &str {
+        self.length()
+    }
+
+    #[inline]
+    pub fn set_length<S: Into<String>>(&mut self, value: S) -> &mut Self {
         self.length.set_value(value.into());
+        self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

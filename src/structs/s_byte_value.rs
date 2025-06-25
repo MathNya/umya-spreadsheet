@@ -4,13 +4,25 @@ pub struct SByteValue {
 }
 impl SByteValue {
     #[inline]
-    pub(crate) fn get_value(&self) -> i8 {
+    pub(crate) fn value(&self) -> i8 {
         self.value.unwrap_or(0)
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub(crate) fn get_value(&self) -> i8 {
+        self.value()
+    }
+
+    #[inline]
+    pub(crate) fn value_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_string()")]
     pub(crate) fn get_value_string(&self) -> String {
-        self.get_value().to_string()
+        self.value_string()
     }
 
     #[inline]

@@ -28,13 +28,26 @@ pub struct DataValidationForumla2 {
 impl DataValidationForumla2 {
     #[inline]
     #[must_use]
-    pub fn get_value(&self) -> &Formula {
+    pub fn value(&self) -> &Formula {
         &self.value
     }
 
     #[inline]
-    pub fn get_value_mut(&mut self) -> &mut Formula {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use value()")]
+    pub fn get_value(&self) -> &Formula {
+        self.value()
+    }
+
+    #[inline]
+    pub fn value_mut(&mut self) -> &mut Formula {
         &mut self.value
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use value_mut()")]
+    pub fn get_value_mut(&mut self) -> &mut Formula {
+        self.value_mut()
     }
 
     #[inline]

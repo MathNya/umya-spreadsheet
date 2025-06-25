@@ -354,8 +354,8 @@ impl Color {
         }
         if let Some(key) = self.theme_index {
             if let Some(v) = theme
-                .get_theme_elements()
-                .get_color_scheme()
+                .theme_elements()
+                .color_scheme()
                 .color_map()
                 .get(key as usize)
             {
@@ -621,7 +621,7 @@ mod tests {
         assert_eq!(obj.argb_str(), "FFFF8080");
 
         let mut obj = Color::default();
-        let theme = Theme::get_default_value();
+        let theme = Theme::default_value();
         obj.set_theme_index(1);
         assert_eq!(obj.argb_with_theme(&theme), "000000");
     }

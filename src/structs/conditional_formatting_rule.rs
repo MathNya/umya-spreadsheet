@@ -61,15 +61,8 @@ pub struct ConditionalFormattingRule {
 impl ConditionalFormattingRule {
     #[inline]
     #[must_use]
-    pub fn r#type(&self) -> &ConditionalFormatValues {
-        self.r#type.value()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use type()")]
     pub fn get_type(&self) -> &ConditionalFormatValues {
-        self.r#type()
+        self.r#type.value()
     }
 
     #[inline]

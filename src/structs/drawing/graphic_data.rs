@@ -80,8 +80,8 @@ impl GraphicData {
                     let chart_id = get_attribute(e, b"r:id").unwrap();
                     let relationship = drawing_relationships
                         .unwrap()
-                        .get_relationship_by_rid(&chart_id);
-                    chart::read(relationship.get_raw_file(), &mut self.chart_space);
+                        .relationship_by_rid(&chart_id);
+                    chart::read(relationship.raw_file(), &mut self.chart_space);
                 }
             },
             Event::End(ref e) => {

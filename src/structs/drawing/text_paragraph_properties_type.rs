@@ -45,8 +45,15 @@ pub struct TextParagraphPropertiesType {
 impl TextParagraphPropertiesType {
     #[inline]
     #[must_use]
-    pub fn get_right_to_left(&self) -> bool {
+    pub fn right_to_left(&self) -> bool {
         self.right_to_left.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use right_to_left()")]
+    pub fn get_right_to_left(&self) -> bool {
+        self.right_to_left()
     }
 
     #[inline]
@@ -57,8 +64,15 @@ impl TextParagraphPropertiesType {
 
     #[inline]
     #[must_use]
-    pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
+    pub fn alignment(&self) -> &TextAlignmentTypeValues {
         self.alignment.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use alignment()")]
+    pub fn get_alignment(&self) -> &TextAlignmentTypeValues {
+        self.alignment()
     }
 
     #[inline]
@@ -69,8 +83,15 @@ impl TextParagraphPropertiesType {
 
     #[inline]
     #[must_use]
-    pub fn get_font_alignment(&self) -> &TextFontAlignmentValues {
+    pub fn font_alignment(&self) -> &TextFontAlignmentValues {
         self.font_alignment.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_alignment()")]
+    pub fn get_font_alignment(&self) -> &TextFontAlignmentValues {
+        self.font_alignment()
     }
 
     #[inline]
@@ -81,13 +102,26 @@ impl TextParagraphPropertiesType {
 
     #[inline]
     #[must_use]
-    pub fn get_space_before(&self) -> Option<&SpaceBefore> {
+    pub fn space_before(&self) -> Option<&SpaceBefore> {
         self.space_before.as_ref()
     }
 
     #[inline]
-    pub fn get_space_before_mut(&mut self) -> Option<&mut SpaceBefore> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use space_before()")]
+    pub fn get_space_before(&self) -> Option<&SpaceBefore> {
+        self.space_before()
+    }
+
+    #[inline]
+    pub fn space_before_mut(&mut self) -> Option<&mut SpaceBefore> {
         self.space_before.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use space_before_mut()")]
+    pub fn get_space_before_mut(&mut self) -> Option<&mut SpaceBefore> {
+        self.space_before_mut()
     }
 
     #[inline]
@@ -98,13 +132,26 @@ impl TextParagraphPropertiesType {
 
     #[inline]
     #[must_use]
-    pub fn get_space_after(&self) -> Option<&SpaceAfter> {
+    pub fn space_after(&self) -> Option<&SpaceAfter> {
         self.space_after.as_ref()
     }
 
     #[inline]
-    pub fn get_space_after_mut(&mut self) -> Option<&mut SpaceAfter> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use space_after()")]
+    pub fn get_space_after(&self) -> Option<&SpaceAfter> {
+        self.space_after()
+    }
+
+    #[inline]
+    pub fn space_after_mut(&mut self) -> Option<&mut SpaceAfter> {
         self.space_after.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use space_after_mut()")]
+    pub fn get_space_after_mut(&mut self) -> Option<&mut SpaceAfter> {
+        self.space_after_mut()
     }
 
     #[inline]
@@ -115,13 +162,26 @@ impl TextParagraphPropertiesType {
 
     #[inline]
     #[must_use]
-    pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
+    pub fn default_run_properties(&self) -> Option<&RunProperties> {
         self.default_run_properties.as_deref()
     }
 
     #[inline]
-    pub fn get_default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_run_properties()")]
+    pub fn get_default_run_properties(&self) -> Option<&RunProperties> {
+        self.default_run_properties()
+    }
+
+    #[inline]
+    pub fn default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
         self.default_run_properties.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use default_run_properties_mut()")]
+    pub fn get_default_run_properties_mut(&mut self) -> Option<&mut RunProperties> {
+        self.default_run_properties_mut()
     }
 
     #[inline]

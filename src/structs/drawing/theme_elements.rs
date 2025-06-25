@@ -32,51 +32,93 @@ pub struct ThemeElements {
 
 impl ThemeElements {
     #[inline]
-    pub fn set_color_scheme(&mut self, value: ColorScheme) {
-        self.color_scheme = value;
-    }
-
-    #[inline]
     #[must_use]
-    pub fn get_color_scheme(&self) -> &ColorScheme {
+    pub fn color_scheme(&self) -> &ColorScheme {
         &self.color_scheme
     }
 
     #[inline]
-    pub fn get_color_scheme_mut(&mut self) -> &mut ColorScheme {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color_scheme()")]
+    pub fn get_color_scheme(&self) -> &ColorScheme {
+        self.color_scheme()
+    }
+
+    #[inline]
+    pub fn color_scheme_mut(&mut self) -> &mut ColorScheme {
         &mut self.color_scheme
     }
 
     #[inline]
-    pub fn set_font_scheme(&mut self, value: FontScheme) {
-        self.font_scheme = value;
+    #[deprecated(since = "3.0.0", note = "Use color_scheme_mut()")]
+    pub fn get_color_scheme_mut(&mut self) -> &mut ColorScheme {
+        self.color_scheme_mut()
+    }
+
+    #[inline]
+    pub fn set_color_scheme(&mut self, value: ColorScheme) -> &mut Self {
+        self.color_scheme = value;
+        self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_font_scheme(&self) -> &FontScheme {
+    pub fn font_scheme(&self) -> &FontScheme {
         &self.font_scheme
     }
 
     #[inline]
-    pub fn get_font_scheme_mut(&mut self) -> &mut FontScheme {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use font_scheme()")]
+    pub fn get_font_scheme(&self) -> &FontScheme {
+        self.font_scheme()
+    }
+
+    #[inline]
+    pub fn font_scheme_mut(&mut self) -> &mut FontScheme {
         &mut self.font_scheme
     }
 
     #[inline]
-    pub fn set_format_scheme(&mut self, value: FormatScheme) {
-        self.format_scheme = value;
+    #[deprecated(since = "3.0.0", note = "Use font_scheme_mut()")]
+    pub fn get_font_scheme_mut(&mut self) -> &mut FontScheme {
+        self.font_scheme_mut()
+    }
+
+    #[inline]
+    pub fn set_font_scheme(&mut self, value: FontScheme) -> &mut Self {
+        self.font_scheme = value;
+        self
     }
 
     #[inline]
     #[must_use]
-    pub fn get_format_scheme(&self) -> &FormatScheme {
+    pub fn format_scheme(&self) -> &FormatScheme {
         &self.format_scheme
     }
 
     #[inline]
-    pub fn get_format_scheme_mut(&mut self) -> &mut FormatScheme {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_scheme()")]
+    pub fn get_format_scheme(&self) -> &FormatScheme {
+        self.format_scheme()
+    }
+
+    #[inline]
+    pub fn format_scheme_mut(&mut self) -> &mut FormatScheme {
         &mut self.format_scheme
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use format_scheme_mut()")]
+    pub fn get_format_scheme_mut(&mut self) -> &mut FormatScheme {
+        self.format_scheme_mut()
+    }
+
+    #[inline]
+    pub fn set_format_scheme(&mut self, value: FormatScheme) -> &mut Self {
+        self.format_scheme = value;
+        self
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

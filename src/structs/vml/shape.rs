@@ -62,8 +62,14 @@ pub struct Shape {
 
 impl Shape {
     #[must_use]
-    pub fn get_style(&self) -> &str {
+    pub fn style(&self) -> &str {
         self.style.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &str {
+        self.style()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -82,8 +88,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_filled(&self) -> bool {
+    pub fn filled(&self) -> bool {
         self.filled.get_value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use filled()")]
+    pub fn get_filled(&self) -> bool {
+        self.filled()
     }
 
     pub fn set_filled(&mut self, value: bool) -> &mut Self {
@@ -92,8 +104,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_fill_color(&self) -> &str {
+    pub fn fill_color(&self) -> &str {
         self.fill_color.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fill_color()")]
+    pub fn get_fill_color(&self) -> &str {
+        self.fill_color()
     }
 
     pub fn set_fill_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -102,8 +120,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_stroked(&self) -> bool {
+    pub fn stroked(&self) -> bool {
         self.stroked.get_value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stroked()")]
+    pub fn get_stroked(&self) -> bool {
+        self.stroked()
     }
 
     pub fn set_stroked(&mut self, value: bool) -> &mut Self {
@@ -112,8 +136,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_stroke_color(&self) -> &str {
+    pub fn stroke_color(&self) -> &str {
         self.stroke_color.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stroke_color()")]
+    pub fn get_stroke_color(&self) -> &str {
+        self.stroke_color()
     }
 
     pub fn set_stroke_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -122,8 +152,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_stroke_weight(&self) -> &str {
+    pub fn stroke_weight(&self) -> &str {
         self.stroke_weight.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stroke_weight()")]
+    pub fn get_stroke_weight(&self) -> &str {
+        self.stroke_weight()
     }
 
     pub fn set_stroke_weight<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -132,8 +168,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_inset_mode(&self) -> &InsetMarginValues {
+    pub fn inset_mode(&self) -> &InsetMarginValues {
         self.inset_mode.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use inset_mode()")]
+    pub fn get_inset_mode(&self) -> &InsetMarginValues {
+        self.inset_mode()
     }
 
     pub fn set_inset_mode(&mut self, value: InsetMarginValues) -> &mut Self {
@@ -142,12 +184,23 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_fill(&self) -> Option<&Fill> {
+    pub fn fill(&self) -> Option<&Fill> {
         self.fill.as_deref()
     }
 
-    pub fn get_fill_mut(&mut self) -> Option<&mut Fill> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use fill()")]
+    pub fn get_fill(&self) -> Option<&Fill> {
+        self.fill()
+    }
+
+    pub fn fill_mut(&mut self) -> Option<&mut Fill> {
         self.fill.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use fill_mut()")]
+    pub fn get_fill_mut(&mut self) -> Option<&mut Fill> {
+        self.fill_mut()
     }
 
     pub fn set_fill(&mut self, value: Fill) -> &mut Self {
@@ -156,12 +209,23 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_image_data(&self) -> Option<&ImageData> {
+    pub fn image_data(&self) -> Option<&ImageData> {
         self.image_data.as_deref()
     }
 
-    pub fn get_image_data_mut(&mut self) -> Option<&mut ImageData> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image_data()")]
+    pub fn get_image_data(&self) -> Option<&ImageData> {
+        self.image_data()
+    }
+
+    pub fn image_data_mut(&mut self) -> Option<&mut ImageData> {
         self.image_data.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use image_data_mut()")]
+    pub fn get_image_data_mut(&mut self) -> Option<&mut ImageData> {
+        self.image_data_mut()
     }
 
     pub fn set_image_data(&mut self, value: ImageData) -> &mut Self {
@@ -170,12 +234,23 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_stroke(&self) -> Option<&Stroke> {
+    pub fn stroke(&self) -> Option<&Stroke> {
         self.stroke.as_deref()
     }
 
-    pub fn get_stroke_mut(&mut self) -> Option<&mut Stroke> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use stroke()")]
+    pub fn get_stroke(&self) -> Option<&Stroke> {
+        self.stroke()
+    }
+
+    pub fn stroke_mut(&mut self) -> Option<&mut Stroke> {
         self.stroke.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use stroke_mut()")]
+    pub fn get_stroke_mut(&mut self) -> Option<&mut Stroke> {
+        self.stroke_mut()
     }
 
     pub fn set_stroke(&mut self, value: Stroke) -> &mut Self {
@@ -184,12 +259,23 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_shadow(&self) -> Option<&Shadow> {
+    pub fn shadow(&self) -> Option<&Shadow> {
         self.shadow.as_deref()
     }
 
-    pub fn get_shadow_mut(&mut self) -> Option<&mut Shadow> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use shadow()")]
+    pub fn get_shadow(&self) -> Option<&Shadow> {
+        self.shadow()
+    }
+
+    pub fn shadow_mut(&mut self) -> Option<&mut Shadow> {
         self.shadow.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use shadow_mut()")]
+    pub fn get_shadow_mut(&mut self) -> Option<&mut Shadow> {
+        self.shadow_mut()
     }
 
     pub fn set_shadow(&mut self, value: Shadow) -> &mut Self {
@@ -198,12 +284,23 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_path(&self) -> Option<&Path> {
+    pub fn path(&self) -> Option<&Path> {
         self.path.as_deref()
     }
 
-    pub fn get_path_mut(&mut self) -> Option<&mut Path> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use path()")]
+    pub fn get_path(&self) -> Option<&Path> {
+        self.path()
+    }
+
+    pub fn path_mut(&mut self) -> Option<&mut Path> {
         self.path.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use path_mut()")]
+    pub fn get_path_mut(&mut self) -> Option<&mut Path> {
+        self.path_mut()
     }
 
     pub fn set_path(&mut self, value: Path) -> &mut Self {
@@ -212,12 +309,23 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_text_box(&self) -> Option<&TextBox> {
+    pub fn text_box(&self) -> Option<&TextBox> {
         self.text_box.as_deref()
     }
 
-    pub fn get_text_box_mut(&mut self) -> Option<&mut TextBox> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text_box()")]
+    pub fn get_text_box(&self) -> Option<&TextBox> {
+        self.text_box()
+    }
+
+    pub fn text_box_mut(&mut self) -> Option<&mut TextBox> {
         self.text_box.as_deref_mut()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use text_box_mut()")]
+    pub fn get_text_box_mut(&mut self) -> Option<&mut TextBox> {
+        self.text_box_mut()
     }
 
     pub fn set_text_box(&mut self, value: TextBox) -> &mut Self {
@@ -226,12 +334,23 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_client_data(&self) -> &ClientData {
+    pub fn client_data(&self) -> &ClientData {
         &self.client_data
     }
 
-    pub fn get_client_data_mut(&mut self) -> &mut ClientData {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use client_data()")]
+    pub fn get_client_data(&self) -> &ClientData {
+        self.client_data()
+    }
+
+    pub fn client_data_mut(&mut self) -> &mut ClientData {
         &mut self.client_data
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use client_data_mut()")]
+    pub fn get_client_data_mut(&mut self) -> &mut ClientData {
+        self.client_data_mut()
     }
 
     pub fn set_client_data(&mut self, value: ClientData) -> &mut Self {
@@ -240,8 +359,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_optional_number(&self) -> i32 {
+    pub fn optional_number(&self) -> i32 {
         self.optional_number.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use optional_number()")]
+    pub fn get_optional_number(&self) -> i32 {
+        self.optional_number()
     }
 
     pub fn set_optional_number(&mut self, value: i32) -> &mut Self {
@@ -250,8 +375,14 @@ impl Shape {
     }
 
     #[must_use]
-    pub fn get_coordinate_size(&self) -> &str {
+    pub fn coordinate_size(&self) -> &str {
         self.coordinate_size.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use coordinate_size()")]
+    pub fn get_coordinate_size(&self) -> &str {
+        self.coordinate_size()
     }
 
     pub fn set_coordinate_size<S: Into<String>>(&mut self, value: S) -> &mut Self {

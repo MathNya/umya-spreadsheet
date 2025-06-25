@@ -18,7 +18,7 @@ use crate::structs::{
 };
 
 pub(crate) fn read(worksheet: &mut Worksheet, table_file: &RawFile) -> Result<(), XlsxError> {
-    let data = std::io::Cursor::new(table_file.get_file_data());
+    let data = std::io::Cursor::new(table_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
     let mut buf = Vec::new();

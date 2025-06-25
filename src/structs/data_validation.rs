@@ -48,15 +48,8 @@ pub struct DataValidation {
 impl DataValidation {
     #[inline]
     #[must_use]
-    pub fn r#type(&self) -> &DataValidationValues {
-        self.r#type.value()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use type()")]
     pub fn get_type(&self) -> &DataValidationValues {
-        self.r#type()
+        self.r#type.value()
     }
 
     #[inline]

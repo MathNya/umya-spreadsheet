@@ -58,8 +58,15 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_operator(&self) -> &DataValidationOperatorValues {
+    pub fn operator(&self) -> &DataValidationOperatorValues {
         self.operator.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use operator()")]
+    pub fn get_operator(&self) -> &DataValidationOperatorValues {
+        self.operator()
     }
 
     #[inline]
@@ -70,8 +77,15 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_allow_blank(&self) -> bool {
+    pub fn allow_blank(&self) -> bool {
         self.allow_blank.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use allow_blank()")]
+    pub fn get_allow_blank(&self) -> bool {
+        self.allow_blank()
     }
 
     #[inline]
@@ -82,8 +96,15 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_show_input_message(&self) -> bool {
+    pub fn show_input_message(&self) -> bool {
         self.show_input_message.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_input_message()")]
+    pub fn get_show_input_message(&self) -> bool {
+        self.show_input_message()
     }
 
     #[inline]
@@ -94,8 +115,15 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_show_error_message(&self) -> bool {
+    pub fn show_error_message(&self) -> bool {
         self.show_error_message.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_error_message()")]
+    pub fn get_show_error_message(&self) -> bool {
+        self.show_error_message()
     }
 
     #[inline]
@@ -106,8 +134,15 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_prompt_title(&self) -> &str {
+    pub fn prompt_title(&self) -> &str {
         self.prompt_title.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prompt_title()")]
+    pub fn get_prompt_title(&self) -> &str {
+        self.prompt_title()
     }
 
     #[inline]
@@ -118,8 +153,15 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_prompt(&self) -> &str {
+    pub fn prompt(&self) -> &str {
         self.prompt.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use prompt()")]
+    pub fn get_prompt(&self) -> &str {
+        self.prompt()
     }
 
     #[inline]
@@ -130,13 +172,26 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_reference_sequence(&self) -> &ReferenceSequence {
+    pub fn reference_sequence(&self) -> &ReferenceSequence {
         &self.reference_sequence
     }
 
     #[inline]
-    pub fn get_reference_sequence_mut(&mut self) -> &mut ReferenceSequence {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use reference_sequence()")]
+    pub fn get_reference_sequence(&self) -> &ReferenceSequence {
+        self.reference_sequence()
+    }
+
+    #[inline]
+    pub fn reference_sequence_mut(&mut self) -> &mut ReferenceSequence {
         &mut self.reference_sequence
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use reference_sequence_mut()")]
+    pub fn get_reference_sequence_mut(&mut self) -> &mut ReferenceSequence {
+        self.reference_sequence_mut()
     }
 
     #[inline]
@@ -147,13 +202,26 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_formula1(&self) -> Option<&DataValidationForumla1> {
+    pub fn formula1(&self) -> Option<&DataValidationForumla1> {
         self.formula1.as_deref()
     }
 
     #[inline]
-    pub fn get_formula1_mut(&mut self) -> Option<&mut DataValidationForumla1> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula1()")]
+    pub fn get_formula1(&self) -> Option<&DataValidationForumla1> {
+        self.formula1()
+    }
+
+    #[inline]
+    pub fn formula1_mut(&mut self) -> Option<&mut DataValidationForumla1> {
         self.formula1.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use formula1_mut()")]
+    pub fn get_formula1_mut(&mut self) -> Option<&mut DataValidationForumla1> {
+        self.formula1_mut()
     }
 
     #[inline]
@@ -170,13 +238,26 @@ impl DataValidation {
 
     #[inline]
     #[must_use]
-    pub fn get_formula2(&self) -> Option<&DataValidationForumla2> {
+    pub fn formula2(&self) -> Option<&DataValidationForumla2> {
         self.formula2.as_deref()
     }
 
     #[inline]
-    pub fn get_formula2_mut(&mut self) -> Option<&mut DataValidationForumla2> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use formula2()")]
+    pub fn get_formula2(&self) -> Option<&DataValidationForumla2> {
+        self.formula2()
+    }
+
+    #[inline]
+    pub fn formula2_mut(&mut self) -> Option<&mut DataValidationForumla2> {
         self.formula2.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use formula2_mut()")]
+    pub fn get_formula2_mut(&mut self) -> Option<&mut DataValidationForumla2> {
+        self.formula2_mut()
     }
 
     #[inline]

@@ -24,8 +24,14 @@ pub struct Stroke {
 
 impl Stroke {
     #[must_use]
-    pub fn get_color(&self) -> &str {
+    pub fn color(&self) -> &str {
         self.color.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> &str {
+        self.color()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -34,8 +40,14 @@ impl Stroke {
     }
 
     #[must_use]
-    pub fn get_color_2(&self) -> &str {
+    pub fn color_2(&self) -> &str {
         self.color_2.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color_2()")]
+    pub fn get_color_2(&self) -> &str {
+        self.color_2()
     }
 
     pub fn set_color_2<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -44,8 +56,14 @@ impl Stroke {
     }
 
     #[must_use]
-    pub fn get_dash_style(&self) -> &str {
+    pub fn dash_style(&self) -> &str {
         self.dash_style.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use dash_style()")]
+    pub fn get_dash_style(&self) -> &str {
+        self.dash_style()
     }
 
     pub fn set_dash_style<S: Into<String>>(&mut self, value: S) -> &mut Self {

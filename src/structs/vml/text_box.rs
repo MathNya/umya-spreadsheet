@@ -40,8 +40,14 @@ impl Default for TextBox {
 
 impl TextBox {
     #[must_use]
-    pub fn get_style(&self) -> &str {
+    pub fn style(&self) -> &str {
         self.style.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use style()")]
+    pub fn get_style(&self) -> &str {
+        self.style()
     }
 
     pub fn set_style<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -50,8 +56,14 @@ impl TextBox {
     }
 
     #[must_use]
-    pub fn get_innder(&self) -> &str {
+    pub fn innder(&self) -> &str {
         self.innder.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use innder()")]
+    pub fn get_innder(&self) -> &str {
+        self.innder()
     }
 
     pub fn set_innder<S: Into<String>>(&mut self, value: S) -> &mut Self {

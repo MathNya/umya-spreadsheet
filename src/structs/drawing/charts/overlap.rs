@@ -20,7 +20,7 @@ pub struct Overlap {
 impl Overlap {
     #[must_use]
     pub fn val(&self) -> i8 {
-        self.val.get_value()
+        self.val.value()
     }
 
     #[must_use]
@@ -47,7 +47,7 @@ impl Overlap {
         write_start_tag(
             writer,
             "c:overlap",
-            vec![("val", &self.val.get_value_string()).into()],
+            vec![("val", &self.val.value_string()).into()],
             true,
         );
     }

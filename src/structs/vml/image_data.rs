@@ -28,13 +28,26 @@ pub struct ImageData {
 impl ImageData {
     #[inline]
     #[must_use]
-    pub fn get_image(&self) -> &MediaObject {
+    pub fn image(&self) -> &MediaObject {
         &self.image
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image()")]
+    pub fn get_image(&self) -> &MediaObject {
+        self.image()
+    }
+
+    #[inline]
+    pub fn image_mut(&mut self) -> &mut MediaObject {
         &mut self.image
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_mut()")]
+    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+        self.image_mut()
     }
 
     #[inline]
@@ -44,8 +57,14 @@ impl ImageData {
     }
 
     #[must_use]
-    pub fn get_title(&self) -> &str {
+    pub fn title(&self) -> &str {
         self.title.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use title()")]
+    pub fn get_title(&self) -> &str {
+        self.title()
     }
 
     pub fn set_title<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -61,11 +80,11 @@ impl ImageData {
     ) {
         if let Some(relid) = get_attribute(e, b"o:relid") {
             if let Some(rel) = drawing_relationships {
-                let relationship = rel.get_relationship_by_rid(&relid);
-                self.get_image_mut()
-                    .set_image_name(relationship.get_raw_file().get_file_name());
-                self.get_image_mut()
-                    .set_image_data(relationship.get_raw_file().get_file_data());
+                let relationship = rel.relationship_by_rid(&relid);
+                self.image_mut()
+                    .set_image_name(relationship.raw_file().file_name());
+                self.image_mut()
+                    .set_image_data(relationship.raw_file().file_data());
             }
         }
 

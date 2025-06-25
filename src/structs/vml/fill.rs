@@ -32,8 +32,15 @@ pub struct Fill {
 impl Fill {
     #[inline]
     #[must_use]
-    pub fn get_color(&self) -> &str {
+    pub fn color(&self) -> &str {
         self.color.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> &str {
+        self.color()
     }
 
     #[inline]
@@ -44,8 +51,15 @@ impl Fill {
 
     #[inline]
     #[must_use]
-    pub fn get_color_2(&self) -> &str {
+    pub fn color_2(&self) -> &str {
         self.color_2.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color_2()")]
+    pub fn get_color_2(&self) -> &str {
+        self.color_2()
     }
 
     #[inline]
@@ -56,8 +70,15 @@ impl Fill {
 
     #[inline]
     #[must_use]
-    pub fn get_on(&self) -> bool {
+    pub fn on(&self) -> bool {
         self.on.get_value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use on()")]
+    pub fn get_on(&self) -> bool {
+        self.on()
     }
 
     #[inline]
@@ -68,8 +89,15 @@ impl Fill {
 
     #[inline]
     #[must_use]
-    pub fn get_focus_size(&self) -> &str {
+    pub fn focus_size(&self) -> &str {
         self.focus_size.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use focus_size()")]
+    pub fn get_focus_size(&self) -> &str {
+        self.focus_size()
     }
 
     #[inline]
@@ -80,13 +108,26 @@ impl Fill {
 
     #[inline]
     #[must_use]
-    pub fn get_image(&self) -> Option<&MediaObject> {
+    pub fn image(&self) -> Option<&MediaObject> {
         self.image.as_ref()
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self) -> Option<&mut MediaObject> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use image()")]
+    pub fn get_image(&self) -> Option<&MediaObject> {
+        self.image()
+    }
+
+    #[inline]
+    pub fn image_mut(&mut self) -> Option<&mut MediaObject> {
         self.image.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use image_mut()")]
+    pub fn get_image_mut(&mut self) -> Option<&mut MediaObject> {
+        self.image_mut()
     }
 
     #[inline]
@@ -109,11 +150,11 @@ impl Fill {
 
         if let Some(relid) = get_attribute(e, b"o:relid") {
             if let Some(rel) = drawing_relationships {
-                let relationship = rel.get_relationship_by_rid(&relid);
+                let relationship = rel.relationship_by_rid(&relid);
                 let mut obj = MediaObject::default();
                 obj.set_image_title(get_attribute(e, b"o:title").unwrap());
-                obj.set_image_name(relationship.get_raw_file().get_file_name());
-                obj.set_image_data(relationship.get_raw_file().get_file_data());
+                obj.set_image_name(relationship.raw_file().file_name());
+                obj.set_image_data(relationship.raw_file().file_data());
                 self.set_image(obj);
             }
         }

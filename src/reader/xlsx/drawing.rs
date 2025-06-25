@@ -20,7 +20,7 @@ pub(crate) fn read(
     drawing_file: &RawFile,
     drawing_relationships: Option<&RawRelationships>,
 ) {
-    let data = std::io::Cursor::new(drawing_file.get_file_data());
+    let data = std::io::Cursor::new(drawing_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
 

@@ -97,11 +97,11 @@ impl Blip {
         }
 
         let picture_id = get_attribute(e, b"r:embed").unwrap();
-        let relationship = drawing_relationships.get_relationship_by_rid(&picture_id);
+        let relationship = drawing_relationships.relationship_by_rid(&picture_id);
         self.image_mut()
-            .set_image_name(relationship.get_raw_file().get_file_name());
+            .set_image_name(relationship.raw_file().file_name());
         self.image_mut()
-            .set_image_data(relationship.get_raw_file().get_file_data());
+            .set_image_data(relationship.raw_file().file_data());
 
         if empty_flag {
             return;

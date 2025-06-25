@@ -53,8 +53,15 @@ pub struct Theme {
 impl Theme {
     #[inline]
     #[must_use]
-    pub fn get_name(&self) -> &str {
+    pub fn name(&self) -> &str {
         self.name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use name()")]
+    pub fn get_name(&self) -> &str {
+        self.name()
     }
 
     #[inline]
@@ -65,13 +72,26 @@ impl Theme {
 
     #[inline]
     #[must_use]
-    pub fn get_theme_elements(&self) -> &ThemeElements {
+    pub fn theme_elements(&self) -> &ThemeElements {
         &self.theme_elements
     }
 
     #[inline]
-    pub fn get_theme_elements_mut(&mut self) -> &mut ThemeElements {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use theme_elements()")]
+    pub fn get_theme_elements(&self) -> &ThemeElements {
+        self.theme_elements()
+    }
+
+    #[inline]
+    pub fn theme_elements_mut(&mut self) -> &mut ThemeElements {
         &mut self.theme_elements
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use theme_elements_mut()")]
+    pub fn get_theme_elements_mut(&mut self) -> &mut ThemeElements {
+        self.theme_elements_mut()
     }
 
     #[inline]
@@ -80,127 +100,127 @@ impl Theme {
         self
     }
 
-    pub(crate) fn get_default_value() -> Theme {
+    pub(crate) fn default_value() -> Theme {
         let mut def = Theme::default();
         def.set_name("Office Theme");
 
         // color_scheme
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .set_name("Office");
 
         let mut dk1 = SystemColor::default();
         dk1.set_val(SystemColorValues::WindowText);
         dk1.set_last_color("000000");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .dk1_mut()
             .set_system_color(dk1); // dk1
 
         let mut lt1 = SystemColor::default();
         lt1.set_val(SystemColorValues::Window);
         lt1.set_last_color("FFFFFF");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .lt1_mut()
             .set_system_color(lt1); // lt1
 
         let mut dk2 = RgbColorModelHex::default();
         dk2.set_val("44546A");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .dk2_mut()
             .set_rgb_color_model_hex(dk2); // dk2
 
         let mut lt2 = RgbColorModelHex::default();
         lt2.set_val("E7E6E6");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .lt2_mut()
             .set_rgb_color_model_hex(lt2); // lt2
 
         let mut accent1 = RgbColorModelHex::default();
         accent1.set_val("4472C4");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .accent1_mut()
             .set_rgb_color_model_hex(accent1); // accent1
 
         let mut accent2 = RgbColorModelHex::default();
         accent2.set_val("ED7D31");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .accent2_mut()
             .set_rgb_color_model_hex(accent2); // accent2
 
         let mut accent3 = RgbColorModelHex::default();
         accent3.set_val("A5A5A5");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .accent3_mut()
             .set_rgb_color_model_hex(accent3); // accent3
 
         let mut accent4 = RgbColorModelHex::default();
         accent4.set_val("FFC000");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .accent4_mut()
             .set_rgb_color_model_hex(accent4); // accent4
 
         let mut accent5 = RgbColorModelHex::default();
         accent5.set_val("5B9BD5");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .accent5_mut()
             .set_rgb_color_model_hex(accent5); // accent5
 
         let mut accent6 = RgbColorModelHex::default();
         accent6.set_val("70AD47");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .accent6_mut()
             .set_rgb_color_model_hex(accent6); // accent6
 
         let mut hlink = RgbColorModelHex::default();
         hlink.set_val("0563C1");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .hlink_mut()
             .set_rgb_color_model_hex(hlink); // hlink
 
         let mut fol_hlink = RgbColorModelHex::default();
         fol_hlink.set_val("954F72");
-        def.get_theme_elements_mut()
-            .get_color_scheme_mut()
+        def.theme_elements_mut()
+            .color_scheme_mut()
             .fol_hlink_mut()
             .set_rgb_color_model_hex(fol_hlink); // folHlink
 
         // font_scheme
-        def.get_theme_elements_mut()
-            .get_font_scheme_mut()
+        def.theme_elements_mut()
+            .font_scheme_mut()
             .set_name("Office");
 
-        def.get_theme_elements_mut()
-            .get_font_scheme_mut()
+        def.theme_elements_mut()
+            .font_scheme_mut()
             .major_font_mut()
             .set_defalut_value_major();
 
-        def.get_theme_elements_mut()
-            .get_font_scheme_mut()
+        def.theme_elements_mut()
+            .font_scheme_mut()
             .minor_font_mut()
             .set_defalut_value_minor();
 
         // format_scheme
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .set_name("Office");
 
         let mut solid_fill = SolidFill::default();
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         solid_fill.set_scheme_color(scheme_color);
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .fill_style_list_mut()
             .add_solid_fill(solid_fill);
 
@@ -266,8 +286,8 @@ impl Theme {
         linear_gradient_fill.set_scaled(false);
         gradient_fill.set_linear_gradient_fill(linear_gradient_fill);
         //
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .fill_style_list_mut()
             .add_gradient_fill_collection(gradient_fill);
 
@@ -333,8 +353,8 @@ impl Theme {
         linear_gradient_fill.set_scaled(false);
         gradient_fill.set_linear_gradient_fill(linear_gradient_fill);
         //
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .fill_style_list_mut()
             .add_gradient_fill_collection(gradient_fill);
 
@@ -358,8 +378,8 @@ impl Theme {
         miter.set_limit(800_000);
         outline.set_miter(miter);
         //
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .line_style_list_mut()
             .add_outline_collection(outline);
 
@@ -383,8 +403,8 @@ impl Theme {
         miter.set_limit(800_000);
         outline.set_miter(miter);
         //
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .line_style_list_mut()
             .add_outline_collection(outline);
 
@@ -408,24 +428,24 @@ impl Theme {
         miter.set_limit(800_000);
         outline.set_miter(miter);
         //
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .line_style_list_mut()
             .add_outline_collection(outline);
 
         let mut effect_style = EffectStyle::default();
         let effect_list = EffectList::default();
         effect_style.set_effect_list(effect_list);
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .effect_style_list_mut()
             .add_effect_style_collection(effect_style);
 
         let mut effect_style = EffectStyle::default();
         let effect_list = EffectList::default();
         effect_style.set_effect_list(effect_list);
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .effect_style_list_mut()
             .add_effect_style_collection(effect_style);
 
@@ -445,8 +465,8 @@ impl Theme {
         outer_shadow.set_rgb_color_model_hex(srgb_clr);
         effect_list.set_outer_shadow(outer_shadow);
         effect_style.set_effect_list(effect_list);
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .effect_style_list_mut()
             .add_effect_style_collection(effect_style);
 
@@ -454,8 +474,8 @@ impl Theme {
         let mut scheme_color = SchemeColor::default();
         scheme_color.set_val(SchemeColorValues::PhColor);
         solid_fill.set_scheme_color(scheme_color);
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .background_fill_style_list_mut()
             .add_solid_fill(solid_fill);
         //
@@ -469,8 +489,8 @@ impl Theme {
         tint.set_val(95000);
         scheme_color.set_tint(tint);
         solid_fill.set_scheme_color(scheme_color);
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .background_fill_style_list_mut()
             .add_solid_fill(solid_fill);
 
@@ -539,12 +559,17 @@ impl Theme {
         linear_gradient_fill.set_scaled(false);
         gradient_fill.set_linear_gradient_fill(linear_gradient_fill);
         //
-        def.get_theme_elements_mut()
-            .get_format_scheme_mut()
+        def.theme_elements_mut()
+            .format_scheme_mut()
             .background_fill_style_list_mut()
             .add_gradient_fill_collection(gradient_fill);
 
         def
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use default_value()")]
+    pub(crate) fn get_default_value() -> Theme {
+        Self::default_value()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

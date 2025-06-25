@@ -12,7 +12,7 @@ use crate::structs::{
 
 #[allow(dead_code)]
 pub(crate) fn read(worksheet: &mut Worksheet, pivot_table_file: &RawFile) {
-    let data = std::io::Cursor::new(pivot_table_file.get_file_data());
+    let data = std::io::Cursor::new(pivot_table_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
     let mut buf = Vec::new();

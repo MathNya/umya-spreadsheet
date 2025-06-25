@@ -19,35 +19,59 @@ pub(crate) struct RawFile {
 }
 impl RawFile {
     #[inline]
-    pub(crate) fn get_file_name(&self) -> &str {
-        let v: Vec<&str> = self.get_file_target().split('/').collect();
+    pub(crate) fn file_name(&self) -> &str {
+        let v: Vec<&str> = self.file_target().split('/').collect();
         let object_name = v.last().unwrap();
         object_name
     }
 
     #[inline]
-    pub(crate) fn make_rel_name(&self) -> String {
-        format!("_rels/{}.rels", self.get_file_name())
+    #[deprecated(since = "3.0.0", note = "Use file_name()")]
+    pub(crate) fn get_file_name(&self) -> &str {
+        self.file_name()
     }
 
     #[inline]
-    pub(crate) fn get_path(&self) -> String {
-        let mut v: Vec<&str> = self.get_file_target().split('/').collect();
+    pub(crate) fn make_rel_name(&self) -> String {
+        format!("_rels/{}.rels", self.file_name())
+    }
+
+    #[inline]
+    pub(crate) fn path(&self) -> String {
+        let mut v: Vec<&str> = self.file_target().split('/').collect();
         v.pop();
         v.join("/")
     }
 
     #[inline]
-    pub(crate) fn get_extension(&self) -> String {
-        self.get_file_name()
+    #[deprecated(since = "3.0.0", note = "Use path()")]
+    pub(crate) fn get_path(&self) -> String {
+        self.path()
+    }
+
+    #[inline]
+    pub(crate) fn extension(&self) -> String {
+        self.file_name()
             .rsplit_once('.')
             .map(|(_, ext)| ext.to_lowercase())
             .unwrap()
     }
 
     #[inline]
-    pub(crate) fn get_file_target(&self) -> &str {
+    #[deprecated(since = "3.0.0", note = "Use extension()")]
+    pub(crate) fn get_extension(&self) -> String {
+        self.extension()
+    }
+
+    #[inline]
+    pub(crate) fn file_target(&self) -> &str {
         self.file_target.value_str()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use file_target()")]
+    pub(crate) fn get_file_target(&self) -> &str {
+        self.file_target()
     }
 
     #[inline]
@@ -57,13 +81,25 @@ impl RawFile {
     }
 
     #[inline]
-    pub(crate) fn get_file_data(&self) -> &[u8] {
+    pub(crate) fn file_data(&self) -> &[u8] {
         &self.file_data
     }
 
     #[inline]
-    pub(crate) fn get_file_data_mut(&mut self) -> &mut Vec<u8> {
+    #[deprecated(since = "3.0.0", note = "Use file_data()")]
+    pub(crate) fn get_file_data(&self) -> &[u8] {
+        self.file_data()
+    }
+
+    #[inline]
+    pub(crate) fn file_data_mut(&mut self) -> &mut Vec<u8> {
         &mut self.file_data
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use file_data_mut()")]
+    pub(crate) fn get_file_data_mut(&mut self) -> &mut Vec<u8> {
+        self.file_data_mut()
     }
 
     #[inline]
@@ -91,8 +127,8 @@ impl RawFile {
         &self,
         writer_mng: &mut WriterManager<W>,
     ) -> Result<(), XlsxError> {
-        if !self.get_file_data().is_empty() {
-            writer_mng.add_bin(self.get_file_target(), self.get_file_data())?;
+        if !self.file_data().is_empty() {
+            writer_mng.add_bin(self.file_target(), self.file_data())?;
         }
         Ok(())
     }

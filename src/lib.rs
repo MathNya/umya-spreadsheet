@@ -262,7 +262,7 @@ pub use self::structs::*;
 #[must_use]
 pub fn new_file() -> Workbook {
     let mut wb = Workbook::default();
-    wb.set_theme(drawing::Theme::get_default_value());
+    wb.set_theme(drawing::Theme::default_value());
     wb.set_stylesheet_default_value();
     let worksheet = wb.new_sheet("Sheet1").unwrap();
     worksheet.set_active_cell("A1");
@@ -291,7 +291,7 @@ pub fn new_file() -> Workbook {
 #[must_use]
 pub fn new_file_empty_worksheet() -> Workbook {
     let mut wb = Workbook::default();
-    wb.set_theme(drawing::Theme::get_default_value());
+    wb.set_theme(drawing::Theme::default_value());
     wb.set_stylesheet_default_value();
     wb
 }

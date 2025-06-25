@@ -31,8 +31,14 @@ pub(crate) struct RawRelationship {
 
 impl RawRelationship {
     #[inline]
-    pub(crate) fn get_id(&self) -> &str {
+    pub(crate) fn id(&self) -> &str {
         self.id.value_str()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
+    pub(crate) fn get_id(&self) -> &str {
+        self.id()
     }
 
     #[inline]
@@ -42,8 +48,14 @@ impl RawRelationship {
     }
 
     #[inline]
-    pub(crate) fn get_target(&self) -> &str {
+    pub(crate) fn target(&self) -> &str {
         self.target.value_str()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use target()")]
+    pub(crate) fn get_target(&self) -> &str {
+        self.target()
     }
 
     #[inline]
@@ -64,13 +76,25 @@ impl RawRelationship {
     }
 
     #[inline]
-    pub(crate) fn get_raw_file(&self) -> &RawFile {
+    pub(crate) fn raw_file(&self) -> &RawFile {
         &self.raw_file
     }
 
     #[inline]
-    pub(crate) fn get_raw_file_mut(&mut self) -> &mut RawFile {
+    #[deprecated(since = "3.0.0", note = "Use raw_file()")]
+    pub(crate) fn get_raw_file(&self) -> &RawFile {
+        self.raw_file()
+    }
+
+    #[inline]
+    pub(crate) fn raw_file_mut(&mut self) -> &mut RawFile {
         &mut self.raw_file
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use raw_file_mut()")]
+    pub(crate) fn get_raw_file_mut(&mut self) -> &mut RawFile {
+        self.raw_file_mut()
     }
 
     #[inline]
@@ -80,8 +104,14 @@ impl RawRelationship {
     }
 
     #[inline]
-    pub(crate) fn get_target_mode(&self) -> &str {
+    pub(crate) fn target_mode(&self) -> &str {
         self.target_mode.value_str()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use target_mode()")]
+    pub(crate) fn get_target_mode(&self) -> &str {
+        self.target_mode()
     }
 
     #[inline]
@@ -103,20 +133,19 @@ impl RawRelationship {
         if let Some(v) = get_attribute(e, b"TargetMode") {
             self.set_target_mode(v);
         }
-        if self.get_target_mode() != "External" {
-            let target = self.get_target().to_string();
-            self.get_raw_file_mut()
-                .set_attributes(arv, base_path, &target);
+        if self.target_mode() != "External" {
+            let target = self.target().to_string();
+            self.raw_file_mut().set_attributes(arv, base_path, &target);
         }
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        attributes.push(("Id", self.get_id()).into());
+        attributes.push(("Id", self.id()).into());
         attributes.push(("Type", self.get_type()).into());
-        attributes.push(("Target", self.get_target()).into());
-        if self.get_target_mode() != "" {
-            attributes.push(("TargetMode", self.get_target_mode()).into());
+        attributes.push(("Target", self.target()).into());
+        if self.target_mode() != "" {
+            attributes.push(("TargetMode", self.target_mode()).into());
         }
         write_start_tag(writer, "Relationship", attributes, true);
     }
@@ -126,6 +155,6 @@ impl RawRelationship {
         &self,
         writer_mng: &mut WriterManager<W>,
     ) -> Result<(), XlsxError> {
-        self.get_raw_file().write_to(writer_mng)
+        self.raw_file().write_to(writer_mng)
     }
 }

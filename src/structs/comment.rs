@@ -123,7 +123,7 @@ impl Comment {
     #[inline]
     #[must_use]
     pub fn anchor(&self) -> &Anchor {
-        self.shape.get_client_data().anchor()
+        self.shape.client_data().anchor()
     }
 
     #[inline]
@@ -135,7 +135,7 @@ impl Comment {
 
     #[inline]
     pub fn anchor_mut(&mut self) -> &mut Anchor {
-        self.shape.get_client_data_mut().anchor_mut()
+        self.shape.client_data_mut().anchor_mut()
     }
 
     #[inline]
@@ -146,7 +146,7 @@ impl Comment {
 
     #[inline]
     pub fn set_anchor(&mut self, value: Anchor) -> &mut Self {
-        self.shape.get_client_data_mut().set_anchor(value);
+        self.shape.client_data_mut().set_anchor(value);
         self
     }
 
@@ -217,16 +217,16 @@ impl Comment {
 
         let movewithcells = MoveWithCells::default();
         self.shape_mut()
-            .get_client_data_mut()
+            .client_data_mut()
             .set_move_with_cells(movewithcells);
 
         let resizewithcells = ResizeWithCells::default();
         self.shape_mut()
-            .get_client_data_mut()
+            .client_data_mut()
             .set_resize_with_cells(resizewithcells);
 
         self.shape_mut()
-            .get_client_data_mut()
+            .client_data_mut()
             .anchor_mut()
             .set_left_column(col)
             .set_left_offset(15)
@@ -242,7 +242,7 @@ impl Comment {
         let mut comment_row = CommentRowTarget::default();
         comment_row.set_value(row - 1);
         self.shape_mut()
-            .get_client_data_mut()
+            .client_data_mut()
             .set_comment_column_target(comment_col)
             .set_comment_row_target(comment_row);
 

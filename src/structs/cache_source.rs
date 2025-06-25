@@ -36,15 +36,8 @@ pub struct CacheSource {
 impl CacheSource {
     #[inline]
     #[must_use]
-    pub fn r#type(&self) -> &SourceValues {
-        self.r#type.value()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use type()")]
     pub fn get_type(&self) -> &SourceValues {
-        self.r#type()
+        self.r#type.value()
     }
 
     #[inline]

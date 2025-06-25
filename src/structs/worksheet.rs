@@ -2476,8 +2476,8 @@ impl Worksheet {
             }
         }
         for ole_objects in self.ole_objects().ole_object() {
-            if let Some(fill) = ole_objects.shape().get_fill() {
-                if let Some(media_object) = fill.get_image() {
+            if let Some(fill) = ole_objects.shape().fill() {
+                if let Some(media_object) = fill.image() {
                     let is_new = !list
                         .iter()
                         .any(|v| v.image_name() == media_object.image_name());
@@ -2488,8 +2488,8 @@ impl Worksheet {
             }
         }
         for comment in self.comments() {
-            if let Some(fill) = comment.shape().get_fill() {
-                if let Some(media_object) = fill.get_image() {
+            if let Some(fill) = comment.shape().fill() {
+                if let Some(media_object) = fill.image() {
                     let is_new = !list
                         .iter()
                         .any(|v| v.image_name() == media_object.image_name());
@@ -2511,10 +2511,10 @@ impl Worksheet {
     pub(crate) fn pivot_cache_definition_collection(&self) -> Vec<&str> {
         let mut result: Vec<&str> = Vec::new();
         if let Some(raw_data) = &self.raw_data_of_worksheet {
-            for relationships in raw_data.get_relationships_list() {
-                for row in relationships.get_relationship_list() {
+            for relationships in raw_data.relationships_list() {
+                for row in relationships.relationship_list() {
                     if row.get_type() == PIVOT_CACHE_DEF_NS {
-                        result.push(row.get_raw_file().get_file_target());
+                        result.push(row.raw_file().file_target());
                     }
                 }
             }

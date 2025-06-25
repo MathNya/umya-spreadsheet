@@ -20,7 +20,7 @@ pub(crate) fn read(
     drawing_file: &RawFile,
     drawing_relationships: Option<&RawRelationships>,
 ) {
-    let data = std::io::Cursor::new(drawing_file.get_file_data());
+    let data = std::io::Cursor::new(drawing_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
 
@@ -33,7 +33,7 @@ pub(crate) fn read(
                 if e.name().into_inner() == b"v:shape" {
                     let mut obj = Shape::default();
                     obj.set_attributes(&mut reader, e, drawing_relationships);
-                    if obj.get_client_data().comment_column_target().is_some() {
+                    if obj.client_data().comment_column_target().is_some() {
                         worksheet
                             .comments_mut()
                             .get_mut(comment_index)

@@ -41,7 +41,7 @@ pub(crate) fn read(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
 ) -> Result<(), XlsxError> {
-    let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
+    let data = std::io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
     let mut formula_shared_list: HashMap<u32, (String, Vec<FormulaToken>)> = HashMap::new();
@@ -124,7 +124,7 @@ pub(crate) fn read(
                 obj.set_attributes(
                     &mut reader,
                     e,
-                    raw_data_of_worksheet.get_worksheet_relationships().unwrap(),
+                    raw_data_of_worksheet.worksheet_relationships().unwrap(),
                 );
                 worksheet.set_ole_objects(obj);
             }
@@ -200,7 +200,7 @@ pub(crate) fn read(
             b"hyperlink" => {
                 let (coor, hyperlink) = get_hyperlink(
                     e,
-                    raw_data_of_worksheet.get_worksheet_relationships()
+                    raw_data_of_worksheet.worksheet_relationships()
                 );
                 worksheet.cell_mut(coor).set_hyperlink(hyperlink);
             }
@@ -213,7 +213,7 @@ pub(crate) fn read(
                 worksheet.page_setup_mut().set_attributes(
                     &mut reader,
                     e,
-                    raw_data_of_worksheet.get_worksheet_relationships(),
+                    raw_data_of_worksheet.worksheet_relationships(),
                 );
             }
             b"sheetProtection" => {
@@ -237,7 +237,7 @@ pub(crate) fn read_lite(
     shared_string_table: &SharedStringTable,
     stylesheet: &Stylesheet,
 ) -> Cells {
-    let data = std::io::Cursor::new(raw_data_of_worksheet.get_worksheet_file().get_file_data());
+    let data = std::io::Cursor::new(raw_data_of_worksheet.worksheet_file().file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(true);
 
@@ -291,8 +291,8 @@ fn get_hyperlink(
         hyperlink.set_location(true);
     }
     if let Some(v) = get_attribute(e, b"r:id") {
-        let relationship = raw_relationships.unwrap().get_relationship_by_rid(&v);
-        hyperlink.set_url(relationship.get_target());
+        let relationship = raw_relationships.unwrap().relationship_by_rid(&v);
+        hyperlink.set_url(relationship.target());
     }
     (coordition, hyperlink)
 }

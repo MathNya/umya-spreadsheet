@@ -31,13 +31,26 @@ pub struct DataValidations {
 impl DataValidations {
     #[inline]
     #[must_use]
-    pub fn get_data_validation_list(&self) -> &[DataValidation] {
+    pub fn data_validation_list(&self) -> &[DataValidation] {
         &self.data_validation_list
     }
 
     #[inline]
-    pub fn get_data_validation_list_mut(&mut self) -> &mut Vec<DataValidation> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use data_validation_list()")]
+    pub fn get_data_validation_list(&self) -> &[DataValidation] {
+        self.data_validation_list()
+    }
+
+    #[inline]
+    pub fn data_validation_list_mut(&mut self) -> &mut Vec<DataValidation> {
         &mut self.data_validation_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use data_validation_list_mut()")]
+    pub fn get_data_validation_list_mut(&mut self) -> &mut Vec<DataValidation> {
+        self.data_validation_list_mut()
     }
 
     #[inline]

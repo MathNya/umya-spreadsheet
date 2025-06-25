@@ -26,8 +26,14 @@ pub struct Shadow {
 }
 impl Shadow {
     #[must_use]
-    pub fn get_on(&self) -> bool {
+    pub fn on(&self) -> bool {
         self.on.get_value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use on()")]
+    pub fn get_on(&self) -> bool {
+        self.on()
     }
 
     pub fn set_on(&mut self, value: bool) -> &mut Self {
@@ -36,8 +42,14 @@ impl Shadow {
     }
 
     #[must_use]
-    pub fn get_color(&self) -> &str {
+    pub fn color(&self) -> &str {
         self.color.value_str()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use color()")]
+    pub fn get_color(&self) -> &str {
+        self.color()
     }
 
     pub fn set_color<S: Into<String>>(&mut self, value: S) -> &mut Self {
@@ -46,8 +58,14 @@ impl Shadow {
     }
 
     #[must_use]
-    pub fn get_obscured(&self) -> bool {
+    pub fn obscured(&self) -> bool {
         self.obscured.get_value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use obscured()")]
+    pub fn get_obscured(&self) -> bool {
+        self.obscured()
     }
 
     pub fn set_obscured(&mut self, value: bool) -> &mut Self {

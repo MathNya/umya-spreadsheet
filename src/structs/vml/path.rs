@@ -22,8 +22,14 @@ pub struct Path {
 }
 impl Path {
     #[must_use]
-    pub fn get_connection_point_type(&self) -> &ConnectValues {
+    pub fn connection_point_type(&self) -> &ConnectValues {
         self.connection_point_type.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use connection_point_type()")]
+    pub fn get_connection_point_type(&self) -> &ConnectValues {
+        self.connection_point_type()
     }
 
     pub fn set_connection_point_type(&mut self, value: ConnectValues) -> &mut Self {

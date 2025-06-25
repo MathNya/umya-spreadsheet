@@ -63,7 +63,7 @@ pub fn read_reader<R: io::Read + io::Seek>(
     content_types::read(&mut arv, &mut book)?;
     let workbook_rel = workbook_rels::read(&mut arv, &mut book)?;
 
-    book.set_theme(Theme::get_default_value());
+    book.set_theme(Theme::default_value());
     for (_, type_value, rel_target) in &workbook_rel {
         if type_value == THEME_NS {
             let theme = theme::read(&mut arv, rel_target)?;
@@ -145,35 +145,35 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
     )
     .unwrap();
 
-    if let Some(v) = raw_data_of_worksheet.get_worksheet_relationships() {
-        for relationship in v.get_relationship_list() {
+    if let Some(v) = raw_data_of_worksheet.worksheet_relationships() {
+        for relationship in v.relationship_list() {
             match relationship.get_type() {
                 // drawing, chart
                 DRAWINGS_NS => {
                     drawing::read(
                         worksheet,
-                        relationship.get_raw_file(),
-                        raw_data_of_worksheet.get_drawing_relationships(),
+                        relationship.raw_file(),
+                        raw_data_of_worksheet.drawing_relationships(),
                     );
                 }
                 // comment
                 COMMENTS_NS => {
-                    comment::read(worksheet, relationship.get_raw_file());
+                    comment::read(worksheet, relationship.raw_file());
                 }
                 // table
                 TABLE_NS => {
-                    table::read(worksheet, relationship.get_raw_file()).unwrap();
+                    table::read(worksheet, relationship.raw_file()).unwrap();
                 }
                 _ => {}
             }
         }
-        for relationship in v.get_relationship_list() {
+        for relationship in v.relationship_list() {
             // vmlDrawing
             if relationship.get_type() == VML_DRAWING_NS {
                 vml_drawing::read(
                     worksheet,
-                    relationship.get_raw_file(),
-                    raw_data_of_worksheet.get_vml_drawing_relationships(),
+                    relationship.raw_file(),
+                    raw_data_of_worksheet.vml_drawing_relationships(),
                 );
             }
         }

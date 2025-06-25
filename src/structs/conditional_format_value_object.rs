@@ -32,15 +32,8 @@ pub struct ConditionalFormatValueObject {
 impl ConditionalFormatValueObject {
     #[inline]
     #[must_use]
-    pub fn r#type(&self) -> &ConditionalFormatValueObjectValues {
-        self.r#type.value()
-    }
-
-    #[inline]
-    #[must_use]
-    #[deprecated(since = "3.0.0", note = "Use type()")]
     pub fn get_type(&self) -> &ConditionalFormatValueObjectValues {
-        self.r#type()
+        self.r#type.value()
     }
 
     #[inline]

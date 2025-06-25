@@ -13,7 +13,7 @@ use crate::{
 };
 
 pub(crate) fn read(worksheet: &mut Worksheet, drawing_file: &RawFile) {
-    let data = std::io::Cursor::new(drawing_file.get_file_data());
+    let data = std::io::Cursor::new(drawing_file.file_data());
     let mut reader = Reader::from_reader(data);
     reader.config_mut().trim_text(false);
 
