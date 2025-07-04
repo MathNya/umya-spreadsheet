@@ -9,13 +9,26 @@ pub struct SequenceOfReferences {
 impl SequenceOfReferences {
     #[inline]
     #[must_use]
-    pub fn get_range_collection(&self) -> &[Range] {
+    pub fn range_collection(&self) -> &[Range] {
         &self.range_collection
     }
 
     #[inline]
-    pub fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use range_collection()")]
+    pub fn get_range_collection(&self) -> &[Range] {
+        self.range_collection()
+    }
+
+    #[inline]
+    pub fn range_collection_mut(&mut self) -> &mut Vec<Range> {
         &mut self.range_collection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use range_collection_mut()")]
+    pub fn get_range_collection_mut(&mut self) -> &mut Vec<Range> {
+        self.range_collection_mut()
     }
 
     #[inline]

@@ -30,8 +30,15 @@ pub struct Selection {
 impl Selection {
     #[inline]
     #[must_use]
-    pub fn get_pane(&self) -> &PaneValues {
+    pub fn pane(&self) -> &PaneValues {
         self.pane.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pane()")]
+    pub fn get_pane(&self) -> &PaneValues {
+        self.pane()
     }
 
     #[inline]
@@ -42,13 +49,26 @@ impl Selection {
 
     #[inline]
     #[must_use]
-    pub fn get_active_cell(&self) -> Option<&Coordinate> {
+    pub fn active_cell(&self) -> Option<&Coordinate> {
         self.active_cell.as_ref()
     }
 
     #[inline]
-    pub fn get_active_cell_mut(&mut self) -> Option<&mut Coordinate> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use active_cell()")]
+    pub fn get_active_cell(&self) -> Option<&Coordinate> {
+        self.active_cell()
+    }
+
+    #[inline]
+    pub fn active_cell_mut(&mut self) -> Option<&mut Coordinate> {
         self.active_cell.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use active_cell_mut()")]
+    pub fn get_active_cell_mut(&mut self) -> Option<&mut Coordinate> {
+        self.active_cell_mut()
     }
 
     #[inline]
@@ -59,13 +79,26 @@ impl Selection {
 
     #[inline]
     #[must_use]
-    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+    pub fn sequence_of_references(&self) -> &SequenceOfReferences {
         &self.sequence_of_references
     }
 
     #[inline]
-    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references()")]
+    pub fn get_sequence_of_references(&self) -> &SequenceOfReferences {
+        self.sequence_of_references()
+    }
+
+    #[inline]
+    pub fn sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
         &mut self.sequence_of_references
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sequence_of_references_mut()")]
+    pub fn get_sequence_of_references_mut(&mut self) -> &mut SequenceOfReferences {
+        self.sequence_of_references_mut()
     }
 
     #[inline]
@@ -98,7 +131,7 @@ impl Selection {
 
         let mut active_cell_id = 0;
         if let Some(active_cell) = &self.active_cell {
-            for range in self.sequence_of_references.get_range_collection() {
+            for range in self.sequence_of_references.range_collection() {
                 let range_str = range.range();
                 if range_str.contains(&active_cell.to_string()) {
                     break;
