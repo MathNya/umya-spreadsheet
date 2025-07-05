@@ -5,6 +5,7 @@ use super::ShapeAutoFit;
 use super::TextWrappingValues;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
+use crate::BooleanValue;
 use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -18,10 +19,12 @@ pub struct BodyProperties {
     rtl_col: StringValue,
     anchor: StringValue,
     wrap: EnumValue<TextWrappingValues>,
+    rotation: Int32Value,
     left_inset: Int32Value,
     top_inset: Int32Value,
     right_inset: Int32Value,
     bottom_inset: Int32Value,
+    use_paragraph_spacing: BooleanValue,
     shape_auto_fit: Option<ShapeAutoFit>,
 }
 
@@ -82,6 +85,16 @@ impl BodyProperties {
     }
 
     #[inline]
+    pub fn get_rotation(&self) -> &i32 {
+        self.rotation.get_value()
+    }
+
+    #[inline]
+    pub fn set_rotation(&mut self, value: i32) {
+        self.rotation.set_value(value);
+    }
+
+    #[inline]
     pub fn get_left_inset(&self) -> &i32 {
         self.left_inset.get_value()
     }
@@ -122,6 +135,16 @@ impl BodyProperties {
     }
 
     #[inline]
+    pub fn get_use_paragraph_spacing(&self) -> &bool {
+        self.use_paragraph_spacing.get_value()
+    }
+
+    #[inline]
+    pub fn set_use_paragraph_spacing(&mut self, value: bool) {
+        self.use_paragraph_spacing.set_value(value);
+    }
+
+    #[inline]
     pub fn get_shape_auto_fit(&self) -> Option<&ShapeAutoFit> {
         self.shape_auto_fit.as_ref()
     }
@@ -143,6 +166,9 @@ impl BodyProperties {
                 let key = attr.key.into_inner();
                 let value = get_attribute_value(&attr).unwrap();
                 match key {
+                    b"rot" => {
+                        self.rotation.set_value_string(value);
+                    }
                     b"vertOverflow" => {
                         self.set_vert_overflow(value);
                     }
@@ -169,6 +195,9 @@ impl BodyProperties {
                     }
                     b"bIns" => {
                         self.bottom_inset.set_value_string(value);
+                    }
+                    b"spcFirstLastPara" => {
+                        self.use_paragraph_spacing.set_value_string(value);
                     }
                     _ => {}
                 }
@@ -217,6 +246,10 @@ impl BodyProperties {
         if self.wrap.has_value() {
             attributes.push(("wrap", self.wrap.get_value_string()));
         }
+        let rotation = self.rotation.get_value_string();
+        if self.rotation.has_value() {
+            attributes.push(("rot", &rotation));
+        }
         let l_ins = self.left_inset.get_value_string();
         if self.left_inset.has_value() {
             attributes.push(("lIns", &l_ins));
@@ -232,6 +265,12 @@ impl BodyProperties {
         let b_ins = self.bottom_inset.get_value_string();
         if self.bottom_inset.has_value() {
             attributes.push(("bIns", &b_ins));
+        }
+        if self.use_paragraph_spacing.has_value() {
+            attributes.push((
+                "spcFirstLastPara",
+                self.use_paragraph_spacing.get_value_string(),
+            ));
         }
 
         write_start_tag(writer, "a:bodyPr", attributes, *empty_flag);

@@ -595,16 +595,16 @@ impl Worksheet {
     // Hyperlink
     // ************************
     /// (This method is crate only.)
-    /// Get Hyperlink convert to hashmap.
-    pub(crate) fn get_hyperlink_collection_to_hashmap(&self) -> HashMap<String, &Hyperlink> {
-        let mut result: HashMap<String, &Hyperlink> = HashMap::new();
-        for cell in self.cell_collection.iter_collection() {
+    /// Get Hyperlink convert to vec.
+    pub(crate) fn get_hyperlink_collection(&self) -> ThinVec<(String, &Hyperlink)> {
+        let mut result: ThinVec<(String, &Hyperlink)> = ThinVec::new();
+        for cell in self.cell_collection.get_collection_sorted() {
             if let Some(hyperlink) = cell.get_hyperlink() {
                 let coordition = coordinate_from_index(
                     cell.get_coordinate().get_col_num(),
                     cell.get_coordinate().get_row_num(),
                 );
-                result.insert(coordition, hyperlink);
+                result.push((coordition, hyperlink));
             }
         }
         result
@@ -1464,22 +1464,22 @@ impl Worksheet {
     }
 
     #[inline]
-    pub fn has_pivot_table(&self) -> bool {
+    pub(crate) fn has_pivot_table(&self) -> bool {
         !self.pivot_tables.is_empty()
     }
 
     #[inline]
-    pub fn add_pivot_table(&mut self, pivot_table: PivotTable) {
+    pub(crate) fn add_pivot_table(&mut self, pivot_table: PivotTable) {
         self.pivot_tables.push(pivot_table);
     }
 
     #[inline]
-    pub fn get_pivot_tables(&self) -> &[PivotTable] {
+    pub(crate) fn get_pivot_tables(&self) -> &[PivotTable] {
         &self.pivot_tables
     }
 
     #[inline]
-    pub fn get_pivot_tables_mut(&mut self) -> &mut ThinVec<PivotTable> {
+    pub(crate) fn get_pivot_tables_mut(&mut self) -> &mut ThinVec<PivotTable> {
         &mut self.pivot_tables
     }
 

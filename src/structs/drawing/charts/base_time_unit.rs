@@ -1,6 +1,6 @@
-// c:layoutTarget
+// c:baseTimeUnit
 use super::super::super::EnumValue;
-use super::LayoutTargetValues;
+use super::TimeUnitValues;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
 use quick_xml::events::BytesStart;
@@ -9,15 +9,15 @@ use quick_xml::Writer;
 use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
-pub struct LayoutTarget {
-    val: EnumValue<LayoutTargetValues>,
+pub struct BaseTimeUnit {
+    val: EnumValue<TimeUnitValues>,
 }
-impl LayoutTarget {
-    pub fn get_val(&self) -> &LayoutTargetValues {
+impl BaseTimeUnit {
+    pub fn get_val(&self) -> &TimeUnitValues {
         self.val.get_value()
     }
 
-    pub fn set_val(&mut self, value: LayoutTargetValues) -> &mut LayoutTarget {
+    pub fn set_val(&mut self, value: TimeUnitValues) -> &mut Self {
         self.val.set_value(value);
         self
     }
@@ -31,10 +31,10 @@ impl LayoutTarget {
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // c:layoutTarget
+        // c:baseTimeUnit
         write_start_tag(
             writer,
-            "c:layoutTarget",
+            "c:baseTimeUnit",
             vec![("val", self.val.get_value_string())],
             true,
         );

@@ -1,4 +1,6 @@
 // c:marker
+use super::ShapeProperties;
+use super::Size;
 use super::Symbol;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
@@ -10,6 +12,8 @@ use std::io::Cursor;
 #[derive(Clone, Default, Debug)]
 pub struct Marker {
     symbol: Option<Symbol>,
+    size: Option<Size>,
+    shape_properties: Option<ShapeProperties>,
 }
 
 impl Marker {
@@ -23,6 +27,32 @@ impl Marker {
 
     pub fn set_symbol(&mut self, value: Symbol) -> &mut Marker {
         self.symbol = Some(value);
+        self
+    }
+
+    pub fn get_size(&self) -> Option<&Size> {
+        self.size.as_ref()
+    }
+
+    pub fn get_size_mut(&mut self) -> Option<&mut Size> {
+        self.size.as_mut()
+    }
+
+    pub fn set_size(&mut self, value: Size) -> &mut Marker {
+        self.size = Some(value);
+        self
+    }
+
+    pub fn get_shape_properties(&self) -> Option<&ShapeProperties> {
+        self.shape_properties.as_ref()
+    }
+
+    pub fn get_shape_properties_mut(&mut self) -> Option<&mut ShapeProperties> {
+        self.shape_properties.as_mut()
+    }
+
+    pub fn set_shape_properties(&mut self, value: ShapeProperties) -> &mut Self {
+        self.shape_properties = Some(value);
         self
     }
 
@@ -44,6 +74,18 @@ impl Marker {
                     obj.set_attributes(reader, e);
                     self.set_symbol(obj);
                 }
+                if e.name().0 == b"c:size" {
+                    let mut obj = Size::default();
+                    obj.set_attributes(reader, e);
+                    self.set_size(obj);
+                }
+            },
+            Event::Start(ref e) => {
+                if e.name().0 == b"c:spPr" {
+                    let mut obj = ShapeProperties::default();
+                    obj.set_attributes(reader, e);
+                    self.set_shape_properties(obj);
+                }
             },
             Event::End(ref e) => {
                 if e.name().0 == b"c:marker" {
@@ -61,6 +103,16 @@ impl Marker {
 
             // a:symbol
             if let Some(v) = &self.symbol {
+                v.write_to(writer);
+            }
+
+            // c:size
+            if let Some(v) = &self.size {
+                v.write_to(writer);
+            }
+
+            // c:spPr
+            if let Some(v) = &self.shape_properties {
                 v.write_to(writer);
             }
 

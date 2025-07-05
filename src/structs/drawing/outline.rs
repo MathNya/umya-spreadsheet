@@ -7,6 +7,7 @@ use super::PenAlignmentValues;
 use super::PresetDash;
 use super::Round;
 use super::SolidFill;
+use super::SystemColor;
 use super::TailEnd;
 use crate::reader::driver::*;
 use crate::structs::EnumValue;
@@ -32,6 +33,7 @@ pub struct Outline {
     miter: Option<Miter>,
     round: Option<Round>,
     alignment: EnumValue<PenAlignmentValues>,
+    system_color: Option<Box<SystemColor>>,
 }
 
 impl Outline {
@@ -206,6 +208,21 @@ impl Outline {
         self.alignment.set_value(value);
     }
 
+    #[inline]
+    pub fn set_system_color(&mut self, value: SystemColor) {
+        self.system_color = Some(Box::new(value));
+    }
+
+    #[inline]
+    pub fn get_system_color(&self) -> Option<&SystemColor> {
+        self.system_color.as_deref()
+    }
+
+    #[inline]
+    pub fn get_system_color_mut(&mut self) -> Option<&mut SystemColor> {
+        self.system_color.as_deref_mut()
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -273,6 +290,11 @@ impl Outline {
                         let mut obj = Round::default();
                         obj.set_attributes(reader, e);
                         self.set_round(obj);
+                    }
+                    b"a:sysClr" => {
+                        let mut obj = SystemColor::default();
+                        obj.set_attributes(reader, e);
+                        self.set_system_color(obj);
                     }
                     _ => (),
                 }

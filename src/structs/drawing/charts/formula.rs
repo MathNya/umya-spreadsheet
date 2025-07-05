@@ -45,6 +45,10 @@ impl Formula {
         self
     }
 
+    pub(crate) fn has_string_value(&self) -> bool {
+        self.string_value.has_value()
+    }
+
     pub fn set_address_str<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let value = value.into();
         if is_address(&value) {

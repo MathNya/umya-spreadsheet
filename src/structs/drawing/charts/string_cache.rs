@@ -1,8 +1,10 @@
+use crate::drawing::charts::Formula;
 // c:strCache
 use crate::reader::driver::*;
 use crate::structs::Address;
 use crate::structs::Spreadsheet;
 use crate::writer::driver::*;
+use crate::CellValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -31,10 +33,17 @@ impl StringCache {
     pub(crate) fn write_to(
         &self,
         writer: &mut Writer<Cursor<Vec<u8>>>,
-        address: &Address,
+        formula: &Formula,
         spreadsheet: &Spreadsheet,
     ) {
-        let cell_value_list = spreadsheet.get_cell_value_by_address_crate(address);
+        let mut cell = CellValue::default();
+        let cell_value_list = match formula.has_string_value() {
+            true => {
+                cell.set_value(formula.get_address_str());
+                vec![&cell]
+            }
+            false => spreadsheet.get_cell_value_by_address_crate(formula.get_address()),
+        };
         let coll_value_count = cell_value_list.len().to_string();
         // c:strCache
         write_start_tag(writer, "c:strCache", vec![], false);

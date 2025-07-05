@@ -11,6 +11,7 @@ use super::Scaling;
 use super::TickLabelPosition;
 use super::Title;
 use crate::reader::driver::*;
+use crate::structs::Spreadsheet;
 use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
@@ -244,7 +245,7 @@ impl SeriesAxis {
         );
     }
 
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, spreadsheet: &Spreadsheet) {
         // c:serAx
         write_start_tag(writer, "c:serAx", vec![], false);
 
@@ -267,7 +268,7 @@ impl SeriesAxis {
 
         // c:title
         if let Some(v) = &self.title {
-            v.write_to(writer);
+            v.write_to(writer, spreadsheet);
         }
 
         // c:majorTickMark

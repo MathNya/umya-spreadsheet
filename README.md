@@ -16,21 +16,18 @@
 Please mention in issues if you have any questions.
 
 ## Update details
-### ver 2.3.0
-#### Fixed bugs related to color constants.(#265)
-#### Fixed bugs related to Error Title and Error Message.(#258)
-#### Images can now be inserted even when running in WebAssembly.(#275)
-#### Optimization for faster processing speeds.
+### ver 2.3.1
+#### Bug Fixed #278,#279,#281,#284
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.3.0"
+umya-spreadsheet = "2.3.1"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.3.0", features = ["js"] }
+umya-spreadsheet = { version = "2.3.1", features = ["js"] }
 ```
 
 Add the following code to main.rs

@@ -2,6 +2,7 @@
 use super::super::BodyProperties;
 use super::super::ListStyle;
 use super::super::Paragraph;
+use crate::drawing::Run;
 use crate::writer::driver::*;
 use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
@@ -18,6 +19,17 @@ pub struct RichText {
 }
 
 impl RichText {
+    #[inline]
+    pub fn set_text<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.paragraph.clear();
+        let mut paragraph = Paragraph::default();
+        let mut run = Run::default();
+        run.set_text(value);
+        paragraph.add_run(run);
+        self.add_paragraph(paragraph);
+        self
+    }
+
     pub fn get_body_properties(&self) -> &BodyProperties {
         &self.body_properties
     }

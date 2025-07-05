@@ -426,3 +426,15 @@ pub use self::area_chart_series_list::*;
 
 mod series_text;
 pub use self::series_text::*;
+
+mod size;
+pub use self::size::*;
+
+mod date_axis;
+pub use self::date_axis::*;
+
+mod time_unit_values;
+pub use self::time_unit_values::*;
+
+mod base_time_unit;
+pub use self::base_time_unit::*;
