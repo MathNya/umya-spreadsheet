@@ -10,21 +10,24 @@ use super::vml::Fill as VmlFill;
 use super::vml::Path;
 use super::vml::Shadow;
 use super::vml::TextBox;
+use super::CommentText;
 use super::Coordinate;
 use super::Fill;
-use super::RichText;
 use crate::helper::coordinate::*;
 use crate::reader::driver::*;
 use crate::structs::vml::Shape;
 use crate::traits::AdjustmentCoordinate;
+use crate::writer::driver::*;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
     coordinate: Coordinate,
     author: Box<str>,
-    text: RichText,
+    text: CommentText,
     shape: Shape,
 }
 
@@ -51,24 +54,24 @@ impl Comment {
     }
 
     #[inline]
-    pub fn get_text(&self) -> &RichText {
+    pub fn get_text(&self) -> &CommentText {
         &self.text
     }
 
     #[inline]
-    pub fn get_text_mut(&mut self) -> &mut RichText {
+    pub fn get_text_mut(&mut self) -> &mut CommentText {
         &mut self.text
     }
 
     #[inline]
-    pub fn set_text(&mut self, value: RichText) -> &mut Self {
+    pub fn set_text(&mut self, value: CommentText) -> &mut Self {
         self.text = value;
         self
     }
 
     #[inline]
     pub fn set_text_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.text.set_text(value);
+        self.text.set_text_string(value);
         self
     }
 
@@ -191,7 +194,7 @@ impl Comment {
             reader,
             Event::Start(ref e) => {
                 if e.name().into_inner() == b"text" {
-                    self.get_text_mut().set_attributes_text(reader, e);
+                    self.get_text_mut().set_attributes(reader, e);
                 }
             },
             Event::End(ref e) => {
@@ -201,6 +204,26 @@ impl Comment {
             },
             Event::Eof => panic!("Error: Could not find {} end element", "comment")
         );
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, authors: &[String]) {
+        // comment
+        let coordinate = self.coordinate.to_string();
+        let author_id = authors
+            .iter()
+            .position(|value| self.get_author() == value)
+            .map_or(String::new(), |i| i.to_string());
+        write_start_tag(
+            writer,
+            "comment",
+            vec![("ref", &coordinate), ("authorId", &author_id)],
+            false,
+        );
+
+        // text
+        self.get_text().write_to(writer);
+
+        write_end_tag(writer, "comment");
     }
 }
 impl AdjustmentCoordinate for Comment {

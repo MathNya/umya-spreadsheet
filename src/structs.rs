@@ -88,6 +88,9 @@ pub use self::defined_name::*;
 mod comment;
 pub use self::comment::*;
 
+mod comment_text;
+pub use self::comment_text::*;
+
 mod coordinate;
 pub use self::coordinate::*;
 

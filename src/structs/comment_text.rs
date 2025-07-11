@@ -1,33 +1,45 @@
-// si
+// text
+use super::vml::office::InsetMarginValues;
+use super::vml::spreadsheet::Anchor;
+use super::vml::spreadsheet::CommentColumnTarget;
+use super::vml::spreadsheet::CommentRowTarget;
+use super::vml::spreadsheet::MoveWithCells;
+use super::vml::spreadsheet::ResizeWithCells;
+use super::vml::Fill as VmlFill;
+use super::vml::Path;
+use super::vml::Shadow;
+use super::vml::TextBox;
+use super::Coordinate;
+use super::Fill;
 use super::PhoneticRun;
 use super::RichText;
 use super::Text;
 use super::TextElement;
+use crate::helper::coordinate::*;
 use crate::reader::driver::*;
+use crate::structs::vml::Shape;
+use crate::traits::AdjustmentCoordinate;
 use crate::writer::driver::*;
-use md5::Digest;
+use crate::xml_read_loop;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
-use std::hash::Hasher;
 use std::io::Cursor;
-extern crate ahash;
-use self::ahash::AHasher;
 
 #[derive(Clone, Default, Debug)]
-pub(crate) struct SharedStringItem {
+pub struct CommentText {
     text: Option<Text>,
     rich_text: Option<RichText>,
 }
 
-impl SharedStringItem {
+impl CommentText {
     #[inline]
     pub(crate) fn get_text(&self) -> Option<&Text> {
         self.text.as_ref()
     }
 
     #[inline]
-    pub(crate) fn _get_text_mut(&mut self) -> Option<&mut Text> {
+    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
     }
 
@@ -38,7 +50,7 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_text(&mut self) -> &mut Self {
         self.text = None;
         self
     }
@@ -60,30 +72,24 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn _remove_rich_text(&mut self) -> &mut Self {
+    pub(crate) fn remove_rich_text(&mut self) -> &mut Self {
         self.rich_text = None;
         self
     }
 
-    pub(crate) fn get_hash_u64(&self) -> u64 {
-        let mut h = AHasher::default();
-        let content = format!(
-            "{}{}",
-            self.text
-                .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code()),
-            self.rich_text
-                .as_ref()
-                .map_or(String::from("NONE"), |v| v.get_hash_code())
-        );
-        h.write(content.as_bytes());
-        h.finish()
+    #[inline]
+    pub fn set_text_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let mut obj = Text::default();
+        obj.set_value(value);
+        self.set_text(obj);
+        self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
     ) {
         let mut vec_text_element: Vec<TextElement> = Vec::new();
 
@@ -109,7 +115,7 @@ impl SharedStringItem {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"si" {
+                if e.name().into_inner() == b"text" {
                     if !vec_text_element.is_empty() {
                         let mut obj = RichText::default();
                         obj.set_rich_text_elements(vec_text_element);
@@ -118,13 +124,13 @@ impl SharedStringItem {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "si")
+            Event::Eof => panic!("Error: Could not find {} end element", "text")
         );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // si
-        write_start_tag(writer, "si", vec![], false);
+        // text
+        write_start_tag(writer, "text", vec![], false);
 
         // t
         if let Some(v) = &self.text {
@@ -136,8 +142,6 @@ impl SharedStringItem {
             v.write_to(writer);
         }
 
-        write_start_tag(writer, "phoneticPr", vec![("fontId", "1")], true);
-
-        write_end_tag(writer, "si");
+        write_end_tag(writer, "text");
     }
 }

@@ -64,53 +64,11 @@ impl RichText {
         format!("{:x}", md5::Md5::digest(&value))
     }
 
-    pub(crate) fn set_attributes_text<R: std::io::BufRead>(
-        &mut self,
-        reader: &mut Reader<R>,
-        _e: &BytesStart,
-    ) {
-        xml_read_loop!(
-            reader,
-            Event::Start(ref e) => {
-                if e.name().into_inner() == b"r" {
-                    let mut obj = TextElement::default();
-                    obj.set_attributes(reader, e);
-                    self.add_rich_text_elements(obj);
-                }
-            },
-            Event::End(ref e) => {
-                if e.name().into_inner() == b"text" {
-                    return
-                }
-            },
-            Event::Eof => panic!("Error: Could not find {} end element", "text")
-        );
-    }
-
     #[inline]
-    pub(crate) fn write_to_none(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // none
-        self.write_to(writer, "");
-    }
-
-    #[inline]
-    pub(crate) fn write_to_text(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // text
-        self.write_to(writer, "text");
-    }
-
-    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, tag_name: &str) {
-        if !tag_name.is_empty() {
-            write_start_tag(writer, tag_name, vec![], false);
-        }
-
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
         // r
         for obj in &self.rich_text_elements {
             obj.write_to(writer);
-        }
-
-        if !tag_name.is_empty() {
-            write_end_tag(writer, tag_name);
         }
     }
 }

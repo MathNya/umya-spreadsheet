@@ -2051,3 +2051,14 @@ fn issue_284() {
     let path = std::path::Path::new("./tests/result_files/issue_284.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_285() {
+    let path = std::path::Path::new("./tests/test_files/issue_285.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+    sheet.get_cell_mut("B7").set_value("test");
+
+    let path = std::path::Path::new("./tests/result_files/r_issue_285.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
