@@ -69,19 +69,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     write_start_tag(&mut writer, "commentList", vec![], false);
     for comment in worksheet.comments() {
         // comment
-        let coordinate = comment.coordinate().to_string();
-        let author_id = get_author_id(&authors, comment.author());
-        write_start_tag(
-            &mut writer,
-            "comment",
-            vec![("ref", &coordinate).into(), ("authorId", &author_id).into()],
-            false,
-        );
-
-        // text
-        comment.text().write_to_text(&mut writer);
-
-        write_end_tag(&mut writer, "comment");
+        comment.write_to(&mut writer, &authors);
     }
     write_end_tag(&mut writer, "commentList");
     write_end_tag(&mut writer, "comments");
@@ -98,12 +86,4 @@ fn get_authors(worksheet: &Worksheet) -> Vec<String> {
         .collect::<HashSet<_>>()
         .into_iter()
         .collect()
-}
-
-#[inline]
-fn get_author_id(authors: &[String], author: &str) -> String {
-    authors
-        .iter()
-        .position(|value| author == value)
-        .map_or(String::new(), |i| i.to_string())
 }

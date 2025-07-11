@@ -1,42 +1,22 @@
-// si
-use std::{
-    hash::{
-        DefaultHasher,
-        Hasher,
-    },
-    io::Cursor,
-};
-
-use quick_xml::{
-    Reader,
-    Writer,
-    events::{
-        BytesStart,
-        Event,
-    },
-};
-
-use super::{
-    PhoneticRun,
-    RichText,
-    Text,
-    TextElement,
-};
-use crate::{
-    reader::driver::xml_read_loop,
-    writer::driver::{
-        write_end_tag,
-        write_start_tag,
-    },
-};
+// text
+use super::PhoneticRun;
+use super::RichText;
+use super::Text;
+use super::TextElement;
+use crate::writer::driver::{write_end_tag, write_start_tag};
+use crate::xml_read_loop;
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::Reader;
+use quick_xml::Writer;
+use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
-pub(crate) struct SharedStringItem {
-    text:      Option<Text>,
+pub struct CommentText {
+    text: Option<Text>,
     rich_text: Option<RichText>,
 }
 
-impl SharedStringItem {
+impl CommentText {
     #[inline]
     pub(crate) fn get_text(&self) -> Option<&Text> {
         self.text.as_ref()
@@ -65,7 +45,6 @@ impl SharedStringItem {
     }
 
     #[inline]
-    #[allow(dead_code)]
     pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
     }
@@ -82,21 +61,15 @@ impl SharedStringItem {
         self
     }
 
-    pub(crate) fn get_hash_u64(&self) -> u64 {
-        let mut h = DefaultHasher::default();
-        let content = format!(
-            "{}{}",
-            self.text
-                .as_ref()
-                .map_or(String::from("NONE"), Text::get_hash_code),
-            self.rich_text
-                .as_ref()
-                .map_or(String::from("NONE"), RichText::hash_code)
-        );
-        h.write(content.as_bytes());
-        h.finish()
+    #[inline]
+    pub fn set_text_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        let mut obj = Text::default();
+        obj.set_value(value);
+        self.set_text(obj);
+        self
     }
 
+    #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
@@ -125,7 +98,7 @@ impl SharedStringItem {
                 }
             },
             Event::End(ref e) => {
-                if e.name().into_inner() == b"si" {
+                if e.name().into_inner() == b"text" {
                     if !vec_text_element.is_empty() {
                         let mut obj = RichText::default();
                         obj.set_rich_text_elements(vec_text_element);
@@ -134,13 +107,13 @@ impl SharedStringItem {
                     return;
                 }
             },
-            Event::Eof => panic!("Error: Could not find {} end element", "si")
+            Event::Eof => panic!("Error: Could not find {} end element", "text")
         );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {
-        // si
-        write_start_tag(writer, "si", vec![], false);
+        // text
+        write_start_tag(writer, "text", vec![], false);
 
         // t
         if let Some(v) = &self.text {
@@ -152,8 +125,6 @@ impl SharedStringItem {
             v.write_to(writer);
         }
 
-        write_start_tag(writer, "phoneticPr", vec![("fontId", "1").into()], true);
-
-        write_end_tag(writer, "si");
+        write_end_tag(writer, "text");
     }
 }

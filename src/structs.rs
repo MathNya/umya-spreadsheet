@@ -73,6 +73,7 @@ pub_mod_use![
     pub column_reference,
     pub column,
     pub comment,
+    pub comment_text,
     pub conditional_format_value_object_values,
     pub conditional_format_value_object,
     pub conditional_format_values,

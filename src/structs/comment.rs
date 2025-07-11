@@ -1,5 +1,8 @@
+use std::io::Cursor;
+
 use quick_xml::{
     Reader,
+    Writer,
     events::{
         BytesStart,
         Event,
@@ -8,7 +11,7 @@ use quick_xml::{
 
 use super::{
     Coordinate,
-    RichText,
+    CommentText,
     vml::{
         Fill as VmlFill,
         Path,
@@ -30,13 +33,17 @@ use crate::{
     structs::vml::Shape,
     traits::AdjustmentCoordinate,
     xml_read_loop,
+    writer::driver::{
+        write_end_tag,
+        write_start_tag,
+    },
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
     coordinate: Coordinate,
     author:     Box<str>,
-    text:       RichText,
+    text: CommentText,
     shape:      Shape,
 }
 
@@ -86,37 +93,37 @@ impl Comment {
 
     #[inline]
     #[must_use]
-    pub fn text(&self) -> &RichText {
+    pub fn text(&self) -> &CommentText {
         &self.text
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use text()")]
-    pub fn get_text(&self) -> &RichText {
+    pub fn get_text(&self) -> &CommentText {
         self.text()
     }
 
     #[inline]
-    pub fn text_mut(&mut self) -> &mut RichText {
+    pub fn text_mut(&mut self) -> &mut CommentText {
         &mut self.text
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use text_mut()")]
-    pub fn get_text_mut(&mut self) -> &mut RichText {
+    pub fn get_text_mut(&mut self) -> &mut CommentText {
         self.text_mut()
     }
 
     #[inline]
-    pub fn set_text(&mut self, value: RichText) -> &mut Self {
+    pub fn set_text(&mut self, value: CommentText) -> &mut Self {
         self.text = value;
         self
     }
 
     #[inline]
     pub fn set_text_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
-        self.text.set_text(value);
+        self.text.set_text_string(value);
         self
     }
 
@@ -270,7 +277,7 @@ impl Comment {
             reader,
             Event::Start(ref e) => {
                 if e.name().into_inner() == b"text" {
-                    self.text_mut().set_attributes_text(reader, e);
+                    self.text_mut().set_attributes(reader, e);
                 }
             },
             Event::End(ref e) => {
@@ -280,6 +287,26 @@ impl Comment {
             },
             Event::Eof => panic!("Error: Could not find {} end element", "comment")
         );
+    }
+
+    pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, authors: &[String]) {
+        // comment
+        let coordinate = self.coordinate.to_string();
+        let author_id = authors
+            .iter()
+            .position(|value| self.author() == value)
+            .map_or(String::new(), |i| i.to_string());
+        write_start_tag(
+            writer,
+            "comment",
+            vec![("ref", &coordinate).into(), ("authorId", &author_id).into()],
+            false,
+        );
+
+        // text
+        self.text().write_to(writer);
+
+        write_end_tag(writer, "comment");
     }
 }
 impl AdjustmentCoordinate for Comment {
