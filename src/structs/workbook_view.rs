@@ -6,6 +6,7 @@ use quick_xml::{
     events::BytesStart,
 };
 
+use super::Int32Value;
 use super::UInt32Value;
 use crate::{
     reader::driver::{
@@ -15,16 +16,36 @@ use crate::{
     writer::driver::write_start_tag,
 };
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Debug)]
 pub struct WorkbookView {
     active_tab: UInt32Value,
-    x_window: UInt32Value,
-    y_window: UInt32Value,
-    window_width: UInt32Value,
-    window_height: UInt32Value,
-    tab_ratio: UInt32Value,
+    x_window: Int32Value,
+    y_window: Int32Value,
+    window_width: Int32Value,
+    window_height: Int32Value,
+    tab_ratio: Int32Value,
 }
-
+impl Default for WorkbookView {
+    #[inline]
+    fn default() -> Self {
+        let mut x_window = Int32Value::default();
+        x_window.set_value(240);
+        let mut y_window = Int32Value::default();
+        y_window.set_value(105);
+        let mut window_width = Int32Value::default();
+        window_width.set_value(14805);
+        let mut window_height = Int32Value::default();
+        window_height.set_value(8010);
+        Self {
+            active_tab: UInt32Value::default(),
+            x_window,
+            y_window,
+            window_width,
+            window_height,
+            tab_ratio: Int32Value::default(),
+        }
+    }
+}
 impl WorkbookView {
     #[inline]
     #[must_use]
@@ -35,6 +56,66 @@ impl WorkbookView {
     #[inline]
     pub fn set_active_tab(&mut self, value: u32) -> &mut Self {
         self.active_tab.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn get_x_window(&self) -> i32 {
+        self.x_window.value()
+    }
+
+    #[inline]
+    pub fn set_x_window(&mut self, value: i32) -> &mut Self {
+        self.x_window.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn get_y_window(&self) -> i32 {
+        self.y_window.value()
+    }
+
+    #[inline]
+    pub fn set_y_window(&mut self, value: i32) -> &mut Self {
+        self.y_window.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn get_window_width(&self) -> i32 {
+        self.window_width.value()
+    }
+
+    #[inline]
+    pub fn set_window_width(&mut self, value: i32) -> &mut Self {
+        self.window_width.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn get_window_height(&self) -> i32 {
+        self.window_height.value()
+    }
+
+    #[inline]
+    pub fn set_window_height(&mut self, value: i32) -> &mut Self {
+        self.window_height.set_value(value);
+        self
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn get_tab_ratio(&self) -> i32 {
+        self.tab_ratio.value()
+    }
+
+    #[inline]
+    pub fn set_tab_ratio(&mut self, value: i32) -> &mut Self {
+        self.tab_ratio.set_value(value);
         self
     }
 
