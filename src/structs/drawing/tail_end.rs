@@ -4,11 +4,17 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::BytesStart,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
-    reader::driver::get_attribute,
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
     structs::StringValue,
     writer::driver::write_start_tag,
 };
@@ -73,8 +79,9 @@ impl TailEnd {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flag: bool,
     ) {
         if let Some(v) = get_attribute(e, b"type") {
             self.set_type(v);
@@ -87,6 +94,20 @@ impl TailEnd {
         if let Some(v) = get_attribute(e, b"len") {
             self.set_length(v);
         }
+
+        if empty_flag {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:tailEnd" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error: Could not find {} end element", "a:tailEnd")
+        );
     }
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>) {

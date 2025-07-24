@@ -193,17 +193,34 @@ impl FontCollectionType {
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Empty(ref e)) => match e.name().into_inner() {
                     b"a:latin" => {
-                        self.latin_font.set_attributes(reader, e);
+                        self.latin_font.set_attributes(reader, e, true);
                     }
                     b"a:ea" => {
-                        self.east_asian_font.set_attributes(reader, e);
+                        self.east_asian_font.set_attributes(reader, e, true);
                     }
                     b"a:cs" => {
-                        self.complex_script_font.set_attributes(reader, e);
+                        self.complex_script_font.set_attributes(reader, e, true);
                     }
                     b"a:font" => {
                         let mut obj = SupplementalFont::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
+                        self.add_supplemental_font_list(obj);
+                    }
+                    _ => (),
+                },
+                Ok(Event::Start(ref e)) => match e.name().into_inner() {
+                    b"a:latin" => {
+                        self.latin_font.set_attributes(reader, e, false);
+                    }
+                    b"a:ea" => {
+                        self.east_asian_font.set_attributes(reader, e, false);
+                    }
+                    b"a:cs" => {
+                        self.complex_script_font.set_attributes(reader, e, false);
+                    }
+                    b"a:font" => {
+                        let mut obj = SupplementalFont::default();
+                        obj.set_attributes(reader, e, false);
                         self.add_supplemental_font_list(obj);
                     }
                     _ => (),

@@ -330,7 +330,7 @@ impl ShapeProperties {
             Event::Empty(ref e) => {
                 if e.name().into_inner() == b"a:noFill" {
                     let obj = NoFill::default();
-                    NoFill::set_attributes(reader, e);
+                    NoFill::set_attributes(reader, e, true);
                     self.set_no_fill(obj);
                 }
             },

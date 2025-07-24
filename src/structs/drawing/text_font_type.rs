@@ -3,12 +3,18 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::BytesStart,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use super::super::StringValue;
 use crate::{
-    reader::driver::get_attribute,
+    reader::driver::{
+        get_attribute,
+        xml_read_loop,
+    },
     writer::driver::write_start_tag,
 };
 
@@ -99,8 +105,9 @@ impl TextFontType {
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flag: bool,
     ) {
         if let Some(v) = get_attribute(e, b"typeface") {
             self.set_typeface(v);
@@ -114,6 +121,26 @@ impl TextFontType {
         if let Some(v) = get_attribute(e, b"panose") {
             self.set_panose(v);
         }
+
+        if empty_flag {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:latin" {
+                    return;
+                }
+                if e.name().into_inner() == b"a:cs" {
+                    return;
+                }
+                if e.name().into_inner() == b"a:ea" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error: Could not find {} end element", "a:latin,a:cs,a:ea")
+        );
     }
 
     #[inline]

@@ -137,6 +137,11 @@ impl SolidFill {
                     rgb_color_model_hex.set_attributes(reader, e, false);
                     self.set_rgb_color_model_hex(rgb_color_model_hex);
                 }
+                b"a:sysClr" => {
+                    let mut obj = SystemColor::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_system_color(obj);
+                }
                 _ => (),
                 }
             },
@@ -154,7 +159,7 @@ impl SolidFill {
                 }
                 b"a:sysClr" => {
                     let mut obj = SystemColor::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_system_color(obj);
                 }
                 _ => (),

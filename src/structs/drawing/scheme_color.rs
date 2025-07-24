@@ -322,42 +322,87 @@ impl SchemeColor {
                 match e.name().into_inner() {
                     b"a:lum" => {
                         let mut obj = PercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.luminance = Some(obj);
                     }
                     b"a:lumMod" => {
                         let mut obj = PercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.luminance_modulation = Some(obj);
                     }
                     b"a:lumOff" => {
                         let mut obj = PercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.luminance_offset = Some(obj);
                     }
                     b"a:sat" => {
                         let mut obj = PercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.saturation = Some(obj);
                     }
                     b"a:satMod" => {
                         let mut obj = PercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.saturation_modulation = Some(obj);
                     }
                     b"a:shade" => {
                         let mut obj = PositiveFixedPercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.shade = Some(obj);
                     }
                     b"a:alpha" => {
                         let mut obj = PositiveFixedPercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.alpha = Some(obj);
                     }
                     b"a:tint" => {
                         let mut obj = PositiveFixedPercentageType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
+                        self.tint = Some(obj);
+                    }
+                    _ => (),
+                }
+            },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                    b"a:lum" => {
+                        let mut obj = PercentageType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.luminance = Some(obj);
+                    }
+                    b"a:lumMod" => {
+                        let mut obj = PercentageType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.luminance_modulation = Some(obj);
+                    }
+                    b"a:lumOff" => {
+                        let mut obj = PercentageType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.luminance_offset = Some(obj);
+                    }
+                    b"a:sat" => {
+                        let mut obj = PercentageType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.saturation = Some(obj);
+                    }
+                    b"a:satMod" => {
+                        let mut obj = PercentageType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.saturation_modulation = Some(obj);
+                    }
+                    b"a:shade" => {
+                        let mut obj = PositiveFixedPercentageType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.shade = Some(obj);
+                    }
+                    b"a:alpha" => {
+                        let mut obj = PositiveFixedPercentageType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.alpha = Some(obj);
+                    }
+                    b"a:tint" => {
+                        let mut obj = PositiveFixedPercentageType::default();
+                        obj.set_attributes(reader, e, false);
                         self.tint = Some(obj);
                     }
                     _ => (),
