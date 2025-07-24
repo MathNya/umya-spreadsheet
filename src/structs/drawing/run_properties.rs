@@ -345,22 +345,22 @@ impl RunProperties {
                 match e.name().into_inner() {
                 b"a:latin" => {
                     let mut obj = TextFontType::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_latin_font(obj);
                 }
                 b"a:ea" => {
                     let mut obj = TextFontType::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_east_asian_font(obj);
                 }
                 b"a:cs" => {
                     let mut obj = TextFontType::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_complex_script_font(obj);
                 }
                 b"a:noFill" => {
                     let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_no_fill(obj);
                 }
                 b"a:effectLst" => {

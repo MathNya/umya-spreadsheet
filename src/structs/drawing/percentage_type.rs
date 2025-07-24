@@ -1,7 +1,7 @@
 use super::super::Int32Value;
 use crate::reader::driver::*;
 use crate::writer::driver::*;
-use quick_xml::events::BytesStart;
+use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
 use std::io::Cursor;
@@ -26,10 +26,37 @@ impl PercentageType {
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flag: bool,
     ) {
         set_string_from_xml!(self, e, val, "val");
+
+        if empty_flag {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                if e.name().into_inner() == b"a:lum" {
+                    return;
+                }
+                if e.name().into_inner() == b"a:lumMod" {
+                    return;
+                }
+                if e.name().into_inner() == b"a:lumOff" {
+                    return;
+                }
+                if e.name().into_inner() == b"a:sat" {
+                    return;
+                }
+                if e.name().into_inner() == b"a:satMod" {
+                    return;
+                }
+            },
+            Event::Eof => panic!("Error: Could not find {} end element", "a:lum,a:lumMod,a:lumOff,a:sat,a:satMod")
+        );
     }
 
     #[inline]

@@ -71,7 +71,7 @@ impl Color2Type {
                 }
                 b"a:sysClr" => {
                     let mut obj = SystemColor::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.system_color = Some(Box::new(obj));
                 }
                 _ => (),
@@ -86,7 +86,7 @@ impl Color2Type {
                 }
                 b"a:sysClr" => {
                     let mut obj = SystemColor::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, false);
                     self.system_color = Some(Box::new(obj));
                 }
                 _ => (),

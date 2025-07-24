@@ -201,7 +201,7 @@ impl ShapeProperties {
             Event::Empty(ref e) => {
                 if e.name().0 == b"a:noFill" {
                     let mut obj = NoFill::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_no_fill(obj);
                 }
             },

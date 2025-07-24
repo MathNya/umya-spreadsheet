@@ -106,20 +106,33 @@ impl GradientFill {
                 match e.name().into_inner() {
                 b"a:lin" => {
                     let mut obj = LinearGradientFill::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_linear_gradient_fill(obj);
                 }
                 b"a:tileRect" => {
                     let mut obj = TileRectangle::default();
-                    obj.set_attributes(reader, e);
+                    obj.set_attributes(reader, e, true);
                     self.set_tile_rectangle(obj);
                 }
                 _ => (),
                 }
             },
             Event::Start(ref e) => {
-                if e.name().into_inner() == b"a:gsLst" {
+                match e.name().into_inner() {
+                b"a:lin" => {
+                    let mut obj = LinearGradientFill::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_linear_gradient_fill(obj);
+                }
+                b"a:tileRect" => {
+                    let mut obj = TileRectangle::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_tile_rectangle(obj);
+                }
+                b"a:gsLst" => {
                     self.gradient_stop_list.set_attributes(reader, e);
+                }
+                _ => (),
                 }
             },
             Event::End(ref e) => {

@@ -256,6 +256,41 @@ impl Outline {
                         obj.set_attributes(reader, e);
                         self.set_gradient_fill(obj);
                     }
+                    b"a:tailEnd" => {
+                        let mut obj = TailEnd::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_tail_end(obj);
+                    }
+                    b"a:noFill" => {
+                        let mut obj = NoFill::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_no_fill(obj);
+                    }
+                    b"a:bevel" => {
+                        let mut obj = Bevel::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_bevel(obj);
+                    }
+                    b"a:miter" => {
+                        let mut obj = Miter::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_miter(obj);
+                    }
+                    b"a:prstDash" => {
+                        let mut obj = PresetDash::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_preset_dash(obj);
+                    }
+                    b"a:round" => {
+                        let mut obj = Round::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_round(obj);
+                    }
+                    b"a:sysClr" => {
+                        let mut obj = SystemColor::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_system_color(obj);
+                    }
                     _ => (),
                 }
             },
@@ -263,37 +298,37 @@ impl Outline {
                 match e.name().into_inner() {
                     b"a:tailEnd" => {
                         let mut obj = TailEnd::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_tail_end(obj);
                     }
                     b"a:noFill" => {
                         let mut obj = NoFill::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_no_fill(obj);
                     }
                     b"a:bevel" => {
                         let mut obj = Bevel::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_bevel(obj);
                     }
                     b"a:miter" => {
                         let mut obj = Miter::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_miter(obj);
                     }
                     b"a:prstDash" => {
                         let mut obj = PresetDash::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_preset_dash(obj);
                     }
                     b"a:round" => {
                         let mut obj = Round::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_round(obj);
                     }
                     b"a:sysClr" => {
                         let mut obj = SystemColor::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_system_color(obj);
                     }
                     _ => (),
