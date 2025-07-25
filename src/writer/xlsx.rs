@@ -25,6 +25,7 @@ mod doc_props_custom;
 mod drawing;
 mod drawing_rels;
 mod embeddings;
+mod jsa_project_bin;
 mod media;
 mod printer_settings;
 mod rels;
@@ -51,6 +52,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
     doc_props_core::write(wb, &mut writer_manager)?;
     doc_props_custom::write(wb, &mut writer_manager)?;
     vba_project_bin::write(wb, &mut writer_manager)?;
+    jsa_project_bin::write(wb, &mut writer_manager)?;
     rels::write(wb, &mut writer_manager)?;
     theme::write(wb.theme(), &mut writer_manager)?;
 

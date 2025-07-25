@@ -36,6 +36,7 @@ pub struct Workbook {
     properties:            Properties,
     work_sheet_collection: Vec<Worksheet>,
     macros_code:           Option<Vec<u8>>,
+    jsa_macros_code:       Option<Vec<u8>>,
     code_name:             StringValue,
     ribbon_xml_data:       StringValue,
     theme:                 Theme,
@@ -311,6 +312,56 @@ impl Workbook {
     #[deprecated(since = "3.0.0", note = "Use has_macros()")]
     pub fn get_has_macros(&self) -> bool {
         self.has_macros()
+    }
+
+    /// Get Macros Code.
+    /// # Return value
+    /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
+    #[inline]
+    #[must_use]
+    pub fn jsa_macros_code(&self) -> Option<&[u8]> {
+        self.jsa_macros_code.as_deref()
+    }
+
+    /// Get Macros Code.
+    /// # Return value
+    /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use jsa_macros_code()")]
+    pub fn get_jsa_macros_code(&self) -> Option<&[u8]> {
+        self.jsa_macros_code()
+    }
+
+    /// Set Macros Code.
+    /// # Arguments
+    /// * `value` - Macros Code Raw Data.
+    #[inline]
+    pub fn set_jsa_macros_code(&mut self, value: impl Into<Vec<u8>>) -> &mut Self {
+        self.jsa_macros_code = Some(value.into());
+        self
+    }
+
+    /// Remove Macros Code
+    #[inline]
+    pub fn remove_jsa_macros_code(&mut self) -> &mut Self {
+        self.jsa_macros_code = None;
+        self
+    }
+
+    /// Has Macros Code
+    #[inline]
+    #[must_use]
+    pub fn has_jsa_macros(&self) -> bool {
+        self.jsa_macros_code.is_some()
+    }
+
+    /// Has Macros Code
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use has_jsa_macros()")]
+    pub fn get_has_jsa_macros(&self) -> bool {
+        self.has_jsa_macros()
     }
 
     /// Set codeName property of workbook

@@ -19,6 +19,7 @@ use super::{
 };
 use crate::{
     helper::const_str::{
+        JSA_PROJECT_NS,
         PIVOT_CACHE_DEF_NS,
         PKG_WORKBOOK_RELS,
         REL_NS,
@@ -110,6 +111,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &index.to_string(),
             VBA_PROJECT_NS,
             "vbaProject.bin",
+            "",
+        );
+        index += 1;
+    }
+
+    // relationships for jsaProject if needed
+    if wb.has_jsa_macros() {
+        write_relationship(
+            &mut writer,
+            &index.to_string(),
+            JSA_PROJECT_NS,
+            "jsaProject.bin",
             "",
         );
     }
