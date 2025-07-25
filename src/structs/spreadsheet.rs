@@ -26,6 +26,7 @@ pub struct Spreadsheet {
     properties: Properties,
     work_sheet_collection: ThinVec<Worksheet>,
     macros_code: Option<ThinVec<u8>>,
+    jsa_macros_code: Option<ThinVec<u8>>,
     code_name: StringValue,
     ribbon_xml_data: StringValue,
     theme: Theme,
@@ -243,6 +244,36 @@ impl Spreadsheet {
     #[inline]
     pub fn get_has_macros(&self) -> bool {
         self.macros_code.is_some()
+    }
+
+    /// Get Macros Code.
+    /// # Return value
+    /// * `Option<&Vec<u8>>` - Macros Code Raw Data.
+    #[inline]
+    pub fn get_jsa_macros_code(&self) -> Option<&[u8]> {
+        self.jsa_macros_code.as_deref()
+    }
+
+    /// Set Macros Code.
+    /// # Arguments
+    /// * `value` - Macros Code Raw Data.
+    #[inline]
+    pub fn set_jsa_macros_code(&mut self, value: impl Into<ThinVec<u8>>) -> &mut Self {
+        self.jsa_macros_code = Some(value.into());
+        self
+    }
+
+    /// Remove Macros Code
+    #[inline]
+    pub fn remove_jsa_macros_code(&mut self) -> &mut Self {
+        self.jsa_macros_code = None;
+        self
+    }
+
+    /// Has Macros Code
+    #[inline]
+    pub fn get_has_jsa_macros(&self) -> bool {
+        self.jsa_macros_code.is_some()
     }
 
     /// Set codeName property of workbook

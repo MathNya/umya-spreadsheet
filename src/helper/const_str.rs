@@ -65,6 +65,7 @@ pub(crate) const THEME_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme";
 pub(crate) const VBA_PROJECT_NS: &str =
     "http://schemas.microsoft.com/office/2006/relationships/vbaProject";
+pub(crate) const JSA_PROJECT_NS: &str = "http://schemas.onlyoffice.com/jsaProject";
 pub(crate) const VML_NS: &str = "urn:schemas-microsoft-com:vml";
 pub(crate) const VML_DRAWING_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/vmlDrawing";
@@ -133,6 +134,7 @@ pub(crate) const PKG_THEME: &str = "xl/theme/theme1.xml";
 pub(crate) const PKG_WORKBOOK: &str = "xl/workbook.xml";
 pub(crate) const PKG_WORKBOOK_RELS: &str = "xl/_rels/workbook.xml.rels";
 pub(crate) const PKG_VBA_PROJECT: &str = "xl/vbaProject.bin";
+pub(crate) const PKG_JSA_PROJECT: &str = "xl/jsaProject.bin";
 pub(crate) const PKG_VML_DRAWING_RELS: &str = "xl/drawings/_rels/vmlDrawing";
 
 pub(crate) const ARC_APP: &str = "docProps/app.xml";

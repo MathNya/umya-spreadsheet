@@ -21,6 +21,7 @@ mod doc_props_custom;
 mod drawing;
 mod drawing_rels;
 mod embeddings;
+mod jsa_project_bin;
 mod media;
 mod printer_settings;
 mod rels;
@@ -52,6 +53,9 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
 
     // Add vbaProject.bin
     vba_project_bin::write(spreadsheet, &mut writer_manager)?;
+
+    // Add jsaProject.bin
+    jsa_project_bin::write(spreadsheet, &mut writer_manager)?;
 
     // Add relationships
     rels::write(spreadsheet, &mut writer_manager)?;

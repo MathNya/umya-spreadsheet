@@ -84,6 +84,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             "vbaProject.bin",
             "",
         );
+        index += 1;
+    }
+
+    // relationships for jsaProject if needed
+    if spreadsheet.get_has_jsa_macros() {
+        write_relationship(
+            &mut writer,
+            &index.to_string(),
+            JSA_PROJECT_NS,
+            "jsaProject.bin",
+            "",
+        );
     }
 
     write_end_tag(&mut writer, root_tag_name);

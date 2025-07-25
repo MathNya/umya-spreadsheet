@@ -1,0 +1,27 @@
+use super::XlsxError;
+use std::io::Read;
+use std::{io, result};
+
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
+
+pub(crate) fn read<R: io::Read + io::Seek>(
+    arv: &mut zip::ZipArchive<R>,
+    spreadsheet: &mut Spreadsheet,
+) -> result::Result<(), XlsxError> {
+    let mut r = io::BufReader::new(match arv.by_name(PKG_JSA_PROJECT) {
+        Ok(v) => v,
+        Err(zip::result::ZipError::FileNotFound) => {
+            return Ok(());
+        }
+        Err(e) => {
+            return Err(e.into());
+        }
+    });
+    let mut buf = Vec::new();
+    r.read_to_end(&mut buf)?;
+
+    spreadsheet.set_jsa_macros_code(buf);
+
+    Ok(())
+}

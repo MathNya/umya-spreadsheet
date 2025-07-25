@@ -7,6 +7,7 @@ use super::TextBody;
 use crate::reader::driver::*;
 use crate::structs::raw::RawRelationships;
 use crate::writer::driver::*;
+use crate::StringValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -19,6 +20,7 @@ pub struct Shape {
     shape_properties: ShapeProperties,
     shape_style: Option<Box<ShapeStyle>>,
     text_body: Option<Box<TextBody>>,
+    r#macro: StringValue,
 }
 
 impl Shape {
@@ -95,12 +97,25 @@ impl Shape {
         self.text_body = Some(Box::new(value));
     }
 
+    #[inline]
+    pub fn get_macro(&self) -> &str {
+        self.r#macro.get_value_str()
+    }
+
+    #[inline]
+    pub fn set_macro<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.r#macro.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
+        set_string_from_xml!(self, e, r#macro, "macro");
+
         xml_read_loop!(
             reader,
                 Event::Start(ref e) => {
@@ -143,7 +158,7 @@ impl Shape {
         write_start_tag(
             writer,
             "xdr:sp",
-            vec![("macro", ""), ("textlink", "")],
+            vec![("macro", self.r#macro.get_value_str()), ("textlink", "")],
             false,
         );
 
