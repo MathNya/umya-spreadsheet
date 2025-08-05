@@ -1,0 +1,38 @@
+use super::driver::*;
+use super::XlsxError;
+use crate::helper::const_str::*;
+use crate::structs::Spreadsheet;
+use crate::structs::WriterManager;
+use quick_xml::events::{BytesDecl, Event};
+use quick_xml::Writer;
+use std::collections::HashSet;
+use std::io;
+
+pub(crate) fn write<W: io::Seek + io::Write>(
+    spreadsheet: &Spreadsheet,
+    writer_mng: &mut WriterManager<W>,
+) -> Result<(), XlsxError> {
+    if !spreadsheet.has_threaded_comments() {
+        return Ok(());
+    }
+
+    let mut writer = Writer::new(io::Cursor::new(Vec::new()));
+    // XML header
+    writer.write_event(Event::Decl(BytesDecl::new(
+        "1.0",
+        Some("UTF-8"),
+        Some("yes"),
+    )));
+    write_new_line(&mut writer);
+
+    // comments
+    write_start_tag(
+        &mut writer,
+        "personList",
+        vec![("xmlns", THREADED_COMMENTS_NS), (" xmlns:x", SHEET_MAIN_NS)],
+        false,
+    );
+
+    write_end_tag(&mut writer, "personList");
+    writer_mng.add_writer(PKG_PERSON, writer)
+}

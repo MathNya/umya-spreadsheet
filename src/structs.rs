@@ -4,6 +4,7 @@ pub mod custom_properties;
 pub mod drawing;
 pub mod office;
 pub mod office2010;
+pub mod office2019;
 pub mod raw;
 pub mod vml;
 
@@ -123,6 +124,9 @@ pub use self::int16_value::*;
 
 mod string_value;
 pub use self::string_value::*;
+
+mod date_time_value;
+pub use self::date_time_value::*;
 
 mod double_value;
 pub use self::double_value::*;

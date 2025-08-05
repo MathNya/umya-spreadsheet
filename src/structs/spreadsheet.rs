@@ -758,6 +758,17 @@ impl Spreadsheet {
     pub fn add_defined_names(&mut self, value: DefinedName) {
         self.defined_names.push(value);
     }
+
+    /// Has ThreadedComments.
+    #[inline]
+    pub fn has_threaded_comments(&self) -> bool {
+        for worksheet in &self.work_sheet_collection {
+            if worksheet.has_threaded_comments() {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 impl AdjustmentCoordinateWithSheet for Spreadsheet {
     fn adjustment_insert_coordinate_with_sheet(

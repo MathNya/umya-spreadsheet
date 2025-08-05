@@ -1,4 +1,5 @@
 use crate::xml_read_loop;
+use crate::StringValue;
 
 use super::vml::office::InsetMarginValues;
 use super::vml::spreadsheet::Anchor;
@@ -29,6 +30,7 @@ pub struct Comment {
     author: Box<str>,
     text: CommentText,
     shape: Shape,
+    id: StringValue,
 }
 
 impl Comment {
@@ -104,6 +106,17 @@ impl Comment {
     #[inline]
     pub fn set_shape(&mut self, value: Shape) -> &mut Self {
         self.shape = value;
+        self
+    }
+
+    #[inline]
+    pub fn get_id(&self) -> &str {
+        &self.id.get_value_str()
+    }
+
+    #[inline]
+    pub(crate) fn set_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.id.set_value(value);
         self
     }
 
@@ -190,6 +203,8 @@ impl Comment {
         let author = authors.get(author_id).unwrap();
         self.set_author(author);
 
+        set_string_from_xml!(self, e, id, "id");
+
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
@@ -208,17 +223,18 @@ impl Comment {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, authors: &[String]) {
         // comment
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
         let coordinate = self.coordinate.to_string();
+        attributes.push(("ref", &coordinate));
         let author_id = authors
             .iter()
             .position(|value| self.get_author() == value)
             .map_or(String::new(), |i| i.to_string());
-        write_start_tag(
-            writer,
-            "comment",
-            vec![("ref", &coordinate), ("authorId", &author_id)],
-            false,
-        );
+        attributes.push(("authorId", &author_id));
+        if self.id.has_value() {
+            attributes.push(("id", self.id.get_value_str()));
+        }
+        write_start_tag(writer, "comment", attributes, false);
 
         // text
         self.get_text().write_to(writer);

@@ -4,6 +4,12 @@ pub(crate) const CHART_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart";
 pub(crate) const COMMENTS_NS: &str =
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/comments";
+pub(crate) const THREADED_COMMENT_NS: &str =
+    "http://schemas.microsoft.com/office/2017/10/relationships/threadedComment";
+pub(crate) const THREADED_COMMENTS_NS: &str =
+    "http://schemas.microsoft.com/office/spreadsheetml/2018/threadedcomments";
+pub(crate) const PERSION_NS: &str =
+    "http://schemas.microsoft.com/office/2017/10/relationships/person";
 pub(crate) const CONTYPES_NS: &str = "http://schemas.openxmlformats.org/package/2006/content-types";
 pub(crate) const COREPROPS_NS: &str =
     "http://schemas.openxmlformats.org/package/2006/metadata/core-properties";
@@ -136,6 +142,7 @@ pub(crate) const PKG_WORKBOOK_RELS: &str = "xl/_rels/workbook.xml.rels";
 pub(crate) const PKG_VBA_PROJECT: &str = "xl/vbaProject.bin";
 pub(crate) const PKG_JSA_PROJECT: &str = "xl/jsaProject.bin";
 pub(crate) const PKG_VML_DRAWING_RELS: &str = "xl/drawings/_rels/vmlDrawing";
+pub(crate) const PKG_PERSON: &str = "xl/persons/person.xml";
 
 pub(crate) const ARC_APP: &str = "docProps/app.xml";
 pub(crate) const ARC_CORE: &str = "docProps/core.xml";

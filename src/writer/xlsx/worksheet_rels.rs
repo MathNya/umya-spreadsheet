@@ -15,6 +15,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     drawing_no: &str,
     vml_drawing_no: &str,
     comment_no: &str,
+    threaded_comment_no: &str,
     ole_object_no_list: &[String],
     excel_no_list: &[String],
     printer_settings_no: &str,
@@ -144,12 +145,28 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Write comments relationship
-    if !worksheet.get_comments().is_empty() {
+    if worksheet.has_comments() {
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),
             COMMENTS_NS,
             format!("../comments{}.xml", comment_no).as_str(),
+            "",
+        );
+        r_id += 1;
+    }
+
+    // Write threadedComment relationship
+    if worksheet.has_threaded_comments() {
+        is_write = write_relationship(
+            &mut writer,
+            &r_id.to_string(),
+            THREADED_COMMENT_NS,
+            format!(
+                "../threadedComments/threadedComment{}.xml",
+                threaded_comment_no
+            )
+            .as_str(),
             "",
         );
     }

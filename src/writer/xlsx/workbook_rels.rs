@@ -96,6 +96,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             "jsaProject.bin",
             "",
         );
+        index += 1;
+    }
+
+    // relationship for persion
+    if spreadsheet.has_threaded_comments() {
+        write_relationship(
+            &mut writer,
+            &index.to_string(),
+            PERSION_NS,
+            "persons/person.xml",
+            "",
+        );
     }
 
     write_end_tag(&mut writer, root_tag_name);

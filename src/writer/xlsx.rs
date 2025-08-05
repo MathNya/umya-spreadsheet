@@ -23,12 +23,14 @@ mod drawing_rels;
 mod embeddings;
 mod jsa_project_bin;
 mod media;
+mod person;
 mod printer_settings;
 mod rels;
 mod shared_strings;
 mod styles;
 mod table;
 mod theme;
+mod threaded_comment;
 mod vba_project_bin;
 mod vml_drawing;
 mod vml_drawing_rels;
@@ -62,6 +64,9 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
 
     // Add theme
     theme::write(spreadsheet.get_theme(), &mut writer_manager)?;
+
+    // Add persion
+    person::write(spreadsheet, &mut writer_manager)?;
 
     // worksheet
     let shared_string_table = spreadsheet.get_shared_string_table();
@@ -125,6 +130,9 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
         // Add comment
         let comment_no = comment::write(worksheet, &mut writer_manager)?;
 
+        // Add threaded_comment
+        let threaded_comment_no = threaded_comment::write(worksheet, &mut writer_manager)?;
+
         // Add ole_object and excel
         let (ole_object_no_list, excel_no_list) =
             embeddings::write(worksheet, &mut writer_manager)?;
@@ -148,6 +156,7 @@ fn make_buffer(spreadsheet: &Spreadsheet, is_light: bool) -> Result<std::vec::Ve
             &drawing_no,
             &vml_drawing_no,
             &comment_no,
+            &threaded_comment_no,
             &ole_object_no_list,
             &excel_no_list,
             &printer_settings_no,

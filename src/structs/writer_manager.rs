@@ -129,6 +129,21 @@ impl<'a, W: io::Seek + io::Write> WriterManager<'a, W> {
         }
     }
 
+    pub(crate) fn add_file_at_threaded_comment(
+        &mut self,
+        writer: Writer<Cursor<Vec<u8>>>,
+    ) -> Result<i32, XlsxError> {
+        let mut index = 0;
+        loop {
+            index += 1;
+            let file_path = format!("xl/threadedComments/threadedComment{}.xml", index);
+            if !self.check_file_exist(&file_path) {
+                self.add_writer(&file_path, writer)?;
+                return Ok(index);
+            }
+        }
+    }
+
     pub(crate) fn add_file_at_chart(
         &mut self,
         writer: Writer<Cursor<Vec<u8>>>,

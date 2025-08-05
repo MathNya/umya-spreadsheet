@@ -1,6 +1,7 @@
 use crate::helper::const_str::*;
 use crate::helper::coordinate::*;
 use crate::helper::range::*;
+use crate::office2019::threaded_comment::ThreadedComment;
 use crate::reader::xlsx::worksheet::*;
 use crate::structs::drawing::spreadsheet::WorksheetDrawing;
 use crate::structs::office2010::excel::DataValidations as DataValidations2010;
@@ -73,6 +74,7 @@ pub struct Worksheet {
     merge_cells: MergeCells,
     auto_filter: Option<AutoFilter>,
     comments: ThinVec<Comment>,
+    threaded_comments: ThinVec<ThreadedComment>,
     active_cell: Box<str>,
     tab_color: Option<Color>,
     code_name: StringValue,
@@ -561,6 +563,56 @@ impl Worksheet {
     #[inline]
     pub fn has_comments(&self) -> bool {
         !self.comments.is_empty()
+    }
+
+    // ************************
+    // ThreadedComment
+    // ************************
+    /// Get ThreadedComments
+    #[inline]
+    pub fn get_threaded_comments(&self) -> &[ThreadedComment] {
+        &self.threaded_comments
+    }
+
+    /// Get ThreadedComments in mutable.
+    #[inline]
+    pub fn get_threaded_comments_mut(&mut self) -> &mut ThinVec<ThreadedComment> {
+        &mut self.threaded_comments
+    }
+
+    /// Get ThreadedComments convert to hashmap.
+    #[inline]
+    pub fn get_threaded_comments_to_hashmap(&self) -> HashMap<String, &ThreadedComment> {
+        let mut result = HashMap::default();
+        for threaded_comment in &self.threaded_comments {
+            result.insert(
+                threaded_comment.get_coordinate().to_string(),
+                threaded_comment,
+            );
+        }
+        result
+    }
+
+    /// Set ThreadedComment.
+    /// # Arguments
+    /// * `value` - ThreadedComment List (Vec)
+    #[inline]
+    pub fn set_threaded_comments(&mut self, value: impl Into<ThinVec<ThreadedComment>>) {
+        self.threaded_comments = value.into();
+    }
+
+    /// Add ThreadedComment.
+    /// # Arguments
+    /// * `value` - ThreadedComment
+    #[inline]
+    pub fn add_threaded_comments(&mut self, value: ThreadedComment) {
+        self.threaded_comments.push(value);
+    }
+
+    /// Has ThreadedComments.
+    #[inline]
+    pub fn has_threaded_comments(&self) -> bool {
+        !self.threaded_comments.is_empty()
     }
 
     // ************************
