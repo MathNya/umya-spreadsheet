@@ -21,38 +21,38 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ImageData {
-    image: MediaObject,
+    image: Option<MediaObject>,
     title: StringValue,
 }
 
 impl ImageData {
     #[inline]
     #[must_use]
-    pub fn image(&self) -> &MediaObject {
-        &self.image
+    pub fn image(&self) -> Option<&MediaObject> {
+        self.image.as_ref()
     }
 
     #[inline]
     #[must_use]
     #[deprecated(since = "3.0.0", note = "Use image()")]
-    pub fn get_image(&self) -> &MediaObject {
+    pub fn get_image(&self) -> Option<&MediaObject> {
         self.image()
     }
 
     #[inline]
-    pub fn image_mut(&mut self) -> &mut MediaObject {
-        &mut self.image
+    pub fn image_mut(&mut self) -> Option<&mut MediaObject> {
+        self.image.as_mut()
     }
 
     #[inline]
     #[deprecated(since = "3.0.0", note = "Use image_mut()")]
-    pub fn get_image_mut(&mut self) -> &mut MediaObject {
+    pub fn get_image_mut(&mut self) -> Option<&mut MediaObject> {
         self.image_mut()
     }
 
     #[inline]
     pub fn set_image(&mut self, value: MediaObject) -> &mut Self {
-        self.image = value;
+        self.image = Some(value);
         self
     }
 
@@ -81,10 +81,10 @@ impl ImageData {
         if let Some(relid) = get_attribute(e, b"o:relid") {
             if let Some(rel) = drawing_relationships {
                 let relationship = rel.relationship_by_rid(&relid);
-                self.image_mut()
-                    .set_image_name(relationship.raw_file().file_name());
-                self.image_mut()
-                    .set_image_data(relationship.raw_file().file_data());
+                let mut obj = MediaObject::default();
+                obj.set_image_name(relationship.raw_file().file_name());
+                obj.set_image_data(relationship.raw_file().file_data());
+                self.set_image(obj);
             }
         }
 
@@ -98,9 +98,10 @@ impl ImageData {
     ) {
         // v:imagedata
         let mut attributes: crate::structs::AttrCollection = Vec::new();
-        let r_id = &self.image.rid(rel_list);
-        let r_id_str = format!("rId{r_id}");
-        attributes.push(("o:relid", &r_id_str).into());
+        if let Some(image) = &self.image {
+            let r_id_str = format!("rId{}", image.rid(rel_list));
+            attributes.push(("o:relid", r_id_str).into());
+        }
         if self.title.has_value() {
             attributes.push(("o:title", self.title.value_str()).into());
         }
