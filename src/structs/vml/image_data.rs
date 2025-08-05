@@ -10,24 +10,24 @@ use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct ImageData {
-    image: MediaObject,
+    image: Option<MediaObject>,
     title: StringValue,
 }
 
 impl ImageData {
     #[inline]
-    pub fn get_image(&self) -> &MediaObject {
-        &self.image
+    pub fn get_image(&self) -> Option<&MediaObject> {
+        self.image.as_ref()
     }
 
     #[inline]
-    pub fn get_image_mut(&mut self) -> &mut MediaObject {
-        &mut self.image
+    pub fn get_image_mut(&mut self) -> Option<&mut MediaObject> {
+        self.image.as_mut()
     }
 
     #[inline]
     pub fn set_image(&mut self, value: MediaObject) -> &mut Self {
-        self.image = value;
+        self.image = Some(value);
         self
     }
 
@@ -49,10 +49,10 @@ impl ImageData {
         if let Some(relid) = get_attribute(e, b"o:relid") {
             if let Some(rel) = drawing_relationships {
                 let relationship = rel.get_relationship_by_rid(&relid);
-                self.get_image_mut()
-                    .set_image_name(relationship.get_raw_file().get_file_name());
-                self.get_image_mut()
-                    .set_image_data(relationship.get_raw_file().get_file_data());
+                let mut obj = MediaObject::default();
+                obj.set_image_name(relationship.get_raw_file().get_file_name());
+                obj.set_image_data(relationship.get_raw_file().get_file_data());
+                self.set_image(obj);
             }
         }
 
@@ -66,8 +66,11 @@ impl ImageData {
     ) {
         // v:imagedata
         let mut attributes: Vec<(&str, &str)> = Vec::new();
-        let r_id_str = format!("rId{}", self.image.get_rid(rel_list));
-        attributes.push(("o:relid", &r_id_str));
+        let mut r_id_str = String::from("");
+        if let Some(image) = &self.image {
+            r_id_str = format!("rId{}", image.get_rid(rel_list));
+            attributes.push(("o:relid", &r_id_str));
+        }
         if self.title.has_value() {
             attributes.push(("o:title", self.title.get_value_str()));
         }

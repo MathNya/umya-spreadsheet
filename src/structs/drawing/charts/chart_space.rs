@@ -19,26 +19,26 @@ use std::io::Cursor;
 
 #[derive(Clone, Default, Debug)]
 pub struct ChartSpace {
-    date1904: Date1904,
+    date1904: Option<Date1904>,
     editing_language: EditingLanguage,
     rounded_corners: RoundedCorners,
-    style: Style,
+    style: Option<Style>,
     chart: Chart,
     shape_properties: Option<ShapeProperties>,
     print_settings: Option<PrintSettings>,
 }
 
 impl ChartSpace {
-    pub fn get_date1904(&self) -> &Date1904 {
-        &self.date1904
+    pub fn get_date1904(&self) -> Option<&Date1904> {
+        self.date1904.as_ref()
     }
 
-    pub fn get_date1904_mut(&mut self) -> &mut Date1904 {
-        &mut self.date1904
+    pub fn get_date1904_mut(&mut self) -> Option<&mut Date1904> {
+        self.date1904.as_mut()
     }
 
     pub fn set_date1904(&mut self, value: Date1904) -> &mut Self {
-        self.date1904 = value;
+        self.date1904 = Some(value);
         self
     }
 
@@ -68,16 +68,16 @@ impl ChartSpace {
         self
     }
 
-    pub fn get_style(&self) -> &Style {
-        &self.style
+    pub fn get_style(&self) -> Option<&Style> {
+        self.style.as_ref()
     }
 
-    pub fn get_style_mut(&mut self) -> &mut Style {
-        &mut self.style
+    pub fn get_style_mut(&mut self) -> Option<&mut Style> {
+        self.style.as_mut()
     }
 
     pub fn set_style(&mut self, value: Style) -> &mut Self {
-        self.style = value;
+        self.style = Some(value);
         self
     }
 
@@ -150,7 +150,9 @@ impl ChartSpace {
             },
             Event::Empty(ref e) => match e.name().into_inner() {
                 b"c:date1904" => {
-                    self.date1904.set_attributes(reader, e);
+                    let mut obj = Date1904::default();
+                    obj.set_attributes(reader, e);
+                    self.set_date1904(obj);
                 }
                 b"c:lang" => {
                     self.editing_language.set_attributes(reader, e);
@@ -159,7 +161,9 @@ impl ChartSpace {
                     self.rounded_corners.set_attributes(reader, e);
                 }
                 b"c:style" => {
-                    self.style.set_attributes(reader, e, false);
+                    let mut obj = Style::default();
+                    obj.set_attributes(reader, e, false);
+                    self.set_style(obj);
                 }
                 _ => (),
             },
@@ -187,7 +191,9 @@ impl ChartSpace {
         );
 
         // c:date1904
-        self.date1904.write_to(writer);
+        if let Some(v) = &self.date1904 {
+            v.write_to(writer);
+        }
 
         // c:lang
         self.editing_language.write_to(writer);
@@ -196,7 +202,9 @@ impl ChartSpace {
         self.rounded_corners.write_to(writer);
 
         // c:style
-        self.style.write_to(writer);
+        if let Some(v) = &self.style {
+            v.write_to(writer);
+        }
 
         // c:chart
         self.chart.write_to(writer, spreadsheet);
