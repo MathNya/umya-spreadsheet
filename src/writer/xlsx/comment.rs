@@ -32,7 +32,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     worksheet: &Worksheet,
     writer_mng: &mut WriterManager<W>,
 ) -> Result<String, XlsxError> {
-    if worksheet.comments().is_empty() {
+    if !worksheet.has_comments() {
         return Ok(String::new());
     }
 

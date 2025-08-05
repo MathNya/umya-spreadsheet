@@ -28,23 +28,22 @@ use super::{
     },
 };
 use crate::{
-    helper::coordinate::CellCoordinates,
-    reader::driver::get_attribute,
-    structs::vml::Shape,
-    traits::AdjustmentCoordinate,
-    xml_read_loop,
-    writer::driver::{
+    helper::coordinate::CellCoordinates, reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+    }, structs::vml::Shape, traits::AdjustmentCoordinate, writer::driver::{
         write_end_tag,
         write_start_tag,
-    },
+    }, xml_read_loop, StringValue
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct Comment {
     coordinate: Coordinate,
     author:     Box<str>,
-    text: CommentText,
+    text:       CommentText,
     shape:      Shape,
+    id:         StringValue,
 }
 
 impl Comment {
@@ -188,6 +187,25 @@ impl Comment {
     }
 
     #[inline]
+    #[must_use]
+    pub fn id(&self) -> &str {
+        self.id.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use id()")]
+    pub fn get_id(&self) -> &str {
+        self.id()
+    }
+
+    #[inline]
+    pub(crate) fn set_id<S: Into<String>>(&mut self, value: S) -> &mut Self {
+        self.id.set_value(value);
+        self
+    }
+
+    #[inline]
     pub fn new_comment<T>(&mut self, coordinate: T) -> &mut Self
     where
         T: Into<CellCoordinates>,
@@ -273,6 +291,8 @@ impl Comment {
         let author = authors.get(author_id).unwrap();
         self.set_author(author);
 
+        set_string_from_xml!(self, e, id, "id");
+
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
@@ -291,17 +311,18 @@ impl Comment {
 
     pub(crate) fn write_to(&self, writer: &mut Writer<Cursor<Vec<u8>>>, authors: &[String]) {
         // comment
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
         let coordinate = self.coordinate.to_string();
+        attributes.push(("ref", &coordinate).into());
         let author_id = authors
             .iter()
             .position(|value| self.author() == value)
             .map_or(String::new(), |i| i.to_string());
-        write_start_tag(
-            writer,
-            "comment",
-            vec![("ref", &coordinate).into(), ("authorId", &author_id).into()],
-            false,
-        );
+        attributes.push(("authorId", &author_id).into());
+        if self.id.has_value() {
+            attributes.push(("id", self.id.value_str()).into());
+        }
+        write_start_tag(writer, "comment", attributes, false);
 
         // text
         self.text().write_to(writer);

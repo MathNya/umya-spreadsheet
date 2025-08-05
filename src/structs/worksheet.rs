@@ -55,6 +55,7 @@ use crate::{
         Table,
         drawing::spreadsheet::WorksheetDrawing,
         office2010::excel::DataValidations as DataValidations2010,
+        office2019::threaded_comment::ThreadedComment,
         raw::RawWorksheet,
     },
     traits::{
@@ -86,6 +87,7 @@ pub struct Worksheet {
     merge_cells:                       MergeCells,
     auto_filter:                       Option<AutoFilter>,
     comments:                          Vec<Comment>,
+    threaded_comments:                 Vec<ThreadedComment>,
     active_cell:                       Box<str>,
     tab_color:                         Option<Color>,
     code_name:                         StringValue,
@@ -770,6 +772,79 @@ impl Worksheet {
     #[must_use]
     pub fn has_comments(&self) -> bool {
         !self.comments.is_empty()
+    }
+
+    // ************************
+    // ThreadedComment
+    // ************************
+    /// Get `ThreadedComments`
+    #[inline]
+    #[must_use]
+    pub fn threaded_comments(&self) -> &[ThreadedComment] {
+        &self.threaded_comments
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use threaded_comments()")]
+    pub fn get_threaded_comments(&self) -> &[ThreadedComment] {
+        self.threaded_comments()
+    }
+
+    /// Get `ThreadedComments` in mutable.
+    #[inline]
+    pub fn threaded_comments_mut(&mut self) -> &mut Vec<ThreadedComment> {
+        &mut self.threaded_comments
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use threaded_comments_mut()")]
+    pub fn get_threaded_comments_mut(&mut self) -> &mut Vec<ThreadedComment> {
+        self.threaded_comments_mut()
+    }
+
+    /// Get `ThreadedComments` convert to hashmap.
+    #[inline]
+    #[must_use]
+    pub fn threaded_comments_to_hashmap(&self) -> HashMap<String, &ThreadedComment> {
+        let mut result = HashMap::default();
+        for threaded_comment in &self.threaded_comments {
+            result.insert(
+                threaded_comment.coordinate().to_string(),
+                threaded_comment,
+            );
+        }
+        result
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use threaded_comments_to_hashmap()")]
+    pub fn get_threaded_comments_to_hashmap(&self) -> HashMap<String, &ThreadedComment> {
+        self.threaded_comments_to_hashmap()
+    }
+
+    /// Set `ThreadedComment`.
+    /// # Arguments
+    /// * `value` - `ThreadedComment` List (Vec)
+    #[inline]
+    pub fn set_threaded_comments(&mut self, value: impl Into<Vec<ThreadedComment>>) {
+        self.threaded_comments = value.into();
+    }
+
+    /// Add `ThreadedComment`.
+    /// # Arguments
+    /// * `value` - `ThreadedComment`
+    #[inline]
+    pub fn add_threaded_comments(&mut self, value: ThreadedComment) {
+        self.threaded_comments.push(value);
+    }
+
+    /// Has `ThreadedComments`.
+    #[inline]
+    #[must_use]
+    pub fn has_threaded_comments(&self) -> bool {
+        !self.threaded_comments.is_empty()
     }
 
     // ************************

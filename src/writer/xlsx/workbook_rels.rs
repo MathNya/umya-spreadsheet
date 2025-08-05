@@ -20,6 +20,7 @@ use super::{
 use crate::{
     helper::const_str::{
         JSA_PROJECT_NS,
+        PERSION_NS,
         PIVOT_CACHE_DEF_NS,
         PKG_WORKBOOK_RELS,
         REL_NS,
@@ -123,6 +124,18 @@ pub(crate) fn write<W: io::Seek + io::Write>(
             &index.to_string(),
             JSA_PROJECT_NS,
             "jsaProject.bin",
+            "",
+        );
+        index += 1;
+    }
+
+    // relationship for persion
+    if wb.has_threaded_comments() {
+        write_relationship(
+            &mut writer,
+            &index.to_string(),
+            PERSION_NS,
+            "persons/person.xml",
             "",
         );
     }

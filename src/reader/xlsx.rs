@@ -13,6 +13,7 @@ use crate::{
         DRAWINGS_NS,
         TABLE_NS,
         THEME_NS,
+        THREADED_COMMENT_NS,
         VML_DRAWING_NS,
     },
     structs::{
@@ -39,6 +40,7 @@ mod shared_strings;
 mod styles;
 pub(crate) mod table;
 mod theme;
+pub(crate) mod threaded_comment;
 mod vba_project_bin;
 pub(crate) mod vml_drawing;
 mod workbook;
@@ -161,6 +163,10 @@ pub(crate) fn raw_to_deserialize_by_worksheet(
                 // comment
                 COMMENTS_NS => {
                     comment::read(worksheet, relationship.raw_file());
+                }
+                // threaded_comment
+                THREADED_COMMENT_NS => {
+                    threaded_comment::read(worksheet, relationship.raw_file());
                 }
                 // table
                 TABLE_NS => {

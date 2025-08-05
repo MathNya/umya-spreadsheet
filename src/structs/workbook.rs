@@ -1000,6 +1000,18 @@ impl Workbook {
     pub fn add_defined_names(&mut self, value: DefinedName) {
         self.defined_names.push(value);
     }
+
+    /// Has `ThreadedComments`.
+    #[inline]
+    #[must_use]
+    pub fn has_threaded_comments(&self) -> bool {
+        for worksheet in &self.work_sheet_collection {
+            if worksheet.has_threaded_comments() {
+                return true;
+            }
+        }
+        false
+    }
 }
 impl AdjustmentCoordinateWithSheet for Workbook {
     fn adjustment_insert_coordinate_with_sheet(

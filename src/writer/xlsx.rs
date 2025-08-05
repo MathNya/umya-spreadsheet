@@ -27,12 +27,14 @@ mod drawing_rels;
 mod embeddings;
 mod jsa_project_bin;
 mod media;
+mod person;
 mod printer_settings;
 mod rels;
 mod shared_strings;
 mod styles;
 mod table;
 mod theme;
+mod threaded_comment;
 mod vba_project_bin;
 mod vml_drawing;
 mod vml_drawing_rels;
@@ -55,6 +57,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
     jsa_project_bin::write(wb, &mut writer_manager)?;
     rels::write(wb, &mut writer_manager)?;
     theme::write(wb.theme(), &mut writer_manager)?;
+    person::write(wb, &mut writer_manager)?;
 
     let shared_string_table = wb.shared_string_table();
     let mut stylesheet = wb.stylesheet().clone();
@@ -118,6 +121,9 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
             // Add comments
             let comment_no = comment::write(worksheet, &mut writer_manager)?;
 
+            // Add threaded_comment
+            let threaded_comment_no = threaded_comment::write(worksheet, &mut writer_manager)?;
+
             // Add ole_object and excel
             let (ole_object_no_list, excel_no_list) =
                 embeddings::write(worksheet, &mut writer_manager)?;
@@ -143,6 +149,7 @@ fn make_buffer(wb: &Workbook, is_light: bool) -> Result<Vec<u8>, XlsxError> {
                 &drawing_no,
                 &vml_drawing_no,
                 &comment_no,
+                &threaded_comment_no,
                 &ole_object_no_list,
                 &excel_no_list,
                 &printer_settings_no,

@@ -28,6 +28,7 @@ use crate::{
         PRINTER_SETTINGS_NS,
         REL_NS,
         TABLE_NS,
+        THREADED_COMMENT_NS,
         VML_DRAWING_NS,
     },
     structs::{
@@ -43,6 +44,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     drawing_no: &str,
     vml_drawing_no: &str,
     comment_no: &str,
+    threaded_comment_no: &str,
     ole_object_no_list: &[String],
     excel_no_list: &[String],
     printer_settings_no: &str,
@@ -176,12 +178,24 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     }
 
     // Write comments relationship
-    if !worksheet.comments().is_empty() {
+    if worksheet.has_comments() {
         is_write = write_relationship(
             &mut writer,
             &r_id.to_string(),
             COMMENTS_NS,
             format!("../comments{comment_no}.xml").as_str(),
+            "",
+        );
+        r_id += 1;
+    }
+
+    // Write threadedComment relationship
+    if worksheet.has_threaded_comments() {
+        is_write = write_relationship(
+            &mut writer,
+            &r_id.to_string(),
+            THREADED_COMMENT_NS,
+            format!("../threadedComments/threadedComment{threaded_comment_no}.xml").as_str(),
             "",
         );
     }
