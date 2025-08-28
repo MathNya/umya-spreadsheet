@@ -34,45 +34,45 @@ pub struct CommentText {
 
 impl CommentText {
     #[inline]
-    pub(crate) fn get_text(&self) -> Option<&Text> {
+    pub fn get_text(&self) -> Option<&Text> {
         self.text.as_ref()
     }
 
     #[inline]
-    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
+    pub fn get_text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
     }
 
     #[inline]
-    pub(crate) fn set_text(&mut self, value: Text) -> &mut Self {
+    pub fn set_text(&mut self, value: Text) -> &mut Self {
         self.text = Some(value);
         self
     }
 
     #[inline]
-    pub(crate) fn remove_text(&mut self) -> &mut Self {
+    pub fn remove_text(&mut self) -> &mut Self {
         self.text = None;
         self
     }
 
     #[inline]
-    pub(crate) fn get_rich_text(&self) -> Option<&RichText> {
+    pub fn get_rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
     }
 
     #[inline]
-    pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
     }
 
     #[inline]
-    pub(crate) fn set_rich_text(&mut self, value: RichText) -> &mut Self {
+    pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.rich_text = Some(value);
         self
     }
 
     #[inline]
-    pub(crate) fn remove_rich_text(&mut self) -> &mut Self {
+    pub fn remove_rich_text(&mut self) -> &mut Self {
         self.rich_text = None;
         self
     }
