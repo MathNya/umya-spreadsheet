@@ -38,11 +38,31 @@ impl Point2DType {
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flg: bool,
     ) {
         set_string_from_xml!(self, e, x, "x");
         set_string_from_xml!(self, e, y, "y");
+
+        if empty_flg {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                match e.name().into_inner() {
+                    b"a:off" => return,
+                    b"a:chOff" => return,
+                    _ => (),
+                }
+            },
+            Event::Eof => panic!(
+                "Error: Could not find {} end element",
+                "a:off,a:chOff"
+            )
+        );
     }
 
     #[inline]

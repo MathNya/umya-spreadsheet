@@ -7,9 +7,12 @@ use super::super::Outline;
 use super::super::PresetGeometry;
 use super::super::SolidFill;
 use super::super::Transform2D;
+use crate::drawing::BlackWhiteModeValues;
+use crate::drawing::GradientFill;
 use crate::reader::driver::*;
 use crate::structs::raw::RawRelationships;
 use crate::writer::driver::*;
+use crate::EnumValue;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use quick_xml::Writer;
@@ -21,10 +24,12 @@ pub struct ShapeProperties {
     preset_geometry: PresetGeometry,
     blip_fill: Option<Box<BlipFill>>,
     solid_fill: Option<Box<SolidFill>>,
+    gradient_fill: Option<Box<GradientFill>>,
     outline: Option<Box<Outline>>,
     effect_list: Option<Box<EffectList>>,
     no_fill: Option<NoFill>,
     extension_list: Option<ExtensionList>,
+    black_white_mode: EnumValue<BlackWhiteModeValues>,
 }
 impl ShapeProperties {
     #[inline]
@@ -92,6 +97,22 @@ impl ShapeProperties {
     }
 
     #[inline]
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill.as_deref()
+    }
+
+    #[inline]
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill.as_deref_mut()
+    }
+
+    #[inline]
+    pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
+        self.gradient_fill = Some(Box::new(value));
+        self
+    }
+
+    #[inline]
     pub fn get_outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
@@ -155,12 +176,25 @@ impl ShapeProperties {
         self
     }
 
+    #[inline]
+    pub fn get_black_white_mode(&self) -> &BlackWhiteModeValues {
+        self.black_white_mode.get_value()
+    }
+
+    #[inline]
+    pub fn set_black_white_mode(&mut self, value: BlackWhiteModeValues) -> &mut Self {
+        self.black_white_mode.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
+        set_string_from_xml!(self, e, black_white_mode, "bwMode");
+
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
@@ -177,6 +211,11 @@ impl ShapeProperties {
                         let mut obj = BlipFill::default();
                         obj.set_attributes(reader, e, drawing_relationships);
                         self.set_blip_fill(obj);
+                    }
+                    b"a:gradFill" => {
+                        let mut obj = GradientFill::default();
+                        obj.set_attributes(reader, e);
+                        self.set_gradient_fill(obj);
                     }
                     b"a:ln" => {
                         let mut outline = Outline::default();
@@ -223,7 +262,11 @@ impl ShapeProperties {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:spPr
-        write_start_tag(writer, "xdr:spPr", vec![], false);
+        let mut attributes: Vec<(&str, &str)> = Vec::new();
+        if self.black_white_mode.has_value() {
+            attributes.push(("bwMode", self.black_white_mode.get_hash_string()));
+        }
+        write_start_tag(writer, "xdr:spPr", attributes, false);
 
         // a:xfrm
         if let Some(v) = &self.transform2d {
@@ -240,6 +283,11 @@ impl ShapeProperties {
 
         // a:solidFill
         if let Some(v) = &self.solid_fill {
+            v.write_to(writer);
+        }
+
+        // a:gradFill
+        if let Some(v) = &self.gradient_fill {
             v.write_to(writer);
         }
 

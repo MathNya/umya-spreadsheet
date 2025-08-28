@@ -38,11 +38,31 @@ impl PositiveSize2DType {
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flg: bool,
     ) {
         set_string_from_xml!(self, e, cx, "cx");
         set_string_from_xml!(self, e, cy, "cy");
+
+        if empty_flg {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                match e.name().into_inner() {
+                    b"a:ext" => return,
+                    b"a:chExt" => return,
+                    _ => (),
+                }
+            },
+            Event::Eof => panic!(
+                "Error: Could not find {} end element",
+                "a:ext,a:chExt"
+            )
+        );
     }
 
     #[inline]
