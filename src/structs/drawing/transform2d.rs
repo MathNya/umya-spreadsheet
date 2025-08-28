@@ -230,19 +230,40 @@ impl Transform2D {
             Event::Empty(ref e) => {
                 match e.name().into_inner() {
                     b"a:off" => {
-                        self.offset.set_attributes(reader, e);
+                        self.offset.set_attributes(reader, e, true);
                     }
                     b"a:ext" => {
-                        self.extents.set_attributes(reader, e);
+                        self.extents.set_attributes(reader, e, true);
                     }
                     b"a:chOff" => {
                         let mut obj = Point2DType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
                         self.set_child_offset(obj);
                     }
                     b"a:chExt" => {
                         let mut obj = PositiveSize2DType::default();
-                        obj.set_attributes(reader, e);
+                        obj.set_attributes(reader, e, true);
+                        self.set_child_extents(obj);
+                    }
+                    _ => (),
+                }
+            },
+            Event::Start(ref e) => {
+                match e.name().into_inner() {
+                    b"a:off" => {
+                        self.offset.set_attributes(reader, e, false);
+                    }
+                    b"a:ext" => {
+                        self.extents.set_attributes(reader, e, false);
+                    }
+                    b"a:chOff" => {
+                        let mut obj = Point2DType::default();
+                        obj.set_attributes(reader, e, false);
+                        self.set_child_offset(obj);
+                    }
+                    b"a:chExt" => {
+                        let mut obj = PositiveSize2DType::default();
+                        obj.set_attributes(reader, e, false);
                         self.set_child_extents(obj);
                     }
                     _ => (),

@@ -2136,3 +2136,12 @@ fn issue_288() {
     let path = std::path::Path::new("./tests/result_files/r_issue_288.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_291() {
+    let path = std::path::Path::new("./tests/test_files/issue_291.xlsx");
+    let mut book = umya_spreadsheet::reader::xlsx::read(path).unwrap();
+
+    let path = std::path::Path::new("./tests/result_files/r_issue_291.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}

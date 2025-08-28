@@ -5,7 +5,10 @@ use std::io::Cursor;
 use quick_xml::{
     Reader,
     Writer,
-    events::BytesStart,
+    events::{
+        BytesStart,
+        Event,
+    },
 };
 
 use crate::{
@@ -15,6 +18,7 @@ use crate::{
     },
     structs::Int64Value,
     writer::driver::write_start_tag,
+    xml_read_loop,
 };
 
 #[derive(Clone, Default, Debug)]
@@ -63,11 +67,30 @@ impl PositiveSize2DType {
     #[inline]
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
-        _reader: &mut Reader<R>,
+        reader: &mut Reader<R>,
         e: &BytesStart,
+        empty_flg: bool,
     ) {
         set_string_from_xml!(self, e, cx, "cx");
         set_string_from_xml!(self, e, cy, "cy");
+
+        if empty_flg {
+            return;
+        }
+
+        xml_read_loop!(
+            reader,
+            Event::End(ref e) => {
+                match e.name().into_inner() {
+                    b"a:chExt" | b"a:ext" => return,
+                    _ => (),
+                }
+            },
+            Event::Eof => panic!(
+                "Error: Could not find {} end element",
+                "a:ext,a:chExt"
+            )
+        );
     }
 
     #[inline]

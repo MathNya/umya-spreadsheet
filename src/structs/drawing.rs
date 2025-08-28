@@ -287,3 +287,6 @@ pub use self::positive_size_2d_type::*;
 
 mod point_2d_type;
 pub use self::point_2d_type::*;
+
+mod black_white_mode_values;
+pub use self::black_white_mode_values::*;

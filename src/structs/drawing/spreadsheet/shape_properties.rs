@@ -21,7 +21,16 @@ use super::super::{
     Transform2D,
 };
 use crate::{
-    reader::driver::xml_read_loop,
+    EnumValue,
+    drawing::{
+        BlackWhiteModeValues,
+        GradientFill,
+    },
+    reader::driver::{
+        get_attribute,
+        set_string_from_xml,
+        xml_read_loop,
+    },
     structs::raw::RawRelationships,
     writer::driver::{
         write_end_tag,
@@ -31,14 +40,16 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct ShapeProperties {
-    transform2d:     Option<Box<Transform2D>>,
-    preset_geometry: PresetGeometry,
-    blip_fill:       Option<Box<BlipFill>>,
-    solid_fill:      Option<Box<SolidFill>>,
-    outline:         Option<Box<Outline>>,
-    effect_list:     Option<Box<EffectList>>,
-    no_fill:         Option<NoFill>,
-    extension_list:  Option<ExtensionList>,
+    transform2d:      Option<Box<Transform2D>>,
+    preset_geometry:  PresetGeometry,
+    blip_fill:        Option<Box<BlipFill>>,
+    solid_fill:       Option<Box<SolidFill>>,
+    gradient_fill:    Option<Box<GradientFill>>,
+    outline:          Option<Box<Outline>>,
+    effect_list:      Option<Box<EffectList>>,
+    no_fill:          Option<NoFill>,
+    extension_list:   Option<ExtensionList>,
+    black_white_mode: EnumValue<BlackWhiteModeValues>,
 }
 impl ShapeProperties {
     #[inline]
@@ -163,6 +174,36 @@ impl ShapeProperties {
 
     #[inline]
     #[must_use]
+    pub fn gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill.as_deref()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill()")]
+    pub fn get_gradient_fill(&self) -> Option<&GradientFill> {
+        self.gradient_fill()
+    }
+
+    #[inline]
+    pub fn gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use gradient_fill_mut()")]
+    pub fn get_gradient_fill_mut(&mut self) -> Option<&mut GradientFill> {
+        self.gradient_fill_mut()
+    }
+
+    #[inline]
+    pub fn set_gradient_fill(&mut self, value: GradientFill) -> &mut Self {
+        self.gradient_fill = Some(Box::new(value));
+        self
+    }
+
+    #[inline]
+    #[must_use]
     pub fn outline(&self) -> Option<&Outline> {
         self.outline.as_deref()
     }
@@ -281,12 +322,33 @@ impl ShapeProperties {
         self
     }
 
+    #[inline]
+    #[must_use]
+    pub fn black_white_mode(&self) -> &BlackWhiteModeValues {
+        self.black_white_mode.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use black_white_mode()")]
+    pub fn get_black_white_mode(&self) -> &BlackWhiteModeValues {
+        self.black_white_mode()
+    }
+
+    #[inline]
+    pub fn set_black_white_mode(&mut self, value: BlackWhiteModeValues) -> &mut Self {
+        self.black_white_mode.set_value(value);
+        self
+    }
+
     pub(crate) fn set_attributes<R: std::io::BufRead>(
         &mut self,
         reader: &mut Reader<R>,
-        _e: &BytesStart,
+        e: &BytesStart,
         drawing_relationships: Option<&RawRelationships>,
     ) {
+        set_string_from_xml!(self, e, black_white_mode, "bwMode");
+
         xml_read_loop!(
             reader,
             Event::Start(ref e) => {
@@ -303,6 +365,11 @@ impl ShapeProperties {
                         let mut obj = BlipFill::default();
                         obj.set_attributes(reader, e, drawing_relationships);
                         self.set_blip_fill(obj);
+                    }
+                    b"a:gradFill" => {
+                        let mut obj = GradientFill::default();
+                        obj.set_attributes(reader, e);
+                        self.set_gradient_fill(obj);
                     }
                     b"a:ln" => {
                         let mut outline = Outline::default();
@@ -349,7 +416,11 @@ impl ShapeProperties {
         rel_list: &mut Vec<(String, String)>,
     ) {
         // xdr:spPr
-        write_start_tag(writer, "xdr:spPr", vec![], false);
+        let mut attributes: crate::structs::AttrCollection = Vec::new();
+        if self.black_white_mode.has_value() {
+            attributes.push(("bwMode", self.black_white_mode.hash_string()).into());
+        }
+        write_start_tag(writer, "xdr:spPr", attributes, false);
 
         // a:xfrm
         if let Some(v) = &self.transform2d {
