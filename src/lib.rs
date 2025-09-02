@@ -197,7 +197,7 @@
     variant_size_differences
 )]
 #![allow(dead_code, unused_macros)]
-#![deny(clippy::correctness)]
+#![deny(clippy::correctness, clippy::trivially_copy_pass_by_ref)]
 #![warn(
     clippy::style,
     clippy::complexity,
