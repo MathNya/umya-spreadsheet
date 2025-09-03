@@ -26,7 +26,7 @@ impl Protection {
     }
 
     #[inline]
-    pub fn get_hidden(&mut self) -> &bool {
+    pub fn get_hidden(&self) -> &bool {
         self.hidden.get_value()
     }
 

@@ -117,6 +117,11 @@ impl Color {
         self.argb.get_value_str()
     }
 
+    #[inline]
+    pub fn get_argb_ref(&self) -> &StringValue {
+        &self.argb
+    }
+
     /// Get Argb.
     /// Color information based on the theme can also be obtained.
     /// # Examples
@@ -171,6 +176,11 @@ impl Color {
     }
 
     #[inline]
+    pub fn get_indexed_ref(&self) -> &UInt32Value {
+        &self.indexed
+    }
+
+    #[inline]
     pub fn set_indexed(&mut self, index: u32) -> &mut Self {
         self.indexed.set_value(index);
         self.theme_index.remove_value();
@@ -184,6 +194,11 @@ impl Color {
     }
 
     #[inline]
+    pub fn get_theme_index_ref(&self) -> &UInt32Value {
+        &self.theme_index
+    }
+
+    #[inline]
     pub fn set_theme_index(&mut self, index: u32) -> &mut Self {
         self.indexed.remove_value();
         self.theme_index.set_value(index);
@@ -194,6 +209,11 @@ impl Color {
     #[inline]
     pub fn get_tint(&self) -> &f64 {
         self.tint.get_value()
+    }
+
+    #[inline]
+    pub fn get_tint_ref(&self) -> &DoubleValue {
+        &self.tint
     }
 
     #[inline]
