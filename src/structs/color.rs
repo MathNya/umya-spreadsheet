@@ -176,8 +176,8 @@ impl Color {
     }
 
     #[inline]
-    pub fn get_indexed_ref(&self) -> &UInt32Value {
-        &self.indexed
+    pub fn has_value_indexed(&self) -> bool {
+        self.indexed.has_value()
     }
 
     #[inline]
