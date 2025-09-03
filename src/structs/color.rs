@@ -118,8 +118,8 @@ impl Color {
     }
 
     #[inline]
-    pub fn get_argb_ref(&self) -> &StringValue {
-        &self.argb
+    pub fn has_value_argb(&self) -> bool {
+        self.argb.has_value()
     }
 
     /// Get Argb.
@@ -194,8 +194,8 @@ impl Color {
     }
 
     #[inline]
-    pub fn get_theme_index_ref(&self) -> &UInt32Value {
-        &self.theme_index
+    pub fn has_value_theme_index(&self) -> bool {
+        self.theme_index.has_value()
     }
 
     #[inline]
@@ -212,8 +212,8 @@ impl Color {
     }
 
     #[inline]
-    pub fn get_tint_ref(&self) -> &DoubleValue {
-        &self.tint
+    pub fn has_value_tint(&self) -> bool {
+        self.tint.has_value()
     }
 
     #[inline]
