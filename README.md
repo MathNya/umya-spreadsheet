@@ -17,17 +17,17 @@ Please mention in issues if you have any questions.
 
 ## Update details
 ### ver 2.3.2
-#### Bug Fixed #285,#286,#288
+#### Bug Fixed #290,#291
 
 ## Usage
 ### Installation
 Add the following code to Cargo.toml
 ```toml
 [dependencies]
-umya-spreadsheet = "2.3.2"
+umya-spreadsheet = "2.3.3"
 
 # WebAssembly support
-umya-spreadsheet = { version = "2.3.2", features = ["js"] }
+umya-spreadsheet = { version = "2.3.3", features = ["js"] }
 ```
 
 Add the following code to main.rs
