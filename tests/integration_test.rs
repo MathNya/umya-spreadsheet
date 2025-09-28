@@ -2089,3 +2089,20 @@ fn issue_291() {
     let path = std::path::Path::new("./tests/result_files/r_issue_291.xlsx");
     let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
 }
+
+#[test]
+fn issue_293() {
+    let mut book = new_file();
+    let mut sheet = book.get_sheet_mut(&0).unwrap();
+
+    sheet
+        .get_sheet_views_mut()
+        .get_sheet_view_list_mut()
+        .get_mut(0)
+        .unwrap()
+        .set_zoom_scale(110)
+        .set_zoom_scale_normal(110);
+
+    let path = std::path::Path::new("./tests/result_files/r_issue_293.xlsx");
+    let _ = umya_spreadsheet::writer::xlsx::write(&book, path);
+}
