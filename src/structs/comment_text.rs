@@ -18,45 +18,50 @@ pub struct CommentText {
 
 impl CommentText {
     #[inline]
-    pub(crate) fn get_text(&self) -> Option<&Text> {
+    #[must_use]
+    pub fn get_text(&self) -> Option<&Text> {
         self.text.as_ref()
     }
 
     #[inline]
-    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
+    #[must_use]
+    pub fn get_text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
     }
 
     #[inline]
-    pub(crate) fn set_text(&mut self, value: Text) -> &mut Self {
+    #[must_use]
+    pub fn set_text(&mut self, value: Text) -> &mut Self {
         self.text = Some(value);
         self
     }
 
     #[inline]
-    pub(crate) fn remove_text(&mut self) -> &mut Self {
+    pub fn remove_text(&mut self) -> &mut Self {
         self.text = None;
         self
     }
 
     #[inline]
-    pub(crate) fn get_rich_text(&self) -> Option<&RichText> {
+    #[must_use]
+    pub fn get_rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
     }
 
     #[inline]
-    pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+    #[must_use]
+    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
     }
 
     #[inline]
-    pub(crate) fn set_rich_text(&mut self, value: RichText) -> &mut Self {
+    pub fn set_rich_text(&mut self, value: RichText) -> &mut Self {
         self.rich_text = Some(value);
         self
     }
 
     #[inline]
-    pub(crate) fn remove_rich_text(&mut self) -> &mut Self {
+    pub fn remove_rich_text(&mut self) -> &mut Self {
         self.rich_text = None;
         self
     }
@@ -65,7 +70,7 @@ impl CommentText {
     pub fn set_text_string<S: Into<String>>(&mut self, value: S) -> &mut Self {
         let mut obj = Text::default();
         obj.set_value(value);
-        self.set_text(obj);
+        let _ = self.set_text(obj);
         self
     }
 
@@ -84,7 +89,7 @@ impl CommentText {
                     b"t" => {
                         let mut obj = Text::default();
                         obj.set_attributes(reader, e);
-                        self.set_text(obj);
+                        let _ = self.set_text(obj);
                     }
                     b"r" => {
                         let mut obj = TextElement::default();
