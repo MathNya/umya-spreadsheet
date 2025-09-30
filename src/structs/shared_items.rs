@@ -30,8 +30,14 @@ pub struct SharedItems {
 }
 impl SharedItems {
     #[must_use]
-    pub fn get_contains_semi_mixed_types(&self) -> bool {
+    pub fn contains_semi_mixed_types(&self) -> bool {
         self.contains_semi_mixed_types.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_semi_mixed_types()")]
+    pub fn get_contains_semi_mixed_types(&self) -> bool {
+        self.contains_semi_mixed_types()
     }
 
     pub fn set_contains_semi_mixed_types(&mut self, value: bool) -> &mut Self {
@@ -40,8 +46,14 @@ impl SharedItems {
     }
 
     #[must_use]
-    pub fn get_contains_string(&self) -> bool {
+    pub fn contains_string(&self) -> bool {
         self.contains_string.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_string()")]
+    pub fn get_contains_string(&self) -> bool {
+        self.contains_string()
     }
 
     pub fn set_contains_string(&mut self, value: bool) -> &mut Self {
@@ -50,8 +62,14 @@ impl SharedItems {
     }
 
     #[must_use]
-    pub fn get_contains_number(&self) -> bool {
+    pub fn contains_number(&self) -> bool {
         self.contains_number.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_number()")]
+    pub fn get_contains_number(&self) -> bool {
+        self.contains_number()
     }
 
     pub fn set_contains_number(&mut self, value: bool) -> &mut Self {
@@ -60,8 +78,14 @@ impl SharedItems {
     }
 
     #[must_use]
-    pub fn get_contains_integer(&self) -> bool {
+    pub fn contains_integer(&self) -> bool {
         self.contains_integer.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use contains_integer()")]
+    pub fn get_contains_integer(&self) -> bool {
+        self.contains_integer()
     }
 
     pub fn set_contains_integer(&mut self, value: bool) -> &mut Self {
@@ -70,8 +94,14 @@ impl SharedItems {
     }
 
     #[must_use]
-    pub fn get_min_value(&self) -> f64 {
+    pub fn min_value(&self) -> f64 {
         self.min_value.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use min_value()")]
+    pub fn get_min_value(&self) -> f64 {
+        self.min_value()
     }
 
     pub fn set_min_value(&mut self, value: f64) -> &mut Self {
@@ -80,8 +110,14 @@ impl SharedItems {
     }
 
     #[must_use]
-    pub fn get_max_value(&self) -> f64 {
+    pub fn max_value(&self) -> f64 {
         self.max_value.value()
+    }
+
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use max_value()")]
+    pub fn get_max_value(&self) -> f64 {
+        self.max_value()
     }
 
     pub fn set_max_value(&mut self, value: f64) -> &mut Self {

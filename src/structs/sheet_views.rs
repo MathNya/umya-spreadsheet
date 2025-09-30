@@ -27,13 +27,26 @@ pub struct SheetViews {
 impl SheetViews {
     #[inline]
     #[must_use]
-    pub fn get_sheet_view_list(&self) -> &[SheetView] {
+    pub fn sheet_view_list(&self) -> &[SheetView] {
         &self.sheet_view_list
     }
 
     #[inline]
-    pub fn get_sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet_view_list()")]
+    pub fn get_sheet_view_list(&self) -> &[SheetView] {
+        self.sheet_view_list()
+    }
+
+    #[inline]
+    pub fn sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
         &mut self.sheet_view_list
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use sheet_view_list_mut()")]
+    pub fn get_sheet_view_list_mut(&mut self) -> &mut Vec<SheetView> {
+        self.sheet_view_list_mut()
     }
 
     #[inline]

@@ -49,8 +49,15 @@ pub struct SheetView {
 impl SheetView {
     #[inline]
     #[must_use]
-    pub fn get_show_grid_lines(&self) -> bool {
+    pub fn show_grid_lines(&self) -> bool {
         self.show_grid_lines.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use show_grid_lines()")]
+    pub fn get_show_grid_lines(&self) -> bool {
+        self.show_grid_lines()
     }
 
     #[inline]
@@ -61,8 +68,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_tab_selected(&self) -> bool {
+    pub fn tab_selected(&self) -> bool {
         self.tab_selected.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use tab_selected()")]
+    pub fn get_tab_selected(&self) -> bool {
+        self.tab_selected()
     }
 
     #[inline]
@@ -73,8 +87,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_workbook_view_id(&self) -> u32 {
+    pub fn workbook_view_id(&self) -> u32 {
         self.workbook_view_id.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use workbook_view_id()")]
+    pub fn get_workbook_view_id(&self) -> u32 {
+        self.workbook_view_id()
     }
 
     #[inline]
@@ -85,13 +106,26 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_pane(&self) -> Option<&Pane> {
+    pub fn pane(&self) -> Option<&Pane> {
         self.pane.as_deref()
     }
 
     #[inline]
-    pub fn get_pane_mut(&mut self) -> Option<&mut Pane> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pane()")]
+    pub fn get_pane(&self) -> Option<&Pane> {
+        self.pane()
+    }
+
+    #[inline]
+    pub fn pane_mut(&mut self) -> Option<&mut Pane> {
         self.pane.as_deref_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use pane_mut()")]
+    pub fn get_pane_mut(&mut self) -> Option<&mut Pane> {
+        self.pane_mut()
     }
 
     #[inline]
@@ -102,8 +136,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_view(&self) -> &SheetViewValues {
+    pub fn view(&self) -> &SheetViewValues {
         self.view.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use view()")]
+    pub fn get_view(&self) -> &SheetViewValues {
+        self.view()
     }
 
     #[inline]
@@ -114,8 +155,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_zoom_scale(&self) -> u32 {
+    pub fn zoom_scale(&self) -> u32 {
         self.zoom_scale.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use zoom_scale()")]
+    pub fn get_zoom_scale(&self) -> u32 {
+        self.zoom_scale()
     }
 
     #[inline]
@@ -126,8 +174,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_zoom_scale_normal(&self) -> u32 {
+    pub fn zoom_scale_normal(&self) -> u32 {
         self.zoom_scale_normal.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use zoom_scale_normal()")]
+    pub fn get_zoom_scale_normal(&self) -> u32 {
+        self.zoom_scale_normal()
     }
 
     #[inline]
@@ -138,8 +193,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_zoom_scale_page_layout_view(&self) -> u32 {
+    pub fn zoom_scale_page_layout_view(&self) -> u32 {
         self.zoom_scale_page_layout_view.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use zoom_scale_page_layout_view()")]
+    pub fn get_zoom_scale_page_layout_view(&self) -> u32 {
+        self.zoom_scale_page_layout_view()
     }
 
     #[inline]
@@ -150,8 +212,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_zoom_scale_sheet_layout_view(&self) -> u32 {
+    pub fn zoom_scale_sheet_layout_view(&self) -> u32 {
         self.zoom_scale_sheet_layout_view.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use zoom_scale_sheet_layout_view()")]
+    pub fn get_zoom_scale_sheet_layout_view(&self) -> u32 {
+        self.zoom_scale_sheet_layout_view()
     }
 
     #[inline]
@@ -162,8 +231,15 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_top_left_cell(&self) -> &str {
+    pub fn top_left_cell(&self) -> &str {
         self.top_left_cell.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use top_left_cell()")]
+    pub fn get_top_left_cell(&self) -> &str {
+        self.top_left_cell()
     }
 
     #[inline]
@@ -174,13 +250,26 @@ impl SheetView {
 
     #[inline]
     #[must_use]
-    pub fn get_selection(&self) -> &[Selection] {
+    pub fn selection(&self) -> &[Selection] {
         &self.selection
     }
 
     #[inline]
-    pub fn get_selection_mut(&mut self) -> &mut Vec<Selection> {
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use selection()")]
+    pub fn get_selection(&self) -> &[Selection] {
+        self.selection()
+    }
+
+    #[inline]
+    pub fn selection_mut(&mut self) -> &mut Vec<Selection> {
         &mut self.selection
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use selection_mut()")]
+    pub fn get_selection_mut(&mut self) -> &mut Vec<Selection> {
+        self.selection_mut()
     }
 
     #[inline]

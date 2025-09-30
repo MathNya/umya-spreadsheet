@@ -454,7 +454,7 @@ impl Cell {
         let char_cnt = self.width_point_cell();
 
         // get font size.
-        let font_size = match self.style().get_font() {
+        let font_size = match self.style().font() {
             Some(font) => font.font_size().val(),
             None => column_font_size,
         };
@@ -497,7 +497,7 @@ impl Cell {
         let value = self.value();
 
         // convert value
-        let result = match self.style().get_number_format() {
+        let result = match self.style().number_format() {
             Some(nmuber_format) => to_formatted_string(&value, nmuber_format.format_code()),
             None => to_formatted_string(&value, NumberingFormat::FORMAT_GENERAL),
         };
@@ -595,7 +595,7 @@ impl Cell {
                         "s" => {
                             let index = string_value.parse::<usize>().unwrap();
                             let shared_string_item = shared_string_table
-                                .get_shared_string_item()
+                                .shared_string_item()
                                 .get(index)
                                 .unwrap();
                             self.set_shared_string_item(shared_string_item);

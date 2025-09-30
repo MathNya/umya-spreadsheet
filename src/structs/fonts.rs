@@ -59,7 +59,7 @@ impl Fonts {
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
-        match style.get_font() {
+        match style.font() {
             Some(v) => {
                 let hash_code = v.hash_code();
                 let mut id = 0;

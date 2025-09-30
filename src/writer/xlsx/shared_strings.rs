@@ -30,7 +30,7 @@ pub(crate) fn write<W: io::Seek + io::Write>(
     if shared_string_table
         .read()
         .unwrap()
-        .get_shared_string_item()
+        .shared_string_item()
         .is_empty()
     {
         return Ok(());

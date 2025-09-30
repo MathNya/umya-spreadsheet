@@ -19,14 +19,28 @@ pub struct CommentText {
 impl CommentText {
     #[inline]
     #[must_use]
-    pub fn get_text(&self) -> Option<&Text> {
+    pub fn text(&self) -> Option<&Text> {
         self.text.as_ref()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_text_mut(&mut self) -> Option<&mut Text> {
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub fn get_text(&self) -> Option<&Text> {
+        self.text()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use text_mut()")]
+    pub fn get_text_mut(&mut self) -> Option<&mut Text> {
+        self.text_mut()
     }
 
     #[inline]
@@ -44,14 +58,28 @@ impl CommentText {
 
     #[inline]
     #[must_use]
-    pub fn get_rich_text(&self) -> Option<&RichText> {
+    pub fn rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
     }
 
     #[inline]
     #[must_use]
-    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub fn get_rich_text(&self) -> Option<&RichText> {
+        self.rich_text()
+    }
+
+    #[inline]
+    #[must_use]
+    pub fn rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use rich_text_mut()")]
+    pub fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+        self.rich_text_mut()
     }
 
     #[inline]

@@ -195,7 +195,7 @@ impl Column {
         let mut column_width_max = 0f64;
 
         // default font size len.
-        let column_font_size = match self.style().get_font() {
+        let column_font_size = match self.style().font() {
             Some(font) => font.font_size().val(),
             None => 11f64,
         };

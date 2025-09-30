@@ -37,8 +37,15 @@ pub struct SheetFormatProperties {
 impl SheetFormatProperties {
     #[inline]
     #[must_use]
-    pub fn get_base_column_width(&self) -> u32 {
+    pub fn base_column_width(&self) -> u32 {
         self.base_column_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use base_column_width()")]
+    pub fn get_base_column_width(&self) -> u32 {
+        self.base_column_width()
     }
 
     #[inline]
@@ -49,8 +56,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_custom_height(&self) -> bool {
+    pub fn custom_height(&self) -> bool {
         self.custom_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use custom_height()")]
+    pub fn get_custom_height(&self) -> bool {
+        self.custom_height()
     }
 
     #[inline]
@@ -61,8 +75,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_default_column_width(&self) -> f64 {
+    pub fn default_column_width(&self) -> f64 {
         self.default_column_width.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_column_width()")]
+    pub fn get_default_column_width(&self) -> f64 {
+        self.default_column_width()
     }
 
     #[inline]
@@ -73,8 +94,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_default_row_height(&self) -> f64 {
+    pub fn default_row_height(&self) -> f64 {
         self.default_row_height.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use default_row_height()")]
+    pub fn get_default_row_height(&self) -> f64 {
+        self.default_row_height()
     }
 
     #[inline]
@@ -85,8 +113,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_dy_descent(&self) -> f64 {
+    pub fn dy_descent(&self) -> f64 {
         self.dy_descent.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use dy_descent()")]
+    pub fn get_dy_descent(&self) -> f64 {
+        self.dy_descent()
     }
 
     #[inline]
@@ -97,8 +132,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_outline_level_column(&self) -> u8 {
+    pub fn outline_level_column(&self) -> u8 {
         self.outline_level_column.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline_level_column()")]
+    pub fn get_outline_level_column(&self) -> u8 {
+        self.outline_level_column()
     }
 
     #[inline]
@@ -109,8 +151,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_outline_level_row(&self) -> u8 {
+    pub fn outline_level_row(&self) -> u8 {
         self.outline_level_row.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use outline_level_row()")]
+    pub fn get_outline_level_row(&self) -> u8 {
+        self.outline_level_row()
     }
 
     #[inline]
@@ -121,8 +170,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_thick_bottom(&self) -> bool {
+    pub fn thick_bottom(&self) -> bool {
         self.thick_bottom.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thick_bottom()")]
+    pub fn get_thick_bottom(&self) -> bool {
+        self.thick_bottom()
     }
 
     #[inline]
@@ -133,8 +189,15 @@ impl SheetFormatProperties {
 
     #[inline]
     #[must_use]
-    pub fn get_thick_top(&self) -> bool {
+    pub fn thick_top(&self) -> bool {
         self.thick_top.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use thick_top()")]
+    pub fn get_thick_top(&self) -> bool {
+        self.thick_top()
     }
 
     #[inline]

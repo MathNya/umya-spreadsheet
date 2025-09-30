@@ -165,10 +165,10 @@ impl DifferentialFormat {
 
     #[inline]
     pub(crate) fn set_style(&mut self, style: &Style) {
-        self.font = style.get_font().cloned().map(Box::new);
-        self.fill = style.get_fill().cloned();
-        self.borders = style.get_borders().cloned().map(Box::new);
-        self.alignment = style.get_alignment().cloned();
+        self.font = style.font().cloned().map(Box::new);
+        self.fill = style.fill().cloned();
+        self.borders = style.borders().cloned().map(Box::new);
+        self.alignment = style.alignment().cloned();
     }
 
     pub(crate) fn hash_code(&self) -> String {

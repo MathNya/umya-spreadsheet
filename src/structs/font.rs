@@ -414,7 +414,7 @@ impl Font {
     #[inline]
     #[must_use]
     pub fn strikethrough(&self) -> bool {
-        self.font_strike.get_val()
+        self.font_strike.val()
     }
 
     #[inline]

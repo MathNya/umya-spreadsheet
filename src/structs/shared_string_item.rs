@@ -38,13 +38,25 @@ pub(crate) struct SharedStringItem {
 
 impl SharedStringItem {
     #[inline]
-    pub(crate) fn get_text(&self) -> Option<&Text> {
+    pub(crate) fn text(&self) -> Option<&Text> {
         self.text.as_ref()
     }
 
     #[inline]
-    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
+    #[deprecated(since = "3.0.0", note = "Use text()")]
+    pub(crate) fn get_text(&self) -> Option<&Text> {
+        self.text()
+    }
+
+    #[inline]
+    pub(crate) fn text_mut(&mut self) -> Option<&mut Text> {
         self.text.as_mut()
+    }
+
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use text_mut()")]
+    pub(crate) fn get_text_mut(&mut self) -> Option<&mut Text> {
+        self.text_mut()
     }
 
     #[inline]
@@ -60,14 +72,27 @@ impl SharedStringItem {
     }
 
     #[inline]
-    pub(crate) fn get_rich_text(&self) -> Option<&RichText> {
+    pub(crate) fn rich_text(&self) -> Option<&RichText> {
         self.rich_text.as_ref()
+    }
+    
+    #[inline]
+    #[deprecated(since = "3.0.0", note = "Use rich_text()")]
+    pub(crate) fn get_rich_text(&self) -> Option<&RichText> {
+        self.rich_text()
     }
 
     #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+    pub(crate) fn rich_text_mut(&mut self) -> Option<&mut RichText> {
         self.rich_text.as_mut()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use rich_text_mut()")]
+    pub(crate) fn get_rich_text_mut(&mut self) -> Option<&mut RichText> {
+        self.rich_text_mut()
     }
 
     #[inline]
@@ -82,7 +107,7 @@ impl SharedStringItem {
         self
     }
 
-    pub(crate) fn get_hash_u64(&self) -> u64 {
+    pub(crate) fn hash_u64(&self) -> u64 {
         let mut h = DefaultHasher::default();
         let content = format!(
             "{}{}",
@@ -95,6 +120,11 @@ impl SharedStringItem {
         );
         h.write(content.as_bytes());
         h.finish()
+    }
+
+    #[deprecated(since = "3.0.0", note = "Use hash_u64()")]
+    pub(crate) fn get_hash_u64(&self) -> u64 {
+        self.hash_u64()
     }
 
     pub(crate) fn set_attributes<R: std::io::BufRead>(

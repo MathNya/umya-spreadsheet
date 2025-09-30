@@ -350,28 +350,28 @@ impl Stylesheet {
         cell_format.set_border_id(border_id);
         cell_format.set_format_id(format_id);
 
-        if style.get_numbering_format().is_some() {
+        if style.numbering_format().is_some() {
             cell_format.set_apply_number_format(true);
         }
 
-        if style.get_font().is_some() {
+        if style.font().is_some() {
             cell_format.set_apply_font(true);
         }
 
-        if style.get_fill().is_some() {
+        if style.fill().is_some() {
             cell_format.set_apply_fill(true);
         }
 
-        if style.get_borders().is_some() {
+        if style.borders().is_some() {
             cell_format.set_apply_border(true);
         }
 
-        if let Some(v) = style.get_alignment() {
+        if let Some(v) = style.alignment() {
             cell_format.set_alignment(v.clone());
             cell_format.set_apply_alignment(true);
         }
 
-        if let Some(v) = style.get_protection() {
+        if let Some(v) = style.protection() {
             cell_format.set_protection(v.clone());
             cell_format.set_apply_protection(true);
         }
@@ -382,9 +382,9 @@ impl Stylesheet {
     }
 
     pub(crate) fn set_defalut_value(&mut self) -> &mut Self {
-        let style = Style::get_default_value();
+        let style = Style::default_value();
         self.set_style(&style);
-        let style = Style::get_default_value_2();
+        let style = Style::default_value_2();
         self.set_style(&style);
         self
     }

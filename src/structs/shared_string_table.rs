@@ -35,14 +35,27 @@ pub(crate) struct SharedStringTable {
 
 impl SharedStringTable {
     #[inline]
-    pub(crate) fn get_shared_string_item(&self) -> &[SharedStringItem] {
+    pub(crate) fn shared_string_item(&self) -> &[SharedStringItem] {
         &self.shared_string_item
     }
 
     #[inline]
+    #[deprecated(since = "3.0.0", note = "Use shared_string_item()")]
+    pub(crate) fn get_shared_string_item(&self) -> &[SharedStringItem] {
+        self.shared_string_item()
+    }
+
+    #[inline]
     #[allow(dead_code)]
-    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
+    pub(crate) fn shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
         &mut self.shared_string_item
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    #[deprecated(since = "3.0.0", note = "Use shared_string_item_mut()")]
+    pub(crate) fn get_shared_string_item_mut(&mut self) -> &mut Vec<SharedStringItem> {
+        self.shared_string_item_mut()
     }
 
     #[inline]
@@ -68,7 +81,7 @@ impl SharedStringTable {
             shared_string_item.set_rich_text(v);
         }
 
-        let hash_code = shared_string_item.get_hash_u64();
+        let hash_code = shared_string_item.hash_u64();
         let n = if let Some(v) = self.map.get(&hash_code) {
             *v
         } else {
@@ -93,7 +106,7 @@ impl SharedStringTable {
                     let mut shared_string_item = SharedStringItem::default();
                     shared_string_item.set_attributes(reader, e);
 
-                    let hash_code = shared_string_item.get_hash_u64();
+                    let hash_code = shared_string_item.hash_u64();
                     self.map.insert(hash_code, n);
                     self.set_shared_string_item(shared_string_item);
 

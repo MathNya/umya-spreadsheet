@@ -48,8 +48,15 @@ pub struct SheetProtection {
 impl SheetProtection {
     #[inline]
     #[must_use]
-    pub fn get_algorithm_name(&self) -> &str {
+    pub fn algorithm_name(&self) -> &str {
         self.algorithm_name.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use algorithm_name()")]
+    pub fn get_algorithm_name(&self) -> &str {
+        self.algorithm_name()
     }
 
     #[inline]
@@ -60,8 +67,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_hash_value(&self) -> &str {
+    pub fn hash_value(&self) -> &str {
         self.hash_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use hash_value()")]
+    pub fn get_hash_value(&self) -> &str {
+        self.hash_value()
     }
 
     #[inline]
@@ -72,8 +86,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_salt_value(&self) -> &str {
+    pub fn salt_value(&self) -> &str {
         self.salt_value.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use salt_value()")]
+    pub fn get_salt_value(&self) -> &str {
+        self.salt_value()
     }
 
     #[inline]
@@ -84,8 +105,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_spin_count(&self) -> u32 {
+    pub fn spin_count(&self) -> u32 {
         self.spin_count.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use spin_count()")]
+    pub fn get_spin_count(&self) -> u32 {
+        self.spin_count()
     }
 
     #[inline]
@@ -96,8 +124,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_password_raw(&self) -> &str {
+    pub fn password_raw(&self) -> &str {
         self.password.value_str()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use password_raw()")]
+    pub fn get_password_raw(&self) -> &str {
+        self.password_raw()
     }
 
     #[inline]
@@ -114,8 +149,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_sheet(&self) -> bool {
+    pub fn sheet(&self) -> bool {
         self.sheet.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sheet()")]
+    pub fn get_sheet(&self) -> bool {
+        self.sheet()
     }
 
     #[inline]
@@ -126,8 +168,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_objects(&self) -> bool {
+    pub fn objects(&self) -> bool {
         self.objects.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use objects()")]
+    pub fn get_objects(&self) -> bool {
+        self.objects()
     }
 
     #[inline]
@@ -138,8 +187,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_delete_rows(&self) -> bool {
+    pub fn delete_rows(&self) -> bool {
         self.delete_rows.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use delete_rows()")]
+    pub fn get_delete_rows(&self) -> bool {
+        self.delete_rows()
     }
 
     #[inline]
@@ -150,8 +206,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_insert_columns(&self) -> bool {
+    pub fn insert_columns(&self) -> bool {
         self.insert_columns.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use insert_columns()")]
+    pub fn get_insert_columns(&self) -> bool {
+        self.insert_columns()
     }
 
     #[inline]
@@ -162,8 +225,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_delete_columns(&self) -> bool {
+    pub fn delete_columns(&self) -> bool {
         self.delete_columns.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use delete_columns()")]
+    pub fn get_delete_columns(&self) -> bool {
+        self.delete_columns()
     }
 
     #[inline]
@@ -174,8 +244,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_insert_hyperlinks(&self) -> bool {
+    pub fn insert_hyperlinks(&self) -> bool {
         self.insert_hyperlinks.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use insert_hyperlinks()")]
+    pub fn get_insert_hyperlinks(&self) -> bool {
+        self.insert_hyperlinks()
     }
 
     #[inline]
@@ -186,8 +263,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_auto_filter(&self) -> bool {
+    pub fn auto_filter(&self) -> bool {
         self.auto_filter.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use auto_filter()")]
+    pub fn get_auto_filter(&self) -> bool {
+        self.auto_filter()
     }
 
     #[inline]
@@ -198,8 +282,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_scenarios(&self) -> bool {
+    pub fn scenarios(&self) -> bool {
         self.scenarios.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use scenarios()")]
+    pub fn get_scenarios(&self) -> bool {
+        self.scenarios()
     }
 
     #[inline]
@@ -210,8 +301,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_format_cells(&self) -> bool {
+    pub fn format_cells(&self) -> bool {
         self.format_cells.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_cells()")]
+    pub fn get_format_cells(&self) -> bool {
+        self.format_cells()
     }
 
     #[inline]
@@ -222,8 +320,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_format_columns(&self) -> bool {
+    pub fn format_columns(&self) -> bool {
         self.format_columns.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_columns()")]
+    pub fn get_format_columns(&self) -> bool {
+        self.format_columns()
     }
 
     #[inline]
@@ -234,8 +339,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_insert_rows(&self) -> bool {
+    pub fn insert_rows(&self) -> bool {
         self.insert_rows.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use insert_rows()")]
+    pub fn get_insert_rows(&self) -> bool {
+        self.insert_rows()
     }
 
     #[inline]
@@ -246,8 +358,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_format_rows(&self) -> bool {
+    pub fn format_rows(&self) -> bool {
         self.format_rows.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use format_rows()")]
+    pub fn get_format_rows(&self) -> bool {
+        self.format_rows()
     }
 
     #[inline]
@@ -258,8 +377,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_pivot_tables(&self) -> bool {
+    pub fn pivot_tables(&self) -> bool {
         self.pivot_tables.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use pivot_tables()")]
+    pub fn get_pivot_tables(&self) -> bool {
+        self.pivot_tables()
     }
 
     #[inline]
@@ -270,8 +396,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_select_locked_cells(&self) -> bool {
+    pub fn select_locked_cells(&self) -> bool {
         self.select_locked_cells.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use select_locked_cells()")]
+    pub fn get_select_locked_cells(&self) -> bool {
+        self.select_locked_cells()
     }
 
     #[inline]
@@ -282,8 +415,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_select_unlocked_cells(&self) -> bool {
+    pub fn select_unlocked_cells(&self) -> bool {
         self.select_unlocked_cells.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use select_unlocked_cells()")]
+    pub fn get_select_unlocked_cells(&self) -> bool {
+        self.select_unlocked_cells()
     }
 
     #[inline]
@@ -294,8 +434,15 @@ impl SheetProtection {
 
     #[inline]
     #[must_use]
-    pub fn get_sort(&self) -> bool {
+    pub fn sort(&self) -> bool {
         self.sort.value()
+    }
+
+    #[inline]
+    #[must_use]
+    #[deprecated(since = "3.0.0", note = "Use sort()")]
+    pub fn get_sort(&self) -> bool {
+        self.sort()
     }
 
     #[inline]

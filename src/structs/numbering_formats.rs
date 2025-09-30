@@ -81,7 +81,7 @@ impl NumberingFormats {
     }
 
     pub(crate) fn set_style(&mut self, style: &Style) -> u32 {
-        match style.get_numbering_format() {
+        match style.numbering_format() {
             Some(v) => {
                 if v.is_build_in() {
                     return v.number_format_id();
@@ -163,41 +163,41 @@ mod tests {
 
         let mut style = Style::default();
         style
-            .get_number_format_mut()
+            .number_format_mut()
             .set_format_code(NumberingFormat::FORMAT_TEXT);
         assert_eq!(obj.set_style(&style), 49);
 
         let mut style = Style::default();
         style
-            .get_number_format_mut()
+            .number_format_mut()
             .set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();
         style
-            .get_number_format_mut()
+            .number_format_mut()
             .set_format_code("test-yyyy/mm/dd");
         assert_eq!(obj.set_style(&style), 177);
 
         let mut style = Style::default();
         style
-            .get_number_format_mut()
+            .number_format_mut()
             .set_format_code("test-yyyy-mm-dd");
         assert_eq!(obj.set_style(&style), 176);
 
         let mut style = Style::default();
-        style.get_number_format_mut().set_format_code("m/d/yy");
+        style.number_format_mut().set_format_code("m/d/yy");
         assert_eq!(obj.set_style(&style), 30);
 
         let mut style = Style::default();
         style
-            .get_number_format_mut()
+            .number_format_mut()
             .set_format_code(NumberingFormat::FORMAT_TEXT);
         assert_eq!(obj.set_style(&style), 49);
 
         let mut style = Style::default();
         style
-            .get_number_format_mut()
+            .number_format_mut()
             .set_format_code(NumberingFormat::FORMAT_DATE_TIME5);
         assert_eq!(obj.set_style(&style), 45);
     }
